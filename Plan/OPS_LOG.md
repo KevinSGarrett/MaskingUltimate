@@ -400,3 +400,19 @@ install targets:        ComfyUI/models/ultralytics/{bbox,segm}/...
 authority gate:         provider-vote only; no detector is gold, training data, or production mask authority
 tests:                  pytest tests\test_civitai_auxiliary_detectors.py -> 5 passed
 ```
+
+## 2026-07-10 22:05 UTC - Civitai pose/control stress fixtures registered
+**Items:** MF-P0-14.03
+**Result:** PASS - adult/NSFW and adjacent OpenPose/OpenPose+Depth pose packs
+are registered as stress fixtures with coverage tags for the required hard cases.
+
+```
+registry:               configs/civitai_pose_stress_fixtures.yaml
+fixture resources:      22 stress-fixture Civitai IDs from Plan/Civitai/adult_body_resource_classification.yaml
+archive evidence:       every archive path and SHA-256 recorded from Plan/Civitai/civitai_bootstrap_manifest.json
+content inventory:      extracted-file counts recorded by extension; mix of OpenPose JSON+PNG and PNG-only pose/depth/control assets
+coverage tags:          contact, occlusion, hands_on_body, rear_body, from_below, difficult_body_visibility
+largest pack:           openposeNSFWPosePackage_final.zip -> 1,753 files including 472 JSON and 1,279 PNG files
+authority gate:         fixtures are QA/control stress cases only; not source images, masks, training data, gold references, or mask authority
+tests:                  pytest tests\test_civitai_pose_stress_fixtures.py -> 4 passed
+```

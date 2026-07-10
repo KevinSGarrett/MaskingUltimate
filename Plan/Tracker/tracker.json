@@ -7435,13 +7435,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T19:48:11+00:00",
+          "actor": "ai_agent",
+          "text": "Pose/control packs are registered only as QA/control stress fixtures, never as source images, masks, training data, gold references, or mask authority."
+        }
+      ],
+      "evidence": "Built configs/civitai_pose_stress_fixtures.yaml from the stress_fixture role group: 22 adult/NSFW and adjacent OpenPose/OpenPose+Depth Civitai IDs with archive path, archive SHA-256, extracted path, file-count inventory, content type, and coverage tags for contact, occlusion, hands_on_body, rear_body, from_below, and difficult_body_visibility; pytest tests\\test_civitai_pose_stress_fixtures.py -> 4 passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T05:50:01+00:00",
+      "updated_at": "2026-07-10T19:48:11+00:00",
       "orphaned": false
     },
     "MF-P0-14.04": {

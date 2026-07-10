@@ -13,6 +13,8 @@ from pathlib import Path
 import click
 
 from . import __version__
+from .providers.fixtures import DEFAULT_FIXTURES, SelfTestRunner, run_external_fixtures
+from .providers.fixtures import DEFAULT_OUTPUT as DEFAULT_FIXTURE_OUTPUT
 from .providers.probe import (
     DEFAULT_CONFIG,
     DEFAULT_OUTPUT,
@@ -224,6 +226,39 @@ def external_probe(config_path: Path, workflow_path: Path, output_path: Path) ->
         f"missing={summary['missing']} reference_only={summary['reference_only']}"
     )
     click.echo(f"downloads_attempted={report['downloads_attempted']} output={output_path}")
+
+
+@external.command("run-fixtures")
+@click.option(
+    "--fixtures-dir",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=DEFAULT_FIXTURES,
+    show_default=True,
+)
+@click.option(
+    "--output-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_FIXTURE_OUTPUT,
+    show_default=True,
+)
+@click.option(
+    "--self-test",
+    is_flag=True,
+    help="Exercise the fixture infrastructure with deterministic non-model outputs.",
+)
+def external_run_fixtures(fixtures_dir: Path, output_root: Path, self_test: bool) -> None:
+    """Save raw provider fixture outputs and side-by-side QA panels."""
+    runners = [SelfTestRunner()] if self_test else None
+    manifest = run_external_fixtures(
+        fixtures_dir=fixtures_dir,
+        output_root=output_root,
+        runners=runners,
+    )
+    click.echo(
+        f"fixtures={manifest['fixture_count']} runners={manifest['runner_count']} "
+        f"raw_before_visualization={manifest['raw_outputs_preserved_before_visualization']}"
+    )
+    click.echo(f"promoted_to_gold={manifest['promoted_to_gold']} output={output_root}")
 
 
 if __name__ == "__main__":

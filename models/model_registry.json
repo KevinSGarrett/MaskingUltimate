@@ -1,6 +1,25 @@
 {
   "models": [
     {
+      "downloaded_at": "2026-07-10T21:21:10.214174Z",
+      "file": "models/silhouette/BiRefNet-general.safetensors",
+      "key": "birefnet_general",
+      "license": "MIT",
+      "role": "primary_person_silhouette",
+      "runtime": "WSL-maskfactory-torch-2.11.0+cu128-transformers-4.47.1",
+      "sha256": "9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "c7c578c05ad1c45e88d5720429772bf8b5d6e77ba42ebb6a52f0ce4334c35242",
+        "runner": "birefnet_general_wsl",
+        "verified_at": "2026-07-10T21:21:10.214174Z"
+      },
+      "source_url": "https://huggingface.co/ZhengPeng7/BiRefNet/resolve/e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4/model.safetensors",
+      "verified": true,
+      "version_tag": "ZhengPeng7/BiRefNet@e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",
+      "vram_note": "bf16/fp16 production; official model card reports about 3.5 GB FP16 inference"
+    },
+    {
       "downloaded_at": "2026-07-10T21:13:03.932355Z",
       "file": "models/detect/yolo11m.pt",
       "key": "yolo11m",

@@ -14,3 +14,15 @@ models:
     vram_note: production CUDA inference; CPU smoke supported; spec budget 1.2 GB
     smoke_test: yolo11_person_detector
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  birefnet_general:
+    url: https://huggingface.co/ZhengPeng7/BiRefNet/resolve/e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4/model.safetensors
+    sha256: 9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154
+    family: silhouette
+    filename: BiRefNet-general.safetensors
+    version_tag: ZhengPeng7/BiRefNet@e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4
+    license: MIT
+    role: primary_person_silhouette
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-transformers-4.47.1
+    vram_note: bf16/fp16 production; official model card reports about 3.5 GB FP16 inference
+    smoke_test: birefnet_general_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

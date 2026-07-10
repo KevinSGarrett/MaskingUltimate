@@ -4,10 +4,22 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
 from .registry import register_smoke_runner
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+def _wsl_path(path: Path) -> str:
+    resolved = path.resolve()
+    drive = resolved.drive.rstrip(":").lower()
+    if not drive:
+        raise ValueError(f"expected Windows drive path, got {resolved}")
+    relative = resolved.as_posix().split(":", 1)[1]
+    return f"/mnt/{drive}{relative}"
 
 
 def yolo11_person_detector(checkpoint: Path, image: Path) -> dict[str, Any]:
@@ -61,3 +73,38 @@ def yolo11_person_detector(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 
 register_smoke_runner("yolo11_person_detector", yolo11_person_detector)
+
+
+def birefnet_general_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run pinned BiRefNet remote code in the authoritative CUDA WSL environment."""
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_birefnet_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=600, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:],
+        }
+    try:
+        result = json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+    return result
+
+
+register_smoke_runner("birefnet_general_wsl", birefnet_general_wsl)

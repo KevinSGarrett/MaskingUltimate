@@ -476,3 +476,30 @@ output SHA-256:         d49b12c55b9c0dd1c87beeaa927ac021f1733980feace2533b948d04
 registry:               verified=true in models/model_registry.json
 idempotency:            immediate rerun returned cached with matching SHA-256
 ```
+
+## 2026-07-11 00:10 UTC - M2 BiRefNet silhouette model fetched and verified
+**Items:** MF-P0-06.03
+**Result:** PASS - the official pinned BiRefNet general checkpoint was fetched,
+hash-verified, loaded through its pinned Hugging Face custom model code, and run
+on the governed adult fixture using the authoritative CUDA WSL environment.
+
+```
+catalog key:            birefnet_general
+official repo:          ZhengPeng7/BiRefNet
+pinned revision:        e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4
+source file:            model.safetensors (stored locally as required BiRefNet-general.safetensors)
+source size:            444,473,596 bytes
+SHA-256:                9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154
+local path:             models/silhouette/BiRefNet-general.safetensors
+license:                MIT
+runtime:                WSL Ubuntu-22.04; torch 2.11.0+cu128; transformers 4.47.1
+GPU:                    NVIDIA GeForce RTX 5060 Laptop GPU
+smoke input:            qa/fixtures/smoke/ultralytics_bus_adults.jpg -> 1024x1024
+mask range:             0..255
+foreground fraction:    0.413952
+output SHA-256:         c7c578c05ad1c45e88d5720429772bf8b5d6e77ba42ebb6a52f0ce4334c35242
+registry:               verified=true in models/model_registry.json
+idempotency:            immediate rerun returned cached with matching SHA-256
+dependency locks:       env/requirements.lock.txt + env/maskfactory_env.yml refreshed
+failed-closed evidence: first attempt missing declared einops; no checkpoint or registry entry published until dependency and real inference passed
+```

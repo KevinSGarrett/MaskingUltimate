@@ -1207,13 +1207,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Built official detectron2 commit 02b5c4e295e990042a714712c21dc79b731e8833 from source in WSL with CUDA_HOME=Conda env, TORCH_CUDA_ARCH_LIST=12.0, FORCE_CUDA=1, MAX_JOBS=4, and ninja; env/source_builds.lock pins commit/build environment and the tracked iopath compatibility patch; cuobjdump found five sm_120 cubins; tools/smoke_detectron2.py executed compiled CUDA nms_rotated on RTX 5060 Laptop GPU (capability 12.0), returned CUDA indices [0,2], and reported compiled CUDA 12.8; pip check passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T22:32:17+00:00",
       "orphaned": false
     },
     "MF-P0-06.11": {

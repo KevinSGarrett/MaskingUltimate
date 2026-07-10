@@ -644,3 +644,25 @@ output SHA-256:         a52baa823458a5eb5380c4951ffcce4746e0eb242378234d1b4aa525
 registry:               verified=true in models/model_registry.json
 idempotency:            immediate rerun returned cached with matching SHA-256
 ```
+
+## 2026-07-10 22:31 UTC - detectron2 built from source for CUDA 12.8 / sm_120
+**Items:** MF-P0-06.10
+**Result:** PASS - the pinned official detectron2 source compiled with ninja and
+executed its compiled rotated-NMS CUDA operator on the RTX 5060 Laptop GPU.
+
+```
+repo:                    https://github.com/facebookresearch/detectron2.git
+pinned commit:           02b5c4e295e990042a714712c21dc79b731e8833
+source worktree:          /home/kevin/mfwork/source/detectron2 (WSL ext4)
+build environment:       CUDA_HOME=$CONDA_PREFIX; TORCH_CUDA_ARCH_LIST=12.0; FORCE_CUDA=1; MAX_JOBS=4
+compiler/toolkit:         NVIDIA CUDA 12.8.93 compiler + CUDA 12.8 development libraries
+runtime:                  Python 3.11.15; torch 2.11.0+cu128; detectron2 0.6
+build result:             detectron2._C compiled and installed successfully with ninja
+architecture evidence:   cuobjdump lists five embedded sm_120 cubins in detectron2._C
+GPU smoke:               nms_rotated accepted CUDA boxes/scores and returned CUDA indices [0,2]
+compiled CUDA version:   CUDA 12.8
+device/capability:        NVIDIA GeForce RTX 5060 Laptop GPU; [12,0]
+compatibility patch:      env/patches/detectron2-iopath-0.1.10.patch (allows shared SAM2 iopath 0.1.10)
+dependency check:         pip check -> No broken requirements found
+reproduction lock:       env/source_builds.lock [detectron2]
+```

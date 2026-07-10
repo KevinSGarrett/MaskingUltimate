@@ -58,6 +58,25 @@
       "vram_note": "paired detector for DWPose; 640x640 input"
     },
     {
+      "downloaded_at": "2026-07-10T21:56:42.895190Z",
+      "file": "models/hand/hand_landmarker.task",
+      "key": "mediapipe_hand_landmarker",
+      "license": "Apache-2.0",
+      "role": "hand_21_landmarks_and_handedness",
+      "runtime": "WSL-mediapipe-0.10.35-cpu",
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/mediapipe_thumb_up.jpg",
+        "output_sha256": "2ba6fd1c26a438bb12f711554606138ee8125b6238442b1b51ca2e0fd00f0737",
+        "runner": "mediapipe_hand_landmarker_wsl",
+        "verified_at": "2026-07-10T21:56:42.895190Z"
+      },
+      "source_url": "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+      "verified": true,
+      "version_tag": "mediapipe-hand-landmarker-float16-v1",
+      "vram_note": "CPU-capable crop-lane landmark source"
+    },
+    {
       "downloaded_at": "2026-07-10T21:27:28.734420Z",
       "file": "models/parsing/sapiens_0.6b_seg.pt2",
       "key": "sapiens_0_6b_seg",

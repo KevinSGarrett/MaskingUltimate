@@ -86,3 +86,15 @@ models:
     vram_note: paired with yolox_l.onnx; 384x288 pose crops
     smoke_test: dwpose_133_cuda_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  mediapipe_hand_landmarker:
+    url: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+    sha256: fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1
+    family: hand
+    filename: hand_landmarker.task
+    version_tag: mediapipe-hand-landmarker-float16-v1
+    license: Apache-2.0
+    role: hand_21_landmarks_and_handedness
+    runtime: WSL-mediapipe-0.10.35-cpu
+    vram_note: CPU-capable crop-lane landmark source
+    smoke_test: mediapipe_hand_landmarker_wsl
+    smoke_image: qa/fixtures/smoke/mediapipe_thumb_up.jpg

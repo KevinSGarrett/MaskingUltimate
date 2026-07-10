@@ -19,6 +19,7 @@ dependencies = [
     "pydantic",
     "jsonschema",
     "loguru",
+    "mediapipe==0.10.35",
     "rich",
 ]
 

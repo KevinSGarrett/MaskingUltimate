@@ -20,7 +20,7 @@ is chosen to fit 8 GB VRAM in fp16/bf16 or 4-bit.
 
 ```bash
 # inside Ubuntu-22.04
-sudo apt update && sudo apt install -y build-essential ninja-build cmake libgl1 libglib2.0-0 ffmpeg
+sudo apt update && sudo apt install -y build-essential ninja-build cmake libgl1 libgles2 libglib2.0-0 ffmpeg
 curl -L -o mf.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh && bash mf.sh -b
 conda create -n maskfactory python=3.11 -y && conda activate maskfactory
 # PyTorch 2.7+ cu128 (Blackwell)

@@ -238,3 +238,87 @@ def dwpose_133_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 register_smoke_runner("dwpose_yolox_cuda_wsl", dwpose_yolox_wsl)
 register_smoke_runner("dwpose_133_cuda_wsl", dwpose_133_wsl)
+
+
+def mediapipe_hand_landmarker(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run MediaPipe Tasks and require one complete 21-landmark hand."""
+    import mediapipe as mp
+
+    options = mp.tasks.vision.HandLandmarkerOptions(
+        base_options=mp.tasks.BaseOptions(model_asset_path=str(checkpoint)),
+        num_hands=2,
+        min_hand_detection_confidence=0.5,
+        min_hand_presence_confidence=0.5,
+        min_tracking_confidence=0.5,
+    )
+    sample = mp.Image.create_from_file(str(image))
+    with mp.tasks.vision.HandLandmarker.create_from_options(options) as landmarker:
+        result = landmarker.detect(sample)
+    if len(result.hand_landmarks) != 1 or len(result.hand_landmarks[0]) != 21:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"expected one 21-point hand, got {[len(hand) for hand in result.hand_landmarks]}",
+        }
+    landmarks = [
+        [round(float(point.x), 6), round(float(point.y), 6), round(float(point.z), 6)]
+        for point in result.hand_landmarks[0]
+    ]
+    world = [
+        [round(float(point.x), 6), round(float(point.y), 6), round(float(point.z), 6)]
+        for point in result.hand_world_landmarks[0]
+    ]
+    handedness = result.handedness[0][0]
+    payload = {
+        "landmarks": landmarks,
+        "world_landmarks": world,
+        "handedness": handedness.category_name,
+        "handedness_score": round(float(handedness.score), 6),
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "passed": True,
+        "output_sha256": hashlib.sha256(encoded).hexdigest(),
+        "hand_count": 1,
+        "landmark_count": 21,
+        "world_landmark_count": 21,
+        "handedness": handedness.category_name,
+        "handedness_score": round(float(handedness.score), 6),
+    }
+
+
+register_smoke_runner("mediapipe_hand_landmarker", mediapipe_hand_landmarker)
+
+
+def mediapipe_hand_landmarker_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the same 21-landmark gate in the authoritative WSL environment."""
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_mediapipe_hand_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=300, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+register_smoke_runner("mediapipe_hand_landmarker_wsl", mediapipe_hand_landmarker_wsl)

@@ -501,6 +501,28 @@ registry:               both verified=true in models/model_registry.json
 idempotency:            both immediate reruns returned cached with matching SHA-256
 ```
 
+## 2026-07-11 00:56 UTC - M6 MediaPipe Hand Landmarker fetched and verified
+**Items:** MF-P0-06.07
+**Result:** PASS - Google's official float16 v1 task bundle was downloaded,
+hash-pinned, loaded by MediaPipe Tasks, and returned a complete 21-point hand,
+21 world landmarks, and handedness on the official hand fixture.
+
+```
+source:                 storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1
+file:                   models/hand/hand_landmarker.task
+size:                   7,819,105 bytes
+SHA-256:                fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1
+version:                MediaPipe Hand Landmarker float16 v1
+license:                Apache-2.0
+runtime:                authoritative WSL; mediapipe 0.10.35; CPU XNNPACK delegate; libgles2
+fixture:                official mediapipe-assets/thumb_up.jpg; SHA-256 5d673c081ab13b8a1812269ff57047066f9c33c07db5f4178089e8cb3fdc0291
+smoke result:           1 hand; 21 normalized points; 21 world points; Right score 0.983548
+output SHA-256:         2ba6fd1c26a438bb12f711554606138ee8125b6238442b1b51ca2e0fd00f0737
+registry:               verified=true in models/model_registry.json
+idempotency:            immediate rerun returned cached with matching SHA-256
+failed-closed evidence: WSL attempt without libGLESv2 published nothing; libgles2 added to the reproducible apt package list before fresh verification
+```
+
 ## 2026-07-11 00:48 UTC - M5 DWPose detector and 133-keypoint pose verified
 **Items:** MF-P0-06.06
 **Result:** PASS - both official pinned ONNX components were hash-verified and

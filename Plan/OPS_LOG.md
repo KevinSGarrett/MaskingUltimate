@@ -316,3 +316,29 @@ confirmed `127.0.0.1:62170`.
 MF-P0-04.04 remains human-owned: Kevin must open task 1 / job 1 in CVAT and
 perform the literal Magic Wand positive/negative click smoke check. The automated
 equivalent passed, but it is not being represented as the required manual UI click.
+
+## 2026-07-10 19:22 UTC - Docker Ollama VLM stack installed and smoke-tested
+**Items:** MF-P0-05.01, MF-P0-05.02, MF-P0-05.03, MF-P0-05.04, MF-P0-05.05
+**Result:** PASS - official Docker Ollama is running on loopback with GPU access,
+all three required models are installed, and the primary VLM returned strict JSON
+for a synthetic P-PART panel image.
+
+```
+container:              ollama; image sha256:509fdf54e23bd50d87af646cb51c0a7a203d6a83cc4d6695b3b08c5be1c62c0a
+runtime:                Ollama 0.31.2; restart count 0
+published port:         127.0.0.1:11434 only
+volume:                 ollama:/root/.ollama
+GPU device request:     all GPUs (-1:[[gpu]])
+primary VLM:            qwen2.5vl:7b, id 5ced39dfa4ba, 6.0 GB, qwen25vl, 8.3B, Q4_K_M, vision
+fallback VLM:           llama3.2-vision:11b, id 6f2f9757ae97, 7.8 GB, mllama, 10.7B, Q4_K_M, vision
+text LLM:               qwen2.5:7b-instruct, id 845dbda0ea48, 4.7 GB, qwen2, 7.6B, Q4_K_M
+config:                 configs/vlm.yaml
+smoke script:           tools/smoke_ollama_vlm.py
+smoke fixture:          generated 1024x256 four-tile synthetic P-PART panel
+smoke result:           strict JSON parsed and schema checks all true
+smoke latency:          139.347 s first cold multimodal run; eval_count 61
+smoke verdict:          pass, confidence 1, problems []
+evidence report:        qa/reports/ollama_vlm_smoke.json
+governance asserted:    VLM may not author masks, approve gold, clear BLOCKs, or send images off-machine
+tests:                  pytest tests\test_vlm_config.py -> 3 passed
+```

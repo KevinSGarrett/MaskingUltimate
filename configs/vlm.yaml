@@ -1,0 +1,48 @@
+runtime:
+  provider: ollama
+  base_url: "http://127.0.0.1:11434"
+  container_name: ollama
+  cloud_enabled: false
+  gpu_slot: exclusive
+
+models:
+  primary_vlm: "qwen2.5vl:7b"
+  fallback_vlm: "llama3.2-vision:11b"
+  text_llm: "qwen2.5:7b-instruct"
+
+prompts:
+  p_part:
+    version: "p-part-v0-doc10"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    allowed_verdicts:
+      - pass
+      - fail
+      - uncertain
+    allowed_problems:
+      - wrong_part
+      - wrong_side
+      - boundary_too_loose
+      - boundary_too_tight
+      - includes_clothing_as_skin
+      - includes_background
+      - includes_neighbor_part
+      - missing_visible_area
+      - mask_on_hidden_area
+      - finger_merge
+      - hair_edge_bad
+      - occlusion_error
+      - other
+    required_keys:
+      - verdict
+      - confidence
+      - problems
+      - evidence
+      - correction_instruction
+
+governance:
+  role: "qa_router_only"
+  may_author_masks: false
+  may_approve_gold: false
+  may_clear_blocks: false
+  source_images_leave_machine: false

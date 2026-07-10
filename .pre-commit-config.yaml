@@ -10,6 +10,9 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-yaml
+        # Docker Compose validates this file; PyYAML does not know Compose's
+        # merge-control !override tag.
+        exclude: '^configs/cvat-compose\.maskfactory\.yml$'
       - id: check-added-large-files
         args: ["--maxkb=2048"]
   - repo: https://github.com/astral-sh/ruff-pre-commit

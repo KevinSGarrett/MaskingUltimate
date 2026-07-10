@@ -1,0 +1,40 @@
+# MaskFactory CVAT v2.24.0 local-only/runtime override (MF-P0-03.05/.06).
+services:
+  nuclio:
+    ports: !override
+      - "127.0.0.1:8070:8070"
+
+  traefik:
+    # Traefik 2.10 hard-codes Docker API v1.24, which Docker 29 removed.
+    # 3.6.1 is the first stable release with API version negotiation.
+    image: traefik:v3.6.1
+    ports: !override
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8090:8090"
+
+  cvat_server:
+    # Traefik v3 accepts one matcher argument; expand CVAT's v2 multi-argument
+    # PathPrefix rule so API/static/admin traffic cannot fall through to UI nginx.
+    labels:
+      traefik.http.routers.cvat.rule: >-
+        Host(`localhost`) &&
+        (PathPrefix(`/api/`) || PathPrefix(`/static/`) || PathPrefix(`/admin`) ||
+        PathPrefix(`/documentation/`) || PathPrefix(`/django-rq`))
+    volumes:
+      - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
+
+  cvat_worker_import:
+    volumes:
+      - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
+
+  cvat_worker_export:
+    volumes:
+      - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
+
+  cvat_worker_annotation:
+    volumes:
+      - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
+
+  cvat_worker_chunks:
+    volumes:
+      - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro

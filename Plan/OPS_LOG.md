@@ -28,6 +28,7 @@ irrelevant (that's what "log" means). One `##` heading per event.
 ```
 
 </details>
+
 ```
 
 ---
@@ -222,3 +223,63 @@ NEXT ACTIONABLE (P0 remaining, dependency-aware)
 ```
 
 </details>
+
+## 2026-07-10 17:52 UTC — Docker Desktop, WSL integration, container GPU
+**Items:** MF-P0-03.01, MF-P0-03.02, MF-P0-03.03
+**Result:** PASS — Docker Desktop 4.74.0 is running on the Linux/WSL2 engine;
+Ubuntu-22.04 integration enabled and verified; CUDA 12.8 container sees the GPU.
+
+```
+docker client/server: 29.4.3 / 29.4.3, server OS linux
+Docker Desktop:        4.74.0 (227015), context desktop-linux
+Ubuntu-22.04 proof:    docker version -> 29.4.3|29.4.3|linux
+container image:       nvidia/cuda:12.8.0-base-ubuntu22.04
+image digest:          sha256:12242992c121f6cab0ca11bccbaaf757db893b3065d7db74b933e59f321b2cf4
+NVIDIA-SMI:            590.62
+driver:                592.01
+GPU:                   NVIDIA GeForce RTX 5060 Laptop GPU, 8151 MiB
+container result:      PASS; no running GPU processes after exit
+```
+
+## 2026-07-10 17:55 UTC — CVAT checkout pinned
+**Item:** MF-P0-03.04
+**Command:** `git clone --branch v2.24.0 --depth 1 https://github.com/cvat-ai/cvat.git cvat`
+**Result:** PASS — exact tag and commit verified in the clean checkout.
+
+```
+tag:    v2.24.0
+commit: 9fafd98f0c0588b775db8f98648569dfa48292b5
+path:   C:\Comfy_UI_Main_Masking\cvat
+config: configs/cvat.yaml
+```
+
+## 2026-07-10 18:14 UTC — CVAT local cluster and administrator verified
+**Items:** MF-P0-03.05, MF-P0-03.06, MF-P0-03.07, MF-P0-03.08, MF-P0-03.09
+**Result:** PASS — pinned CVAT 2.24.0 is live on localhost, its full serverless
+compose stack is stable, the shared data mount is read-only, and the local
+`kevin` superuser/token were provisioned and authenticated without logging secrets.
+
+```
+containers:             19/19 running; 0 restarted; 0 unhealthy
+CVAT API:               GET /api/server/about -> 200, version 2.24.0
+CVAT UI:                GET / -> 200 text/html, 1214 bytes
+Nuclio API:             GET :8070/api/versions -> 200; health=healthy
+published ports:        127.0.0.1:8070, 127.0.0.1:8080, 127.0.0.1:8090 only
+shared data:            cvat_server/import/export/annotation/chunks
+                        C:/Comfy_UI_Main_Masking/data -> /home/django/share (ro)
+administrator:          kevin; POST /api/auth/login succeeded;
+                        authenticated GET /api/users/self -> 200, is_superuser=true
+secrets:                CVAT_USERNAME/PASSWORD/EMAIL/TOKEN present and nonempty
+                        only in root .env; git check-ignore confirms .gitignore:10
+tests:                  25 pytest passed; ruff + black + all pre-commit hooks passed
+```
+
+Docker 29 compatibility required two reproducible, version-recorded shims:
+
+- `tools/bootstrap_cvat.py` aliases the retired
+  `gcr.io/iguazio/alpine:3.17` helper to official `alpine:3.17` digest
+  `sha256:8fc3dacfb6d69da8d44e42390de777e48577085db99aa4e4af35f483eb08b989`.
+- `configs/cvat-compose.maskfactory.yml` uses official Traefik 3.6.1 (Docker API
+  negotiation) and expands CVAT's legacy multi-argument `PathPrefix` router rule.
+  Verification showed zero current Docker-provider errors and Django, not UI nginx,
+  handling API POSTs.

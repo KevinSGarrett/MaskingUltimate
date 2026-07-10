@@ -382,3 +382,21 @@ rejects:                generative breast-expansion workflow and generative clot
 authority gate:         no Civitai asset is gold authority, training data, or production mask authority without explicit provenance/license/consent/allowed-use review
 tests:                  pytest tests\test_civitai_classification.py -> 5 passed
 ```
+
+## 2026-07-10 21:35 UTC - Civitai auxiliary detector registry recorded
+**Items:** MF-P0-14.02
+**Result:** PASS - all usable provider-vote Civitai detector models are
+registered with local artifact path, SHA-256, version, coverage bucket, payload
+path/hash, and planned ComfyUI/ADetailer install target.
+
+```
+registry:               configs/civitai_auxiliary_detectors.yaml
+registered detectors:   24 provider-vote resources
+coverage buckets:       shoes/footwear, feet, hair, lips, socks, hands, face bands, armpits, nails, mouth, rear/accessory/body
+archive payloads:       inspected extracted .pt files for hand, eye, face-band, armpit, nails, rear, teeth, lips, socks, glasses, tattoo, head accessory, clothes/tops
+standalone models:      registered direct .pt files for mouth, foot/shoe, shoes, feet, hair, jewelry, rings, anime foot, person/female, anime hair
+missing manifest hash:  computed nailsSegmentationAdetailer_v10.zip sha256 e2130d2b478c1252d8d0b6a3d69d46c878d5ba05ffa549f396addad020905cae
+install targets:        ComfyUI/models/ultralytics/{bbox,segm}/...
+authority gate:         provider-vote only; no detector is gold, training data, or production mask authority
+tests:                  pytest tests\test_civitai_auxiliary_detectors.py -> 5 passed
+```

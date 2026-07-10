@@ -59,9 +59,9 @@ Admission is utility-gated instead:
 
 - Accept detector, segmentation, workflow, pose, depth, and control assets when they improve candidate masks, stress fixtures, QA coverage, or ComfyUI wiring.
 - Record source URL, file hash, local path, version, and role in `Plan\Civitai\civitai_bootstrap_manifest.json`.
-- Treat adult/NSFW pose packs as stress fixtures, not as gold masks.
+- Treat adult/NSFW pose packs as stress fixtures by default; eligible source/control pairs may also become training examples or seed human-reviewed gold after all normal governance and review gates pass.
 - Treat adult/NSFW detector outputs as votes that must be checked against Sapiens/SCHP/DensePose/DWPose/SAM2 consensus.
-- Do not use adult/NSFW assets as training data or gold reference masks unless provenance, license, consent status, and allowed use have been explicitly verified.
+- Adult/NSFW assets are eligible for training data and may seed human-reviewed gold when provenance, license, adult-age/consent status, and allowed use have been explicitly verified and the normal intake, annotation, QA, and human-review gates pass.
 
 The current adult-inclusive Civitai searches found useful rear/foot/hand/hair/sock/shoe/clothing/accessory detector candidates, person/silhouette workflow references, and several adult/multi-person pose/depth packs. They did not surface a strong dedicated vagina, penis, genital, nipple, areola, or breast segmentation detector. Those regions should therefore be handled by the primary full-body parsing stack, DensePose/pose geometry, protected-region QA, and human-reviewed gold masks rather than a single Civitai detector.
 

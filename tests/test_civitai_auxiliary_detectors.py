@@ -74,9 +74,9 @@ def test_install_targets_are_adetailer_ultralytics_paths():
         assert target.endswith(".pt")
 
 
-def test_auxiliary_detector_policy_blocks_authority_and_gold_use():
+def test_auxiliary_detector_policy_allows_governed_training_and_reviewed_gold():
     registry = _load_yaml(REGISTRY)
 
     assert registry["policy"]["role_required"] == "provider_vote"
-    assert registry["policy"]["no_detector_is_mask_authority"] is True
-    assert registry["policy"]["no_detector_is_training_or_gold_data"] is True
+    assert registry["policy"]["detector_outputs_may_be_training_labels_when_governed"] is True
+    assert registry["policy"]["detector_outputs_may_seed_human_reviewed_gold_when_governed"] is True

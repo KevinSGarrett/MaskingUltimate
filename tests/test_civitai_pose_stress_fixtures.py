@@ -48,10 +48,9 @@ def test_required_stress_coverage_is_present():
     assert set(registry["required_coverage"]) <= coverage
 
 
-def test_fixture_policy_blocks_training_gold_and_mask_authority():
+def test_fixture_policy_allows_governed_training_and_reviewed_gold():
     registry = _load_yaml(REGISTRY)
 
     assert registry["policy"]["role_required"] == "stress_fixture"
-    assert registry["policy"]["no_fixture_is_training_data"] is True
-    assert registry["policy"]["no_fixture_is_gold_reference"] is True
-    assert registry["policy"]["no_fixture_is_mask_authority"] is True
+    assert registry["policy"]["fixtures_may_be_training_data_when_governed"] is True
+    assert registry["policy"]["fixtures_may_seed_human_reviewed_gold_when_governed"] is True

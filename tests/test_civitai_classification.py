@@ -35,7 +35,7 @@ def test_every_civitai_manifest_id_is_classified_once():
     assert len(ids) == classification["unique_civitai_id_count_at_classification"]
 
 
-def test_classification_roles_are_allowed_and_have_required_gates():
+def test_classification_roles_are_allowed_and_define_training_eligibility():
     classification = _load_yaml(CLASSIFICATION)
     allowed_roles = set(classification["policy"]["allowed_primary_roles"])
 
@@ -46,21 +46,24 @@ def test_classification_roles_are_allowed_and_have_required_gates():
         defaults = classification["role_defaults"][role]
         assert defaults["allowed_use"]
         assert defaults["authority_gate"]
-        assert defaults["training_gold_gate"].startswith("Blocked")
+        assert defaults["training_gold_eligibility"]
 
 
-def test_civitai_assets_are_not_gold_or_training_authority():
+def test_adult_nsfw_assets_are_explicitly_eligible_for_training_and_reviewed_gold():
     classification = _load_yaml(CLASSIFICATION)
 
-    assert classification["policy"]["no_civitai_asset_is_gold_authority"] is True
-    assert classification["policy"]["no_civitai_asset_is_training_data_without_rights"] is True
+    assert classification["policy"]["adult_nsfw_assets_may_be_training_data_when_eligible"] is True
+    assert (
+        classification["policy"]["adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible"]
+        is True
+    )
     assert (
         classification["policy"]["require_provenance_license_consent_before_training_or_gold"]
         is True
     )
 
 
-def test_explicit_nsfw_pose_resources_are_stress_fixtures_only():
+def test_explicit_nsfw_pose_resources_are_registered_for_stress_and_training_eligibility():
     classification = _load_yaml(CLASSIFICATION)
     stress_ids = {int(entry["id"]) for entry in classification["role_groups"]["stress_fixture"]}
 

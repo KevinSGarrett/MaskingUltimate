@@ -1,8 +1,9 @@
 # configs/civitai_auxiliary_detectors.yaml
 #
 # MF-P0-14.02 registry for usable Civitai auxiliary detector/provider-vote
-# models. These are proposal sources only; none is gold, training data, or
-# production mask authority.
+# models. Their predictions can become training labels or seed human-reviewed
+# gold when paired with eligible adult source imagery and passed through the
+# normal consensus, QA, rights, and human-review gates.
 schema_version: 1.0.0
 classification_file: Plan/Civitai/adult_body_resource_classification.yaml
 manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
@@ -11,8 +12,8 @@ policy:
   role_required: provider_vote
   usable_requires_local_artifact: true
   usable_requires_sha256: true
-  no_detector_is_mask_authority: true
-  no_detector_is_training_or_gold_data: true
+  detector_outputs_may_be_training_labels_when_governed: true
+  detector_outputs_may_seed_human_reviewed_gold_when_governed: true
   install_targets_are_planning_paths: true
 detectors:
   - key: hand_detailer_v2_v9c

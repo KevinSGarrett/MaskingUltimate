@@ -18,8 +18,8 @@ policy:
     - qa_probe
     - reject
   adult_nsfw_label_is_not_rejection_reason: true
-  no_civitai_asset_is_gold_authority: true
-  no_civitai_asset_is_training_data_without_rights: true
+  adult_nsfw_assets_may_be_training_data_when_eligible: true
+  adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible: true
   require_provenance_license_consent_before_training_or_gold: true
   classification_basis:
     - Plan/16_EXTERNAL_FOUNDATION_BOOTSTRAP.md
@@ -30,23 +30,23 @@ role_defaults:
   provider_vote:
     allowed_use: Candidate detector/segmentation proposal vote only; compare against Sapiens, SCHP, DensePose, DWPose/MediaPipe, SAM2, and source overlays.
     authority_gate: Not mask authority; cannot clear gold, BLOCK, or QA decisions.
-    training_gold_gate: Blocked from training and gold packages until provenance, license, consent status, and allowed use are explicitly recorded.
+    training_gold_eligibility: Eligible after provenance, license, adult-age/consent status, and allowed use are explicitly recorded; any gold mask still requires the normal consensus, QA, and human-review workflow.
   comfyui_graph_reference:
     allowed_use: Reference wiring for controlled MaskFactory/ComfyUI adapters and debug graphs only.
     authority_gate: Not a production stage unless rebuilt under MaskFactory controls and QA.
-    training_gold_gate: Blocked from training and gold packages.
+    training_gold_eligibility: Graph files are not examples by themselves; eligible adult source images and masks produced through a governed graph may enter training or human-reviewed gold after the normal intake, rights, QA, and review gates.
   stress_fixture:
     allowed_use: Pose/depth/control stress fixture for occlusion, contact, multi-person, perspective, and body-visibility QA.
     authority_gate: Not a mask provider and not evidence of anatomical truth.
-    training_gold_gate: Blocked from training and gold packages unless explicit rights and consent provenance are recorded.
+    training_gold_eligibility: Eligible as training examples or seeds for human-reviewed gold when the underlying adult source imagery has verified provenance, license, adult-age/consent status, and allowed use, and passes normal intake and annotation QA.
   qa_probe:
     allowed_use: QA visualization, disagreement probe, or non-authoritative comparison signal only.
     authority_gate: Not mask authority and not a production decision source.
-    training_gold_gate: Blocked from training and gold packages.
+    training_gold_eligibility: Probe outputs may become training examples or seeds for human-reviewed gold only when paired with an eligible governed source image and passed through normal annotation, QA, and review.
   reject:
     allowed_use: Do not use in MaskFactory pipelines except as a recorded rejected candidate.
     authority_gate: Rejected as provider, fixture, graph reference, and QA probe.
-    training_gold_gate: Blocked from training and gold packages.
+    training_gold_eligibility: Ineligible while rejected; reclassification requires documented evidence that resolves the rejection reason and all normal governance gates.
 role_groups:
   provider_vote:
     - id: 142240

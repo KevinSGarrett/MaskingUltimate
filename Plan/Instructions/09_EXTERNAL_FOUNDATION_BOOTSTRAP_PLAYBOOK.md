@@ -20,7 +20,7 @@ Use this playbook when turning existing datasets, models, or Civitai workflows i
 - Map labels through explicit config tables; do not infer class names in code.
 - Use Civitai workflows to learn graph wiring, not to replace MaskFactory stages.
 - Do not discard adult/NSFW-labeled Civitai assets solely because of the label. Evaluate them by masking/segmentation/detector/pose/control/workflow utility, provenance, license, and safe/legal use.
-- Adult/NSFW Civitai assets may be detector candidates, pose/control stress fixtures, ComfyUI wiring references, or QA probes. They are not assumed to be consented training data or gold masks without explicit provenance and license verification.
+- Adult/NSFW Civitai assets may be detector candidates, pose/control stress fixtures, ComfyUI wiring references, QA probes, and training inputs. They are eligible for training and may seed human-reviewed gold after explicit provenance, license, adult-age/consent, allowed-use, intake, annotation, and QA verification.
 - Use Dataset Ninja and similar platforms to discover datasets, inspect label taxonomies, and compare coverage. Download from official dataset sources whenever possible.
 - Store model weights outside `Plan\`, normally under model cache or runtime model directories.
 - Store documentation, manifests, small workflow JSONs, and dataset registry records inside `Plan\`.
@@ -81,7 +81,7 @@ For each adult/NSFW-labeled Civitai or dataset resource:
 - Verify download status in `Plan\Civitai\civitai_bootstrap_manifest.json`: downloaded, manual-browser-required, metadata-only, blocked, or rejected.
 - Use adult pose/control packs to stress test occlusion, contact, body visibility, perspective, hands-on-body, rear-body, and clothing/skin boundary cases.
 - Use adult/body detectors only as proposal votes; compare against Sapiens, SCHP, DensePose, DWPose/MediaPipe, SAM2, and source-image overlays.
-- Keep adult/NSFW assets out of training and gold datasets until license, provenance, consent status, and allowed use are explicitly recorded.
+- Promote eligible adult/NSFW assets into training datasets, and into the normal human-reviewed gold workflow, once license, provenance, adult-age/consent status, and allowed use are explicitly recorded and all intake/annotation/QA gates pass.
 
 ## Provider Authority Matrix
 

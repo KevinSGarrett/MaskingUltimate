@@ -1,17 +1,18 @@
 # configs/civitai_pose_stress_fixtures.yaml
 #
 # MF-P0-14.03 registry for adult/NSFW and adjacent Civitai pose/control stress
-# fixtures. These files are used to stress QA and provider disagreement, not as
-# source images, masks, training data, or gold references.
+# fixtures. In addition to stress QA and provider disagreement, eligible adult
+# source/control pairs may be promoted into training examples or seed
+# human-reviewed gold after provenance, license, adult-age/consent, allowed-use,
+# intake, annotation, and QA gates pass.
 schema_version: 1.0.0
 classification_file: Plan/Civitai/adult_body_resource_classification.yaml
 manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
 registered_at_utc: "2026-07-10T22:05:00Z"
 policy:
   role_required: stress_fixture
-  no_fixture_is_training_data: true
-  no_fixture_is_gold_reference: true
-  no_fixture_is_mask_authority: true
+  fixtures_may_be_training_data_when_governed: true
+  fixtures_may_seed_human_reviewed_gold_when_governed: true
   image_preview_not_required_for_registry: true
 required_coverage:
   - contact

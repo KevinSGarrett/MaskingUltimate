@@ -49,7 +49,8 @@ RATIONALE = {
     ),
     "qa_visualization": (
         "Pose, depth, contact, occlusion, or perspective stress fixture for QA panels; "
-        "not training data or gold truth without separate provenance approval."
+        "eligible for training or to seed human-reviewed gold after provenance, license, "
+        "adult-age/consent, allowed-use, intake, annotation, and QA approval."
     ),
     "reject": (
         "Rejected from MaskFactory v1 intake because its primary purpose is out-of-scope "

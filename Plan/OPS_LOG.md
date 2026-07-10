@@ -379,7 +379,7 @@ graph references:       SAM2, Florence2+SAM2, mask add/remove, DWPose/DensePose/
 stress fixtures:        adult/NSFW and adjacent OpenPose/depth packs for contact, occlusion, hands-on-body, rear-body, from-above/from-below, and multi-person coverage
 QA probes:              RMBG/matting/rotoscope/auto-mask comparison workflows
 rejects:                generative breast-expansion workflow and generative clothing-extractor model
-authority gate:         no Civitai asset is gold authority, training data, or production mask authority without explicit provenance/license/consent/allowed-use review
+training eligibility:   adult/NSFW Civitai assets may enter training or seed human-reviewed gold after provenance/license/adult-age-consent/allowed-use/intake/annotation/QA gates pass
 tests:                  pytest tests\test_civitai_classification.py -> 5 passed
 ```
 
@@ -397,7 +397,7 @@ archive payloads:       inspected extracted .pt files for hand, eye, face-band, 
 standalone models:      registered direct .pt files for mouth, foot/shoe, shoes, feet, hair, jewelry, rings, anime foot, person/female, anime hair
 missing manifest hash:  computed nailsSegmentationAdetailer_v10.zip sha256 e2130d2b478c1252d8d0b6a3d69d46c878d5ba05ffa549f396addad020905cae
 install targets:        ComfyUI/models/ultralytics/{bbox,segm}/...
-authority gate:         provider-vote only; no detector is gold, training data, or production mask authority
+training eligibility:   detector outputs may become training labels or seed human-reviewed gold when paired with eligible sources and passed through normal consensus/QA/review gates
 tests:                  pytest tests\test_civitai_auxiliary_detectors.py -> 5 passed
 ```
 
@@ -413,22 +413,23 @@ archive evidence:       every archive path and SHA-256 recorded from Plan/Civita
 content inventory:      extracted-file counts recorded by extension; mix of OpenPose JSON+PNG and PNG-only pose/depth/control assets
 coverage tags:          contact, occlusion, hands_on_body, rear_body, from_below, difficult_body_visibility
 largest pack:           openposeNSFWPosePackage_final.zip -> 1,753 files including 472 JSON and 1,279 PNG files
-authority gate:         fixtures are QA/control stress cases only; not source images, masks, training data, gold references, or mask authority
+training eligibility:   eligible adult source/control pairs may also become training examples or seed human-reviewed gold after all governance, annotation, QA, and review gates pass
 tests:                  pytest tests\test_civitai_pose_stress_fixtures.py -> 4 passed
 ```
 
 ## 2026-07-10 22:20 UTC - Civitai adult/NSFW governance gates verified
 **Items:** MF-P0-14.04
-**Result:** PASS - tracked Civitai adult/body registries explicitly prevent
-training, gold-reference, and production mask-authority use.
+**Result:** SUPERSEDED 2026-07-10 - Kevin clarified that adult/NSFW assets must
+be usable for training and may seed human-reviewed gold. Registries now encode
+conditional eligibility after the normal governance and quality gates.
 
 ```
 classification:         Plan/Civitai/adult_body_resource_classification.yaml
 detector registry:      configs/civitai_auxiliary_detectors.yaml
 fixture registry:       configs/civitai_pose_stress_fixtures.yaml
-verified gates:         classification blocks training/gold without provenance/license/consent/allowed-use review
-detector gate:          provider_vote only; no detector is mask authority, training data, or gold data
-fixture gate:           stress_fixture only; no fixture is source image, mask, training data, gold reference, or mask authority
-path gate:              Civitai artifact/payload/archive/extracted paths remain under Plan/Civitai, not data/gold, data/packages, datasets, runs, or models/training
+verified eligibility:   adult/NSFW assets may enter training or seed human-reviewed gold after provenance/license/adult-age-consent/allowed-use/intake/annotation/QA gates pass
+detector eligibility:   governed detector outputs may become training labels or seed reviewed gold
+fixture eligibility:    governed adult source/control pairs may become training examples or seed reviewed gold
+source provenance:      original Civitai artifact/payload/archive/extracted paths remain stable under Plan/Civitai before governed promotion
 tests:                  pytest tests\test_civitai_governance_gates.py -> 4 passed
 ```

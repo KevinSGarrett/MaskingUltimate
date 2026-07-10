@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-10T17:04:28+00:00",
+    "generated_at": "2026-07-10T19:57:47+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -7388,12 +7388,17 @@
           "ts": "2026-07-10T19:36:01+00:00",
           "actor": "ai_agent",
           "text": "Adult/body Civitai resource roles recorded without opening adult imagery; classification is metadata/manifest based and covers every current manifest ID exactly once."
+        },
+        {
+          "ts": "2026-07-10T19:57:48+00:00",
+          "actor": "ai_agent",
+          "text": "Policy corrected per Kevin: adult/NSFW labeling is not a training exclusion."
         }
       ],
-      "evidence": "Classified all 79 records / 71 unique Civitai IDs from Plan/Civitai/civitai_bootstrap_manifest.json in Plan/Civitai/adult_body_resource_classification.yaml by provider_vote, comfyui_graph_reference, stress_fixture, qa_probe, or reject; classification covers adult/NSFW detectors, workflows, OpenPose/depth packs, and manual-download candidates; policy blocks Civitai assets from gold/training/production mask authority until provenance/license/consent/allowed-use gates are explicit; pytest tests\\test_civitai_classification.py -> 5 passed.",
+      "evidence": "Classified all 79 records / 71 unique Civitai IDs; policy now explicitly permits eligible adult/NSFW assets as training data and as seeds for human-reviewed gold after provenance, license, adult-age/consent, allowed-use, intake, annotation, and QA gates; focused Civitai tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:36:01+00:00",
+      "updated_at": "2026-07-10T19:57:48+00:00",
       "orphaned": false
     },
     "MF-P0-14.02": {
@@ -7414,13 +7419,18 @@
         {
           "ts": "2026-07-10T19:43:56+00:00",
           "actor": "ai_agent",
-          "text": "Detector registry is provider-vote only; no auxiliary detector is gold, training data, or production mask authority."
+          "text": "Detector registry recorded; governed outputs are eligible as training labels and may seed human-reviewed gold."
+        },
+        {
+          "ts": "2026-07-10T19:57:48+00:00",
+          "actor": "ai_agent",
+          "text": "Policy corrected per Kevin: governed detector outputs are training-eligible."
         }
       ],
-      "evidence": "Registered 24 usable provider-vote Civitai auxiliary detector resources in configs/civitai_auxiliary_detectors.yaml with civitai_id, version, coverage bucket, local artifact path/hash, payload path/hash, and planned ComfyUI/models/ultralytics/{bbox,segm} install target; covers shoes/footwear, feet, hair, lips, socks, hands, face bands, armpits, nails, mouth, rear/accessory/body; computed missing nails archive sha256; pytest tests\\test_civitai_auxiliary_detectors.py -> 5 passed.",
+      "evidence": "Registered 24 Civitai auxiliary detectors with hashes and coverage; registry now explicitly permits governed detector outputs to become training labels or seed human-reviewed gold; focused Civitai tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:43:56+00:00",
+      "updated_at": "2026-07-10T19:57:48+00:00",
       "orphaned": false
     },
     "MF-P0-14.03": {
@@ -7441,13 +7451,18 @@
         {
           "ts": "2026-07-10T19:48:11+00:00",
           "actor": "ai_agent",
-          "text": "Pose/control packs are registered only as QA/control stress fixtures, never as source images, masks, training data, gold references, or mask authority."
+          "text": "Pose/control packs are registered for stress coverage and governed training or human-reviewed-gold eligibility."
+        },
+        {
+          "ts": "2026-07-10T19:57:48+00:00",
+          "actor": "ai_agent",
+          "text": "Policy corrected per Kevin: governed adult pose/control assets are training-eligible."
         }
       ],
-      "evidence": "Built configs/civitai_pose_stress_fixtures.yaml from the stress_fixture role group: 22 adult/NSFW and adjacent OpenPose/OpenPose+Depth Civitai IDs with archive path, archive SHA-256, extracted path, file-count inventory, content type, and coverage tags for contact, occlusion, hands_on_body, rear_body, from_below, and difficult_body_visibility; pytest tests\\test_civitai_pose_stress_fixtures.py -> 4 passed.",
+      "evidence": "Registered 22 adult/NSFW and adjacent pose/control packs with hashes, paths, inventories, and required coverage; registry now explicitly permits governed source/control pairs as training examples or seeds for human-reviewed gold; focused Civitai tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:48:11+00:00",
+      "updated_at": "2026-07-10T19:57:48+00:00",
       "orphaned": false
     },
     "MF-P0-14.04": {
@@ -7456,7 +7471,7 @@
       "cluster_id": "MF-P0-13",
       "cluster_title": "Local MaskedWarehouse intake",
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Verify no adult/NSFW Civitai asset is used as training data, gold reference masks, or production mask authority until provenance, license, consent status, and allowed use are explicitly recorded.",
+      "description": "Verify adult/NSFW Civitai assets are eligible for training data and may seed human-reviewed gold once provenance, license, adult-age/consent status, allowed use, intake, annotation, and QA gates pass.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
       "source_line": 37,
       "is_exit_gate": false,
@@ -7468,13 +7483,18 @@
         {
           "ts": "2026-07-10T19:50:54+00:00",
           "actor": "ai_agent",
-          "text": "Adult/NSFW Civitai resources are now verified as gated proposal/fixture/reference assets only, pending explicit provenance/license/consent/allowed-use approval for any stronger use."
+          "text": "Adult/NSFW Civitai resources are eligible for governed training and may seed human-reviewed gold after the normal gates pass."
+        },
+        {
+          "ts": "2026-07-10T19:57:48+00:00",
+          "actor": "ai_agent",
+          "text": "Supersedes the earlier blanket-exclusion wording; adult/NSFW assets are usable for training when governed."
         }
       ],
-      "evidence": "Verified tracked Civitai adult/body registries block training/gold/production mask-authority use: classification requires provenance/license/consent/allowed-use review before training or gold; detector registry is provider_vote only and no detector is mask authority/training/gold data; pose fixture registry is stress_fixture only and no fixture is source image/mask/training/gold/authority; path gate keeps Civitai artifacts under Plan/Civitai and out of data/gold, data/packages, datasets, runs, and models/training; pytest tests\\test_civitai_governance_gates.py -> 4 passed.",
+      "evidence": "Verified adult/NSFW Civitai assets are explicitly eligible for training and may seed human-reviewed gold after provenance, license, adult-age/consent, allowed-use, intake, annotation, QA, and human-review gates; tests enforce eligibility rather than blanket exclusion.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:50:54+00:00",
+      "updated_at": "2026-07-10T19:57:48+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {

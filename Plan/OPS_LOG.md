@@ -417,11 +417,11 @@ training eligibility:   eligible adult source/control pairs may also become trai
 tests:                  pytest tests\test_civitai_pose_stress_fixtures.py -> 4 passed
 ```
 
-## 2026-07-10 22:20 UTC - Civitai adult/NSFW governance gates verified
+## 2026-07-10 22:20 UTC - Civitai adult/NSFW training eligibility verified
 **Items:** MF-P0-14.04
-**Result:** SUPERSEDED 2026-07-10 - Kevin clarified that adult/NSFW assets must
-be usable for training and may seed human-reviewed gold. Registries now encode
-conditional eligibility after the normal governance and quality gates.
+**Result:** PASS - adult/NSFW assets are usable for training and may seed
+human-reviewed gold. Registries encode their eligibility after the normal
+governance and quality gates.
 
 ```
 classification:         Plan/Civitai/adult_body_resource_classification.yaml

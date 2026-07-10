@@ -283,3 +283,36 @@ Docker 29 compatibility required two reproducible, version-recorded shims:
   negotiation) and expands CVAT's legacy multi-argument `PathPrefix` router rule.
   Verification showed zero current Docker-provider errors and Django, not UI nginx,
   handling API POSTs.
+
+## 2026-07-10 18:55 UTC — CPU SAM2 Nuclio interactor deployed and smoke-tested
+**Items:** MF-P0-04.01, MF-P0-04.02, MF-P0-04.03, MF-P0-04.05
+**Result:** PASS — CVAT lists `pth-sam2` as a v2 interactor; Nuclio reports
+`ready` 1/1; a synthetic task invoked through CVAT returned a valid binary mask.
+
+```
+nuctl:                  1.13.0, commit c4422eb772781fb50fbf017698aae96199d81388
+nuctl sha256:           df6d4070d2884ce8af90af3d45734700ab8607c83f469b6f36cf3c8222bb0790
+function:               pth-sam2; image cvat.pth.sam2:latest
+model:                  SAM 2.1 hiera base-plus, CPU only (4 CPUs, 8 GiB limit)
+Nuclio state:           ready, 1/1; container healthy; restart count 0
+published function:     127.0.0.1:62170 only
+model init cold start:  3.005 s (18:49:58.412 -> 18:50:01.417 UTC)
+first CVAT inference:   6.600 s end-to-end
+scratch task/job:       task 1, job 1, "MaskFactory SAM2 synthetic smoke"
+mask result:            256x256; values {0,255}; 21,491 foreground pixels
+prompt checks:          positive point=foreground; negative point=background
+evidence report:        qa/reports/cvat_sam2_smoke.json
+```
+
+Compatibility notes: pinned CVAT v2.24.0 does not ship the specified SAM2
+Nuclio directory. The conservative resolution is logged in DECISIONS_LOG and
+implemented under `integrations/cvat/serverless/.../sam2/nuclio`. CVAT's generic
+CPU deploy script also performs an unrelated OpenVINO build whose retired Intel
+apt source now fails; `tools/deploy_cvat_sam2.py` executes the script's exact
+function-specific `nuctl deploy` block instead. A narrow Docker CLI wrapper forces
+Nuclio 1.13's dynamically published HTTP port to loopback; live `docker inspect`
+confirmed `127.0.0.1:62170`.
+
+MF-P0-04.04 remains human-owned: Kevin must open task 1 / job 1 in CVAT and
+perform the literal Magic Wand positive/negative click smoke check. The automated
+equivalent passed, but it is not being represented as the required manual UI click.

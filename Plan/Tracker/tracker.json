@@ -748,13 +748,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Installed official Nuclio release asset nuctl-1.13.0-linux-amd64 into Ubuntu-22.04 /usr/local/bin/nuctl; nuctl version reports Label 1.13.0, commit c4422eb772781fb50fbf017698aae96199d81388, linux/amd64, matching the running quay.io/nuclio/dashboard:1.13.0-amd64; binary SHA-256 df6d4070d2884ce8af90af3d45734700ab8607c83f469b6f36cf3c8222bb0790; nuctl get projects --platform local successfully reached dashboard and listed namespace nuclio/default.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T18:21:07+00:00",
       "orphaned": false
     },
     "MF-P0-04.02": {
@@ -769,13 +769,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "2026-07-10 deployed tracked CPU-only SAM2.1 base-plus adapter via tools/deploy_cvat_sam2.py into pinned CVAT v2.24.0/Nuclio 1.13; function image cvat.pth.sam2:latest built successfully, CPU limit 4, memory 8 GiB, no GPU resource, Redis/network parameters match pinned deploy_cpu.sh. Missing upstream path and unrelated failed OpenVINO prebuild resolved conservatively per DECISIONS_LOG 2026-07-10 entry. Live function container healthy with zero restarts and loopback-only port.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T18:56:38+00:00",
       "orphaned": false
     },
     "MF-P0-04.03": {
@@ -790,13 +790,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "2026-07-10 nuctl get function pth-sam2 --platform local reports namespace nuclio, project cvat, state ready, replicas 1/1. Docker inspect independently reports running/healthy, restart count 0, image cvat.pth.sam2:latest; CVAT authenticated GET /api/lambda/functions=200 lists id pth-sam2, kind interactor, version 2.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T18:56:39+00:00",
       "orphaned": false
     },
     "MF-P0-04.04": {
@@ -811,13 +811,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-10T18:56:39+00:00",
+          "actor": "ai_agent",
+          "text": "All non-manual setup and equivalent API verification are complete; do not mark complete until Kevin performs the literal UI click required by the item."
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: Manual CVAT UI judgment/click is explicitly Kevin-owned. Open http://localhost:8080/tasks/1/jobs/1 (synthetic scratch task), select Magic Wand / Segment Anything 2.1 (CPU), place a positive click in the light object and optional negative click in the dark corner, and confirm a mask appears. Automated CVAT->Nuclio equivalent already passed: qa/reports/cvat_sam2_smoke.json records a 256x256 binary mask, positive=foreground, negative=background, 6.600 s.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T18:56:39+00:00",
       "orphaned": false
     },
     "MF-P0-04.05": {
@@ -832,13 +838,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "OPS_LOG 2026-07-10 18:55 UTC records measured SAM2 CPU initialization cold start 3.005 s from container logs (18:49:58.412 to 18:50:01.417 UTC) and first end-to-end CVAT inference 6.600 s; runbook baseline (~60 s normal) retained. Synthetic mask smoke passed all checks.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T18:56:39+00:00",
       "orphaned": false
     },
     "MF-P0-05.01": {

@@ -38,3 +38,9 @@ services:
   cvat_worker_chunks:
     volumes:
       - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
+
+networks:
+  cvat:
+    # Applies to Nuclio's dynamically published function port as well as Compose.
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"

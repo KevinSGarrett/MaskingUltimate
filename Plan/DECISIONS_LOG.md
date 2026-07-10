@@ -105,3 +105,24 @@ Classification OUTPUTS are written outside `Plan/Civitai/` (configs/, Plan/) so
 they remain versioned. Kevin to decide final storage (DVC vs external) when he
 resolves the remote-repo question (08.02).
 **Approved by:** AI-autonomous (conservative default, logged for Kevin's awareness)
+
+## 2026-07-10 — Supply the specified SAM2 Nuclio function outside pinned CVAT
+**Item(s) affected:** MF-P0-04.02, MF-P0-04.03, MF-P0-04.04, MF-P0-04.05
+**Spec said:** `Plan\06` §4 and MF-P0-04 require pinned CVAT v2.24.0 plus
+`serverless/pytorch/facebookresearch/sam2/nuclio`, deployed as a CPU interactor
+and reported by the runbook as function `pth-sam2`.
+**What we did instead:** Keep CVAT at the mandated v2.24.0 pin and provide the
+missing SAM2 Nuclio source as a tracked MaskFactory compatibility component,
+synced into the exact expected path before executing the function-specific
+`nuctl deploy` block from CVAT's pinned `serverless/deploy_cpu.sh`. The wrapper
+skips that script's unconditional, unrelated OpenVINO base-image prebuild because
+its retired Intel apt repository prevents the script from reaching SAM2. Do not
+substitute the checkout's SAM 1 function or upgrade CVAT.
+**Why:** The official CVAT v2.24.0 tree contains
+`serverless/pytorch/facebookresearch/sam/nuclio` but no `sam2` directory; CVAT's
+public project also confirms SAM2 was not shipped as a community Nuclio config.
+The written requirements are otherwise unambiguous about the model generation,
+function identity, CPU ownership, and pinned CVAT version. Supplying the missing
+adapter is the narrowest reading that satisfies all of them and keeps the
+external checkout reproducible and clean.
+**Approved by:** AI-autonomous (conservative default, logged for Kevin's awareness)

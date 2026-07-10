@@ -28,6 +28,7 @@ def test_compose_override_has_local_ports_and_all_required_share_mounts() -> Non
     assert '"127.0.0.1:8070:8070"' in text
     assert "image: traefik:v3.6.1" in text
     assert "PathPrefix(`/api/`) || PathPrefix(`/static/`)" in text
+    assert 'com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"' in text
     assert "0.0.0.0" not in text
     assert (
         text.count(

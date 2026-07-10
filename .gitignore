@@ -12,7 +12,7 @@ mfwork/
 
 # External CVAT clone lives here (MF-P0-03.04); it is its own upstream git repo,
 # not part of this source tree, so it is not committed here.
-cvat/
+/cvat/
 
 # Tracker: tracker.json (state) and phases/*.md / DASHBOARD.md ARE committed, but
 # the auto-generated backup snapshots and transient swap files are not.

@@ -1,0 +1,74 @@
+# MaskFactory SAM 2.1 CPU interactor for pinned CVAT v2.24.0.
+metadata:
+  name: pth-sam2
+  namespace: cvat
+  annotations:
+    name: Segment Anything 2.1 (CPU)
+    version: 2
+    type: interactor
+    spec:
+    min_pos_points: 1
+    min_neg_points: 0
+    startswith_box_optional: true
+    help_message: >-
+      Click positive points on the object and optional negative points outside it.
+      The CPU interactor can take up to about 60 seconds on its first use.
+
+spec:
+  description: Meta SAM 2.1 base-plus interactive segmentation on CPU
+  runtime: "python:3.10"
+  handler: main:handler
+  eventTimeout: 120s
+  env:
+    - name: PYTHONPATH
+      value: /opt/nuclio/sam2
+
+  build:
+    image: cvat.pth.sam2
+    baseImage: ubuntu:22.04
+    directives:
+      preCopy:
+        - kind: ENV
+          value: DEBIAN_FRONTEND=noninteractive
+        - kind: WORKDIR
+          value: /opt/nuclio/sam2
+        - kind: RUN
+          value: >-
+            apt-get update && apt-get install -y --no-install-recommends
+            ca-certificates curl git libgl1 libglib2.0-0 python3 python3-pip
+            python-is-python3 && rm -rf /var/lib/apt/lists/*
+        - kind: RUN
+          value: >-
+            pip3 install --no-cache-dir
+            torch==2.5.1+cpu torchvision==0.20.1+cpu
+            --index-url https://download.pytorch.org/whl/cpu
+        - kind: RUN
+          value: >-
+            pip3 install --no-cache-dir
+            git+https://github.com/facebookresearch/sam2.git@2b90b9f5ceec907a1c18123530e92e794ad901a4
+            opencv-python-headless==4.10.0.84 pillow==11.1.0
+        - kind: RUN
+          value: >-
+            curl -fL --retry 3
+            -o /opt/nuclio/sam2/sam2.1_hiera_base_plus.pt
+            https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt
+
+  triggers:
+    myHttpTrigger:
+      maxWorkers: 1
+      kind: http
+      workerAvailabilityTimeoutMilliseconds: 120000
+      attributes:
+        maxRequestBodySize: 33554432
+
+  platform:
+    attributes:
+      restartPolicy:
+        name: always
+        maximumRetryCount: 3
+      mountMode: volume
+
+  resources:
+    limits:
+      cpu: 4
+      memory: 8Gi

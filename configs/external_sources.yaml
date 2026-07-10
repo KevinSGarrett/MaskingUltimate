@@ -1,0 +1,315 @@
+# configs/external_sources.yaml
+# External foundation registry (MF-P0-09; spec: doc 16, model details doc 06 §3).
+#
+# Provenance record for every external model/tool provider and dataset MaskFactory
+# builds on. Fields per provider (MF-P0-09.02): source_url, license, version,
+# local_path, output_type, role, authority_level. `verify_license: true` flags an
+# entry whose license needs explicit confirmation before commercial/training use.
+#
+# CORE RULE (doc 16 §1): no single external model or workflow is mask authority.
+# External tools produce candidates/priors/boxes/landmarks/masks; MaskFactory gold
+# is only ever produced via the full consensus->QA->human-review->package flow.
+
+meta:
+  spec: "doc 16 (External Foundation Bootstrap); model checkpoints doc 06 §3"
+  core_rule: "No single external model/workflow is mask authority (doc 16 §1)."
+  license_note: >
+    Several strong models are NON-COMMERCIAL (Sapiens, RMBG-2.0) or copyleft
+    (Ultralytics YOLO = AGPL-3.0). Scentiment is a commercial context, so any
+    entry with verify_license: true MUST have its license confirmed before its
+    weights/outputs enter training data or a shipped product. Using a model only
+    to produce a *draft* that a human then corrects into an independently-owned
+    gold mask is a different question from redistributing/serving its weights —
+    both need Kevin's sign-off where flagged.
+
+providers:
+
+  # ---- Human parsing (semantic body-part priors) ----
+  sapiens:
+    component: "M3 — human parsing (primary)"
+    source_url: "https://huggingface.co/facebook/sapiens-seg-0.6b-torchscript"
+    repo: "https://github.com/facebookresearch/sapiens"
+    license: "CC-BY-NC-4.0 (Meta Sapiens) — NON-COMMERCIAL"
+    verify_license: true
+    version: "sapiens-0.6b seg (28-class Goliath), torchscript"
+    local_path: "models/parsing/sapiens_0.6b_seg.pt2"
+    output_type: "indexed 28-class part-segmentation map"
+    role: "primary full-body semantic parsing prior (S03)"
+    authority_level: "strong candidate prior, never sole authority (doc 16 §2)"
+
+  schp:
+    component: "M4 — human parsing (fallback) + clothing lane feed"
+    source_url: "https://github.com/GoGoDuck912/Self-Correction-Human-Parsing"
+    license: "MIT"
+    verify_license: false
+    version: "exp-schp-201908301523-atr.pth (ATR 18-cls) + LIP variant"
+    local_path: "models/parsing_fallback/"
+    output_type: "indexed ATR/LIP human-parsing map"
+    role: "secondary parsing vote; feeds clothing/material lane (S08)"
+    authority_level: "secondary vote (doc 16 §2)"
+
+  # ---- Pose / landmarks (geometry sources) ----
+  dwpose:
+    component: "M5 — whole-body pose"
+    source_url: "https://github.com/IDEA-Research/DWPose"
+    license: "Apache-2.0 (code); weights derived from COCO-WholeBody"
+    verify_license: true
+    version: "dw-ll_ucoco_384.onnx + yolox_l.onnx (onnxruntime-gpu)"
+    local_path: "models/pose/"
+    output_type: "133-kp COCO-WholeBody (body + 21x2 hand, 6 foot, face)"
+    role: "pose, hands, feet, crop boxes, L/R, contact/occlusion cues (S04)"
+    authority_level: "geometry source (doc 16 §2)"
+
+  openpose:
+    component: "pose (alternative / Civitai control refs)"
+    source_url: "https://github.com/CMU-Perceptual-Computing-Lab/openpose"
+    license: "OpenPose Academic/Non-Commercial License"
+    verify_license: true
+    version: "n/a (reference; DWPose is the installed pose provider)"
+    local_path: "(not installed; DWPose used instead)"
+    output_type: "body/hand/face keypoints"
+    role: "reference + Civitai control-graph compatibility only"
+    authority_level: "geometry source (reference)"
+
+  mediapipe:
+    component: "M6 — hand landmarks (crop lane)"
+    source_url: "https://developers.google.com/mediapipe/solutions/vision/hand_landmarker"
+    license: "Apache-2.0"
+    verify_license: false
+    version: "hand_landmarker.task (Tasks API)"
+    local_path: "models/hand/hand_landmarker.task"
+    output_type: "21-kp hand landmarks + handedness"
+    role: "hand crop-lane landmarks; handedness for L/R vote (QC-014)"
+    authority_level: "geometry source (doc 16 §2)"
+
+  densepose:
+    component: "M9 — 3D surface prior"
+    source_url: "https://github.com/facebookresearch/detectron2 (projects/DensePose)"
+    license: "Apache-2.0 (detectron2)"
+    verify_license: false
+    version: "densepose_rcnn_R_50_FPN_s1x.pkl (built from source on cu128, see env/source_builds.lock)"
+    local_path: "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl"
+    output_type: "dense body UV surface + part index"
+    role: "front/back, L/R, surface continuity, impossible-adjacency checks (S08.5)"
+    authority_level: "geometry referee (doc 16 §2)"
+
+  # ---- Boundary refinement / silhouette ----
+  sam2:
+    component: "M7 — boundary refiner"
+    source_url: "https://github.com/facebookresearch/sam2"
+    license: "Apache-2.0"
+    verify_license: false
+    version: "sam2.1_hiera_large.pt (primary) + sam2.1_hiera_base_plus.pt (OOM auto-fallback)"
+    local_path: "models/sam2/"
+    output_type: "refined binary mask from box/point/mask prompt"
+    role: "boundary refinement from priors, crop lanes, alpha/matte proposals (S07)"
+    authority_level: "boundary refiner; NEVER decides semantic labels (doc 16 §7)"
+
+  birefnet:
+    component: "M2 — silhouette (primary)"
+    source_url: "https://huggingface.co/ZhengPeng7/BiRefNet"
+    license: "MIT"
+    verify_license: false
+    version: "BiRefNet-general.safetensors (fp16, tile >=2048 px)"
+    local_path: "models/silhouette/BiRefNet-general.safetensors"
+    output_type: "full-person silhouette / soft matte"
+    role: "first-stage person silhouette + hair/background separation (S02)"
+    authority_level: "silhouette source (doc 16 §2)"
+
+  rmbg:
+    component: "silhouette (alternative)"
+    source_url: "https://huggingface.co/briaai/RMBG-2.0"
+    license: "BRIA RAIL — NON-COMMERCIAL (RMBG-2.0 / RMBG-1.4)"
+    verify_license: true
+    version: "RMBG-2.0"
+    local_path: "models/silhouette/rmbg/"
+    output_type: "person/background silhouette"
+    role: "silhouette cross-check + review-workflow reference (doc 16 §2.1)"
+    authority_level: "silhouette source (alternative)"
+
+  # ---- Open-vocab prompting (boxes only) ----
+  groundingdino:
+    component: "M8 — open-vocab boxes"
+    source_url: "https://github.com/IDEA-Research/GroundingDINO"
+    license: "Apache-2.0"
+    verify_license: false
+    version: "groundingdino_swint_ogc.pth (Grounded-SAM-2)"
+    local_path: "models/gdino/groundingdino_swint_ogc.pth"
+    output_type: "open-vocabulary bounding boxes"
+    role: "prompt/box source for hair, garments, accessories (S06)"
+    authority_level: "prompt/box source ONLY, never final masks (doc 16 §7)"
+
+  florence2:
+    component: "open-vocab boxes/captions (alternative to GDINO)"
+    source_url: "https://huggingface.co/microsoft/Florence-2-large"
+    license: "MIT"
+    verify_license: false
+    version: "Florence-2-large"
+    local_path: "models/florence2/"
+    output_type: "open-vocab boxes, region captions, grounding"
+    role: "prompt/box source; Civitai Florence2+SAM2 graph compatibility"
+    authority_level: "prompt/box source only (doc 16 §7)"
+
+  # ---- Face/hair detail + matting ----
+  faceparse_bisenet:
+    component: "M10 — hair/face parsing (detail fallback)"
+    source_url: "https://github.com/zllrunning/face-parsing.PyTorch"
+    license: "MIT"
+    verify_license: false
+    version: "79999_iter.pth (BiSeNet)"
+    local_path: "models/faceparse/79999_iter.pth"
+    output_type: "face-component parse (skin, brows, eyes, nose, lips, hair)"
+    role: "face/hair detail; Sapiens covers hair/face primarily (S03)"
+    authority_level: "detail fallback vote"
+
+  vitmatte:
+    component: "M11 — matting"
+    source_url: "https://huggingface.co/hustvl/vitmatte-small-composition-1k"
+    license: "Apache-2.0 (verify weights terms)"
+    verify_license: true
+    version: "vitmatte_s.pth"
+    local_path: "models/matting/vitmatte_s.pth"
+    output_type: "0-255 alpha matte from trimap"
+    role: "hair alpha matte (derived artifact; v2 training only) (doc 03 §7)"
+    authority_level: "derived-only; never gold binary truth"
+
+  # ---- Detection ----
+  yolo11:
+    component: "M1 — person detector"
+    source_url: "https://github.com/ultralytics/ultralytics"
+    license: "AGPL-3.0 (copyleft — commercial use needs Ultralytics Enterprise license)"
+    verify_license: true
+    version: "yolo11m.pt (person class only)"
+    local_path: "models/detect/yolo11m.pt"
+    output_type: "person bounding boxes"
+    role: "person detection + context crops (S01)"
+    authority_level: "detection source"
+
+  # ---- Local VLM QA (never mask authority) ----
+  ollama_vlm:
+    component: "M12 — local VLM QA"
+    source_url: "https://ollama.com/library/qwen2.5vl"
+    license: "Qwen (Tongyi Qianwen) license for qwen2.5vl; Llama-3.2 Community License for fallback"
+    verify_license: true
+    version: "qwen2.5vl:7b (Q4, primary); llama3.2-vision:11b (fallback); qwen2.5:7b-instruct (manifest lint)"
+    local_path: "managed by Ollama (docker container per MF-P0-05)"
+    output_type: "strict-JSON QA verdicts + routing suggestions"
+    role: "VLM QA + routing only (S11); text-only cloud boundary (doc 10 §5-6)"
+    authority_level: "QA/router ONLY — cannot approve gold, clear a BLOCK, or edit a pixel"
+
+  # ---- Human review tool ----
+  cvat:
+    component: "human-in-the-loop review"
+    source_url: "https://github.com/cvat-ai/cvat"
+    license: "MIT"
+    verify_license: false
+    version: "v2.24.0 (pinned, MF-P0-03.04)"
+    local_path: "C:/Comfy_UI_Main_Masking/cvat (git-ignored external clone)"
+    output_type: "human-corrected polygons/masks (COCO RLE + CVAT XML)"
+    role: "human correction + review with SAM2 interactor (S12, doc 11)"
+    authority_level: "annotation tool; human judgment is the review authority"
+
+# Dataset registry (MF-P0-09.03; doc 16 §3). license = best-known class; most are
+# research/non-commercial and MUST be verified before any training use (doc 16 §7:
+# do not mix incompatible-license datasets into training without recording class).
+datasets:
+  lv_mhp_v2:
+    source_url: "https://lv-mhp.github.io/"
+    license: "research/non-commercial — verify"
+    labels: "multi-human parsing, body parts + occlusion"
+    use: "multi-person / protected other_person, body-part parsing, occlusion eval"
+  lip:
+    source_url: "http://sysu-hcp.net/lip/"
+    license: "research-only — verify"
+    labels: "20-class single-person human parsing (body + clothing)"
+    use: "body-parsing + clothing-prior training/eval seed"
+  cihp:
+    source_url: "http://sysu-hcp.net/lip/overview.php"
+    license: "research-only — verify"
+    labels: "crowd instance-level human parsing"
+    use: "multi-person separation, other_person class, occlusion stress"
+  atr:
+    source_url: "https://github.com/lemondan/HumanParsing-Dataset"
+    license: "research-only — verify"
+    labels: "18-class clothing-rich human parsing"
+    use: "SCHP-ATR remap + material/clothing priors"
+  pascal_person_part:
+    source_url: "http://roozbehm.info/pascal-parts/pascal-parts.html"
+    license: "PASCAL VOC terms (research) — verify"
+    labels: "head/torso/upper-arm/lower-arm/upper-leg/lower-leg"
+    use: "low-complexity sanity fixtures for head/torso/limbs"
+  densepose_coco:
+    source_url: "https://github.com/facebookresearch/DensePose"
+    license: "COCO images CC-BY-4.0; DensePose annotations research — verify"
+    labels: "dense body surface (UV) annotations"
+    use: "3D prior + L/R/front/back referee validation"
+  coco_keypoints:
+    source_url: "https://cocodataset.org/"
+    license: "images CC-BY-4.0 (annotations CC-BY-4.0)"
+    verify_license: true
+    labels: "17 person keypoints"
+    use: "DWPose/OpenPose validation + fixture construction"
+  mpii_pose:
+    source_url: "http://human-pose.mpi-inf.mpg.de/"
+    license: "BSD-like (research) — verify"
+    labels: "human pose keypoints"
+    use: "pose diversity + difficult limb-angle fixtures"
+  celebamask_hq:
+    source_url: "https://github.com/switchablenorms/CelebAMask-HQ"
+    license: "NON-COMMERCIAL research only"
+    verify_license: true
+    labels: "19-class face/hair/facial-component masks"
+    use: "face/hair protected region + facial QA lanes (also local in MaskedWarehouse)"
+  lapa:
+    source_url: "https://github.com/JDAI-CV/lapa-dataset"
+    license: "research-only — verify"
+    labels: "11-class face parsing + 106 landmarks"
+    use: "face parsing masks + facial QA (also local in MaskedWarehouse)"
+  helen:
+    source_url: "http://www.ifp.illinois.edu/~vuongle2/helen/"
+    license: "research-only — verify"
+    labels: "face component parsing"
+    use: "face-parsing detail fixtures"
+  deepfashion:
+    source_url: "https://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html"
+    license: "NON-COMMERCIAL research only"
+    verify_license: true
+    labels: "clothing categories + landmarks + segmentation"
+    use: "material map, straps, waistband, clothing/skin boundary cases"
+  modanet:
+    source_url: "https://github.com/eBay/modanet"
+    license: "research (Creative Commons on Paperdoll images) — verify"
+    labels: "13-class street-fashion segmentation"
+    use: "clothing/material parsing priors"
+  fashionpedia:
+    source_url: "https://fashionpedia.github.io/home/"
+    license: "CC-BY-4.0 (verify per-split)"
+    verify_license: true
+    labels: "46 apparel categories + attributes, instance seg"
+    use: "fine-grained garment/material boundaries"
+  egohands:
+    source_url: "http://vision.soic.indiana.edu/projects/egohands/"
+    license: "research — verify"
+    labels: "hand segmentation, contact"
+    use: "hand/finger crop-lane pretraining + QA fixtures"
+
+# Platforms are DISCOVERY / inspection aids only (MF-P0-09.04, doc 16 §3): never the
+# canonical license or download authority unless the platform is the dataset's
+# official host. Never use their preview images/screenshots as source masks (doc 16 §7).
+platforms:
+  dataset_ninja:
+    url: "https://datasetninja.com/"
+    role: "discovery / label-preview / dataset comparison ONLY"
+    canonical_authority: false
+  paperswithcode:
+    url: "https://paperswithcode.com/datasets"
+    role: "discovery / benchmark reference ONLY"
+    canonical_authority: false
+  kaggle_mirrors:
+    url: "https://www.kaggle.com/datasets"
+    role: "discovery ONLY; obtain license + original files from the official host"
+    canonical_authority: false
+  huggingface_hub:
+    url: "https://huggingface.co/datasets"
+    role: "download host when it IS the official host; otherwise discovery only"
+    canonical_authority: "per-dataset (true only when official host)"

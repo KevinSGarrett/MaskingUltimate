@@ -1,0 +1,146 @@
+# Document 16: External Foundation Bootstrap
+
+**Purpose:** identify already-built datasets, models, and ComfyUI workflows that can accelerate MaskFactory without weakening the gold-mask standard.
+
+MaskFactory should not hand-build every low-level capability from scratch. The practical foundation is a fused stack of existing human parsing, pose, dense body geometry, object prompting, and mask-refinement tools, wrapped by MaskFactory ontology, QA, and provenance rules.
+
+## 1. Core Position
+
+No single external model or workflow is mask authority.
+
+External tools may produce candidates, priors, boxes, landmarks, probability maps, masks, or overlays. Final MaskFactory gold output is still created by:
+
+`source image -> person silhouette -> human parsing -> pose/landmarks -> DensePose sanity -> SAM2 refinement -> material/clothing parse -> consensus fusion -> QA panels -> human review -> gold package`
+
+This protects the project from the failure mode that caused the earlier face masks to drift into hair or neighboring regions: a model proposal looked plausible but was never checked against source-visible geometry.
+
+## 2. Highest-Value Model/Workflow Sources
+
+| Source | Use in MaskFactory | Authority level |
+|---|---|---|
+| Sapiens human part segmentation | Primary full-body semantic parsing prior for body parts | Strong candidate prior, never sole authority |
+| SCHP human parsing | Companion pass for clothing/body parsing and cross-checks | Secondary vote |
+| DensePose | Front/back, left/right, surface continuity, impossible adjacency checks | Geometry referee |
+| DWPose/OpenPose/MediaPipe | Pose, hands, feet, crop boxes, left/right, contact/occlusion cues | Geometry source |
+| SAM2 | Boundary refinement from prompts, crop lanes, alpha/matte proposals | Boundary refiner |
+| Florence2/GroundingDINO | Open-vocabulary boxes for hair, garments, accessories, objects | Prompt/box source only |
+| BiRefNet/RMBG | Full person silhouette, hair/background separation, first-stage mask | Silhouette source |
+| CVAT + SAM2 interactor | Human-in-the-loop correction and review | Annotation tool |
+| Civitai workflows | Reference wiring for ComfyUI node graphs and prototypes | Prototype/reference only |
+
+## 2.1 Civitai Detector Roles
+
+| Civitai asset | Intended MaskFactory role |
+|---|---|
+| YOLO Dataset Auto-Annotate Workflow | Bootstrap detector-label generation from local image folders using Florence2/SAM2; useful for creating candidate YOLO datasets, never gold. |
+| Hand Detailer/Segmentation - ADetailer | Hand-lane candidate detector for crop experiments and disagreement panels. |
+| Eye Detailer/Segmentation - ADetailer | Face protected-region and eye-mask QA cross-check. |
+| Mask aDetailer - Face detailer for Eyes, Eyebrows, and Nose | Face-band cross-check for eyes, brows, and nose only. |
+| ADetailer 2d mouth detection | Mouth/lip detector vote; must be tested for illustration bias. |
+| ADetailer 2d armpit yolov8 | Optional underarm/chest/arm boundary experiment; must be tested for illustration bias. |
+| Nails Segmentation - ADetailer | Optional nail/hand-detail detector; not hand or finger authority. |
+| RMBG-2.0 | Person/background silhouette and review workflow reference. |
+| ADetailer shoes/footwear yolov8 | Lower-body footwear/material detector vote for shoe/sock/foot separation QA. |
+| ADetailer Foot Model / foot_yolov8x | Foot-region detector candidates for feet, toes, ankle crops, and pose-vs-mask disagreement panels. |
+| ADetailer Hair Model | Hair/face boundary detector vote; useful for preventing face/eye/brow masks from drifting into hair. |
+| Socks Segmentation - ADetailer | Sock/material detector vote for lower-leg and foot lanes. |
+| assDetailer | Registered detector candidate for glute/rear/pelvis and pants/panties boundary QA; never sole anatomy authority. |
+| Teeth, lips, glasses, jewelry, rings, tattoo, head-accessory detectors | Specialist protected-region/object votes for face, hands, skin detail, and accessory preservation. |
+| Adult/NSFW OpenPose and OpenPose+Depth packs | Pose/control stress fixtures for contact, occlusion, hands-on-body, from-below perspective, and difficult body visibility. |
+| Multi-person/contact OpenPose packs | Stress fixtures for protected `other_person`, overlapping limbs, torso/chest contact, carrying/hugging, rear views, and multi-character separation. |
+| Clothing/tops detection and clothing-swap workflows | Garment-mask references and clothing/material boundary experiments; not material authority without remap and QA. |
+| Person cutout / SAM2 workflows | Silhouette and person-mask references for cross-checking BiRefNet/RMBG/SAM2 proposals. |
+
+## 2.2 Adult/NSFW-Aware Civitai Intake
+
+Adult/NSFW metadata is not an exclusion criterion. MaskFactory is a body-part and full-body masking system, so useful resources may be tagged adult simply because they include nude/anatomy, underwear, contact poses, occlusion, or difficult body visibility. Rejecting those labels by default removes exactly the cases the system must handle well.
+
+Admission is utility-gated instead:
+
+- Accept detector, segmentation, workflow, pose, depth, and control assets when they improve candidate masks, stress fixtures, QA coverage, or ComfyUI wiring.
+- Record source URL, file hash, local path, version, and role in `Plan\Civitai\civitai_bootstrap_manifest.json`.
+- Treat adult/NSFW pose packs as stress fixtures, not as gold masks.
+- Treat adult/NSFW detector outputs as votes that must be checked against Sapiens/SCHP/DensePose/DWPose/SAM2 consensus.
+- Do not use adult/NSFW assets as training data or gold reference masks unless provenance, license, consent status, and allowed use have been explicitly verified.
+
+The current adult-inclusive Civitai searches found useful rear/foot/hand/hair/sock/shoe/clothing/accessory detector candidates, person/silhouette workflow references, and several adult/multi-person pose/depth packs. They did not surface a strong dedicated vagina, penis, genital, nipple, areola, or breast segmentation detector. Those regions should therefore be handled by the primary full-body parsing stack, DensePose/pose geometry, protected-region QA, and human-reviewed gold masks rather than a single Civitai detector.
+
+## 3. Dataset and Platform Sources
+
+Dataset platforms like Dataset Ninja are useful, but only as discovery, inspection, label-preview, and dataset comparison tools. They should not be treated as the canonical license or download authority unless the platform is the dataset's official host.
+
+Useful dataset families:
+
+| Dataset/platform | Why it helps | Suggested MaskFactory use |
+|---|---|---|
+| LV-MHP / MHP-v2 | Multi-human parsing with part labels and occlusion-heavy people | Evaluate multi-person/protected `other_person`, body-part parsing, occlusion cases |
+| LIP | Large human parsing benchmark with body/clothing labels | Training/eval seed for body parsing and clothing priors |
+| CIHP | Crowd instance-level human parsing | Multi-person separation, protected other-person class, occlusion stress tests |
+| ATR | Clothing-rich human parsing | SCHP-ATR mapping and material/clothing priors |
+| PASCAL-Person-Part | Classic person-part segmentation | Low-complexity sanity fixtures for head/torso/limbs |
+| DensePose-COCO | Dense body surface annotations | 3D prior and left/right/front/back referee validation |
+| COCO person keypoints | Pose/keypoint baseline | DWPose/OpenPose validation and fixture construction |
+| MPII Human Pose | Pose diversity | Pose-tags and difficult limb-angle fixtures |
+| CelebAMask-HQ / LaPa / Helen | Face/hair/eyes/nose/mouth masks | Face/hair protected region and facial QA lanes |
+| DeepFashion / ModaNet / Fashionpedia | Clothing and garment parsing | Material map, straps, waistband, clothing/skin boundary cases |
+| EgoHands / hand segmentation datasets | Hands and contact cases | Hand/finger crop lane pretraining and QA fixtures |
+
+## 4. Civitai References Added
+
+`Plan\Civitai\` now contains:
+
+- Civitai metadata for DWPose/DensePose/OpenPose, DensePose ControlNet, Florence2+SAM2, SAM2, SAM2 alpha matte, mask add/subtract, YOLO auto-annotate, hand/eye/mouth/armpit/nail segmentation detectors, RMBG, and selected face-band detectors.
+- Extracted workflow JSON for the DWPose/DensePose/OpenPose reference workflow.
+- Extracted workflow JSON for the mask add/subtract reference workflow.
+- Extracted RMBG workflow references, SAM2/Florence workflow references, YOLO auto-annotation workflow, DWPose/depth workflow, face/hand/armpit/nail/mouth detector assets, and DensePose ControlNet metadata/manual-path registration.
+- Adult-inclusive detector and fixture intake for shoes/footwear, feet, hair, lips, socks, assDetailer, foot/shoe segmentation, teeth, glasses, jewelry, rings, tattoo, head accessories, OpenPose+Depth adult poses, covering-body poses, hands-on-body poses, from-below perspective poses, breast/contact poses, multi-person poses, hand-in-hair poses, rear-body poses, and the 525-pose adult OpenPose pack.
+- Registered adult-inclusive workflow references for prompt-based Florence segmentation, RotoMaker, SDMatte, Auto Masking/Removing, hand fixing, clothes swap, person cutout, and multi-character control.
+- Registered manual downloads for anime foot YOLO, person/female detection, tops/clothing detection, anime hair detection, feet pose/depth assets, hand auto-mask workflows, SAM2 person cutout, multi-character mask/control, multi-control/depth-mask workflows, clothing SegmentAnything workflows, breast-region workflow reference, rear-body OpenPose support, and a large manual-path-only clothing extractor model.
+
+Some older alternate file variants remain metadata-only because Civitai blocked direct file download with API token authentication and they were not manually supplied. Large model binaries are intentionally not duplicated inside the plan folder.
+
+Manual downloads supplied under `Plan\Civitai\manual_downloads` are registered in `Plan\Civitai\manual_downloads_inventory.json` and merged into `Plan\Civitai\civitai_bootstrap_manifest.json` with hashes.
+
+## 4.1 Local MaskedWarehouse Sources
+
+`C:\Comfy_UI_Main\MaskedWarehouse` is a first-class external source root for MaskFactory. It currently includes:
+
+- `CelebAMask-HQ`: face/hair/facial-component masks for protected face and facial QA lanes.
+- `LaPa`: face parsing and landmark-associated face masks.
+- `Body\LV-MHP-v1`: multi-human/full-body parsing source.
+- `Body\UniDataPro_swimsuit-human-segmentation-dataset`: swimsuit/body color segmentation sample; requires color-to-label remap.
+- `Body\archive`: body segmentation archive material requiring inventory before use.
+
+See `Plan\MASKEDWAREHOUSE_SOURCE_REGISTRY.md` for the intake rules.
+
+## 5. Foundation Build Order
+
+1. Build the dataset registry first: official URL, license, labels, download method, local path, ontology mapping, split policy, and allowed use.
+2. Inventory `C:\Comfy_UI_Main\MaskedWarehouse` and classify each local source as face, full-body, clothing/material, silhouette, fixture, or training-candidate.
+3. Install or wrap Sapiens, SCHP, DWPose, DensePose, SAM2, and BiRefNet as separate providers.
+4. Run each provider on the same fixture image set and save raw outputs unchanged.
+5. Build remap tables from provider labels and warehouse labels to MaskFactory ontology.
+6. Add consensus fusion only after raw provider outputs and remaps are inspectable.
+7. Add Civitai workflow adapters only where they accelerate ComfyUI graph integration or debug visualization.
+8. Never promote a Civitai workflow output directly to gold.
+
+## 6. Minimum Viable External Bootstrap Gate
+
+The external bootstrap foundation is usable only when:
+
+- At least one full-body semantic parser is producing indexed maps.
+- At least one pose provider is producing whole-body and hand/foot keypoints.
+- At least one silhouette provider is producing person masks.
+- SAM2 can refine at least one body-region prompt from a prior.
+- DensePose or equivalent 3D signal is available for referee checks, or the lack is explicitly marked degraded.
+- Dataset registry includes official sources and license status.
+- All outputs are stored with provenance and source-image hash.
+
+## 7. Anti-Patterns
+
+- Do not use a Civitai workflow as a hidden final mask generator.
+- Do not mix datasets with incompatible licenses into training without recording license class.
+- Do not train on platform preview images or screenshots.
+- Do not use Dataset Ninja previews as source masks unless the dataset license and original files are obtained correctly.
+- Do not let Florence2/GroundingDINO boxes override pose, parsing, or DensePose on body parts.
+- Do not let SAM2 decide semantic labels.

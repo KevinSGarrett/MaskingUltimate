@@ -1,0 +1,23 @@
+# env/source_builds.lock — pinned commits for packages BUILT FROM SOURCE on cu128
+# (doc 06 §8 pitfall 2). PyPI wheels are pinned in requirements.lock.txt; this
+# file pins anything compiled locally so the environment stays byte-reproducible
+# for D9. Append one block per source build, at the moment the build succeeds.
+#
+# Format (one block per package):
+#   [<package>]
+#   repo       = <git url>
+#   commit     = <full 40-char SHA checked out at build time>
+#   ref        = <tag/branch the commit came from, if any>
+#   build_env  = TORCH_CUDA_ARCH_LIST=12.0 ; <other build-time env vars>
+#   built_with = torch 2.11.0+cu128 ; python 3.11.15 ; cuda-runtime 12.8
+#   date       = <YYYY-MM-DD>
+#   notes      = <ninja flags, patches applied, gotchas>
+#
+# ---------------------------------------------------------------------------
+# PENDING source builds (populate when the build in P0-06 actually runs):
+#   [detectron2] -> MF-P0-06.10  (export TORCH_CUDA_ARCH_LIST="12.0", ninja, ~15-30 min)
+#   [densepose]  -> MF-P0-06.11  (detectron2 projects/DensePose; shares detectron2 build)
+#   [mmcv]       -> only if a source build proves necessary on cu128 (else wheel)
+# ---------------------------------------------------------------------------
+
+# (no source builds recorded yet)

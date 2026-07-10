@@ -503,3 +503,28 @@ idempotency:            immediate rerun returned cached with matching SHA-256
 dependency locks:       env/requirements.lock.txt + env/maskfactory_env.yml refreshed
 failed-closed evidence: first attempt missing declared einops; no checkpoint or registry entry published until dependency and real inference passed
 ```
+
+## 2026-07-11 00:22 UTC - M3 Sapiens 0.6B human parser fetched and verified
+**Items:** MF-P0-06.04
+**Result:** PASS - Meta's official pinned 0.6B Goliath segmentation TorchScript
+checkpoint was fetched, hash-verified, loaded on CUDA, and produced a nontrivial
+28-channel human-part parse on the governed adult fixture.
+
+```
+catalog key:            sapiens_0_6b_seg
+official repo:          facebook/sapiens-seg-0.6b-torchscript
+pinned revision:        ea5545c735d1fc994d0d1aafede27df892761322
+official filename:      sapiens_0.6b_goliath_best_goliath_mIoU_7777_epoch_178_torchscript.pt2
+source size:            2,685,144,079 bytes
+SHA-256:                86aa2cb9d7310ba1cb1971026889f1d10d80ddf655d6028aea060aae94d82082
+local path:             models/parsing/sapiens_0.6b_seg.pt2
+license:                CC-BY-NC-4.0 (non-commercial)
+runtime:                WSL Ubuntu-22.04; torch 2.11.0+cu128; TorchScript FP32
+GPU:                    NVIDIA GeForce RTX 5060 Laptop GPU
+input/output:            1024x768 input; logits [1,28,1024,768]; label map [1024,768]
+unique labels:           0,2,3,5,8,9,12,14,17,18,22
+foreground fraction:    0.029035
+output SHA-256:         a52baa823458a5eb5380c4951ffcce4746e0eb242378234d1b4aa525897fe262
+registry:               verified=true in models/model_registry.json
+idempotency:            immediate rerun returned cached with matching SHA-256
+```

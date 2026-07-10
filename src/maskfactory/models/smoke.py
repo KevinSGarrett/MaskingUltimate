@@ -108,3 +108,37 @@ def birefnet_general_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 
 register_smoke_runner("birefnet_general_wsl", birefnet_general_wsl)
+
+
+def sapiens_seg_0_6b_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the official Sapiens 0.6B TorchScript parser on one CUDA image."""
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_sapiens_seg_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+register_smoke_runner("sapiens_seg_0_6b_wsl", sapiens_seg_0_6b_wsl)

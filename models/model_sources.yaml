@@ -26,3 +26,15 @@ models:
     vram_note: bf16/fp16 production; official model card reports about 3.5 GB FP16 inference
     smoke_test: birefnet_general_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  sapiens_0_6b_seg:
+    url: https://huggingface.co/facebook/sapiens-seg-0.6b-torchscript/resolve/ea5545c735d1fc994d0d1aafede27df892761322/sapiens_0.6b_goliath_best_goliath_mIoU_7777_epoch_178_torchscript.pt2
+    sha256: 86aa2cb9d7310ba1cb1971026889f1d10d80ddf655d6028aea060aae94d82082
+    family: parsing
+    filename: sapiens_0.6b_seg.pt2
+    version_tag: facebook/sapiens-seg-0.6b-torchscript@ea5545c735d1fc994d0d1aafede27df892761322
+    license: CC-BY-NC-4.0
+    role: primary_human_parsing_28_class_goliath
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-torchscript-fp32
+    vram_note: 0.664B TorchScript model; one 1024x768 image per smoke/inference slot
+    smoke_test: sapiens_seg_0_6b_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

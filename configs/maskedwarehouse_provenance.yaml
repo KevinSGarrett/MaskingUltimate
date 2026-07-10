@@ -1,0 +1,160 @@
+# configs/maskedwarehouse_provenance.yaml
+#
+# License/provenance gate for the already-downloaded datasets inventoried in
+# configs/maskedwarehouse_inventory.json. These entries intentionally separate
+# "source located and license recorded" from "approved for MaskFactory gold or
+# production model training".
+schema_version: 1.0.0
+inventory_file: configs/maskedwarehouse_inventory.json
+recorded_at_utc: "2026-07-10T20:10:00Z"
+policy:
+  source_masks_are_gold: false
+  require_entry_for_every_inventory_source: true
+  require_remap_and_visual_qa_before_fixture_use: true
+  require_explicit_rights_before_training_or_gold: true
+  unknown_or_unverified_sources_default_to_blocked: true
+sources:
+  celebamask_hq:
+    local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\CelebAMask-HQ'
+    inventory_counts:
+      images: 30000
+      masks: 372767
+      metadata: 15
+      total_files: 402782
+    role: face_components
+    official_source_url: https://github.com/switchablenorms/CelebAMask-HQ
+    local_provenance_evidence:
+      - README.txt names the GitHub project and says image use is restricted to non-commercial research and educational purposes.
+    public_provenance_evidence:
+      - Official GitHub README describes the dataset agreement and license/citation restrictions.
+    license_status: recorded_restricted_non_commercial
+    license_terms_summary: Non-commercial research/educational use only; no selling, resale, commercial exploitation, or further distribution except internal single-organization copies.
+    provenance_status: official_source_matched_to_local_readme
+    allowed_uses:
+      - local_non_distributable_research_qc_after_remap_and_visual_qa
+      - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+    prohibited_uses:
+      - gold_package_inputs
+      - production_model_training
+      - commercial_or_distributed_outputs
+      - redistribution_of_source_or_derived_data
+    conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
+    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    gold_gate: blocked_external_source_masks_are_not_gold
+    notes: Face-only source; never mix into full-body part training without role tags.
+  lapa:
+    local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\LaPa'
+    inventory_counts:
+      images: 22168
+      masks: 22168
+      metadata: 22168
+      total_files: 66504
+    role: face_parsing
+    official_source_url: https://github.com/jd-opensource/lapa-dataset
+    alternate_source_url: https://github.com/JDAI-CV/lapa-dataset
+    local_provenance_evidence:
+      - Local train/val/test split contains images, labels, and landmarks matching the public LaPa structure.
+    public_provenance_evidence:
+      - Official GitHub README records non-commercial terms for academic research, teaching, scientific publication, or personal experimentation.
+    license_status: recorded_restricted_non_commercial
+    license_terms_summary: Freely available to academic and non-academic entities for non-commercial purposes only, subject to license terms.
+    provenance_status: official_source_matched_by_structure_and_counts
+    allowed_uses:
+      - local_non_distributable_research_qc_after_remap_and_visual_qa
+      - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+    prohibited_uses:
+      - gold_package_inputs
+      - production_model_training
+      - commercial_or_distributed_outputs
+      - redistribution_of_source_or_derived_data
+    conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
+    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    gold_gate: blocked_external_source_masks_are_not_gold
+    notes: Landmark-associated face source; use only for face geometry/face parsing checks.
+  lv_mhp_v1:
+    local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\LV-MHP-v1'
+    inventory_counts:
+      images: 4980
+      masks: 14969
+      metadata: 4
+      total_files: 19953
+    role: multi_person_full_body_parsing
+    official_source_url: https://lv-mhp.github.io/
+    repository_url: https://github.com/ZhaoJ9014/Multi-Human-Parsing
+    local_provenance_evidence:
+      - LV-MHP-v1 README lists the 18 semantic categories, train/test lists, images, and per-person annotation files.
+    public_provenance_evidence:
+      - Official MHP site records that MHP v1.0 and v2.0 are available for non-commercial purposes under license terms.
+      - Official GitHub repository describes MHP v1.0 with 4,980 images and the same 18 semantic categories.
+    license_status: recorded_restricted_non_commercial
+    license_terms_summary: Freely available to academic and non-academic entities for non-commercial uses such as research, teaching, publications, or personal experimentation.
+    provenance_status: official_source_matched_by_local_readme_counts_and_labels
+    allowed_uses:
+      - local_non_distributable_research_qc_after_remap_and_visual_qa
+      - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+    prohibited_uses:
+      - gold_package_inputs
+      - production_model_training
+      - commercial_or_distributed_outputs
+      - redistribution_of_source_or_derived_data
+    conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
+    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    gold_gate: blocked_external_source_masks_are_not_gold
+    notes: Highest-value local multi-person body source, but still restricted; do not use for production model training without explicit compatible rights.
+  swimsuit_preview:
+    local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\UniDataPro_swimsuit-human-segmentation-dataset'
+    inventory_counts:
+      images: 10
+      masks: 10
+      metadata: 4
+      total_files: 48
+    role: clothing_body_color_segmentation_preview
+    official_source_url: https://huggingface.co/datasets/UniDataPro/swimsuit-human-segmentation-dataset
+    vendor_source_url: https://unidata.pro/datasets/swimsuit-human-segmentation-dataset/
+    kaggle_source_url: https://www.kaggle.com/datasets/unidpro/swimsuit-human-segmentation-dataset
+    local_provenance_evidence:
+      - README.md has Hugging Face-style metadata with license cc-by-nc-nd-4.0 and says the local content is a limited preview.
+    public_provenance_evidence:
+      - Hugging Face dataset page describes a 20-row preview and directs users to UniDataPro to buy/access the full dataset.
+    license_status: recorded_cc_by_nc_nd_4_0_preview
+    license_terms_summary: CC BY-NC-ND 4.0 preview metadata; no commercial use and no derivatives; full-dataset rights not established locally.
+    provenance_status: preview_source_matched_to_local_readme
+    allowed_uses:
+      - local_non_distributable_visual_inspection_only
+    prohibited_uses:
+      - converted_mask_fixtures
+      - gold_package_inputs
+      - model_training
+      - commercial_or_distributed_outputs
+      - derivative_remapped_dataset_outputs
+    conversion_gate: blocked_no_derivatives_preview_license
+    training_gate: blocked_no_derivatives_preview_license_and_no_full_dataset_rights
+    gold_gate: blocked_external_source_masks_are_not_gold
+    notes: Color-mask preview may inform ontology review visually, but do not convert/remap into fixtures or training.
+  body_archive:
+    local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\archive'
+    inventory_counts:
+      images: 175
+      masks: 175
+      metadata: 1
+      total_files: 351
+    role: seven_group_body_color_segmentation
+    official_source_url: null
+    local_provenance_evidence:
+      - Local root contains Men/Women grouped image-mask folders and Human Segmentation 7 Types.xlsx.
+      - No README, license file, URL, citation, or download manifest was found in the local root during MF-P0-13.04 review.
+    public_provenance_evidence: []
+    license_status: unknown_unverified
+    license_terms_summary: No license or official upstream source recorded.
+    provenance_status: local_files_only_no_official_source
+    allowed_uses: []
+    prohibited_uses:
+      - converted_mask_fixtures
+      - gold_package_inputs
+      - model_training
+      - commercial_or_distributed_outputs
+      - redistribution_of_source_or_derived_data
+    conversion_gate: blocked_missing_license_and_official_provenance
+    training_gate: blocked_missing_license_and_official_provenance
+    gold_gate: blocked_external_source_masks_are_not_gold
+    notes: May be reconsidered only after Kevin or a future intake step supplies an official source URL and compatible license evidence.

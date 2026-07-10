@@ -14,6 +14,25 @@ These datasets are not automatically gold. They are source material for remappin
 | `C:\Comfy_UI_Main\MaskedWarehouse\Body\UniDataPro_swimsuit-human-segmentation-dataset` | Swimsuit/body color segmentation sample | Useful for visible body shape and skin/clothing boundary experiments. Masks are RGB color segmentation masks and require color-to-label remap. |
 | `C:\Comfy_UI_Main\MaskedWarehouse\Body\archive` | Body segmentation archive material | Requires inventory before use; likely useful for body silhouette and broad human segmentation references. |
 
+## License and Provenance Status
+
+Machine-readable status lives in `configs/maskedwarehouse_provenance.yaml` and
+must stay aligned with `configs/maskedwarehouse_inventory.json`. This table is
+the human-facing summary of the current intake gate.
+
+| Source key | Official/upstream evidence | Recorded status | Current conversion/training/gold gate |
+|---|---|---|---|
+| `celebamask_hq` | Local `README.txt`; official `switchablenorms/CelebAMask-HQ` GitHub project. | Non-commercial research/educational only; redistribution/commercial exploitation restricted. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
+| `lapa` | Public LaPa GitHub project; local split structure with images, labels, and landmarks. | Non-commercial only for research/teaching/publications/personal experimentation. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
+| `lv_mhp_v1` | Official MHP site; official `ZhaoJ9014/Multi-Human-Parsing` GitHub project; local README with matching category list. | Non-commercial only for research/teaching/scientific publication/personal experimentation. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
+| `swimsuit_preview` | Local Hugging Face-style `README.md`; UniDataPro/Hugging Face preview page. | CC BY-NC-ND 4.0 preview metadata; full-dataset rights not established. | Visual inspection only. Converted fixtures, derivative remaps, training, and gold-package use blocked. |
+| `body_archive` | Local folders plus `Human Segmentation 7 Types.xlsx`; no README/license/upstream URL found. | Unknown/unverified. | All conversion, fixture, training, distribution, and gold-package use blocked until official source and compatible license evidence are recorded. |
+
+Recording a source here does **not** make it MaskFactory gold and does **not**
+approve production training. External source masks remain source masks. Any
+promotion into fixtures, training seed data, or gold-package workflows requires
+the stricter gate recorded per source, plus remap tests, hashing, and visual QA.
+
 ## Required Intake Steps
 
 1. Create an inventory JSON per dataset: source root, image count, mask count, file extensions, dimensions, label format, and hash sample.
@@ -42,4 +61,3 @@ These datasets are not automatically gold. They are source material for remappin
 - Do not train on RGB color masks until a deterministic color-to-label map is written and tested.
 - Do not let any external dataset override the visible-pixel-only rule.
 - Do not use warehouse data without recording license/provenance status.
-

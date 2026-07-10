@@ -342,3 +342,23 @@ evidence report:        qa/reports/ollama_vlm_smoke.json
 governance asserted:    VLM may not author masks, approve gold, clear BLOCKs, or send images off-machine
 tests:                  pytest tests\test_vlm_config.py -> 3 passed
 ```
+
+## 2026-07-10 20:10 UTC - MaskedWarehouse license/provenance gate recorded
+**Items:** MF-P0-13.04
+**Result:** PASS - every source in `configs/maskedwarehouse_inventory.json` now
+has an explicit license/provenance record and conservative workflow gates in
+`configs/maskedwarehouse_provenance.yaml`.
+
+```
+inventory source count: 5
+celebamask_hq:          30,000 images; 372,767 masks; official CelebAMask-HQ GitHub/local README; non-commercial research/educational only
+lapa:                   22,168 images; 22,168 masks; official LaPa GitHub; non-commercial only
+lv_mhp_v1:              4,980 images; 14,969 masks; official MHP site/GitHub/local README; non-commercial only
+swimsuit_preview:       10 images; 10 masks; local Hugging Face-style README and UniDataPro preview; CC BY-NC-ND 4.0 preview; conversion blocked
+body_archive:           175 images; 175 masks; local Excel/folders only; no upstream/license found; all conversion/training/gold use blocked
+gold gate:              blocked for all external source masks; they are source masks, not MaskFactory gold
+production training:    blocked for all five until explicit compatible rights are recorded
+fixture conversion:     allowed only for non-distributable local QA/prototype use on CelebAMask-HQ/LaPa/LV-MHP after remap tests and visual QA
+machine record:         configs/maskedwarehouse_provenance.yaml
+tests:                  pytest tests\test_maskedwarehouse_provenance.py -> 5 passed
+```

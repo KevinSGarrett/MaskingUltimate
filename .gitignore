@@ -5,6 +5,7 @@ data/
 runs/
 logs/
 datasets/
+work/
 .env
 mfwork/
 

@@ -8,9 +8,17 @@ stays green before the stages are wired up.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import click
 
 from . import __version__
+from .providers.probe import (
+    DEFAULT_CONFIG,
+    DEFAULT_OUTPUT,
+    DEFAULT_WORKFLOWS,
+    probe_external_sources,
+)
 
 _STUB = "  (stub) not yet implemented — see {spec}"
 
@@ -174,6 +182,48 @@ def models() -> None:
 def models_fetch(key: str | None, fetch_all: bool) -> None:
     """Download + register a model checkpoint (SHA-256 + smoke test)."""
     _todo("doc 06 §3, doc 04 §3, MF-P0-06.01")
+
+
+@main.group()
+def external() -> None:
+    """External foundation provider operations (doc 16)."""
+
+
+@external.command("probe")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_CONFIG,
+    show_default=True,
+)
+@click.option(
+    "--workflows",
+    "workflow_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_WORKFLOWS,
+    show_default=True,
+)
+@click.option(
+    "--output",
+    "output_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_OUTPUT,
+    show_default=True,
+)
+def external_probe(config_path: Path, workflow_path: Path, output_path: Path) -> None:
+    """Report installed/missing providers and hash local artifacts; never download."""
+    report = probe_external_sources(
+        config_path=config_path,
+        workflow_path=workflow_path,
+        output_path=output_path,
+    )
+    summary = report["summary"]
+    click.echo(
+        f"providers={summary['provider_count']} available={summary['available']} "
+        f"missing={summary['missing']} reference_only={summary['reference_only']}"
+    )
+    click.echo(f"downloads_attempted={report['downloads_attempted']} output={output_path}")
 
 
 if __name__ == "__main__":

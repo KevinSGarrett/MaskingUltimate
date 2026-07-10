@@ -1,6 +1,8 @@
 # === MaskFactory .gitignore (MF-P0-08.01) ===
 # Spec-required list (item MF-P0-08.01): large binary data + secrets never in git.
-models/
+/models/*
+!/models/model_sources.yaml
+!/models/model_registry.json
 data/
 runs/
 logs/

@@ -433,3 +433,24 @@ fixture eligibility:    governed adult source/control pairs may become training 
 source provenance:      original Civitai artifact/payload/archive/extracted paths remain stable under Plan/Civitai before governed promotion
 tests:                  pytest tests\test_civitai_governance_gates.py -> 4 passed
 ```
+
+## 2026-07-10 23:50 UTC - Verified model fetch and registry foundation implemented
+**Items:** MF-P0-06.01
+**Result:** PASS - `maskfactory models fetch <key>` now downloads transactionally,
+computes SHA-256, requires a model-specific one-image smoke test, atomically writes
+the registry only after success, and exposes the sole verified checkpoint resolver.
+
+```
+catalog:                models/model_sources.yaml
+registry:               models/model_registry.json
+implementation:         src/maskfactory/models/registry.py
+CLI:                    maskfactory models fetch <key> | --all
+required metadata:      source URL, version tag, license, download date, role, runtime, path, SHA-256
+smoke evidence:         generated 3x2 RGB fixture image + fixture checkpoint; deterministic inference-output SHA-256 recorded
+transaction gate:       failed download/hash/smoke never publishes a target or verified registry entry
+loader gate:            rejects unknown path/key, unverified entry, missing file, path escape, and hash mismatch
+idempotency:            verified matching checkpoint returns cached without download or registry rewrite
+focused tests:          pytest tests\test_model_registry.py -> 6 passed
+full tests:             pytest -> 61 passed
+quality:                pre-commit run --all-files -> passed
+```

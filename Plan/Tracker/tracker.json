@@ -964,13 +964,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T21:08:47+00:00",
+          "actor": "ai_agent",
+          "text": "Uniform verified model acquisition and loader gate are operational; individual M1-M11 catalog entries and inference runners follow in MF-P0-06.02-.13."
+        }
+      ],
+      "evidence": "Implemented src/maskfactory/models/registry.py and maskfactory models fetch <key>|--all: transactional download into models/<family>, SHA-256, atomic models/model_registry.json entry with URL/version/license/date, mandatory model-specific one-image smoke output hash before verified=true, cached idempotent rerun, and load_registered_model/resolve_registered_model refusal for unregistered, unverified, missing, escaped, or hash-mismatched paths. tests/test_model_registry.py 6 passed; full pytest 61 passed; pre-commit passed; OPS_LOG 2026-07-10 23:50 UTC.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T21:08:47+00:00",
       "orphaned": false
     },
     "MF-P0-06.02": {

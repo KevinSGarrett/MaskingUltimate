@@ -1,0 +1,4 @@
+# Model acquisition catalog. Each model-specific item MF-P0-06.02 through .13
+# adds its authoritative source, exact hash, and one-image smoke runner here.
+schema_version: 1.0.0
+models: {}

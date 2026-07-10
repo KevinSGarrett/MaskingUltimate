@@ -13,6 +13,14 @@ from pathlib import Path
 import click
 
 from . import __version__
+from .models import (
+    DEFAULT_CATALOG,
+    DEFAULT_REGISTRY,
+    ModelFetchError,
+    ModelRegistryError,
+    catalog_model_keys,
+    fetch_models,
+)
 from .providers.fixtures import DEFAULT_FIXTURES, SelfTestRunner, run_external_fixtures
 from .providers.fixtures import DEFAULT_OUTPUT as DEFAULT_FIXTURE_OUTPUT
 from .providers.probe import (
@@ -181,9 +189,56 @@ def models() -> None:
 @models.command("fetch")
 @click.argument("key", required=False)
 @click.option("--all", "fetch_all", is_flag=True, help="Fetch every registered model.")
-def models_fetch(key: str | None, fetch_all: bool) -> None:
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_CATALOG,
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+def models_fetch(
+    key: str | None,
+    fetch_all: bool,
+    catalog_path: Path,
+    registry_path: Path,
+    models_root: Path,
+) -> None:
     """Download + register a model checkpoint (SHA-256 + smoke test)."""
-    _todo("doc 06 §3, doc 04 §3, MF-P0-06.01")
+    if bool(key) == fetch_all:
+        raise click.UsageError("provide exactly one model KEY or --all")
+    try:
+        if fetch_all:
+            keys = catalog_model_keys(catalog_path)
+            if not keys:
+                raise ModelFetchError(f"model catalog contains no entries: {catalog_path}")
+        else:
+            keys = [key]  # type: ignore[list-item]
+        results = fetch_models(
+            keys,
+            catalog_path=catalog_path,
+            registry_path=registry_path,
+            models_root=models_root,
+        )
+    except (OSError, ValueError, ModelFetchError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    for result in results:
+        click.echo(
+            f"{result['key']}: {result['fetch_status']} sha256={result['sha256']} "
+            f"verified={str(result['verified']).lower()}"
+        )
 
 
 @main.group()

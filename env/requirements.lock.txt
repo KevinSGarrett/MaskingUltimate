@@ -13,6 +13,7 @@ asyncssh==2.24.0
 atpublic==7.0.0
 attrs==26.1.0
 bcrypt==5.0.0
+beautifulsoup4==4.15.0
 billiard==4.2.4
 celery==5.6.3
 certifi==2026.6.17
@@ -57,6 +58,7 @@ fonttools==4.63.0
 frozenlist==1.8.0
 fsspec==2026.4.0
 funcy==2.0
+gdown==5.2.0
 gitdb==4.0.12
 GitPython==3.1.50
 grandalf==0.8
@@ -81,7 +83,7 @@ lazy-loader==0.5
 loguru==0.7.3
 markdown-it-py==4.2.0
 MarkupSafe==3.0.3
--e git+https://github.com/KevinSGarrett/MaskingUltimate.git@0e07aca30c23329515e4b54e22e3f437cc271d35#egg=maskfactory
+-e git+https://github.com/KevinSGarrett/MaskingUltimate.git@a010f30c0ee4a08bced44b4701fe6f923583e726#egg=maskfactory
 matplotlib==3.11.0
 mdurl==0.1.2
 mpmath==1.3.0
@@ -129,6 +131,7 @@ pygit2==1.19.3
 Pygments==2.20.0
 pygtrie==2.5.0
 pyparsing==3.3.2
+PySocks==1.7.1
 pytest==9.1.1
 python-dateutil==2.9.0.post0
 python-discovery==1.4.4
@@ -151,6 +154,7 @@ shortuuid==1.0.13
 shtab==1.8.1
 six==1.17.0
 smmap==5.0.3
+soupsieve==2.8.4
 sqltrie==0.11.2
 sshfs==2025.11.0
 starlette==1.3.1

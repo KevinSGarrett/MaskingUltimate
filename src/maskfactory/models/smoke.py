@@ -142,3 +142,49 @@ def sapiens_seg_0_6b_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 
 register_smoke_runner("sapiens_seg_0_6b_wsl", sapiens_seg_0_6b_wsl)
+
+
+def _schp_wsl(checkpoint: Path, image: Path, dataset: str) -> dict[str, Any]:
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_schp_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+        "--dataset",
+        dataset,
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=600, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+def schp_atr_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the official SCHP ATR 18-class parser on one CUDA image."""
+    return _schp_wsl(checkpoint, image, "atr")
+
+
+def schp_lip_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the official SCHP LIP 20-class parser on one CUDA image."""
+    return _schp_wsl(checkpoint, image, "lip")
+
+
+register_smoke_runner("schp_atr_wsl", schp_atr_wsl)
+register_smoke_runner("schp_lip_wsl", schp_lip_wsl)

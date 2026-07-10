@@ -477,6 +477,30 @@ registry:               verified=true in models/model_registry.json
 idempotency:            immediate rerun returned cached with matching SHA-256
 ```
 
+## 2026-07-11 00:35 UTC - M4 SCHP ATR and LIP fallbacks fetched and verified
+**Items:** MF-P0-06.05
+**Result:** PASS - both official SCHP fallback variants were downloaded from
+the authors' linked Google Drive records, hash-pinned, loaded strictly against
+the pinned source architecture, and exercised by real CUDA parsing.
+
+```
+source repository:      GoGoDuck912/Self-Correction-Human-Parsing
+source revision:        eb84c432cc697f494d99662a05f2335eb2f26095
+license:                MIT
+compatibility:          obsolete compiled InPlaceABNSync replaced for inference by state-compatible pure torch BatchNorm2d; strict state load passed
+ATR file:               exp-schp-201908301523-atr.pth; 267,445,237 bytes
+ATR SHA-256:            e9d7c91ce3b4e7133df56b599fc817b533e3439c5e8d282a59126d2fda339a2a
+ATR output:             [1,18,512,512]; labels 0,4; foreground 0.041264
+ATR output SHA-256:     3dbf93127a736e745abd4f3659f8d2cbaafbd04ab17ee54448e98d6f84e05157
+LIP file:               exp-schp-201908261155-lip.pth; 267,449,349 bytes
+LIP SHA-256:            24fa3254ceeb74c8435458994a64b522fb439a3635b7b86ff470457e0413da00
+LIP output:             [1,20,473,473]; labels 0,7,9; foreground 0.056908
+LIP output SHA-256:     4a48994533e69b1161061cd0286e24420b34305648900267325c195bc12953e2
+runtime:                WSL Ubuntu-22.04; torch 2.11.0+cu128; RTX 5060 Laptop GPU
+registry:               both verified=true in models/model_registry.json
+idempotency:            both immediate reruns returned cached with matching SHA-256
+```
+
 ## 2026-07-11 00:10 UTC - M2 BiRefNet silhouette model fetched and verified
 **Items:** MF-P0-06.03
 **Result:** PASS - the official pinned BiRefNet general checkpoint was fetched,

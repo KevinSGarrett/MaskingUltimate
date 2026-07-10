@@ -94,6 +94,24 @@ def _download(url: str, output: BinaryIO) -> None:
     scheme = urlparse(url).scheme.lower()
     if scheme not in {"https", "http", "file"}:
         raise ModelFetchError(f"unsupported model URL scheme: {scheme or '(none)'}")
+    parsed = urlparse(url)
+    if parsed.netloc.lower() in {"drive.google.com", "docs.google.com"}:
+        import gdown
+
+        handle, companion_name = tempfile.mkstemp(suffix=".gdrive")
+        os.close(handle)
+        companion = Path(companion_name)
+        try:
+            downloaded = gdown.download(url=url, output=str(companion), quiet=True, fuzzy=True)
+            if downloaded is None or not companion.is_file() or companion.stat().st_size == 0:
+                raise ModelFetchError(f"Google Drive download failed for {url}")
+            with companion.open("rb") as source:
+                shutil.copyfileobj(source, output, length=CHUNK_SIZE)
+            return
+        except (OSError, RuntimeError) as exc:
+            raise ModelFetchError(f"Google Drive download failed for {url}: {exc}") from exc
+        finally:
+            companion.unlink(missing_ok=True)
     request = Request(url, headers={"User-Agent": "MaskFactory/0.0.1"})
     try:
         with urlopen(request, timeout=120) as response:  # noqa: S310 - catalog is trusted input

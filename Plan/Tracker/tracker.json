@@ -1072,13 +1072,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T21:38:09+00:00",
+          "actor": "ai_agent",
+          "text": "M4 ATR and LIP fallback parsers are both verified; Google Drive acquisition is confirmation-token aware and hash-pinned."
+        }
+      ],
+      "evidence": "Fetched both official SCHP variants from author-linked Google Drive: ATR exp-schp-201908301523-atr.pth 267,445,237 bytes SHA-256 e9d7c91ce3b4e7133df56b599fc817b533e3439c5e8d282a59126d2fda339a2a and LIP exp-schp-201908261155-lip.pth 267,449,349 bytes SHA-256 24fa3254ceeb74c8435458994a64b522fb439a3635b7b86ff470457e0413da00; pinned MIT source revision eb84c432cc697f494d99662a05f2335eb2f26095; strict state loading with state-compatible pure-torch inference ABN passed; real WSL CUDA smoke produced ATR [1,18,512,512] hash 3dbf93127a736e745abd4f3659f8d2cbaafbd04ab17ee54448e98d6f84e05157 and LIP [1,20,473,473] hash 4a48994533e69b1161061cd0286e24420b34305648900267325c195bc12953e2; both verified=true and cached reruns; full pytest 61 passed, quality/pip check passed; OPS_LOG 2026-07-11 00:35 UTC.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T21:38:09+00:00",
       "orphaned": false
     },
     "MF-P0-06.06": {

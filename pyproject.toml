@@ -12,6 +12,7 @@ requires-python = ">=3.11"
 # The loose list here is only so `pip install -e .` works in a plain venv/CI.
 dependencies = [
     "click",
+    "gdown==5.2.0",
     "numpy",
     "pillow",
     "pyyaml",

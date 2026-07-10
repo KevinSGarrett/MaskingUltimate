@@ -38,3 +38,27 @@ models:
     vram_note: 0.664B TorchScript model; one 1024x768 image per smoke/inference slot
     smoke_test: sapiens_seg_0_6b_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  schp_atr:
+    url: https://drive.google.com/file/d/1ruJg4lqR_jgQPj-9K0PP-L2vJERYOxLP/view?usp=sharing
+    sha256: e9d7c91ce3b4e7133df56b599fc817b533e3439c5e8d282a59126d2fda339a2a
+    family: parsing_fallback
+    filename: exp-schp-201908301523-atr.pth
+    version_tag: GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-ATR
+    license: MIT
+    role: fallback_human_parsing_atr_18_class
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat
+    vram_note: ResNet-101 SCHP fallback; single 512x512 smoke image
+    smoke_test: schp_atr_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  schp_lip:
+    url: https://drive.google.com/file/d/1k4dllHpu0bdx38J7H28rVVLpU-kOHmnH/view?usp=sharing
+    sha256: 24fa3254ceeb74c8435458994a64b522fb439a3635b7b86ff470457e0413da00
+    family: parsing_fallback
+    filename: exp-schp-201908261155-lip.pth
+    version_tag: GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-LIP
+    license: MIT
+    role: fallback_human_parsing_lip_20_class
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat
+    vram_note: ResNet-101 SCHP fallback; single 473x473 smoke image
+    smoke_test: schp_lip_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

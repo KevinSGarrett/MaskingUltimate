@@ -39,6 +39,44 @@
       "vram_note": "0.664B TorchScript model; one 1024x768 image per smoke/inference slot"
     },
     {
+      "downloaded_at": "2026-07-10T21:34:40.119469Z",
+      "file": "models/parsing_fallback/exp-schp-201908301523-atr.pth",
+      "key": "schp_atr",
+      "license": "MIT",
+      "role": "fallback_human_parsing_atr_18_class",
+      "runtime": "WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat",
+      "sha256": "e9d7c91ce3b4e7133df56b599fc817b533e3439c5e8d282a59126d2fda339a2a",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "3dbf93127a736e745abd4f3659f8d2cbaafbd04ab17ee54448e98d6f84e05157",
+        "runner": "schp_atr_wsl",
+        "verified_at": "2026-07-10T21:34:40.119469Z"
+      },
+      "source_url": "https://drive.google.com/file/d/1ruJg4lqR_jgQPj-9K0PP-L2vJERYOxLP/view?usp=sharing",
+      "verified": true,
+      "version_tag": "GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-ATR",
+      "vram_note": "ResNet-101 SCHP fallback; single 512x512 smoke image"
+    },
+    {
+      "downloaded_at": "2026-07-10T21:35:10.205126Z",
+      "file": "models/parsing_fallback/exp-schp-201908261155-lip.pth",
+      "key": "schp_lip",
+      "license": "MIT",
+      "role": "fallback_human_parsing_lip_20_class",
+      "runtime": "WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat",
+      "sha256": "24fa3254ceeb74c8435458994a64b522fb439a3635b7b86ff470457e0413da00",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "4a48994533e69b1161061cd0286e24420b34305648900267325c195bc12953e2",
+        "runner": "schp_lip_wsl",
+        "verified_at": "2026-07-10T21:35:10.205126Z"
+      },
+      "source_url": "https://drive.google.com/file/d/1k4dllHpu0bdx38J7H28rVVLpU-kOHmnH/view?usp=sharing",
+      "verified": true,
+      "version_tag": "GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-LIP",
+      "vram_note": "ResNet-101 SCHP fallback; single 473x473 smoke image"
+    },
+    {
       "downloaded_at": "2026-07-10T21:13:03.932355Z",
       "file": "models/detect/yolo11m.pt",
       "key": "yolo11m",

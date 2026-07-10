@@ -20,6 +20,25 @@
       "vram_note": "bf16/fp16 production; official model card reports about 3.5 GB FP16 inference"
     },
     {
+      "downloaded_at": "2026-07-10T22:41:56.587161Z",
+      "file": "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl",
+      "key": "densepose_rcnn_r50_fpn_s1x",
+      "license": "Apache-2.0",
+      "role": "dense_human_surface_prior",
+      "runtime": "WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120",
+      "sha256": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "70567801d4e3fe6bc5ffde312d412369b3ca95cda88219aa737bb9ea6d469143",
+        "runner": "densepose_r50_cuda_wsl",
+        "verified_at": "2026-07-10T22:41:56.587161Z"
+      },
+      "source_url": "https://dl.fbaipublicfiles.com/densepose/densepose_rcnn_R_50_FPN_s1x/165712039/model_final_162be9.pkl",
+      "verified": true,
+      "version_tag": "detectron2-densepose-model-165712039-source-02b5c4e295e990042a714712c21dc79b731e8833",
+      "vram_note": "R50-FPN chart-based DensePose referee; one image per GPU slot"
+    },
+    {
       "downloaded_at": "2026-07-10T21:46:44.708706Z",
       "file": "models/pose/dw-ll_ucoco_384.onnx",
       "key": "dwpose_133",

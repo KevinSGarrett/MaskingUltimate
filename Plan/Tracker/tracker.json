@@ -1228,13 +1228,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Installed detectron2-densepose 0.6 from projects/DensePose at official pinned detectron2 commit 02b5c4e295e990042a714712c21dc79b731e8833; env/source_builds.lock records source and tracked OpenCV compatibility patch. Fetched official model 165712039 as models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl (255,757,821 bytes; SHA-256 b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91). CUDA smoke on RTX 5060 produced 5 DensePose instances and nonempty coarse/fine/U/V tensors with chart labels 1..24; output hash 70567801d4e3fe6bc5ffde312d412369b3ca95cda88219aa737bb9ea6d469143. Registry verified=true; idempotent fetch cached; pip check passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T22:43:08+00:00",
       "orphaned": false
     },
     "MF-P0-06.12": {

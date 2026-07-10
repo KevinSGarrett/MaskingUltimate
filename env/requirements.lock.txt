@@ -14,6 +14,7 @@ appdirs==1.4.4
 asyncssh==2.24.0
 atpublic==7.0.0
 attrs==26.1.0
+av==18.0.0
 bcrypt==5.0.0
 beautifulsoup4==4.15.0
 billiard==4.2.4
@@ -39,6 +40,7 @@ cuda-toolkit==12.8.1
 cycler==0.12.1
 defusedxml==0.7.1
 detectron2 @ file:///home/kevin/mfwork/source/detectron2
+detectron2-densepose @ file:///home/kevin/mfwork/source/detectron2/projects/DensePose
 dictdiffer==0.9.0
 diskcache==5.6.3
 distlib==0.4.3
@@ -94,7 +96,7 @@ loguru==0.7.3
 Markdown==3.10.2
 markdown-it-py==4.2.0
 MarkupSafe==3.0.3
--e git+https://github.com/KevinSGarrett/MaskingUltimate.git@e86e1fbdb1d5b95ffd1d5c9ddb642da620b8fd2d#egg=maskfactory
+-e git+https://github.com/KevinSGarrett/MaskingUltimate.git@d8ee57d95dede6a7a2da9f3518eeb5b323ac133f#egg=maskfactory
 matplotlib==3.11.0
 mdurl==0.1.2
 mediapipe==0.10.35

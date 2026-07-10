@@ -15,7 +15,6 @@
 #
 # ---------------------------------------------------------------------------
 # PENDING source builds (populate when the build in P0-06 actually runs):
-#   [densepose]  -> MF-P0-06.11  (detectron2 projects/DensePose; shares detectron2 build)
 #   [mmcv]       -> only if a source build proves necessary on cu128 (else wheel)
 # ---------------------------------------------------------------------------
 
@@ -27,6 +26,15 @@ build_env  = CUDA_HOME=$CONDA_PREFIX ; TORCH_CUDA_ARCH_LIST=12.0 ; FORCE_CUDA=1 
 built_with = torch 2.11.0+cu128 ; python 3.11.15 ; CUDA compiler/development libraries 12.8
 date       = 2026-07-10
 notes      = Built on WSL ext4; env/patches/detectron2-iopath-0.1.10.patch widens metadata compatibility for SAM2's iopath 0.1.10; cuobjdump confirms sm_120 cubins; CUDA nms_rotated smoke passed on RTX 5060 Laptop GPU
+
+[densepose]
+repo       = https://github.com/facebookresearch/detectron2.git
+commit     = 02b5c4e295e990042a714712c21dc79b731e8833
+ref        = projects/DensePose at the pinned detectron2 commit
+build_env  = --no-build-isolation ; shared detectron2 CUDA extension built with TORCH_CUDA_ARCH_LIST=12.0
+built_with = detectron2 0.6 ; torch 2.11.0+cu128 ; python 3.11.15 ; CUDA runtime 12.8
+date       = 2026-07-10
+notes      = Pure-Python DensePose project wheel; env/patches/densepose-opencv-contrib.patch reuses the governed OpenCV contrib distribution; real R50-FPN CUDA surface inference passed
 
 [sam2]
 repo       = https://github.com/facebookresearch/sam2.git

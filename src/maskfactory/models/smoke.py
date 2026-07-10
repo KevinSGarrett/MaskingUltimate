@@ -402,3 +402,39 @@ def groundingdino_person_boxes_wsl(checkpoint: Path, image: Path) -> dict[str, A
 
 
 register_smoke_runner("groundingdino_person_boxes_wsl", groundingdino_person_boxes_wsl)
+
+
+def densepose_r50_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the pinned DensePose R50-FPN chart model on one CUDA image."""
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_densepose_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+        "--config",
+        "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml",
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-3000:] or process.stdout.strip()[-3000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+register_smoke_runner("densepose_r50_cuda_wsl", densepose_r50_cuda_wsl)

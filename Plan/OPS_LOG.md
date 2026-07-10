@@ -666,3 +666,32 @@ compatibility patch:      env/patches/detectron2-iopath-0.1.10.patch (allows sha
 dependency check:         pip check -> No broken requirements found
 reproduction lock:       env/source_builds.lock [detectron2]
 ```
+
+## 2026-07-10 22:42 UTC - M9 DensePose surface prior installed and verified
+**Items:** MF-P0-06.11
+**Result:** PASS - DensePose was installed from the pinned detectron2 source and
+the official R50-FPN checkpoint produced nontrivial chart-based human-surface
+predictions through the verified sm_120 CUDA extension.
+
+```
+source repo/commit:      facebookresearch/detectron2@02b5c4e295e990042a714712c21dc79b731e8833
+project:                 projects/DensePose; detectron2-densepose 0.6
+catalog key:             densepose_rcnn_r50_fpn_s1x
+official model id:       165712039
+official source file:    model_final_162be9.pkl
+local required filename: models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl
+size:                    255,757,821 bytes
+SHA-256:                 b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91
+license:                 Apache-2.0
+runtime:                 detectron2/DensePose 0.6; torch 2.11.0+cu128; CUDA 12.8
+GPU:                     NVIDIA GeForce RTX 5060 Laptop GPU; capability [12,0]
+smoke input:             qa/fixtures/smoke/ultralytics_bus_adults.jpg (1080x810)
+instances:               5 with confidence 0.838524..0.999564
+output tensors:          coarse [5,2,112,112]; fine/U/V [5,25,112,112]
+surface labels:          all chart labels 1..24 present; nonzero fraction 1.0
+output SHA-256:          70567801d4e3fe6bc5ffde312d412369b3ca95cda88219aa737bb9ea6d469143
+registry:                verified=true in models/model_registry.json
+idempotency:             immediate rerun returned cached with matching SHA-256
+dependency check:        pip check -> No broken requirements found
+reproduction lock:       env/source_builds.lock [densepose]
+```

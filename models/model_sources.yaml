@@ -134,3 +134,15 @@ models:
     vram_note: boxes only; CPU PyTorch deformable-attention fallback because nvcc is unavailable
     smoke_test: groundingdino_person_boxes_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  densepose_rcnn_r50_fpn_s1x:
+    url: https://dl.fbaipublicfiles.com/densepose/densepose_rcnn_R_50_FPN_s1x/165712039/model_final_162be9.pkl
+    sha256: b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91
+    family: densepose
+    filename: densepose_rcnn_R_50_FPN_s1x.pkl
+    version_tag: detectron2-densepose-model-165712039-source-02b5c4e295e990042a714712c21dc79b731e8833
+    license: Apache-2.0
+    role: dense_human_surface_prior
+    runtime: WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120
+    vram_note: R50-FPN chart-based DensePose referee; one image per GPU slot
+    smoke_test: densepose_r50_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

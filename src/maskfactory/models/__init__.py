@@ -1,5 +1,6 @@
 """Model checkpoint acquisition and verified-registry access."""
 
+from . import smoke as _smoke  # noqa: F401 - registers built-in smoke runners
 from .registry import (
     DEFAULT_CATALOG,
     DEFAULT_REGISTRY,

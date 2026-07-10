@@ -164,7 +164,15 @@ def fetch_models(
             raise ModelFetchError(f"catalog entry {key} missing: {', '.join(missing)}")
         target = _safe_target(models_root, str(source["family"]), str(source["filename"]))
         existing = next((item for item in registry["models"] if item.get("key") == key), None)
-        if existing and existing.get("verified") is True and target.exists():
+        cache_metadata_matches = bool(
+            existing
+            and existing.get("source_url") == source["url"]
+            and existing.get("version_tag") == source["version_tag"]
+            and existing.get("license") == source["license"]
+            and existing.get("smoke_test", {}).get("runner") == source["smoke_test"]
+            and existing.get("smoke_test", {}).get("image") == source.get("smoke_image")
+        )
+        if cache_metadata_matches and existing.get("verified") is True and target.exists():
             if _sha256(target) == existing.get("sha256"):
                 results.append({**existing, "fetch_status": "cached"})
                 continue
@@ -181,7 +189,7 @@ def fetch_models(
 
         target.parent.mkdir(parents=True, exist_ok=True)
         fd, temporary_name = tempfile.mkstemp(
-            prefix=f".{target.name}.", suffix=".download", dir=target.parent
+            prefix=f".{target.stem}.download.", suffix=target.suffix, dir=target.parent
         )
         temporary = Path(temporary_name)
         try:

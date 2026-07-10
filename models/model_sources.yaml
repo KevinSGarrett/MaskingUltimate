@@ -1,4 +1,16 @@
 # Model acquisition catalog. Each model-specific item MF-P0-06.02 through .13
 # adds its authoritative source, exact hash, and one-image smoke runner here.
 schema_version: 1.0.0
-models: {}
+models:
+  yolo11m:
+    url: https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m.pt
+    sha256: d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95
+    family: detect
+    filename: yolo11m.pt
+    version_tag: ultralytics-assets-v8.4.0-yolo11m
+    license: AGPL-3.0-or-Ultralytics-Enterprise
+    role: person_detector
+    runtime: ultralytics-8.4.87+torch-2.12.1-cpu-smoke
+    vram_note: production CUDA inference; CPU smoke supported; spec budget 1.2 GB
+    smoke_test: yolo11_person_detector
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

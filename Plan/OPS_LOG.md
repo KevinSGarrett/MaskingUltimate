@@ -454,3 +454,25 @@ focused tests:          pytest tests\test_model_registry.py -> 6 passed
 full tests:             pytest -> 61 passed
 quality:                pre-commit run --all-files -> passed
 ```
+
+## 2026-07-10 23:58 UTC - M1 YOLO11m person detector fetched and verified
+**Items:** MF-P0-06.02
+**Result:** PASS - the exact official YOLO11m release checkpoint is registered,
+hash-verified, loaded with Ultralytics, and exercised on one governed image with
+four class-0 person detections.
+
+```
+catalog key:            yolo11m
+source:                 https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m.pt
+official asset size:    40,684,120 bytes
+SHA-256:                d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95
+local path:             models/detect/yolo11m.pt
+license:                AGPL-3.0 or Ultralytics Enterprise
+runtime smoke:          ultralytics 8.4.87, torch 2.12.1+cpu
+fixture:                qa/fixtures/smoke/ultralytics_bus_adults.jpg
+fixture governance:     official Ultralytics package asset; clearly adult pedestrians; QA-only; SHA-256 c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63
+smoke result:           5 detections, 4 class-0 persons
+output SHA-256:         d49b12c55b9c0dd1c87beeaa927ac021f1733980feace2533b948d04d10aa8a4
+registry:               verified=true in models/model_registry.json
+idempotency:            immediate rerun returned cached with matching SHA-256
+```

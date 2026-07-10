@@ -229,6 +229,25 @@
       "vram_note": "ResNet-101 SCHP fallback; single 473x473 smoke image"
     },
     {
+      "downloaded_at": "2026-07-10T22:51:48.696127Z",
+      "file": "models/matting/vitmatte_s.pth",
+      "key": "vitmatte_small_composition_1k",
+      "license": "Apache-2.0",
+      "role": "trimap_seeded_hair_and_material_alpha_matte",
+      "runtime": "WSL-transformers-4.47.1+torch-2.11.0+cu128",
+      "sha256": "6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "c1ab0c212278e042413e92ac14b8717976799a88a0b4631a40454cf32f03c1da",
+        "runner": "vitmatte_small_cuda_wsl",
+        "verified_at": "2026-07-10T22:51:48.696127Z"
+      },
+      "source_url": "https://huggingface.co/hustvl/vitmatte-small-composition-1k/resolve/6a58ad7646403c1df626fbd746900aec7361ea1d/pytorch_model.bin",
+      "verified": true,
+      "version_tag": "hustvl/vitmatte-small-composition-1k@6a58ad7646403c1df626fbd746900aec7361ea1d",
+      "vram_note": "small ViTMatte; RGB plus three-state trimap, padded to multiples of 32"
+    },
+    {
       "downloaded_at": "2026-07-10T21:13:03.932355Z",
       "file": "models/detect/yolo11m.pt",
       "key": "yolo11m",

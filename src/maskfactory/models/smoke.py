@@ -474,3 +474,39 @@ def faceparse_bisenet_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 
 register_smoke_runner("faceparse_bisenet_cuda_wsl", faceparse_bisenet_cuda_wsl)
+
+
+def vitmatte_small_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the pinned ViTMatte-S checkpoint with a three-state trimap on CUDA."""
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_vitmatte_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+        "--revision",
+        "6a58ad7646403c1df626fbd746900aec7361ea1d",
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-3000:] or process.stdout.strip()[-3000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+register_smoke_runner("vitmatte_small_cuda_wsl", vitmatte_small_cuda_wsl)

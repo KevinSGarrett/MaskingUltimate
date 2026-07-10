@@ -721,3 +721,30 @@ output SHA-256:          8c3235e1d57e8c8fed280c0d9542458fa7198b415cfead1171d7d20
 registry:                verified=true in models/model_registry.json
 idempotency:             immediate rerun returned cached with matching SHA-256
 ```
+
+## 2026-07-10 23:02 UTC - M11 ViTMatte-S fetched and verified
+**Items:** MF-P0-06.13
+**Result:** PASS - the official pinned Hugging Face PyTorch checkpoint was
+hash-verified, loaded strictly into ViTMatte-S, and produced a nontrivial
+trimap-conditioned alpha transition through CUDA.
+
+```
+catalog key:             vitmatte_small_composition_1k
+official repo:           hustvl/vitmatte-small-composition-1k
+pinned revision:         6a58ad7646403c1df626fbd746900aec7361ea1d
+official source file:    pytorch_model.bin
+required local path:     models/matting/vitmatte_s.pth
+size:                    103,349,013 bytes
+SHA-256:                 6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5
+license:                 Apache-2.0
+runtime:                 transformers 4.47.1; torch 2.11.0+cu128; strict state-dict load
+GPU:                     NVIDIA GeForce RTX 5060 Laptop GPU; capability [12,0]
+smoke input/crop:        qa/fixtures/smoke/ultralytics_bus_adults.jpg; [502,270,810,950]
+input/output:             RGB+trimap [1,4,512,512] -> alpha [1,1,512,512]
+alpha range/mean:        0.0..1.0 / 0.267437
+unknown band mean/std:   0.495792 / 0.451953
+output SHA-256:          c1ab0c212278e042413e92ac14b8717976799a88a0b4631a40454cf32f03c1da
+registry:                verified=true in models/model_registry.json
+idempotency:             immediate rerun returned cached with matching SHA-256
+dependency check:        pip check -> No broken requirements found
+```

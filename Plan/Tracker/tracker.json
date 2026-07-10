@@ -1270,13 +1270,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Fetched official hustvl/vitmatte-small-composition-1k revision 6a58ad7646403c1df626fbd746900aec7361ea1d pytorch_model.bin as models/matting/vitmatte_s.pth (103,349,013 bytes; SHA-256 6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5). Strict Transformers ViTMatte-S CUDA inference with a three-state trimap produced alpha [1,1,512,512], range 0..1, unknown-band std 0.451953, and output hash c1ab0c212278e042413e92ac14b8717976799a88a0b4631a40454cf32f03c1da on RTX 5060 capability 12.0. Registry verified=true; immediate refetch cached with matching hash; pip check passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T22:52:35+00:00",
       "orphaned": false
     },
     "MF-P0-06.14": {

@@ -158,3 +158,15 @@ models:
     vram_note: 19-class 512x512 BiSeNet face crop; specialist fallback only
     smoke_test: faceparse_bisenet_cuda_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  vitmatte_small_composition_1k:
+    url: https://huggingface.co/hustvl/vitmatte-small-composition-1k/resolve/6a58ad7646403c1df626fbd746900aec7361ea1d/pytorch_model.bin
+    sha256: 6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5
+    family: matting
+    filename: vitmatte_s.pth
+    version_tag: hustvl/vitmatte-small-composition-1k@6a58ad7646403c1df626fbd746900aec7361ea1d
+    license: Apache-2.0
+    role: trimap_seeded_hair_and_material_alpha_matte
+    runtime: WSL-transformers-4.47.1+torch-2.11.0+cu128
+    vram_note: small ViTMatte; RGB plus three-state trimap, padded to multiples of 32
+    smoke_test: vitmatte_small_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

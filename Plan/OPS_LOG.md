@@ -416,3 +416,19 @@ largest pack:           openposeNSFWPosePackage_final.zip -> 1,753 files includi
 authority gate:         fixtures are QA/control stress cases only; not source images, masks, training data, gold references, or mask authority
 tests:                  pytest tests\test_civitai_pose_stress_fixtures.py -> 4 passed
 ```
+
+## 2026-07-10 22:20 UTC - Civitai adult/NSFW governance gates verified
+**Items:** MF-P0-14.04
+**Result:** PASS - tracked Civitai adult/body registries explicitly prevent
+training, gold-reference, and production mask-authority use.
+
+```
+classification:         Plan/Civitai/adult_body_resource_classification.yaml
+detector registry:      configs/civitai_auxiliary_detectors.yaml
+fixture registry:       configs/civitai_pose_stress_fixtures.yaml
+verified gates:         classification blocks training/gold without provenance/license/consent/allowed-use review
+detector gate:          provider_vote only; no detector is mask authority, training data, or gold data
+fixture gate:           stress_fixture only; no fixture is source image, mask, training data, gold reference, or mask authority
+path gate:              Civitai artifact/payload/archive/extracted paths remain under Plan/Civitai, not data/gold, data/packages, datasets, runs, or models/training
+tests:                  pytest tests\test_civitai_governance_gates.py -> 4 passed
+```

@@ -7462,13 +7462,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T19:50:54+00:00",
+          "actor": "ai_agent",
+          "text": "Adult/NSFW Civitai resources are now verified as gated proposal/fixture/reference assets only, pending explicit provenance/license/consent/allowed-use approval for any stronger use."
+        }
+      ],
+      "evidence": "Verified tracked Civitai adult/body registries block training/gold/production mask-authority use: classification requires provenance/license/consent/allowed-use review before training or gold; detector registry is provider_vote only and no detector is mask authority/training/gold data; pose fixture registry is stress_fixture only and no fixture is source image/mask/training/gold/authority; path gate keeps Civitai artifacts under Plan/Civitai and out of data/gold, data/packages, datasets, runs, and models/training; pytest tests\\test_civitai_governance_gates.py -> 4 passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T05:50:01+00:00",
+      "updated_at": "2026-07-10T19:50:54+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {

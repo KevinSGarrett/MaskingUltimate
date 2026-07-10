@@ -122,3 +122,15 @@ models:
     vram_note: primary large checkpoint; auto-fallback to base-plus on OOM
     smoke_test: sam2_1_large_cuda_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  groundingdino_swint_ogc:
+    url: https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+    sha256: 3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799
+    family: gdino
+    filename: groundingdino_swint_ogc.pth
+    version_tag: GroundingDINO-v0.1.0-alpha-source-856dde20aee659246248e20734ef9ba5214f5e44
+    license: Apache-2.0
+    role: open_vocabulary_boxes_only
+    runtime: WSL-GroundingDINO-0.1.0+torch-2.11.0-cpu-fallback
+    vram_note: boxes only; CPU PyTorch deformable-attention fallback because nvcc is unavailable
+    smoke_test: groundingdino_person_boxes_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

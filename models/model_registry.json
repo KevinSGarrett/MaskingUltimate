@@ -58,6 +58,25 @@
       "vram_note": "paired detector for DWPose; 640x640 input"
     },
     {
+      "downloaded_at": "2026-07-10T22:14:55.072396Z",
+      "file": "models/gdino/groundingdino_swint_ogc.pth",
+      "key": "groundingdino_swint_ogc",
+      "license": "Apache-2.0",
+      "role": "open_vocabulary_boxes_only",
+      "runtime": "WSL-GroundingDINO-0.1.0+torch-2.11.0-cpu-fallback",
+      "sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "bed324d537289fba5746273a88e4a73bcff17bfdf47af09b77efb6ce651f338e",
+        "runner": "groundingdino_person_boxes_wsl",
+        "verified_at": "2026-07-10T22:14:55.072396Z"
+      },
+      "source_url": "https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth",
+      "verified": true,
+      "version_tag": "GroundingDINO-v0.1.0-alpha-source-856dde20aee659246248e20734ef9ba5214f5e44",
+      "vram_note": "boxes only; CPU PyTorch deformable-attention fallback because nvcc is unavailable"
+    },
+    {
       "downloaded_at": "2026-07-10T21:56:42.895190Z",
       "file": "models/hand/hand_landmarker.task",
       "key": "mediapipe_hand_landmarker",

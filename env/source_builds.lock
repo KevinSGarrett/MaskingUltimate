@@ -30,3 +30,12 @@ build_env  = --no-build-isolation ; optional CUDA extension not required for ima
 built_with = torch 2.11.0+cu128 ; python 3.11.15 ; cuda-runtime 12.8
 date       = 2026-07-11
 notes      = SAM-2 1.0 pure Python wheel; same source commit as cvat.pth.sam2 Nuclio function
+
+[groundingdino]
+repo       = https://github.com/IDEA-Research/GroundingDINO.git
+commit     = 856dde20aee659246248e20734ef9ba5214f5e44
+ref        = main (pinned after v0.1.0-alpha; alpha tag itself predates Python packaging)
+build_env  = CUDA_HOME unset ; --no-build-isolation ; pure PyTorch CPU deformable-attention fallback
+built_with = torch 2.11.0+cu128 ; python 3.11.15
+date       = 2026-07-11
+notes      = nvcc unavailable; installed source package without custom C++/CUDA ops, using its supported CPU fallback for boxes

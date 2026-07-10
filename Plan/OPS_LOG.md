@@ -502,6 +502,27 @@ registry:               both verified=true; large primary, base-plus OOM fallbac
 idempotency:            both immediate reruns returned cached with matching SHA-256
 ```
 
+## 2026-07-11 01:28 UTC - M8 GroundingDINO Swin-T fetched and verified
+**Items:** MF-P0-06.09
+**Result:** PASS - the official alpha checkpoint was hash-pinned and performed
+real open-vocabulary grounding for the literal `person .` prompt, returning
+four finite normalized person boxes on the governed adult fixture.
+
+```
+checkpoint release:     IDEA-Research/GroundingDINO v0.1.0-alpha
+file:                   groundingdino_swint_ogc.pth; 693,997,677 bytes
+SHA-256:                3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799
+inference source:       GroundingDINO@856dde20aee659246248e20734ef9ba5214f5e44
+license:                Apache-2.0
+runtime:                authoritative WSL; torch 2.11; supported pure-PyTorch CPU deformable-attention fallback
+prompt:                 person .
+result:                 4 normalized cxcywh boxes; phrases person/person/person/person; max logit 0.795840
+output SHA-256:         bed324d537289fba5746273a88e4a73bcff17bfdf47af09b77efb6ce651f338e
+authority:              boxes only, never semantic or mask authority
+registry:               verified=true in models/model_registry.json
+idempotency:            immediate rerun returned cached with matching SHA-256
+```
+
 ## 2026-07-11 00:35 UTC - M4 SCHP ATR and LIP fallbacks fetched and verified
 **Items:** MF-P0-06.05
 **Result:** PASS - both official SCHP fallback variants were downloaded from

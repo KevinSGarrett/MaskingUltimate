@@ -1249,13 +1249,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Fetched the author's official Google Drive checkpoint from file id 154JgKpzCPW82qINcVieuPH3fZ2e0P812 as models/faceparse/79999_iter.pth (53,289,463 bytes; SHA-256 468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567), with implementation pinned to zllrunning/face-parsing.PyTorch commit d2e684cf1588b46145635e8fe7bcc29544e5537e. Strict CUDA inference on a governed face crop produced [1,19,512,512] logits with labels 0,1,6,10,18 and output hash 8c3235e1d57e8c8fed280c0d9542458fa7198b415cfead1171d7d20ead518be2. Registry verified=true and immediate refetch was cached with matching hash.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T22:47:27+00:00",
       "orphaned": false
     },
     "MF-P0-06.13": {

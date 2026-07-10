@@ -77,6 +77,25 @@
       "vram_note": "paired detector for DWPose; 640x640 input"
     },
     {
+      "downloaded_at": "2026-07-10T22:46:47.003379Z",
+      "file": "models/faceparse/79999_iter.pth",
+      "key": "faceparse_bisenet",
+      "license": "MIT",
+      "role": "hair_and_face_detail_fallback",
+      "runtime": "WSL-face-parsing-PyTorch+torch-2.11.0+cu128",
+      "sha256": "468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "8c3235e1d57e8c8fed280c0d9542458fa7198b415cfead1171d7d20ead518be2",
+        "runner": "faceparse_bisenet_cuda_wsl",
+        "verified_at": "2026-07-10T22:46:47.003379Z"
+      },
+      "source_url": "https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view?usp=sharing",
+      "verified": true,
+      "version_tag": "zllrunning/face-parsing.PyTorch@d2e684cf1588b46145635e8fe7bcc29544e5537e",
+      "vram_note": "19-class 512x512 BiSeNet face crop; specialist fallback only"
+    },
+    {
       "downloaded_at": "2026-07-10T22:14:55.072396Z",
       "file": "models/gdino/groundingdino_swint_ogc.pth",
       "key": "groundingdino_swint_ogc",

@@ -695,3 +695,29 @@ idempotency:             immediate rerun returned cached with matching SHA-256
 dependency check:        pip check -> No broken requirements found
 reproduction lock:       env/source_builds.lock [densepose]
 ```
+
+## 2026-07-10 22:49 UTC - M10 BiSeNet face parser fetched and verified
+**Items:** MF-P0-06.12
+**Result:** PASS - the author's official Google Drive checkpoint was fetched,
+hash-verified, loaded strictly into the pinned 19-class BiSeNet implementation,
+and produced a nontrivial CUDA face-detail parse on the governed fixture.
+
+```
+catalog key:             faceparse_bisenet
+official repo:           zllrunning/face-parsing.PyTorch
+pinned source commit:    d2e684cf1588b46145635e8fe7bcc29544e5537e
+official Drive file id:  154JgKpzCPW82qINcVieuPH3fZ2e0P812
+filename/local path:     models/faceparse/79999_iter.pth
+size:                    53,289,463 bytes
+SHA-256:                 468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567
+license:                 MIT
+runtime:                 WSL; torch 2.11.0+cu128; strict state-dict load; CUDA
+GPU:                     NVIDIA GeForce RTX 5060 Laptop GPU; capability [12,0]
+smoke input/crop:        qa/fixtures/smoke/ultralytics_bus_adults.jpg; [567,238,810,670]
+input/output:             [1,3,512,512] -> logits [1,19,512,512]
+unique labels:           0,1,6,10,18
+foreground fraction:    0.980186
+output SHA-256:          8c3235e1d57e8c8fed280c0d9542458fa7198b415cfead1171d7d20ead518be2
+registry:                verified=true in models/model_registry.json
+idempotency:             immediate rerun returned cached with matching SHA-256
+```

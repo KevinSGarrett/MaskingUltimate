@@ -146,3 +146,15 @@ models:
     vram_note: R50-FPN chart-based DensePose referee; one image per GPU slot
     smoke_test: densepose_r50_cuda_wsl
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  faceparse_bisenet:
+    url: https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view?usp=sharing
+    sha256: 468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567
+    family: faceparse
+    filename: 79999_iter.pth
+    version_tag: zllrunning/face-parsing.PyTorch@d2e684cf1588b46145635e8fe7bcc29544e5537e
+    license: MIT
+    role: hair_and_face_detail_fallback
+    runtime: WSL-face-parsing-PyTorch+torch-2.11.0+cu128
+    vram_note: 19-class 512x512 BiSeNet face crop; specialist fallback only
+    smoke_test: faceparse_bisenet_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

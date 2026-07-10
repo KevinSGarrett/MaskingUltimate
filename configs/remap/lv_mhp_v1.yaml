@@ -1,0 +1,29 @@
+schema_version: "1.0.0"
+source: lv_mhp_v1
+source_root: C:/Comfy_UI_Main/MaskedWarehouse/Body/LV-MHP-v1
+source_encoding: 8-bit indexed per-person PNG; local README defines IDs 0-18
+status: initial_plan_complete_license_blocked
+source_authority: external_source_maps_never_gold
+license: research/non-commercial; verify before training use
+training_allowed: false
+side_convention: source left/right must pass overlay and pose-chain validation before use
+mappings:
+  0: {source_label: background, action: direct, part: [background], material: [none/background]}
+  1: {source_label: hat, action: direct, part: [accessory_or_prop], material: [accessory]}
+  2: {source_label: hair, action: direct, part: [hair], material: [hair_material]}
+  3: {source_label: sunglass, action: direct, part: [accessory_or_prop], material: [accessory]}
+  4: {source_label: upper_clothes, action: split_required, part: [chest_upper_torso, left_shoulder, right_shoulder, left_upper_arm, right_upper_arm], material: [top_garment]}
+  5: {source_label: skirt, action: split_required, part: [pelvic_region, left_thigh, right_thigh], material: [bottom_garment]}
+  6: {source_label: pants, action: split_required, part: [pelvic_region, left_thigh, right_thigh, left_knee, right_knee, left_calf, right_calf], material: [bottom_garment]}
+  7: {source_label: dress, action: split_required, part: [chest_upper_torso, abdomen_stomach, pelvic_region, left_thigh, right_thigh], material: [clothing_generic]}
+  8: {source_label: belt, action: direct, part: [accessory_or_prop], material: [waistband]}
+  9: {source_label: left_shoe, action: split_required, part: [left_foot_base, left_toes], material: [footwear]}
+  10: {source_label: right_shoe, action: split_required, part: [right_foot_base, right_toes], material: [footwear]}
+  11: {source_label: face, action: direct, part: [head_face], material: [skin]}
+  12: {source_label: left_leg, action: split_required, part: [left_thigh, left_knee, left_calf, left_ankle], material: [skin]}
+  13: {source_label: right_leg, action: split_required, part: [right_thigh, right_knee, right_calf, right_ankle], material: [skin]}
+  14: {source_label: left_arm, action: split_required, part: [left_shoulder, left_upper_arm, left_elbow, left_forearm, left_wrist, left_hand_base], material: [skin]}
+  15: {source_label: right_arm, action: split_required, part: [right_shoulder, right_upper_arm, right_elbow, right_forearm, right_wrist, right_hand_base], material: [skin]}
+  16: {source_label: bag, action: direct, part: [accessory_or_prop], material: [accessory]}
+  17: {source_label: scarf, action: direct, part: [accessory_or_prop], material: [accessory]}
+  18: {source_label: torso_skin, action: split_required, part: [neck, chest_upper_torso, left_breast, right_breast, abdomen_stomach], material: [skin]}

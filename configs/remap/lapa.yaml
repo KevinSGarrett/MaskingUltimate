@@ -1,0 +1,21 @@
+schema_version: "1.0.0"
+source: lapa
+source_root: C:/Comfy_UI_Main/MaskedWarehouse/LaPa
+source_encoding: 8-bit indexed PNG; official 11-class labelmap
+status: initial_plan_complete_license_blocked
+source_authority: external_source_maps_never_gold
+license: research-only; verify before training use
+training_allowed: false
+side_convention: official left/right must be fixture-validated as character perspective before use
+mappings:
+  0: {source_label: background, action: direct, part: [background], material: [none/background]}
+  1: {source_label: skin, action: merge, part: [head_face], material: [skin]}
+  2: {source_label: left_eyebrow, action: merge, part: [head_face], material: [skin], detail_role: left_brow_qa}
+  3: {source_label: right_eyebrow, action: merge, part: [head_face], material: [skin], detail_role: right_brow_qa}
+  4: {source_label: left_eye, action: merge, part: [head_face], material: [skin], detail_role: left_eye_qa}
+  5: {source_label: right_eye, action: merge, part: [head_face], material: [skin], detail_role: right_eye_qa}
+  6: {source_label: nose, action: merge, part: [head_face], material: [skin], detail_role: face_qa}
+  7: {source_label: upper_lip, action: merge, part: [head_face], material: [skin], detail_role: upper_lip_qa}
+  8: {source_label: inner_mouth, action: merge, part: [head_face], material: [skin], detail_role: mouth_qa}
+  9: {source_label: lower_lip, action: merge, part: [head_face], material: [skin], detail_role: lower_lip_qa}
+  10: {source_label: hair, action: direct, part: [hair], material: [hair_material]}

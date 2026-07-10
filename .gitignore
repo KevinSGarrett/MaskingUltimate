@@ -6,6 +6,7 @@ runs/
 logs/
 datasets/
 work/
+qa/reports/maskedwarehouse_alignment/
 .env
 mfwork/
 

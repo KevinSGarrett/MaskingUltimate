@@ -188,3 +188,53 @@ def schp_lip_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 
 register_smoke_runner("schp_atr_wsl", schp_atr_wsl)
 register_smoke_runner("schp_lip_wsl", schp_lip_wsl)
+
+
+def _dwpose_wsl(checkpoint: Path, image: Path, mode: str) -> dict[str, Any]:
+    detector = checkpoint if mode == "detector" else ROOT / "models" / "pose" / "yolox_l.onnx"
+    pose = checkpoint if mode == "pose" else None
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/usr/bin/env",
+        "LD_LIBRARY_PATH=/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cublas/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cudnn/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cuda_runtime/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cufft/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/curand/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cusolver/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/cusparse/lib:/home/kevin/miniforge3/envs/maskfactory/lib/python3.11/site-packages/nvidia/nvjitlink/lib",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_dwpose_wsl.py"),
+        "--detector",
+        _wsl_path(detector),
+        "--image",
+        _wsl_path(image),
+    ]
+    if pose is not None:
+        command.extend(["--pose", _wsl_path(pose)])
+    process = subprocess.run(command, capture_output=True, text=True, timeout=600, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+def dwpose_yolox_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the official paired YOLOX detector on one image."""
+    return _dwpose_wsl(checkpoint, image, "detector")
+
+
+def dwpose_133_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run YOLOX and the official 133-keypoint DWPose model together."""
+    return _dwpose_wsl(checkpoint, image, "pose")
+
+
+register_smoke_runner("dwpose_yolox_cuda_wsl", dwpose_yolox_wsl)
+register_smoke_runner("dwpose_133_cuda_wsl", dwpose_133_wsl)

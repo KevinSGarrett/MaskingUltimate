@@ -501,6 +501,30 @@ registry:               both verified=true in models/model_registry.json
 idempotency:            both immediate reruns returned cached with matching SHA-256
 ```
 
+## 2026-07-11 00:48 UTC - M5 DWPose detector and 133-keypoint pose verified
+**Items:** MF-P0-06.06
+**Result:** PASS - both official pinned ONNX components were hash-verified and
+run together through CUDA ONNX Runtime, detecting four adults and producing
+four complete 133-keypoint arrays with 454 visible keypoints.
+
+```
+official host:          yzd-v/DWPose (linked by IDEA-Research/DWPose)
+pinned model revision:  f7c16a3d45ad3783db41471848c80fbc281cabac
+license:                Apache-2.0
+detector:               yolox_l.onnx; 216,746,733 bytes
+detector SHA-256:       7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411
+detector result:        4 person boxes; output hash 8245f5a511ba8b70a1589e9477d50a008d4cbc8dac18533abd27fc76986c926d
+pose:                   dw-ll_ucoco_384.onnx; 134,399,116 bytes
+pose SHA-256:           724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843
+paired result:          keypoints [4,133,2]; 454 scores >= 0.3
+pose output hash:       a9d571753218695f851405b64e3c9f91830cd3ee2b47520384406b326d131a03
+inference source:       Fannovel16/comfyui_controlnet_aux@e8b689a513c3e6b63edc44066560ca5919c0576e
+runtime:                WSL onnxruntime-gpu 1.20.2; CUDAExecutionProvider active for both sessions
+failed-closed repair:   initial CPU fallback exposed missing wheel CUDA library path; GPU-path smoke runners forced re-verification after repair
+registry:               both verified=true with GPU output hashes
+idempotency:            both immediate reruns returned cached with matching SHA-256
+```
+
 ## 2026-07-11 00:10 UTC - M2 BiRefNet silhouette model fetched and verified
 **Items:** MF-P0-06.03
 **Result:** PASS - the official pinned BiRefNet general checkpoint was fetched,

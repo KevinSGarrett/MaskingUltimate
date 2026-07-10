@@ -83,7 +83,7 @@ lazy-loader==0.5
 loguru==0.7.3
 markdown-it-py==4.2.0
 MarkupSafe==3.0.3
--e git+https://github.com/KevinSGarrett/MaskingUltimate.git@a010f30c0ee4a08bced44b4701fe6f923583e726#egg=maskfactory
+-e git+https://github.com/KevinSGarrett/MaskingUltimate.git@c939aafaf00db124f0b050ef103d5daeee985b10#egg=maskfactory
 matplotlib==3.11.0
 mdurl==0.1.2
 mpmath==1.3.0

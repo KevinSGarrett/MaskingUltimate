@@ -1099,13 +1099,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T21:49:17+00:00",
+          "actor": "ai_agent",
+          "text": "M5 paired detector and 133-keypoint whole-body pose are verified on CUDA, including hands, feet, and face outputs."
+        }
+      ],
+      "evidence": "Fetched official yzd-v/DWPose revision f7c16a3d45ad3783db41471848c80fbc281cabac components: yolox_l.onnx 216,746,733 bytes SHA-256 7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411 and dw-ll_ucoco_384.onnx 134,399,116 bytes SHA-256 724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843; Apache-2.0 recorded; paired real WSL CUDAExecutionProvider smoke via pinned inference source e8b689a513c3e6b63edc44066560ca5919c0576e detected 4 persons and returned keypoints [4,133,2] with 454 visible scores, detector hash 8245f5a511ba8b70a1589e9477d50a008d4cbc8dac18533abd27fc76986c926d, pose hash a9d571753218695f851405b64e3c9f91830cd3ee2b47520384406b326d131a03; both verified=true and cached reruns; initial CPU fallback repaired and forced fresh GPU verification; full pytest 61 passed, quality/pip checks passed; OPS_LOG 2026-07-11 00:48 UTC.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-10T21:49:17+00:00",
       "orphaned": false
     },
     "MF-P0-06.07": {

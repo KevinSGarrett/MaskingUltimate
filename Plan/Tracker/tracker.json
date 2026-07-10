@@ -7381,13 +7381,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-10T19:36:01+00:00",
+          "actor": "ai_agent",
+          "text": "Adult/body Civitai resource roles recorded without opening adult imagery; classification is metadata/manifest based and covers every current manifest ID exactly once."
+        }
+      ],
+      "evidence": "Classified all 79 records / 71 unique Civitai IDs from Plan/Civitai/civitai_bootstrap_manifest.json in Plan/Civitai/adult_body_resource_classification.yaml by provider_vote, comfyui_graph_reference, stress_fixture, qa_probe, or reject; classification covers adult/NSFW detectors, workflows, OpenPose/depth packs, and manual-download candidates; policy blocks Civitai assets from gold/training/production mask authority until provenance/license/consent/allowed-use gates are explicit; pytest tests\\test_civitai_classification.py -> 5 passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T05:50:01+00:00",
+      "updated_at": "2026-07-10T19:36:01+00:00",
       "orphaned": false
     },
     "MF-P0-14.02": {

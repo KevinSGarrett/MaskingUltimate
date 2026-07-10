@@ -362,3 +362,23 @@ fixture conversion:     allowed only for non-distributable local QA/prototype us
 machine record:         configs/maskedwarehouse_provenance.yaml
 tests:                  pytest tests\test_maskedwarehouse_provenance.py -> 5 passed
 ```
+
+## 2026-07-10 20:55 UTC - Adult/body Civitai role classification recorded
+**Items:** MF-P0-14.01
+**Result:** PASS - all Civitai manifest resources, including adult/NSFW-labeled
+detectors, workflows, pose packs, and manual-download candidates, are classified
+by MaskFactory role.
+
+```
+manifest records:       79 records in Plan/Civitai/civitai_bootstrap_manifest.json
+unique Civitai IDs:     71 classified IDs
+classification file:    Plan/Civitai/adult_body_resource_classification.yaml
+roles:                  provider_vote, comfyui_graph_reference, stress_fixture, qa_probe, reject
+provider votes:         hand/eye/mouth/lips/armpit/nail/teeth/hair/sock/shoe/foot/rear/accessory/tattoo/person/clothing candidates
+graph references:       SAM2, Florence2+SAM2, mask add/remove, DWPose/DensePose/OpenPose, multi-character/multi-control, garment/hand/foot workflows
+stress fixtures:        adult/NSFW and adjacent OpenPose/depth packs for contact, occlusion, hands-on-body, rear-body, from-above/from-below, and multi-person coverage
+QA probes:              RMBG/matting/rotoscope/auto-mask comparison workflows
+rejects:                generative breast-expansion workflow and generative clothing-extractor model
+authority gate:         no Civitai asset is gold authority, training data, or production mask authority without explicit provenance/license/consent/allowed-use review
+tests:                  pytest tests\test_civitai_classification.py -> 5 passed
+```

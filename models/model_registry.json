@@ -77,6 +77,44 @@
       "vram_note": "CPU-capable crop-lane landmark source"
     },
     {
+      "downloaded_at": "2026-07-10T22:03:46.169806Z",
+      "file": "models/sam2/sam2.1_hiera_base_plus.pt",
+      "key": "sam2_1_hiera_base_plus",
+      "license": "Apache-2.0",
+      "role": "boundary_refiner_oom_fallback",
+      "runtime": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "sha256": "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "51b5e27fab46df194cd30263c1c8464c6df9065b775f64baf0dfce8a3e4e263e",
+        "runner": "sam2_1_base_plus_cuda_wsl",
+        "verified_at": "2026-07-10T22:03:46.169806Z"
+      },
+      "source_url": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt",
+      "verified": true,
+      "version_tag": "SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4",
+      "vram_note": "base-plus OOM fallback; point/box/mask prompts only"
+    },
+    {
+      "downloaded_at": "2026-07-10T22:04:26.921245Z",
+      "file": "models/sam2/sam2.1_hiera_large.pt",
+      "key": "sam2_1_hiera_large",
+      "license": "Apache-2.0",
+      "role": "primary_boundary_refiner",
+      "runtime": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
+      "smoke_test": {
+        "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_sha256": "1ac5750f294ff511e0b22fc03f6d997a498f123f9be6fced16cbd3202d9835a0",
+        "runner": "sam2_1_large_cuda_wsl",
+        "verified_at": "2026-07-10T22:04:26.921245Z"
+      },
+      "source_url": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt",
+      "verified": true,
+      "version_tag": "SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4",
+      "vram_note": "primary large checkpoint; auto-fallback to base-plus on OOM"
+    },
+    {
       "downloaded_at": "2026-07-10T21:27:28.734420Z",
       "file": "models/parsing/sapiens_0.6b_seg.pt2",
       "key": "sapiens_0_6b_seg",

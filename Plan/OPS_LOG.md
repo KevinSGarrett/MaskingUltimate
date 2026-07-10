@@ -477,6 +477,31 @@ registry:               verified=true in models/model_registry.json
 idempotency:            immediate rerun returned cached with matching SHA-256
 ```
 
+## 2026-07-11 01:12 UTC - M7 SAM 2.1 large and base-plus verified
+**Items:** MF-P0-06.08
+**Result:** PASS - both official SAM 2.1 checkpoints were hash-pinned and run
+with identical positive/negative point prompts through the pinned CUDA image
+predictor; base-plus also matches the already-deployed CVAT interactor artifact.
+
+```
+official source:        dl.fbaipublicfiles.com/segment_anything_2/092824
+source code:            facebookresearch/sam2@2b90b9f5ceec907a1c18123530e92e794ad901a4
+license:                Apache-2.0
+base-plus file:         sam2.1_hiera_base_plus.pt; 323,606,802 bytes
+base-plus SHA-256:      a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5
+CVAT parity:            exact hash match with /opt/nuclio/sam2/sam2.1_hiera_base_plus.pt
+base smoke:             1080x810 mask; area 0.060175; score 0.851562
+base output SHA-256:    51b5e27fab46df194cd30263c1c8464c6df9065b775f64baf0dfce8a3e4e263e
+large file:             sam2.1_hiera_large.pt; 898,083,611 bytes
+large SHA-256:          2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318
+large smoke:            1080x810 mask; area 0.033365; score 0.777344
+large output SHA-256:   1ac5750f294ff511e0b22fc03f6d997a498f123f9be6fced16cbd3202d9835a0
+prompts:                positive [150,550]; negative [600,150]
+runtime:                WSL torch 2.11.0+cu128 BF16; RTX 5060 Laptop GPU
+registry:               both verified=true; large primary, base-plus OOM fallback
+idempotency:            both immediate reruns returned cached with matching SHA-256
+```
+
 ## 2026-07-11 00:35 UTC - M4 SCHP ATR and LIP fallbacks fetched and verified
 **Items:** MF-P0-06.05
 **Result:** PASS - both official SCHP fallback variants were downloaded from

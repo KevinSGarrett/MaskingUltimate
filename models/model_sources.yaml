@@ -98,3 +98,27 @@ models:
     vram_note: CPU-capable crop-lane landmark source
     smoke_test: mediapipe_hand_landmarker_wsl
     smoke_image: qa/fixtures/smoke/mediapipe_thumb_up.jpg
+  sam2_1_hiera_base_plus:
+    url: https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt
+    sha256: a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5
+    family: sam2
+    filename: sam2.1_hiera_base_plus.pt
+    version_tag: SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4
+    license: Apache-2.0
+    role: boundary_refiner_oom_fallback
+    runtime: WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16
+    vram_note: base-plus OOM fallback; point/box/mask prompts only
+    smoke_test: sam2_1_base_plus_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  sam2_1_hiera_large:
+    url: https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt
+    sha256: 2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318
+    family: sam2
+    filename: sam2.1_hiera_large.pt
+    version_tag: SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4
+    license: Apache-2.0
+    role: primary_boundary_refiner
+    runtime: WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16
+    vram_note: primary large checkpoint; auto-fallback to base-plus on OOM
+    smoke_test: sam2_1_large_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

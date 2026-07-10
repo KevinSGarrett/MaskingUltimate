@@ -322,3 +322,49 @@ def mediapipe_hand_landmarker_wsl(checkpoint: Path, image: Path) -> dict[str, An
 
 
 register_smoke_runner("mediapipe_hand_landmarker_wsl", mediapipe_hand_landmarker_wsl)
+
+
+def _sam2_wsl(checkpoint: Path, image: Path, config: str) -> dict[str, Any]:
+    command = [
+        "wsl",
+        "-d",
+        "Ubuntu-22.04",
+        "--",
+        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        _wsl_path(ROOT / "tools" / "smoke_sam2_wsl.py"),
+        "--checkpoint",
+        _wsl_path(checkpoint),
+        "--image",
+        _wsl_path(image),
+        "--config",
+        config,
+    ]
+    process = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
+    if process.returncode != 0:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": process.stderr.strip()[-3000:] or process.stdout.strip()[-3000:],
+        }
+    try:
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return {
+            "passed": False,
+            "output_sha256": "",
+            "reason": f"invalid WSL smoke output: {exc}: {process.stdout[-1000:]}",
+        }
+
+
+def sam2_1_base_plus_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run a positive/negative point-prompt smoke with SAM 2.1 base-plus."""
+    return _sam2_wsl(checkpoint, image, "configs/sam2.1/sam2.1_hiera_b+.yaml")
+
+
+def sam2_1_large_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run a positive/negative point-prompt smoke with SAM 2.1 large."""
+    return _sam2_wsl(checkpoint, image, "configs/sam2.1/sam2.1_hiera_l.yaml")
+
+
+register_smoke_runner("sam2_1_base_plus_cuda_wsl", sam2_1_base_plus_cuda_wsl)
+register_smoke_runner("sam2_1_large_cuda_wsl", sam2_1_large_cuda_wsl)

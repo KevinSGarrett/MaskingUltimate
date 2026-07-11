@@ -242,11 +242,23 @@ def build_production_runners(
             threshold=float(settings.get("threshold", 0.5)),
             connected_min_person_pct=float(settings.get("connected_min_person_pct", 0.01)),
             ratio_range=(float(ratio_range[0]), float(ratio_range[1])),
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            hf_home=Path(settings["hf_home"]) if settings.get("hf_home") else None,
         )
         if not result.qc_passed:
-            raise SemanticStageError(
-                f"S02 silhouette/bbox ratio {result.silhouette_bbox_ratio:.4f} outside configured range"
+            reason = (
+                f"silhouette_bbox_ratio={result.silhouette_bbox_ratio:.6f} outside "
+                f"[{float(ratio_range[0]):.2f},{float(ratio_range[1]):.2f}]"
             )
+            return {
+                "silhouette_bbox_ratio": result.silhouette_bbox_ratio,
+                "qc_passed": False,
+                "reason": reason,
+                "_terminal": {"outcome": "needs_review", "reason": reason},
+                "_telemetry": {"model_keys": ["birefnet_general"]},
+            }
         return {
             "silhouette_bbox_ratio": result.silhouette_bbox_ratio,
             "qc_passed": True,
@@ -287,7 +299,9 @@ def build_production_runners(
                 context.output_dir,
                 other_person_protected_full=np.asarray(Image.open(protection_path).convert("L")),
                 target_silhouette_full=np.asarray(
-                    Image.open(context.prior_stage_dir("S02") / "silhouette.png").convert("L")
+                    Image.open(context.prior_stage_dir("S02") / "person_full_visible.png").convert(
+                        "L"
+                    )
                 ),
                 context_bbox_xyxy=tuple(
                     selected_person(
@@ -353,7 +367,7 @@ def build_production_runners(
             parser_map = parsing_map["schp_atr"]
         priors, plans, crops = run_s05_production(
             parsing_path=parsing_path,
-            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
             parsing_map=parser_map,
@@ -471,7 +485,7 @@ def build_production_runners(
             source_path=s01_dir / instance_name / "person_ctx.png",
             sapiens_path=sapiens_path if sapiens_path.is_file() else None,
             schp_path=s03_dir / "schp_atr.png",
-            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             gdino_path=context.prior_stage_dir("S06") / "gdino_boxes.json",
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
@@ -529,7 +543,7 @@ def build_production_runners(
             s07_dir=context.prior_stage_dir("S07"),
             s08_material_path=context.prior_stage_dir("S08") / "material_draft.png",
             s08_5_iuv_path=context.prior_stage_dir("S08.5") / "densepose_iuv.png",
-            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
             parsing_maps=parsing_map,
@@ -560,7 +574,9 @@ def build_production_runners(
         manifest, _ = _source(context.image_id, images_root)
         person = promoted[0]
         silhouette = (
-            np.asarray(Image.open(context.prior_stage_dir("S02") / "silhouette.png").convert("L"))
+            np.asarray(
+                Image.open(context.prior_stage_dir("S02") / "person_full_visible.png").convert("L")
+            )
             > 0
         )
         result = reconcile_instances(
@@ -595,7 +611,7 @@ def build_production_runners(
             part_map_path=s09_dir / "label_map_part.png",
             material_map_path=s09_dir / "label_map_material.png",
             disagreement_path=s09_dir / "work/s09/disagreement.png",
-            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             parsing_metrics_path=context.prior_stage_dir("S03") / "parsing_metrics.json",
             sam2_metrics_path=context.prior_stage_dir("S07") / "sam2_metrics.json",
@@ -814,6 +830,7 @@ def run_multi_person_production(
     runner_factory=build_production_runners,
     through_autoqa: bool = False,
     database: Path | None = None,
+    silhouettes_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -876,6 +893,32 @@ def run_multi_person_production(
                 gpu_lock_path=gpu_lock_path,
             )
         )
+    routed = {
+        name: execution
+        for name, executions in per_instance.items()
+        for execution in executions
+        if execution.status == "terminal"
+    }
+    if routed:
+        reason = "; ".join(
+            f"{name}:{execution.terminal_reason}" for name, execution in sorted(routed.items())
+        )
+        return MultiPersonProductionResult(
+            tuple(shared),
+            per_instance,
+            s01_dir / "person_bbox.json",
+            False,
+            (),
+            "needs_review",
+            reason,
+        )
+    if silhouettes_only:
+        return MultiPersonProductionResult(
+            tuple(shared),
+            per_instance,
+            s01_dir / "person_bbox.json",
+            False,
+        )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
     downstream = ("S03", "S04", "S05", "S06", "S07", "S08", "S08.5", "S09")
     for person in promoted:
@@ -901,7 +944,7 @@ def run_multi_person_production(
                     / f"p{person['person_index']}"
                     / "s02"
                     / image_id
-                    / "silhouette.png"
+                    / "person_full_visible.png"
                 ).convert("L")
             )
             > 0,
@@ -973,7 +1016,8 @@ def build_multi_instance_qc_inputs(
     other_person_id = int(get_ontology().label("other_person").id)
     for person, name in zip(promoted, names, strict=True):
         silhouette = (
-            read_mask(work_root / "instances" / name / "s02" / image_id / "silhouette.png") > 0
+            read_mask(work_root / "instances" / name / "s02" / image_id / "person_full_visible.png")
+            > 0
         )
         if shape is None:
             shape = silhouette.shape
@@ -1190,7 +1234,7 @@ def _inject_other_person_protection(
                 / f"p{person['person_index']}"
                 / "s02"
                 / image_id
-                / "silhouette.png"
+                / "person_full_visible.png"
             ).convert("L")
         )
         > 0

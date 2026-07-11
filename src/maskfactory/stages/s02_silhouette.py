@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -37,8 +38,10 @@ def infer_birefnet_confidence(
     timeout_sec: int = 900,
     tile_size: int = 2048,
     tile_overlap: int = 128,
+    local_cuda_python: Path | None = None,
+    hf_home: Path | None = None,
 ) -> np.ndarray:
-    """Run pinned BiRefNet in WSL and validate its geometry-preserving float confidence."""
+    """Run pinned BiRefNet in an explicit CUDA runtime and validate its confidence."""
     if not Path(image_path).is_file():
         raise SilhouetteError(f"BiRefNet input image does not exist: {image_path}")
     if not Path(checkpoint).is_file():
@@ -46,24 +49,51 @@ def infer_birefnet_confidence(
     if tile_size <= 0 or tile_overlap < 0 or tile_overlap >= tile_size:
         raise SilhouetteError("BiRefNet tile contract requires 0 <= overlap < tile size")
     root = Path(__file__).resolve().parents[3]
-    command = [
-        "wsl",
-        "-d",
-        wsl_distribution,
-        "--",
-        python_path,
-        _wsl_path(root / "tools" / "run_birefnet_wsl.py"),
-        "--checkpoint",
-        _wsl_path(checkpoint),
-        "--image",
-        _wsl_path(image_path),
-        "--output",
-        _wsl_path(output_path),
-        "--tile-size",
-        str(tile_size),
-        "--tile-overlap",
-        str(tile_overlap),
-    ]
+    local_python = Path(local_cuda_python) if local_cuda_python is not None else None
+    if local_python is not None:
+        if not local_python.is_file():
+            raise SilhouetteError(f"configured local CUDA Python does not exist: {local_python}")
+        command = [
+            str(local_python),
+            str(root / "tools" / "run_birefnet_wsl.py"),
+            "--checkpoint",
+            str(Path(checkpoint).resolve()),
+            "--image",
+            str(Path(image_path).resolve()),
+            "--output",
+            str(Path(output_path).resolve()),
+            "--tile-size",
+            str(tile_size),
+            "--tile-overlap",
+            str(tile_overlap),
+        ]
+        launcher = "local_cuda"
+        environment = os.environ.copy()
+        if hf_home is not None:
+            cache = str(Path(hf_home).resolve())
+            environment["HF_HOME"] = cache
+            environment["HF_HUB_CACHE"] = str(Path(cache) / "hub")
+    else:
+        command = [
+            "wsl",
+            "-d",
+            wsl_distribution,
+            "--",
+            python_path,
+            _wsl_path(root / "tools" / "run_birefnet_wsl.py"),
+            "--checkpoint",
+            _wsl_path(checkpoint),
+            "--image",
+            _wsl_path(image_path),
+            "--output",
+            _wsl_path(output_path),
+            "--tile-size",
+            str(tile_size),
+            "--tile-overlap",
+            str(tile_overlap),
+        ]
+        launcher = "wsl_cuda"
+        environment = None
     try:
         process = subprocess.run(
             command,
@@ -71,12 +101,13 @@ def infer_birefnet_confidence(
             text=True,
             timeout=timeout_sec,
             check=False,
+            **({"env": environment} if environment is not None else {}),
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
-        raise SilhouetteError(f"BiRefNet WSL launch failed: {exc}") from exc
+        raise SilhouetteError(f"BiRefNet {launcher} launch failed: {exc}") from exc
     if process.returncode:
         detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
-        raise SilhouetteError(f"BiRefNet WSL inference failed: {detail}")
+        raise SilhouetteError(f"BiRefNet {launcher} inference failed: {detail}")
     try:
         metadata = json.loads(process.stdout.strip().splitlines()[-1])
         confidence = np.load(output_path, allow_pickle=False)
@@ -104,8 +135,18 @@ def infer_birefnet_confidence(
         raise SilhouetteError("BiRefNet metadata requires a positive integer tile_count")
     if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
         raise SilhouetteError("BiRefNet metadata requires the CUDA device name")
+    if "+cu128" not in str(metadata.get("torch", "")):
+        raise SilhouetteError("BiRefNet metadata requires the governed cu128 PyTorch runtime")
     if not np.isfinite(confidence).all() or confidence.min() < 0 or confidence.max() > 1:
         raise SilhouetteError("BiRefNet confidence must be finite and in 0..1")
+    runtime_document = {
+        "launcher": launcher,
+        "python": str(local_python or python_path),
+        **metadata,
+    }
+    (Path(output_path).parent / "birefnet_runtime.json").write_text(
+        json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return confidence
 
 
@@ -122,6 +163,8 @@ def run_s02(
     threshold: float = 0.5,
     connected_min_person_pct: float = 0.01,
     ratio_range: tuple[float, float] = (0.35, 0.95),
+    local_cuda_python: Path | None = None,
+    hf_home: Path | None = None,
 ) -> S02Result:
     """Execute real BiRefNet inference followed by S02 confidence post-processing."""
     output_dir = Path(output_dir)
@@ -132,6 +175,8 @@ def run_s02(
         output_path=output_dir / "birefnet_confidence.npy",
         tile_size=tile_size,
         tile_overlap=tile_overlap,
+        local_cuda_python=local_cuda_python,
+        hf_home=hf_home,
     )
     expected_shape = (
         context_bbox_xyxy[3] - context_bbox_xyxy[1],

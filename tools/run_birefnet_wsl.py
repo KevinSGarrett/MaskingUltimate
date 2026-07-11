@@ -4,17 +4,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import tempfile
 from pathlib import Path
 
 import numpy as np
-import torch
-import torch.nn.functional as functional
-from huggingface_hub import snapshot_download
 from PIL import Image
-from torchvision.transforms.functional import normalize, pil_to_tensor
-from transformers import AutoModelForImageSegmentation
 
 REPO_ID = "ZhengPeng7/BiRefNet"
 REVISION = "e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4"
@@ -23,6 +19,10 @@ DEFAULT_TILE_OVERLAP = 128
 
 
 def _load_model(checkpoint: Path):
+    import torch
+    from huggingface_hub import snapshot_download
+    from transformers import AutoModelForImageSegmentation
+
     source = snapshot_download(
         repo_id=REPO_ID,
         revision=REVISION,
@@ -31,15 +31,33 @@ def _load_model(checkpoint: Path):
     temporary = tempfile.TemporaryDirectory(prefix="maskfactory-birefnet-")
     model_dir = Path(temporary.name) / "model"
     shutil.copytree(source, model_dir, symlinks=False)
-    (model_dir / "model.safetensors").symlink_to(checkpoint.resolve())
+    attachment = _attach_checkpoint(checkpoint.resolve(), model_dir / "model.safetensors")
     model = AutoModelForImageSegmentation.from_pretrained(
         model_dir, trust_remote_code=True, local_files_only=True
     ).eval()
     model.to(torch.device("cuda"))
-    return model, temporary
+    return model, temporary, attachment
+
+
+def _attach_checkpoint(checkpoint: Path, destination: Path) -> str:
+    """Attach immutable weights without requiring Windows symlink privilege."""
+    try:
+        destination.symlink_to(checkpoint)
+        return "symlink"
+    except OSError:
+        try:
+            os.link(checkpoint, destination)
+            return "hardlink"
+        except OSError:
+            shutil.copy2(checkpoint, destination)
+            return "copy"
 
 
 def _predict_tile(model, image: Image.Image) -> np.ndarray:
+    import torch
+    import torch.nn.functional as functional
+    from torchvision.transforms.functional import normalize, pil_to_tensor
+
     tensor = pil_to_tensor(image).float().div_(255)
     tensor = normalize(tensor, [0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     height, width = tensor.shape[-2:]
@@ -76,9 +94,11 @@ def run(
     tile_size: int = DEFAULT_TILE_SIZE,
     tile_overlap: int = DEFAULT_TILE_OVERLAP,
 ) -> dict[str, object]:
+    import torch
+
     if tile_size <= 0 or tile_overlap < 0 or tile_overlap >= tile_size:
         raise ValueError("tile contract requires 0 <= overlap < tile size")
-    model, temporary = _load_model(checkpoint)
+    model, temporary, checkpoint_attachment = _load_model(checkpoint)
     try:
         image = Image.open(image_path).convert("RGB")
         width, height = image.size
@@ -107,6 +127,7 @@ def run(
             "tile_overlap": tile_overlap,
             "device": torch.cuda.get_device_name(0),
             "torch": torch.__version__,
+            "checkpoint_attachment": checkpoint_attachment,
         }
     finally:
         del model

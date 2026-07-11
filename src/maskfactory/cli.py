@@ -371,6 +371,11 @@ def draft(
     help="Run shared S00/S01, every promoted instance through S09, then S09.5.",
 )
 @click.option(
+    "--through-silhouettes",
+    is_flag=True,
+    help="Run shared S00/S01 and every promoted instance through S02, then stop.",
+)
+@click.option(
     "--through-autoqa",
     is_flag=True,
     help="Run the activated multi-instance path through per-instance S10 hard gates.",
@@ -386,6 +391,7 @@ def run(
     database: Path,
     plan_only: bool,
     through_drafts: bool,
+    through_silhouettes: bool,
     through_autoqa: bool,
 ) -> None:
     """Run the governed S00–S15 file-based stage graph for an image."""
@@ -411,10 +417,10 @@ def run(
             for stage in plan:
                 click.echo(stage.name)
             return
-        if through_drafts or through_autoqa:
-            if through_drafts and through_autoqa:
+        if through_silhouettes or through_drafts or through_autoqa:
+            if sum((through_silhouettes, through_drafts, through_autoqa)) > 1:
                 raise StageConfigurationError(
-                    "--through-drafts and --through-autoqa are mutually exclusive"
+                    "--through-silhouettes, --through-drafts and --through-autoqa are mutually exclusive"
                 )
             if selected or force or skip:
                 raise StageConfigurationError(
@@ -430,14 +436,23 @@ def run(
                 gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
                 through_autoqa=through_autoqa,
                 database=database,
+                silhouettes_only=through_silhouettes,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
             if outcome.terminal_outcome is not None:
-                click.echo(f"S01 terminal: {outcome.terminal_outcome} ({outcome.terminal_reason})")
+                click.echo(
+                    f"Pipeline terminal: {outcome.terminal_outcome} ({outcome.terminal_reason})"
+                )
                 return
             for instance, executions in sorted(outcome.per_instance.items()):
-                terminal = "S10" if through_autoqa else "S09"
-                click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
+                if through_silhouettes:
+                    click.echo(f"{instance}: {len(executions)} stage execution(s) S02")
+                else:
+                    terminal = "S10" if through_autoqa else "S09"
+                    click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
+            if through_silhouettes:
+                click.echo(f"S02 batch complete: {len(outcome.per_instance)} instance(s)")
+                return
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
             for contract in outcome.draft_contract_paths:
                 click.echo(f"D1: {contract}")
@@ -457,7 +472,7 @@ def run(
                 run_log=run_log,
             )
         terminal = next((result for result in results if result.status == "terminal"), None)
-        if terminal is not None:
+        if terminal is not None and terminal.terminal_outcome in {"rejected", "quarantined"}:
             persist_terminal_image_outcome(
                 database,
                 image_id,

@@ -760,7 +760,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
                 s02 = Path(work_root) / "s02" / image_id
                 silhouette = np.zeros((100, 100), dtype=np.uint8)
                 silhouette[10:90, index * 30 : index * 30 + 20] = 255
-                Image.fromarray(silhouette, mode="L").save(s02 / "silhouette.png")
+                Image.fromarray(silhouette, mode="L").save(s02 / "person_full_visible.png")
         return ()
 
     legacy_root = work / "legacy"
@@ -860,6 +860,42 @@ def test_run_through_drafts_exposes_one_command_multi_instance_path(
     assert "qc035=True" in result.output
 
 
+def test_run_through_silhouettes_stops_after_every_instance_s02(
+    tmp_path: Path, monkeypatch
+) -> None:
+    manifest = tmp_path / "person_bbox.json"
+    manifest.write_text("{}", encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=False,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(
+        main,
+        [
+            "run",
+            "img_a3f9c2e17b04",
+            "--through-silhouettes",
+            "--work-root",
+            str(tmp_path / "work"),
+            "--images-root",
+            str(tmp_path / "images"),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert captured["silhouettes_only"] is True
+    assert "p0: 0 stage execution(s) S02" in result.output
+    assert "S02 batch complete: 2 instance(s)" in result.output
+    assert "S09.5" not in result.output
+
+
 def test_run_through_autoqa_extends_each_instance_through_s10(tmp_path: Path, monkeypatch) -> None:
     manifest = tmp_path / "image_manifest.json"
     manifest.write_text("{}", encoding="utf-8")
@@ -909,7 +945,7 @@ def test_multi_instance_s10_inputs_project_maps_and_exclude_other_person(
         s09 = work / "instances" / name / "s09" / image_id
         (s09 / "masks_regions").mkdir(parents=True)
         s02.mkdir(parents=True)
-        Image.fromarray(silhouette, mode="L").save(s02 / "silhouette.png")
+        Image.fromarray(silhouette, mode="L").save(s02 / "person_full_visible.png")
         part = np.zeros(shape, dtype=np.uint16)
         part[silhouette > 0] = 18 + index
         if index == 0:

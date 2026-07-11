@@ -18,6 +18,8 @@ def test_s02_governed_contract_is_explicit() -> None:
         "threshold": 0.5,
         "connected_min_person_pct": 0.01,
         "silhouette_bbox_ratio": [0.35, 0.95],
+        "local_cuda_python": "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+        "hf_home": "models/runtime_cache/huggingface",
     }
 
 

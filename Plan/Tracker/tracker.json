@@ -2941,8 +2941,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T05:35:42+00:00",
@@ -2955,10 +2955,10 @@
           "text": "Hardened S02 to production-grade boundary: governed config now reaches the runner; subprocess metadata must prove pinned revision/fp16/tile contract/CUDA identity; input/checkpoint/confidence/geometry validated fail-closed; SciPy connected-component labeling replaces per-pixel Python tuples; full-canvas binary+confidence and QC remain strict. 27 focused and 507 full tests pass; 2048x2048 postprocess measured 0.081s. Live run still cannot be credited because this managed boundary exposes no WSL distro."
         }
       ],
-      "evidence": "Code/tests: src/maskfactory/stages/s02_silhouette.py, tools/run_birefnet_wsl.py, production runner/config bridge, tests/test_s01_s02.py + test_pipeline_config.py + test_production_runners.py. Real model checkpoint and prior CUDA smoke remain registry-verified (SHA-256 9ab374...; output c7c578...). Current validation: Ruff/format clean across 246 files; ontology current; 507 pytest pass; 2048-square postprocessor 0.081s. Missing final evidence: an end-to-end run_s02 invocation in the authoritative Ubuntu-22.04 CUDA runtime.",
+      "evidence": "Exact registered BiRefNet checkpoint SHA-256 9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154 now runs through explicit C:/Comfy_UI_Main/ComfyUI/.venv CUDA Python when WSL is account-invisible, retaining pinned revision e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4, fp16, 2048/128 tile contract, threshold/component/full-canvas postprocess, and cu128 metadata validation. Checkpoint attachment uses byte-identical symlink/hardlink/copy fallback. Live all-instance run: 30 promoted pN stages, all local_cuda torch 2.11.0+cu128; 29 QC pass ratios 0.353674..0.728952; img_cea6df6f0f13 p0 preserved as cached needs_review ratio 0.299361. Median/max stage duration 18.94/66.12s. Canonical person_full_visible paths fixed across downstream consumers. 579 full tests pass; Ruff/format, ontology, tracker clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T18:14:52+00:00",
+      "updated_at": "2026-07-11T23:30:33+00:00",
       "orphaned": false
     },
     "MF-P2-01.03": {
@@ -8943,13 +8943,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "partially_complete",
+      "percent_complete": 5,
+      "notes": [
+        {
+          "ts": "2026-07-11T23:30:07+00:00",
+          "actor": "ai_agent",
+          "text": "Activated real multi-person execution now has S01 and S02 for both qualifying corpus images: img_7b7a3c7d5dd3 p0-p2 and img_6d6bb33f01a1 p0-p3 all have canonical full-canvas BiRefNet masks, confidence maps, pinned local-CUDA runtime evidence, and QC-pass ratios. Full S03-S15 remains pending; this does not claim end-to-end completion."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-10T07:48:48+00:00",
+      "updated_at": "2026-07-11T23:30:07+00:00",
       "orphaned": false
     },
     "MF-P8-10.03": {

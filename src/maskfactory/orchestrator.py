@@ -325,12 +325,12 @@ def _execute_stage(
             if (
                 not isinstance(terminal, Mapping)
                 or set(terminal) != {"outcome", "reason"}
-                or terminal.get("outcome") not in {"rejected", "quarantined"}
+                or terminal.get("outcome") not in {"rejected", "quarantined", "needs_review"}
                 or not isinstance(terminal.get("reason"), str)
                 or not terminal["reason"].strip()
             ):
                 raise TypeError(
-                    f"{stage.name} _terminal must contain rejected|quarantined outcome and reason"
+                    f"{stage.name} _terminal must contain a governed outcome and reason"
                 )
             terminal_outcome = str(terminal["outcome"])
             terminal_reason = terminal["reason"].strip()

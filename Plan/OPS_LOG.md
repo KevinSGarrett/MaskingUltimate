@@ -3127,6 +3127,32 @@ focused regression:         49 text/VLM/mining/dataset/production tests pass
 full regression:            563 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-12 00:30 UTC - S02 activated on local CUDA; all 30 promoted instances processed
+**Items:** MF-P2-01.02 95% partial -> complete; MF-P8-10.02 open -> 5% partial
+**Result:** The exact registered BiRefNet model is no longer blocked by the sandbox account's invisible WSL distro. Kevin's existing ComfyUI CUDA venv provides a governed equivalent launcher, and every live promoted instance now has a durable S02 outcome.
+
+```
+local CUDA Python:           C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe
+runtime:                     torch 2.11.0+cu128; CUDA 12.8; NVIDIA GeForce RTX 5060 Laptop GPU
+checkpoint SHA-256:          9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154
+model source revision:       e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4
+inference contract:          fp16, long-side/tile 2048, overlap 128, threshold 0.5, native geometry
+checkpoint attachment:       symlink first; byte-identical hardlink then copy fallback when Windows privilege blocks symlink
+cache boundary:              workspace-local Hugging Face cache at models/runtime_cache/huggingface
+runtime artifact:            birefnet_runtime.json beside every confidence map
+canonical binary:            person_full_visible.png; obsolete silhouette.png consumers removed
+batch command:               maskfactory run <image_id> --through-silhouettes
+batch semantics:             S00/S01 shared; S02 once per promoted pN; stop before S03; GPU serialized
+live stage count:            30/30 promoted pN instances have stage_run + mask + confidence + runtime + metrics
+QC pass count:               29; ratio range 0.353674..0.728952 within configured [0.35,0.95]
+routed instance:             img_cea6df6f0f13/p0 ratio 0.299361 -> needs_review
+routed evidence:             failed-QC mask/confidence/runtime/metrics preserved atomically; downstream stopped; rerun caches
+duration:                    median 18.94 s; max 66.12 s per stage including clean model-process startup
+P8 real qualifying set:      img_7b7a3c7d5dd3 p0-p2 and img_6d6bb33f01a1 p0-p3 all S02 QC-pass
+focused regression:         61 orchestrator/production/S01-S02/config/tool tests pass
+full regression:            579 tests pass
+quality:                    Ruff check/format clean across 257 files; generated ontology current; tracker structurally valid
+```
 ## 2026-07-11 23:58 UTC - S01 terminal outcomes made durable and resumable
 **Item:** MF-P2-01.01 completion evidence strengthened
 **Result:** `no_person` and crowd outcomes are no longer discarded staging errors. They are terminal S01 results with preserved evidence, stopped downstream execution, idempotent database state, and cache behavior.

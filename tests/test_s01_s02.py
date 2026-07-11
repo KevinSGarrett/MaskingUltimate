@@ -241,7 +241,8 @@ def test_s02_production_adapter_validates_wsl_float_output(
                 '{"device":"NVIDIA fixture","model_revision":'
                 '"e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",'
                 '"precision":"fp16","protocol_version":1,"shape":[100,100],'
-                '"tile_count":1,"tile_overlap":128,"tile_size":2048}\n'
+                '"tile_count":1,"tile_overlap":128,"tile_size":2048,'
+                '"torch":"2.11.0+cu128"}\n'
             )
 
         return Process()
@@ -251,6 +252,50 @@ def test_s02_production_adapter_validates_wsl_float_output(
     assert confidence.shape == (100, 100)
     assert confidence.dtype == np.float32
     assert np.all(confidence == 0.75)
+    runtime = json.loads((tmp_path / "birefnet_runtime.json").read_text())
+    assert runtime["launcher"] == "wsl_cuda"
+
+
+@pytest.mark.skipif(os.name != "nt", reason="local CUDA adapter requires a Windows host")
+def test_s02_explicit_local_cuda_launcher_and_cache(tmp_path: Path, monkeypatch) -> None:
+    image = tmp_path / "crop.png"
+    _image().save(image)
+    checkpoint = tmp_path / "model.safetensors"
+    checkpoint.write_bytes(b"fixture")
+    output = tmp_path / "confidence.npy"
+    python = tmp_path / "python.exe"
+    python.write_bytes(b"fixture")
+    cache = tmp_path / "hf"
+
+    def fake_run(command, **kwargs):
+        assert command[0] == str(python)
+        assert kwargs["env"]["HF_HOME"] == str(cache.resolve())
+        np.save(output, np.full((100, 100), 0.75, dtype=np.float32), allow_pickle=False)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = (
+                '{"checkpoint_attachment":"hardlink","device":"NVIDIA fixture",'
+                '"model_revision":"e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",'
+                '"precision":"fp16","protocol_version":1,"shape":[100,100],'
+                '"tile_count":1,"tile_overlap":128,"tile_size":2048,'
+                '"torch":"2.11.0+cu128"}\n'
+            )
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s02_silhouette.subprocess.run", fake_run)
+    infer_birefnet_confidence(
+        image,
+        checkpoint=checkpoint,
+        output_path=output,
+        local_cuda_python=python,
+        hf_home=cache,
+    )
+    runtime = json.loads((tmp_path / "birefnet_runtime.json").read_text())
+    assert runtime["launcher"] == "local_cuda"
+    assert runtime["checkpoint_attachment"] == "hardlink"
 
 
 @pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")

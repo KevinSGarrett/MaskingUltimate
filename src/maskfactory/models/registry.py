@@ -20,6 +20,8 @@ from urllib.request import Request, urlopen
 
 import yaml
 
+from ..ontology import get_ontology
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CATALOG = PROJECT_ROOT / "models" / "model_sources.yaml"
 DEFAULT_REGISTRY = PROJECT_ROOT / "models" / "model_registry.json"
@@ -30,6 +32,7 @@ OLLAMA_MODEL_NAMES = (
     "llama3.2-vision:11b",
     "qwen2.5:7b-instruct",
 )
+SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
 
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
 _SMOKE_RUNNERS: dict[str, SmokeRunner] = {}
@@ -510,6 +513,7 @@ def promote_model_role(
     role: str,
     *,
     registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
     history_path: Path | None = None,
 ) -> dict[str, Any]:
     """Atomically swap a verified challenger into a champion role and record rollback data."""
@@ -527,6 +531,9 @@ def promote_model_role(
         raise ModelRegistryError(
             f"promotion candidate is not a verified checkpoint: {candidate_key}"
         )
+    resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
+    if role in SERVING_CHAMPION_ROLES:
+        _validate_serving_champion_metadata(candidate, role=role, models_root=models_root)
     incumbents = [item for item in registry["models"] if item.get("role") == role]
     if len(incumbents) > 1:
         raise ModelRegistryError(f"multiple incumbent models already claim {role}")
@@ -548,6 +555,50 @@ def promote_model_role(
     if history_path is not None:
         _append_jsonl(Path(history_path), record)
     return record
+
+
+def _validate_serving_champion_metadata(
+    entry: dict[str, Any], *, role: str, models_root: Path
+) -> None:
+    """Refuse promotion of a checkpoint the production MMSeg loader cannot reproduce."""
+    config_value = entry.get("inference_config")
+    expected_digest = entry.get("inference_config_sha256")
+    class_names = entry.get("class_names")
+    if not isinstance(config_value, str) or not isinstance(expected_digest, str):
+        raise ModelRegistryError("serving champion lacks hashed inference_config metadata")
+    normalized = Path(config_value.replace("\\", "/"))
+    if normalized.parts and normalized.parts[0].lower() == "models":
+        normalized = Path(*normalized.parts[1:])
+    root = Path(models_root).resolve()
+    config_path = (root / normalized).resolve()
+    if config_path == root or root not in config_path.parents or not config_path.is_file():
+        raise ModelRegistryError("serving champion inference_config is missing or unsafe")
+    actual_digest = _sha256(config_path)
+    if actual_digest != expected_digest:
+        raise ModelRegistryError(
+            "serving champion inference_config hash mismatch: "
+            f"expected {expected_digest}, got {actual_digest}"
+        )
+    if (
+        not isinstance(class_names, list)
+        or not class_names
+        or not all(isinstance(name, str) and name for name in class_names)
+        or len(class_names) != len(set(class_names))
+    ):
+        raise ModelRegistryError("serving champion class_names must be non-empty and unique")
+    expected_map = "material" if role == "champion_clothing" else "part"
+    ontology = get_ontology()
+    for name in class_names:
+        if name == "background":
+            continue
+        try:
+            label = ontology.label(name)
+        except Exception as exc:
+            raise ModelRegistryError(f"serving champion declares unknown class: {name}") from exc
+        if label.map != expected_map:
+            raise ModelRegistryError(
+                f"serving champion class {name} belongs to {label.map}, expected {expected_map}"
+            )
 
 
 def rollback_model_role(record: dict[str, Any], *, registry_path: Path = DEFAULT_REGISTRY) -> None:

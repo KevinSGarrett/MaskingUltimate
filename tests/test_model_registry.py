@@ -3,6 +3,7 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
 import yaml
 from click.testing import CliRunner
 from PIL import Image
@@ -295,11 +296,24 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
     incumbent = document["models"][0]
     incumbent["role"] = "champion_bodypart"
     challenger = {**incumbent, "key": "challenger", "role": "challenger_bodypart"}
+    config = models_root / "challenger_inference.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    challenger.update(
+        {
+            "inference_config": "models/challenger_inference.py",
+            "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+            "class_names": ["background", "hair"],
+        }
+    )
     document["models"].append(challenger)
     registry.write_text(json.dumps(document), encoding="utf-8")
     history = tmp_path / "champion_history.jsonl"
     record = promote_model_role(
-        "challenger", "champion_bodypart", registry_path=registry, history_path=history
+        "challenger",
+        "champion_bodypart",
+        registry_path=registry,
+        models_root=models_root,
+        history_path=history,
     )
     promoted = json.loads(registry.read_text())
     roles = {item["key"]: item["role"] for item in promoted["models"]}
@@ -323,6 +337,47 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
         "fixture": "champion_bodypart",
         "challenger": "challenger_bodypart",
     }
+
+
+def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "candidate.pth"
+    checkpoint.write_bytes(b"candidate")
+    config = models_root / "candidate.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    entry = {
+        "key": "candidate",
+        "file": "models/candidate.pth",
+        "role": "challenger_bodypart",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/candidate.py",
+        "inference_config_sha256": "0" * 64,
+        "class_names": ["background", "hair"],
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="inference_config hash mismatch"):
+        promote_model_role(
+            "candidate",
+            "champion_bodypart",
+            registry_path=registry,
+            models_root=models_root,
+        )
+    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_bodypart"
+
+    entry["inference_config_sha256"] = hashlib.sha256(config.read_bytes()).hexdigest()
+    entry["class_names"] = ["background", "clothing_generic"]
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="belongs to material"):
+        promote_model_role(
+            "candidate",
+            "champion_bodypart",
+            registry_path=registry,
+            models_root=models_root,
+        )
 
 
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):

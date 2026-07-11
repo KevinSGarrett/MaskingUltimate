@@ -2895,3 +2895,20 @@ quality:                    Ruff check/format clean across 247 files; generated 
 managed-shell probes:       wsl.exe reports no installed distro; schtasks queries return system path unavailable
 honest boundary:            live champion-backed WSL HTTP inference remains unclaimed until trained winners are promoted with checkpoint/config/class metadata
 ```
+## 2026-07-11 19:35 UTC - Serving champion promotion made fail-closed
+**Item:** MF-P5-06.03 advanced 94% -> 96% partial
+**Result:** A registry role edit can no longer promote a nominally verified but unreproducible model into a production serving role.
+
+```
+candidate checkpoint:       re-resolved by registry key and SHA-256 checked before promotion
+config containment:         inference_config must resolve strictly beneath models_root
+config identity:            independently recorded inference_config_sha256 must match current bytes
+vocabulary contract:        non-empty unique explicit class_names; background permitted; all other names must resolve in ontology
+role/map contract:          bodypart/hand champions accept PART classes; clothing champion accepts MATERIAL classes
+mutation ordering:          every serving-artifact check completes before candidate/incumbent roles change
+negative evidence:          tampered config and material class offered to bodypart role both refuse with registry unchanged
+focused regression:         10 registry tests pass
+full regression:            534 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+honest boundary:            no trained/evaluated winner exists yet to exercise promote -> live serve -> rollback with real artifacts
+```

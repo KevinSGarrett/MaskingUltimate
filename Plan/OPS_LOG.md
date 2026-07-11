@@ -884,3 +884,18 @@ multi-person contract:    reciprocal per-instance relationship records and conta
 schema self-check:        Draft202012Validator.check_schema passed
 focused tests:            3 passed (full contract, required authority block, unsafe path/hash rejection)
 ```
+
+## 2026-07-11 00:23 UTC - Remaining P1 schema family implemented
+**Items:** MF-P1-01.02, MF-P1-01.03, MF-P1-01.04, MF-P1-01.05, MF-P1-01.06
+**Result:** PASS - all remaining doc 04 machine contracts and the doc 03 §5
+crop contract are strict Draft 2020-12 schemas with acceptance fixtures.
+
+```
+qa_report.schema.json:       QC-001..038 checks, metrics, consensus, closed VLM problem taxonomy, overall/score
+model_registry.schema.json:  validates all 14 file-backed + 3 managed Ollama entries; verified-only; no managed fake paths
+failure_queue.schema.json:   exact append-only JSONL record and closed failure_reason enum
+coverage_matrix.schema.json: closed view/pose/attribute vocab plus solo|duo|small_group context from doc 17
+crop_transform.schema.json:  part/x0/y0/positive scale/square crop_size/source SHA-256
+schema self-checks:           every schema passes Draft202012Validator.check_schema
+focused tests:                12 passed across the five contracts
+```

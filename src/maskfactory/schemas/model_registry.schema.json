@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/model_registry.schema.json",
+  "title": "MaskFactory model registry",
+  "description": "Authoritative registry for file-backed checkpoints and managed Ollama models (doc 04 §3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "models"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/fileBackedModel" },
+          { "$ref": "#/$defs/ollamaModel" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^models/(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+(?:/[^\\\\]+)*$"
+    },
+    "smokeTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image", "output_sha256", "runner", "verified_at"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^qa/fixtures/smoke/(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$"
+        },
+        "output_sha256": { "$ref": "#/$defs/sha256" },
+        "runner": { "$ref": "#/$defs/key" },
+        "verified_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "fileBackedModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "role",
+        "source_url",
+        "file",
+        "sha256",
+        "version_tag",
+        "license",
+        "runtime",
+        "vram_note",
+        "downloaded_at",
+        "verified",
+        "smoke_test"
+      ],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "role": { "$ref": "#/$defs/key" },
+        "source_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "file": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "version_tag": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 },
+        "runtime": { "type": "string", "minLength": 1 },
+        "vram_note": { "type": "string", "minLength": 1 },
+        "downloaded_at": { "$ref": "#/$defs/timestamp" },
+        "verified": { "const": true },
+        "smoke_test": { "$ref": "#/$defs/smokeTest" }
+      }
+    },
+    "ollamaModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "role",
+        "managed",
+        "manager",
+        "ollama_name",
+        "digest",
+        "sha256",
+        "ollama_list_id",
+        "availability_check",
+        "family",
+        "format",
+        "parameter_size",
+        "quantization",
+        "size",
+        "registered_at",
+        "verified"
+      ],
+      "properties": {
+        "key": { "$ref": "#/$defs/key" },
+        "role": { "$ref": "#/$defs/key" },
+        "managed": { "const": true },
+        "manager": { "const": "ollama" },
+        "ollama_name": { "type": "string", "pattern": "^[^:]+:[^:]+$" },
+        "digest": { "$ref": "#/$defs/sha256" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "ollama_list_id": { "type": "string", "pattern": "^[a-f0-9]{12}$" },
+        "availability_check": { "const": "api_tags+ollama_list_digest_match" },
+        "family": { "type": "string", "minLength": 1 },
+        "format": { "const": "gguf" },
+        "parameter_size": { "type": "string", "minLength": 1 },
+        "quantization": { "type": "string", "minLength": 1 },
+        "size": { "type": "integer", "minimum": 1 },
+        "registered_at": { "$ref": "#/$defs/timestamp" },
+        "verified": { "const": true }
+      }
+    }
+  }
+}

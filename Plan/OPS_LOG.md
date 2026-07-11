@@ -2638,3 +2638,21 @@ regression:                 22 thermal/config/run/GPU-lock tests pass
 quality:                    Ruff check/format and git diff --check clean
 honest boundary:            no dataset/train execution; MMSeg dependencies are absent from locks and 56-vs-57 class conflict remains unresolved
 ```
+## 2026-07-11 16:12 UTC - Accumulated build published and clean-checkout CI repaired
+**Scope:** End-of-session Git/GitHub handoff
+**Result:** The protected workspace was reproduced in a writable clean clone, validated, committed, pushed, and opened as draft PR #1.
+
+```
+workspace git boundary:     root .git read-only; direct branch creation correctly failed
+publish method:             clean clone at authoritative origin/main d6a3c0e; Git-filtered files copied byte-exact
+branch:                     agent/maskfactory-build-progress-20260711
+initial commit:             0d3ad48236222c5f27afb17966d3a5e3299f4cbd
+draft PR:                   https://github.com/KevinSGarrett/MaskingUltimate/pull/1
+secret/binary audit:        no .env, model/archive extension, or file >20 MB staged
+local full validation:      474 passed; Ruff 0.15.21 lint/format clean; config generators/tracker clean
+clean-clone validation:     471 passed, 3 external Plan/Civitai-cache tests skipped; generators clean
+CI root cause repaired:     unanchored datasets/ ignore hid src/maskfactory/datasets in clean checkouts
+ignore fix:                 root data/run/log/dataset/work paths anchored; sqlite WAL/SHM sidecars excluded
+package fix:                six dataset modules now versioned; Ruff first-party classification explicit
+external-cache contract:    Civitai hash tests run when 9 GB cache is mounted and skip clearly when absent
+```

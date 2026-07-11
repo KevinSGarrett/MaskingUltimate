@@ -45,6 +45,9 @@ extend-exclude = ["Plan", "cvat", "env", "build", "dist"]
 select = ["E", "F", "I", "W"]
 ignore = ["E501"]  # long spec-reference lines in docstrings; black owns code width
 
+[tool.ruff.lint.isort]
+known-first-party = ["maskfactory"]
+
 [tool.black]
 line-length = 100
 target-version = ["py311"]

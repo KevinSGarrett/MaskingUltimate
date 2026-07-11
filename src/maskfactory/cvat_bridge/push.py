@@ -259,7 +259,7 @@ def _task_description(instances: list[ReviewInstance]) -> str:
             instruction = str(verdict.get("correction_instruction", "")).strip()
             if instruction:
                 lines.append(
-                    f"{instance.instance_id}/{verdict.get('label','unknown')}: "
+                    f"{instance.instance_id}/{verdict.get('label', 'unknown')}: "
                     f"MACHINE-GENERATED SUGGESTION: {instruction}"
                 )
     return "\n".join(lines)

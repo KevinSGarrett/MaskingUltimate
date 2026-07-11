@@ -113,7 +113,7 @@ def compact_manifest_digest(manifest: dict[str, Any]) -> str:
     for label, entry in sorted(manifest.get("parts", {}).items()):
         if isinstance(entry, dict):
             rows.append(
-                f"{label}:{entry.get('visibility','missing')}:{float(entry.get('area_pct',0)):.4f}"
+                f"{label}:{entry.get('visibility', 'missing')}:{float(entry.get('area_pct', 0)):.4f}"
             )
     return "\n".join(rows)
 

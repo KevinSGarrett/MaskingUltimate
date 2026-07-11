@@ -3,11 +3,11 @@
 /models/*
 !/models/model_sources.yaml
 !/models/model_registry.json
-data/
-runs/
-logs/
-datasets/
-work/
+/data/
+/runs/
+/logs/
+/datasets/
+/work/
 qa/reports/maskedwarehouse_alignment/
 .env
 mfwork/
@@ -64,3 +64,5 @@ dist/
 .venv/
 venv/
 *.log
+*.sqlite-shm
+*.sqlite-wal

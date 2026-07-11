@@ -1,0 +1,361 @@
+"""Deterministic S14 export from verified frozen gold packages."""
+
+from __future__ import annotations
+
+import json
+import shutil
+import subprocess
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from PIL import Image
+
+from ..io.png_strict import write_label_map
+from ..ontology import get_ontology
+from ..packager import verify_packages
+from .coverage import build_coverage_matrix, write_coverage_matrix
+from .splits import SplitRecord, assign_splits, validate_instance_split_integrity
+
+
+def build_dataset(
+    *,
+    packages_root: Path,
+    output_root: Path,
+    version: int,
+    hard_case_file: Path | None = None,
+) -> Path:
+    """Verify approved gold and export MMSeg/COCO layouts without holdout trainer paths."""
+    if version < 1:
+        raise ValueError("dataset version must be positive")
+    packages = _approved_packages(Path(packages_root))
+    if not packages:
+        raise ValueError("no frozen human-approved gold packages")
+    for package in packages:
+        verification = verify_packages(package)[0]
+        if not verification.passed:
+            raise ValueError(f"gold package verification failed: {package}")
+    by_image: dict[str, list[tuple[Path, dict[str, Any]]]] = {}
+    for package in packages:
+        manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+        by_image.setdefault(manifest["image_id"], []).append((package, manifest))
+    records = tuple(
+        SplitRecord(
+            image_id,
+            str(entries[0][1]["source"].get("phash64", _fallback_phash(image_id))),
+            str(entries[0][1]["source"]["source_origin"]),
+        )
+        for image_id, entries in sorted(by_image.items())
+    )
+    hard_ids = _hard_ids(hard_case_file)
+    splits = assign_splits(records, hard_case_ids=hard_ids)
+    destination = Path(output_root) / f"bodyparts@v{version}"
+    if destination.exists():
+        raise FileExistsError(f"dataset version already exists: {destination}")
+    for directory in (
+        "part_seg/images",
+        "part_seg/annotations",
+        "material_seg/images",
+        "material_seg/annotations",
+        "hand_crops",
+        "matting",
+        "projected",
+        "coco",
+        "holdout/test",
+        "holdout/hard_case",
+    ):
+        (destination / directory).mkdir(parents=True, exist_ok=True)
+    coco_images, coco_annotations = [], []
+    annotation_id = 1
+    split_instances: dict[str, list[str]] = {
+        "train": [],
+        "val": [],
+        "test_holdout": [],
+        "hard_case_holdout": [],
+    }
+    for image_id, entries in sorted(by_image.items()):
+        split = splits[image_id]
+        for index, (package, manifest) in enumerate(sorted(entries, key=lambda item: item[0].name)):
+            instance = package.name if package.name.startswith("p") else f"p{index}"
+            sample_id = f"{image_id}_{instance}"
+            split_instances[split].append(sample_id)
+            target_root = (
+                destination / "holdout" / ("hard_case" if split == "hard_case_holdout" else "test")
+                if split.endswith("holdout")
+                else destination
+            )
+            if split.endswith("holdout"):
+                _copy_sample(package, target_root, sample_id, holdout=True)
+                continue
+            _copy_sample(package, target_root, sample_id, holdout=False)
+            with Image.open(package / "source.png") as opened:
+                width, height = opened.size
+            image_number = len(coco_images) + 1
+            coco_images.append(
+                {
+                    "id": image_number,
+                    "file_name": f"{sample_id}.png",
+                    "width": width,
+                    "height": height,
+                }
+            )
+            part = np.asarray(Image.open(package / "label_map_part.png"))
+            for label in get_ontology().labels_for_map("part", enabled_only=True):
+                if not label.id:
+                    continue
+                mask = part == int(label.id)
+                if not mask.any():
+                    continue
+                ys, xs = np.nonzero(mask)
+                coco_annotations.append(
+                    {
+                        "id": annotation_id,
+                        "image_id": image_number,
+                        "category_id": int(label.id),
+                        "segmentation": {"size": [height, width], "counts": _rle(mask)},
+                        "area": int(mask.sum()),
+                        "bbox": [
+                            int(xs.min()),
+                            int(ys.min()),
+                            int(xs.max() - xs.min() + 1),
+                            int(ys.max() - ys.min() + 1),
+                        ],
+                        "iscrowd": 0,
+                    }
+                )
+                annotation_id += 1
+            for optional in ("crops", "matting", "projected"):
+                if (package / optional).is_dir():
+                    shutil.copytree(
+                        package / optional,
+                        destination
+                        / ("hand_crops" if optional == "crops" else optional)
+                        / sample_id,
+                    )
+    for split in ("train", "val"):
+        instance_ids = sorted(split_instances[split])
+        (destination / f"{split}.txt").write_text(
+            "".join(f"{value}\n" for value in instance_ids), encoding="utf-8"
+        )
+    validate_instance_split_integrity(
+        {
+            instance_id: split
+            for split, instance_ids in split_instances.items()
+            for instance_id in instance_ids
+        }
+    )
+    ontology = get_ontology()
+    coco = {
+        "images": coco_images,
+        "annotations": coco_annotations,
+        "categories": [
+            {"id": int(label.id), "name": label.name}
+            for label in ontology.labels_for_map("part", enabled_only=True)
+            if label.id
+        ],
+    }
+    (destination / "coco/annotations.json").write_text(
+        json.dumps(coco, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    coverage_rows = []
+    for entries in by_image.values():
+        for _, manifest in entries:
+            person = manifest.get("person", {})
+            if person.get("view") is None:
+                continue
+            count = int(person.get("person_count", 1))
+            coverage_rows.append(
+                {
+                    "status": "human_approved_gold",
+                    "view": person["view"],
+                    "pose_tags": person.get("pose_tags", ()),
+                    "instance_context": "solo"
+                    if count == 1
+                    else "duo"
+                    if count == 2
+                    else "small_group",
+                    "attributes": (),
+                }
+            )
+    coverage = build_coverage_matrix(coverage_rows, generated_at=datetime(1970, 1, 1, tzinfo=UTC))
+    write_coverage_matrix(destination / "coverage_matrix.json", coverage)
+    card = _dataset_card(
+        version,
+        ontology.version,
+        splits,
+        split_instances,
+        records,
+        class_annotations=coco_annotations,
+        coverage=coverage,
+    )
+    (destination / "dataset_card.md").write_text(card, encoding="utf-8")
+    (destination / "build_manifest.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0.0",
+                "dataset": f"bodyparts@v{version}",
+                "ontology_version": ontology.version,
+                "seed": 1337,
+                "git_sha": _git_sha(),
+                "splits": splits,
+                "instances": split_instances,
+                "trainer_inputs": [
+                    "train.txt",
+                    "val.txt",
+                    "part_seg",
+                    "material_seg",
+                    "hand_crops",
+                    "matting",
+                    "projected",
+                ],
+                "holdout_trainer_read_path": None,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return destination
+
+
+def approved_package_count(packages_root: Path) -> int:
+    return len(_approved_packages(Path(packages_root)))
+
+
+def next_dataset_version(output_root: Path) -> int:
+    versions = []
+    for path in Path(output_root).glob("bodyparts@v*"):
+        try:
+            versions.append(int(path.name.rsplit("@v", 1)[1]))
+        except ValueError:
+            continue
+    return max(versions, default=0) + 1
+
+
+def _approved_packages(root: Path) -> tuple[Path, ...]:
+    results = []
+    for path in sorted(root.rglob("manifest.json")):
+        package = path.parent
+        if not (package / ".maskfactory_frozen.json").is_file():
+            continue
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        visible = [
+            entry for entry in manifest.get("parts", {}).values() if entry.get("status") != "n/a"
+        ]
+        if visible and all(entry.get("status") == "human_approved_gold" for entry in visible):
+            results.append(package)
+    return tuple(results)
+
+
+def _copy_sample(package: Path, root: Path, sample_id: str, *, holdout: bool) -> None:
+    part, material = _training_label_maps(package)
+    if holdout:
+        target = root / sample_id
+        target.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(package / "source.png", target / "source.png")
+        write_label_map(target / "label_map_part.png", part, bits=16)
+        write_label_map(target / "label_map_material.png", material, bits=8)
+    else:
+        for group in ("part_seg/images", "material_seg/images"):
+            shutil.copy2(package / "source.png", root / group / f"{sample_id}.png")
+        write_label_map(root / "part_seg/annotations" / f"{sample_id}.png", part, bits=16)
+        write_label_map(root / "material_seg/annotations" / f"{sample_id}.png", material, bits=8)
+
+
+def _training_label_maps(package: Path) -> tuple[np.ndarray, np.ndarray]:
+    """Return maps with every honestly ambiguous part region burned to ignore 255."""
+    part = np.asarray(Image.open(package / "label_map_part.png")).copy()
+    material = np.asarray(Image.open(package / "label_map_material.png")).copy()
+    if part.shape != material.shape:
+        raise ValueError(f"gold label-map dimensions differ: {package}")
+    manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+    authority = get_ontology()
+    ambiguity = np.zeros(part.shape, dtype=bool)
+    for name, entry in manifest.get("parts", {}).items():
+        if entry.get("visibility") != "ambiguous_do_not_use":
+            continue
+        label = authority.label(name)
+        if label.map != "part" or label.id is None:
+            raise ValueError(f"ambiguous training label is not an indexed part: {name}")
+        ambiguity |= part == int(label.id)
+    if ambiguity.any():
+        part[ambiguity] = 255
+        material[ambiguity] = 255
+    return part, material
+
+
+def _rle(mask: np.ndarray) -> list[int]:
+    flat = np.asarray(mask, order="F").reshape(-1, order="F")
+    counts, previous, run = [], False, 0
+    for value in flat:
+        current = bool(value)
+        if current == previous:
+            run += 1
+        else:
+            counts.append(run)
+            run, previous = 1, current
+    counts.append(run)
+    return counts
+
+
+def _hard_ids(path: Path | None) -> frozenset[str]:
+    if path is None or not Path(path).is_file():
+        return frozenset()
+    return frozenset(
+        line.strip() for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()
+    )
+
+
+def _fallback_phash(image_id: str) -> str:
+    import hashlib
+
+    return hashlib.sha256(image_id.encode()).hexdigest()[:16]
+
+
+def _dataset_card(
+    version, ontology_version, splits, split_instances, records, *, class_annotations, coverage
+) -> str:
+    synthetic = sum(record.source_origin in {"synthetic", "generated"} for record in records)
+    ratio = synthetic / len(records)
+    lines = [
+        f"# MaskFactory bodyparts@v{version}",
+        "",
+        f"- Ontology: `{ontology_version}`",
+        "- Build command: `maskfactory dataset build --name bodyparts`",
+        f"- Git SHA: `{_git_sha()}`",
+        "- Seed: `1337`",
+        f"- Source images: `{len(records)}`",
+        f"- Synthetic ratio: `{ratio:.6f}`",
+        "- Split key: `image_id` (never instance ID)",
+        "- Holdouts are excluded from trainer inputs.",
+        "",
+        "## Counts",
+        "",
+    ]
+    for split in ("train", "val", "test_holdout", "hard_case_holdout"):
+        lines.append(
+            f"- {split}: {sum(value == split for value in splits.values())} images / {len(split_instances[split])} instances"
+        )
+    counts: dict[int, int] = {}
+    for annotation in class_annotations:
+        counts[annotation["category_id"]] = counts.get(annotation["category_id"], 0) + 1
+    lines.extend(("", "## Visible instance masks", ""))
+    for label in get_ontology().labels_for_map("part", enabled_only=True):
+        if label.id:
+            lines.append(f"- {label.name}: {counts.get(int(label.id), 0)}")
+    lines.extend(("", "## Coverage cells", ""))
+    for cell in coverage["cells"]:
+        lines.append(
+            f"- {cell['view']} / {cell['pose']} / {cell['instance_context']}: "
+            f"{cell['approved_gold_count']}"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def _git_sha() -> str:
+    process = subprocess.run(
+        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=10, check=False
+    )
+    return process.stdout.strip() if process.returncode == 0 else "unavailable"

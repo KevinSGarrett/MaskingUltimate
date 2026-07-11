@@ -12,6 +12,7 @@ from maskfactory.state import (
     WriterBusyError,
     WriterGuard,
     initialize_database,
+    persist_terminal_image_outcome,
     reader_connection,
     transition_image_status,
     writer_connection,
@@ -71,6 +72,40 @@ def test_writer_connection_persists_related_rows_and_enforces_foreign_keys(
                 "INSERT INTO stage_runs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 ("run_bad", "img_missing", "S00", "now", None, None, None, sha, 0),
             )
+
+
+def test_terminal_outcome_transition_is_idempotent_and_governed(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_a3f9c2e17b04", "a" * 64, "ingested", "S00", 1, "t0", "t0"),
+        )
+    assert persist_terminal_image_outcome(
+        database,
+        "img_a3f9c2e17b04",
+        "rejected",
+        reason="no_person",
+        current_stage="S01",
+        updated_at="t1",
+    )
+    assert not persist_terminal_image_outcome(
+        database,
+        "img_a3f9c2e17b04",
+        "rejected",
+        reason="no_person",
+        current_stage="S01",
+        updated_at="t2",
+    )
+    with pytest.raises(InvalidStatusTransition, match="invalid terminal"):
+        persist_terminal_image_outcome(
+            database,
+            "img_a3f9c2e17b04",
+            "drafted",
+            reason="bad",
+            current_stage="S01",
+        )
 
 
 def test_writer_guard_refuses_concurrent_orchestrator_and_releases_cleanly(

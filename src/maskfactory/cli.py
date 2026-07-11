@@ -293,7 +293,12 @@ def draft(
             images_root=images_root,
             work_root=work_root,
             gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
+            database=database,
         )
+        if outcome.terminal_outcome is not None:
+            raise StageConfigurationError(
+                f"D1 stopped at S01: {outcome.terminal_outcome} ({outcome.terminal_reason})"
+            )
         if len(outcome.draft_contract_paths) != len(outcome.per_instance):
             raise StageConfigurationError("D1 did not emit one atomic contract per instance")
         contracts = []
@@ -353,6 +358,12 @@ def draft(
     default=Path("work"),
     show_default=True,
 )
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
 @click.option("--plan-only", is_flag=True, help="Print the resolved stage plan without running.")
 @click.option(
     "--through-drafts",
@@ -372,6 +383,7 @@ def run(
     config_path: Path,
     images_root: Path,
     work_root: Path,
+    database: Path,
     plan_only: bool,
     through_drafts: bool,
     through_autoqa: bool,
@@ -388,6 +400,7 @@ def run(
         run_pipeline,
     )
     from .runlog import PipelineRunLog
+    from .state import persist_terminal_image_outcome
 
     if not image_id:
         raise click.UsageError("IMAGE_ID is required")
@@ -416,8 +429,12 @@ def run(
                 work_root=work_root,
                 gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
                 through_autoqa=through_autoqa,
+                database=database,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
+            if outcome.terminal_outcome is not None:
+                click.echo(f"S01 terminal: {outcome.terminal_outcome} ({outcome.terminal_reason})")
+                return
             for instance, executions in sorted(outcome.per_instance.items()):
                 terminal = "S10" if through_autoqa else "S09"
                 click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
@@ -438,6 +455,15 @@ def run(
                 runners=build_production_runners(config, images_root=images_root),
                 gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
                 run_log=run_log,
+            )
+        terminal = next((result for result in results if result.status == "terminal"), None)
+        if terminal is not None:
+            persist_terminal_image_outcome(
+                database,
+                image_id,
+                str(terminal.terminal_outcome),
+                reason=str(terminal.terminal_reason),
+                current_stage=terminal.stage,
             )
     except (
         StageConfigurationError,

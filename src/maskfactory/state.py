@@ -226,6 +226,39 @@ def transition_image_status(
     )
 
 
+def persist_terminal_image_outcome(
+    database: Path,
+    image_id: str,
+    outcome: str,
+    *,
+    reason: str,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Persist a cacheable terminal stage outcome exactly once."""
+    if outcome not in {"rejected", "quarantined"}:
+        raise InvalidStatusTransition(f"invalid terminal outcome: {outcome}")
+    if not reason.strip():
+        raise ValueError("terminal outcome reason cannot be empty")
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) == outcome and str(row[1]) == current_stage:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            outcome,
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
 @contextmanager
 def writer_connection(path: Path = DEFAULT_DB_PATH) -> Iterator[sqlite3.Connection]:
     """Yield the sole mutable connection while holding the orchestrator lease."""

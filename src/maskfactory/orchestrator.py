@@ -122,6 +122,8 @@ class StageExecution:
     model_keys: tuple[str, ...] = ()
     duration_sec: float = 0.0
     vram_peak_mb: float = 0.0
+    terminal_outcome: str | None = None
+    terminal_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -278,19 +280,21 @@ def _execute_stage(
     if (
         not forced
         and stamp is not None
-        and stamp.get("status") == "complete"
+        and stamp.get("status") in {"complete", "terminal"}
         and stamp.get("config_hash") == digest
         and (destination / "manifest_delta.json").is_file()
     ):
         return StageExecution(
             stage.name,
-            "cached",
+            "terminal" if stamp["status"] == "terminal" else "cached",
             digest,
             str(destination),
             False,
             tuple(stamp.get("model_keys", [])),
             0.0,
             float(stamp.get("vram_peak_mb", 0.0)),
+            stamp.get("terminal_outcome"),
+            stamp.get("terminal_reason"),
         )
 
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -314,6 +318,22 @@ def _execute_stage(
         telemetry = delta_document.pop("_telemetry", {})
         if not isinstance(telemetry, Mapping):
             raise TypeError(f"{stage.name} _telemetry must be a mapping")
+        terminal = delta_document.pop("_terminal", None)
+        terminal_outcome = None
+        terminal_reason = None
+        if terminal is not None:
+            if (
+                not isinstance(terminal, Mapping)
+                or set(terminal) != {"outcome", "reason"}
+                or terminal.get("outcome") not in {"rejected", "quarantined"}
+                or not isinstance(terminal.get("reason"), str)
+                or not terminal["reason"].strip()
+            ):
+                raise TypeError(
+                    f"{stage.name} _terminal must contain rejected|quarantined outcome and reason"
+                )
+            terminal_outcome = str(terminal["outcome"])
+            terminal_reason = terminal["reason"].strip()
         configured_models = context.config["stage"].get("model_keys", [])
         model_keys = tuple(sorted(set(telemetry.get("model_keys", configured_models))))
         vram_peak_mb = float(telemetry.get("vram_peak_mb", 0.0))
@@ -332,11 +352,13 @@ def _execute_stage(
                 "dependencies": list(stage.dependencies),
                 "config_hash": digest,
                 "forced": forced,
-                "status": "complete",
+                "status": "terminal" if terminal_outcome else "complete",
                 "model_keys": list(model_keys),
                 "duration_sec": duration_sec,
                 "vram_peak_mb": vram_peak_mb,
                 "files": files,
+                "terminal_outcome": terminal_outcome,
+                "terminal_reason": terminal_reason,
             },
         )
         _replace_directory(staging, destination)
@@ -345,13 +367,15 @@ def _execute_stage(
         raise
     return StageExecution(
         stage.name,
-        "complete",
+        "terminal" if terminal_outcome else "complete",
         digest,
         str(destination),
         forced,
         model_keys,
         duration_sec,
         vram_peak_mb,
+        terminal_outcome,
+        terminal_reason,
     )
 
 
@@ -466,6 +490,8 @@ def run_pipeline(
                     duration_sec=execution.duration_sec,
                     vram_peak_mb=execution.vram_peak_mb,
                 )
+            if execution.status == "terminal":
+                break
     return tuple(results)
 
 

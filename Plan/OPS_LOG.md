@@ -3127,6 +3127,28 @@ focused regression:         49 text/VLM/mining/dataset/production tests pass
 full regression:            563 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-11 23:58 UTC - S01 terminal outcomes made durable and resumable
+**Item:** MF-P2-01.01 completion evidence strengthened
+**Result:** `no_person` and crowd outcomes are no longer discarded staging errors. They are terminal S01 results with preserved evidence, stopped downstream execution, idempotent database state, and cache behavior.
+
+```
+runner contract:             _terminal = {outcome: rejected|quarantined, reason: nonempty}
+orchestrator artifact:       stage_run status=terminal plus terminal_outcome/terminal_reason
+artifact preservation:       person_bbox.json + manifest_delta.json promoted atomically with the terminal stamp
+downstream behavior:         run_pipeline stops immediately after a terminal execution; S02 is never called
+cache behavior:              unchanged terminal config returns terminal evidence without rerunning YOLO
+database behavior:           ingested -> rejected|quarantined at current_stage S01; exact rerun is a no-op
+multi-instance behavior:     through-drafts/autoqa returns the S01 terminal instead of demanding nonexistent p0
+D1 behavior:                 terminal S01 updates DB then refuses the draft contract honestly
+live rejected IDs:           img_5bc6130e5055, img_a3d2663ad90d
+live detector evidence:      both raw_detection_count=0, persons=[], reason=no_person
+live database evidence:      both status=rejected, current_stage=S01
+live cache proof:            img_5bc6130e5055 rerun terminal with duration_sec=0
+current workflow totals:     19 ingested/promotion-ready + 2 rejected at S01 + 2 age_safety quarantined
+focused regression:         52 orchestrator/production/state tests pass
+full regression:            576 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+```
 ## 2026-07-11 23:40 UTC - Large-image age-screen transport repaired; governed source set ingested through S01
 **Items:** MF-P1-04.06 evidence strengthened; MF-P1-08.01 open -> complete; MF-P2-01.01 evidence strengthened; MF-P8-10.01 10% -> 20%
 **Result:** Every supplied source now has a governed intake outcome, and every clear-adult ingest has an S01 outcome. The prior large-image HTTP-400 quarantines were recovered only through a new hash-verified rescreen path.

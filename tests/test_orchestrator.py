@@ -10,6 +10,7 @@ from maskfactory.orchestrator import (
     FatalStageError,
     SemanticStageError,
     StageConfigurationError,
+    StageExecution,
     config_digest,
     plan_stages,
     run_batch,
@@ -94,6 +95,80 @@ def test_rerun_cache_and_force_atomically_replace_stage_owned_work(tmp_path: Pat
     stamp = json.loads((output / "stage_run.json").read_text(encoding="utf-8"))
     assert stamp["forced"] is True
     assert stamp["config_hash"] == third[0].config_hash
+
+
+def test_terminal_stage_is_cached_preserves_evidence_and_stops_downstream(tmp_path: Path) -> None:
+    calls = {"S01": 0, "S02": 0}
+
+    def terminal(context):
+        calls["S01"] += 1
+        (context.output_dir / "person_bbox.json").write_text('{"outcome":"rejected"}')
+        return {
+            "outcome": "rejected",
+            "reason": "no_person",
+            "_terminal": {"outcome": "rejected", "reason": "no_person"},
+        }
+
+    def downstream(_context):
+        calls["S02"] += 1
+        return {"must_not_run": True}
+
+    kwargs = {
+        "image_id": "img_a3f9c2e17b04",
+        "selected": ("S01", "S02"),
+        "work_root": tmp_path,
+        "runners": {"S01": terminal, "S02": downstream},
+    }
+    first = run_pipeline(**kwargs)
+    second = run_pipeline(**kwargs)
+    assert len(first) == len(second) == 1
+    assert first[0].status == second[0].status == "terminal"
+    assert first[0].terminal_outcome == second[0].terminal_outcome == "rejected"
+    assert first[0].terminal_reason == second[0].terminal_reason == "no_person"
+    assert calls == {"S01": 1, "S02": 0}
+    output = tmp_path / "s01/img_a3f9c2e17b04"
+    assert (output / "person_bbox.json").is_file()
+    assert json.loads((output / "stage_run.json").read_text())["status"] == "terminal"
+
+
+def test_run_cli_persists_terminal_s01_outcome_once(tmp_path: Path, monkeypatch) -> None:
+    database = tmp_path / "state.sqlite"
+    _batch_database(database, ("img_a3f9c2e17b04",))
+    execution = StageExecution(
+        "S01",
+        "terminal",
+        "a" * 64,
+        str(tmp_path / "work/s01/img_a3f9c2e17b04"),
+        False,
+        ("yolo11m",),
+        1.0,
+        0.0,
+        "rejected",
+        "no_person",
+    )
+    monkeypatch.setattr(
+        "maskfactory.orchestrator.run_pipeline", lambda *args, **kwargs: (execution,)
+    )
+    args = [
+        "run",
+        "img_a3f9c2e17b04",
+        "--stage",
+        "S01",
+        "--database",
+        str(database),
+        "--work-root",
+        str(tmp_path / "work"),
+        "--images-root",
+        str(tmp_path / "images"),
+    ]
+    first = CliRunner().invoke(main, args)
+    second = CliRunner().invoke(main, args)
+    assert first.exit_code == second.exit_code == 0
+    with reader_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage FROM images WHERE image_id = 'img_a3f9c2e17b04'"
+        ).fetchone()
+    assert tuple(row) == ("rejected", "S01")
 
 
 def test_config_change_invalidates_cache(tmp_path: Path) -> None:

@@ -34,6 +34,7 @@ from ..packager import verify_packages
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
 from ..review_package import assemble_review_package
+from ..state import persist_terminal_image_outcome
 from ..vlm.production import run_s11_production
 from .s01_person_detection import run_s01
 from .s02_silhouette import run_s02
@@ -57,6 +58,8 @@ class MultiPersonProductionResult:
     image_manifest_path: Path
     qc035_passed: bool
     draft_contract_paths: tuple[Path, ...] = ()
+    terminal_outcome: str | None = None
+    terminal_reason: str | None = None
 
 
 SINGLE_PERSON_REGRESSION_STAGES = (
@@ -197,7 +200,14 @@ def build_production_runners(
             context_scale=float(settings.get("context_scale", 1.25)),
         )
         if result.outcome != "promoted":
-            raise SemanticStageError(f"S01 {result.outcome}: {result.reason}")
+            return {
+                "outcome": result.outcome,
+                "reason": result.reason,
+                "promoted_instances": 0,
+                "background_people": 0,
+                "_terminal": {"outcome": result.outcome, "reason": result.reason},
+                "_telemetry": {"model_keys": ["yolo11m"]},
+            }
         return {
             "outcome": result.outcome,
             "promoted_instances": sum(person.promoted for person in result.persons),
@@ -803,6 +813,7 @@ def run_multi_person_production(
     pipeline_runner=run_pipeline,
     runner_factory=build_production_runners,
     through_autoqa: bool = False,
+    database: Path | None = None,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -816,6 +827,25 @@ def run_multi_person_production(
         gpu_lock_path=gpu_lock_path,
     )
     s01_dir = work_root / "s01" / image_id
+    terminal = next((execution for execution in shared if execution.status == "terminal"), None)
+    if terminal is not None:
+        if database is not None:
+            persist_terminal_image_outcome(
+                database,
+                image_id,
+                str(terminal.terminal_outcome),
+                reason=str(terminal.terminal_reason),
+                current_stage="S01",
+            )
+        return MultiPersonProductionResult(
+            tuple(shared),
+            {},
+            s01_dir / "person_bbox.json",
+            False,
+            (),
+            terminal.terminal_outcome,
+            terminal.terminal_reason,
+        )
     people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
     promoted = sorted(
         (item for item in people["persons"] if item["promoted"]),

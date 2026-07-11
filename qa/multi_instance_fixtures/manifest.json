@@ -1,0 +1,207 @@
+{
+  "count_authority": "manual_visual_review_plus_s01_exact_match",
+  "downstream_status": "S02-S09.5 blocked_by_unavailable_WSL_runtime",
+  "fixture_count": 2,
+  "fixtures": [
+    {
+      "age_evidence": "Non-configurable qwen2.5vl:7b intake screen: clear_adult, person_count=3",
+      "age_safety": "clear_adult",
+      "downstream_package_count_verified": false,
+      "key": "supplied_adult_triptych_3",
+      "manual_visible_instance_count": 3,
+      "model_key": "yolo11m",
+      "persons": [
+        {
+          "area_px": 358868,
+          "bbox_xyxy": [
+            454,
+            73,
+            746,
+            1302
+          ],
+          "centeredness": 0.9983581987226343,
+          "confidence": 0.9235813021659851,
+          "context_bbox_xyxy": [
+            417,
+            0,
+            783,
+            1378
+          ],
+          "detection_index": 1,
+          "frame_area_fraction": 0.21702225447508466,
+          "person_index": 0,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 358278.81005919434
+        },
+        {
+          "area_px": 387135,
+          "bbox_xyxy": [
+            49,
+            73,
+            364,
+            1302
+          ],
+          "centeredness": 0.5692976690217708,
+          "confidence": 0.9323405027389526,
+          "context_bbox_xyxy": [
+            9,
+            0,
+            404,
+            1378
+          ],
+          "detection_index": 0,
+          "frame_area_fraction": 0.23411647314949202,
+          "person_index": 1,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 220395.05309674324
+        },
+        {
+          "area_px": 345911,
+          "bbox_xyxy": [
+            862,
+            74,
+            1143,
+            1305
+          ],
+          "centeredness": 0.559449650656231,
+          "confidence": 0.9109693169593811,
+          "context_bbox_xyxy": [
+            826,
+            0,
+            1179,
+            1378
+          ],
+          "detection_index": 2,
+          "frame_area_fraction": 0.20918662312530237,
+          "person_index": 2,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 193519.7881081475
+        }
+      ],
+      "promoted_instance_count": 3,
+      "promoted_instances": [
+        "p0",
+        "p1",
+        "p2"
+      ],
+      "raw_detection_count": 3,
+      "reviewed_at": "2026-07-11T20:13:50Z",
+      "reviewer": "ai_agent_visual_review",
+      "rights_evidence": "Kevin-supplied governed project source; intake manifest records generated origin",
+      "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
+      "s01_evidence_path": "work/s01/img_7b7a3c7d5dd3/person_bbox.json",
+      "s01_evidence_sha256": "aea56c45ccdf5d4bc5e34ea962ee02e68d47a2b095711424737f1bb868205e4d",
+      "source_origin": "generated",
+      "source_path": "data/images/img_7b7a3c7d5dd3/source.jpg",
+      "source_sha256": "715401f7d8ded038759f2d406f2a5a4185e23448c280c35859f5c7d8c693f31b",
+      "source_size": [
+        1200,
+        1378
+      ]
+    },
+    {
+      "age_evidence": "qa/fixtures/smoke/README.md visible-subject review records clearly adult pedestrians",
+      "age_safety": "clear_adult",
+      "downstream_package_count_verified": false,
+      "key": "ultralytics_bus_adults_4_cap3",
+      "manual_visible_instance_count": 4,
+      "model_key": "yolo11m",
+      "persons": [
+        {
+          "area_px": 102921,
+          "bbox_xyxy": [
+            48,
+            399,
+            251,
+            906
+          ],
+          "centeredness": 0.5864131933448169,
+          "confidence": 0.9162590503692627,
+          "context_bbox_xyxy": [
+            22,
+            335,
+            277,
+            970
+          ],
+          "detection_index": 0,
+          "frame_area_fraction": 0.11765089163237312,
+          "person_index": 0,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 60354.2322722419
+        },
+        {
+          "area_px": 56750,
+          "bbox_xyxy": [
+            221,
+            406,
+            346,
+            860
+          ],
+          "centeredness": 0.7733224403488896,
+          "confidence": 0.893501341342926,
+          "context_bbox_xyxy": [
+            205,
+            349,
+            362,
+            917
+          ],
+          "detection_index": 2,
+          "frame_area_fraction": 0.06487197073616827,
+          "person_index": 1,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 43886.04848979949
+        },
+        {
+          "area_px": 69090,
+          "bbox_xyxy": [
+            669,
+            391,
+            810,
+            881
+          ],
+          "centeredness": 0.4844396551946587,
+          "confidence": 0.9072402119636536,
+          "context_bbox_xyxy": [
+            651,
+            329,
+            810,
+            943
+          ],
+          "detection_index": 1,
+          "frame_area_fraction": 0.07897805212620028,
+          "person_index": 2,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 33469.93577739897
+        }
+      ],
+      "promoted_instance_count": 3,
+      "promoted_instances": [
+        "p0",
+        "p1",
+        "p2"
+      ],
+      "raw_detection_count": 4,
+      "reviewed_at": "2026-07-11T20:13:55Z",
+      "reviewer": "ai_agent_visual_review",
+      "rights_evidence": "Official Ultralytics AGPL-3.0 package asset registered for local QA",
+      "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
+      "s01_evidence_path": "qa/live_verification/s01_bus/person_bbox.json",
+      "s01_evidence_sha256": "95d9219e9ee5553b08c9152529dc54ad025b03853c37c22b8cb66b35b3816b24",
+      "source_origin": "qa_asset",
+      "source_path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+      "source_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+      "source_size": [
+        810,
+        1080
+      ]
+    }
+  ],
+  "max_instances_per_image": 3,
+  "schema_version": "1.0.0"
+}

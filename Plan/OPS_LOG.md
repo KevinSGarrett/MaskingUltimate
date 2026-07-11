@@ -2969,3 +2969,26 @@ full regression:            538 tests pass
 quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
 honest boundary:            final completion still requires a real P1-P7 reviewed package replay comparison, not only deterministic draft/stage artifacts
 ```
+## 2026-07-11 20:22 UTC - First governed supplied multi-person image reached live S01
+**Items:** MF-P8-01.03 advanced 70% -> 85% partial; MF-P8-10.01 opened at 10% partial
+**Result:** Kevin-supplied incoming data is now moving through the real governed path. One qualifying three-instance source passed intake and S01; uncertain-age candidates stayed quarantined; a durable two-image count fixture registry now replaces mocked-count-only evidence.
+
+```
+doctor:                     PASS=7 WARN=1 FAIL=3
+live services:              CVAT API v2.24.0 PASS; project PASS; pth-sam2 Nuclio PASS; qwen2.5vl image JSON PASS; SQLite/GPU lock/PNG PASS
+runtime boundary:           current shell cannot resolve Ubuntu-22.04; torch/model-smoke/roundtrip fail at WSL identity
+supplied multi intake:      5 images screened; 1 ingested clear_adult; 4 quarantined age_safety_uncertain with no override
+accepted image:             img_7b7a3c7d5dd3, generated origin, 1200x1378, metadata stripped
+independent age evidence:   qwen2.5vl:7b clear_adult and person_count=3
+manual visual review:       exactly 3 visible adult human instances (front/three-quarter/back triptych)
+live S01:                   YOLO11m 3 raw detections, confidence 0.9109-0.9323, exactly p0/p1/p2 promoted with distinct crops
+full draft attempt:         correctly stopped at S02 BiRefNet with WSL_E_DISTRO_NOT_FOUND; no downstream success claimed
+fixture 2:                  Ultralytics governed street QA image manually shows 4 adults; live S01 evidence has 4 raw, p0/p1/p2 promoted under cap=3
+fixture sealer:             2-3 distinct rasters required; source/S01 hashes, rights/age/reviewer, geometry, config/model, manual/raw/promoted counts validated
+durable artifact:           qa/multi_instance_fixtures/manifest.json embeds complete promoted detection evidence and downstream_package_count_verified=false
+negative evidence:          count mismatch, source/evidence tamper, duplicate raster, unsafe path, invalid bbox, or non-adult status refuse sealing
+focused regression:         40 multi-fixture/S01/production tests pass
+full regression:            540 tests pass
+quality:                    Ruff check/format clean across 252 files; generated ontology current; tracker structurally valid
+honest boundary:            P8-01.03 still needs live S02-S09.5 package fan-out; P8-10.01 has 1/10 minimum qualifying real images
+```

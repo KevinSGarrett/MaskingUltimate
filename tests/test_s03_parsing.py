@@ -185,7 +185,25 @@ def test_wsl_parser_provider_validates_probabilities_and_restores_half_scale(
         class Process:
             returncode = 0
             stderr = ""
-            stdout = json.dumps({"parser": parser}) + "\n"
+            stdout = (
+                json.dumps(
+                    {
+                        "protocol_version": 1,
+                        "parser": parser,
+                        "class_count": classes,
+                        "labels_shape": [height, width],
+                        "probabilities_shape": [classes, height, width],
+                        "model_revision": WslParserProvider.SAPIENS_REVISION,
+                        "precision": "bf16",
+                        "model_input": [1024, 768],
+                        "tile_count": 1,
+                        "tile_size": 1536,
+                        "tile_overlap": 128,
+                        "device": "NVIDIA fixture",
+                    }
+                )
+                + "\n"
+            )
 
         return Process()
 
@@ -196,3 +214,76 @@ def test_wsl_parser_provider_validates_probabilities_and_restores_half_scale(
     assert output.probabilities.shape == (28, 8, 6)
     assert np.allclose(output.probabilities.sum(axis=0), 1)
     assert np.all(output.labels == 0)
+    assert not list((tmp_path / "work").iterdir())
+
+
+@pytest.mark.parametrize("fault", ["mass", "argmax", "label_dtype"])
+def test_s03_refuses_incoherent_probability_archives(tmp_path: Path, fault: str) -> None:
+    labels = np.zeros((2, 2), dtype=np.uint8)
+    probabilities = np.zeros((2, 2, 2), dtype=np.float32)
+    probabilities[0] = 1.0
+    if fault == "mass":
+        probabilities[0] = 0.5
+    elif fault == "argmax":
+        labels[:] = 1
+    elif fault == "label_dtype":
+        labels = labels.astype(np.float32)
+
+    with pytest.raises(ParsingError, match="sum to one|argmax|integer"):
+        run_parsing(
+            np.zeros((2, 2, 3), dtype=np.uint8),
+            sapiens=lambda image, scale=1.0: ModelParsing(labels, probabilities),
+            schp=lambda image, scale=1.0: _output(np.zeros((2, 2), dtype=np.uint8)),
+            sapiens_map=SAPIENS_MAP,
+            schp_map=SCHP_MAP,
+            output_dir=tmp_path,
+        )
+
+
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
+def test_wsl_schp_provider_requires_pinned_companion_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    checkpoint = tmp_path / "schp.pth"
+    checkpoint.write_bytes(b"fixture")
+
+    def fake_run(command, **kwargs):
+        output_arg = command[command.index("--output") + 1]
+        output_path = Path("C:/" + output_arg.removeprefix("/mnt/c/"))
+        probabilities = np.zeros((18, 4, 5), dtype=np.float32)
+        probabilities[0] = 1
+        labels = np.zeros((4, 5), dtype=np.uint8)
+        np.savez_compressed(output_path, labels=labels, probabilities=probabilities)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = (
+                json.dumps(
+                    {
+                        "protocol_version": 1,
+                        "parser": "schp_atr",
+                        "class_count": 18,
+                        "labels_shape": [4, 5],
+                        "probabilities_shape": [18, 4, 5],
+                        "model_revision": WslParserProvider.SCHP_REVISION,
+                        "precision": "fp32",
+                        "model_input": [512, 512],
+                        "dataset": "atr",
+                        "tile_count": 1,
+                        "device": "NVIDIA fixture",
+                    }
+                )
+                + "\n"
+            )
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s03_parsing.subprocess.run", fake_run)
+    provider = WslParserProvider("schp_atr", checkpoint, tmp_path / "work")
+
+    result = provider(np.zeros((4, 5, 3), dtype=np.uint8))
+
+    assert result.labels.shape == (4, 5)
+    assert result.probabilities.shape == (18, 4, 5)
+    assert not list((tmp_path / "work").iterdir())

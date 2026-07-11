@@ -20,13 +20,18 @@ STD = torch.tensor([58.5, 57.0, 57.5]).view(3, 1, 1)
 EXPECTED_CLASSES = 28
 
 
-def infer(checkpoint: Path, image_path: Path, *, use_bf16: bool = False) -> np.ndarray:
+def load_model(checkpoint: Path):
+    """Load the pinned TorchScript model once for smoke or multi-tile inference."""
     device = torch.device("cuda")
-    model = torch.jit.load(str(checkpoint), map_location=device).eval()
+    return torch.jit.load(str(checkpoint), map_location=device).eval()
+
+
+def infer_with_model(model, image_path: Path, *, use_bf16: bool = False) -> np.ndarray:
+    """Infer one tile without transferring or reloading the heavyweight model."""
     image = Image.open(image_path).convert("RGB").resize((INPUT_WIDTH, INPUT_HEIGHT))
     array = np.asarray(image, dtype=np.float32).copy()
     tensor = torch.from_numpy(array).permute(2, 0, 1)
-    tensor = ((tensor - MEAN) / STD).unsqueeze(0).to(device)
+    tensor = ((tensor - MEAN) / STD).unsqueeze(0).to("cuda")
     autocast = (
         torch.autocast("cuda", dtype=torch.bfloat16) if use_bf16 else contextlib.nullcontext()
     )
@@ -39,9 +44,17 @@ def infer(checkpoint: Path, image_path: Path, *, use_bf16: bool = False) -> np.n
         logits.float(), size=(INPUT_HEIGHT, INPUT_WIDTH), mode="bilinear", align_corners=False
     )
     probabilities = logits.softmax(dim=1)[0].cpu().numpy().astype(np.float32)
-    del tensor, logits, output, model
-    torch.cuda.empty_cache()
+    del tensor, logits, output
     return probabilities
+
+
+def infer(checkpoint: Path, image_path: Path, *, use_bf16: bool = False) -> np.ndarray:
+    model = load_model(checkpoint)
+    try:
+        return infer_with_model(model, image_path, use_bf16=use_bf16)
+    finally:
+        del model
+        torch.cuda.empty_cache()
 
 
 def run(checkpoint: Path, image_path: Path) -> dict[str, object]:

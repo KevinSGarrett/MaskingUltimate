@@ -158,6 +158,20 @@ def build_production_runners(
 
     def s03(context: StageContext) -> Mapping[str, Any]:
         crop = prior(context, "S01") / instance_name / "person_ctx.png"
+        settings = context.config["stage"]
+        required = {
+            "model": "sapiens_0_6b_seg",
+            "precision": "bf16",
+            "oom_half_res_retry": True,
+            "fallback": "schp_atr",
+        }
+        drift = {
+            key: (settings.get(key), expected)
+            for key, expected in required.items()
+            if settings.get(key) != expected
+        }
+        if drift:
+            raise SemanticStageError(f"S03 settings violate governed contract: {drift}")
         result = run_s03_production(
             crop,
             sapiens_checkpoint=ROOT / "models" / "parsing" / "sapiens_0.6b_seg.pt2",
@@ -165,6 +179,9 @@ def build_production_runners(
             sapiens_map=parsing_map["sapiens_28"],
             schp_map=parsing_map["schp_atr"],
             output_dir=context.output_dir,
+            sapiens_long_side=int(settings.get("long_side", 1024)),
+            tile_size=int(settings.get("tile_size", 1536)),
+            tile_overlap=int(settings.get("tile_overlap", 128)),
         )
         protection_path = context.prior_stage_dir("S02") / "other_person_protected.png"
         suppression = {"suppressed_px": 0, "ambiguous_px": 0, "careful_review": False}

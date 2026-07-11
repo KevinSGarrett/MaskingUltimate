@@ -2995,18 +2995,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-11T05:41:26+00:00",
           "actor": "ai_agent",
           "text": "Production Sapiens provider implemented around registered 0.6B TorchScript: bf16 CUDA, native crop restoration, fixed 1024 model input, 1536 tiles/128 overlap beyond, 28-class labels+normalized per-class probabilities, OOM signaling and half-res restoration. Provider tests pass; live run uncredited because current machine has no WSL distro."
+        },
+        {
+          "ts": "2026-07-11T18:25:51+00:00",
+          "actor": "ai_agent",
+          "text": "Hardened Sapiens production boundary: governed S03 config reaches provider; WSL metadata must prove pinned model revision, bf16, 1024x768 model input, 1536/128 tiling, class/shape/tile/CUDA identity; archive dtype, normalized probabilities, and label=argmax enforced; scaled outputs renormalized; provider intermediates removed. Tiled inference now loads the 0.6B model once and reuses it across all tiles. 40 focused and 516 full tests pass. Fresh live CUDA invocation remains unavailable in this managed boundary."
         }
       ],
-      "evidence": null,
+      "evidence": "src/maskfactory/stages/s03_parsing.py + production.py; tools/run_parser_wsl.py + smoke_sapiens_seg_wsl.py; tests/test_s03_parsing.py + test_production_runners.py. Vectorized 2048-square disagreement measured 0.072s. Registry retains real checkpoint SHA-256 86aa2c... and CUDA smoke hash a52baa.... Ruff/format clean, ontology current, 516 tests pass. Missing final evidence: fresh end-to-end authoritative WSL CUDA production invocation.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:41:26+00:00",
+      "updated_at": "2026-07-11T18:25:51+00:00",
       "orphaned": false
     },
     "MF-P2-02.02": {
@@ -3022,18 +3027,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-11T05:41:26+00:00",
           "actor": "ai_agent",
           "text": "Mandatory always-run SCHP-ATR production provider implemented around pinned official revision/checkpoint with 18-class native-geometry labels+normalized probabilities. Existing S03 calls SCHP before Sapiens and retains it on Sapiens OOM. Provider tests pass; live run fails at current WSL_E_DISTRO_NOT_FOUND boundary."
+        },
+        {
+          "ts": "2026-07-11T18:25:52+00:00",
+          "actor": "ai_agent",
+          "text": "Hardened mandatory SCHP companion boundary: production refuses fallback/model/precision policy drift; SCHP archive must prove pinned eb84c4 revision, ATR dataset, fp32, 512x512 input, 18 classes, CUDA identity, normalized probabilities, and label argmax; SCHP remains first/always-run and survives Sapiens OOM degradation; provider intermediates are removed. 40 focused and 516 full tests pass. Fresh live CUDA invocation remains unavailable."
         }
       ],
-      "evidence": null,
+      "evidence": "src/maskfactory/stages/s03_parsing.py + production.py and tools/run_parser_wsl.py implement/verify SCHP-ATR companion contract; tests cover pinned SCHP metadata, output coherence, always-run order, Sapiens double-OOM retention, and config drift refusal. Registry retains checkpoint SHA-256 e9d7c9... and CUDA smoke hash 3dbf93.... Ruff/format clean, ontology current, 516 tests pass. Missing final evidence: fresh end-to-end authoritative WSL CUDA production invocation.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:41:26+00:00",
+      "updated_at": "2026-07-11T18:25:52+00:00",
       "orphaned": false
     },
     "MF-P2-02.03": {

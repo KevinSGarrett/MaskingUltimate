@@ -193,6 +193,87 @@ def test_s02_production_runner_refuses_ungoverned_runtime(
         production.build_production_runners(config, images_root=images)["S02"](context)
 
 
+def test_s03_production_runner_forwards_governed_parser_contract(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    s01_dir = work / "s01" / image_id
+    (s01_dir / "p0").mkdir(parents=True)
+    crop = s01_dir / "p0/person_ctx.png"
+    Image.new("RGB", (80, 100), "white").save(crop)
+    (s01_dir / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "context_bbox_xyxy": [10, 10, 90, 110],
+                        "bbox_xyxy": [15, 15, 85, 105],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    captured = {}
+
+    def fake_s03(*args, **kwargs):
+        captured.update(kwargs)
+        return SimpleNamespace(parsing_degraded=False, sapiens_scale=1.0)
+
+    monkeypatch.setattr(production, "run_s03_production", fake_s03)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = config["stages"]["S03"]
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S03"],
+        output_dir=work / "s03" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    delta = production.build_production_runners(config)["S03"](context)
+
+    assert delta["parsing_degraded"] is False
+    assert captured["sapiens_long_side"] == 1024
+    assert captured["tile_size"] == 1536
+    assert captured["tile_overlap"] == 128
+
+
+@pytest.mark.parametrize(
+    "key,value",
+    [
+        ("model", "other"),
+        ("precision", "fp32"),
+        ("oom_half_res_retry", False),
+        ("fallback", "none"),
+    ],
+)
+def test_s03_production_runner_refuses_governance_drift(
+    tmp_path: Path, key: str, value: object
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    s01_dir = tmp_path / "work" / "s01" / image_id
+    (s01_dir / "p0").mkdir(parents=True)
+    Image.new("RGB", (10, 10), "white").save(s01_dir / "p0/person_ctx.png")
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = dict(config["stages"]["S03"])
+    settings[key] = value
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S03"],
+        output_dir=tmp_path / "work" / "s03" / image_id,
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="governed"):
+        production.build_production_runners(config)["S03"](context)
+
+
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:
     parsing = np.zeros((100, 80), dtype=np.uint8)
     parsing[15:75, 25:55] = 22  # Sapiens torso

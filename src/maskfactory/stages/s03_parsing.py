@@ -35,6 +35,8 @@ class WslParserProvider:
     """Pinned Sapiens/SCHP provider executed in the authoritative WSL CUDA env."""
 
     CLASS_COUNTS = {"sapiens": 28, "schp_atr": 18}
+    SAPIENS_REVISION = "ea5545c735d1fc994d0d1aafede27df892761322"
+    SCHP_REVISION = "eb84c432cc697f494d99662a05f2335eb2f26095"
 
     def __init__(
         self,
@@ -45,21 +47,36 @@ class WslParserProvider:
         wsl_distribution: str = "Ubuntu-22.04",
         python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
         timeout_sec: int = 900,
+        sapiens_long_side: int = 1024,
+        tile_size: int = 1536,
+        tile_overlap: int = 128,
     ) -> None:
         if parser not in self.CLASS_COUNTS:
             raise ParsingError(f"unsupported WSL parser: {parser}")
         if not Path(checkpoint).is_file():
             raise ParsingError(f"parser checkpoint missing: {checkpoint}")
+        if sapiens_long_side != 1024:
+            raise ParsingError("pinned Sapiens TorchScript requires governed long_side=1024")
+        if tile_size <= 0 or tile_overlap < 0 or tile_overlap >= tile_size:
+            raise ParsingError("parser tile contract requires 0 <= overlap < tile size")
         self.parser = parser
         self.checkpoint = Path(checkpoint)
         self.work_dir = Path(work_dir)
         self.wsl_distribution = wsl_distribution
         self.python_path = python_path
         self.timeout_sec = timeout_sec
+        self.sapiens_long_side = sapiens_long_side
+        self.tile_size = tile_size
+        self.tile_overlap = tile_overlap
 
     def __call__(self, image: np.ndarray, *, scale: float = 1.0) -> ModelParsing:
         source = np.asarray(image)
-        if source.ndim != 3 or source.shape[2] not in {3, 4} or not 0 < scale <= 1:
+        if (
+            source.ndim != 3
+            or source.shape[2] not in {3, 4}
+            or source.dtype != np.uint8
+            or not 0 < scale <= 1
+        ):
             raise ParsingError("provider image/scale invalid")
         original_shape = source.shape[:2]
         if source.shape[2] == 4:
@@ -95,34 +112,82 @@ class WslParserProvider:
             _wsl_path(input_path),
             "--output",
             _wsl_path(output_path),
+            "--sapiens-long-side",
+            str(self.sapiens_long_side),
+            "--tile-size",
+            str(self.tile_size),
+            "--tile-overlap",
+            str(self.tile_overlap),
         ]
         try:
-            process = subprocess.run(
-                command,
-                capture_output=True,
-                text=True,
-                timeout=self.timeout_sec,
-                check=False,
-            )
-        except (OSError, subprocess.TimeoutExpired) as exc:
-            raise ParsingError(f"{self.parser} WSL launch failed: {exc}") from exc
-        if process.returncode:
-            detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
-            if "out of memory" in detail.lower():
-                raise RuntimeError(f"CUDA out of memory: {detail}")
-            raise ParsingError(f"{self.parser} WSL inference failed: {detail}")
-        try:
-            metadata = json.loads(process.stdout.strip().splitlines()[-1])
-            with np.load(output_path, allow_pickle=False) as archive:
-                labels = archive["labels"]
-                probabilities = archive["probabilities"]
-        except (OSError, ValueError, KeyError, IndexError, json.JSONDecodeError) as exc:
-            raise ParsingError(f"{self.parser} output invalid: {exc}") from exc
+            try:
+                process = subprocess.run(
+                    command,
+                    capture_output=True,
+                    text=True,
+                    timeout=self.timeout_sec,
+                    check=False,
+                )
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                raise ParsingError(f"{self.parser} WSL launch failed: {exc}") from exc
+            if process.returncode:
+                detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
+                if "out of memory" in detail.lower():
+                    raise RuntimeError(f"CUDA out of memory: {detail}")
+                raise ParsingError(f"{self.parser} WSL inference failed: {detail}")
+            try:
+                metadata = json.loads(process.stdout.strip().splitlines()[-1])
+                with np.load(output_path, allow_pickle=False) as archive:
+                    labels = archive["labels"]
+                    probabilities = archive["probabilities"]
+            except (OSError, ValueError, KeyError, IndexError, json.JSONDecodeError) as exc:
+                raise ParsingError(f"{self.parser} output invalid: {exc}") from exc
+        finally:
+            input_path.unlink(missing_ok=True)
+            output_path.unlink(missing_ok=True)
         expected_classes = self.CLASS_COUNTS[self.parser]
-        if metadata.get("parser") != self.parser or probabilities.shape[0] != expected_classes:
-            raise ParsingError(f"{self.parser} metadata/class-count mismatch")
+        expected_metadata: dict[str, object] = {
+            "protocol_version": 1,
+            "parser": self.parser,
+            "class_count": expected_classes,
+            "labels_shape": list(labels.shape),
+            "probabilities_shape": list(probabilities.shape),
+        }
+        if self.parser == "sapiens":
+            expected_metadata.update(
+                {
+                    "model_revision": self.SAPIENS_REVISION,
+                    "precision": "bf16",
+                    "model_input": [1024, 768],
+                    "tile_size": self.tile_size,
+                    "tile_overlap": self.tile_overlap,
+                }
+            )
+        else:
+            expected_metadata.update(
+                {
+                    "model_revision": self.SCHP_REVISION,
+                    "precision": "fp32",
+                    "model_input": [512, 512],
+                    "dataset": "atr",
+                }
+            )
+        mismatches = {
+            key: (metadata.get(key), expected)
+            for key, expected in expected_metadata.items()
+            if metadata.get(key) != expected
+        }
+        if mismatches:
+            raise ParsingError(f"{self.parser} metadata violates governed contract: {mismatches}")
+        if not isinstance(metadata.get("tile_count"), int) or metadata["tile_count"] < 1:
+            raise ParsingError(f"{self.parser} metadata requires positive integer tile_count")
+        if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
+            raise ParsingError(f"{self.parser} metadata requires CUDA device identity")
+        if labels.dtype != np.uint8 or probabilities.dtype != np.float32:
+            raise ParsingError(f"{self.parser} archive dtype mismatch")
         if labels.shape != source.shape[:2] or probabilities.shape[1:] != source.shape[:2]:
             raise ParsingError(f"{self.parser} provider geometry mismatch")
+        _validate_distribution(labels, probabilities, expected_classes, self.parser)
         if source.shape[:2] != original_shape:
             probabilities = _restore_probabilities(probabilities, original_shape)
             labels = probabilities.argmax(axis=0).astype(np.uint8)
@@ -148,6 +213,9 @@ def run_s03_production(
     sapiens_map: dict[int, dict[str, Any]],
     schp_map: dict[int, dict[str, Any]],
     output_dir: Path,
+    sapiens_long_side: int = 1024,
+    tile_size: int = 1536,
+    tile_overlap: int = 128,
 ) -> S03Result:
     """Execute registered Sapiens primary and mandatory SCHP-ATR companion."""
     with Image.open(image_path) as opened:
@@ -155,8 +223,22 @@ def run_s03_production(
     provider_work = Path(output_dir) / "provider_work"
     return run_parsing(
         image,
-        sapiens=WslParserProvider("sapiens", sapiens_checkpoint, provider_work / "sapiens"),
-        schp=WslParserProvider("schp_atr", schp_checkpoint, provider_work / "schp_atr"),
+        sapiens=WslParserProvider(
+            "sapiens",
+            sapiens_checkpoint,
+            provider_work / "sapiens",
+            sapiens_long_side=sapiens_long_side,
+            tile_size=tile_size,
+            tile_overlap=tile_overlap,
+        ),
+        schp=WslParserProvider(
+            "schp_atr",
+            schp_checkpoint,
+            provider_work / "schp_atr",
+            sapiens_long_side=sapiens_long_side,
+            tile_size=tile_size,
+            tile_overlap=tile_overlap,
+        ),
         sapiens_map=sapiens_map,
         schp_map=schp_map,
         output_dir=output_dir,
@@ -316,8 +398,7 @@ def _validated(
         raise ParsingError(f"{name} output shape mismatch")
     if labels.min() < 0 or labels.max() >= class_count:
         raise ParsingError(f"{name} label outside class vocabulary")
-    if not np.isfinite(probabilities).all() or probabilities.min() < 0 or probabilities.max() > 1:
-        raise ParsingError(f"{name} probabilities must be finite in 0..1")
+    _validate_distribution(labels, probabilities, class_count, name)
     return ModelParsing(labels.astype(np.uint8), probabilities)
 
 
@@ -343,14 +424,25 @@ def _disagreement_pct(
     sapiens_map: dict[int, dict[str, Any]],
     schp_map: dict[int, dict[str, Any]],
 ) -> float:
-    sapiens_priors = remap_priors(sapiens_labels, sapiens_map)
-    schp_priors = remap_priors(schp_labels, schp_map)
-    disagreements = 0
-    for sapiens_prior, schp_prior in zip(sapiens_priors.flat, schp_priors.flat, strict=True):
-        sapiens_set = set(sapiens_prior[0]) | set(sapiens_prior[1])
-        schp_set = set(schp_prior[0]) | set(schp_prior[1])
-        disagreements += not bool(sapiens_set & schp_set)
-    return 100.0 * disagreements / sapiens_labels.size
+    sapiens_labels = np.asarray(sapiens_labels)
+    schp_labels = np.asarray(schp_labels)
+    sapiens_unknown = set(np.unique(sapiens_labels).tolist()) - set(sapiens_map)
+    schp_unknown = set(np.unique(schp_labels).tolist()) - set(schp_map)
+    if sapiens_unknown or schp_unknown:
+        raise ParsingError(
+            f"unmapped parser classes: sapiens={sorted(sapiens_unknown)}, schp={sorted(schp_unknown)}"
+        )
+    compatible = np.zeros((max(sapiens_map) + 1, max(schp_map) + 1), dtype=bool)
+    for sapiens_id, sapiens_entry in sapiens_map.items():
+        sapiens_set = set(sapiens_entry.get("part_priors", ())) | set(
+            sapiens_entry.get("material_priors", ())
+        )
+        for schp_id, schp_entry in schp_map.items():
+            schp_set = set(schp_entry.get("part_priors", ())) | set(
+                schp_entry.get("material_priors", ())
+            )
+            compatible[sapiens_id, schp_id] = bool(sapiens_set & schp_set)
+    return 100.0 * float((~compatible[sapiens_labels, schp_labels]).mean())
 
 
 def _is_oom(error: BaseException) -> bool:
@@ -371,7 +463,25 @@ def _restore_probabilities(probabilities: np.ndarray, shape: tuple[int, int]) ->
         ]
     )
     normalizer = restored.sum(axis=0, keepdims=True)
-    return np.divide(restored, normalizer, out=np.zeros_like(restored), where=normalizer > 0)
+    if not np.all(normalizer > 0):
+        raise ParsingError("restored parser probabilities contain zero-mass pixels")
+    return restored / normalizer
+
+
+def _validate_distribution(
+    labels: np.ndarray, probabilities: np.ndarray, class_count: int, name: str
+) -> None:
+    if labels.dtype.kind not in "iu":
+        raise ParsingError(f"{name} labels must be integer")
+    if not np.isfinite(probabilities).all() or probabilities.min() < 0 or probabilities.max() > 1:
+        raise ParsingError(f"{name} probabilities must be finite in 0..1")
+    if probabilities.shape[0] != class_count:
+        raise ParsingError(f"{name} probability class count mismatch")
+    if not np.allclose(probabilities.sum(axis=0), 1.0, rtol=0, atol=1e-4):
+        raise ParsingError(f"{name} probabilities must sum to one per pixel")
+    expected_labels = probabilities.argmax(axis=0)
+    if not np.array_equal(labels, expected_labels):
+        raise ParsingError(f"{name} labels must equal probability argmax")
 
 
 def _wsl_path(path: Path) -> str:

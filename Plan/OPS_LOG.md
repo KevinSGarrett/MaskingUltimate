@@ -2777,3 +2777,22 @@ full regression:            507 tests pass
 quality:                    Ruff check/format clean across 246 files; generated ontology current; tracker structurally valid
 honest boundary:            managed shell exposes no WSL distro, so a fresh end-to-end run_s02 CUDA invocation is not claimed; item remains partial
 ```
+## 2026-07-11 18:26 UTC - S03 dual-parser production contract hardened
+**Items:** MF-P2-02.01 and MF-P2-02.02 advanced 80% -> 95% partial
+**Result:** Sapiens primary and the mandatory SCHP-ATR companion now have governed, coherent, resource-safe production boundaries; neither can publish weak or contradictory parser evidence.
+
+```
+configuration authority:    S03 model/bf16/1024/1536/128/OOM-retry/SCHP-fallback values reach production and drift refuses
+Sapiens runtime proof:       pinned ea5545 revision, bf16, 1024x768 input, exact tiling, 28 classes, positive tile count, CUDA identity
+SCHP runtime proof:          pinned eb84c4 revision, ATR, fp32, 512x512 input, 18 classes, positive tile count, CUDA identity
+archive coherence:           exact uint8 labels + float32 probabilities; finite [0,1], per-pixel sum=1, labels exactly argmax
+scaled recovery:             half-resolution probabilities restore bilinearly, reject zero-mass pixels, renormalize, then recompute labels
+residency discipline:        one Sapiens model load per WSL process; reused across all 1536/128 tiles; explicitly released after final tile
+companion invariant:         SCHP executes first and always remains available when Sapiens full/half-resolution attempts OOM
+temporary hygiene:           unique WSL bridge PNG/NPZ intermediates removed on success and failure paths
+cross-check scalability:     vectorized compatibility-matrix disagreement replaces per-pixel Python objects; 2048x2048 measured 0.072 sec
+focused regression:         40 parser/production/config/registry tests pass
+full regression:            516 tests pass
+quality:                    Ruff check/format clean across 246 files; generated ontology current; tracker structurally valid
+honest boundary:            managed shell exposes no WSL distro, so fresh end-to-end Sapiens and SCHP CUDA invocations are not claimed
+```

@@ -931,3 +931,19 @@ governed branches:         rejected, quarantined, deprecated with explicit recov
 double enforcement:        transition API rejects skips/unknowns; SQL CHECK rejects direct invalid statuses
 focused tests:             8 passed including WAL, FKs, rollback, writer contention, full chain, branches, and bypass attempts
 ```
+
+## 2026-07-11 00:41 UTC - File-only stage orchestrator implemented
+**Items:** MF-P1-02.03
+**Result:** PASS - the full S00–S15 graph, including S08.5 and S09.5, now has
+deterministic planning, content-hash caching, and idempotent filesystem promotion.
+
+```
+stage graph:               18 canonical stages in topological order with explicit dependencies
+CLI controls:              maskfactory run IMAGE_ID --stage/--force/--skip/--config/--plan-only
+config stamps:             SHA-256 of canonical global + stage-local config; unrelated stage changes do not invalidate cache
+stage contract:            runner writes only to private staging dir and returns a manifest delta; downstream reads prior directories
+idempotency:               completed same-hash stages cache; force/config drift reruns; whole owned directory atomically replaced
+failure hygiene:           incomplete staging removed; prior complete directory restored if promotion fails
+evidence files:            manifest_delta.json + stage_run.json with config hash, dependencies, forced state, and file inventory
+focused tests:             7 passed across graph, flags, hashing, cache, replacement, config drift, file-only handoff, and CLI plan
+```

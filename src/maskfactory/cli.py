@@ -55,9 +55,54 @@ def ingest(image: str | None) -> None:
 
 @main.command()
 @click.argument("image_id", required=False)
-def run(image_id: str | None) -> None:
-    """Run the full drafting pipeline (S01–S09) for an image."""
-    _todo("doc 07")
+@click.option("--stage", "selected", multiple=True, help="Run only this stage (repeatable).")
+@click.option("--force", multiple=True, help="Force this stage even if cached or disabled.")
+@click.option("--skip", multiple=True, help="Skip this stage (repeatable).")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option("--plan-only", is_flag=True, help="Print the resolved stage plan without running.")
+def run(
+    image_id: str | None,
+    selected: tuple[str, ...],
+    force: tuple[str, ...],
+    skip: tuple[str, ...],
+    config_path: Path,
+    plan_only: bool,
+) -> None:
+    """Run the governed S00–S15 file-based stage graph for an image."""
+    from .orchestrator import (
+        StageConfigurationError,
+        StageRunnerMissingError,
+        load_pipeline_config,
+        plan_stages,
+        run_pipeline,
+    )
+
+    if not image_id:
+        raise click.UsageError("IMAGE_ID is required")
+    try:
+        config = load_pipeline_config(config_path)
+        plan = plan_stages(selected=selected, force=force, skip=skip, config=config)
+        if plan_only:
+            for stage in plan:
+                click.echo(stage.name)
+            return
+        results = run_pipeline(
+            image_id,
+            selected=selected,
+            force=force,
+            skip=skip,
+            config=config,
+        )
+    except (StageConfigurationError, StageRunnerMissingError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    for result in results:
+        click.echo(f"{result.stage}: {result.status} config={result.config_hash}")
 
 
 @main.command()

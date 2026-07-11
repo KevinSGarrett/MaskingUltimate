@@ -23,3 +23,12 @@
   no identifiable person is depicted.
 - License: MediaPipe Apache-2.0 test asset; currently registered for local QA.
 - SHA-256: `5d673c081ab13b8a1812269ff57047066f9c33c07db5f4178089e8cb3fdc0291`.
+
+## Model expectation manifest
+
+`model_expectations.json` maps every file-backed registry key to its governed
+smoke image and exact expected inference-output SHA-256. Multiple models may
+reuse the same governed image; the per-model runner and output hash are unique.
+The doctor replays every runner and fails if any output differs from this
+registry-backed snapshot. Ollama-managed models use the separate live image
+probe and API/`ollama list` digest checks because they have no checkpoint path.

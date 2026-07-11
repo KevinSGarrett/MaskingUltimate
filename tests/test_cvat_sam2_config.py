@@ -35,7 +35,10 @@ def test_sam2_adapter_returns_full_binary_mask_not_sam1_embedding() -> None:
     handler = (FUNCTION / "model_handler.py").read_text(encoding="utf-8")
 
     assert 'json.dumps({"mask": mask.tolist()})' in main
+    assert 'box=data.get("obj_bbox") or None' in main
+    assert "isinstance(data, (bytes, bytearray))" in main
     assert "get_image_embedding" not in handler
+    assert "prompt_box.shape != (4,)" in handler
     assert "best.astype(np.uint8) * 255" in handler
     assert 'device="cpu"' in handler
 

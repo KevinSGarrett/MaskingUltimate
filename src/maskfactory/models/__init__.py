@@ -9,8 +9,11 @@ from .registry import (
     catalog_model_keys,
     fetch_models,
     load_registered_model,
+    register_ollama_models,
     register_smoke_runner,
+    resolve_registered_managed_model,
     resolve_registered_model,
+    verify_registered_model_smokes,
 )
 
 __all__ = [
@@ -21,6 +24,9 @@ __all__ = [
     "catalog_model_keys",
     "fetch_models",
     "load_registered_model",
+    "register_ollama_models",
     "register_smoke_runner",
+    "resolve_registered_managed_model",
     "resolve_registered_model",
+    "verify_registered_model_smokes",
 ]

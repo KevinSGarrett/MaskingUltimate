@@ -39,7 +39,11 @@ class ModelHandler:
             if points
             else None
         )
-        prompt_box = np.asarray(box, dtype=np.float32) if box is not None else None
+        prompt_box = np.asarray(box, dtype=np.float32) if box is not None and len(box) else None
+        if prompt_box is not None and prompt_box.shape != (4,):
+            raise ValueError(
+                f"SAM2 bounding box must have four coordinates, got {prompt_box.shape}"
+            )
 
         with torch.inference_mode():
             self.predictor.set_image(np.asarray(image))

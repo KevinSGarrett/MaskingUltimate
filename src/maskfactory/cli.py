@@ -13,6 +13,7 @@ from pathlib import Path
 import click
 
 from . import __version__
+from .doctor import run_doctor
 from .models import (
     DEFAULT_CATALOG,
     DEFAULT_REGISTRY,
@@ -20,6 +21,7 @@ from .models import (
     ModelRegistryError,
     catalog_model_keys,
     fetch_models,
+    register_ollama_models,
 )
 from .providers.fixtures import DEFAULT_FIXTURES, SelfTestRunner, run_external_fixtures
 from .providers.fixtures import DEFAULT_OUTPUT as DEFAULT_FIXTURE_OUTPUT
@@ -178,7 +180,16 @@ def gc() -> None:
 @main.command()
 def doctor() -> None:
     """Environment health checks (MF-P0-07)."""
-    _todo("doc 06 §9, MF-P0-07")
+    results = run_doctor()
+    for result in results:
+        click.echo(f"[{result.status}] {result.name}: {result.detail}")
+        if result.hint:
+            click.echo(f"  FIX: {result.hint}")
+    statuses = ("PASS", "WARN", "SKIP", "FAIL")
+    counts = {status: sum(result.status == status for result in results) for status in statuses}
+    click.echo("doctor summary: " + " ".join(f"{status}={counts[status]}" for status in statuses))
+    if counts["FAIL"]:
+        raise click.exceptions.Exit(1)
 
 
 @main.group()
@@ -238,6 +249,27 @@ def models_fetch(
         click.echo(
             f"{result['key']}: {result['fetch_status']} sha256={result['sha256']} "
             f"verified={str(result['verified']).lower()}"
+        )
+
+
+@models.command("register-ollama")
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+def models_register_ollama(registry_path: Path) -> None:
+    """Register locally managed Ollama models after API/CLI digest cross-checks."""
+    try:
+        entries = register_ollama_models(registry_path=registry_path)
+    except (OSError, ValueError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    for entry in entries:
+        click.echo(
+            f"{entry['key']}: {entry['register_status']} managed=true digest={entry['digest']} "
+            f"ollama_list_id={entry['ollama_list_id']} verified=true"
         )
 
 

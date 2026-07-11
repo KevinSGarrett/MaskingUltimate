@@ -13,8 +13,11 @@ from maskfactory.models.registry import (
     ModelRegistryError,
     fetch_models,
     load_registered_model,
+    register_ollama_models,
     register_smoke_runner,
+    resolve_registered_managed_model,
     resolve_registered_model,
+    verify_registered_model_smokes,
 )
 
 
@@ -95,6 +98,20 @@ def test_fetch_downloads_hashes_smokes_registers_and_is_idempotent(tmp_path: Pat
     assert second["fetch_status"] == "cached"
     assert json.loads(registry.read_text(encoding="utf-8")) == document
 
+    verified = verify_registered_model_smokes(
+        catalog_path=catalog,
+        registry_path=registry,
+        models_root=models_root,
+        smoke_runners={"fixture_image_inference": _smoke},
+    )
+    assert verified == [
+        {
+            "key": "fixture",
+            "sha256": _digest(source.read_bytes()),
+            "output_sha256": recorded["smoke_test"]["output_sha256"],
+        }
+    ]
+
 
 def test_failed_smoke_never_publishes_checkpoint_or_verified_entry(tmp_path: Path):
     _, _, catalog = _fixture(tmp_path)
@@ -141,7 +158,9 @@ def test_hash_mismatch_never_publishes_checkpoint(tmp_path: Path):
     assert not (models_root / "fixture_family" / "fixture.ckpt").exists()
 
 
-def test_loader_refuses_unregistered_unverified_missing_and_tampered_paths(tmp_path: Path):
+def test_loader_refuses_unregistered_unverified_missing_and_tampered_paths(
+    tmp_path: Path,
+):
     source, _, catalog = _fixture(tmp_path)
     models_root = tmp_path / "models"
     registry = models_root / "model_registry.json"
@@ -255,3 +274,86 @@ def test_models_fetch_cli_requires_exactly_key_or_all(tmp_path: Path):
     assert both.exit_code == 2
     assert "provide exactly one model KEY or --all" in neither.output
     assert "provide exactly one model KEY or --all" in both.output
+
+
+def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):
+    names = ["qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"]
+    digests = ["a" * 64, "b" * 64, "c" * 64]
+    inventory = {
+        "models": [
+            {
+                "name": name,
+                "digest": digest,
+                "size": index + 100,
+                "details": {
+                    "format": "gguf",
+                    "family": "fixture",
+                    "parameter_size": "7B",
+                    "quantization_level": "Q4_K_M",
+                },
+            }
+            for index, (name, digest) in enumerate(zip(names, digests, strict=True))
+        ]
+    }
+    list_output = "NAME ID SIZE MODIFIED\n" + "\n".join(
+        f"{name} {digest[:12]} 1 GB now" for name, digest in zip(names, digests, strict=True)
+    )
+    registry = tmp_path / "registry.json"
+
+    entries = register_ollama_models(
+        registry_path=registry,
+        inventory=inventory,
+        list_output=list_output,
+        now=lambda: datetime(2026, 7, 10, 23, 0, tzinfo=UTC),
+    )
+
+    assert len(entries) == 3
+    assert all(entry["register_status"] == "registered" for entry in entries)
+    assert all(entry["managed"] is True for entry in entries)
+    assert all(entry["verified"] is True for entry in entries)
+    primary = resolve_registered_managed_model("ollama_qwen2_5vl_7b", registry_path=registry)
+    assert primary["digest"] == "a" * 64
+    assert primary["ollama_list_id"] == "a" * 12
+    cached = register_ollama_models(
+        registry_path=registry,
+        inventory=inventory,
+        list_output=list_output,
+        now=lambda: datetime(2026, 7, 11, 1, 0, tzinfo=UTC),
+    )
+    assert all(entry["register_status"] == "cached" for entry in cached)
+    assert all(entry["registered_at"] == "2026-07-10T23:00:00Z" for entry in cached)
+    try:
+        resolve_registered_model("ollama_qwen2_5vl_7b", registry_path=registry)
+    except ModelRegistryError as exc:
+        assert "managed model has no checkpoint path" in str(exc)
+    else:
+        raise AssertionError("managed Ollama model was exposed as a checkpoint path")
+
+
+def test_register_ollama_models_rejects_digest_mismatch(tmp_path: Path):
+    inventory = {
+        "models": [
+            {"name": name, "digest": character * 64, "details": {}}
+            for name, character in zip(
+                ("qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"),
+                "abc",
+                strict=True,
+            )
+        ]
+    }
+    bad_list = (
+        "NAME ID SIZE MODIFIED\n"
+        "qwen2.5vl:7b deadbeefdead 1 GB now\n"
+        f"llama3.2-vision:11b {'b' * 12} 1 GB now\n"
+        f"qwen2.5:7b-instruct {'c' * 12} 1 GB now\n"
+    )
+    try:
+        register_ollama_models(
+            registry_path=tmp_path / "registry.json",
+            inventory=inventory,
+            list_output=bad_list,
+        )
+    except ModelRegistryError as exc:
+        assert "digest mismatch" in str(exc)
+    else:
+        raise AssertionError("mismatched Ollama digest was registered")

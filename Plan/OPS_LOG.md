@@ -748,3 +748,110 @@ registry:                verified=true in models/model_registry.json
 idempotency:             immediate rerun returned cached with matching SHA-256
 dependency check:        pip check -> No broken requirements found
 ```
+
+## 2026-07-10 23:00 UTC - M12 Ollama-managed models registered
+**Items:** MF-P0-06.14
+**Result:** PASS - all three required Ollama models were cross-checked between
+the local `/api/tags` inventory and `ollama list`, then atomically registered
+with full manifest digests, `managed: true`, and verified runtime metadata.
+
+```
+command:                 maskfactory models register-ollama
+primary VLM:             qwen2.5vl:7b
+primary digest/list ID:  5ced39dfa4bac325dc183dd1e4febaa1c46b3ea28bce48896c8e69c1e79611cc / 5ced39dfa4ba
+primary size/details:    5,969,245,856 bytes; qwen25vl 8.3B Q4_K_M GGUF
+fallback VLM:            llama3.2-vision:11b
+fallback digest/list ID: 6f2f9757ae97e8a3f8ea33d6adb2b11d93d9a35bef277cd2c0b1b5af8e8d0b1e / 6f2f9757ae97
+fallback size/details:   7,816,589,186 bytes; mllama 10.7B Q4_K_M GGUF
+text manifest linter:    qwen2.5:7b-instruct
+text digest/list ID:     845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e / 845dbda0ea48
+text size/details:       4,683,087,332 bytes; qwen2 7.6B Q4_K_M GGUF
+registry semantics:      managed=true; manager=ollama; verified=true; no fake checkpoint paths
+resolver guard:          filesystem resolver explicitly rejects managed entries
+idempotency:             two immediate registrations returned cached and preserved registered_at
+focused tests:           tests/test_model_registry.py -> 8 passed
+```
+
+## 2026-07-10 23:10 UTC - Complete model acquisition idempotency verified
+**Items:** MF-P0-06.15
+**Result:** PASS - `maskfactory models fetch --all` verified every catalog
+artifact in place and returned only cached results; no model was downloaded,
+replaced, or republished.
+
+```
+catalog artifacts:       14
+cached/verified:         14 / 14
+downloads:               0
+hash mismatches:         0
+catalog keys:            yolo11m, birefnet_general, sapiens_0_6b_seg, schp_atr, schp_lip, dwpose_yolox_l, dwpose_133, mediapipe_hand_landmarker, sam2_1_hiera_base_plus, sam2_1_hiera_large, groundingdino_swint_ogc, densepose_rcnn_r50_fpn_s1x, faceparse_bisenet, vitmatte_small_composition_1k
+managed artifacts:       all 3 Ollama entries separately returned cached with matching API/list digests
+registry mutations:      none from the cached fetch/register reruns
+```
+
+## 2026-07-10 23:22 UTC - Doctor check engine and fail-closed CLI implemented
+**Items:** MF-P0-07.01, MF-P0-07.03
+**Result:** PASS for implementation and exit-contract requirements. The live
+restricted-sandbox run intentionally remains ineligible for MF-P0-07.04 because
+WSL and Docker/CVAT are hidden by the current execution boundary.
+
+```
+implemented checks:      torch cu128 + sm_120; full registered-model load/smoke hash replay; CVAT API; conditional CVAT project; live SAM2 Nuclio invocation; Ollama image JSON; disk thresholds; WSL round-trip; png_strict; SQLite write transaction; stale gpu.lock
+result contract:         stable PASS/WARN/SKIP/FAIL records with detail and actionable FIX hints
+exit contract:           any FAIL -> process exit 1; WARN/SKIP alone -> exit 0
+registry enforcement:    all file-backed smokes rerun and must equal their recorded output hashes; managed entries never become fake paths
+tests:                   70 passed total; doctor default battery, thresholds, lock states, P1 project gate, exception isolation, CLI output, and exit codes covered
+live sandbox PASS:       ollama_image, png_strict, sqlite_writable, gpu_lock
+live sandbox WARN:       disk_free = 101.0 GiB (below 150 GiB warning threshold)
+live sandbox FAIL:       WSL/distro hidden; model replay blocked at first WSL-backed model; Docker/CVAT hidden behind sandbox 404; WSL round-trip unavailable
+next live action:        rerun `maskfactory doctor` in the normal machine session; do not complete MF-P0-07.04 until FAIL=0
+```
+
+## 2026-07-10 23:36 UTC - Registry-complete model smoke fixtures verified
+**Items:** MF-P0-07.02
+**Result:** PASS - every file-backed registered model has a governed input image
+and exact expected inference-output SHA-256, enforced against the live registry.
+
+```
+file-backed models:      14 / 14 represented in qa/fixtures/smoke/model_expectations.json
+fixture images:          ultralytics_bus_adults.jpg; mediapipe_thumb_up.jpg
+expectation contract:    exact model-key coverage; registry image/hash identity; real image file; 64-char hexadecimal output hash
+managed models:          3 Ollama entries covered by the separate live image/API and manifest-digest doctor checks
+tests:                   71 passed total; Ruff clean; Black 25.1/Python 3.11 profile clean
+tracker validation:      393 items parsed; no structural problems
+```
+
+## 2026-07-10 23:58 UTC - CVAT UI SAM2 interactor verified and repaired
+**Items:** MF-P0-04.04
+**Result:** PASS - Magic Wand / AI Tools / Segment Anything 2.1 (CPU) produced,
+accepted, and saved a real mask on the synthetic scratch task.
+
+```
+root cause repaired:      CVAT sends obj_bbox=[] for point-only interaction; adapter now normalizes it to None before SAM2 prediction
+request hardening:        Nuclio adapter accepts decoded objects, UTF-8 bytes, or JSON strings and validates box shape=(4,)
+deployment:               pth-sam2 rebuilt and deployed ready on port 62170
+UI workflow:              positive click inside light object -> mask preview -> Done -> Save
+CVAT evidence:            Items: 1; shape id=1; type=mask; frame=0; points_count=329
+service evidence:         lambda POST 200; annotation PATCH action=create 200
+durable report:           qa/reports/cvat_sam2_ui_verification.json
+```
+
+## 2026-07-10 23:59 UTC - Full machine doctor completed with zero failures
+**Items:** MF-P0-07.04
+**Result:** PASS - the complete live doctor exited 0 after replaying every model
+and service check. The pre-P1 project check is explicitly skippable; disk free
+is above the hard block-ingest threshold but remains a tracked warning.
+
+```
+[PASS] torch_cuda: {"available": true, "capability": [12, 0], "cuda": "12.8", "torch": "2.11.0+cu128"}
+[PASS] registered_models: 14 file-backed models loaded; every smoke output hash matched
+[PASS] cvat_api: reachable; version=2.24.0
+[SKIP] cvat_project: no project yet; allowed before P1 project creation
+[PASS] nuclio_interactor: pth-sam2 answered; foreground=21491
+[PASS] ollama_image: qwen2.5vl:7b returned strict image JSON
+[WARN] disk_free: 100.7 GiB free
+[PASS] wsl_roundtrip: Windows -> /mnt/c -> Windows content matched
+[PASS] png_strict: all built-in writer invariants passed
+[PASS] sqlite_writable: C:\Comfy_UI_Main_Masking\data\maskfactory.sqlite
+[PASS] gpu_lock: no gpu.lock present
+doctor summary: PASS=9 WARN=1 SKIP=1 FAIL=0
+```

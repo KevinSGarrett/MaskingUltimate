@@ -12,18 +12,19 @@ Builder = AI coding agent under Kevin's direction (doc 01 roles); solo-dev rhyth
 
 ## 1. Phase P0 — Environment & Foundation (Days 1–3) → feeds D9
 
-| ID | Task | Deliverable | Acceptance | Spec |
-|----|------|-------------|-----------|------|
-| MF-P0-01 | WSL2 Ubuntu 22.04 + systemd + hot workdir | `~/mfwork` on ext4, `/mnt/c` repo junctioned | `wsl -l -v` shows v2; IO benchmark noted | 06 §1 |
-| MF-P0-02 | conda env `maskfactory`, PyTorch ≥2.7 cu128 | `env\environment.yml` + lock | `torch.cuda.get_device_capability()==(12,0)`; sm_120 tensor op runs | 06 §2 |
-| MF-P0-03 | Docker Desktop + CVAT v2.24.0 pinned | CVAT at 127.0.0.1:8080, admin user | login OK; version endpoint matches pin | 06 §4 |
-| MF-P0-04 | nuclio serverless SAM2 interactor | function `pth-sam2` deployed (CPU) | interactive click-segment works on a test image in CVAT UI | 06 §4 |
-| MF-P0-05 | Ollama + Qwen2.5-VL 7B Q4 (+ llama3.2-vision fallback) | models pulled, smoke prompt | P-PART prompt on sample panel returns parseable JSON | 06 §5, 10 §3 |
-| MF-P0-06 | `maskfactory models fetch` — M1–M12 checkpoints | `models\` populated + `model_registry.json` with SHA-256 | every hash verifies; re-run is a no-op | 06 §3, 04 §3 |
-| MF-P0-07 | `maskfactory doctor` | doctor command implementing the full checklist | all checks green on this machine; any red exits non-zero with fix hint | 06 §8 |
-| MF-P0-08 | Repo + quality rails | git init, pre-commit (ruff/black), `png_strict.py` writer, GitHub Actions (lint+unit) | CI green on empty test suite; cv2.imwrite ban lint rule fires on a fixture | 05 §3, 06 §2 |
+| ID | Status | Task | Deliverable | Acceptance | Spec |
+|----|--------|------|-------------|-----------|------|
+| MF-P0-01 | ☑ | WSL2 Ubuntu 22.04 + systemd + hot workdir | `~/mfwork` on ext4, `/mnt/c` repo junctioned | `wsl -l -v` shows v2; IO benchmark noted | 06 §1 |
+| MF-P0-02 | ☑ | conda env `maskfactory`, PyTorch ≥2.7 cu128 | `env\environment.yml` + lock | `torch.cuda.get_device_capability()==(12,0)`; sm_120 tensor op runs | 06 §2 |
+| MF-P0-03 | ☑ | Docker Desktop + CVAT v2.24.0 pinned | CVAT at localhost:8080, admin user | login OK; version endpoint matches pin | 06 §4 |
+| MF-P0-04 | ☑ | nuclio serverless SAM2 interactor | function `pth-sam2` deployed (CPU) | interactive click-segment works on a test image in CVAT UI | 06 §4 |
+| MF-P0-05 | ☑ | Ollama + Qwen2.5-VL 7B Q4 (+ llama3.2-vision fallback) | models pulled, smoke prompt | P-PART prompt on sample panel returns parseable JSON | 06 §5, 10 §3 |
+| MF-P0-06 | ☑ | `maskfactory models fetch` — M1–M12 checkpoints | `models\` populated + `model_registry.json` with SHA-256 | every hash verifies; re-run is a no-op | 06 §3, 04 §3 |
+| MF-P0-07 | ☑ | `maskfactory doctor` | doctor command implementing the full checklist | all checks green on this machine; any red exits non-zero with fix hint | 06 §8 |
+| MF-P0-08 | ☑ | Repo + quality rails | git init, pre-commit (ruff/black), `png_strict.py` writer, GitHub Actions (lint+unit) | CI green on empty test suite; cv2.imwrite ban lint rule fires on a fixture | 05 §3, 06 §2 |
 
-**Exit:** doctor green end-to-end; D9 provable on paper (lockfiles + registry exist).
+**Exit: ☑ PASS (2026-07-10)** — doctor completed with zero FAIL results; D9 is
+provable from the committed lockfiles and populated, hash-verified registry.
 
 ## 2. Phase P1 — Gold Factory MVP (Weeks 1–2) → D2 partial
 
@@ -163,4 +164,3 @@ of an already-working single-instance system, not a from-scratch parallel build 
 
 **Exit:** `MF-P8-EXIT` — **D11/G9** hold on real multi-person images, not just fixtures; doc 00 §4
 and doc 01 §3 both reflect this as demonstrated, not just specified.
-

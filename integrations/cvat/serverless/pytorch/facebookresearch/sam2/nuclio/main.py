@@ -21,12 +21,18 @@ def init_context(context) -> None:
 def handler(context, event):
     """Decode a CVAT request and return its full-resolution binary mask."""
     data = event.body
+    if isinstance(data, (bytes, bytearray)):
+        data = json.loads(data.decode("utf-8"))
+    elif isinstance(data, str):
+        data = json.loads(data)
     image = Image.open(io.BytesIO(base64.b64decode(data["image"]))).convert("RGB")
     mask = context.user_data.model.handle(
         image=image,
         pos_points=data.get("pos_points", []),
         neg_points=data.get("neg_points", []),
-        box=data.get("obj_bbox"),
+        # CVAT sends [] when optional box-first interaction is disabled. SAM2
+        # distinguishes that from no box and otherwise creates a (0,) tensor.
+        box=data.get("obj_bbox") or None,
     )
     return context.Response(
         body=json.dumps({"mask": mask.tolist()}),

@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import tempfile
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime
@@ -24,6 +25,11 @@ DEFAULT_CATALOG = PROJECT_ROOT / "models" / "model_sources.yaml"
 DEFAULT_REGISTRY = PROJECT_ROOT / "models" / "model_registry.json"
 DEFAULT_MODELS_ROOT = PROJECT_ROOT / "models"
 CHUNK_SIZE = 1024 * 1024
+OLLAMA_MODEL_NAMES = (
+    "qwen2.5vl:7b",
+    "llama3.2-vision:11b",
+    "qwen2.5:7b-instruct",
+)
 
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
 _SMOKE_RUNNERS: dict[str, SmokeRunner] = {}
@@ -156,6 +162,167 @@ def _relative_registry_path(path: Path, models_root: Path) -> str:
     return f"models/{relative}"
 
 
+def _ollama_key(name: str) -> str:
+    return "ollama_" + "".join(
+        character if character.isalnum() else "_" for character in name
+    ).strip("_")
+
+
+def _ollama_list_ids(output: str) -> dict[str, str]:
+    rows: dict[str, str] = {}
+    for line in output.splitlines()[1:]:
+        columns = line.split()
+        if len(columns) >= 2:
+            rows[columns[0]] = columns[1]
+    return rows
+
+
+def register_ollama_models(
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    api_url: str = "http://127.0.0.1:11434/api/tags",
+    expected_names: Iterable[str] = OLLAMA_MODEL_NAMES,
+    inventory: dict[str, Any] | None = None,
+    list_output: str | None = None,
+    now: Callable[[], datetime] | None = None,
+) -> list[dict[str, Any]]:
+    """Cross-check Ollama API manifests against ``ollama list`` and register them."""
+    if inventory is None:
+        request = Request(api_url, headers={"User-Agent": "MaskFactory/0.0.1"})
+        try:
+            with urlopen(request, timeout=30) as response:  # noqa: S310 - local Ollama endpoint
+                inventory = json.load(response)
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ModelRegistryError(f"cannot read Ollama inventory from {api_url}: {exc}") from exc
+    if list_output is None:
+        process = subprocess.run(
+            ["docker", "exec", "ollama", "ollama", "list"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        if process.returncode != 0:
+            raise ModelRegistryError(f"ollama list failed: {process.stderr.strip()}")
+        list_output = process.stdout
+
+    api_models = {
+        item.get("name"): item
+        for item in inventory.get("models", [])
+        if isinstance(item, dict) and isinstance(item.get("name"), str)
+    }
+    cli_ids = _ollama_list_ids(list_output)
+    registry = _load_registry(registry_path)
+    clock = now or (lambda: datetime.now(UTC))
+    timestamp = clock().astimezone(UTC).isoformat().replace("+00:00", "Z")
+    results: list[dict[str, Any]] = []
+
+    for name in expected_names:
+        model = api_models.get(name)
+        if model is None:
+            raise ModelRegistryError(f"required Ollama model is missing: {name}")
+        digest = model.get("digest")
+        if not isinstance(digest, str) or len(digest) != 64:
+            raise ModelRegistryError(f"Ollama model has invalid manifest digest: {name}")
+        list_id = cli_ids.get(name)
+        if not list_id or not digest.startswith(list_id):
+            raise ModelRegistryError(
+                f"Ollama API/list digest mismatch for {name}: api={digest}, list={list_id}"
+            )
+        details = model.get("details") if isinstance(model.get("details"), dict) else {}
+        entry = {
+            "key": _ollama_key(name),
+            "role": ("local_vlm" if "vision" in name or "vl" in name else "manifest_linter"),
+            "managed": True,
+            "manager": "ollama",
+            "ollama_name": name,
+            "digest": digest,
+            "ollama_list_id": list_id,
+            "sha256": digest,
+            "size": model.get("size"),
+            "format": details.get("format"),
+            "family": details.get("family"),
+            "parameter_size": details.get("parameter_size"),
+            "quantization": details.get("quantization_level"),
+            "registered_at": timestamp,
+            "availability_check": "api_tags+ollama_list_digest_match",
+            "verified": True,
+        }
+        existing = next(
+            (item for item in registry["models"] if item.get("key") == entry["key"]),
+            None,
+        )
+        stable_fields = set(entry) - {"registered_at"}
+        if existing and all(existing.get(field) == entry[field] for field in stable_fields):
+            results.append({**existing, "register_status": "cached"})
+            continue
+        registry["models"] = [
+            item for item in registry["models"] if item.get("key") != entry["key"]
+        ]
+        registry["models"].append(entry)
+        results.append({**entry, "register_status": "registered"})
+
+    registry["models"].sort(key=lambda item: item["key"])
+    _atomic_json(registry_path, registry)
+    return results
+
+
+def resolve_registered_managed_model(
+    key: str,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+) -> dict[str, Any]:
+    """Return verified metadata for a manager-owned model without inventing a file path."""
+    registry = _load_registry(registry_path)
+    entry = next((item for item in registry["models"] if item.get("key") == key), None)
+    if entry is None:
+        raise ModelRegistryError(f"managed model is not registered: {key}")
+    if entry.get("managed") is not True or entry.get("manager") != "ollama":
+        raise ModelRegistryError(f"registry entry is not an Ollama-managed model: {key}")
+    if entry.get("verified") is not True:
+        raise ModelRegistryError(f"managed model is not verified: {key}")
+    return entry
+
+
+def verify_registered_model_smokes(
+    *,
+    catalog_path: Path = DEFAULT_CATALOG,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    smoke_runners: dict[str, SmokeRunner] | None = None,
+) -> list[dict[str, Any]]:
+    """Re-run every file-backed model smoke and require its recorded output hash."""
+    catalog = _load_catalog(catalog_path)
+    registry = _load_registry(registry_path)
+    runners = {**_SMOKE_RUNNERS, **(smoke_runners or {})}
+    results: list[dict[str, Any]] = []
+    for entry in registry["models"]:
+        if entry.get("managed") is True:
+            continue
+        key = entry.get("key")
+        if key not in catalog:
+            raise ModelRegistryError(f"registered model is absent from catalog: {key}")
+        source = catalog[key]
+        path = resolve_registered_model(
+            str(key), registry_path=registry_path, models_root=models_root
+        )
+        runner_name = entry.get("smoke_test", {}).get("runner")
+        runner = runners.get(runner_name)
+        if runner is None:
+            raise ModelRegistryError(f"registered model has unavailable smoke runner: {key}")
+        smoke_image = (PROJECT_ROOT / str(source.get("smoke_image", ""))).resolve()
+        if catalog_path != DEFAULT_CATALOG:
+            smoke_image = (catalog_path.parent / str(source.get("smoke_image", ""))).resolve()
+        result = runner(path, smoke_image)
+        expected = entry.get("smoke_test", {}).get("output_sha256")
+        if result.get("passed") is not True or result.get("output_sha256") != expected:
+            raise ModelRegistryError(
+                f"model smoke mismatch for {key}: expected {expected}, got {result}"
+            )
+        results.append({"key": key, "sha256": entry.get("sha256"), "output_sha256": expected})
+    return results
+
+
 def fetch_models(
     keys: Iterable[str],
     *,
@@ -264,7 +431,10 @@ def resolve_registered_model(
 ) -> Path:
     """Resolve only a verified, present, hash-matching registered checkpoint."""
     registry = _load_registry(registry_path)
-    entry = next((item for item in registry["models"] if item.get("key") == str(key_or_path)), None)
+    entry = next(
+        (item for item in registry["models"] if item.get("key") == str(key_or_path)),
+        None,
+    )
     requested = None
     if entry is None:
         candidate = Path(key_or_path)
@@ -281,6 +451,11 @@ def resolve_registered_model(
         )
     if entry is None:
         raise ModelRegistryError(f"checkpoint is not registered: {key_or_path}")
+    if entry.get("managed") is True:
+        raise ModelRegistryError(
+            f"managed model has no checkpoint path; use its {entry.get('manager')} runtime: "
+            f"{entry.get('key')}"
+        )
     if entry.get("verified") is not True:
         raise ModelRegistryError(f"checkpoint is not verified: {entry.get('key')}")
     path = _registry_entry_path(entry, models_root)

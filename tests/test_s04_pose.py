@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -12,8 +13,10 @@ from maskfactory.stages.s04_pose import (
     classify_view,
     evaluate_pose_tags,
     infer_dwpose_candidates,
+    infer_dwpose_candidates_wsl,
     pose_metrics,
     process_pose_candidates,
+    run_s04_production,
 )
 
 
@@ -219,3 +222,132 @@ def test_dwpose_onnx_adapter_decodes_yolox_and_simcc(
     assert candidates[0].keypoints.shape == (133, 3)
     assert np.allclose(candidates[0].keypoints[:, 2], 0.8)
     assert np.isfinite(candidates[0].keypoints).all()
+
+
+def test_dwpose_refuses_silent_cuda_session_fallback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import onnxruntime
+    from PIL import Image
+
+    image = tmp_path / "person.png"
+    detector = tmp_path / "det.onnx"
+    pose = tmp_path / "pose.onnx"
+    Image.new("RGB", (20, 20), "white").save(image)
+    detector.write_bytes(b"fixture")
+    pose.write_bytes(b"fixture")
+
+    class Session:
+        def __init__(self, path, providers):
+            pass
+
+        def get_providers(self):
+            return ["CPUExecutionProvider"]
+
+    monkeypatch.setattr(
+        onnxruntime,
+        "get_available_providers",
+        lambda: ["CUDAExecutionProvider", "CPUExecutionProvider"],
+    )
+    monkeypatch.setattr(onnxruntime, "InferenceSession", Session)
+
+    with pytest.raises(PoseError, match="did not bind CUDAExecutionProvider"):
+        infer_dwpose_candidates(
+            image,
+            detector_checkpoint=detector,
+            pose_checkpoint=pose,
+            require_cuda=True,
+        )
+
+
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
+def test_dwpose_wsl_bridge_validates_pinned_archive_and_cleans_up(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image_path = tmp_path / "person.png"
+    from PIL import Image
+
+    Image.new("RGB", (200, 240), "white").save(image_path)
+    detector = tmp_path / "yolox_l.onnx"
+    pose = tmp_path / "dw-ll_ucoco_384.onnx"
+    detector.write_bytes(b"detector fixture")
+    pose.write_bytes(b"pose fixture")
+
+    def windows_path(wsl_path: str) -> Path:
+        assert wsl_path.startswith("/mnt/c/")
+        return Path("C:/" + wsl_path.removeprefix("/mnt/c/"))
+
+    def fake_run(command, **kwargs):
+        output = windows_path(command[command.index("--output") + 1])
+        boxes = np.array([[10, 20, 100, 220]], dtype=np.float32)
+        keypoints = np.zeros((1, 133, 3), dtype=np.float32)
+        keypoints[:, :, 0] = 50
+        keypoints[:, :, 1] = 100
+        keypoints[:, :, 2] = 0.9
+        np.savez_compressed(output, bboxes=boxes, keypoints=keypoints)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = json.dumps(
+                {
+                    "protocol_version": 1,
+                    "detector_sha256": (
+                        "7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411"
+                    ),
+                    "pose_sha256": (
+                        "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843"
+                    ),
+                    "provider": "CUDAExecutionProvider",
+                    "candidate_count": 1,
+                    "bboxes_shape": [1, 4],
+                    "keypoints_shape": [1, 133, 3],
+                    "detection_confidence": 0.3,
+                    "nms_iou": 0.45,
+                    "device": "NVIDIA fixture",
+                }
+            )
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s04_pose.subprocess.run", fake_run)
+    work = tmp_path / "work"
+    candidates = infer_dwpose_candidates_wsl(
+        image_path,
+        detector_checkpoint=detector,
+        pose_checkpoint=pose,
+        work_dir=work,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].keypoints.shape == (133, 3)
+    assert not list(work.iterdir())
+
+
+def test_s04_production_uses_authoritative_wsl_provider(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image = tmp_path / "source.png"
+    detector = tmp_path / "det.onnx"
+    pose = tmp_path / "pose.onnx"
+    image.write_bytes(b"fixture")
+    detector.write_bytes(b"fixture")
+    pose.write_bytes(b"fixture")
+    called = {}
+
+    def fake_wsl(*args, **kwargs):
+        called.update(kwargs)
+        return [PoseCandidate((0, 0, 100, 110), _keypoints())]
+
+    monkeypatch.setattr("maskfactory.stages.s04_pose.infer_dwpose_candidates_wsl", fake_wsl)
+    result = run_s04_production(
+        image,
+        instance_bbox_xyxy=(0, 0, 100, 110),
+        detector_checkpoint=detector,
+        pose_checkpoint=pose,
+        output_dir=tmp_path / "out",
+        pose_tag_rules=_rules(),
+    )
+
+    assert result.pose_path.is_file()
+    assert called["work_dir"] == tmp_path / "out/provider_work"

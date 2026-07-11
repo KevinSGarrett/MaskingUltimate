@@ -210,6 +210,9 @@ def build_production_runners(
         }
 
     def s04(context: StageContext) -> Mapping[str, Any]:
+        settings = context.config["stage"]
+        if settings.get("model") != "dwpose_133":
+            raise SemanticStageError("S04 production requires governed dwpose_133 model")
         _, source_path = _source(context.image_id, images_root)
         people = json.loads(
             (prior(context, "S01") / "person_bbox.json").read_text(encoding="utf-8")
@@ -230,6 +233,9 @@ def build_production_runners(
             require_cuda=True,
             promoted_instance_bboxes=promoted_bboxes,
             person_index=person_index,
+            confidence_min=float(settings.get("keypoint_confidence", 0.3)),
+            degraded_body_fraction=float(settings.get("degraded_body_keypoint_fraction", 0.6)),
+            use_wsl=True,
         )
         return {
             "view": result.view,

@@ -2796,3 +2796,22 @@ full regression:            516 tests pass
 quality:                    Ruff check/format clean across 246 files; generated ontology current; tracker structurally valid
 honest boundary:            managed shell exposes no WSL distro, so fresh end-to-end Sapiens and SCHP CUDA invocations are not claimed
 ```
+## 2026-07-11 18:37 UTC - S04 DWPose authoritative CUDA bridge implemented
+**Item:** MF-P2-03.01 advanced 90% -> 95% partial
+**Result:** Production pose inference no longer depends on the Windows CPU/Azure ORT boundary; it now crosses a fail-closed WSL bridge and returns complete, pinned 133-keypoint evidence for instance ownership and serialization.
+
+```
+production runtime:         Ubuntu-22.04 authoritative environment; onnxruntime-gpu; CUDA required for both sessions
+detector proof:             YOLOX-L checkpoint SHA-256 7860ae...; CUDAExecutionProvider must bind first; 640 decode/NMS
+pose proof:                 dw-ll_ucoco-384 SHA-256 724f4f...; CUDAExecutionProvider must bind first; 288x384 crops
+bridge archive:             exact float32 Nx4 boxes + Nx133x3 coordinates/confidences; no pickle; unique temporary artifact removed
+bridge metadata:            protocol, both hashes, thresholds, candidate count/shapes, provider, and GPU device all mandatory
+decoder hardening:          SimCC x/y selected by literal 576/768 widths, finite checked, inverse-affine coordinates clipped to canvas
+configuration authority:    governed dwpose_133 model, keypoint confidence 0.3, degraded body fraction 0.6 forwarded into production
+ownership/output:           global unique instance assignment, co-subject suppression, all 133 indexed points/confidences in pose133.json
+focused regression:         36 S04/production/config tests pass
+full regression:            521 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+live managed-shell probe:   correctly failed WSL_E_DISTRO_NOT_FOUND before publishing any candidate archive
+honest boundary:            registry CUDA smokes and prior CPU diagnostic exist, but a fresh production-bridge CUDA run is not claimed
+```

@@ -3122,7 +3122,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-11T03:43:01+00:00",
@@ -3133,12 +3133,17 @@
           "ts": "2026-07-11T05:46:24+00:00",
           "actor": "ai_agent",
           "text": "Production YOLOX-L + dw-ll_ucoco_384 ONNX adapter implemented with CUDA-required default, standard 640 YOLOX grid/stride decode, person score/NMS, 288x384 top-down affine, 133-keypoint SimCC decode/inverse mapping, and strict provider/output checks. Live CPU diagnostic on adult bus produced 4 candidates, selected p0 ownership, suppressed 3 co-subjects, serialized pose133, body fraction 1.0/front/non-degraded. Cannot claim complete: installed ORT exposes CPU/Azure only, not required CUDAExecutionProvider."
+        },
+        {
+          "ts": "2026-07-11T18:37:09+00:00",
+          "actor": "ai_agent",
+          "text": "Production S04 now uses an authoritative WSL CUDA bridge rather than the Windows CPU/Azure ORT boundary. Child runs the strict YOLOX-L + DWPose decoder, returns all float32 Nx4/Nx133x3 candidates, and proves exact checkpoint hashes, CUDA-first session binding, thresholds, shapes, candidate count, and GPU identity. SimCC output order is shape-derived, finite, and clipped to canvas; governed confidence/degraded thresholds reach serialization. 36 focused and 521 full tests pass. Live bridge probe correctly failed WSL_E_DISTRO_NOT_FOUND in this managed shell, so fresh CUDA execution remains unclaimed."
         }
       ],
-      "evidence": null,
+      "evidence": "src/maskfactory/stages/s04_pose.py, tools/run_dwpose_wsl.py, and production runner implement the WSL CUDA boundary; tests/test_s04_pose.py and test_production_runners.py verify archive metadata/cleanup, CUDA session binding, 133-keypoint contract, config forwarding, ownership, and serialization. Registry checkpoint hashes 7860ae.../724f4f... and prior CUDA smokes remain verified; prior CPU diagnostic serialized a real 133-keypoint result. Current: Ruff/format clean across 247 files, ontology current, 521 tests pass. Missing final evidence: fresh production bridge run because Ubuntu-22.04 is invisible to this managed boundary.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:46:24+00:00",
+      "updated_at": "2026-07-11T18:37:09+00:00",
       "orphaned": false
     },
     "MF-P2-03.02": {

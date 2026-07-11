@@ -274,6 +274,85 @@ def test_s03_production_runner_refuses_governance_drift(
         production.build_production_runners(config)["S03"](context)
 
 
+def test_s04_production_runner_forwards_governed_pose_contract(tmp_path: Path, monkeypatch) -> None:
+    image_id = "img_a3f9c2e17b04"
+    images = tmp_path / "images"
+    image_dir = images / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (100, 120), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "status": "ingested",
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 100,
+                    "source_height": 120,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    work = tmp_path / "work"
+    s01_dir = work / "s01" / image_id
+    s01_dir.mkdir(parents=True)
+    (s01_dir / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "promoted": True,
+                        "bbox_xyxy": [10, 10, 90, 110],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    captured = {}
+
+    def fake_s04(*args, **kwargs):
+        captured.update(kwargs)
+        return SimpleNamespace(view="front", pose_tags=("arms_down",), pose_degraded=False)
+
+    monkeypatch.setattr(production, "run_s04_production", fake_s04)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S04"],
+        output_dir=work / "s04" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S04"]},
+        config_hash="fixture",
+    )
+
+    delta = production.build_production_runners(config, images_root=images)["S04"](context)
+
+    assert delta["view"] == "front"
+    assert captured["require_cuda"] is True and captured["use_wsl"] is True
+    assert captured["confidence_min"] == 0.3
+    assert captured["degraded_body_fraction"] == 0.6
+
+
+def test_s04_production_runner_refuses_model_drift(tmp_path: Path) -> None:
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = dict(config["stages"]["S04"])
+    settings["model"] = "other"
+    context = StageContext(
+        image_id="img_a3f9c2e17b04",
+        stage=STAGE_BY_NAME["S04"],
+        output_dir=tmp_path / "work/s04/img_a3f9c2e17b04",
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="governed"):
+        production.build_production_runners(config)["S04"](context)
+
+
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:
     parsing = np.zeros((100, 80), dtype=np.uint8)
     parsing[15:75, 25:55] = 22  # Sapiens torso

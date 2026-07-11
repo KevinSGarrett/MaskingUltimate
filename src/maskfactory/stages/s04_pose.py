@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import math
+import subprocess
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -41,6 +43,8 @@ NOSE, LEFT_SHOULDER, RIGHT_SHOULDER = 0, 5, 6
 LEFT_ELBOW, RIGHT_ELBOW, LEFT_WRIST, RIGHT_WRIST = 7, 8, 9, 10
 LEFT_HIP, RIGHT_HIP, LEFT_KNEE, RIGHT_KNEE = 11, 12, 13, 14
 LEFT_ANKLE, RIGHT_ANKLE = 15, 16
+DETECTOR_SHA256 = "7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411"
+POSE_SHA256 = "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843"
 
 
 def infer_dwpose_candidates(
@@ -53,6 +57,12 @@ def infer_dwpose_candidates(
     nms_iou: float = 0.45,
 ) -> list[PoseCandidate]:
     """Run pinned YOLOX-L + DWPose-133 ONNX with strict provider/output contracts."""
+    if not Path(image_path).is_file():
+        raise PoseError(f"DWPose input image missing: {image_path}")
+    if not Path(detector_checkpoint).is_file() or not Path(pose_checkpoint).is_file():
+        raise PoseError("DWPose detector and pose checkpoints must both exist")
+    if not 0 <= detection_confidence <= 1 or not 0 <= nms_iou <= 1:
+        raise PoseError("DWPose confidence and NMS thresholds must be in 0..1")
     try:
         import cv2
         import onnxruntime as ort
@@ -71,6 +81,11 @@ def infer_dwpose_candidates(
         pose = ort.InferenceSession(str(pose_checkpoint), providers=providers)
     except Exception as exc:  # noqa: BLE001 - normalize ONNX provider boundary
         raise PoseError(f"DWPose session creation failed: {exc}") from exc
+    if require_cuda:
+        for name, session in (("detector", detector), ("pose", pose)):
+            bound = session.get_providers()
+            if not bound or bound[0] != "CUDAExecutionProvider":
+                raise PoseError(f"DWPose {name} session did not bind CUDAExecutionProvider first")
     with Image.open(image_path) as opened:
         rgb = np.asarray(opened.convert("RGB"))
     boxes = _yolox_people(
@@ -86,17 +101,124 @@ def infer_dwpose_candidates(
         outputs = pose.run(None, {pose.get_inputs()[0].name: tensor})
         if len(outputs) != 2:
             raise PoseError("DWPose pose model must return simcc_x and simcc_y")
-        simcc_x, simcc_y = (np.asarray(output) for output in outputs)
-        if simcc_x.shape[:2] != (1, 133) or simcc_y.shape[:2] != (1, 133):
-            raise PoseError("DWPose SimCC output must contain 133 keypoints")
+        arrays = [np.asarray(output) for output in outputs]
+        if any(array.shape[:2] != (1, 133) or not np.isfinite(array).all() for array in arrays):
+            raise PoseError("DWPose SimCC output must be finite and contain 133 keypoints")
+        by_width = {array.shape[2]: array for array in arrays}
+        if set(by_width) != {576, 768}:
+            raise PoseError("DWPose SimCC outputs must have x/y widths 576/768")
+        simcc_x, simcc_y = by_width[576], by_width[768]
         x_indices = simcc_x[0].argmax(axis=1).astype(np.float32) / 2.0
         y_indices = simcc_y[0].argmax(axis=1).astype(np.float32) / 2.0
         confidences = np.minimum(simcc_x[0].max(axis=1), simcc_y[0].max(axis=1))
         points = np.stack((x_indices, y_indices, np.ones(133)), axis=1)
         original = points @ inverse.T
+        original[:, 0] = np.clip(original[:, 0], 0, rgb.shape[1] - 1)
+        original[:, 1] = np.clip(original[:, 1], 0, rgb.shape[0] - 1)
         keypoints = np.column_stack((original[:, :2], np.clip(confidences, 0.0, 1.0)))
         candidates.append(PoseCandidate(tuple(float(value) for value in box), keypoints))
     return candidates
+
+
+def infer_dwpose_candidates_wsl(
+    image_path: Path,
+    *,
+    detector_checkpoint: Path,
+    pose_checkpoint: Path,
+    work_dir: Path,
+    detection_confidence: float = 0.3,
+    nms_iou: float = 0.45,
+    wsl_distribution: str = "Ubuntu-22.04",
+    python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+    timeout_sec: int = 900,
+) -> list[PoseCandidate]:
+    """Execute the strict decoder in authoritative WSL CUDA and validate its archive."""
+    for name, path in (
+        ("image", image_path),
+        ("detector checkpoint", detector_checkpoint),
+        ("pose checkpoint", pose_checkpoint),
+    ):
+        if not Path(path).is_file():
+            raise PoseError(f"DWPose {name} missing: {path}")
+    if not 0 <= detection_confidence <= 1 or not 0 <= nms_iou <= 1:
+        raise PoseError("DWPose confidence and NMS thresholds must be in 0..1")
+    work_dir = Path(work_dir)
+    work_dir.mkdir(parents=True, exist_ok=True)
+    output_path = work_dir / f"dwpose_{uuid.uuid4().hex}.npz"
+    root = Path(__file__).resolve().parents[3]
+    command = [
+        "wsl",
+        "-d",
+        wsl_distribution,
+        "--",
+        python_path,
+        _wsl_path(root / "tools" / "run_dwpose_wsl.py"),
+        "--image",
+        _wsl_path(image_path),
+        "--detector",
+        _wsl_path(detector_checkpoint),
+        "--pose",
+        _wsl_path(pose_checkpoint),
+        "--output",
+        _wsl_path(output_path),
+        "--detection-confidence",
+        str(detection_confidence),
+        "--nms-iou",
+        str(nms_iou),
+    ]
+    try:
+        try:
+            process = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=timeout_sec,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise PoseError(f"DWPose WSL launch failed: {exc}") from exc
+        if process.returncode:
+            detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
+            raise PoseError(f"DWPose WSL inference failed: {detail}")
+        try:
+            metadata = json.loads(process.stdout.strip().splitlines()[-1])
+            with np.load(output_path, allow_pickle=False) as archive:
+                boxes = archive["bboxes"]
+                keypoints = archive["keypoints"]
+        except (OSError, ValueError, KeyError, IndexError, json.JSONDecodeError) as exc:
+            raise PoseError(f"DWPose WSL output invalid: {exc}") from exc
+    finally:
+        output_path.unlink(missing_ok=True)
+    expected = {
+        "protocol_version": 1,
+        "detector_sha256": DETECTOR_SHA256,
+        "pose_sha256": POSE_SHA256,
+        "provider": "CUDAExecutionProvider",
+        "candidate_count": int(boxes.shape[0]),
+        "bboxes_shape": list(boxes.shape),
+        "keypoints_shape": list(keypoints.shape),
+        "detection_confidence": detection_confidence,
+        "nms_iou": nms_iou,
+    }
+    mismatches = {
+        key: (metadata.get(key), value)
+        for key, value in expected.items()
+        if metadata.get(key) != value
+    }
+    if mismatches:
+        raise PoseError(f"DWPose WSL metadata violates governed contract: {mismatches}")
+    if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
+        raise PoseError("DWPose WSL metadata requires CUDA device identity")
+    if boxes.dtype != np.float32 or keypoints.dtype != np.float32:
+        raise PoseError("DWPose WSL archive dtype mismatch")
+    if boxes.ndim != 2 or boxes.shape[1:] != (4,):
+        raise PoseError("DWPose WSL boxes must have shape Nx4")
+    if keypoints.shape != (boxes.shape[0], 133, 3):
+        raise PoseError("DWPose WSL keypoints must have shape Nx133x3")
+    return [
+        _validate_candidate(PoseCandidate(tuple(box.tolist()), points))
+        for box, points in zip(boxes, keypoints, strict=True)
+    ]
 
 
 def run_s04_production(
@@ -110,14 +232,27 @@ def run_s04_production(
     require_cuda: bool = True,
     promoted_instance_bboxes: dict[int, tuple[float, float, float, float]] | None = None,
     person_index: int | None = None,
+    confidence_min: float = 0.3,
+    degraded_body_fraction: float = 0.6,
+    use_wsl: bool = True,
 ) -> PoseResult:
     """Execute real DWPose then apply instance ownership/view/tag policy."""
-    candidates = infer_dwpose_candidates(
-        image_path,
-        detector_checkpoint=detector_checkpoint,
-        pose_checkpoint=pose_checkpoint,
-        require_cuda=require_cuda,
-    )
+    if use_wsl:
+        if not require_cuda:
+            raise PoseError("production WSL DWPose cannot disable the CUDA requirement")
+        candidates = infer_dwpose_candidates_wsl(
+            image_path,
+            detector_checkpoint=detector_checkpoint,
+            pose_checkpoint=pose_checkpoint,
+            work_dir=Path(output_dir) / "provider_work",
+        )
+    else:
+        candidates = infer_dwpose_candidates(
+            image_path,
+            detector_checkpoint=detector_checkpoint,
+            pose_checkpoint=pose_checkpoint,
+            require_cuda=require_cuda,
+        )
     return process_pose_candidates(
         candidates,
         instance_bbox_xyxy=instance_bbox_xyxy,
@@ -125,6 +260,8 @@ def run_s04_production(
         pose_tag_rules=pose_tag_rules,
         promoted_instance_bboxes=promoted_instance_bboxes,
         person_index=person_index,
+        confidence_min=confidence_min,
+        degraded_body_fraction=degraded_body_fraction,
     )
 
 
@@ -493,3 +630,11 @@ def _box_from_points(
 
 def _point_in_box(x: float, y: float, box: tuple[float, float, float, float]) -> bool:
     return box[0] <= x <= box[2] and box[1] <= y <= box[3]
+
+
+def _wsl_path(path: Path) -> str:
+    resolved = Path(path).resolve()
+    drive = resolved.drive.rstrip(":").lower()
+    if not drive:
+        raise PoseError(f"expected Windows drive path: {resolved}")
+    return f"/mnt/{drive}{resolved.as_posix().split(':', 1)[1]}"

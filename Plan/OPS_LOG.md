@@ -915,3 +915,19 @@ invalid fixtures:          manifest, qa_report, model_registry, failure_queue, c
 pointer assertions:        /image_id, /score, /models/0, /failure_reason, /cells/0/pose, /scale
 focused tests:             13 passed (7 enforcement + 6 invalid-fixture cases)
 ```
+
+## 2026-07-11 00:33 UTC - SQLite state foundation and workflow transitions enforced
+**Items:** MF-P1-02.01, MF-P1-02.02
+**Result:** PASS - the rebuildable workflow index now has its authoritative
+tables, concurrency policy, and guarded state machine.
+
+```
+database schema:           images, stage_runs, review_tasks, training_runs; foreign keys and supporting indexes
+durability:                WAL mode; schema user_version=1; 30 s busy timeout; transactional commit/rollback
+writer policy:             atomic PID/host/timestamp owner file; concurrent orchestrator refused; lease always released
+dashboard policy:          URI mode=ro plus PRAGMA query_only=ON
+main state chain:           ingested→drafted→auto_qa→vlm_qa→in_review→corrected→approved_gold→exported
+governed branches:         rejected, quarantined, deprecated with explicit recovery/terminal transitions
+double enforcement:        transition API rejects skips/unknowns; SQL CHECK rejects direct invalid statuses
+focused tests:             8 passed including WAL, FKs, rollback, writer contention, full chain, branches, and bypass attempts
+```

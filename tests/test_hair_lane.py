@@ -1,6 +1,8 @@
+import os
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
 
 from maskfactory.io.png_strict import read_mask
@@ -122,6 +124,7 @@ def test_matting_trigger_trimap_alpha_and_optional_lace_path(tmp_path: Path) -> 
     ).triggered
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_vitmatte_provider_enforces_known_trimap_and_native_geometry(
     tmp_path: Path, monkeypatch
 ) -> None:

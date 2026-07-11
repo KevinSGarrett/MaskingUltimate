@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -119,6 +120,7 @@ def test_s06_writes_only_configured_thresholded_proposal_boxes(tmp_path: Path) -
         )
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_s06_production_provider_preserves_proposal_only_authority(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -171,6 +173,7 @@ def test_s07_embedding_uses_one_primary_or_one_oom_fallback() -> None:
     ]
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_s07_persistent_provider_embeds_once_and_serves_multimask(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

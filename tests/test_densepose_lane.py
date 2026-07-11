@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import numpy as np
@@ -49,6 +50,7 @@ def test_densepose_provider_writes_strict_rgb_iuv_artifact(tmp_path: Path) -> No
         write_densepose_iuv(output.part_index, bad_u, output.v, tmp_path / "bad.png")
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_densepose_production_provider_validates_owned_full_canvas_iuv(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

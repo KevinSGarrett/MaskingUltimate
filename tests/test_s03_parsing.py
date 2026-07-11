@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -152,6 +153,7 @@ def test_remap_rejects_unknown_and_output_validation_is_strict(tmp_path: Path) -
         )
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_wsl_parser_provider_validates_probabilities_and_restores_half_scale(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

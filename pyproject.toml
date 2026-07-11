@@ -27,6 +27,8 @@ dependencies = [
     "scipy",
     "scikit-image",
     "torch",
+    "ultralytics",
+    "onnxruntime",
 ]
 
 [project.scripts]

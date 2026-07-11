@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -185,6 +186,7 @@ def test_s02_rejects_bad_confidence_or_shape(tmp_path: Path) -> None:
         )
 
 
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_s02_production_adapter_validates_wsl_float_output(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

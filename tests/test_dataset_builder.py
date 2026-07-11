@@ -280,3 +280,50 @@ def test_two_week_class_error_trigger_opens_idempotent_p5_task(tmp_path: Path) -
     assert first["retrain_task"] == second["retrain_task"]
     task = json.loads(Path(first["retrain_task"]).read_text())
     assert task["status"] == "open" and task["approved_gold_count"] == 225
+
+
+def test_active_learning_writes_weekly_summary_from_local_model_evidence(tmp_path: Path) -> None:
+    class TextClient:
+        def generate(self, **kwargs) -> str:
+            return json.dumps(
+                {
+                    "clusters": {"finger_merge": "hands_fingers"},
+                    "coverage_targets": ["fingers_spread"],
+                    "weekly_summary": "Acquire more separated-finger examples.",
+                }
+            )
+
+    queue = tmp_path / "failure_queue.jsonl"
+    queue.write_text(
+        json.dumps(
+            {
+                "ts": "2026-07-10T00:00:00Z",
+                "image_id": "img_000000000001",
+                "failed_body_part": "left_index_finger",
+                "failure_reason": "finger_merge",
+                "pose_angle": "arms_down",
+                "model_that_failed": "draft_pipeline_full",
+                "correction_needed": "separate visible finger gap",
+                "priority": 0.9,
+                "resolved": False,
+                "resolution_pkg_version": None,
+            }
+        )
+        + "\n"
+    )
+    config = tmp_path / "vlm.yaml"
+    config.write_text(
+        "runtime:\n  base_url: http://127.0.0.1:11434\nmodels:\n  text_llm: qwen2.5:7b-instruct\n"
+    )
+    result = run_active_learning(
+        failure_queue_path=queue,
+        coverage_matrix_path=tmp_path / "missing.json",
+        output_dir=tmp_path / "reports",
+        approved_gold_count=0,
+        report_date="2026-07-12",
+        text_client=TextClient(),
+        vlm_config_path=config,
+    )
+    summary = Path(result["weekly_qa_summary"]).read_text()
+    assert "Acquire more separated-finger examples." in summary
+    assert "`fingers_spread`" in summary

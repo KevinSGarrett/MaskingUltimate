@@ -413,7 +413,12 @@ def write_weekly_qa_summary(
         raise FailureMiningError("weekly summarizer returned no Markdown")
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(summary.rstrip() + "\n", encoding="utf-8")
+    temporary = output_path.with_name(f".{output_path.name}.tmp-{uuid.uuid4().hex}")
+    try:
+        temporary.write_text(summary.rstrip() + "\n", encoding="utf-8")
+        os.replace(temporary, output_path)
+    finally:
+        temporary.unlink(missing_ok=True)
     return output_path
 
 

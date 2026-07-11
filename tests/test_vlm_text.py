@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from maskfactory.vlm.text import TextLlmError, cluster_failure_reasons
+from maskfactory.vlm.text import (
+    TextLlmError,
+    cluster_failure_reasons,
+    lint_manifest,
+    run_manifest_lint_sweep,
+)
 
 
 class Client:
@@ -83,3 +88,87 @@ def test_empty_failure_set_writes_no_model_call_evidence(tmp_path: Path) -> None
     )
     assert client.calls == []
     assert json.loads(path.read_text())["model_called"] is False
+
+
+def test_manifest_lint_retries_and_enforces_text_only_contract(tmp_path: Path) -> None:
+    valid = json.dumps(
+        {
+            "findings": [
+                {
+                    "severity": "WARN",
+                    "path": "/notes",
+                    "problem": "review note is vague",
+                    "suggestion": "name the uncertain boundary",
+                }
+            ],
+            "overall": "needs_human",
+        }
+    )
+    client = Client(["not json", valid])
+    result = lint_manifest(
+        {"image_id": "img_a3f9c2e17b04", "notes": "check"},
+        client=client,
+        model="qwen2.5:7b-instruct",
+        prompt_version="p-manifest-v1-doc10",
+    )
+    assert result["overall"] == "needs_human"
+    assert result["findings"][0]["path"] == "/notes"
+    assert all(call["images"] == () for call in client.calls)
+    assert all(
+        call["options"] == {"temperature": 0, "seed": 1337, "num_predict": 1024}
+        for call in client.calls
+    )
+    assert len(result["prompt_sha256"]) == len(result["response_sha256"]) == 64
+
+
+def test_manifest_sweep_uses_configured_model_and_blocks_malformed_json(tmp_path: Path) -> None:
+    root = tmp_path / "packages"
+    good = root / "img_a3f9c2e17b04/instances/p0"
+    bad = root / "img_b3f9c2e17b04/instances/p0"
+    good.mkdir(parents=True)
+    bad.mkdir(parents=True)
+    (good / "manifest.json").write_text(json.dumps({"image_id": "img_a3f9c2e17b04"}))
+    (bad / "manifest.json").write_text("bad json")
+    config = tmp_path / "vlm.yaml"
+    config.write_text(
+        "runtime:\n  base_url: http://127.0.0.1:11434\n"
+        "models:\n  text_llm: qwen2.5:7b-instruct\n"
+        "prompts:\n  p_manifest:\n    version: p-manifest-v1-doc10\n"
+    )
+    client = Client([json.dumps({"findings": [], "overall": "pass"})])
+    output = run_manifest_lint_sweep(
+        packages_root=root,
+        output_path=tmp_path / "report.json",
+        client=client,
+        vlm_config_path=config,
+    )
+    report = json.loads(output.read_text())
+    assert report["package_count"] == 2
+    assert report["model"] == "qwen2.5:7b-instruct"
+    assert sum(item["model_called"] for item in report["packages"]) == 1
+    malformed = next(item for item in report["packages"] if not item["model_called"])
+    assert malformed["findings"][0]["severity"] == "BLOCK"
+
+
+def test_manifest_lint_rejects_findings_marked_pass(tmp_path: Path) -> None:
+    invalid = json.dumps(
+        {
+            "findings": [
+                {
+                    "severity": "WARN",
+                    "path": "/notes",
+                    "problem": "vague",
+                    "suggestion": "clarify",
+                }
+            ],
+            "overall": "pass",
+        }
+    )
+    client = Client([invalid, invalid])
+    with pytest.raises(TextLlmError, match="P-MANIFEST"):
+        lint_manifest(
+            {"image_id": "img_a3f9c2e17b04"},
+            client=client,
+            model="qwen2.5:7b-instruct",
+            prompt_version="p-manifest-v1-doc10",
+        )

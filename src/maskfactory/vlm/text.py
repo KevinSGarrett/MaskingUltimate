@@ -1,12 +1,18 @@
-"""Strict local text-LLM duties for weekly failure mining."""
+"""Strict local text-LLM duties for failure mining and manifest QA."""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import uuid
 from pathlib import Path
 from typing import Protocol
+
+import yaml
+
+from .client import OllamaClient
 
 
 class TextLlmError(RuntimeError):
@@ -68,6 +74,8 @@ ALLOWED_COVERAGE_TARGETS = frozenset(
         "props_present",
     }
 )
+_MANIFEST_SEVERITIES = frozenset({"BLOCK", "ROUTE", "WARN"})
+_MANIFEST_OVERALL = frozenset({"pass", "needs_human"})
 
 
 def cluster_failure_reasons(
@@ -129,6 +137,112 @@ def cluster_failure_reasons(
     return dict(parsed["clusters"])
 
 
+def run_manifest_lint_sweep(
+    *,
+    packages_root: Path,
+    output_path: Path,
+    client: TextClient | None = None,
+    vlm_config_path: Path = Path("configs/vlm.yaml"),
+) -> Path:
+    """Lint every package manifest with the governed local text model.
+
+    The batch is deliberately text-only, records malformed manifests without asking
+    the model, and seals enough request/response evidence to audit every model call.
+    """
+    config = yaml.safe_load(Path(vlm_config_path).read_text(encoding="utf-8"))
+    if config["runtime"]["base_url"] != "http://127.0.0.1:11434":
+        raise TextLlmError("P-MANIFEST must remain on the fixed local Ollama endpoint")
+    model = config["models"]["text_llm"]
+    prompt_version = config["prompts"]["p_manifest"]["version"]
+    active_client = client or OllamaClient(config["runtime"]["base_url"])
+    packages_root = Path(packages_root)
+    results = []
+    for manifest_path in sorted(packages_root.rglob("manifest.json")):
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if not isinstance(manifest, dict):
+                raise ValueError("manifest root must be an object")
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            results.append(
+                {
+                    "package": str(manifest_path.parent),
+                    "manifest": str(manifest_path),
+                    "overall": "needs_human",
+                    "findings": [
+                        {
+                            "severity": "BLOCK",
+                            "path": "/",
+                            "problem": f"manifest cannot be parsed: {exc}",
+                            "suggestion": "repair the manifest before package review",
+                        }
+                    ],
+                    "model_called": False,
+                }
+            )
+            continue
+        result = lint_manifest(
+            manifest,
+            client=active_client,
+            model=model,
+            prompt_version=prompt_version,
+        )
+        results.append(
+            {
+                "package": str(manifest_path.parent),
+                "manifest": str(manifest_path),
+                **result,
+            }
+        )
+    document = {
+        "schema_version": "1.0.0",
+        "model": model,
+        "prompt_version": prompt_version,
+        "packages_root": str(packages_root),
+        "package_count": len(results),
+        "packages": results,
+    }
+    _write_evidence(output_path, document)
+    return Path(output_path)
+
+
+def lint_manifest(
+    manifest: dict,
+    *,
+    client: TextClient,
+    model: str,
+    prompt_version: str,
+) -> dict:
+    """Run P-MANIFEST with one strict retry and return sealed text-only evidence."""
+    prompt = _manifest_prompt(manifest)
+    raw = ""
+    parsed = None
+    for attempt in range(2):
+        raw = client.generate(
+            model=model,
+            prompt=(
+                prompt
+                if attempt == 0
+                else prompt + "\nYour prior response was invalid. Return the exact JSON shape only."
+            ),
+            images=(),
+            options={"temperature": 0, "seed": 1337, "num_predict": 1024},
+        )
+        parsed = _parse_manifest_lint(raw)
+        if parsed is not None:
+            break
+    if parsed is None:
+        raise TextLlmError("local text LLM returned invalid P-MANIFEST JSON after one retry")
+    return {
+        **parsed,
+        "model_called": True,
+        "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+        "response_sha256": hashlib.sha256(raw.encode()).hexdigest(),
+        "manifest_sha256": hashlib.sha256(
+            json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+    }
+
+
 def _prompt(reasons: tuple[str, ...]) -> str:
     cluster_template = {reason: "choose_one_allowed_theme" for reason in reasons}
     return (
@@ -151,6 +265,20 @@ def _prompt(reasons: tuple[str, ...]) -> str:
         + json.dumps(cluster_template, separators=(",", ":"))
         + "\nREASONS:\n"
         + json.dumps(list(reasons), separators=(",", ":"))
+    )
+
+
+def _manifest_prompt(manifest: dict) -> str:
+    return (
+        "You are MaskFactory's local P-MANIFEST reviewer. Lint this text-only package "
+        "manifest against the body-part ontology. Check that visibility states are complete "
+        "and plausible, derived subsets are consistent, the occlusion graph is acyclic, and "
+        "review notes are specific. You are QA routing only: never approve gold, clear a "
+        "BLOCK, or claim to have inspected pixels. Return JSON only with exact keys findings "
+        "and overall. findings must be an array of objects with exact keys severity, path, "
+        "problem, suggestion. severity must be BLOCK, ROUTE, or WARN; path must be a JSON "
+        "pointer; overall must be pass or needs_human. A nonempty findings array requires "
+        "needs_human.\nMANIFEST:\n" + json.dumps(manifest, sort_keys=True, separators=(",", ":"))
     )
 
 
@@ -187,7 +315,50 @@ def _parse(raw: str, reasons: tuple[str, ...]) -> dict | None:
     }
 
 
+def _parse_manifest_lint(raw: str) -> dict | None:
+    try:
+        document = json.loads(raw)
+    except (json.JSONDecodeError, TypeError):
+        return None
+    if not isinstance(document, dict) or set(document) != {"findings", "overall"}:
+        return None
+    findings = document["findings"]
+    overall = document["overall"]
+    if not isinstance(findings, list) or overall not in _MANIFEST_OVERALL:
+        return None
+    normalized = []
+    for finding in findings:
+        if not isinstance(finding, dict) or set(finding) != {
+            "severity",
+            "path",
+            "problem",
+            "suggestion",
+        }:
+            return None
+        if (
+            finding["severity"] not in _MANIFEST_SEVERITIES
+            or not isinstance(finding["path"], str)
+            or not finding["path"].startswith("/")
+            or any(
+                not isinstance(finding[key], str) or not finding[key].strip()
+                for key in ("problem", "suggestion")
+            )
+        ):
+            return None
+        normalized.append({key: finding[key].strip() for key in finding})
+    if bool(normalized) != (overall == "needs_human"):
+        return None
+    return {"findings": normalized, "overall": overall}
+
+
 def _write_evidence(path: Path, document: dict) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")
+    try:
+        temporary.write_text(
+            json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)

@@ -16,6 +16,7 @@ from ..qa.failure_mining import (
     FailureRecord,
     harvest_human_edit_deltas,
     write_acquisition_plan,
+    write_weekly_qa_summary,
 )
 from ..vlm.client import OllamaClient
 from ..vlm.text import cluster_failure_reasons
@@ -79,6 +80,21 @@ def run_active_learning(
         clusterer=clusterer,
         report_date=date,
     )
+    weekly_summary = None
+    if clustering_path.is_file():
+        clustering = json.loads(clustering_path.read_text(encoding="utf-8"))
+        summary_text = clustering.get("weekly_summary")
+        targets = clustering.get("coverage_targets", [])
+        if isinstance(summary_text, str) and summary_text.strip():
+            weekly_summary = write_weekly_qa_summary(
+                {
+                    "summary": summary_text,
+                    "unresolved_failure_count": sum(not record.resolved for record in records),
+                    "coverage_targets": targets,
+                },
+                output_path=Path(output_dir) / f"weekly_qa_summary_{date}.md",
+                summarizer=_render_weekly_summary,
+            )
     deficits = coverage_deficit_report(coverage, target_per_cell=8)["cells"]
     top = [row for row in deficits if row["deficit"] > 0][:10]
     with plan.open("a", encoding="utf-8") as handle:
@@ -119,6 +135,7 @@ def run_active_learning(
         "class_error_trigger_classes": list(error_classes),
         "acquisition_plan": str(plan),
         "text_llm_clustering_evidence": str(clustering_path) if clustering_path.is_file() else None,
+        "weekly_qa_summary": str(weekly_summary) if weekly_summary else None,
         "human_edit_harvest": {
             key: value for key, value in harvest.items() if key != "new_records"
         },
@@ -127,6 +144,18 @@ def run_active_learning(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return result
+
+
+def _render_weekly_summary(statistics: dict) -> str:
+    targets = statistics["coverage_targets"]
+    target_lines = "\n".join(f"- `{target}`" for target in targets) or "- None proposed"
+    return (
+        "# Weekly MaskFactory QA Summary\n\n"
+        f"{statistics['summary'].strip()}\n\n"
+        f"Unresolved failures: {statistics['unresolved_failure_count']}\n\n"
+        "## Model-proposed coverage targets\n\n"
+        f"{target_lines}"
+    )
 
 
 def _class_error_trigger(path: Path | None) -> tuple[bool, tuple[str, ...]]:

@@ -462,6 +462,42 @@ def qa(image_id: str | None) -> None:
     _todo("doc 09")
 
 
+@main.command("manifest-lint")
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    "output_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/reports/manifest_lint.json"),
+    show_default=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/vlm.yaml"),
+    show_default=True,
+)
+def manifest_lint(packages_root: Path, output_path: Path, config_path: Path) -> None:
+    """Run the local text-only P-MANIFEST sweep across package manifests."""
+    from .vlm.text import TextLlmError, run_manifest_lint_sweep
+
+    try:
+        report = run_manifest_lint_sweep(
+            packages_root=packages_root,
+            output_path=output_path,
+            vlm_config_path=config_path,
+        )
+    except (OSError, KeyError, ValueError, TextLlmError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(report)
+
+
 @main.group("second-review")
 def second_review() -> None:
     """Stratified fresh-eyes review workflow (doc 11 §6)."""

@@ -3127,3 +3127,26 @@ focused regression:         49 text/VLM/mining/dataset/production tests pass
 full regression:            563 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-11 22:15 UTC - P-MANIFEST and weekly-summary callbacks replaced by production model paths
+**Item:** MF-P4-03.04 completion evidence corrected and strengthened
+**Result:** The nightly command and weekly S15 job now invoke the governed local text model; the prior callback-only helpers are no longer treated as production evidence.
+
+```
+nightly command:             maskfactory manifest-lint --packages-root data/packages --output qa/reports/manifest_lint.json
+discovery:                   recursively finds package manifest.json files under the supplied package root
+endpoint/model:              fixed http://127.0.0.1:11434; configs/vlm.yaml qwen2.5:7b-instruct + p-manifest-v1-doc10
+privacy boundary:            serialized manifest text only; images are explicitly empty and nothing leaves the machine
+determinism:                 Ollama options temperature=0, seed=1337, num_predict=1024
+output contract:             exact findings + overall keys; exact severity/path/problem/suggestion finding keys
+consistency:                 nonempty findings require needs_human; pass requires zero findings
+failure behavior:            one strict retry; malformed source JSON becomes a local BLOCK without a model call
+auditability:                report seals manifest, prompt, and response SHA-256 per called package and is replaced atomically
+weekly artifact:             S15 writes weekly_qa_summary_<date>.md from the same governed model's summary and closed-vocabulary targets
+live proof:                  local model correctly returned a strict BLOCK/needs_human finding for an empty parts map
+live artifact:               qa/live_verification/p_manifest_text_llm_20260711.json
+artifact SHA-256:            1f86e803424c49ded69468ae9da0fb8e36ca0532e9ea787ab336327486e523d6
+focused regression:         19 text/mining/dataset tests pass
+full regression:            567 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+honest boundary:            data/packages currently contains zero production package manifests, so no production-package findings are claimed
+```

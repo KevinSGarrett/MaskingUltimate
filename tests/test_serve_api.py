@@ -23,7 +23,11 @@ from maskfactory.serve.api import (
     probe_vram,
 )
 from maskfactory.serve.comfy_export import ComfyPackageError, MFPredictMasks
-from maskfactory.serve.providers import load_production_sam2_refiner
+from maskfactory.serve.providers import (
+    ServingProviderError,
+    load_production_mmseg_slot,
+    load_production_sam2_refiner,
+)
 from maskfactory.stages.s07_sam2 import SamCandidate
 
 
@@ -193,6 +197,102 @@ def test_sequential_champion_slots_and_sam2_on_demand_never_coreside(tmp_path: P
     runtime.refine(_png(), "hair", ({"x": 1, "y": 1, "positive": True},))
     assert sam_events == ["load", "call", "close"]
     runtime.stop()
+
+
+def test_production_mmseg_slot_requires_hashed_config_and_maps_explicit_classes(
+    tmp_path: Path,
+) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "body.pth"
+    checkpoint.write_bytes(b"champion")
+    config = models_root / "body.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    registry = tmp_path / "registry.json"
+    entry = {
+        "key": "body",
+        "file": "models/body.pth",
+        "role": "champion_bodypart",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/body.py",
+        "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+        "class_names": ["background", "hair", "left_upper_arm"],
+    }
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    calls = []
+
+    class Tensor:
+        def detach(self):
+            return self
+
+        def cpu(self):
+            return np.array([[[0, 1], [2, 1]]], dtype=np.int64)
+
+    model = SimpleNamespace(to=lambda device: calls.append(("to", device)))
+    slot = load_production_mmseg_slot(
+        "champion_bodypart",
+        checkpoint,
+        registry_path=registry,
+        models_root=models_root,
+        initializer=lambda config_path, checkpoint_path, device: (
+            calls.append((config_path, checkpoint_path, device)) or model
+        ),
+        inference=lambda _model, _image: SimpleNamespace(
+            pred_sem_seg=SimpleNamespace(data=Tensor())
+        ),
+    )
+    outputs = slot(np.zeros((2, 2, 3), dtype=np.uint8), ("hair", "left_upper_arm"))
+    assert outputs["hair"].tolist() == [[False, True], [False, True]]
+    assert outputs["left_upper_arm"].tolist() == [[False, False], [True, False]]
+    assert calls[0] == (str(config), str(checkpoint), "cuda:0")
+    slot.close()
+    assert calls[-1] == ("to", "cpu")
+
+    entry["inference_config_sha256"] = "0" * 64
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ServingProviderError, match="config hash mismatch"):
+        load_production_mmseg_slot(
+            "champion_bodypart",
+            checkpoint,
+            registry_path=registry,
+            models_root=models_root,
+            initializer=lambda *_args, **_kwargs: model,
+            inference=lambda *_args: None,
+        )
+
+
+def test_production_runtime_auto_configures_only_a_complete_champion_set(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    entries = []
+    for role in ("champion_bodypart", "champion_hand", "champion_clothing"):
+        checkpoint = models_root / f"{role}.pth"
+        checkpoint.write_bytes(role.encode())
+        entries.append(
+            {
+                "key": role,
+                "file": f"models/{checkpoint.name}",
+                "role": role,
+                "version_tag": "fixture-v1",
+                "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+                "verified": True,
+            }
+        )
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": entries}), encoding="utf-8")
+    runtime = create_production_runtime(registry_path=registry, models_root=models_root)
+    assert runtime.configured_models == [
+        "champion_bodypart",
+        "champion_hand",
+        "champion_clothing",
+    ]
+    assert runtime.refiner is not None
+
+    registry.write_text(json.dumps({"models": entries[:1]}), encoding="utf-8")
+    with pytest.raises(ServingError, match="partial champion serving registry"):
+        create_production_runtime(registry_path=registry, models_root=models_root)
 
 
 def test_production_sam2_refiner_resolves_hashes_validates_clicks_and_releases_embedding(

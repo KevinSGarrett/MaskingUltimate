@@ -322,12 +322,38 @@ class InferenceRuntime:
         }
 
 
-def create_production_runtime() -> InferenceRuntime:
+def create_production_runtime(
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+) -> InferenceRuntime:
     """Build the production runtime with every currently available verified provider."""
-    from .providers import load_production_sam2_refiner
+    from functools import partial
 
-    runtime = InferenceRuntime()
-    runtime.configure_on_demand_refiner(load_production_sam2_refiner)
+    from ..models.registry import champion_status
+    from .providers import CHAMPION_ROLES, load_production_mmseg_slot, load_production_sam2_refiner
+
+    runtime = InferenceRuntime(registry_path=Path(registry_path), models_root=Path(models_root))
+    runtime.configure_on_demand_refiner(
+        partial(
+            load_production_sam2_refiner,
+            registry_path=runtime.registry_path,
+            models_root=runtime.models_root,
+        )
+    )
+    present = set(champion_status(registry_path=runtime.registry_path)["champions"])
+    required = set(CHAMPION_ROLES)
+    if present & required and present & required != required:
+        missing = sorted(required - present)
+        raise ServingError(f"partial champion serving registry; missing roles: {missing}")
+    if required <= present:
+        runtime.configure_sequential_champions(
+            partial(
+                load_production_mmseg_slot,
+                registry_path=runtime.registry_path,
+                models_root=runtime.models_root,
+            )
+        )
     return runtime
 
 

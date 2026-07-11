@@ -2876,3 +2876,22 @@ full regression:            531 tests pass
 quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
 honest boundary:            no Kevin-supplied live source/WSL run or draft-vs-corrected-gold G2 measurement exists; D1/G2 remain open
 ```
+## 2026-07-11 19:27 UTC - Production champion-backed Mode-B predictor wired
+**Items:** MF-P6-02.01 advanced 98% -> 99%; MF-P6-02.03 advanced 90% -> 98%; MF-P5-06.03 advanced 88% -> 94%
+**Result:** The live service no longer stops at an abstract predictor callback: a complete promoted champion set now configures three real sequential MMSeg slots, while absent or partial champion sets fail closed without claiming inference readiness.
+
+```
+role contract:              exactly champion_bodypart + champion_hand + champion_clothing; a partial set refuses startup
+checkpoint authority:       every slot is resolved through the exactly-one verified registry role and SHA-256 recheck
+config authority:           inference_config must remain under models_root and match its independently registered SHA-256
+class authority:            explicit unique class_names required; every non-background name must exist in the governed ontology and match part/material map type
+framework boundary:         mmseg.apis.init_model(config, checkpoint, device=cuda:0) followed by inference_model
+prediction contract:        uint8 RGB in; native-size integer pred_sem_seg; class IDs bounded by the declared vocabulary; requested masks mapped by class name
+residency proof:            only requested role slots load, provider closes after each slot, model moves to CPU, CUDA cache clears before the next role
+SAM2 boundary:              remains per-request/on-demand and cannot co-reside with the completed sequential prediction request
+focused regression:         17 serving tests pass
+full regression:            533 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+managed-shell probes:       wsl.exe reports no installed distro; schtasks queries return system path unavailable
+honest boundary:            live champion-backed WSL HTTP inference remains unclaimed until trained winners are promoted with checkpoint/config/class metadata
+```

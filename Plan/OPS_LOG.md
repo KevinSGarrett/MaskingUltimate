@@ -2932,3 +2932,23 @@ full regression:            536 tests pass
 quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
 honest boundary:            a real evaluated winner still must be registered, promoted, served in WSL, and rolled back before MF-P5-06.03 completes
 ```
+## 2026-07-11 19:54 UTC - Production VLM calibration corpus authority hardened
+**Item:** MF-P4-05.01 advanced 35% -> 50% partial
+**Result:** The replacement 40-panel builder can no longer turn repeated, ungoverned, or mislabeled imagery into apparent production calibration evidence.
+
+```
+corpus size:                exactly 20 explicit seeds -> one good + one known-defect panel each
+source diversity:           exactly 20 distinct source byte hashes; varied masks cannot disguise source reuse
+origin allowlist:           generated | owned_photo | licensed | consented_subject
+age safety:                 every source must be explicitly clear_adult; uncertain or missing refuses the corpus
+rights authority:           nonempty rights_evidence required per source
+identity:                   declared source_sha256 must match current source bytes
+label authority:            ontology-resolved indexed atomic PART/MATERIAL labels only; derived unions refuse
+gold contract:              strict binary nonempty good mask, same source geometry, defect mask must differ
+coverage:                   >=5 distinct labels and all ten defect taxonomy values exactly twice
+audit output:               source origin, age safety, rights evidence, and source/good/defect hashes recorded in manifest
+focused regression:         11 VLM evaluation/client/router tests pass
+full regression:            537 tests pass
+quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
+honest boundary:            qa/vlm_eval currently has one governed real seed only; deprecated_synthetic_v0 remains non-authoritative and no production gate rerun is claimed
+```

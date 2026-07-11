@@ -5442,18 +5442,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 35,
+      "percent_complete": 50,
       "notes": [
         {
           "ts": "2026-07-11T06:05:29+00:00",
           "actor": "ai_agent",
           "text": "2026-07-11 calibration audit invalidated prior completion: panels are abstract capsule drawings, all 20 goods are near-duplicates, and each defect taxonomy label is printed inside the image. This is not production-grade calibration evidence. Existing set/results will be archived as deprecated_synthetic_v0; real distinct source+known-mask seeds are required."
+        },
+        {
+          "ts": "2026-07-11T19:54:13+00:00",
+          "actor": "ai_agent",
+          "text": "Production calibration builder is now fail-closed on corpus authority: exactly 20 distinct source byte hashes (not one source with varied masks), per-source allowed origin + clear_adult + nonempty rights evidence + matching SHA-256, ontology-valid indexed atomic labels across >=5 classes, nonempty strict good masks, differing known defect masks, and every taxonomy value exactly twice. Manifest records governance for audit. Focused VLM tests and 537-test full suite pass. Only one governed real seed currently exists, so no replacement 40-panel corpus is claimed."
         }
       ],
-      "evidence": "qa/vlm_eval/manifest.json plus 40 generated PNG panels; tests/test_vlm_eval_gate.py verifies exact 20 good/20 defect balance, all ten taxonomy classes, and every panel file. Generated with python tools/generate_vlm_eval.py.",
+      "evidence": "Builder and tests prove the governed 20-source/40-panel contract and reject duplicate, ungoverned, hash-drifted, non-atomic, empty, or taxonomy-incomplete seeds. Production corpus remains absent; deprecated_synthetic_v0 is not gate authority.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T06:05:29+00:00",
+      "updated_at": "2026-07-11T19:54:13+00:00",
       "orphaned": false
     },
     "MF-P4-05.02": {

@@ -14,6 +14,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from ..io.png_strict import read_mask
+from ..ontology import get_ontology
 from ..qa.panels import render_boundary_panel
 
 DEFECT_TAXONOMY = (
@@ -28,6 +29,7 @@ DEFECT_TAXONOMY = (
     "hair_edge_bad",
     "occlusion_error",
 )
+CALIBRATION_ORIGINS = {"generated", "owned_photo", "licensed", "consented_subject"}
 
 
 class VlmEvalError(RuntimeError):
@@ -111,7 +113,15 @@ def build_calibration_from_seed_manifest(
         raise VlmEvalError(f"calibration seed manifest invalid: {exc}") from exc
     if not isinstance(seeds, list) or len(seeds) != 20:
         raise VlmEvalError("production calibration requires exactly 20 explicit seed records")
-    required = {"id", "label", "source", "good_mask", "defect_mask", "defect_type"}
+    required = {
+        "id",
+        "label",
+        "source",
+        "good_mask",
+        "defect_mask",
+        "defect_type",
+        "governance",
+    }
     if any(not isinstance(seed, dict) or set(seed) != required for seed in seeds):
         raise VlmEvalError(f"every calibration seed requires exactly {sorted(required)}")
     if len({seed["id"] for seed in seeds}) != 20:
@@ -124,7 +134,32 @@ def build_calibration_from_seed_manifest(
     base = seed_manifest_path.parent
     validated = []
     signatures = set()
+    source_hashes = set()
+    authority = get_ontology()
     for seed in seeds:
+        governance = seed["governance"]
+        if not isinstance(governance, dict) or set(governance) != {
+            "source_origin",
+            "age_safety",
+            "rights_evidence",
+            "source_sha256",
+        }:
+            raise VlmEvalError(f"calibration governance invalid: {seed['id']}")
+        if governance["source_origin"] not in CALIBRATION_ORIGINS:
+            raise VlmEvalError(f"calibration source origin is not governed: {seed['id']}")
+        if governance["age_safety"] != "clear_adult":
+            raise VlmEvalError(f"calibration source is not age-cleared adult: {seed['id']}")
+        if (
+            not isinstance(governance["rights_evidence"], str)
+            or not governance["rights_evidence"].strip()
+        ):
+            raise VlmEvalError(f"calibration rights evidence missing: {seed['id']}")
+        try:
+            label = authority.label(seed["label"])
+        except Exception as exc:
+            raise VlmEvalError(f"calibration label is not in the ontology: {seed['id']}") from exc
+        if label.map not in {"part", "material"} or label.id is None:
+            raise VlmEvalError(f"calibration label is not an indexed atomic class: {seed['id']}")
         paths = {
             name: (base / seed[name]).resolve() for name in ("source", "good_mask", "defect_mask")
         }
@@ -132,8 +167,16 @@ def build_calibration_from_seed_manifest(
             raise VlmEvalError(f"calibration seed file missing: {seed['id']}")
         with Image.open(paths["source"]) as opened:
             source = opened.convert("RGB")
+        source_digest = hashlib.sha256(paths["source"].read_bytes()).hexdigest()
+        if governance["source_sha256"] != source_digest:
+            raise VlmEvalError(f"calibration source hash mismatch: {seed['id']}")
+        if source_digest in source_hashes:
+            raise VlmEvalError(f"calibration requires 20 distinct source images: {seed['id']}")
+        source_hashes.add(source_digest)
         good = _binary_seed(paths["good_mask"], source.size)
         defect = _binary_seed(paths["defect_mask"], source.size)
+        if not good.any():
+            raise VlmEvalError(f"good mask is empty: {seed['id']}")
         if np.array_equal(good, defect):
             raise VlmEvalError(f"defect mask equals good mask: {seed['id']}")
         signature = (
@@ -174,6 +217,9 @@ def build_calibration_from_seed_manifest(
                 "good_mask_sha256": hashlib.sha256(good.tobytes()).hexdigest(),
                 "defect_mask_sha256": hashlib.sha256(defect.tobytes()).hexdigest(),
                 "defect_type": seed["defect_type"],
+                "source_origin": seed["governance"]["source_origin"],
+                "age_safety": seed["governance"]["age_safety"],
+                "rights_evidence": seed["governance"]["rights_evidence"],
             }
         )
     manifest = {

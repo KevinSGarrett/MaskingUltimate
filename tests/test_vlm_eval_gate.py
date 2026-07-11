@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -35,7 +36,13 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
 ) -> None:
     seeds_root = tmp_path / "seeds"
     seeds_root.mkdir()
-    labels = ("hair", "right_hand", "left_forearm", "right_foot_base", "chest_upper_torso")
+    labels = (
+        "hair",
+        "right_hand_base",
+        "left_forearm",
+        "right_foot_base",
+        "chest_upper_torso",
+    )
     seeds = []
     for index in range(20):
         source = np.full((80, 100, 3), 40 + index, dtype=np.uint8)
@@ -57,6 +64,12 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
                 "good_mask": good_path.name,
                 "defect_mask": defect_path.name,
                 "defect_type": DEFECT_TAXONOMY[index % len(DEFECT_TAXONOMY)],
+                "governance": {
+                    "source_origin": "generated",
+                    "age_safety": "clear_adult",
+                    "rights_evidence": "deterministic test fixture generated in this test",
+                    "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                },
             }
         )
     manifest_path = seeds_root / "manifest.json"
@@ -68,7 +81,56 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
     assert document["corpus_authority"] == "explicit_source_good_defect_pairs"
     assert document["answer_text_embedded_in_panels"] is False
     assert len(document["sources"]) == 20
+    assert {source["age_safety"] for source in document["sources"]} == {"clear_adult"}
     assert load_cases(output) == cases
+
+
+def test_production_builder_refuses_duplicate_or_ungoverned_sources(tmp_path: Path) -> None:
+    seeds_root = tmp_path / "seeds"
+    seeds_root.mkdir()
+    source_path = seeds_root / "source.png"
+    good_path = seeds_root / "good.png"
+    defect_path = seeds_root / "defect.png"
+    Image.fromarray(np.full((20, 20, 3), 80, dtype=np.uint8), mode="RGB").save(source_path)
+    good = np.zeros((20, 20), dtype=np.uint8)
+    good[4:12, 4:12] = 255
+    defect = good.copy()
+    defect[15:18, 15:18] = 255
+    Image.fromarray(good, mode="L").save(good_path)
+    Image.fromarray(defect, mode="L").save(defect_path)
+    digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    seeds = [
+        {
+            "id": f"seed_{index:02d}",
+            "label": (
+                "hair",
+                "right_hand_base",
+                "left_forearm",
+                "right_foot_base",
+                "chest_upper_torso",
+            )[index % 5],
+            "source": source_path.name,
+            "good_mask": good_path.name,
+            "defect_mask": defect_path.name,
+            "defect_type": DEFECT_TAXONOMY[index % len(DEFECT_TAXONOMY)],
+            "governance": {
+                "source_origin": "owned_photo",
+                "age_safety": "clear_adult",
+                "rights_evidence": "fixture",
+                "source_sha256": digest,
+            },
+        }
+        for index in range(20)
+    ]
+    manifest = seeds_root / "manifest.json"
+    manifest.write_text(json.dumps({"seeds": seeds}), encoding="utf-8")
+    with pytest.raises(VlmEvalError, match="20 distinct source images"):
+        build_calibration_from_seed_manifest(manifest, tmp_path / "output")
+
+    seeds[0]["governance"]["age_safety"] = "uncertain"
+    manifest.write_text(json.dumps({"seeds": seeds}), encoding="utf-8")
+    with pytest.raises(VlmEvalError, match="not age-cleared adult"):
+        build_calibration_from_seed_manifest(manifest, tmp_path / "output")
 
 
 def test_eval_thresholds_and_model_prompt_change_invalidation(tmp_path: Path) -> None:

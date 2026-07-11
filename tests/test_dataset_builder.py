@@ -227,6 +227,10 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         approved_gold_count=60,
         champion_gold_count=5,
         report_date="2026-07-12",
+        clusterer=lambda reasons: {
+            reason: "hands_fingers" if reason == "finger_merge" else "fixture_cluster"
+            for reason in reasons
+        },
     )
     assert result["unresolved_failure_count"] == 1
     assert result["retrain_requested"] is True
@@ -263,6 +267,7 @@ def test_two_week_class_error_trigger_opens_idempotent_p5_task(tmp_path: Path) -
         "champion_gold_count": 225,
         "class_error_history_path": history,
         "report_date": "2026-07-12",
+        "clusterer": lambda reasons: {reason: "fixture_cluster" for reason in reasons},
     }
     first = run_active_learning(**kwargs)
     second = run_active_learning(**kwargs)

@@ -3105,3 +3105,25 @@ full regression:            560 tests pass
 quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
 honest boundary:            fresh live S07 execution still awaits the Windows account owning Ubuntu-22.04; no real finger_merge row is claimed yet
 ```
+## 2026-07-11 21:46 UTC - Weekly S15 clustering moved from keywords to governed local text LLM
+**Item:** MF-P4-03.03 completion evidence corrected and strengthened
+**Result:** The production weekly job now calls the configured local `qwen2.5:7b-instruct`; the prior `_cluster()` keyword substitute was removed.
+
+```
+privacy boundary:           text failure_reason slugs only; images/crops/overlays are never included
+endpoint/model:             fixed http://127.0.0.1:11434; configs/vlm.yaml text_llm authority
+determinism:                Ollama options temperature=0, seed=1337
+output contract:            exact clusters + coverage_targets + weekly_summary keys
+completeness:               every distinct input reason must appear exactly once as a clusters key
+theme vocabulary:           hands_fingers, hair_boundary, occlusion_contact, left_right, human_correction, semantic_qc, general_boundary
+target vocabulary:          closed view/pose/instance-context/attribute values from the coverage matrix
+semantic guard:             prompt explicitly defines lr_swap as anatomical left/right, never learning rate
+failure behavior:           one strict retry; invalid, inverted, incomplete, invented-theme, or invented-target JSON refuses the weekly artifact
+zero-failure behavior:      writes auditable model_called=false evidence without loading/calling the model
+live proof:                 five representative reasons mapped correctly; nine valid coverage targets and a weekly summary returned
+live artifact:              qa/live_verification/s15_text_llm_clustering_20260711.json
+artifact SHA-256:            60a27124964709b3c223a60252d5a31bed394c39740f612d40bbf48731284f8a
+focused regression:         49 text/VLM/mining/dataset/production tests pass
+full regression:            563 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+```

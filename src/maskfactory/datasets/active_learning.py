@@ -5,15 +5,20 @@ from __future__ import annotations
 import json
 import os
 import uuid
+from collections.abc import Callable
 from dataclasses import fields
 from datetime import UTC, datetime
 from pathlib import Path
+
+import yaml
 
 from ..qa.failure_mining import (
     FailureRecord,
     harvest_human_edit_deltas,
     write_acquisition_plan,
 )
+from ..vlm.client import OllamaClient
+from ..vlm.text import cluster_failure_reasons
 from .coverage import build_coverage_matrix, coverage_deficit_report
 
 
@@ -29,6 +34,9 @@ def run_active_learning(
     report_date: str | None = None,
     packages_root: Path | None = None,
     use_weights_path: Path = Path("configs/training/use_weights.yaml"),
+    clusterer: Callable[[tuple[str, ...]], dict[str, str]] | None = None,
+    text_client=None,
+    vlm_config_path: Path = Path("configs/vlm.yaml"),
 ) -> dict:
     coverage = _coverage(coverage_matrix_path)
     harvest = (
@@ -49,10 +57,26 @@ def run_active_learning(
     )
     records = _records(failure_queue_path)
     date = report_date or datetime.now(UTC).date().isoformat()
+    clustering_path = Path(output_dir) / f"text_llm_clustering_{date}.json"
+    if clusterer is None:
+        vlm_config = yaml.safe_load(Path(vlm_config_path).read_text(encoding="utf-8"))
+        if vlm_config["runtime"]["base_url"] != "http://127.0.0.1:11434":
+            raise ValueError("S15 text LLM must remain on the fixed local Ollama endpoint")
+        active_client = text_client or OllamaClient(vlm_config["runtime"]["base_url"])
+
+        def clusterer(reasons: tuple[str, ...]) -> dict[str, str]:
+            return cluster_failure_reasons(
+                reasons,
+                client=active_client,
+                model=vlm_config["models"]["text_llm"],
+                prompt_version="failure-cluster-v1-doc10",
+                output_path=clustering_path,
+            )
+
     plan = write_acquisition_plan(
         records,
         output_dir=output_dir,
-        clusterer=lambda reasons: {reason: _cluster(reason) for reason in reasons},
+        clusterer=clusterer,
         report_date=date,
     )
     deficits = coverage_deficit_report(coverage, target_per_cell=8)["cells"]
@@ -94,6 +118,7 @@ def run_active_learning(
         "retrain_task": str(retrain_task) if retrain_task else None,
         "class_error_trigger_classes": list(error_classes),
         "acquisition_plan": str(plan),
+        "text_llm_clustering_evidence": str(clustering_path) if clustering_path.is_file() else None,
         "human_edit_harvest": {
             key: value for key, value in harvest.items() if key != "new_records"
         },
@@ -192,16 +217,3 @@ def _coverage(path: Path) -> dict:
     if Path(path).is_file():
         return json.loads(Path(path).read_text(encoding="utf-8"))
     return build_coverage_matrix([], generated_at=datetime(1970, 1, 1, tzinfo=UTC))
-
-
-def _cluster(reason: str) -> str:
-    lowered = reason.lower()
-    if "finger" in lowered or "hand" in lowered:
-        return "hands_fingers"
-    if "hair" in lowered:
-        return "hair_boundary"
-    if "occlu" in lowered or "contact" in lowered:
-        return "occlusion_contact"
-    if "left" in lowered or "right" in lowered or "swap" in lowered:
-        return "left_right"
-    return "general_boundary"

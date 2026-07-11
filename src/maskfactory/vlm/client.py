@@ -68,7 +68,14 @@ class OllamaClient:
         self.base_url = base_url.rstrip("/")
         self.timeout_sec = timeout_sec
 
-    def generate(self, *, model: str, prompt: str, images: tuple[Path, ...] = ()) -> str:
+    def generate(
+        self,
+        *,
+        model: str,
+        prompt: str,
+        images: tuple[Path, ...] = (),
+        options: dict[str, Any] | None = None,
+    ) -> str:
         payload = {
             "model": model,
             "prompt": prompt,
@@ -77,6 +84,7 @@ class OllamaClient:
             ],
             "stream": False,
             "format": "json",
+            **({"options": options} if options is not None else {}),
         }
         request = urllib.request.Request(
             f"{self.base_url}/api/generate",

@@ -210,6 +210,7 @@ def test_human_edit_delta_harvest_is_hash_verified_measured_and_idempotent(
         report_date="2026-07-11",
         packages_root=tmp_path / "packages",
         use_weights_path=Path("configs/training/use_weights.yaml"),
+        clusterer=lambda reasons: {reason: "fixture_cluster" for reason in reasons},
     )
 
     assert first["new_record_count"] == 2

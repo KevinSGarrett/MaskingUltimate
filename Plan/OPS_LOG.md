@@ -2656,3 +2656,37 @@ ignore fix:                 root data/run/log/dataset/work paths anchored; sqlit
 package fix:                six dataset modules now versioned; Ruff first-party classification explicit
 external-cache contract:    Civitai hash tests run when 9 GB cache is mounted and skip clearly when absent
 ```
+## 2026-07-11 16:32 UTC - Draft PR CI fully green
+**Scope:** Draft PR #1 clean-install and cross-platform CI repair
+**Result:** Both the push and pull-request GitHub Actions runs pass at head `a3b8a64`.
+
+```
+branch:                     agent/maskfactory-build-progress-20260711
+draft PR:                   https://github.com/KevinSGarrett/MaskingUltimate/pull/1
+CI commits:                 0016b78 (dependencies/CPU torch), a3b8a64 (platform-aware bridge tests)
+clean install:              PASS; scipy, scikit-image, torch, ultralytics, and onnxruntime declared
+CPU CI policy:              official PyTorch CPU wheel installed before editable package
+Linux-only boundary:        six Windows-host/WSL bridge tests skip; cross-platform algorithm tests still run
+GitHub Linux pytest:        465 passed, 9 skipped in 25.90s
+GitHub gates:               Ruff PASS; ontology drift PASS; training flip invariant PASS; full pytest PASS
+Windows root pytest:        474 passed in 49.97s
+Windows publish clone:      471 passed, 3 external-cache skips in 47.27s
+publish clone status:       clean at a3b8a64
+```
+## 2026-07-11 16:38 UTC - WSL identity-boundary audit after green CVAT recheck
+**Scope:** Recheck the earlier WSL/CVAT blocker from the current managed shell
+**Result:** CVAT remains green; the three doctor failures are caused by per-user WSL registry isolation, not loss of the live distro or its data.
+
+```
+doctor in managed shell:    PASS=7 WARN=1 SKIP=0 FAIL=3
+passing live services:      CVAT API 2.24.0, project, pth-sam2 Nuclio, qwen2.5vl image, PNG, SQLite, gpu.lock
+failing probes:             torch_cuda, registered_models, wsl_roundtrip
+immediate cause:            shell identity CodexSandboxOnline sees no registered WSL distributions
+live-machine evidence:      wslservice, vmmemWSL, eight wslhost processes, and Docker Desktop are running
+preserved distro disk:      26,598,178,816-byte ext4.vhdx under Kevin LocalAppData, valid VHDX header
+disk state:                 actively locked by the live WSL process; no overwrite, detach, shutdown, or unregister attempted
+safe recovery attempts:     import-in-place rejected E_INVALIDARG; copy import refused active-file sharing
+Windows-control retry:      connection transport closed before any UI action
+CVAT UI evidence:           qa/reports/cvat_sam2_ui_verification.json remains PASS (saved mask id=1)
+authority decision:         retain prior full-user doctor FAIL=0 evidence; do not downgrade P0 from sandbox-only visibility
+```

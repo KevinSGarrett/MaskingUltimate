@@ -947,3 +947,18 @@ failure hygiene:           incomplete staging removed; prior complete directory 
 evidence files:            manifest_delta.json + stage_run.json with config hash, dependencies, forced state, and file inventory
 focused tests:             7 passed across graph, flags, hashing, cache, replacement, config drift, file-only handoff, and CLI plan
 ```
+
+## 2026-07-11 00:47 UTC - Orchestrator failure policy enforced
+**Items:** MF-P1-02.04
+**Result:** PASS - stage failures are classified, retried/routed/quarantined by
+policy, and never stop later images in the batch.
+
+```
+transient policy:         OOM/MemoryError/IO/timeout or explicit transient -> 2 retries (3 total attempts), 1 s then 2 s backoff
+semantic policy:          no retry; durable review_queue.jsonl record; batch continues
+fatal policy:             no retry; durable quarantine_queue.jsonl + SQLite status=quarantined; batch continues
+exhausted transient:      classified transient_exhausted and quarantined after exactly 3 attempts
+staging safety:           failed attempt removes private temp output and preserves prior complete stage output
+queue evidence:           UTC timestamp, image, stage, category, attempts, error, route; append flushed + fsynced
+focused tests:            11 orchestrator tests, including retry delays, semantic routing, fatal continuation, and exhausted OOM
+```

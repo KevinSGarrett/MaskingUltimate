@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import shutil
+import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import asdict, dataclass
@@ -14,6 +15,8 @@ from types import MappingProxyType
 from typing import Any
 
 import yaml
+
+from .state import transition_image_status, writer_connection
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_WORK_ROOT = ROOT / "work"
@@ -62,6 +65,29 @@ class StageRunnerMissingError(RuntimeError):
     """Raised when execution reaches a stage whose implementation is not registered."""
 
 
+class TransientStageError(RuntimeError):
+    """Explicit retryable stage failure (OOM/IO/service interruption)."""
+
+
+class SemanticStageError(RuntimeError):
+    """A valid computation whose meaning requires human review."""
+
+
+class FatalStageError(RuntimeError):
+    """Non-retryable failure that quarantines this image."""
+
+
+class StagePolicyError(RuntimeError):
+    """Classified terminal stage outcome carrying retry evidence."""
+
+    def __init__(self, *, stage: str, category: str, attempts: int, cause: BaseException) -> None:
+        self.stage = stage
+        self.category = category
+        self.attempts = attempts
+        self.cause = cause
+        super().__init__(f"{stage} {category} after {attempts} attempt(s): {cause}")
+
+
 @dataclass(frozen=True)
 class StageContext:
     """Filesystem contract provided to exactly one stage invocation."""
@@ -90,6 +116,16 @@ class StageExecution:
     config_hash: str
     output_dir: str
     forced: bool
+
+
+@dataclass(frozen=True)
+class BatchOutcome:
+    image_id: str
+    status: str
+    completed_stages: tuple[str, ...]
+    failed_stage: str | None = None
+    attempts: int = 0
+    error: str | None = None
 
 
 def _stage(name: str) -> StageSpec:
@@ -273,6 +309,53 @@ def _execute_stage(
     return StageExecution(stage.name, "complete", digest, str(destination), forced)
 
 
+def _is_transient(exc: BaseException) -> bool:
+    return isinstance(exc, (TransientStageError, OSError, TimeoutError, MemoryError)) or (
+        exc.__class__.__name__ == "OutOfMemoryError"
+    )
+
+
+def _execute_with_policy(
+    *,
+    image_id: str,
+    stage: StageSpec,
+    config: Mapping[str, Any],
+    work_root: Path,
+    runner: StageRunner,
+    forced: bool,
+    retry_delays: Sequence[float],
+    sleeper: Callable[[float], None],
+) -> StageExecution:
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            return _execute_stage(
+                image_id=image_id,
+                stage=stage,
+                config=config,
+                work_root=work_root,
+                runner=runner,
+                forced=forced,
+            )
+        except SemanticStageError as exc:
+            raise StagePolicyError(
+                stage=stage.name, category="semantic", attempts=attempts, cause=exc
+            ) from exc
+        except FatalStageError as exc:
+            raise StagePolicyError(
+                stage=stage.name, category="fatal", attempts=attempts, cause=exc
+            ) from exc
+        except Exception as exc:
+            if _is_transient(exc) and attempts <= len(retry_delays):
+                sleeper(retry_delays[attempts - 1])
+                continue
+            category = "transient_exhausted" if _is_transient(exc) else "fatal"
+            raise StagePolicyError(
+                stage=stage.name, category=category, attempts=attempts, cause=exc
+            ) from exc
+
+
 def run_pipeline(
     image_id: str,
     *,
@@ -282,6 +365,8 @@ def run_pipeline(
     config: Mapping[str, Any] | None = None,
     work_root: Path = DEFAULT_WORK_ROOT,
     runners: Mapping[str, StageRunner] | None = None,
+    retry_delays: Sequence[float] = (1.0, 2.0),
+    sleeper: Callable[[float], None] = time.sleep,
 ) -> tuple[StageExecution, ...]:
     """Run selected stages; downstream communication remains entirely on disk."""
     if not image_id.startswith("img_"):
@@ -296,16 +381,108 @@ def run_pipeline(
         if runner is None:
             raise StageRunnerMissingError(f"no runner registered for {stage.name}")
         results.append(
-            _execute_stage(
+            _execute_with_policy(
                 image_id=image_id,
                 stage=stage,
                 config=config,
                 work_root=Path(work_root),
                 runner=runner,
                 forced=stage.name in force_names,
+                retry_delays=retry_delays,
+                sleeper=sleeper,
             )
         )
     return tuple(results)
+
+
+def _append_queue(path: Path, record: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(dict(record), sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+def run_batch(
+    image_ids: Sequence[str],
+    *,
+    database: Path,
+    selected: Sequence[str] = (),
+    force: Sequence[str] = (),
+    skip: Sequence[str] = (),
+    config: Mapping[str, Any] | None = None,
+    work_root: Path = DEFAULT_WORK_ROOT,
+    runners: Mapping[str, StageRunner] | None = None,
+    retry_delays: Sequence[float] = (1.0, 2.0),
+    sleeper: Callable[[float], None] = time.sleep,
+) -> tuple[BatchOutcome, ...]:
+    """Run a batch, route semantic failures, quarantine fatal failures, and continue."""
+    outcomes: list[BatchOutcome] = []
+    queue_root = Path(work_root) / "queues"
+    for image_id in image_ids:
+        try:
+            executions = run_pipeline(
+                image_id,
+                selected=selected,
+                force=force,
+                skip=skip,
+                config=config,
+                work_root=work_root,
+                runners=runners,
+                retry_delays=retry_delays,
+                sleeper=sleeper,
+            )
+        except StagePolicyError as exc:
+            record = {
+                "ts": datetime_now(),
+                "image_id": image_id,
+                "stage": exc.stage,
+                "category": exc.category,
+                "attempts": exc.attempts,
+                "error": str(exc.cause),
+            }
+            if exc.category == "semantic":
+                record["route"] = "review"
+                _append_queue(queue_root / "review_queue.jsonl", record)
+                status = "needs_review"
+            else:
+                record["route"] = "quarantine"
+                _append_queue(queue_root / "quarantine_queue.jsonl", record)
+                with writer_connection(database) as connection:
+                    transition_image_status(
+                        connection,
+                        image_id,
+                        "quarantined",
+                        updated_at=record["ts"],
+                        current_stage=exc.stage,
+                    )
+                status = "quarantined"
+            outcomes.append(
+                BatchOutcome(
+                    image_id=image_id,
+                    status=status,
+                    completed_stages=(),
+                    failed_stage=exc.stage,
+                    attempts=exc.attempts,
+                    error=str(exc.cause),
+                )
+            )
+            continue
+        outcomes.append(
+            BatchOutcome(
+                image_id=image_id,
+                status="complete",
+                completed_stages=tuple(execution.stage for execution in executions),
+            )
+        )
+    return tuple(outcomes)
+
+
+def datetime_now() -> str:
+    """UTC timestamp seam kept injectable/patchable for durable queue evidence."""
+    from datetime import UTC, datetime
+
+    return datetime.now(UTC).isoformat()
 
 
 def execution_as_dict(result: StageExecution) -> dict[str, Any]:

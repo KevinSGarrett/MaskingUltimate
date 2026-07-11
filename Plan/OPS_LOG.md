@@ -3085,3 +3085,23 @@ full regression:            559 tests pass
 quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
 honest remaining gap:       apply_finger_merge_policy emits the correct record payload in memory, but no active P3 hand-lane stage persists it yet
 ```
+## 2026-07-11 21:33 UTC - Active S07 hand-merge producer closes failure-source wiring
+**Items:** MF-P3-01.07 evidence strengthened; MF-P4-03.01 restored 90% partial -> complete
+**Result:** The hand lane's `finger_merge` decision now changes live draft authority before S09 and reaches the durable failure queue; every MF-P4-03.01 source has a real producer.
+
+```
+active input:                S07 refined left/right hand_base + five finger masks and S04 COCO-WholeBody hand confidences
+merge trigger:              adjacent refined-mask overlap >30% or any four-point finger chain confidence <0.5
+never-guess action:         affected finger masks emptied; their pixels merged into same-side hand_base before S09
+state evidence:             sam2_metrics visibility_state=ambiguous_do_not_use and fingers_merged_or_ambiguous=true
+review flags:               finger_merge + careful_review stamped on affected RefinedPart evidence
+band path:                  S07 <side>_finger_occlusion_boundary -> S09 masks_regions -> review package
+queue record:               one measured finger_merge per affected label with image/pN/model/view and max confidence/overlap error
+idempotency:                forced replay of identical image/pN/model/label does not duplicate the open producer record
+no-hand behavior:           S07 audit explicitly skips when no hand parts were refined; no fabricated failure
+all producer sources:       lane, S10 QC, second review, S11 disagreement, and S15 human-edit delta now persist
+focused regression:         51 hand/S09/production/mining tests pass
+full regression:            560 tests pass
+quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
+honest boundary:            fresh live S07 execution still awaits the Windows account owning Ubuntu-22.04; no real finger_merge row is claimed yet
+```

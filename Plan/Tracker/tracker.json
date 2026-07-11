@@ -4225,10 +4225,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "apply_finger_merge_policy detects >30% adjacent overlap or chain confidence<0.5, merges to hand_base, empties affected fingers, sets ambiguous_do_not_use/fingers_merged_or_ambiguous, emits boundary and failure_queue finger_merge record; both paths tested in 255-test suite.",
+      "evidence": "The >30% adjacent-overlap/<0.5 confidence merge rule is now active inside production S07, not only unit-level: it audits refined pN finger masks against the exact 21 DWPose hand confidences, empties affected finger masks, merges their pixels into hand_base before S09, stamps ambiguous state/review flags in SAM2 metrics, emits finger_occlusion_boundary, and writes measured finger_merge failures idempotently.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T04:25:36+00:00",
+      "updated_at": "2026-07-11T21:33:21+00:00",
       "orphaned": false
     },
     "MF-P3-01.08": {
@@ -5273,8 +5273,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T21:23:40+00:00",
@@ -5282,10 +5282,10 @@
           "text": "Evidence audit corrected an overstated complete claim. Real locked/schema-validated production writers now exist for S10 QC failures, S11 auto-QA/VLM disagreements, second-review failures, and hash-verified human-edit deltas. append_failure_once suppresses exact producer duplicates atomically. The hand lane still only returns an in-memory finger_merge record because the P3 lane is not invoked by the current S02-S10 production graph; completion remains withheld until that runtime persists its record."
         }
       ],
-      "evidence": "Human-edit production wiring is now real, not only a generic append helper: every S12 review package seals immutable S09 PART/MATERIAL baselines with identity+SHA-256; legacy CVAT pull seals before correction; weekly S15 verifies baseline/frozen-gold hashes, measures per-part draft-vs-gold IoU deltas, and appends schema-valid human_edit_delta rows exactly once per image/pN/baseline/part. Existing lane/QC/second-review/VLM sources remain wired.",
+      "evidence": "All required failure producers now persist through real paths: S07 hand merge -> finger_merge; S10 failed checks -> qc_fail; second-review fail; S11 measured auto-QA/VLM disagreements; S15 hash-verified draft/gold human-edit deltas. Writes validate the failure schema and use exclusive-lock duplicate-check+append+fsync. S07 rewrites ambiguous masks before S09 and its band reaches package regions. 51 focused and 560 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T21:23:40+00:00",
+      "updated_at": "2026-07-11T21:33:22+00:00",
       "orphaned": false
     },
     "MF-P4-03.02": {

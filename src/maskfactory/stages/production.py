@@ -21,6 +21,7 @@ from ..datasets.active_learning import run_active_learning
 from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
 from ..fs_atomic import replace_with_retry
 from ..io.png_strict import read_mask, write_binary_mask, write_label_map
+from ..lanes.hand import apply_and_record_s07_hand_merges
 from ..ontology import get_ontology
 from ..orchestrator import (
     SemanticStageError,
@@ -421,11 +422,21 @@ def build_production_runners(
             primary_model=primary,
             fallback_model=fallback,
         )
+        hand_audit = apply_and_record_s07_hand_merges(
+            results,
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            output_dir=context.output_dir,
+            image_id=context.image_id,
+            instance_id=instance_name,
+            model=model,
+            failure_queue_path=ROOT / "qa/failure_queue.jsonl",
+        )
         return {
             "refined_part_count": len(results),
             "low_confidence_count": sum(result.sam2_low_conf for result in results.values()),
             "embedding_count": 1,
             "model": model,
+            "hand_merge_failure_count": hand_audit["failure_record_count"],
             "_telemetry": {"model_keys": [model]},
         }
 

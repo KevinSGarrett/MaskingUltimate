@@ -10,6 +10,7 @@ from maskfactory.lanes.common import CropTransform, reproject_crop_mask
 from maskfactory.lanes.hand import (
     HandGeometry,
     HandLaneError,
+    apply_and_record_s07_hand_merges,
     apply_finger_merge_policy,
     apply_hand_contact_zorder,
     assign_gap_ownership,
@@ -21,7 +22,7 @@ from maskfactory.lanes.hand import (
     refine_hand_with_sam2,
     write_hand_evidence,
 )
-from maskfactory.stages.s07_sam2 import SamCandidate
+from maskfactory.stages.s07_sam2 import RefinedPart, SamCandidate
 from maskfactory.training.leaderboard import load_leaderboard
 
 
@@ -215,6 +216,70 @@ def test_low_confidence_never_guesses_split_and_queues_finger_merge() -> None:
     assert result.failure_queue_record["queue"] == "failure_queue"
     assert result.failure_queue_record["reason"] == "finger_merge"
     assert "left_index_finger" in result.failure_queue_record["parts"]
+
+
+def test_live_s07_hand_merge_rewrites_masks_and_persists_failure_once(tmp_path: Path) -> None:
+    shape = (30, 60)
+    labels = (
+        "left_thumb",
+        "left_index_finger",
+        "left_middle_finger",
+        "left_ring_finger",
+        "left_pinky",
+    )
+    results = {}
+    for index, label in enumerate(labels):
+        mask = np.zeros(shape, dtype=bool)
+        mask[4:20, 2 + index * 10 : 8 + index * 10] = True
+        results[label] = RefinedPart(label, mask, 0.9, 0.9, False, False, (), "sam2-large")
+    base = np.zeros(shape, dtype=bool)
+    base[18:28, 2:52] = True
+    results["left_hand_base"] = RefinedPart(
+        "left_hand_base", base, 0.9, 0.9, False, False, (), "sam2-large"
+    )
+    pose = {
+        "view": "front",
+        "keypoints": [
+            {
+                "index": index,
+                "x": 0,
+                "y": 0,
+                "confidence": 0.49 if index == 97 else 0.95,
+            }
+            for index in range(133)
+        ],
+    }
+    pose_path = tmp_path / "pose133.json"
+    pose_path.write_text(json.dumps(pose), encoding="utf-8")
+    output = tmp_path / "s07"
+    output.mkdir()
+    (output / "sam2_metrics.json").write_text(
+        json.dumps({"parts": {label: {} for label in results}}), encoding="utf-8"
+    )
+    queue = tmp_path / "failure_queue.jsonl"
+    kwargs = {
+        "pose_path": pose_path,
+        "output_dir": output,
+        "image_id": "img_a3f9c2e17b04",
+        "instance_id": "p0",
+        "model": "sam2.1_hiera_large",
+        "failure_queue_path": queue,
+    }
+
+    first = apply_and_record_s07_hand_merges(results, **kwargs)
+    second = apply_and_record_s07_hand_merges(results, **kwargs)
+
+    assert first["sides"]["left"]["ambiguous_parts"] == ["left_index_finger"]
+    assert first["failure_record_count"] == 1
+    assert second["failure_record_count"] == 0
+    assert not results["left_index_finger"].mask.any()
+    assert results["left_hand_base"].mask.sum() > base.sum()
+    assert (output / "left_finger_occlusion_boundary.png").is_file()
+    metrics = json.loads((output / "sam2_metrics.json").read_text())
+    assert metrics["parts"]["left_index_finger"]["visibility_state"] == ("ambiguous_do_not_use")
+    rows = [json.loads(line) for line in queue.read_text().splitlines()]
+    assert len(rows) == 1 and rows[0]["failure_reason"] == "finger_merge"
+    assert rows[0]["failed_body_part"] == "left_index_finger"
 
 
 def test_adjacent_overlap_merge_and_hand_contact_ownership() -> None:

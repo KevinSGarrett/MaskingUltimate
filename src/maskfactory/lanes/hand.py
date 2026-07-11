@@ -6,6 +6,7 @@ import hashlib
 import json
 import statistics
 from dataclasses import asdict, dataclass, replace
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -13,12 +14,14 @@ from PIL import Image, ImageDraw
 from scipy import ndimage
 from scipy.spatial import ConvexHull
 
+from ..io.png_strict import write_binary_mask
 from ..models.registry import (
     DEFAULT_MODELS_ROOT,
     DEFAULT_REGISTRY,
     ModelRegistryError,
     resolve_registered_role,
 )
+from ..qa.failure_mining import append_failure_once, make_failure_record
 from ..qa.metrics import boundary_f, iou
 from ..stages.s05_geometry import PromptPlan, build_prompt_plan
 from ..stages.s07_sam2 import RefinedPart, Sam2Provider, build_embedding, refine_part
@@ -347,6 +350,149 @@ def apply_finger_merge_policy(
         else None
     )
     return MergeResult(masks, hand_base, states, bool(ambiguous), boundary, record)
+
+
+def apply_and_record_s07_hand_merges(
+    results: dict[str, RefinedPart],
+    *,
+    pose_path: Path,
+    output_dir: Path,
+    image_id: str,
+    instance_id: str,
+    model: str,
+    failure_queue_path: Path,
+) -> dict[str, object]:
+    """Apply the no-guess merge rule to live S07 masks before S09 consumes them."""
+    if not instance_id.startswith("p") or not instance_id[1:].isdigit():
+        raise HandLaneError("S07 hand merge instance must be pN")
+    hand_labels = {
+        f"{side}_{suffix}"
+        for side in ("left", "right")
+        for suffix in (*FINGER_INDICES, "hand_base")
+    }
+    if not set(results) & hand_labels:
+        return {"status": "skipped_no_hand_parts", "sides": {}, "failure_record_count": 0}
+    pose = json.loads(Path(pose_path).read_text(encoding="utf-8"))
+    keypoints = pose.get("keypoints", ())
+    if len(keypoints) != 133 or any(
+        int(item.get("index", -1)) != index for index, item in enumerate(keypoints)
+    ):
+        raise HandLaneError("S07 hand merge requires indexed COCO-WholeBody-133 evidence")
+    output_dir = Path(output_dir)
+    sides = {}
+    emitted = 0
+    now = datetime.now(UTC)
+    for side in ("left", "right"):
+        base_label = f"{side}_hand_base"
+        finger_labels = tuple(f"{side}_{name}" for name in FINGER_INDICES)
+        present = [results[name] for name in (base_label, *finger_labels) if name in results]
+        if base_label not in results or not any(name in results for name in finger_labels):
+            sides[side] = {"status": "skipped_no_visible_hand", "ambiguous_parts": []}
+            continue
+        shape = present[0].mask.shape
+        if any(item.mask.shape != shape for item in present):
+            raise HandLaneError(f"S07 {side} hand masks differ in geometry")
+        zeros = np.zeros(shape, dtype=bool)
+        geometry = HandGeometry(
+            {
+                name: np.asarray(results[name].mask).astype(bool)
+                if name in results
+                else zeros.copy()
+                for name in finger_labels
+            },
+            np.asarray(results[base_label].mask).astype(bool),
+            zeros.copy(),
+        )
+        indices = LEFT_HAND_INDICES if side == "left" else RIGHT_HAND_INDICES
+        confidences = np.asarray(
+            [float(keypoints[index]["confidence"]) for index in indices], dtype=np.float64
+        )
+        merged = apply_finger_merge_policy(geometry, confidences, side=side)
+        ambiguous = (
+            tuple(merged.failure_queue_record["parts"]) if merged.failure_queue_record else ()
+        )
+        updates = {base_label: merged.hand_base, **merged.finger_masks}
+        for label, mask in updates.items():
+            if label not in results:
+                continue
+            flags = results[label].review_flags
+            if label in ambiguous:
+                flags = tuple(dict.fromkeys((*flags, "finger_merge", "careful_review")))
+            results[label] = replace(results[label], mask=mask, review_flags=flags)
+            write_binary_mask(
+                output_dir / f"sam2_{label}.png",
+                mask,
+                source_size=(shape[1], shape[0]),
+            )
+        boundary_path = None
+        if merged.finger_occlusion_boundary.any():
+            boundary_path = write_binary_mask(
+                output_dir / f"{side}_finger_occlusion_boundary.png",
+                merged.finger_occlusion_boundary,
+                source_size=(shape[1], shape[0]),
+            )
+        for label in ambiguous:
+            error_rate = _finger_merge_error(label, geometry, confidences, side=side)
+            record = make_failure_record(
+                image_id=image_id,
+                body_part=label,
+                reason="finger_merge",
+                pose=str(pose["view"]),
+                model=f"hand_lane_s07:{instance_id}:{model}",
+                correction=f"merge_{label}_into_hand_base",
+                class_error_rate=error_rate,
+                coverage_deficit=1.0,
+                use_weight=1.0,
+                event_time=now,
+                now=now,
+            )
+            emitted += int(append_failure_once(failure_queue_path, record))
+        sides[side] = {
+            "status": "merged_ambiguous" if ambiguous else "clean",
+            "ambiguous_parts": list(ambiguous),
+            "boundary_file": boundary_path.name if boundary_path else None,
+        }
+    metrics_path = output_dir / "sam2_metrics.json"
+    if metrics_path.is_file():
+        metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+        for side_result in sides.values():
+            for label in side_result["ambiguous_parts"]:
+                if label in metrics.get("parts", {}):
+                    metrics["parts"][label]["visibility_state"] = "ambiguous_do_not_use"
+                    metrics["parts"][label]["fingers_merged_or_ambiguous"] = True
+        metrics_path.write_text(
+            json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    audit = {
+        "schema_version": "1.0.0",
+        "image_id": image_id,
+        "instance_id": instance_id,
+        "model": model,
+        "sides": sides,
+        "failure_record_count": emitted,
+    }
+    (output_dir / "hand_merge_audit.json").write_text(
+        json.dumps(audit, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return audit
+
+
+def _finger_merge_error(
+    label: str, geometry: HandGeometry, confidences: np.ndarray, *, side: str
+) -> float:
+    suffix = label.removeprefix(f"{side}_")
+    chain = FINGER_INDICES[suffix]
+    confidence_error = 1.0 - float(np.min(confidences[list(chain)]))
+    ordered = tuple(f"{side}_{name}" for name in FINGER_INDICES)
+    position = ordered.index(label)
+    overlaps = []
+    for neighbor_index in (position - 1, position + 1):
+        if not 0 <= neighbor_index < len(ordered):
+            continue
+        first, second = geometry.finger_masks[label], geometry.finger_masks[ordered[neighbor_index]]
+        denominator = min(int(first.sum()), int(second.sum()))
+        overlaps.append(int(np.count_nonzero(first & second)) / denominator if denominator else 0.0)
+    return min(1.0, max(confidence_error, *overlaps, 0.0))
 
 
 def apply_hand_contact_zorder(

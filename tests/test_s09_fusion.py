@@ -35,6 +35,11 @@ def test_s09_production_assembles_disk_evidence_and_fills_visible_coverage(tmp_p
     Image.fromarray(right, mode="L").save(tmp_path / "s05/prior_right_forearm.png")
     Image.fromarray(left, mode="L").save(tmp_path / "s07/sam2_left_forearm.png")
     Image.fromarray(right, mode="L").save(tmp_path / "s07/sam2_right_forearm.png")
+    hand_boundary = np.zeros(shape, dtype=np.uint8)
+    hand_boundary[8:12, 8:12] = 255
+    Image.fromarray(hand_boundary, mode="L").save(
+        tmp_path / "s07/left_finger_occlusion_boundary.png"
+    )
     sapiens = np.zeros(shape, dtype=np.uint8)
     sapiens[:, :10] = 6
     sapiens[:, 10:] = 16
@@ -117,6 +122,7 @@ def test_s09_production_assembles_disk_evidence_and_fills_visible_coverage(tmp_p
     assert np.all(part[5:15, :3] == 50)
     assert result.material_map_path.is_file() and result.disagreement_path.is_file()
     assert (tmp_path / "output/masks_regions/waist.png").is_file()
+    assert read_mask(tmp_path / "output/masks_regions/left_finger_occlusion_boundary.png").any()
     metrics = json.loads((tmp_path / "output/work/s09/consensus.json").read_text())
     assert "custom_bodypart" in metrics["sources"]
 

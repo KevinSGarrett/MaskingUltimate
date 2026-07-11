@@ -365,6 +365,11 @@ def run_s09_production(
         shoulder_y = ((points[5]["y"] + points[6]["y"]) / 2) - top
         hip_y = ((points[11]["y"] + points[12]["y"]) / 2) - top
         region_bands["waist"] = make_waist_band(visible, shoulder_mid_y=shoulder_y, hip_mid_y=hip_y)
+    for path in sorted(Path(s07_dir).glob("*_finger_occlusion_boundary.png")):
+        band = np.asarray(Image.open(path).convert("L")) > 0
+        if band.shape != shape:
+            raise FusionError(f"S07 hand-lane band dimensions differ: {path}")
+        region_bands[path.stem] = band
     protection_decisions = (
         tuple(
             ZOrderDecision("other_person", label, "co_subject_protection")

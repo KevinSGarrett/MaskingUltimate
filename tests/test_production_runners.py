@@ -443,7 +443,14 @@ def test_s07_production_runner_forwards_governed_large_and_fallback_models(
         captured.update(kwargs)
         return {}, kwargs["primary_model"]
 
+    hand_audit = {}
+
+    def fake_hand_audit(results, **kwargs):
+        hand_audit.update(kwargs)
+        return {"failure_record_count": 0}
+
     monkeypatch.setattr(production, "run_s07_production", fake_s07)
+    monkeypatch.setattr(production, "apply_and_record_s07_hand_merges", fake_hand_audit)
     config = load_pipeline_config(Path("configs/pipeline.yaml"))
     context = StageContext(
         image_id=image_id,
@@ -459,6 +466,8 @@ def test_s07_production_runner_forwards_governed_large_and_fallback_models(
     assert delta["embedding_count"] == 1
     assert captured["primary_model"] == "sam2.1_hiera_large"
     assert captured["fallback_model"] == "sam2.1_hiera_base_plus"
+    assert hand_audit["instance_id"] == "p0"
+    assert hand_audit["pose_path"] == work / "s04" / image_id / "pose133.json"
 
 
 def test_s07_production_runner_refuses_model_alias_drift(tmp_path: Path) -> None:

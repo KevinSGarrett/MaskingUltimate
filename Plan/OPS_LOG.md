@@ -2992,3 +2992,20 @@ full regression:            540 tests pass
 quality:                    Ruff check/format clean across 252 files; generated ontology current; tracker structurally valid
 honest boundary:            P8-01.03 still needs live S02-S09.5 package fan-out; P8-10.01 has 1/10 minimum qualifying real images
 ```
+## 2026-07-11 20:35 UTC - Doctor WSL identity diagnostics made actionable
+**Item:** MF-P0-07.01 maintenance; MF-P0-04.04 completion evidence reconfirmed
+**Result:** The three remaining live doctor failures are now reported as one Windows-account-scoped WSL registration boundary instead of misleading CUDA, checkpoint, and filesystem repair failures.
+
+```
+live doctor:                 PASS=7 WARN=1 FAIL=3
+passing services:            CVAT API v2.24.0, CVAT project, pth-sam2 Nuclio, qwen2.5vl image JSON, PNG, SQLite, GPU lock
+process identity:            KEVIN\CodexSandboxOnline (resolved from the process token, not shared profile metadata)
+WSL diagnosis:               Ubuntu-22.04 is not registered for this Windows identity; torch, model smokes, and C:\ round-trip share WSL_E_DISTRO_NOT_FOUND
+diagnostic normalization:    raw UTF-16-like NULs and escaped \\x00 sequences removed from redirected WSL output
+checkpoint guidance:         identity-scoped model-smoke failures no longer recommend refetching valid registered checkpoints
+safety boundary:             no distro import/VHD attach attempted while another account's WSL instance is active
+UI reconciliation:           MF-P0-04.04 was already completed and must not be reopened from stale prose
+persisted UI evidence:        qa/reports/cvat_sam2_ui_verification.json SHA-256 50bf553455f551f1899fc47abf7c8c6affaf921d1c34709df265caaa49a52edc
+focused regression:          9 doctor tests pass; Ruff check/format clean
+honest boundary:             live WSL-backed execution requires a shell launched in the Windows account that owns the Ubuntu-22.04 registration
+```

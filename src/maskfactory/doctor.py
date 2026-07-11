@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import base64
 import contextlib
+import ctypes
+import getpass
 import io
 import json
 import os
@@ -45,6 +47,39 @@ class CheckResult:
 
 def _result(name: str, status: Status, detail: str, hint: str = "") -> CheckResult:
     return CheckResult(name=name, status=status, detail=detail, hint=hint)
+
+
+def _clean_wsl_text(value: str) -> str:
+    """Normalize WSL's UTF-16-looking redirected diagnostics into readable evidence."""
+    return str(value or "").replace("\x00", "").replace("\\x00", "").strip()
+
+
+def _windows_identity() -> str:
+    """Return the process token identity, not merely the shared profile owner."""
+    username = getpass.getuser()
+    if os.name == "nt":
+        size = ctypes.c_ulong(256)
+        buffer = ctypes.create_unicode_buffer(size.value)
+        if ctypes.windll.advapi32.GetUserNameW(buffer, ctypes.byref(size)):
+            username = buffer.value
+    domain = os.environ.get("USERDOMAIN", "")
+    return f"{domain}\\{username}" if domain and "\\" not in username else username
+
+
+def _wsl_failure(process: subprocess.CompletedProcess[str]) -> tuple[str, str]:
+    detail = _clean_wsl_text(process.stderr) or _clean_wsl_text(process.stdout)
+    detail = detail or f"wsl.exe exited {process.returncode} without diagnostics"
+    missing = (
+        "WSL_E_DISTRO_NOT_FOUND" in detail or "no distribution with the supplied name" in detail
+    )
+    if missing:
+        identity = _windows_identity()
+        return (
+            f"Windows identity {identity!r} cannot resolve Ubuntu-22.04: {detail}",
+            "Run this command in the Windows user session that owns the Ubuntu-22.04 WSL "
+            "registration; do not import or attach its VHD while another WSL instance is active.",
+        )
+    return detail, "Repair the Ubuntu-22.04 WSL runtime and /mnt/c integration."
 
 
 def _json_request(
@@ -108,10 +143,21 @@ def check_torch_cuda() -> CheckResult:
     ]
     try:
         process = subprocess.run(command, capture_output=True, text=True, timeout=30, check=False)
-        payload = json.loads(process.stdout.strip().splitlines()[-1])
-    except (OSError, subprocess.TimeoutExpired, IndexError, json.JSONDecodeError) as exc:
+    except (OSError, subprocess.TimeoutExpired) as exc:
         return _result(
             "torch_cuda", "FAIL", str(exc), "Start WSL Ubuntu-22.04 and activate maskfactory."
+        )
+    if process.returncode:
+        detail, hint = _wsl_failure(process)
+        return _result("torch_cuda", "FAIL", detail, hint)
+    try:
+        payload = json.loads(_clean_wsl_text(process.stdout).splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return _result(
+            "torch_cuda",
+            "FAIL",
+            f"WSL torch probe returned invalid JSON: {exc}",
+            "Repair the maskfactory Python environment inside Ubuntu-22.04.",
         )
     valid = (
         process.returncode == 0
@@ -134,10 +180,20 @@ def check_registered_models() -> CheckResult:
     try:
         results = verify_registered_model_smokes()
     except Exception as exc:  # noqa: BLE001 - doctor must convert all failures to evidence
+        detail = _clean_wsl_text(str(exc))
+        if "WSL_E_DISTRO_NOT_FOUND" in detail or "no distribution with the supplied name" in detail:
+            return _result(
+                "registered_models",
+                "FAIL",
+                f"Windows identity {_windows_identity()!r} cannot run registered WSL model smokes: "
+                + detail,
+                "Rerun doctor in the Windows user session that owns Ubuntu-22.04; the registered "
+                "checkpoint hashes are not implicated by this identity-scoped failure.",
+            )
         return _result(
             "registered_models",
             "FAIL",
-            str(exc),
+            detail,
             "Run `maskfactory models fetch --all`, repair the failing runtime, then rerun doctor.",
         )
     return _result(
@@ -315,8 +371,11 @@ def check_wsl_roundtrip() -> CheckResult:
             timeout=30,
             check=False,
         )
-        if process.returncode != 0 or path.read_text(encoding="utf-8") != token + "|wsl":
-            raise RuntimeError(process.stderr.strip() or "round-trip content mismatch")
+        if process.returncode != 0:
+            detail, hint = _wsl_failure(process)
+            return _result("wsl_roundtrip", "FAIL", detail, hint)
+        if path.read_text(encoding="utf-8") != token + "|wsl":
+            raise RuntimeError("round-trip content mismatch")
     except Exception as exc:  # noqa: BLE001 - OS boundary
         return _result(
             "wsl_roundtrip", "FAIL", str(exc), "Repair WSL /mnt/c integration and permissions."

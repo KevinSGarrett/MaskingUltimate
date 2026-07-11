@@ -37,3 +37,21 @@ def test_task_registration_defines_nightly_and_weekly_limited_tasks() -> None:
     assert "/SC DAILY /ST 02:00 /RL LIMITED" in text
     assert "MaskFactory_WeeklyColdCopyReminder" in text
     assert "/SC WEEKLY /D MON /ST 09:00 /RL LIMITED" in text
+    assert "MaskFactory_NightlyManifestLint" in text
+    assert "/SC DAILY /ST 03:00 /RL LIMITED" in text
+    assert "MaskFactory_WeeklyQaMining" in text
+    assert "/SC WEEKLY /D MON /ST 10:00 /RL LIMITED" in text
+
+
+def test_p4_nightly_and_weekly_jobs_cross_the_governed_wsl_boundary() -> None:
+    nightly = (ROOT / "tools" / "nightly_qa.ps1").read_text(encoding="utf-8")
+    weekly = (ROOT / "tools" / "weekly_qa.ps1").read_text(encoding="utf-8")
+    for text in (nightly, weekly):
+        assert "wsl.exe -d Ubuntu-22.04 -- bash -lc" in text
+        assert "PYTHONPATH=src python -m maskfactory.cli" in text
+        assert "configs/vlm.yaml" in text
+        assert "$LASTEXITCODE -ne 0" in text
+    assert "manifest-lint" in nightly
+    assert "qa/reports/manifest_lint_$Date.json" in nightly
+    assert "active-learning" in weekly
+    assert "--report-date $Date" in weekly

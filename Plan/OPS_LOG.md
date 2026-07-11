@@ -3150,3 +3150,24 @@ full regression:            567 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 honest boundary:            data/packages currently contains zero production package manifests, so no production-package findings are claimed
 ```
+## 2026-07-11 22:30 UTC - P4 scheduled QA jobs production-ready; registration account-blocked
+**Item:** MF-P4-03.05 open -> 90% blocked
+**Result:** Both governed batch jobs now have fail-closed WSL runners and Task Scheduler definitions. Registration itself cannot be claimed from the sandbox Windows identity.
+
+```
+nightly task:               MaskFactory_NightlyManifestLint, DAILY 03:00, LIMITED
+nightly action:             Ubuntu-22.04 -> maskfactory manifest-lint -> dated qa/reports JSON + dated log
+weekly task:                MaskFactory_WeeklyQaMining, MON 10:00, LIMITED
+weekly action:              Ubuntu-22.04 -> maskfactory active-learning -> acquisition plan, clustering evidence, summary, active-learning JSON
+CLI count authority:        approved package count is derived from data/packages unless explicitly overridden
+failure behavior:           either WSL batch exits nonzero -> PowerShell throws and Task Scheduler records failure
+ordering:                   02:00 backup/integrity, 03:00 manifest lint, 09:00 cold-copy reminder, 10:00 weekly mining
+syntax proof:               all three registration/job PowerShell files parse successfully
+runtime proof:              zero-failure weekly CLI emitted all four expected artifacts without loading the model
+focused regression:         18 backup/text/dataset tests pass
+full regression:            568 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+current identity:           KEVIN\CodexSandboxOnline; schtasks returns system path unavailable; WSL reports no distro
+desktop attempt:            Windows-control transport closed before connection; no UI input occurred
+NEEDS KEVIN:                run tools\register_scheduled_tasks.ps1 once from Kevin's interactive Windows account, then preserve /Query output as registration evidence
+```

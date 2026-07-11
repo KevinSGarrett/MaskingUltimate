@@ -498,6 +498,79 @@ def manifest_lint(packages_root: Path, output_path: Path, config_path: Path) -> 
     click.echo(report)
 
 
+@main.command("active-learning")
+@click.option(
+    "--failure-queue",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/failure_queue.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--coverage-matrix",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/coverage_matrix.json"),
+    show_default=True,
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--output-dir",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/reports"),
+    show_default=True,
+)
+@click.option("--approved-gold-count", type=click.IntRange(min=0), default=None)
+@click.option("--champion-gold-count", type=click.IntRange(min=0), default=0, show_default=True)
+@click.option("--report-date", default=None, help="ISO date override for deterministic reruns.")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/vlm.yaml"),
+    show_default=True,
+)
+def active_learning(
+    failure_queue: Path,
+    coverage_matrix: Path,
+    packages_root: Path,
+    output_dir: Path,
+    approved_gold_count: int | None,
+    champion_gold_count: int,
+    report_date: str | None,
+    config_path: Path,
+) -> None:
+    """Run the governed weekly failure-mining and QA-summary batch."""
+    from .datasets.active_learning import run_active_learning
+    from .datasets.builder import approved_package_count
+    from .qa.failure_mining import FailureMiningError
+    from .vlm.client import VlmClientError
+    from .vlm.text import TextLlmError
+
+    count = (
+        approved_gold_count
+        if approved_gold_count is not None
+        else approved_package_count(packages_root)
+    )
+    try:
+        result = run_active_learning(
+            failure_queue_path=failure_queue,
+            coverage_matrix_path=coverage_matrix,
+            output_dir=output_dir,
+            approved_gold_count=count,
+            champion_gold_count=champion_gold_count,
+            report_date=report_date,
+            packages_root=packages_root,
+            vlm_config_path=config_path,
+        )
+    except (FailureMiningError, OSError, ValueError, TextLlmError, VlmClientError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, indent=2, sort_keys=True))
+
+
 @main.group("second-review")
 def second_review() -> None:
     """Stratified fresh-eyes review workflow (doc 11 §6)."""

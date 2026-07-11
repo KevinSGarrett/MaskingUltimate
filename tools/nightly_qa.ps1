@@ -9,6 +9,7 @@ $Command = @(
     "PYTHONPATH=src python -m maskfactory.cli manifest-lint"
     "--packages-root data/packages"
     "--output qa/reports/manifest_lint_$Date.json"
+    "--state qa/reports/manifest_lint_state.json"
     "--config configs/vlm.yaml"
 ) -join " "
 & wsl.exe -d Ubuntu-22.04 -- bash -lc $Command *>> $Log

@@ -172,3 +172,63 @@ def test_manifest_lint_rejects_findings_marked_pass(tmp_path: Path) -> None:
             model="qwen2.5:7b-instruct",
             prompt_version="p-manifest-v1-doc10",
         )
+
+
+def test_manifest_sweep_only_lints_new_or_changed_authoritative_packages(tmp_path: Path) -> None:
+    root = tmp_path / "packages"
+    legacy = root / "img_legacy"
+    instance = root / "img_multi/instances/p0"
+    derivative = instance / "masks_derived"
+    for directory in (legacy, instance, derivative):
+        directory.mkdir(parents=True, exist_ok=True)
+    (legacy / "manifest.json").write_text(json.dumps({"image_id": "img_legacy"}))
+    instance_path = instance / "manifest.json"
+    instance_path.write_text(json.dumps({"image_id": "img_multi", "parts": {}}))
+    (derivative / "manifest.json").write_text(json.dumps({"derived": True}))
+    config = tmp_path / "vlm.yaml"
+    config.write_text(
+        "runtime:\n  base_url: http://127.0.0.1:11434\n"
+        "models:\n  text_llm: qwen2.5:7b-instruct\n"
+        "prompts:\n  p_manifest:\n    version: p-manifest-v1-doc10\n"
+    )
+    pass_response = json.dumps({"findings": [], "overall": "pass"})
+    state = tmp_path / "state.json"
+    first_client = Client([pass_response, pass_response])
+    first = run_manifest_lint_sweep(
+        packages_root=root,
+        output_path=tmp_path / "first.json",
+        state_path=state,
+        client=first_client,
+        vlm_config_path=config,
+    )
+    first_report = json.loads(first.read_text())
+    assert first_report["discovered_manifest_count"] == 2
+    assert first_report["package_count"] == 2
+    assert len(first_client.calls) == 2
+
+    second_client = Client([])
+    second = run_manifest_lint_sweep(
+        packages_root=root,
+        output_path=tmp_path / "second.json",
+        state_path=state,
+        client=second_client,
+        vlm_config_path=config,
+    )
+    second_report = json.loads(second.read_text())
+    assert second_report["package_count"] == 0
+    assert second_report["skipped_unchanged_count"] == 2
+    assert second_client.calls == []
+
+    instance_path.write_text(json.dumps({"image_id": "img_multi", "parts": {"hair": {}}}))
+    changed_client = Client([pass_response])
+    changed = run_manifest_lint_sweep(
+        packages_root=root,
+        output_path=tmp_path / "changed.json",
+        state_path=state,
+        client=changed_client,
+        vlm_config_path=config,
+    )
+    changed_report = json.loads(changed.read_text())
+    assert changed_report["package_count"] == 1
+    assert changed_report["skipped_unchanged_count"] == 1
+    assert changed_report["packages"][0]["package"].endswith("p0")

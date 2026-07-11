@@ -477,13 +477,22 @@ def qa(image_id: str | None) -> None:
     show_default=True,
 )
 @click.option(
+    "--state",
+    "state_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/reports/manifest_lint_state.json"),
+    show_default=True,
+)
+@click.option(
     "--config",
     "config_path",
     type=click.Path(path_type=Path, dir_okay=False, exists=True),
     default=Path("configs/vlm.yaml"),
     show_default=True,
 )
-def manifest_lint(packages_root: Path, output_path: Path, config_path: Path) -> None:
+def manifest_lint(
+    packages_root: Path, output_path: Path, state_path: Path, config_path: Path
+) -> None:
     """Run the local text-only P-MANIFEST sweep across package manifests."""
     from .vlm.text import TextLlmError, run_manifest_lint_sweep
 
@@ -491,6 +500,7 @@ def manifest_lint(packages_root: Path, output_path: Path, config_path: Path) -> 
         report = run_manifest_lint_sweep(
             packages_root=packages_root,
             output_path=output_path,
+            state_path=state_path,
             vlm_config_path=config_path,
         )
     except (OSError, KeyError, ValueError, TextLlmError) as exc:

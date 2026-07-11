@@ -3171,3 +3171,27 @@ current identity:           KEVIN\CodexSandboxOnline; schtasks returns system pa
 desktop attempt:            Windows-control transport closed before connection; no UI input occurred
 NEEDS KEVIN:                run tools\register_scheduled_tasks.ps1 once from Kevin's interactive Windows account, then preserve /Query output as registration evidence
 ```
+## 2026-07-11 22:55 UTC - Nightly P-MANIFEST made package-exact and incremental
+**Item:** MF-P4-03.04 completion evidence strengthened
+**Result:** The nightly sweep no longer recursively mistakes derivative manifests for packages or spends local-model time on unchanged packages.
+
+```
+authoritative discovery:     <image>/manifest.json legacy packages and <image>/instances/pN/manifest.json multi-instance packages only
+explicit exclusion:         nested masks_derived/manifest.json and every other non-package manifest
+incremental identity:       package-relative manifest path + exact source-byte SHA-256
+durable state:              qa/reports/manifest_lint_state.json, atomically replaced only after a successful report
+new-or-changed behavior:     call P-MANIFEST only when the path is absent from state or its bytes changed
+unchanged behavior:          record discovered/skipped counts; perform zero model calls
+removed-package behavior:    absent paths disappear from the next state rather than accumulating forever
+malformed behavior:          source-byte hash is still tracked and a local BLOCK is emitted without a model call
+scheduled wiring:            nightly_qa.ps1 passes the stable state path beside its dated report path
+live first pass:             one authoritative-layout manifest discovered, one local model call, one BLOCK finding
+live unchanged pass:         one discovered, one skipped, zero report packages/model calls
+first artifact:              qa/live_verification/p_manifest_incremental_first_20260711.json
+first SHA-256:               90df59e99650cee1c424fa3ab5f5e3be56466cc1d745424fe446bb3ed8770043
+unchanged artifact:          qa/live_verification/p_manifest_incremental_unchanged_20260711.json
+unchanged SHA-256:           d18e63a67c86ae2b6af79990d6715ac265a985a785b65bd7507fd80d31c34232
+focused regression:         11 text/scheduling tests pass
+full regression:            569 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+```

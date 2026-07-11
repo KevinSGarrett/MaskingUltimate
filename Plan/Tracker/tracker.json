@@ -5345,10 +5345,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Production maskfactory manifest-lint now scans package manifests, calls configured local qwen2.5:7b-instruct at fixed 127.0.0.1 text-only with temperature=0/seed=1337, strictly validates P-MANIFEST findings/overall with one retry, blocks malformed JSON without a model call, and seals manifest/prompt/response hashes atomically. Weekly S15 writes weekly_qa_summary_<date>.md from the governed model summary/targets. Live invalid-fixture contract proof: qa/live_verification/p_manifest_text_llm_20260711.json SHA-256 1f86e803424c49ded69468ae9da0fb8e36ca0532e9ea787ab336327486e523d6. Current data/packages contains zero production package manifests, so no production sweep is claimed. 567 full tests pass; Ruff/format, ontology, tracker clean.",
+      "evidence": "Production P-MANIFEST now discovers only authoritative legacy <image>/manifest.json and multi-instance <image>/instances/pN/manifest.json layouts, excludes nested derivative manifests, and atomically persists relative-path SHA-256 state so nightly runs call the local model only for new or changed packages. Live first/unchanged pair proves one model call then zero calls: first SHA-256 90df59e99650cee1c424fa3ab5f5e3be56466cc1d745424fe446bb3ed8770043; unchanged SHA-256 d18e63a67c86ae2b6af79990d6715ac265a985a785b65bd7507fd80d31c34232. Weekly model-summary path remains active. 569 full tests pass; Ruff/format, ontology, tracker clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T22:00:52+00:00",
+      "updated_at": "2026-07-11T22:18:29+00:00",
       "orphaned": false
     },
     "MF-P4-03.05": {

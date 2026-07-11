@@ -53,5 +53,6 @@ def test_p4_nightly_and_weekly_jobs_cross_the_governed_wsl_boundary() -> None:
         assert "$LASTEXITCODE -ne 0" in text
     assert "manifest-lint" in nightly
     assert "qa/reports/manifest_lint_$Date.json" in nightly
+    assert "--state qa/reports/manifest_lint_state.json" in nightly
     assert "active-learning" in weekly
     assert "--report-date $Date" in weekly

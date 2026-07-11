@@ -141,6 +141,7 @@ def run_manifest_lint_sweep(
     *,
     packages_root: Path,
     output_path: Path,
+    state_path: Path | None = None,
     client: TextClient | None = None,
     vlm_config_path: Path = Path("configs/vlm.yaml"),
 ) -> Path:
@@ -156,13 +157,27 @@ def run_manifest_lint_sweep(
     prompt_version = config["prompts"]["p_manifest"]["version"]
     active_client = client or OllamaClient(config["runtime"]["base_url"])
     packages_root = Path(packages_root)
+    previous = _read_manifest_lint_state(state_path)
+    current_hashes = {}
     results = []
-    for manifest_path in sorted(packages_root.rglob("manifest.json")):
+    skipped_unchanged = 0
+    manifests = _package_manifest_paths(packages_root)
+    for manifest_path in manifests:
+        relative = manifest_path.relative_to(packages_root).as_posix()
         try:
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            source_bytes = manifest_path.read_bytes()
+        except OSError as exc:
+            source_bytes = f"unreadable:{type(exc).__name__}:{exc}".encode()
+        manifest_hash = hashlib.sha256(source_bytes).hexdigest()
+        current_hashes[relative] = manifest_hash
+        if previous.get(relative) == manifest_hash:
+            skipped_unchanged += 1
+            continue
+        try:
+            manifest = json.loads(source_bytes.decode("utf-8"))
             if not isinstance(manifest, dict):
                 raise ValueError("manifest root must be an object")
-        except (OSError, json.JSONDecodeError, ValueError) as exc:
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             results.append(
                 {
                     "package": str(manifest_path.parent),
@@ -177,6 +192,7 @@ def run_manifest_lint_sweep(
                         }
                     ],
                     "model_called": False,
+                    "manifest_sha256": manifest_hash,
                 }
             )
             continue
@@ -198,10 +214,21 @@ def run_manifest_lint_sweep(
         "model": model,
         "prompt_version": prompt_version,
         "packages_root": str(packages_root),
+        "discovered_manifest_count": len(manifests),
         "package_count": len(results),
+        "skipped_unchanged_count": skipped_unchanged,
         "packages": results,
     }
     _write_evidence(output_path, document)
+    if state_path is not None:
+        _write_evidence(
+            state_path,
+            {
+                "schema_version": "1.0.0",
+                "packages_root": str(packages_root),
+                "manifest_sha256": current_hashes,
+            },
+        )
     return Path(output_path)
 
 
@@ -280,6 +307,41 @@ def _manifest_prompt(manifest: dict) -> str:
         "pointer; overall must be pass or needs_human. A nonempty findings array requires "
         "needs_human.\nMANIFEST:\n" + json.dumps(manifest, sort_keys=True, separators=(",", ":"))
     )
+
+
+def _package_manifest_paths(packages_root: Path) -> tuple[Path, ...]:
+    """Return only authoritative instance or legacy package manifests."""
+    output = []
+    for path in packages_root.rglob("manifest.json"):
+        relative = path.relative_to(packages_root)
+        parts = relative.parts
+        is_legacy = len(parts) == 2
+        is_instance = (
+            len(parts) == 4
+            and parts[1] == "instances"
+            and re.fullmatch(r"p\d+", parts[2]) is not None
+        )
+        if is_legacy or is_instance:
+            output.append(path)
+    return tuple(sorted(output))
+
+
+def _read_manifest_lint_state(path: Path | None) -> dict[str, str]:
+    if path is None or not Path(path).is_file():
+        return {}
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+        hashes = document["manifest_sha256"]
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise TextLlmError(f"invalid P-MANIFEST state: {exc}") from exc
+    if not isinstance(hashes, dict) or any(
+        not isinstance(key, str)
+        or not isinstance(value, str)
+        or re.fullmatch(r"[0-9a-f]{64}", value) is None
+        for key, value in hashes.items()
+    ):
+        raise TextLlmError("invalid P-MANIFEST state hashes")
+    return hashes
 
 
 def _parse(raw: str, reasons: tuple[str, ...]) -> dict | None:

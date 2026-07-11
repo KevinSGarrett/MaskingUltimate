@@ -9,6 +9,7 @@ from PIL import Image
 
 from maskfactory.datasets.active_learning import run_active_learning
 from maskfactory.datasets.builder import build_dataset
+from maskfactory.datasets.cocorle import decode_binary_mask
 from maskfactory.datasets.splits import (
     SplitRecord,
     assign_splits,
@@ -106,6 +107,8 @@ def test_builder_keeps_instances_together_isolates_holdout_and_rebuilds_identica
     assert (first / "holdout/hard_case/img_000000000001_p0/source.png").is_file()
     coco = json.loads((first / "coco/annotations.json").read_text())
     assert len(coco["images"]) == 1 and coco["annotations"][0]["category_id"] == 18
+    decoded = decode_binary_mask(coco["annotations"][0]["segmentation"])
+    assert int(decoded.sum()) == coco["annotations"][0]["area"]
     first_hashes = {
         path.relative_to(first).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in first.rglob("*")

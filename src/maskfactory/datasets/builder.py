@@ -15,6 +15,7 @@ from PIL import Image
 from ..io.png_strict import write_label_map
 from ..ontology import get_ontology
 from ..packager import verify_packages
+from .cocorle import encode_binary_mask
 from .coverage import build_coverage_matrix, write_coverage_matrix
 from .splits import SplitRecord, assign_splits, validate_instance_split_integrity
 
@@ -113,7 +114,7 @@ def build_dataset(
                         "id": annotation_id,
                         "image_id": image_number,
                         "category_id": int(label.id),
-                        "segmentation": {"size": [height, width], "counts": _rle(mask)},
+                        "segmentation": encode_binary_mask(mask),
                         "area": int(mask.sum()),
                         "bbox": [
                             int(xs.min()),
@@ -284,20 +285,6 @@ def _training_label_maps(package: Path) -> tuple[np.ndarray, np.ndarray]:
         part[ambiguity] = 255
         material[ambiguity] = 255
     return part, material
-
-
-def _rle(mask: np.ndarray) -> list[int]:
-    flat = np.asarray(mask, order="F").reshape(-1, order="F")
-    counts, previous, run = [], False, 0
-    for value in flat:
-        current = bool(value)
-        if current == previous:
-            run += 1
-        else:
-            counts.append(run)
-            run, previous = 1, current
-    counts.append(run)
-    return counts
 
 
 def _hard_ids(path: Path | None) -> frozenset[str]:

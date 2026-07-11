@@ -3009,3 +3009,21 @@ persisted UI evidence:        qa/reports/cvat_sam2_ui_verification.json SHA-256 
 focused regression:          9 doctor tests pass; Ruff check/format clean
 honest boundary:             live WSL-backed execution requires a shell launched in the Windows account that owns the Ubuntu-22.04 registration
 ```
+## 2026-07-11 20:50 UTC - S14 COCO-RLE interoperability boundary completed
+**Item:** MF-P5-01.02 completion evidence strengthened
+**Result:** Dataset COCO annotations no longer depend on an untestable private encoder; the designated codec module now provides strict, independently decodable uncompressed COCO RLE.
+
+```
+codec authority:             src/maskfactory/datasets/cocorle.py
+wire order:                  canonical COCO column-major (Fortran) traversal
+run contract:                first count is background (zero allowed); every later alternating run positive
+integrity:                   dimensions positive; counts cover exactly height*width; extra keys rejected
+source contract:             nonempty 2-D bool, {0,1}, or {0,255}; floats/nonbinary values refuse
+decoder evidence:            known non-square vector [1,3,2], uniform masks, seeded 1xN/Nx1/rectangular round trips
+S14 integration:             every annotations.json segmentation uses the codec; decoded area equals declared annotation area
+negative evidence:           truncated coverage, interior zero run, zero dimension, compressed-string counts, extra fields, 3-D/nonbinary/float sources all refuse
+focused regression:         20 codec/dataset-builder tests pass
+full regression:            554 tests pass
+quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
+honest boundary:            first real bodyparts@v1 build remains gated by human-approved gold packages and DVC authority
+```

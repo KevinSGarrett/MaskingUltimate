@@ -824,21 +824,28 @@ def train(
     initialize_only: bool,
 ) -> None:
     """Fine-tune a specialist model (doc 12 §6)."""
-    if not initialize_only:
-        raise click.ClickException(
-            "trainer execution is not activated; use --initialize-only to create provenance"
-        )
     from .training.run import TrainingRunError, initialize_training_run
 
     try:
-        path = initialize_training_run(
-            model=model,
-            dataset_root=dataset_root,
-            config_path=config_path,
-            dvc_md5=dvc_md5,
-            runs_root=runs_root,
-        )
-    except (FileExistsError, OSError, TrainingRunError, ValueError) as exc:
+        if initialize_only:
+            path = initialize_training_run(
+                model=model,
+                dataset_root=dataset_root,
+                config_path=config_path,
+                dvc_md5=dvc_md5,
+                runs_root=runs_root,
+            )
+        else:
+            from .training.launch import launch_training
+
+            path = launch_training(
+                model=model,
+                dataset_root=dataset_root,
+                config_path=config_path,
+                dvc_md5=dvc_md5,
+                runs_root=runs_root,
+            )
+    except (FileExistsError, OSError, TrainingRunError, ValueError, RuntimeError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(path)
 

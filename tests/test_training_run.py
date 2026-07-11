@@ -105,7 +105,9 @@ def test_training_run_refuses_invalid_dataset_identity(tmp_path: Path, dvc_md5: 
     assert not (tmp_path / "runs").exists()
 
 
-def test_train_cli_requires_explicit_initialize_only_and_creates_tree(tmp_path: Path) -> None:
+def test_train_cli_fails_closed_without_runtime_and_initialize_only_creates_tree(
+    tmp_path: Path, monkeypatch
+) -> None:
     dataset, config = _inputs(tmp_path)
     arguments = [
         "train",
@@ -119,9 +121,13 @@ def test_train_cli_requires_explicit_initialize_only_and_creates_tree(tmp_path: 
         "--runs-root",
         str(tmp_path / "runs"),
     ]
+    monkeypatch.setattr(
+        "maskfactory.training.launch.launch_training",
+        lambda **kwargs: (_ for _ in ()).throw(RuntimeError("runtime is not ready")),
+    )
     refused = CliRunner().invoke(main, arguments)
     assert refused.exit_code == 1
-    assert "trainer execution is not activated" in refused.output
+    assert "runtime is not ready" in refused.output
     created = CliRunner().invoke(main, [*arguments, "--initialize-only"])
     assert created.exit_code == 0, created.output
     runs = list((tmp_path / "runs").glob("r_*"))

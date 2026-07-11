@@ -28,6 +28,7 @@ class TrainingRuntimeReport:
     mmcv_ops_loaded: bool
     datasets_registered: bool
     transforms_registered: bool
+    metric_registered: bool
     cuda_available: bool
     cuda_capability: tuple[int, int] | None
     issues: tuple[str, ...]
@@ -44,6 +45,7 @@ class TrainingRuntimeReport:
             "mmcv_ops_loaded": self.mmcv_ops_loaded,
             "datasets_registered": self.datasets_registered,
             "transforms_registered": self.transforms_registered,
+            "metric_registered": self.metric_registered,
             "cuda_available": self.cuda_available,
             "cuda_capability": list(self.cuda_capability) if self.cuda_capability else None,
             "issues": list(self.issues),
@@ -84,6 +86,7 @@ def evaluate_openmmlab_runtime(
     mmcv_ops_loaded: bool,
     datasets_registered: bool,
     transforms_registered: bool,
+    metric_registered: bool,
     cuda_available: bool,
     cuda_capability: tuple[int, int] | None,
     lock: Mapping[str, Any],
@@ -110,6 +113,8 @@ def evaluate_openmmlab_runtime(
         issues.append("MaskFactory MMSeg BaseSegDataset classes are not registered")
     if not transforms_registered:
         issues.append("MaskFactory ontology-aware MMSeg transforms are not registered")
+    if not metric_registered:
+        issues.append("MaskFactory MMSeg IoU/boundary-F metric is not registered")
     if not cuda_available:
         issues.append("CUDA is unavailable to the training runtime")
     expected_capability = tuple(lock["runtime"]["compute_capability"])
@@ -123,6 +128,7 @@ def evaluate_openmmlab_runtime(
         mmcv_ops_loaded=mmcv_ops_loaded,
         datasets_registered=datasets_registered,
         transforms_registered=transforms_registered,
+        metric_registered=metric_registered,
         cuda_available=cuda_available,
         cuda_capability=cuda_capability,
         issues=tuple(issues),
@@ -142,6 +148,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
     mmcv_ops_loaded = False
     datasets_registered = False
     transforms_registered = False
+    metric_registered = False
     import_issues: list[str] = []
     if all(versions[key] == lock["packages"][key]["version"] for key in REQUIRED_PACKAGES):
         try:
@@ -166,6 +173,8 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
                     "MaskFactoryRotate",
                 )
             )
+            importlib.import_module("maskfactory.training.mmseg_metric")
+            metric_registered = "MaskFactorySegMetric" in registry_module.METRICS.module_dict
         except Exception as exc:  # pragma: no cover - exercised only in the real training env.
             import_issues.append(f"MMSeg dataset import failed: {type(exc).__name__}: {exc}")
 
@@ -187,6 +196,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
         mmcv_ops_loaded=mmcv_ops_loaded,
         datasets_registered=datasets_registered,
         transforms_registered=transforms_registered,
+        metric_registered=metric_registered,
         cuda_available=cuda_available,
         cuda_capability=cuda_capability,
         lock=lock,
@@ -199,6 +209,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
         mmcv_ops_loaded=report.mmcv_ops_loaded,
         datasets_registered=report.datasets_registered,
         transforms_registered=report.transforms_registered,
+        metric_registered=report.metric_registered,
         cuda_available=report.cuda_available,
         cuda_capability=report.cuda_capability,
         issues=(*report.issues, *import_issues),

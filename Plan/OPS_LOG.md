@@ -2733,3 +2733,30 @@ full regression:            487 tests pass on clean retry
 quality:                    Ruff 0.15.21 check/format clean across 240 files; tracker structurally valid
 honest boundary:            real full-MMCV 2.1.0 CUDA BaseSegDataset execution remains pending Kevin-session WSL access
 ```
+## 2026-07-11 17:59 UTC - Executable MMSeg compiler, metrics, and fail-closed launcher implemented
+**Items:** MF-P5-03.02 advanced 35% -> 75% partial; MF-P5-03.03 advanced 35% -> 65% partial
+**Result:** `maskfactory train` now has a real governed MMEngine execution path; it cannot bypass dataset, runtime, ontology, GPU, or checkpoint evidence gates.
+
+```
+compiler authority:         self-contained structures from pinned MMSeg 1.2.2 SegFormer-B3 and Mask2Former-SwinB configs
+class weights:              scan train split only; ignore 255; sqrt(max_pixel_frequency/frequency), capped x8, absent=0
+SegFormer:                  official MiT-B3 shape/pretrain, CE weighted + Dice, 512 crops
+Mask2Former:                Swin-B 22K pretrain, with_cp=true, mmdet pixel decoder/Hungarian matcher/native CE+BCE+Dice
+optimizer:                  AdamW 6e-5; bf16 AmpOptimWrapper; batch 2 x accumulation 8
+schedule:                   linear warmup 1500 then poly power1; 40k release / validation every 4k
+metric:                     registered MaskFactorySegMetric; additive per-class IoU + per-present-class boundary-F@2px
+metric ignore policy:       target 255 excluded from IoU and BF; out-of-range IDs hard-fail
+data:                       exact registered dataset/transform bundle for train; deterministic no-augmentation val bundle
+thermal:                    mandatory 30 min / >87C / 60 sec MMEngine hook compiled into every run
+entry gate:                 build_manifest must contain >=200 unique instances across disjoint named splits
+runtime gate:               exact packages, full mmcv._ext, dataset/transforms/metric registries, torch cu128, CUDA sm_120
+GPU gate:                   parent process owns runs/gpu.lock for the entire child trainer lifetime
+run evidence:               immutable run tree + compiled config + command JSON + stdout/stderr + checkpoint directory
+success rule:               child exit 0 is insufficient; at least one .pth checkpoint required
+failure rule:               compile/process/evidence failures atomically transition run.json to failed and release GPU lock
+managed-shell doctor:       correctly FAILS (CPU torch 2.12.1, no OpenMMLab/CUDA); no fake launch attempted
+focused regression:         33 compiler/launcher/metric/transform/runtime/run tests pass
+full regression:            501 tests pass
+quality:                    Ruff 0.15.21 check/format clean across 246 files; tracker structurally valid
+honest boundary:            no real CUDA training/checkpoint/thermal event or holdout leaderboard row is claimed
+```

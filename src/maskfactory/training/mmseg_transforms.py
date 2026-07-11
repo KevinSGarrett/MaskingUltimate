@@ -292,6 +292,7 @@ def mmseg_augmentation_config(config: Mapping[str, Any], *, map_name: str) -> di
         "custom_imports": {
             "imports": [
                 "maskfactory.training.dataset",
+                "maskfactory.training.mmseg_metric",
                 "maskfactory.training.mmseg_transforms",
             ],
             "allow_failed_imports": False,

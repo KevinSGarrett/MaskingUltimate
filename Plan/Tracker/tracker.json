@@ -5946,18 +5946,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 35,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-11T10:09:46+00:00",
           "actor": "ai_agent",
           "text": "Implemented mandatory in-process MMEngine thermal hook: exact 30-minute poll, hottest-GPU nvidia-smi probe, >87C triggers 60-second trainer-thread sleep, fsynced thermal.jsonl evidence, and strict governed config bridge. Boundary tests prove 87.0 no-cool and 87.0001 cool; live probe returned 42C. 22 thermal/config/run/GPU-lock tests pass; Ruff/format/diff clean. Actual SegFormer training remains gated by no eligible dataset, absent MMSeg locks/runtime, and unresolved 56-vs-57 class count."
+        },
+        {
+          "ts": "2026-07-11T17:59:28+00:00",
+          "actor": "ai_agent",
+          "text": "Activated the real SegFormer-B3 training boundary: governed YAML compiles to self-contained MMEngine/MMSeg config with official B3 architecture/pretrain, train/val dataset bundles, inverse-sqrt pixel-frequency CE weights capped x8, CE+Dice, bf16 AmpOptimWrapper, batch2 x accumulation8, 1500 warmup/poly1, deterministic seed, 4k validation/checkpoint cadence, registered per-class IoU + boundary-F@2px metric, thermal hook, >=200-instance entry gate, runtime doctor, and exclusive runs/gpu.lock. maskfactory train now executes MMEngine, captures logs/command/config, and refuses zero-exit without checkpoint. Real CUDA long run/thermal event/eval rows remain. 33 focused and 501 full tests pass; Ruff clean."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T10:09:46+00:00",
+      "updated_at": "2026-07-11T17:59:28+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -5973,18 +5978,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 35,
+      "percent_complete": 65,
       "notes": [
         {
           "ts": "2026-07-11T17:24:13+00:00",
           "actor": "ai_agent",
           "text": "Authored bodypart_mask2former_swinb.yaml with local Swin-B, activation checkpointing in backbone/trainer, 512 crops, bf16, effective batch 16, native matcher CE/BCE/Dice losses, 40k/80k schedule, 4k evaluation, hard holdouts, exact thermal hook policy, and Swin-L restricted to MF-P5-08.03 AWS burst. Class-contract preflight intentionally refuses both body-part configs while the literal 57 logits conflict with authoritative IDs 0..55; no challenger run is claimed. 34 focused and 481 full tests pass; Ruff clean."
+        },
+        {
+          "ts": "2026-07-11T17:59:29+00:00",
+          "actor": "ai_agent",
+          "text": "Mask2Former-SwinB governed config now compiles into the pinned official Swin-B/Mask2Former structure with with_cp activation checkpointing, mmdet pixel decoder/Hungarian matcher/native classification-mask-dice losses, class-frequency weights, bf16 accumulation, Swin-specific paramwise optimizer, 4k IoU/BF validation, thermal hook, and the same fail-closed launcher/evidence contract. Swin-L remains AWS-only. No challenger run or checkpoint is claimed; >=200 gold, full CUDA runtime, and 56/57 decision remain. 33 focused and 501 full tests pass; Ruff clean."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T17:24:13+00:00",
+      "updated_at": "2026-07-11T17:59:29+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {

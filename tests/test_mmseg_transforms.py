@@ -83,6 +83,7 @@ def test_mmseg_pipeline_compiler_is_exact_and_refuses_drift() -> None:
     assert compiled["custom_imports"] == {
         "imports": [
             "maskfactory.training.dataset",
+            "maskfactory.training.mmseg_metric",
             "maskfactory.training.mmseg_transforms",
         ],
         "allow_failed_imports": False,

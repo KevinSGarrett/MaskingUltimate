@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import queue
 import subprocess
+import threading
 import uuid
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
@@ -41,6 +43,18 @@ class WslSam2Embedding:
     image_shape: tuple[int, int]
     model: str
     work_dir: Path
+    image_path: Path
+    prediction_count: int = 0
+
+
+MODEL_SHA256 = {
+    "sam2.1_hiera_large": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
+    "sam2.1_hiera_base_plus": "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5",
+}
+MODEL_CONFIGS = {
+    "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
+    "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+}
 
 
 class WslSam2Provider:
@@ -54,18 +68,42 @@ class WslSam2Provider:
         *,
         wsl_distribution: str = "Ubuntu-22.04",
         python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+        startup_timeout_sec: float = 300,
+        prediction_timeout_sec: float = 120,
     ) -> None:
         self.checkpoints = {key: Path(value) for key, value in checkpoints.items()}
-        self.configs = configs
+        self.configs = dict(configs)
+        drift = {
+            key: (self.configs.get(key), expected)
+            for key, expected in MODEL_CONFIGS.items()
+            if self.configs.get(key) != expected
+        }
+        if drift:
+            raise Sam2Error(f"SAM2 config mapping violates governed contract: {drift}")
         self.work_dir = Path(work_dir)
         self.wsl_distribution = wsl_distribution
         self.python_path = python_path
+        if startup_timeout_sec <= 0 or prediction_timeout_sec <= 0:
+            raise Sam2Error("SAM2 timeouts must be positive")
+        self.startup_timeout_sec = startup_timeout_sec
+        self.prediction_timeout_sec = prediction_timeout_sec
 
     def embed(self, image: np.ndarray, *, model: str, precision: str) -> WslSam2Embedding:
-        if precision != "fp16" or model not in self.checkpoints or model not in self.configs:
+        if (
+            precision != "fp16"
+            or model not in MODEL_SHA256
+            or model not in self.checkpoints
+            or model not in self.configs
+        ):
             raise Sam2Error("SAM2 model/config/precision unavailable")
         source = np.asarray(image)
-        if source.ndim != 3 or source.shape[2] not in {3, 4}:
+        if (
+            source.ndim != 3
+            or source.shape[2] not in {3, 4}
+            or source.dtype != np.uint8
+            or source.shape[0] < 1
+            or source.shape[1] < 1
+        ):
             raise Sam2Error("SAM2 embedding image must be HxWx3/4")
         checkpoint = self.checkpoints[model]
         if not checkpoint.is_file():
@@ -87,6 +125,8 @@ class WslSam2Provider:
             self.configs[model],
             "--image",
             _wsl_path(image_path),
+            "--model-key",
+            model,
         ]
         try:
             process = subprocess.Popen(
@@ -98,24 +138,48 @@ class WslSam2Provider:
                 bufsize=1,
             )
         except OSError as exc:
+            image_path.unlink(missing_ok=True)
             raise Sam2Error(f"SAM2 WSL launch failed: {exc}") from exc
-        ready_line = process.stdout.readline() if process.stdout is not None else ""
+        ready_line = (
+            _readline_with_timeout(process.stdout, self.startup_timeout_sec)
+            if process.stdout is not None
+            else ""
+        )
         if not ready_line:
+            _stop_process(process)
             detail = process.stderr.read()[-2000:] if process.stderr is not None else ""
-            process.wait(timeout=30)
+            image_path.unlink(missing_ok=True)
             if "out of memory" in detail.lower():
                 raise RuntimeError(f"CUDA out of memory: {detail}")
             raise Sam2Error(f"SAM2 server failed before embedding: {detail}")
         try:
             ready = json.loads(ready_line)
         except json.JSONDecodeError as exc:
-            process.terminate()
+            _stop_process(process)
+            image_path.unlink(missing_ok=True)
             detail = ready_line.replace("\x00", "").strip()[-1000:]
             raise Sam2Error(f"SAM2 ready response invalid: {detail or exc}") from exc
-        if ready.get("status") != "ready" or ready.get("shape") != list(source.shape[:2]):
-            process.terminate()
-            raise Sam2Error("SAM2 ready response geometry mismatch")
-        return WslSam2Embedding(process, source.shape[:2], model, self.work_dir)
+        expected = {
+            "protocol_version": 1,
+            "status": "ready",
+            "shape": list(source.shape[:2]),
+            "model": model,
+            "checkpoint_sha256": MODEL_SHA256[model],
+            "config": self.configs[model],
+            "precision": "fp16",
+            "device_type": "cuda",
+            "embedding_count": 1,
+        }
+        mismatches = {
+            key: (ready.get(key), value)
+            for key, value in expected.items()
+            if ready.get(key) != value
+        }
+        if mismatches or not isinstance(ready.get("device"), str) or not ready["device"].strip():
+            _stop_process(process)
+            image_path.unlink(missing_ok=True)
+            raise Sam2Error(f"SAM2 ready response violates governed contract: {mismatches}")
+        return WslSam2Embedding(process, source.shape[:2], model, self.work_dir, image_path)
 
     def predict(
         self, embedding: WslSam2Embedding, plan: PromptPlan, *, multimask_output: bool
@@ -123,6 +187,9 @@ class WslSam2Provider:
         process = embedding.process
         if process.poll() is not None or process.stdin is None or process.stdout is None:
             raise Sam2Error("SAM2 embedding server is not running")
+        if not multimask_output:
+            raise Sam2Error("S07 requires multimask_output=True")
+        _validate_prompt_plan(plan, embedding.image_shape)
         request_id = uuid.uuid4().hex
         output_path = embedding.work_dir / f"prediction_{request_id}.npz"
         request = {
@@ -133,27 +200,52 @@ class WslSam2Provider:
             "multimask_output": multimask_output,
             "output": _wsl_path(output_path),
         }
-        process.stdin.write(json.dumps(request, separators=(",", ":")) + "\n")
-        process.stdin.flush()
-        response_line = process.stdout.readline()
+        try:
+            process.stdin.write(json.dumps(request, separators=(",", ":")) + "\n")
+            process.stdin.flush()
+            response_line = _readline_with_timeout(process.stdout, self.prediction_timeout_sec)
+        except OSError as exc:
+            output_path.unlink(missing_ok=True)
+            raise Sam2Error(f"SAM2 prediction request failed: {exc}") from exc
         if not response_line:
+            _stop_process(process)
             detail = process.stderr.read()[-2000:] if process.stderr is not None else ""
+            output_path.unlink(missing_ok=True)
             raise Sam2Error(f"SAM2 prediction server stopped: {detail}")
         try:
-            response = json.loads(response_line)
-            with np.load(output_path, allow_pickle=False) as archive:
-                logits = archive["logits"]
-                scores = archive["scores"]
-        except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
-            raise Sam2Error(f"SAM2 prediction output invalid: {exc}") from exc
+            try:
+                response = json.loads(response_line)
+                with np.load(output_path, allow_pickle=False) as archive:
+                    logits = archive["logits"]
+                    scores = archive["scores"]
+            except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
+                raise Sam2Error(f"SAM2 prediction output invalid: {exc}") from exc
+        finally:
+            output_path.unlink(missing_ok=True)
+        expected_index = embedding.prediction_count + 1
         if (
-            response.get("status") != "ok"
+            response.get("protocol_version") != 1
+            or response.get("status") != "ok"
             or response.get("request_id") != request_id
+            or response.get("embedding_count") != 1
+            or response.get("prediction_index") != expected_index
+            or response.get("multimask_output") is not True
             or logits.ndim != 3
+            or logits.shape[0] != 3
             or logits.shape[1:] != embedding.image_shape
             or scores.shape != (logits.shape[0],)
         ):
             raise Sam2Error("SAM2 prediction response shape/id mismatch")
+        if (
+            logits.dtype != np.float32
+            or scores.dtype != np.float32
+            or not np.isfinite(logits).all()
+            or not np.isfinite(scores).all()
+            or np.any(scores < 0)
+            or np.any(scores > 1)
+        ):
+            raise Sam2Error("SAM2 prediction archive dtype/value contract violated")
+        embedding.prediction_count = expected_index
         return [
             SamCandidate(logit.astype(np.float32), float(score))
             for logit, score in zip(logits, scores, strict=True)
@@ -161,9 +253,8 @@ class WslSam2Provider:
 
     @staticmethod
     def close(embedding: WslSam2Embedding) -> None:
-        if embedding.process.poll() is None:
-            embedding.process.terminate()
-            embedding.process.wait(timeout=30)
+        _stop_process(embedding.process)
+        embedding.image_path.unlink(missing_ok=True)
 
 
 @dataclass(frozen=True)
@@ -186,6 +277,8 @@ def build_embedding(
     fallback_model: str = "sam2.1_hiera_base_plus",
 ) -> tuple[Any, str]:
     """Build exactly one reusable embedding, falling back on primary-model OOM."""
+    if primary_model == fallback_model:
+        raise Sam2Error("SAM2 primary and OOM fallback models must differ")
     try:
         return provider.embed(image, model=primary_model, precision="fp16"), primary_model
     except (MemoryError, RuntimeError) as error:
@@ -318,6 +411,11 @@ def run_s07_production(
         raise Sam2Error(f"S05 prompts invalid: {exc}") from exc
     if not plans:
         raise Sam2Error("S07 has no eligible full-frame prompt plans")
+    labels = [plan.label for plan in plans]
+    if len(set(labels)) != len(labels):
+        raise Sam2Error("S07 prompt labels must be unique")
+    if any(plan.multimask_output is not True for plan in plans):
+        raise Sam2Error("S07 requires multimask_output=True for every prompt plan")
     embedding = None
     results: dict[str, RefinedPart] = {}
     try:
@@ -351,6 +449,9 @@ def run_s07_production(
     metrics = {
         "schema_version": "1.0.0",
         "embedding_count": 1,
+        "prediction_count": sum(
+            1 + int(result.corrective_iteration) for result in results.values()
+        ),
         "model": model,
         "parts": {
             label: {
@@ -431,3 +532,42 @@ def _wsl_path(path: Path) -> str:
     if not drive:
         raise Sam2Error(f"expected Windows drive path: {resolved}")
     return f"/mnt/{drive}{resolved.as_posix().split(':', 1)[1]}"
+
+
+def _readline_with_timeout(stream: Any, timeout_sec: float) -> str:
+    result: queue.Queue[str] = queue.Queue(maxsize=1)
+
+    def read() -> None:
+        try:
+            result.put(stream.readline(), block=False)
+        except (OSError, ValueError):
+            result.put("", block=False)
+
+    threading.Thread(target=read, daemon=True).start()
+    try:
+        return result.get(timeout=timeout_sec)
+    except queue.Empty:
+        return ""
+
+
+def _stop_process(process: Any) -> None:
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=30)
+
+
+def _validate_prompt_plan(plan: PromptPlan, shape: tuple[int, int]) -> None:
+    height, width = shape
+    left, top, right, bottom = plan.box_xyxy
+    if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+        raise Sam2Error(f"SAM2 prompt box for {plan.label} must be inside image geometry")
+    for name, points in (
+        ("positive", plan.positive_points),
+        ("negative", plan.negative_points),
+    ):
+        if any(not (0 <= x < width and 0 <= y < height) for x, y in points):
+            raise Sam2Error(f"SAM2 {name} prompt point for {plan.label} is outside image")

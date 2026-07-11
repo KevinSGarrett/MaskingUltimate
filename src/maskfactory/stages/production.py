@@ -308,8 +308,13 @@ def build_production_runners(
             "sam2_1_large": "sam2.1_hiera_large",
             "sam2_1_base_plus": "sam2.1_hiera_base_plus",
         }
-        primary = model_aliases[settings["primary_model"]]
-        fallback = model_aliases[settings["oom_fallback"]]
+        try:
+            primary = model_aliases[settings["primary_model"]]
+            fallback = model_aliases[settings["oom_fallback"]]
+        except KeyError as exc:
+            raise SemanticStageError(f"S07 model configuration is not governed: {exc}") from exc
+        if primary == fallback:
+            raise SemanticStageError("S07 primary and OOM fallback must differ")
         provider = WslSam2Provider(
             checkpoints={
                 "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",

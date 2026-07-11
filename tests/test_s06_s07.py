@@ -92,6 +92,7 @@ def test_s07_production_writes_strict_masks_metrics_and_one_embedding(tmp_path: 
     assert mask.mode == "L" and set(np.unique(np.asarray(mask)).tolist()) == {0, 255}
     metrics = json.loads((tmp_path / "output/sam2_metrics.json").read_text())
     assert metrics["embedding_count"] == 1
+    assert metrics["prediction_count"] == 1
     assert metrics["parts"]["left_forearm"]["predicted_iou"] == 0.9
 
 
@@ -212,7 +213,25 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
 
     class Output:
         def __init__(self):
-            self.lines = [json.dumps({"status": "ready", "shape": [100, 100]}) + "\n"]
+            self.lines = [
+                json.dumps(
+                    {
+                        "protocol_version": 1,
+                        "status": "ready",
+                        "shape": [100, 100],
+                        "model": "sam2.1_hiera_large",
+                        "checkpoint_sha256": (
+                            "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318"
+                        ),
+                        "config": "configs/sam2.1/sam2.1_hiera_l.yaml",
+                        "precision": "fp16",
+                        "device_type": "cuda",
+                        "device": "NVIDIA fixture",
+                        "embedding_count": 1,
+                    }
+                )
+                + "\n"
+            ]
 
         def readline(self):
             return self.lines.pop(0) if self.lines else ""
@@ -226,6 +245,7 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
             self.stdout = Output()
             self.stderr = Error()
             self.alive = True
+            self.prediction_index = 0
             outer = self
 
             class Input:
@@ -244,13 +264,18 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
                         logits=logits,
                         scores=np.array([0.9, 0.5, 0.8], dtype=np.float32),
                     )
+                    outer.prediction_index += 1
                     outer.stdout.lines.append(
                         json.dumps(
                             {
+                                "protocol_version": 1,
                                 "status": "ok",
                                 "request_id": request["request_id"],
                                 "count": 3,
                                 "shape": [100, 100],
+                                "embedding_count": 1,
+                                "prediction_index": outer.prediction_index,
+                                "multimask_output": True,
                             }
                         )
                         + "\n"
@@ -289,6 +314,115 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
     assert [candidate.predicted_iou for candidate in candidates] == pytest.approx([0.9, 0.5, 0.8])
     assert all(candidate.logits.shape == (100, 100) for candidate in candidates)
     provider.close(embedding)
+    assert not list((tmp_path / "work").iterdir())
+
+
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
+def test_s07_wsl_provider_translates_large_oom_and_builds_one_base_embedding(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    large = tmp_path / "large.pt"
+    base = tmp_path / "base.pt"
+    large.write_bytes(b"large")
+    base.write_bytes(b"base")
+    calls = []
+
+    class Input:
+        def write(self, value):
+            pass
+
+        def flush(self):
+            pass
+
+    class Error:
+        def __init__(self, text=""):
+            self.text = text
+
+        def read(self):
+            return self.text
+
+    class Output:
+        def __init__(self, line):
+            self.line = line
+
+        def readline(self):
+            line, self.line = self.line, ""
+            return line
+
+    class Process:
+        def __init__(self, command, **kwargs):
+            model = command[command.index("--model-key") + 1]
+            calls.append(model)
+            self.alive = model != "sam2.1_hiera_large"
+            self.stdin = Input()
+            if model == "sam2.1_hiera_large":
+                self.stdout = Output("")
+                self.stderr = Error("CUDA out of memory")
+            else:
+                self.stdout = Output(
+                    json.dumps(
+                        {
+                            "protocol_version": 1,
+                            "status": "ready",
+                            "shape": [20, 20],
+                            "model": model,
+                            "checkpoint_sha256": (
+                                "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5"
+                            ),
+                            "config": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+                            "precision": "fp16",
+                            "device_type": "cuda",
+                            "device": "NVIDIA fixture",
+                            "embedding_count": 1,
+                        }
+                    )
+                    + "\n"
+                )
+                self.stderr = Error()
+
+        def poll(self):
+            return None if self.alive else 1
+
+        def terminate(self):
+            self.alive = False
+
+        def wait(self, timeout):
+            return 0
+
+    monkeypatch.setattr("maskfactory.stages.s07_sam2.subprocess.Popen", Process)
+    provider = WslSam2Provider(
+        {
+            "sam2.1_hiera_large": large,
+            "sam2.1_hiera_base_plus": base,
+        },
+        {
+            "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
+            "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+        },
+        tmp_path / "work",
+    )
+
+    embedding, model = build_embedding(provider, np.zeros((20, 20, 3), dtype=np.uint8))
+
+    assert model == "sam2.1_hiera_base_plus"
+    assert calls == ["sam2.1_hiera_large", "sam2.1_hiera_base_plus"]
+    provider.close(embedding)
+    assert not list((tmp_path / "work").iterdir())
+
+
+def test_s07_provider_refuses_config_mapping_drift(tmp_path: Path) -> None:
+    with pytest.raises(Sam2Error, match="config mapping"):
+        WslSam2Provider(
+            {
+                "sam2.1_hiera_large": tmp_path / "large.pt",
+                "sam2.1_hiera_base_plus": tmp_path / "base.pt",
+            },
+            {
+                "sam2.1_hiera_large": "wrong.yaml",
+                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+            },
+            tmp_path / "work",
+        )
 
 
 def test_s07_weighted_selection_and_single_corrective_iteration() -> None:

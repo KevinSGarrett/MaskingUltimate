@@ -427,6 +427,55 @@ def test_s06_production_runner_refuses_threshold_source_drift(tmp_path: Path) ->
         production.build_production_runners(config)["S06"](context)
 
 
+def test_s07_production_runner_forwards_governed_large_and_fallback_models(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    crop_dir = work / "s01" / image_id / "p0"
+    crop_dir.mkdir(parents=True)
+    Image.new("RGB", (20, 30), "white").save(crop_dir / "person_ctx.png")
+    captured = {}
+
+    def fake_s07(*args, **kwargs):
+        captured.update(kwargs)
+        return {}, kwargs["primary_model"]
+
+    monkeypatch.setattr(production, "run_s07_production", fake_s07)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S07"],
+        output_dir=work / "s07" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S07"]},
+        config_hash="fixture",
+    )
+
+    delta = production.build_production_runners(config)["S07"](context)
+
+    assert delta["embedding_count"] == 1
+    assert captured["primary_model"] == "sam2.1_hiera_large"
+    assert captured["fallback_model"] == "sam2.1_hiera_base_plus"
+
+
+def test_s07_production_runner_refuses_model_alias_drift(tmp_path: Path) -> None:
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = dict(config["stages"]["S07"])
+    settings["primary_model"] = "unknown"
+    context = StageContext(
+        image_id="img_a3f9c2e17b04",
+        stage=STAGE_BY_NAME["S07"],
+        output_dir=tmp_path / "work/s07/img_a3f9c2e17b04",
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="not governed"):
+        production.build_production_runners(config)["S07"](context)
+
+
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:
     parsing = np.zeros((100, 80), dtype=np.uint8)
     parsing[15:75, 25:55] = 22  # Sapiens torso

@@ -2834,3 +2834,24 @@ quality:                    Ruff check/format clean across 247 files; generated 
 live managed-shell probe:   correctly failed WSL_E_DISTRO_NOT_FOUND before any proposals were accepted
 honest boundary:            prior pinned WSL smoke exists, but a fresh full-vocabulary production run is not claimed
 ```
+## 2026-07-11 19:02 UTC - S07 persistent SAM2 embedding boundary hardened
+**Item:** MF-P2-05.02 advanced 90% -> 95% partial
+**Result:** One-image SAM2 refinement now has bounded, pinned, reusable embedding evidence; large-model OOM alone triggers base-plus, while hangs, metadata drift, malformed logits, and other failures refuse.
+
+```
+primary identity:           SAM2.1 hiera-large; checkpoint SHA-256 264787...; exact large config; fp16 CUDA
+fallback identity:          SAM2.1 hiera-base-plus; checkpoint SHA-256 a2345a...; exact base-plus config; fp16 CUDA
+fallback rule:              only MemoryError/CUDA OOM from large starts base-plus; primary/fallback must differ
+embedding proof:            protocol, model/config/hash/precision/device/shape and embedding_count=1 mandatory at ready
+hang prevention:            daemon-bounded startup (300s) and prediction (120s) reads; timed-out child terminated/killed
+prompt contract:            on-canvas box/points, unique eligible labels, multimask_output=true for every request
+prediction contract:        raw float32 finite logits, exactly three full-resolution masks, float32 IoU scores in [0,1]
+reuse proof:                monotonically increasing prediction_index with embedding_count=1 on every response
+artifact hygiene:           embedding PNG, per-request NPZ, and persistent process removed on success/failure/close
+metrics evidence:           embedding_count=1 plus exact prediction_count including the one permitted corrective iteration
+focused regression:         38 S07/production/config tests pass
+full regression:            528 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+live managed-shell probe:   absent-distro response refused and provider_work remaining_files=[]
+honest boundary:            registry CUDA smokes exist, but a fresh production embedding plus prompt response is not claimed
+```

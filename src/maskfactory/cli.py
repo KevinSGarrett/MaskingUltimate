@@ -126,6 +126,138 @@ def ingest(
     )
 
 
+@main.command("draft")
+@click.argument(
+    "image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--incoming-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/incoming"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--work-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("work"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--event-log",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("logs/intake.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+def draft(
+    image: Path,
+    incoming_root: Path,
+    images_root: Path,
+    work_root: Path,
+    database: Path,
+    event_log: Path,
+    config_path: Path,
+) -> None:
+    """D1: ingest one governed incoming file and emit all 56 atomic drafts in one command."""
+    from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
+    from .intake import LocalAgeSafetyScreener, ingest_one
+    from .orchestrator import (
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        load_pipeline_config,
+    )
+    from .stages.production import run_multi_person_production
+
+    try:
+        config = load_pipeline_config(config_path)
+        intake_config = config.get("intake", {})
+        if not isinstance(intake_config, dict):
+            raise StageConfigurationError("pipeline intake config must be a mapping")
+        min_side = intake_config.get("min_side", 512)
+        if not isinstance(min_side, int) or min_side < 1:
+            raise StageConfigurationError("intake.min_side must be a positive integer")
+        intake = ingest_one(
+            image,
+            screener=LocalAgeSafetyScreener(),
+            incoming_root=incoming_root,
+            images_root=images_root,
+            database=database,
+            event_log=event_log,
+            min_side=min_side,
+        )
+        ready_manifest = images_root / intake.image_id / "manifest.json"
+        duplicate_ready = False
+        if intake.duplicate and ready_manifest.is_file():
+            ready_document = json.loads(ready_manifest.read_text(encoding="utf-8"))
+            duplicate_ready = (
+                ready_document.get("image_id") == intake.image_id
+                and ready_document.get("status") == "ingested"
+            )
+        if intake.outcome != "ingested" and not duplicate_ready:
+            raise StageConfigurationError(
+                f"D1 draft refused intake outcome={intake.outcome}: {intake.reason}"
+            )
+        outcome = run_multi_person_production(
+            intake.image_id,
+            config=config,
+            images_root=images_root,
+            work_root=work_root,
+            gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
+        )
+        if len(outcome.draft_contract_paths) != len(outcome.per_instance):
+            raise StageConfigurationError("D1 did not emit one atomic contract per instance")
+        contracts = []
+        for path in outcome.draft_contract_paths:
+            document = json.loads(path.read_text(encoding="utf-8"))
+            if (
+                document.get("contract") != "D1_all_56_atomic_parts"
+                or document.get("atomic_count") != 56
+            ):
+                raise StageConfigurationError(f"D1 atomic contract invalid: {path}")
+            contracts.append(str(path))
+    except (
+        GpuLockError,
+        OSError,
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        ValueError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "image_id": intake.image_id,
+                "intake_outcome": intake.outcome,
+                "promoted_instance_count": len(outcome.per_instance),
+                "atomic_count_per_instance": 56,
+                "draft_contracts": contracts,
+                "qc035_passed": outcome.qc035_passed,
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @main.command()
 @click.argument("image_id", required=False)
 @click.option("--stage", "selected", multiple=True, help="Run only this stage (repeatable).")
@@ -170,6 +302,7 @@ def run(
     """Run the governed S00–S15 file-based stage graph for an image."""
     from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
     from .orchestrator import (
+        SemanticStageError,
         StageConfigurationError,
         StagePolicyError,
         StageRunnerMissingError,
@@ -200,11 +333,14 @@ def run(
                 config=config,
                 images_root=images_root,
                 work_root=work_root,
+                gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
             for instance, executions in sorted(outcome.per_instance.items()):
                 click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S09")
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
+            for contract in outcome.draft_contract_paths:
+                click.echo(f"D1: {contract}")
             return
         with PipelineRunLog(image_ids=(image_id,), config=config) as run_log:
             from .stages.production import build_production_runners
@@ -225,6 +361,7 @@ def run(
         StageRunnerMissingError,
         StagePolicyError,
         GpuLockError,
+        SemanticStageError,
         ValueError,
     ) as exc:
         raise click.ClickException(str(exc)) from exc

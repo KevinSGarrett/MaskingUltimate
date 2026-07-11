@@ -9,6 +9,7 @@ from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
+from maskfactory.intake import IntakeResult
 from maskfactory.orchestrator import STAGE_BY_NAME, StageContext, load_pipeline_config, run_pipeline
 from maskfactory.stages import production
 from maskfactory.stages.s01_person_detection import RankedPerson, S01Result
@@ -678,7 +679,11 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
             {
                 "image_id": image_id,
                 "status": "ingested",
-                "source": {"source_file": "source.png"},
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 100,
+                    "source_height": 100,
+                },
             }
         ),
         encoding="utf-8",
@@ -728,6 +733,12 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
             s09 = Path(work_root) / "s09" / image_id
             s02.mkdir(parents=True, exist_ok=True)
             s09.mkdir(parents=True, exist_ok=True)
+            part = np.zeros((100, 30), dtype=np.uint16)
+            part[10:90, 5:25] = 1
+            material = np.zeros((100, 30), dtype=np.uint8)
+            material[10:90, 5:25] = 1
+            Image.fromarray(part).save(s09 / "label_map_part.png")
+            Image.fromarray(material, mode="L").save(s09 / "label_map_material.png")
             if tuple(selected) == ("S02",):
                 silhouette = np.zeros((100, 100), dtype=np.uint8)
                 silhouette[10:90, index * 30 : index * 30 + 20] = 255
@@ -748,6 +759,11 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     manifest = json.loads(result.image_manifest_path.read_text())
     assert manifest["promoted_instances"] == [f"p{index}" for index in range(person_count)]
     assert result.qc035_passed
+    assert len(result.draft_contract_paths) == person_count
+    for contract_path in result.draft_contract_paths:
+        contract = json.loads(contract_path.read_text())
+        assert contract["atomic_count"] == 56
+        assert len(contract["atomics"]) == 56
     p0_protected = (
         np.asarray(Image.open(work / f"instances/p0/s02/{image_id}/other_person_protected.png")) > 0
     )
@@ -787,3 +803,120 @@ def test_run_through_drafts_exposes_one_command_multi_instance_path(
     assert "p0: 0 stage execution(s) S02-S09" in result.output
     assert "p1: 0 stage execution(s) S02-S09" in result.output
     assert "qc035=True" in result.output
+
+
+def test_d1_materializer_emits_full_resolution_all_56_atomic_contract(
+    tmp_path: Path,
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    s09 = work / "instances/p0/s09" / image_id
+    s09.mkdir(parents=True)
+    part = np.zeros((3, 4), dtype=np.uint16)
+    part[:, :2] = 1
+    part[:, 2:] = 2
+    material = np.ones((3, 4), dtype=np.uint8)
+    Image.fromarray(part).save(s09 / "label_map_part.png")
+    Image.fromarray(material, mode="L").save(s09 / "label_map_material.png")
+    promoted = [{"person_index": 0, "context_bbox_xyxy": [1, 1, 5, 4]}]
+    manifest = {"source": {"source_width": 6, "source_height": 5}}
+
+    paths = production.materialize_d1_atomic_drafts(
+        image_id,
+        promoted=promoted,
+        manifest=manifest,
+        work_root=work,
+    )
+
+    assert len(paths) == 1
+    contract = json.loads(paths[0].read_text())
+    assert contract["contract"] == "D1_all_56_atomic_parts"
+    assert contract["atomic_count"] == 56
+    assert contract["disabled_atomic_ids"] == [54, 55]
+    root = paths[0].parent
+    masks = [np.asarray(Image.open(root / record["path"])) for record in contract["atomics"]]
+    assert all(mask.shape == (5, 6) and set(np.unique(mask)) <= {0, 255} for mask in masks)
+    assert np.count_nonzero(masks[54]) == np.count_nonzero(masks[55]) == 0
+    assert sum(np.count_nonzero(mask) for mask in masks) == 30
+    assert np.count_nonzero(masks[0]) == 18
+
+    repeated = production.materialize_d1_atomic_drafts(
+        image_id,
+        promoted=promoted,
+        manifest=manifest,
+        work_root=work,
+    )
+    assert repeated == paths
+
+
+def test_d1_materializer_refuses_disabled_or_unknown_map_ids(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    s09 = tmp_path / "work/instances/p0/s09" / image_id
+    s09.mkdir(parents=True)
+    Image.fromarray(np.full((2, 2), 55, dtype=np.uint16)).save(s09 / "label_map_part.png")
+    Image.fromarray(np.ones((2, 2), dtype=np.uint8), mode="L").save(s09 / "label_map_material.png")
+    with pytest.raises(production.SemanticStageError, match="disabled/unknown IDs"):
+        production.materialize_d1_atomic_drafts(
+            image_id,
+            promoted=[{"person_index": 0, "context_bbox_xyxy": [0, 0, 2, 2]}],
+            manifest={"source": {"source_width": 2, "source_height": 2}},
+            work_root=tmp_path / "work",
+        )
+
+
+def test_draft_command_ingests_runs_and_returns_verified_d1_contract(
+    tmp_path: Path, monkeypatch
+) -> None:
+    incoming = tmp_path / "incoming"
+    image = incoming / "owned" / "person.png"
+    image.parent.mkdir(parents=True)
+    Image.new("RGB", (512, 512), "white").save(image)
+    contract = tmp_path / "work/drafts/img_a3f9c2e17b04/instances/p0/draft_contract.json"
+    contract.parent.mkdir(parents=True)
+    contract.write_text(
+        json.dumps({"contract": "D1_all_56_atomic_parts", "atomic_count": 56}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        "maskfactory.intake.ingest_one",
+        lambda *args, **kwargs: IntakeResult(
+            "img_a3f9c2e17b04", "ingested", "accepted", manifest_path=tmp_path / "manifest.json"
+        ),
+    )
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": ()},
+            image_manifest_path=tmp_path / "image_manifest.json",
+            qc035_passed=True,
+            draft_contract_paths=(contract,),
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(
+        main,
+        [
+            "draft",
+            str(image),
+            "--incoming-root",
+            str(incoming),
+            "--images-root",
+            str(tmp_path / "images"),
+            "--work-root",
+            str(tmp_path / "work"),
+            "--database",
+            str(tmp_path / "state.sqlite"),
+            "--event-log",
+            str(tmp_path / "intake.jsonl"),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload["image_id"] == "img_a3f9c2e17b04"
+    assert payload["atomic_count_per_instance"] == 56
+    assert payload["draft_contracts"] == [str(contract)]
+    assert captured["gpu_lock_path"].name == "gpu.lock"

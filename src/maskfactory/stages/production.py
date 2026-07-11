@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import shutil
+import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,7 +20,8 @@ from ..cvat_bridge.client import CvatClient
 from ..cvat_bridge.push import push_images
 from ..datasets.active_learning import run_active_learning
 from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
-from ..io.png_strict import write_binary_mask
+from ..io.png_strict import read_mask, write_binary_mask, write_label_map
+from ..ontology import get_ontology
 from ..orchestrator import (
     SemanticStageError,
     StageContext,
@@ -50,6 +54,7 @@ class MultiPersonProductionResult:
     per_instance: dict[str, tuple[StageExecution, ...]]
     image_manifest_path: Path
     qc035_passed: bool
+    draft_contract_paths: tuple[Path, ...] = ()
 
 
 def build_production_runners(
@@ -682,6 +687,7 @@ def run_multi_person_production(
     config: Mapping[str, Any],
     images_root: Path = ROOT / "data/images",
     work_root: Path = ROOT / "work",
+    gpu_lock_path: Path | None = None,
     pipeline_runner=run_pipeline,
     runner_factory=build_production_runners,
 ) -> MultiPersonProductionResult:
@@ -694,6 +700,7 @@ def run_multi_person_production(
         config=config,
         work_root=work_root,
         runners=shared_runners,
+        gpu_lock_path=gpu_lock_path,
     )
     s01_dir = work_root / "s01" / image_id
     people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
@@ -723,6 +730,7 @@ def run_multi_person_production(
                 config=config,
                 work_root=instance_root,
                 runners=runners,
+                gpu_lock_path=gpu_lock_path,
             )
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
@@ -736,6 +744,7 @@ def run_multi_person_production(
             config=config,
             work_root=instance_root,
             runners=scoped_runners[name],
+            gpu_lock_path=gpu_lock_path,
         )
         per_instance[name] = (*per_instance[name], *tuple(remainder))
     manifest, _ = _source(image_id, Path(images_root))
@@ -767,12 +776,166 @@ def run_multi_person_production(
         background_person_count=sum(item["protected_as_part_50"] for item in people["persons"]),
         crowd_scene=False,
     )
+    draft_contract_paths = materialize_d1_atomic_drafts(
+        image_id,
+        promoted=promoted,
+        manifest=manifest,
+        work_root=work_root,
+    )
     return MultiPersonProductionResult(
         tuple(shared),
         per_instance,
         reconciliation.image_manifest_path,
         reconciliation.qc035_passed,
+        draft_contract_paths,
     )
+
+
+def materialize_d1_atomic_drafts(
+    image_id: str,
+    *,
+    promoted: list[Mapping[str, Any]],
+    manifest: Mapping[str, Any],
+    work_root: Path,
+) -> tuple[Path, ...]:
+    """Project S09 context maps to source geometry and atomically emit all 56 PART masks."""
+    authority = get_ontology()
+    labels = tuple(sorted(authority.labels_for_map("part"), key=lambda label: int(label.id)))
+    if len(labels) != 56 or [label.id for label in labels] != list(range(56)):
+        raise SemanticStageError("D1 requires the authoritative contiguous PART IDs 0..55")
+    enabled_ids = {int(label.id) for label in labels if label.enabled}
+    material_ids = {
+        int(label.id) for label in authority.labels_for_map("material", enabled_only=True)
+    }
+    try:
+        width = int(manifest["source"]["source_width"])
+        height = int(manifest["source"]["source_height"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise SemanticStageError(f"D1 source geometry unavailable: {exc}") from exc
+    if width <= 0 or height <= 0:
+        raise SemanticStageError("D1 source geometry must be positive")
+    outputs = []
+    for person in promoted:
+        index = int(person["person_index"])
+        instance = f"p{index}"
+        left, top, right, bottom = (int(value) for value in person["context_bbox_xyxy"])
+        if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+            raise SemanticStageError(f"D1 {instance} context bbox is outside source geometry")
+        s09_dir = Path(work_root) / "instances" / instance / "s09" / image_id
+        part = read_mask(s09_dir / "label_map_part.png").astype(np.uint16)
+        material = read_mask(s09_dir / "label_map_material.png").astype(np.uint8)
+        expected_shape = (bottom - top, right - left)
+        if part.shape != expected_shape or material.shape != expected_shape:
+            raise SemanticStageError(f"D1 {instance} S09 maps differ from context geometry")
+        unknown = set(np.unique(part).tolist()) - enabled_ids
+        if unknown:
+            raise SemanticStageError(
+                f"D1 {instance} part map has disabled/unknown IDs: {sorted(unknown)}"
+            )
+        unknown_material = set(np.unique(material).tolist()) - material_ids
+        if unknown_material:
+            raise SemanticStageError(
+                f"D1 {instance} material map has disabled/unknown IDs: {sorted(unknown_material)}"
+            )
+        destination = Path(work_root) / "drafts" / image_id / "instances" / instance
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        staging = destination.parent / f".{instance}.tmp-{uuid.uuid4().hex}"
+        backup = destination.parent / f".{instance}.backup-{uuid.uuid4().hex}"
+        try:
+            staging.mkdir()
+            full_part = np.zeros((height, width), dtype=np.uint16)
+            full_material = np.zeros((height, width), dtype=np.uint8)
+            full_part[top:bottom, left:right] = part
+            full_material[top:bottom, left:right] = material
+            write_label_map(staging / "label_map_part.png", full_part, bits=16)
+            write_label_map(staging / "label_map_material.png", full_material, bits=8)
+            records = []
+            for label in labels:
+                label_id = int(label.id)
+                mask = full_part == label_id
+                directory = (
+                    "protected" if label_id == 0 or label.mask_type == "protected_qa" else "masks"
+                )
+                path = write_binary_mask(
+                    staging / directory / f"{label.name}.png",
+                    mask,
+                    source_size=(width, height),
+                )
+                records.append(
+                    {
+                        "id": label_id,
+                        "name": label.name,
+                        "enabled": label.enabled,
+                        "pixel_count": int(mask.sum()),
+                        "path": path.relative_to(staging).as_posix(),
+                        "sha256": _sha256_file(path),
+                    }
+                )
+            document = {
+                "schema_version": "1.0.0",
+                "contract": "D1_all_56_atomic_parts",
+                "image_id": image_id,
+                "instance": instance,
+                "source_size": [width, height],
+                "context_bbox_xyxy": [left, top, right, bottom],
+                "atomic_count": len(records),
+                "enabled_atomic_count": sum(record["enabled"] for record in records),
+                "disabled_atomic_ids": [
+                    record["id"] for record in records if not record["enabled"]
+                ],
+                "part_map_sha256": _sha256_file(staging / "label_map_part.png"),
+                "material_map_sha256": _sha256_file(staging / "label_map_material.png"),
+                "atomics": records,
+            }
+            contract_path = staging / "draft_contract.json"
+            contract_path.write_text(
+                json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            _verify_d1_draft_directory(staging, document, full_part)
+            if destination.exists():
+                os.replace(destination, backup)
+            try:
+                os.replace(staging, destination)
+            except Exception:
+                if backup.exists():
+                    os.replace(backup, destination)
+                raise
+            shutil.rmtree(backup, ignore_errors=True)
+            outputs.append(destination / "draft_contract.json")
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
+    return tuple(outputs)
+
+
+def _verify_d1_draft_directory(
+    directory: Path, document: Mapping[str, Any], full_part: np.ndarray
+) -> None:
+    if document.get("atomic_count") != 56 or len(document.get("atomics", ())) != 56:
+        raise SemanticStageError("D1 draft contract must enumerate exactly 56 atomic masks")
+    claimed = np.zeros(full_part.shape, dtype=np.uint16)
+    seen = np.zeros(full_part.shape, dtype=np.uint8)
+    for record in document["atomics"]:
+        path = directory / record["path"]
+        mask = read_mask(path)
+        if mask.shape != full_part.shape or set(np.unique(mask).tolist()) - {0, 255}:
+            raise SemanticStageError(f"D1 atomic mask is not strict/full-size: {path}")
+        foreground = mask == 255
+        if np.any(seen[foreground]):
+            raise SemanticStageError(f"D1 atomic masks overlap: {path}")
+        claimed[foreground] = int(record["id"])
+        seen[foreground] = 1
+        if _sha256_file(path) != record["sha256"]:
+            raise SemanticStageError(f"D1 atomic hash mismatch: {path}")
+    if not np.all(seen == 1) or not np.array_equal(claimed, full_part):
+        raise SemanticStageError("D1 atomic masks do not reproduce the full-resolution PART map")
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _inject_other_person_protection(

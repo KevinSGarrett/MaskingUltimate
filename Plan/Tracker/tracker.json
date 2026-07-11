@@ -3989,7 +3989,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 94,
+      "percent_complete": 96,
       "notes": [
         {
           "ts": "2026-07-11T06:16:28+00:00",
@@ -4045,12 +4045,22 @@
           "ts": "2026-07-11T07:12:35+00:00",
           "actor": "ai_agent",
           "text": "Production runner registry now spans S00-S15. S14 implements deterministic image-level splits, pHash duplicate grouping, multi-instance integrity, verified-gold preflight, MMSeg/COCO/holdout exports, coverage/card provenance, and DVC publish commands, but both CLI/runner enforce >=200 approved gold; current 0 means no build occurred and no P5 item is claimed. S15 emits failure/coverage acquisition plans and retrain triggers even while gated. Full regression: 337 tests in four zero-exit partitions (79+83+92+83); Ruff clean. D1 remains unclaimed pending live source/model/manual evidence, full specialist atomics, and multi-person outer orchestration."
+        },
+        {
+          "ts": "2026-07-11T19:15:05+00:00",
+          "actor": "ai_agent",
+          "text": "Closed the deterministic one-command D1 gap: new maskfactory draft <incoming-file> performs mandatory governed intake, derives image_id, runs every promoted instance through S09.5 under GPU locking, projects context maps to full source geometry, and atomically emits/hash-verifies exactly 56 mutually exclusive strict PART PNGs plus full-resolution part/material maps per instance. Disabled ears 54/55 are explicit empty views; disabled/unknown IDs, overlap, uncovered pixels, hash drift, or map reproduction mismatch refuse success. 50 focused and 531 full tests pass. D1/G2 remain unclaimed pending a Kevin-supplied live adult source run through WSL models and measured draft-vs-gold metrics."
+        },
+        {
+          "ts": "2026-07-11T19:15:18+00:00",
+          "actor": "ai_agent",
+          "text": "Evidence correction: the focused production/config/intake/mapbuild selection contains 47 tests (not 50); all 47 passed. Full-suite count remains 531 passed. No scope or status change."
         }
       ],
-      "evidence": null,
+      "evidence": "CLI help proves maskfactory draft IMAGE single entry point. production.materialize_d1_atomic_drafts enforces contiguous IDs 0..55, full-source geometry, strict PNGs, atomic promotion, hashes, exclusivity/coverage, and exact master-map reproduction. Tests cover 1/2/3-person outer loop, 56-mask materialization/repeat, disabled-ID refusal, one-command ingest/run/contract output, and GPU-lock forwarding. Focused selection: 47 passed. Ruff/format clean across 247 files; ontology current; full suite 531 passed. Missing required completion evidence: real governed source, authoritative WSL inference, visible-part correctness, G2 initial measurements against corrected gold.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T07:12:35+00:00",
+      "updated_at": "2026-07-11T19:15:18+00:00",
       "orphaned": false
     },
     "MF-P2-EXIT": {

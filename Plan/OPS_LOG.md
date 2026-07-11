@@ -2855,3 +2855,24 @@ quality:                    Ruff check/format clean across 247 files; generated 
 live managed-shell probe:   absent-distro response refused and provider_work remaining_files=[]
 honest boundary:            registry CUDA smokes exist, but a fresh production embedding plus prompt response is not claimed
 ```
+## 2026-07-11 19:15 UTC - True one-command D1 draft contract implemented
+**Item:** MF-P2-08.04 advanced 94% -> 96% partial
+**Result:** A governed incoming file now has a literal single CLI entry point that cannot report success until every promoted instance owns a full-resolution, hash-verified set of all 56 atomic PART masks reproduced from its exclusive master map.
+
+```
+single command:             maskfactory draft <data/incoming/<origin>/<file>>
+intake boundary:            mandatory origin, decode/min-size, metadata stripping, duplicate identity, and non-configurable age safety
+execution boundary:         derived image_id; shared S00/S01; per-instance S02-S09; S09.5 reconciliation; GPU lock on every pipeline segment
+source projection:          context-crop S09 part/material maps pasted into exact source width/height with background outside context
+ontology contract:          runtime authority must expose contiguous PART IDs 0..55; enabled map values only
+atomic outputs:             exactly 56 strict binary PNGs per promoted instance plus full-resolution indexed part/material maps
+disabled labels:            left_ear 54 and right_ear 55 emitted explicitly as empty, disabled atomic views
+exclusivity proof:          every source pixel claimed exactly once; no overlaps; atomics reproduce full-resolution PART map byte-semantically
+durability:                 per-mask SHA-256, map hashes, pixel counts, enabled flags, paths, source/context geometry in draft_contract.json
+promotion safety:           complete staging directory verified before atomic replace; previous draft restored if promotion fails
+resume behavior:            duplicate governed input may reuse its stable image_id; regenerated contract atomically replaces prior work draft
+focused regression:         47 production/config/intake/mapbuild tests pass
+full regression:            531 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+honest boundary:            no Kevin-supplied live source/WSL run or draft-vs-corrected-gold G2 measurement exists; D1/G2 remain open
+```

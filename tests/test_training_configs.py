@@ -32,6 +32,24 @@ def test_bodypart_segformer_b3_contract() -> None:
     assert config["evaluation"]["interval_iters"] == 4000
 
 
+def test_bodypart_mask2former_swinb_challenger_contract() -> None:
+    config = _config("bodypart_mask2former_swinb.yaml")
+    assert config["model"]["architecture"] == "mask2former_swin_b"
+    assert config["model"]["num_classes"] == 57
+    assert config["model"]["backbone"]["activation_checkpointing"] is True
+    assert config["training"]["activation_checkpointing"] is True
+    assert config["training"]["loss"] == {
+        "type": "native_mask2former_matcher",
+        "components": ["classification_cross_entropy", "mask_binary_cross_entropy", "dice"],
+    }
+    assert config["training"]["batch_per_gpu"] * config["training"]["gradient_accumulation"] == 16
+    assert config["execution"] == {
+        "swin_b": "local",
+        "swin_l": "aws_burst_only",
+        "aws_item": "MF-P5-08.03",
+    }
+
+
 def test_clothing_segformer_b2_contract() -> None:
     config = _config("clothing_segformer_b2.yaml")
     assert config["model"]["architecture"] == "segformer_b2"

@@ -1,0 +1,48 @@
+schema_version: 1.0.0
+task: bodypart_semantic_segmentation
+model:
+  architecture: mask2former_swin_b
+  pretrained: imagenet_22k
+  num_classes: 57
+  backbone:
+    type: swin_base
+    activation_checkpointing: true
+    drop_path_rate: 0.3
+data:
+  dataset: maskfactory_bodyparts
+  crop_size: [512, 512]
+  ignore_index: 255
+  seed: 1337
+augmentations:
+  - {type: random_resized_crop, output_size: 512, scale: [0.5, 2.0], rare_force_probability: 0.4}
+  - {type: horizontal_flip, probability: 0.5, swap_partner_remap: true}
+  - {type: photometric_jitter, brightness: 0.25, contrast: 0.25, saturation: 0.25, hue: 0.05}
+  - {type: rotate, degrees: 15, label_interpolation: nearest, border_label: 255}
+optimizer:
+  type: AdamW
+  learning_rate: 0.00006
+  weight_decay: 0.05
+  schedule: {type: poly, power: 1.0, warmup_iters: 1500}
+training:
+  iterations: 40000
+  iterations_at_500_gold: 80000
+  batch_per_gpu: 2
+  gradient_accumulation: 8
+  amp: bf16
+  activation_checkpointing: true
+  loss:
+    type: native_mask2former_matcher
+    components: [classification_cross_entropy, mask_binary_cross_entropy, dice]
+  class_weights: {formula: inverse_sqrt_pixel_frequency, cap_multiplier: 8.0}
+evaluation:
+  interval_iters: 4000
+  metrics: [per_class_iou, boundary_f_2px]
+  final_splits: [test_holdout, hard_case_holdout]
+execution:
+  swin_b: local
+  swin_l: aws_burst_only
+  aws_item: MF-P5-08.03
+thermal:
+  poll_interval_minutes: 30
+  max_celsius: 87
+  cooldown_seconds: 60

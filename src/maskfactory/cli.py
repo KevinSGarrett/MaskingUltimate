@@ -843,6 +843,27 @@ def train(
     click.echo(path)
 
 
+@main.command("training-doctor")
+@click.option(
+    "--lock",
+    "lock_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("env/openmmlab_training_stack.lock.json"),
+    show_default=True,
+)
+def training_doctor(lock_path: Path) -> None:
+    """Verify the exact MMSeg/MMCV/CUDA training runtime."""
+    from .training.runtime import TrainingRuntimeError, probe_openmmlab_runtime
+
+    try:
+        report = probe_openmmlab_runtime(lock_path)
+    except (OSError, ValueError, json.JSONDecodeError, TrainingRuntimeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report.as_dict(), indent=2, sort_keys=True))
+    if not report.ready:
+        raise click.ClickException("OpenMMLab training runtime is not ready")
+
+
 @main.command()
 @click.option("--compare", nargs=2, metavar="RUN_A RUN_B")
 @click.option("--format", "output_format", type=click.Choice(["table", "json"]), default="table")

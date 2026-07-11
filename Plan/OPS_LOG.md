@@ -2690,3 +2690,25 @@ Windows-control retry:      connection transport closed before any UI action
 CVAT UI evidence:           qa/reports/cvat_sam2_ui_verification.json remains PASS (saved mask id=1)
 authority decision:         retain prior full-user doctor FAIL=0 evidence; do not downgrade P0 from sandbox-only visibility
 ```
+## 2026-07-11 17:24 UTC - OpenMMLab training runtime made fail-closed and Swin-B challenger specified
+**Items:** MF-P5-02.01 advanced 95% -> 97% partial; MF-P5-03.03 advanced open -> 35% partial
+**Result:** The exact compatible trainer stack is immutable and diagnosable; broken MMSeg installs can no longer masquerade as an intentionally absent optional runtime.
+
+```
+compatibility authority:    MMSeg 1.2.2 + MMDetection 3.3.0 require MMCV >=2.0.0rc4,<2.2.0 and MMEngine <1.0.0
+selected stack:             MMEngine 0.10.7; full MMCV 2.1.0; MMSeg 1.2.2; MMDetection 3.3.0
+source identity:            every package tag resolved to a full upstream Git commit; pure-wheel SHA-256 values recorded
+runtime lock:               env/openmmlab_training_stack.lock.json
+MMCV authority:             build_from_source=true; mmcv._ext mandatory; mmcv-lite explicitly refused
+real isolated probe:        exact four packages imported through MMSeg until mmcv-lite failed at mmcv._ext
+loader correction:          only a genuinely absent top-level mmseg is optional; missing transitive modules now propagate
+training doctor:            exact versions + torch 2.11.0+cu128 + full ops + registered datasets + CUDA sm_120 all required
+current managed-shell probe: correctly FAIL (packages absent, torch 2.12.1+cpu, CUDA unavailable)
+class-count safety:         both 57-logit body-part configs refuse initialization against authoritative indexed IDs 0..55
+challenger config:          Mask2Former-SwinB, activation checkpointing, 512 crop, bf16, effective batch 16, native matcher losses
+Swin-L boundary:            AWS burst only through MF-P5-08.03
+focused regression:         34 training runtime/config/dataset/run/thermal tests pass
+full regression:            481 tests pass
+quality:                    Ruff 0.15.21 check and format clean across 238 files; tracker structurally valid
+honest boundary:            full MMCV CUDA source build/dataloader and challenger run remain pending WSL access, >=200 gold, and Kevin's 56/57 decision
+```

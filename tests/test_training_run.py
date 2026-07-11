@@ -127,3 +127,19 @@ def test_train_cli_requires_explicit_initialize_only_and_creates_tree(tmp_path: 
     runs = list((tmp_path / "runs").glob("r_*"))
     assert len(runs) == 1
     assert json.loads((runs[0] / "run.json").read_text())["status"] == "initialized"
+
+
+def test_training_run_refuses_unresolved_bodypart_class_count_before_staging(
+    tmp_path: Path,
+) -> None:
+    dataset, _config = _inputs(tmp_path)
+    with pytest.raises(TrainingRunError, match="57 logits.*require 56"):
+        initialize_training_run(
+            model="segformer_b3",
+            dataset_root=dataset,
+            config_path=Path("configs/training/bodypart_segformer_b3.yaml"),
+            dvc_md5="a" * 32,
+            runs_root=tmp_path / "runs",
+            git_sha="b" * 40,
+        )
+    assert not (tmp_path / "runs").exists()

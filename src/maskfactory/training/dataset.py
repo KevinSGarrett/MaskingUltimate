@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
+from types import ModuleType
+from typing import Callable
 
 import numpy as np
 from PIL import Image
@@ -99,12 +102,21 @@ def _class_names(map_name: str) -> tuple[str, ...]:
     return tuple(label.name for label in labels)
 
 
-try:
-    from mmseg.datasets import BaseSegDataset
-    from mmseg.registry import DATASETS
-except ImportError:  # CI and package-reader environments deliberately omit MMSeg.
-    BaseSegDataset = None
-    DATASETS = None
+def _load_mmseg_components(
+    importer: Callable[[str], ModuleType] = importlib.import_module,
+) -> tuple[object | None, object | None]:
+    """Allow an absent MMSeg install, but expose every broken partial install."""
+    try:
+        datasets_module = importer("mmseg.datasets")
+        registry_module = importer("mmseg.registry")
+    except ModuleNotFoundError as exc:
+        if exc.name == "mmseg":
+            return None, None
+        raise
+    return datasets_module.BaseSegDataset, registry_module.DATASETS
+
+
+BaseSegDataset, DATASETS = _load_mmseg_components()
 
 if DATASETS is not None and BaseSegDataset is not None:
 

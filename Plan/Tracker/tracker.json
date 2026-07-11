@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-11T09:56:49+00:00",
+    "generated_at": "2026-07-11T16:43:04+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -5788,7 +5788,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 95,
+      "percent_complete": 97,
       "notes": [
         {
           "ts": "2026-07-11T08:11:22+00:00",
@@ -5804,12 +5804,17 @@
           "ts": "2026-07-11T09:21:20+00:00",
           "actor": "ai_agent",
           "text": "Replaced invalid optional registration of the lightweight reader with genuine MaskFactoryBodyPartDataset/MaskFactoryMaterialDataset BaseSegDataset subclasses, ontology class metadata, ignore 255/zero-label contracts, and exact framework config builder. Simulated MMSeg registry proves both classes/kwargs; 19 focused tests pass. Remaining blocker: authoritative IDs 0..55 already include background (56 logits) while training spec demands 57; NEEDS KEVIN logged in DECISIONS_LOG."
+        },
+        {
+          "ts": "2026-07-11T17:24:11+00:00",
+          "actor": "ai_agent",
+          "text": "Pinned the exact compatible OpenMMLab stack in env/openmmlab_training_stack.lock.json (MMEngine 0.10.7, full MMCV 2.1.0 source commit, MMSeg 1.2.2, MMDetection 3.3.0), added maskfactory training-doctor, and made optional MMSeg loading fail closed on broken transitive installs. A real isolated MMSeg/mmcv-lite probe now exposes missing mmcv._ext instead of silently disabling dataset registration. The actual full-MMCV CUDA BaseSegDataset run remains pending the Kevin-session WSL identity boundary and the unresolved 56-vs-57 class contract. 34 focused and 481 full tests pass; Ruff clean."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:21:20+00:00",
+      "updated_at": "2026-07-11T17:24:11+00:00",
       "orphaned": false
     },
     "MF-P5-02.02": {
@@ -5962,13 +5967,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "partially_complete",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-11T17:24:13+00:00",
+          "actor": "ai_agent",
+          "text": "Authored bodypart_mask2former_swinb.yaml with local Swin-B, activation checkpointing in backbone/trainer, 512 crops, bf16, effective batch 16, native matcher CE/BCE/Dice losses, 40k/80k schedule, 4k evaluation, hard holdouts, exact thermal hook policy, and Swin-L restricted to MF-P5-08.03 AWS burst. Class-contract preflight intentionally refuses both body-part configs while the literal 57 logits conflict with authoritative IDs 0..55; no challenger run is claimed. 34 focused and 481 full tests pass; Ruff clean."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-11T17:24:13+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {

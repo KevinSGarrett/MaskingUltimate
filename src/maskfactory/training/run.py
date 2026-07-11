@@ -16,6 +16,7 @@ from typing import Any
 import yaml
 
 from .augmentations import validate_augmentation_config
+from .runtime import TrainingRuntimeError, validate_bodypart_class_contract
 
 RUN_ID = re.compile(r"^r_\d{8}T\d{6}Z_[a-z0-9_]+_bodyparts_v\d+$")
 DVC_MD5 = re.compile(r"^[a-f0-9]{32}$")
@@ -53,6 +54,10 @@ def initialize_training_run(
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     if not isinstance(config, dict):
         raise TrainingRunError("training config must be a mapping")
+    try:
+        validate_bodypart_class_contract(config)
+    except TrainingRuntimeError as exc:
+        raise TrainingRunError(str(exc)) from exc
     validate_augmentation_config(config)
     timestamp = (now or datetime.now(UTC)).astimezone(UTC).strftime("%Y%m%dT%H%M%SZ")
     selected_id = run_id or f"r_{timestamp}_{model_name}_{dataset_ref.replace('@', '_')}"

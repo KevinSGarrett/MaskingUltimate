@@ -1633,13 +1633,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Implemented strict Draft 2020-12 src/maskfactory/schemas/manifest.schema.json for every doc 04 §1 authority block plus doc 17 §6 per-instance interperson records. Encodes IDs, safe relative paths, SHA-256, dimensions/bboxes, timestamps, source origins, views, mask types, visibility/status, derivatives, tooling, review, QA, and files. Draft202012Validator.check_schema passes; tests/test_manifest_schema.py covers a full valid contract, required-block rejection, and unsafe path/hash rejection; full pytest 75 passed; pre-commit file checks passed; OPS_LOG 2026-07-11 00:14 UTC.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-11T00:13:50+00:00",
       "orphaned": false
     },
     "MF-P1-01.02": {

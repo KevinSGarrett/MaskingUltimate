@@ -870,3 +870,17 @@ implementation commit:   57f0e2e
 roadmap:                  doc 14 §1 marks MF-P0-01 through MF-P0-08 and P0 exit PASS
 tracker:                  90 / 90 P0 items complete
 ```
+
+## 2026-07-11 00:14 UTC - Per-instance manifest schema implemented
+**Items:** MF-P1-01.01
+**Result:** PASS - the authoritative doc 04 §1 manifest contract and doc 17 §6
+multi-person amendment are encoded as strict JSON Schema Draft 2020-12.
+
+```
+schema:                   src/maskfactory/schemas/manifest.schema.json
+required blocks:          source, person, interperson, parts, inpaint_derivatives, tooling, review, qa, files
+governed constraints:     image/instance IDs, safe relative paths, SHA-256, dimensions/bboxes, timestamps, source origins, views, mask types, visibility/status, review and QA ranges
+multi-person contract:    reciprocal per-instance relationship records and contact-band paths
+schema self-check:        Draft202012Validator.check_schema passed
+focused tests:            3 passed (full contract, required authority block, unsafe path/hash rejection)
+```

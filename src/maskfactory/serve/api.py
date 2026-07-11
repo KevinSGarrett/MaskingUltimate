@@ -1,6 +1,473 @@
-"""FastAPI inference service (Mode B).
-
-Spec: doc 13 §3. Scaffold stub (MF-P0-08.07) -- implementation lands in its phase.
-"""
+"""Local-only Mode-B inference service contract and lazy FastAPI application."""
 
 from __future__ import annotations
+
+import base64
+import io
+import json
+import subprocess
+import threading
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Mapping
+
+import numpy as np
+from PIL import Image
+
+from .. import __version__
+from ..gpu import DEFAULT_GPU_LOCK_PATH, GpuLock
+from ..inpaint import feathered_dilation
+from ..models.registry import DEFAULT_MODELS_ROOT, ModelRegistryError, resolve_registered_role
+from ..ontology import get_ontology
+
+ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_REGISTRY = ROOT / "models/model_registry.json"
+
+
+class ServingError(RuntimeError):
+    """The serving contract cannot safely fulfill a request."""
+
+
+Predictor = Callable[[np.ndarray, tuple[str, ...]], dict[str, np.ndarray]]
+Refiner = Callable[[np.ndarray, str, tuple[dict[str, Any], ...]], np.ndarray]
+ChampionPredictorLoader = Callable[[Mapping[str, Path]], Predictor]
+SlotPredictorLoader = Callable[[str, Path], Predictor]
+RefinerLoader = Callable[[], Refiner]
+
+
+def probe_vram() -> dict[str, Any]:
+    """Return stable NVIDIA memory telemetry without making service health fatal."""
+    command = [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.used,memory.free",
+        "--format=csv,noheader,nounits",
+    ]
+    try:
+        process = subprocess.run(command, capture_output=True, text=True, timeout=5, check=False)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"available": False, "reason": str(exc), "gpus": []}
+    if process.returncode:
+        return {
+            "available": False,
+            "reason": (process.stderr.strip() or process.stdout.strip())[-500:],
+            "gpus": [],
+        }
+    gpus = []
+    try:
+        for line in process.stdout.splitlines():
+            index, name, total, used, free = (value.strip() for value in line.split(",", 4))
+            gpus.append(
+                {
+                    "index": int(index),
+                    "name": name,
+                    "total_mib": int(total),
+                    "used_mib": int(used),
+                    "free_mib": int(free),
+                }
+            )
+    except (TypeError, ValueError):
+        return {"available": False, "reason": "unparseable nvidia-smi output", "gpus": []}
+    return {"available": bool(gpus), "gpus": gpus}
+
+
+class SequentialChampionPredictor:
+    """Load, use, and unload one champion role at a time for an inference request."""
+
+    ROLE_ORDER = ("champion_bodypart", "champion_hand", "champion_clothing")
+
+    def __init__(self, checkpoints: Mapping[str, Path], loader: SlotPredictorLoader) -> None:
+        if set(checkpoints) != set(self.ROLE_ORDER):
+            raise ServingError(f"sequential serving requires exactly {list(self.ROLE_ORDER)}")
+        self.checkpoints = {role: Path(path) for role, path in checkpoints.items()}
+        self.loader = loader
+        self.load_history: list[str] = []
+
+    def __call__(self, image: np.ndarray, labels: tuple[str, ...]) -> dict[str, np.ndarray]:
+        grouped = {role: [] for role in self.ROLE_ORDER}
+        for label in labels:
+            grouped[_champion_role_for_label(label)].append(label)
+        outputs: dict[str, np.ndarray] = {}
+        for role in self.ROLE_ORDER:
+            requested = tuple(grouped[role])
+            if not requested:
+                continue
+            provider = self.loader(role, self.checkpoints[role])
+            self.load_history.append(role)
+            try:
+                result = provider(image, requested)
+                if set(result) != set(requested):
+                    raise ServingError(f"{role} output labels differ from its slot request")
+                outputs.update(result)
+            finally:
+                close = getattr(provider, "close", None)
+                if callable(close):
+                    close()
+                del provider
+        return outputs
+
+
+class OnDemandRefiner:
+    """Load SAM2 for one refine request and release it before returning."""
+
+    def __init__(self, loader: RefinerLoader) -> None:
+        self.loader = loader
+        self.load_count = 0
+
+    def __call__(
+        self, image: np.ndarray, label: str, clicks: tuple[dict[str, Any], ...]
+    ) -> np.ndarray:
+        provider = self.loader()
+        self.load_count += 1
+        try:
+            return provider(image, label, clicks)
+        finally:
+            close = getattr(provider, "close", None)
+            if callable(close):
+                close()
+            del provider
+
+
+@dataclass
+class InferenceRuntime:
+    predictor: Predictor | None = None
+    refiner: Refiner | None = None
+    registry_path: Path = DEFAULT_REGISTRY
+    models_root: Path = DEFAULT_MODELS_ROOT
+    gpu_lock_path: Path = DEFAULT_GPU_LOCK_PATH
+    loaded_models: list[str] = field(default_factory=list)
+    configured_models: list[str] = field(default_factory=list)
+    vram_probe: Callable[[], dict[str, Any]] = probe_vram
+    _lease: GpuLock | None = None
+    _request_lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
+
+    def configure_champion_predictor(
+        self,
+        loader: ChampionPredictorLoader,
+        *,
+        roles: tuple[str, ...] = ("champion_bodypart",),
+    ) -> None:
+        """Resolve verified champion roles and build the only production predictor path."""
+        if self._lease is not None:
+            raise ServingError("cannot reconfigure champion models while serving")
+        if not roles or len(set(roles)) != len(roles):
+            raise ServingError("champion role list must be non-empty and unique")
+        if any(not role.startswith("champion_") for role in roles):
+            raise ServingError("serving predictor may load champion_* roles only")
+        try:
+            checkpoints = {
+                role: resolve_registered_role(
+                    role,
+                    registry_path=self.registry_path,
+                    models_root=self.models_root,
+                )
+                for role in roles
+            }
+        except ModelRegistryError as exc:
+            raise ServingError(f"champion model resolution failed: {exc}") from exc
+        self.predictor = loader(checkpoints)
+        if self.predictor is None:
+            raise ServingError("champion predictor loader returned no predictor")
+        self.loaded_models = list(roles)
+        self.configured_models = list(roles)
+
+    def configure_sequential_champions(self, loader: SlotPredictorLoader) -> None:
+        """Resolve the required serving champions without co-residency."""
+        if self._lease is not None:
+            raise ServingError("cannot reconfigure champion models while serving")
+        roles = SequentialChampionPredictor.ROLE_ORDER
+        try:
+            checkpoints = {
+                role: resolve_registered_role(
+                    role, registry_path=self.registry_path, models_root=self.models_root
+                )
+                for role in roles
+            }
+        except ModelRegistryError as exc:
+            raise ServingError(f"champion model resolution failed: {exc}") from exc
+        self.predictor = SequentialChampionPredictor(checkpoints, loader)
+        self.loaded_models = []
+        self.configured_models = list(roles)
+
+    def configure_on_demand_refiner(self, loader: RefinerLoader) -> None:
+        if self._lease is not None:
+            raise ServingError("cannot reconfigure SAM2 while serving")
+        self.refiner = OnDemandRefiner(loader)
+
+    def start(self) -> None:
+        if self._lease is not None:
+            raise ServingError("MaskFactory serving runtime is already started")
+        lease = GpuLock(self.gpu_lock_path, purpose="serve_mode_b")
+        lease.acquire()
+        self._lease = lease
+
+    def stop(self) -> None:
+        if self._lease is not None:
+            self._lease.release()
+            self._lease = None
+
+    def health(self) -> dict[str, Any]:
+        return {
+            "status": "ok" if self._lease is not None else "not_started",
+            "pipeline_version": __version__,
+            "versions": {"pipeline": __version__, "mode_b_api": "1.0.0"},
+            "loaded_models": list(self.loaded_models),
+            "configured_models": list(self.configured_models),
+            "gpu_lock": str(self.gpu_lock_path),
+            "vram": self.vram_probe(),
+        }
+
+    def models(self) -> dict[str, Any]:
+        document = json.loads(Path(self.registry_path).read_text(encoding="utf-8"))
+        models = [
+            {
+                "key": item["key"],
+                "role": item["role"],
+                "version_tag": item["version_tag"],
+                "sha256": item.get("sha256"),
+            }
+            for item in document.get("models", [])
+            if item.get("verified")
+        ]
+        champions = {
+            item["role"]: {
+                "key": item["key"],
+                "version_tag": item["version_tag"],
+                "sha256": item.get("sha256"),
+            }
+            for item in document.get("models", [])
+            if item.get("verified") and str(item.get("role", "")).startswith("champion_")
+        }
+        return {
+            "models": models,
+            "champions": champions,
+            "loaded_models": list(self.loaded_models),
+            "configured_models": list(self.configured_models),
+        }
+
+    def predict(
+        self,
+        image_bytes: bytes,
+        labels: tuple[str, ...],
+        *,
+        return_mode: str = "binaries",
+        inpaint: Mapping[str, int] | None = None,
+    ) -> dict[str, Any]:
+        if self._lease is None:
+            raise ServingError("serving runtime must hold runs/gpu.lock before inference")
+        if self.predictor is None:
+            raise ServingError("champion prediction provider is not configured")
+        if return_mode not in {"binaries", "label_maps", "both"}:
+            raise ServingError("return_mode must be binaries, label_maps, or both")
+        dilation, feather = _validate_inpaint_request(inpaint)
+        image = _decode_rgb(image_bytes)
+        with self._request_lock:
+            outputs = self.predictor(image, labels)
+        if set(outputs) != set(labels):
+            raise ServingError("predictor output labels differ from the request")
+        masks = {}
+        mask_arrays = {}
+        metadata = {}
+        for label in labels:
+            mask = _validated_mask(outputs[label], image.shape[:2], label)
+            mask_arrays[label] = mask
+            if return_mode in {"binaries", "both"}:
+                masks[label] = _png_base64(mask)
+            source_models = (
+                [_champion_role_for_label(label)]
+                if isinstance(self.predictor, SequentialChampionPredictor)
+                else list(self.loaded_models)
+            )
+            metadata[label] = {
+                "visibility": "visible" if mask.any() else "not_visible",
+                "area_px": int(mask.sum()),
+                "status": "draft_model_generated",
+                "provenance": {"source": "champion_models", "models": source_models},
+            }
+        response = {
+            "status": "draft_model_generated",
+            "labels": list(labels),
+            "width": image.shape[1],
+            "height": image.shape[0],
+            "masks": masks,
+            "manifest": metadata,
+        }
+        if return_mode in {"label_maps", "both"}:
+            response["label_maps"] = _encoded_label_maps(mask_arrays, image.shape[:2])
+        if inpaint is not None:
+            response["inpaint_masks"] = {
+                label: _grayscale_png_base64(
+                    feathered_dilation(mask, dilate_px=dilation, feather_px=feather)
+                )
+                for label, mask in mask_arrays.items()
+            }
+            response["inpaint"] = {"dilate": dilation, "feather": feather}
+        return response
+
+    def refine(
+        self, image_bytes: bytes, label: str, clicks: tuple[dict[str, Any], ...]
+    ) -> dict[str, Any]:
+        if self._lease is None:
+            raise ServingError("serving runtime must hold runs/gpu.lock before refinement")
+        if self.refiner is None:
+            raise ServingError("SAM2 refinement provider is not configured")
+        image = _decode_rgb(image_bytes)
+        with self._request_lock:
+            mask = _validated_mask(self.refiner(image, label, clicks), image.shape[:2], label)
+        return {
+            "status": "draft_model_generated",
+            "label": label,
+            "mask": _png_base64(mask),
+            "area_px": int(mask.sum()),
+            "provenance": {"source": "sam2_interactive_refine"},
+        }
+
+
+def create_production_runtime() -> InferenceRuntime:
+    """Build the production runtime with every currently available verified provider."""
+    from .providers import load_production_sam2_refiner
+
+    runtime = InferenceRuntime()
+    runtime.configure_on_demand_refiner(load_production_sam2_refiner)
+    return runtime
+
+
+def create_app(runtime: InferenceRuntime | None = None):
+    """Create the FastAPI app lazily so non-serving environments need no web stack."""
+    try:
+        from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+    except ImportError as exc:
+        raise ServingError(
+            "FastAPI serving dependencies are missing; install the pinned MaskFactory environment"
+        ) from exc
+
+    service = runtime or create_production_runtime()
+    app = FastAPI(title="MaskFactory", version=__version__)
+
+    @app.on_event("startup")
+    def startup() -> None:
+        service.start()
+
+    @app.on_event("shutdown")
+    def shutdown() -> None:
+        service.stop()
+
+    @app.get("/health")
+    def health():
+        return service.health()
+
+    @app.get("/models")
+    def models():
+        return service.models()
+
+    @app.post("/predict")
+    async def predict(
+        image: UploadFile = File(...),
+        labels: str = Form(...),
+        return_mode: str = Form("binaries"),
+        inpaint: str = Form("null"),
+    ):
+        try:
+            requested = tuple(value.strip() for value in labels.split(",") if value.strip())
+            if not requested:
+                raise ServingError("at least one label is required")
+            parsed_inpaint = json.loads(inpaint)
+            return service.predict(
+                await image.read(),
+                requested,
+                return_mode=return_mode,
+                inpaint=parsed_inpaint,
+            )
+        except (ServingError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    @app.post("/refine")
+    async def refine(
+        image: UploadFile = File(...), label: str = Form(...), clicks: str = Form("[]")
+    ):
+        try:
+            parsed = tuple(json.loads(clicks))
+            return service.refine(await image.read(), label, parsed)
+        except (ServingError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    return app
+
+
+def _decode_rgb(value: bytes) -> np.ndarray:
+    try:
+        with Image.open(io.BytesIO(value)) as opened:
+            return np.asarray(opened.convert("RGB"))
+    except (OSError, ValueError) as exc:
+        raise ServingError("request image is not a readable raster") from exc
+
+
+def _champion_role_for_label(name: str) -> str:
+    try:
+        label = get_ontology().label(name)
+    except Exception as exc:
+        raise ServingError(f"unknown ontology label requested: {name}") from exc
+    if label.map == "material":
+        return "champion_clothing"
+    if label.map != "part":
+        raise ServingError(f"label is not served by a champion segmentation slot: {name}")
+    if label.id is not None and 20 <= int(label.id) <= 33:
+        return "champion_hand"
+    return "champion_bodypart"
+
+
+def _validated_mask(mask: np.ndarray, shape: tuple[int, int], label: str) -> np.ndarray:
+    array = np.asarray(mask)
+    if array.shape != shape:
+        raise ServingError(f"{label} mask dimensions differ from request image")
+    if array.dtype == bool:
+        return array
+    if not set(np.unique(array)).issubset({0, 1, 255}):
+        raise ServingError(f"{label} mask is not binary")
+    return array > 0
+
+
+def _png_base64(mask: np.ndarray) -> str:
+    output = io.BytesIO()
+    Image.fromarray(mask.astype(np.uint8) * 255, mode="L").save(output, format="PNG")
+    return base64.b64encode(output.getvalue()).decode("ascii")
+
+
+def _grayscale_png_base64(values: np.ndarray) -> str:
+    output = io.BytesIO()
+    Image.fromarray(np.asarray(values, dtype=np.uint8), mode="L").save(output, format="PNG")
+    return base64.b64encode(output.getvalue()).decode("ascii")
+
+
+def _validate_inpaint_request(value: Mapping[str, int] | None) -> tuple[int, int]:
+    if value is None:
+        return 0, 0
+    if not isinstance(value, Mapping) or set(value) != {"dilate", "feather"}:
+        raise ServingError("inpaint must be null or exactly {dilate, feather}")
+    if any(isinstance(value[key], bool) or not isinstance(value[key], int) for key in value):
+        raise ServingError("inpaint dilation and feather must be integers")
+    dilation, feather = int(value["dilate"]), int(value["feather"])
+    if not 0 <= dilation <= 512 or not 0 <= feather <= 512:
+        raise ServingError("inpaint dilation and feather must be in [0, 512]")
+    return dilation, feather
+
+
+def _encoded_label_maps(masks: Mapping[str, np.ndarray], shape: tuple[int, int]) -> dict[str, str]:
+    maps: dict[str, np.ndarray] = {}
+    for name, mask in masks.items():
+        label = get_ontology().label(name)
+        if label.map not in {"part", "material"} or label.id is None:
+            raise ServingError(f"label-map return requires indexed atomic label: {name}")
+        target = maps.setdefault(label.map, np.zeros(shape, dtype=np.uint16))
+        conflict = mask & (target != 0) & (target != int(label.id))
+        if conflict.any():
+            raise ServingError(f"predicted {label.map} masks overlap; label map would be ambiguous")
+        target[mask] = int(label.id)
+    encoded = {}
+    for map_name, values in maps.items():
+        output = io.BytesIO()
+        if map_name == "part":
+            Image.fromarray(values).save(output, format="PNG")
+        else:
+            Image.fromarray(values.astype(np.uint8), mode="L").save(output, format="PNG")
+        encoded[map_name] = base64.b64encode(output.getvalue()).decode("ascii")
+    return encoded

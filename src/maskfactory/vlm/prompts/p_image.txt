@@ -1,0 +1,2 @@
+PROMPT_VERSION: p-image-v1-doc10
+Given the overlay and this manifest digest, list: (a) labels marked visible whose mask appears missing or misplaced, (b) visible body parts with no visible-state entry, (c) left/right naming that contradicts the character's orientation, and (d) masks claiming areas clearly clothing-covered or out of frame. Answer STRICT JSON only: {"missing":[],"mislabeled":[],"lr_suspect":[],"impossible_claims":[],"notes":""}.

@@ -21,6 +21,9 @@ dependencies = [
     "loguru",
     "mediapipe==0.10.35",
     "rich",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
 ]
 
 [project.scripts]

@@ -30,6 +30,10 @@
         "occlusion_confusion",
         "area_anomaly",
         "topology",
+        "qc_fail",
+        "second_review_fail",
+        "vlm_autoqa_disagreement",
+        "human_edit_delta",
         "other"
       ]
     },

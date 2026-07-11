@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/leaderboard.schema.json",
+  "title": "MaskFactory model leaderboard row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id", "model_family", "ckpt_sha", "dataset_ref", "split",
+    "mean_iou", "mean_boundary_f", "per_class", "group_scores",
+    "instance_context_scores", "latency_ms_1024", "vram_gb", "seeds", "notes"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "model_family": { "type": "string", "minLength": 1 },
+    "ckpt_sha": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "dataset_ref": { "type": "string", "minLength": 1 },
+    "split": { "enum": ["val", "test_holdout", "hard_case_holdout"] },
+    "mean_iou": { "$ref": "#/$defs/unit" },
+    "mean_boundary_f": { "$ref": "#/$defs/unit" },
+    "per_class": { "$ref": "#/$defs/metricMap" },
+    "group_scores": { "$ref": "#/$defs/metricMap" },
+    "instance_context_scores": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "solo": { "$ref": "#/$defs/contextMetric" },
+        "duo": { "$ref": "#/$defs/contextMetric" },
+        "small_group": { "$ref": "#/$defs/contextMetric" }
+      }
+    },
+    "sample_count": { "type": "integer", "minimum": 0 },
+    "latency_ms_1024": { "type": "number", "minimum": 0 },
+    "vram_gb": { "type": "number", "minimum": 0 },
+    "seeds": { "type": "array", "uniqueItems": true, "items": { "type": "integer" } },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean_iou", "mean_boundary_f"],
+      "properties": {
+        "mean_iou": { "$ref": "#/$defs/unit" },
+        "mean_boundary_f": { "$ref": "#/$defs/unit" }
+      }
+    },
+    "contextMetric": {
+      "type": "object",
+      "required": ["mean_iou", "mean_boundary_f", "per_class", "sample_count"],
+      "properties": {
+        "mean_iou": { "$ref": "#/$defs/unit" },
+        "mean_boundary_f": { "$ref": "#/$defs/unit" },
+        "per_class": { "$ref": "#/$defs/metricMap" },
+        "sample_count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "metricMap": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/classMetric" }
+    },
+    "classMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["iou", "bf"],
+      "properties": {
+        "iou": { "$ref": "#/$defs/unit" },
+        "bf": { "$ref": "#/$defs/unit" }
+      }
+    }
+  }
+}

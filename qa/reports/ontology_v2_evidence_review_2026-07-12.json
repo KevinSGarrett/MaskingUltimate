@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "review_date": "2026-07-12",
+  "window_days": 30,
+  "required_distinct_failures": 10,
+  "failure_queue_path": "qa/failure_queue.jsonl",
+  "failure_queue_present": false,
+  "candidates": {
+    "per_toe_splits": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "inner_outer_thigh": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "shin_front": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "enable_ears_54_55": {"distinct_qualifying_failures": 0, "decision": "no_go"}
+  },
+  "overall_decision": "no_go_keep_body_parts_v1",
+  "reason": "No candidate reaches the mandatory 10-distinct-failures-in-30-days growth bar.",
+  "changes_authorized": []
+}

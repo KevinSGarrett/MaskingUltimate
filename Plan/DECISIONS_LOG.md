@@ -126,3 +126,18 @@ function identity, CPU ownership, and pinned CVAT version. Supplying the missing
 adapter is the narrowest reading that satisfies all of them and keeps the
 external checkout reproducible and clean.
 **Approved by:** AI-autonomous (conservative default, logged for Kevin's awareness)
+## 2026-07-11 — UNRESOLVED: body-part trainer requires 56 or 57 logits
+**Item(s) affected:** MF-P5-02.01, MF-P5-03.01, every body-part training/promotion run
+**Spec conflict:** The authoritative ontology and label-map contract define exactly
+56 indexed values, IDs `0..55`, and ID 0 is already `background`. Doc 12 §6.1 and
+MF-P5-03.01 instead demand "57-class (56 PART IDs + background)" and the completed
+training YAML therefore declares `num_classes: 57`.
+**Observed consequence:** A real MMSeg dataset built from the authoritative maps has
+56 class names and no possible target pixel for logit 56. Keeping 57 creates an
+untrained, unnamed output; changing to 56 contradicts the literal training item.
+**Current safe behavior:** The MMSeg dataset adapters follow the map authority and
+expose the contiguous 56-class vocabulary. No body-part training or promotion may be
+credited until this mismatch is resolved. No dummy class, ID remap, or silent YAML
+change was introduced.
+**NEEDS KEVIN:** Decide whether `num_classes` should be corrected to 56, or identify
+the missing 57th indexed class and its required ontology/map migration.

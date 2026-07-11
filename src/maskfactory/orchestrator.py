@@ -9,6 +9,7 @@ import shutil
 import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import nullcontext
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -16,6 +17,7 @@ from typing import Any
 
 import yaml
 
+from .gpu import GpuLock
 from .state import transition_image_status, writer_connection
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -116,6 +118,9 @@ class StageExecution:
     config_hash: str
     output_dir: str
     forced: bool
+    model_keys: tuple[str, ...] = ()
+    duration_sec: float = 0.0
+    vram_peak_mb: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -250,6 +255,13 @@ def _replace_directory(staging: Path, destination: Path) -> None:
         shutil.rmtree(backup)
 
 
+def _cleanup_abandoned_staging(destination: Path) -> None:
+    """Remove only this image/stage's private directories left by a hard-killed owner."""
+    for candidate in destination.parent.glob(destination.name + ".tmp-*"):
+        if candidate.is_dir():
+            shutil.rmtree(candidate)
+
+
 def _execute_stage(
     *,
     image_id: str,
@@ -269,9 +281,19 @@ def _execute_stage(
         and stamp.get("config_hash") == digest
         and (destination / "manifest_delta.json").is_file()
     ):
-        return StageExecution(stage.name, "cached", digest, str(destination), False)
+        return StageExecution(
+            stage.name,
+            "cached",
+            digest,
+            str(destination),
+            False,
+            tuple(stamp.get("model_keys", [])),
+            0.0,
+            float(stamp.get("vram_peak_mb", 0.0)),
+        )
 
     destination.parent.mkdir(parents=True, exist_ok=True)
+    _cleanup_abandoned_staging(destination)
     staging = destination.with_name(destination.name + f".tmp-{uuid.uuid4().hex}")
     staging.mkdir(parents=False, exist_ok=False)
     context = StageContext(
@@ -283,10 +305,21 @@ def _execute_stage(
         config_hash=digest,
     )
     try:
+        started = time.perf_counter()
         delta = runner(context)
         if not isinstance(delta, Mapping):
             raise TypeError(f"{stage.name} runner must return a manifest-delta mapping")
-        _write_json(staging / "manifest_delta.json", dict(delta))
+        delta_document = dict(delta)
+        telemetry = delta_document.pop("_telemetry", {})
+        if not isinstance(telemetry, Mapping):
+            raise TypeError(f"{stage.name} _telemetry must be a mapping")
+        configured_models = context.config["stage"].get("model_keys", [])
+        model_keys = tuple(sorted(set(telemetry.get("model_keys", configured_models))))
+        vram_peak_mb = float(telemetry.get("vram_peak_mb", 0.0))
+        if vram_peak_mb < 0:
+            raise ValueError("vram_peak_mb cannot be negative")
+        duration_sec = time.perf_counter() - started
+        _write_json(staging / "manifest_delta.json", delta_document)
         files = sorted(
             path.relative_to(staging).as_posix() for path in staging.rglob("*") if path.is_file()
         )
@@ -299,6 +332,9 @@ def _execute_stage(
                 "config_hash": digest,
                 "forced": forced,
                 "status": "complete",
+                "model_keys": list(model_keys),
+                "duration_sec": duration_sec,
+                "vram_peak_mb": vram_peak_mb,
                 "files": files,
             },
         )
@@ -306,7 +342,16 @@ def _execute_stage(
     except Exception:
         shutil.rmtree(staging, ignore_errors=True)
         raise
-    return StageExecution(stage.name, "complete", digest, str(destination), forced)
+    return StageExecution(
+        stage.name,
+        "complete",
+        digest,
+        str(destination),
+        forced,
+        model_keys,
+        duration_sec,
+        vram_peak_mb,
+    )
 
 
 def _is_transient(exc: BaseException) -> bool:
@@ -367,6 +412,8 @@ def run_pipeline(
     runners: Mapping[str, StageRunner] | None = None,
     retry_delays: Sequence[float] = (1.0, 2.0),
     sleeper: Callable[[float], None] = time.sleep,
+    gpu_lock_path: Path | None = None,
+    run_log: Any | None = None,
 ) -> tuple[StageExecution, ...]:
     """Run selected stages; downstream communication remains entirely on disk."""
     if not image_id.startswith("img_"):
@@ -375,23 +422,49 @@ def run_pipeline(
     force_names = _normalize_stages(force)
     plan = plan_stages(selected=selected, force=force, skip=skip, config=config)
     available = runners if runners is not None else STAGE_RUNNERS
+    lease = (
+        GpuLock(Path(gpu_lock_path), purpose="pipeline", image_id=image_id)
+        if gpu_lock_path is not None
+        else nullcontext()
+    )
     results: list[StageExecution] = []
-    for stage in plan:
-        runner = available.get(stage.name)
-        if runner is None:
-            raise StageRunnerMissingError(f"no runner registered for {stage.name}")
-        results.append(
-            _execute_with_policy(
-                image_id=image_id,
-                stage=stage,
-                config=config,
-                work_root=Path(work_root),
-                runner=runner,
-                forced=stage.name in force_names,
-                retry_delays=retry_delays,
-                sleeper=sleeper,
-            )
-        )
+    with lease:
+        for stage in plan:
+            runner = available.get(stage.name)
+            if runner is None:
+                raise StageRunnerMissingError(f"no runner registered for {stage.name}")
+            try:
+                execution = _execute_with_policy(
+                    image_id=image_id,
+                    stage=stage,
+                    config=config,
+                    work_root=Path(work_root),
+                    runner=runner,
+                    forced=stage.name in force_names,
+                    retry_delays=retry_delays,
+                    sleeper=sleeper,
+                )
+            except StagePolicyError as exc:
+                if run_log is not None:
+                    run_log.record_failure(
+                        image_id=image_id,
+                        stage=exc.stage,
+                        category=exc.category,
+                        attempts=exc.attempts,
+                        error=str(exc.cause),
+                    )
+                raise
+            results.append(execution)
+            if run_log is not None:
+                run_log.record_stage(
+                    image_id=image_id,
+                    stage=execution.stage,
+                    status=execution.status,
+                    config_hash=execution.config_hash,
+                    model_keys=execution.model_keys,
+                    duration_sec=execution.duration_sec,
+                    vram_peak_mb=execution.vram_peak_mb,
+                )
     return tuple(results)
 
 

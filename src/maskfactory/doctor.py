@@ -21,6 +21,7 @@ from urllib.request import Request, urlopen
 
 import numpy as np
 
+from .gpu import lock_state
 from .io import png_strict
 from .models import verify_registered_model_smokes
 
@@ -361,30 +362,19 @@ def check_sqlite(path: Path = ROOT / "data" / "maskfactory.sqlite") -> CheckResu
     return _result("sqlite_writable", "PASS", str(path))
 
 
-def _pid_exists(pid: int) -> bool:
-    if pid <= 0:
-        return False
-    try:
-        os.kill(pid, 0)
-    except OSError:
-        return False
-    return True
-
-
 def check_gpu_lock(
     path: Path = ROOT / "runs" / "gpu.lock", stale_seconds: int = 7200
 ) -> CheckResult:
-    if not path.exists():
+    state, document, age = lock_state(path, stale_seconds=stale_seconds)
+    if state == "absent":
         return _result("gpu_lock", "PASS", "no gpu.lock present")
-    age = max(0.0, time.time() - path.stat().st_mtime)
     try:
-        document = json.loads(path.read_text(encoding="utf-8"))
-        pid = int(document.get("pid", -1))
-    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        pid = int(document.get("pid", -1)) if document else -1
+    except (ValueError, TypeError):
         pid = -1
-    if _pid_exists(pid):
+    if state == "active":
         return _result("gpu_lock", "WARN", f"active lock pid={pid}; age={age:.0f}s")
-    if age >= stale_seconds or pid > 0:
+    if state == "stale":
         return _result(
             "gpu_lock",
             "FAIL",

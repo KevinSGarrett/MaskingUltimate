@@ -962,3 +962,1679 @@ staging safety:           failed attempt removes private temp output and preserv
 queue evidence:           UTC timestamp, image, stage, category, attempts, error, route; append flushed + fsynced
 focused tests:            11 orchestrator tests, including retry delays, semantic routing, fatal continuation, and exhausted OOM
 ```
+
+## 2026-07-11 00:54 UTC - GPU lease and stale-lock integration completed
+**Items:** MF-P1-02.05
+**Result:** PASS - the orchestrator CLI now owns one atomic, token-checked GPU
+lease for pipeline execution, and doctor consumes the same lock-state authority.
+
+```
+lock path:                runs/gpu.lock
+owner metadata:           pid, host, UTC acquired_at, purpose, image_id, unique token
+acquire policy:           O_EXCL atomic creation; live/unrecognized owner refused; dead owner reported stale and never auto-deleted
+release policy:           token must still match; replaced-owner lock is preserved; exceptions release the owned lease
+orchestrator wiring:      CLI pipeline execution holds the lease across selected stages
+doctor wiring:            shared absent/active/stale/unrecognized classifier; stale remains FAIL with manual nvidia-smi confirmation hint
+focused tests:            24 GPU/doctor/orchestrator tests passed
+full validation:          124 pytest tests passed; Ruff clean; Black 25.1/Python 3.11 profile clean; diff check clean
+```
+
+## 2026-07-11 01:02 UTC - Package-authoritative SQLite reindex implemented
+**Items:** MF-P1-02.06
+**Result:** PASS - `maskfactory reindex` now diffs or rebuilds the image index
+from validated per-instance package manifests.
+
+```
+discovery:                data/packages/<image_id>/instances/pN/manifest.json (legacy direct manifest also structurally accepted)
+validation:               every manifest passes bundled schema; directory image_id and cross-instance source hash must agree
+row derivation:           one image row from all instances; status/current stage, source hash, timestamps, and package version derived
+dry-run report:           deterministic clean/missing_in_db/stale_rows/extra_in_db JSON; no database mutation
+rebuild policy:           WAL/single-writer transaction; clears rebuildable image/stage/review index and inserts manifest truth
+CLI:                      --dry-run, --rebuild, --packages-root, --database; no-flag behavior rebuilds
+focused tests:            5 passed (dry/rebuild/clean, pre-schema DB, stale+extra repair, multi-instance conflict, CLI JSON)
+live workspace dry-run:   clean=true; zero missing, stale, or extra image rows
+```
+
+## 2026-07-11 01:11 UTC - Daily and per-run telemetry logging implemented
+**Items:** MF-P1-02.07
+**Result:** PASS - orchestrated runs now persist both a bound daily Loguru stream
+and an incrementally atomic `runs/<run_id>/run.json` ledger.
+
+```
+daily sink:               logs/maskfactory_<YYYY-MM-DD>.log filtered/bound by run_id
+run ledger:               schema/run/status/images/start/end/full-config hash/model union/duration/VRAM peak/stages/error
+stage telemetry:           image, stage, status, stage config hash, model keys, duration_sec, vram_peak_mb
+runner contract:           reserved _telemetry removed before manifest_delta.json publication
+durability:                run.json written at start and atomically replaced after every stage/failure/finalization
+failure evidence:          classified stage, attempts, error, and failed final status survive raised exception
+CLI wiring:                maskfactory run creates/finalizes the ledger around the GPU-leased pipeline
+focused tests:             14 runlog/orchestrator tests passed, including successful and fatal ledgers
+```
+
+## 2026-07-11 01:16 UTC - Hard-kill resume and reindex recovery gate passed
+**Items:** MF-P1-02.08
+**Result:** PASS - a real child process was terminated during a stage write;
+the next invocation removed abandoned private staging and completed cleanly.
+
+```
+crash mechanism:          subprocess killed after writing partial.bin + readiness marker, before manifest delta/stage stamp
+observed crash state:     nonzero child exit and img_<id>.tmp-* staging directory present
+resume behavior:          abandoned stage-owned temp removed; complete.bin promoted; partial.bin absent; resumed delta/stamp valid
+database recovery:        package manifest rebuilt a fresh SQLite index; immediate reindex --dry-run clean=true
+test:                     tests/test_crash_resume.py passed as an actual process-boundary crash, not a mocked exception
+```
+
+## 2026-07-11 01:34 UTC - Canonical ontology cluster completed
+**Items:** MF-P1-03.01, MF-P1-03.02, MF-P1-03.03, MF-P1-03.04,
+MF-P1-03.05, MF-P1-03.06
+**Result:** PASS - doc 02 is encoded as deterministic generator data, the
+generated YAML is the strict runtime authority, CI detects drift, and the fixed
+visualization contract is committed.
+
+```
+source registries:        PART 0-55, MATERIAL 0-15, 19 region bands, 40 derived formulas, projected templates/static labels, protected classes
+canonical artifact:       configs/ontology.yaml; 135 concrete labels; all required machine fields; deterministic byte rendering
+runtime authority:        ontology.py validates the YAML and hard-fails unknown name, map/ID, disabled-required label, invalid swap, or duplicates
+CI drift gate:            tools/generate_ontology.py --check in .github/workflows/ci.yml
+ontology invariants:      ears 54/55 disabled; reciprocal sided swaps; every atomic has area bounds and component limit
+visualization contract:   fixed color for every ontology label; RGBA(255,64,64,110); 1 px contour; horizontal five-tile 512 px QA panel at 2x bbox
+focused tests:            10 ontology/viz tests passed
+full validation:          142 pytest tests passed; Ruff clean; Black 25.1/Python 3.11 profile clean; diff check clean
+```
+
+## 2026-07-11 02:02 UTC - Governed S00 intake completed
+**Items:** MF-P1-04.01, MF-P1-04.02, MF-P1-04.03, MF-P1-04.04,
+MF-P1-04.05, MF-P1-04.06, MF-P1-04.07, MF-P1-04.08
+**Result:** PASS - intake is an integrated CLI/runtime path with deterministic
+identity, privacy rewriting, provenance enforcement, mandatory local age
+screening, durable registration, and all specified batch outcomes.
+
+```
+identity/duplicates:      streaming SHA-256 -> img_<hash12>; existing source hash skipped and fsynced to logs/intake.jsonl
+decode policy:            png/jpg/jpeg/webp fully decoded; corrupt/unsupported/min-side<512 inserted as rejected and logged
+privacy rewrite:          PNG pixels preserved with ancillary metadata removed; JPEG APPn/COM removed with scan stream byte-identical
+provenance:               generated/owned/licensed/consented folders map to canonical manifest values; root/invalid origin quarantined
+near-duplicate key:       deterministic 64-bit 32x32 DCT pHash stored as 16 hex characters in intake manifest and event log
+age safety:               YOLO11m person count + local qwen2.5vl whole-image apparent-minor verdict; yes/uncertain/error quarantine; no disable path
+adult-content policy:     prompt explicitly classifies age only and does not classify nudity/sexual content
+live model proof:         installed yolo11m.pt + qwen2.5vl:7b returned clear_adult with person_count=4 on ultralytics_bus_adults.jpg
+registration:             atomic canonical source + manifest skeleton, then SQLite S00 row; quarantined imagery is not copied
+mixed batch:              exactly 10 inputs -> 5 ingested, 1 duplicate skipped, 2 rejected, 2 quarantined; DB/events/artifacts asserted
+focused tests:            12 intake tests passed
+full validation:          154 pytest tests passed; Ruff, Black, and diff checks clean
+```
+
+## 2026-07-11 02:31 UTC - Authority maps, binary views, and derivatives completed
+**Items:** MF-P1-05.01, MF-P1-05.02, MF-P1-05.03, MF-P1-05.04,
+MF-P1-05.05, MF-P1-05.06
+**Result:** PASS - human mask candidates now resolve into the two exclusive
+authority maps, every binary/derived/inpaint view is reproducible, and the P1
+format-integrity battery passes end to end.
+
+```
+map fusion:               ontology-validated 2-D CVAT candidates; lexicographic score -> explicit priority -> ontology-ID argmax
+authority outputs:        label_map_part.png strict 16-bit + label_map_material.png strict 8-bit; shape agreement enforced
+binary export:            54 enabled PART views routed to masks/protected + all 16 MATERIAL views under masks_material via png_strict
+derived registry:         configs/derived.yaml contains all 40 exact doc-02 formulas; script-only parser supports unions/intersections/subtraction/ranges/edges/projected inputs
+derived evidence:         masks_derived/manifest.json records formula, authority-map/projected hashes, output hash, and config hash
+inpaint:                  defaults d8f4@1024 with per-label overrides; scaled hard dilation then outward linear feather; grayscale written only via png_strict
+inpaint provenance:       package manifest inpaint_derivatives[] atomically updated with actual scaled settings, relative file, ref scale, and source-gold SHA-256
+round trip:               maps -> 70 binaries -> maps is array-identical for both PART and MATERIAL; overlap/missing views hard-fail
+format gate:              QC-001 through QC-007 all green on a complete exporter package, including schema and exhaustive files-hash checks
+focused tests:            9 map/derived/inpaint tests passed
+full validation:          163 pytest tests passed; Ruff, Black, ontology drift, and diff checks clean
+```
+
+## 2026-07-11 02:50 UTC - CVAT bridge v1 completed and live-verified
+**Items:** MF-P1-06.01, MF-P1-06.02, MF-P1-06.03, MF-P1-06.04,
+MF-P1-06.05
+**Result:** PASS - the pinned local CVAT 2.24 service now has the canonical
+project, scripted review upload/download, durable backup, and a proven
+pixel-identical unedited mask round trip.
+
+```
+live project:             project_id=1, MaskFactory_body_parts_v1; 135 exact ontology labels; fixed viz colors; type=mask
+label attributes:         visibility six-state enum, ambiguous checkbox, notes text; server IDs persisted in data/cvat/label_mapping.json
+API routing:              localhost:8080 used for Traefik API routing while host bind remains 127.0.0.1-only
+push policy:              ontology-strict CVAT RLE; source + all-parts overlay + optional disagreement heatmap; segment_size=1; 10 jobs/task; assignee kevin
+pull policy:              corrected RLE/attributes imported through png_strict; prior map views seed deletions; automatic re-fuse, binary/derived rebuild, and re-QA
+backup:                   async CVAT task backup export retained at annotations/cvat_task_backup.zip
+codec verification:       10 randomized binary masks encode/decode pixel-identically; malformed/empty RLE hard-fails
+live round trip:          disposable task 2; img_c02019c4979c; 24,300 foreground pixels; unedited pull pixel_identical=true
+live evidence:            qa/evidence/cvat_roundtrip.json; backup=1,532,360 bytes; re-QA trigger present; disposable task deleted
+focused tests:            16 CVAT mapping/project/push/pull tests passed
+full validation:          179 pytest tests passed; Ruff and diff checks clean
+doctor after bridge:      CVAT API/project, Nuclio SAM2, Ollama image, png_strict, SQLite, GPU lock all PASS; unrelated WSL boundary remains 3 FAIL
+```
+
+## 2026-07-11 03:10 UTC - P1 QA-001 through QA-010 and auto-fix hard blocks completed
+**Items:** MF-P1-07.01, MF-P1-07.02, MF-P1-07.03, MF-P1-07.04
+**Result:** PASS - the full P1 format/integrity battery is independently
+attributable, non-mutating during verification, and backed by exact seeded
+defect isolation.
+
+```
+QC-001..003:             source dimensions, strict binary values, mode L/no alpha/no palette/PNG magic; inpaint/matting excluded by directory contract
+QC-004..006:             every binary filename is an enabled ontology label; full manifest schema; exhaustive tracked/missing/untracked/hash mismatch detection
+QC-007/030:              direct map-vs-view array identity for every one of 70 required files; missing views and hand edits fail without verifier mutation
+QC-008:                  every enabled non-material ontology label requires a valid visibility state
+QC-009:                  all 40 formulas reevaluated from current maps/projected inputs and compared to pixels, formulas, input hashes, and output hashes
+QC-010:                  crop transform schema, enabled ontology part, positive scale, and full-image bounds
+seed isolation:           10 fixtures, one per QC-001..010; every fixture fails exactly its intended QC and no other check
+auto-fix allowlist:       once only: map-authoritative binary regeneration, <max(64px,2%) component drop, <0.5% hole fill, union re-derive
+auto-fix safeguards:      hair/lace-sheer hole exemptions; no protected edits; material consistency maintained; before/after hashes + recheck logged
+full validation:          194 pytest tests passed; Ruff and diff checks clean
+remaining cluster work:   packager approval override enforcement, verifier/versioning, and DVC remote evidence
+```
+
+## 2026-07-11 03:31 UTC - Gold approval, verification, and immutable versioning completed
+**Items:** MF-P1-07.05, MF-P1-07.06, MF-P1-07.07, MF-P1-07.08
+**Result:** PASS - approval is structurally downstream of every BLOCK, clean
+packages freeze with complete evidence, verification supports restore roots and
+sampling, and corrections promote atomically with rollback.
+
+```
+approval order:           one-shot auto-fix -> complete QC-001..010 -> explicit confirmation -> review/gold stamps -> validated QA report -> freeze -> full files hashes -> recheck -> DVC add
+BLOCK enforcement:        approved=True on seeded QC-002 still bounces statuses to rejected_needs_fix; no freeze and no DVC callback; override impossible
+review evidence:          reviewer, approved_at, review_time_sec, second-review block, human_approved_gold part statuses, qa_overall=pass
+freeze contract:          .maskfactory_frozen.json marks immutable package; already-frozen approval refused; every non-manifest file hashed
+DVC handoff:              production path preflights DVC and requires successful dvc add; test proves callback occurs only after final green recheck
+verification:             one instance or recursive --root discovery; deterministic --sample N; every selected package reruns hashes plus QC-001..010
+versioning:               frozen masks -> editable masks@v2; explicit approval; temporary atomic swap; QC-001/2/3/4/7; exact rollback on BLOCK
+retention:                prior active becomes masks@v1 deprecated with retain_until exactly 30 days; v2 becomes active human_approved_gold
+seed enforcement:         all 10 defects fail exactly their own QC and approval-confirmed defect cannot cross the gate
+full validation:          197 pytest tests passed; Ruff, Black, and diff checks clean
+DVC environment attempt:  no dvc executable/AWS credentials or profile present; workspace-local pip install attempt stalled and was terminated without partial executable
+```
+
+## 2026-07-11 03:48 UTC - P1 backup operations authored; registration boundary recorded
+**Items:** MF-P1-09.01, MF-P1-09.02, MF-P1-09.03, MF-P1-09.04,
+MF-P1-09.05
+**Result:** PARTIAL/BLOCKED - production scripts and their ordering/integrity
+tests are complete, but this execution boundary cannot access the Windows Task
+Scheduler service, and no gold/B1 package exists for the restore drill.
+
+```
+B5 implementation:        Python sqlite3 online backup API + PRAGMA integrity_check + exactly seven timestamped rotations
+nightly ordering:         B5 completes first; then robocopy /MIR packages, qa, configs to D:\MaskFactoryBackup; robocopy >=8 hard-fails
+integrity sweep:          scheduled wrapper crosses into Ubuntu-22.04 WSL and runs verify-package --root data/packages --sample 10
+weekly B2 reminder:       Monday 09:00 reminder logs offline-SSD instructions and sends local user message
+task definitions:         daily 02:00 and weekly Monday 09:00, LIMITED privilege, idempotent /F replacement, verbose query evidence
+tests:                    live SQLite backup contents/integrity/7-rotation pass; scripts assert B5-before-B1, three mirrors, WSL sample, schedules
+registration attempt:     schtasks.exe itself resolves, but Query/Create both return "The system cannot find the path specified" at the service boundary
+restore drill:            cannot select one B1 package because P1-08 source/manual-review packages do not yet exist
+schedule skill impact:    project-required Windows Task Scheduler scripts used; product scheduling tool is unavailable and cannot replace the specified OS tasks
+```
+
+## 2026-07-11 04:20 UTC - P2 configuration and S01-S03 deterministic cores implemented
+**Items:** MF-P2-02.03, MF-P2-02.04, MF-P2-02.05
+**Result:** PASS - the complete P2 pipeline contract is authored and the S03
+degradation/remap paths are executable and tested. Live heavyweight model and
+hand-truth fixture gates remain open pending actual inference evidence.
+
+```
+pipeline contract:        seed 1337; workdir; device/cooldown; S00-S15 toggles; thresholds/tiles; pose rules; exact fusion weights and z-order rules
+parser vocabularies:      official Sapiens 28-class reduced vocabulary and SCHP ATR 18-class vocabulary mapped to part/material ontology priors
+S01 core:                 confidence/4% floor, area*centeredness deterministic rank, doc-17 max-four promotion, PART50 protection, crowd quarantine, 1.25 clamped crops
+S02 core:                 threshold 0.5, connected-component retention rule, full-canvas strict binary/confidence outputs, 0.35-0.95 area-ratio QC hook
+S03 normal path:          SCHP always runs; indexed Sapiens/SCHP outputs and every per-class 8-bit probability map are written through strict PNG helpers
+S03 degraded path:        Sapiens OOM retries at scale 0.5; second OOM produces SCHP-only output and parsing_degraded=true
+cross-check:              remaps reject unknown class indices; prior-overlap disagreement percentage logged in parsing_metrics.json per image
+tests:                    14 focused P2 tests green; full suite green (214 tests); Ruff clean
+regression repaired:      recursive package verification now excludes nested derived-artifact manifests, preserving deterministic restore sampling
+open evidence gates:      YOLO/BiRefNet/Sapiens/SCHP live adapters and 10-image hand-truth IoU fixture evaluation are not claimed complete
+```
+
+## 2026-07-11 04:45 UTC - S04 deterministic pose ownership and classification completed
+**Items:** MF-P2-03.01 (partial), MF-P2-03.02, MF-P2-03.03,
+MF-P2-03.04
+**Result:** PASS for deterministic S04 processing; the production WSL DWPose
+adapter remains to be wired, while its paired CUDA model smoke is already
+independently evidenced under MF-P0-06.06.
+
+```
+ownership:                candidate with maximum bbox IoU to defining instance selected; every co-subject candidate explicitly suppressed and recorded
+pose artifact:             strict finite 133x3 coordinates/confidences; COCO-WholeBody-133 pose133.json with ownership, view, tags, metrics, and mode
+view classifier:           front/back from nose and optional DensePose back vote; left/right profile and 3/4 from torso span/side confidence geometry
+pose tags:                 deterministic config operators consume arm elevation, opposite-torso wrist overlap, knee bend, torso axis, ankle separation, leg overlap
+degraded gate:             body confidence fraction computed over COCO body 0..16; <60% at 0.3 switches geometry_prior_mode to parsing_only and adds careful_review
+multi-person amendment:    other detected humans cannot leak into the selected instance pose prior; suppression is serialized for audit
+tests:                     6 focused S04 tests; full suite green (220 tests); Ruff clean
+remaining S04 evidence:    production onnxruntime-gpu detector/pose adapter and 20-image hand-tagged >=90% evaluation remain open
+```
+
+## 2026-07-11 05:10 UTC - S05 limb, joint, crop, hair, and prompt-plan contracts completed
+**Items:** MF-P2-04.01, MF-P2-04.02, MF-P2-04.04, MF-P2-04.05,
+MF-P2-04.07, MF-P2-04.08, MF-P2-04.09
+**Result:** PASS - deterministic geometry and prompting primitives are implemented
+and strict-output tested. Torso partitioning and back-surface priors remain open.
+
+```
+limb capsules:            exactly five perpendicular parsing cross-sections; median half-width radius; capsule clipped by parsing superset and silhouette
+joint ownership:          perpendicular exclusive bands; elbow/knee/ankle height=0.6*local width, wrist=0.5; owned pixels carved from adjoining segments
+lane requests:            point bbox expanded 1.6 and clamped to image; typed specialist queue entries serialized with prompts
+hair prior:               parsing hair union GDINO hair proposal boxes, explicitly retained as prior rather than final mask
+prompting config:         exact GDINO box/text 0.30/0.25; required 11 prompts; may_write_final_masks=false; every PART 1..55 covered by a recipe family
+SAM2 prompt plan:         full prior bbox*1.1; prior peak + 3..7 skeleton samples; neighbor peaks + eight-point background ring; multimask_output=true
+fallback:                 missing skeleton/keypoint path accepts parsing-only prior and records prior_quality=low
+debug/evidence:           strict grayscale prior artifacts, prompts.json, RGB box/positive/negative overlay; RGB save is audited as non-mask
+regression caught:        initial prompt box used only max-confidence support; focused test forced correction to full nonzero prior support
+tests:                    5 focused S05 tests; full suite green (225 tests); Ruff clean
+open S05 work:            MF-P2-04.03 torso partition and MF-P2-04.06 DensePose-backed back partition remain open
+```
+
+## 2026-07-11 05:25 UTC - S05 torso and back-surface partition completed
+**Items:** MF-P2-04.03, MF-P2-04.06
+**Result:** PASS - front/profile and back branches are surface-exclusive,
+character-perspective aware, and covered by synthetic landmark/DensePose fixtures.
+
+```
+front boundaries:         clavicle from shoulder midpoint; under-breast fold from central horizontal-profile minimum; iliac from hip midpoint; pose midline
+front atomics:            chest, left/right breast ellipse seeds, abdomen, navel, pelvis, left/right hip priors all clipped to torso parsing
+exclusive carve-outs:     breast seeds removed from chest; belly_button removed from abdomen; hip priors removed from pelvic center
+view gating:              breast seeds only front/left_3_4/right_3_4; profiles omit breasts; back views emit no front torso/breast labels
+character convention:     left/right breast and hip follow the named DWPose shoulder side, not raw image-left/image-right
+back surfaces:            waist split produces mutually exclusive back_upper_torso/back_lower_torso; spine width exactly 10% shoulder width
+DensePose bridge:         optional left/right scapula UV seeds dimension-validated and clipped to back_upper_torso, ready for P3-05 provider wiring
+tests:                    2 focused partition tests added; full suite green (227 tests); Ruff clean
+```
+
+## 2026-07-11 05:50 UTC - S06/S07 proposal and refinement core completed
+**Items:** MF-P2-05.01 (partial), MF-P2-05.02 (partial), MF-P2-05.03,
+MF-P2-05.04, MF-P2-05.05, MF-P2-05.06, MF-P2-05.07
+**Result:** PASS for deterministic contracts; actual GroundingDINO and SAM2
+provider adapters remain to be connected to the already-verified model assets.
+
+```
+GDINO authority:          typed BoxProposal only; configured prompt allowlist; 0.30/0.25 filters; gdino_boxes.json explicitly says proposal_boxes_only/may_write_final_masks=false
+embedding lifecycle:      one primary fp16 embed call; primary OOM performs one base-plus fp16 fallback; embedding object is reused for every part refinement
+candidate selection:      multimask_output=true; stable argmax of 0.6*IoU(prior)+0.4*predicted_iou with provider shape/finite/score validation
+corrective iteration:     triggered above 8% symmetric disagreement per prior area; adds prior-only positive near skeleton and mask-only/outside-box negative; never more than once
+post-processing:          logits>=0; components below max(64,2% part area) removed; holes below 0.5% filled; boolean output and no smoothing/AA
+joint ownership:          configured adjacent segment masks lose every joint-band pixel; joint result owns the clipped band
+low confidence:           predicted_iou<0.5 returns prior unchanged and emits sam2_low_conf + careful_review flags
+tests:                    5 focused S06/S07 tests; full suite green (232 tests); Ruff clean
+open provider/eval gates: real GDINO execution, real SAM2 image embedding/prediction, and 46-core-part 10-fixture run remain unclaimed
+```
+
+## 2026-07-11 06:15 UTC - S09 consensus and authoritative map core completed
+**Items:** MF-P2-06.01 through MF-P2-06.07
+**Result:** PASS - weighted fusion now emits deterministic exclusive authority
+maps and complete arbitration/disagreement evidence. The 10-fixture QC-011 gate
+remains open because the required real fixture set has not run.
+
+```
+evidence fusion:          label/source stacks normalized across available configured votes with exact sam2 .40, sapiens .25, geometry .15, schp .10, densepose .10 weights
+agreement routes:         owned-pixel mean consensus >=.85 quick_pass, .60-.85 normal, below .60 model_disagreement_high
+z-order:                  >.4 contested threshold; automatic hair-front plus explicit wrist-depth hand, uninterrupted crossed-limb, and closed-contour object decisions
+occlusion audit:          winner/loser/reason/pixel count serialized; occluded visibility becomes partially_visible; contested edge band emitted
+PART authority:           uint16 argmax, every silhouette pixel nonzero, background exactly outside silhouette; uncovered foreground hard-fails
+MATERIAL v1:              SCHP-remapped evidence fused within silhouette, uint8, material zero outside silhouette
+region bands:             supplied bands emitted strict binary; waist is 12% shoulder-hip distance; contact band scales 8px@1024; overlap band generated
+disagreement:             uint8 work/s09/disagreement.png equals top2/top1, i.e. 1-normalized top-two margin; equal votes=255, sole winner=0
+determinism:              fixed seed 1337, PYTHONHASHSEED, CUBLAS workspace, torch deterministic algorithms/cudnn flags; repeated output hashes identical
+tests:                    5 focused S09 tests; full suite green (237 tests); Ruff clean
+open gate:                MF-P2-06.08 requires QC-011 clean on the real fixture set and is not claimed
+```
+
+## 2026-07-11 06:35 UTC - P2 overlay and five-tile QA evidence renderer completed
+**Items:** MF-P2-07.01, MF-P2-07.02
+**Result:** PASS - visual evidence artifacts now implement the exact viz.yaml
+layout and remain categorically separate from mask-authority writers.
+
+```
+per-label overlays:       every present enabled PART gets source+configured RGBA fill+white contour at source dimensions
+all-parts context:        all present labels alpha-composited with label_colors into overlays/all_parts.png for CVAT/review context
+panel crop:               target part bbox expanded exactly 2x and frame-clamped
+five tiles:               source crop | strict-nearest mask | overlay | cyan contour-on-source | magenta protected-neighbor overlap heat
+panel contract:           each tile exactly 512x512; horizontal output exactly 2560x512 RGB PNG
+writer safety:            RGB overlays/panels carry audited png-strict non-mask annotations; full raw-mask-writer CI remains green
+tests:                    2 focused visual artifact tests; full suite green (239 tests); Ruff clean
+```
+
+## 2026-07-11 07:05 UTC - QC-011 through QC-024, metrics, and L/R blocker completed
+**Items:** MF-P2-07.03, MF-P2-07.04, MF-P2-07.05, MF-P2-07.06
+**Result:** PASS - the entire P2 geometric/semantic battery is configured,
+measured, severity-preserving, and exercised by clean plus seeded-failure cases.
+
+```
+QC-011..013:             pairwise atomic overlap=0; outside silhouette<=0.2%; protected overlap<=0.5% and skin-derived/clothing intersection=0
+QC-014:                  visible sided parts require >=2 available pose/MediaPipe/DensePose votes matching character-side label; insufficient votes BLOCK
+QC-015..017:             ontology area-percent ranges, pose-absent mask prohibition, ontology component limits
+QC-018..020:             crop reprojection IoU>=.995; exact breast_skin identity; projected containment and masks-directory prohibition
+QC-021..024:             holes<=1% with exact exemptions; contour gradient ratio>=.6 against +/-3px band; visible/amodal state ranges; DensePose front/back majority
+qa.yaml:                 every QC-011..024 threshold/severity; hard-class list; exact metric weights summing 1; fingers/hair/chest family 2x; BLOCK cannot be overridden
+metrics:                 IoU, Boundary-F@2px, symmetric Hausdorff-95, hole ratio, component count, area/bbox, disagreement and protected/exclusive overlap
+qa_score:                weighted mean of normalized per-part terms with 2x hard tiers; score is diagnostic only and cannot alter BLOCK outcomes
+seeded L/R:              left_forearm with [right,right,left] votes BLOCKs; [left,left,right] passes, proving exact 2-of-3 rule
+tests:                    clean QC-011..024 battery plus seeded failures for every rule family; full suite green (245 tests); Ruff clean
+activation note:          QC-024 accepts DensePose votes now; production activation remains tied to P3-05 as specified
+```
+
+## 2026-07-11 07:25 UTC - P3 specialist-lane common crop contract completed
+**Items:** MF-P3-01.01
+**Result:** PASS - lane crops now share one schema-valid, pixel-stable transform
+implementation with executable QC-018 evidence.
+
+```
+crop geometry:            square side=ceil(1.6*max(part bbox width,height)); centered then shifted within frame without shrinking/clipping
+lane resolution:          exact 1024x1024; RGB source uses Lanczos; binary crop uses nearest only
+transform evidence:       per-part crop_to_full_transform JSON with part,x0,y0,scale,crop_size,source_sha256; existing schema validation required before write
+reprojection:             strict binary 1024 mask resized to exact source-window side by nearest and pasted at integer x0/y0
+QC-018:                   crop_roundtrip_iou compares original and reprojected mask within the exact crop window; two fixtures pass >=0.995
+edge behavior:            near-frame crop shifts square to x0/y0=0 while preserving full requested side; impossible no-padding square fails explicitly
+tests:                    3 focused lane-common tests; full suite green (248 tests); Ruff and raw-mask-writer checks clean
+```
+
+## 2026-07-11 07:45 UTC - P3 hand crop and MediaPipe side arbitration completed
+**Items:** MF-P3-01.02, MF-P3-01.03
+**Result:** PASS - DWPose whole-hand geometry now feeds the lane-common crop,
+and the pinned MediaPipe model has a production adapter with honest QC-014 arbitration.
+
+```
+DWPose indexing:          COCO-WholeBody left hand 91..111/right 112..132 plus body wrist 9/10; only confidence>=0.3 points participate
+hand crop:                bbox covers wrist plus all available 21 side landmarks, then common contract expands 1.6 and creates 1024 crop/transform
+MediaPipe adapter:        pinned HandLandmarker Tasks model, one-hand mode, detection/presence/tracking thresholds .5, exactly 21 results required
+evidence artifact:        left/right_landmarks.json stores 21 normalized xyz points, handedness/score, skeleton side, resolved side, mismatch/QC flag
+side arbitration:         MediaPipe mismatch sets qc014_flag=true and handedness_mismatch=true; resolved_side remains skeleton_side (SKELETON WINS)
+validation:               invalid 133 pose, insufficient hand points, non-21 landmark arrays, invalid sides/scores all hard-fail
+tests:                    3 focused hand-lane tests; full suite green (251 tests); Ruff clean
+model provenance:         MediaPipe checkpoint/runtime smoke remains independently verified under the completed P0 model bootstrap evidence
+```
+
+## 2026-07-11 08:15 UTC - P3 hand/finger geometry, refinement, gaps, merge, and contact completed
+**Items:** MF-P3-01.04, MF-P3-01.05, MF-P3-01.06, MF-P3-01.07,
+MF-P3-01.08
+**Result:** PASS - the hand lane now conservatively drafts separable fingers,
+preserves gap/behind ownership, and collapses uncertainty instead of inventing splits.
+
+```
+finger geometry:         standard MediaPipe chains thumb 1..4, index 5..8, middle 9..12, ring 13..16, pinky 17..20
+strip construction:      segment quads use endpoint widths measured perpendicular through parsing; every result clipped to hand parsing
+hand_base:               convex hull of wrist plus four MCPs minus every finger strip, guaranteeing no palm/finger overlap
+crop SAM2:               one fresh crop embedding reused for five fingers+hand_base; finger plans use 3 line positives, inter-gap and neighboring-finger negatives
+gap ownership:           explicit finger_gap_regions exclude fingers/palm; pixels inherit the existing behind PART id, otherwise remain background
+merge rule:              adjacent overlap >30% or any chain confidence <.5 merges affected region into hand_base, empties finger mask, state ambiguous_do_not_use
+failure evidence:        fingers_merged_or_ambiguous, 2px finger_occlusion_boundary, and failure_queue(reason=finger_merge) record
+contact rule:             hand retains all hand/body overlap, body mask is carved, scaled 8px@1024 contact band emitted
+tests:                    4 focused geometry/refinement/merge/contact tests added (7 hand-lane total); full suite green (255 tests); Ruff clean
+open hand gate:           MF-P3-01.09 still requires real fixture gap checks, paste-back metrics, and leaderboard rows
+```
+
+## 2026-07-11 08:40 UTC - S08 material fusion and protection rules completed
+**Items:** MF-P3-02.01, MF-P3-02.02, MF-P3-02.03, MF-P3-02.04
+**Result:** PASS - material evidence now produces an exclusive indexed draft
+with guarded sensitive classes and specialist refinements.
+
+```
+base fusion:              SCHP garment regions + Sapiens skin/clothing + GDINO boxes; all clipped to silhouette
+skin constitution:        skin = Sapiens skin AND NOT any fused clothing evidence
+specific gating:          bra and underwear_bottom remain empty without explicit SCHP/GDINO evidence; otherwise own pixels over generic clothing
+generic remainder:        clothing_generic is only clothing not claimed by top/bottom/footwear/bra/underwear specific evidence
+thin structures:          clothing skeleton local width <4% torso; vertical component touching shoulder -> strap(10), horizontal near iliac -> waistband(11)
+sheer:                    clothing pixel normalized-chroma cosine similarity >.8 to adjacent skin -> lace_or_sheer(12)
+SAM2 material path:       exactly one prompt required for every region; every supplied region edge-refined through shared S07 contract
+hand/foot protection:     hand_or_foot AND clothing_texture -> glove_or_sock(15), applied at higher map priority
+indexed authority:        strict uint8 MATERIAL IDs with deterministic priority and zero outside silhouette
+tests:                    4 focused material tests; full suite green (259 tests); Ruff clean
+```
+
+## 2026-07-11 09:10 UTC - Chest visible/projected lane and S08-to-S09 upgrade completed
+**Items:** MF-P3-02.05, MF-P3-02.06, MF-P3-02.07, MF-P3-02.08,
+MF-P3-02.09
+**Result:** PASS - visible breast PART truth, material skin identity, and
+projected edit regions are separated structurally and verified in a clothed case.
+
+```
+chest crop:              clavicle-to-under-bust/torso bbox expanded exactly 1.4, square shifted within frame, 1024 Lanczos image/nearest mask, schema transform
+view behavior:            front/3-4 two character-perspective ellipses; profile one visible side; back/back-3-4 skips lane and both states not_visible
+visible truth:            breast PART follows union of visible skin contour and fabric-defined contour inside seed; breast_skin is exact PART AND material-skin
+clothed constitution:     fully clothed breasts retain PART location/material garment while both breast_skin derivatives are correctly empty
+projected drafting:       ellipse plus clothing luminance-Laplacian curvature evidence, clipped to torso; sole writer rejects any root not literally projected/
+boundary refinement:      strap and inframammary evidence each require SAM2 prompt/refinement; clothing_boundary_chest is exact 4px skin/clothing transition
+review evidence:          every nonempty supplied chest hard class gets mandatory five-tile 2560x512 zoom panel
+S09 upgrade:              fuse_consensus accepts exactly one material authority: legacy evidence stack OR direct S08 indexed map; direct map validates ontology/coverage
+seeded clothed case:      S08 top_garment ID6 fills silhouette; breast_skin empty; projected contained; QC-019 and QC-020 both PASS
+tests:                    6 focused chest/S09 tests; full suite green (265 tests); Ruff and raw-writer checks clean
+```
+
+## 2026-07-11 09:40 UTC - Hair/face lane, protection, and matting contract completed
+**Items:** MF-P3-03.01, MF-P3-03.02, MF-P3-03.03 (partial),
+MF-P3-03.04, MF-P3-03.05
+**Result:** PASS for crop/fusion/protection/ownership and matte artifact logic;
+the production ViTMatte WSL provider adapter remains open.
+
+```
+head crop:               square head bbox*1.8 to 1024 Lanczos; any hair-prior pixel outside proposed crop triggers honest full-frame PNG fallback
+hair fusion:             max Sapiens/BiSeNet hair probability; binary authority at >=0.50 majority-opacity; face and scalp-skin exclude hair
+SAM2 hair:               five hair positives with negative priors from face and background; strict binary S07 refinement contract
+matting trigger:         hair area/person bbox >=2%; same optional function supports lace_or_sheer prefix
+trimap:                  scaled +/-6px@1024 morphology, values exactly {0,128,255}; binary copy remains authority, alpha is evidence only
+alpha contract:           provider must return exact-shape uint8; writes grayscale alpha/trimap under matting; injected provider tested
+face protection:         exact eyes,mouth,nose,brows,jawline input set; jawline dilated two pixels into face_protected QC mask
+z-order/review:           hair owns shoulder overlap, affected shoulder states partially_visible, mandatory 2560x512 hairline panel
+tests:                    4 focused hair-lane tests; full suite green (269 tests); Ruff/raw-writer checks clean
+open adapter:             pinned ViTMatte CUDA checkpoint has prior smoke evidence, but production callable is not yet wired, so MF-P3-03.03 is partial
+```
+
+## 2026-07-11 10:05 UTC - Feet/toes lane and footwear constitution completed
+**Items:** MF-P3-04.01, MF-P3-04.02, MF-P3-04.03
+**Result:** PASS - crop/split/material behavior is deterministic and the fully
+shod constitution is locked by a seeded fixture.
+
+```
+foot indexing:            left ankle15 + foot17/18/19; right ankle16 + foot20/21/22; confidence>=.3 points define common 1.6x crop
+MTP estimate:             heel-to-mean-toe axis; 13 cross-sections over distal 55-85%; narrowest width (stable tie near .72) defines perpendicular split
+exclusive geometry:       foot_base and toes have zero overlap and their union exactly reconstructs the foot prior
+closed shoe:              complete visible location becomes foot_base PART, toes empty/not_visible, MATERIAL footwear(8), visible_body_skin empty
+sock:                     same PART/visibility behavior, MATERIAL glove_or_sock(15), visible_body_skin empty
+barefoot/sandal:          PART follows visible skin contours; barefoot material skin(1), sandal may retain footwear on covered non-skin pixels
+tests:                    crop extent, MTP exclusivity/order, shod/sock/barefoot constitution; full suite green (272 tests); Ruff clean
+```
+
+## 2026-07-11 10:35 UTC - DensePose IUV referee and semantic votes completed
+**Items:** MF-P3-05.01 (partial), MF-P3-05.02, MF-P3-05.03,
+MF-P3-05.04, MF-P3-05.05, MF-P3-05.06
+**Result:** PASS for artifact/referee/QA contracts; production Detectron2
+inference adapter remains open despite prior checkpoint CUDA smoke evidence.
+
+```
+IUV artifact:             RGB [I,U,V], I=0..24 and U/V=0..255, background I0 requires U=V=0; RGB evidence writer never enters mask authority
+provider boundary:        infer(image)->DensePoseOutput and run_densepose writes work/s08_5/densepose_iuv.png; actual Detectron2 adapter still pending
+surface votes:            front/back torso fractions and character-side majority; back fraction plugs directly into existing S04 classifier input
+QC activation:            DensePose third side vote participates in exact QC-014 2-of-3; front fraction feeds QC-024 majority check
+continuity:               valid-surface connected components plus adjacent normalized UV jump fraction; split/jump produces occlusion_suspect
+adjacency referee:        scaled-dilation required-neighbor gaps emitted as named evidence for topology checks
+seed fixtures:            [left,right,left]+front .9 passes QC-014/024; [left,right,right]+front .1 fails both
+SMPL-X:                   explicit reserved_v2_not_built interface raises NotImplementedError; replacement only after failure mining proves need
+tests:                    5 focused DensePose/referee tests; full suite green (277 tests); Ruff/raw-writer checks clean
+```
+
+## 2026-07-11 11:10 UTC - Topology QC-025..029 and uncertainty/regression QC-031..034 completed
+**Items:** MF-P3-06.01 through MF-P3-06.08
+**Result:** PASS - topology, uncertainty routing, and previous-gold regression
+are executable with evidence-preserving exceptions and seeded failures.
+
+```
+QC-025:                  3px@1024 scaled chain adjacency for wrists/hands, joints/segments, ankles/feet, toes, fingers, neck/head
+occlusion exception:      shortest gap band must be >=80% covered by the declared occluder; metadata alone never exempts a break
+QC-026:                  every finger inside dilate(hand crop,10px@1024); thumb-to-hand_base adjacency mandatory
+QC-027:                  joint band touches both adjacent segments and axis-projected height stays within +/-30% expected formula
+QC-028:                  every sided-part centroid closer to its character-side skeleton reference than opposite reference
+QC-029:                  breast masks contained in chest horizontal band, character-side order matches references; any back/back-3/4 breast fails
+QC-031..033:             disagreement>.5 over >3% part ROUTE; predicted_iou<.5 WARN; parsing/pose degraded ROUTE
+QC-034:                  foreground plus every present-label IoU must be >=.5 vs previous gold; BLOCK and JSON/RGB v1-v2 diff artifacts otherwise
+seeded chain break:       unexplained wrist-hand gap ROUTEs with exact pair; real covering occluder clears it
+tests:                    6 focused topology/uncertainty/regression tests; full suite green (283 tests); Ruff/raw-writer checks clean
+```
+
+## 2026-07-11 11:45 UTC - Local VLM client, strict verdicts, CVAT hints, and routing completed
+**Items:** MF-P4-01.01 through MF-P4-01.05; MF-P4-02.01 through
+MF-P4-02.04
+**Result:** PASS - S11 is local-only, GPU-exclusive, strict/uncertain on parse
+failure, append-only in reports, and structurally incapable of mask/gold authority.
+
+```
+local boundary:           Ollama endpoint fixed to http://127.0.0.1:11434; any other URL rejected; cloud_enabled=false
+GPU slot:                 every review_part call owns purpose=S11_vlm_qa GpuLock across both original and retry requests
+prompt suite:             p_part/p_image/p_manifest v1 files mirror doc10 strict JSON contracts; versions/config thresholds stamped
+input prep:               panels/whole overlay downscaled to <=1024 long side; compact label:state:area% digest; only fail/warn/route QC excerpts
+strict parser:            exact five-key P-PART object, closed verdict/problem vocabularies, confidence 0..1, evidence<=25 words, instruction<=30
+retry:                    one and only one JSON-only retry; second invalid response returns uncertain/confidence0/no problems/no instruction
+report append:            exact verdict record appended atomically to qa_report.vlm_review.verdicts; complete qa_report schema revalidated before replace
+routing:                  all five doc10 rows plus low-confidence pass; uncertain has no hint; ROUTE/fail raises priority and pins heatmap
+CVAT descriptions:        fail correction only, prefixed MACHINE-GENERATED SUGGESTION; uncertain/pass instructions excluded
+authority invariants:     every RoutingDecision hardcodes may_approve_gold=false, may_clear_block=false, may_edit_mask=false; BLOCK always highest careful
+tests:                    5 focused VLM/router/CVAT tests; full suite green (288 tests); Ruff/raw-writer checks clean
+open run gate:            MF-P4-01.06 still requires the specified real 20-image panel run
+```
+
+## 2026-07-11 12:20 UTC - Failure mining, acquisition reports, and coverage matrix completed
+**Items:** MF-P4-03.01 through MF-P4-03.04; MF-P4-04.01,
+MF-P4-04.02
+**Result:** PASS - all required failure producers share one validated append
+path, priority math is exact, and approved-gold coverage deficits are deterministic.
+
+```
+queue durability:         schema-validated one-record JSONL append, fsync, short exclusive lock, contention timeout, no partial rewrite
+source wiring:            lane(reason-specific), QC fail, second-review fail, VLM/auto-QA disagreement, human-edit delta map to closed failure reasons
+priority:                 .4*class_error_rate + .3*coverage_deficit + .2*downstream_use_weight + .1*recency; recency 14-day half-life
+use weights:              hands/chest 1.0, feet .8, bands .5, default .3 in configs/training/use_weights.yaml
+weekly acquisition:       local text-LLM reason cluster callback; stable descending priority; top 20 collect/reannotate/holdout/label-proposal actions
+nightly lint:             P-MANIFEST-style local linter callback per package, malformed manifests become BLOCK findings, atomic JSON report
+weekly summary:           local text-LLM Markdown summarizer callback with nonempty-output enforcement
+coverage matrix:          human_approved_gold only; closed 6 views x 7 poses x 3 instance contexts; 12 closed attributes; schema validated
+deficit report:           ranked target-count and normalized deficit for all 126 cells; drafted packages excluded
+tests:                    4 focused mining/coverage tests plus schema tests; full suite green (292 tests); Ruff clean
+open gates:               Task Scheduler registration P4-03.05 and real 30-image coverage audit P4-04.03 remain unclaimed
+```
+
+## 2026-07-11 13:20 UTC - VLM calibration infrastructure complete; live gate failed honestly
+**Items:** MF-P4-05.01 through MF-P4-05.03 complete; MF-P4-05.04 partial
+**Result:** Infrastructure PASS; production model gate FAIL and remains unresolved.
+
+```
+calibration set:          qa/vlm_eval contains exactly 40 five-tile panels: 20 good and 20 seeded defects spanning all ten required problems
+command:                  maskfactory vlmqa eval supports saved predictions or --live local Ollama execution
+gate:                     exact-case coverage; defect recall >=0.90 AND precision >=0.80; atomic report and production_gate writes
+change invalidation:      SHA-256 binds exact model id + prompt_version + prompt bytes; stale or failed gates are refused
+primary live result:      qwen2.5vl:7b; TP=0 FP=0 FN=20; recall=0.00 precision=0.00; all 40 verdicts pass; gate refused
+primary evidence:         qa/vlm_eval/results/qwen/live_verdicts_qwen2.5vl_7b.json and eval_qwen2.5vl_7b_p-part-v1-doc10.json
+fallback live result:     not scoreable; Ollama 0.31.2 runner HTTP 500: unknown model architecture 'mllama' loading llama3.2-vision:11b
+fallback disposition:     retained as an open runtime/model compatibility defect; no score fabricated
+tests:                    296 tests pass; Ruff clean after calibration/CLI/client error-reporting changes
+```
+
+## 2026-07-11 13:55 UTC - Flip CI blocker and second-review workflow completed
+**Items:** MF-P5-02.02; MF-P4-06.01 through MF-P4-06.03
+**Result:** PASS - deterministic infrastructure and enforcement tests are green; no dataset/training entry gate was bypassed.
+
+```
+flip authority:           runtime Ontology/configs/ontology.yaml only; no handwritten label-ID table
+flip coverage:            every PART/MATERIAL ontology ID, all 42 current sided PART IDs, future sided MATERIAL IDs, ignore_index 255
+flip invariants:          reciprocal swap pairs, involution, unknown-ID hard failure, paired image/map width flip, default p=0.5
+CI enforcement:           dedicated tests/test_training_augmentations.py step runs before the full pytest job
+second-review sample:     deterministic ceil(15%) of QA-pass human_approved_gold packages; hard package and part candidates have exact x2 weighted-rendezvous weight
+fresh-eyes enforcement:  different named reviewer; later UTC day; panels timestamp <= full-image timestamp <= completion; one pass/fail per sampled part
+fail path:                all applicable parts demoted rejected_needs_fix; QA fail; schema-valid second_review_fail queue append
+IAA archive:              first and second masks copied under qa/iaa/<image>/<timestamp>/ with SHA-256s and ordered review evidence
+CLI:                      maskfactory second-review sample|record
+tests:                    304 tests pass; Ruff clean; focused flip and second-review suites pass
+open evidence gates:      first weekly IAA report/leaderboard export still require real approved packages; P5 training remains gated at 200 gold
+```
+
+## 2026-07-11 14:15 UTC - Weekly IAA reporting and human-ceiling export implemented
+**Items:** MF-P4-06.04 and MF-P4-06.05 advanced to partial
+**Result:** Implementation PASS; real-data evidence gate remains open because qa/iaa has no genuine review archive.
+
+```
+IAA reader:               scans timestamped qa/iaa review.json archives and selects the requested ISO week
+input enforcement:        both masks must exist, be 2-D PNG mode L, and contain only 0/255
+metrics:                  per-class and pooled IoU plus boundary-F@2px; sample counts preserved
+targets:                  body IoU >=0.92; fingers/thumb/pinky IoU >=0.80; per-class PASS/FAIL
+reports:                  qa/reports/iaa_<YYYY-Www>.json and .md, atomic writes
+human ceiling:            human_ceiling_<YYYY-Www>.json with pooled/per-class IoU+BF, fingers/toes/chest/hairline/bands groups, 0.02 saturation rule note
+CLI:                      maskfactory second-review report --iso-week YYYY-Www
+fixture verification:     known disjoint mask pair produces IoU=0, BF=0, body target fail and matching leaderboard row
+honest status:            no qa/iaa directory exists in live data, so no first weekly production report or real ceiling row was claimed
+```
+
+## 2026-07-11 14:40 UTC - S01 production adapter live; S02 adapter blocked at live WSL boundary
+**Items:** MF-P2-01.01 complete; MF-P2-01.02 advanced to 80% partial
+**Result:** S01 PASS on installed checkpoint. S02 implementation PASS, live CUDA evidence unavailable in current machine state.
+
+```
+S01 checkpoint:           models/detect/yolo11m.pt, verified registry asset
+S01 adapter:              Ultralytics YOLO11, COCO class 0 only, conf >=0.5, production entry point run_s01
+doc17 policy:             4% prominence floor; area*centeredness; left-to-right tie; top4; PART50 protection; raw >8 quarantine; no-person reject
+live fixture:             qa/fixtures/smoke/ultralytics_bus_adults.jpg
+live S01 result:           3 detected/promoted adults; person_bbox.json and p0/p1/p2 context crops under qa/live_verification/s01_bus
+S02 runner:               pinned BiRefNet remote code + local safetensors; fp16 CUDA; geometry-preserving <=2048 tiles; 128 overlap; float32 .npy confidence
+S02 integration:          confidence validated then thresholded 0.5; component policy; full-canvas mask/confidence; bbox-ratio QC
+live S02 result:           unavailable — wsl --list --quiet currently reports no distro; Ubuntu-22.04 returns WSL_E_DISTRO_NOT_FOUND
+status discipline:        older successful model smoke was not reused as proof that the new production adapter ran
+tests:                    306 tests pass on clean rerun; Ruff clean (one prior transient Windows directory-rename test failure passed isolated and full rerun)
+```
+
+## 2026-07-11 15:05 UTC - S03 Sapiens/SCHP production provider boundary implemented
+**Items:** MF-P2-02.01 and MF-P2-02.02 advanced to 80% partial
+**Result:** Provider implementation/tests PASS; live CUDA run blocked by current absence of a WSL distro.
+
+```
+Sapiens asset:            registered models/parsing/sapiens_0.6b_seg.pt2, 28 classes
+Sapiens execution:        pinned TorchScript, bf16 CUDA, 1024x768 native model input, 1536 source tiles with 128 overlap beyond
+Sapiens output:           native crop geometry, uint8 argmax plus normalized 28xHxW float probabilities
+OOM policy:               provider surfaces CUDA OOM; S03 retries scale 0.5, restores full geometry, then falls back SCHP-only with parsing_degraded
+SCHP asset:               registered ATR ResNet-101 checkpoint, pinned official source revision, 18 classes
+SCHP execution:           mandatory first/always-run companion, native geometry labels plus normalized 18xHxW probabilities
+evidence persistence:     sapiens_28.png, schp_atr.png, one 8-bit confidence PNG/class, parsing metrics and cross-parser disagreement
+focused tests:            provider class count/metadata, probability normalization, half-scale geometry restoration; existing dual-run/OOM/remap tests
+live result:              schp_atr launch fails immediately with WSL_E_DISTRO_NOT_FOUND; wsl --list --quiet returns no distro
+status discipline:        no provider item marked complete from historical smoke output
+regression:               307 tests pass; Ruff and tracker validation clean
+```
+
+## 2026-07-11 15:30 UTC - DWPose production adapter and live CPU diagnostic
+**Item:** MF-P2-03.01 advanced from 70% to 90% partial
+**Result:** Algorithm/live output PASS; required ONNX CUDA provider unavailable in current Windows runtime.
+
+```
+assets:                    models/pose/yolox_l.onnx + dw-ll_ucoco_384.onnx, registry-verified pinned pair
+detector:                  640x640 YOLOX preprocessing; 8400-anchor grid/stride decode; COCO person score; 0.45 NMS
+pose:                      bbox aspect/pad affine to 288x384; ImageNet normalization; 133-point SimCC x/y decode at split ratio 2; inverse affine
+provider rule:             production default refuses to run without CUDAExecutionProvider; CPU requires explicit diagnostic override
+live fixture:              qa/fixtures/smoke/ultralytics_bus_adults.jpg, S01 p0 bbox
+live CPU result:           4 pose candidates; candidate 1 selected for p0; candidates 0/2/3 suppressed; 133 points; body fraction 1.0
+classification:            front, non-degraded, pose_and_parsing; pose133.json at qa/live_verification/s04_bus_p0_cpu
+runtime gap:               onnxruntime 1.27.0 exposes AzureExecutionProvider and CPUExecutionProvider only; locked env requires onnxruntime-gpu 1.20.2
+status discipline:        CPU diagnostic does not satisfy the GPU execution clause, so item remains partial
+regression:               308 tests pass; Ruff and tracker validation clean
+```
+
+## 2026-07-11 16:00 UTC - GroundingDINO and persistent SAM2 provider boundaries implemented
+**Items:** MF-P2-05.01 and MF-P2-05.02 advanced from 70% to 90% partial
+**Result:** Provider/authority tests PASS; live model execution unavailable at current WSL boundary.
+
+```
+GroundingDINO:             pinned Swin-T checkpoint/source; one model load runs all 11 configured prompts
+proposal output:           full-image xyxy + scores + prompt; typed BoxProposal authority=proposal_only
+authority invariant:       runner and writer both assert proposal_boxes_only and may_write_final_masks=false; no pixel-mask field/API exists
+SAM2 lifecycle:            persistent one-image WSL server; build_sam2 + predictor.set_image once; JSON-lines requests reuse embedding for every part
+SAM2 prompts:              box + all positive/negative points; multimask output; full-resolution +/- logits and predicted-IoU scores
+precision/fallback:        fp16 server; large initialization OOM becomes RuntimeError consumed by existing base-plus fallback
+cleanup:                   explicit provider.close terminates and joins the embedding process
+focused tests:             GDINO authority/provider parsing; SAM2 ready/one-embedding/multimask response; existing selection/correction/low-confidence/postprocess tests
+live attempts:             both stop before model load with WSL_E_DISTRO_NOT_FOUND; no historical smoke substituted
+regression:               310 tests pass; Ruff and tracker validation clean
+```
+
+## 2026-07-11 16:25 UTC - ViTMatte production provider implemented
+**Item:** MF-P3-03.03 advanced from 75% to 90% partial
+**Result:** Provider/lane tests PASS; live CUDA model load unavailable at current WSL boundary.
+
+```
+asset:                     models/matting/vitmatte_s.pth, pinned hustvl revision 6a58ad7646403c1df626fbd746900aec7361ea1d
+input:                     RGB source + strict uint8 trimap values 0/128/255 at identical native dimensions
+execution:                 pinned Transformers ViTMatte-S config/processor, local checkpoint, fp16 CUDA
+geometry:                  processor-padded alpha cropped back to exact native HxW
+known-region authority:    trimap background forced alpha 0; trimap foreground forced alpha 255; model predicts unknown band only
+output:                    mode-L uint8 alpha; provider rejects mode/shape/known-region violations
+lane integration:          existing >=2% bbox trigger, scaled +/-6px trimap, separate hair_binary and alpha; same optional lace_or_sheer path
+live attempt:              WSL_E_DISTRO_NOT_FOUND before Transformers/model load; item remains partial
+regression:               311 tests pass after png-strict guard rerun; Ruff clean
+```
+
+## 2026-07-11 16:50 UTC - DensePose production IUV provider implemented
+**Item:** MF-P3-05.01 advanced from 65% to 90% partial
+**Result:** Provider/IUV tests PASS; live Detectron2 CUDA load unavailable at current WSL boundary.
+
+```
+asset:                     densepose_rcnn_R_50_FPN_s1x.pkl with pinned Detectron2 DensePose config/source
+execution:                 DefaultPredictor CUDA, score threshold 0.5, chart-based pred_densepose
+instance ownership:        select candidate with highest IoU against S01 target bbox; reject zero overlap; report suppressed candidates
+surface decode:            fine_segm argmax I=0..24; gather matching per-surface U/V; clamp U/V to 0..1
+projection:                nearest I and bilinear U/V resized to selected bbox, clamped and pasted to exact full canvas
+artifact:                  strict RGB densepose_iuv.png channels [I,U,V], uint8; I=0 requires U=V=0
+downstream:                existing front/back/LR votes, UV continuity, topology evidence, QC-014/QC-024 consumers unchanged
+live attempt:              WSL_E_DISTRO_NOT_FOUND before Detectron2/model load; item remains partial
+regression:               312 tests pass; Ruff and tracker validation clean
+```
+
+## 2026-07-11 17:25 UTC - VLM calibration evidence audit revoked weak corpus
+**Items:** MF-P4-05.01 downgraded complete -> 35% partial; MF-P4-05.04 reduced to 25% partial
+**Result:** Prior corpus invalid for production calibration; preserved as deprecated evidence, never silently deleted.
+
+```
+audit findings:            abstract capsule rather than real image/mask pairs; near-duplicate good panels; defect answer text visibly embedded in every bad panel
+old corpus:                moved intact to qa/vlm_eval/deprecated_synthetic_v0/{panels,manifest.json,results}
+production safety:         qa/vlm_eval no longer has an active manifest/panels, so vlmqa eval cannot accidentally reuse the invalid gate
+test fixture guard:        abstract generator now requires test_fixture=true and otherwise raises; production CLI no longer calls it
+replacement contract:     generate_vlm_eval requires --seed-manifest with exactly 20 explicit source/good_mask/defect_mask records
+diversity/integrity:       unique IDs and source/mask signatures, >=5 labels, exact two-per-taxonomy coverage, mode-L binary masks at source dimensions
+panel integrity:           fixed renderer receives explicit masks only; no taxonomy/answer text is embedded; manifest records source/good/defect hashes
+local seed attempt:        CVAT pth-sam2 successfully generated a binary adult hand+forearm candidate from mediapipe_thumb_up.jpg (task 5), archived as calibration_seed_only_not_gold
+seed limitation:           candidate is not an ontology-exact hand boundary and is not counted toward the required 20 explicit reviewed pairs
+gate discipline:           qwen recall=0 result remains failure history only; it is not a meaningful production score after corpus invalidation
+regression:               313 tests pass; Ruff and tracker validation clean; unresolved hard blockers honestly increased 9 -> 10
+```
+
+## 2026-07-11 18:00 UTC - Production CLI runners wired through S04
+**Item:** MF-P2-08.04 advanced to 20% partial
+**Result:** Early one-command infrastructure PASS; D1 and G2 remain open.
+
+```
+runner factory:            src/maskfactory/stages/production.py returns real S00-S04 file-contract runners closed over pipeline config/images root
+S00:                       verifies existing governed ingest manifest/status/source identity and exposes immutable source metadata
+S01:                       installed YOLO11 checkpoint + amended doc17 promotion policy, crops and model telemetry
+S02:                       reads S01 p0 bbox/crop, invokes BiRefNet provider, enforces silhouette/bbox QC and records telemetry
+S03:                       invokes Sapiens+SCHP providers with authoritative parsing maps and degraded status
+S04:                       invokes YOLOX+DWPose with authoritative pose rules and CUDA-required production mode
+CLI:                       maskfactory run gains --images-root/--work-root and supplies production runners; StagePolicyError becomes a controlled Click error
+atomic fixture:            governed ingested source -> S00/S01 manifest_delta.json + stage_run.json + context artifact contract
+runtime repair attempt:    wsl --install Ubuntu-22.04 --no-launch failed fetching DistributionInfo.json with WININET_E_CANNOT_CONNECT; no local Ubuntu appx/msix found
+honest boundary:           S05-S15 production runners are not wired; no real source or 56-atomic run exists; D1/G2 not claimed
+regression:               314 tests pass; Ruff and tracker validation clean
+```
+
+## 2026-07-11 19:10 UTC - Production CLI geometry runner wired through S05
+**Item:** MF-P2-08.04 advanced to 30% partial
+**Result:** S05 file/coordinate contract PASS; D1 and G2 remain open.
+
+```
+runner factory:            src/maskfactory/stages/production.py now returns real S00-S05 runners
+coordinate authority:      S04 full-image pose and S02 full-canvas silhouette are projected into the exact S01 context crop used by S03 parsing
+geometry output:           limb capsules, torso partitions, hair prior, SAM2 prompt plans, hand/foot crop requests, and per-prior debug overlays
+fallback discipline:       missing/low-confidence landmarks use parsing-only priors with prior_quality=low; empty S05 output fails semantically
+parser fallback:           Sapiens-28 is authoritative when present; degraded S03 output automatically uses SCHP-ATR with its own mapping
+focused evidence:          9 S05/production-runner tests pass, including exact 100x80 crop-space artifact assertions
+static checks:             Ruff clean; Black module is not installed in the active Python runtime
+full-suite caveat:         attempted full regression was disrupted by restricted/locked pytest base-temp roots; no product assertion failed, but no new full-suite pass is claimed here
+honest boundary:           S06-S15 production runners and a real all-56-atomic source run remain missing; D1/G2 remain unclaimed
+```
+
+## 2026-07-11 19:25 UTC - Production CLI open-vocabulary runner wired through S06
+**Item:** MF-P2-08.04 advanced to 35% partial
+**Result:** S06 proposal-only production boundary PASS; D1 and G2 remain open.
+
+```
+runner factory:            real S00-S06 runners now available to maskfactory run
+input/model:               S01 p0 context crop + pinned models/gdino/groundingdino_swint_ogc.pth
+configuration:             exact configs/prompting.yaml vocabulary and 0.30 box / 0.25 text thresholds
+authority invariant:       runner rereads gdino_boxes.json and rejects anything except proposal_boxes_only with may_write_final_masks=false
+telemetry:                 groundingdino_swint_ogc model key recorded
+focused evidence:          9 S06/S07 and production-runner tests pass; Ruff clean
+honest boundary:           live inference still needs the absent WSL distro; S07-S15 runners and a real 56-atomic run remain missing
+```
+
+## 2026-07-11 20:05 UTC - Production CLI runners wired through S08
+**Item:** MF-P2-08.04 advanced to 45% partial
+**Result:** S07 full-frame refinement and S08 deterministic material draft contracts PASS; D1/G2 remain open.
+
+```
+S07 embedding:             exactly one persistent context-crop embedding; SAM2.1 hiera-large fp16 with base-plus OOM fallback
+S07 selection:             existing 0.6 prior-IoU + 0.4 predicted-IoU logic, one corrective iteration, low-confidence prior retention
+S07 artifacts:             strict mode-L binary sam2_<label>.png plus sam2_metrics.json with predicted IoU/review flags/model
+S07 lane boundary:         hair and chest/breast specialist crop-lane parts excluded from the full-frame pass
+S08 coordinate contract:  Sapiens/SCHP/GDINO/full-canvas silhouette and pose fused in the exact S01 context-crop coordinate system
+S08 evidence:              skin/hair/clothing, SCHP garment classes, proposal-only boxes, evidence-gated bra/underwear, thin strap/waistband, sheer chroma
+S08 artifacts:             8-bit indexed material_draft.png plus per-region evidence and pixel counts
+fallback:                  degraded S03 can use SCHP map for coarse skin/clothing evidence; Sapiens remains authoritative when available
+focused evidence:          10 S06/S07/runner tests pass; 5 S08 tests pass including production file contract
+full regression:           316 tests pass; Ruff clean
+honest boundary:           S08 per-material SAM2 edge refinement is not yet integrated into this runner; S08.5-S15 and the real 56-atomic run remain open
+runtime boundary:          live S06/S07 execution still requires the currently absent WSL distro
+```
+
+## 2026-07-11 20:45 UTC - S08 refinement closed and production CLI wired through S08.5
+**Item:** MF-P2-08.04 advanced to 55% partial
+**Result:** S08 SAM2 edge refinement and S08.5 DensePose runner contracts PASS; D1/G2 remain open.
+
+```
+S08 refinement:            one shared SAM2 embedding edge-refines every non-empty material seed using the S07 selection/correction/low-confidence policy
+S08 fallback:              predicted_iou <0.5 retains the evidence seed and records sam2_low_conf/review flags rather than inventing a boundary
+S08 evidence artifact:     material_evidence.json now includes per-region model, predicted IoU, selection score, correction state, and review flags
+S08.5 input:               exact S01 person context crop; S01 full-image person bbox explicitly transformed into crop coordinates for instance ownership
+S08.5 model:               pinned densepose_rcnn_R_50_FPN_s1x checkpoint and pinned Detectron2 DensePose config
+S08.5 artifact:            strict RGB densepose_iuv.png with I=0..24, U/V=0..255, and background I=0 => U=V=0 enforcement
+telemetry:                 DensePose surface-pixel count, IUV geometry, and model key recorded
+focused evidence:          13 material/SAM2 tests pass; 13 S08/DensePose/runner tests pass
+full regression:           317 tests pass across four explicit test-file partitions (79 + 82 + 101 + 55); Ruff clean
+execution-host note:       monolithic pytest stdout was dropped by the command host, so only the four explicit zero-exit partitions are cited
+honest boundary:           S09-S15 production runners and a real all-56-atomic source run remain missing; live WSL-backed stages remain environment-blocked
+```
+
+## 2026-07-11 21:35 UTC - Production CLI master maps and reconciliation wired through S09.5
+**Item:** MF-P2-08.04 advanced to 65% partial
+**Result:** S09 master-map and reusable S09.5 reconciliation contracts PASS; D1/G2 remain open.
+
+```
+S09 evidence assembly:     S05 geometry + S07 SAM2 + S03 parser confidence maps + S08.5 DensePose side/surface support
+parser authority:          broad parser classes may support an existing body-aware candidate but cannot instantiate a fine-grained atomic on their own
+silhouette coverage:       uncovered visible pixels receive only a 0.01 nearest-geometry vote; background inside the promoted silhouette remains forbidden
+S09 outputs:               uint16 part map, uint8 material map, disagreement grayscale, waist/occlusion region bands, consensus routes, occlusion audit, SHA-256 map
+material invariant:        S08 material ID 0 inside the silhouette is rejected rather than silently relabeled
+S09.5 engine:              pairwise silhouette IoU/QC-035 evidence, scaled reciprocal interperson contact bands in each crop, preliminary image_manifest.json
+S09.5 reciprocity:         relationship records contain both pA and pB band paths from one computed full-canvas band
+single-person runner:      writes the trivial passing image index and proceeds honestly
+multi-person runner:       explicitly stops because the required per-instance S02-S09 outer loop is not built; it does not fake reconciliation from p0 alone
+focused evidence:          10 S09/S09.5/runner tests pass
+full regression:           320 tests pass across four zero-exit partitions (79 + 82 + 101 + 58); Ruff clean
+honest boundary:           multi-person outer orchestration, specialist atom coverage, S10-S15, live WSL execution, and the real all-56-atomic run remain open
+```
+
+## 2026-07-11 22:30 UTC - Production CLI S10 report and QC-035..038 hard gates live
+**Items:** MF-P2-08.04 advanced to 72% partial; MF-P8-05.01..06 complete
+**Result:** Schema-valid pre-package S10 report and all multi-instance QA gates PASS.
+
+```
+S10 inputs:                authoritative S09 part/material/disagreement maps, S02 silhouette, S04 pose, S03/S07 metrics, DensePose IUV, S09.5 image index
+S10 batteries:             QC-011..029 semantic/topology plus QC-031..033 uncertainty and QC-035..038 multi-instance checks
+report:                    qa_report.json validates against bundled Draft 2020-12 schema; includes per-part metrics, score, consensus provenance, routes and hard blocks
+hard routing:              any failed BLOCK forces overall=fail regardless of numerical QA score
+package-only boundary:     QC-005..010 and QC-034 are explicitly skipped until S13 manifest/hash/derived/previous-gold artifacts exist; never reported as passes
+QC-035:                    pair silhouette IoU >0.30 => BLOCK
+QC-036:                    atomic bleed into another instance's eroded silhouette core outside reciprocal contact band => BLOCK
+QC-037:                    directional relationship/contact-band mismatch => ROUTE
+QC-038:                    actual promoted count differs from expected or exceeds cap => WARN
+seed isolation:            parameterized fixture proves each QC-035/036/037/038 defect trips exactly its own check
+approval enforcement:      approve_package reads existing qa_report first; approved=true cannot override QC-035 or QC-036 failures
+focused evidence:          20 approval/S10/seeded package tests pass
+full regression:           328 tests pass across four zero-exit partitions (79 + 87 + 95 + 67); Ruff clean
+honest boundary:           S10 is partial until package-only checks can run; S11-S15, multi-instance outer loop, specialist atomics, live WSL, real D1/G2 remain open
+```
+
+## 2026-07-11 23:15 UTC - Production CLI S11 VLM QA wired with mandatory gate
+**Item:** MF-P2-08.04 advanced to 78% partial
+**Result:** S11 panel/review/router contract PASS; live VLM remains correctly disabled by the missing production calibration gate.
+
+```
+panel generation:          exact five-tile 2560x512 boundary panel for every visible atomic plus all_parts whole-image overlay
+gate:                      require_current_gate checks primary model + p-part-v1-doc10 prompt fingerprint and 0.90 recall / 0.80 precision thresholds
+gate unavailable path:     no Ollama call; every visible part routes careful; existing auto-QA BLOCK remains fail; report remains schema-valid
+gate-current path:         local-only Ollama endpoint, strict JSON parse + one retry, append-only schema validation, cautious five-row routing
+part authority:            VLM may not approve gold, clear BLOCK, or edit a mask; routing records preserve all three false invariants
+whole-image review:        P-IMAGE overlay sanity with strict keys, retry, visible-label digest, and needs_human routing on findings/invalid response
+manifest review:           explicitly skipped until the draft package manifest exists; not represented as a pass
+live project state:        qa/vlm_eval has no active valid production_gate.json; deprecated synthetic v0 remains excluded
+focused evidence:          12 S11/client/router/calibration tests pass across gate-disabled and gate-current paths
+full regression:           330 tests pass across four zero-exit partitions (79 + 87 + 95 + 69); Ruff clean
+honest boundary:           S11 production model scores are unclaimed; valid 40-panel real calibration corpus/gate, draft manifest lint, S12-S15 remain open
+```
+
+## 2026-07-12 00:05 UTC - Production CLI S12 draft package and CVAT push live
+**Item:** MF-P2-08.04 advanced to 84% partial
+**Result:** Automated S12 review handoff PASS; manual correction/approval remains pending by design.
+
+```
+draft layout:              data/packages/<image_id>/instances/p0 with source crop, indexed maps, masks, materials, protected, regions, overlays, panels, QA report
+manifest:                  full Draft 2020-12 manifest schema; every enabled atomic has visibility/status/provenance/occlusion state
+binary exports:            strict png_strict views for every enabled PART and MATERIAL ID; visible masks linked and hashed, absent atomics recorded not_visible/n/a
+provenance:                governed intake origin/time, crop-relative person bbox, pose/view/tags, model/config versions and full file hash index
+CVAT context:              all_parts overlay + disagreement heatmap archived as related images; draft masks encoded through existing RLE bridge
+task automation:           production S12 assembles package, creates CVAT task, records task IDs, returns pending_kevin_correction_and_approval
+authority boundary:        human_approved=false always on push; no automated correction or approval claim
+overwrite guard:           assembler refuses any package containing human_corrected or human_approved_gold state
+multi-person boundary:     S12 refuses multi-person until the required per-instance pipeline loop supplies every instance package
+focused evidence:          5 package/CVAT/production-runner tests pass
+full regression:           332 tests pass across four zero-exit partitions (79 + 87 + 90 + 76); Ruff clean
+honest boundary:           no source image exists for a live S12 task in this run; Kevin's correction clicks and approval, S13-S15, and prior blockers remain open
+```
+
+## 2026-07-12 00:45 UTC - Production CLI S13 approval-gated finalizer live
+**Item:** MF-P2-08.04 advanced to 88% partial
+**Result:** S13 finalization contract PASS; no gold claim without Kevin confirmation.
+
+```
+explicit authority:        only maskfactory package's interactive confirmation may call approve_package(... approved=true)
+pipeline S13 unapproved:   writes approval_handoff.json with NEEDS KEVIN command/status and leaves all human_corrected/draft states unchanged
+pipeline S13 approved:     accepts only frozen package + every visible part human_approved_gold + verify_packages pass
+final binaries/unions:     governed one-shot autofix regenerates strict atomics and all declarative derived unions before confirmation
+final inpaint:             approval finalizer regenerates every configured inpaint derivative from corrected atomic/derived authority and records source hashes
+final visuals:             all-parts/per-part overlays and exact five-tile review panels regenerated from corrected final maps before freeze
+post-generation gate:      QC-001..010 rerun after final derivatives/visuals and before gold stamp; failure bounces package
+freeze:                    review identity/minutes/timestamp, gold statuses, qa_report, immutable marker, refreshed hashes, final verification, DVC add
+focused evidence:          17 production/approval/versioning tests pass; approval fixture asserts all 7 inpaint targets and final visuals exist
+full regression:           333 tests pass across four zero-exit partitions (79 + 87 + 91 + 76); Ruff clean
+honest boundary:           no corrected/approved live package exists, so S13 gold_exported=true is unclaimed; S14-S15 and prior blockers remain open
+```
+
+## 2026-07-12 01:35 UTC - S14/S15 production code wired behind immutable gold gate
+**Item:** MF-P2-08.04 advanced to 94% partial; no P5 item claimed
+**Result:** Dataset exporter and active-learning planner contracts PASS; actual dataset build remains forbidden at 0/200 gold.
+
+```
+split formula:             sha256(image_id) bucket 0-69 train / 70-84 val / 85-99 test; never instance ID
+near duplicates:           pHash Hamming <=6 connected components forced into one split
+overrides:                 hard_case_holdout wins; generated/synthetic-connected groups train-only
+multi-person integrity:    all p0/p1/... packages sharing image_id exported to the same split
+preflight:                 only frozen packages whose visible parts are all human_approved_gold; verify_packages must pass every instance
+export layout:             dataset card, train/val lists, part/material MMSeg trees, optional hand/matting/projected, COCO uncompressed RLE, isolated holdouts
+holdout isolation:         test/hard samples exist only under holdout; build manifest gives trainers no holdout read path
+reproducibility:            sorted inputs, seed 1337, deterministic coverage timestamp/content; byte-identical dual-root rebuild proven
+provenance:                package schema now preserves intake phash64; dataset card records ontology, Git SHA, split/class counts, synthetic ratio, build command
+version/publish CLI:        auto-increment bodyparts@vN; dvc add, dataset/bodyparts-vN git tag, dvc push (not executed while gate closed)
+entry gate:                production S14 and CLI require >=200 approved gold instances; current count=0; no dataset directory created
+S15:                       harvests failure_queue + coverage deficits, emits top-20/top-10 acquisition actions and +50-gold/ontology retrain triggers
+focused evidence:          12 dataset/coverage/active-learning/runner tests pass
+full regression:           337 tests pass across four zero-exit partitions (79 + 83 + 92 + 83); Ruff clean
+honest boundary:           no real S14 build/DVC publish occurred; P5 remains unopened; D1 still lacks live source/model/manual evidence and multi-person/specialist completion
+```
+
+## 2026-07-12 02:05 UTC - Multi-person reconciliation and split-integrity contracts closed
+**Items:** MF-P8-03.01..05 and MF-P8-07.01..03 complete
+**Result:** S09.5 false-split/contact evidence and dataset leakage CI blockers PASS.
+
+```
+false split:               seeded two-detection fixture at silhouette IoU=1/3 exceeds 0.30 and fails QC-035
+genuine contact:           edge-touching people at IoU=0 pass QC-035 and receive nonempty reciprocal crop-space contact bands
+image index:               preliminary image_manifest records promoted IDs, background count, crowd flag, max IoU/QC result, relationship and both paths
+split enforcement:         validate_instance_split_integrity parses every <image_id>_pN and rejects any image spanning multiple partitions
+broken fixture:            deliberate p0=train / p1=test_holdout assignment raises multi-instance split leakage
+builder integration:       validator runs on every completed dataset build after image-keyed assignments are assembled
+CI:                        broken-split test lives in normal pytest inventory and therefore blocks the same repository test gate as flip/remap checks
+full regression:           339 tests pass (80 + 83 + 92 + 84); one initial parallel Windows directory-replace lock reran serially and passed
+Ruff:                      clean
+hard blockers:             unresolved tracker hard blockers reduced 8 -> 5
+honest boundary:           real S02-S09 per-instance outer loop and co-subject protection remain open; these completed contracts do not prove D11
+```
+
+## 2026-07-12 03:00 UTC - Real per-instance S02-S09 outer loop and co-subject protection live
+**Items:** MF-P8-01.01/.02 complete; .03 70% partial; .04 80% partial
+**Result:** One-command multi-person draft orchestration PASS on deterministic 1/2/3-person fixtures.
+
+```
+shared stages:             S00/S01 execute exactly once in the shared work root
+runner scope:              build_production_runners(person_index=N, shared_work_root=...) selects pN bbox/crop while retaining shared S01 authority
+instance layout:           each promoted person runs S02-S09 under work/instances/pN with the full existing production stage implementations
+execution order:           all promoted S02 silhouettes complete first; only then do all instances continue through S03-S09
+co-subject promoted:       target pN other_person_protected is the union of every other promoted instance's real S02 full-canvas silhouette
+co-subject background:     non-promoted detections are conservatively protected by their full-canvas S01 bbox
+fusion authority:          protected evidence enters S09 only as PART other_person and is clipped by the target silhouette; it cannot author another body part
+reconciliation:            S09.5 runs once after every instance S09 and writes/injects shared relationship evidence
+CLI:                       maskfactory run <image_id> --through-drafts owns exact shared S00/S01 + per-instance S02-S09 + once-only S09.5 plan
+fixtures:                  parameterized 1/2/3 promoted counts, contiguous pN output set, background person protection, single p0 trivial case, CLI exposure
+full regression:           343 tests pass across four zero-exit partitions (80 + 83 + 96 + 84); Ruff clean
+honest boundary:           distinct hand-verified multi-image fixture set and byte-identical N=1 comparison remain open; parsing ambiguity suppression and real D11 run remain open
+```
+
+## 2026-07-12 03:35 UTC - Co-subject parser suppression and ambiguity handoff live
+**Items:** MF-P8-02.02/.03/.04 complete; MF-P8-02.01 85% partial
+**Result:** Co-subject pixels cannot become target parsing priors or silently enter training authority.
+
+```
+parser suppression:        S03 projects the protected co-subject mask into context space and zeros both Sapiens-28 and SCHP-ATR labels/confidence planes
+geometry boundary:         suppression occurs before S05 consumes parser outputs
+ambiguity artifact:        target/co-subject overlap is written exactly to ambiguous_do_not_use.png and marks parsing degraded/careful-review
+fusion protection:         S09 admits protected overlap only as PART other_person with explicit z-order authority over target body-part labels
+review handoff:            S12 marks intersecting atomics ambiguous_do_not_use, withholds authoritative mask metadata, and records a specific careful-review note
+training safety:           ambiguous atomics retain visual draft pixels for CVAT review but expose no manifest mask_file/status that dataset export could treat as authority
+focused evidence:          22 S03/S09/review-package/production-runner tests pass; Ruff clean
+full regression note:      complete-suite launch could not be collected because the execution host lost yielded-process ownership; no full-suite count is claimed for this entry
+honest boundary:           literal nearest-promoted-bbox assignment across multiple parser/pose detections remains open; current per-instance crop/silhouette isolation is recorded at 85%
+```
+
+## 2026-07-12 04:05 UTC - Multi-instance package finalization and verification live
+**Items:** MF-P8-04.01..04 complete
+**Result:** S09.5 image relationships now become authoritative, reciprocal per-instance package metadata.
+
+```
+layout gate:               finalizer requires contiguous instances/p0..pN and one matching manifest per promoted instance
+relationship mirror:       image-level contact/occlusion records become reciprocal per-instance interperson[] entries using schema-required full instance IDs
+band authority:            every manifest relationship must resolve to that instance's masks_regions/interperson_contact_boundary.png or finalization fails
+hash integrity:            files{} is refreshed after contact-band injection; every per-instance manifest is schema-validated before image_manifest.json is installed
+multi-instance round trip: assembled p0+p1 -> reconciled contact -> finalized index/manifests -> verify_packages discovers exactly two and all QC-001..010 pass
+single-person regression:  trivial instances/p0 index retains promoted_instances=[p0], interperson=[], and exactly one verifiable package
+focused evidence:          8 review-package/S09.5/schema tests pass; Ruff clean
+full regression note:      long-suite execution transport again lost ownership of yielded processes, so no new repository-wide count is claimed
+honest boundary:           this closes package structure/verification contracts, not live CVAT review or real-image D11 evidence
+```
+
+## 2026-07-12 04:45 UTC - Multi-instance CVAT jobs, overview, and correction routing live
+**Items:** MF-P8-06.01..04 complete; MF-P8-06.05 85% partial
+**Result:** A duo produces two independent authoring tasks plus one non-authoring shared overview.
+
+```
+instance jobs:             push creates one segment_size=1 task and durable package_root record per (image_id,pN), never a mixed multi-instance authoring batch
+overview job:              multi-person images receive exactly one composite all-promoted-instance context task with zero mask shapes
+SOP-6:                     instance and overview descriptions require reciprocal contact agreement, cross-person bleed review, per-instance corrections, and honest ambiguity
+pull isolation:            image_overview records are excluded; each correction is fused, derived, QA-checked, and backed up only in its recorded pN package
+seeded routing proof:      a modified p1 CVAT mask changes p1 only while p0 remains pixel-identical; both retain independent task backups
+backward compatibility:   single-person image still creates exactly one ordinary authoring task and pulls unchanged pixels identically
+focused evidence:          19 CVAT/labelmap/project/review-package tests pass; final 2 push/pull tests pass; Ruff and git diff --check clean
+honest boundary:           FakeCvat proves the complete API/data contract, but literal live-CVAT two-person execution remains required before MF-P8-06.05 reaches 100%
+```
+
+## 2026-07-12 05:15 UTC - Coverage and leaderboard instance-context breakouts live
+**Items:** MF-P8-08.01..03 complete; MF-P5-06.01 70% and MF-P5-06.02 85% partial
+**Result:** Solo, duo, and small-group performance are independently measurable without breaking pooled or legacy scores.
+
+```
+coverage matrix:           closed 6 views x 7 poses x 3 instance contexts; dataset builder derives solo/duo/small_group from source person_count
+coverage CLI:              maskfactory coverage report reads the validated matrix and returns ranked deficits retaining instance_context
+leaderboard schema:        validated candidate x holdout row stores pooled metrics plus optional solo/duo/small_group metrics, per-class maps, and sample counts
+durable storage:           append uses validated canonical JSONL and atomic replacement; reader identifies the exact invalid row
+legacy compatibility:      pre-context rows normalize to an equivalent solo breakout; pooled mean IoU, boundary-F, class, and group values are untouched
+comparison:                same-dataset/split enforcement; pooled, per-class, group, and context deltas exposed by maskfactory leaderboard --compare
+focused evidence:          13 leaderboard/coverage/schema/dataset tests pass; Ruff clean
+honest boundary:           standing-baseline auto-scoring and human-oriented table rendering remain open under P5; no trained-model performance claim is made
+```
+
+## 2026-07-12 05:50 UTC - Instance-aware read-only ComfyUI Mode-A nodes live
+**Items:** MF-P8-09.01..04 and MF-P6-01.01/.03/.04 complete; MF-P6-01.05/.06 85% partial
+**Result:** Every package-backed node resolves image_id + person_index (default 0), with serialized p0/p1 workflow proofs.
+
+```
+shared resolver:           data/packages/<image_id>/instances/pN with legacy root-package fallback only for p0; invalid/missing/newer-major packages fail clearly
+browser:                   enumerates status-filtered (image_id,person_index) pairs and exposes the selected index plus total count
+Mode-A nodes:              Source, Gold, Union, Projected NON-TRUTH, Inpaint existing/derive, Label Map, Combine, and Mask Stats registered
+mask contract:             strict binary -> exact float 0/1; feather ramps preserved; every package-backed mask checked against source HxW; no resize path
+legacy workflow:           serialized prompt omitting person_index is torch.equal to explicit person_index=0
+multi workflow:            serialized person_index=1 prompt loads seeded p1 pixels that are distinct from p0
+read-only proof:            before/after package-tree hash identical; static audit finds no write/unlink/replace APIs in node module
+dependency boundary:       Mode-A imports only stdlib, numpy, PIL, torch; no cv2, mmseg, model load, or pipeline dependency
+focused evidence:          4 Comfy node/workflow tests pass; 7 broader Comfy/inpaint/package tests passed in the initial slice; Ruff and git diff --check clean
+honest boundary:           node-pack installer and live ComfyUI execution remain open; broader on_missing/inpaint semantic matrix remains under P6 partial items
+```
+
+## 2026-07-12 06:20 UTC - ComfyUI Mode-A installer and semantic matrix complete
+**Items:** MF-P6-01.02/.05/.06 and MF-P6-04.01/.02 complete
+**Result:** The standalone read-only node pack installs reproducibly and enforces package semantics without heavy dependencies.
+
+```
+installer CLI:             maskfactory comfy install --comfy-root copies standalone __init__.py + workflows and writes absolute config.json
+installed config:          packages_root, api_url=http://127.0.0.1:8765, format_version=1.x; fresh dynamic import resolves configured package root
+missing behavior:          default error; explicit empty returns source-sized zero MASK with warning
+status boundary:           browser default exposes human_approved_gold only and excludes seeded rejected_needs_fix p1
+projected boundary:        purple-tagged NON-TRUTH category and independent projected source path
+mask semantics:            exact binary float mapping; multi-level derived feather ramp; mismatched source dimensions hard-fail without resize
+static CI audit:           AST forbids cv2/mmseg/scipy/transformers and every filesystem mutation method in the installed node runtime
+mutation guard:            deliberate package-truth output target raises; ordinary ComfyUI output outside data/packages remains allowed
+focused evidence:          8 Mode-A/install/static tests pass; Ruff and git diff --check clean
+honest boundary:           live ComfyUI workflow execution and node-pack workflow 1 remain open
+```
+
+## 2026-07-12 07:00 UTC - Mode-B service contract, predict node, and workflows live
+**Items:** MF-P6-02.04/.06, MF-P6-03.01/.04 complete; related live-runtime items partial
+**Result:** Local inference has a strict read-only API core and tested multipart Comfy client without false live-model claims.
+
+```
+service core:              health/models/predict/refine contracts; strict request raster and provider mask dimensions/binary values
+FastAPI boundary:          lazy app factory with startup/shutdown GPU lease and multipart endpoints; absent web stack gives pinned-env install guidance
+localhost CLI:             maskfactory serve --port 8765 hard-codes host 127.0.0.1 (live WSL execution still pending)
+GPU exclusion:             serving lock refuses pipeline with named serve_mode_b owner; pipeline lock refuses serving with named pipeline owner
+response authority:        top-level and per-label status=draft_model_generated; visibility/area/provenance included; no package truth write path
+Comfy Mode B:              multipart IMAGE PNG + labels/inpaint params; base64 decode to MASK batch + labels + JSON; exact serve command on API down
+provider boundary:         injected champion/refine callbacks permit deterministic contract tests while actual champion/SAM2 residency remains unclaimed
+workflows:                 all three required JSONs filed and installer-copied: gold hand, bodypart conditioned, live predict/inpaint
+focused evidence:          15 combined service/Comfy/GPU tests pass; final service/workflow slice 12 tests and final API 4 tests pass; Ruff clean
+honest boundary:           FastAPI is absent from this Windows test env; live WSL bind, real champion/SAM2 providers, latency gates, and live Comfy workflows remain open
+```
+
+## 2026-07-12 07:35 UTC - P5 dataset contracts reconciled and training configs authored
+**Items:** MF-P5-01.01..05/.07, MF-P5-03.01, MF-P5-04.01, MF-P5-05.01 complete
+**Result:** Code/config work that does not require crossing the 200-gold gate is verified; build/publish/train remain closed.
+
+```
+split authority:           exact SHA bucket, pHash<=6 connected groups, synthetic train-only, hard-case override, image-level instance integrity
+trainer IDs:               train/val lists now contain exported image_id_pN sample IDs, fixing the previous image-ID/filename mismatch
+export layout:             part/material MMSeg, optional hand/matting/projected, COCO RLE, isolated test/hard holdouts
+preflight:                 every frozen eligible package is verified before destination creation; seeded failure leaves no dataset directory
+reproducibility:            dual-root rebuild relative-file SHA maps are byte-identical; seed 1337 and deterministic coverage timestamp recorded
+dataset card:              image/instance split counts, class counts, every view/pose/context cell, ontology, build command, Git SHA, seed, synthetic ratio
+configs:                   exact SegFormer-B3 bodypart, SegFormer-B2 material, and SegFormer-B2 hand specialist schedules/gates authored and fixture-checked
+focused evidence:          11 dataset/coverage tests pass; final dataset+config slice 8 tests pass; Ruff and git diff --check clean
+honest boundary:           approved_gold_count=0, so bodyparts@v1 build/DVC publish and every actual training/evaluation gate remain unexecuted
+```
+
+## 2026-07-12 08:05 UTC - P5 augmentation semantics and CI guards live
+**Items:** MF-P5-02.03..05 complete; MF-P5-02.01 85% partial
+**Result:** Rare-class sampling and every permitted transform preserve ontology/truth semantics before MMSeg runtime activation.
+
+```
+dataset adapter:           per-instance lists/maps, dimension enforcement, optional MMSeg registry, ambiguity -> ignore_index 255 on part+material
+rare crop:                 configured output/scale; 40% forced selection; chosen rare pixel preserved even when nearest downsampling would erase a singleton
+measurement:               attempts, forced attempts, rare-contained count, and realized rate atomically logged; seeded 200-trial fixture within tolerance
+photometric:               brightness/contrast/saturation +/-0.25 and hue +/-0.05 bounds; labels are not accepted or modified
+rotation:                  +/-15 degree bound; RGB bilinear; labels nearest; introduced border is exactly 255
+banned guard:              recursively rejects vflip, vertical flip, elastic, perspective, MixUp, CutMix; valid horizontal flip accepted
+config wiring:             bodypart/material/hand YAMLs carry the approved transform stacks and hand-specific 768/0.75-1.25 settings
+focused evidence:          8 augmentation/dataset tests pass; combined augmentation+config slice 11 tests passed; Ruff and git diff --check clean
+honest boundary:           MMSeg is absent here and approved_gold_count=0, so real framework dataloader/trainer execution remains the final 15% of MF-P5-02.01
+```
+
+## 2026-07-12 08:35 UTC - Leaderboard tables, human ceiling, and reversible promotion live
+**Items:** MF-P5-06.02/.04/.05 complete; MF-P5-06.03 75% partial
+**Result:** The arbiter can compare, saturate, promote, and roll back verified candidates without asserting a winner exists.
+
+```
+comparison CLI:            default Markdown table includes pooled, per-class, group, and instance-context IoU/BF deltas; deterministic JSON remains optional
+comparability gate:        candidates must share dataset_ref and split before any delta is produced
+human ceiling:             weekly IAA artifact now conforms to leaderboard schema with per-class/group IoU+BF, sample count, and explicit human model family
+saturation:                class is saturated only when best model is within 0.02 of human on both IoU and boundary-F
+role resolver:             exactly one verified file-backed model may satisfy a runtime role; zero/multiple/missing/hash mismatch remain hard errors
+promotion:                 one atomic role swap records candidate prior role + incumbent; champion history JSONL is durable
+rollback:                  one atomic inverse edit restores exact original roles and refuses if either role changed after promotion
+focused evidence:          16 registry/leaderboard/second-review tests pass; Ruff and git diff --check clean
+honest boundary:           no trained winner exists at 0 approved gold; live registry has no champion pointer and pipeline/provider champion consumption remains partial
+```
+
+## 2026-07-12 09:05 UTC - Retrain triggers now open durable P5 tasks
+**Items:** MF-P7-02.01 complete; MF-P7-02.02 35% and MF-P5-06.03 80% partial
+**Result:** Weekly S15 can request retraining for every specified reason without bypassing the 200-gold gate.
+
+```
+gold trigger:              approved_gold_count - champion_gold_count >= 50
+error trigger:             same class must increase >0.05 in each of the latest two weekly transitions; one-week spike does not qualify
+ontology trigger:          explicit ontology version change flag
+task artifact:             atomic/idempotent retrain_tasks/p5_retrain_<date>.json with vNext build, candidates, frozen holdouts, leaderboard, promote/reject, history steps
+gate awareness:            task status=open at >=200 gold; otherwise waiting_for_p5_entry_gate with current/required counts preserved
+collision safety:          same task ID/content is idempotent; changed content under same ID hard-fails
+history visibility:        maskfactory models champions returns current champion role pointers and append-only promotion history
+focused evidence:          15 active-learning/dataset/model-registry tests pass; Ruff and git diff --check clean
+honest boundary:           no trigger-driven training run has executed because approved_gold_count=0; MF-P7-02.02 remains partial
+```
+
+## 2026-07-12 09:35 UTC - P7 ontology and horizon decisions recorded
+**Items:** MF-P7-04.01/.02 and MF-P7-05.01/.02 complete
+**Result:** Evidence gates produce explicit decisions without speculative ontology or production claims.
+
+```
+ontology evidence:         qa/failure_queue.jsonl absent; 0 qualifying failures for every proposed v2 label against mandatory 10/30-day threshold
+ontology decision:         NO-GO; body_parts_v1 unchanged; no IDs, boundaries, swaps, CVAT labels, back-annotation, or dataset bump authorized
+changelog:                 dated NO-GO entry links machine-readable/Markdown evidence and preserves Kevin approval for any future GO
+video horizon:             NO-GO until temporal schema, track identity, keyframe/drift QA, CVAT flow, measured cost model, and D1-D11 exist
+video pilot gate:          governed adult clips, zero identity switches, temporal/per-frame hard checks clean, approved operator-cost target
+multi architecture:        GO already enacted by doc17/P8; ownership is instances/pN, not person-namespaced ontology labels
+multi production:          NO-GO until real 10-20 image SOP-1..6 review, QC-035/036 clean, reciprocal contacts, and G9=0 prove D11
+focused evidence:          2 decision-artifact regression tests pass; Ruff and git diff --check clean
+```
+
+## 2026-07-12 10:05 UTC - Conservative garbage collection implemented
+**Item:** MF-P7-03.02 80% partial
+**Result:** GC can rehearse/apply the only fully-authorized deletion category without exposing current gold or referenced data.
+
+```
+default mode:              dry-run; every candidate and content-derived plan hash printed and logged
+eligible:                  masks@vN marked deprecated, retain_until expired, active successor human_approved_gold in masks/
+manifest guard:            any files{} reference to the deprecated tree protects it
+path guard:                exact masks@v<version> child only; target must remain inside packages root and directly under its package
+review race guard:         apply recomputes candidates at the reviewed generated_at; byte/path/metadata changes invalidate the plan
+confirmation:              --apply prompts unless explicit --yes; logs gc_<date>.log with WOULD_REMOVE/REMOVED, bytes, version, retention date
+protected by construction: active masks/, young versions, referenced versions, holdouts, IAA, leaderboard, and categories lacking explicit authority
+focused evidence:          3 GC/versioning tests pass; dry-run/apply fixture preserves current and protected trees; Ruff and git diff --check clean
+honest boundary:           real-corpus dry-run review, apply, verify-package sample, and reindex post-check remain before MF-P7-03.02 can complete
+```
+
+## 2026-07-12 10:30 UTC - IP-3 copy-only reindex drill executed
+**Item:** MF-P7-03.04 complete
+**Result:** The live state database was never mutated; its isolated copy rebuilt and diffed clean.
+
+```
+command:                   maskfactory incident reindex-drill --database data/maskfactory.sqlite --packages-root data/packages
+source before/after:       0 bytes; SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 identical
+copy:                      qa/live_verification/ip3/maskfactory_ip3_copy_20260711T083019Z.sqlite (49152 bytes after schema rebuild)
+report:                    qa/live_verification/ip3/ip3_reindex_drill_20260711T083019Z.json
+before diff:               clean=true, missing=[], stale={}, extra=[]
+after diff:                clean=true, missing=[], stale={}, extra=[]
+safety:                    source hash is checked after rebuild; implementation targets copy path only and hard-fails a non-clean post-diff
+focused evidence:          7 reindex/IP-3 tests pass; Ruff and git diff --check clean
+honest boundary:           this is a real mechanism drill on the current empty package/index state, not proof of recovering a populated or corrupted production index
+```
+
+## 2026-07-12 10:55 UTC - Disk headroom reviewed and junction move rehearsed
+**Item:** MF-P7-03.05 complete
+**Result:** C: is in the warning band; no unsafe move was attempted without a second governed volume.
+
+```
+live capacity:             951.65 GiB total / 854.59 GiB used / 97.05 GiB free
+doctor:                    WARN 97.1 GiB; below 150 GiB warning, above 75 GiB ingest block; 200 GiB target unmet
+visible volumes:           C: only; no larger fixed target currently available
+rehearsal:                 tools/move_data_to_junction.ps1 -Name data -Target D:\MaskFactory\data -WhatIf
+rehearsal output:          source_bytes=25741, target_volume_visible=false, no filesystem changes made
+safeguards:                allowlist data/datasets/runs; outside-workspace target; +20 GiB reserve; robocopy <8; verify/reindex/doctor; automatic rollback
+retention:                 rollback data_old timestamp is never auto-deleted; models is not an allowed junction source
+evidence:                  qa/live_verification/disk_headroom_2026-07-12.{json,md}; 10 disk/doctor tests pass; Ruff/git diff clean
+next external state:       attach/provision governed larger fixed volume, rerun rehearsal, apply, retain rollback until all checks reviewed
+```
+
+## 2026-07-12 11:20 UTC - Hand-lane acceptance metrics integrated
+**Item:** MF-P3-01.09 complete
+**Result:** Gap preservation, QC-018 paste-back, and leaderboard evidence now form one hard-gated operation.
+
+```
+fixture:                   five separated left-finger masks with explicit inter-finger gap regions and one crop transform
+gap invariant:             prediction union intersection with gap regions = 0 px
+negative proof:            deliberate one-pixel gap fill raises HandLaneError before any leaderboard file is created
+paste-back:                every crop prediction nearest-reprojects through CropTransform; minimum per-finger IoU = 1.000000 (gate >=0.995)
+metrics:                   per-finger IoU and boundary-F@2px for thumb/index/middle/ring/pinky
+leaderboard:               schema-valid test_holdout row with all five classes and fingers group {iou=1.0,bf=1.0}
+focused evidence:          15 hand-lane/leaderboard/P2-metric tests pass; Ruff and git diff --check clean
+```
+## 2026-07-11 08:49 UTC - Training ambiguity burned at dataset export boundary
+**Item:** MF-P5-02.01 advanced from 85% to 90% partial
+**Result:** Dataset exports now make `ambiguous_do_not_use` spatially authoritative for MMSeg inputs.
+
+```
+source of truth:           manifest part visibility + indexed gold part map
+export behavior:           union every ambiguous part region and write ignore_index 255
+targets protected:         both part_seg and material_seg annotations
+holdouts:                  same burned maps exported for honest later scoring
+non-ambiguous pixels:      retain exact original part/material IDs
+writer:                    png_strict.write_label_map (16-bit part, 8-bit material)
+regression:                15 dataset-builder/training-augmentation tests pass
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           live MMSeg dataloader/trainer execution remains gated by the absent WSL runtime and 0/200 approved gold
+```
+## 2026-07-11 08:55 UTC - Standing-baseline leaderboard orchestration implemented
+**Item:** MF-P5-06.01 advanced from 70% to 82% partial
+**Result:** Every dataset-version/holdout pair can now require and idempotently score the complete standing baseline set.
+
+```
+required baselines:         sam2_only, sam2_pose, sam2_parsing, draft_pipeline_full
+identity authority:         orchestrator stamps run_id/model_family/dataset_ref/split
+scoring boundary:           injected production evaluator returns measured metric payload only
+idempotency:                existing exact dataset_ref+split baselines are never duplicated
+version behavior:           a new dataset_ref triggers all four fresh scores
+validation:                 every emitted row passes the full leaderboard schema
+regression:                 16 leaderboard/hand/IAA tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           no baseline scores fabricated at 0 approved gold; live holdout evaluation remains required
+```
+## 2026-07-11 09:02 UTC - Mode-B serving champion resolution enforced
+**Item:** MF-P5-06.03 advanced from 80% to 88% partial
+**Result:** The production predictor configuration path can no longer claim champion provenance from arbitrary checkpoint names.
+
+```
+accepted roles:            non-empty unique champion_* roles only
+registry contract:         exactly one verified file-backed model per role
+integrity:                 checkpoint must exist and match registered SHA-256
+loader boundary:           receives role -> verified Path mapping only
+provenance:                loaded_models populated from resolved roles, not caller labels
+mutation guard:            champion configuration refused while serving holds the GPU lease
+negative coverage:         non-champion role and tampered checkpoint both hard-fail
+regression:                14 serving/model-registry tests pass
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           trained champion checkpoints do not yet exist at 0/200 gold
+```
+## 2026-07-11 09:10 UTC - Mode-B sequential residency scheduler implemented
+**Item:** MF-P6-02.03 advanced from 30% to 85% partial
+**Result:** Serving now enforces the 8 GB one-heavy-model-at-a-time contract for champion inference and SAM2 refinement.
+
+```
+champion slots:             body-part -> hand -> clothing, deterministic order
+label routing:              ontology material -> clothing; part IDs 20..33 -> hand; remaining parts -> body
+residency:                  provider loaded for its requested label subset, called, then closed before next slot
+SAM2:                       zero startup load; load/call/close only when /refine is invoked
+registry trust:             all three champion paths resolve by verified role + SHA-256 before configuration
+observability:              configured_models separated from loaded_models; idle sequential service reports no false co-residency
+provenance:                 each label reports the exact champion role that produced it
+negative guards:            missing role, wrong output labels, unknown ontology labels, and live reconfiguration hard-fail
+regression:                 15 serving/model-registry tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           live GPU residency/latency awaits trained champion checkpoints
+```
+## 2026-07-11 09:18 UTC - Mode-B predict response modes completed
+**Item:** MF-P6-02.01 advanced from 80% to 92% partial
+**Result:** `/predict` no longer ignores its documented return and inpaint parameters.
+
+```
+return modes:              binaries | label_maps | both, strict enum
+part label map:            native-size indexed 16-bit PNG
+material label map:        native-size indexed 8-bit mode-L PNG
+exclusivity:               overlapping different IDs in one map hard-fail instead of arbitrary overwrite
+inpaint:                   exact {dilate, feather}, integers 0..512; per-label 8-bit feathered ramps
+response:                  base64 PNGs + manifest-lite visibility/area/exact champion-role provenance
+draft authority:           in-memory response only; no data/packages mutation path
+negative coverage:         invalid mode, invalid inpaint range/schema, unknown/non-indexed label, overlap all refuse
+regression:                16 serving/model-registry tests pass without warnings
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           live FastAPI request with trained champions remains pending
+```
+## 2026-07-11 09:29 UTC - Mode-B launch lock completed; live dependency fetch unavailable
+**Item:** MF-P6-02.02 advanced from 80% to 90% partial
+**Result:** The authoritative environment and CLI now prove the localhost-only launch contract.
+
+```
+command:                    maskfactory serve --port <1..65535>, default 8765
+binding:                    uvicorn receives host=127.0.0.1 only; no host override exists
+runtime pins:               fastapi==0.139.0, uvicorn==0.51.0, python-multipart==0.0.32
+reproducibility fix:        python-multipart was missing from env/requirements.lock.txt and is now pinned
+CLI execution fixture:      requested port 9876 reaches uvicorn with exact loopback host/log level
+regression:                 8 Mode-B serving tests pass
+quality:                    Ruff check/format and git diff --check clean
+live attempt:               current Windows Python lacks FastAPI; exact workspace-target install timed out after 300 s with no index response
+honest boundary:           live 127.0.0.1:8765 WSL HTTP probe remains uncredited
+```
+## 2026-07-11 09:37 UTC - Multi-person parser/pose ownership matching completed
+**Item:** MF-P8-02.01 complete
+**Result:** Every promoted person receives unique pose ownership; co-subject parser evidence remains silhouette-suppressed before geometry.
+
+```
+pose inputs:               all DWPose person candidates + all promoted S01 bboxes
+assignment:                global maximum-IoU bipartite assignment (not independent per-instance maxima)
+uniqueness:                one pose candidate can belong to at most one promoted person
+determinism:               sorted person IDs and deterministic linear assignment
+no-overlap behavior:       candidate/instance pair with zero IoU is not assigned; target hard-fails if unmatched
+production wiring:         every per-instance S04 call receives the complete promoted bbox map + target person_index
+parser ownership:          S03 target silhouette plus other_person_protected suppression zeros co-subject labels/confidence before S05
+regression:                17 S04/production-runner tests pass, including overlapping-person unique assignment
+quality:                   Ruff check/format and git diff --check clean
+```
+## 2026-07-11 09:06 UTC - Live two-person CVAT workflow verified
+**Item:** MF-P8-06.05 complete
+**Result:** Real CVAT v2.24 created exactly two instance review tasks and one image overview task.
+
+```
+fixture image:             img_a3f9c2e17b04 with instances p0/p1 and reciprocal contact metadata
+live task IDs:             6, 7, 8
+live names:                MaskFactory_review_img_a3f9c2e17b04_p0
+                           MaskFactory_review_img_a3f9c2e17b04_p1
+                           MaskFactory_overview_img_a3f9c2e17b04
+persisted job types:       instance_review, instance_review, image_overview
+record count:              3
+artifact:                  runs/live_verification/MF-P8-06.05/20260711T090647Z/live_result.json
+cleanup:                   DELETE succeeded for exactly task IDs 6, 7, 8
+regression:                17 CVAT push/pull/project/label-map tests pass
+quality:                   Ruff and git diff --check clean
+```
+## 2026-07-11 09:08 UTC - Real-corpus GC apply executed
+**Item:** MF-P7-03.02 advanced from 80% to 90% partial
+**Result:** Reviewed dry-run and confirmed apply used the identical live plan; index post-check is clean.
+
+```
+packages root:             data/packages
+reviewed plan hash:        4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+dry-run candidates:        0
+apply candidates:          0
+removed:                   0 (correct for current empty/non-deprecated corpus)
+log:                       logs/gc_2026-07-11.log, mode=apply
+reindex rebuild:           complete
+post-reindex dry-run:      clean=true; no missing/extra/stale rows
+verify-package sample:     correctly refused: no package manifests under data/packages
+honest boundary:           post-GC package verification remains pending until the first approved package exists
+```
+## 2026-07-11 09:45 UTC - Body-part-conditioned Comfy workflow completed structurally
+**Item:** MF-P6-03.02 advanced from 70% to 90% partial
+**Result:** The shipped workflow now implements the full documented skin-only img2img chain.
+
+```
+package source:             MFPackageBrowser filtered human_approved_gold
+instance propagation:      browser person_index feeds source, union, and material-map nodes
+mask formula:              visible_body_skin - material label 3 (clothing_generic), binarized
+latent conditioning:       combined mask -> VAEEncodeForInpaint with selected source image
+generation chain:          checkpoint + positive/negative CLIP -> KSampler -> VAEDecode -> SaveImage
+default safety:            denoise=0.35, fixed seed=1337, no mask growth beyond exact computed region
+graph validation:          every link resolves; subtraction direction and all downstream edges asserted
+regression:                17 serving/Comfy node-pack tests pass
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           live ComfyUI execution requires an approved package and user-selected installed checkpoint
+```
+## 2026-07-11 09:51 UTC - Gold-hand Comfy workflow completed structurally
+**Item:** MF-P6-01.07 advanced from 55% to 90% partial
+**Result:** The shipped workflow now executes the documented gold-mask hand repaint graph through a mask-bounded composite.
+
+```
+authority:                  MFPackageBrowser requires human_approved_gold
+source/mask identity:       identical image_id + person_index from browser
+edit region:               existing left_hand inpaint d8f4
+latent chain:              source + exact mask -> VAEEncodeForInpaint -> KSampler -> VAEDecode
+composite:                 decoded repaint over original source using the same d8f4 mask
+outside-mask invariant:    original source remains destination outside the mask
+output:                    SaveImage MaskFactory_gold_hand_repaint
+graph validation:          exact source/mask/latent/sampler/decode/composite edges asserted
+regression:                18 serving/Comfy node-pack tests pass
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           live ComfyUI execution awaits first approved package and installed checkpoint selection
+```
+## 2026-07-11 09:57 UTC - Live-predict Comfy workflow completed structurally
+**Item:** MF-P6-03.03 advanced from 65% to 90% partial
+**Result:** The never-seen image workflow now continues from Mode-B prediction through a complete mask-bounded inpaint chain.
+
+```
+input:                      LoadImage never_seen_input.png
+prediction:                 MFPredictMasks label=left_forearm, d8f4
+latent chain:               original image + predicted mask -> VAEEncodeForInpaint
+generation:                 checkpoint/CLIP -> KSampler -> VAEDecode
+composite:                  decoded image over original using the same predicted mask
+outside-mask invariant:     original source remains destination outside predicted left_forearm
+output:                     SaveImage MaskFactory_live_left_forearm
+graph validation:           exact prediction/image/latent/sampler/decode/composite edges asserted
+regression:                 19 serving/Comfy node-pack tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           live never-seen execution awaits Mode-B trained champions and a selected Comfy checkpoint
+```
+## 2026-07-11 10:03 UTC - Shipped workflows validated against Kevin's installed ComfyUI
+**Items:** MF-P6-01.07, MF-P6-03.02, MF-P6-03.03 advanced to 92% partial
+**Result:** All five prompt graphs satisfy the actual installed standard-node input contracts.
+
+```
+Comfy root:                 C:/Comfy_UI_Main/ComfyUI
+Comfy git SHA:              7747c342d4143f35e7c8031dddf3ee4455f10a2e (worktree dirty)
+Python:                     C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe
+workflows checked:          5
+standard nodes imported:   LoadImage, CheckpointLoaderSimple, CLIPTextEncode,
+                           VAEEncodeForInpaint, KSampler, VAEDecode,
+                           ImageCompositeMasked, SaveImage
+contract:                   every required input present; no unknown inputs
+compatibility fix:          removed UI-only control_after_generate from KSampler prompt payloads
+artifact:                   qa/live_verification/comfy_workflow_compatibility_20260711.json
+regression:                 19 serving/Comfy tests pass; Ruff/diff clean
+remaining live gate:        custom node pack is not installed and checkpoints directory has only put_checkpoints_here
+```
+## 2026-07-11 10:12 UTC - MMSeg dataset registration corrected; class-count conflict exposed
+**Item:** MF-P5-02.01 advanced from 90% to 95% partial
+**Result:** Optional MMSeg integration now uses actual BaseSegDataset subclasses instead of registering an incompatible lightweight reader.
+
+```
+registered datasets:       MaskFactoryBodyPartDataset, MaskFactoryMaterialDataset
+framework base:            mmseg.datasets.BaseSegDataset
+layout configs:            exact train/val ann_file and part/material image+annotation prefixes
+map semantics:             .png suffixes, reduce_zero_label=false, ignore_index=255
+class metadata:            contiguous names read from the authoritative ontology
+simulated registry load:   both classes register; BaseSegDataset receives correct kwargs
+regression:                19 dataset/build/training-config tests pass; Ruff/diff clean
+unresolved blocker:        ontology IDs 0..55 already include background (56 logits), but doc12/MF-P5-03.01 require 57
+escalation:                Plan/DECISIONS_LOG.md, NEEDS KEVIN; no dummy/untrained class invented
+```
+## 2026-07-11 10:20 UTC - Mode-B health/models telemetry completed
+**Item:** MF-P6-02.01 advanced from 92% to 96% partial
+**Result:** The remaining read-only endpoint payload clauses now report explicit versions, live VRAM, and champion pointers.
+
+```
+/health versions:           pipeline + mode_b_api schema version
+/health residency:          loaded_models and configured_models remain distinct
+/health VRAM:               nvidia-smi index/name/total/used/free MiB; nonfatal unavailable reason
+live GPU result:            RTX 5060 Laptop, total=8151 MiB, used=0 MiB, free=7899 MiB
+/models:                    all verified registry entries plus explicit champions{role -> key/version/hash}
+degraded behavior:          missing driver/tool never makes health endpoint crash
+regression:                 21 serving/model-registry tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           live FastAPI multipart requests with trained champions/SAM2 remain pending
+```
+## 2026-07-11 10:27 UTC - Leaderboard run identity made immutable
+**Item:** MF-P5-06.01 advanced from 82% to 88% partial
+**Result:** Promotion evidence can no longer change meaning through duplicate JSONL rows or append order.
+
+```
+exact rerun:                same normalized run_id payload returns existing row with zero file write
+conflicting rerun:          same run_id with any changed evidence hard-fails before mutation
+comparison:                duplicate run_id input is ambiguous and refused
+standing baselines:        >1 row for one family/dataset_ref/split is refused
+durability:                failed duplicate attempts leave leaderboard bytes unchanged
+regression:                18 leaderboard/hand/IAA tests pass
+quality:                   Ruff check/format and git diff --check clean
+honest boundary:           actual four-baseline holdout scores still require approved gold and runnable pipelines
+```
+## 2026-07-11 10:38 UTC - Custom body-part champion fusion path implemented
+**Item:** MF-P5-07.01 advanced from open to 85% partial
+**Result:** S09 can consume a promoted custom body-part map at weight 0.45 without changing pre-promotion output.
+
+```
+config:                     fusion.weights.custom_bodypart=0.45
+artifact:                   S03 custom_bodypart.png, indexed native-size part map
+authority sidecar:          custom_bodypart_provenance.json role + checkpoint_sha256
+registry gate:              exactly one verified champion_bodypart; local file exists/hash matches
+fusion evidence:            one-hot per enabled ontology part ID, source=custom_bodypart
+audit:                      consensus.json records every source including custom_bodypart
+inactive behavior:          expanded weight profile with no custom artifact is byte-identical to base profile
+hard failures:              missing/wrong provenance, unresolvable champion, hash mismatch, invalid IDs/geometry
+regression:                 28 fusion/config/production/registry tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           S03 champion inference and live promoted checkpoint remain gated by training/D6
+```
+## 2026-07-11 10:48 UTC - Training run provenance contract completed
+**Item:** MF-P5-03.05 complete
+**Result:** Every future trainer now has a transactional, immutable run tree before execution can begin.
+
+```
+run ID:                    r_<UTC>_<model>_bodyparts_vN, strict grammar
+required identity:         dataset bodyparts@vN + exact lowercase DVC md5 + Git SHA
+frozen config:             byte copy config.yaml + SHA-256 in run.json
+required files:            run.json, config.yaml, git_sha, dataset_ref, dataset_dvc_md5
+required directories:      ckpts, tb, eval
+creation:                   staging directory + atomic rename; collision refuses
+lifecycle:                 initialized -> running -> complete|failed; final states immutable
+CLI:                       maskfactory train ... --initialize-only; normal execution refuses until trainer activation
+negative coverage:         bad/missing dataset identity, bad DVC hash, collision, skipped/final transitions
+regression:                14 training-run/config/GPU-lock tests pass
+quality:                   Ruff check/format and git diff --check clean
+scope note:                this proves run logging; it does not claim MF-P5-03.02 model training
+```
+## 2026-07-11 10:57 UTC - Seeded ambiguous-hand audit set completed
+**Item:** MF-P5-05.02 complete
+**Result:** A deterministic 100-case known-truth corpus and strict merged-finger false-split evaluator now gate the hand specialist.
+
+```
+artifact root:             qa/hand_audit
+manifest:                  schema 1.0.0, seed 1337, 100 cases
+balance:                   50 left / 50 right; adjacent affected-finger pairs rotated
+files:                     100 RGB evidence images + 100 truth maps + 100 binary ambiguity masks + manifest
+truth rule:                ambiguous merged region is hand_base, never guessed finger classes
+false split:               any affected finger-class pixel inside that known ambiguity region
+gate:                      rate < 0.02, case-level denominator 100
+boundary proof:            0%=pass, 1 case/1%=pass, 2 cases/2%=fail
+reproducibility:            second seed-1337 build is byte-identical for manifest and all 300 PNGs
+negative coverage:         missing prediction, wrong geometry, and unknown class ID refuse
+regression:                14 hand-audit/lane/config tests pass
+quality:                   Ruff check/format and git diff --check clean
+```
+## 2026-07-11 11:04 UTC - D7 hand promotion gate evaluator implemented
+**Item:** MF-P5-05.04 advanced from open to 70% partial (hard blocker remains)
+**Result:** Finger quality, ambiguous false-split behavior, and crop round-trip are now one indivisible promotion decision.
+
+```
+required split:             frozen test_holdout only
+required evidence:          leaderboard fingers group + >=100-case audit + paste-back IoU
+finger IoU:                 >=0.70 (0.70 pass; 0.699999 fail)
+false split:                <0.02 (0.01 pass; exactly 0.02 fail)
+paste-back IoU:             >=0.995 (0.995 pass; 0.994999 fail)
+result:                     schema-versioned checks with measured/operator/threshold/passed
+writer:                     atomic gate.json; refuses incomplete three-check result
+negative coverage:         val split, missing group metric, <100 audit cases, out-of-range values
+regression:                 19 hand-audit/lane/config tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           no trained hand checkpoint/holdout row exists, so D7 is not passed
+```
+## 2026-07-11 11:13 UTC - Champion hand crop-drafter integration implemented
+**Item:** MF-P5-05.05 advanced from open to 85% partial
+**Result:** A D7-winning hand model can replace geometry/SAM2 auto-drafting without replacing SAM2's separate interactive editor.
+
+```
+activation authority:       exactly one verified champion_hand registry role
+loader input:               verified, present, SHA-matching checkpoint Path only
+model output:               integer native crop HxW, local 14-class vocabulary
+side guard:                 left crop rejects all right-hand IDs and vice versa
+lane adapter:               five finger masks + hand_base + explicit local gap region -> HandGeometry
+provider lifecycle:         load/predict/close for drafting
+SAM2 boundary:              no SAM2 provider enters champion drafting; refine_hand_with_sam2 remains separate
+QC-018 path:                existing evaluate_hand_predictions enforces minimum paste-back IoU >=0.995
+negative coverage:          missing champion, tampered checkpoint, wrong geometry/dtype, opposite-side IDs, empty evidence
+regression:                 26 hand-lane/audit/registry tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           live activation awaits a trained model that passes D7
+```
+## 2026-07-11 11:22 UTC - Champion clothing S08 primary path implemented
+**Item:** MF-P5-04.03 advanced from open to 85% partial
+**Result:** A promoted clothing parser can become S08 primary while the existing SCHP/S08 path remains explicit fallback authority.
+
+```
+inactive state:             no champion_clothing role -> existing SCHP/Sapiens/GDINO/SAM2 path unchanged
+activation:                 exactly one champion_clothing registry entry + configured framework loader
+integrity:                  verified, present, SHA-matching checkpoint resolution
+output contract:            native context HxW integer IDs 0..15
+containment:                background outside silhouette; every visible silhouette pixel assigned
+evidence:                   primary=champion_clothing, fallback=schp_plus_s08_heuristics,
+                           checkpoint SHA, per-class source and pixel counts
+provider lifecycle:         load/predict/close
+hard failures:              duplicate role, missing loader after promotion, tampered checkpoint,
+                           invalid dtype/geometry/IDs/coverage
+regression:                 24 S08/registry/production tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:           live promotion/fallback exercise awaits a trained model that wins MF-P5-04.02
+```
+## 2026-07-11 09:49 UTC - Clothing promotion gate implemented
+**Item:** MF-P5-04.02 advanced from open to 70% partial
+**Result:** Clothing promotion is now fail-closed on one comparable frozen-holdout baseline and all three spec thresholds.
+
+```
+comparison authority:       exact baseline model_family=schp_atr_plus_s08_heuristics
+comparison scope:           identical dataset_ref and frozen test_holdout split
+material mIoU:              candidate must be strictly greater than baseline (equality fails)
+strap IoU:                  >=0.55 (0.55 pass; 0.549999 fail)
+waistband IoU:              >=0.55 (0.55 pass; 0.549999 fail)
+validation:                 missing/non-finite/out-of-range metrics and wrong comparator refuse
+result:                     schema-versioned checks with run IDs and measured thresholds
+writer:                     atomic gate.json; refuses an incomplete three-check result
+regression:                 27 clothing-gate/S08/config tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:            no eligible gold dataset, 30k training run, or measured holdout rows yet
+```
+## 2026-07-11 09:54 UTC - D6/G7 body-part promotion gate implemented
+**Item:** MF-P5-07.02 advanced from open to 70% partial
+**Result:** Body-part promotion is fail-closed on the full draft-pipeline baseline and all pooled/hard-group regression rules.
+
+```
+comparison authority:       exact baseline model_family=draft_pipeline_full
+comparison scope:           identical dataset_ref and frozen test_holdout split
+pooled gates:               candidate mean IoU > baseline AND mean boundary-F > baseline
+tracked hard groups:        fingers, toes, chest_boundary, hairline
+regression gate:            candidate delta >= -0.02 for IoU and boundary-F in every hard group
+exact boundary:             -0.020000 passes; -0.020001 fails
+validation:                 missing/non-finite/out-of-range metrics and wrong comparator refuse
+result:                     schema-versioned ten-check result with run IDs and measured deltas
+writer:                     atomic gate.json; refuses incomplete evidence
+regression:                 38 body-part-gate/leaderboard/S09 tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:            no trained champion or measured frozen-holdout rows yet, so D6/G7 is not passed
+```
+## 2026-07-11 09:55 UTC - CVAT and SAM2 live services revalidated
+**Items:** MF-P0-03.07, MF-P0-04.04 (confirmation only; both already complete)
+**Result:** The live service path remains healthy; the quoted three-failure/browser note was stale relative to authoritative evidence.
+
+```
+CVAT API:                   PASS, version=2.24.0
+CVAT governed project:      PASS, project_count=1
+Nuclio interactor:          PASS, pth-sam2 foreground=21491
+prior literal UI proof:     qa/reports/cvat_sam2_ui_verification.json remains PASS with saved mask shape id=1
+browser retry:              Windows/Chrome control transport closed before inspection; no uncertain UI input sent
+doctor authority:           prior full-machine run remains FAIL=0; current sandbox WSL visibility is not treated as a machine regression
+```
+## 2026-07-11 10:02 UTC - Reproducible Mode-B latency gate implemented
+**Item:** MF-P6-02.05 advanced from open to 75% partial
+**Result:** One command now cold-launches the loopback API and measures every doc-13 serving target with durable, fail-closed evidence.
+
+```
+command:                    maskfactory benchmark-serving <1024-long-side-image>
+cold-start authority:       refuses a pre-existing listener; launches maskfactory serve itself
+canonical all-label set:    68 enabled indexed non-background PART+MATERIAL labels from ontology.yaml
+warm methodology:           one unmeasured warmup then five measured requests per endpoint case
+passing statistic:          worst measured request, not mean/median
+thresholds:                 cold <=60s; all-label predict <=4s; single-label <=2s; refine/click <=1.2s
+response validation:        draft status, exact label order/mask set, refine identity and encoded mask
+input guard:                long side must equal exactly 1024 px; loopback HTTP only
+evidence:                   atomic schema-versioned JSON, image SHA/dimensions, health, raw samples, min/median/p95/max
+failure guards:             >=3 samples, finite/nonnegative timings, unused port, no evidence overwrite
+regression:                 21 serving/benchmark tests pass
+quality:                    Ruff check/format, CLI help, and git diff --check clean
+honest boundary:            live measurements remain open until trained champion and SAM2 production loaders exist
+```
+## 2026-07-11 10:05 UTC - Production SAM2 Mode-B refiner wired
+**Items:** MF-P6-02.01 advanced to 98%; MF-P6-02.03 advanced to 90%
+**Result:** The default serving runtime can now execute real `/refine` requests through the verified SAM2 primary/fallback pair without permitting heavyweight request co-residency.
+
+```
+checkpoint authority:       registry roles primary_boundary_refiner + boundary_refiner_oom_fallback
+integrity:                  both current files resolved present with verified SHA-256
+provider:                   existing persistent per-image WSL SAM2 adapter and exact SAM2.1 configs
+click contract:             integer in-bounds coordinates, boolean polarity, >=1 positive click
+prompt:                     full-image box + positive/negative clicks, multimask_output=true
+selection:                  highest predicted IoU, stable first-candidate tie break
+output:                     finite native-geometry binary mask only
+cleanup:                    embedding server closed in finally on success or failure
+OOM behavior:               large checkpoint -> base-plus fallback via shared build_embedding contract
+service wiring:             create_app default uses production on-demand SAM2 loader
+concurrency:                one runtime request lock serializes predict and refine GPU sections
+live construction:          Sam2InteractiveRefiner resolved both current checkpoints/configs successfully
+regression:                 24 serving/benchmark tests pass; 32 with shared S06/S07 suite
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:            WSL CUDA click execution/latency and trained champion `/predict` remain open
+```
+## 2026-07-11 10:09 UTC - Mandatory MMEngine training thermal hook implemented
+**Item:** MF-P5-03.02 advanced from open to 35% partial
+**Result:** The exact laptop cooldown policy now runs inside the training process and produces durable per-poll evidence.
+
+```
+framework boundary:         MMEngine custom hook registered when mmengine is installed
+poll schedule:              every 30 minutes of training runtime
+temperature authority:      hottest visible GPU from nvidia-smi temperature.gpu
+threshold:                  >87C triggers; exactly 87C does not
+cooldown:                   training thread sleeps 60 seconds (GPU work actually pauses)
+evidence:                   fsynced runs/<run_id>/thermal.jsonl with iteration/temp/policy/cooldown
+config bridge:              governed YAML -> exact custom_imports/custom_hooks MMEngine config
+policy integrity:           release config refuses any value other than 30 min / 87C / 60 sec
+probe behavior:             missing/failing/non-numeric nvidia-smi fails closed
+live probe:                 42C on current RTX GPU
+regression:                 22 thermal/config/run/GPU-lock tests pass
+quality:                    Ruff check/format and git diff --check clean
+honest boundary:            no dataset/train execution; MMSeg dependencies are absent from locks and 56-vs-57 class conflict remains unresolved
+```

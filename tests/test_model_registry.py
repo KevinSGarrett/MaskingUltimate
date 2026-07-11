@@ -11,12 +11,16 @@ from maskfactory.cli import main
 from maskfactory.models.registry import (
     ModelFetchError,
     ModelRegistryError,
+    champion_status,
     fetch_models,
     load_registered_model,
+    promote_model_role,
     register_ollama_models,
     register_smoke_runner,
     resolve_registered_managed_model,
     resolve_registered_model,
+    resolve_registered_role,
+    rollback_model_role,
     verify_registered_model_smokes,
 )
 
@@ -274,6 +278,51 @@ def test_models_fetch_cli_requires_exactly_key_or_all(tmp_path: Path):
     assert both.exit_code == 2
     assert "provide exactly one model KEY or --all" in neither.output
     assert "provide exactly one model KEY or --all" in both.output
+
+
+def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> None:
+    _, _, catalog = _fixture(tmp_path)
+    models_root = tmp_path / "models"
+    registry = models_root / "registry.json"
+    register_smoke_runner("fixture_image_inference", _smoke)
+    fetch_models(
+        ["fixture"],
+        catalog_path=catalog,
+        registry_path=registry,
+        models_root=models_root,
+    )
+    document = json.loads(registry.read_text())
+    incumbent = document["models"][0]
+    incumbent["role"] = "champion_bodypart"
+    challenger = {**incumbent, "key": "challenger", "role": "challenger_bodypart"}
+    document["models"].append(challenger)
+    registry.write_text(json.dumps(document), encoding="utf-8")
+    history = tmp_path / "champion_history.jsonl"
+    record = promote_model_role(
+        "challenger", "champion_bodypart", registry_path=registry, history_path=history
+    )
+    promoted = json.loads(registry.read_text())
+    roles = {item["key"]: item["role"] for item in promoted["models"]}
+    assert roles == {"fixture": "challenger_bodypart", "challenger": "champion_bodypart"}
+    assert resolve_registered_role(
+        "champion_bodypart", registry_path=registry, models_root=models_root
+    ).is_file()
+    assert json.loads(history.read_text())["incumbent_key"] == "fixture"
+    visible = champion_status(registry_path=registry, history_path=history)
+    assert visible["champions"]["champion_bodypart"]["key"] == "challenger"
+    assert len(visible["history"]) == 1
+    cli = CliRunner().invoke(
+        main,
+        ["models", "champions", "--registry", str(registry), "--history", str(history)],
+    )
+    assert cli.exit_code == 0, cli.output
+    assert json.loads(cli.output)["champions"]["champion_bodypart"]["key"] == "challenger"
+    rollback_model_role(record, registry_path=registry)
+    rolled_back = json.loads(registry.read_text())
+    assert {item["key"]: item["role"] for item in rolled_back["models"]} == {
+        "fixture": "champion_bodypart",
+        "challenger": "challenger_bodypart",
+    }
 
 
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):

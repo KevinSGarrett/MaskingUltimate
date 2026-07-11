@@ -19,5 +19,9 @@ jobs:
           pip install ruff pytest
       - name: Ruff lint
         run: ruff check .
+      - name: Assert generated ontology has no drift
+        run: python tools/generate_ontology.py --check
+      - name: Block training merges on ontology-aware flip invariant
+        run: pytest -q tests/test_training_augmentations.py
       - name: Pytest
         run: pytest

@@ -12,7 +12,7 @@ models:
 
 prompts:
   p_part:
-    version: "p-part-v0-doc10"
+    version: "p-part-v1-doc10"
     max_image_long_side: 1024
     retry_on_invalid_json: 1
     allowed_verdicts:
@@ -39,6 +39,21 @@ prompts:
       - problems
       - evidence
       - correction_instruction
+  p_image:
+    version: "p-image-v1-doc10"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    required_keys: [missing, mislabeled, lr_suspect, impossible_claims, notes]
+  p_manifest:
+    version: "p-manifest-v1-doc10"
+    retry_on_invalid_json: 1
+    required_keys: [findings, overall]
+
+routing:
+  quick_pass_min_confidence: 0.7
+  uncertain_has_hints: false
+  machine_instruction_prefix: "MACHINE-GENERATED SUGGESTION: "
+  heatmap_pin_on_auto_vlm_disagreement: true
 
 governance:
   role: "qa_router_only"

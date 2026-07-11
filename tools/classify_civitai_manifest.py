@@ -125,7 +125,9 @@ def build() -> dict[str, Any]:
                 "download_status": (
                     "manual_registered"
                     if record.get("status") == "ManualRegistered"
-                    else "downloaded" if downloaded else "metadata_only"
+                    else "downloaded"
+                    if downloaded
+                    else "metadata_only"
                 ),
                 "metadata_only_disposition": disposition,
                 "download_action": download_action,

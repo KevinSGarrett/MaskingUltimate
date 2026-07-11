@@ -68,12 +68,12 @@ def test_gpu_lock_distinguishes_absent_active_and_stale(tmp_path: Path) -> None:
     assert check_gpu_lock(lock).status == "PASS"
 
     lock.write_text(json.dumps({"pid": 1234}), encoding="utf-8")
-    with patch("maskfactory.doctor._pid_exists", return_value=True):
+    with patch("maskfactory.gpu.pid_exists", return_value=True):
         assert check_gpu_lock(lock).status == "WARN"
 
     old = time.time() - 8000
     os.utime(lock, (old, old))
-    with patch("maskfactory.doctor._pid_exists", return_value=False):
+    with patch("maskfactory.gpu.pid_exists", return_value=False):
         result = check_gpu_lock(lock)
     assert result.status == "FAIL"
     assert "remove runs/gpu.lock" in result.hint

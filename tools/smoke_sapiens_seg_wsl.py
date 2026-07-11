@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 from pathlib import Path
@@ -19,26 +20,36 @@ STD = torch.tensor([58.5, 57.0, 57.5]).view(3, 1, 1)
 EXPECTED_CLASSES = 28
 
 
-def run(checkpoint: Path, image_path: Path) -> dict[str, object]:
+def infer(checkpoint: Path, image_path: Path, *, use_bf16: bool = False) -> np.ndarray:
     device = torch.device("cuda")
     model = torch.jit.load(str(checkpoint), map_location=device).eval()
     image = Image.open(image_path).convert("RGB").resize((INPUT_WIDTH, INPUT_HEIGHT))
     array = np.asarray(image, dtype=np.float32).copy()
     tensor = torch.from_numpy(array).permute(2, 0, 1)
     tensor = ((tensor - MEAN) / STD).unsqueeze(0).to(device)
-    with torch.inference_mode():
+    autocast = (
+        torch.autocast("cuda", dtype=torch.bfloat16) if use_bf16 else contextlib.nullcontext()
+    )
+    with torch.inference_mode(), autocast:
         output = model(tensor)
     logits = output[0] if isinstance(output, (tuple, list)) else output
     if logits.ndim != 4 or logits.shape[0] != 1 or logits.shape[1] != EXPECTED_CLASSES:
-        return {
-            "passed": False,
-            "output_sha256": "",
-            "reason": f"unexpected logits shape {list(logits.shape)}",
-        }
+        raise ValueError(f"unexpected logits shape {list(logits.shape)}")
     logits = functional.interpolate(
         logits.float(), size=(INPUT_HEIGHT, INPUT_WIDTH), mode="bilinear", align_corners=False
     )
-    labels = logits.argmax(dim=1)[0].to(torch.uint8).cpu().numpy()
+    probabilities = logits.softmax(dim=1)[0].cpu().numpy().astype(np.float32)
+    del tensor, logits, output, model
+    torch.cuda.empty_cache()
+    return probabilities
+
+
+def run(checkpoint: Path, image_path: Path) -> dict[str, object]:
+    try:
+        probabilities = infer(checkpoint, image_path)
+    except ValueError as exc:
+        return {"passed": False, "output_sha256": "", "reason": str(exc)}
+    labels = probabilities.argmax(axis=0).astype(np.uint8)
     unique_labels = sorted(int(value) for value in np.unique(labels))
     output_hash = hashlib.sha256(labels.tobytes()).hexdigest()
     foreground_fraction = float((labels != 0).mean())
@@ -46,7 +57,7 @@ def run(checkpoint: Path, image_path: Path) -> dict[str, object]:
     return {
         "passed": passed,
         "output_sha256": output_hash if passed else "",
-        "logits_shape": list(logits.shape),
+        "logits_shape": [1, EXPECTED_CLASSES, INPUT_HEIGHT, INPUT_WIDTH],
         "label_map_shape": list(labels.shape),
         "unique_labels": unique_labels,
         "foreground_fraction": round(foreground_fraction, 6),

@@ -25,7 +25,7 @@ def test_p_part_contract_matches_doc10_shape() -> None:
     config = yaml.safe_load((ROOT / "configs" / "vlm.yaml").read_text(encoding="utf-8"))
     p_part = config["prompts"]["p_part"]
 
-    assert p_part["version"] == "p-part-v0-doc10"
+    assert p_part["version"] == "p-part-v1-doc10"
     assert p_part["max_image_long_side"] == 1024
     assert p_part["retry_on_invalid_json"] == 1
     assert p_part["allowed_verdicts"] == ["pass", "fail", "uncertain"]

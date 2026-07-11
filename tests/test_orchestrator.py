@@ -183,6 +183,23 @@ def test_transient_failure_retries_exactly_twice_with_backoff(tmp_path: Path) ->
     assert delays == [1.0, 2.0]
 
 
+def test_pipeline_holds_and_releases_configured_gpu_lock(tmp_path: Path) -> None:
+    lock_path = tmp_path / "runs" / "gpu.lock"
+
+    def runner(context):
+        assert lock_path.is_file()
+        return {"ok": True}
+
+    run_pipeline(
+        "img_a3f9c2e17b04",
+        selected=("S02",),
+        work_root=tmp_path / "work",
+        runners={"S02": runner},
+        gpu_lock_path=lock_path,
+    )
+    assert not lock_path.exists()
+
+
 def _batch_database(path: Path, image_ids: tuple[str, ...]) -> None:
     initialize_database(path)
     with writer_connection(path) as connection:

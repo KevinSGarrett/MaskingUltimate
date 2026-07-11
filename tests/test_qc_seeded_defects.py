@@ -1,0 +1,219 @@
+import hashlib
+import json
+import shutil
+from pathlib import Path
+
+import numpy as np
+import pytest
+from PIL import Image
+
+from maskfactory.derive import derive_package
+from maskfactory.fusion.mapbuild import export_binaries
+from maskfactory.io.png_strict import read_mask, write_binary_mask, write_label_map
+from maskfactory.ontology import get_ontology
+from maskfactory.packager import (
+    ApprovalRequiredError,
+    PackageBlockedError,
+    approve_package,
+    verify_packages,
+)
+from maskfactory.qa.checks import run_qc001_010
+from test_manifest_schema import valid_manifest
+
+
+def _refresh_hashes(package: Path) -> None:
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"] = {
+        path.relative_to(package).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in package.rglob("*")
+        if path.is_file() and path.name != "manifest.json"
+    }
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+
+@pytest.fixture
+def clean_package(tmp_path: Path) -> Path:
+    package = tmp_path / "clean"
+    package.mkdir()
+    source = package / "source.png"
+    Image.fromarray(np.zeros((96, 128, 3), dtype=np.uint8)).save(source)
+    part = np.zeros((96, 128), dtype=np.uint16)
+    material = np.zeros((96, 128), dtype=np.uint8)
+    part[20:70, 30:55] = 18
+    material[20:70, 30:55] = 1
+    write_label_map(package / "label_map_part.png", part, bits=16)
+    write_label_map(package / "label_map_material.png", material, bits=8)
+    export_binaries(package)
+    derive_package(package)
+    waist = np.zeros((96, 128), dtype=np.uint8)
+    waist[45:50, 20:100] = 255
+    write_binary_mask(package / "masks_regions" / "waist.png", waist)
+    manifest = valid_manifest()
+    manifest["source"].update(
+        {
+            "source_file": "source.png",
+            "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "source_width": 128,
+            "source_height": 96,
+        }
+    )
+    manifest["parts"] = {
+        label.name: {
+            "mask_type": label.mask_type,
+            "visibility": label.visibility_default,
+            "mask_file": None,
+            "status": "n/a",
+        }
+        for label in get_ontology().labels
+        if label.enabled and label.map != "material"
+    }
+    manifest["files"] = {}
+    (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    _refresh_hashes(package)
+    results = run_qc001_010(package)
+    assert all(result.passed for result in results), results
+    return package
+
+
+def _seed(package: Path, qc_id: str) -> None:
+    waist = package / "masks_regions" / "waist.png"
+    if qc_id == "QC-001":
+        write_binary_mask(waist, np.zeros((95, 128), dtype=np.uint8))
+    elif qc_id == "QC-002":
+        array = read_mask(waist)
+        array[0, 0] = 128
+        Image.fromarray(array, mode="L").save(waist)
+    elif qc_id == "QC-003":
+        array = read_mask(waist)
+        palette = Image.frombytes("P", (array.shape[1], array.shape[0]), array.tobytes())
+        palette.putpalette([value for index in range(256) for value in (index, index, index)])
+        palette.save(waist)
+    elif qc_id == "QC-004":
+        write_binary_mask(package / "masks_regions" / "invented_label.png", read_mask(waist))
+    elif qc_id == "QC-005":
+        path = package / "manifest.json"
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        del manifest["tooling"]
+        path.write_text(json.dumps(manifest), encoding="utf-8")
+    elif qc_id == "QC-006":
+        with (package / "source.png").open("ab") as handle:
+            handle.write(b"hash-defect")
+    elif qc_id == "QC-007":
+        path = package / "masks" / "left_forearm.png"
+        array = read_mask(path)
+        array[0, 0] = 255
+        write_binary_mask(path, array)
+    elif qc_id == "QC-008":
+        path = package / "manifest.json"
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        del manifest["parts"]["left_forearm"]
+        path.write_text(json.dumps(manifest), encoding="utf-8")
+    elif qc_id == "QC-009":
+        path = package / "masks_derived" / "left_hand.png"
+        array = read_mask(path)
+        array[0, 0] = 255
+        write_binary_mask(path, array)
+    elif qc_id == "QC-010":
+        path = package / "crops" / "crop_to_full_transform.json"
+        path.parent.mkdir()
+        path.write_text(
+            json.dumps(
+                {
+                    "part": "left_forearm",
+                    "x0": 120,
+                    "y0": 90,
+                    "scale": 1.0,
+                    "crop_size": 64,
+                    "source_sha256": "a" * 64,
+                }
+            ),
+            encoding="utf-8",
+        )
+    else:
+        raise AssertionError(qc_id)
+    if qc_id not in {"QC-005", "QC-006", "QC-008"}:
+        _refresh_hashes(package)
+
+
+@pytest.mark.parametrize("qc_id", [f"QC-{number:03d}" for number in range(1, 11)])
+def test_each_seeded_defect_trips_exactly_its_qc(
+    clean_package: Path, tmp_path: Path, qc_id: str
+) -> None:
+    package = tmp_path / qc_id
+    shutil.copytree(clean_package, package)
+    _seed(package, qc_id)
+    results = run_qc001_010(package)
+    failed = [result.qc_id for result in results if not result.passed]
+    assert failed == [qc_id], results
+
+
+def test_human_approval_cannot_override_block(clean_package: Path, tmp_path: Path) -> None:
+    package = tmp_path / "blocked"
+    shutil.copytree(clean_package, package)
+    _seed(package, "QC-002")
+    dvc_calls = []
+    with pytest.raises(PackageBlockedError, match="QC-002"):
+        approve_package(
+            package,
+            reviewer="kevin",
+            review_minutes=12,
+            approved=True,
+            dvc_add=dvc_calls.append,
+        )
+    assert dvc_calls == []
+    assert not (package / ".maskfactory_frozen.json").exists()
+    manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["qa"]["qa_overall"] == "fail"
+
+
+def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
+    clean_package: Path, tmp_path: Path
+) -> None:
+    package = tmp_path / "approved"
+    shutil.copytree(clean_package, package)
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["parts"]["left_forearm"]["status"] = "human_corrected"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ApprovalRequiredError):
+        approve_package(
+            package,
+            reviewer="kevin",
+            review_minutes=12,
+            approved=False,
+            dvc_add=lambda _path: None,
+        )
+    dvc_calls = []
+    result = approve_package(
+        package,
+        reviewer="kevin",
+        review_minutes=12,
+        approved=True,
+        dvc_add=dvc_calls.append,
+    )
+    assert result.passed
+    assert dvc_calls == [package]
+    assert (package / ".maskfactory_frozen.json").is_file()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["parts"]["left_forearm"]["status"] == "human_approved_gold"
+    assert manifest["review"]["reviewer"] == "kevin"
+    assert manifest["review"]["review_time_sec"] == 720
+    assert manifest["qa"]["qa_overall"] == "pass"
+    assert {record["label"] for record in manifest["inpaint_derivatives"]} == {
+        "left_hand",
+        "right_hand",
+        "left_foot",
+        "right_foot",
+        "hair",
+        "both_breasts",
+        "abdomen_full",
+    }
+    assert (package / "overlays/all_parts.png").is_file()
+    assert (package / "qa_panels/left_forearm.png").is_file()
+    assert verify_packages(package)[0].passed
+    sample_root = tmp_path / "sample_root"
+    shutil.copytree(package, sample_root / "approved_first")
+    shutil.copytree(package, sample_root / "approved_second")
+    sampled = verify_packages(sample_root, sample=1)
+    assert len(sampled) == 1 and sampled[0].passed

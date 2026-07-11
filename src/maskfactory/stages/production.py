@@ -1,0 +1,779 @@
+"""Production file-contract runners for the implemented early pipeline stages."""
+
+from __future__ import annotations
+
+import json
+import shutil
+from collections.abc import Mapping
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import yaml
+from PIL import Image
+
+from ..cvat_bridge.client import CvatClient
+from ..cvat_bridge.push import push_images
+from ..datasets.active_learning import run_active_learning
+from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
+from ..io.png_strict import write_binary_mask
+from ..orchestrator import (
+    SemanticStageError,
+    StageContext,
+    StageExecution,
+    StageRunner,
+    run_pipeline,
+)
+from ..packager import verify_packages
+from ..qa.production import run_s10_production
+from ..review_package import assemble_review_package
+from ..vlm.production import run_s11_production
+from .s01_person_detection import run_s01
+from .s02_silhouette import run_s02
+from .s03_parsing import run_s03_production, suppress_co_subject_parsing
+from .s04_pose import run_s04_production
+from .s05_geometry import run_s05_production
+from .s06_openvocab import run_s06_production
+from .s07_sam2 import WslSam2Provider, run_s07_production
+from .s08_5_densepose import WslDensePoseProvider, run_densepose
+from .s08_material import run_s08_production
+from .s09_5_instance_recon import ReconciliationInstance, reconcile_instances
+from .s09_fusion import run_s09_production
+
+ROOT = Path(__file__).resolve().parents[3]
+
+
+@dataclass(frozen=True)
+class MultiPersonProductionResult:
+    shared: tuple[StageExecution, ...]
+    per_instance: dict[str, tuple[StageExecution, ...]]
+    image_manifest_path: Path
+    qc035_passed: bool
+
+
+def build_production_runners(
+    config: Mapping[str, Any],
+    *,
+    images_root: Path = ROOT / "data" / "images",
+    person_index: int = 0,
+    shared_work_root: Path | None = None,
+) -> dict[str, StageRunner]:
+    """Return production runners scoped to one promoted person (p0 by default)."""
+    if person_index < 0:
+        raise ValueError("person_index must be non-negative")
+    images_root = Path(images_root)
+    instance_name = f"p{person_index}"
+    parsing_map = config.get("parsing_map", {})
+    pose_rules = config.get("pose_tags_rules", {})
+    prompting = yaml.safe_load((ROOT / "configs" / "prompting.yaml").read_text(encoding="utf-8"))
+
+    def prior(context: StageContext, stage_name: str) -> Path:
+        if stage_name == "S01" and shared_work_root is not None:
+            return Path(shared_work_root) / "s01" / context.image_id
+        return context.prior_stage_dir(stage_name)
+
+    def selected_person(document: Mapping[str, Any]) -> Mapping[str, Any]:
+        person = next(
+            (item for item in document["persons"] if item["person_index"] == person_index),
+            None,
+        )
+        if person is None:
+            raise SemanticStageError(f"promoted person_index={person_index} unavailable")
+        return person
+
+    def s00(context: StageContext) -> Mapping[str, Any]:
+        manifest, source_path = _source(context.image_id, images_root)
+        if manifest.get("status") != "ingested":
+            raise SemanticStageError(
+                f"S00 requires ingested source, got {manifest.get('status')!r}"
+            )
+        return {
+            "source_file": str(source_path),
+            "source_sha256": manifest["source"]["source_sha256"],
+            "source_width": manifest["source"]["source_width"],
+            "source_height": manifest["source"]["source_height"],
+        }
+
+    def s01(context: StageContext) -> Mapping[str, Any]:
+        _, source_path = _source(context.image_id, images_root)
+        settings = context.config["stage"]
+        result = run_s01(
+            source_path,
+            context.output_dir,
+            checkpoint=ROOT / "models" / "detect" / "yolo11m.pt",
+            confidence_min=float(settings.get("confidence", 0.5)),
+            device="cpu",
+            instance_min_area_pct=float(settings.get("instance_min_area_pct", 0.04)),
+            max_instances_per_image=int(settings.get("max_instances_per_image", 4)),
+            crowd_scene_threshold=int(settings.get("crowd_scene_threshold", 8)),
+            context_scale=float(settings.get("context_scale", 1.25)),
+        )
+        if result.outcome != "promoted":
+            raise SemanticStageError(f"S01 {result.outcome}: {result.reason}")
+        return {
+            "outcome": result.outcome,
+            "promoted_instances": sum(person.promoted for person in result.persons),
+            "background_people": sum(person.protected_as_part_50 for person in result.persons),
+            "_telemetry": {"model_keys": ["yolo11m"]},
+        }
+
+    def s02(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        document = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(document)
+        manifest, _ = _source(context.image_id, images_root)
+        result = run_s02(
+            s01_dir / instance_name / "person_ctx.png",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+            full_size=(manifest["source"]["source_width"], manifest["source"]["source_height"]),
+            output_dir=context.output_dir,
+            checkpoint=ROOT / "models" / "silhouette" / "BiRefNet-general.safetensors",
+        )
+        if not result.qc_passed:
+            raise SemanticStageError(
+                f"S02 silhouette/bbox ratio {result.silhouette_bbox_ratio:.4f} outside configured range"
+            )
+        return {
+            "silhouette_bbox_ratio": result.silhouette_bbox_ratio,
+            "qc_passed": True,
+            "_telemetry": {"model_keys": ["birefnet_general"]},
+        }
+
+    def s03(context: StageContext) -> Mapping[str, Any]:
+        crop = prior(context, "S01") / instance_name / "person_ctx.png"
+        result = run_s03_production(
+            crop,
+            sapiens_checkpoint=ROOT / "models" / "parsing" / "sapiens_0.6b_seg.pt2",
+            schp_checkpoint=ROOT / "models" / "parsing_fallback" / "exp-schp-201908301523-atr.pth",
+            sapiens_map=parsing_map["sapiens_28"],
+            schp_map=parsing_map["schp_atr"],
+            output_dir=context.output_dir,
+        )
+        protection_path = context.prior_stage_dir("S02") / "other_person_protected.png"
+        suppression = {"suppressed_px": 0, "ambiguous_px": 0, "careful_review": False}
+        if protection_path.is_file():
+            suppression = suppress_co_subject_parsing(
+                context.output_dir,
+                other_person_protected_full=np.asarray(Image.open(protection_path).convert("L")),
+                target_silhouette_full=np.asarray(
+                    Image.open(context.prior_stage_dir("S02") / "silhouette.png").convert("L")
+                ),
+                context_bbox_xyxy=tuple(
+                    selected_person(
+                        json.loads(
+                            (prior(context, "S01") / "person_bbox.json").read_text(encoding="utf-8")
+                        )
+                    )["context_bbox_xyxy"]
+                ),
+            )
+        return {
+            "parsing_degraded": result.parsing_degraded or suppression["careful_review"],
+            "sapiens_scale": result.sapiens_scale,
+            "co_subject_suppressed_px": suppression["suppressed_px"],
+            "co_subject_ambiguous_px": suppression["ambiguous_px"],
+            "careful_review": suppression["careful_review"],
+            "_telemetry": {"model_keys": ["sapiens_0_6b_seg", "schp_atr"]},
+        }
+
+    def s04(context: StageContext) -> Mapping[str, Any]:
+        _, source_path = _source(context.image_id, images_root)
+        people = json.loads(
+            (prior(context, "S01") / "person_bbox.json").read_text(encoding="utf-8")
+        )
+        person = selected_person(people)
+        promoted_bboxes = {
+            int(item["person_index"]): tuple(item["bbox_xyxy"])
+            for item in people["persons"]
+            if item.get("promoted") and item.get("person_index") is not None
+        }
+        result = run_s04_production(
+            source_path,
+            instance_bbox_xyxy=tuple(person["bbox_xyxy"]),
+            detector_checkpoint=ROOT / "models" / "pose" / "yolox_l.onnx",
+            pose_checkpoint=ROOT / "models" / "pose" / "dw-ll_ucoco_384.onnx",
+            output_dir=context.output_dir,
+            pose_tag_rules=pose_rules,
+            require_cuda=True,
+            promoted_instance_bboxes=promoted_bboxes,
+            person_index=person_index,
+        )
+        return {
+            "view": result.view,
+            "pose_tags": list(result.pose_tags),
+            "pose_degraded": result.pose_degraded,
+            "_telemetry": {"model_keys": ["dwpose_yolox_l", "dwpose_133"]},
+        }
+
+    def s05(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
+        s03_dir = context.prior_stage_dir("S03")
+        parsing_path = s03_dir / "sapiens_28.png"
+        parser_map = parsing_map["sapiens_28"]
+        if not parsing_path.is_file():
+            parsing_path = s03_dir / "schp_atr.png"
+            parser_map = parsing_map["schp_atr"]
+        priors, plans, crops = run_s05_production(
+            parsing_path=parsing_path,
+            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            parsing_map=parser_map,
+            output_dir=context.output_dir,
+        )
+        if not priors:
+            raise SemanticStageError("S05 produced no non-empty geometry priors")
+        return {
+            "prior_count": len(priors),
+            "prompt_count": len(plans),
+            "crop_request_count": len(crops),
+        }
+
+    def s06(context: StageContext) -> Mapping[str, Any]:
+        gdino = prompting["grounding_dino"]
+        path = run_s06_production(
+            prior(context, "S01") / instance_name / "person_ctx.png",
+            context.output_dir,
+            checkpoint=ROOT / "models" / "gdino" / "groundingdino_swint_ogc.pth",
+            prompts=tuple(gdino["prompts"]),
+            box_threshold=float(gdino["box_threshold"]),
+            text_threshold=float(gdino["text_threshold"]),
+        )
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if document["authority"] != "proposal_boxes_only" or document["may_write_final_masks"]:
+            raise SemanticStageError("S06 proposal-only authority boundary violated")
+        return {
+            "proposal_count": len(document["proposals"]),
+            "authority": document["authority"],
+            "_telemetry": {"model_keys": ["groundingdino_swint_ogc"]},
+        }
+
+    def s07(context: StageContext) -> Mapping[str, Any]:
+        settings = context.config["stage"]
+        model_aliases = {
+            "sam2_1_large": "sam2.1_hiera_large",
+            "sam2_1_base_plus": "sam2.1_hiera_base_plus",
+        }
+        primary = model_aliases[settings["primary_model"]]
+        fallback = model_aliases[settings["oom_fallback"]]
+        provider = WslSam2Provider(
+            checkpoints={
+                "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
+                "sam2.1_hiera_base_plus": ROOT / "models/sam2/sam2.1_hiera_base_plus.pt",
+            },
+            configs={
+                "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
+                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+            },
+            work_dir=context.output_dir / "provider_work",
+        )
+        results, model = run_s07_production(
+            prior(context, "S01") / instance_name / "person_ctx.png",
+            context.prior_stage_dir("S05") / "prompts.json",
+            context.prior_stage_dir("S05"),
+            context.output_dir,
+            provider=provider,
+            primary_model=primary,
+            fallback_model=fallback,
+        )
+        return {
+            "refined_part_count": len(results),
+            "low_confidence_count": sum(result.sam2_low_conf for result in results.values()),
+            "embedding_count": 1,
+            "model": model,
+            "_telemetry": {"model_keys": [model]},
+        }
+
+    def s08(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
+        s03_dir = context.prior_stage_dir("S03")
+        sapiens_path = s03_dir / "sapiens_28.png"
+        provider = WslSam2Provider(
+            checkpoints={
+                "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
+                "sam2.1_hiera_base_plus": ROOT / "models/sam2/sam2.1_hiera_base_plus.pt",
+            },
+            configs={
+                "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
+                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+            },
+            work_dir=context.output_dir / "provider_work",
+        )
+        draft = run_s08_production(
+            source_path=s01_dir / instance_name / "person_ctx.png",
+            sapiens_path=sapiens_path if sapiens_path.is_file() else None,
+            schp_path=s03_dir / "schp_atr.png",
+            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            gdino_path=context.prior_stage_dir("S06") / "gdino_boxes.json",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            sapiens_map=parsing_map["sapiens_28"],
+            schp_map=parsing_map["schp_atr"],
+            output_dir=context.output_dir,
+            provider=provider,
+        )
+        return {
+            "material_region_count": sum(mask.any() for mask in draft.regions.values()),
+            "assigned_pixel_count": int((draft.material_map > 0).sum()),
+        }
+
+    def s08_5(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        crop_path = s01_dir / instance_name / "person_ctx.png"
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
+        context_box = person["context_bbox_xyxy"]
+        box = person["bbox_xyxy"]
+        crop_box = (
+            box[0] - context_box[0],
+            box[1] - context_box[1],
+            box[2] - context_box[0],
+            box[3] - context_box[1],
+        )
+        provider = WslDensePoseProvider(
+            checkpoint=ROOT / "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl",
+            config_path=(
+                "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/"
+                "densepose_rcnn_R_50_FPN_s1x.yaml"
+            ),
+            image_path=crop_path,
+            target_bbox_xyxy=crop_box,
+            work_dir=context.output_dir / "provider_work",
+        )
+        image = np.asarray(Image.open(crop_path).convert("RGB"))
+        path = run_densepose(provider, image, context.output_dir)
+        with Image.open(path) as opened:
+            iuv = np.asarray(opened).copy()
+        return {
+            "densepose_surface_pixel_count": int((iuv[:, :, 0] > 0).sum()),
+            "iuv_shape": list(iuv.shape[:2]),
+            "_telemetry": {"model_keys": ["densepose_rcnn_R_50_FPN_s1x"]},
+        }
+
+    def s09(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
+        fusion = config["fusion"]
+        result = run_s09_production(
+            s03_dir=context.prior_stage_dir("S03"),
+            s05_dir=context.prior_stage_dir("S05"),
+            s07_dir=context.prior_stage_dir("S07"),
+            s08_material_path=context.prior_stage_dir("S08") / "material_draft.png",
+            s08_5_iuv_path=context.prior_stage_dir("S08.5") / "densepose_iuv.png",
+            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            parsing_maps=parsing_map,
+            weights=fusion["weights"],
+            output_dir=context.output_dir,
+            other_person_protected_path=(
+                context.prior_stage_dir("S02") / "other_person_protected.png"
+            ),
+        )
+        return {
+            "part_count": len(result.consensus_scores),
+            "review_route_counts": {
+                route: list(result.review_routes.values()).count(route)
+                for route in sorted(set(result.review_routes.values()))
+            },
+            "occlusion_count": len(result.occlusions),
+            "artifact_sha256": result.artifact_sha256,
+        }
+
+    def s09_5(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        promoted = [item for item in people["persons"] if item["promoted"]]
+        if len(promoted) != 1:
+            raise SemanticStageError(
+                "S09.5 requires the per-instance outer loop before reconciling multiple promoted people"
+            )
+        manifest, _ = _source(context.image_id, images_root)
+        person = promoted[0]
+        silhouette = (
+            np.asarray(Image.open(context.prior_stage_dir("S02") / "silhouette.png").convert("L"))
+            > 0
+        )
+        result = reconcile_instances(
+            image_id=context.image_id,
+            source_file=manifest["source"]["source_file"],
+            instances=(
+                ReconciliationInstance(
+                    instance_name,
+                    silhouette,
+                    tuple(person["context_bbox_xyxy"]),
+                    context.prior_stage_dir("S09"),
+                ),
+            ),
+            output_dir=context.output_dir,
+            background_person_count=sum(item["protected_as_part_50"] for item in people["persons"]),
+            crowd_scene=False,
+        )
+        return {
+            "promoted_instance_count": 1,
+            "maximum_pair_iou": result.maximum_pair_iou,
+            "qc035_passed": result.qc035_passed,
+            "relationship_count": len(result.relationships),
+        }
+
+    def s10(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
+        s09_dir = context.prior_stage_dir("S09")
+        report = run_s10_production(
+            image_id=context.image_id,
+            part_map_path=s09_dir / "label_map_part.png",
+            material_map_path=s09_dir / "label_map_material.png",
+            disagreement_path=s09_dir / "work/s09/disagreement.png",
+            silhouette_path=context.prior_stage_dir("S02") / "silhouette.png",
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            parsing_metrics_path=context.prior_stage_dir("S03") / "parsing_metrics.json",
+            sam2_metrics_path=context.prior_stage_dir("S07") / "sam2_metrics.json",
+            densepose_path=context.prior_stage_dir("S08.5") / "densepose_iuv.png",
+            image_manifest_path=context.prior_stage_dir("S09.5") / "image_manifest.json",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+            source_crop_path=s01_dir / instance_name / "person_ctx.png",
+            output_dir=context.output_dir,
+        )
+        return {
+            "overall": report["overall"],
+            "score": report["score"],
+            "failed_block_count": sum(
+                check["result"] == "fail" and check.get("severity") == "BLOCK"
+                for check in report["checks"]
+            ),
+            "route_count": sum(check["result"] == "route" for check in report["checks"]),
+        }
+
+    def s11(context: StageContext) -> Mapping[str, Any]:
+        status = run_s11_production(
+            source_crop_path=prior(context, "S01") / instance_name / "person_ctx.png",
+            part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
+            s10_report_path=context.prior_stage_dir("S10") / "qa_report.json",
+            output_dir=context.output_dir,
+            gate_path=ROOT / "qa/vlm_eval/results/production_gate.json",
+        )
+        return {
+            "vlm_enabled": status["enabled"],
+            "reviewed_part_count": len(status["routes"]),
+            "careful_route_count": sum(
+                route["queue"] == "careful" for route in status["routes"].values()
+            ),
+            "whole_image_review": status["whole_image_review"],
+        }
+
+    def s12(context: StageContext) -> Mapping[str, Any]:
+        manifest, _ = _source(context.image_id, images_root)
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        promoted = [item for item in people["persons"] if item["promoted"]]
+        if len(promoted) != 1:
+            raise SemanticStageError(
+                "S12 multi-person package push requires the per-instance outer loop"
+            )
+        person = selected_person(people)
+        package_root = ROOT / "data/packages" / context.image_id / "instances" / instance_name
+        assemble_review_package(
+            image_id=context.image_id,
+            instance_index=person_index,
+            source_crop_path=s01_dir / instance_name / "person_ctx.png",
+            part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
+            material_map_path=context.prior_stage_dir("S09") / "label_map_material.png",
+            s09_dir=context.prior_stage_dir("S09"),
+            s11_dir=context.prior_stage_dir("S11"),
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            person_count=len(people["persons"]),
+            intake_source=manifest["source"],
+            package_root=package_root,
+            ambiguity_path=context.prior_stage_dir("S03") / "ambiguous_do_not_use.png",
+        )
+        task_ids = push_images(
+            CvatClient.from_config(ROOT / "configs/cvat.yaml"),
+            (context.image_id,),
+            config_path=ROOT / "configs/cvat.yaml",
+            packages_root=ROOT / "data/packages",
+            task_records=ROOT / "data/cvat/tasks",
+        )
+        return {
+            "package_root": str(package_root),
+            "cvat_task_ids": list(task_ids),
+            "manual_review_status": "pending_kevin_correction_and_approval",
+            "human_approved": False,
+        }
+
+    def s13(context: StageContext) -> Mapping[str, Any]:
+        package_root = ROOT / "data/packages" / context.image_id / "instances" / instance_name
+        manifest_path = package_root / "manifest.json"
+        if not manifest_path.is_file():
+            raise SemanticStageError("S13 draft package is missing; S12 handoff did not complete")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        frozen = (package_root / ".maskfactory_frozen.json").is_file()
+        statuses = {
+            entry.get("status")
+            for entry in manifest["parts"].values()
+            if entry.get("status") != "n/a"
+        }
+        if not frozen:
+            handoff = {
+                "status": "needs_kevin_approval",
+                "reason": "S13 requires explicit human confirmation after CVAT correction",
+                "command": (
+                    f"maskfactory package {context.image_id} --reviewer kevin --minutes <minutes>"
+                ),
+                "current_part_statuses": sorted(statuses),
+            }
+            context.output_dir.mkdir(parents=True, exist_ok=True)
+            (context.output_dir / "approval_handoff.json").write_text(
+                json.dumps(handoff, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            return {
+                "gold_exported": False,
+                "status": "needs_kevin_approval",
+                "package_root": str(package_root),
+            }
+        verification = verify_packages(package_root)[0]
+        if not verification.passed or statuses != {"human_approved_gold"}:
+            raise SemanticStageError(
+                "S13 frozen package failed verification or contains non-gold visible parts"
+            )
+        return {
+            "gold_exported": True,
+            "status": "approved_gold",
+            "package_root": str(package_root),
+            "verified_check_count": len(verification.results),
+        }
+
+    def s14(context: StageContext) -> Mapping[str, Any]:
+        packages_root = ROOT / "data/packages"
+        count = approved_package_count(packages_root)
+        if count < 200:
+            gate = {
+                "status": "entry_gate_not_met",
+                "approved_gold_instances": count,
+                "required_approved_gold_instances": 200,
+                "dataset_built": False,
+            }
+            context.output_dir.mkdir(parents=True, exist_ok=True)
+            (context.output_dir / "dataset_gate.json").write_text(
+                json.dumps(gate, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            return gate
+        version = next_dataset_version(ROOT / "datasets")
+        path = build_dataset(
+            packages_root=packages_root,
+            output_root=ROOT / "datasets",
+            version=version,
+            hard_case_file=ROOT / "datasets/hard_case_holdout.txt",
+        )
+        shutil.copy2(path / "coverage_matrix.json", ROOT / "qa/coverage_matrix.json")
+        return {
+            "status": "dataset_built_pending_dvc_publish",
+            "approved_gold_instances": count,
+            "dataset_built": True,
+            "dataset_ref": path.name,
+        }
+
+    def s15(context: StageContext) -> Mapping[str, Any]:
+        count = approved_package_count(ROOT / "data/packages")
+        result = run_active_learning(
+            failure_queue_path=ROOT / "qa/failure_queue.jsonl",
+            coverage_matrix_path=ROOT / "qa/coverage_matrix.json",
+            output_dir=ROOT / "qa/reports",
+            approved_gold_count=count,
+        )
+        return {
+            "unresolved_failure_count": result["unresolved_failure_count"],
+            "coverage_deficit_count": result["coverage_deficit_count"],
+            "retrain_requested": result["retrain_requested"],
+            "acquisition_plan": result["acquisition_plan"],
+        }
+
+    return {
+        "S00": s00,
+        "S01": s01,
+        "S02": s02,
+        "S03": s03,
+        "S04": s04,
+        "S05": s05,
+        "S06": s06,
+        "S07": s07,
+        "S08": s08,
+        "S08.5": s08_5,
+        "S09": s09,
+        "S09.5": s09_5,
+        "S10": s10,
+        "S11": s11,
+        "S12": s12,
+        "S13": s13,
+        "S14": s14,
+        "S15": s15,
+    }
+
+
+def run_multi_person_production(
+    image_id: str,
+    *,
+    config: Mapping[str, Any],
+    images_root: Path = ROOT / "data/images",
+    work_root: Path = ROOT / "work",
+    pipeline_runner=run_pipeline,
+    runner_factory=build_production_runners,
+) -> MultiPersonProductionResult:
+    """Run S00/S01 once, S02-S09 for every promoted pN, then reconcile once."""
+    work_root = Path(work_root)
+    shared_runners = runner_factory(config, images_root=images_root)
+    shared = pipeline_runner(
+        image_id,
+        selected=("S00", "S01"),
+        config=config,
+        work_root=work_root,
+        runners=shared_runners,
+    )
+    s01_dir = work_root / "s01" / image_id
+    people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+    promoted = sorted(
+        (item for item in people["persons"] if item["promoted"]),
+        key=lambda item: item["person_index"],
+    )
+    if not promoted or [item["person_index"] for item in promoted] != list(range(len(promoted))):
+        raise SemanticStageError("S01 promoted person indices must be contiguous from p0")
+    per_instance: dict[str, tuple[StageExecution, ...]] = {}
+    scoped_runners = {}
+    for person in promoted:
+        index = int(person["person_index"])
+        name = f"p{index}"
+        instance_root = work_root / "instances" / name
+        runners = runner_factory(
+            config,
+            images_root=images_root,
+            person_index=index,
+            shared_work_root=work_root,
+        )
+        scoped_runners[name] = runners
+        per_instance[name] = tuple(
+            pipeline_runner(
+                image_id,
+                selected=("S02",),
+                config=config,
+                work_root=instance_root,
+                runners=runners,
+            )
+        )
+    _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
+    downstream = ("S03", "S04", "S05", "S06", "S07", "S08", "S08.5", "S09")
+    for person in promoted:
+        name = f"p{person['person_index']}"
+        instance_root = work_root / "instances" / name
+        remainder = pipeline_runner(
+            image_id,
+            selected=downstream,
+            config=config,
+            work_root=instance_root,
+            runners=scoped_runners[name],
+        )
+        per_instance[name] = (*per_instance[name], *tuple(remainder))
+    manifest, _ = _source(image_id, Path(images_root))
+    recon_inputs = tuple(
+        ReconciliationInstance(
+            f"p{person['person_index']}",
+            np.asarray(
+                Image.open(
+                    work_root
+                    / "instances"
+                    / f"p{person['person_index']}"
+                    / "s02"
+                    / image_id
+                    / "silhouette.png"
+                ).convert("L")
+            )
+            > 0,
+            tuple(person["context_bbox_xyxy"]),
+            work_root / "instances" / f"p{person['person_index']}" / "s09" / image_id,
+        )
+        for person in promoted
+    )
+    recon_dir = work_root / "s09_5" / image_id
+    reconciliation = reconcile_instances(
+        image_id=image_id,
+        source_file=manifest["source"]["source_file"],
+        instances=recon_inputs,
+        output_dir=recon_dir,
+        background_person_count=sum(item["protected_as_part_50"] for item in people["persons"]),
+        crowd_scene=False,
+    )
+    return MultiPersonProductionResult(
+        tuple(shared),
+        per_instance,
+        reconciliation.image_manifest_path,
+        reconciliation.qc035_passed,
+    )
+
+
+def _inject_other_person_protection(
+    image_id: str,
+    promoted: list[Mapping[str, Any]],
+    all_people: list[Mapping[str, Any]],
+    work_root: Path,
+) -> None:
+    silhouettes = {
+        int(person["person_index"]): np.asarray(
+            Image.open(
+                work_root
+                / "instances"
+                / f"p{person['person_index']}"
+                / "s02"
+                / image_id
+                / "silhouette.png"
+            ).convert("L")
+        )
+        > 0
+        for person in promoted
+    }
+    shape = next(iter(silhouettes.values())).shape
+    for target in promoted:
+        target_index = int(target["person_index"])
+        protected = np.zeros(shape, dtype=bool)
+        for other_index, silhouette in silhouettes.items():
+            if other_index != target_index:
+                protected |= silhouette
+        for person in all_people:
+            if person.get("promoted"):
+                continue
+            left, top, right, bottom = person["bbox_xyxy"]
+            protected[max(0, top) : min(shape[0], bottom), max(0, left) : min(shape[1], right)] = (
+                True
+            )
+        path = (
+            work_root
+            / "instances"
+            / f"p{target_index}"
+            / "s02"
+            / image_id
+            / "other_person_protected.png"
+        )
+        write_binary_mask(path, protected, source_size=(shape[1], shape[0]))
+
+
+def _source(image_id: str, images_root: Path) -> tuple[dict[str, Any], Path]:
+    directory = images_root / image_id
+    manifest_path = directory / "manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        source_path = directory / manifest["source"]["source_file"]
+    except (OSError, KeyError, json.JSONDecodeError) as exc:
+        raise SemanticStageError(
+            f"ingested source manifest unavailable for {image_id}: {exc}"
+        ) from exc
+    if manifest.get("image_id") != image_id or not source_path.is_file():
+        raise SemanticStageError(f"ingested source identity/file invalid for {image_id}")
+    return manifest, source_path

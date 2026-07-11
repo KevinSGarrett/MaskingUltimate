@@ -112,7 +112,8 @@
         },
         "origin_note": { "type": "string" },
         "ingested_at": { "$ref": "#/$defs/timestamp" },
-        "exif_stripped": { "const": true }
+        "exif_stripped": { "const": true },
+        "phash64": { "type": "string", "pattern": "^[a-fA-F0-9]{16}$" }
       }
     },
     "person": {
@@ -213,7 +214,7 @@
       "required": ["mask_type", "visibility", "mask_file", "status"],
       "properties": {
         "mask_type": {
-          "enum": ["atomic_exclusive", "region_band", "derived_union", "projected_amodal"]
+          "enum": ["atomic_exclusive", "protected_qa", "region_band", "derived_union", "projected_amodal"]
         },
         "visibility": { "$ref": "#/$defs/visibility" },
         "basis": { "type": "string", "minLength": 1 },

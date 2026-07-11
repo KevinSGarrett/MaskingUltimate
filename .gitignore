@@ -53,7 +53,13 @@ __pycache__/
 build/
 dist/
 .pytest_cache/
+.pytest*/
+.pytest_*/
 .ruff_cache/
+.black_cache/
+.runtime_tmp/
+.publish_tmp/
+.pt_*/
 .mypy_cache/
 .venv/
 venv/

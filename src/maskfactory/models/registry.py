@@ -481,3 +481,123 @@ def load_registered_model(
         key_or_path, registry_path=registry_path, models_root=models_root
     )
     return loader(path)
+
+
+def resolve_registered_role(
+    role: str,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+) -> Path:
+    """Resolve exactly one verified file-backed model by authoritative runtime role."""
+    registry = _load_registry(registry_path)
+    matches = [
+        item
+        for item in registry["models"]
+        if item.get("role") == role and item.get("managed") is not True
+    ]
+    if len(matches) != 1:
+        raise ModelRegistryError(
+            f"expected exactly one registered model for role {role!r}, found {len(matches)}"
+        )
+    return resolve_registered_model(
+        str(matches[0]["key"]), registry_path=registry_path, models_root=models_root
+    )
+
+
+def promote_model_role(
+    candidate_key: str,
+    role: str,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    history_path: Path | None = None,
+) -> dict[str, Any]:
+    """Atomically swap a verified challenger into a champion role and record rollback data."""
+    if not role.startswith("champion_"):
+        raise ModelRegistryError("promotion target must be a champion_* role")
+    registry = _load_registry(registry_path)
+    candidate = next(
+        (item for item in registry["models"] if item.get("key") == candidate_key), None
+    )
+    if (
+        candidate is None
+        or candidate.get("managed") is True
+        or candidate.get("verified") is not True
+    ):
+        raise ModelRegistryError(
+            f"promotion candidate is not a verified checkpoint: {candidate_key}"
+        )
+    incumbents = [item for item in registry["models"] if item.get("role") == role]
+    if len(incumbents) > 1:
+        raise ModelRegistryError(f"multiple incumbent models already claim {role}")
+    incumbent = incumbents[0] if incumbents else None
+    if incumbent is candidate:
+        raise ModelRegistryError(f"candidate already owns {role}")
+    candidate_previous_role = str(candidate["role"])
+    candidate["role"] = role
+    if incumbent is not None:
+        incumbent["role"] = candidate_previous_role
+    record = {
+        "schema_version": "1.0.0",
+        "candidate_key": candidate_key,
+        "candidate_previous_role": candidate_previous_role,
+        "incumbent_key": incumbent.get("key") if incumbent else None,
+        "champion_role": role,
+    }
+    _atomic_json(registry_path, registry)
+    if history_path is not None:
+        _append_jsonl(Path(history_path), record)
+    return record
+
+
+def rollback_model_role(record: dict[str, Any], *, registry_path: Path = DEFAULT_REGISTRY) -> None:
+    """Reverse exactly one recorded promotion, refusing if roles changed meanwhile."""
+    registry = _load_registry(registry_path)
+    by_key = {str(item["key"]): item for item in registry["models"]}
+    candidate = by_key.get(str(record["candidate_key"]))
+    if candidate is None or candidate.get("role") != record["champion_role"]:
+        raise ModelRegistryError("cannot rollback: candidate no longer owns the recorded role")
+    incumbent_key = record.get("incumbent_key")
+    incumbent = by_key.get(str(incumbent_key)) if incumbent_key else None
+    if incumbent is not None and incumbent.get("role") != record["candidate_previous_role"]:
+        raise ModelRegistryError("cannot rollback: incumbent role changed after promotion")
+    candidate["role"] = record["candidate_previous_role"]
+    if incumbent is not None:
+        incumbent["role"] = record["champion_role"]
+    _atomic_json(registry_path, registry)
+
+
+def champion_status(
+    *, registry_path: Path = DEFAULT_REGISTRY, history_path: Path | None = None
+) -> dict[str, Any]:
+    """Expose current champion pointers and append-only promotion history."""
+    registry = _load_registry(registry_path)
+    champions = {
+        str(item["role"]): {
+            "key": item["key"],
+            "version_tag": item.get("version_tag"),
+            "sha256": item.get("sha256"),
+        }
+        for item in registry["models"]
+        if str(item.get("role", "")).startswith("champion_")
+    }
+    history = []
+    if history_path is not None and Path(history_path).is_file():
+        for number, line in enumerate(
+            Path(history_path).read_text(encoding="utf-8").splitlines(), 1
+        ):
+            if not line.strip():
+                continue
+            try:
+                history.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                raise ModelRegistryError(f"invalid champion history row {number}: {exc}") from exc
+    return {"champions": champions, "history": history}
+
+
+def _append_jsonl(path: Path, document: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(document, sort_keys=True, separators=(",", ":")) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())

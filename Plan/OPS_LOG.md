@@ -899,3 +899,19 @@ crop_transform.schema.json:  part/x0/y0/positive scale/square crop_size/source S
 schema self-checks:           every schema passes Draft202012Validator.check_schema
 focused tests:                12 passed across the five contracts
 ```
+
+## 2026-07-11 00:28 UTC - Schema enforcement and invalid-fixture gate completed
+**Items:** MF-P1-01.07, MF-P1-01.08
+**Result:** PASS - bundled schemas now have one deterministic validation API,
+non-overridable manifest invariants, and pointer-asserted invalid fixtures.
+
+```
+validator API:             validate_document/require_valid_document; validate_manifest/require_valid_manifest
+error contract:            stable ValidationIssue records with RFC 6901 JSON pointers; aggregate ArtifactValidationError
+invariant 1:               every enabled ontology label must exist in manifest.parts
+invariant 2:               non-visible atomic labels must have mask_file=null
+invariant 3:               human_approved_gold requires qa_overall=pass and completed review evidence
+invalid fixtures:          manifest, qa_report, model_registry, failure_queue, coverage_matrix, crop_transform
+pointer assertions:        /image_id, /score, /models/0, /failure_reason, /cells/0/pose, /scale
+focused tests:             13 passed (7 enforcement + 6 invalid-fixture cases)
+```

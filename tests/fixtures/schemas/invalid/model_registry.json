@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "models": [
+    {
+      "key": "ollama_fixture",
+      "role": "local_vlm",
+      "managed": true,
+      "manager": "ollama",
+      "ollama_name": "fixture:latest",
+      "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ollama_list_id": "aaaaaaaaaaaa",
+      "availability_check": "api_tags+ollama_list_digest_match",
+      "family": "fixture",
+      "format": "gguf",
+      "parameter_size": "1B",
+      "quantization": "Q4_K_M",
+      "size": 1,
+      "registered_at": "2026-07-11T00:25:00Z",
+      "verified": false
+    }
+  ]
+}

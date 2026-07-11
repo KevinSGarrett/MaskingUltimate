@@ -11,6 +11,7 @@ from PIL import Image
 from maskfactory.cli import main
 from maskfactory.intake import IntakeResult
 from maskfactory.orchestrator import STAGE_BY_NAME, StageContext, load_pipeline_config, run_pipeline
+from maskfactory.qa.multi_instance import run_multi_instance_qc
 from maskfactory.stages import production
 from maskfactory.stages.s01_person_detection import RankedPerson, S01Result
 from maskfactory.stages.s05_geometry import run_s05_production
@@ -690,6 +691,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     )
     work = tmp_path / "work"
     calls = []
+    pipeline_calls = []
 
     def factory(config, *, images_root, person_index=0, shared_work_root=None):
         calls.append((person_index, shared_work_root))
@@ -697,6 +699,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
 
     def pipeline(image_id_arg, *, selected, work_root, runners, **kwargs):
         assert image_id_arg == image_id
+        pipeline_calls.append((Path(work_root), tuple(selected)))
         if tuple(selected) == ("S00", "S01"):
             s01 = Path(work_root) / "s01" / image_id
             s01.mkdir(parents=True)
@@ -767,6 +770,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
         work_root=work,
         pipeline_runner=pipeline,
         runner_factory=factory,
+        through_autoqa=True,
     )
     assert set(result.per_instance) == {f"p{index}" for index in range(person_count)}
     assert calls[0] == (0, None)
@@ -775,6 +779,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     assert manifest["promoted_instances"] == [f"p{index}" for index in range(person_count)]
     assert result.qc035_passed
     assert len(result.draft_contract_paths) == person_count
+    assert sum(selected == ("S10",) for _, selected in pipeline_calls) == person_count
     for contract_path in result.draft_contract_paths:
         contract = json.loads(contract_path.read_text())
         assert contract["atomic_count"] == 56
@@ -844,6 +849,95 @@ def test_run_through_drafts_exposes_one_command_multi_instance_path(
     assert "p0: 0 stage execution(s) S02-S09" in result.output
     assert "p1: 0 stage execution(s) S02-S09" in result.output
     assert "qc035=True" in result.output
+
+
+def test_run_through_autoqa_extends_each_instance_through_s10(tmp_path: Path, monkeypatch) -> None:
+    manifest = tmp_path / "image_manifest.json"
+    manifest.write_text("{}", encoding="utf-8")
+    calls = []
+
+    def fake_run(*args, **kwargs):
+        calls.append(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=True,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(
+        main,
+        [
+            "run",
+            "img_a3f9c2e17b04",
+            "--through-autoqa",
+            "--work-root",
+            str(tmp_path / "work"),
+            "--images-root",
+            str(tmp_path / "images"),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert calls[0]["through_autoqa"] is True
+    assert "p0: 0 stage execution(s) S02-S10" in result.output
+
+
+def test_multi_instance_s10_inputs_project_maps_and_exclude_other_person(
+    tmp_path: Path,
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    shape = (40, 80)
+    p0_silhouette = np.zeros(shape, dtype=np.uint8)
+    p1_silhouette = np.zeros(shape, dtype=np.uint8)
+    p0_silhouette[5:35, 5:30] = 255
+    p1_silhouette[5:35, 50:75] = 255
+    people = []
+    for index, silhouette in enumerate((p0_silhouette, p1_silhouette)):
+        name = f"p{index}"
+        s02 = work / "instances" / name / "s02" / image_id
+        s09 = work / "instances" / name / "s09" / image_id
+        (s09 / "masks_regions").mkdir(parents=True)
+        s02.mkdir(parents=True)
+        Image.fromarray(silhouette, mode="L").save(s02 / "silhouette.png")
+        part = np.zeros(shape, dtype=np.uint16)
+        part[silhouette > 0] = 18 + index
+        if index == 0:
+            part[p1_silhouette > 0] = 50
+        Image.fromarray(part).save(s09 / "label_map_part.png")
+        band = np.zeros(shape, dtype=np.uint8)
+        band[5:35, 38:42] = 255
+        Image.fromarray(band, mode="L").save(s09 / "masks_regions/interperson_contact_boundary.png")
+        people.append(
+            {
+                "person_index": index,
+                "promoted": True,
+                "context_bbox_xyxy": [0, 0, 80, 40],
+            }
+        )
+    image_manifest = work / "s09_5" / image_id / "image_manifest.json"
+    image_manifest.parent.mkdir(parents=True)
+    image_manifest.write_text(
+        json.dumps(
+            {
+                "promoted_instances": ["p0", "p1"],
+                "interperson_relationships": [{"a": "p0", "b": "p1"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    inputs = production.build_multi_instance_qc_inputs(
+        image_id,
+        people=people,
+        work_root=work,
+        image_manifest_path=image_manifest,
+        configured_cap=4,
+    )
+    results = {item.qc_id: item for item in run_multi_instance_qc(inputs)}
+    assert not inputs.atomic_unions["p0"][p1_silhouette > 0].any()
+    assert all(results[qc].passed for qc in ("QC-035", "QC-036", "QC-037", "QC-038"))
 
 
 def test_d1_materializer_emits_full_resolution_all_56_atomic_contract(

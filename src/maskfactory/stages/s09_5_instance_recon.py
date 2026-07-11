@@ -55,7 +55,15 @@ def reconcile_instances(
         )
     if not 0 <= instance_overlap_max <= 1 or background_person_count < 0:
         raise InstanceReconciliationError("invalid overlap threshold or background count")
+    for item in instances:
+        x1, y1, x2, y2 = item.context_bbox_xyxy
+        if not (0 <= x1 < x2 <= shape[1] and 0 <= y1 < y2 <= shape[0]):
+            raise InstanceReconciliationError(f"invalid context bbox for {item.instance_id}")
+        (Path(item.package_dir) / "masks_regions/interperson_contact_boundary.png").unlink(
+            missing_ok=True
+        )
     relationships: list[dict[str, object]] = []
+    contact_bands = {item.instance_id: np.zeros(shape, dtype=bool) for item in instances}
     maximum_iou = 0.0
     for left_index, a in enumerate(instances):
         a_mask = np.asarray(a.silhouette_full).astype(bool)
@@ -72,22 +80,14 @@ def reconcile_instances(
                 continue
             radius = max(1, round(8 * max(1, shape[1]) / 1024))
             full_band = ndimage.binary_dilation(near, iterations=radius) & union
+            contact_bands[a.instance_id] |= full_band
+            contact_bands[b.instance_id] |= full_band
             files = {}
             for item in (a, b):
-                x1, y1, x2, y2 = item.context_bbox_xyxy
-                if not (0 <= x1 < x2 <= shape[1] and 0 <= y1 < y2 <= shape[0]):
-                    raise InstanceReconciliationError(
-                        f"invalid context bbox for {item.instance_id}"
-                    )
                 relative = (
                     Path("instances")
                     / item.instance_id
                     / "masks_regions/interperson_contact_boundary.png"
-                )
-                write_binary_mask(
-                    Path(item.package_dir) / "masks_regions/interperson_contact_boundary.png",
-                    full_band[y1:y2, x1:x2],
-                    source_size=(x2 - x1, y2 - y1),
                 )
                 files[item.instance_id] = relative.as_posix()
             relationships.append(
@@ -101,6 +101,16 @@ def reconcile_instances(
                     "qc035_passed": iou <= instance_overlap_max,
                 }
             )
+    for item in instances:
+        band = contact_bands[item.instance_id]
+        if not band.any():
+            continue
+        x1, y1, x2, y2 = item.context_bbox_xyxy
+        write_binary_mask(
+            Path(item.package_dir) / "masks_regions/interperson_contact_boundary.png",
+            band[y1:y2, x1:x2],
+            source_size=(x2 - x1, y2 - y1),
+        )
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     document = {

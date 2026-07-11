@@ -81,3 +81,36 @@ def test_genuine_edge_contact_passes_overlap_gate_and_injects_reciprocal_bands(
     assert first.any() and second.any()
     assert result.relationships[0]["contact_band_file_a"].startswith("instances/p0/")
     assert result.relationships[0]["contact_band_file_b"].startswith("instances/p1/")
+
+
+def test_three_person_middle_instance_contact_band_accumulates_both_neighbors(
+    tmp_path: Path,
+) -> None:
+    shape = (40, 90)
+    masks = []
+    for left, right in ((5, 30), (30, 60), (60, 85)):
+        mask = np.zeros(shape, dtype=bool)
+        mask[8:32, left:right] = True
+        masks.append(mask)
+    boxes = ((0, 0, 45, 40), (20, 0, 70, 40), (45, 0, 90, 40))
+    instances = tuple(
+        ReconciliationInstance(f"p{index}", masks[index], boxes[index], tmp_path / f"p{index}")
+        for index in range(3)
+    )
+
+    result = reconcile_instances(
+        image_id="img_a3f9c2e17b04",
+        source_file="source.png",
+        instances=instances,
+        output_dir=tmp_path / "recon",
+        background_person_count=0,
+        crowd_scene=False,
+    )
+
+    assert {(item["a"], item["b"]) for item in result.relationships} == {
+        ("p0", "p1"),
+        ("p1", "p2"),
+    }
+    middle = np.asarray(Image.open(tmp_path / "p1/masks_regions/interperson_contact_boundary.png"))
+    assert middle[:, :15].any()
+    assert middle[:, -15:].any()

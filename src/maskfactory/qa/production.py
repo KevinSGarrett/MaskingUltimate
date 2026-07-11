@@ -40,6 +40,7 @@ def run_s10_production(
     person_bbox_xyxy: tuple[int, int, int, int],
     source_crop_path: Path,
     output_dir: Path,
+    multi_instance_inputs: MultiInstanceQcInputs | None = None,
 ) -> dict[str, Any]:
     """Run every S10 check supported before packaging; mark package-only checks skipped."""
     authority = get_ontology()
@@ -118,15 +119,19 @@ def run_s10_production(
         )
     )
     image_manifest = json.loads(Path(image_manifest_path).read_text(encoding="utf-8"))
-    results.extend(
-        run_multi_instance_qc(
-            MultiInstanceQcInputs(
-                silhouettes={"p0": silhouette},
-                atomic_unions={"p0": np.logical_or.reduce(tuple(masks.values()))},
-                expected_promoted_count=len(image_manifest["promoted_instances"]),
-            )
-        )
+    promoted_instances = image_manifest["promoted_instances"]
+    if len(promoted_instances) > 1 and multi_instance_inputs is None:
+        raise ValueError("S10 multi-person hard gates require full-canvas evidence for every pN")
+    qc_inputs = multi_instance_inputs or MultiInstanceQcInputs(
+        silhouettes={"p0": silhouette},
+        atomic_unions={"p0": np.logical_or.reduce(tuple(masks.values()))},
+        expected_promoted_count=len(promoted_instances),
     )
+    if qc_inputs.expected_promoted_count != len(promoted_instances) or sorted(
+        qc_inputs.silhouettes
+    ) != sorted(promoted_instances):
+        raise ValueError("S10 multi-instance evidence disagrees with image_manifest identity/count")
+    results.extend(run_multi_instance_qc(qc_inputs))
     results.append(
         QcResult("QC-030", "strict_writer_parity", True, "all S09 maps use png_strict", "BLOCK")
     )

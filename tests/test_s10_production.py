@@ -2,9 +2,11 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
 
 from maskfactory.io.png_strict import write_grayscale, write_label_map
+from maskfactory.qa.multi_instance import MultiInstanceQcInputs
 from maskfactory.qa.production import run_s10_production
 from maskfactory.validation import validate_document
 
@@ -80,3 +82,52 @@ def test_s10_production_writes_schema_valid_report_and_preserves_blocks(tmp_path
     assert checks["QC-035"]["result"] == "pass"
     assert checks["QC-005"]["result"] == "skipped"
     assert (tmp_path / "output/qa_report.json").is_file()
+
+    p0 = np.zeros((30, 80), dtype=bool)
+    p1 = np.zeros_like(p0)
+    p0[:, :30] = True
+    p1[:, 50:] = True
+    (tmp_path / "image_manifest.json").write_text(
+        json.dumps({"promoted_instances": ["p0", "p1"]}), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="require full-canvas evidence"):
+        run_s10_production(
+            image_id="img_a3f9c2e17b04",
+            part_map_path=tmp_path / "part.png",
+            material_map_path=tmp_path / "material.png",
+            disagreement_path=tmp_path / "disagreement.png",
+            silhouette_path=tmp_path / "silhouette.png",
+            pose_path=tmp_path / "pose.json",
+            parsing_metrics_path=tmp_path / "parsing.json",
+            sam2_metrics_path=tmp_path / "sam2.json",
+            densepose_path=tmp_path / "densepose.png",
+            image_manifest_path=tmp_path / "image_manifest.json",
+            context_bbox_xyxy=(10, 10, 50, 40),
+            person_bbox_xyxy=(10, 10, 50, 40),
+            source_crop_path=tmp_path / "source.png",
+            output_dir=tmp_path / "refused_output",
+        )
+    multi_report = run_s10_production(
+        image_id="img_a3f9c2e17b04",
+        part_map_path=tmp_path / "part.png",
+        material_map_path=tmp_path / "material.png",
+        disagreement_path=tmp_path / "disagreement.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        parsing_metrics_path=tmp_path / "parsing.json",
+        sam2_metrics_path=tmp_path / "sam2.json",
+        densepose_path=tmp_path / "densepose.png",
+        image_manifest_path=tmp_path / "image_manifest.json",
+        context_bbox_xyxy=(10, 10, 50, 40),
+        person_bbox_xyxy=(10, 10, 50, 40),
+        source_crop_path=tmp_path / "source.png",
+        output_dir=tmp_path / "multi_output",
+        multi_instance_inputs=MultiInstanceQcInputs(
+            silhouettes={"p0": p0, "p1": p1},
+            atomic_unions={"p0": p0 | p1, "p1": p1},
+            expected_promoted_count=2,
+        ),
+    )
+    multi_checks = {item["id"]: item for item in multi_report["checks"]}
+    assert multi_checks["QC-036"]["result"] == "fail"
+    assert "p0->p1" in multi_checks["QC-036"]["message"]

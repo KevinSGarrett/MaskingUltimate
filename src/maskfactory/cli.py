@@ -289,6 +289,11 @@ def draft(
     is_flag=True,
     help="Run shared S00/S01, every promoted instance through S09, then S09.5.",
 )
+@click.option(
+    "--through-autoqa",
+    is_flag=True,
+    help="Run the activated multi-instance path through per-instance S10 hard gates.",
+)
 def run(
     image_id: str | None,
     selected: tuple[str, ...],
@@ -299,6 +304,7 @@ def run(
     work_root: Path,
     plan_only: bool,
     through_drafts: bool,
+    through_autoqa: bool,
 ) -> None:
     """Run the governed S00–S15 file-based stage graph for an image."""
     from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
@@ -322,10 +328,14 @@ def run(
             for stage in plan:
                 click.echo(stage.name)
             return
-        if through_drafts:
+        if through_drafts or through_autoqa:
+            if through_drafts and through_autoqa:
+                raise StageConfigurationError(
+                    "--through-drafts and --through-autoqa are mutually exclusive"
+                )
             if selected or force or skip:
                 raise StageConfigurationError(
-                    "--through-drafts owns the exact S00-S09.5 plan; do not combine stage filters"
+                    "multi-instance through modes own the exact stage plan; do not combine stage filters"
                 )
             from .stages.production import run_multi_person_production
 
@@ -335,10 +345,12 @@ def run(
                 images_root=images_root,
                 work_root=work_root,
                 gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
+                through_autoqa=through_autoqa,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
             for instance, executions in sorted(outcome.per_instance.items()):
-                click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S09")
+                terminal = "S10" if through_autoqa else "S09"
+                click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
             for contract in outcome.draft_contract_paths:
                 click.echo(f"D1: {contract}")

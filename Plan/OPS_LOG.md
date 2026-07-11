@@ -3027,3 +3027,23 @@ full regression:            554 tests pass
 quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
 honest boundary:            first real bodyparts@v1 build remains gated by human-approved gold packages and DVC authority
 ```
+## 2026-07-11 21:01 UTC - Multi-instance S10 hard gates wired to production evidence
+**Items:** MF-P8-03.02, MF-P8-05.01, MF-P8-05.02 completion evidence strengthened
+**Result:** Production auto-QA can no longer reduce a multi-person image to a fabricated p0-only QC input; QC-035/036 now receive exact full-canvas evidence for every promoted instance.
+
+```
+new command path:           maskfactory run <image_id> --through-autoqa
+execution order:            shared S00/S01 -> each pN S02-S09 -> shared S09.5 -> each pN S10
+identity gate:              image_manifest promoted pN names/count must exactly match S01 and S10 evidence
+silhouette evidence:        every S02 full-canvas silhouette required with one shared geometry
+ownership evidence:         every context PART map projected to source canvas; background and PART 50 other_person excluded
+contact evidence:           reciprocal crop bands projected to full canvas and relationships checked in both directions
+hard refusal:               a multi-person manifest without full-canvas evidence cannot run S10
+QC-036 proof:               seeded production S10 p0 atomic union entering p1 core yields BLOCK with p0->p1 pixels
+three-person fix:           S09.5 accumulates both neighbor contacts before writing the middle instance band; no pair overwrites another
+compatibility:              existing --through-drafts remains S00-S09.5 only; single-person S10 retains trivial p0 behavior
+focused regression:         41 multi-QC/reconciliation/S10/production-runner tests pass
+full regression:            557 tests pass
+quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
+honest boundary:            live --through-autoqa on the accepted three-instance image still awaits access to the Windows account owning Ubuntu-22.04
+```

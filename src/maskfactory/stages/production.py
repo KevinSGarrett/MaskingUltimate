@@ -30,6 +30,7 @@ from ..orchestrator import (
     run_pipeline,
 )
 from ..packager import verify_packages
+from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
 from ..review_package import assemble_review_package
 from ..vlm.production import run_s11_production
@@ -154,8 +155,8 @@ def build_production_runners(
     prompting = yaml.safe_load((ROOT / "configs" / "prompting.yaml").read_text(encoding="utf-8"))
 
     def prior(context: StageContext, stage_name: str) -> Path:
-        if stage_name == "S01" and shared_work_root is not None:
-            return Path(shared_work_root) / "s01" / context.image_id
+        if shared_work_root is not None and stage_name in {"S01", "S09.5"}:
+            return Path(shared_work_root) / stage_name.lower().replace(".", "_") / context.image_id
         return context.prior_stage_dir(stage_name)
 
     def selected_person(document: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -578,11 +579,22 @@ def build_production_runners(
             parsing_metrics_path=context.prior_stage_dir("S03") / "parsing_metrics.json",
             sam2_metrics_path=context.prior_stage_dir("S07") / "sam2_metrics.json",
             densepose_path=context.prior_stage_dir("S08.5") / "densepose_iuv.png",
-            image_manifest_path=context.prior_stage_dir("S09.5") / "image_manifest.json",
+            image_manifest_path=prior(context, "S09.5") / "image_manifest.json",
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
             person_bbox_xyxy=tuple(person["bbox_xyxy"]),
             source_crop_path=s01_dir / instance_name / "person_ctx.png",
             output_dir=context.output_dir,
+            multi_instance_inputs=(
+                build_multi_instance_qc_inputs(
+                    context.image_id,
+                    people=people["persons"],
+                    work_root=Path(shared_work_root),
+                    image_manifest_path=prior(context, "S09.5") / "image_manifest.json",
+                    configured_cap=int(config["stages"]["S01"]["max_instances_per_image"]),
+                )
+                if shared_work_root is not None
+                else None
+            ),
         )
         return {
             "overall": report["overall"],
@@ -770,8 +782,9 @@ def run_multi_person_production(
     gpu_lock_path: Path | None = None,
     pipeline_runner=run_pipeline,
     runner_factory=build_production_runners,
+    through_autoqa: bool = False,
 ) -> MultiPersonProductionResult:
-    """Run S00/S01 once, S02-S09 for every promoted pN, then reconcile once."""
+    """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
     shared_runners = runner_factory(config, images_root=images_root)
     shared = pipeline_runner(
@@ -862,12 +875,107 @@ def run_multi_person_production(
         manifest=manifest,
         work_root=work_root,
     )
+    if through_autoqa:
+        for person in promoted:
+            name = f"p{person['person_index']}"
+            instance_root = work_root / "instances" / name
+            autoqa = pipeline_runner(
+                image_id,
+                selected=("S10",),
+                config=config,
+                work_root=instance_root,
+                runners=scoped_runners[name],
+                gpu_lock_path=gpu_lock_path,
+            )
+            per_instance[name] = (*per_instance[name], *tuple(autoqa))
     return MultiPersonProductionResult(
         tuple(shared),
         per_instance,
         reconciliation.image_manifest_path,
         reconciliation.qc035_passed,
         draft_contract_paths,
+    )
+
+
+def build_multi_instance_qc_inputs(
+    image_id: str,
+    *,
+    people: list[Mapping[str, Any]],
+    work_root: Path,
+    image_manifest_path: Path,
+    configured_cap: int,
+) -> MultiInstanceQcInputs:
+    """Project every instance's S02/S09/contact evidence to one full source canvas."""
+    promoted = sorted(
+        (item for item in people if item.get("promoted")),
+        key=lambda item: int(item["person_index"]),
+    )
+    names = [f"p{int(item['person_index'])}" for item in promoted]
+    if not promoted or names != [f"p{index}" for index in range(len(promoted))]:
+        raise SemanticStageError("S10 multi-instance evidence requires contiguous promoted pN")
+    if configured_cap < 1:
+        raise SemanticStageError("S10 configured instance cap must be positive")
+    work_root = Path(work_root)
+    silhouettes: dict[str, np.ndarray] = {}
+    atomics: dict[str, np.ndarray] = {}
+    band_by_instance: dict[str, np.ndarray] = {}
+    shape: tuple[int, int] | None = None
+    other_person_id = int(get_ontology().label("other_person").id)
+    for person, name in zip(promoted, names, strict=True):
+        silhouette = (
+            read_mask(work_root / "instances" / name / "s02" / image_id / "silhouette.png") > 0
+        )
+        if shape is None:
+            shape = silhouette.shape
+        if silhouette.shape != shape:
+            raise SemanticStageError("S10 instance silhouettes do not share full-canvas geometry")
+        silhouettes[name] = silhouette
+        x1, y1, x2, y2 = (int(value) for value in person["context_bbox_xyxy"])
+        if not (0 <= x1 < x2 <= shape[1] and 0 <= y1 < y2 <= shape[0]):
+            raise SemanticStageError(f"S10 invalid context bbox for {name}")
+        part = read_mask(work_root / "instances" / name / "s09" / image_id / "label_map_part.png")
+        if part.shape != (y2 - y1, x2 - x1):
+            raise SemanticStageError(f"S10 {name} PART map differs from context geometry")
+        full_union = np.zeros(shape, dtype=bool)
+        full_union[y1:y2, x1:x2] = (part != 0) & (part != other_person_id)
+        atomics[name] = full_union
+        band_path = (
+            work_root
+            / "instances"
+            / name
+            / "s09"
+            / image_id
+            / "masks_regions/interperson_contact_boundary.png"
+        )
+        if band_path.is_file():
+            band = read_mask(band_path) > 0
+            if band.shape != part.shape:
+                raise SemanticStageError(f"S10 {name} contact band differs from context geometry")
+            full_band = np.zeros(shape, dtype=bool)
+            full_band[y1:y2, x1:x2] = band
+            band_by_instance[name] = full_band
+    image_manifest = json.loads(Path(image_manifest_path).read_text(encoding="utf-8"))
+    if image_manifest.get("promoted_instances") != names:
+        raise SemanticStageError("S10 image_manifest promoted instances disagree with S01")
+    relationships = {name: set() for name in names}
+    contact_bands = {}
+    for relationship in image_manifest.get("interperson_relationships", ()):
+        a, b = str(relationship.get("a")), str(relationship.get("b"))
+        if a not in relationships or b not in relationships or a == b:
+            raise SemanticStageError("S10 image_manifest contains an invalid relationship")
+        relationships[a].add(b)
+        relationships[b].add(a)
+        if a not in band_by_instance or b not in band_by_instance:
+            raise SemanticStageError("S10 reciprocal relationship is missing a contact band")
+        contact_bands[(a, b)] = band_by_instance[a]
+        contact_bands[(b, a)] = band_by_instance[b]
+    return MultiInstanceQcInputs(
+        silhouettes=silhouettes,
+        atomic_unions=atomics,
+        contact_bands=contact_bands,
+        recorded_relationships={name: frozenset(values) for name, values in relationships.items()},
+        expected_promoted_count=len(names),
+        configured_cap=configured_cap,
     )
 
 

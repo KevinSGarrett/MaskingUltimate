@@ -8293,10 +8293,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "reconcile_instances computes a scaled full-canvas contact band and writes strict crop-relative reciprocal band files for both instances; genuine edge-contact fixture passes.",
+      "evidence": "reconcile_instances computes reciprocal scaled full-canvas contact bands and writes strict crop-relative files. Bands are now accumulated per instance before writing, so a middle person in a three-person scene retains contact with both neighbors instead of the later pair overwriting the earlier band; duo and trio fixtures pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T07:14:39+00:00",
+      "updated_at": "2026-07-11T21:01:46+00:00",
       "orphaned": false
     },
     "MF-P8-03.03": {
@@ -8461,10 +8461,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "src/maskfactory/qa/multi_instance.py implements pairwise silhouette IoU >0.30 as QC-035 BLOCK; isolated seeded test passes.",
+      "evidence": "QC-035 remains a non-overridable BLOCK and is now wired into production S10 with every promoted pN full-canvas silhouette and exact image_manifest identity/count. Multi-person S10 refuses fabricated single-p0 evidence; --through-autoqa executes S10 for every promoted instance after shared S09.5.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T06:48:26+00:00",
+      "updated_at": "2026-07-11T21:01:48+00:00",
       "orphaned": false
     },
     "MF-P8-05.02": {
@@ -8482,10 +8482,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "src/maskfactory/qa/multi_instance.py checks atomic union bleed into another eroded silhouette core outside reciprocal contact bands as QC-036 BLOCK; isolated seeded test passes.",
+      "evidence": "QC-036 remains a non-overridable BLOCK and production S10 now projects every per-instance S09 target-owned atomic union plus reciprocal contact bands to one full canvas before evaluation. PART 50 other_person protection is excluded from ownership to avoid false bleed; seeded production evidence detects p0->p1 bleed. 41 focused and 557 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T06:48:27+00:00",
+      "updated_at": "2026-07-11T21:01:48+00:00",
       "orphaned": false
     },
     "MF-P8-05.03": {

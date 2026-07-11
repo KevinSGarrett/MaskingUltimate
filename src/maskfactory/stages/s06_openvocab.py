@@ -3,13 +3,33 @@
 from __future__ import annotations
 
 import json
+import math
 import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from PIL import Image
+
 
 class OpenVocabError(ValueError):
     """GroundingDINO proposal output violates the S06 contract."""
+
+
+CHECKPOINT_SHA256 = "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799"
+SOURCE_REVISION = "856dde20aee659246248e20734ef9ba5214f5e44"
+REQUIRED_PROMPTS = (
+    "hair",
+    "bra",
+    "underwear",
+    "shoe",
+    "sock",
+    "glove",
+    "necklace",
+    "handheld object",
+    "chair",
+    "bed",
+    "surface",
+)
 
 
 @dataclass(frozen=True)
@@ -33,8 +53,21 @@ def infer_gdino_proposals(
     timeout_sec: int = 900,
 ) -> list[BoxProposal]:
     """Run all configured text prompts through one pinned GroundingDINO load."""
-    if len(set(prompts)) != len(prompts) or not all(prompt.strip() for prompt in prompts):
+    if not Path(image_path).is_file():
+        raise OpenVocabError(f"GroundingDINO input image missing: {image_path}")
+    if not Path(checkpoint).is_file():
+        raise OpenVocabError(f"GroundingDINO checkpoint missing: {checkpoint}")
+    if not all(isinstance(prompt, str) and prompt.strip() for prompt in prompts) or len(
+        set(prompts)
+    ) != len(prompts):
         raise OpenVocabError("GroundingDINO prompts must be unique non-empty strings")
+    if not 0 <= box_threshold <= 1 or not 0 <= text_threshold <= 1:
+        raise OpenVocabError("GroundingDINO thresholds must be in 0..1")
+    try:
+        with Image.open(image_path) as opened:
+            image_size = opened.size
+    except OSError as exc:
+        raise OpenVocabError(f"GroundingDINO input image invalid: {exc}") from exc
     root = Path(__file__).resolve().parents[3]
     command = [
         "wsl",
@@ -74,6 +107,26 @@ def infer_gdino_proposals(
             or document.get("may_write_final_masks") is not False
         ):
             raise OpenVocabError("GroundingDINO runner violated proposal-only authority")
+        expected = {
+            "protocol_version": 1,
+            "checkpoint_sha256": CHECKPOINT_SHA256,
+            "source_revision": SOURCE_REVISION,
+            "device_type": "cpu",
+            "model_load_count": 1,
+            "prompts": list(prompts),
+            "box_threshold": box_threshold,
+            "text_threshold": text_threshold,
+            "image_size": list(image_size),
+        }
+        mismatches = {
+            key: (document.get(key), value)
+            for key, value in expected.items()
+            if document.get(key) != value
+        }
+        if mismatches:
+            raise OpenVocabError(f"GroundingDINO metadata violates governed contract: {mismatches}")
+        if not isinstance(document.get("device"), str) or not document["device"].strip():
+            raise OpenVocabError("GroundingDINO metadata requires runtime device identity")
         proposals = [
             BoxProposal(
                 item["prompt"],
@@ -86,6 +139,20 @@ def infer_gdino_proposals(
         ]
     except (KeyError, TypeError, ValueError, IndexError, json.JSONDecodeError) as exc:
         raise OpenVocabError(f"GroundingDINO output invalid: {exc}") from exc
+    width, height = image_size
+    for proposal in proposals:
+        if len(proposal.bbox_xyxy) != 4:
+            raise OpenVocabError("GroundingDINO proposal bbox must have four coordinates")
+        left, top, right, bottom = proposal.bbox_xyxy
+        if (
+            proposal.prompt not in prompts
+            or proposal.authority != "proposal_only"
+            or not all(math.isfinite(value) for value in proposal.bbox_xyxy)
+            or not (0 <= left < right <= width and 0 <= top < bottom <= height)
+            or not box_threshold <= proposal.box_score <= 1
+            or not text_threshold <= proposal.text_score <= 1
+        ):
+            raise OpenVocabError("GroundingDINO proposal violates prompt/box/score authority")
     return proposals
 
 
@@ -99,6 +166,8 @@ def run_s06_production(
     text_threshold: float = 0.25,
 ) -> Path:
     """Infer then persist proposal boxes through the only typed S06 output API."""
+    if prompts != REQUIRED_PROMPTS:
+        raise OpenVocabError("production GroundingDINO prompt vocabulary drifted from S06 spec")
     proposals = infer_gdino_proposals(
         image_path,
         checkpoint=checkpoint,
@@ -124,11 +193,15 @@ def write_gdino_proposals(
     text_threshold: float = 0.25,
 ) -> Path:
     """Validate and serialize boxes only; this API has no pixel-mask output type."""
+    if not 0 <= box_threshold <= 1 or not 0 <= text_threshold <= 1:
+        raise OpenVocabError("GroundingDINO thresholds must be in 0..1")
     accepted = []
     for proposal in proposals:
         if proposal.prompt not in allowed_prompts:
             raise OpenVocabError(f"unconfigured GroundingDINO prompt: {proposal.prompt}")
         left, top, right, bottom = proposal.bbox_xyxy
+        if not all(math.isfinite(value) for value in proposal.bbox_xyxy):
+            raise OpenVocabError("proposal bbox must be finite")
         if right <= left or bottom <= top:
             raise OpenVocabError("proposal bbox must have positive area")
         if not 0 <= proposal.box_score <= 1 or not 0 <= proposal.text_score <= 1:
@@ -144,6 +217,7 @@ def write_gdino_proposals(
         "schema_version": "1.0.0",
         "authority": "proposal_boxes_only",
         "may_write_final_masks": False,
+        "allowed_consumers": ["sam2_prompting", "fusion_evidence"],
         "box_threshold": box_threshold,
         "text_threshold": text_threshold,
         "proposals": [asdict(proposal) for proposal in accepted],

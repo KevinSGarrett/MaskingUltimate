@@ -353,6 +353,80 @@ def test_s04_production_runner_refuses_model_drift(tmp_path: Path) -> None:
         production.build_production_runners(config)["S04"](context)
 
 
+def test_s06_production_runner_forwards_exact_prompt_and_threshold_contract(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    crop_dir = work / "s01" / image_id / "p0"
+    crop_dir.mkdir(parents=True)
+    Image.new("RGB", (20, 30), "white").save(crop_dir / "person_ctx.png")
+    captured = {}
+
+    def fake_s06(image_path, output_dir, **kwargs):
+        captured.update(kwargs)
+        path = Path(output_dir) / "gdino_boxes.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(
+                {
+                    "authority": "proposal_boxes_only",
+                    "may_write_final_masks": False,
+                    "proposals": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        return path
+
+    monkeypatch.setattr(production, "run_s06_production", fake_s06)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S06"],
+        output_dir=work / "s06" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S06"]},
+        config_hash="fixture",
+    )
+
+    delta = production.build_production_runners(config)["S06"](context)
+
+    assert delta["authority"] == "proposal_boxes_only"
+    assert captured["prompts"] == (
+        "hair",
+        "bra",
+        "underwear",
+        "shoe",
+        "sock",
+        "glove",
+        "necklace",
+        "handheld object",
+        "chair",
+        "bed",
+        "surface",
+    )
+    assert captured["box_threshold"] == 0.3
+    assert captured["text_threshold"] == 0.25
+
+
+def test_s06_production_runner_refuses_threshold_source_drift(tmp_path: Path) -> None:
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = dict(config["stages"]["S06"])
+    settings["box_threshold"] = 0.31
+    context = StageContext(
+        image_id="img_a3f9c2e17b04",
+        stage=STAGE_BY_NAME["S06"],
+        output_dir=tmp_path / "work/s06/img_a3f9c2e17b04",
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="threshold configuration drift"):
+        production.build_production_runners(config)["S06"](context)
+
+
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:
     parsing = np.zeros((100, 80), dtype=np.uint8)
     parsing[15:75, 25:55] = 22  # Sapiens torso

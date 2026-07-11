@@ -88,6 +88,36 @@ def test_s08_production_writes_indexed_crop_space_draft_and_evidence(tmp_path: P
     assert evidence["sam2_refinement"]["hair_material"]["sam2_low_conf"] is True
     assert provider.embed_calls == 1 and provider.closed
 
+    (tmp_path / "gdino.json").write_text(
+        json.dumps(
+            {
+                "authority": "proposal_boxes_only",
+                "may_write_final_masks": False,
+                "allowed_consumers": ["sam2_prompting", "fusion_evidence"],
+                "proposals": [
+                    {
+                        "prompt": "shoe",
+                        "bbox_xyxy": [1, 1, 5, 5],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(MaterialError, match="require SAM2 refinement"):
+        run_s08_production(
+            source_path=tmp_path / "source.png",
+            sapiens_path=tmp_path / "sapiens.png",
+            schp_path=tmp_path / "schp.png",
+            silhouette_path=tmp_path / "silhouette.png",
+            pose_path=tmp_path / "pose.json",
+            gdino_path=tmp_path / "gdino.json",
+            context_bbox_xyxy=(5, 5, 25, 25),
+            sapiens_map=config["parsing_map"]["sapiens_28"],
+            schp_map=config["parsing_map"]["schp_atr"],
+            output_dir=tmp_path / "unrefined",
+        )
+
 
 def test_promoted_clothing_model_becomes_primary_with_schp_named_fallback(
     tmp_path: Path,

@@ -12,6 +12,7 @@ from maskfactory.stages.s06_openvocab import (
     BoxProposal,
     OpenVocabError,
     infer_gdino_proposals,
+    run_s06_production,
     write_gdino_proposals,
 )
 from maskfactory.stages.s07_sam2 import (
@@ -110,6 +111,7 @@ def test_s06_writes_only_configured_thresholded_proposal_boxes(tmp_path: Path) -
     document = json.loads(path.read_text())
     assert document["authority"] == "proposal_boxes_only"
     assert document["may_write_final_masks"] is False
+    assert document["allowed_consumers"] == ["sam2_prompting", "fusion_evidence"]
     assert [proposal["prompt"] for proposal in document["proposals"]] == ["hair"]
     assert not list(tmp_path.glob("*.png"))
     with pytest.raises(OpenVocabError, match="unconfigured"):
@@ -125,7 +127,7 @@ def test_s06_production_provider_preserves_proposal_only_authority(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     image = tmp_path / "image.png"
-    image.write_bytes(b"fixture")
+    Image.new("RGB", (40, 40), "white").save(image)
     checkpoint = tmp_path / "gdino.pth"
     checkpoint.write_bytes(b"fixture")
 
@@ -137,6 +139,18 @@ def test_s06_production_provider_preserves_proposal_only_authority(
             stderr = ""
             stdout = json.dumps(
                 {
+                    "protocol_version": 1,
+                    "checkpoint_sha256": (
+                        "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799"
+                    ),
+                    "source_revision": "856dde20aee659246248e20734ef9ba5214f5e44",
+                    "device_type": "cpu",
+                    "device": "CPU fixture",
+                    "model_load_count": 1,
+                    "prompts": ["hair", "shoe"],
+                    "box_threshold": 0.3,
+                    "text_threshold": 0.25,
+                    "image_size": [40, 40],
                     "authority": "proposal_boxes_only",
                     "may_write_final_masks": False,
                     "proposals": [
@@ -157,6 +171,16 @@ def test_s06_production_provider_preserves_proposal_only_authority(
     proposals = infer_gdino_proposals(image, checkpoint=checkpoint, prompts=("hair", "shoe"))
     assert proposals == [BoxProposal("hair", (1.0, 2.0, 20.0, 30.0), 0.8, 0.7)]
     assert not hasattr(proposals[0], "mask")
+
+
+def test_s06_production_refuses_prompt_vocabulary_drift(tmp_path: Path) -> None:
+    with pytest.raises(OpenVocabError, match="vocabulary drifted"):
+        run_s06_production(
+            tmp_path / "missing.png",
+            tmp_path / "output",
+            checkpoint=tmp_path / "missing.pth",
+            prompts=("hair",),
+        )
 
 
 def test_s07_embedding_uses_one_primary_or_one_oom_fallback() -> None:

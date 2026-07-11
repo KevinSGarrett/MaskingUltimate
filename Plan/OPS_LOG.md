@@ -2815,3 +2815,22 @@ quality:                    Ruff check/format clean across 247 files; generated 
 live managed-shell probe:   correctly failed WSL_E_DISTRO_NOT_FOUND before publishing any candidate archive
 honest boundary:            registry CUDA smokes and prior CPU diagnostic exist, but a fresh production-bridge CUDA run is not claimed
 ```
+## 2026-07-11 18:49 UTC - S06 GroundingDINO box-only authority made executable
+**Item:** MF-P2-05.01 advanced 90% -> 95% partial
+**Result:** The open-vocabulary assist now proves its pinned runtime and literal proposal geometry, while downstream code rejects every path that could promote an unrefined GroundingDINO box into a material map.
+
+```
+prompt authority:           exact 11 spec prompts; unique/nonempty; production vocabulary drift refuses
+threshold authority:        pipeline and prompting configs must agree on box 0.30 / text 0.25 or S06 refuses
+runtime identity:           WSL pinned source 856dde; checkpoint SHA-256 3b3ca2...; documented CPU deformable-attention fallback
+load discipline:            one GroundingDINO model load serves every configured prompt, then model is released
+runtime metadata:           protocol, hash/revision/device, model_load_count, prompts, thresholds, and image geometry mandatory
+proposal validation:        configured prompt, proposal_only, finite in-canvas positive-area xyxy, scores in [threshold,1]
+artifact authority:         gdino_boxes.json only; may_write_final_masks=false; consumers limited to SAM2 prompting/fusion evidence
+downstream enforcement:     nonempty GDINO evidence with missing/tampered authority or no SAM2 provider is refused before map creation
+focused regression:         40 S06/S08/production/config tests pass
+full regression:            524 tests pass
+quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
+live managed-shell probe:   correctly failed WSL_E_DISTRO_NOT_FOUND before any proposals were accepted
+honest boundary:            prior pinned WSL smoke exists, but a fresh full-vocabulary production run is not claimed
+```

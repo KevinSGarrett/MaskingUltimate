@@ -272,13 +272,26 @@ def build_production_runners(
 
     def s06(context: StageContext) -> Mapping[str, Any]:
         gdino = prompting["grounding_dino"]
+        settings = context.config["stage"]
+        if gdino.get("role") != "proposal_boxes_only" or gdino.get("may_write_final_masks"):
+            raise SemanticStageError("S06 prompting authority must remain proposal boxes only")
+        configured_thresholds = (
+            float(gdino["box_threshold"]),
+            float(gdino["text_threshold"]),
+        )
+        stage_thresholds = (
+            float(settings.get("box_threshold", 0.30)),
+            float(settings.get("text_threshold", 0.25)),
+        )
+        if configured_thresholds != stage_thresholds:
+            raise SemanticStageError("S06 pipeline/prompt threshold configuration drift")
         path = run_s06_production(
             prior(context, "S01") / instance_name / "person_ctx.png",
             context.output_dir,
             checkpoint=ROOT / "models" / "gdino" / "groundingdino_swint_ogc.pth",
             prompts=tuple(gdino["prompts"]),
-            box_threshold=float(gdino["box_threshold"]),
-            text_threshold=float(gdino["text_threshold"]),
+            box_threshold=stage_thresholds[0],
+            text_threshold=stage_thresholds[1],
         )
         document = json.loads(path.read_text(encoding="utf-8"))
         if document["authority"] != "proposal_boxes_only" or document["may_write_final_masks"]:

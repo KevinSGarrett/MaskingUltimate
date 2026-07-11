@@ -360,8 +360,18 @@ def run_s08_production(
         if entry["class"] != "background"
     }
     gdino = json.loads(Path(gdino_path).read_text(encoding="utf-8"))
+    proposals = gdino.get("proposals", [])
+    if proposals:
+        if (
+            gdino.get("authority") != "proposal_boxes_only"
+            or gdino.get("may_write_final_masks") is not False
+            or gdino.get("allowed_consumers") != ["sam2_prompting", "fusion_evidence"]
+        ):
+            raise MaterialError("S08 refuses GroundingDINO evidence without box-only authority")
+        if provider is None:
+            raise MaterialError("GroundingDINO boxes require SAM2 refinement before any map")
     boxes: dict[str, list[tuple[int, int, int, int]]] = {}
-    for proposal in gdino["proposals"]:
+    for proposal in proposals:
         boxes.setdefault(proposal["prompt"], []).append(
             tuple(round(float(value)) for value in proposal["bbox_xyxy"])
         )

@@ -7,6 +7,7 @@ import io
 import json
 import os
 import sqlite3
+import urllib.error
 import urllib.request
 import uuid
 from collections.abc import Callable
@@ -33,6 +34,7 @@ DEFAULT_INCOMING_ROOT = ROOT / "data" / "incoming"
 DEFAULT_IMAGES_ROOT = ROOT / "data" / "images"
 DEFAULT_EVENT_LOG = ROOT / "logs" / "intake.jsonl"
 DEFAULT_YOLO_CHECKPOINT = ROOT / "models" / "detect" / "yolo11m.pt"
+AGE_SCREEN_LONG_SIDE = 1024
 
 
 class IntakeError(ValueError):
@@ -133,34 +135,76 @@ class LocalAgeSafetyScreener:
     def _ask_vlm(self, image: Path) -> dict[str, Any]:
         import base64
 
-        payload = json.dumps(
-            {
-                "model": self.model,
-                "stream": False,
-                "format": "json",
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": (
-                            "Age-safety only; do not classify nudity or sexual content. Does this "
-                            "image depict a real or apparent minor? Return JSON exactly with "
-                            "apparent_minor as yes|no|uncertain and a short reason."
-                        ),
-                        "images": [base64.b64encode(image.read_bytes()).decode("ascii")],
-                    }
-                ],
-            }
-        ).encode("utf-8")
-        request = urllib.request.Request(
-            self.ollama_url, data=payload, headers={"Content-Type": "application/json"}
+        review_bytes = _age_screen_review_image(image)
+        encoded = base64.b64encode(review_bytes).decode("ascii")
+        prompt = (
+            "Age-safety only; do not classify nudity or sexual content. Does this image depict "
+            "a real or apparent minor? Return JSON exactly with apparent_minor as "
+            "yes|no|uncertain and reason as a short string."
         )
-        if self._request is not None:
-            response_bytes = self._request(request, 240)
-        else:
-            with urllib.request.urlopen(request, timeout=240) as response:  # noqa: S310
-                response_bytes = response.read()
-        response = json.loads(response_bytes)
-        return json.loads(response["message"]["content"])
+        last_error: Exception | None = None
+        for attempt in range(2):
+            payload = json.dumps(
+                {
+                    "model": self.model,
+                    "stream": False,
+                    "format": "json",
+                    "options": {"temperature": 0, "seed": 1337, "num_predict": 128},
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": (
+                                prompt
+                                if attempt == 0
+                                else prompt
+                                + " Your prior response was invalid. Return the exact JSON only."
+                            ),
+                            "images": [encoded],
+                        }
+                    ],
+                }
+            ).encode("utf-8")
+            request = urllib.request.Request(
+                self.ollama_url, data=payload, headers={"Content-Type": "application/json"}
+            )
+            try:
+                if self._request is not None:
+                    response_bytes = self._request(request, 240)
+                else:
+                    with urllib.request.urlopen(request, timeout=240) as response:  # noqa: S310
+                        response_bytes = response.read()
+                response = json.loads(response_bytes)
+                content = json.loads(response["message"]["content"])
+                if (
+                    not isinstance(content, dict)
+                    or set(content) != {"apparent_minor", "reason"}
+                    or content["apparent_minor"] not in {"yes", "no", "uncertain"}
+                    or not isinstance(content["reason"], str)
+                    or not content["reason"].strip()
+                ):
+                    raise ValueError("age screen response violates the exact JSON contract")
+                return content
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", errors="replace")[:500]
+                raise RuntimeError(f"Ollama age screen HTTP {exc.code}: {detail}") from exc
+            except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
+                last_error = exc
+        raise ValueError(f"invalid age screen JSON after one retry: {last_error}")
+
+
+def _age_screen_review_image(image: Path) -> bytes:
+    """Create a small metadata-free RGB JPEG for the local safety model only."""
+    try:
+        with Image.open(image) as opened:
+            review = opened.convert("RGB")
+            review.thumbnail((AGE_SCREEN_LONG_SIDE, AGE_SCREEN_LONG_SIDE), Image.Resampling.LANCZOS)
+            output = io.BytesIO()
+            review.save(  # png-strict: allow (RGB age-screen review, never mask)
+                output, format="JPEG", quality=90, optimize=True
+            )
+            return output.getvalue()
+    except (OSError, UnidentifiedImageError) as exc:
+        raise DecodeRejected(f"cannot prepare age-screen review image: {image}") from exc
 
 
 def sha256_file(path: Path) -> str:
@@ -403,6 +447,116 @@ def ingest_one(
     return IntakeResult(image_id, outcome, reason, manifest_path=manifest_path)
 
 
+def rescreen_quarantined(
+    source: Path,
+    *,
+    screener: SafetyScreener,
+    incoming_root: Path = DEFAULT_INCOMING_ROOT,
+    images_root: Path = DEFAULT_IMAGES_ROOT,
+    database: Path = DEFAULT_DB_PATH,
+    event_log: Path = DEFAULT_EVENT_LOG,
+    min_side: int = 512,
+    now: Callable[[], datetime] | None = None,
+) -> IntakeResult:
+    """Re-run age safety and atomically promote an existing quarantine when clear."""
+    source = Path(source)
+    images_root = Path(images_root)
+    database = Path(database)
+    event_log = Path(event_log)
+    timestamp = (now or (lambda: datetime.now(UTC)))().astimezone(UTC).isoformat()
+    inspected = inspect_image(source, incoming_root, min_side=min_side)
+    image_id = inspected.image_id
+    quarantine_path = images_root / "quarantine" / f"{image_id}.json"
+    if _existing_status(database, inspected.source_sha256) != "quarantined":
+        raise IntakeError(f"source is not an existing quarantined image: {image_id}")
+    try:
+        manifest = json.loads(quarantine_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise IntakeError(f"quarantine record unavailable for {image_id}: {exc}") from exc
+    recorded_source = manifest.get("source")
+    if not isinstance(recorded_source, dict) or (
+        manifest.get("image_id") != image_id
+        or recorded_source.get("source_sha256") != inspected.source_sha256
+        or recorded_source.get("original_name") != source.name
+        or recorded_source.get("source_origin") != inspected.source_origin
+    ):
+        raise IntakeError(f"quarantine source identity mismatch for {image_id}")
+
+    safety = screener.screen(source)
+    manifest["age_safety"] = {
+        "verdict": safety.verdict,
+        "person_count": safety.person_count,
+        "model": safety.model,
+        "detail": safety.detail,
+        "non_configurable": True,
+    }
+    if safety.verdict != "clear_adult" or inspected.source_origin is None:
+        reasons = []
+        if inspected.source_origin is None:
+            reasons.append("missing_or_invalid_source_origin")
+        if safety.verdict != "clear_adult":
+            reasons.append(f"age_safety_{safety.verdict}")
+        manifest["reason"] = ",".join(reasons)
+        manifest["status"] = "quarantined"
+        manifest["rescreened_at"] = timestamp
+        _write_json_atomic(quarantine_path, manifest)
+        _touch_image_status(database, image_id, "quarantined", timestamp)
+        _append_event(
+            event_log,
+            {
+                "at": timestamp,
+                "action": "age_safety_rescreen",
+                "image_id": image_id,
+                "source_sha256": inspected.source_sha256,
+                "outcome": "quarantined",
+                "reason": manifest["reason"],
+            },
+        )
+        return IntakeResult(
+            image_id, "quarantined", manifest["reason"], manifest_path=quarantine_path
+        )
+
+    image_directory = images_root / image_id
+    if image_directory.exists():
+        raise IntakeError(f"accepted image directory already exists for quarantine: {image_id}")
+    temporary = images_root / f".{image_id}.rescreen-{uuid.uuid4().hex}"
+    temporary.mkdir(parents=True, exist_ok=False)
+    extension = ".jpg" if source.suffix.lower() in {".jpg", ".jpeg"} else ".png"
+    manifest["status"] = "ingested"
+    manifest["reason"] = "accepted_after_age_safety_rescreen"
+    manifest["rescreened_at"] = timestamp
+    manifest["source"]["exif_stripped"] = True
+    manifest["source"]["source_file"] = f"source{extension}"
+    try:
+        write_metadata_stripped(source, temporary / f"source{extension}")
+        _write_json_atomic(temporary / "manifest.json", manifest)
+        replace_with_retry(temporary, image_directory)
+        _touch_image_status(database, image_id, "ingested", timestamp)
+    except Exception:
+        _remove_tree(temporary)
+        _remove_tree(image_directory)
+        raise
+    quarantine_path.unlink()
+    _append_event(
+        event_log,
+        {
+            "at": timestamp,
+            "action": "age_safety_rescreen",
+            "image_id": image_id,
+            "source_sha256": inspected.source_sha256,
+            "outcome": "ingested",
+            "reason": "accepted_after_age_safety_rescreen",
+            "phash64": inspected.phash64,
+        },
+    )
+    return IntakeResult(
+        image_id,
+        "ingested",
+        "accepted_after_age_safety_rescreen",
+        manifest_path=image_directory / "manifest.json",
+    )
+
+
 def _existing_status(database: Path, digest: str) -> str | None:
     connection = sqlite3.connect(database)
     try:
@@ -423,6 +577,17 @@ def _insert_image(database: Path, image_id: str, digest: str, status: str, times
             """,
             (image_id, digest, status, timestamp, timestamp),
         )
+
+
+def _touch_image_status(database: Path, image_id: str, status: str, timestamp: str) -> None:
+    with writer_connection(database) as connection:
+        cursor = connection.execute(
+            "UPDATE images SET status = ?, current_stage = 'S00', updated_at = ? "
+            "WHERE image_id = ? AND status = 'quarantined'",
+            (status, timestamp, image_id),
+        )
+        if cursor.rowcount != 1:
+            raise IntakeError(f"quarantine database status changed concurrently: {image_id}")
 
 
 def _write_json_atomic(path: Path, document: dict[str, Any]) -> None:

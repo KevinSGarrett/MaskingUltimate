@@ -127,6 +127,76 @@ def ingest(
     )
 
 
+@main.command("rescreen-quarantine")
+@click.argument(
+    "image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--incoming-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/incoming"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--event-log",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("logs/intake.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+def rescreen_quarantine(
+    image: Path,
+    incoming_root: Path,
+    images_root: Path,
+    database: Path,
+    event_log: Path,
+    config_path: Path,
+) -> None:
+    """Re-screen and safely promote one existing age-safety quarantine."""
+    from .intake import IntakeError, LocalAgeSafetyScreener, rescreen_quarantined
+    from .orchestrator import load_pipeline_config
+
+    config = load_pipeline_config(config_path)
+    intake_config = config.get("intake", {})
+    min_side = intake_config.get("min_side", 512) if isinstance(intake_config, dict) else 512
+    try:
+        result = rescreen_quarantined(
+            image,
+            screener=LocalAgeSafetyScreener(),
+            incoming_root=incoming_root,
+            images_root=images_root,
+            database=database,
+            event_log=event_log,
+            min_side=min_side,
+        )
+    except (IntakeError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {"image_id": result.image_id, "outcome": result.outcome, "reason": result.reason},
+            sort_keys=True,
+        )
+    )
+
+
 @main.command("draft")
 @click.argument(
     "image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True

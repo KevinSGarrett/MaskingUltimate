@@ -1,3 +1,5 @@
+import base64
+import io
 import json
 import sqlite3
 from pathlib import Path
@@ -15,6 +17,7 @@ from maskfactory.intake import (
     ingest_one,
     inspect_image,
     perceptual_hash64,
+    rescreen_quarantined,
     source_origin,
     write_metadata_stripped,
 )
@@ -195,6 +198,140 @@ def test_local_age_screen_is_fail_closed_and_parses_clear_adult(tmp_path: Path) 
     ).screen(image)
     assert failed.verdict == "uncertain"
     assert "detector unavailable" in failed.detail
+
+
+def test_age_screen_downscales_locally_and_retries_strict_json(tmp_path: Path) -> None:
+    image = tmp_path / "large.png"
+    _pattern((2400, 1600)).save(image)
+    payloads = []
+    responses = [
+        {"message": {"content": "not json"}},
+        {
+            "message": {
+                "content": json.dumps({"apparent_minor": "no", "reason": "clearly adult subjects"})
+            }
+        },
+    ]
+
+    def request(request, _timeout):
+        payloads.append(json.loads(request.data))
+        return json.dumps(responses.pop(0)).encode()
+
+    result = LocalAgeSafetyScreener(detector=lambda _path: 2, request=request).screen(image)
+    assert result.verdict == "clear_adult" and result.person_count == 2
+    assert len(payloads) == 2
+    for payload in payloads:
+        assert payload["options"] == {"temperature": 0, "seed": 1337, "num_predict": 128}
+        review_bytes = base64.b64decode(payload["messages"][0]["images"][0])
+        assert review_bytes != image.read_bytes()
+        with Image.open(io.BytesIO(review_bytes)) as review:
+            assert max(review.size) == 1024
+            assert review.mode == "RGB"
+    assert "prior response was invalid" in payloads[1]["messages"][0]["content"]
+
+
+def test_age_screen_rejects_extra_or_empty_response_fields(tmp_path: Path) -> None:
+    image = tmp_path / "adult.png"
+    _pattern().save(image)
+    invalid = json.dumps(
+        {"message": {"content": json.dumps({"apparent_minor": "no", "reason": ""})}}
+    ).encode()
+    screener = LocalAgeSafetyScreener(detector=lambda _path: 1, request=lambda *_args: invalid)
+    result = screener.screen(image)
+    assert result.verdict == "uncertain"
+    assert "after one retry" in result.detail
+
+
+def test_quarantine_rescreen_promotes_only_matching_clear_adult_source(tmp_path: Path) -> None:
+    incoming = tmp_path / "incoming"
+    source = incoming / "generated" / "adult.png"
+    source.parent.mkdir(parents=True)
+    _pattern().save(source)
+    images = tmp_path / "images"
+    database = tmp_path / "state.sqlite"
+    events = tmp_path / "intake.jsonl"
+
+    class Uncertain:
+        def screen(self, _image):
+            return SafetyVerdict("uncertain", 1, "fixture", "first pass unavailable")
+
+    initial = ingest_one(
+        source,
+        screener=Uncertain(),
+        incoming_root=incoming,
+        images_root=images,
+        database=database,
+        event_log=events,
+    )
+    assert initial.outcome == "quarantined"
+
+    class Adult:
+        def screen(self, _image):
+            return SafetyVerdict("clear_adult", 1, "fixture", "adult")
+
+    promoted = rescreen_quarantined(
+        source,
+        screener=Adult(),
+        incoming_root=incoming,
+        images_root=images,
+        database=database,
+        event_log=events,
+    )
+    assert promoted.outcome == "ingested"
+    assert not initial.manifest_path.exists()
+    manifest = json.loads(promoted.manifest_path.read_text())
+    assert manifest["reason"] == "accepted_after_age_safety_rescreen"
+    assert manifest["age_safety"]["verdict"] == "clear_adult"
+    assert manifest["source"]["exif_stripped"] is True
+    with sqlite3.connect(database) as connection:
+        assert connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (promoted.image_id,)
+        ).fetchone() == ("ingested",)
+    assert json.loads(events.read_text().splitlines()[-1])["action"] == "age_safety_rescreen"
+
+
+def test_quarantine_rescreen_stays_closed_and_refuses_wrong_source(tmp_path: Path) -> None:
+    incoming = tmp_path / "incoming"
+    source = incoming / "generated" / "subject.png"
+    source.parent.mkdir(parents=True)
+    _pattern().save(source)
+    images = tmp_path / "images"
+    database = tmp_path / "state.sqlite"
+    events = tmp_path / "intake.jsonl"
+
+    class Uncertain:
+        def screen(self, _image):
+            return SafetyVerdict("uncertain", 1, "fixture", "uncertain")
+
+    initial = ingest_one(
+        source,
+        screener=Uncertain(),
+        incoming_root=incoming,
+        images_root=images,
+        database=database,
+        event_log=events,
+    )
+    repeated = rescreen_quarantined(
+        source,
+        screener=Uncertain(),
+        incoming_root=incoming,
+        images_root=images,
+        database=database,
+        event_log=events,
+    )
+    assert repeated.outcome == "quarantined" and initial.manifest_path.exists()
+    changed = np.asarray(_pattern()).copy()
+    changed[0, 0] = (1, 2, 3)
+    Image.fromarray(changed).save(source)
+    with pytest.raises(ValueError, match="not an existing quarantined image"):
+        rescreen_quarantined(
+            source,
+            screener=Uncertain(),
+            incoming_root=incoming,
+            images_root=images,
+            database=database,
+            event_log=events,
+        )
 
 
 def test_cli_uses_configured_min_side_but_cannot_disable_age_gate(

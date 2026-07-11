@@ -3127,6 +3127,32 @@ focused regression:         49 text/VLM/mining/dataset/production tests pass
 full regression:            563 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-11 23:40 UTC - Large-image age-screen transport repaired; governed source set ingested through S01
+**Items:** MF-P1-04.06 evidence strengthened; MF-P1-08.01 open -> complete; MF-P2-01.01 evidence strengthened; MF-P8-10.01 10% -> 20%
+**Result:** Every supplied source now has a governed intake outcome, and every clear-adult ingest has an S01 outcome. The prior large-image HTTP-400 quarantines were recovered only through a new hash-verified rescreen path.
+
+```
+root cause:                  age screen base64-embedded original 16-26 MB / 4K-7K images directly into Ollama chat requests
+review transport:            local metadata-free RGB JPEG, aspect-preserving long side <=1024, never used as source/mask authority
+determinism:                 qwen2.5vl:7b; temperature=0; seed=1337; num_predict=128
+response contract:           exact apparent_minor + reason keys; yes|no|uncertain; nonempty reason; one strict retry
+fail-closed behavior:        HTTP/JSON/schema/detector errors still become uncertain quarantine
+rescreen identity:           original filename + SHA-256 + source_origin + quarantined database state must all match
+promotion transaction:       metadata-stripped accepted source/manifest written first, DB status moved from quarantined, old quarantine record removed
+live transport proof:        previously HTTP-400 6720x4480 image -> 4 people, clear_adult, specific adult rationale
+prior quarantine recovery:   3 clear_adult promoted; 1 age_safety_yes remained quarantined
+new source batch:             16 previously unseen -> 15 ingested, 1 age_safety_yes quarantine
+current intake totals:        23 supplied = 21 ingested + 2 quarantined; zero unprocessed
+P1 source gate:              >=5 clean clear-adult ingests proven; MF-P1-08.01 complete
+S01 live totals:              19 promoted images, 30 promoted person instances, 2 semantic no_person failures
+real group detections:        raw/promoted counts 3/3, 4/4, 5/4, 5/4
+P8 honest count:              only the 3-person and 4-person images qualify; both visible 5-person photos excluded from 2-4 requirement
+P8 corpus progress:           2/10 minimum qualifying images (20%); 8 more required
+S02 fresh attempt:            img_dd4151e9a815 fails at BiRefNet with WSL_E_DISTRO_NOT_FOUND under KEVIN\CodexSandboxOnline
+focused regression:          16 intake tests pass
+full regression:             573 tests pass
+quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
+```
 ## 2026-07-11 22:15 UTC - P-MANIFEST and weekly-summary callbacks replaced by production model paths
 **Item:** MF-P4-03.04 completion evidence corrected and strengthened
 **Result:** The nightly command and weekly S15 job now invoke the governed local text model; the prior callback-only helpers are no longer treated as production evidence.

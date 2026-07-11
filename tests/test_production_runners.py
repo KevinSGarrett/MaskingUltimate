@@ -728,22 +728,37 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
             )
         else:
             instance = Path(work_root).name
-            index = int(instance.removeprefix("p"))
-            s02 = Path(work_root) / "s02" / image_id
-            s09 = Path(work_root) / "s09" / image_id
-            s02.mkdir(parents=True, exist_ok=True)
-            s09.mkdir(parents=True, exist_ok=True)
-            part = np.zeros((100, 30), dtype=np.uint16)
-            part[10:90, 5:25] = 1
-            material = np.zeros((100, 30), dtype=np.uint8)
-            material[10:90, 5:25] = 1
-            Image.fromarray(part).save(s09 / "label_map_part.png")
-            Image.fromarray(material, mode="L").save(s09 / "label_map_material.png")
-            if tuple(selected) == ("S02",):
+            index = 0 if instance == "legacy" else int(instance.removeprefix("p"))
+            for stage in selected:
+                stage_dir = Path(work_root) / stage.lower().replace(".", "_") / image_id
+                stage_dir.mkdir(parents=True, exist_ok=True)
+                (stage_dir / "regression_marker.json").write_text(
+                    json.dumps({"image_id": image_id, "stage": stage}, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            if "S09" in selected:
+                s09 = Path(work_root) / "s09" / image_id
+                part = np.zeros((100, 30), dtype=np.uint16)
+                part[10:90, 5:25] = 1
+                material = np.zeros((100, 30), dtype=np.uint8)
+                material[10:90, 5:25] = 1
+                Image.fromarray(part).save(s09 / "label_map_part.png")
+                Image.fromarray(material, mode="L").save(s09 / "label_map_material.png")
+            if "S02" in selected:
+                s02 = Path(work_root) / "s02" / image_id
                 silhouette = np.zeros((100, 100), dtype=np.uint8)
                 silhouette[10:90, index * 30 : index * 30 + 20] = 255
                 Image.fromarray(silhouette, mode="L").save(s02 / "silhouette.png")
         return ()
+
+    legacy_root = work / "legacy"
+    if person_count == 1:
+        pipeline(
+            image_id,
+            selected=("S02", "S03", "S04", "S05", "S06", "S07", "S08", "S08.5", "S09"),
+            work_root=legacy_root,
+            runners={},
+        )
 
     result = production.run_multi_person_production(
         image_id,
@@ -770,6 +785,32 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     assert not p0_protected[20, 5]
     assert p0_protected[5, 95]  # non-promoted background person is protected too
     assert bool(p0_protected[:, :90].any()) == (person_count > 1)
+    if person_count == 1:
+        regression = production.verify_single_person_regression(
+            image_id, legacy_work_root=legacy_root, p8_work_root=work
+        )
+        assert regression["byte_identical"] is True
+        assert set(regression["stages"]) == set(production.SINGLE_PERSON_REGRESSION_STAGES)
+        assert regression["file_count"] == 12
+        assert set(regression["p8_only_files"]["s02"]) == {"other_person_protected.png"}
+
+
+def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    legacy = tmp_path / "legacy"
+    activated = tmp_path / "activated"
+    for stage in production.SINGLE_PERSON_REGRESSION_STAGES:
+        left = legacy / stage / image_id
+        right = activated / "instances/p0" / stage / image_id
+        left.mkdir(parents=True)
+        right.mkdir(parents=True)
+        (left / "artifact.bin").write_bytes(stage.encode())
+        (right / "artifact.bin").write_bytes(stage.encode())
+    (activated / "instances/p0/s07" / image_id / "artifact.bin").write_bytes(b"drift")
+    with pytest.raises(production.SemanticStageError, match="bytes differ: s07/artifact.bin"):
+        production.verify_single_person_regression(
+            image_id, legacy_work_root=legacy, p8_work_root=activated
+        )
 
 
 def test_run_through_drafts_exposes_one_command_multi_instance_path(

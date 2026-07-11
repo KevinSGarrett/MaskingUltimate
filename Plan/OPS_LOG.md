@@ -2952,3 +2952,20 @@ full regression:            537 tests pass
 quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
 honest boundary:            qa/vlm_eval currently has one governed real seed only; deprecated_synthetic_v0 remains non-authoritative and no production gate rerun is claimed
 ```
+## 2026-07-11 20:02 UTC - Explicit single-person pre/P8 byte regression added
+**Item:** MF-P8-01.04 advanced 80% -> 95% partial
+**Result:** The activated multi-instance outer loop now has direct evidence that its p0 path preserves every existing single-person S02-S09 artifact byte-for-byte.
+
+```
+baseline path:              legacy direct S02,S03,S04,S05,S06,S07,S08,S08.5,S09 execution
+activated path:             identical deterministic producer through instances/p0 outer-loop execution
+comparison contract:       every legacy stage directory required and nonempty; exact relative file set and bytes
+evidence digest:            per-stage SHA-256 plus one whole-tree SHA-256 over stage/path/bytes
+intentional P8 addition:    s02/other_person_protected.png separately allowlisted and hash-recorded, never counted as legacy equality
+instance result:            exactly one p0, one 56-atomic draft contract, passing trivial S09.5 reconciliation
+negative evidence:          one-byte drift in s07/artifact.bin hard-fails with exact path
+focused regression:         27 production-runner tests pass
+full regression:            538 tests pass
+quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
+honest boundary:            final completion still requires a real P1-P7 reviewed package replay comparison, not only deterministic draft/stage artifacts
+```

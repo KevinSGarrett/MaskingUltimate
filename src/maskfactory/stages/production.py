@@ -57,6 +57,86 @@ class MultiPersonProductionResult:
     draft_contract_paths: tuple[Path, ...] = ()
 
 
+SINGLE_PERSON_REGRESSION_STAGES = (
+    "s02",
+    "s03",
+    "s04",
+    "s05",
+    "s06",
+    "s07",
+    "s08",
+    "s08_5",
+    "s09",
+)
+P8_ONLY_SINGLE_PERSON_FILES = {"s02": {"other_person_protected.png"}}
+
+
+def verify_single_person_regression(
+    image_id: str, *, legacy_work_root: Path, p8_work_root: Path
+) -> dict[str, Any]:
+    """Prove P8's p0 stage artifacts are byte-identical to the pre-P8 layout."""
+    stage_results = {}
+    tree_digest = hashlib.sha256()
+    total_files = 0
+    added_files = {}
+    for stage in SINGLE_PERSON_REGRESSION_STAGES:
+        legacy = Path(legacy_work_root) / stage / image_id
+        activated = Path(p8_work_root) / "instances" / "p0" / stage / image_id
+        if not legacy.is_dir() or not activated.is_dir():
+            raise SemanticStageError(f"single-person regression stage missing: {stage}")
+        legacy_files = {
+            path.relative_to(legacy).as_posix(): path
+            for path in sorted(legacy.rglob("*"))
+            if path.is_file()
+        }
+        activated_files = {
+            path.relative_to(activated).as_posix(): path
+            for path in sorted(activated.rglob("*"))
+            if path.is_file()
+        }
+        allowed_additions = P8_ONLY_SINGLE_PERSON_FILES.get(stage, set())
+        actual_additions = set(activated_files) - set(legacy_files)
+        if (
+            not legacy_files
+            or set(legacy_files) - set(activated_files)
+            or actual_additions - allowed_additions
+        ):
+            raise SemanticStageError(
+                f"single-person regression file set differs for {stage}: "
+                f"legacy={sorted(legacy_files)}, p8={sorted(activated_files)}"
+            )
+        if actual_additions:
+            added_files[stage] = {
+                relative: _sha256_file(activated_files[relative])
+                for relative in sorted(actual_additions)
+            }
+        stage_digest = hashlib.sha256()
+        for relative in sorted(legacy_files):
+            legacy_bytes = legacy_files[relative].read_bytes()
+            activated_bytes = activated_files[relative].read_bytes()
+            if legacy_bytes != activated_bytes:
+                raise SemanticStageError(
+                    f"single-person regression bytes differ: {stage}/{relative}"
+                )
+            stage_digest.update(relative.encode("utf-8") + b"\0" + legacy_bytes)
+            tree_digest.update(stage.encode("ascii") + b"\0")
+            tree_digest.update(relative.encode("utf-8") + b"\0" + legacy_bytes)
+            total_files += 1
+        stage_results[stage] = {
+            "file_count": len(legacy_files),
+            "sha256": stage_digest.hexdigest(),
+        }
+    return {
+        "image_id": image_id,
+        "instance": "p0",
+        "stages": stage_results,
+        "file_count": total_files,
+        "p8_only_files": added_files,
+        "tree_sha256": tree_digest.hexdigest(),
+        "byte_identical": True,
+    }
+
+
 def build_production_runners(
     config: Mapping[str, Any],
     *,

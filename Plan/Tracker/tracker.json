@@ -5276,10 +5276,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "failure_mining provides schema-validated locked/fsynced JSONL append and one append_source_failure wiring point for lanes, QC, second review, VLM-autoQA disagreements, and human edit deltas; all five mappings/append tests and full 292-test suite passed.",
+      "evidence": "Human-edit production wiring is now real, not only a generic append helper: every S12 review package seals immutable S09 PART/MATERIAL baselines with identity+SHA-256; legacy CVAT pull seals before correction; weekly S15 verifies baseline/frozen-gold hashes, measures per-part draft-vs-gold IoU deltas, and appends schema-valid human_edit_delta rows exactly once per image/pN/baseline/part. Existing lane/QC/second-review/VLM sources remain wired.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:05:05+00:00",
+      "updated_at": "2026-07-11T21:13:50+00:00",
       "orphaned": false
     },
     "MF-P4-03.02": {
@@ -5297,10 +5297,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "priority_score implements exact .4 error+.3 deficit+.2 use+.1 recency with 14-day half-life; configs/training/use_weights.yaml has hands/chest1, feet.8, bands.5; exact numeric test and 292-test suite passed.",
+      "evidence": "The exact priority scorer remains .4 error+.3 coverage deficit+.2 downstream use+.1 14-day recency. Production human-edit harvesting now supplies measured class_error_rate=1-IoU, the matching view/pose/context coverage deficit, governed hands/chest/feet/bands/default weights, and approval-time recency; seeded expected numeric priorities pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:05:06+00:00",
+      "updated_at": "2026-07-11T21:13:51+00:00",
       "orphaned": false
     },
     "MF-P4-03.03": {
@@ -5318,10 +5318,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "write_acquisition_plan uses local text-LLM cluster callback and writes stable top-20 priority collect/reannotate/hard-case/label-proposal actions to dated Markdown; focused multi-reason test and full suite passed.",
+      "evidence": "Weekly run_active_learning now harvests verified human-edit deltas before loading the queue and writing the top-20 acquisition plan; reruns are idempotent and report new/already-harvested/missing-baseline counts. Hash tamper refuses mining. 46 focused and 558 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:05:06+00:00",
+      "updated_at": "2026-07-11T21:13:51+00:00",
       "orphaned": false
     },
     "MF-P4-03.04": {

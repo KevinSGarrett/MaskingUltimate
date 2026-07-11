@@ -743,12 +743,15 @@ def build_production_runners(
             coverage_matrix_path=ROOT / "qa/coverage_matrix.json",
             output_dir=ROOT / "qa/reports",
             approved_gold_count=count,
+            packages_root=ROOT / "data/packages",
+            use_weights_path=ROOT / "configs/training/use_weights.yaml",
         )
         return {
             "unresolved_failure_count": result["unresolved_failure_count"],
             "coverage_deficit_count": result["coverage_deficit_count"],
             "retrain_requested": result["retrain_requested"],
             "acquisition_plan": result["acquisition_plan"],
+            "human_edit_harvest": result["human_edit_harvest"],
         }
 
     return {

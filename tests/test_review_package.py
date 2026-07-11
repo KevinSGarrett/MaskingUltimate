@@ -96,6 +96,15 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
     assert left_forearm["mask_file"] is None
     assert "careful human review" in left_forearm["notes"]
     assert manifest["parts"]["right_forearm"]["status"] == "n/a"
+    baseline = json.loads(
+        (package / "annotations/draft_baseline/baseline_manifest.json").read_text()
+    )
+    assert baseline["image_id"] == image_id and baseline["instance_id"] == "p0"
+    assert baseline["source_stage"] == "S09_weighted_consensus"
+    assert (
+        manifest["files"]["annotations/draft_baseline/label_map_part.png"]
+        == baseline["part_map_sha256"]
+    )
     instances = _discover_instances(packages, image_id)
     assert len(instances) == 1 and instances[0].package_root == package
     archive, frames = _review_archive(list(instances))

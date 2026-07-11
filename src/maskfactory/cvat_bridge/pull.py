@@ -16,6 +16,7 @@ from ..fusion.mapbuild import export_binaries, fuse_package
 from ..io.png_strict import read_mask, write_binary_mask
 from ..ontology import get_ontology
 from ..qa.checks import run_format_integrity
+from ..review_package import snapshot_draft_baseline
 from .client import DEFAULT_CONFIG, CvatApiError, CvatClient, load_cvat_config
 from .labelmap import CvatLabelMap, decode_mask_rle
 from .push import DEFAULT_TASK_RECORDS, _load_mapping
@@ -60,6 +61,12 @@ def _pull_task(client: CvatClient, record: dict[str, Any], mapping: CvatLabelMap
     for frame_record in record["frames"]:
         package = Path(frame_record["package_root"])
         shape = (int(frame_record["height"]), int(frame_record["width"]))
+        package_manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+        snapshot_draft_baseline(
+            package,
+            image_id=str(package_manifest["image_id"]),
+            instance_id=package.name if package.name.startswith("p") else "p0",
+        )
         _seed_fusion_inputs(package)
         for name in frame_record.get("pushed_labels", []):
             _write_corrected(package, name, np.zeros(shape, dtype=np.uint8))

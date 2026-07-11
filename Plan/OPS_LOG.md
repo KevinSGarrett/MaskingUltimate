@@ -3047,3 +3047,24 @@ full regression:            557 tests pass
 quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
 honest boundary:            live --through-autoqa on the accepted three-instance image still awaits access to the Windows account owning Ubuntu-22.04
 ```
+## 2026-07-11 21:13 UTC - S15 human-edit delta feedback loop completed
+**Items:** MF-P4-03.01, MF-P4-03.02, MF-P4-03.03 completion evidence corrected and strengthened
+**Result:** Weekly active learning now measures actual S09-draft versus approved-gold corrections; the previous generic append helper is no longer mistaken for production human-edit wiring.
+
+```
+S12 baseline:                annotations/draft_baseline/{label_map_part,label_map_material,baseline_manifest}.png/json
+baseline authority:          exact image_id, pN instance, S09 source stage, PART/MATERIAL SHA-256
+legacy protection:           CVAT pull seals a missing baseline before seeding/overwriting corrected masks
+immutability:                an existing baseline is identity/hash verified and never replaced during pull
+S15 eligibility:             frozen package, uniformly human_approved_gold visible parts, valid review timestamp
+gold authority:              current label_map_part SHA-256 must equal the frozen manifest files entry
+measurement:                 every enabled changed PART records class_error_rate = 1 - draft/gold IoU
+priority inputs:             measured error, matching view/pose/context coverage deficit, governed use weight, approval recency
+dedup identity:              image_id + pN + baseline PART hash + label; weekly reruns append nothing twice
+audit output:                compared/unchanged/missing-baseline/new/already-harvested counts in active_learning_<date>.json
+negative evidence:           baseline identity drift, baseline hash tamper, gold hash drift, non-gold frozen status, or geometry mismatch refuses harvesting
+focused regression:         46 review/CVAT/mining/dataset/production/atomic tests pass
+full regression:            558 tests pass
+quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
+honest boundary:            no real human-edit delta exists until Kevin completes and approves the first gold package; no fabricated queue rows were added
+```

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,7 @@ from PIL import Image
 from scipy import ndimage
 
 from . import __version__
+from .fs_atomic import replace_with_retry
 from .fusion.mapbuild import export_binaries
 from .io.png_strict import read_mask
 from .ontology import get_ontology
@@ -52,6 +54,12 @@ def assemble_review_package(
     shutil.copy2(source_crop_path, package_root / "source.png")
     shutil.copy2(part_map_path, package_root / "label_map_part.png")
     shutil.copy2(material_map_path, package_root / "label_map_material.png")
+    snapshot_draft_baseline(
+        package_root,
+        image_id=image_id,
+        instance_id=f"p{instance_index}",
+        allow_replace=True,
+    )
     export_binaries(package_root)
     overlays = package_root / "overlays"
     overlays.mkdir(parents=True, exist_ok=True)
@@ -210,6 +218,72 @@ def assemble_review_package(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return package_root
+
+
+def snapshot_draft_baseline(
+    package_root: Path,
+    *,
+    image_id: str,
+    instance_id: str,
+    allow_replace: bool = False,
+) -> Path:
+    """Seal the pre-human S09 maps used later by S15 edit-delta mining."""
+    package_root = Path(package_root)
+    if not instance_id.startswith("p") or not instance_id[1:].isdigit():
+        raise ValueError("draft baseline instance_id must be pN")
+    part_source = package_root / "label_map_part.png"
+    material_source = package_root / "label_map_material.png"
+    if not part_source.is_file() or not material_source.is_file():
+        raise FileNotFoundError("draft baseline requires both authoritative label maps")
+    destination = package_root / "annotations" / "draft_baseline"
+    manifest_path = destination / "baseline_manifest.json"
+    part_sha = _sha256(part_source)
+    material_sha = _sha256(material_source)
+    if manifest_path.is_file() and not allow_replace:
+        document = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if (
+            document.get("image_id") != image_id
+            or document.get("instance_id") != instance_id
+            or document.get("source_stage") != "S09_weighted_consensus"
+        ):
+            raise ValueError(f"sealed draft baseline identity is invalid: {manifest_path}")
+        for name, digest in (
+            ("label_map_part.png", document.get("part_map_sha256")),
+            ("label_map_material.png", document.get("material_map_sha256")),
+        ):
+            path = destination / name
+            if not path.is_file() or _sha256(path) != digest:
+                raise ValueError(f"sealed draft baseline is corrupt: {path}")
+        return manifest_path
+    staging = destination.with_name(f".{destination.name}.tmp-{uuid.uuid4().hex}")
+    backup = destination.with_name(f".{destination.name}.old-{uuid.uuid4().hex}")
+    try:
+        staging.mkdir(parents=True)
+        shutil.copy2(part_source, staging / "label_map_part.png")
+        shutil.copy2(material_source, staging / "label_map_material.png")
+        document = {
+            "schema_version": "1.0.0",
+            "image_id": image_id,
+            "instance_id": instance_id,
+            "source_stage": "S09_weighted_consensus",
+            "part_map_sha256": part_sha,
+            "material_map_sha256": material_sha,
+        }
+        (staging / "baseline_manifest.json").write_text(
+            json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        if destination.exists():
+            replace_with_retry(destination, backup)
+        try:
+            replace_with_retry(staging, destination)
+        except Exception:
+            if backup.exists():
+                replace_with_retry(backup, destination)
+            raise
+        shutil.rmtree(backup, ignore_errors=True)
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
+    return manifest_path
 
 
 def finalize_image_package_index(

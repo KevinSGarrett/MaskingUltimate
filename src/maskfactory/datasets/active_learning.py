@@ -9,7 +9,11 @@ from dataclasses import fields
 from datetime import UTC, datetime
 from pathlib import Path
 
-from ..qa.failure_mining import FailureRecord, write_acquisition_plan
+from ..qa.failure_mining import (
+    FailureRecord,
+    harvest_human_edit_deltas,
+    write_acquisition_plan,
+)
 from .coverage import build_coverage_matrix, coverage_deficit_report
 
 
@@ -23,7 +27,26 @@ def run_active_learning(
     ontology_changed: bool = False,
     class_error_history_path: Path | None = None,
     report_date: str | None = None,
+    packages_root: Path | None = None,
+    use_weights_path: Path = Path("configs/training/use_weights.yaml"),
 ) -> dict:
+    coverage = _coverage(coverage_matrix_path)
+    harvest = (
+        harvest_human_edit_deltas(
+            packages_root=packages_root,
+            failure_queue_path=failure_queue_path,
+            coverage_matrix=coverage,
+            use_weights_path=use_weights_path,
+        )
+        if packages_root is not None
+        else {
+            "compared_package_count": 0,
+            "unchanged_package_count": 0,
+            "missing_baseline_packages": [],
+            "new_record_count": 0,
+            "already_harvested_count": 0,
+        }
+    )
     records = _records(failure_queue_path)
     date = report_date or datetime.now(UTC).date().isoformat()
     plan = write_acquisition_plan(
@@ -32,7 +55,6 @@ def run_active_learning(
         clusterer=lambda reasons: {reason: _cluster(reason) for reason in reasons},
         report_date=date,
     )
-    coverage = _coverage(coverage_matrix_path)
     deficits = coverage_deficit_report(coverage, target_per_cell=8)["cells"]
     top = [row for row in deficits if row["deficit"] > 0][:10]
     with plan.open("a", encoding="utf-8") as handle:
@@ -72,6 +94,9 @@ def run_active_learning(
         "retrain_task": str(retrain_task) if retrain_task else None,
         "class_error_trigger_classes": list(error_classes),
         "acquisition_plan": str(plan),
+        "human_edit_harvest": {
+            key: value for key, value in harvest.items() if key != "new_records"
+        },
     }
     (output_dir / f"active_learning_{date}.json").write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"

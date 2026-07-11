@@ -18,6 +18,7 @@ from ..ontology import get_ontology
 from ..stages.s08_5_densepose import DensePoseOutput
 from ..validation import ArtifactValidationError, validate_document
 from .checks import QcResult
+from .failure_mining import append_failure_once, make_failure_record
 from .metrics import compute_part_metrics, package_qa_score
 from .multi_instance import MultiInstanceQcInputs, run_multi_instance_qc
 from .semantic import SemanticInputs, run_semantic_qc
@@ -41,6 +42,8 @@ def run_s10_production(
     source_crop_path: Path,
     output_dir: Path,
     multi_instance_inputs: MultiInstanceQcInputs | None = None,
+    failure_queue_path: Path | None = None,
+    failure_instance_id: str = "p0",
 ) -> dict[str, Any]:
     """Run every S10 check supported before packaging; mark package-only checks skipped."""
     authority = get_ontology()
@@ -216,7 +219,44 @@ def run_s10_production(
     (output_dir / "qa_report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
+    if failure_queue_path is not None:
+        _emit_qc_failures(
+            report,
+            Path(failure_queue_path),
+            pose_angle=str(pose["view"]),
+            instance_id=failure_instance_id,
+        )
     return report
+
+
+def _emit_qc_failures(
+    report: dict[str, Any], path: Path, *, pose_angle: str, instance_id: str
+) -> int:
+    if not instance_id.startswith("p") or not instance_id[1:].isdigit():
+        raise ValueError("S10 failure instance must be pN")
+    emitted = 0
+    event_time = datetime.fromisoformat(str(report["created_at"]).replace("Z", "+00:00"))
+    for check in report["checks"]:
+        if check.get("result") != "fail":
+            continue
+        if str(check["id"]) in {"QC-035", "QC-036", "QC-037", "QC-038"} and instance_id != "p0":
+            continue
+        qc_slug = str(check["id"]).lower().replace("-", "_")
+        record = make_failure_record(
+            image_id=str(report["image_id"]),
+            body_part=qc_slug,
+            reason="qc_fail",
+            pose=pose_angle,
+            model=f"s10_autoqa:{instance_id}:{report['run_id']}",
+            correction=f"review_{qc_slug}",
+            class_error_rate=1.0,
+            coverage_deficit=1.0,
+            use_weight=0.3,
+            event_time=event_time,
+            now=event_time,
+        )
+        emitted += int(append_failure_once(path, record))
+    return emitted
 
 
 def _check_document(result: QcResult) -> dict[str, Any]:

@@ -41,11 +41,38 @@ class FailureRecord:
 def append_failure(path: Path, record: FailureRecord, *, lock_timeout_sec: float = 5) -> None:
     """Validate then append one durable JSONL record under a short exclusive lock."""
     document = asdict(record)
+    _validate_failure_document(document)
+    _append_document(path, document, lock_timeout_sec=lock_timeout_sec)
+
+
+def append_failure_once(path: Path, record: FailureRecord, *, lock_timeout_sec: float = 5) -> bool:
+    """Atomically append unless the exact producer identity already exists."""
+    document = asdict(record)
+    _validate_failure_document(document)
+    identity = _failure_identity(document)
+    return _append_document(
+        path,
+        document,
+        lock_timeout_sec=lock_timeout_sec,
+        unique_identity=identity,
+    )
+
+
+def _validate_failure_document(document: dict) -> None:
     issues = validate_document(document, "failure_queue")
     if issues:
         raise FailureMiningError(
             "invalid failure record: " + "; ".join(str(issue) for issue in issues)
         )
+
+
+def _append_document(
+    path: Path,
+    document: dict,
+    *,
+    lock_timeout_sec: float,
+    unique_identity: tuple[str, ...] | None = None,
+) -> bool:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     lock = path.with_suffix(path.suffix + ".lock")
@@ -60,10 +87,21 @@ def append_failure(path: Path, record: FailureRecord, *, lock_timeout_sec: float
             time.sleep(0.05)
     try:
         os.close(descriptor)
+        if unique_identity is not None and path.is_file():
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if not line.strip():
+                    continue
+                try:
+                    existing = json.loads(line)
+                except json.JSONDecodeError as exc:
+                    raise FailureMiningError(f"invalid failure queue row {number}: {exc}") from exc
+                if _failure_identity(existing) == unique_identity:
+                    return False
         with path.open("a", encoding="utf-8", newline="\n") as handle:
             handle.write(json.dumps(document, sort_keys=True, separators=(",", ":")) + "\n")
             handle.flush()
             os.fsync(handle.fileno())
+        return True
     finally:
         lock.unlink(missing_ok=True)
 
@@ -162,6 +200,19 @@ def append_source_failure(
     )
     append_failure(path, record)
     return record
+
+
+def _failure_identity(document: dict) -> tuple[str, ...]:
+    return tuple(
+        str(document.get(key, ""))
+        for key in (
+            "image_id",
+            "failed_body_part",
+            "failure_reason",
+            "model_that_failed",
+            "correction_needed",
+        )
+    )
 
 
 def harvest_human_edit_deltas(

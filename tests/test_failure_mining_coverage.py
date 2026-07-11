@@ -19,6 +19,7 @@ from maskfactory.io.png_strict import write_label_map
 from maskfactory.qa.failure_mining import (
     FailureMiningError,
     append_failure,
+    append_failure_once,
     append_source_failure,
     harvest_human_edit_deltas,
     make_failure_record,
@@ -66,6 +67,10 @@ def test_failure_queue_append_and_exact_priority_formula(tmp_path: Path) -> None
     assert len(lines) == 2
     assert all(json.loads(line)["priority"] == pytest.approx(score) for line in lines)
     assert not (tmp_path / "failure_queue.jsonl.lock").exists()
+    once = tmp_path / "failure_once.jsonl"
+    assert append_failure_once(once, record) is True
+    assert append_failure_once(once, record) is False
+    assert len(once.read_text().splitlines()) == 1
 
 
 def test_failure_reason_sources_and_weekly_top20_acquisition_plan(tmp_path: Path) -> None:

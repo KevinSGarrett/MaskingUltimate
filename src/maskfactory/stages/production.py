@@ -595,6 +595,8 @@ def build_production_runners(
                 if shared_work_root is not None
                 else None
             ),
+            failure_queue_path=ROOT / "qa/failure_queue.jsonl",
+            failure_instance_id=instance_name,
         )
         return {
             "overall": report["overall"],
@@ -607,12 +609,16 @@ def build_production_runners(
         }
 
     def s11(context: StageContext) -> Mapping[str, Any]:
+        pose = json.loads((context.prior_stage_dir("S04") / "pose133.json").read_text())
         status = run_s11_production(
             source_crop_path=prior(context, "S01") / instance_name / "person_ctx.png",
             part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
             s10_report_path=context.prior_stage_dir("S10") / "qa_report.json",
             output_dir=context.output_dir,
             gate_path=ROOT / "qa/vlm_eval/results/production_gate.json",
+            failure_queue_path=ROOT / "qa/failure_queue.jsonl",
+            pose_angle=str(pose["view"]),
+            failure_instance_id=instance_name,
         )
         return {
             "vlm_enabled": status["enabled"],

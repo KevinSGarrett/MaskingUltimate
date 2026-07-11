@@ -74,6 +74,7 @@ def test_s10_production_writes_schema_valid_report_and_preserves_blocks(tmp_path
         person_bbox_xyxy=(10, 10, 50, 40),
         source_crop_path=tmp_path / "source.png",
         output_dir=tmp_path / "output",
+        failure_queue_path=tmp_path / "failure_queue.jsonl",
     )
     assert validate_document(report, "qa_report") == ()
     assert report["overall"] == "fail"  # QC-014 has only one independent side vote.
@@ -82,6 +83,15 @@ def test_s10_production_writes_schema_valid_report_and_preserves_blocks(tmp_path
     assert checks["QC-035"]["result"] == "pass"
     assert checks["QC-005"]["result"] == "skipped"
     assert (tmp_path / "output/qa_report.json").is_file()
+    failures = [
+        json.loads(line) for line in (tmp_path / "failure_queue.jsonl").read_text().splitlines()
+    ]
+    assert {row["failed_body_part"] for row in failures} == {
+        check_id.lower().replace("-", "_")
+        for check_id, check in checks.items()
+        if check["result"] == "fail"
+    }
+    assert all(row["failure_reason"] == "qc_fail" for row in failures)
 
     p0 = np.zeros((30, 80), dtype=bool)
     p1 = np.zeros_like(p0)

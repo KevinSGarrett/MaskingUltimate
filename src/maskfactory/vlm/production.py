@@ -6,6 +6,7 @@ import json
 import shutil
 import time
 from dataclasses import asdict
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Callable
 
@@ -15,6 +16,7 @@ from PIL import Image
 
 from ..gpu import GpuLock
 from ..ontology import get_ontology
+from ..qa.failure_mining import append_failure_once, make_failure_record
 from ..qa.panels import render_boundary_panel, render_part_overlays
 from ..validation import ArtifactValidationError, validate_document
 from .client import OllamaClient, append_verdict, prepare_panel_input, review_part
@@ -35,6 +37,9 @@ def run_s11_production(
     config_path: Path = Path("configs/vlm.yaml"),
     prompt_path: Path = Path("src/maskfactory/vlm/prompts/p_part.txt"),
     gate_checker: GateChecker = require_current_gate,
+    failure_queue_path: Path | None = None,
+    pose_angle: str | None = None,
+    failure_instance_id: str = "p0",
 ) -> dict:
     """Run gated local VLM review, or safely route every part when the gate is unavailable."""
     output_dir = Path(output_dir)
@@ -127,6 +132,26 @@ def run_s11_production(
             append_verdict(qa_report_path, verdict)
             decision = route(auto_qa, verdict)
             routes[label] = asdict(decision)
+            if failure_queue_path is not None and _is_disagreement(auto_qa, verdict):
+                if pose_angle is None:
+                    raise ValueError("S11 failure-queue emission requires pose_angle")
+                if not failure_instance_id.startswith("p") or not failure_instance_id[1:].isdigit():
+                    raise ValueError("S11 failure instance must be pN")
+                occurred = datetime.now(UTC)
+                record = make_failure_record(
+                    image_id=str(report["image_id"]),
+                    body_part=label,
+                    reason="vlm_autoqa_disagreement",
+                    pose=pose_angle,
+                    model=f"{model}:{prompt_version}:{failure_instance_id}:{report['run_id']}",
+                    correction=f"review_{label}",
+                    class_error_rate=float(verdict.confidence),
+                    coverage_deficit=1.0,
+                    use_weight=_label_use_weight(label),
+                    event_time=occurred,
+                    now=occurred,
+                )
+                append_failure_once(Path(failure_queue_path), record)
         image_review = _review_whole_image(
             active_client,
             model=model,
@@ -226,3 +251,19 @@ def _parse_image_review(raw: str) -> dict | None:
     if not isinstance(value["notes"], str):
         return None
     return value
+
+
+def _is_disagreement(auto_qa: str, verdict) -> bool:
+    return (auto_qa == "all_pass" and verdict.verdict == "fail") or (
+        auto_qa in {"route", "block"} and verdict.verdict == "pass" and verdict.confidence >= 0.7
+    )
+
+
+def _label_use_weight(label: str) -> float:
+    if any(token in label for token in ("finger", "thumb", "hand", "wrist")):
+        return 1.0
+    if any(token in label for token in ("chest", "breast")):
+        return 1.0
+    if any(token in label for token in ("foot", "toe", "ankle")):
+        return 0.8
+    return 0.3

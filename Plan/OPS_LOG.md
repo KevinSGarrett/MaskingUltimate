@@ -3068,3 +3068,20 @@ full regression:            558 tests pass
 quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
 honest boundary:            no real human-edit delta exists until Kevin completes and approves the first gold package; no fabricated queue rows were added
 ```
+## 2026-07-11 21:23 UTC - S10/S11 failure producers wired; overstated tracker claim corrected
+**Item:** MF-P4-03.01 corrected complete -> 90% partial
+**Result:** Auto-QA and VLM disagreement records now reach the durable failure queue in production. The item was honestly reopened because the hand lane still returns an in-memory record without a live stage call that persists it.
+
+```
+S10 producer:               every result=fail check appends qc_fail with image, pN, QC ID, run identity, view and exact failure priority inputs
+multi-instance dedup:       global QC-035..038 records emit from p0 only; per-instance checks retain pN producer identity
+S11 producer:               all-pass/VLM-fail and route-or-block/VLM-confident-pass append vlm_autoqa_disagreement
+S11 authority:              uncertain/low-confidence results route carefully but do not masquerade as measured disagreement
+append atomicity:           schema validation + one exclusive lock + fsync; exact producer identity checked under the same lock
+idempotency proof:          replaying one S11 run appends one row, not two
+other real producers:       second-review failure and hash-verified human-edit delta paths remain live
+focused regression:         45 S10/S11/mining/dataset/production tests pass
+full regression:            559 tests pass
+quality:                    Ruff check/format clean across 253 files; generated ontology current; tracker structurally valid
+honest remaining gap:       apply_finger_merge_policy emits the correct record payload in memory, but no active P3 hand-lane stage persists it yet
+```

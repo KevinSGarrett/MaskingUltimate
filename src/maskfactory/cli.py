@@ -23,6 +23,7 @@ from .models import (
     catalog_model_keys,
     fetch_models,
     register_ollama_models,
+    register_training_candidate,
 )
 from .providers.fixtures import DEFAULT_FIXTURES, SelfTestRunner, run_external_fixtures
 from .providers.fixtures import DEFAULT_OUTPUT as DEFAULT_FIXTURE_OUTPUT
@@ -1314,6 +1315,41 @@ def models_register_ollama(registry_path: Path) -> None:
             f"{entry['key']}: {entry['register_status']} managed=true digest={entry['digest']} "
             f"ollama_list_id={entry['ollama_list_id']} verified=true"
         )
+
+
+@models.command("register-training-candidate")
+@click.argument("run_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--key", "candidate_key", required=True, help="Stable registry key for this run.")
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+def models_register_training_candidate(
+    run_root: Path, candidate_key: str, registry_path: Path, models_root: Path
+) -> None:
+    """Register one sealed completed MMSeg run as a non-champion candidate."""
+    try:
+        entry = register_training_candidate(
+            run_root,
+            candidate_key,
+            registry_path=registry_path,
+            models_root=models_root,
+        )
+    except (OSError, ValueError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        f"{entry['key']}: role={entry['role']} run={entry['training_run']} "
+        f"sha256={entry['sha256']} verified=true"
+    )
 
 
 @models.command("champions")

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import shutil
 import uuid
 from collections.abc import Mapping
@@ -20,6 +19,7 @@ from ..cvat_bridge.client import CvatClient
 from ..cvat_bridge.push import push_images
 from ..datasets.active_learning import run_active_learning
 from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
+from ..fs_atomic import replace_with_retry
 from ..io.png_strict import read_mask, write_binary_mask, write_label_map
 from ..ontology import get_ontology
 from ..orchestrator import (
@@ -893,12 +893,12 @@ def materialize_d1_atomic_drafts(
             )
             _verify_d1_draft_directory(staging, document, full_part)
             if destination.exists():
-                os.replace(destination, backup)
+                replace_with_retry(destination, backup)
             try:
-                os.replace(staging, destination)
+                replace_with_retry(staging, destination)
             except Exception:
                 if backup.exists():
-                    os.replace(backup, destination)
+                    replace_with_retry(backup, destination)
                 raise
             shutil.rmtree(backup, ignore_errors=True)
             outputs.append(destination / "draft_contract.json")

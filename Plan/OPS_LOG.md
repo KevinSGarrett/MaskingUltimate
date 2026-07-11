@@ -2912,3 +2912,23 @@ full regression:            534 tests pass
 quality:                    Ruff check/format clean across 247 files; generated ontology current; tracker structurally valid
 honest boundary:            no trained/evaluated winner exists yet to exercise promote -> live serve -> rollback with real artifacts
 ```
+## 2026-07-11 19:47 UTC - Completed-run to promotable-candidate handoff implemented
+**Item:** MF-P5-06.03 advanced 96% -> 98% partial
+**Result:** A successful governed MMSeg run now produces the exact immutable artifact bundle required by the hardened champion promotion and serving paths; no manual registry JSON construction is needed.
+
+```
+trainer seal:               candidate_artifact.json written before running -> complete transition
+sealed identity:            run_id/model/dataset_ref/DVC md5, target champion role, checkpoint/config paths+SHA-256, explicit class_names
+registration command:       maskfactory models register-training-candidate <run_root> --key <slug>
+entry role:                 challenger_bodypart only; registration can never directly create a champion pointer
+installed layout:           models/trained/<key>/<checkpoint> + inference_config.py
+copy verification:          both installed files re-hashed before one atomic registry write
+failure atomicity:          tampered run artifacts produce neither registry entry nor installed candidate directory
+promotion compatibility:    entry includes target role, training provenance, DVC identity, config hash, and ontology vocabulary required by the serving gate
+Windows durability:         shared bounded PermissionError retry added to atomic directory promotions used by derivation/intake/orchestration/D1/training/model install
+retry scope:                short 10/50/100/250/500ms schedule; semantic and non-permission failures are never retried
+focused regression:         32 launch/registry/serving tests and 46 durability/affected-workflow tests pass
+full regression:            536 tests pass
+quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
+honest boundary:            a real evaluated winner still must be registered, promoted, served in WSL, and rolled back before MF-P5-06.03 completes
+```

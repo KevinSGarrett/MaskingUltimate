@@ -17,6 +17,7 @@ from typing import Any
 
 import yaml
 
+from .fs_atomic import replace_with_retry
 from .gpu import GpuLock
 from .state import transition_image_status, writer_connection
 
@@ -244,12 +245,12 @@ def _replace_directory(staging: Path, destination: Path) -> None:
     backup = destination.with_name(destination.name + f".old-{uuid.uuid4().hex}")
     had_destination = destination.exists()
     if had_destination:
-        os.replace(destination, backup)
+        replace_with_retry(destination, backup)
     try:
-        os.replace(staging, destination)
+        replace_with_retry(staging, destination)
     except Exception:
         if had_destination and backup.exists():
-            os.replace(backup, destination)
+            replace_with_retry(backup, destination)
         raise
     if backup.exists():
         shutil.rmtree(backup)

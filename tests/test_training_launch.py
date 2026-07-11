@@ -4,8 +4,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 import yaml
+from click.testing import CliRunner
 from PIL import Image
 
+from maskfactory.cli import main
+from maskfactory.models.registry import resolve_registered_model
 from maskfactory.training.launch import TrainingLaunchError, dataset_instance_count, launch_training
 from maskfactory.training.runtime import TrainingRuntimeReport
 
@@ -100,7 +103,84 @@ def test_launcher_holds_gpu_runs_compiled_config_and_requires_checkpoint(tmp_pat
     assert document["status"] == "complete"
     assert document["status_detail"] == "checkpoint=iter_40000.pth"
     assert (run / "mmengine_config.py").is_file()
+    candidate = json.loads((run / "candidate_artifact.json").read_text())
+    assert candidate["target_champion_role"] == "champion_bodypart"
+    assert candidate["checkpoint"] == "ckpts/iter_40000.pth"
+    assert len(candidate["class_names"]) == 56
     assert not (runs_root / "gpu.lock").exists()
+
+
+def test_completed_run_registers_atomically_as_reproducible_nonchampion(tmp_path: Path) -> None:
+    runs_root = tmp_path / "runs"
+
+    class Process:
+        def __init__(self, _command, **_kwargs):
+            run_root = next(runs_root.glob("r_*"))
+            (run_root / "ckpts/iter_40000.pth").write_bytes(b"candidate checkpoint")
+
+        def wait(self):
+            return 0
+
+    run = launch_training(
+        model="segformer_b3",
+        dataset_root=_dataset(tmp_path),
+        config_path=_config(tmp_path),
+        dvc_md5="a" * 32,
+        runs_root=runs_root,
+        runtime_probe=_ready,
+        process_factory=Process,
+    )
+    models_root = tmp_path / "models"
+    registry = models_root / "registry.json"
+    original_config = (run / "mmengine_config.py").read_bytes()
+    (run / "mmengine_config.py").write_bytes(original_config + b"# tampered\n")
+    failed = CliRunner().invoke(
+        main,
+        [
+            "models",
+            "register-training-candidate",
+            str(run),
+            "--key",
+            "segformer_b3_bodyparts_v3",
+            "--registry",
+            str(registry),
+            "--models-root",
+            str(models_root),
+        ],
+    )
+    assert failed.exit_code != 0
+    assert "inference config hash mismatch" in failed.output
+    assert not registry.exists()
+    assert not (models_root / "trained/segformer_b3_bodyparts_v3").exists()
+
+    (run / "mmengine_config.py").write_bytes(original_config)
+    result = CliRunner().invoke(
+        main,
+        [
+            "models",
+            "register-training-candidate",
+            str(run),
+            "--key",
+            "segformer_b3_bodyparts_v3",
+            "--registry",
+            str(registry),
+            "--models-root",
+            str(models_root),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    document = json.loads(registry.read_text())
+    entry = document["models"][0]
+    assert entry["role"] == "challenger_bodypart"
+    assert entry["target_champion_role"] == "champion_bodypart"
+    assert entry["training_run"] == run.name
+    assert entry["dataset_ref"] == "bodyparts@v3"
+    assert len(entry["class_names"]) == 56
+    resolved = resolve_registered_model(
+        "segformer_b3_bodyparts_v3", registry_path=registry, models_root=models_root
+    )
+    assert resolved.read_bytes() == b"candidate checkpoint"
+    assert (resolved.parent / "inference_config.py").read_bytes() == original_config
 
 
 def test_launcher_fails_before_run_when_entry_or_runtime_gate_is_closed(tmp_path: Path) -> None:

@@ -18,6 +18,7 @@ from typing import Any, Protocol
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 
+from .fs_atomic import replace_with_retry
 from .state import DEFAULT_DB_PATH, initialize_database, writer_connection
 
 ALLOWED_EXTENSIONS = frozenset({".png", ".jpg", ".jpeg", ".webp"})
@@ -370,7 +371,7 @@ def ingest_one(
             write_metadata_stripped(source, temporary / f"source{extension}")
             manifest["source"]["source_file"] = f"source{extension}"
             _write_json_atomic(temporary / "manifest.json", manifest)
-            os.replace(temporary, image_directory)
+            replace_with_retry(temporary, image_directory)
         except Exception:
             _remove_tree(temporary)
             raise

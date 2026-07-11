@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 from typing import Any, Callable
 
@@ -115,6 +118,7 @@ def launch_training(
             checkpoints = sorted((run_root / "ckpts").glob("*.pth"))
             if not checkpoints:
                 raise TrainingLaunchError("MMSeg exited zero without a checkpoint")
+            write_candidate_artifact(run_root, checkpoints[-1], compiled)
             transition_training_run(
                 run_root,
                 "complete",
@@ -128,3 +132,59 @@ def launch_training(
             raise
         raise TrainingLaunchError(str(exc)) from exc
     return run_root
+
+
+def write_candidate_artifact(
+    run_root: Path, checkpoint: Path, compiled_config: dict[str, Any]
+) -> Path:
+    """Seal the exact reproducible inference artifacts from a successful training run."""
+    root = Path(run_root).resolve()
+    checkpoint = Path(checkpoint).resolve()
+    config = (root / "mmengine_config.py").resolve()
+    if root not in checkpoint.parents or checkpoint.parent != root / "ckpts":
+        raise TrainingLaunchError("candidate checkpoint is outside the run ckpts directory")
+    if not checkpoint.is_file() or not config.is_file():
+        raise TrainingLaunchError("candidate checkpoint or generated inference config is missing")
+    run = json.loads((root / "run.json").read_text(encoding="utf-8"))
+    if run.get("status") != "running":
+        raise TrainingLaunchError("candidate artifact may be sealed only while training is running")
+    evaluator = compiled_config.get("val_evaluator")
+    class_names = evaluator.get("class_names") if isinstance(evaluator, dict) else None
+    if (
+        not isinstance(class_names, list)
+        or not class_names
+        or not all(isinstance(name, str) and name for name in class_names)
+        or len(class_names) != len(set(class_names))
+    ):
+        raise TrainingLaunchError("compiled config lacks a valid class_names vocabulary")
+    document = {
+        "schema_version": "1.0.0",
+        "run_id": run["run_id"],
+        "model": run["model"],
+        "dataset_ref": run["dataset_ref"],
+        "dataset_dvc_md5": run["dataset_dvc_md5"],
+        "target_champion_role": "champion_bodypart",
+        "checkpoint": str(checkpoint.relative_to(root).as_posix()),
+        "checkpoint_sha256": _file_sha256(checkpoint),
+        "inference_config": str(config.relative_to(root).as_posix()),
+        "inference_config_sha256": _file_sha256(config),
+        "class_names": class_names,
+    }
+    path = root / "candidate_artifact.json"
+    temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")
+    try:
+        temporary.write_text(
+            json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return path
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()

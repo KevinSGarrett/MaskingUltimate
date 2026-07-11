@@ -6348,7 +6348,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 96,
+      "percent_complete": 98,
       "notes": [
         {
           "ts": "2026-07-11T08:15:31+00:00",
@@ -6374,12 +6374,17 @@
           "ts": "2026-07-11T19:34:56+00:00",
           "actor": "ai_agent",
           "text": "Promotion into champion_bodypart/champion_hand/champion_clothing now re-resolves and hash-checks the candidate checkpoint, independently verifies a safe in-models_root inference config and SHA-256, and rejects empty/duplicate/unknown/wrong-map class vocabularies before any registry mutation. Tampered-config and part-vs-material fixtures prove the incumbent role remains unchanged on refusal. 10 focused registry and 534 full tests pass. Remaining evidence is an actually trained/evaluated winner registered with these artifacts, promoted, served, and rolled back."
+        },
+        {
+          "ts": "2026-07-11T19:46:47+00:00",
+          "actor": "ai_agent",
+          "text": "Completed the producer side of champion provenance. Successful MMSeg training now seals candidate_artifact.json with exact run/dataset identity, checkpoint/config SHA-256, target champion role, and class vocabulary before the run becomes complete. maskfactory models register-training-candidate accepts only that matching completed run, copies both artifacts atomically into models/trained/<key>, re-hashes copies, registers only as challenger_bodypart, and rolls back installed files if registry mutation fails. Tamper fixture proves no durable state appears. Shared bounded PermissionError retry now hardens atomic directory promotion on Windows without retrying semantic errors. 536 full tests pass; Ruff/format/ontology clean. Remaining 2% is a real evaluated winner registration, promotion, live serve, and rollback."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T19:34:56+00:00",
+      "updated_at": "2026-07-11T19:46:47+00:00",
       "orphaned": false
     },
     "MF-P5-06.04": {

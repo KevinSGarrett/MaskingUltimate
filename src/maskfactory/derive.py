@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
 import uuid
 from pathlib import Path
@@ -13,6 +12,7 @@ from typing import Any
 import numpy as np
 import yaml
 
+from .fs_atomic import replace_with_retry
 from .io.png_strict import read_mask, write_binary_mask
 from .ontology import Ontology, get_ontology
 
@@ -65,12 +65,12 @@ def derive_package(
         destination = package_root / "masks_derived"
         backup = package_root / f".masks_derived.backup-{uuid.uuid4().hex}"
         if destination.exists():
-            os.replace(destination, backup)
+            replace_with_retry(destination, backup)
         try:
-            os.replace(temporary, destination)
+            replace_with_retry(temporary, destination)
         except Exception:
             if backup.exists():
-                os.replace(backup, destination)
+                replace_with_retry(backup, destination)
             raise
         _remove_tree(backup)
         outputs = [destination / f"{name}.png" for name in formulas]

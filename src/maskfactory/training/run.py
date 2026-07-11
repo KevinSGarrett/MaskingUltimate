@@ -15,6 +15,7 @@ from typing import Any
 
 import yaml
 
+from ..fs_atomic import replace_with_retry
 from .augmentations import validate_augmentation_config
 from .runtime import TrainingRuntimeError, validate_bodypart_class_contract
 
@@ -97,7 +98,7 @@ def initialize_training_run(
         (staging / "run.json").write_text(
             json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
-        os.replace(staging, destination)
+        replace_with_retry(staging, destination)
     finally:
         if staging.exists():
             shutil.rmtree(staging)

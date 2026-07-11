@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -20,6 +21,7 @@ from urllib.request import Request, urlopen
 
 import yaml
 
+from ..fs_atomic import replace_with_retry
 from ..ontology import get_ontology
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -33,6 +35,7 @@ OLLAMA_MODEL_NAMES = (
     "qwen2.5:7b-instruct",
 )
 SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
+TRAINED_CANDIDATE_KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{2,79}$")
 
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
 _SMOKE_RUNNERS: dict[str, SmokeRunner] = {}
@@ -506,6 +509,115 @@ def resolve_registered_role(
     return resolve_registered_model(
         str(matches[0]["key"]), registry_path=registry_path, models_root=models_root
     )
+
+
+def register_training_candidate(
+    run_root: Path,
+    candidate_key: str,
+    *,
+    candidate_role: str = "challenger_bodypart",
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    now: Callable[[], datetime] | None = None,
+) -> dict[str, Any]:
+    """Atomically copy a sealed completed-run artifact into the verified model registry."""
+    if not TRAINED_CANDIDATE_KEY.fullmatch(candidate_key):
+        raise ModelRegistryError("training candidate key must be a safe 3-80 character slug")
+    if candidate_role.startswith("champion_") or candidate_role != "challenger_bodypart":
+        raise ModelRegistryError("completed body-part runs register only as challenger_bodypart")
+    root = Path(run_root).resolve()
+    try:
+        run = json.loads((root / "run.json").read_text(encoding="utf-8"))
+        artifact = json.loads((root / "candidate_artifact.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ModelRegistryError(f"training candidate evidence is unreadable: {exc}") from exc
+    if run.get("status") != "complete" or artifact.get("run_id") != run.get("run_id"):
+        raise ModelRegistryError("training candidate requires one matching completed run")
+    if artifact.get("target_champion_role") != "champion_bodypart":
+        raise ModelRegistryError("training candidate target champion role is unsupported")
+    for field in ("model", "dataset_ref", "dataset_dvc_md5"):
+        if artifact.get(field) != run.get(field):
+            raise ModelRegistryError(f"training candidate {field} differs from run.json")
+    checkpoint = _safe_run_artifact(root, artifact.get("checkpoint"), expected_parent="ckpts")
+    config = _safe_run_artifact(root, artifact.get("inference_config"))
+    if _sha256(checkpoint) != artifact.get("checkpoint_sha256"):
+        raise ModelRegistryError("training candidate checkpoint hash mismatch")
+    if _sha256(config) != artifact.get("inference_config_sha256"):
+        raise ModelRegistryError("training candidate inference config hash mismatch")
+    class_names = artifact.get("class_names")
+    registry = _load_registry(Path(registry_path))
+    if any(item.get("key") == candidate_key for item in registry["models"]):
+        raise ModelRegistryError(f"training candidate key already exists: {candidate_key}")
+    destination = (Path(models_root).resolve() / "trained" / candidate_key).resolve()
+    models_root_resolved = Path(models_root).resolve()
+    if models_root_resolved not in destination.parents or destination.exists():
+        raise ModelRegistryError(f"training candidate destination already exists: {destination}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=f".{candidate_key}.", dir=destination.parent))
+    installed = False
+    try:
+        target_checkpoint = staging / checkpoint.name
+        target_config = staging / "inference_config.py"
+        shutil.copy2(checkpoint, target_checkpoint)
+        shutil.copy2(config, target_config)
+        if _sha256(target_checkpoint) != artifact["checkpoint_sha256"]:
+            raise ModelRegistryError("copied training checkpoint failed hash verification")
+        if _sha256(target_config) != artifact["inference_config_sha256"]:
+            raise ModelRegistryError("copied training config failed hash verification")
+        replace_with_retry(staging, destination)
+        installed = True
+        timestamp = (
+            (now or (lambda: datetime.now(UTC)))()
+            .astimezone(UTC)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        entry = {
+            "key": candidate_key,
+            "role": candidate_role,
+            "target_champion_role": artifact["target_champion_role"],
+            "file": _relative_registry_path(destination / checkpoint.name, models_root_resolved),
+            "sha256": artifact["checkpoint_sha256"],
+            "inference_config": _relative_registry_path(
+                destination / "inference_config.py", models_root_resolved
+            ),
+            "inference_config_sha256": artifact["inference_config_sha256"],
+            "class_names": class_names,
+            "version_tag": run["run_id"],
+            "training_run": run["run_id"],
+            "dataset_ref": run["dataset_ref"],
+            "dataset_dvc_md5": run["dataset_dvc_md5"],
+            "git_sha": run.get("git_sha"),
+            "runtime": "OpenMMLab MMSeg governed training run",
+            "license": "MaskFactory-internal",
+            "registered_at": timestamp,
+            "verified": True,
+        }
+        _validate_serving_champion_metadata(
+            entry, role=str(artifact["target_champion_role"]), models_root=models_root_resolved
+        )
+        registry["models"].append(entry)
+        registry["models"].sort(key=lambda item: str(item.get("key", "")))
+        _atomic_json(Path(registry_path), registry)
+        return entry
+    except Exception:
+        if installed:
+            shutil.rmtree(destination, ignore_errors=True)
+        raise
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging, ignore_errors=True)
+
+
+def _safe_run_artifact(root: Path, value: Any, *, expected_parent: str | None = None) -> Path:
+    if not isinstance(value, str) or not value or Path(value).is_absolute():
+        raise ModelRegistryError("training candidate artifact path is invalid")
+    path = (root / Path(value.replace("\\", "/"))).resolve()
+    if root not in path.parents or not path.is_file():
+        raise ModelRegistryError("training candidate artifact is missing or escapes its run")
+    if expected_parent is not None and path.parent != root / expected_parent:
+        raise ModelRegistryError(f"training candidate artifact must be under {expected_parent}")
+    return path
 
 
 def promote_model_role(

@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-11T16:43:04+00:00",
+    "generated_at": "2026-07-11T18:04:39+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -2942,18 +2942,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-11T05:35:42+00:00",
           "actor": "ai_agent",
           "text": "Production BiRefNet WSL runner implemented: pinned local checkpoint/remote code, fp16 CUDA, native geometry, <=2048 tiles with 128 overlap beyond, float32 confidence output, existing threshold/component/full-canvas/QC path; adapter tests pass. Live run cannot be credited: current wsl --list --quiet shows no distro and Ubuntu-22.04 returns WSL_E_DISTRO_NOT_FOUND."
+        },
+        {
+          "ts": "2026-07-11T18:14:52+00:00",
+          "actor": "ai_agent",
+          "text": "Hardened S02 to production-grade boundary: governed config now reaches the runner; subprocess metadata must prove pinned revision/fp16/tile contract/CUDA identity; input/checkpoint/confidence/geometry validated fail-closed; SciPy connected-component labeling replaces per-pixel Python tuples; full-canvas binary+confidence and QC remain strict. 27 focused and 507 full tests pass; 2048x2048 postprocess measured 0.081s. Live run still cannot be credited because this managed boundary exposes no WSL distro."
         }
       ],
-      "evidence": null,
+      "evidence": "Code/tests: src/maskfactory/stages/s02_silhouette.py, tools/run_birefnet_wsl.py, production runner/config bridge, tests/test_s01_s02.py + test_pipeline_config.py + test_production_runners.py. Real model checkpoint and prior CUDA smoke remain registry-verified (SHA-256 9ab374...; output c7c578...). Current validation: Ruff/format clean across 246 files; ontology current; 507 pytest pass; 2048-square postprocessor 0.081s. Missing final evidence: an end-to-end run_s02 invocation in the authoritative Ubuntu-22.04 CUDA runtime.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:35:42+00:00",
+      "updated_at": "2026-07-11T18:14:52+00:00",
       "orphaned": false
     },
     "MF-P2-01.03": {

@@ -2760,3 +2760,20 @@ full regression:            501 tests pass
 quality:                    Ruff 0.15.21 check/format clean across 246 files; tracker structurally valid
 honest boundary:            no real CUDA training/checkpoint/thermal event or holdout leaderboard row is claimed
 ```
+## 2026-07-11 18:15 UTC - S02 BiRefNet production contract hardened
+**Item:** MF-P2-01.02 advanced 80% -> 95% partial
+**Result:** The implemented silhouette stage now fails closed unless configuration, runtime metadata, geometry, confidence, and output placement all prove the literal S02 contract.
+
+```
+configuration authority:    pipeline S02 model/fp16/2048/128/0.5/1%/[0.35,0.95] forwarded into production
+runtime proof:              WSL child must report protocol v1, pinned BiRefNet revision, fp16, exact tile size/overlap, positive tile count, and CUDA device identity
+input proof:                missing image/checkpoint, invalid tile geometry, malformed metadata, non-float32/nonfinite/out-of-range confidence all refuse
+geometry proof:             context/person bboxes must be integer, nonempty, on-canvas, and person fully contained by context
+component filter:           compiled SciPy 4-connected labeling; largest retained; qualifying >=1% diagonal-touch components retained; isolated/small components dropped
+artifact contract:          strict binary person_full_visible.png, full-canvas 8-bit confidence, and ratio metrics remain authoritative
+scalability measurement:    2048x2048 postprocess + both PNG artifacts completed in 0.081 seconds in workspace-local storage
+focused regression:         27 S01/S02/config/production tests pass
+full regression:            507 tests pass
+quality:                    Ruff check/format clean across 246 files; generated ontology current; tracker structurally valid
+honest boundary:            managed shell exposes no WSL distro, so a fresh end-to-end run_s02 CUDA invocation is not claimed; item remains partial
+```

@@ -18,8 +18,8 @@ from transformers import AutoModelForImageSegmentation
 
 REPO_ID = "ZhengPeng7/BiRefNet"
 REVISION = "e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4"
-TILE_SIZE = 2048
-TILE_OVERLAP = 128
+DEFAULT_TILE_SIZE = 2048
+DEFAULT_TILE_OVERLAP = 128
 
 
 def _load_model(checkpoint: Path):
@@ -59,16 +59,25 @@ def _predict_tile(model, image: Image.Image) -> np.ndarray:
     return output
 
 
-def _starts(length: int) -> list[int]:
-    if length <= TILE_SIZE:
+def _starts(length: int, *, tile_size: int, tile_overlap: int) -> list[int]:
+    if length <= tile_size:
         return [0]
-    starts = list(range(0, length - TILE_SIZE + 1, TILE_SIZE - TILE_OVERLAP))
-    if starts[-1] != length - TILE_SIZE:
-        starts.append(length - TILE_SIZE)
+    starts = list(range(0, length - tile_size + 1, tile_size - tile_overlap))
+    if starts[-1] != length - tile_size:
+        starts.append(length - tile_size)
     return starts
 
 
-def run(checkpoint: Path, image_path: Path, output_path: Path) -> dict[str, object]:
+def run(
+    checkpoint: Path,
+    image_path: Path,
+    output_path: Path,
+    *,
+    tile_size: int = DEFAULT_TILE_SIZE,
+    tile_overlap: int = DEFAULT_TILE_OVERLAP,
+) -> dict[str, object]:
+    if tile_size <= 0 or tile_overlap < 0 or tile_overlap >= tile_size:
+        raise ValueError("tile contract requires 0 <= overlap < tile size")
     model, temporary = _load_model(checkpoint)
     try:
         image = Image.open(image_path).convert("RGB")
@@ -76,9 +85,9 @@ def run(checkpoint: Path, image_path: Path, output_path: Path) -> dict[str, obje
         total = np.zeros((height, width), dtype=np.float32)
         weights = np.zeros((height, width), dtype=np.float32)
         tile_count = 0
-        for top in _starts(height):
-            for left in _starts(width):
-                right, bottom = min(width, left + TILE_SIZE), min(height, top + TILE_SIZE)
+        for top in _starts(height, tile_size=tile_size, tile_overlap=tile_overlap):
+            for left in _starts(width, tile_size=tile_size, tile_overlap=tile_overlap):
+                right, bottom = min(width, left + tile_size), min(height, top + tile_size)
                 prediction = _predict_tile(model, image.crop((left, top, right, bottom)))
                 total[top:bottom, left:right] += prediction
                 weights[top:bottom, left:right] += 1
@@ -87,10 +96,15 @@ def run(checkpoint: Path, image_path: Path, output_path: Path) -> dict[str, obje
         output_path.parent.mkdir(parents=True, exist_ok=True)
         np.save(output_path, confidence.astype(np.float32), allow_pickle=False)
         return {
+            "protocol_version": 1,
+            "model_revision": REVISION,
+            "precision": "fp16",
             "shape": list(confidence.shape),
             "min": float(confidence.min()),
             "max": float(confidence.max()),
             "tile_count": tile_count,
+            "tile_size": tile_size,
+            "tile_overlap": tile_overlap,
             "device": torch.cuda.get_device_name(0),
             "torch": torch.__version__,
         }
@@ -105,8 +119,21 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--image", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--tile-size", type=int, default=DEFAULT_TILE_SIZE)
+    parser.add_argument("--tile-overlap", type=int, default=DEFAULT_TILE_OVERLAP)
     args = parser.parse_args()
-    print(json.dumps(run(args.checkpoint, args.image, args.output), sort_keys=True))
+    print(
+        json.dumps(
+            run(
+                args.checkpoint,
+                args.image,
+                args.output,
+                tile_size=args.tile_size,
+                tile_overlap=args.tile_overlap,
+            ),
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

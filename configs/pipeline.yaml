@@ -22,7 +22,7 @@ devices:
 stages:
   S00: {enabled: true}
   S01: {enabled: true, model: yolo11m_person, confidence: 0.5, instance_min_area_pct: 0.04, max_instances_per_image: 4, crowd_scene_threshold: 8, context_scale: 1.25}
-  S02: {enabled: true, model: birefnet_general, precision: fp16, long_side: 2048, threshold: 0.5, connected_min_person_pct: 0.01, silhouette_bbox_ratio: [0.35, 0.95]}
+  S02: {enabled: true, model: birefnet_general, precision: fp16, long_side: 2048, tile_overlap: 128, threshold: 0.5, connected_min_person_pct: 0.01, silhouette_bbox_ratio: [0.35, 0.95]}
   S03: {enabled: true, model: sapiens_0_6b_seg, precision: bf16, long_side: 1024, tile_size: 1536, tile_overlap: 128, oom_half_res_retry: true, fallback: schp_atr}
   S04: {enabled: true, model: dwpose_133, keypoint_confidence: 0.3, degraded_body_keypoint_fraction: 0.6}
   S05: {enabled: true}

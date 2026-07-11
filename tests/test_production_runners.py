@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -71,6 +72,125 @@ def test_production_runner_factory_executes_real_file_contract_through_s01(
     s01 = json.loads((tmp_path / f"work/s01/{image_id}/manifest_delta.json").read_text())
     assert s00["source_width"] == 100
     assert s01 == {"background_people": 0, "outcome": "promoted", "promoted_instances": 1}
+
+
+def test_s02_production_runner_forwards_entire_governed_stage_contract(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    images = tmp_path / "images"
+    image_dir = images / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (100, 120), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "status": "ingested",
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 100,
+                    "source_height": 120,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    work = tmp_path / "work"
+    s01_dir = work / "s01" / image_id
+    (s01_dir / "p0").mkdir(parents=True)
+    Image.new("RGB", (90, 110), "white").save(s01_dir / "p0/person_ctx.png")
+    (s01_dir / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "context_bbox_xyxy": [5, 5, 95, 115],
+                        "bbox_xyxy": [10, 10, 90, 110],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    captured = {}
+
+    def fake_s02(*args, **kwargs):
+        captured.update(kwargs)
+        return SimpleNamespace(silhouette_bbox_ratio=0.6, qc_passed=True)
+
+    monkeypatch.setattr(production, "run_s02", fake_s02)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S02"],
+        output_dir=work / "s02" / image_id,
+        work_root=work,
+        config={"global": config.get("global", {}), "stage": config["stages"]["S02"]},
+        config_hash="fixture",
+    )
+
+    delta = production.build_production_runners(config, images_root=images)["S02"](context)
+
+    assert delta["qc_passed"] is True
+    assert captured["tile_size"] == 2048
+    assert captured["tile_overlap"] == 128
+    assert captured["threshold"] == 0.5
+    assert captured["connected_min_person_pct"] == 0.01
+    assert captured["ratio_range"] == (0.35, 0.95)
+
+
+@pytest.mark.parametrize("key,value", [("model", "other"), ("precision", "fp32")])
+def test_s02_production_runner_refuses_ungoverned_runtime(
+    tmp_path: Path, monkeypatch, key: str, value: str
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    images = tmp_path / "images"
+    image_dir = images / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (10, 10), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "status": "ingested",
+                "source": {"source_file": "source.png", "source_width": 10, "source_height": 10},
+            }
+        ),
+        encoding="utf-8",
+    )
+    s01_dir = tmp_path / "work" / "s01" / image_id
+    (s01_dir / "p0").mkdir(parents=True)
+    Image.new("RGB", (10, 10), "white").save(s01_dir / "p0/person_ctx.png")
+    (s01_dir / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "context_bbox_xyxy": [0, 0, 10, 10],
+                        "bbox_xyxy": [0, 0, 10, 10],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    settings = dict(config["stages"]["S02"])
+    settings[key] = value
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S02"],
+        output_dir=tmp_path / "work" / "s02" / image_id,
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": settings},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="governed"):
+        production.build_production_runners(config, images_root=images)["S02"](context)
 
 
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:

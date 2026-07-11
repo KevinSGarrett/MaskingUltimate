@@ -8,6 +8,19 @@ from maskfactory.ontology import get_ontology
 CONFIG = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
 
 
+def test_s02_governed_contract_is_explicit() -> None:
+    assert CONFIG["stages"]["S02"] == {
+        "enabled": True,
+        "model": "birefnet_general",
+        "precision": "fp16",
+        "long_side": 2048,
+        "tile_overlap": 128,
+        "threshold": 0.5,
+        "connected_min_person_pct": 0.01,
+        "silhouette_bbox_ratio": [0.35, 0.95],
+    }
+
+
 def test_pipeline_config_has_all_stages_devices_io_and_determinism() -> None:
     assert CONFIG["seed"] == 1337
     assert CONFIG["gpu_cooldown_sec"] == 3

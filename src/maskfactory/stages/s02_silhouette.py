@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+from scipy import ndimage
 
 from ..io.png_strict import write_binary_mask, write_grayscale
 
@@ -34,8 +35,16 @@ def infer_birefnet_confidence(
     wsl_distribution: str = "Ubuntu-22.04",
     python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
     timeout_sec: int = 900,
+    tile_size: int = 2048,
+    tile_overlap: int = 128,
 ) -> np.ndarray:
     """Run pinned BiRefNet in WSL and validate its geometry-preserving float confidence."""
+    if not Path(image_path).is_file():
+        raise SilhouetteError(f"BiRefNet input image does not exist: {image_path}")
+    if not Path(checkpoint).is_file():
+        raise SilhouetteError(f"BiRefNet checkpoint does not exist: {checkpoint}")
+    if tile_size <= 0 or tile_overlap < 0 or tile_overlap >= tile_size:
+        raise SilhouetteError("BiRefNet tile contract requires 0 <= overlap < tile size")
     root = Path(__file__).resolve().parents[3]
     command = [
         "wsl",
@@ -50,6 +59,10 @@ def infer_birefnet_confidence(
         _wsl_path(image_path),
         "--output",
         _wsl_path(output_path),
+        "--tile-size",
+        str(tile_size),
+        "--tile-overlap",
+        str(tile_overlap),
     ]
     try:
         process = subprocess.run(
@@ -73,6 +86,26 @@ def infer_birefnet_confidence(
         raise SilhouetteError("BiRefNet output must be a 2-D float32 confidence map")
     if metadata.get("shape") != list(confidence.shape):
         raise SilhouetteError("BiRefNet metadata/output shape mismatch")
+    expected_metadata = {
+        "protocol_version": 1,
+        "model_revision": "e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",
+        "precision": "fp16",
+        "tile_size": tile_size,
+        "tile_overlap": tile_overlap,
+    }
+    mismatches = {
+        key: (metadata.get(key), expected)
+        for key, expected in expected_metadata.items()
+        if metadata.get(key) != expected
+    }
+    if mismatches:
+        raise SilhouetteError(f"BiRefNet metadata violates governed contract: {mismatches}")
+    if not isinstance(metadata.get("tile_count"), int) or metadata["tile_count"] < 1:
+        raise SilhouetteError("BiRefNet metadata requires a positive integer tile_count")
+    if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
+        raise SilhouetteError("BiRefNet metadata requires the CUDA device name")
+    if not np.isfinite(confidence).all() or confidence.min() < 0 or confidence.max() > 1:
+        raise SilhouetteError("BiRefNet confidence must be finite and in 0..1")
     return confidence
 
 
@@ -84,6 +117,11 @@ def run_s02(
     full_size: tuple[int, int],
     output_dir: Path,
     checkpoint: Path,
+    tile_size: int = 2048,
+    tile_overlap: int = 128,
+    threshold: float = 0.5,
+    connected_min_person_pct: float = 0.01,
+    ratio_range: tuple[float, float] = (0.35, 0.95),
 ) -> S02Result:
     """Execute real BiRefNet inference followed by S02 confidence post-processing."""
     output_dir = Path(output_dir)
@@ -92,6 +130,8 @@ def run_s02(
         context_image_path,
         checkpoint=checkpoint,
         output_path=output_dir / "birefnet_confidence.npy",
+        tile_size=tile_size,
+        tile_overlap=tile_overlap,
     )
     expected_shape = (
         context_bbox_xyxy[3] - context_bbox_xyxy[1],
@@ -107,6 +147,9 @@ def run_s02(
         person_bbox_xyxy=person_bbox_xyxy,
         full_size=full_size,
         output_dir=output_dir,
+        threshold=threshold,
+        connected_min_person_pct=connected_min_person_pct,
+        ratio_range=ratio_range,
     )
 
 
@@ -134,34 +177,50 @@ def build_silhouette(
         raise SilhouetteError("confidence crop must be finite and 2-D")
     if confidence.min() < 0 or confidence.max() > 1:
         raise SilhouetteError("confidence values must be in 0..1")
-    left, top, right, bottom = context_bbox_xyxy
+    if not 0 <= threshold <= 1:
+        raise SilhouetteError("threshold must be in 0..1")
+    if not 0 <= connected_min_person_pct <= 1:
+        raise SilhouetteError("connected_min_person_pct must be in 0..1")
+    if (
+        len(ratio_range) != 2
+        or not 0 <= ratio_range[0] <= ratio_range[1]
+        or not np.isfinite(ratio_range).all()
+    ):
+        raise SilhouetteError("ratio_range must contain two finite ascending non-negative values")
+    left, top, right, bottom = _validated_bbox(
+        context_bbox_xyxy, full_size=full_size, name="context"
+    )
+    person_left, person_top, person_right, person_bottom = _validated_bbox(
+        person_bbox_xyxy, full_size=full_size, name="person"
+    )
+    if not (
+        left <= person_left < person_right <= right and top <= person_top < person_bottom <= bottom
+    ):
+        raise SilhouetteError("person bbox must be fully contained by the context bbox")
     width, height = full_size
     if confidence.shape != (bottom - top, right - left):
         raise SilhouetteError("confidence crop shape does not match context bbox")
     binary = confidence >= threshold
-    components = _components(binary)
-    if components:
-        components.sort(key=len, reverse=True)
-        largest = components[0]
-        keep = np.zeros(binary.shape, dtype=bool)
-        _paint(keep, largest)
-        person_bbox_area = (person_bbox_xyxy[2] - person_bbox_xyxy[0]) * (
-            person_bbox_xyxy[3] - person_bbox_xyxy[1]
-        )
+    labels, component_count = ndimage.label(binary, structure=_FOUR_CONNECTED)
+    if component_count:
+        areas = np.bincount(labels.ravel(), minlength=component_count + 1)
+        areas[0] = 0
+        largest_label = int(np.argmax(areas))
+        keep = labels == largest_label
+        person_bbox_area = (person_right - person_left) * (person_bottom - person_top)
         min_area = connected_min_person_pct * person_bbox_area
-        for component in components[1:]:
-            candidate = np.zeros(binary.shape, dtype=bool)
-            _paint(candidate, component)
-            if len(component) >= min_area and np.any(_dilate(candidate) & keep):
+        for label_id in np.flatnonzero(areas >= min_area):
+            if label_id in (0, largest_label):
+                continue
+            candidate = labels == label_id
+            if np.any(ndimage.binary_dilation(candidate, structure=_EIGHT_CONNECTED) & keep):
                 keep |= candidate
         binary = keep
     full_mask = np.zeros((height, width), dtype=bool)
     full_confidence = np.zeros((height, width), dtype=np.uint8)
     full_mask[top:bottom, left:right] = binary
     full_confidence[top:bottom, left:right] = np.rint(confidence * 255).astype(np.uint8)
-    bbox_area = (person_bbox_xyxy[2] - person_bbox_xyxy[0]) * (
-        person_bbox_xyxy[3] - person_bbox_xyxy[1]
-    )
+    bbox_area = (person_right - person_left) * (person_bottom - person_top)
     area = int(full_mask.sum())
     ratio = area / bbox_area if bbox_area else 0.0
     output_dir = Path(output_dir)
@@ -199,39 +258,26 @@ def build_silhouette(
     return result
 
 
-def _components(mask: np.ndarray) -> list[list[tuple[int, int]]]:
-    visited = np.zeros(mask.shape, dtype=bool)
-    height, width = mask.shape
-    output = []
-    for y, x in zip(*np.nonzero(mask), strict=True):
-        if visited[y, x]:
-            continue
-        stack = [(int(y), int(x))]
-        visited[y, x] = True
-        component = []
-        while stack:
-            cy, cx = stack.pop()
-            component.append((cy, cx))
-            for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
-                if 0 <= ny < height and 0 <= nx < width and mask[ny, nx] and not visited[ny, nx]:
-                    visited[ny, nx] = True
-                    stack.append((ny, nx))
-        output.append(component)
-    return output
+_FOUR_CONNECTED = ndimage.generate_binary_structure(2, 1)
+_EIGHT_CONNECTED = ndimage.generate_binary_structure(2, 2)
 
 
-def _paint(mask: np.ndarray, component: list[tuple[int, int]]) -> None:
-    if component:
-        ys, xs = zip(*component, strict=True)
-        mask[np.asarray(ys), np.asarray(xs)] = True
-
-
-def _dilate(mask: np.ndarray) -> np.ndarray:
-    padded = np.pad(mask, 1)
-    return (
-        padded[1:-1, 1:-1]
-        | padded[:-2, 1:-1]
-        | padded[2:, 1:-1]
-        | padded[1:-1, :-2]
-        | padded[1:-1, 2:]
-    )
+def _validated_bbox(
+    bbox: tuple[int, int, int, int], *, full_size: tuple[int, int], name: str
+) -> tuple[int, int, int, int]:
+    if len(bbox) != 4 or any(
+        isinstance(value, bool) or not isinstance(value, int) for value in bbox
+    ):
+        raise SilhouetteError(f"{name} bbox must contain four integer coordinates")
+    if (
+        len(full_size) != 2
+        or any(isinstance(value, bool) or not isinstance(value, int) for value in full_size)
+        or full_size[0] <= 0
+        or full_size[1] <= 0
+    ):
+        raise SilhouetteError("full_size must contain positive integer width and height")
+    left, top, right, bottom = bbox
+    width, height = full_size
+    if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+        raise SilhouetteError(f"{name} bbox must be non-empty and inside the full canvas")
+    return bbox

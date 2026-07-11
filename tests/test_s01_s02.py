@@ -128,7 +128,7 @@ def test_s01_production_adapter_filters_person_and_runs_policy(
 def test_s02_keeps_largest_and_qualifying_touching_component(tmp_path: Path) -> None:
     confidence = np.zeros((20, 20), dtype=np.float32)
     confidence[3:13, 3:13] = 0.9  # largest: 100 px
-    confidence[13:15, 7:12] = 0.8  # 10 px, touches and exceeds 1% of 20x20
+    confidence[13:15, 13:18] = 0.8  # 10 px, diagonal touch and exceeds 1% of 20x20
     confidence[0:2, 18:20] = 0.9  # isolated: discarded
 
     result = build_silhouette(
@@ -149,6 +149,23 @@ def test_s02_keeps_largest_and_qualifying_touching_component(tmp_path: Path) -> 
     assert np.count_nonzero(mask[:20]) == 0
     assert int(conf[20 + 3, 10 + 3]) == 230
     assert int(conf[20, 28]) == 230  # confidence retained even if component rejected
+
+
+def test_s02_drops_too_small_touching_component(tmp_path: Path) -> None:
+    confidence = np.zeros((20, 20), dtype=np.float32)
+    confidence[3:13, 3:13] = 0.9
+    confidence[13, 13] = 0.9  # diagonal touch, but below 1% of a 20x20 person bbox
+
+    result = build_silhouette(
+        confidence,
+        context_bbox_xyxy=(0, 0, 20, 20),
+        person_bbox_xyxy=(0, 0, 20, 20),
+        full_size=(20, 20),
+        output_dir=tmp_path,
+        ratio_range=(0.2, 0.4),
+    )
+
+    assert result.area_px == 100
 
 
 def test_s02_reports_ratio_failure_and_writes_metrics(tmp_path: Path) -> None:
@@ -175,6 +192,23 @@ def test_s02_rejects_bad_confidence_or_shape(tmp_path: Path) -> None:
             person_bbox_xyxy=(0, 0, 2, 2),
             full_size=(2, 2),
             output_dir=tmp_path,
+        )
+    with pytest.raises(SilhouetteError, match="contained"):
+        build_silhouette(
+            np.zeros((10, 10)),
+            context_bbox_xyxy=(5, 5, 15, 15),
+            person_bbox_xyxy=(0, 0, 10, 10),
+            full_size=(20, 20),
+            output_dir=tmp_path,
+        )
+    with pytest.raises(SilhouetteError, match="threshold"):
+        build_silhouette(
+            np.zeros((10, 10)),
+            context_bbox_xyxy=(0, 0, 10, 10),
+            person_bbox_xyxy=(0, 0, 10, 10),
+            full_size=(10, 10),
+            output_dir=tmp_path,
+            threshold=1.1,
         )
     with pytest.raises(SilhouetteError, match="shape"):
         build_silhouette(
@@ -203,7 +237,12 @@ def test_s02_production_adapter_validates_wsl_float_output(
         class Process:
             returncode = 0
             stderr = ""
-            stdout = '{"shape":[100,100],"tile_count":1}\n'
+            stdout = (
+                '{"device":"NVIDIA fixture","model_revision":'
+                '"e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4",'
+                '"precision":"fp16","protocol_version":1,"shape":[100,100],'
+                '"tile_count":1,"tile_overlap":128,"tile_size":2048}\n'
+            )
 
         return Process()
 
@@ -212,3 +251,28 @@ def test_s02_production_adapter_validates_wsl_float_output(
     assert confidence.shape == (100, 100)
     assert confidence.dtype == np.float32
     assert np.all(confidence == 0.75)
+
+
+@pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
+def test_s02_production_adapter_rejects_unproven_runtime_contract(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image = tmp_path / "crop.png"
+    _image().save(image)
+    checkpoint = tmp_path / "model.safetensors"
+    checkpoint.write_bytes(b"fixture")
+    output = tmp_path / "confidence.npy"
+
+    def fake_run(command, **kwargs):
+        np.save(output, np.full((100, 100), 0.75, dtype=np.float32), allow_pickle=False)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = '{"shape":[100,100],"tile_count":1}\n'
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s02_silhouette.subprocess.run", fake_run)
+    with pytest.raises(SilhouetteError, match="governed contract"):
+        infer_birefnet_confidence(image, checkpoint=checkpoint, output_path=output)

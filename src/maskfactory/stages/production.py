@@ -123,6 +123,16 @@ def build_production_runners(
         document = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
         person = selected_person(document)
         manifest, _ = _source(context.image_id, images_root)
+        settings = context.config["stage"]
+        if settings.get("model", "birefnet_general") != "birefnet_general":
+            raise SemanticStageError(
+                "S02 production supports only the governed birefnet_general model"
+            )
+        if settings.get("precision", "fp16") != "fp16":
+            raise SemanticStageError("S02 production requires governed fp16 inference")
+        ratio_range = settings.get("silhouette_bbox_ratio", [0.35, 0.95])
+        if not isinstance(ratio_range, (list, tuple)) or len(ratio_range) != 2:
+            raise SemanticStageError("S02 silhouette_bbox_ratio must contain [minimum, maximum]")
         result = run_s02(
             s01_dir / instance_name / "person_ctx.png",
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
@@ -130,6 +140,11 @@ def build_production_runners(
             full_size=(manifest["source"]["source_width"], manifest["source"]["source_height"]),
             output_dir=context.output_dir,
             checkpoint=ROOT / "models" / "silhouette" / "BiRefNet-general.safetensors",
+            tile_size=int(settings.get("long_side", 2048)),
+            tile_overlap=int(settings.get("tile_overlap", 128)),
+            threshold=float(settings.get("threshold", 0.5)),
+            connected_min_person_pct=float(settings.get("connected_min_person_pct", 0.01)),
+            ratio_range=(float(ratio_range[0]), float(ratio_range[1])),
         )
         if not result.qc_passed:
             raise SemanticStageError(

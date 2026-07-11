@@ -27,6 +27,7 @@ class TrainingRuntimeReport:
     torch_version: str | None
     mmcv_ops_loaded: bool
     datasets_registered: bool
+    transforms_registered: bool
     cuda_available: bool
     cuda_capability: tuple[int, int] | None
     issues: tuple[str, ...]
@@ -42,6 +43,7 @@ class TrainingRuntimeReport:
             "torch_version": self.torch_version,
             "mmcv_ops_loaded": self.mmcv_ops_loaded,
             "datasets_registered": self.datasets_registered,
+            "transforms_registered": self.transforms_registered,
             "cuda_available": self.cuda_available,
             "cuda_capability": list(self.cuda_capability) if self.cuda_capability else None,
             "issues": list(self.issues),
@@ -81,6 +83,7 @@ def evaluate_openmmlab_runtime(
     torch_version: str | None,
     mmcv_ops_loaded: bool,
     datasets_registered: bool,
+    transforms_registered: bool,
     cuda_available: bool,
     cuda_capability: tuple[int, int] | None,
     lock: Mapping[str, Any],
@@ -105,6 +108,8 @@ def evaluate_openmmlab_runtime(
         )
     if not datasets_registered:
         issues.append("MaskFactory MMSeg BaseSegDataset classes are not registered")
+    if not transforms_registered:
+        issues.append("MaskFactory ontology-aware MMSeg transforms are not registered")
     if not cuda_available:
         issues.append("CUDA is unavailable to the training runtime")
     expected_capability = tuple(lock["runtime"]["compute_capability"])
@@ -117,6 +122,7 @@ def evaluate_openmmlab_runtime(
         torch_version=torch_version,
         mmcv_ops_loaded=mmcv_ops_loaded,
         datasets_registered=datasets_registered,
+        transforms_registered=transforms_registered,
         cuda_available=cuda_available,
         cuda_capability=cuda_capability,
         issues=tuple(issues),
@@ -135,6 +141,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
 
     mmcv_ops_loaded = False
     datasets_registered = False
+    transforms_registered = False
     import_issues: list[str] = []
     if all(versions[key] == lock["packages"][key]["version"] for key in REQUIRED_PACKAGES):
         try:
@@ -147,6 +154,17 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
             datasets_registered = all(
                 hasattr(dataset_module, name)
                 for name in ("MaskFactoryBodyPartDataset", "MaskFactoryMaterialDataset")
+            )
+            importlib.import_module("maskfactory.training.mmseg_transforms")
+            registry_module = importlib.import_module("mmseg.registry")
+            transforms_registered = all(
+                name in registry_module.TRANSFORMS.module_dict
+                for name in (
+                    "MaskFactoryRandomResizedCrop",
+                    "MaskFactoryHorizontalFlip",
+                    "MaskFactoryPhotometricJitter",
+                    "MaskFactoryRotate",
+                )
             )
         except Exception as exc:  # pragma: no cover - exercised only in the real training env.
             import_issues.append(f"MMSeg dataset import failed: {type(exc).__name__}: {exc}")
@@ -168,6 +186,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
         torch_version=torch_version,
         mmcv_ops_loaded=mmcv_ops_loaded,
         datasets_registered=datasets_registered,
+        transforms_registered=transforms_registered,
         cuda_available=cuda_available,
         cuda_capability=cuda_capability,
         lock=lock,
@@ -179,6 +198,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
         torch_version=report.torch_version,
         mmcv_ops_loaded=report.mmcv_ops_loaded,
         datasets_registered=report.datasets_registered,
+        transforms_registered=report.transforms_registered,
         cuda_available=report.cuda_available,
         cuda_capability=report.cuda_capability,
         issues=(*report.issues, *import_issues),

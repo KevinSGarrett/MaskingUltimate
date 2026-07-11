@@ -2712,3 +2712,24 @@ full regression:            481 tests pass
 quality:                    Ruff 0.15.21 check and format clean across 238 files; tracker structurally valid
 honest boundary:            full MMCV CUDA source build/dataloader and challenger run remain pending WSL access, >=200 gold, and Kevin's 56/57 decision
 ```
+## 2026-07-11 17:42 UTC - MMSeg ontology-aware transform stack completed to live-runtime boundary
+**Item:** MF-P5-02.01 advanced 97% -> 99% partial
+**Result:** The exported BaseSegDataset and governed augmentation pipeline are now inseparable and framework-registerable; only a real full-MMCV CUDA execution remains.
+
+```
+framework input contract:   every wrapper consumes MMSeg img + gt_seg_map and preserves required metadata
+rare crop:                  512 output, scale 0.5-2.0, exact 40% force policy
+rare PART IDs:              belly_button; both thumbs/index/middle/ring/pinkies; both toes
+rare MATERIAL IDs:          strap
+horizontal flip:            p=0.5; every sided ID remapped through authoritative swap_partner LUT
+photometric jitter:         image only; MMCV BGR converted to RGB for PIL hue math and restored to BGR
+rotation:                   sampled +/-15 degrees; bilinear image, nearest labels, border=255
+config compiler:            exact governed transform order/values; any drift or banned augmentation refuses
+dataset bundle:             MaskFactory dataset custom import + transform custom import + compiled pipeline
+runtime doctor:             now requires all four MaskFactory transforms present in mmseg.registry.TRANSFORMS
+focused regression:         20 MMSeg-transform/runtime/augmentation tests pass
+filesystem retry evidence:  seeded QC file 12/12 pass after one transient Windows temp-directory access denial
+full regression:            487 tests pass on clean retry
+quality:                    Ruff 0.15.21 check/format clean across 240 files; tracker structurally valid
+honest boundary:            real full-MMCV 2.1.0 CUDA BaseSegDataset execution remains pending Kevin-session WSL access
+```

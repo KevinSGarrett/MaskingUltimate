@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 from pathlib import Path
 from types import ModuleType
-from typing import Callable
+from typing import Any, Callable, Mapping
 
 import numpy as np
 from PIL import Image
@@ -92,6 +92,21 @@ def mmseg_dataset_config(dataset_root: Path, split: str, target: str) -> dict:
         "reduce_zero_label": False,
         "ignore_index": IGNORE_INDEX,
     }
+
+
+def mmseg_training_dataset_bundle(
+    dataset_root: Path,
+    split: str,
+    target: str,
+    training_config: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Return a dataset plus the mandatory custom imports and governed pipeline."""
+    from .mmseg_transforms import mmseg_augmentation_config
+
+    integration = mmseg_augmentation_config(training_config, map_name=target)
+    dataset = mmseg_dataset_config(dataset_root, split, target)
+    dataset["pipeline"] = integration["train_pipeline"]
+    return {"custom_imports": integration["custom_imports"], "dataset": dataset}
 
 
 def _class_names(map_name: str) -> tuple[str, ...]:

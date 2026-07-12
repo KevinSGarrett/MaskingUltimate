@@ -1,7 +1,7 @@
 {
-  "awaiting_human_review": 2,
+  "awaiting_human_review": 0,
   "count": 2,
-  "generated_at": "2026-07-12T13:27:45.028228+00:00",
+  "generated_at": "2026-07-12T23:43:31.718046+00:00",
   "handoffs": [
     {
       "config_hash": "bb672f3bebde32bcc9d19a7bf9effdabe3377c0788d311b08e4a7c485f54a584",
@@ -18,10 +18,10 @@
       ],
       "queue_error": "silhouette_bbox_ratio=0.311724 outside [0.35,0.95]",
       "queue_timestamp": "2026-07-12T12:05:14.635377+00:00",
-      "resolution_path": null,
+      "resolution_path": "work\\review_resolutions\\img_c02019c4979c\\p2\\S02\\resolution.json",
       "silhouette_bbox_ratio": 0.3117238384715588,
       "source_path": "data\\images\\img_c02019c4979c\\source.jpg",
-      "status": "awaiting_human_review"
+      "status": "resolved_applied"
     },
     {
       "config_hash": "bb672f3bebde32bcc9d19a7bf9effdabe3377c0788d311b08e4a7c485f54a584",
@@ -38,10 +38,10 @@
       ],
       "queue_error": "silhouette_bbox_ratio=0.299361 outside [0.35,0.95]",
       "queue_timestamp": "2026-07-12T12:05:11.132273+00:00",
-      "resolution_path": null,
+      "resolution_path": "work\\review_resolutions\\img_cea6df6f0f13\\p0\\S02\\resolution.json",
       "silhouette_bbox_ratio": 0.29936144319766883,
       "source_path": "data\\images\\img_cea6df6f0f13\\source.jpg",
-      "status": "awaiting_human_review"
+      "status": "resolved_applied"
     }
   ],
   "schema_version": "1.0.0",

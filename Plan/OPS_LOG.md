@@ -4068,3 +4068,16 @@ other runtime routes:            Docker named pipe denied; local torch 2.11.0+cu
 optional work:                   P5 hair/chest/AWS triggers and P7 synthetic bootstrap deferred rather than presented as routine next actions
 authority preserved:             no source acquisition, age override, CVAT clicks, human-review impersonation, paid launch, or active-VHD mutation occurred
 evidence:                        qa/live_verification/remaining_dependency_audit_20260712.json
+
+## 2026-07-12 - Kevin-confirmed S02 reviews recovered two source drafts
+
+**Result:** PASS - both pending S02 semantic reviews are sealed, applied, and replayed through D1.
+
+review authority:                Kevin explicitly confirmed both full-body masks as valid; immutable resolutions retain reviewer=kevin and decision=confirmed_valid
+review cases:                    img_cea6df6f0f13/p0 wide-limbed pose; img_c02019c4979c/p2 visible right-edge-truncated pedestrian
+gate integrity:                  the model ratio threshold was not weakened; the original QC failure remains recorded and human semantic review satisfies the explicit exception path
+replay result:                   both sources reached S09.5 with QC-035 pass and generated four D1 instance contracts
+D1 verification:                4/4 contracts independently verified; 56 strict non-overlapping atomic masks per instance, 224 recovered atomic masks total
+batch progress:                  complete governed source drafts increased from 20/25 to 22/25; three additional governed clear-adult originals remain required
+handoff state:                   qa/review_handoffs/s02/index.json reports two resolved_applied and zero awaiting human review
+evidence:                        qa/live_verification/s02_review_recovery_20260712.json

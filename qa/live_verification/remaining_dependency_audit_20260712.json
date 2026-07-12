@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-12T20:33:28+00:00",
+  "captured_at": "2026-07-12T23:43:31.718046+00:00",
   "outcome": "no_autonomous_actionable_items",
   "tracker": {
     "total_items": 393,
@@ -21,28 +21,24 @@
     "docker": "Docker client exists, but this identity is denied access to npipe:////./pipe/docker_engine.",
     "local_cuda_training": "C:/Comfy_UI_Main/ComfyUI/.venv has torch 2.11.0+cu128 and CUDA, but lacks MMEngine/MMSeg and the local machine exposes neither nvcc nor MSVC Build Tools for an honest full-MMCV ops build.",
     "windows_control": "The computer-control transport closed twice before connection; no desktop input occurred.",
-    "input_inventory": "24 governed incoming images reconcile to 20 complete draft sources, two explicit S02 semantic-review cases, and two age-safety quarantines; no additional unprocessed governed originals are waiting.",
-    "s02_visual_audit": "Both review overlays correctly cover the intended visible person and show no apparent cross-person ownership defect, but the sealed handoff explicitly reserves semantic confirmation to Kevin. No reviewer identity was impersonated and no resolution was sealed."
+    "input_inventory": "24 governed incoming images reconcile to 22 complete draft sources and two age-safety quarantines; no additional unprocessed governed originals are waiting.",
+    "s02_visual_audit": "Kevin explicitly confirmed both full-body masks as valid. Both immutable resolutions are sealed under Kevin's reviewer identity, applied on fresh replay, and verified through QC-035 and D1; no reviewer identity was impersonated."
   },
   "minimum_kevin_unblock_sequence": [
     {
       "priority": 1,
-      "action": "Review the two S02 overlays in qa/review_handoffs/s02 and run the supplied confirmed_valid or corrected commands under Kevin's reviewer identity."
+      "action": "Supply at least three additional governed clear-adult originals to reach 25 completed source drafts."
     },
     {
       "priority": 2,
-      "action": "After both confirmations, supply at least three additional governed clear-adult originals to reach 25 completed source drafts; without confirming them, supply five."
-    },
-    {
-      "priority": 3,
       "action": "Perform and approve the first five CVAT SOP-1 corrections with real review minutes. This unlocks P1 gold, G1 baseline, DVC package evidence, and the downstream approved-gold ladder."
     },
     {
-      "priority": 4,
+      "priority": 3,
       "action": "Continue manual approvals to 20 distinct gold packages for the real VLM calibration corpus, then toward 200 for training."
     },
     {
-      "priority": 5,
+      "priority": 4,
       "action": "Run WSL/Task Scheduler/ComfyUI proofs from Kevin's interactive Windows account, or restore the Windows-control transport for the agent. AWS credentials and any billable burst still require explicit approval."
     }
   ],

@@ -4066,7 +4066,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 80,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-12T07:27:09+00:00",
@@ -4097,12 +4097,17 @@
           "ts": "2026-07-12T15:04:00+00:00",
           "actor": "ai_agent",
           "text": "Verified source-level batch progress is now 20/25 (80%); five additional governed sources with completed drafts are required."
+        },
+        {
+          "ts": "2026-07-12T23:46:47+00:00",
+          "actor": "ai_agent",
+          "text": "Kevin confirmed both pending S02 full-body masks as valid. Immutable resolutions were applied on fresh replay; both sources passed QC-035 and four D1 contracts independently verified 224 atomic masks. Batch progress is now 22/25 (88%)."
         }
       ],
-      "evidence": "20/25 governed sources now have complete S09.5/D1 contracts. The two newly recovered stylized sources add five instance contracts; both reached S10, with one honestly failing QC-035 and the other reaching S12. SQLite progress is reconciled to 16 auto_qa, 1 vlm_qa, and 3 in_review. Two additional sources remain at S02 human review and are not counted. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json and qa/live_verification/pipeline_state_and_package_identity_20260712.json.",
-      "blocked_reason": "NEEDS KEVIN: 20/25 governed sources have complete drafts. Two additional supplied masks are visually aligned but remain in explicit S02 human semantic review (qa/review_handoffs/s02/index.json); Kevin must confirm/correct those. After both confirmations, at least three additional governed clear-adult originals are still required (or five new originals without those confirmations).",
+      "evidence": "22/25 governed sources now have complete S09.5/D1 contracts. Kevin's two confirmed_valid S02 resolutions are sealed, resolved_applied, and replayed without weakening the model QC threshold. Both recovered sources pass QC-035; four D1 contracts independently verify 56 strict non-overlapping atomic masks each (224 total). Evidence: qa/live_verification/s02_review_recovery_20260712.json; handoff: qa/review_handoffs/s02/index.json.",
+      "blocked_reason": "NEEDS KEVIN: 22/25 governed sources have complete drafts after applying Kevin's two S02 confirmations. Three additional governed clear-adult originals are required to reach the 25-source gate.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:31+00:00",
+      "updated_at": "2026-07-12T23:46:47+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {

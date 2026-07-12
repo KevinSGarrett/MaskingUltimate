@@ -16,6 +16,7 @@ from PIL import Image
 
 from maskfactory.cli import main
 from maskfactory.gpu import GpuLock, GpuLockBusyError
+from maskfactory.models.registry import CHAMPION_HAND_CLASS_NAMES
 from maskfactory.serve.api import (
     InferenceRuntime,
     OnDemandRefiner,
@@ -272,6 +273,60 @@ def test_production_mmseg_slot_requires_hashed_config_and_maps_explicit_classes(
             registry_path=registry,
             models_root=models_root,
             initializer=lambda *_args, **_kwargs: model,
+            inference=lambda *_args: None,
+        )
+
+
+def test_production_mmseg_slot_accepts_exact_hand_crop_boundary_contract(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "hand.pth"
+    checkpoint.write_bytes(b"hand")
+    config = models_root / "hand.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    entry = {
+        "key": "hand",
+        "file": "models/hand.pth",
+        "role": "champion_hand",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/hand.py",
+        "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+        "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    prediction = np.array([[[1, 3], [13, 0]]], dtype=np.int64)
+    slot = load_production_mmseg_slot(
+        "champion_hand",
+        checkpoint,
+        registry_path=registry,
+        models_root=models_root,
+        initializer=lambda *args, **kwargs: SimpleNamespace(to=lambda _device: None),
+        inference=lambda *_args: SimpleNamespace(pred_sem_seg=SimpleNamespace(data=prediction)),
+    )
+    masks = slot(
+        np.zeros((2, 2, 3), dtype=np.uint8),
+        ("left_hand_base", "left_thumb", "finger_occlusion_boundary"),
+    )
+    assert masks["left_hand_base"].tolist() == [[True, False], [False, False]]
+    assert masks["left_thumb"].tolist() == [[False, True], [False, False]]
+    assert masks["finger_occlusion_boundary"].tolist() == [
+        [False, False],
+        [True, False],
+    ]
+    slot.close()
+
+    entry["class_names"] = list(CHAMPION_HAND_CLASS_NAMES[:-1])
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ServingProviderError, match="14-class crop contract"):
+        load_production_mmseg_slot(
+            "champion_hand",
+            checkpoint,
+            registry_path=registry,
+            models_root=models_root,
+            initializer=lambda *args, **kwargs: object(),
             inference=lambda *_args: None,
         )
 

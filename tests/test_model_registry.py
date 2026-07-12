@@ -10,6 +10,7 @@ from PIL import Image
 
 from maskfactory.cli import main
 from maskfactory.models.registry import (
+    CHAMPION_HAND_CLASS_NAMES,
     ModelFetchError,
     ModelRegistryError,
     champion_status,
@@ -378,6 +379,39 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
             registry_path=registry,
             models_root=models_root,
         )
+
+
+def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
+    tmp_path: Path,
+) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "hand.pth"
+    checkpoint.write_bytes(b"hand")
+    config = models_root / "hand.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    entry = {
+        "key": "hand",
+        "file": "models/hand.pth",
+        "role": "challenger_hand",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/hand.py",
+        "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+        "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+    assert json.loads(registry.read_text())["models"][0]["role"] == "champion_hand"
+
+    entry["class_names"] = list(CHAMPION_HAND_CLASS_NAMES[:-1])
+    entry["role"] = "challenger_hand"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="14-class crop contract"):
+        promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_hand"
 
 
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):

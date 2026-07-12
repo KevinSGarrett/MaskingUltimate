@@ -21,7 +21,11 @@ from ..datasets.active_learning import run_active_learning
 from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
 from ..fs_atomic import replace_with_retry
 from ..io.png_strict import read_mask, write_binary_mask, write_label_map
-from ..lanes.hand import apply_and_record_s07_hand_merges
+from ..lanes.hand import (
+    apply_and_record_s07_hand_merges,
+    apply_champion_hand_drafts,
+    champion_hand_refresh_required,
+)
 from ..ontology import get_ontology
 from ..orchestrator import (
     SemanticStageError,
@@ -479,6 +483,17 @@ def build_production_runners(
             primary_model=primary,
             fallback_model=fallback,
         )
+        people = json.loads(
+            (prior(context, "S01") / "person_bbox.json").read_text(encoding="utf-8")
+        )
+        person = selected_person(people)
+        lane_audit = apply_champion_hand_drafts(
+            results,
+            source_path=prior(context, "S01") / instance_name / "person_ctx.png",
+            pose_path=context.prior_stage_dir("S04") / "pose133.json",
+            context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+            output_dir=context.output_dir,
+        )
         hand_audit = apply_and_record_s07_hand_merges(
             results,
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
@@ -488,13 +503,17 @@ def build_production_runners(
             model=model,
             failure_queue_path=ROOT / "qa/failure_queue.jsonl",
         )
+        model_keys = [model]
+        if lane_audit["model_key"]:
+            model_keys.append(str(lane_audit["model_key"]))
         return {
             "refined_part_count": len(results),
             "low_confidence_count": sum(result.sam2_low_conf for result in results.values()),
             "embedding_count": 1,
             "model": model,
             "hand_merge_failure_count": hand_audit["failure_record_count"],
-            "_telemetry": {"model_keys": [model]},
+            "champion_hand_sides": list(lane_audit["sides"]),
+            "_telemetry": {"model_keys": model_keys},
         }
 
     def s08(context: StageContext) -> Mapping[str, Any]:
@@ -1058,6 +1077,10 @@ def run_multi_person_production(
 
     def runtime_forces(instance_root: Path, selected: tuple[str, ...]) -> tuple[str, ...]:
         forces = list(s03_force(instance_root))
+        if "S07" in selected:
+            cached = instance_root / "s07" / image_id
+            if champion_hand_refresh_required(cached):
+                forces.append("S07")
         if "S08" in selected:
             cached = instance_root / "s08" / image_id
             if champion_clothing_refresh_required(cached):

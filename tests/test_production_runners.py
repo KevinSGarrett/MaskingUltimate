@@ -452,6 +452,21 @@ def test_s07_production_runner_forwards_governed_large_and_fallback_models(
     crop_dir = work / "s01" / image_id / "p0"
     crop_dir.mkdir(parents=True)
     Image.new("RGB", (20, 30), "white").save(crop_dir / "person_ctx.png")
+    (crop_dir.parent / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "promoted": True,
+                        "bbox_xyxy": [0, 0, 20, 30],
+                        "context_bbox_xyxy": [0, 0, 20, 30],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
     captured = {}
 
     def fake_s07(*args, **kwargs):
@@ -1055,8 +1070,20 @@ def test_promoted_bodypart_role_forces_stale_cached_s03_refresh(
     assert force_calls == [("S03",)]
 
 
-def test_promoted_clothing_role_forces_stale_cached_s08_refresh(
-    tmp_path: Path, monkeypatch
+@pytest.mark.parametrize(
+    ("hand_stale", "clothing_stale", "expected"),
+    [
+        (True, False, ("S07",)),
+        (False, True, ("S08",)),
+        (True, True, ("S07", "S08")),
+    ],
+)
+def test_promoted_specialist_roles_force_their_cached_stage_refresh(
+    tmp_path: Path,
+    monkeypatch,
+    hand_stale: bool,
+    clothing_stale: bool,
+    expected: tuple[str, ...],
 ) -> None:
     image_id = "img_a3f9c2e17b04"
     image_dir = tmp_path / "images" / image_id
@@ -1106,7 +1133,10 @@ def test_promoted_clothing_role_forces_stale_cached_s08_refresh(
         return ()
 
     monkeypatch.setattr(production, "custom_bodypart_refresh_required", lambda path: False)
-    monkeypatch.setattr(production, "champion_clothing_refresh_required", lambda path: True)
+    monkeypatch.setattr(production, "champion_hand_refresh_required", lambda path: hand_stale)
+    monkeypatch.setattr(
+        production, "champion_clothing_refresh_required", lambda path: clothing_stale
+    )
     result = production.run_multi_person_production(
         image_id,
         config=load_pipeline_config(Path("configs/pipeline.yaml")),
@@ -1118,7 +1148,7 @@ def test_promoted_clothing_role_forces_stale_cached_s08_refresh(
     )
 
     assert result.terminal_outcome is None
-    assert force_calls == [("S08",)]
+    assert force_calls == [expected]
 
 
 def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path) -> None:

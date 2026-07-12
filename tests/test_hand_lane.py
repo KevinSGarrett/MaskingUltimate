@@ -11,17 +11,20 @@ from maskfactory.lanes.hand import (
     HandGeometry,
     HandLaneError,
     apply_and_record_s07_hand_merges,
+    apply_champion_hand_drafts,
     apply_finger_merge_policy,
     apply_hand_contact_zorder,
     assign_gap_ownership,
     build_hand_geometry,
     build_hand_prompt_plans,
+    champion_hand_refresh_required,
     create_hand_crop,
     draft_hand_with_champion,
     evaluate_hand_predictions,
     refine_hand_with_sam2,
     write_hand_evidence,
 )
+from maskfactory.models.registry import CHAMPION_HAND_CLASS_NAMES
 from maskfactory.stages.s07_sam2 import RefinedPart, SamCandidate
 from maskfactory.training.leaderboard import load_leaderboard
 
@@ -31,6 +34,8 @@ def _champion_registry(tmp_path: Path) -> tuple[Path, Path, Path]:
     models_root.mkdir()
     checkpoint = models_root / "hand.bin"
     checkpoint.write_bytes(b"verified hand champion")
+    config = models_root / "hand.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
     document = json.loads(Path("models/model_registry.json").read_text())
     entry = dict(document["models"][0])
     entry.update(
@@ -40,6 +45,9 @@ def _champion_registry(tmp_path: Path) -> tuple[Path, Path, Path]:
             "file": "hand.bin",
             "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
             "verified": True,
+            "inference_config": "models/hand.py",
+            "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+            "class_names": list(CHAMPION_HAND_CLASS_NAMES),
         }
     )
     document["models"] = [entry]
@@ -59,14 +67,21 @@ def test_promoted_hand_model_is_crop_drafter_and_sam2_boundary_stays_separate(
     events = []
 
     class Provider:
-        def __call__(self, image, side):
-            events.append(("predict", image.shape, side))
-            return indexed
+        class_names = CHAMPION_HAND_CLASS_NAMES
+
+        def __call__(self, image, labels):
+            events.append(("predict", image.shape, labels))
+            return {
+                name: indexed == class_id
+                for class_id, name in enumerate(self.class_names)
+                if name in labels
+            }
 
         def close(self):
             events.append(("close",))
 
-    def loader(path):
+    def loader(role, path, **kwargs):
+        assert role == "champion_hand"
         assert path == checkpoint
         events.append(("load", path.name))
         return Provider()
@@ -80,6 +95,7 @@ def test_promoted_hand_model_is_crop_drafter_and_sam2_boundary_stays_separate(
     )
     assert draft.role == "champion_hand"
     assert draft.checkpoint_sha256 == hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+    assert draft.model_key == "fixture_hand_champion"
     assert set(draft.geometry.finger_masks) == {
         "left_thumb",
         "left_index_finger",
@@ -100,6 +116,85 @@ def test_promoted_hand_model_is_crop_drafter_and_sam2_boundary_stays_separate(
             registry_path=registry,
             models_root=models_root,
         )
+
+
+def test_champion_hand_production_lane_reprojects_and_tracks_role_cache(tmp_path: Path) -> None:
+    registry, models_root, _checkpoint = _champion_registry(tmp_path)
+    source = tmp_path / "source.png"
+    Image.new("RGB", (300, 200), "white").save(source)
+    pose = _pose()
+    pose_path = tmp_path / "pose.json"
+    pose_path.write_text(
+        json.dumps(
+            {
+                "keypoints": [
+                    {"index": index, "x": row[0], "y": row[1], "confidence": row[2]}
+                    for index, row in enumerate(pose.tolist())
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    shape = (200, 300)
+    labels = (
+        "left_hand_base",
+        *(
+            f"left_{name}"
+            for name in ("thumb", "index_finger", "middle_finger", "ring_finger", "pinky")
+        ),
+    )
+    results = {}
+    for offset, label in enumerate(labels):
+        mask = np.zeros(shape, dtype=bool)
+        mask[70:110, 72 + offset * 5 : 82 + offset * 5] = True
+        results[label] = RefinedPart(label, mask, 0.9, 0.9, False, False, (), "sam2")
+    indexed = np.zeros((1024, 1024), dtype=np.uint8)
+    indexed[500:850, 300:700] = 1
+    for offset, class_id in enumerate((3, 5, 7, 9, 11)):
+        indexed[180:520, 180 + offset * 135 : 260 + offset * 135] = class_id
+    indexed[490:510, 280:720] = 13
+    events = []
+
+    class Slot:
+        class_names = CHAMPION_HAND_CLASS_NAMES
+
+        def __call__(self, image, requested):
+            events.append(("predict", image.shape, len(requested)))
+            return {
+                name: indexed == class_id
+                for class_id, name in enumerate(self.class_names)
+                if name in requested
+            }
+
+        def close(self):
+            events.append(("close",))
+
+    audit = apply_champion_hand_drafts(
+        results,
+        source_path=source,
+        pose_path=pose_path,
+        context_bbox_xyxy=(0, 0, 300, 200),
+        output_dir=tmp_path / "s07",
+        loader=lambda *args, **kwargs: Slot(),
+        registry_path=registry,
+        models_root=models_root,
+    )
+    assert audit == {
+        "status": "champion_hand",
+        "sides": ("left",),
+        "model_key": "fixture_hand_champion",
+    }
+    assert all(results[label].model == "fixture_hand_champion" for label in labels)
+    assert all("champion_hand" in results[label].review_flags for label in labels)
+    assert (tmp_path / "s07/left_finger_occlusion_boundary.png").is_file()
+    assert not champion_hand_refresh_required(tmp_path / "s07", registry_path=registry)
+    document = json.loads(registry.read_text())
+    document["models"][0]["key"] = "replacement_hand"
+    registry.write_text(json.dumps(document), encoding="utf-8")
+    assert champion_hand_refresh_required(tmp_path / "s07", registry_path=registry)
+    registry.write_text('{"models": []}\n', encoding="utf-8")
+    assert champion_hand_refresh_required(tmp_path / "s07", registry_path=registry)
+    assert events == [("predict", (1024, 1024, 3), 13), ("close",)]
 
 
 def _pose() -> np.ndarray:

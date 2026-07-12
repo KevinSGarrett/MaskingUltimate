@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T12:36:38+00:00",
+    "generated_at": "2026-07-12T12:56:29+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -6465,18 +6465,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 98,
       "notes": [
         {
           "ts": "2026-07-11T09:43:31+00:00",
           "actor": "ai_agent",
           "text": "Implemented verified champion_hand crop drafter: resolves exactly one hash-matching role, validates native integer 14-class output and side ownership, converts to HandGeometry (five fingers/base/gaps), then closes provider. SAM2 is not part of drafting and remains separate refine_hand_with_sam2 API; existing QC-018 evaluator enforces paste-back >=0.995. 26 focused tests pass; Ruff/diff clean. Live activation awaits a D7-winning checkpoint."
+        },
+        {
+          "ts": "2026-07-12T12:56:27+00:00",
+          "actor": "ai_agent",
+          "text": "Closed the production integration gap and a real promotion blocker: registry and MMSeg serving now accept only the exact 14-class hand-crop vocabulary including finger_occlusion_boundary; promoted champion_hand runs per visible side through the governed 1024 crop and nearest paste-back transform, records checkpoint/config/class/transform provenance, closes each slot, retains SAM2 as interactive editor only, and forces S07 caches on promotion/change/rollback. Current registry has no champion_hand. Kept item partial at 98% because the exact requirement still needs a D7-winning real checkpoint output to measure QC-018 paste-back >=0.995; MF-P5-05.04 also remains open."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/champion_hand_production_integration_20260712.json; 91 focused tests; full suite split 281+376=657; Ruff/format clean",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:43:31+00:00",
+      "updated_at": "2026-07-12T12:56:27+00:00",
       "orphaned": false
     },
     "MF-P5-06.01": {

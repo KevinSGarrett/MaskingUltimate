@@ -35,6 +35,22 @@ OLLAMA_MODEL_NAMES = (
     "qwen2.5:7b-instruct",
 )
 SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
+CHAMPION_HAND_CLASS_NAMES = (
+    "background",
+    "left_hand_base",
+    "right_hand_base",
+    "left_thumb",
+    "right_thumb",
+    "left_index_finger",
+    "right_index_finger",
+    "left_middle_finger",
+    "right_middle_finger",
+    "left_ring_finger",
+    "right_ring_finger",
+    "left_pinky",
+    "right_pinky",
+    "finger_occlusion_boundary",
+)
 TRAINED_CANDIDATE_KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{2,79}$")
 
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
@@ -698,10 +714,16 @@ def _validate_serving_champion_metadata(
         or len(class_names) != len(set(class_names))
     ):
         raise ModelRegistryError("serving champion class_names must be non-empty and unique")
+    if role == "champion_hand" and tuple(class_names) != CHAMPION_HAND_CLASS_NAMES:
+        raise ModelRegistryError(
+            "champion_hand class_names differ from the governed 14-class crop contract"
+        )
     expected_map = "material" if role == "champion_clothing" else "part"
     ontology = get_ontology()
     for name in class_names:
-        if name == "background":
+        if name == "background" or (
+            role == "champion_hand" and name == "finger_occlusion_boundary"
+        ):
             continue
         try:
             label = ontology.label(name)

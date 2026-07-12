@@ -11,7 +11,11 @@ from typing import Any
 
 import numpy as np
 
-from ..models.registry import DEFAULT_MODELS_ROOT, resolve_registered_role
+from ..models.registry import (
+    CHAMPION_HAND_CLASS_NAMES,
+    DEFAULT_MODELS_ROOT,
+    resolve_registered_role,
+)
 from ..ontology import get_ontology
 from ..stages.s05_geometry import PromptPlan
 from ..stages.s07_sam2 import Sam2Provider, WslSam2Provider, build_embedding
@@ -125,9 +129,15 @@ def load_production_mmseg_slot(
     ):
         raise ServingProviderError(f"{role} lacks a valid explicit class_names vocabulary")
     ontology = get_ontology()
+    if role == "champion_hand" and tuple(class_names) != CHAMPION_HAND_CLASS_NAMES:
+        raise ServingProviderError(
+            "champion_hand class_names differ from the governed 14-class crop contract"
+        )
     expected_map = "material" if role == "champion_clothing" else "part"
     for name in class_names:
-        if name == "background":
+        if name == "background" or (
+            role == "champion_hand" and name == "finger_occlusion_boundary"
+        ):
             continue
         try:
             label = ontology.label(name)

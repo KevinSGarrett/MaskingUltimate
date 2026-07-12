@@ -3784,3 +3784,21 @@ current registry:                no champion role; 29 cached S08 outputs remain 
 not claimed:                     no D6/G7 winner or live champion score; MF-P5-04.02 remains open
 evidence:                        qa/live_verification/champion_clothing_s08_integration_20260712.json
 validation:                      55 focused and 652 full tests passed; Ruff/format clean
+
+## 2026-07-12 - Champion-hand production crop path activated
+
+**Result:** PASS implementation readiness for MF-P5-05.05; the live D7/QC-018 winner gate remains open.
+
+contract defect fixed:           actual 14-class hand models were previously rejected on finger_occlusion_boundary
+registry contract:               exact ordered 14 classes required; boundary band explicitly governed
+serving contract:                verified MMSeg loader accepts and names all 14 outputs
+production authority:            promoted champion_hand replaces hand-lane steps 2.3-2.4 in S07
+crop/paste path:                 per-side 1.6x square 1024 crop -> nearest crop_to_full_transform reprojection
+outputs:                         hand base, five fingers, finger_occlusion_boundary, model/config provenance
+SAM2 boundary:                   retained as interactive editor only when champion drafting is active
+cache lifecycle:                 promotion, replacement, and rollback force S07; unrelated selections do not
+fallback:                        no champion role leaves the existing full-frame S07/SAM2 path byte-authoritative
+current registry:                no champion_hand role; no live winner inference claimed
+remaining exact gate:            D7-winning output must still measure QC-018 paste-back >= 0.995
+evidence:                        qa/live_verification/champion_hand_production_integration_20260712.json
+validation:                      91 focused tests; full suite split 281 + 376 = 657; Ruff/format clean

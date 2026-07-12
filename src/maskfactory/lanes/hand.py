@@ -16,6 +16,7 @@ from scipy.spatial import ConvexHull
 
 from ..io.png_strict import write_binary_mask
 from ..models.registry import (
+    CHAMPION_HAND_CLASS_NAMES,
     DEFAULT_MODELS_ROOT,
     DEFAULT_REGISTRY,
     ModelRegistryError,
@@ -89,6 +90,8 @@ class MergeResult:
 class ChampionHandDraft:
     geometry: HandGeometry
     checkpoint_sha256: str
+    finger_occlusion_boundary: np.ndarray
+    model_key: str
     role: str = "champion_hand"
 
 
@@ -108,13 +111,50 @@ HAND_CLASS_IDS = {
 }
 
 
+def champion_hand_refresh_required(
+    output_dir: Path, *, registry_path: Path = DEFAULT_REGISTRY
+) -> bool:
+    """Return whether cached hand-lane provenance differs from the promoted role."""
+    try:
+        registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise HandLaneError(f"champion registry is unreadable: {exc}") from exc
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_hand" and entry.get("managed") is not True
+    ]
+    if len(matches) > 1:
+        raise HandLaneError("expected at most one champion_hand registry entry")
+    path = Path(output_dir) / "champion_hand_provenance.json"
+    if not matches:
+        return path.exists()
+    if not path.is_file():
+        return True
+    try:
+        provenance = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return True
+    entry = matches[0]
+    return any(
+        provenance.get(key) != entry.get(entry_key)
+        for key, entry_key in (
+            ("model_key", "key"),
+            ("checkpoint_sha256", "sha256"),
+            ("inference_config_sha256", "inference_config_sha256"),
+            ("class_names", "class_names"),
+        )
+    )
+
+
 def draft_hand_with_champion(
     crop_image: np.ndarray,
     *,
     side: str,
-    loader,
+    loader=None,
     registry_path: Path = DEFAULT_REGISTRY,
     models_root: Path = DEFAULT_MODELS_ROOT,
+    output_dir: Path | None = None,
 ) -> ChampionHandDraft:
     """Load exactly the promoted hand checkpoint and convert its crop map to lane geometry."""
     image = np.asarray(crop_image)
@@ -126,9 +166,42 @@ def draft_hand_with_champion(
         )
     except ModelRegistryError as exc:
         raise HandLaneError(f"champion hand resolution failed: {exc}") from exc
-    provider = loader(checkpoint)
+    registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_hand" and entry.get("managed") is not True
+    ]
+    if len(matches) != 1:
+        raise HandLaneError("expected exactly one champion_hand registry entry")
+    entry = matches[0]
+    if loader is None:
+        from ..serve.providers import load_production_mmseg_slot
+
+        loader = load_production_mmseg_slot
+    provider = loader(
+        "champion_hand",
+        checkpoint,
+        registry_path=Path(registry_path),
+        models_root=Path(models_root),
+    )
     try:
-        indexed = np.asarray(provider(image, side))
+        if tuple(provider.class_names) != CHAMPION_HAND_CLASS_NAMES:
+            raise HandLaneError(
+                "champion_hand class_names differ from the governed 14-class crop contract"
+            )
+        requested = CHAMPION_HAND_CLASS_NAMES[1:]
+        masks = provider(image, requested)
+        indexed = np.zeros(image.shape[:2], dtype=np.uint8)
+        occupied = np.zeros(image.shape[:2], dtype=bool)
+        for class_id, name in enumerate(requested, start=1):
+            mask = np.asarray(masks.get(name))
+            if mask.shape != image.shape[:2] or mask.dtype != np.bool_:
+                raise HandLaneError(f"champion hand mask {name} must be boolean HxW")
+            if np.any(occupied & mask):
+                raise HandLaneError("champion hand masks overlap")
+            indexed[mask] = class_id
+            occupied |= mask
     finally:
         close = getattr(provider, "close", None)
         if callable(close):
@@ -154,7 +227,141 @@ def draft_hand_with_champion(
     finger_union = np.logical_or.reduce(tuple(fingers.values()))
     gaps = (indexed == 0) & ndimage.binary_dilation(finger_union, iterations=2)
     checkpoint_sha = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
-    return ChampionHandDraft(HandGeometry(fingers, hand_base, gaps), checkpoint_sha)
+    provenance = {
+        "schema_version": "1.0.0",
+        "role": "champion_hand",
+        "model_key": str(entry.get("key", "")),
+        "checkpoint_sha256": str(entry.get("sha256", "")),
+        "inference_config_sha256": str(entry.get("inference_config_sha256", "")),
+        "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+    }
+    if (
+        not provenance["model_key"]
+        or provenance["checkpoint_sha256"] != checkpoint_sha
+        or len(provenance["inference_config_sha256"]) != 64
+        or entry.get("class_names") != provenance["class_names"]
+    ):
+        raise HandLaneError("champion_hand registry provenance is incomplete")
+    if output_dir is not None:
+        destination = Path(output_dir) / "champion_hand_provenance.json"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(
+            json.dumps(provenance, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    return ChampionHandDraft(
+        HandGeometry(fingers, hand_base, gaps),
+        checkpoint_sha,
+        indexed == 13,
+        provenance["model_key"],
+    )
+
+
+def apply_champion_hand_drafts(
+    results: dict[str, RefinedPart],
+    *,
+    source_path: Path,
+    pose_path: Path,
+    context_bbox_xyxy: tuple[int, int, int, int],
+    output_dir: Path,
+    loader=None,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+) -> dict[str, object]:
+    """Replace S07 hand masks with the promoted 1024-crop drafter when present."""
+    registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_hand" and entry.get("managed") is not True
+    ]
+    if not matches:
+        return {"status": "fallback_s07", "sides": (), "model_key": None}
+    if len(matches) != 1:
+        raise HandLaneError("expected exactly one champion_hand registry entry")
+    pose_document = json.loads(Path(pose_path).read_text(encoding="utf-8"))
+    keypoints = pose_document.get("keypoints", ())
+    if len(keypoints) != 133:
+        raise HandLaneError("champion hand lane requires COCO-WholeBody-133 evidence")
+    left, top, _, _ = context_bbox_xyxy
+    pose = np.asarray(
+        [
+            [float(item["x"]) - left, float(item["y"]) - top, float(item["confidence"])]
+            for item in keypoints
+        ],
+        dtype=np.float64,
+    )
+    with Image.open(source_path) as opened:
+        source_size = opened.size
+    output_dir = Path(output_dir)
+    lane_root = output_dir / "hand_lane"
+    applied_sides = []
+    transforms = {}
+    model_key = None
+    for side in ("left", "right"):
+        labels = (f"{side}_hand_base", *(f"{side}_{name}" for name in FINGER_INDICES))
+        present = tuple(name for name in labels if name in results)
+        if labels[0] not in results or len(present) < 2:
+            continue
+        prior = np.logical_or.reduce(
+            tuple(np.asarray(results[name].mask).astype(bool) for name in present)
+        )
+        lane = create_hand_crop(
+            source_path,
+            prior,
+            pose,
+            side=side,
+            output_dir=lane_root,
+        )
+        with Image.open(lane.image_path) as opened:
+            crop_image = np.asarray(opened.convert("RGB"))
+        draft = draft_hand_with_champion(
+            crop_image,
+            side=side,
+            loader=loader,
+            registry_path=registry_path,
+            models_root=models_root,
+            output_dir=output_dir,
+        )
+        model_key = draft.model_key
+        crop_masks = {f"{side}_hand_base": draft.geometry.hand_base, **draft.geometry.finger_masks}
+        for name in present:
+            projected = reproject_crop_mask(crop_masks[name], lane.transform, full_size=source_size)
+            current = results[name]
+            results[name] = replace(
+                current,
+                mask=projected,
+                model=draft.model_key,
+                review_flags=tuple(dict.fromkeys((*current.review_flags, "champion_hand"))),
+            )
+            write_binary_mask(output_dir / f"{name}.png", projected, source_size=source_size)
+        boundary = reproject_crop_mask(
+            draft.finger_occlusion_boundary, lane.transform, full_size=source_size
+        )
+        write_binary_mask(
+            output_dir / f"{side}_finger_occlusion_boundary.png",
+            boundary,
+            source_size=source_size,
+        )
+        applied_sides.append(side)
+        transforms[side] = str(lane.transform_path.relative_to(output_dir))
+    if not applied_sides:
+        return {"status": "skipped_no_visible_hand", "sides": (), "model_key": None}
+    (output_dir / "champion_hand_lane.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0.0",
+                "model_key": model_key,
+                "sides": applied_sides,
+                "transforms": transforms,
+                "sam2_authority": "interactive_editor_only",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return {"status": "champion_hand", "sides": tuple(applied_sides), "model_key": model_key}
 
 
 def evaluate_hand_predictions(

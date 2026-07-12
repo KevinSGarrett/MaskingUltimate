@@ -10,6 +10,7 @@ from maskfactory.io.png_strict import read_mask
 from maskfactory.stages.s01_person_detection import (
     Detection,
     PersonDetectionError,
+    infer_groundingdino_people,
     infer_yolo11_people,
     process_detections,
     run_s01,
@@ -19,6 +20,7 @@ from maskfactory.stages.s02_silhouette import (
     build_silhouette,
     infer_birefnet_confidence,
 )
+from maskfactory.stages.s06_openvocab import BoxProposal
 
 
 def _image() -> Image.Image:
@@ -123,6 +125,90 @@ def test_s01_production_adapter_filters_person_and_runs_policy(
     result = run_s01(image_path, tmp_path / "s01", checkpoint=checkpoint, device="cpu")
     assert result.outcome == "promoted"
     assert (tmp_path / "s01/p0/person_ctx.png").is_file()
+
+
+def test_s01_uses_groundingdino_only_after_yolo_returns_zero_boxes(
+    tmp_path: Path, monkeypatch
+) -> None:
+    import maskfactory.stages.s01_person_detection as s01
+
+    image_path = tmp_path / "anime.png"
+    Image.new("RGB", (200, 120), "white").save(image_path)
+    checkpoint = tmp_path / "yolo.pt"
+    fallback = tmp_path / "gdino.pth"
+    checkpoint.write_bytes(b"yolo")
+    fallback.write_bytes(b"gdino")
+    events = []
+    monkeypatch.setattr(
+        s01, "infer_yolo11_people", lambda *args, **kwargs: events.append("yolo") or []
+    )
+    monkeypatch.setattr(
+        s01,
+        "infer_groundingdino_people",
+        lambda *args, **kwargs: events.append("gdino")
+        or [
+            Detection((5, 5, 85, 115), 0.8),
+            Detection((105, 5, 195, 115), 0.7),
+        ],
+    )
+    result = run_s01(
+        image_path,
+        tmp_path / "fallback",
+        checkpoint=checkpoint,
+        device="cpu",
+        fallback_checkpoint=fallback,
+    )
+    assert events == ["yolo", "gdino"]
+    assert result.detector_source == "groundingdino_swint_ogc"
+    assert len(result.persons) == 2
+    evidence = json.loads((tmp_path / "fallback/person_bbox.json").read_text())
+    assert evidence["detector_source"] == "groundingdino_swint_ogc"
+
+    monkeypatch.setattr(
+        s01,
+        "infer_yolo11_people",
+        lambda *args, **kwargs: [Detection((5, 5, 85, 115), 0.9)],
+    )
+    monkeypatch.setattr(
+        s01,
+        "infer_groundingdino_people",
+        lambda *args, **kwargs: pytest.fail("fallback ran despite a YOLO box"),
+    )
+    primary = run_s01(
+        image_path,
+        tmp_path / "primary",
+        checkpoint=checkpoint,
+        device="cpu",
+        fallback_checkpoint=fallback,
+    )
+    assert primary.detector_source == "yolo11m"
+
+
+def test_groundingdino_person_fallback_preserves_proposal_authority_and_nms(
+    tmp_path: Path, monkeypatch
+) -> None:
+    import maskfactory.stages.s06_openvocab as s06
+
+    image = tmp_path / "source.png"
+    Image.new("RGB", (100, 100), "white").save(image)
+    checkpoint = tmp_path / "gdino.pth"
+    checkpoint.write_bytes(b"gdino")
+    monkeypatch.setattr(
+        s06,
+        "infer_gdino_proposals",
+        lambda *args, **kwargs: [
+            BoxProposal("person", (5, 5, 55, 95), 0.9, 0.8),
+            BoxProposal("person", (7, 5, 57, 95), 0.8, 0.7),
+            BoxProposal("person", (60, 5, 98, 95), 0.75, 0.7),
+        ],
+    )
+    detections = infer_groundingdino_people(image, checkpoint=checkpoint)
+    assert detections == [
+        Detection((5, 5, 55, 95), 0.8),
+        Detection((60, 5, 98, 95), 0.7),
+    ]
+    with pytest.raises(PersonDetectionError, match="exactly 'person'"):
+        infer_groundingdino_people(image, checkpoint=checkpoint, prompt="anime person")
 
 
 def test_s02_keeps_largest_and_qualifying_touching_component(tmp_path: Path) -> None:

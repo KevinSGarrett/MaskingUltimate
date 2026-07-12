@@ -104,6 +104,31 @@ def test_s04_degraded_path_forces_parsing_only_and_careful_review(tmp_path: Path
     assert document["body_keypoint_fraction"] == pytest.approx(9 / 17)
 
 
+def test_s04_missing_owned_candidate_uses_parsing_only_without_cosubject_leakage(
+    tmp_path: Path,
+) -> None:
+    left = PoseCandidate((0, 0, 80, 100), _keypoints())
+    right = PoseCandidate((220, 0, 300, 100), _keypoints())
+    promoted = {0: (100, 0, 200, 100), 1: (0, 0, 80, 100), 2: (220, 0, 300, 100)}
+
+    result = process_pose_candidates(
+        [left, right],
+        instance_bbox_xyxy=promoted[0],
+        promoted_instance_bboxes=promoted,
+        person_index=0,
+        output_dir=tmp_path,
+        pose_tag_rules=_rules(),
+    )
+
+    document = json.loads(result.pose_path.read_text())
+    assert result.pose_degraded and result.careful_review
+    assert result.selected_candidate_index == 2
+    assert result.suppressed_candidate_indices == (0, 1)
+    assert document["pose_candidate_missing"] is True
+    assert document["body_keypoint_fraction"] == 0.0
+    assert document["geometry_prior_mode"] == "parsing_only"
+
+
 def test_s04_view_classifier_covers_front_back_profile_and_three_quarter() -> None:
     front = _keypoints()
     back = front.copy()

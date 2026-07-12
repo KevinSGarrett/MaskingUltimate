@@ -433,7 +433,7 @@ def run(
         run_pipeline,
     )
     from .runlog import PipelineRunLog
-    from .state import persist_terminal_image_outcome
+    from .state import persist_recovered_image_outcome, persist_terminal_image_outcome
 
     if not image_id:
         raise click.UsageError("IMAGE_ID is required")
@@ -568,6 +568,8 @@ def run(
                 reason=str(terminal.terminal_reason),
                 current_stage=terminal.stage,
             )
+        elif any(result.stage == "S01" and result.status == "complete" for result in results):
+            persist_recovered_image_outcome(database, image_id, current_stage="S01")
     except (
         StageConfigurationError,
         StageRunnerMissingError,

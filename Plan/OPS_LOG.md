@@ -3849,3 +3849,21 @@ data governance:                 source-containing panels remain local and git-i
 QA writer policy:                RGB panel save explicitly audited as non-mask; raw-mask-writer gate remains clean
 authority boundary:              panels prepare review but do not approve; both cases remain unresolved
 validation:                      71 focused; full suite 663 collected/passed across split plus corrected policy test; Ruff/format clean
+
+## 2026-07-12 - Stylized multi-person S01 recovery and downstream activation
+
+**Result:** PASS implementation; one source passed QC-035 and reached live CVAT, one remained honestly blocked by QC-035.
+
+false rejection root cause:      YOLO11m returned zero boxes on two clear-adult stylized multi-person sources
+governed S01 recovery:           zero-raw-box-only GroundingDINO `person` proposal fallback; YOLO remains primary and all existing confidence/area/ranking/crowd gates remain authoritative
+live S01 evidence:               img_5bc6130e5055=3 promoted; img_a3d2663ad90d=2 promoted; detector_source=groundingdino_swint_ogc
+state repair:                    successful rerun transitions only prior rejected/quarantined rows back to ingested/S01; active downstream rows never regress
+live S02 evidence:               5/5 silhouettes passed unchanged [0.35,0.95] ratio gate; range 0.585266..0.830617
+S04 repair:                      missing owned DWPose candidate now emits zero-confidence degraded pose, parsing-only geometry, careful-review; co-subject candidates remain suppressed
+S03/S05 repair:                  all-background Sapiens is degraded; S05 consumes always-run SCHP rather than selecting an empty file by existence
+D1 evidence:                     3+2 instance draft contracts emitted through S09/S09.5
+hard-gate honesty:               img_5bc6130e5055 maximum pair IoU=0.307266 >0.30; all 3 S10 reports fail QC-035
+passing multi-person source:      img_a3d2663ad90d maximum pair IoU=0.096472; both S10 reports pass all blockers and route needs_human
+CVAT handoff:                    img_a3d2663ad90d reached S11/S12; live tasks 18,19,20 pending Kevin correction/approval
+Windows UI retry:                computer-control initialization and reset both returned Transport closed; no blind UI input sent
+validation:                      669 tests collected/passed; Ruff and ruff-format clean; tracker structurally valid with 393 items

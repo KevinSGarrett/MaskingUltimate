@@ -12,6 +12,7 @@ from maskfactory.state import (
     WriterBusyError,
     WriterGuard,
     initialize_database,
+    persist_recovered_image_outcome,
     persist_terminal_image_outcome,
     reader_connection,
     transition_image_status,
@@ -106,6 +107,37 @@ def test_terminal_outcome_transition_is_idempotent_and_governed(tmp_path: Path) 
             reason="bad",
             current_stage="S01",
         )
+
+
+def test_successful_rerun_recovers_only_terminal_images(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.executemany(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (
+                ("img_rejected", "a" * 64, "rejected", "S01", 1, "t0", "t0"),
+                ("img_active", "b" * 64, "drafted", "S09", 1, "t0", "t0"),
+            ),
+        )
+
+    assert persist_recovered_image_outcome(
+        database, "img_rejected", current_stage="S01", updated_at="t1"
+    )
+    assert not persist_recovered_image_outcome(
+        database, "img_active", current_stage="S01", updated_at="t1"
+    )
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage FROM images WHERE image_id = 'img_rejected'"
+            ).fetchone()
+        ) == ("ingested", "S01")
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage FROM images WHERE image_id = 'img_active'"
+            ).fetchone()
+        ) == ("drafted", "S09")
 
 
 def test_writer_guard_refuses_concurrent_orchestrator_and_releases_cleanly(

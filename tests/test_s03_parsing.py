@@ -67,6 +67,26 @@ def test_s03_writes_both_parsers_confidences_and_disagreement(tmp_path: Path) ->
     assert metrics["sapiens_schp_disagreement_pct"] == 25.0
 
 
+def test_s03_all_background_sapiens_is_degraded_for_schp_fallback(tmp_path: Path) -> None:
+    background = np.zeros((3, 3), dtype=np.uint8)
+    schp_labels = background.copy()
+    schp_labels[1:, 1:] = 1
+
+    result = run_parsing(
+        np.zeros((3, 3, 3), dtype=np.uint8),
+        sapiens=lambda image, scale=1.0: _output(background),
+        schp=lambda image, scale=1.0: _output(schp_labels),
+        sapiens_map=SAPIENS_MAP,
+        schp_map=SCHP_MAP,
+        output_dir=tmp_path,
+    )
+
+    metrics = json.loads((tmp_path / "parsing_metrics.json").read_text())
+    assert result.parsing_degraded
+    assert metrics["parsing_degraded"] is True
+    assert metrics["sapiens_foreground_px"] == 0
+
+
 def test_co_subject_pixels_are_removed_from_both_parsers_before_geometry(
     tmp_path: Path,
 ) -> None:
@@ -256,15 +276,18 @@ def test_s03_oom_retries_half_resolution_then_uses_schp_only(tmp_path: Path) -> 
 
 
 def test_s03_half_resolution_retry_can_recover(tmp_path: Path) -> None:
+    recovered = np.zeros((2, 2), dtype=np.uint8)
+    recovered[0, 0] = 1
+
     def sapiens(image: np.ndarray, *, scale: float) -> ModelParsing:
         if scale == 1.0:
             raise MemoryError
-        return _output(np.zeros((2, 2), dtype=np.uint8))
+        return _output(recovered)
 
     result = run_parsing(
         np.zeros((2, 2, 3), dtype=np.uint8),
         sapiens=sapiens,
-        schp=lambda image, scale=1.0: _output(np.zeros((2, 2), dtype=np.uint8)),
+        schp=lambda image, scale=1.0: _output(recovered),
         sapiens_map=SAPIENS_MAP,
         schp_map=SCHP_MAP,
         output_dir=tmp_path,

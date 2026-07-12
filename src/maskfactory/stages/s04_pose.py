@@ -388,19 +388,26 @@ def process_pose_candidates(
     person_index: int | None = None,
 ) -> PoseResult:
     """Select the pose owned by this instance and suppress all co-subject poses."""
-    if not candidates:
-        raise PoseError("DWPose returned no candidates")
     validated = [_validate_candidate(candidate) for candidate in candidates]
-    ownership = [_bbox_iou(candidate.bbox_xyxy, instance_bbox_xyxy) for candidate in validated]
-    if promoted_instance_bboxes is not None:
+    pose_candidate_missing = False
+    if not validated:
+        validated.append(_missing_pose_candidate(instance_bbox_xyxy))
+        selected_index = 0
+        pose_candidate_missing = True
+    elif promoted_instance_bboxes is not None:
         if person_index is None or person_index not in promoted_instance_bboxes:
             raise PoseError("global pose assignment requires the target promoted person_index")
         assignments = assign_pose_candidates_to_instances(validated, promoted_instance_bboxes)
         if person_index not in assignments:
-            raise PoseError("no pose candidate assigned to the promoted instance")
-        selected_index = assignments[person_index]
+            validated.append(_missing_pose_candidate(instance_bbox_xyxy))
+            selected_index = len(validated) - 1
+            pose_candidate_missing = True
+        else:
+            selected_index = assignments[person_index]
     else:
+        ownership = [_bbox_iou(candidate.bbox_xyxy, instance_bbox_xyxy) for candidate in validated]
         selected_index = max(range(len(validated)), key=lambda index: (ownership[index], -index))
+    ownership = [_bbox_iou(candidate.bbox_xyxy, instance_bbox_xyxy) for candidate in validated]
     if ownership[selected_index] <= 0:
         raise PoseError("no pose candidate overlaps the instance bbox")
     selected = validated[selected_index]
@@ -434,6 +441,7 @@ def process_pose_candidates(
         "view": view,
         "pose_tags": list(tags),
         "pose_degraded": degraded,
+        "pose_candidate_missing": pose_candidate_missing,
         "geometry_prior_mode": "parsing_only" if degraded else "pose_and_parsing",
         "review_tags": ["careful_review"] if degraded else [],
         "body_keypoint_fraction": body_fraction,
@@ -463,6 +471,19 @@ def process_pose_candidates(
         tuple(index for index in range(len(candidates)) if index != selected_index),
         metrics,
     )
+
+
+def _missing_pose_candidate(
+    instance_bbox_xyxy: tuple[float, float, float, float],
+) -> PoseCandidate:
+    """Represent a detector miss as zero-confidence keypoints for parsing-only fallback."""
+    left, top, right, bottom = instance_bbox_xyxy
+    center_x = (left + right) / 2
+    center_y = (top + bottom) / 2
+    keypoints = np.zeros((133, 3), dtype=np.float64)
+    keypoints[:, 0] = center_x
+    keypoints[:, 1] = center_y
+    return PoseCandidate(tuple(float(value) for value in instance_bbox_xyxy), keypoints)
 
 
 def assign_pose_candidates_to_instances(

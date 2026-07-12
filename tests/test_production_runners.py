@@ -74,7 +74,12 @@ def test_production_runner_factory_executes_real_file_contract_through_s01(
     s00 = json.loads((tmp_path / f"work/s00/{image_id}/manifest_delta.json").read_text())
     s01 = json.loads((tmp_path / f"work/s01/{image_id}/manifest_delta.json").read_text())
     assert s00["source_width"] == 100
-    assert s01 == {"background_people": 0, "outcome": "promoted", "promoted_instances": 1}
+    assert s01 == {
+        "background_people": 0,
+        "detector_source": "yolo11m",
+        "outcome": "promoted",
+        "promoted_instances": 1,
+    }
 
 
 def test_s02_production_runner_forwards_entire_governed_stage_contract(
@@ -708,6 +713,19 @@ def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_pa
     document = json.loads((output / "prompts.json").read_text(encoding="utf-8"))
     assert len(document["plans"]) == len(priors)
     assert (output / "debug/left_forearm.png").is_file()
+
+
+def test_s05_selects_schp_when_sapiens_is_degraded(tmp_path: Path) -> None:
+    Image.new("L", (8, 8), 0).save(tmp_path / "sapiens_28.png")
+    Image.new("L", (8, 8), 11).save(tmp_path / "schp_atr.png")
+    (tmp_path / "parsing_metrics.json").write_text(
+        json.dumps({"parsing_degraded": True}), encoding="utf-8"
+    )
+
+    path, provider = production._select_s05_parsing(tmp_path)
+
+    assert path == tmp_path / "schp_atr.png"
+    assert provider == "schp_atr"
 
 
 def test_s05_pose_capsules_recover_anatomical_sides_from_swapped_parser_classes(

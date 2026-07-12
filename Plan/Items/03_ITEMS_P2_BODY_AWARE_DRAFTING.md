@@ -3,7 +3,7 @@
 Goal: automatic drafts for all 56 parts from one command (D1) + first G2 measurement. Parent IDs from doc 14 §3.
 
 ## MF-P2-01 — S01 person detection + S02 silhouette (spec: 07 S01–S02)
-- [ ] MF-P2-01.01 S01: YOLO11m person class conf ≥ 0.5 · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · >3 → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\s01\`
+- [ ] MF-P2-01.01 S01: YOLO11m person class conf ≥ 0.5, with proposal-only GroundingDINO `person` fallback only when YOLO returns zero raw boxes · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · crowd threshold → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\s01\`
 - [ ] MF-P2-01.02 S02: BiRefNet fp16, long side 2048 (tiled beyond) · threshold 0.5 · keep largest component + components ≥ 1% person area touching it · paste to full canvas → `person_full_visible` candidate + confidence map · QC hook: silhouette/bbox area ratio ∈ [0.35, 0.95]
 - [ ] MF-P2-01.03 Fixture set: 10 images with hand-truth bboxes + silhouettes · detection and silhouette IoU ≥ 0.95
 
@@ -11,14 +11,14 @@ Goal: automatic drafts for all 56 parts from one command (D1) + first G2 measure
 - [ ] MF-P2-02.01 Sapiens-0.6B-seg bf16, input long-side 1024 (tile 1536 / 128 overlap) · argmax + per-class prob maps saved 8-bit
 - [ ] MF-P2-02.02 SCHP-ATR always-run companion pass (clothing classes + cross-check)
 - [ ] MF-P2-02.03 Author `configs\pipeline.yaml`: stage toggles · device · tile sizes · thresholds · `seed: 1337` · `io.workdir` · `gpu_cooldown_sec: 3` · `parsing_map` (Sapiens-28 + SCHP-ATR → ontology priors) · `pose_tags_rules` · fusion weights (sam2 .40 / sapiens .25 / geometry .15 / schp .10 / densepose .10) · `fusion.zorder_rules`
-- [ ] MF-P2-02.04 OOM path: half-res retry → SCHP-only + `parsing_degraded: true`
+- [ ] MF-P2-02.04 OOM path: half-res retry → SCHP-only + `parsing_degraded: true`; all-background Sapiens output for an S01/S02-confirmed person is likewise degraded and S05 selects SCHP
 - [ ] MF-P2-02.05 Remap unit tests green · Sapiens↔SCHP disagreement % logged per image
 
 ## MF-P2-03 — S04 pose + view/pose_tags (spec: 07 S04)
 - [ ] MF-P2-03.01 DWPose via onnxruntime-gpu (yolox_l det + dw-ll_ucoco_384) → `pose133.json` with confidences (133 kp incl. 21×2 hands, 6 feet)
 - [ ] MF-P2-03.02 View classifier: shoulder/hip geometry + nose visibility (+ DensePose back-ratio once S08.5 lands in P3) → {front, back, left/right_profile, left/right_3_4}
 - [ ] MF-P2-03.03 pose_tags deterministic rules (arm elevation angles, hip-knee-ankle angles, overlap tests) per `pose_tags_rules`
-- [ ] MF-P2-03.04 Degraded path: < 60% body kp above conf 0.3 → `pose_degraded: true` · parsing-only priors · auto careful-review tag
+- [ ] MF-P2-03.04 Degraded path: < 60% body kp above conf 0.3 or no owned DWPose candidate → `pose_degraded: true` · missing candidate serialized as zero-confidence 133-kp evidence · parsing-only priors · auto careful-review tag; co-subject poses remain suppressed
 - [ ] MF-P2-03.05 20-image hand-tagged eval set · view + pose_tags ≥ 90% correct
 
 ## MF-P2-04 — S05 geometry engine (spec: 07 S05, 02 §6)

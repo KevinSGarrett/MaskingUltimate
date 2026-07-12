@@ -502,8 +502,12 @@ def run_parsing(
     sapiens_path = None
     sapiens_confidence: tuple[Path, ...] = ()
     disagreement = None
+    sapiens_foreground_px = None
     if sapiens_output is not None:
         sapiens_output = _validated(sapiens_output, image.shape[:2], len(sapiens_map), "Sapiens")
+        sapiens_foreground_px = int(np.count_nonzero(sapiens_output.labels))
+        if sapiens_foreground_px == 0:
+            degraded = True
         sapiens_path, sapiens_confidence = _write_output(output_dir, "sapiens_28", sapiens_output)
         disagreement = _disagreement_pct(
             sapiens_output.labels, schp_output.labels, sapiens_map, schp_map
@@ -512,6 +516,7 @@ def run_parsing(
     metrics = {
         "parsing_degraded": degraded,
         "sapiens_scale": sapiens_scale,
+        "sapiens_foreground_px": sapiens_foreground_px,
         "sapiens_schp_disagreement_pct": disagreement,
         "schp_always_run": True,
     }

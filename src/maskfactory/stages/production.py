@@ -44,7 +44,7 @@ from ..review_resolution import (
     apply_s02_review_resolution,
     s02_review_refresh_required,
 )
-from ..state import persist_terminal_image_outcome
+from ..state import persist_recovered_image_outcome, persist_terminal_image_outcome
 from ..vlm.production import run_s11_production
 from .s01_person_detection import run_s01
 from .s02_silhouette import run_s02
@@ -158,6 +158,24 @@ def verify_single_person_regression(
     }
 
 
+def _select_s05_parsing(s03_dir: Path) -> tuple[Path, str]:
+    """Honor S03's degraded-provider decision when selecting S05 geometry input."""
+    s03_dir = Path(s03_dir)
+    metrics_path = s03_dir / "parsing_metrics.json"
+    try:
+        metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SemanticStageError(f"S05 requires valid S03 parsing metrics: {exc}") from exc
+    if not bool(metrics.get("parsing_degraded")):
+        sapiens = s03_dir / "sapiens_28.png"
+        if sapiens.is_file():
+            return sapiens, "sapiens_28"
+    schp = s03_dir / "schp_atr.png"
+    if not schp.is_file():
+        raise SemanticStageError("S05 requires SCHP output when S03 parsing is degraded")
+    return schp, "schp_atr"
+
+
 def build_production_runners(
     config: Mapping[str, Any],
     *,
@@ -204,6 +222,15 @@ def build_production_runners(
     def s01(context: StageContext) -> Mapping[str, Any]:
         _, source_path = _source(context.image_id, images_root)
         settings = context.config["stage"]
+        if settings.get("zero_box_fallback") != "groundingdino_person":
+            raise SemanticStageError("S01 requires governed zero-box GroundingDINO fallback")
+        if settings.get("fallback_prompt") != "person":
+            raise SemanticStageError("S01 GroundingDINO fallback prompt must be person")
+        if float(settings.get("fallback_box_threshold", -1.0)) != 0.30:
+            raise SemanticStageError("S01 GroundingDINO fallback box threshold must be 0.30")
+        if float(settings.get("fallback_text_threshold", -1.0)) != 0.25:
+            raise SemanticStageError("S01 GroundingDINO fallback text threshold must be 0.25")
+        gdino_settings = config["stages"]["S06"]
         result = run_s01(
             source_path,
             context.output_dir,
@@ -214,21 +241,34 @@ def build_production_runners(
             max_instances_per_image=int(settings.get("max_instances_per_image", 4)),
             crowd_scene_threshold=int(settings.get("crowd_scene_threshold", 8)),
             context_scale=float(settings.get("context_scale", 1.25)),
+            fallback_checkpoint=ROOT / "models/gdino/groundingdino_swint_ogc.pth",
+            fallback_prompt=str(settings["fallback_prompt"]),
+            fallback_box_threshold=float(settings.get("fallback_box_threshold", 0.30)),
+            fallback_text_threshold=float(settings.get("fallback_text_threshold", 0.25)),
+            fallback_local_python=Path(gdino_settings["local_python"]),
+            fallback_source_path=Path(gdino_settings["source_path"]),
+            fallback_dependency_site=Path(gdino_settings["dependency_site"]),
+            fallback_hf_home=Path(gdino_settings["hf_home"]),
         )
+        model_keys = ["yolo11m"]
+        if result.detector_source != "yolo11m":
+            model_keys.append(result.detector_source)
         if result.outcome != "promoted":
             return {
                 "outcome": result.outcome,
                 "reason": result.reason,
                 "promoted_instances": 0,
                 "background_people": 0,
+                "detector_source": result.detector_source,
                 "_terminal": {"outcome": result.outcome, "reason": result.reason},
-                "_telemetry": {"model_keys": ["yolo11m"]},
+                "_telemetry": {"model_keys": model_keys},
             }
         return {
             "outcome": result.outcome,
             "promoted_instances": sum(person.promoted for person in result.persons),
             "background_people": sum(person.protected_as_part_50 for person in result.persons),
-            "_telemetry": {"model_keys": ["yolo11m"]},
+            "detector_source": result.detector_source,
+            "_telemetry": {"model_keys": model_keys},
         }
 
     def s02(context: StageContext) -> Mapping[str, Any]:
@@ -417,11 +457,8 @@ def build_production_runners(
         people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
         person = selected_person(people)
         s03_dir = context.prior_stage_dir("S03")
-        parsing_path = s03_dir / "sapiens_28.png"
-        parser_map = parsing_map["sapiens_28"]
-        if not parsing_path.is_file():
-            parsing_path = s03_dir / "schp_atr.png"
-            parser_map = parsing_map["schp_atr"]
+        parsing_path, parser_key = _select_s05_parsing(s03_dir)
+        parser_map = parsing_map[parser_key]
         priors, plans, crops = run_s05_production(
             parsing_path=parsing_path,
             silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
@@ -436,6 +473,7 @@ def build_production_runners(
             "prior_count": len(priors),
             "prompt_count": len(plans),
             "crop_request_count": len(crops),
+            "parsing_provider": parser_key,
         }
 
     def s06(context: StageContext) -> Mapping[str, Any]:
@@ -1037,6 +1075,8 @@ def run_multi_person_production(
             terminal.terminal_outcome,
             terminal.terminal_reason,
         )
+    if database is not None:
+        persist_recovered_image_outcome(database, image_id, current_stage="S01")
     people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
     promoted = sorted(
         (item for item in people["persons"] if item["promoted"]),

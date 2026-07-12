@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T13:32:05+00:00",
+    "generated_at": "2026-07-12T14:29:41+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -2975,7 +2975,7 @@
       "cluster_id": "MF-P2-01",
       "cluster_title": "S01 person detection + S02 silhouette",
       "spec_ref": "07 S01–S02",
-      "description": "S01: YOLO11m person class conf ≥ 0.5 · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · >3 → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\\s01\\`",
+      "description": "S01: YOLO11m person class conf ≥ 0.5, with proposal-only GroundingDINO `person` fallback only when YOLO returns zero raw boxes · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · crowd threshold → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\\s01\\`",
       "source_file": "03_ITEMS_P2_BODY_AWARE_DRAFTING.md",
       "source_line": 6,
       "is_exit_gate": false,
@@ -2984,10 +2984,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Production S01 now treats specified no_person rejection and crowd quarantine as durable terminal stage outcomes rather than generic semantic errors: person_bbox/manifest_delta/stage_run are atomically preserved, downstream execution stops, terminal outcomes cache, and SQLite transitions exactly once to rejected|quarantined at S01. Live img_5bc6130e5055 and img_a3d2663ad90d now show rejected/S01 with raw_detection_count=0; cached rerun of img_5bc6130e5055 recorded terminal duration 0. The other 19 images retain 30 promoted instances. 52 focused orchestration/production/state tests and 576 full tests pass.",
+      "evidence": "YOLO11m remains primary; production now invokes pinned GroundingDINO with exact prompt person and 0.30/0.25 thresholds only after zero raw YOLO boxes, while unchanged confidence/area/ranking/crowd gates retain authority. Live img_5bc6130e5055 and img_a3d2663ad90d recovered from false no_person terminals with exactly 3 and 2 promoted instances and detector_source=groundingdino_swint_ogc. Successful reruns legally restored only terminal SQLite rows to ingested/S01. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T22:54:28+00:00",
+      "updated_at": "2026-07-12T14:30:05+00:00",
       "orphaned": false
     },
     "MF-P2-01.02": {
@@ -3149,7 +3149,7 @@
       "cluster_id": "MF-P2-02",
       "cluster_title": "S03 human parsing",
       "spec_ref": "07 S03",
-      "description": "OOM path: half-res retry → SCHP-only + `parsing_degraded: true`",
+      "description": "OOM path: half-res retry → SCHP-only + `parsing_degraded: true`; all-background Sapiens output for an S01/S02-confirmed person is likewise degraded and S05 selects SCHP",
       "source_file": "03_ITEMS_P2_BODY_AWARE_DRAFTING.md",
       "source_line": 14,
       "is_exit_gate": false,
@@ -3158,10 +3158,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "src/maskfactory/stages/s03_parsing.py implements Sapiens OOM half-resolution retry then SCHP-only parsing_degraded=true; tests/test_s03_parsing.py covers double-OOM fallback and half-resolution recovery; full 214-test suite passed.",
+      "evidence": "S03 retains OOM half-resolution then SCHP-only fallback and now also treats all-background Sapiens output for an S01/S02-confirmed person as semantic degradation. S05 reads parsing_metrics and selects SCHP rather than an empty Sapiens file. Live p2 recovered from zero Sapiens foreground to SCHP-backed S05/S09; focused S03/production suite passed. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:36:31+00:00",
+      "updated_at": "2026-07-12T14:30:06+00:00",
       "orphaned": false
     },
     "MF-P2-02.05": {
@@ -3275,7 +3275,7 @@
       "cluster_id": "MF-P2-03",
       "cluster_title": "S04 pose + view/pose_tags",
       "spec_ref": "07 S04",
-      "description": "Degraded path: < 60% body kp above conf 0.3 → `pose_degraded: true` · parsing-only priors · auto careful-review tag",
+      "description": "Degraded path: < 60% body kp above conf 0.3 or no owned DWPose candidate → `pose_degraded: true` · missing candidate serialized as zero-confidence 133-kp evidence · parsing-only priors · auto careful-review tag; co-subject poses remain suppressed",
       "source_file": "03_ITEMS_P2_BODY_AWARE_DRAFTING.md",
       "source_line": 21,
       "is_exit_gate": false,
@@ -3284,10 +3284,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "S04 computes confidence>=0.3 fraction over 17 COCO body keypoints; below 0.60 serializes pose_degraded=true, geometry_prior_mode=parsing_only, and careful_review; 9/17 focused fixture proves boundary behavior; full 220-test suite passed.",
+      "evidence": "S04 retains the <60% confidence degraded path and now handles a missing globally owned DWPose candidate with a zero-confidence 133-keypoint pose_candidate_missing record, parsing-only geometry, and careful_review while suppressing all co-subject candidates. Live 3-person p0 missed by DWPose completed S04-S09 without pose leakage. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:43:03+00:00",
+      "updated_at": "2026-07-12T14:30:06+00:00",
       "orphaned": false
     },
     "MF-P2-03.05": {
@@ -9185,7 +9185,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 20,
+      "percent_complete": 40,
       "notes": [
         {
           "ts": "2026-07-11T20:21:34+00:00",
@@ -9196,12 +9196,17 @@
           "ts": "2026-07-11T22:42:15+00:00",
           "actor": "ai_agent",
           "text": "Live governed corpus now contains exactly two qualifying real 2-4-person images: img_7b7a3c7d5dd3 (3 raw/promoted) and img_6d6bb33f01a1 (4 raw/promoted), both mandatory clear_adult. Two additional clear-adult group photos each visibly contain five people and are honestly excluded even though the configured promotion cap retained four. Need 8 more qualifying images to reach minimum 10."
+        },
+        {
+          "ts": "2026-07-12T14:30:07+00:00",
+          "actor": "ai_agent",
+          "text": "Four qualifying governance-compliant clear-adult 2-4-person sources are now collected. Newly activated stylized sources img_5bc6130e5055 (3 promoted) and img_a3d2663ad90d (2 promoted) join the prior two; both passed mandatory intake and generated real per-instance evidence. Need 6 more to reach minimum 10."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T22:42:15+00:00",
+      "updated_at": "2026-07-12T14:30:07+00:00",
       "orphaned": false
     },
     "MF-P8-10.02": {
@@ -9217,7 +9222,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 20,
+      "percent_complete": 40,
       "notes": [
         {
           "ts": "2026-07-11T23:30:07+00:00",
@@ -9238,12 +9243,17 @@
           "ts": "2026-07-12T08:45:34+00:00",
           "actor": "ai_agent",
           "text": "Added and live-verified one-command --through-review-handoff orchestration: both qualifying sources now transactionally run S00-S11, reuse their exact image-level CVAT fan-out, and write per-instance S12 pending-human receipts only after complete handoff. Task records stayed 9 before/after both runs; no duplicate tasks or approval claims. Source-count progress remains 2/10 (20%)."
+        },
+        {
+          "ts": "2026-07-12T14:30:07+00:00",
+          "actor": "ai_agent",
+          "text": "Full activated S00-S10 pipeline now ran on both new sources: five D1 contracts total. img_5bc6130e5055 honestly fails QC-035 at max IoU 0.307266; img_a3d2663ad90d passes QC-035 at 0.096472 and reached S11/S12. Evidence qa/live_verification/stylized_multi_person_recovery_20260712.json."
         }
       ],
       "evidence": "Both currently qualifying 2-4-person sources (2/10 minimum set) now complete S00-S11; seven schema-valid instance review packages were assembled and live CVAT handoff created tasks 9-17: seven instance jobs plus two overview jobs, 166 preannotation shapes. Durable API-confirmed evidence: qa/live_verification/p8_real_cvat_handoff_20260712.json. Source-count gate remains 2/10, so percent stays 20 and S13-S15/gold remain open.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T08:45:34+00:00",
+      "updated_at": "2026-07-12T14:30:07+00:00",
       "orphaned": false
     },
     "MF-P8-10.03": {

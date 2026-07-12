@@ -259,6 +259,33 @@ def persist_terminal_image_outcome(
     return True
 
 
+def persist_recovered_image_outcome(
+    database: Path,
+    image_id: str,
+    *,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Return a previously terminal image to the main chain after a verified rerun."""
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) not in {"rejected", "quarantined"}:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            "ingested",
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
 @contextmanager
 def writer_connection(path: Path = DEFAULT_DB_PATH) -> Iterator[sqlite3.Connection]:
     """Yield the sole mutable connection while holding the orchestrator lease."""

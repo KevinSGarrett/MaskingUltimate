@@ -19,6 +19,7 @@ from ..io.png_strict import read_mask, write_binary_mask
 from ..ontology import get_ontology
 from ..packager import verify_packages
 from ..qa.panels import render_boundary_panel
+from .client import DETERMINISTIC_GENERATION_OPTIONS
 
 DEFECT_TAXONOMY = (
     "wrong_side",
@@ -62,6 +63,7 @@ class EvalReport:
     recall: float
     precision: float
     passed: bool
+    generation_options: dict[str, int | float]
 
 
 def generate_calibration_set(root: Path, *, test_fixture: bool = False) -> tuple[EvalCase, ...]:
@@ -505,8 +507,22 @@ def _binary_seed(path: Path, source_size: tuple[int, int]) -> np.ndarray:
     return mask > 0
 
 
-def gate_fingerprint(*, model: str, prompt_version: str, prompt_path: Path) -> str:
-    payload = b"\0".join((model.encode(), prompt_version.encode(), Path(prompt_path).read_bytes()))
+def gate_fingerprint(
+    *,
+    model: str,
+    prompt_version: str,
+    prompt_path: Path,
+    generation_options: Mapping[str, int | float] | None = None,
+) -> str:
+    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
+    payload = b"\0".join(
+        (
+            model.encode(),
+            prompt_version.encode(),
+            Path(prompt_path).read_bytes(),
+            json.dumps(options, sort_keys=True, separators=(",", ":")).encode(),
+        )
+    )
     return hashlib.sha256(payload).hexdigest()
 
 
@@ -518,6 +534,7 @@ def evaluate_gate(
     prompt_version: str,
     prompt_path: Path,
     output_dir: Path,
+    generation_options: Mapping[str, int | float] | None = None,
 ) -> EvalReport:
     if set(predictions) != {case.case_id for case in cases}:
         raise VlmEvalError("predictions must cover every calibration case exactly once")
@@ -529,19 +546,26 @@ def evaluate_gate(
     defect_count = sum(case.expected_defect for case in cases)
     recall = tp / defect_count
     precision = tp / (tp + fp) if tp + fp else 0.0
+    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
     report = EvalReport(
-        model,
-        prompt_version,
-        gate_fingerprint(model=model, prompt_version=prompt_version, prompt_path=prompt_path),
-        len(cases),
-        len(cases) - defect_count,
-        defect_count,
-        tp,
-        fp,
-        fn,
-        recall,
-        precision,
-        recall >= 0.90 and precision >= 0.80,
+        model=model,
+        prompt_version=prompt_version,
+        fingerprint=gate_fingerprint(
+            model=model,
+            prompt_version=prompt_version,
+            prompt_path=prompt_path,
+            generation_options=options,
+        ),
+        total=len(cases),
+        good_count=len(cases) - defect_count,
+        defect_count=defect_count,
+        true_positives=tp,
+        false_positives=fp,
+        false_negatives=fn,
+        recall=recall,
+        precision=precision,
+        passed=recall >= 0.90 and precision >= 0.80,
+        generation_options=options,
     )
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -583,6 +607,7 @@ def predict_live(
             prompt_template=prompt,
             prompt_version="calibration",
             gpu_lock_path=gpu_lock_path,
+            generation_options=DETERMINISTIC_GENERATION_OPTIONS,
         )
         predictions[case.case_id] = verdict.verdict
         verdicts.append(asdict(verdict) | {"problems": list(verdict.problems)})
@@ -599,14 +624,25 @@ def require_current_gate(
     model: str,
     prompt_version: str,
     prompt_path: Path,
+    generation_options: Mapping[str, int | float] | None = None,
 ) -> dict:
     try:
         gate = json.loads(Path(gate_path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise VlmEvalError("VLM production gate unavailable") from exc
-    current = gate_fingerprint(model=model, prompt_version=prompt_version, prompt_path=prompt_path)
+    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
+    current = gate_fingerprint(
+        model=model,
+        prompt_version=prompt_version,
+        prompt_path=prompt_path,
+        generation_options=options,
+    )
     if gate.get("fingerprint") != current:
-        raise VlmEvalError("VLM production gate invalidated by model or prompt change")
+        raise VlmEvalError(
+            "VLM production gate invalidated by model, prompt, or generation-options change"
+        )
+    if gate.get("generation_options") != options:
+        raise VlmEvalError("VLM production gate generation options are not current")
     if (
         gate.get("passed") is not True
         or gate.get("recall", 0) < 0.90

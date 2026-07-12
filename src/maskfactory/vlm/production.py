@@ -50,6 +50,7 @@ def run_s11_production(
     config = yaml.safe_load(Path(config_path).read_text(encoding="utf-8"))
     model = config["models"]["primary_vlm"]
     prompt_version = config["prompts"]["p_part"]["version"]
+    generation_options = config["runtime"]["generation_options"]
     prompt_template = Path(prompt_path).read_text(encoding="utf-8")
     report["vlm_review"] = {"model": model, "verdicts": []}
     qa_report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -81,7 +82,11 @@ def run_s11_production(
 
     try:
         gate = gate_checker(
-            gate_path, model=model, prompt_version=prompt_version, prompt_path=prompt_path
+            gate_path,
+            model=model,
+            prompt_version=prompt_version,
+            prompt_path=prompt_path,
+            generation_options=generation_options,
         )
     except VlmEvalError as exc:
         routes = {
@@ -128,6 +133,7 @@ def run_s11_production(
                 prompt_template=prompt_template,
                 prompt_version=prompt_version,
                 gpu_lock_path=output_dir / ".vlm_gpu.lock",
+                generation_options=generation_options,
             )
             append_verdict(qa_report_path, verdict)
             decision = route(auto_qa, verdict)
@@ -159,6 +165,7 @@ def run_s11_production(
             labels=masks,
             prompt_path=Path("src/maskfactory/vlm/prompts/p_image.txt"),
             output_dir=output_dir,
+            generation_options=generation_options,
         )
         report = json.loads(qa_report_path.read_text(encoding="utf-8"))
         if report["overall"] != "fail" and any(
@@ -206,19 +213,26 @@ def _review_whole_image(
     labels: dict[str, np.ndarray],
     prompt_path: Path,
     output_dir: Path,
+    generation_options: dict,
 ) -> dict:
     prepared = prepare_panel_input(overlay_path, output_dir / "prepared/all_parts.png")
     digest = "\n".join(f"{name}:visible:{int(mask.sum())}" for name, mask in sorted(labels.items()))
     prompt = prompt_path.read_text(encoding="utf-8") + "\n\nVISIBLE LABEL DIGEST:\n" + digest
     started = time.perf_counter()
     with GpuLock(path=output_dir / ".vlm_gpu.lock", purpose="S11_vlm_image_qa"):
-        raw = client.generate(model=model, prompt=prompt, images=(prepared,))
+        raw = client.generate(
+            model=model,
+            prompt=prompt,
+            images=(prepared,),
+            options=generation_options,
+        )
         parsed = _parse_image_review(raw)
         if parsed is None:
             raw = client.generate(
                 model=model,
                 prompt=prompt + "\nYour prior response was invalid. JSON only.",
                 images=(prepared,),
+                options=generation_options,
             )
             parsed = _parse_image_review(raw)
     if parsed is None:

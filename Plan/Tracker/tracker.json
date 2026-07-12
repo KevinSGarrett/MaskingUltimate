@@ -5574,11 +5574,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-12T09:17:57+00:00",
+          "actor": "ai_agent",
+          "text": "Strengthened gate change detection beyond the minimum model/prompt clause: canonical generation options (temperature=0, seed=1337, num_predict=192) are now part of the fingerprint and are shared by calibration, invalid-JSON retry, production P-PART, and P-IMAGE requests. Options drift refuses production. 20 focused and full suites pass."
+        }
+      ],
       "evidence": "SHA-256 gate fingerprint covers exact model id, prompt_version, and prompt bytes; require_current_gate refuses stale model/prompt and below-threshold gates. Invalidation tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:10:50+00:00",
+      "updated_at": "2026-07-12T09:17:57+00:00",
       "orphaned": false
     },
     "MF-P4-05.04": {
@@ -5605,12 +5611,17 @@
           "ts": "2026-07-11T06:05:30+00:00",
           "actor": "ai_agent",
           "text": "Prior qwen 0/0 score remains useful failure evidence but was measured on the now-invalidated synthetic corpus; it cannot satisfy or meaningfully calibrate the production gate. A replacement real-image known-mask corpus is required before rerun."
+        },
+        {
+          "ts": "2026-07-12T09:17:58+00:00",
+          "actor": "ai_agent",
+          "text": "Live bounded diagnostic confirmed the gate must remain closed. Fixed options made normalized verdict/confidence/problems repeat, while Ollama free-text wording varied; the original prompt still passed an obvious deprecated loose-boundary defect. A stricter candidate increased sensitivity but also false-failed a good case and was not promoted. No authoritative score or pass is claimed before approved-gold calibration."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T06:05:30+00:00",
+      "updated_at": "2026-07-12T09:17:58+00:00",
       "orphaned": false
     },
     "MF-P4-06.01": {

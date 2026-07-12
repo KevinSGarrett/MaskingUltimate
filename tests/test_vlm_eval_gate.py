@@ -337,6 +337,14 @@ def test_eval_thresholds_and_model_prompt_change_invalidation(tmp_path: Path) ->
             prompt_version="p-part-v1-doc10",
             prompt_path=prompt,
         )
+    with pytest.raises(VlmEvalError, match="invalidated"):
+        require_current_gate(
+            gate,
+            model="qwen2.5vl:7b",
+            prompt_version="p-part-v1-doc10",
+            prompt_path=prompt,
+            generation_options={"temperature": 0, "seed": 1337, "num_predict": 64},
+        )
     prompt.write_text("version changed")
     with pytest.raises(VlmEvalError, match="invalidated"):
         require_current_gate(

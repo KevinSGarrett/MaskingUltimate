@@ -3579,3 +3579,23 @@ full regression:             all tests passed; Ruff clean
 durable audit:               qa/live_verification/vlm_gold_calibration_builder_20260712.json
 honest boundary:             approved_gold_count=0, so no live production calibration corpus or VLM gate pass is claimed
 ```
+
+## 2026-07-12 09:45 UTC - VLM generation settings joined the calibration fingerprint
+**Items:** MF-P4-05.03 strengthened; MF-P4-05.04 remains 25% partial
+**Result:** Calibration and production S11 now share one governed request contract; changing sampling/output settings invalidates the gate just like changing model or prompt.
+
+```
+governed options:            temperature=0, seed=1337, num_predict=192
+calibration path:            every P-PART request and invalid-JSON retry uses the exact options
+production path:             gated P-PART and whole-image P-IMAGE requests use the same options
+fingerprint:                 model + prompt version + prompt bytes + canonical generation-options JSON
+change behavior:             any options drift makes require_current_gate fail closed
+current real S11 audit:      seven reports, VLM disabled, zero verdicts, every part routed careful because the gate is unavailable
+live repeat diagnostic:      normalized verdict/confidence/problems identical; free-text evidence wording differed, so no byte-identical text claim
+prompt experiment:           stricter candidate not adopted; deprecated subset produced mixed sensitivity and a good-case false positive
+known model boundary:        original prompt still passed an obvious deprecated loose-boundary defect; production gate remains correctly closed
+focused verification:       20 VLM/S11 tests passed
+full regression:             all tests passed; Ruff clean
+durable audit:               qa/live_verification/vlm_generation_contract_20260712.json
+honest boundary:             authoritative approved-gold corpus and passing primary/fallback scores remain required
+```

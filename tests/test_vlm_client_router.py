@@ -8,6 +8,7 @@ from PIL import Image
 from maskfactory.cvat_bridge.push import ReviewInstance, _task_description
 from maskfactory.validation import validate_document
 from maskfactory.vlm.client import (
+    DETERMINISTIC_GENERATION_OPTIONS,
     OllamaClient,
     VlmClientError,
     VlmVerdict,
@@ -46,6 +47,7 @@ def test_versioned_prompts_and_config_cover_all_three_contracts() -> None:
         "container_name": "ollama",
         "cloud_enabled": False,
         "gpu_slot": "exclusive",
+        "generation_options": DETERMINISTIC_GENERATION_OPTIONS,
     }
     assert set(config["prompts"]) == {"p_part", "p_image", "p_manifest"}
     for name in ("p_part", "p_image", "p_manifest"):
@@ -81,9 +83,11 @@ def test_panel_prep_manifest_digest_and_strict_retry(tmp_path: Path) -> None:
         def __init__(self, responses):
             self.responses = list(responses)
             self.prompts = []
+            self.options = []
 
-        def generate(self, *, model, prompt, images=()):
+        def generate(self, *, model, prompt, images=(), options=None):
             self.prompts.append(prompt)
+            self.options.append(options)
             return self.responses.pop(0)
 
     valid = json.dumps(
@@ -107,6 +111,7 @@ def test_panel_prep_manifest_digest_and_strict_retry(tmp_path: Path) -> None:
         gpu_lock_path=tmp_path / "gpu.lock",
     )
     assert result.verdict == "fail" and len(client.prompts) == 2
+    assert client.options == [None, None]
     assert client.prompts[1].endswith("JSON only.")
     assert not (tmp_path / "gpu.lock").exists()
     uncertain = review_part(
@@ -121,6 +126,20 @@ def test_panel_prep_manifest_digest_and_strict_retry(tmp_path: Path) -> None:
     )
     assert uncertain.verdict == "uncertain" and uncertain.confidence == 0
     assert uncertain.correction_instruction == ""
+
+    deterministic = FakeClient([valid])
+    review_part(
+        deterministic,
+        label="left_forearm",
+        panel_path=prepared,
+        panel_file="qa_panels/left_forearm.png",
+        model="qwen2.5vl:7b",
+        prompt_template="audit <label>",
+        prompt_version="p-part-v1-doc10",
+        gpu_lock_path=tmp_path / "gpu3.lock",
+        generation_options=DETERMINISTIC_GENERATION_OPTIONS,
+    )
+    assert deterministic.options == [DETERMINISTIC_GENERATION_OPTIONS]
 
 
 def test_verdict_appends_atomically_and_preserves_qa_schema(tmp_path: Path) -> None:

@@ -4,6 +4,10 @@ runtime:
   container_name: ollama
   cloud_enabled: false
   gpu_slot: exclusive
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 192
 
 models:
   primary_vlm: "qwen2.5vl:7b"

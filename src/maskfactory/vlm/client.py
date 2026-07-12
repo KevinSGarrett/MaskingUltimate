@@ -19,6 +19,11 @@ from ..gpu import GpuLock
 from ..validation import validate_document
 
 ALLOWED_VERDICTS = {"pass", "fail", "uncertain"}
+DETERMINISTIC_GENERATION_OPTIONS = {
+    "temperature": 0,
+    "seed": 1337,
+    "num_predict": 192,
+}
 ALLOWED_PROBLEMS = {
     "wrong_part",
     "wrong_side",
@@ -153,18 +158,19 @@ def review_part(
     prompt_template: str,
     prompt_version: str,
     gpu_lock_path: Path,
+    generation_options: dict[str, Any] | None = None,
 ) -> VlmVerdict:
     prompt = prompt_template.replace("<label>", label)
     started = time.perf_counter()
     with GpuLock(path=gpu_lock_path, purpose="S11_vlm_qa"):
-        raw = client.generate(model=model, prompt=prompt, images=(panel_path,))
+        request = {"model": model, "prompt": prompt, "images": (panel_path,)}
+        if generation_options is not None:
+            request["options"] = generation_options
+        raw = client.generate(**request)
         parsed = _parse_part(raw)
         if parsed is None:
-            raw = client.generate(
-                model=model,
-                prompt=prompt + "\nYour prior response was invalid. JSON only.",
-                images=(panel_path,),
-            )
+            request["prompt"] = prompt + "\nYour prior response was invalid. JSON only."
+            raw = client.generate(**request)
             parsed = _parse_part(raw)
     latency = round((time.perf_counter() - started) * 1000)
     if parsed is None:

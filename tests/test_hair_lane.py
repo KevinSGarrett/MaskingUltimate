@@ -1,3 +1,4 @@
+import hashlib
 import os
 from pathlib import Path
 
@@ -7,6 +8,8 @@ from PIL import Image
 
 from maskfactory.io.png_strict import read_mask
 from maskfactory.lanes.hair import (
+    HairLaneError,
+    LocalCudaVitMatteProvider,
     WslVitMatteProvider,
     apply_hair_shoulder_zorder,
     build_face_protected,
@@ -160,6 +163,54 @@ def test_vitmatte_provider_enforces_known_trimap_and_native_geometry(
     assert set(np.unique(alpha)) == {0, 160, 255}
     assert not alpha[trimap == 0].any()
     assert np.all(alpha[trimap == 255] == 255)
+
+
+def test_local_cuda_vitmatte_provider_pins_runtime_cache_and_checkpoint(
+    tmp_path: Path, monkeypatch
+) -> None:
+    checkpoint = tmp_path / "vitmatte.pth"
+    checkpoint.write_bytes(b"fixture")
+    python_path = tmp_path / "python.exe"
+    python_path.write_bytes(b"runtime")
+    expected_sha = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+
+    def fake_run(command, **kwargs):
+        assert command[0] == str(python_path)
+        assert kwargs["env"]["HF_HUB_OFFLINE"] == "1"
+        trimap_path = Path(command[command.index("--trimap") + 1])
+        output_path = Path(command[command.index("--output") + 1])
+        trimap = np.asarray(Image.open(trimap_path))
+        alpha = np.where(trimap == 255, 255, np.where(trimap == 128, 96, 0)).astype(np.uint8)
+        Image.fromarray(alpha, mode="L").save(output_path)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = '{"shape":[32,24],"mode":"L","device":"fixture CUDA"}\n'
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.lanes.hair.subprocess.run", fake_run)
+    provider = LocalCudaVitMatteProvider(
+        checkpoint,
+        tmp_path / "work",
+        python_path=python_path,
+        hf_home=tmp_path / "hf",
+        checkpoint_sha256=expected_sha,
+    )
+    image = np.zeros((32, 24, 3), dtype=np.uint8)
+    trimap = np.zeros((32, 24), dtype=np.uint8)
+    trimap[4:28, 4:20] = 128
+    trimap[10:22, 8:16] = 255
+    assert set(np.unique(provider(image, trimap))) == {0, 96, 255}
+    assert provider.last_metadata == {
+        "shape": [32, 24],
+        "mode": "L",
+        "device": "fixture CUDA",
+    }
+    provider.checkpoint_sha256 = "0" * 64
+    with pytest.raises(HairLaneError, match="SHA-256 mismatch"):
+        provider(image, trimap)
 
 
 def test_face_protection_hair_shoulder_ownership_and_hairline_panel(tmp_path: Path) -> None:

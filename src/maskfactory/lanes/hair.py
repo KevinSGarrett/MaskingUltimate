@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -68,14 +69,7 @@ class WslVitMatteProvider:
         self.timeout_sec = timeout_sec
 
     def __call__(self, image: np.ndarray, trimap: np.ndarray) -> np.ndarray:
-        source = np.asarray(image)
-        guide = np.asarray(trimap)
-        if source.ndim != 3 or source.shape[2] != 3 or guide.shape != source.shape[:2]:
-            raise HairLaneError("ViTMatte source/trimap geometry invalid")
-        if guide.dtype != np.uint8 or set(np.unique(guide).tolist()) - {0, 128, 255}:
-            raise HairLaneError("ViTMatte trimap must be uint8 0/128/255")
-        if not self.checkpoint.is_file():
-            raise HairLaneError(f"ViTMatte checkpoint missing: {self.checkpoint}")
+        source, guide = _validate_vitmatte_inputs(image, trimap, self.checkpoint)
         self.work_dir.mkdir(parents=True, exist_ok=True)
         token = "vitmatte_" + hashlib.sha256(source.tobytes() + guide.tobytes()).hexdigest()[:16]
         image_path = self.work_dir / f"{token}_image.png"
@@ -115,18 +109,90 @@ class WslVitMatteProvider:
         if process.returncode:
             detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
             raise HairLaneError(f"ViTMatte inference failed: {detail}")
+        return _load_vitmatte_output(process.stdout, output_path, guide)
+
+
+class LocalCudaVitMatteProvider:
+    """Run the pinned ViTMatte checkpoint in an explicit Windows CUDA Python."""
+
+    def __init__(
+        self,
+        checkpoint: Path,
+        work_dir: Path,
+        *,
+        python_path: Path,
+        hf_home: Path,
+        revision: str = "6a58ad7646403c1df626fbd746900aec7361ea1d",
+        checkpoint_sha256: str | None = None,
+        timeout_sec: int = 900,
+    ) -> None:
+        self.checkpoint = Path(checkpoint)
+        self.work_dir = Path(work_dir)
+        self.python_path = Path(python_path)
+        self.hf_home = Path(hf_home)
+        self.revision = revision
+        self.checkpoint_sha256 = checkpoint_sha256
+        self.timeout_sec = timeout_sec
+        self.last_metadata: dict[str, object] | None = None
+
+    def __call__(self, image: np.ndarray, trimap: np.ndarray) -> np.ndarray:
+        source, guide = _validate_vitmatte_inputs(image, trimap, self.checkpoint)
+        if not self.python_path.is_file():
+            raise HairLaneError(f"ViTMatte CUDA Python missing: {self.python_path}")
+        if self.checkpoint_sha256 is not None:
+            actual = hashlib.sha256(self.checkpoint.read_bytes()).hexdigest()
+            if actual != self.checkpoint_sha256:
+                raise HairLaneError("ViTMatte checkpoint SHA-256 mismatch")
+        self.work_dir.mkdir(parents=True, exist_ok=True)
+        self.hf_home.mkdir(parents=True, exist_ok=True)
+        token = "vitmatte_" + hashlib.sha256(source.tobytes() + guide.tobytes()).hexdigest()[:16]
+        image_path = self.work_dir / f"{token}_image.png"
+        trimap_path = self.work_dir / f"{token}_trimap.png"
+        output_path = self.work_dir / f"{token}_alpha.png"
+        Image.fromarray(source.astype(np.uint8), mode="RGB").save(image_path, format="PNG")
+        Image.fromarray(guide, mode="L").save(trimap_path, format="PNG")
+        root = Path(__file__).resolve().parents[3]
+        command = [
+            str(self.python_path),
+            str(root / "tools" / "run_vitmatte_wsl.py"),
+            "--checkpoint",
+            str(self.checkpoint.resolve()),
+            "--image",
+            str(image_path.resolve()),
+            "--trimap",
+            str(trimap_path.resolve()),
+            "--output",
+            str(output_path.resolve()),
+            "--revision",
+            self.revision,
+        ]
+        environment = dict(os.environ)
+        environment.update(
+            {
+                "HF_HOME": str(self.hf_home.resolve()),
+                "HF_HUB_OFFLINE": "1",
+                "TRANSFORMERS_OFFLINE": "1",
+            }
+        )
         try:
-            metadata = json.loads(process.stdout.strip().splitlines()[-1])
-            with Image.open(output_path) as opened:
-                if opened.mode != "L":
-                    raise HairLaneError("ViTMatte alpha must be mode L")
-                alpha = np.asarray(opened).copy()
-        except (OSError, ValueError, IndexError, json.JSONDecodeError) as exc:
-            raise HairLaneError(f"ViTMatte output invalid: {exc}") from exc
-        if alpha.shape != guide.shape or metadata.get("shape") != list(guide.shape):
-            raise HairLaneError("ViTMatte alpha geometry mismatch")
-        if np.any(alpha[guide == 0]) or np.any(alpha[guide == 255] != 255):
-            raise HairLaneError("ViTMatte violated known trimap regions")
+            process = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=self.timeout_sec,
+                check=False,
+                env=environment,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise HairLaneError(f"ViTMatte local CUDA launch failed: {exc}") from exc
+        if process.returncode:
+            detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
+            raise HairLaneError(f"ViTMatte inference failed: {detail}")
+        alpha = _load_vitmatte_output(process.stdout, output_path, guide)
+        metadata = json.loads(process.stdout.strip().splitlines()[-1])
+        if not str(metadata.get("device", "")).strip():
+            raise HairLaneError("ViTMatte local CUDA evidence lacks device identity")
+        self.last_metadata = metadata
         return alpha
 
 
@@ -307,6 +373,36 @@ def _probability(value, name):
     if array.ndim != 2 or not np.isfinite(array).all() or array.min() < 0 or array.max() > 1:
         raise HairLaneError(f"{name} must be finite probability HxW")
     return array
+
+
+def _validate_vitmatte_inputs(
+    image: np.ndarray, trimap: np.ndarray, checkpoint: Path
+) -> tuple[np.ndarray, np.ndarray]:
+    source = np.asarray(image)
+    guide = np.asarray(trimap)
+    if source.ndim != 3 or source.shape[2] != 3 or guide.shape != source.shape[:2]:
+        raise HairLaneError("ViTMatte source/trimap geometry invalid")
+    if guide.dtype != np.uint8 or set(np.unique(guide).tolist()) - {0, 128, 255}:
+        raise HairLaneError("ViTMatte trimap must be uint8 0/128/255")
+    if not Path(checkpoint).is_file():
+        raise HairLaneError(f"ViTMatte checkpoint missing: {checkpoint}")
+    return source, guide
+
+
+def _load_vitmatte_output(stdout: str, output_path: Path, guide: np.ndarray) -> np.ndarray:
+    try:
+        metadata = json.loads(stdout.strip().splitlines()[-1])
+        with Image.open(output_path) as opened:
+            if opened.mode != "L":
+                raise HairLaneError("ViTMatte alpha must be mode L")
+            alpha = np.asarray(opened).copy()
+    except (OSError, ValueError, IndexError, json.JSONDecodeError) as exc:
+        raise HairLaneError(f"ViTMatte output invalid: {exc}") from exc
+    if alpha.shape != guide.shape or metadata.get("shape") != list(guide.shape):
+        raise HairLaneError("ViTMatte alpha geometry mismatch")
+    if np.any(alpha[guide == 0]) or np.any(alpha[guide == 255] != 255):
+        raise HairLaneError("ViTMatte violated known trimap regions")
+    return alpha
 
 
 def _same(value, shape, name):

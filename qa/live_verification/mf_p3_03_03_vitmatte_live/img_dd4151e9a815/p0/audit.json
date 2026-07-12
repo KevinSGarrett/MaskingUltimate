@@ -1,0 +1,46 @@
+{
+  "alpha_max": 255,
+  "alpha_min": 0,
+  "artifacts": {
+    "hair_alpha_matte.png": "1f912bedc84136b950e005586808fdc06b4c187c0f6752f9197e1cd37ca5cf29",
+    "hair_binary.png": "f26af7b61e860386947e20f474c0a286626ea41a6c4aa39120d34553e49478fa",
+    "hair_trimap.png": "ed77f7e24adf3b911659ac91e5d3ed19d3fbdf2b46940b24f6511ee989f64baa"
+  },
+  "checkpoint_sha256": "6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5",
+  "hair_area_px": 288763,
+  "hair_fraction_of_person_bbox": 0.5945442341585545,
+  "image_id": "img_dd4151e9a815",
+  "instance_id": "p0",
+  "item": "MF-P3-03.03",
+  "known_background_exact_zero": true,
+  "known_foreground_exact_255": true,
+  "person_bbox_area": 485688,
+  "runtime": {
+    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "max": 255,
+    "min": 0,
+    "mode": "L",
+    "shape": [
+      1600,
+      429
+    ],
+    "unknown_mean": 0.5379201173782349,
+    "unknown_std": 0.36030033230781555
+  },
+  "schema_version": "1.0.0",
+  "source_shape": [
+    1600,
+    429
+  ],
+  "trigger_threshold": 0.02,
+  "triggered": true,
+  "trimap_radius_px": 3,
+  "trimap_values": [
+    0,
+    128,
+    255
+  ],
+  "unknown_mean": 137.18052586938083,
+  "unknown_pixel_count": 29475,
+  "unknown_std": 91.89546489862629
+}

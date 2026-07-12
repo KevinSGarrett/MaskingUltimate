@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-11T20:45:01+00:00",
+    "generated_at": "2026-07-12T07:35:00+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -4573,8 +4573,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T04:40:24+00:00",
@@ -4585,12 +4585,17 @@
           "ts": "2026-07-11T05:54:59+00:00",
           "actor": "ai_agent",
           "text": "Production WslVitMatteProvider implemented around registered vitmatte_s checkpoint/pinned HF revision: image+0/128/255 trimap, fp16 CUDA, processor padding cropped to native geometry, mode-L uint8 alpha, known bg forced0/fg forced255, callable integrates existing >=2% trigger and +/-6px trimap for hair/lace. Focused provider/lane tests pass. Live attempt uncredited: WSL_E_DISTRO_NOT_FOUND before model load."
+        },
+        {
+          "ts": "2026-07-12T07:40:43+00:00",
+          "actor": "ai_agent",
+          "text": "Closed the prior WSL-only live gap without weakening WSL support: added an explicit LocalCudaVitMatteProvider using the established project-local CUDA runtime and offline pinned model config. Seven focused tests, including a durable live-artifact contract, pass."
         }
       ],
-      "evidence": null,
+      "evidence": "Production local-CUDA ViTMatte provider validates strict RGB/0-128-255 geometry, exact registered checkpoint SHA-256, explicit CUDA Python, offline pinned HF revision/cache, native mode-L geometry, device identity, and exact known trimap regions. Live governed img_dd4151e9a815/p0 proof triggered at hair/person-bbox=0.594544 >=0.02, used scaled radius 3 at width 429, ran on NVIDIA GeForce RTX 5060 Laptop GPU, and wrote hair_binary.png, hair_trimap.png, hair_alpha_matte.png with SHA-256-sealed audit at qa/live_verification/mf_p3_03_03_vitmatte_live/img_dd4151e9a815/p0/audit.json. Unknown band has 29,475 px and nontrivial std 91.8955; known bg/fg are exact 0/255. Optional lace prefix and below-threshold behavior remain fixture-proven.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:54:59+00:00",
+      "updated_at": "2026-07-12T07:40:43+00:00",
       "orphaned": false
     },
     "MF-P3-03.04": {

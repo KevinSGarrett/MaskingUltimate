@@ -3446,3 +3446,23 @@ MF-P2-08.01 boundary:       model-major execution is proven, but only 18/25 requ
 human authority boundary:   no report approves a mask or substitutes for Kevin's CVAT correction/approval
 durable audit:              qa/live_verification/s10_autoqa_corpus_20260712.json
 ```
+
+## 2026-07-12 07:44 UTC - Production ViTMatte local-CUDA path verified live
+**Item:** MF-P3-03.03 90% partial -> complete
+**Result:** The prominent-hair trigger now has a verified production CUDA provider and real matte artifacts; WSL remains supported but is no longer the only runtime path.
+
+```
+provider:                   LocalCudaVitMatteProvider with explicit CUDA Python, offline pinned HF cache/revision, and checkpoint hash validation
+registered checkpoint:      models/matting/vitmatte_s.pth SHA-256 6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5
+live source:                img_dd4151e9a815/p0, governed existing instance context 1600x429
+trigger evidence:           hair 288,763 px / person bbox 485,688 px = 0.594544 >= 0.02
+trimap contract:            values exactly 0/128/255; scaled +/-6px@1024 radius = 3px at width 429
+runtime identity:           NVIDIA GeForce RTX 5060 Laptop GPU
+alpha evidence:             range 0..255; unknown band 29,475 px, mean 137.181, std 91.8955
+known-region invariants:    trimap background alpha exactly 0; trimap foreground alpha exactly 255
+artifact hashes:            binary f26af7b6...; trimap ed77f7e2...; alpha 1f912bed...
+optional contract:          lace_or_sheer prefix and below-2% no-op remain fixture-proven
+durable audit:              qa/live_verification/mf_p3_03_03_vitmatte_live/img_dd4151e9a815/p0/audit.json
+focused validation:         7 hair/provider/live-evidence tests pass; Ruff and format clean
+authority boundary:         binary hair remains label authority; alpha is evidence/compositing only
+```

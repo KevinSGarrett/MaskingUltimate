@@ -1335,6 +1335,58 @@ def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path
         )
 
 
+def test_single_person_d1_package_regression_is_exact_and_rejects_drift(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    roots = (tmp_path / "legacy", tmp_path / "activated")
+    for work_root in roots:
+        package = work_root / "drafts" / image_id / "instances" / "p0"
+        package.mkdir(parents=True)
+        part = np.zeros((2, 3), dtype=np.uint16)
+        material = np.zeros((2, 3), dtype=np.uint8)
+        production.write_label_map(package / "label_map_part.png", part, bits=16)
+        production.write_label_map(package / "label_map_material.png", material, bits=8)
+        records = []
+        for label in sorted(
+            production.get_ontology().labels_for_map("part"), key=lambda item: int(item.id)
+        ):
+            directory = (
+                "protected" if int(label.id) == 0 or label.mask_type == "protected_qa" else "masks"
+            )
+            mask = (
+                np.ones((2, 3), dtype=bool) if int(label.id) == 0 else np.zeros((2, 3), dtype=bool)
+            )
+            path = production.write_binary_mask(package / directory / f"{label.name}.png", mask)
+            records.append(
+                {
+                    "id": int(label.id),
+                    "name": label.name,
+                    "enabled": label.enabled,
+                    "pixel_count": int(mask.sum()),
+                    "path": path.relative_to(package).as_posix(),
+                    "sha256": production._sha256_file(path),
+                }
+            )
+        contract = {
+            "contract": "D1_all_56_atomic_parts",
+            "image_id": image_id,
+            "instance": "p0",
+            "atomic_count": 56,
+            "atomics": records,
+        }
+        (package / "draft_contract.json").write_text(
+            json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    result = production.verify_single_person_draft_regression(
+        image_id, legacy_work_root=roots[0], p8_work_root=roots[1]
+    )
+    assert result["byte_identical"] and result["file_count"] == 59
+    (roots[1] / "drafts" / image_id / "instances/p0/draft_contract.json").write_bytes(b"drift")
+    with pytest.raises(production.SemanticStageError, match="package bytes differ"):
+        production.verify_single_person_draft_regression(
+            image_id, legacy_work_root=roots[0], p8_work_root=roots[1]
+        )
+
+
 def test_existing_cvat_handoff_is_reused_only_when_exact(tmp_path: Path) -> None:
     image_id = "img_a3f9c2e17b04"
     records = tmp_path / "tasks"

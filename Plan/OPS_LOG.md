@@ -3945,3 +3945,20 @@ rollback proof:                  seeded DVC failure restores every package byte 
 human authority:                 promotion still requires explicit confirmation; no CVAT click, reviewer identity, or minutes were fabricated
 evidence:                        qa/live_verification/post_gold_correction_transaction_20260712.json
 validation:                      23 focused versioning/QC/package/GC tests; 677 full tests split 196+124+276+81; Ruff and ruff-format clean
+
+## 2026-07-12 - Real single-person pre-P8 versus activated-p0 regression
+
+**Result:** PASS - the governed real source produces one byte-identical authoritative p0 D1 package through both layouts.
+
+source:                          img_2ca794d19be9; generated; clear_adult; person_count=1; SHA-256 2ca794d19be98054259b0bb37aa3d59d5b882510f484952075e2bf1f8e388c3b
+legacy replay:                   direct S02-S09 layout, nine real GPU stages, 400.640183 s
+activated replay:                P8 instances/p0 outer loop, nine real GPU stages, 502.298333 s; QC-035 pass; one D1 contract
+authoritative maps:              S09 PART and MATERIAL bytes identical before D1 projection
+D1 package:                      exactly p0; 59/59 files identical; 56 atomics; no missing/extra/changed bytes
+PART map SHA-256:                9c2732e462b2e20dfda3facb1a343d7ea75a70d7c49eab9f409aca664bc6c180
+MATERIAL map SHA-256:            718f98decb253c13d6a6ee34cc4c85401c7066323b5511ab60daa3287dbb904d
+whole p0 tree SHA-256:           b5a082e347422e9cf212924fd16decb53d901ea1e55131c222fc400916262c96
+honest intermediate disclosure: stage durations differ by definition; GDINO floats varied slightly with identical proposal count/order; DensePose varied at 6 pixels by value 1; these did not alter either authoritative S09 map or any D1 package byte
+durable verifier:                verify_single_person_draft_regression requires exactly one p0, exact file set/bytes, valid 56-atomic contracts, strict non-overlap, full coverage, and map reproduction on both sides
+evidence:                        qa/live_verification/single_person_real_p8_regression_20260712.json
+validation:                      52 focused production-runner tests; 678 full tests split 196+124+277+81; Ruff and ruff-format clean

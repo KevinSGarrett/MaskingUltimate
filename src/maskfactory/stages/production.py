@@ -168,6 +168,62 @@ def verify_single_person_regression(
     }
 
 
+def verify_single_person_draft_regression(
+    image_id: str, *, legacy_work_root: Path, p8_work_root: Path
+) -> dict[str, Any]:
+    """Prove the complete authoritative p0 D1 package is byte-identical across activation."""
+    roots = {
+        "legacy": Path(legacy_work_root) / "drafts" / image_id / "instances",
+        "p8": Path(p8_work_root) / "drafts" / image_id / "instances",
+    }
+    for name, root in roots.items():
+        instances = sorted(path.name for path in root.glob("p*") if path.is_dir())
+        if instances != ["p0"]:
+            raise SemanticStageError(
+                f"single-person {name} draft must contain exactly p0, got {instances}"
+            )
+    legacy = roots["legacy"] / "p0"
+    activated = roots["p8"] / "p0"
+    files = {
+        name: {
+            path.relative_to(root).as_posix(): path
+            for path in sorted(root.rglob("*"))
+            if path.is_file()
+        }
+        for name, root in (("legacy", legacy), ("p8", activated))
+    }
+    if not files["legacy"] or set(files["legacy"]) != set(files["p8"]):
+        raise SemanticStageError(
+            "single-person D1 package file set differs: "
+            f"legacy={sorted(files['legacy'])}, p8={sorted(files['p8'])}"
+        )
+    tree_digest = hashlib.sha256()
+    file_hashes = {}
+    for relative in sorted(files["legacy"]):
+        legacy_bytes = files["legacy"][relative].read_bytes()
+        if legacy_bytes != files["p8"][relative].read_bytes():
+            raise SemanticStageError(f"single-person D1 package bytes differ: {relative}")
+        digest = hashlib.sha256(legacy_bytes).hexdigest()
+        file_hashes[relative] = digest
+        tree_digest.update(relative.encode("utf-8") + b"\0" + legacy_bytes)
+    for root in (legacy, activated):
+        contract = json.loads((root / "draft_contract.json").read_text(encoding="utf-8"))
+        full_part = read_mask(root / "label_map_part.png").astype(np.uint16)
+        _verify_d1_draft_directory(root, contract, full_part)
+        if contract.get("image_id") != image_id or contract.get("instance") != "p0":
+            raise SemanticStageError("single-person D1 contract identity differs from p0")
+    return {
+        "image_id": image_id,
+        "instances": ["p0"],
+        "file_count": len(files["legacy"]),
+        "tree_sha256": tree_digest.hexdigest(),
+        "part_map_sha256": file_hashes["label_map_part.png"],
+        "material_map_sha256": file_hashes["label_map_material.png"],
+        "atomic_count": 56,
+        "byte_identical": True,
+    }
+
+
 def _select_s05_parsing(s03_dir: Path) -> tuple[Path, str]:
     """Honor S03's degraded-provider decision when selecting S05 geometry input."""
     s03_dir = Path(s03_dir)

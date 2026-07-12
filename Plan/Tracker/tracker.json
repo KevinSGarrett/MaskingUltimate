@@ -8437,8 +8437,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T07:25:19+00:00",
@@ -8451,10 +8451,10 @@
           "text": "Added verify_single_person_regression over the full S02-S09 pre-P8 versus activated instances/p0 trees. It requires every legacy relative file and byte to match, emits per-stage and whole-tree SHA-256 evidence, and separately allowlists/records only the intentional P8 other_person_protected.png addition. The N=1 outer-loop fixture now runs a legacy direct baseline and activated p0 path from the same deterministic stage producer; all 9 stages/12 legacy files match, and a one-byte S07 drift hard-fails. 27 focused production tests and 538 full tests pass. Final 5% remains byte comparison of a real P1-P7 reviewed package replay, not just draft/stage artifacts."
         }
       ],
-      "evidence": null,
+      "evidence": "Real governed single-person source img_2ca794d19be9 (clear_adult, person_count=1) completed independent direct-layout and activated instances/p0 GPU replays through S02-S09. Both authoritative S09 maps were byte-identical; projecting the direct result through D1 produced exactly one p0 package with the same 59 files, all 56 atomic masks, no missing/extra/changed bytes, and tree SHA-256 b5a082e347422e9cf212924fd16decb53d901ea1e55131c222fc400916262c96. Intermediate timing and tiny native GDINO/DensePose nondeterminism are explicitly disclosed and did not change any authoritative package byte. Durable verifier checks p0 cardinality, exact file set/bytes, strict masks, non-overlap, coverage, and map reproduction. Evidence qa/live_verification/single_person_real_p8_regression_20260712.json; 678 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T20:02:16+00:00",
+      "updated_at": "2026-07-12T16:45:41+00:00",
       "orphaned": false
     },
     "MF-P8-02.01": {

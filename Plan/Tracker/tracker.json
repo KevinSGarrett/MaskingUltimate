@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T14:40:12+00:00",
+    "generated_at": "2026-07-12T20:23:51+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -2771,13 +2771,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: SOP-1 requires Kevin's actual CVAT correction/annotation clicks; automation, draft package, and review tooling are ready but human annotation authority cannot be substituted.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:29+00:00",
       "orphaned": false
     },
     "MF-P1-08.03": {
@@ -2792,13 +2792,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: images 2-5 require Kevin's manual CVAT annotation/correction clicks under SOP-1.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:30+00:00",
       "orphaned": false
     },
     "MF-P1-08.04": {
@@ -2813,13 +2813,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: package verification can run autonomously only after Kevin completes and approves the five CVAT corrections; approved_gold_count is currently 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:30+00:00",
       "orphaned": false
     },
     "MF-P1-08.05": {
@@ -2834,13 +2834,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the real baseline minutes/image must come from Kevin's completed review_tasks; no operator time may be fabricated.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:30+00:00",
       "orphaned": false
     },
     "MF-P1-09.01": {
@@ -2960,13 +2960,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P1 exit requires the incoming-to-CVAT-to-approved-gold demonstration and measured operator time from MF-P1-08.02 through 08.05.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P2-01.01": {
@@ -4065,7 +4065,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 80,
       "notes": [
         {
@@ -4100,9 +4100,9 @@
         }
       ],
       "evidence": "20/25 governed sources now have complete S09.5/D1 contracts. The two newly recovered stylized sources add five instance contracts; both reached S10, with one honestly failing QC-035 and the other reaching S12. SQLite progress is reconciled to 16 auto_qa, 1 vlm_qa, and 3 in_review. Two additional sources remain at S02 human review and are not counted. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json and qa/live_verification/pipeline_state_and_package_identity_20260712.json.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: 20/25 governed sources have complete drafts. Two additional supplied masks are visually aligned but remain in explicit S02 human semantic review (qa/review_handoffs/s02/index.json); Kevin must confirm/correct those. After both confirmations, at least three additional governed clear-adult originals are still required (or five new originals without those confirmations).",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T15:04:00+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {
@@ -4117,13 +4117,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: review/correct/approve to approximately 30 gold is manual CVAT work reserved to Kevin; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P2-08.03": {
@@ -4138,13 +4138,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: draft_pipeline_full scoring requires corrected human-approved gold packages; approved_gold_count is 0, so draft-vs-gold IoU/boundary-F cannot be measured honestly.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P2-08.04": {
@@ -4159,7 +4159,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 98,
       "notes": [
         {
@@ -4234,9 +4234,9 @@
         }
       ],
       "evidence": "Production run proves S09/S09.5 and D1 structural contracts on 29 eligible promoted instances across 18 source images. qa/live_verification/s09_d1_corpus_20260712.json records 29 verified contracts, 1,624 independently re-decoded strict binary PNGs, exact hash/non-overlap/coverage/PART-map reproduction, 18 QC-035-pass source manifests, and zero temp directories/failures. Remaining required completion evidence: one genuinely fresh governed original through the literal maskfactory draft intake command, corrected-gold G2 metrics, and visible-part semantic correctness; nearest-filled material draft uncertainty is explicitly not gold evidence.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: structural D1 is proven, but completion requires one genuinely fresh Kevin-supplied governed original through literal maskfactory draft plus corrected-gold G2 measurements.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T05:07:30+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P2-EXIT": {
@@ -4251,13 +4251,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P2 exit requires the P1 review-time baseline and P2 corrected-gold review minutes to prove a real G1 improvement.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:31+00:00",
       "orphaned": false
     },
     "MF-P3-01.01": {
@@ -5139,13 +5139,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: active SOP-2/3/4 cadence requires Kevin's manual CVAT correction work; specialist tooling and handoffs are implemented.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:51+00:00",
       "orphaned": false
     },
     "MF-P3-07.02": {
@@ -5160,13 +5160,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: reaching 100 human_approved_gold packages requires Kevin's manual CVAT review/approval; current count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P3-07.03": {
@@ -5181,13 +5181,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: median review time requires real Kevin-entered review_tasks minutes across approved packages.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P3-07.04": {
@@ -5202,13 +5202,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the fresh-day second-look habit is a human review activity reserved to Kevin.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P3-EXIT": {
@@ -5223,13 +5223,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P3 exit requires live specialist-lane use and approved-gold evidence from MF-P3-07.01 through 07.04.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P4-01.01": {
@@ -5355,13 +5355,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the governed VLM gate requires 20 distinct human-approved gold packages before a valid 20-image verdict run; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P4-02.01": {
@@ -5613,13 +5613,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the 30-image hand-count audit requires 30 approved packages and independent human count authority; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P4-05.01": {
@@ -5634,7 +5634,7 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 65,
       "notes": [
         {
@@ -5659,9 +5659,9 @@
         }
       ],
       "evidence": "Implementation and tests: src/maskfactory/vlm/eval.py, src/maskfactory/cli.py, tests/test_vlm_eval_gate.py. Durable contract audit: qa/live_verification/vlm_gold_calibration_builder_20260712.json. The builder is verified; the item remains partial until 20 approved distinct gold images exist and the real qa/vlm_eval corpus is built.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the fail-closed builder requires exactly 20 distinct frozen QA-passing human-approved gold packages. Current approved_gold_count is 0; deprecated synthetic panels are diagnostic-only and cannot be substituted.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T09:02:25+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P4-05.02": {
@@ -5724,7 +5724,7 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 25,
       "notes": [
         {
@@ -5756,12 +5756,17 @@
           "ts": "2026-07-12T19:21:47+00:00",
           "actor": "ai_agent",
           "text": "Live single-label workhorse audit completed on img_2ca794d19be9 left_forearm: 145.058 s, Qwen still falsely passed at confidence 1.0 and missed a disconnected underwear fragment. Controller was therefore hardened with deterministic component metrics, ontology max_components veto, remove_small_components candidate tool, ontology contract, and non-pass auto-QA context. 40 selected VLM/S11/workhorse tests and Ruff pass. Result confirms Qwen alone remains untrusted; hybrid controller work continues under shadow authority."
+        },
+        {
+          "ts": "2026-07-12T20:19:33+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 adversarial replacement-model check did not justify promotion. Qwen3-VL 8B instruct falsely passed known-bad real img_6d6bb33f01a1 left_forearm at confidence 1.0 in 266.9 s; Qwen3.5 9B timed out on six images at 180 s and three images at 300 s. S11 now gives label-specific deterministic BLOCK/ROUTE/WARN findings veto authority over model passes, sends clean source plus overlay to whole-image review, disables thinking for structured review, and fingerprints controller/renderer/client/prompt code. Evidence: qa/live_verification/vlm_workhorse_model_controller_review_20260712.json. 31 focused tests plus Ruff format/check pass. Real approved-gold calibration remains absent and this item remains 25%."
         }
       ],
       "evidence": "qa/live_verification/vlmqa_run_cli_20260712.json proves live fail-closed gate enforcement and no CVAT side effect. Actual qwen/fallback scoring against the governed 40-panel approved-gold corpus remains required.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: Qwen and fallback scoring cannot be authoritative until MF-P4-05.01 has a real 20-gold/40-panel corpus. Current live diagnostics correctly fail the gate.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T19:21:47+00:00",
+      "updated_at": "2026-07-12T20:31:53+00:00",
       "orphaned": false
     },
     "MF-P4-06.01": {
@@ -5839,7 +5844,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 75,
       "notes": [
         {
@@ -5849,9 +5854,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the first genuine IAA report requires Kevin's second-review sign-off and archived reviewer mask pairs; no real qa/iaa archive exists.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:30:16+00:00",
+      "updated_at": "2026-07-12T20:31:54+00:00",
       "orphaned": false
     },
     "MF-P4-06.05": {
@@ -5866,7 +5871,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 80,
       "notes": [
         {
@@ -5876,9 +5881,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: a human-ceiling leaderboard row requires real IAA numbers from signed second reviews; fixture-only numbers cannot be published.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:30:17+00:00",
+      "updated_at": "2026-07-12T20:31:54+00:00",
       "orphaned": false
     },
     "MF-P4-EXIT": {
@@ -5893,13 +5898,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D4 requires approved-gold calibration, a valid 20-image VLM run, and human second-review evidence; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:31:54+00:00",
       "orphaned": false
     },
     "MF-P5-01.01": {
@@ -6019,7 +6024,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [
         {
@@ -6029,9 +6034,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: bodyparts@v1 requires at least 200 verified human-approved gold packages, Kevin-authorized AWS credentials, and the first DVC S3 push; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T15:52:22+00:00",
+      "updated_at": "2026-07-12T20:32:42+00:00",
       "orphaned": false
     },
     "MF-P5-01.07": {
@@ -6067,7 +6072,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 99,
       "notes": [
         {
@@ -6102,9 +6107,9 @@
         }
       ],
       "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves the doc-18 resolution, corrected configs, direct compiler acceptance, 57-drift refusal before staging, 21 focused and 639 full tests. Actual CUDA BaseSegDataset execution remains open.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: implementation/tests are complete; final proof requires the pinned full-MMCV CUDA BaseSegDataset runtime. Kevin's Ubuntu-22.04 is active under another Windows identity; this identity sees no distro, Docker pipe access is denied, local CUDA Python lacks CUDA toolkit/MSVC, and Windows-control transport is unavailable. The active WSL VHD was not re-registered to avoid corruption.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T10:58:59+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-02.02": {
@@ -6235,7 +6240,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 75,
       "notes": [
         {
@@ -6255,9 +6260,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: real SegFormer-B3 training requires bodyparts@v1 from approved gold and the Kevin-owned CUDA training runtime; neither is available to this identity.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T10:59:01+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -6272,7 +6277,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 65,
       "notes": [
         {
@@ -6292,9 +6297,9 @@
         }
       ],
       "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves corrected SegFormer and Mask2Former configs plus drift refusal. Mask2Former compiler structure remains focused-test covered; no run/checkpoint is claimed.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the real Mask2Former challenger run requires the approved-gold dataset and accessible CUDA training runtime; optional AWS execution additionally requires spending approval.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T10:59:01+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {
@@ -6309,13 +6314,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: final frozen-holdout evaluation requires trained challengers and approved-gold holdouts, neither of which exists.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-03.05": {
@@ -6372,7 +6377,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 70,
       "notes": [
         {
@@ -6382,9 +6387,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: clothing training/gate measurement requires the approved-gold dataset and CUDA training runtime.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:49:29+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-04.03": {
@@ -6473,13 +6478,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: hand-crop training/evaluation requires human-approved hand crops and a CUDA training runtime; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-05.04": {
@@ -6494,7 +6499,7 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 70,
       "notes": [
         {
@@ -6504,9 +6509,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D7 is a measured trained-model gate requiring approved hand gold and a completed hand training run; no synthetic or draft substitute is allowed.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:40:21+00:00",
+      "updated_at": "2026-07-12T20:32:43+00:00",
       "orphaned": false
     },
     "MF-P5-05.05": {
@@ -6521,7 +6526,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 98,
       "notes": [
         {
@@ -6536,9 +6541,9 @@
         }
       ],
       "evidence": "qa/live_verification/champion_hand_production_integration_20260712.json; 91 focused tests; full suite split 281+376=657; Ruff/format clean",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the production lane swap can occur only after a real D7-winning hand checkpoint exists; implementation is ready but no winner exists.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T12:56:27+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-06.01": {
@@ -6553,7 +6558,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 88,
       "notes": [
         {
@@ -6573,9 +6578,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: schema and baseline orchestration are implemented; measured standing baseline rows require real approved frozen holdouts.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:26:11+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-06.02": {
@@ -6617,7 +6622,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 98,
       "notes": [
         {
@@ -6652,9 +6657,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: champion pointer/loaders are implemented; a real champion cannot be registered until training and holdout gates produce a winning checkpoint.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T19:46:47+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-06.04": {
@@ -6743,7 +6748,7 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 70,
       "notes": [
         {
@@ -6753,9 +6758,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D6/G7 requires real champion and draft_pipeline_full rows on approved frozen holdouts; those data and trained models do not exist.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:54:45+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-07.03": {
@@ -6770,13 +6775,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: G1 remeasurement requires Kevin's real review-task minutes; G2/G3 require corrected gold and trained-model metrics.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-07.04": {
@@ -6791,13 +6796,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: QC-034 post-swap regression requires an actually promoted champion and reprocessed approved sample.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-08.01": {
@@ -6812,13 +6817,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": true,
-      "status": "open",
+      "status": "deferred",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-12T20:32:44+00:00",
+          "actor": "ai_agent",
+          "text": "Trigger not met: approved_gold_count=0, below the required >=80 hair-prominent golds."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:44+00:00",
       "orphaned": false
     },
     "MF-P5-08.02": {
@@ -6833,13 +6844,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": true,
-      "status": "open",
+      "status": "deferred",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-12T20:32:45+00:00",
+          "actor": "ai_agent",
+          "text": "Trigger not met: approved_gold_count=0, below >=120 projected labels; no measured chest-lane fail rate exists."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:45+00:00",
       "orphaned": false
     },
     "MF-P5-08.03": {
@@ -6854,13 +6871,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "deferred",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-12T20:32:45+00:00",
+          "actor": "ai_agent",
+          "text": "Optional AWS burst is deferred; any billable launch requires explicit Kevin spending approval and an approved dataset."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:45+00:00",
       "orphaned": false
     },
     "MF-P5-EXIT": {
@@ -6875,13 +6898,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P5 exit requires approved training data, real trained champions, and measured D6/D7 leaderboard wins.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:32:45+00:00",
       "orphaned": false
     },
     "MF-P6-01.01": {
@@ -7034,7 +7057,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 92,
       "notes": [
         {
@@ -7054,9 +7077,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: end-to-end wf_inpaint_gold_hand verification requires a real approved gold left_hand package and Kevin's interactive ComfyUI session; approved_gold_count is 0 and Windows-control transport is unavailable.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:17:49+00:00",
+      "updated_at": "2026-07-12T20:32:59+00:00",
       "orphaned": false
     },
     "MF-P6-02.01": {
@@ -7071,7 +7094,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 99,
       "notes": [
         {
@@ -7116,9 +7139,9 @@
         }
       ],
       "evidence": "qa/live_verification/serve_refine_cuda_20260712.json proves live localhost health plus multipart SAM2 /refine on RTX 5060: cold load/embed 7.979531s, warm click 0.058920s, HTTP 200 strict 810x1080 binary mask and exact SAM2 provenance. FastAPI multipart annotations and default Windows local-CUDA settings are corrected; session cleanup leaves no gpu.lock. /predict remains unavailable until all three trained champion roles exist.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: endpoint/SAM2 live evidence is complete; final /predict proof requires real promoted champion_bodypart/champion_hand/champion_clothing checkpoints, which depend on P5 training.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T08:18:54+00:00",
+      "updated_at": "2026-07-12T20:33:00+00:00",
       "orphaned": false
     },
     "MF-P6-02.02": {
@@ -7133,7 +7156,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 90,
       "notes": [
         {
@@ -7148,9 +7171,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: loopback CLI wiring and Windows localhost service are verified; literal Ubuntu-22.04 uvicorn proof requires execution in Kevin's Windows identity that owns the active distro.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:03:00+00:00",
+      "updated_at": "2026-07-12T20:33:00+00:00",
       "orphaned": false
     },
     "MF-P6-02.03": {
@@ -7165,7 +7188,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 99,
       "notes": [
         {
@@ -7200,9 +7223,9 @@
         }
       ],
       "evidence": "Sequential champion slots remain fixture-proven with forced close between roles. Live RTX HTTP evidence now proves SAM2 loads lazily on first /refine, retains exactly one image embedding for warm clicks, and is released before any champion request or shutdown; bounded probe leaves no lock. Real champion slot residency remains gated by trained promoted roles.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: sequential residency and live SAM2 are proven; final real body/hand/clothing slot residency requires trained promoted champion checkpoints.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T08:18:55+00:00",
+      "updated_at": "2026-07-12T20:33:00+00:00",
       "orphaned": false
     },
     "MF-P6-02.04": {
@@ -7238,7 +7261,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 85,
       "notes": [
         {
@@ -7258,9 +7281,9 @@
         }
       ],
       "evidence": "Live audit qa/live_verification/serve_refine_cuda_20260712.json: SAM2 cold load+embedding 7.979531s <=60s cold target and warm multipart click 0.058920s <=1.2s refine target, HTTP 200 strict mask. All-label <=4s and single-label <=2s /predict remain unmeasured without trained champion roles.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: /refine warm latency passes, but /predict latency targets require real trained champion roles and the owned WSL serving runtime.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T08:18:55+00:00",
+      "updated_at": "2026-07-12T20:33:01+00:00",
       "orphaned": false
     },
     "MF-P6-02.06": {
@@ -7317,7 +7340,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 92,
       "notes": [
         {
@@ -7337,9 +7360,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: workflow structure is implemented; live verification requires real champion prediction and Kevin's interactive ComfyUI run.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:17:50+00:00",
+      "updated_at": "2026-07-12T20:33:01+00:00",
       "orphaned": false
     },
     "MF-P6-03.03": {
@@ -7354,7 +7377,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 92,
       "notes": [
         {
@@ -7374,9 +7397,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D8 never-seen-image workflow requires a new Kevin-supplied governed image, trained champion prediction, and Kevin's interactive ComfyUI run.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:17:50+00:00",
+      "updated_at": "2026-07-12T20:33:01+00:00",
       "orphaned": false
     },
     "MF-P6-03.04": {
@@ -7460,13 +7483,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D8 requires live Mode A and Mode B ComfyUI demonstrations after approved gold and trained champions exist.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:01+00:00",
       "orphaned": false
     },
     "MF-P7-01.01": {
@@ -7481,13 +7504,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: weekly acquisition-to-gold cadence requires Kevin-supplied governed sources and manual CVAT approvals until 300 gold; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:24+00:00",
       "orphaned": false
     },
     "MF-P7-01.02": {
@@ -7502,13 +7525,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D5 coverage thresholds require 300 approved gold packages and human-approved attributes; current coverage_cells_at_target_pct is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:25+00:00",
       "orphaned": false
     },
     "MF-P7-01.03": {
@@ -7523,13 +7546,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the 500-package stretch cadence requires continuing source supply and manual approvals.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:26+00:00",
       "orphaned": false
     },
     "MF-P7-01.04": {
@@ -7544,13 +7567,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": true,
-      "status": "open",
+      "status": "deferred",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-12T20:33:26+00:00",
+          "actor": "ai_agent",
+          "text": "Optional synthetic bootstrapping is not activated; no approved coverage matrix exists to identify stubborn deficit cells, and source-image governance remains Kevin-owned."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:26+00:00",
       "orphaned": false
     },
     "MF-P7-02.01": {
@@ -7586,7 +7615,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 35,
       "notes": [
         {
@@ -7596,9 +7625,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: trigger-driven retraining requires an approved dataset version, a failure trigger, and the accessible CUDA training runtime; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T08:18:42+00:00",
+      "updated_at": "2026-07-12T20:33:26+00:00",
       "orphaned": false
     },
     "MF-P7-03.01": {
@@ -7613,13 +7642,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the B2 restore drill requires at least three approved packages on Kevin's offline backup media plus a manual CVAT usability check; neither exists.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:26+00:00",
       "orphaned": false
     },
     "MF-P7-03.02": {
@@ -7666,13 +7695,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: closing a mined item end-to-end requires Kevin-supplied/re-annotated source data and human-approved gold.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:26+00:00",
       "orphaned": false
     },
     "MF-P7-03.04": {
@@ -7735,13 +7764,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D10 cannot be signed until the backup restore, retrain, failure-mining, GC, and incident drills have real evidence; several require Kevin actions/media.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P7-04.01": {
@@ -7840,13 +7869,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P7 exit and the 20-image/4-hour headline test require 20 new governed images and Kevin's manual approvals; approved_gold_count is 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P0-09.01": {
@@ -9216,7 +9245,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 40,
       "notes": [
         {
@@ -9236,9 +9265,9 @@
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: completion requires 10-20 Kevin-supplied governance-compliant real 2-4-person images. The current governed real set is below the required count.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T14:30:07+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P8-10.02": {
@@ -9253,7 +9282,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 40,
       "notes": [
         {
@@ -9283,9 +9312,9 @@
         }
       ],
       "evidence": "Both currently qualifying 2-4-person sources (2/10 minimum set) now complete S00-S11; seven schema-valid instance review packages were assembled and live CVAT handoff created tasks 9-17: seven instance jobs plus two overview jobs, 166 preannotation shapes. Durable API-confirmed evidence: qa/live_verification/p8_real_cvat_handoff_20260712.json. Source-count gate remains 2/10, so percent stays 20 and S13-S15/gold remain open.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: the full activated run cannot reach the required 10-20 set until MF-P8-10.01 supplies the remaining governed sources; current partial real runs remain evidence only.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T14:30:07+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P8-10.03": {
@@ -9300,7 +9329,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 5,
       "notes": [
         {
@@ -9320,9 +9349,9 @@
         }
       ],
       "evidence": "Live CVAT v2.24 handoff is ready for every current promoted instance: task IDs 9,10,11 and overview 12 for img_7b7a3c7d5dd3; task IDs 13,14,15,16 and overview 17 for img_6d6bb33f01a1. Seven package manifests have reviewer=null and approved_at=null. Audit explicitly records human_correction_completed=false and human_approval_completed=false.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: SOP-1 through SOP-6 CVAT correction/approval for every promoted instance is manual work reserved to Kevin.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T11:34:29+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P8-10.04": {
@@ -9337,13 +9366,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: QC-035/036 approval-set confirmation requires completed Kevin-approved packages from MF-P8-10.03.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-10T07:48:48+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P8-10.05": {
@@ -9358,13 +9387,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: D11/G9 final measurement requires the complete approved real multi-person set.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-10T07:48:48+00:00",
+      "updated_at": "2026-07-12T20:33:27+00:00",
       "orphaned": false
     },
     "MF-P8-10.06": {
@@ -9379,13 +9408,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: approved_gold_count may only be advanced from real verified human-approved instances; current count is 0.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-10T07:48:48+00:00",
+      "updated_at": "2026-07-12T20:33:28+00:00",
       "orphaned": false
     },
     "MF-P8-EXIT": {
@@ -9400,13 +9429,13 @@
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
+      "status": "blocked",
       "percent_complete": 0,
       "notes": [],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: P8 exit requires D11/G9 on the completed real multi-person set after Kevin's source supply and CVAT approvals.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-10T07:48:48+00:00",
+      "updated_at": "2026-07-12T20:33:28+00:00",
       "orphaned": false
     }
   }

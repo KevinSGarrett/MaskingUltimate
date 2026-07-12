@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-12T20:33:28+00:00",
+  "outcome": "no_autonomous_actionable_items",
+  "tracker": {
+    "total_items": 393,
+    "complete": 322,
+    "blocked": 67,
+    "deferred": 4,
+    "open": 0,
+    "in_progress": 0,
+    "partially_complete": 0,
+    "failed": 0,
+    "approved_gold_count": 0,
+    "tracker_validate": "pass",
+    "tracker_next": "Nothing actionable found (everything complete/blocked/n-a in scope?)."
+  },
+  "autonomous_routes_checked": {
+    "p4_gold_calibration": "Builder and evaluator are complete, but the required 20 distinct human-approved gold packages do not exist; deprecated synthetic panels remain diagnostic-only.",
+    "wsl": "WSL2 is enabled and WslService is running, but this Windows identity has no registered distributions. Kevin's active Ubuntu-22.04 VHD is owned by another identity and was not re-registered or copied.",
+    "docker": "Docker client exists, but this identity is denied access to npipe:////./pipe/docker_engine.",
+    "local_cuda_training": "C:/Comfy_UI_Main/ComfyUI/.venv has torch 2.11.0+cu128 and CUDA, but lacks MMEngine/MMSeg and the local machine exposes neither nvcc nor MSVC Build Tools for an honest full-MMCV ops build.",
+    "windows_control": "The computer-control transport closed twice before connection; no desktop input occurred.",
+    "input_inventory": "24 governed incoming images reconcile to 20 complete draft sources, two explicit S02 semantic-review cases, and two age-safety quarantines; no additional unprocessed governed originals are waiting.",
+    "s02_visual_audit": "Both review overlays correctly cover the intended visible person and show no apparent cross-person ownership defect, but the sealed handoff explicitly reserves semantic confirmation to Kevin. No reviewer identity was impersonated and no resolution was sealed."
+  },
+  "minimum_kevin_unblock_sequence": [
+    {
+      "priority": 1,
+      "action": "Review the two S02 overlays in qa/review_handoffs/s02 and run the supplied confirmed_valid or corrected commands under Kevin's reviewer identity."
+    },
+    {
+      "priority": 2,
+      "action": "After both confirmations, supply at least three additional governed clear-adult originals to reach 25 completed source drafts; without confirming them, supply five."
+    },
+    {
+      "priority": 3,
+      "action": "Perform and approve the first five CVAT SOP-1 corrections with real review minutes. This unlocks P1 gold, G1 baseline, DVC package evidence, and the downstream approved-gold ladder."
+    },
+    {
+      "priority": 4,
+      "action": "Continue manual approvals to 20 distinct gold packages for the real VLM calibration corpus, then toward 200 for training."
+    },
+    {
+      "priority": 5,
+      "action": "Run WSL/Task Scheduler/ComfyUI proofs from Kevin's interactive Windows account, or restore the Windows-control transport for the agent. AWS credentials and any billable burst still require explicit approval."
+    }
+  ],
+  "safety_and_authority": {
+    "source_images_sourced_by_agent": false,
+    "cvat_manual_clicks_by_agent": false,
+    "human_review_impersonated": false,
+    "age_quarantine_overridden": false,
+    "paid_resources_launched": false,
+    "active_wsl_vhd_re_registered": false
+  }
+}

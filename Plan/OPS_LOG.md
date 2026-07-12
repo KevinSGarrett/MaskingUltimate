@@ -4021,6 +4021,21 @@ controller hardening:             deterministic component metrics and ontology m
 additional grounding:             prompt now includes side, parent union, expected area, max components, boundary rule, and up to 20 non-pass deterministic QA findings
 final focused validation:         40 selected VLM/S11/workhorse tests pass; Ruff clean; no real-gold gate pass claimed
 
+## 2026-07-12 - VLM workhorse adversarial model and controller hardening
+
+known-bad case:                  img_6d6bb33f01a1 / left_forearm; real source plus current S09 mask
+Qwen3-VL 8B instruct:            reduced three-image audit completed in 266.9 s and falsely returned pass/confidence=1.0
+Qwen3.5 9B six-image:            client timeout after 180 s; no usable verdict
+Qwen3.5 9B three-image:          client timeout after 300 s; no usable verdict
+promotion result:                neither Qwen3 model promoted; downloaded experimental tags removed
+controller change:               label-specific BLOCK auto-QA contradicting a pass now forces fail; label-specific ROUTE/WARN forces uncertain; raw model verdict remains recorded
+whole-image repair:              clean source and overlay are sent separately; prediction absence is explicitly unknown; thinking disabled for deterministic JSON completion
+gate invalidation:               workhorse fingerprint now binds audit/compare/whole-image prompts, client, renderer, controller, and S11 production code
+next pixel backend:              official SAM 3.1 selected for governed evaluation only; checkpoint access and separate Python/CUDA environment remain prerequisites
+focused validation:              31 VLM/S11/evaluator/config tests pass; Ruff check and ruff-format clean
+repository-wide attempt:         monolithic and three-part pytest launches lost the desktop execution stdout channel; no new full-suite pass claimed
+authority:                       qwen2.5vl remains configured but uncalibrated and shadow-only; no quick-pass, gold approval, BLOCK clearing, or authoritative mask edit
+
 ## 2026-07-12 - Exact P2 46-core draft and QC-011 ten-fixture gates closed
 
 **Result:** PASS - MF-P2-05.08 and MF-P2-06.08 complete on the exact governed fixture set.
@@ -4036,3 +4051,20 @@ QC-011:                           10/10 full PART maps independently expanded to
 runtime provenance:               per-fixture contracts bind S05, production adapter, core-contract writer, S09, and QC-011 implementation hashes; stale-runtime fixtures are refreshed while current receipts resume
 evidence:                         qa/live_verification/p2_core_fixture_gate_20260712.json
 validation:                       704 full tests pass; Ruff check clean; 278 source/test/tool Python files format-clean; tracker validation clean
+
+## 2026-07-12 - Remaining-work dependency audit and honest blocker reconciliation
+
+**Result:** PASS state audit - no autonomous actionable tracker item remains; the project is not complete.
+
+tracker state:                    322/393 complete; 67 blocked; 4 optional trigger items deferred; zero open/in-progress/partial/failed
+tracker proof:                    validate reports no structural problems; `tracker.py next -n 25` reports nothing actionable
+approved gold:                   0; this is the common gate for P1 review evidence, P2 draft-vs-gold metrics, P4 calibration/IAA, P5 training, P6 champion serving, and P7 scale demonstrations
+incoming reconciliation:         24 governed inputs = 20 complete source drafts + 2 explicit S02 semantic-review routes + 2 age-safety quarantines; no extra unprocessed governed original is waiting
+S02 panel audit:                 both overlays visibly cover the intended person; no apparent model/ownership defect; the immutable handoff still reserves semantic confirmation to Kevin, so no reviewer identity was impersonated and no resolution was sealed
+P2 minimum unblock:              Kevin confirms/corrects both S02 masks, then supplies >=3 additional governed clear-adult originals; alternatively five new originals without those confirmations
+gold minimum unblock:            Kevin performs/approves the first five SOP-1 CVAT corrections with real review minutes; continue to 20 distinct golds for VLM calibration and 200 for training
+WSL diagnosis:                   WSL2/WslService active, but this identity has zero registered distros; Kevin's 28.8 GB Ubuntu VHD is actively owned elsewhere and was not re-registered/copied due corruption and disk-pressure risk
+other runtime routes:            Docker named pipe denied; local torch 2.11.0+cu128 works but nvcc/MSVC/OpenMMLab stack are absent; computer-control transport closed twice before connection and sent no input
+optional work:                   P5 hair/chest/AWS triggers and P7 synthetic bootstrap deferred rather than presented as routine next actions
+authority preserved:             no source acquisition, age override, CVAT clicks, human-review impersonation, paid launch, or active-VHD mutation occurred
+evidence:                        qa/live_verification/remaining_dependency_audit_20260712.json

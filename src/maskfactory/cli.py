@@ -919,6 +919,64 @@ def vlmqa(context: click.Context) -> None:
         _todo("doc 10")
 
 
+@vlmqa.command("build-calibration")
+@click.option(
+    "--selection",
+    "selection_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Reviewed 20-case selection over frozen human-approved gold packages.",
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    "output_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/vlm_eval"),
+    show_default=True,
+)
+def vlmqa_build_calibration(
+    selection_path: Path,
+    packages_root: Path,
+    images_root: Path,
+    output_root: Path,
+) -> None:
+    """Build the fixed VLM gate corpus from verified human-approved gold only."""
+    from .vlm.eval import VlmEvalError, build_calibration_from_gold_selection
+
+    try:
+        cases = build_calibration_from_gold_selection(
+            selection_path,
+            output_root,
+            packages_root=packages_root,
+            images_root=images_root,
+        )
+    except (OSError, ValueError, VlmEvalError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "output": str(output_root),
+                "total": len(cases),
+                "good": sum(not case.expected_defect for case in cases),
+                "defect": sum(case.expected_defect for case in cases),
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @vlmqa.command("eval")
 @click.option(
     "--calibration-root",

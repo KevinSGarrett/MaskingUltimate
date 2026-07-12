@@ -1,6 +1,7 @@
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -8,15 +9,101 @@ from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
+from maskfactory.ontology import get_ontology
 from maskfactory.vlm.eval import (
     DEFECT_TAXONOMY,
     VlmEvalError,
+    build_calibration_from_gold_selection,
     build_calibration_from_seed_manifest,
     evaluate_gate,
     generate_calibration_set,
     load_cases,
     require_current_gate,
 )
+
+
+def _gold_selection_fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
+    packages = tmp_path / "packages"
+    images = tmp_path / "images"
+    target_by_problem = {
+        "wrong_side": ("left_forearm", None),
+        "boundary_too_loose": ("hair", None),
+        "boundary_too_tight": ("left_thigh", None),
+        "includes_clothing_as_skin": ("skin", "top_garment"),
+        "includes_neighbor_part": ("chest_upper_torso", "left_upper_arm"),
+        "missing_visible_area": ("right_calf", None),
+        "mask_on_hidden_area": ("left_breast", None),
+        "finger_merge": ("left_index_finger", "left_middle_finger"),
+        "hair_edge_bad": ("hair", None),
+        "occlusion_error": ("right_forearm", "occluding_object"),
+    }
+    authority = get_ontology()
+    cases = []
+    for index in range(20):
+        problem = DEFECT_TAXONOMY[index % len(DEFECT_TAXONOMY)]
+        label, auxiliary = target_by_problem[problem]
+        image_id = f"img_{index + 1:012x}"
+        package = packages / image_id / "instances/p0"
+        package.mkdir(parents=True)
+        source = np.full((64, 64, 3), (30 + index, 60 + index, 90 + index), dtype=np.uint8)
+        Image.fromarray(source, mode="RGB").save(package / "source.png")
+        masks = {label, auxiliary, "right_forearm" if problem == "wrong_side" else None} - {None}
+        parts = {}
+        for mask_index, name in enumerate(sorted(masks)):
+            definition = authority.label(name)
+            if definition.mask_type == "protected_qa":
+                directory = package / "protected"
+            elif definition.map == "material":
+                directory = package / "masks_material"
+            else:
+                directory = package / "masks"
+            directory.mkdir(exist_ok=True)
+            mask = np.zeros((64, 64), dtype=np.uint8)
+            left = 8 + mask_index * 22
+            mask[12:52, left : left + 16] = 255
+            Image.fromarray(mask, mode="L").save(directory / f"{name}.png")
+            parts[name] = {
+                "visibility": "not_visible"
+                if definition.mask_type == "protected_qa"
+                else "visible",
+                "status": "n/a"
+                if definition.mask_type == "protected_qa"
+                else "human_approved_gold",
+            }
+        manifest = {
+            "image_id": image_id,
+            "source": {
+                "source_file": "source.png",
+                "source_origin": "generated",
+                "origin_note": f"owned deterministic gold calibration fixture {index}",
+            },
+            "parts": parts,
+            "review": {
+                "reviewer": "kevin",
+                "approved_at": "2026-07-12T00:00:00+00:00",
+                "review_time_sec": 60,
+            },
+            "qa": {"qa_overall": "pass"},
+        }
+        (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+        (package / ".maskfactory_frozen.json").write_text("{}", encoding="utf-8")
+        intake = images / image_id
+        intake.mkdir(parents=True)
+        (intake / "manifest.json").write_text(
+            json.dumps({"age_safety": {"verdict": "clear_adult"}}), encoding="utf-8"
+        )
+        cases.append(
+            {
+                "id": f"gold_{index:02d}",
+                "package": f"{image_id}/instances/p0",
+                "label": label,
+                "defect_type": problem,
+                "auxiliary_label": auxiliary,
+            }
+        )
+    selection = tmp_path / "selection.json"
+    selection.write_text(json.dumps({"schema_version": "1.0.0", "cases": cases}), encoding="utf-8")
+    return selection, packages, images
 
 
 def test_generate_exact_balanced_40_panel_taxonomy(tmp_path: Path) -> None:
@@ -83,6 +170,95 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
     assert len(document["sources"]) == 20
     assert {source["age_safety"] for source in document["sources"]} == {"clear_adult"}
     assert load_cases(output) == cases
+
+
+def test_gold_selection_builds_exact_governed_calibration_corpus(tmp_path: Path) -> None:
+    selection, packages, images = _gold_selection_fixture(tmp_path)
+    output = tmp_path / "vlm_eval"
+    cases = build_calibration_from_gold_selection(
+        selection,
+        output,
+        packages_root=packages,
+        images_root=images,
+        package_verifier=lambda package: (SimpleNamespace(passed=True),),
+    )
+    assert len(cases) == 40
+    assert sum(not case.expected_defect for case in cases) == 20
+    assert sum(case.expected_defect for case in cases) == 20
+    assert load_cases(output) == cases
+    manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["corpus_authority"] == "explicit_source_good_defect_pairs"
+    assert len({source["source_sha256"] for source in manifest["sources"]}) == 20
+    assert {source["age_safety"] for source in manifest["sources"]} == {"clear_adult"}
+    assert (output / "seeds/manifest.json").is_file()
+
+
+def test_gold_selection_refuses_unapproved_or_unverified_packages(tmp_path: Path) -> None:
+    selection, packages, images = _gold_selection_fixture(tmp_path)
+    first = packages / "img_000000000001/instances/p0"
+    manifest_path = first / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["review"]["approved_at"] = None
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(VlmEvalError, match="lacks approval"):
+        build_calibration_from_gold_selection(
+            selection,
+            tmp_path / "unapproved",
+            packages_root=packages,
+            images_root=images,
+            package_verifier=lambda package: (SimpleNamespace(passed=True),),
+        )
+
+    manifest["review"]["approved_at"] = "2026-07-12T00:00:00+00:00"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(VlmEvalError, match="fails format/hash verification"):
+        build_calibration_from_gold_selection(
+            selection,
+            tmp_path / "unverified",
+            packages_root=packages,
+            images_root=images,
+            package_verifier=lambda package: (SimpleNamespace(passed=False),),
+        )
+
+
+def test_vlmqa_build_calibration_cli_reports_exact_balance(tmp_path: Path, monkeypatch) -> None:
+    selection = tmp_path / "selection.json"
+    selection.write_text("{}", encoding="utf-8")
+    packages = tmp_path / "packages"
+    images = tmp_path / "images"
+    packages.mkdir()
+    images.mkdir()
+    fixture_cases = tuple(
+        [SimpleNamespace(expected_defect=False) for _ in range(20)]
+        + [SimpleNamespace(expected_defect=True) for _ in range(20)]
+    )
+    monkeypatch.setattr(
+        "maskfactory.vlm.eval.build_calibration_from_gold_selection",
+        lambda *args, **kwargs: fixture_cases,
+    )
+    output = tmp_path / "vlm_eval"
+    result = CliRunner().invoke(
+        main,
+        [
+            "vlmqa",
+            "build-calibration",
+            "--selection",
+            str(selection),
+            "--packages-root",
+            str(packages),
+            "--images-root",
+            str(images),
+            "--output",
+            str(output),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.output) == {
+        "output": str(output),
+        "total": 40,
+        "good": 20,
+        "defect": 20,
+    }
 
 
 def test_production_builder_refuses_duplicate_or_ungoverned_sources(tmp_path: Path) -> None:

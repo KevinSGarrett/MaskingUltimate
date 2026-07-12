@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import uuid
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -12,9 +13,11 @@ from typing import Mapping
 
 import numpy as np
 from PIL import Image, ImageDraw
+from scipy import ndimage
 
-from ..io.png_strict import read_mask
+from ..io.png_strict import read_mask, write_binary_mask
 from ..ontology import get_ontology
+from ..packager import verify_packages
 from ..qa.panels import render_boundary_panel
 
 DEFECT_TAXONOMY = (
@@ -236,6 +239,170 @@ def build_calibration_from_seed_manifest(
     return tuple(cases)
 
 
+def build_calibration_from_gold_selection(
+    selection_path: Path,
+    root: Path,
+    *,
+    packages_root: Path,
+    images_root: Path,
+    package_verifier=verify_packages,
+) -> tuple[EvalCase, ...]:
+    """Derive known-truth calibration pairs only from frozen, verified approved gold."""
+    selection_path = Path(selection_path)
+    root = Path(root)
+    if root.exists():
+        raise VlmEvalError(f"calibration output already exists: {root}")
+    try:
+        selection = json.loads(selection_path.read_text(encoding="utf-8"))
+        cases = selection["cases"]
+    except (OSError, KeyError, json.JSONDecodeError) as exc:
+        raise VlmEvalError(f"gold calibration selection invalid: {exc}") from exc
+    required = {"id", "package", "label", "defect_type", "auxiliary_label"}
+    if selection.get("schema_version") != "1.0.0" or not isinstance(cases, list):
+        raise VlmEvalError("gold calibration selection requires schema_version 1.0.0 and cases")
+    if len(cases) != 20 or any(
+        not isinstance(case, dict) or set(case) != required for case in cases
+    ):
+        raise VlmEvalError(f"gold calibration requires 20 cases with exactly {sorted(required)}")
+    if len({case["id"] for case in cases}) != 20:
+        raise VlmEvalError("gold calibration case IDs must be unique")
+    defects = [case["defect_type"] for case in cases]
+    if set(defects) != set(DEFECT_TAXONOMY) or any(
+        defects.count(name) != 2 for name in DEFECT_TAXONOMY
+    ):
+        raise VlmEvalError("gold calibration defects must cover every taxonomy value exactly twice")
+
+    packages_root = Path(packages_root).resolve()
+    images_root = Path(images_root).resolve()
+    authority = get_ontology()
+    validated = []
+    image_ids = set()
+    labels = set()
+    for case in cases:
+        package = _contained_path(packages_root, str(case["package"]), "gold package")
+        manifest_path = package / "manifest.json"
+        frozen_path = package / ".maskfactory_frozen.json"
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise VlmEvalError(f"gold package manifest invalid: {package}: {exc}") from exc
+        image_id = str(manifest.get("image_id", ""))
+        if image_id in image_ids:
+            raise VlmEvalError(f"gold calibration requires 20 distinct image IDs: {image_id}")
+        image_ids.add(image_id)
+        if not frozen_path.is_file():
+            raise VlmEvalError(f"gold package is not frozen: {package}")
+        review = manifest.get("review", {})
+        if (
+            not review.get("reviewer")
+            or not review.get("approved_at")
+            or not isinstance(review.get("review_time_sec"), (int, float))
+            or manifest.get("qa", {}).get("qa_overall") != "pass"
+        ):
+            raise VlmEvalError(f"gold package lacks approval or passing QA: {package}")
+        visible = {
+            name: entry
+            for name, entry in manifest.get("parts", {}).items()
+            if entry.get("visibility") in {"visible", "partially_visible", "occluded"}
+        }
+        if not visible or any(
+            entry.get("status") != "human_approved_gold" for entry in visible.values()
+        ):
+            raise VlmEvalError(f"gold package has visible non-gold labels: {package}")
+        verifications = tuple(package_verifier(package))
+        if len(verifications) != 1 or not verifications[0].passed:
+            raise VlmEvalError(f"gold package fails format/hash verification: {package}")
+        try:
+            label = authority.label(str(case["label"]), require_enabled=True)
+        except Exception as exc:
+            raise VlmEvalError(f"gold calibration label invalid: {case['id']}") from exc
+        if (
+            label.id is None
+            or label.map not in {"part", "material"}
+            or label.mask_type == "protected_qa"
+        ):
+            raise VlmEvalError(
+                f"gold calibration label is not indexed mask authority: {case['id']}"
+            )
+        good_path = _package_mask_path(package, label)
+        if not good_path.is_file():
+            raise VlmEvalError(f"gold mask missing for calibration case: {case['id']}")
+        source_path = package / str(manifest["source"]["source_file"])
+        if not source_path.is_file():
+            raise VlmEvalError(f"gold source missing for calibration case: {case['id']}")
+        intake_path = images_root / image_id / "manifest.json"
+        try:
+            intake = json.loads(intake_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise VlmEvalError(f"intake authority missing for {image_id}: {exc}") from exc
+        if intake.get("age_safety", {}).get("verdict") != "clear_adult":
+            raise VlmEvalError(f"gold calibration source is not age-cleared adult: {image_id}")
+        origin_note = str(manifest.get("source", {}).get("origin_note", "")).strip()
+        if not origin_note:
+            raise VlmEvalError(f"gold calibration rights evidence missing: {image_id}")
+        auxiliary = case["auxiliary_label"]
+        auxiliary_path = None
+        if case["defect_type"] == "wrong_side":
+            auxiliary = label.swap_partner
+        if auxiliary is not None:
+            try:
+                auxiliary_definition = authority.label(str(auxiliary), require_enabled=True)
+            except Exception as exc:
+                raise VlmEvalError(
+                    f"gold calibration auxiliary label invalid: {case['id']}"
+                ) from exc
+            auxiliary_path = _package_mask_path(package, auxiliary_definition)
+            if not auxiliary_path.is_file():
+                raise VlmEvalError(f"gold auxiliary mask missing: {case['id']}")
+        labels.add(label.name)
+        validated.append((case, package, manifest, source_path, good_path, auxiliary_path))
+    if len(labels) < 5:
+        raise VlmEvalError("gold calibration must span at least five distinct labels")
+
+    stage = root.with_name(f".{root.name}.tmp-{uuid.uuid4().hex}")
+    seed_root = stage / "seeds"
+    try:
+        seed_root.mkdir(parents=True)
+        seeds = []
+        for index, (case, _package, manifest, source_path, good_path, auxiliary_path) in enumerate(
+            validated
+        ):
+            source_target = seed_root / f"source_{index:02d}{source_path.suffix.lower()}"
+            good_target = seed_root / f"good_{index:02d}.png"
+            defect_target = seed_root / f"defect_{index:02d}.png"
+            shutil.copy2(source_path, source_target)
+            good = read_mask(good_path) > 0
+            auxiliary = read_mask(auxiliary_path) > 0 if auxiliary_path is not None else None
+            defect = _seed_gold_defect(good, str(case["defect_type"]), auxiliary)
+            source_size = (good.shape[1], good.shape[0])
+            write_binary_mask(good_target, good, source_size=source_size)
+            write_binary_mask(defect_target, defect, source_size=source_size)
+            seeds.append(
+                {
+                    "id": str(case["id"]),
+                    "label": str(case["label"]),
+                    "source": source_target.name,
+                    "good_mask": good_target.name,
+                    "defect_mask": defect_target.name,
+                    "defect_type": str(case["defect_type"]),
+                    "governance": {
+                        "source_origin": manifest["source"]["source_origin"],
+                        "age_safety": "clear_adult",
+                        "rights_evidence": manifest["source"]["origin_note"],
+                        "source_sha256": hashlib.sha256(source_target.read_bytes()).hexdigest(),
+                    },
+                }
+            )
+        seed_manifest = seed_root / "manifest.json"
+        _atomic_json(seed_manifest, {"schema_version": "1.0.0", "seeds": seeds})
+        built = build_calibration_from_seed_manifest(seed_manifest, stage)
+        os.replace(stage, root)
+        return built
+    except Exception:
+        shutil.rmtree(stage, ignore_errors=True)
+        raise
+
+
 def load_cases(root: Path) -> tuple[EvalCase, ...]:
     document = json.loads((Path(root) / "manifest.json").read_text(encoding="utf-8"))
     cases = tuple(EvalCase(**case) for case in document["cases"])
@@ -250,6 +417,82 @@ def load_cases(root: Path) -> tuple[EvalCase, ...]:
     if any(not (Path(root) / case.panel_file).is_file() for case in cases):
         raise VlmEvalError("calibration panel file missing")
     return cases
+
+
+def _contained_path(root: Path, relative: str, description: str) -> Path:
+    candidate = (root / relative).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise VlmEvalError(f"{description} escapes configured root: {relative}") from exc
+    return candidate
+
+
+def _package_mask_path(package: Path, label) -> Path:
+    if label.mask_type == "protected_qa":
+        directory = "protected"
+    elif label.map == "material":
+        directory = "masks_material"
+    else:
+        directory = "masks"
+    return Path(package) / directory / f"{label.name}.png"
+
+
+def _seed_gold_defect(
+    good: np.ndarray,
+    problem: str,
+    auxiliary: np.ndarray | None,
+) -> np.ndarray:
+    """Apply one deterministic, visibly material defect without changing gold authority."""
+    region = np.asarray(good).astype(bool)
+    if region.ndim != 2 or not region.any():
+        raise VlmEvalError("selected gold mask is empty")
+    radius = max(2, min(region.shape) // 96)
+    if problem == "boundary_too_loose":
+        defect = ndimage.binary_dilation(region, iterations=radius)
+    elif problem == "boundary_too_tight":
+        defect = ndimage.binary_erosion(region, iterations=radius)
+        if not defect.any():
+            defect = region.copy()
+            ys, xs = np.nonzero(region)
+            defect[ys[len(ys) // 2 :], xs[len(xs) // 2 :]] = False
+    elif problem == "missing_visible_area":
+        defect = region.copy()
+        ys, xs = np.nonzero(region)
+        split = int(np.quantile(xs, 0.65))
+        defect[:, split:] = False
+    elif problem == "mask_on_hidden_area":
+        shift = max(radius * 4, region.shape[1] // 4)
+        translated = np.zeros_like(region)
+        if shift < region.shape[1]:
+            translated[:, shift:] = region[:, :-shift]
+        defect = region | (translated & ~region)
+        if np.array_equal(defect, region):
+            defect = region | (ndimage.binary_dilation(region, iterations=radius * 4) & ~region)
+    elif problem == "hair_edge_bad":
+        inner = ndimage.binary_erosion(region, iterations=radius)
+        outer = ndimage.binary_dilation(region, iterations=radius)
+        yy, xx = np.indices(region.shape)
+        checker = ((xx // radius) + (yy // radius)) % 2 == 0
+        defect = (region & (inner | checker)) | ((outer & ~region) & checker)
+    elif problem in {
+        "wrong_side",
+        "includes_clothing_as_skin",
+        "includes_neighbor_part",
+        "finger_merge",
+        "occlusion_error",
+    }:
+        if auxiliary is None or np.asarray(auxiliary).shape != region.shape:
+            raise VlmEvalError(f"{problem} requires a same-size auxiliary gold mask")
+        other = np.asarray(auxiliary).astype(bool)
+        if not other.any():
+            raise VlmEvalError(f"{problem} auxiliary gold mask is empty")
+        defect = other if problem == "wrong_side" else region | other
+    else:
+        raise VlmEvalError(f"unsupported calibration defect: {problem}")
+    if not defect.any() or np.array_equal(defect, region):
+        raise VlmEvalError(f"seeded {problem} defect did not materially change the gold mask")
+    return np.asarray(defect).astype(bool)
 
 
 def _binary_seed(path: Path, source_size: tuple[int, int]) -> np.ndarray:

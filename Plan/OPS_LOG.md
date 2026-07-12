@@ -3560,3 +3560,22 @@ tracker validation:         PASS; 393 items; five hard blockers remain unresolve
 durable audit:              qa/live_verification/p8_review_handoff_coordinator_20260712.json
 NEEDS KEVIN unchanged:      correct tasks 9-11 and 13-16; review 12/17; record time; explicitly approve
 ```
+
+## 2026-07-12 09:20 UTC - Approved-gold VLM calibration builder activated
+**Item:** MF-P4-05.01 advanced 50% -> 65% partial
+**Result:** The missing governed bridge from approved packages to the fixed 40-panel calibration corpus is complete; the real corpus still correctly waits for gold.
+
+```
+command:                     maskfactory vlmqa build-calibration --selection SELECTION.json
+input authority:             exactly 20 distinct image IDs from frozen, QA-passing, hash-verified human_approved_gold packages
+governance:                  intake clear_adult + allowed source origin + nonempty package origin/rights note
+known truth:                 good mask is copied from immutable approved package authority; draft maps are refused
+defect construction:         deterministic wrong-side, loose/tight boundary, clothing-as-skin, neighbor bleed, missing area, hidden-area, finger-merge, hair-edge, and occlusion perturbations
+balance:                     all ten taxonomy values exactly twice; >=5 target labels; 20 good + 20 defect panels
+atomicity:                   corpus is built in a sibling temporary tree and promoted only after the existing production validator accepts every pair
+negative tests:              missing approval and package verification failure both refuse without an output corpus
+focused verification:       18 VLM tests passed
+full regression:             all tests passed; Ruff clean
+durable audit:               qa/live_verification/vlm_gold_calibration_builder_20260712.json
+honest boundary:             approved_gold_count=0, so no live production calibration corpus or VLM gate pass is claimed
+```

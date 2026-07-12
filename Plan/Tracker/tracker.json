@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T08:36:02+00:00",
+    "generated_at": "2026-07-12T08:51:00+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -5510,7 +5510,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 50,
+      "percent_complete": 65,
       "notes": [
         {
           "ts": "2026-07-11T06:05:29+00:00",
@@ -5521,12 +5521,22 @@
           "ts": "2026-07-11T19:54:13+00:00",
           "actor": "ai_agent",
           "text": "Production calibration builder is now fail-closed on corpus authority: exactly 20 distinct source byte hashes (not one source with varied masks), per-source allowed origin + clear_adult + nonempty rights evidence + matching SHA-256, ontology-valid indexed atomic labels across >=5 classes, nonempty strict good masks, differing known defect masks, and every taxonomy value exactly twice. Manifest records governance for audit. Focused VLM tests and 537-test full suite pass. Only one governed real seed currently exists, so no replacement 40-panel corpus is claimed."
+        },
+        {
+          "ts": "2026-07-12T09:01:22+00:00",
+          "actor": "ai_agent",
+          "text": "Added maskfactory vlmqa build-calibration: an atomic, fail-closed bridge from exactly 20 distinct frozen, QA-passing, hash-verified human-approved gold packages to 20 good + 20 seeded-defect panels. It derives known truth only from immutable gold, covers every taxonomy value exactly twice across >=5 labels, validates age/rights authority, and refuses drafts/unverified inputs. Focused 17-test and full suites pass. Production corpus remains absent because approved_gold_count=0; no draft was substituted."
+        },
+        {
+          "ts": "2026-07-12T09:02:25+00:00",
+          "actor": "ai_agent",
+          "text": "Verification count correction after adding the CLI contract regression: focused VLM suite is 18 passed (9 calibration-gate tests plus 9 client/router/config tests); full suite remains green."
         }
       ],
-      "evidence": "Builder and tests prove the governed 20-source/40-panel contract and reject duplicate, ungoverned, hash-drifted, non-atomic, empty, or taxonomy-incomplete seeds. Production corpus remains absent; deprecated_synthetic_v0 is not gate authority.",
+      "evidence": "Implementation and tests: src/maskfactory/vlm/eval.py, src/maskfactory/cli.py, tests/test_vlm_eval_gate.py. Durable contract audit: qa/live_verification/vlm_gold_calibration_builder_20260712.json. The builder is verified; the item remains partial until 20 approved distinct gold images exist and the real qa/vlm_eval corpus is built.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T19:54:13+00:00",
+      "updated_at": "2026-07-12T09:02:25+00:00",
       "orphaned": false
     },
     "MF-P4-05.02": {

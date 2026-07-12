@@ -18,18 +18,18 @@
       "model_key": "yolo11m"
     },
     {
-      "key": "ultralytics_bus_adults_4_cap3",
-      "source_path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
-      "source_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
-      "source_origin": "qa_asset",
-      "rights_evidence": "Official Ultralytics AGPL-3.0 package asset registered for local QA",
+      "key": "supplied_adult_four_view_4",
+      "source_path": "data/images/img_6d6bb33f01a1/source.jpg",
+      "source_sha256": "45f866f12724a2db7a929b841f523e776b78748023c87ef83a5888d93dd68f29",
+      "source_origin": "generated",
+      "rights_evidence": "Kevin-supplied governed project source; intake manifest records generated origin",
       "age_safety": "clear_adult",
-      "age_evidence": "qa/fixtures/smoke/README.md visible-subject review records clearly adult pedestrians",
+      "age_evidence": "Non-configurable qwen2.5vl:7b intake rescreen: clear_adult, person_count=4",
       "manual_visible_instance_count": 4,
       "reviewer": "ai_agent_visual_review",
-      "reviewed_at": "2026-07-11T20:13:55Z",
-      "s01_evidence_path": "qa/live_verification/s01_bus/person_bbox.json",
-      "s01_evidence_sha256": "95d9219e9ee5553b08c9152529dc54ad025b03853c37c22b8cb66b35b3816b24",
+      "reviewed_at": "2026-07-12T07:50:00Z",
+      "s01_evidence_path": "work/s01/img_6d6bb33f01a1/person_bbox.json",
+      "s01_evidence_sha256": "6bb96b7a0073b6300568bacd9034974645ed8d216f3e0a211265720c4e6eacde",
       "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
       "model_key": "yolo11m"
     }

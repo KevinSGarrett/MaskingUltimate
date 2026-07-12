@@ -19,10 +19,17 @@ class MultiInstanceFixtureError(ValueError):
 
 
 def seal_multi_instance_fixture_set(
-    registry_path: Path, output_path: Path, *, project_root: Path
+    registry_path: Path,
+    output_path: Path,
+    *,
+    project_root: Path,
+    max_instances_per_image: int = 4,
+    work_root: Path | None = None,
 ) -> dict[str, Any]:
     """Validate 2-3 manually reviewed rasters against immutable S01 count evidence."""
     root = Path(project_root).resolve()
+    if isinstance(max_instances_per_image, bool) or not 2 <= max_instances_per_image <= 16:
+        raise MultiInstanceFixtureError("max_instances_per_image must be an integer in [2,16]")
     try:
         registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
         fixtures = registry["fixtures"]
@@ -87,7 +94,7 @@ def seal_multi_instance_fixture_set(
         if not isinstance(persons, list):
             raise MultiInstanceFixtureError(f"fixture persons list is missing: {key}")
         promoted = [person for person in persons if person.get("promoted") is True]
-        expected_promoted = min(manual_count, 3)
+        expected_promoted = min(manual_count, max_instances_per_image)
         if len(promoted) != expected_promoted or [p.get("person_index") for p in promoted] != list(
             range(expected_promoted)
         ):
@@ -97,6 +104,10 @@ def seal_multi_instance_fixture_set(
         for person in promoted:
             _validate_box(person.get("bbox_xyxy"), width, height, key)
             _validate_box(person.get("context_bbox_xyxy"), width, height, key)
+        promoted_names = [f"p{person['person_index']}" for person in promoted]
+        # Canonical data/images paths carry the image id in their parent directory.
+        image_id = source.parent.name if source.parent.parent.name == "images" else None
+        downstream_verified = _downstream_verified(root, work_root, image_id, promoted_names)
         records.append(
             {
                 "key": key,
@@ -116,21 +127,62 @@ def seal_multi_instance_fixture_set(
                 "model_key": fixture["model_key"],
                 "raw_detection_count": s01["raw_detection_count"],
                 "promoted_instance_count": len(promoted),
-                "promoted_instances": [f"p{person['person_index']}" for person in promoted],
+                "promoted_instances": promoted_names,
                 "persons": promoted,
-                "downstream_package_count_verified": False,
+                "downstream_package_count_verified": downstream_verified,
             }
         )
     document = {
         "schema_version": "1.0.0",
         "fixture_count": len(records),
         "count_authority": "manual_visual_review_plus_s01_exact_match",
-        "max_instances_per_image": 3,
+        "max_instances_per_image": max_instances_per_image,
         "fixtures": records,
-        "downstream_status": "S02-S09.5 blocked_by_unavailable_WSL_runtime",
+        "downstream_status": (
+            "verified_exact_promoted_draft_packages"
+            if all(record["downstream_package_count_verified"] for record in records)
+            else "not_all_fixture_package_counts_verified"
+        ),
     }
     _atomic_json(Path(output_path), document)
     return document
+
+
+def _downstream_verified(
+    root: Path,
+    work_root: Path | None,
+    image_id: str | None,
+    promoted: list[str],
+) -> bool:
+    if work_root is None or image_id is None or not image_id.startswith("img_"):
+        return False
+    work = (root / work_root).resolve() if not Path(work_root).is_absolute() else Path(work_root)
+    if root not in work.parents and work != root:
+        raise MultiInstanceFixtureError("fixture work root is outside project root")
+    draft_instances = work / "drafts" / image_id / "instances"
+    if not draft_instances.is_dir():
+        return False
+    actual = sorted(path.name for path in draft_instances.iterdir() if path.is_dir())
+    if actual != promoted:
+        return False
+    for name in promoted:
+        if not (draft_instances / name / "draft_contract.json").is_file():
+            return False
+        for stage in ("s02", "s03", "s04", "s05", "s06", "s07", "s08", "s08_5", "s09"):
+            receipt = work / "instances" / name / stage / image_id / "stage_run.json"
+            if not receipt.is_file():
+                return False
+            try:
+                if json.loads(receipt.read_text(encoding="utf-8")).get("status") != "complete":
+                    return False
+            except (OSError, json.JSONDecodeError):
+                return False
+    manifest_path = work / "s09_5" / image_id / "image_manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    return manifest.get("promoted_instances") == promoted
 
 
 def _safe_file(root: Path, value: Any) -> Path:

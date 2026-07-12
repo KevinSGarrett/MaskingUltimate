@@ -3466,3 +3466,19 @@ durable audit:              qa/live_verification/mf_p3_03_03_vitmatte_live/img_d
 focused validation:         7 hair/provider/live-evidence tests pass; Ruff and format clean
 authority boundary:         binary hair remains label authority; alpha is evidence/compositing only
 ```
+
+## 2026-07-12 07:53 UTC - Real multi-instance fixture package fan-out sealed
+**Item:** MF-P8-01.03 85% partial -> complete
+**Result:** Two distinct governed, manually counted adult fixtures now prove exact real S01-to-draft fan-out under the configured doc-17 cap of four.
+
+```
+stale contract corrected:   fixture sealer hard-coded cap=3 while doc 17/config default max_instances_per_image=4
+configured contract:        sealer now accepts the governed cap and fails outside integer [2,16]
+downstream proof:            exact draft instance directories + draft contracts + complete S02-S09 receipts + matching S09.5 promoted list
+fixture 1:                  supplied_adult_triptych_3; manual/raw 3; exact completed p0,p1,p2
+fixture 2:                  supplied_adult_four_view_4; manual/raw 4; exact completed p0,p1,p2,p3
+authority manifest:          qa/multi_instance_fixtures/manifest.json status verified_exact_promoted_draft_packages
+negative evidence retained: licensed bus fixture canonically intake-cleared four adults but p2 stopped at S02 ratio 0.311724 < required 0.35
+hard-gate behavior:          bus terminal remains needs_review; no silhouette threshold was relaxed and no missing package was counted
+regression:                  configured-cap, tamper, mismatch, and exact-downstream tests pass
+```

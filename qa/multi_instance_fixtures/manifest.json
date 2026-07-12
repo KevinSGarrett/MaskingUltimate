@@ -1,12 +1,12 @@
 {
   "count_authority": "manual_visual_review_plus_s01_exact_match",
-  "downstream_status": "S02-S09.5 blocked_by_unavailable_WSL_runtime",
+  "downstream_status": "verified_exact_promoted_draft_packages",
   "fixture_count": 2,
   "fixtures": [
     {
       "age_evidence": "Non-configurable qwen2.5vl:7b intake screen: clear_adult, person_count=3",
       "age_safety": "clear_adult",
-      "downstream_package_count_verified": false,
+      "downstream_package_count_verified": true,
       "key": "supplied_adult_triptych_3",
       "manual_visible_instance_count": 3,
       "model_key": "yolo11m",
@@ -103,105 +103,129 @@
       ]
     },
     {
-      "age_evidence": "qa/fixtures/smoke/README.md visible-subject review records clearly adult pedestrians",
+      "age_evidence": "Non-configurable qwen2.5vl:7b intake rescreen: clear_adult, person_count=4",
       "age_safety": "clear_adult",
-      "downstream_package_count_verified": false,
-      "key": "ultralytics_bus_adults_4_cap3",
+      "downstream_package_count_verified": true,
+      "key": "supplied_adult_four_view_4",
       "manual_visible_instance_count": 4,
       "model_key": "yolo11m",
       "persons": [
         {
-          "area_px": 102921,
+          "area_px": 3514875,
           "bbox_xyxy": [
-            48,
-            399,
-            251,
-            906
+            2280,
+            282,
+            3155,
+            4299
           ],
-          "centeredness": 0.5864131933448169,
-          "confidence": 0.9162590503692627,
+          "centeredness": 0.84040443933275,
+          "confidence": 0.9332402348518372,
           "context_bbox_xyxy": [
-            22,
-            335,
-            277,
-            970
+            2170,
+            0,
+            3265,
+            4480
           ],
-          "detection_index": 0,
-          "frame_area_fraction": 0.11765089163237312,
+          "detection_index": 2,
+          "frame_area_fraction": 0.11675153459821429,
           "person_index": 0,
           "promoted": true,
           "protected_as_part_50": false,
-          "score": 60354.2322722419
+          "score": 2953916.5536996997
         },
         {
-          "area_px": 56750,
+          "area_px": 2895504,
           "bbox_xyxy": [
-            221,
-            406,
-            346,
-            860
+            3661,
+            253,
+            4377,
+            4297
           ],
-          "centeredness": 0.7733224403488896,
-          "confidence": 0.893501341342926,
+          "centeredness": 0.836579184821532,
+          "confidence": 0.8729757070541382,
           "context_bbox_xyxy": [
-            205,
-            349,
-            362,
-            917
+            3571,
+            0,
+            4467,
+            4480
           ],
-          "detection_index": 2,
-          "frame_area_fraction": 0.06487197073616827,
+          "detection_index": 3,
+          "frame_area_fraction": 0.0961782525510204,
           "person_index": 1,
           "promoted": true,
           "protected_as_part_50": false,
-          "score": 43886.04848979949
+          "score": 2422318.3759674854
         },
         {
-          "area_px": 69090,
+          "area_px": 4175035,
           "bbox_xyxy": [
-            669,
-            391,
-            810,
-            881
+            4811,
+            340,
+            5872,
+            4275
           ],
-          "centeredness": 0.4844396551946587,
-          "confidence": 0.9072402119636536,
+          "centeredness": 0.5090285753674355,
+          "confidence": 0.9476074576377869,
           "context_bbox_xyxy": [
-            651,
-            329,
-            810,
-            943
+            4678,
+            0,
+            6005,
+            4480
           ],
-          "detection_index": 1,
-          "frame_area_fraction": 0.07897805212620028,
+          "detection_index": 0,
+          "frame_area_fraction": 0.1386796808567177,
           "person_index": 2,
           "promoted": true,
           "protected_as_part_50": false,
-          "score": 33469.93577739897
+          "score": 2125212.118159181
+        },
+        {
+          "area_px": 4205512,
+          "bbox_xyxy": [
+            712,
+            259,
+            1754,
+            4295
+          ],
+          "centeredness": 0.47320276134788697,
+          "confidence": 0.9422540664672852,
+          "context_bbox_xyxy": [
+            581,
+            0,
+            1885,
+            4480
+          ],
+          "detection_index": 1,
+          "frame_area_fraction": 0.1396920174319728,
+          "person_index": 3,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 1990059.8912816748
         }
       ],
-      "promoted_instance_count": 3,
+      "promoted_instance_count": 4,
       "promoted_instances": [
         "p0",
         "p1",
-        "p2"
+        "p2",
+        "p3"
       ],
       "raw_detection_count": 4,
-      "reviewed_at": "2026-07-11T20:13:55Z",
+      "reviewed_at": "2026-07-12T07:50:00Z",
       "reviewer": "ai_agent_visual_review",
-      "rights_evidence": "Official Ultralytics AGPL-3.0 package asset registered for local QA",
+      "rights_evidence": "Kevin-supplied governed project source; intake manifest records generated origin",
       "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
-      "s01_evidence_path": "qa/live_verification/s01_bus/person_bbox.json",
-      "s01_evidence_sha256": "95d9219e9ee5553b08c9152529dc54ad025b03853c37c22b8cb66b35b3816b24",
-      "source_origin": "qa_asset",
-      "source_path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
-      "source_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+      "s01_evidence_path": "work/s01/img_6d6bb33f01a1/person_bbox.json",
+      "s01_evidence_sha256": "6bb96b7a0073b6300568bacd9034974645ed8d216f3e0a211265720c4e6eacde",
+      "source_origin": "generated",
+      "source_path": "data/images/img_6d6bb33f01a1/source.jpg",
+      "source_sha256": "45f866f12724a2db7a929b841f523e776b78748023c87ef83a5888d93dd68f29",
       "source_size": [
-        810,
-        1080
+        6720,
+        4480
       ]
     }
   ],
-  "max_instances_per_image": 3,
+  "max_instances_per_image": 4,
   "schema_version": "1.0.0"
 }

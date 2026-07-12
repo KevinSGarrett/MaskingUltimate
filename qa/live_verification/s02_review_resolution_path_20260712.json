@@ -30,10 +30,19 @@
     "conflicting reviewer evidence is refused"
   ],
   "cache_lifecycle": "a sealed resolution forces cached S02 exactly until the matching resolution is reflected in the atomic stage output",
+  "operator_handoff": {
+    "command": "maskfactory review prepare-s02",
+    "live_index": "qa/review_handoffs/s02/index.json",
+    "queued_cases": 2,
+    "awaiting_human_review": 2,
+    "panels": "two local source-versus-red-overlay PNGs visually inspected for correct person alignment",
+    "publication_policy": "source-containing panel PNGs are git-ignored; only the JSON index, immutable hashes, paths, and command hints are published"
+  },
   "verification": {
-    "focused_tests": 68,
-    "full_suite_split": [287, 375],
-    "full_test_total": 662,
+    "focused_tests": 71,
+    "full_suite_split": [287, 376],
+    "split_note": "the second split's sole raw-writer-policy failure was corrected and rerun successfully; every collected test has a passing result",
+    "full_test_total": 663,
     "ruff": "pass",
     "format": "231 files clean"
   },

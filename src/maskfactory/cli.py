@@ -953,6 +953,48 @@ def review_resolve_s02(
     click.echo(json.dumps({"resolution": str(resolution)}, sort_keys=True))
 
 
+@review.command("prepare-s02")
+@click.option(
+    "--work-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("work"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--output-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/review_handoffs/s02"),
+    show_default=True,
+)
+def review_prepare_s02(work_root: Path, images_root: Path, output_root: Path) -> None:
+    """Render panels and copy-ready commands for every queued S02 review."""
+    from .review_resolution import ReviewResolutionError, build_s02_review_handoffs
+
+    try:
+        index = build_s02_review_handoffs(
+            work_root=work_root, images_root=images_root, output_root=output_root
+        )
+        document = json.loads(index.read_text(encoding="utf-8"))
+    except (OSError, ReviewResolutionError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "index": str(index),
+                "count": document["count"],
+                "awaiting_human_review": document["awaiting_human_review"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @main.group("second-review")
 def second_review() -> None:
     """Stratified fresh-eyes review workflow (doc 11 §6)."""

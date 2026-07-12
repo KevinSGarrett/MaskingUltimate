@@ -13,6 +13,8 @@
 !/datasets/*.dvc
 /work/
 qa/reports/maskedwarehouse_alignment/
+# Local operator review panels contain governed source imagery; publish only their JSON indexes.
+qa/review_handoffs/**/*.png
 .env
 mfwork/
 

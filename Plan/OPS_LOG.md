@@ -3833,3 +3833,19 @@ tamper handling:                 stale config/model, altered mask, conflicting r
 live authority boundary:         zero resolutions sealed; both current cases still await Kevin's semantic review
 evidence:                        qa/live_verification/s02_review_resolution_path_20260712.json
 validation:                      68 focused tests; full suite split 287 + 375 = 662; Ruff/format clean
+
+## 2026-07-12 - Live S02 operator handoff generated
+
+**Result:** PASS - every queued S02 route now has review-ready visual and command evidence.
+
+command:                         maskfactory review prepare-s02
+live index:                      qa/review_handoffs/s02/index.json
+index result:                    count=2; awaiting_human_review=2; no sealed resolution
+panel contract:                 full source beside red silhouette overlay, aspect-preserving max-side render
+visual verification:             both panels align to the intended person; no coordinate mismatch
+operator hints:                  copy-ready confirmed_valid and corrected commands with exact image/pN/mask paths
+immutable identity:              config hash, queue timestamp/error, model-mask SHA-256, ratio and QC range
+data governance:                 source-containing panels remain local and git-ignored; JSON index is publishable
+QA writer policy:                RGB panel save explicitly audited as non-mask; raw-mask-writer gate remains clean
+authority boundary:              panels prepare review but do not approve; both cases remain unresolved
+validation:                      71 focused; full suite 663 collected/passed across split plus corrected policy test; Ruff/format clean

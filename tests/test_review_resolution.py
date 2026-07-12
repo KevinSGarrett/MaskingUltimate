@@ -5,12 +5,14 @@ from pathlib import Path
 import numpy as np
 import pytest
 from click.testing import CliRunner
+from PIL import Image
 
 from maskfactory.cli import main
 from maskfactory.io.png_strict import read_mask, write_binary_mask, write_grayscale
 from maskfactory.review_resolution import (
     ReviewResolutionError,
     apply_s02_review_resolution,
+    build_s02_review_handoffs,
     create_s02_review_resolution,
     s02_review_refresh_required,
 )
@@ -24,11 +26,13 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
     images = tmp_path / "images"
     image_dir = images / IMAGE_ID
     image_dir.mkdir(parents=True)
+    Image.new("RGB", (10, 12), "white").save(image_dir / "source.png")
     (image_dir / "manifest.json").write_text(
         json.dumps(
             {
                 "image_id": IMAGE_ID,
                 "source": {
+                    "source_file": "source.png",
                     "source_width": 10,
                     "source_height": 12,
                     "source_sha256": "b" * 64,
@@ -254,3 +258,40 @@ def test_resolve_s02_cli_seals_only_a_queued_review(tmp_path: Path) -> None:
     )
     assert result.exit_code == 0, result.output
     assert Path(json.loads(result.output)["resolution"]).is_file()
+
+
+def test_prepare_s02_builds_authoritative_panel_index_and_copy_ready_commands(
+    tmp_path: Path,
+) -> None:
+    work, images, model_mask = _fixture(tmp_path)
+    output = tmp_path / "handoffs"
+    index = build_s02_review_handoffs(
+        work_root=work, images_root=images, output_root=output, max_side=256
+    )
+    document = json.loads(index.read_text())
+    assert document["count"] == document["awaiting_human_review"] == 1
+    handoff = document["handoffs"][0]
+    assert handoff["status"] == "awaiting_human_review"
+    assert handoff["model_mask_sha256"] == hashlib.sha256(model_mask.read_bytes()).hexdigest()
+    assert "--decision confirmed_valid" in handoff["confirm_command"]
+    assert "REVIEWED_MASK_PATH" in handoff["correct_command"]
+    panel_path = Path(handoff["panel_path"])
+    with Image.open(panel_path) as panel:
+        assert panel.mode == "RGB"
+        assert panel.size == (20, 44)
+
+    result = CliRunner().invoke(
+        main,
+        [
+            "review",
+            "prepare-s02",
+            "--work-root",
+            str(work),
+            "--images-root",
+            str(images),
+            "--output-root",
+            str(output),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.output)["awaiting_human_review"] == 1

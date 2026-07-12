@@ -1,0 +1,49 @@
+{
+  "awaiting_human_review": 2,
+  "count": 2,
+  "generated_at": "2026-07-12T13:27:45.028228+00:00",
+  "handoffs": [
+    {
+      "config_hash": "bb672f3bebde32bcc9d19a7bf9effdabe3377c0788d311b08e4a7c485f54a584",
+      "confirm_command": "maskfactory review resolve-s02 img_c02019c4979c p2 --mask \"work\\instances\\p2\\s02\\img_c02019c4979c\\person_full_visible.png\" --reviewer kevin --decision confirmed_valid --note \"REPLACE_WITH_REVIEW_REASON\"",
+      "correct_command": "maskfactory review resolve-s02 img_c02019c4979c p2 --mask \"REVIEWED_MASK_PATH\" --reviewer kevin --decision corrected --note \"REPLACE_WITH_CORRECTION_NOTE\"",
+      "image_id": "img_c02019c4979c",
+      "instance_id": "p2",
+      "model_mask_path": "work\\instances\\p2\\s02\\img_c02019c4979c\\person_full_visible.png",
+      "model_mask_sha256": "dbe9777fb8fabfa90ab539fc4d2bcef316c9265cc2c07aa205b0ef3f0d4b10e0",
+      "panel_path": "qa\\review_handoffs\\s02\\img_c02019c4979c\\p2\\source_and_silhouette_overlay.png",
+      "qc_range": [
+        0.35,
+        0.95
+      ],
+      "queue_error": "silhouette_bbox_ratio=0.311724 outside [0.35,0.95]",
+      "queue_timestamp": "2026-07-12T12:05:14.635377+00:00",
+      "resolution_path": null,
+      "silhouette_bbox_ratio": 0.3117238384715588,
+      "source_path": "data\\images\\img_c02019c4979c\\source.jpg",
+      "status": "awaiting_human_review"
+    },
+    {
+      "config_hash": "bb672f3bebde32bcc9d19a7bf9effdabe3377c0788d311b08e4a7c485f54a584",
+      "confirm_command": "maskfactory review resolve-s02 img_cea6df6f0f13 p0 --mask \"work\\instances\\p0\\s02\\img_cea6df6f0f13\\person_full_visible.png\" --reviewer kevin --decision confirmed_valid --note \"REPLACE_WITH_REVIEW_REASON\"",
+      "correct_command": "maskfactory review resolve-s02 img_cea6df6f0f13 p0 --mask \"REVIEWED_MASK_PATH\" --reviewer kevin --decision corrected --note \"REPLACE_WITH_CORRECTION_NOTE\"",
+      "image_id": "img_cea6df6f0f13",
+      "instance_id": "p0",
+      "model_mask_path": "work\\instances\\p0\\s02\\img_cea6df6f0f13\\person_full_visible.png",
+      "model_mask_sha256": "2880d5ae0d6e9e1e89243c163d8d7ebe8b00e758e8b0bcd8f33a131f4605dfde",
+      "panel_path": "qa\\review_handoffs\\s02\\img_cea6df6f0f13\\p0\\source_and_silhouette_overlay.png",
+      "qc_range": [
+        0.35,
+        0.95
+      ],
+      "queue_error": "silhouette_bbox_ratio=0.299361 outside [0.35,0.95]",
+      "queue_timestamp": "2026-07-12T12:05:11.132273+00:00",
+      "resolution_path": null,
+      "silhouette_bbox_ratio": 0.29936144319766883,
+      "source_path": "data\\images\\img_cea6df6f0f13\\source.jpg",
+      "status": "awaiting_human_review"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "stage": "S02"
+}

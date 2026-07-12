@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T13:21:23+00:00",
+    "generated_at": "2026-07-12T13:32:05+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -1904,12 +1904,17 @@
           "ts": "2026-07-12T13:21:22+00:00",
           "actor": "ai_agent",
           "text": "Closed the semantic-route lifecycle rather than only its enqueue half. A queued pre-package S02 review can now be sealed by Kevin as byte-identical confirmed_valid or a pixel-different corrected native mask; the next run forces S02, reproduces the exact model/config/base hash, applies separate human authority, preserves model_qc_passed=false, and refuses stale/tampered/conflicting evidence. No live resolution was self-approved."
+        },
+        {
+          "ts": "2026-07-12T13:32:05+00:00",
+          "actor": "ai_agent",
+          "text": "Added maskfactory review prepare-s02: it reconciles queued versus sealed/applied state, renders deterministic local source/red-overlay panels, and publishes a JSON index with exact hashes, ratios, queue identity, and copy-ready confirm/correct commands. Live index contains exactly two awaiting_human_review cases. Source-containing panels are explicitly git-ignored and no case was approved."
         }
       ],
-      "evidence": "Semantic failures still route durably without retry; qa/live_verification/s02_review_queue_durability_20260712.json proves idempotent queueing, and qa/live_verification/s02_review_resolution_path_20260712.json proves immutable fail-closed human resolution/replay. 662 tests; Ruff/format clean.",
+      "evidence": "Durable queue: qa/live_verification/s02_review_queue_durability_20260712.json. Immutable resolution plus live operator handoff: qa/live_verification/s02_review_resolution_path_20260712.json and qa/review_handoffs/s02/index.json. 663 tests; Ruff/format/raw-writer policy clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T13:21:22+00:00",
+      "updated_at": "2026-07-12T13:32:05+00:00",
       "orphaned": false
     },
     "MF-P1-02.05": {
@@ -4071,12 +4076,17 @@
           "ts": "2026-07-12T13:21:23+00:00",
           "actor": "ai_agent",
           "text": "Removed the process dead end for the two S02 needs_review cases: the new immutable resolve-s02 command and forced fresh replay can return a confirmed or corrected mask to S03+ only after exact queue/config/model/mask validation. This does not add batch credit: zero live resolutions are sealed and the item remains 18/25 (72%)."
+        },
+        {
+          "ts": "2026-07-12T13:32:05+00:00",
+          "actor": "ai_agent",
+          "text": "Generated and visually verified local review panels for img_c02019c4979c/p2 and img_cea6df6f0f13/p0. The publishable index reports two queued/two awaiting, exact mask hashes and commands; neither is sealed or applied. Progress remains 18/25."
         }
       ],
-      "evidence": "Live model-major completion remains 18/25. qa/live_verification/s02_low_ratio_case_audit_20260712.json proves both additional S02 routes are genuine low-fill cases; qa/live_verification/s02_review_resolution_path_20260712.json proves they now have a governed human-review return path without threshold change. Both remain unresolved pending Kevin review.",
+      "evidence": "18/25 complete. The two S02 cases have audited valid-looking low-fill masks (qa/live_verification/s02_low_ratio_case_audit_20260712.json), a governed resolution path, and live handoffs in qa/review_handoffs/s02/index.json; both remain awaiting_human_review, so no additional batch credit.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T13:21:23+00:00",
+      "updated_at": "2026-07-12T13:32:05+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {

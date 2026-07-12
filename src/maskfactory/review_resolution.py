@@ -179,8 +179,157 @@ def s02_review_refresh_required(
     return not applied.is_file() or _sha256(applied) != _sha256(resolution)
 
 
+def build_s02_review_handoffs(
+    *,
+    work_root: Path = Path("work"),
+    images_root: Path = Path("data/images"),
+    output_root: Path = Path("qa/review_handoffs/s02"),
+    max_side: int = 1024,
+) -> Path:
+    """Render deterministic source/overlay panels and commands for every queued S02 route."""
+    if max_side < 256 or max_side > 2048:
+        raise ReviewResolutionError("review panel max_side must be within 256..2048")
+    work_root = Path(work_root)
+    images_root = Path(images_root)
+    output_root = Path(output_root)
+    queue_path = work_root / "queues" / "review_queue.jsonl"
+    if not queue_path.is_file():
+        raise ReviewResolutionError("review queue is missing")
+    records: dict[tuple[str, str], dict[str, Any]] = {}
+    for line in queue_path.read_text(encoding="utf-8").splitlines():
+        record = json.loads(line)
+        if record.get("stage") != "S02" or record.get("terminal_outcome") != "needs_review":
+            continue
+        identity = (str(record.get("image_id", "")), str(record.get("instance_id", "")))
+        _validate_identity(*identity)
+        if identity in records:
+            raise ReviewResolutionError(f"duplicate queued S02 route: {identity[0]}/{identity[1]}")
+        records[identity] = record
+    handoffs = []
+    for (image_id, instance_id), queue_record in sorted(records.items()):
+        manifest = _read_json(images_root / image_id / "manifest.json", "source manifest")
+        source_meta = manifest.get("source", {})
+        source_file = source_meta.get("source_file")
+        if not isinstance(source_file, str) or not source_file:
+            raise ReviewResolutionError(f"source manifest lacks source_file: {image_id}")
+        source_path = images_root / image_id / source_file
+        if not source_path.is_file():
+            raise ReviewResolutionError(f"source raster is missing: {source_path}")
+        stage_dir = work_root / "instances" / instance_id / "s02" / image_id
+        mask_path = stage_dir / "person_full_visible.png"
+        metrics_path = stage_dir / "silhouette_metrics.json"
+        metrics = _read_json(metrics_path, "S02 silhouette metrics")
+        with Image.open(source_path) as opened:
+            source = opened.convert("RGB")
+        mask = _strict_binary_mask(mask_path, full_size=source.size) > 0
+        panel = _s02_panel(
+            source, mask, image_id=image_id, instance_id=instance_id, max_side=max_side
+        )
+        case_dir = output_root / image_id / instance_id
+        case_dir.mkdir(parents=True, exist_ok=True)
+        panel_path = case_dir / "source_and_silhouette_overlay.png"
+        temporary = panel_path.with_name(f".{panel_path.name}.tmp-{uuid.uuid4().hex}.png")
+        try:
+            panel.save(  # png-strict: allow (RGB QA review panel, never a mask)
+                temporary, format="PNG", optimize=False, compress_level=6
+            )
+            os.replace(temporary, panel_path)
+        finally:
+            temporary.unlink(missing_ok=True)
+        resolution = _resolution_dir(work_root, image_id, instance_id) / "resolution.json"
+        if not resolution.is_file():
+            status = "awaiting_human_review"
+        elif s02_review_refresh_required(work_root, image_id, instance_id, stage_dir):
+            status = "sealed_pending_replay"
+        else:
+            status = "resolved_applied"
+        command_prefix = (
+            f"maskfactory review resolve-s02 {image_id} {instance_id} "
+            f'--mask "{mask_path}" --reviewer kevin '
+        )
+        handoffs.append(
+            {
+                "image_id": image_id,
+                "instance_id": instance_id,
+                "status": status,
+                "queue_timestamp": queue_record.get("ts"),
+                "queue_error": queue_record.get("error"),
+                "config_hash": queue_record.get("config_hash"),
+                "silhouette_bbox_ratio": metrics.get("silhouette_bbox_ratio"),
+                "qc_range": metrics.get("qc_range"),
+                "source_path": str(source_path),
+                "model_mask_path": str(mask_path),
+                "model_mask_sha256": _sha256(mask_path),
+                "panel_path": str(panel_path),
+                "confirm_command": command_prefix
+                + '--decision confirmed_valid --note "REPLACE_WITH_REVIEW_REASON"',
+                "correct_command": command_prefix.replace(
+                    f'--mask "{mask_path}"', '--mask "REVIEWED_MASK_PATH"'
+                )
+                + '--decision corrected --note "REPLACE_WITH_CORRECTION_NOTE"',
+                "resolution_path": str(resolution) if resolution.is_file() else None,
+            }
+        )
+    output_root.mkdir(parents=True, exist_ok=True)
+    index = output_root / "index.json"
+    _write_json_atomic(
+        index,
+        {
+            "schema_version": "1.0.0",
+            "generated_at": datetime.now(UTC).isoformat(),
+            "stage": "S02",
+            "count": len(handoffs),
+            "awaiting_human_review": sum(
+                item["status"] == "awaiting_human_review" for item in handoffs
+            ),
+            "handoffs": handoffs,
+        },
+    )
+    return index
+
+
 def _resolution_dir(work_root: Path, image_id: str, instance_id: str) -> Path:
     return Path(work_root) / "review_resolutions" / image_id / instance_id / "S02"
+
+
+def _s02_panel(
+    source: Image.Image,
+    mask: np.ndarray,
+    *,
+    image_id: str,
+    instance_id: str,
+    max_side: int,
+) -> Image.Image:
+    scale = min(1.0, max_side / max(source.size))
+    size = (max(1, round(source.width * scale)), max(1, round(source.height * scale)))
+    resized_source = source.resize(size, Image.Resampling.LANCZOS)
+    resized_mask = Image.fromarray(mask.astype(np.uint8) * 255, mode="L").resize(
+        size, Image.Resampling.NEAREST
+    )
+    tint = Image.new("RGB", size, (255, 32, 32))
+    alpha = resized_mask.point(lambda value: 112 if value else 0)
+    overlay = Image.composite(tint, resized_source, alpha)
+    panel = Image.new("RGB", (size[0] * 2, size[1] + 32), "black")
+    panel.paste(resized_source, (0, 32))
+    panel.paste(overlay, (size[0], 32))
+    from PIL import ImageDraw
+
+    draw = ImageDraw.Draw(panel)
+    draw.text((8, 9), f"{image_id}/{instance_id} SOURCE", fill="white")
+    draw.text((size[0] + 8, 9), "S02 MASK OVERLAY (RED)", fill="white")
+    return panel
+
+
+def _write_json_atomic(path: Path, document: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")
+    try:
+        temporary.write_text(
+            json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def _queued_s02_record(work_root: Path, image_id: str, instance_id: str) -> dict[str, Any]:

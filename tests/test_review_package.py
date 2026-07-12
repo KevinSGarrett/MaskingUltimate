@@ -16,6 +16,7 @@ from maskfactory.review_package import (
     assemble_review_package,
     ensure_parent_source_identity,
     finalize_image_package_index,
+    refresh_review_package_derivations,
     update_package_workflow_status,
 )
 from maskfactory.stages.s09_5_instance_recon import (
@@ -92,6 +93,7 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
     manifest = json.loads((package / "manifest.json").read_text())
     assert validate_document(manifest, "manifest") == ()
     assert manifest["workflow_status"] == "drafted"
+    assert (package / "masks_derived/manifest.json").is_file()
     assert manifest["source"]["parent_source_sha256"] == "a" * 64
     manifest["source"].pop("parent_source_sha256")
     (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -101,13 +103,12 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
         ensure_parent_source_identity(package, "b" * 64)
     assert update_package_workflow_status(package, "in_review", updated_at="2026-07-12T15:00:00Z")
     assert not update_package_workflow_status(package, "drafted")
+    assert refresh_review_package_derivations(package)
     manifest = json.loads((package / "manifest.json").read_text())
     assert manifest["workflow_status"] == "in_review"
     assert manifest["workflow_updated_at"] == "2026-07-12T15:00:00Z"
     expected = {
-        label.name
-        for label in get_ontology().labels_for_map("part", enabled_only=True)
-        if label.id != 0
+        label.name for label in get_ontology().labels if label.enabled and label.map != "material"
     }
     assert set(manifest["parts"]) == expected
     left_forearm = manifest["parts"]["left_forearm"]

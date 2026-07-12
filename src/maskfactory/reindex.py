@@ -43,6 +43,9 @@ STATUS_STAGE = {
     "exported": "S13",
     "deprecated": "S13",
 }
+PACKAGE_REQUIRED_STATUSES = frozenset(
+    {"in_review", "corrected", "approved_gold", "exported", "deprecated"}
+)
 
 
 class ReindexError(RuntimeError):
@@ -123,6 +126,8 @@ def expected_image_rows(packages_root: Path = DEFAULT_PACKAGES_ROOT) -> dict[str
     grouped: dict[str, list[tuple[dict[str, Any], Path]]] = {}
     for path in sorted(packages_root.rglob("manifest.json")):
         manifest = json.loads(path.read_text(encoding="utf-8"))
+        if not all(key in manifest for key in ("image_id", "source", "parts", "files")):
+            continue
         require_valid_document(manifest, "manifest")
         image_id = manifest["image_id"]
         relative = path.relative_to(packages_root)
@@ -178,7 +183,13 @@ def diff_rows(
     expected: Mapping[str, ImageIndexRow], current: Mapping[str, ImageIndexRow]
 ) -> ReindexDiff:
     missing = tuple(sorted(set(expected).difference(current)))
-    extra = tuple(sorted(set(current).difference(expected)))
+    extra = tuple(
+        sorted(
+            image_id
+            for image_id in set(current).difference(expected)
+            if current[image_id].status in PACKAGE_REQUIRED_STATUSES
+        )
+    )
     stale: dict[str, dict[str, tuple[Any, Any]]] = {}
     for image_id in sorted(set(expected).intersection(current)):
         expected_values = asdict(expected[image_id])
@@ -207,9 +218,16 @@ def reindex_packages(
         return difference
     initialize_database(database)
     with writer_connection(database) as connection:
-        connection.execute("DELETE FROM stage_runs")
-        connection.execute("DELETE FROM review_tasks")
-        connection.execute("DELETE FROM images")
+        touched = tuple(sorted(set(expected).union(difference.extra_in_db)))
+        if touched:
+            placeholders = ",".join("?" for _ in touched)
+            connection.execute(
+                f"DELETE FROM stage_runs WHERE image_id IN ({placeholders})", touched
+            )
+            connection.execute(
+                f"DELETE FROM review_tasks WHERE image_id IN ({placeholders})", touched
+            )
+            connection.execute(f"DELETE FROM images WHERE image_id IN ({placeholders})", touched)
         connection.executemany(
             "INSERT INTO images (image_id, source_sha256, status, current_stage, package_version, "
             "created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",

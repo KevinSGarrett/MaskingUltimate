@@ -14,6 +14,7 @@ from PIL import Image
 from scipy import ndimage
 
 from . import __version__
+from .derive import derive_package
 from .fs_atomic import replace_with_retry
 from .fusion.mapbuild import export_binaries
 from .io.hashing import sha256_file
@@ -83,6 +84,7 @@ def assemble_review_package(
             package_root / "qa_panels",
             dirs_exist_ok=True,
         )
+    derive_package(package_root)
     pose = json.loads(Path(pose_path).read_text(encoding="utf-8"))
     report = json.loads((package_root / "qa_report.json").read_text(encoding="utf-8"))
     source_sha = _sha256(package_root / "source.png")
@@ -141,6 +143,7 @@ def assemble_review_package(
             },
             "notes": "Co-subject overlap requires careful human review." if ambiguous else "",
         }
+    _complete_nonmaterial_part_states(parts, package_root, authority)
     manifest = {
         "schema_version": "1.0.0",
         "image_id": image_id,
@@ -288,6 +291,106 @@ def update_package_workflow_status(
         raise RuntimeError(f"workflow status update produced invalid manifest: {issues}")
     write_json_atomic(manifest_path, manifest)
     return True
+
+
+def refresh_review_package_derivations(package_root: Path) -> bool:
+    """Regenerate required derived masks and reseal the package file inventory."""
+    package_root = Path(package_root)
+    manifest_path = package_root / "manifest.json"
+    if not manifest_path.is_file():
+        return False
+    derive_package(package_root)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    _complete_nonmaterial_part_states(manifest["parts"], package_root, get_ontology())
+    manifest["files"] = {
+        path.relative_to(package_root).as_posix(): sha256_file(path)
+        for path in sorted(package_root.rglob("*"))
+        if path.is_file() and path.name != "manifest.json"
+    }
+    issues = validate_document(manifest, "manifest")
+    if issues:
+        raise RuntimeError(f"derived-mask refresh produced invalid manifest: {issues}")
+    write_json_atomic(manifest_path, manifest)
+    return True
+
+
+def _complete_nonmaterial_part_states(parts: dict[str, Any], package_root: Path, authority) -> None:
+    """Add explicit manifest state for every enabled non-material ontology label."""
+    directories = {
+        "atomic_exclusive": "masks",
+        "protected_qa": "protected",
+        "region_band": "masks_regions",
+        "derived_union": "masks_derived",
+        "projected_amodal": "projected",
+    }
+    for label in authority.labels:
+        if not label.enabled or label.map == "material" or label.name in parts:
+            continue
+        directory = "protected" if label.id == 0 else directories[label.mask_type]
+        relative = Path(directory) / f"{label.name}.png"
+        path = package_root / relative
+        if path.is_file():
+            mask = read_mask(path) > 0
+            ys, xs = np.nonzero(mask)
+            area = int(mask.sum())
+            visibility = (
+                "n/a"
+                if label.mask_type == "projected_amodal"
+                else "visible"
+                if area
+                else "not_visible"
+            )
+            entry = {
+                "mask_type": label.mask_type,
+                "visibility": visibility,
+                "mask_file": relative.as_posix(),
+                "mask_sha256": sha256_file(path),
+                "mask_area_px": area,
+                "mask_bbox": (
+                    [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+                    if area
+                    else None
+                ),
+                "components": int(ndimage.label(mask)[1]),
+                "status": "draft_model_generated",
+                "annotated_on": "full",
+                "occlusion": {"occluded_by": [], "occludes": [], "layer": "unknown"},
+                "provenance": {
+                    "draft_source": "derived_script"
+                    if label.mask_type == "derived_union"
+                    else "s09_weighted_consensus",
+                    "sam2_prompt_id": None,
+                    "human_edit": False,
+                },
+                "notes": "",
+            }
+            if label.mask_type == "projected_amodal":
+                entry["basis"] = "torso_landmarks+clothing_surface"
+            parts[label.name] = entry
+        else:
+            parts[label.name] = {
+                "mask_type": label.mask_type,
+                "visibility": "n/a" if label.mask_type == "projected_amodal" else "not_visible",
+                "mask_file": None,
+                "mask_sha256": None,
+                "mask_area_px": None,
+                "mask_bbox": None,
+                "components": None,
+                "status": "n/a",
+                "annotated_on": "full",
+                "occlusion": {"occluded_by": [], "occludes": [], "layer": "unknown"},
+                "provenance": {
+                    "draft_source": None,
+                    "sam2_prompt_id": None,
+                    "human_edit": False,
+                },
+                "notes": "",
+                **(
+                    {"basis": "torso_landmarks+clothing_surface"}
+                    if label.mask_type == "projected_amodal"
+                    else {}
+                ),
+            }
 
 
 def snapshot_draft_baseline(

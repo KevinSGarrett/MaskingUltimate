@@ -69,7 +69,11 @@ def test_reindex_reports_stale_and_extra_rows_then_rebuild_removes_them(tmp_path
         )
         connection.execute(
             "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
-            ("img_b3f9c2e17b04", "b" * 64, "ingested", "S00", 1, "old", "old"),
+            ("img_b3f9c2e17b04", "b" * 64, "in_review", "S12", 1, "old", "old"),
+        )
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_c3f9c2e17b04", "c" * 64, "ingested", "S00", 1, "old", "old"),
         )
     difference = reindex_packages(packages_root=packages, database=database, dry_run=True)
     assert difference.extra_in_db == ("img_b3f9c2e17b04",)
@@ -81,8 +85,10 @@ def test_reindex_reports_stale_and_extra_rows_then_rebuild_removes_them(tmp_path
     }
     reindex_packages(packages_root=packages, database=database, dry_run=False)
     with reader_connection(database) as connection:
-        ids = [row[0] for row in connection.execute("SELECT image_id FROM images")]
-    assert ids == [manifest["image_id"]]
+        ids = [
+            row[0] for row in connection.execute("SELECT image_id FROM images ORDER BY image_id")
+        ]
+    assert ids == [manifest["image_id"], "img_c3f9c2e17b04"]
 
 
 def test_reindex_collapses_distinct_instance_crops_by_parent_source_identity(
@@ -93,6 +99,9 @@ def test_reindex_collapses_distinct_instance_crops_by_parent_source_identity(
     second = copy.deepcopy(first)
     _write_manifest(packages, first, "p0")
     _write_manifest(packages, second, "p1")
+    nested = packages / first["image_id"] / "instances/p0/masks_derived/manifest.json"
+    nested.parent.mkdir(parents=True)
+    nested.write_text(json.dumps({"config_sha256": "a" * 64, "derivations": {}}))
     assert list(expected_image_rows(packages)) == [first["image_id"]]
 
     second["source"]["source_sha256"] = "b" * 64

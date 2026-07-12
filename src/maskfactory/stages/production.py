@@ -42,6 +42,7 @@ from ..qa.production import run_s10_production
 from ..review_package import (
     assemble_review_package,
     ensure_parent_source_identity,
+    refresh_review_package_derivations,
     update_package_workflow_status,
 )
 from ..review_resolution import (
@@ -1316,6 +1317,7 @@ def run_multi_person_production(
                 package_root,
                 str(manifest["source"]["source_sha256"]),
             )
+            refresh_review_package_derivations(package_root)
         if not cvat_task_ids:
             for person in promoted:
                 index = int(person["person_index"])

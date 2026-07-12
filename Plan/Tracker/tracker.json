@@ -2652,10 +2652,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "verify-package core verifies direct or recursively discovered instance packages with deterministic --sample N; clean/frozen package and sampled-root tests pass.",
+      "evidence": "verify-package retains all hash/format/derived hard gates and now has live corpus proof: --sample 10 discovered all 9 S12 instance packages and every package passed, including QC-008 complete states and QC-009 deterministic derivation. Production S12 assembly now emits those required artifacts rather than relying on a fixture-only derive call. Evidence qa/live_verification/gc_postcheck_and_s12_package_completion_20260712.json; 671 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:15:30+00:00",
+      "updated_at": "2026-07-12T15:22:59+00:00",
       "orphaned": false
     },
     "MF-P1-07.07": {
@@ -7607,8 +7607,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T08:26:42+00:00",
@@ -7621,10 +7621,10 @@
           "text": "Executed live data/packages GC dry-run and --apply --yes with identical plan hash 4f53cda1...b945, candidates=0/removals=0; durable apply log written. Rebuilt SQLite index and post-diff is clean with no missing/extra/stale rows. verify-package --sample 10 correctly refuses because the corpus has zero package manifests, so the item remains partial pending first approved gold."
         }
       ],
-      "evidence": null,
+      "evidence": "Live data/packages GC dry-run and --apply used identical plan SHA-256 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945 with zero candidates/removals. The post-check exposed and fixed missing S12 derived/state artifacts without weakening QC. verify-package --sample 10 then discovered and passed all 9 instance packages; scoped reindex is clean with missing=[], stale={}, extra=[] while preserving valid non-package rows. Evidence qa/live_verification/gc_postcheck_and_s12_package_completion_20260712.json; 671-test full suite and hosted checks pending publication.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:09:14+00:00",
+      "updated_at": "2026-07-12T15:22:58+00:00",
       "orphaned": false
     },
     "MF-P7-03.03": {
@@ -8703,10 +8703,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Multi-instance assembly/verify round-trip remains green and package identity is now disaster-recovery safe: each crop has its own verified source_sha256, all pN manifests share required parent_source_sha256, package workflow_status records in_review independently of part statuses, and reindex reports no missing or stale package rows across 9 live manifests. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json.",
+      "evidence": "The multi-instance package round-trip is now proven both by fixture and live corpus: S12 assembly emits parent identity, package workflow authority, all derived masks, every enabled non-material manifest state, and a complete file hash inventory. verify-package passed all 9 live pN folders across three multi-person images; scoped reindex is clean. Evidence qa/live_verification/gc_postcheck_and_s12_package_completion_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T15:04:01+00:00",
+      "updated_at": "2026-07-12T15:22:59+00:00",
       "orphaned": false
     },
     "MF-P8-04.04": {

@@ -3883,3 +3883,18 @@ reindex result:                  missing_in_db=[]; stale_rows={}; remaining extr
 Task Scheduler retry:            service running, but schtasks path failure and native API access denied under kevin\codexsandboxonline
 evidence:                        qa/live_verification/pipeline_state_and_package_identity_20260712.json
 validation:                      671 tests collected/passed; Ruff and ruff-format clean; tracker structurally valid
+
+## 2026-07-12 - Live GC drill and S12 package verification completed
+
+**Result:** PASS - the real-corpus post-GC verification and scoped reindex are clean.
+
+GC dry/apply:                    identical plan hash 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+GC effect:                       candidates=0, removals=0; no package bytes selected for deletion
+initial post-check:              9/9 S12 packages correctly failed QC-008/009 because production assembly omitted derived/state artifacts
+assembler repair:               S12 now generates masks_derived, explicit states for every enabled non-material label, and a complete resealed file inventory
+live repair:                    all 9 existing instance packages refreshed without changing CVAT task IDs or human status
+verify-package --sample 10:      discovered=9, passed=9, failed=0; QC-008 and QC-009 clean on every package
+reindex repair:                 nested derived manifests ignored; package-backed rows reconciled; non-package intake/draft/QA rows preserved on apply
+reindex --dry-run:              clean=true, missing=[], stale={}, extra=[]
+evidence:                        qa/live_verification/gc_postcheck_and_s12_package_completion_20260712.json
+validation:                      671 tests collected/passed; Ruff and ruff-format clean

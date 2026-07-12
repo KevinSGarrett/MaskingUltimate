@@ -31,7 +31,8 @@
     "workflow_status": "in_review",
     "reindex_missing_in_db": [],
     "reindex_stale_rows": {},
-    "reindex_extra_rows_explanation": "21 database rows have no S12 package yet and are intentionally outside the package-only reindex set"
+    "reindex_extra_rows": [],
+    "reindex_scope": "package-backed rows are reconciled; valid intake/draft/QA rows without S12 packages are preserved"
   },
   "task_scheduler_retry": {
     "identity": "kevin\\codexsandboxonline",

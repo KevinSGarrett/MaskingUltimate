@@ -107,24 +107,28 @@ class SequentialChampionPredictor:
 
 
 class OnDemandRefiner:
-    """Load SAM2 for one refine request and release it before returning."""
+    """Load SAM2 lazily and retain one interactive session until explicitly released."""
 
     def __init__(self, loader: RefinerLoader) -> None:
         self.loader = loader
         self.load_count = 0
+        self.provider: Refiner | None = None
 
     def __call__(
         self, image: np.ndarray, label: str, clicks: tuple[dict[str, Any], ...]
     ) -> np.ndarray:
-        provider = self.loader()
-        self.load_count += 1
-        try:
-            return provider(image, label, clicks)
-        finally:
-            close = getattr(provider, "close", None)
-            if callable(close):
-                close()
-            del provider
+        if self.provider is None:
+            self.provider = self.loader()
+            self.load_count += 1
+        return self.provider(image, label, clicks)
+
+    def close(self) -> None:
+        if self.provider is None:
+            return
+        close = getattr(self.provider, "close", None)
+        if callable(close):
+            close()
+        self.provider = None
 
 
 @dataclass
@@ -202,6 +206,9 @@ class InferenceRuntime:
 
     def stop(self) -> None:
         if self._lease is not None:
+            close = getattr(self.refiner, "close", None)
+            if callable(close):
+                close()
             self._lease.release()
             self._lease = None
 
@@ -261,6 +268,9 @@ class InferenceRuntime:
         dilation, feather = _validate_inpaint_request(inpaint)
         image = _decode_rgb(image_bytes)
         with self._request_lock:
+            close = getattr(self.refiner, "close", None)
+            if callable(close):
+                close()
             outputs = self.predictor(image, labels)
         if set(outputs) != set(labels):
             raise ServingError("predictor output labels differ from the request")
@@ -360,7 +370,7 @@ def create_production_runtime(
 def create_app(runtime: InferenceRuntime | None = None):
     """Create the FastAPI app lazily so non-serving environments need no web stack."""
     try:
-        from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+        from fastapi import FastAPI, File, Form, HTTPException
     except ImportError as exc:
         raise ServingError(
             "FastAPI serving dependencies are missing; install the pinned MaskFactory environment"
@@ -387,7 +397,7 @@ def create_app(runtime: InferenceRuntime | None = None):
 
     @app.post("/predict")
     async def predict(
-        image: UploadFile = File(...),
+        image: bytes = File(...),
         labels: str = Form(...),
         return_mode: str = Form("binaries"),
         inpaint: str = Form("null"),
@@ -398,7 +408,7 @@ def create_app(runtime: InferenceRuntime | None = None):
                 raise ServingError("at least one label is required")
             parsed_inpaint = json.loads(inpaint)
             return service.predict(
-                await image.read(),
+                image,
                 requested,
                 return_mode=return_mode,
                 inpaint=parsed_inpaint,
@@ -407,12 +417,10 @@ def create_app(runtime: InferenceRuntime | None = None):
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     @app.post("/refine")
-    async def refine(
-        image: UploadFile = File(...), label: str = Form(...), clicks: str = Form("[]")
-    ):
+    async def refine(image: bytes = File(...), label: str = Form(...), clicks: str = Form("[]")):
         try:
             parsed = tuple(json.loads(clicks))
-            return service.refine(await image.read(), label, parsed)
+            return service.refine(image, label, parsed)
         except (ServingError, ValueError, TypeError, json.JSONDecodeError) as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 

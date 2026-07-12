@@ -18,6 +18,7 @@ from maskfactory.cli import main
 from maskfactory.gpu import GpuLock, GpuLockBusyError
 from maskfactory.serve.api import (
     InferenceRuntime,
+    OnDemandRefiner,
     ServingError,
     create_production_runtime,
     probe_vram,
@@ -27,6 +28,7 @@ from maskfactory.serve.providers import (
     ServingProviderError,
     load_production_mmseg_slot,
     load_production_sam2_refiner,
+    production_sam2_runtime_options,
 )
 from maskfactory.stages.s07_sam2 import SamCandidate
 
@@ -72,6 +74,13 @@ def test_serve_cli_is_loopback_only_and_runtime_dependencies_are_locked(
     result = CliRunner().invoke(main, ["serve", "--port", "9876"])
     assert result.exit_code == 0, result.output
     assert calls == [(sentinel, {"host": "127.0.0.1", "port": 9876, "log_level": "info"})]
+
+
+def test_fastapi_multipart_endpoints_use_resolvable_in_memory_bytes_annotations() -> None:
+    source = Path("src/maskfactory/serve/api.py").read_text(encoding="utf-8")
+    assert source.count("image: bytes = File(...)") == 2
+    assert "UploadFile" not in source
+    assert "await image.read()" not in source
 
 
 def test_serving_predictor_resolves_verified_champion_role_only(tmp_path: Path) -> None:
@@ -195,7 +204,11 @@ def test_sequential_champion_slots_and_sam2_on_demand_never_coreside(tmp_path: P
     assert response["manifest"]["left_index_finger"]["provenance"]["models"] == ["champion_hand"]
     assert runtime.health()["loaded_models"] == []
     runtime.refine(_png(), "hair", ({"x": 1, "y": 1, "positive": True},))
+    assert sam_events == ["load", "call"]
+    assert runtime.refiner.provider is not None
+    runtime.predict(_png(), ("hair",))
     assert sam_events == ["load", "call", "close"]
+    assert runtime.refiner.provider is None
     runtime.stop()
 
 
@@ -363,15 +376,40 @@ def test_production_sam2_refiner_resolves_hashes_validates_clicks_and_releases_e
         ({"x": 4, "y": 3, "positive": True}, {"x": 0, "y": 0, "positive": False}),
     )
     assert mask.sum() == 16
+    second = refiner(image, "hair", ({"x": 5, "y": 4, "positive": True},))
+    assert second.sum() == 16
+    refiner.close()
     assert events == [
         ("embed", "sam2.1_hiera_large", "fp16", (8, 10, 3)),
         ("predict", "embedding", ((4, 3),), ((0, 0),), True),
+        ("predict", "embedding", ((5, 4),), (), True),
         ("close", "embedding"),
     ]
     with pytest.raises(ValueError, match="positive click"):
         refiner(image, "hair", ({"x": 0, "y": 0, "positive": False},))
     with pytest.raises(ValueError, match="outside"):
         refiner(image, "hair", ({"x": 10, "y": 0, "positive": True},))
+
+
+def test_production_sam2_runtime_uses_governed_local_cuda_settings_on_windows(
+    tmp_path: Path,
+) -> None:
+    config = tmp_path / "pipeline.yaml"
+    config.write_text(
+        "stages:\n"
+        "  S07:\n"
+        "    enabled: true\n"
+        "    local_cuda_python: C:/cuda/python.exe\n"
+        "    source_path: models/runtime_cache/sam2/revision\n"
+        "    dependency_site: models/runtime_cache/sam2_deps\n",
+        encoding="utf-8",
+    )
+    assert production_sam2_runtime_options(config, windows_host=True) == {
+        "local_cuda_python": Path("C:/cuda/python.exe"),
+        "source_path": Path("models/runtime_cache/sam2/revision"),
+        "dependency_site": Path("models/runtime_cache/sam2_deps"),
+    }
+    assert production_sam2_runtime_options(config, windows_host=False) == {}
 
 
 def test_production_runtime_configures_sam2_without_loading_it(monkeypatch) -> None:
@@ -383,6 +421,28 @@ def test_production_runtime_configures_sam2_without_loading_it(monkeypatch) -> N
     runtime = create_production_runtime()
     assert loaded == [] and runtime.refiner is not None
     assert runtime.predictor is None
+
+
+def test_on_demand_refiner_reuses_session_and_closes_explicitly() -> None:
+    events = []
+
+    class Session:
+        def __call__(self, image, label, clicks):
+            events.append((label, clicks))
+            return np.zeros(image.shape[:2], dtype=bool)
+
+        def close(self):
+            events.append("close")
+
+    refiner = OnDemandRefiner(lambda: events.append("load") or Session())
+    image = np.zeros((8, 10, 3), dtype=np.uint8)
+    click = ({"x": 1, "y": 1, "positive": True},)
+    refiner(image, "hair", click)
+    refiner(image, "hair", click)
+    assert refiner.load_count == 1
+    assert events.count("load") == 1
+    refiner.close()
+    assert events[-1] == "close" and refiner.provider is None
 
 
 def test_runtime_serializes_concurrent_heavy_requests(tmp_path: Path) -> None:

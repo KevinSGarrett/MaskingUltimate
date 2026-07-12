@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
@@ -159,10 +160,13 @@ def load_production_mmseg_slot(
 
 
 class Sam2InteractiveRefiner:
-    """One-request SAM2 interactive adapter with primary-to-fallback OOM handling."""
+    """Single-image SAM2 session with reusable embedding and OOM fallback."""
 
     def __init__(self, provider: Sam2Provider) -> None:
         self.provider = provider
+        self.embedding: Any | None = None
+        self.image_sha256: str | None = None
+        self.model: str | None = None
 
     def __call__(
         self, image: np.ndarray, label: str, clicks: tuple[dict[str, Any], ...]
@@ -180,10 +184,13 @@ class Sam2InteractiveRefiner:
             prior_quality="interactive_clicks",
             multimask_output=True,
         )
-        embedding = None
+        digest = hashlib.sha256(source.tobytes()).hexdigest()
+        if self.image_sha256 != digest:
+            self.close()
+            self.embedding, self.model = build_embedding(self.provider, source)
+            self.image_sha256 = digest
         try:
-            embedding, _model = build_embedding(self.provider, source)
-            candidates = self.provider.predict(embedding, plan, multimask_output=True)
+            candidates = self.provider.predict(self.embedding, plan, multimask_output=True)
             if not candidates:
                 raise ServingProviderError("SAM2 refine returned no candidates")
             ranked = []
@@ -195,14 +202,18 @@ class Sam2InteractiveRefiner:
                     raise ServingProviderError("SAM2 refine predicted IoU is outside [0, 1]")
                 ranked.append((candidate.predicted_iou, -index, logits))
             return max(ranked, key=lambda item: (item[0], item[1]))[2] >= 0
-        finally:
-            if embedding is not None:
-                close = getattr(self.provider, "close", None)
-                if callable(close):
-                    close(embedding)
+        except Exception:
+            self.close()
+            raise
 
     def close(self) -> None:
-        """The per-image embedding is already released at the end of each call."""
+        if self.embedding is not None:
+            close = getattr(self.provider, "close", None)
+            if callable(close):
+                close(self.embedding)
+        self.embedding = None
+        self.image_sha256 = None
+        self.model = None
 
 
 def load_production_sam2_refiner(
@@ -225,8 +236,26 @@ def load_production_sam2_refiner(
             models_root=models_root,
         ),
     }
-    provider = provider_factory(checkpoints, dict(SAM2_CONFIGS), Path(work_dir))
+    options = production_sam2_runtime_options() if provider_factory is WslSam2Provider else {}
+    provider = provider_factory(checkpoints, dict(SAM2_CONFIGS), Path(work_dir), **options)
     return Sam2InteractiveRefiner(provider)
+
+
+def production_sam2_runtime_options(
+    config_path: Path = ROOT / "configs/pipeline.yaml", *, windows_host: bool | None = None
+) -> dict[str, Path]:
+    """Select the governed local-CUDA SAM2 runtime on Windows; retain WSL mode elsewhere."""
+    host_is_windows = os.name == "nt" if windows_host is None else windows_host
+    if not host_is_windows:
+        return {}
+    from ..orchestrator import load_pipeline_config
+
+    config = load_pipeline_config(Path(config_path))
+    settings = config["stages"]["S07"]
+    required = ("local_cuda_python", "source_path", "dependency_site")
+    if any(not settings.get(name) for name in required):
+        raise ServingProviderError("S07 local CUDA serving settings are incomplete")
+    return {name: Path(settings[name]) for name in required}
 
 
 def _validated_clicks(

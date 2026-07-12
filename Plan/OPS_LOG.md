@@ -3484,3 +3484,40 @@ regression:                  configured-cap, tamper, mismatch, and exact-downstr
 P8 automated-set progress:   MF-P8-10.02 advanced 5% -> 20%; both qualifying 2-4-person sources (2/10 minimum) complete S00-S10
 scope exclusions:            two five-person sources remain outside the 2-4-person set; bus S02 terminal is not counted
 ```
+
+## 2026-07-12 08:14 UTC - Live localhost SAM2 refine path activated and measured
+**Items:** MF-P6-02.01 remains 99%; MF-P6-02.03 remains 98%; MF-P6-02.05 remains 75%
+**Result:** Real multipart `/refine` now succeeds on local CUDA, but measured latency fails the required gate and champion `/predict` remains unavailable.
+
+```
+runtime correction:          default Windows serving now passes governed S07 local_cuda_python/source_path/dependency_site into SAM2
+HTTP defect corrected:       lazy FastAPI endpoints use bytes=File; locally-scoped UploadFile forward reference no longer produces Pydantic HTTP 500
+service bind:                live http://127.0.0.1:8765; GET /health HTTP 200
+health evidence:             pipeline/API versions present; RTX 5060 8,151 MiB; gpu.lock active during service
+champion honesty:            configured_models=[] and loaded_models=[]; no untrained predictor substituted
+refine request:              multipart licensed adult bus fixture, left_forearm, one positive + one negative click
+refine response:             HTTP 200; 810x1080 mode-L values {0,255}; area 397,174; SAM2 provenance
+determinism:                 repeated mask SHA-256 e572cb0abd6aaa560c6ce738e89c27d8358041053fbca8446e7addc856d50c89
+latency:                     9.418917 s versus <=1.2 s/click target -> FAIL, not overridden
+root cause boundary:         stateless request reloads SAM2 and rebuilds the image embedding; interactive-session caching is still absent
+probe hygiene:               bounded tool verifies/removes only its own dead serve_mode_b lock after process shutdown
+durable audit:               qa/live_verification/serve_refine_cuda_20260712.json
+remaining P6 gate:           trained champion bodypart/hand/clothing roles, live /predict, and target-compliant warm latency
+```
+
+## 2026-07-12 08:20 UTC - Interactive SAM2 session meets cold and warm latency gates
+**Items:** MF-P6-02.01 remains 99%; MF-P6-02.03 98% -> 99%; MF-P6-02.05 75% -> 85%
+**Result:** The stateless refine bottleneck was replaced by a bounded one-image session; warm click latency now passes while champion prediction latency remains honestly unmeasured.
+
+```
+session rule:                first request lazily loads SAM2 + embeds image; identical image bytes reuse that embedding
+session invalidation:        changed image closes/rebuilds; any champion predict closes SAM2 before loading its sequential slot
+shutdown invariant:          service stop closes embedding/provider; bounded probe verifies no residual gpu.lock
+cold measurement:            7.979531 s <= 60 s target -> PASS
+warm click measurement:      0.058920 s <= 1.2 s target -> PASS
+warm request:                same 810x1080 image, cumulative third positive click, HTTP 200
+mask evidence:               mode L, values {0,255}, area 509,950, SHA-256 a3e7caf593bd98255a7fbd454a66c6f850a3690a27dba77ae3432f00aa38b79e
+no-co-residency regression:  cached SAM2 session is explicitly closed before champion predictor invocation
+remaining latency gates:     /predict all-labels <=4 s and single-label <=2 s require real trained champion roles
+durable audit updated:       qa/live_verification/serve_refine_cuda_20260712.json
+```

@@ -3802,3 +3802,17 @@ current registry:                no champion_hand role; no live winner inference
 remaining exact gate:            D7-winning output must still measure QC-018 paste-back >= 0.995
 evidence:                        qa/live_verification/champion_hand_production_integration_20260712.json
 validation:                      91 focused tests; full suite split 281 + 376 = 657; Ruff/format clean
+
+## 2026-07-12 - Live S02 low-ratio cases audited without override
+
+**Result:** PASS review-routing audit - both failures are genuine metric edge cases, not coordinate or provider defects.
+
+governed range:                  silhouette/bbox area ratio [0.35, 0.95], unchanged
+img_cea6df6f0f13/p0:             0.299361; complete wide-limbed standing silhouette; tight-box fill 0.301483
+img_c02019c4979c/p2:             0.311724; complete visible frame-truncated pedestrian; tight-box fill 0.312720
+coordinate finding:              masks align with sources and detector boxes; no paste/crop displacement
+provider finding:                no visibly missing major person region in either BiRefNet result
+authority:                       neither case was auto-passed and no threshold/area was changed
+durable outcome:                 both remain needs_review; central queue remains two records
+batch credit:                    unchanged at 18/25 completed sources
+evidence:                        qa/live_verification/s02_low_ratio_case_audit_20260712.json

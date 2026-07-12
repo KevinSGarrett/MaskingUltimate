@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T12:56:29+00:00",
+    "generated_at": "2026-07-12T13:06:51+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -4056,12 +4056,17 @@
           "ts": "2026-07-12T12:08:12+00:00",
           "actor": "ai_agent",
           "text": "Current governed inventory is reconciled: 18 images complete S09.5/D1; two additional promoted images stop at durable S02 needs_review routes; two accepted images are rejected no_person at S01; two supplied files remain age-safety quarantined. Completion remains 18/25 (72%); no partial or quarantined source is counted."
+        },
+        {
+          "ts": "2026-07-12T13:06:50+00:00",
+          "actor": "ai_agent",
+          "text": "Audited both durable S02 routes against source pixels, detector boxes, full masks, tight mask boxes, source-edge contact, and immutable mask hashes. img_cea6df6f0f13/p0 is a complete wide-limbed pose (ratio 0.299361; tight fill 0.301483); img_c02019c4979c/p2 is a complete visible right-edge-truncated pedestrian (ratio 0.311724; tight fill 0.312720). No coordinate/provider defect was found, so both remain needs_review and batch credit remains 18/25."
         }
       ],
-      "evidence": "Live governed model-major run covered all 18 currently eligible source images / 29 promoted instances: forced S05 29/29, persistent-SAM2 S07 29/29, S09 29/29, S09.5 reconciliation 18/18, and S10 29/29, with zero final phase failures. The required 25-image corpus is only 18/25, so completion is not credited.",
+      "evidence": "Live model-major run remains 18/25 completed sources. qa/live_verification/s02_low_ratio_case_audit_20260712.json proves the two additional S02 stops are aligned, complete-looking silhouettes whose intrinsic tight-box fill remains below the exact 0.35 gate; both stay needs_review with no threshold override.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T12:08:12+00:00",
+      "updated_at": "2026-07-12T13:06:50+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {

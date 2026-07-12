@@ -3630,3 +3630,15 @@ weak evidence:               suppressed to no-vote; QC-014 therefore remains fai
 live corpus:                 29 instances audited; 13 pass / 16 BLOCK before and after; zero verdicts changed
 evidence:                    qa/live_verification/densepose_side_vote_reliability_20260712.json
 regression:                  focused DensePose/S10/semantic suite passed; Ruff check and format clean
+## 2026-07-12 - Doctor shares one fail-fast WSL availability probe
+
+**Result:** PASS - an unavailable identity-scoped distro is detected once and
+reported under every required WSL-dependent check without repeated model smokes.
+
+shared preflight:             0.14 s; one `wsl -d Ubuntu-22.04 -- true` call
+short-circuited checks:       torch_cuda, registered_models, wsl_roundtrip
+non-WSL checks:               still execute independently in stable order
+warm live battery:            20.3 s; Nuclio SAM2 inference dominated at 13.9 s
+live status:                  PASS=7 / FAIL=4; disk 72.6 GiB remains an ingest BLOCK
+evidence:                     qa/live_verification/doctor_wsl_preflight_20260712.json
+validation:                   631 tests passed; Ruff check and format clean

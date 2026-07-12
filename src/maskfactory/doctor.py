@@ -457,11 +457,55 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_gpu_lock,
 )
 
+_WSL_DEPENDENT_CHECKS = frozenset(
+    {"check_torch_cuda", "check_registered_models", "check_wsl_roundtrip"}
+)
 
-def run_doctor(checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS) -> list[CheckResult]:
+
+def _wsl_preflight_failure() -> tuple[str, str] | None:
+    """Return one shared WSL failure so doctor does not repeat an unavailable boundary."""
+    try:
+        process = subprocess.run(
+            ["wsl", "-d", "Ubuntu-22.04", "--", "true"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return str(exc), "Start the Ubuntu-22.04 WSL distribution and rerun doctor."
+    if process.returncode:
+        return _wsl_failure(process)
+    return None
+
+
+def _wsl_short_circuit(check_name: str, detail: str, hint: str) -> CheckResult:
+    if check_name == "check_registered_models":
+        return _result(
+            "registered_models",
+            "FAIL",
+            f"Registered WSL model smokes not run because the shared WSL preflight failed: {detail}",
+            "Rerun doctor in the Windows user session that owns Ubuntu-22.04; the registered "
+            "checkpoint hashes are not implicated by this identity-scoped failure.",
+        )
+    result_name = "torch_cuda" if check_name == "check_torch_cuda" else "wsl_roundtrip"
+    return _result(result_name, "FAIL", detail, hint)
+
+
+def run_doctor(
+    checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS,
+    *,
+    preflight_wsl: bool | None = None,
+) -> list[CheckResult]:
     """Run checks in stable order and convert unexpected exceptions to actionable FAILs."""
+    if preflight_wsl is None:
+        preflight_wsl = checks is DEFAULT_CHECKS
+    wsl_failure = _wsl_preflight_failure() if preflight_wsl else None
     results: list[CheckResult] = []
     for check in checks:
+        if wsl_failure is not None and check.__name__ in _WSL_DEPENDENT_CHECKS:
+            results.append(_wsl_short_circuit(check.__name__, *wsl_failure))
+            continue
         try:
             results.append(check())
         except Exception as exc:  # noqa: BLE001 - never crash without a named doctor result

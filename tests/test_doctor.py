@@ -58,6 +58,49 @@ def test_run_doctor_preserves_statuses_and_converts_unexpected_exceptions() -> N
     assert results[1].hint
 
 
+def test_default_style_doctor_short_circuits_repeated_wsl_failures() -> None:
+    calls = []
+
+    def wsl_check() -> CheckResult:
+        calls.append("unexpected")
+        raise AssertionError("WSL-dependent check must not run after failed preflight")
+
+    def healthy() -> CheckResult:
+        calls.append("healthy")
+        return CheckResult("healthy", "PASS", "ok")
+
+    torch = wsl_check
+    torch.__name__ = "check_torch_cuda"
+    models = lambda: wsl_check()  # noqa: E731 - distinct callable identity for the test
+    models.__name__ = "check_registered_models"
+    roundtrip = lambda: wsl_check()  # noqa: E731 - distinct callable identity for the test
+    roundtrip.__name__ = "check_wsl_roundtrip"
+    missing = SimpleNamespace(
+        returncode=1,
+        stdout="",
+        stderr="There is no distribution with the supplied name. WSL_E_DISTRO_NOT_FOUND",
+    )
+    with (
+        patch("maskfactory.doctor.subprocess.run", return_value=missing) as run,
+        patch("maskfactory.doctor._windows_identity", return_value="kevin\\sandbox"),
+    ):
+        results = run_doctor(
+            [torch, models, healthy, roundtrip],
+            preflight_wsl=True,
+        )
+
+    assert run.call_count == 1
+    assert calls == ["healthy"]
+    assert [result.name for result in results] == [
+        "torch_cuda",
+        "registered_models",
+        "healthy",
+        "wsl_roundtrip",
+    ]
+    assert [result.status for result in results] == ["FAIL", "FAIL", "PASS", "FAIL"]
+    assert "checkpoint hashes are not implicated" in results[1].hint
+
+
 def test_disk_thresholds_match_operations_runbook(tmp_path: Path) -> None:
     gib = 1024**3
     cases = [(250, "PASS"), (175, "WARN"), (100, "WARN"), (74, "FAIL")]

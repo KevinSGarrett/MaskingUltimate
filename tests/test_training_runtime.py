@@ -81,10 +81,10 @@ def test_optional_mmseg_loader_only_swallows_missing_top_level_package() -> None
 
 
 @pytest.mark.parametrize("name", ["bodypart_segformer_b3.yaml", "bodypart_mask2former_swinb.yaml"])
-def test_bodypart_class_contract_refuses_current_57_vs_56_conflict(name: str) -> None:
+def test_bodypart_class_contract_accepts_governed_v1_and_refuses_drift(name: str) -> None:
     config = yaml.safe_load(Path("configs/training", name).read_text(encoding="utf-8"))
+    validate_bodypart_class_contract(config)
+    drifted = json.loads(json.dumps(config))
+    drifted["model"]["num_classes"] = 57
     with pytest.raises(TrainingRuntimeError, match="57 logits.*require 56"):
-        validate_bodypart_class_contract(config)
-    corrected = json.loads(json.dumps(config))
-    corrected["model"]["num_classes"] = 56
-    validate_bodypart_class_contract(corrected)
+        validate_bodypart_class_contract(drifted)

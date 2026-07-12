@@ -3,7 +3,7 @@ task: bodypart_semantic_segmentation
 model:
   architecture: segformer_b3
   pretrained: imagenet
-  num_classes: 57
+  num_classes: 56
 data:
   dataset: maskfactory_bodyparts
   crop_size: [512, 512]

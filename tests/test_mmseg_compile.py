@@ -33,10 +33,8 @@ def _dataset(tmp_path: Path) -> Path:
     return root
 
 
-def _corrected(name: str) -> dict:
-    config = yaml.safe_load(Path("configs/training", name).read_text(encoding="utf-8"))
-    config["model"]["num_classes"] = 56
-    return config
+def _config(name: str) -> dict:
+    return yaml.safe_load(Path("configs/training", name).read_text(encoding="utf-8"))
 
 
 def test_pixel_counts_ignore_255_and_inverse_sqrt_weights_are_capped(tmp_path: Path) -> None:
@@ -54,7 +52,7 @@ def test_pixel_counts_ignore_255_and_inverse_sqrt_weights_are_capped(tmp_path: P
 def test_compile_segformer_is_self_contained_and_exact(tmp_path: Path) -> None:
     root = _dataset(tmp_path)
     compiled = compile_mmseg_config(
-        _corrected("bodypart_segformer_b3.yaml"),
+        _config("bodypart_segformer_b3.yaml"),
         dataset_root=root,
         work_dir=tmp_path / "run",
     )
@@ -84,7 +82,7 @@ def test_compile_mask2former_uses_native_matcher_and_checkpointed_swin_b(
     tmp_path: Path,
 ) -> None:
     compiled = compile_mmseg_config(
-        _corrected("bodypart_mask2former_swinb.yaml"),
+        _config("bodypart_mask2former_swinb.yaml"),
         dataset_root=_dataset(tmp_path),
         work_dir=tmp_path / "run",
     )
@@ -99,14 +97,14 @@ def test_compile_mask2former_uses_native_matcher_and_checkpointed_swin_b(
     assert compiled["optim_wrapper"]["clip_grad"] == {"max_norm": 0.01, "norm_type": 2}
 
 
-def test_compiler_refuses_live_57_class_conflict_and_policy_drift(tmp_path: Path) -> None:
+def test_compiler_refuses_class_count_and_policy_drift(tmp_path: Path) -> None:
     root = _dataset(tmp_path)
-    live = yaml.safe_load(
-        Path("configs/training/bodypart_segformer_b3.yaml").read_text(encoding="utf-8")
-    )
+    live = _config("bodypart_segformer_b3.yaml")
+    drifted_count = copy.deepcopy(live)
+    drifted_count["model"]["num_classes"] = 57
     with pytest.raises(TrainingCompileError, match="57 logits.*require 56"):
-        compile_mmseg_config(live, dataset_root=root, work_dir=tmp_path / "run")
-    drifted = copy.deepcopy(_corrected("bodypart_segformer_b3.yaml"))
+        compile_mmseg_config(drifted_count, dataset_root=root, work_dir=tmp_path / "run")
+    drifted = copy.deepcopy(live)
     drifted["augmentations"][0]["rare_force_probability"] = 0.3
     with pytest.raises(ValueError, match="40% rare"):
         compile_mmseg_config(drifted, dataset_root=root, work_dir=tmp_path / "run")

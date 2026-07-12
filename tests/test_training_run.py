@@ -135,15 +135,18 @@ def test_train_cli_fails_closed_without_runtime_and_initialize_only_creates_tree
     assert json.loads((runs[0] / "run.json").read_text())["status"] == "initialized"
 
 
-def test_training_run_refuses_unresolved_bodypart_class_count_before_staging(
+def test_training_run_refuses_drifted_bodypart_class_count_before_staging(
     tmp_path: Path,
 ) -> None:
     dataset, _config = _inputs(tmp_path)
+    governed = Path("configs/training/bodypart_segformer_b3.yaml").read_text(encoding="utf-8")
+    drifted = tmp_path / "bodypart_57.yaml"
+    drifted.write_text(governed.replace("num_classes: 56", "num_classes: 57"), encoding="utf-8")
     with pytest.raises(TrainingRunError, match="57 logits.*require 56"):
         initialize_training_run(
             model="segformer_b3",
             dataset_root=dataset,
-            config_path=Path("configs/training/bodypart_segformer_b3.yaml"),
+            config_path=drifted,
             dvc_md5="a" * 32,
             runs_root=tmp_path / "runs",
             git_sha="b" * 40,

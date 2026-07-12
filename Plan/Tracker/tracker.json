@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T10:50:35+00:00",
+    "generated_at": "2026-07-12T10:59:01+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -5994,12 +5994,17 @@
           "ts": "2026-07-11T17:41:53+00:00",
           "actor": "ai_agent",
           "text": "Completed the actual MMSeg transform bridge: four registered wrappers consume img/gt_seg_map, preserve geometry, force 40% rare-class crops (all fingers/toes/belly_button or material strap), remap every sided ID on p=0.5 flip, apply BGR-correct image-only jitter, and rotate labels nearest with border 255. mmseg_augmentation_config strictly compiles the governed YAML order/parameters; mmseg_training_dataset_bundle makes dataset custom imports and pipeline inseparable; training-doctor now requires all transforms registered. 20 focused tests pass; seeded QC retry 12/12; full regression 487 passed; Ruff clean. Final 1% remains a real full-MMCV CUDA BaseSegDataset execution in Kevin's WSL runtime."
+        },
+        {
+          "ts": "2026-07-12T10:58:59+00:00",
+          "actor": "ai_agent",
+          "text": "Resolved the obsolete 56/57 blocker from approved doc 18: active v1 IDs 0..55 include background 0 and therefore require 56 logits; v2 IDs 0..64 require 65. Both governed v1 configs now match the adapter's 56-class vocabulary and compile directly. Final 1% is only the real pinned full-MMCV CUDA BaseSegDataset execution in Kevin's WSL runtime; training-doctor confirms this Windows process lacks that stack."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves the doc-18 resolution, corrected configs, direct compiler acceptance, 57-drift refusal before staging, 21 focused and 639 full tests. Actual CUDA BaseSegDataset execution remains open.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T17:41:53+00:00",
+      "updated_at": "2026-07-12T10:58:59+00:00",
       "orphaned": false
     },
     "MF-P5-02.02": {
@@ -6092,7 +6097,7 @@
       "cluster_id": "MF-P5-03",
       "cluster_title": "Train 6.1 body-part segmenter",
       "spec_ref": "12 §5/§6.1",
-      "description": "Author `configs\\training\\bodypart_segformer_b3.yaml`: 57-class · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8",
+      "description": "Author `configs\\training\\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 65-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 22,
       "is_exit_gate": false,
@@ -6105,12 +6110,17 @@
           "ts": "2026-07-11T09:21:21+00:00",
           "actor": "ai_agent",
           "text": "Execution audit found a spec conflict: this completed YAML correctly encodes the literal requested num_classes=57, but authoritative part IDs 0..55 already include background, yielding only 56 indexed targets. No training may be credited until NEEDS KEVIN decision in DECISIONS_LOG resolves whether YAML becomes 56 or ontology gains a real ID 56."
+        },
+        {
+          "ts": "2026-07-12T10:59:00+00:00",
+          "actor": "ai_agent",
+          "text": "Supersedes the historical unresolved note. Approved doc 18 explicitly invalidates 57 classes: active v1 is 56 logits including background ID 0; append-only v2 will be 65. The SegFormer-B3 config is corrected to 56 and the production compiler accepts it without test-time mutation."
         }
       ],
-      "evidence": "bodypart_segformer_b3.yaml encodes 57 classes, 512 crops, AdamW 6e-5/poly1, 40k/80k schedules, 1500 warmup, CE+Dice, inverse-sqrt weights cap x8, bf16, effective batch 16, 4k eval, holdouts and thermal policy; config test passes.",
+      "evidence": "configs/training/bodypart_segformer_b3.yaml now encodes the authoritative 56-class v1 contract plus all original schedule/optimizer/loss/AMP requirements. qa/live_verification/bodypart_class_contract_20260712.json records doc-18 authority, compile acceptance, deliberate 57-drift refusal, and 639 full tests.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:21:21+00:00",
+      "updated_at": "2026-07-12T10:59:00+00:00",
       "orphaned": false
     },
     "MF-P5-03.02": {
@@ -6137,12 +6147,17 @@
           "ts": "2026-07-11T17:59:28+00:00",
           "actor": "ai_agent",
           "text": "Activated the real SegFormer-B3 training boundary: governed YAML compiles to self-contained MMEngine/MMSeg config with official B3 architecture/pretrain, train/val dataset bundles, inverse-sqrt pixel-frequency CE weights capped x8, CE+Dice, bf16 AmpOptimWrapper, batch2 x accumulation8, 1500 warmup/poly1, deterministic seed, 4k validation/checkpoint cadence, registered per-class IoU + boundary-F@2px metric, thermal hook, >=200-instance entry gate, runtime doctor, and exclusive runs/gpu.lock. maskfactory train now executes MMEngine, captures logs/command/config, and refuses zero-exit without checkpoint. Real CUDA long run/thermal event/eval rows remain. 33 focused and 501 full tests pass; Ruff clean."
+        },
+        {
+          "ts": "2026-07-12T10:59:01+00:00",
+          "actor": "ai_agent",
+          "text": "Class-count blocker removed: active SegFormer training config now compiles at the authoritative v1 56 logits. Remaining gates are unchanged and real: >=200 approved gold, pinned full-MMCV CUDA runtime in Kevin's WSL identity, long thermal run, holdout evaluation, and champion decision."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T17:59:28+00:00",
+      "updated_at": "2026-07-12T10:59:01+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -6169,12 +6184,17 @@
           "ts": "2026-07-11T17:59:29+00:00",
           "actor": "ai_agent",
           "text": "Mask2Former-SwinB governed config now compiles into the pinned official Swin-B/Mask2Former structure with with_cp activation checkpointing, mmdet pixel decoder/Hungarian matcher/native classification-mask-dice losses, class-frequency weights, bf16 accumulation, Swin-specific paramwise optimizer, 4k IoU/BF validation, thermal hook, and the same fail-closed launcher/evidence contract. Swin-L remains AWS-only. No challenger run or checkpoint is claimed; >=200 gold, full CUDA runtime, and 56/57 decision remain. 33 focused and 501 full tests pass; Ruff clean."
+        },
+        {
+          "ts": "2026-07-12T10:59:01+00:00",
+          "actor": "ai_agent",
+          "text": "Class-count blocker removed from the challenger: Mask2Former-SwinB now declares and compiles 56 v1 classes; its matcher retains the framework-required extra no-object classification weight. Remaining work is the actual >=200-gold CUDA challenger run/evaluation; Swin-L remains AWS-only."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves corrected SegFormer and Mask2Former configs plus drift refusal. Mask2Former compiler structure remains focused-test covered; no run/checkpoint is claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T17:59:29+00:00",
+      "updated_at": "2026-07-12T10:59:01+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {

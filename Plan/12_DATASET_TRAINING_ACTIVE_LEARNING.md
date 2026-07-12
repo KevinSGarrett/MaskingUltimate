@@ -105,7 +105,9 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
 ## 6. The Five Fine-Tuned Models (Specs & Gates)
 
 ### 6.1 Body-part segmenter (primary)
-- Task: 57-class semantic seg (56 PART IDs + background) on `label_map_part.png`.
+- Task: 56-class v1 semantic segmentation on `label_map_part.png`: contiguous IDs `0..55`,
+  with background already represented by ID 0. The approved append-only v2 migration uses
+  65 logits for IDs `0..64` (doc 18); the obsolete 57-class wording is invalid.
 - Arch A (default): **SegFormer-B3**, ImageNet-pretrained, 512 crops — fits 8 GB comfortably.
 - Arch B (challenger): **Mask2Former-SwinB** (local, ckpt-activated) or Swin-L (AWS burst only).
 - Schedule: AdamW lr 6e-5 poly 1.0, 40k iters (≈300 gold) / 80k (≈500), warmup 1.5k; loss CE +

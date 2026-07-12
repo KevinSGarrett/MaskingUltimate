@@ -3667,3 +3667,15 @@ CLI cleanup:                  no scaffold output; bare vlmqa prints its real com
 source audit:                 zero scaffold/not-yet-implemented markers remain under src/maskfactory
 evidence:                     qa/live_verification/architecture_boundaries_20260712.json
 validation:                   35 focused and 639 full tests passed; Ruff/format clean
+## 2026-07-12 - Body-part v1 class-count conflict resolved from approved spec
+
+**Result:** PASS - active v1 uses 56 logits for authoritative IDs 0..55, including background 0.
+
+authority:                     approved doc 18 §1 explicitly invalidates the old 57-class phrase
+v1 contract:                   IDs 0..55 -> exactly 56 logits
+v2 contract:                   append-only IDs 0..64 -> exactly 65 logits
+configs corrected:             SegFormer-B3 and Mask2Former-SwinB num_classes 57 -> 56
+compiler behavior:             live governed configs compile; deliberate 57 drift fails before staging
+training doctor:               class issue absent; local boundary is CPU torch/no pinned OpenMMLab/CUDA
+evidence:                      qa/live_verification/bodypart_class_contract_20260712.json
+validation:                    21 focused and 639 full tests passed; Ruff/format clean

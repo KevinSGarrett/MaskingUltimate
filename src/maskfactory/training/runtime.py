@@ -217,7 +217,7 @@ def probe_openmmlab_runtime(path: Path = DEFAULT_LOCK_PATH) -> TrainingRuntimeRe
 
 
 def validate_bodypart_class_contract(config: Mapping[str, Any]) -> None:
-    """Refuse the unresolved 57-logit config against the authoritative 0..55 map."""
+    """Require one logit for every contiguous authoritative ID, including background 0."""
     if config.get("task") != "bodypart_semantic_segmentation":
         return
     model = config.get("model")
@@ -231,5 +231,5 @@ def validate_bodypart_class_contract(config: Mapping[str, Any]) -> None:
         raise TrainingRuntimeError(
             "body-part class-count conflict: config declares "
             f"{declared} logits but authoritative indexed IDs {ids[0]}..{ids[-1]} require "
-            f"{ontology_classes}; resolve Plan/DECISIONS_LOG.md before training"
+            f"{ontology_classes}"
         )

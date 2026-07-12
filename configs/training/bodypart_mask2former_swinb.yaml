@@ -3,7 +3,7 @@ task: bodypart_semantic_segmentation
 model:
   architecture: mask2former_swin_b
   pretrained: imagenet_22k
-  num_classes: 57
+  num_classes: 56
   backbone:
     type: swin_base
     activation_checkpointing: true

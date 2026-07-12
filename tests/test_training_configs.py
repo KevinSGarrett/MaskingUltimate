@@ -12,7 +12,7 @@ def test_bodypart_segformer_b3_contract() -> None:
     assert config["model"] == {
         "architecture": "segformer_b3",
         "pretrained": "imagenet",
-        "num_classes": 57,
+        "num_classes": 56,
     }
     assert config["data"]["crop_size"] == [512, 512]
     assert config["data"]["ignore_index"] == 255
@@ -35,7 +35,7 @@ def test_bodypart_segformer_b3_contract() -> None:
 def test_bodypart_mask2former_swinb_challenger_contract() -> None:
     config = _config("bodypart_mask2former_swinb.yaml")
     assert config["model"]["architecture"] == "mask2former_swin_b"
-    assert config["model"]["num_classes"] == 57
+    assert config["model"]["num_classes"] == 56
     assert config["model"]["backbone"]["activation_checkpointing"] is True
     assert config["training"]["activation_checkpointing"] is True
     assert config["training"]["loss"] == {

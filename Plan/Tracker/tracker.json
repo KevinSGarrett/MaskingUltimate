@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T08:51:00+00:00",
+    "generated_at": "2026-07-12T10:12:19+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -3836,12 +3836,17 @@
           "ts": "2026-07-12T07:27:08+00:00",
           "actor": "ai_agent",
           "text": "Corrected side-aware live production rather than overriding hard blocks. Official DensePose fine-chart sides replaced the inverted mapping; pose-chain geometry now tolerates parser L/R swaps, bounds pathological capsule width, and supplies pose-only fallbacks; paired torso UV supplies breast-side evidence; zero-valued upstream artifacts no longer authorize broad parsers to invent fine hip labels. The ordered 18-source/29-instance S09→S09.5→S10 rebuild completed with no final stage failures. QC-014 improved from 27 fail/2 pass to 16 fail/13 pass; remaining reports contain 10 wrong-side contradictions and 8 insufficient-evidence cases (some overlap), so they remain BLOCK. Queue reconciled 27→16 and ontology v2 remains NO-GO."
+        },
+        {
+          "ts": "2026-07-12T10:12:17+00:00",
+          "actor": "ai_agent",
+          "text": "Hardened DensePose QC-014 evidence without weakening the gate: side votes now require at least 32 sided pixels, 1% mask coverage, and a 10% majority margin. A full 29-instance artifact audit remained exactly 13 pass / 16 BLOCK with zero verdict changes; trace/weak overlaps become no-vote and therefore remain fail-closed. Full 630-test suite passed; Ruff check/format clean. The exact governed 10-fixture completion gate remains open."
         }
       ],
-      "evidence": "Current S10 corpus and queue evidence: qa/live_verification/s10_autoqa_corpus_20260712.json; authoritative qa/failure_queue.jsonl contains 16 current deduplicated QC-014 rows, SHA-256 ed5e5c20b816c7aae40e47b457a13bb73987c0826aa89937fef9840f196e06a8. Forced ordered rebuild completed S09 29/29, S09.5 18/18 with QC-035 pass, and S10 29/29; QC-011/013 pass universally. Exact governed 10-fixture completion gate remains open.",
+      "evidence": "Current corpus: qa/live_verification/s10_autoqa_corpus_20260712.json. DensePose reliability audit: qa/live_verification/densepose_side_vote_reliability_20260712.json records 29 instances, unchanged 13 pass / 16 BLOCK, and zero verdict changes after rejecting trace/weak side evidence. Full suite: 630 passed; Ruff clean. Exact governed 10-fixture completion gate remains open.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T07:27:08+00:00",
+      "updated_at": "2026-07-12T10:12:17+00:00",
       "orphaned": false
     },
     "MF-P2-07.01": {

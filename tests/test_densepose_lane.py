@@ -194,10 +194,32 @@ def test_surface_side_votes_match_official_densepose_fine_segmentation() -> None
 
     for surface in range(1, 25):
         index = np.full(mask.shape, surface, dtype=np.uint8)
-        vote = surface_vote(mask, DensePoseOutput(index, index.copy(), index.copy())).side_vote
+        vote = surface_vote(
+            mask,
+            DensePoseOutput(index, index.copy(), index.copy()),
+            min_side_pixels=1,
+        ).side_vote
         expected = "left" if surface in left else "right" if surface in right else None
         assert vote == expected, surface
     assert left | right | neutral == set(range(1, 25))
+
+
+def test_surface_side_vote_rejects_trace_coverage_and_weak_majority() -> None:
+    shape = (100, 100)
+    mask = np.ones(shape, dtype=bool)
+    index = np.zeros(shape, dtype=np.uint8)
+    index[0, 0] = 4
+    dense = DensePoseOutput(index, np.zeros(shape, np.uint8), np.zeros(shape, np.uint8))
+    assert surface_vote(mask, dense).side_vote is None
+
+    index[:10, :10] = 4
+    index[:9, 10:20] = 3
+    weak = DensePoseOutput(index, np.zeros(shape, np.uint8), np.zeros(shape, np.uint8))
+    assert surface_vote(mask, weak).side_vote is None
+
+    index[:9, 10:20] = 4
+    strong = DensePoseOutput(index, np.zeros(shape, np.uint8), np.zeros(shape, np.uint8))
+    assert surface_vote(mask, strong).side_vote == "left"
 
 
 def test_paired_torso_uv_supplies_side_vote_only_with_separated_evidence() -> None:

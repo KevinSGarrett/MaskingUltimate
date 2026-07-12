@@ -30,7 +30,24 @@ class ContinuityEvidence:
     uv_jump_fraction: float
 
 
-def surface_vote(mask: np.ndarray, densepose: DensePoseOutput) -> SurfaceVote:
+def surface_vote(
+    mask: np.ndarray,
+    densepose: DensePoseOutput,
+    *,
+    min_side_pixels: int = 32,
+    min_side_coverage: float = 0.01,
+    min_side_margin: float = 0.10,
+) -> SurfaceVote:
+    """Summarize DensePose evidence without treating trace overlap as a side vote.
+
+    DensePose is a referee, so an isolated/misprojected chart pixel must not count as
+    an independent QC-014 signal. Front/back fractions retain their previous behavior;
+    only the L/R vote is suppressed when coverage or majority separation is too weak.
+    """
+    if min_side_pixels < 1:
+        raise ValueError("min_side_pixels must be positive")
+    if not 0 <= min_side_coverage <= 1 or not 0 <= min_side_margin <= 1:
+        raise ValueError("DensePose side reliability fractions must be within 0..1")
     region, index = _region_index(mask, densepose)
     values = index[region & (index > 0)]
     if not len(values):
@@ -40,7 +57,13 @@ def surface_vote(mask: np.ndarray, densepose: DensePoseOutput) -> SurfaceVote:
     torso_votes = front + back
     left = np.isin(values, tuple(LEFT_SURFACES)).sum()
     right = np.isin(values, tuple(RIGHT_SURFACES)).sum()
-    side = "left" if left > right else "right" if right > left else None
+    sided = int(left + right)
+    coverage = sided / int(region.sum())
+    margin = abs(int(left) - int(right)) / sided if sided else 0.0
+    reliable = (
+        sided >= min_side_pixels and coverage >= min_side_coverage and margin >= min_side_margin
+    )
+    side = "left" if reliable and left > right else "right" if reliable and right > left else None
     return SurfaceVote(
         float(front / torso_votes) if torso_votes else None,
         float(back / torso_votes) if torso_votes else None,

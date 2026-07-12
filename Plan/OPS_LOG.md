@@ -3621,3 +3621,12 @@ remote action:               not attempted without credentials and without any h
 durable audit:               qa/live_verification/dvc_s3_runtime_20260712.json
 NEEDS KEVIN:                 provide authorized dev-account AWS credentials after first package approval; then execute first data/packages add + push
 ```
+## 2026-07-12 - DensePose QC-014 side-vote reliability hardened
+
+**Result:** PASS - trace DensePose overlap can no longer act as an independent L/R vote.
+
+contract:                    require >=32 sided pixels, >=1% mask coverage, and >=10% L/R majority margin
+weak evidence:               suppressed to no-vote; QC-014 therefore remains fail-closed on insufficient evidence
+live corpus:                 29 instances audited; 13 pass / 16 BLOCK before and after; zero verdicts changed
+evidence:                    qa/live_verification/densepose_side_vote_reliability_20260712.json
+regression:                  focused DensePose/S10/semantic suite passed; Ruff check and format clean

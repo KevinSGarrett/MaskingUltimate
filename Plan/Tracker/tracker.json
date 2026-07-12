@@ -2669,12 +2669,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: No DVC executable is installed and no AWS credentials/profile are available. Workspace-local dvc[s3] install stalled; actual s3://maskfactory-dvc-dev push cannot be evidenced without install/network completion and dev-account credentials.",
+      "percent_complete": 65,
+      "notes": [
+        {
+          "ts": "2026-07-12T09:51:02+00:00",
+          "actor": "ai_agent",
+          "text": "Removed the obsolete missing-executable/backend portion of this blocker. Added dvc-s3 and transitive pins, reproducible uv bootstrap, initialized the default S3 remote, production resolver for package/dataset flows, repository-local config/cache isolation, and Git exceptions for DVC descriptors. Live dvc status/remote/local-add pass; no unauthorized remote request was made."
+        },
+        {
+          "ts": "2026-07-12T09:53:22+00:00",
+          "actor": "ai_agent",
+          "text": "Verification count correction after adding fail-closed subprocess-timeout coverage: focused DVC/package/dataset suite is 27 passed; full suite remains green."
+        }
+      ],
+      "evidence": "qa/live_verification/dvc_s3_runtime_20260712.json records runtime versions, S3 capability, initialized remote, production wiring, valid local-add md5 descriptor, 26 focused tests, full-suite pass, and the negative credential audit.",
+      "blocked_reason": "NEEDS KEVIN: DVC 3.67.1 with the pinned S3 backend is installed, repository-initialized, production-wired, and live local-add verified. Completion now specifically requires Kevin-authorized AWS credentials for dev account 548846591581 plus the first human-approved package before data/packages can be added and pushed to s3://maskfactory-dvc-dev.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:15:30+00:00",
+      "updated_at": "2026-07-12T09:53:22+00:00",
       "orphaned": false
     },
     "MF-P1-08.01": {

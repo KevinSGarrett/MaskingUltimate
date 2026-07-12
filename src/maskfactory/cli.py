@@ -1269,9 +1269,8 @@ def dataset_build(
     name: str, ontology: str, packages_root: Path, output_root: Path, publish: bool
 ) -> None:
     """S14: build the training dataset from gold packages."""
-    import subprocess
-
     from .datasets.builder import approved_package_count, build_dataset, next_dataset_version
+    from .dvc_runtime import DvcRuntimeError, run_dvc
 
     if name != "bodyparts" or ontology != "body_parts_v1":
         raise click.ClickException("S14 v1 supports exactly bodyparts/body_parts_v1")
@@ -1289,18 +1288,24 @@ def dataset_build(
             hard_case_file=output_root / "hard_case_holdout.txt",
         )
         if publish:
-            commands = (
-                ["dvc", "add", str(path)],
+            add = run_dvc(("add", str(path.resolve())), timeout=1800)
+            if add.returncode:
+                raise RuntimeError(f"dvc add failed: {add.stderr.strip()}")
+            import subprocess
+
+            tag = subprocess.run(
                 ["git", "tag", f"dataset/bodyparts-v{version}"],
-                ["dvc", "push"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
             )
-            for command in commands:
-                process = subprocess.run(
-                    command, capture_output=True, text=True, timeout=1800, check=False
-                )
-                if process.returncode:
-                    raise RuntimeError(f"{' '.join(command)} failed: {process.stderr.strip()}")
-    except (OSError, RuntimeError, ValueError) as exc:
+            if tag.returncode:
+                raise RuntimeError(f"git tag failed: {tag.stderr.strip()}")
+            push = run_dvc(("push",), timeout=1800)
+            if push.returncode:
+                raise RuntimeError(f"dvc push failed: {push.stderr.strip()}")
+    except (DvcRuntimeError, OSError, RuntimeError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(path)
 

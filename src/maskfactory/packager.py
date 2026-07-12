@@ -5,7 +5,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import subprocess
 import uuid
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
@@ -18,6 +17,7 @@ import yaml
 from PIL import Image
 
 from . import __version__
+from .dvc_runtime import DvcRuntimeError, run_dvc
 from .inpaint import derive_inpaint
 from .io.png_strict import read_mask
 from .ontology import get_ontology
@@ -302,17 +302,20 @@ def _failing_panels(package_root: Path, results: tuple[QcResult, ...]) -> tuple[
 
 
 def _require_dvc() -> None:
-    process = subprocess.run(
-        ["dvc", "version"], capture_output=True, text=True, timeout=30, check=False
-    )
+    try:
+        process = run_dvc(("version",), timeout=30)
+    except (DvcRuntimeError, OSError) as exc:
+        raise RuntimeError(f"DVC is required before package approval: {exc}") from exc
     if process.returncode != 0:
-        raise RuntimeError("DVC is required before package approval")
+        detail = process.stderr.strip() or process.stdout.strip()
+        raise RuntimeError(f"DVC is required before package approval: {detail}")
 
 
 def _dvc_add(path: Path) -> None:
-    process = subprocess.run(
-        ["dvc", "add", str(path)], capture_output=True, text=True, timeout=300, check=False
-    )
+    try:
+        process = run_dvc(("add", str(Path(path).resolve())), timeout=300)
+    except (DvcRuntimeError, OSError) as exc:
+        raise RuntimeError(f"dvc add failed: {exc}") from exc
     if process.returncode != 0:
         raise RuntimeError(f"dvc add failed: {process.stderr.strip()}")
 

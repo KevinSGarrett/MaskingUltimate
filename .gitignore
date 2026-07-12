@@ -3,10 +3,14 @@
 /models/*
 !/models/model_sources.yaml
 !/models/model_registry.json
-/data/
+/data/*
+!/data/.gitignore
+!/data/packages.dvc
 /runs/
 /logs/
-/datasets/
+/datasets/*
+!/datasets/.gitignore
+!/datasets/*.dvc
 /work/
 qa/reports/maskedwarehouse_alignment/
 .env
@@ -58,6 +62,7 @@ dist/
 .ruff_cache/
 .black_cache/
 .runtime_tmp/
+.tools/
 .publish_tmp/
 .pt_*/
 .mypy_cache/

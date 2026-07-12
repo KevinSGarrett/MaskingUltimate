@@ -3599,3 +3599,25 @@ full regression:             all tests passed; Ruff clean
 durable audit:               qa/live_verification/vlm_generation_contract_20260712.json
 honest boundary:             authoritative approved-gold corpus and passing primary/fallback scores remain required
 ```
+
+## 2026-07-12 10:20 UTC - Pinned DVC/S3 runtime and repository activated
+**Item:** MF-P1-07.09 remains blocked, advanced 0% -> 65% machine-owned completion
+**Result:** The obsolete executable/backend blocker is removed; only the authorized remote push with real approved data remains.
+
+```
+runtime:                     workspace-local DVC 3.67.1 on Python 3.11.9
+S3 backend:                  dvc-s3 3.3.0 + fsspec/s3fs 2026.4.0; dvc version reports s3 support
+environment lock:            all S3 backend packages and transitive pins added to env/requirements.lock.txt
+bootstrap:                   tools/bootstrap_dvc.ps1 recreates/verifies the exact isolated runtime with uv
+repository:                  .dvc initialized; default maskfactory-dvc-dev -> s3://maskfactory-dvc-dev
+account isolation:           production runner uses repository-local DVC system/global config + site cache, avoiding inaccessible ProgramData/user config
+production wiring:           package approval and dataset build add/push resolve explicit, PATH, or workspace-local DVC consistently
+Git contract correction:     data/packages.dvc, datasets/*.dvc, and their .gitignore files are explicitly publishable while payload trees remain ignored
+live local add:              PASS; one-file/42-byte probe, md5 6d69afc782aa89a3490df53fb8b0d147.dir; disposable descriptor/data removed
+focused verification:       27 DVC/package/dataset tests passed
+full regression:             all tests passed; Ruff clean
+credential audit:            no AWS env keys, profile, credentials file, or botocore provider available
+remote action:               not attempted without credentials and without any human-approved package
+durable audit:               qa/live_verification/dvc_s3_runtime_20260712.json
+NEEDS KEVIN:                 provide authorized dev-account AWS credentials after first package approval; then execute first data/packages add + push
+```

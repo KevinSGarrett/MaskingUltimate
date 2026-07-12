@@ -3488,8 +3488,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T03:56:30+00:00",
@@ -3505,12 +3505,17 @@
           "ts": "2026-07-11T19:02:24+00:00",
           "actor": "ai_agent",
           "text": "Hardened persistent SAM2.1 production boundary: exact governed configs and checkpoint hashes, fp16/CUDA/device identity, protocol and embedding_count=1 required at readiness; bounded startup/prediction reads prevent hangs; prompt geometry and multimask=true enforced; raw float32 three-mask logits/scores remain finite/coherent; request index proves reuse; all bridge PNG/NPZ/process artifacts clean. Large-server OOM translates to exactly one base-plus embedding; other failures do not silently fallback. 38 focused and 528 full tests pass. Live probe correctly refused absent WSL and left zero files, so fresh CUDA embedding remains unclaimed."
+        },
+        {
+          "ts": "2026-07-12T03:01:27+00:00",
+          "actor": "ai_agent",
+          "text": "Activated facebookresearch/sam2@2b90b9f5 on the explicit local CUDA runtime with isolated Hydra 1.3.4. The large model fit every live crop. Fixed the real all-specialist-plan edge case to preserve the spec's one embedding per image with zero full-frame predictions, and made transient bridge archives uncompressed because they are deleted immediately after exact validation."
         }
       ],
-      "evidence": "src/maskfactory/stages/s07_sam2.py, tools/run_sam2_server_wsl.py, and production.py implement identity/timeouts/raw-logit/reuse/fallback contracts; test_s06_s07.py and test_production_runners.py cover one embedding, three-mask responses, corrective reuse, provider-level large OOM to base-plus, config drift, cleanup, and model routing. Registry hashes 264787.../a2345a... and prior CUDA smokes remain verified. Current: Ruff/format clean across 247 files, ontology current, 528 tests pass; live provider probe returned absent-distro error and remaining_files []. Missing: fresh authoritative CUDA embedding/prediction run.",
+      "evidence": "Live governed batch 2026-07-12: 29/29 S02-QC-pass instances have complete S07 stage stamps, sam2_metrics.json, and local runtime evidence. All prove exact large checkpoint SHA-256 2647878d..., source revision 2b90b9f5..., fp16 CUDA, RTX 5060, torch 2.11.0+cu128, and embedding_count=1. Large model used 29/29; zero OOM fallbacks. 247 refined masks from 488 prediction requests; each package mask count matches refined count; 72 low-confidence flags preserved; zero hand-merge failures; zero bridge temporaries. Two specialist-only packages honestly record one embedding/zero predictions. Median duration 23.40s; pre-optimization compressed-bridge max 392.25s.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T19:02:24+00:00",
+      "updated_at": "2026-07-12T03:01:27+00:00",
       "orphaned": false
     },
     "MF-P2-05.03": {

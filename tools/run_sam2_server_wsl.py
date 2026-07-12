@@ -18,6 +18,7 @@ MODEL_SHA256 = {
     "sam2.1_hiera_large": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
     "sam2.1_hiera_base_plus": "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5",
 }
+SOURCE_REVISION = "2b90b9f5ceec907a1c18123530e92e794ad901a4"
 
 
 def _sha256(path: Path) -> str:
@@ -55,6 +56,8 @@ def main() -> None:
                 "precision": "fp16",
                 "device_type": "cuda",
                 "device": torch.cuda.get_device_name(0),
+                "torch": torch.__version__,
+                "source_revision": SOURCE_REVISION,
                 "embedding_count": 1,
             }
         ),
@@ -105,7 +108,10 @@ def main() -> None:
             raise ValueError("SAM2 prediction output violates three-mask float32 contract")
         output = Path(request["output"])
         output.parent.mkdir(parents=True, exist_ok=True)
-        np.savez_compressed(output, logits=logits, scores=scores)
+        # This archive is a same-host transient deleted immediately after
+        # validation. Compression adds minutes on large crops without creating
+        # durable evidence, so preserve exact float32 arrays uncompressed.
+        np.savez(output, logits=logits, scores=scores)
         prediction_index += 1
         print(
             json.dumps(

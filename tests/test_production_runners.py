@@ -480,6 +480,13 @@ def test_s07_production_runner_forwards_governed_large_and_fallback_models(
     assert delta["embedding_count"] == 1
     assert captured["primary_model"] == "sam2.1_hiera_large"
     assert captured["fallback_model"] == "sam2.1_hiera_base_plus"
+    assert captured["provider"].local_cuda_python == Path(
+        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    )
+    assert captured["provider"].source_path == Path(
+        "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4"
+    )
+    assert captured["provider"].dependency_site == Path("models/runtime_cache/sam2_deps")
     assert hand_audit["instance_id"] == "p0"
     assert hand_audit["pose_path"] == work / "s04" / image_id / "pose133.json"
 
@@ -979,6 +986,29 @@ def test_run_through_openvocab_stops_after_every_instance_s06(tmp_path: Path, mo
     assert captured["openvocab_only"] is True
     assert "p0: 0 stage execution(s) S02-S06" in result.output
     assert "S06 batch complete: 2 instance(s)" in result.output
+    assert "S09.5" not in result.output
+
+
+def test_run_through_sam2_stops_after_every_instance_s07(tmp_path: Path, monkeypatch) -> None:
+    manifest = tmp_path / "person_bbox.json"
+    manifest.write_text("{}", encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=False,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(main, ["run", "img_a3f9c2e17b04", "--through-sam2"])
+    assert result.exit_code == 0, result.output
+    assert captured["sam2_only"] is True
+    assert "p0: 0 stage execution(s) S02-S07" in result.output
+    assert "S07 batch complete: 2 instance(s)" in result.output
     assert "S09.5" not in result.output
 
 

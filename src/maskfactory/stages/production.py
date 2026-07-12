@@ -450,6 +450,13 @@ def build_production_runners(
                 "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
             },
             work_dir=context.output_dir / "provider_work",
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+            dependency_site=(
+                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+            ),
         )
         results, model = run_s07_production(
             prior(context, "S01") / instance_name / "person_ctx.png",
@@ -484,6 +491,7 @@ def build_production_runners(
         person = selected_person(people)
         s03_dir = context.prior_stage_dir("S03")
         sapiens_path = s03_dir / "sapiens_28.png"
+        sam_settings = config["stages"]["S07"]
         provider = WslSam2Provider(
             checkpoints={
                 "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
@@ -494,6 +502,19 @@ def build_production_runners(
                 "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
             },
             work_dir=context.output_dir / "provider_work",
+            local_cuda_python=(
+                Path(sam_settings["local_cuda_python"])
+                if sam_settings.get("local_cuda_python")
+                else None
+            ),
+            source_path=(
+                Path(sam_settings["source_path"]) if sam_settings.get("source_path") else None
+            ),
+            dependency_site=(
+                Path(sam_settings["dependency_site"])
+                if sam_settings.get("dependency_site")
+                else None
+            ),
         )
         draft = run_s08_production(
             source_path=s01_dir / instance_name / "person_ctx.png",
@@ -848,6 +869,7 @@ def run_multi_person_production(
     parsing_only: bool = False,
     pose_only: bool = False,
     openvocab_only: bool = False,
+    sam2_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -937,13 +959,15 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
-    if parsing_only or pose_only or openvocab_only:
+    if parsing_only or pose_only or openvocab_only or sam2_only:
         if parsing_only:
             selected = ("S03",)
         elif pose_only:
             selected = ("S03", "S04")
-        else:
+        elif openvocab_only:
             selected = ("S03", "S04", "S05", "S06")
+        else:
+            selected = ("S03", "S04", "S05", "S06", "S07")
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name

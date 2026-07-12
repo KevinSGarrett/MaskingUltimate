@@ -3324,3 +3324,22 @@ runtime evidence:           29/29 exact checkpoint/source, local_cpu, CPU device
 duration:                   median 43.25s; maximum 74.89s; summed committed stage duration 22.63 minutes
 focused regression:         52 S06/S07/config/production tests pass
 ```
+## 2026-07-12 02:45 UTC - S07 persistent SAM2 activated on local CUDA and completed for every eligible live instance
+**Item:** MF-P2-05.02 95% -> complete
+**Result:** The pinned SAM2.1 large image predictor now runs persistently on local CUDA with exactly one embedding per instance and repeated prompt reuse; every eligible live instance has complete refinement evidence.
+
+```
+source:                     facebookresearch/sam2@2b90b9f5ceec907a1c18123530e92e794ad901a4
+large checkpoint:           sam2.1_hiera_large.pt SHA-256 2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318
+fallback checkpoint:        sam2.1_hiera_base_plus.pt SHA-256 a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5
+runtime:                    local ComfyUI Python; Hydra 1.3.4 isolated under models/runtime_cache/sam2_deps; torch 2.11.0+cu128; RTX 5060
+live corpus:                29/29 S02-QC-pass instances committed S07; 2 no_person remain at S01; 1 low-ratio silhouette remains needs_review at S02
+embedding contract:         29/29 exact embedding_count=1 in stage and runtime evidence
+model routing:              large model 29/29; zero OOM fallbacks; fallback path remains regression-tested
+prediction reuse:           488 total prompt predictions from 29 embeddings
+mask output:                247 refined binary masks; every package mask count matches refined-part count
+quality routing:            72 low-confidence results preserved; zero hand-merge failures
+specialist-only edge:       2 packages correctly record one embedding and zero full-frame predictions
+bridge cleanup:             zero embedding/prediction temporaries remain in all 29 packages
+performance:                median 23.40s; pre-optimization compressed-bridge maximum 392.25s; transient archives now exact uncompressed NPZ
+```

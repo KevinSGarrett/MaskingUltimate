@@ -16,6 +16,7 @@ from maskfactory.stages.s06_openvocab import (
     write_gdino_proposals,
 )
 from maskfactory.stages.s07_sam2 import (
+    MODEL_CONFIGS,
     Sam2Error,
     SamCandidate,
     WslSam2Provider,
@@ -263,6 +264,43 @@ def test_s07_embedding_uses_one_primary_or_one_oom_fallback() -> None:
     ]
 
 
+def test_s07_all_specialist_plans_still_record_one_embedding(tmp_path: Path) -> None:
+    image = tmp_path / "image.png"
+    Image.new("RGB", (100, 100), "white").save(image)
+    prompts = tmp_path / "prompts.json"
+    prompts.write_text(
+        json.dumps(
+            {
+                "plans": [
+                    {
+                        "label": "hair",
+                        "box_xyxy": [10, 10, 90, 90],
+                        "positive_points": [[50, 50]],
+                        "negative_points": [],
+                        "prior_quality": "high",
+                        "multimask_output": True,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    provider = FakeProvider([])
+    results, model = run_s07_production(
+        image,
+        prompts,
+        tmp_path,
+        tmp_path / "output",
+        provider=provider,
+    )
+    assert results == {}
+    assert model == "sam2.1_hiera_large"
+    assert provider.embed_calls == [("sam2.1_hiera_large", "fp16")]
+    metrics = json.loads((tmp_path / "output/sam2_metrics.json").read_text(encoding="utf-8"))
+    assert metrics["embedding_count"] == 1
+    assert metrics["prediction_count"] == 0
+
+
 @pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
 def test_s07_persistent_provider_embeds_once_and_serves_multimask(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -292,6 +330,8 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
                         "precision": "fp16",
                         "device_type": "cuda",
                         "device": "NVIDIA fixture",
+                        "torch": "2.11.0+cu128",
+                        "source_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
                         "embedding_count": 1,
                     }
                 )
@@ -379,7 +419,8 @@ def test_s07_persistent_provider_embeds_once_and_serves_multimask(
     assert [candidate.predicted_iou for candidate in candidates] == pytest.approx([0.9, 0.5, 0.8])
     assert all(candidate.logits.shape == (100, 100) for candidate in candidates)
     provider.close(embedding)
-    assert not list((tmp_path / "work").iterdir())
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "wsl_cuda"
 
 
 @pytest.mark.skipif(os.name != "nt", reason="WSL bridge adapter requires a Windows host")
@@ -438,6 +479,8 @@ def test_s07_wsl_provider_translates_large_oom_and_builds_one_base_embedding(
                             "precision": "fp16",
                             "device_type": "cuda",
                             "device": "NVIDIA fixture",
+                            "torch": "2.11.0+cu128",
+                            "source_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
                             "embedding_count": 1,
                         }
                     )
@@ -472,7 +515,118 @@ def test_s07_wsl_provider_translates_large_oom_and_builds_one_base_embedding(
     assert model == "sam2.1_hiera_base_plus"
     assert calls == ["sam2.1_hiera_large", "sam2.1_hiera_base_plus"]
     provider.close(embedding)
-    assert not list((tmp_path / "work").iterdir())
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["model"] == "sam2.1_hiera_base_plus"
+
+
+def test_s07_provider_supports_explicit_local_cuda_runtime(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    large = tmp_path / "large.pt"
+    base = tmp_path / "base.pt"
+    python = tmp_path / "python.exe"
+    for path in (large, base, python):
+        path.write_bytes(b"fixture")
+    source = tmp_path / "source"
+    deps = tmp_path / "deps"
+    (source / "sam2").mkdir(parents=True)
+    (source / "sam2/__init__.py").write_text("", encoding="utf-8")
+    (deps / "hydra").mkdir(parents=True)
+
+    class Output:
+        def __init__(self):
+            self.lines = [
+                json.dumps(
+                    {
+                        "protocol_version": 1,
+                        "status": "ready",
+                        "shape": [100, 100],
+                        "model": "sam2.1_hiera_large",
+                        "checkpoint_sha256": (
+                            "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318"
+                        ),
+                        "config": "configs/sam2.1/sam2.1_hiera_l.yaml",
+                        "precision": "fp16",
+                        "device_type": "cuda",
+                        "device": "NVIDIA fixture",
+                        "torch": "2.11.0+cu128",
+                        "source_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+                        "embedding_count": 1,
+                    }
+                )
+                + "\n"
+            ]
+
+        def readline(self):
+            return self.lines.pop(0) if self.lines else ""
+
+    class Process:
+        def __init__(self, command, **kwargs):
+            assert command[0] == str(python)
+            assert kwargs["env"]["PYTHONPATH"].split(os.pathsep)[:2] == [
+                str(source.resolve()),
+                str(deps.resolve()),
+            ]
+            self.stdout = Output()
+            self.alive = True
+            outer = self
+
+            class Input:
+                def write(self, value):
+                    request = json.loads(value)
+                    output = Path(request["output"])
+                    np.savez_compressed(
+                        output,
+                        logits=np.zeros((3, 100, 100), dtype=np.float32),
+                        scores=np.array([0.9, 0.8, 0.7], dtype=np.float32),
+                    )
+                    outer.stdout.lines.append(
+                        json.dumps(
+                            {
+                                "protocol_version": 1,
+                                "status": "ok",
+                                "request_id": request["request_id"],
+                                "embedding_count": 1,
+                                "prediction_index": 1,
+                                "multimask_output": True,
+                            }
+                        )
+                        + "\n"
+                    )
+
+                def flush(self):
+                    pass
+
+            self.stdin = Input()
+            self.stderr = None
+
+        def poll(self):
+            return None if self.alive else 0
+
+        def terminate(self):
+            self.alive = False
+
+        def wait(self, timeout):
+            return 0
+
+    monkeypatch.setattr("maskfactory.stages.s07_sam2.subprocess.Popen", Process)
+    provider = WslSam2Provider(
+        {"sam2.1_hiera_large": large, "sam2.1_hiera_base_plus": base},
+        MODEL_CONFIGS,
+        tmp_path / "work",
+        local_cuda_python=python,
+        source_path=source,
+        dependency_site=deps,
+    )
+    embedding = provider.embed(
+        np.zeros((100, 100, 3), dtype=np.uint8),
+        model="sam2.1_hiera_large",
+        precision="fp16",
+    )
+    assert len(provider.predict(embedding, _plan(), multimask_output=True)) == 3
+    provider.close(embedding)
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "local_cuda"
 
 
 def test_s07_provider_refuses_config_mapping_drift(tmp_path: Path) -> None:

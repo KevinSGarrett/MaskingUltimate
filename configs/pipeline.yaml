@@ -27,7 +27,7 @@ stages:
   S04: {enabled: true, model: dwpose_133, keypoint_confidence: 0.3, degraded_body_keypoint_fraction: 0.6, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", ort_gpu_site: "models/runtime_cache/onnxruntime_gpu"}
   S05: {enabled: true}
   S06: {enabled: true, box_threshold: 0.30, text_threshold: 0.25, local_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/groundingdino/856dde20aee659246248e20734ef9ba5214f5e44", dependency_site: "models/runtime_cache/groundingdino_deps", hf_home: "models/runtime_cache/huggingface"}
-  S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus}
+  S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
   S08: {enabled: true}
   S08.5: {enabled: true}
   S09: {enabled: true}

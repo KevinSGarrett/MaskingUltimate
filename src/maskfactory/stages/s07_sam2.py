@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import queue
 import subprocess
 import threading
@@ -44,6 +45,7 @@ class WslSam2Embedding:
     model: str
     work_dir: Path
     image_path: Path
+    launcher: str
     prediction_count: int = 0
 
 
@@ -70,6 +72,9 @@ class WslSam2Provider:
         python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
         startup_timeout_sec: float = 300,
         prediction_timeout_sec: float = 120,
+        local_cuda_python: Path | None = None,
+        source_path: Path | None = None,
+        dependency_site: Path | None = None,
     ) -> None:
         self.checkpoints = {key: Path(value) for key, value in checkpoints.items()}
         self.configs = dict(configs)
@@ -87,6 +92,9 @@ class WslSam2Provider:
             raise Sam2Error("SAM2 timeouts must be positive")
         self.startup_timeout_sec = startup_timeout_sec
         self.prediction_timeout_sec = prediction_timeout_sec
+        self.local_cuda_python = Path(local_cuda_python) if local_cuda_python is not None else None
+        self.source_path = Path(source_path) if source_path is not None else None
+        self.dependency_site = Path(dependency_site) if dependency_site is not None else None
 
     def embed(self, image: np.ndarray, *, model: str, precision: str) -> WslSam2Embedding:
         if (
@@ -112,22 +120,57 @@ class WslSam2Provider:
         image_path = self.work_dir / f"embedding_{uuid.uuid4().hex}.png"
         Image.fromarray(source[:, :, :3].astype(np.uint8), mode="RGB").save(image_path)
         root = Path(__file__).resolve().parents[3]
-        command = [
-            "wsl",
-            "-d",
-            self.wsl_distribution,
-            "--",
-            self.python_path,
-            _wsl_path(root / "tools" / "run_sam2_server_wsl.py"),
+        arguments = [
             "--checkpoint",
-            _wsl_path(checkpoint),
+            str(checkpoint.resolve()),
             "--config",
             self.configs[model],
             "--image",
-            _wsl_path(image_path),
+            str(image_path.resolve()),
             "--model-key",
             model,
         ]
+        if self.local_cuda_python is not None:
+            if not self.local_cuda_python.is_file():
+                image_path.unlink(missing_ok=True)
+                raise Sam2Error("configured local CUDA Python is missing")
+            if self.source_path is None or not (self.source_path / "sam2/__init__.py").is_file():
+                image_path.unlink(missing_ok=True)
+                raise Sam2Error("configured SAM2 source is missing")
+            if self.dependency_site is None or not (self.dependency_site / "hydra").is_dir():
+                image_path.unlink(missing_ok=True)
+                raise Sam2Error("configured SAM2 dependency site is missing")
+            command = [
+                str(self.local_cuda_python),
+                str(root / "tools" / "run_sam2_server_wsl.py"),
+                *arguments,
+            ]
+            launcher = "local_cuda"
+            environment = os.environ.copy()
+            existing = environment.get("PYTHONPATH")
+            environment["PYTHONPATH"] = os.pathsep.join(
+                [
+                    str(self.source_path.resolve()),
+                    str(self.dependency_site.resolve()),
+                    *([existing] if existing else []),
+                ]
+            )
+        else:
+            wsl_arguments = [
+                _wsl_path(Path(value)) if index in {1, 5} else value
+                for index, value in enumerate(arguments)
+            ]
+            command = [
+                "wsl",
+                "-d",
+                self.wsl_distribution,
+                "--",
+                self.python_path,
+                _wsl_path(root / "tools" / "run_sam2_server_wsl.py"),
+                *wsl_arguments,
+            ]
+            launcher = "wsl_cuda"
+            environment = None
         try:
             process = subprocess.Popen(
                 command,
@@ -136,10 +179,11 @@ class WslSam2Provider:
                 stderr=subprocess.PIPE,
                 text=True,
                 bufsize=1,
+                **({"env": environment} if environment is not None else {}),
             )
         except OSError as exc:
             image_path.unlink(missing_ok=True)
-            raise Sam2Error(f"SAM2 WSL launch failed: {exc}") from exc
+            raise Sam2Error(f"SAM2 {launcher} launch failed: {exc}") from exc
         ready_line = (
             _readline_with_timeout(process.stdout, self.startup_timeout_sec)
             if process.stdout is not None
@@ -169,6 +213,7 @@ class WslSam2Provider:
             "precision": "fp16",
             "device_type": "cuda",
             "embedding_count": 1,
+            "source_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
         }
         mismatches = {
             key: (ready.get(key), value)
@@ -179,7 +224,21 @@ class WslSam2Provider:
             _stop_process(process)
             image_path.unlink(missing_ok=True)
             raise Sam2Error(f"SAM2 ready response violates governed contract: {mismatches}")
-        return WslSam2Embedding(process, source.shape[:2], model, self.work_dir, image_path)
+        if "+cu128" not in str(ready.get("torch", "")):
+            _stop_process(process)
+            image_path.unlink(missing_ok=True)
+            raise Sam2Error("SAM2 ready response requires the governed cu128 PyTorch runtime")
+        runtime_document = {
+            "launcher": launcher,
+            "python": str(self.local_cuda_python or self.python_path),
+            **ready,
+        }
+        (self.work_dir / "runtime.json").write_text(
+            json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        return WslSam2Embedding(
+            process, source.shape[:2], model, self.work_dir, image_path, launcher
+        )
 
     def predict(
         self, embedding: WslSam2Embedding, plan: PromptPlan, *, multimask_output: bool
@@ -198,7 +257,11 @@ class WslSam2Provider:
             "positive_points": [list(point) for point in plan.positive_points],
             "negative_points": [list(point) for point in plan.negative_points],
             "multimask_output": multimask_output,
-            "output": _wsl_path(output_path),
+            "output": (
+                str(output_path.resolve())
+                if embedding.launcher == "local_cuda"
+                else _wsl_path(output_path)
+            ),
         }
         try:
             process.stdin.write(json.dumps(request, separators=(",", ":")) + "\n")
@@ -409,8 +472,6 @@ def run_s07_production(
         )
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
         raise Sam2Error(f"S05 prompts invalid: {exc}") from exc
-    if not plans:
-        raise Sam2Error("S07 has no eligible full-frame prompt plans")
     labels = [plan.label for plan in plans]
     if len(set(labels)) != len(labels):
         raise Sam2Error("S07 prompt labels must be unique")

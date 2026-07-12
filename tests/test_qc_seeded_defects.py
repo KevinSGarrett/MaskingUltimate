@@ -59,6 +59,7 @@ def clean_package(tmp_path: Path) -> Path:
     waist[45:50, 20:100] = 255
     write_binary_mask(package / "masks_regions" / "waist.png", waist)
     manifest = valid_manifest()
+    manifest["workflow_status"] = "corrected"
     manifest["source"].update(
         {
             "source_file": "source.png",
@@ -174,6 +175,7 @@ def test_human_approval_cannot_override_block(clean_package: Path, tmp_path: Pat
     assert not (package / ".maskfactory_frozen.json").exists()
     manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["qa"]["qa_overall"] == "fail"
+    assert manifest["workflow_status"] == "in_review"
 
 
 def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
@@ -209,6 +211,7 @@ def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
     assert manifest["review"]["reviewer"] == "kevin"
     assert manifest["review"]["review_time_sec"] == 720
     assert manifest["qa"]["qa_overall"] == "pass"
+    assert manifest["workflow_status"] == "approved_gold"
     assert {record["label"] for record in manifest["inpaint_derivatives"]} == {
         "left_hand",
         "right_hand",
@@ -318,4 +321,8 @@ def test_multi_instance_approval_freezes_all_and_registers_image_once(
     assert all(result.passed for result in results)
     assert dvc_calls == [image_root]
     assert all((root / ".maskfactory_frozen.json").is_file() for root in roots)
+    assert all(
+        json.loads((root / "manifest.json").read_text())["workflow_status"] == "approved_gold"
+        for root in roots
+    )
     assert not tuple((image_root / "instances").glob(".*.image-approval-*"))

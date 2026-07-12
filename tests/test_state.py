@@ -167,6 +167,15 @@ def test_pipeline_progress_advances_exact_chain_and_never_regresses(tmp_path: Pa
                 ("img_progress",),
             ).fetchone()
         ) == ("in_review", "S12", "t3")
+    assert persist_image_progress(database, "img_progress", "corrected", updated_at="t4")
+    assert persist_image_progress(database, "img_progress", "approved_gold", updated_at="t5")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("approved_gold", "S13", "t5")
 
 
 def test_pipeline_progress_refuses_invalid_or_terminal_targets(tmp_path: Path) -> None:
@@ -178,7 +187,7 @@ def test_pipeline_progress_refuses_invalid_or_terminal_targets(tmp_path: Path) -
             ("img_terminal", "a" * 64, "rejected", "S01", 1, "t0", "t0"),
         )
     with pytest.raises(InvalidStatusTransition, match="invalid pipeline progress target"):
-        persist_image_progress(database, "img_terminal", "approved_gold")
+        persist_image_progress(database, "img_terminal", "deprecated")
     with pytest.raises(InvalidStatusTransition, match="rerun S01 recovery"):
         persist_image_progress(database, "img_terminal", "drafted")
 

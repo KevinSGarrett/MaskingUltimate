@@ -1484,7 +1484,15 @@ def cvat_push(
     default=Path("data/cvat/tasks"),
     show_default=True,
 )
-def cvat_pull(image_ids: tuple[str, ...], config_path: Path, task_records: Path) -> None:
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def cvat_pull(
+    image_ids: tuple[str, ...], config_path: Path, task_records: Path, database: Path
+) -> None:
     """Pull human-corrected annotations from CVAT."""
     from .cvat_bridge.client import CvatApiError, CvatClient
     from .cvat_bridge.pull import pull_images
@@ -1495,6 +1503,7 @@ def cvat_pull(image_ids: tuple[str, ...], config_path: Path, task_records: Path)
             image_ids,
             config_path=config_path,
             task_records=task_records,
+            database=database,
         )
     except (CvatApiError, OSError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
@@ -1512,7 +1521,19 @@ def cvat_pull(image_ids: tuple[str, ...], config_path: Path, task_records: Path)
     default=Path("data/packages"),
     show_default=True,
 )
-def package(image_id: str, reviewer: str, minutes: float, packages_root: Path) -> None:
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def package(
+    image_id: str,
+    reviewer: str,
+    minutes: float,
+    packages_root: Path,
+    database: Path,
+) -> None:
     """S13: package + freeze an approved gold image (re-runs QA)."""
     from .packager import (
         ApprovalRequiredError,
@@ -1552,6 +1573,9 @@ def package(image_id: str, reviewer: str, minutes: float, packages_root: Path) -
             review_minutes=minutes,
             approved=True,
         )
+        from .state import persist_image_progress
+
+        persist_image_progress(database, image_id, "approved_gold")
     except PackageBlockedError as exc:
         for result in exc.results:
             if not result.passed:

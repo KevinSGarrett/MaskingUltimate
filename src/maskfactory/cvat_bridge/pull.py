@@ -16,7 +16,12 @@ from ..fusion.mapbuild import export_binaries, fuse_package
 from ..io.png_strict import read_mask, write_binary_mask
 from ..ontology import get_ontology
 from ..qa.checks import run_format_integrity
-from ..review_package import snapshot_draft_baseline
+from ..review_package import (
+    refresh_review_package_derivations,
+    snapshot_draft_baseline,
+    update_package_workflow_status,
+)
+from ..state import persist_image_progress
 from .client import DEFAULT_CONFIG, CvatApiError, CvatClient, load_cvat_config
 from .labelmap import CvatLabelMap, decode_mask_rle
 from .push import DEFAULT_TASK_RECORDS, _load_mapping
@@ -28,6 +33,7 @@ def pull_images(
     *,
     config_path: Path = DEFAULT_CONFIG,
     task_records: Path = DEFAULT_TASK_RECORDS,
+    database: Path | None = None,
 ) -> tuple[int, ...]:
     config = load_cvat_config(config_path)
     _project_id, mapping = _load_mapping(config)
@@ -45,6 +51,8 @@ def pull_images(
     for record in records:
         _pull_task(client, record, mapping)
         completed.append(int(record["task_id"]))
+    if database is not None:
+        _persist_corrected_images(records, database)
     return tuple(completed)
 
 
@@ -70,7 +78,10 @@ def _pull_task(client: CvatClient, record: dict[str, Any], mapping: CvatLabelMap
         _seed_fusion_inputs(package)
         for name in frame_record.get("pushed_labels", []):
             _write_corrected(package, name, np.zeros(shape, dtype=np.uint8))
-        attributes: dict[str, dict[str, str]] = {}
+        attributes: dict[str, dict[str, str]] = {
+            name: {"visibility": "not_visible", "ambiguous": "false", "notes": ""}
+            for name in frame_record.get("pushed_labels", [])
+        }
         for raw_shape in by_frame.get(int(frame_record["frame"]), []):
             name = mapping.ontology_name(int(raw_shape["label_id"]))
             mask = decode_mask_rle(raw_shape["points"], shape=shape)
@@ -94,6 +105,39 @@ def _pull_task(client: CvatClient, record: dict[str, Any], mapping: CvatLabelMap
         backup_path = package / "annotations" / "cvat_task_backup.zip"
         backup_path.parent.mkdir(parents=True, exist_ok=True)
         backup_path.write_bytes(backup)
+        refresh_review_package_derivations(package)
+        update_package_workflow_status(package, "corrected")
+
+
+def _persist_corrected_images(records: list[dict[str, Any]], database: Path) -> None:
+    """Advance SQLite only after every recorded instance package reached corrected."""
+    roots_by_image: dict[str, set[Path]] = {}
+    for record in records:
+        for frame in record.get("frames", []):
+            roots_by_image.setdefault(str(frame["image_id"]), set()).add(
+                Path(frame["package_root"]).resolve()
+            )
+    for image_id, recorded_roots in sorted(roots_by_image.items()):
+        sample = next(iter(recorded_roots))
+        if sample.parent.name == "instances":
+            expected_roots = {
+                path.parent.resolve()
+                for path in sample.parent.glob("p*/manifest.json")
+                if path.parent.name[1:].isdigit()
+            }
+        else:
+            expected_roots = {sample}
+        if recorded_roots != expected_roots:
+            raise CvatApiError(
+                f"CVAT pull records do not cover every package instance for {image_id}"
+            )
+        for root in expected_roots:
+            manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+            if manifest.get("workflow_status") != "corrected":
+                raise CvatApiError(
+                    f"CVAT pull did not correct every package instance for {image_id}"
+                )
+        persist_image_progress(database, image_id, "corrected")
 
 
 def _seed_fusion_inputs(package: Path) -> None:

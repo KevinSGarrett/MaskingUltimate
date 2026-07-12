@@ -46,6 +46,9 @@ PIPELINE_PROGRESS_STAGE = {
     "auto_qa": "S10",
     "vlm_qa": "S11",
     "in_review": "S12",
+    "corrected": "S12",
+    "approved_gold": "S13",
+    "exported": "S13",
 }
 ALLOWED_STATUS_TRANSITIONS: dict[str, frozenset[str]] = {
     status: frozenset({MAIN_STATUS_CHAIN[index + 1], "rejected", "quarantined"})

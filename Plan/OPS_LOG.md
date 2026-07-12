@@ -3898,3 +3898,19 @@ reindex repair:                 nested derived manifests ignored; package-backed
 reindex --dry-run:              clean=true, missing=[], stale={}, extra=[]
 evidence:                        qa/live_verification/gc_postcheck_and_s12_package_completion_20260712.json
 validation:                      671 tests collected/passed; Ruff and ruff-format clean
+
+## 2026-07-12 - Corrected-to-gold workflow authority wired end to end
+
+**Result:** PASS implementation readiness; live human correction/approval remains pending Kevin.
+
+CVAT pull completion:            all instance task records required before image transition; absent shapes sealed human-corrected/not_visible
+artifact refresh:               corrected maps re-fused; atomics/derivations regenerated; per-label hashes, areas, boxes, components and full file inventory resealed
+package transition:             in_review -> corrected only after every pN succeeds
+SQLite transition:              in_review/S12 -> corrected/S12 through the same successful pull boundary
+gold precondition:              package command refuses approval unless workflow_status=corrected
+gold transition:                every pN stamped approved_gold with shared approval timestamp; SQLite advances approved_gold/S13 only after atomic package success
+bounce behavior:                any package BLOCK returns package workflow to in_review; human approval remains non-overridable
+CLI contracts:                  cvat pull and package both expose explicit --database (default data/maskfactory.sqlite)
+live authority:                 3 images remain in_review; corrected=0; approved_gold=0; no manual correction or approval claimed
+evidence:                        qa/live_verification/corrected_gold_workflow_contract_20260712.json
+validation:                      43 focused lifecycle tests; 671 full tests; Ruff and ruff-format clean

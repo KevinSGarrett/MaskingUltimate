@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-12T15:25:00Z",
+  "cvat_pull_contract": {
+    "cli_database_option": "data/maskfactory.sqlite",
+    "requires_all_instance_task_records": true,
+    "absent_shapes": "sealed as human-corrected not_visible masks",
+    "corrected_artifacts": "fusion, atomics, derivations, per-label hashes/geometry, complete file inventory",
+    "package_target": "corrected",
+    "sqlite_target": "corrected/S12",
+    "partial_multi_instance_transition_allowed": false
+  },
+  "gold_approval_contract": {
+    "precondition": "every package workflow_status is corrected",
+    "package_target": "approved_gold",
+    "sqlite_target": "approved_gold/S13",
+    "qa_bounce_target": "in_review",
+    "multi_instance_approval": "byte-atomic with one image-level DVC registration",
+    "human_approval_bypassed": false
+  },
+  "live_authority_boundary": {
+    "current_in_review_images": 3,
+    "current_corrected_images": 0,
+    "current_approved_gold_images": 0,
+    "cvat_tasks_remain_pending_kevin": true,
+    "live_gold_claimed": false
+  },
+  "validation": {
+    "focused_state_cvat_package_tests": 43,
+    "pytest_collected_and_passed": 671,
+    "ruff": "pass",
+    "ruff_format": "pass",
+    "cli_help_verified": ["cvat pull --database", "package --database"]
+  }
+}

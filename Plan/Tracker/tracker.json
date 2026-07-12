@@ -1853,10 +1853,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "The legal state machine and SQL constraints remain enforced, and production success paths now durably invoke it at D1/S09, S10, S11, and S12. A bounded reconciler repaired 20 live rows without skips or regressions: 16 auto_qa, 1 vlm_qa, 3 in_review. Terminal recovery remains explicit at S01. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json; 671-test full suite passes.",
+      "evidence": "The production state machine is now invoked through the complete implemented lifecycle: S09 drafted, S10 auto_qa, S11 vlm_qa, S12 in_review, successful all-instance CVAT pull corrected, and atomic S13 approval approved_gold. Package manifests and SQLite advance together; reruns cannot regress, partial multi-instance pulls cannot advance, and BLOCK bounce returns package workflow to in_review. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json and qa/live_verification/corrected_gold_workflow_contract_20260712.json; 671 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T15:04:01+00:00",
+      "updated_at": "2026-07-12T15:36:51+00:00",
       "orphaned": false
     },
     "MF-P1-02.03": {
@@ -2478,10 +2478,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Pull decodes corrected RLE/attributes through png_strict, retains 1.53MB live task backup, and automatically re-fuses, re-exports, re-derives, and writes re-QA results.",
+      "evidence": "CVAT pull decodes corrected RLE/attributes, retains task backup, re-fuses/re-exports/re-derives/re-QAs, refreshes per-label and full-file hashes, and now requires all pN task records before atomically advancing every package plus SQLite to corrected/S12. Absent shapes are explicitly sealed human_corrected/not_visible. Evidence qa/live_verification/corrected_gold_workflow_contract_20260712.json; 43 focused and 671 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T02:47:46+00:00",
+      "updated_at": "2026-07-12T15:36:50+00:00",
       "orphaned": false
     },
     "MF-P1-06.04": {
@@ -2631,10 +2631,10 @@
           "text": "2026-07-12 hardening: multi-person approval is now all-or-nothing across every pN; no partial gold state can survive a seeded image-level DVC failure."
         }
       ],
-      "evidence": "Packager enforces non-overridable QC before confirmation, stamps review/gold/QA, freezes and hashes all files, then DVC-adds. Image-level transaction now preflights every pN, freezes all instances together, registers the common image root once, and restores every package byte-for-byte on finalization/DVC failure. Seeded failure and success tests: qa/live_verification/atomic_image_approval_20260712.json.",
+      "evidence": "Package approval still enforces non-overridable QCs and image-level atomic rollback, and now requires workflow_status=corrected before approval. Success stamps every pN and SQLite approved_gold/S13 only after the package transaction succeeds; any BLOCK bounces package workflow to in_review. No live approval is claimed. Evidence qa/live_verification/corrected_gold_workflow_contract_20260712.json and qa/live_verification/atomic_image_approval_20260712.json; 671 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T11:34:27+00:00",
+      "updated_at": "2026-07-12T15:36:51+00:00",
       "orphaned": false
     },
     "MF-P1-07.06": {

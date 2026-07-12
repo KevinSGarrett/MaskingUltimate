@@ -73,6 +73,9 @@ def approve_package(
     existing_blocks = _existing_report_blocks(package_root)
     if existing_blocks:
         raise PackageBlockedError(existing_blocks, _failing_panels(package_root, existing_blocks))
+    manifest = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))
+    if manifest.get("workflow_status") != "corrected":
+        raise ApprovalRequiredError("CVAT pull/correction must complete before gold approval")
 
     run_autofix_once(package_root)
     _refresh_files(package_root)
@@ -347,6 +350,8 @@ def _stamp_gold_manifest(
         {"required": False, "reviewer": None, "result": "not_required", "at": None},
     )
     manifest["qa"] = {"qa_report_file": "qa_report.json", "qa_overall": "pass", "qa_score": 1.0}
+    manifest["workflow_status"] = "approved_gold"
+    manifest["workflow_updated_at"] = timestamp.isoformat()
     _write_json_atomic(path, manifest)
 
 
@@ -360,6 +365,8 @@ def _bounce(package_root: Path, results: tuple[QcResult, ...]) -> None:
         if isinstance(entry, dict) and entry.get("status") != "n/a":
             entry["status"] = "rejected_needs_fix"
     manifest.setdefault("qa", {}).update({"qa_overall": "fail", "qa_score": 0.0})
+    manifest["workflow_status"] = "in_review"
+    manifest["workflow_updated_at"] = datetime.now(UTC).isoformat()
     _write_json_atomic(path, manifest)
     _write_json_atomic(
         package_root / "qa" / "package_block.json",

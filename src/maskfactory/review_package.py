@@ -301,6 +301,7 @@ def refresh_review_package_derivations(package_root: Path) -> bool:
         return False
     derive_package(package_root)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    _refresh_manifest_part_artifacts(manifest["parts"], package_root)
     _complete_nonmaterial_part_states(manifest["parts"], package_root, get_ontology())
     manifest["files"] = {
         path.relative_to(package_root).as_posix(): sha256_file(path)
@@ -312,6 +313,30 @@ def refresh_review_package_derivations(package_root: Path) -> bool:
         raise RuntimeError(f"derived-mask refresh produced invalid manifest: {issues}")
     write_json_atomic(manifest_path, manifest)
     return True
+
+
+def _refresh_manifest_part_artifacts(parts: dict[str, Any], package_root: Path) -> None:
+    """Refresh per-label hashes and geometry after CVAT/fusion changes authority maps."""
+    for name, entry in parts.items():
+        if not isinstance(entry, dict) or not entry.get("mask_file"):
+            continue
+        path = package_root / str(entry["mask_file"])
+        if not path.is_file():
+            raise RuntimeError(f"manifest mask_file is missing for {name}: {path}")
+        mask = read_mask(path) > 0
+        ys, xs = np.nonzero(mask)
+        entry.update(
+            {
+                "mask_sha256": sha256_file(path),
+                "mask_area_px": int(mask.sum()),
+                "mask_bbox": (
+                    [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+                    if len(xs)
+                    else None
+                ),
+                "components": int(ndimage.label(mask)[1]),
+            }
+        )
 
 
 def _complete_nonmaterial_part_states(parts: dict[str, Any], package_root: Path, authority) -> None:

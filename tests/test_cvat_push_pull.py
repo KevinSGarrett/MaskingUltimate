@@ -13,6 +13,7 @@ from maskfactory.cvat_bridge.pull import pull_images
 from maskfactory.cvat_bridge.push import push_images
 from maskfactory.fusion.mapbuild import export_binaries
 from maskfactory.io.png_strict import read_mask, write_label_map
+from maskfactory.state import initialize_database, reader_connection, writer_connection
 from test_manifest_schema import valid_manifest
 
 
@@ -79,6 +80,8 @@ def _setup(tmp_path: Path) -> tuple[Path, Path, Path, str]:
     write_label_map(package / "label_map_material.png", material, bits=8)
     export_binaries(package)
     manifest = valid_manifest()
+    manifest["workflow_status"] = "in_review"
+    manifest["parts"] = {"left_forearm": manifest["parts"]["left_forearm"]}
     manifest["source"].update({"source_width": 64, "source_height": 48})
     manifest["parts"]["left_forearm"]["visibility"] = "visible"
     (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -128,6 +131,13 @@ def test_push_then_pull_unedited_is_pixel_identical_and_retains_context_backup(
 ) -> None:
     packages, package, config, image_id = _setup(tmp_path)
     records = tmp_path / "tasks"
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (image_id, "a" * 64, "in_review", "S12", 1, "t0", "t0"),
+        )
     before = read_mask(package / "masks" / "left_forearm.png")
     client = FakeCvat()
     task_ids = push_images(
@@ -148,7 +158,13 @@ def test_push_then_pull_unedited_is_pixel_identical_and_retains_context_backup(
     assert any("related_images/" in name and "all_parts_overlay" in name for name in names)
     assert any("related_images/" in name and "disagreement_heatmap" in name for name in names)
 
-    assert pull_images(client, (image_id,), config_path=config, task_records=records) == (100,)
+    assert pull_images(
+        client,
+        (image_id,),
+        config_path=config,
+        task_records=records,
+        database=database,
+    ) == (100,)
     after = read_mask(package / "masks" / "left_forearm.png")
     assert np.array_equal(after, before)
     assert (package / "annotations" / "cvat_task_backup.zip").read_bytes().startswith(b"PK")
@@ -156,6 +172,13 @@ def test_push_then_pull_unedited_is_pixel_identical_and_retains_context_backup(
     assert qa["trigger"] == "cvat_pull"
     manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["parts"]["left_forearm"]["status"] == "human_corrected"
+    assert manifest["workflow_status"] == "corrected"
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage FROM images WHERE image_id = ?", (image_id,)
+            ).fetchone()
+        ) == ("corrected", "S12")
 
 
 def test_two_people_create_two_instance_tasks_plus_overview_and_pull_routes_by_instance(

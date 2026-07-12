@@ -28,7 +28,7 @@ stages:
   S05: {enabled: true}
   S06: {enabled: true, box_threshold: 0.30, text_threshold: 0.25, local_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/groundingdino/856dde20aee659246248e20734ef9ba5214f5e44", dependency_site: "models/runtime_cache/groundingdino_deps", hf_home: "models/runtime_cache/huggingface"}
   S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
-  S08: {enabled: true}
+  S08: {enabled: true, coverage_policy: seed_then_nearest}
   S08.5: {enabled: true, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/detectron2/02b5c4e295e990042a714712c21dc79b731e8833", dependency_site: "models/runtime_cache/detectron2_deps"}
   S09: {enabled: true}
   S09.5: {enabled: true}

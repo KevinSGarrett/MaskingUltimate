@@ -3361,3 +3361,28 @@ transaction hygiene:        zero temporary stage directories after the batch
 performance fix:            thin-structure components use bounded label slices instead of rescanning the full frame per component
 focused regression:         58 S08/DensePose/config/production tests pass
 ```
+## 2026-07-12 05:06 UTC - Live corpus completed S09/S09.5 and strict D1 draft contracts
+**Item:** MF-P2-08.04 96% -> 98% partial
+**Result:** Every eligible promoted instance now has structurally verified master maps and a full-resolution 56-atomic draft contract; semantic G2/gold evidence remains open.
+
+```
+initial hard failure:       S09 correctly rejected S08 material ID 0 inside projected silhouettes
+root cause:                 SAM2-refined material regions could shrink valid parser seeds; true parser-background fringe also remained unassigned
+coverage policy:            restore original evidence-backed seed labels first, then nearest-fill only remaining draft fringe; background stays 0
+cache safety:               S08 coverage_policy config changes the stage hash, forcing stale material maps to rerun
+performance safety:         thin-structure connected components use bounded label slices, avoiding full-frame scan per component
+live corpus:                29/29 eligible promoted instances across 18 source images committed S09 and D1
+terminal routing:           2 no_person sources rejected at S01; 1 low-ratio silhouette remains needs_review at S02
+instance reconciliation:    18/18 eligible source manifests QC-035 PASS
+D1 contract:                29 contracts; IDs 0..55 exactly once; 54 enabled plus disabled empty ears 54/55
+independent second audit:   1,624 strict binary PNGs re-decoded; hashes, non-overlap, full coverage, and exact PART-map reproduction all PASS
+map invariants:             PART/MATERIAL nonzero at every silhouette pixel and 0 outside; zero temp directories; zero audit failures
+material restoration:      0..260,733 evidence-seed pixels restored per instance
+material nearest fill:      corpus 3.4401% of visible pixels; worst case 58.4803% (img_7b7a3c7d5dd3/p2)
+quality boundary:           nearest-filled pixels are draft-only uncertainty, not gold semantic evidence; corrected-gold review remains mandatory
+durable audit:              qa/live_verification/s09_d1_corpus_20260712.json
+focused regression:         50 S08/S09/production tests pass
+literal draft probe:        governed root drop refused, then canonical stripped-byte duplicate remained quarantined because it is not the original hash
+probe cleanup:              test-only quarantine row/manifest/input removed after exact identity check; real ingested image stayed ingested
+remaining completion gate:  fresh governed incoming original + corrected-gold G2 measurements and visible-part correctness
+```

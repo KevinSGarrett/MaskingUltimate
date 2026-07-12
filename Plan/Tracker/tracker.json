@@ -4014,7 +4014,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 96,
+      "percent_complete": 98,
       "notes": [
         {
           "ts": "2026-07-11T06:16:28+00:00",
@@ -4080,12 +4080,17 @@
           "ts": "2026-07-11T19:15:18+00:00",
           "actor": "ai_agent",
           "text": "Evidence correction: the focused production/config/intake/mapbuild selection contains 47 tests (not 50); all 47 passed. Full-suite count remains 531 passed. No scope or status change."
+        },
+        {
+          "ts": "2026-07-12T05:07:30+00:00",
+          "actor": "ai_agent",
+          "text": "Live production advanced all 29 eligible promoted instances across 18 source images through S09/S09.5 and full-resolution D1 materialization. Independent second audit re-decoded and verified 1,624 strict atomic PNGs: exact hashes, no overlap, complete coverage, exact reproduction of every authoritative PART map, 18/18 QC-035 reconciliation passes, and zero temporary directories. S08 coverage bug was fixed by restoring evidence seeds before draft-only nearest fringe fill. Quality caveat remains explicit: nearest fill averaged 3.4401% and reached 58.4803% on one parser-poor instance, so semantic correctness is not claimed. Literal fresh-file maskfactory draft and corrected-gold G2 measurements remain open."
         }
       ],
-      "evidence": "CLI help proves maskfactory draft IMAGE single entry point. production.materialize_d1_atomic_drafts enforces contiguous IDs 0..55, full-source geometry, strict PNGs, atomic promotion, hashes, exclusivity/coverage, and exact master-map reproduction. Tests cover 1/2/3-person outer loop, 56-mask materialization/repeat, disabled-ID refusal, one-command ingest/run/contract output, and GPU-lock forwarding. Focused selection: 47 passed. Ruff/format clean across 247 files; ontology current; full suite 531 passed. Missing required completion evidence: real governed source, authoritative WSL inference, visible-part correctness, G2 initial measurements against corrected gold.",
+      "evidence": "Production run proves S09/S09.5 and D1 structural contracts on 29 eligible promoted instances across 18 source images. qa/live_verification/s09_d1_corpus_20260712.json records 29 verified contracts, 1,624 independently re-decoded strict binary PNGs, exact hash/non-overlap/coverage/PART-map reproduction, 18 QC-035-pass source manifests, and zero temp directories/failures. Remaining required completion evidence: one genuinely fresh governed original through the literal maskfactory draft intake command, corrected-gold G2 metrics, and visible-part semantic correctness; nearest-filled material draft uncertainty is explicitly not gold evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T19:15:18+00:00",
+      "updated_at": "2026-07-12T05:07:30+00:00",
       "orphaned": false
     },
     "MF-P2-EXIT": {

@@ -273,6 +273,40 @@ def build_material_map(regions: Mapping[str, np.ndarray], silhouette: np.ndarray
     return output
 
 
+def restore_material_coverage(
+    refined_map: np.ndarray,
+    seed_map: np.ndarray,
+    silhouette: np.ndarray,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """Restore refinement shrinkage, then nearest-fill parser-background silhouette fringe."""
+    visible = _mask(silhouette, "silhouette")
+    output = np.asarray(refined_map).astype(np.uint8, copy=True)
+    seed = np.asarray(seed_map)
+    if output.shape != visible.shape or seed.shape != visible.shape:
+        raise MaterialError("material coverage inputs differ in shape")
+    output[~visible] = 0
+    initially_unassigned = visible & (output == 0)
+    restored = initially_unassigned & (seed > 0)
+    output[restored] = seed[restored]
+    nearest_fill = visible & (output == 0)
+    if nearest_fill.any():
+        assigned = visible & (output > 0)
+        if not assigned.any():
+            raise MaterialError("material evidence assigns no silhouette pixels")
+        nearest = ndimage.distance_transform_edt(
+            ~assigned, return_distances=False, return_indices=True
+        )
+        output[nearest_fill] = output[tuple(nearest[:, nearest_fill])]
+    if np.any(output[visible] == 0):
+        raise MaterialError("material coverage restoration left silhouette pixels unassigned")
+    return output, {
+        "initially_unassigned_pixel_count": int(initially_unassigned.sum()),
+        "seed_restored_pixel_count": int(restored.sum()),
+        "nearest_fill_pixel_count": int(nearest_fill.sum()),
+        "final_unassigned_pixel_count": 0,
+    }
+
+
 def run_s08_production(
     *,
     source_path: Path,
@@ -461,7 +495,10 @@ def run_s08_production(
         finally:
             if embedding is not None and hasattr(provider, "close"):
                 provider.close(embedding)  # type: ignore[attr-defined]
-    material_map = build_material_map(regions, visible)
+    material_map, coverage = restore_material_coverage(
+        build_material_map(regions, visible), draft.material_map, visible
+    )
+    regions = {name: material_map == material_id for name, material_id in MATERIAL_IDS.items()}
     output_dir = Path(output_dir)
     write_label_map(output_dir / "material_draft.png", material_map, bits=8)
     evidence = dict(draft.evidence)
@@ -480,6 +517,7 @@ def run_s08_production(
                 "fallback": None,
                 "evidence": evidence,
                 "sam2_refinement": refinement_metrics,
+                "coverage": coverage,
                 "pixel_counts": {name: int(mask.sum()) for name, mask in regions.items()},
             },
             indent=2,

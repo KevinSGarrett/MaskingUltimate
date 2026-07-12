@@ -15,6 +15,7 @@ from maskfactory.stages.s08_material import (
     detect_sheer,
     fuse_material_evidence,
     refine_material_regions,
+    restore_material_coverage,
     run_s08_production,
     thin_structure_pass,
 )
@@ -240,6 +241,29 @@ def test_s08_fusion_skin_excludes_clothing_and_specifics_require_evidence() -> N
     )
     assert not no_specific.regions["bra"].any()
     assert np.all(no_specific.material_map[sapiens_clothing] == 3)
+
+
+def test_material_coverage_restores_seed_then_fills_true_parser_fringe() -> None:
+    visible = np.ones((8, 10), dtype=bool)
+    seed = np.ones(visible.shape, dtype=np.uint8)
+    seed[:, 5:] = 6
+    seed[0, 0] = 0
+    refined = np.zeros_like(seed)
+    refined[2:6, 2:4] = 1
+    refined[2:6, 6:8] = 6
+
+    restored, metrics = restore_material_coverage(refined, seed, visible)
+
+    assert not np.any(restored[visible] == 0)
+    assert restored[4, 0] == 1
+    assert restored[4, 9] == 6
+    assert restored[0, 0] == 1
+    assert metrics == {
+        "initially_unassigned_pixel_count": 64,
+        "seed_restored_pixel_count": 63,
+        "nearest_fill_pixel_count": 1,
+        "final_unassigned_pixel_count": 0,
+    }
 
 
 def test_thin_structure_pass_classifies_vertical_shoulder_and_horizontal_iliac() -> None:

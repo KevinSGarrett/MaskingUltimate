@@ -3716,3 +3716,19 @@ ordering:                       numeric pN discovery remains correct for p10 and
 human authority:                no CVAT correction/approval claimed; live review remains pending Kevin
 evidence:                       qa/live_verification/atomic_image_approval_20260712.json
 validation:                     22 focused and 643 full tests passed; Ruff/format clean
+
+## 2026-07-12 - Doctor inference waits bounded and results streamed
+
+**Result:** PASS - the environment doctor now completes with named evidence instead of appearing frozen behind multi-minute local inference waits.
+
+observed before:                 no output before a 120.5 s external termination
+root cause:                      sequential Nuclio/Ollama HTTP waits allowed 120 s / 240 s
+bounded contract:                10 s ordinary local API; 45 s local inference request
+cold Qwen measurement:           33.012 s, strict {image_received:true}; supports the 45 s ceiling
+warm live doctor:                17.966 s; PASS=7 WARN=1 FAIL=3
+live passes:                     CVAT 2.24.0/project, pth-sam2, qwen2.5vl image, PNG, SQLite, gpu.lock
+remaining failures:              three existing sandbox-identity Ubuntu-22.04 checks only
+disk:                            WARN at 75.1 GiB; still above the 75 GiB ingest hard stop
+observability:                   each completed named result is emitted immediately
+evidence:                        qa/live_verification/doctor_bounded_streaming_20260712.json
+validation:                      12 focused and 645 full tests passed; Ruff/format clean

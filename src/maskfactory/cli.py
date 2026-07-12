@@ -11,7 +11,7 @@ from pathlib import Path
 import click
 
 from . import __version__
-from .doctor import run_doctor
+from .doctor import LOCAL_INFERENCE_TIMEOUT_SECONDS, run_doctor
 from .models import (
     DEFAULT_CATALOG,
     DEFAULT_REGISTRY,
@@ -1868,11 +1868,22 @@ def benchmark_serving(
 @main.command()
 def doctor() -> None:
     """Environment health checks (MF-P0-07)."""
-    results = run_doctor()
-    for result in results:
+    emitted = 0
+
+    def emit(result) -> None:
+        nonlocal emitted
         click.echo(f"[{result.status}] {result.name}: {result.detail}")
         if result.hint:
             click.echo(f"  FIX: {result.hint}")
+        emitted += 1
+
+    click.echo(
+        "doctor: running bounded local checks "
+        f"({LOCAL_INFERENCE_TIMEOUT_SECONDS}s maximum per inference request)"
+    )
+    results = run_doctor(on_result=emit)
+    for result in results[emitted:]:
+        emit(result)
     statuses = ("PASS", "WARN", "SKIP", "FAIL")
     counts = {status: sum(result.status == status for result in results) for status in statuses}
     click.echo("doctor summary: " + " ".join(f"{status}={counts[status]}" for status in statuses))

@@ -11,6 +11,8 @@ from maskfactory.cli import main
 from maskfactory.doctor import (
     CVAT_BASE_URL,
     DEFAULT_CHECKS,
+    LOCAL_API_TIMEOUT_SECONDS,
+    LOCAL_INFERENCE_TIMEOUT_SECONDS,
     CheckResult,
     check_cvat_project,
     check_disk_free,
@@ -24,6 +26,11 @@ from maskfactory.doctor import (
 
 def test_cvat_uses_traefik_canonical_host() -> None:
     assert CVAT_BASE_URL == "http://localhost:8080"
+
+
+def test_local_doctor_requests_have_bounded_operational_timeouts() -> None:
+    assert LOCAL_API_TIMEOUT_SECONDS == 10
+    assert LOCAL_INFERENCE_TIMEOUT_SECONDS == 45
 
 
 def test_default_doctor_battery_covers_every_p0_requirement() -> None:
@@ -56,6 +63,20 @@ def test_run_doctor_preserves_statuses_and_converts_unexpected_exceptions() -> N
     assert results[1].status == "FAIL"
     assert "boom" in results[1].detail
     assert results[1].hint
+
+
+def test_run_doctor_streams_each_result_in_stable_order() -> None:
+    def passing() -> CheckResult:
+        return CheckResult("passing", "PASS", "ok")
+
+    def crashing() -> CheckResult:
+        raise RuntimeError("boom")
+
+    streamed = []
+    results = run_doctor([passing, crashing], on_result=streamed.append)
+
+    assert streamed == results
+    assert [result.name for result in streamed] == ["passing", "crashing"]
 
 
 def test_default_style_doctor_short_circuits_repeated_wsl_failures() -> None:

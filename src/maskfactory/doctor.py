@@ -29,6 +29,8 @@ from .models import verify_registered_model_smokes
 
 ROOT = Path(__file__).resolve().parents[2]
 CVAT_BASE_URL = "http://localhost:8080"
+LOCAL_API_TIMEOUT_SECONDS = 10
+LOCAL_INFERENCE_TIMEOUT_SECONDS = 45
 Status = Literal["PASS", "WARN", "SKIP", "FAIL"]
 
 
@@ -88,7 +90,7 @@ def _json_request(
     method: str = "GET",
     payload: dict | None = None,
     token: str | None = None,
-    timeout: int = 30,
+    timeout: int = LOCAL_API_TIMEOUT_SECONDS,
 ) -> dict | list:
     headers = {"User-Agent": "MaskFactory/0.0.1"}
     if token:
@@ -265,7 +267,7 @@ def check_nuclio_interactor() -> CheckResult:
             base + "/api/lambda/functions/pth-sam2",
             method="POST",
             token=token,
-            timeout=120,
+            timeout=LOCAL_INFERENCE_TIMEOUT_SECONDS,
             payload={
                 "task": int(task["id"]),
                 "frame": 0,
@@ -295,7 +297,7 @@ def check_ollama_image() -> CheckResult:
         response = _json_request(
             "http://127.0.0.1:11434/api/chat",
             method="POST",
-            timeout=240,
+            timeout=LOCAL_INFERENCE_TIMEOUT_SECONDS,
             payload={
                 "model": "qwen2.5vl:7b",
                 "stream": False,
@@ -496,20 +498,28 @@ def run_doctor(
     checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS,
     *,
     preflight_wsl: bool | None = None,
+    on_result: Callable[[CheckResult], None] | None = None,
 ) -> list[CheckResult]:
     """Run checks in stable order and convert unexpected exceptions to actionable FAILs."""
     if preflight_wsl is None:
         preflight_wsl = checks is DEFAULT_CHECKS
     wsl_failure = _wsl_preflight_failure() if preflight_wsl else None
     results: list[CheckResult] = []
+
+    def record(result: CheckResult) -> None:
+        results.append(result)
+        if on_result is not None:
+            on_result(result)
+
     for check in checks:
         if wsl_failure is not None and check.__name__ in _WSL_DEPENDENT_CHECKS:
-            results.append(_wsl_short_circuit(check.__name__, *wsl_failure))
+            record(_wsl_short_circuit(check.__name__, *wsl_failure))
             continue
         try:
-            results.append(check())
+            result = check()
         except Exception as exc:  # noqa: BLE001 - never crash without a named doctor result
-            results.append(
-                _result(check.__name__, "FAIL", str(exc), "Inspect the failing check traceback.")
+            result = _result(
+                check.__name__, "FAIL", str(exc), "Inspect the failing check traceback."
             )
+        record(result)
     return results

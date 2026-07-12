@@ -92,10 +92,10 @@ parsing_map:
 pose_tags_rules:
   arms_raised: {metric: shoulder_to_wrist_vertical_fraction, operator: gt, threshold: 0.15}
   arms_down: {metric: shoulder_to_wrist_vertical_fraction, operator: lt, threshold: -0.20}
-  arms_crossed: {metric: wrist_opposite_torso_overlap, operator: gte, threshold: 0.5}
+  arms_crossed: {metric: wrist_opposite_torso_overlap, operator: gte, threshold: 1.0}
   seated_or_crouched: {metric: mean_hip_knee_ankle_angle_deg, operator: lt, threshold: 135}
-  lying: {metric: shoulder_hip_axis_from_horizontal_deg, operator: lt, threshold: 30}
-  walking: {metric: ankle_horizontal_separation_over_hip_width, operator: gt, threshold: 0.75}
+  lying: {metric: lying_likelihood, operator: gt, threshold: 0.5}
+  walking: {metric: walking_likelihood, operator: gt, threshold: 0.5}
   leg_overlap: {metric: left_right_leg_bbox_iou, operator: gt, threshold: 0.15}
 
 fusion:

@@ -10,8 +10,12 @@ from scipy import ndimage
 
 from ..stages.s08_5_densepose import DensePoseOutput
 
-FRONT_SURFACES = frozenset({1})
-BACK_SURFACES = frozenset({2})
+# DensePose's two fine torso charts are ordered back then front.  This is easy
+# to invert because both map to the same coarse ``Torso`` class.  The mapping
+# below is also fixture-verified against independently reviewed front/back
+# sources; do not infer it from the coarse class table.
+FRONT_SURFACES = frozenset({2})
+BACK_SURFACES = frozenset({1})
 LEFT_SURFACES = frozenset({4, 5, 8, 10, 12, 14, 15, 17, 19, 21})
 RIGHT_SURFACES = frozenset({3, 6, 7, 9, 11, 13, 16, 18, 20, 22})
 

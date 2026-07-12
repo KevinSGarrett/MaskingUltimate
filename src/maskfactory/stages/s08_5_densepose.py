@@ -204,6 +204,20 @@ def write_densepose_iuv(part_index: np.ndarray, u: np.ndarray, v: np.ndarray, pa
     return path
 
 
+def read_densepose_iuv(path: Path) -> DensePoseOutput:
+    """Load and validate a governed RGB [I,U,V] artifact."""
+    try:
+        with Image.open(path) as opened:
+            if opened.mode != "RGB":
+                raise DensePoseError("DensePose IUV artifact must be RGB")
+            iuv = np.asarray(opened).copy()
+    except OSError as exc:
+        raise DensePoseError(f"cannot read DensePose IUV artifact: {path}") from exc
+    output = DensePoseOutput(iuv[:, :, 0], iuv[:, :, 1], iuv[:, :, 2])
+    _validate_iuv(output)
+    return output
+
+
 def _validate_iuv(output: DensePoseOutput) -> None:
     index = np.asarray(output.part_index)
     u_value, v_value = np.asarray(output.u), np.asarray(output.v)

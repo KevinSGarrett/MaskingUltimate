@@ -19,6 +19,7 @@ from maskfactory.stages.s08_5_densepose import (
     DensePoseError,
     DensePoseOutput,
     WslDensePoseProvider,
+    read_densepose_iuv,
     run_densepose,
     write_densepose_iuv,
 )
@@ -26,8 +27,8 @@ from maskfactory.stages.s08_5_densepose import (
 
 def _densepose(shape=(40, 50)) -> DensePoseOutput:
     index = np.zeros(shape, dtype=np.uint8)
-    index[5:35, 5:25] = 1  # front torso
-    index[5:35, 25:45] = 2  # back torso
+    index[5:35, 5:25] = 1  # back torso
+    index[5:35, 25:45] = 2  # front torso
     u = np.zeros(shape, dtype=np.uint8)
     v = np.zeros(shape, dtype=np.uint8)
     u[index > 0] = np.tile(np.arange(shape[1], dtype=np.uint8), (shape[0], 1))[index > 0]
@@ -46,6 +47,7 @@ def test_densepose_provider_writes_strict_rgb_iuv_artifact(tmp_path: Path) -> No
     with Image.open(path) as image:
         assert image.mode == "RGB" and image.size == (50, 40)
         assert np.array_equal(np.asarray(image)[:, :, 0], output.part_index)
+    assert np.array_equal(read_densepose_iuv(path).part_index, output.part_index)
     bad_u = output.u.copy()
     bad_u[0, 0] = 1
     with pytest.raises(DensePoseError, match="background"):
@@ -176,8 +178,8 @@ def test_densepose_provider_supports_explicit_local_cuda_runtime(
 
 def test_surface_votes_feed_view_and_left_right_referees() -> None:
     dense = _densepose()
-    front = dense.part_index == 1
-    back = dense.part_index == 2
+    front = dense.part_index == 2
+    back = dense.part_index == 1
     assert surface_vote(front, dense).front_fraction == 1.0
     assert densepose_back_ratio(back, dense) == 1.0
     side_index = dense.part_index.copy()

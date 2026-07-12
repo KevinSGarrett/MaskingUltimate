@@ -450,6 +450,7 @@ def test_s04_production_runner_forwards_governed_pose_contract(tmp_path: Path, m
                         "person_index": 0,
                         "promoted": True,
                         "bbox_xyxy": [10, 10, 90, 110],
+                        "context_bbox_xyxy": [0, 0, 100, 120],
                     }
                 ]
             }
@@ -463,6 +464,14 @@ def test_s04_production_runner_forwards_governed_pose_contract(tmp_path: Path, m
         return SimpleNamespace(view="front", pose_tags=("arms_down",), pose_degraded=False)
 
     monkeypatch.setattr(production, "run_s04_production", fake_s04)
+    monkeypatch.setattr(
+        production,
+        "run_densepose_view_prepass",
+        lambda **_kwargs: (
+            tmp_path / "densepose_iuv.png",
+            SimpleNamespace(back_fraction=0.1, side_vote="left"),
+        ),
+    )
     config = load_pipeline_config(Path("configs/pipeline.yaml"))
     context = StageContext(
         image_id=image_id,
@@ -483,6 +492,8 @@ def test_s04_production_runner_forwards_governed_pose_contract(tmp_path: Path, m
         "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
     )
     assert captured["ort_gpu_site"] == Path("models/runtime_cache/onnxruntime_gpu")
+    assert captured["densepose_back_ratio"] == 0.1
+    assert captured["densepose_side_vote"] == "left"
 
 
 def test_s04_production_runner_refuses_model_drift(tmp_path: Path) -> None:
@@ -500,6 +511,60 @@ def test_s04_production_runner_refuses_model_drift(tmp_path: Path) -> None:
 
     with pytest.raises(production.SemanticStageError, match="governed"):
         production.build_production_runners(config)["S04"](context)
+
+
+def test_s08_5_reuses_strict_densepose_view_prepass(tmp_path: Path, monkeypatch) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    crop = work / "s01" / image_id / "p0/person_ctx.png"
+    crop.parent.mkdir(parents=True)
+    Image.new("RGB", (20, 30), "white").save(crop)
+    (crop.parents[1] / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "bbox_xyxy": [2, 3, 18, 29],
+                        "context_bbox_xyxy": [0, 0, 20, 30],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    cached = work / "s04" / image_id / "densepose_view/densepose_iuv.png"
+    cached.parent.mkdir(parents=True)
+    iuv = np.zeros((30, 20, 3), dtype=np.uint8)
+    iuv[3:29, 2:18, 0] = 2
+    iuv[3:29, 2:18, 1:] = 128
+    Image.fromarray(iuv, mode="RGB").save(cached)
+    runtime = work / "s04" / image_id / "densepose_view_provider/runtime.json"
+    runtime.parent.mkdir(parents=True)
+    runtime.write_text(json.dumps({"device": "fixture", "torch": "2.11+cu128"}))
+
+    class ForbiddenProvider:
+        def __init__(self, **_kwargs):
+            raise AssertionError("cached S04 DensePose evidence must prevent a second inference")
+
+    monkeypatch.setattr(production, "WslDensePoseProvider", ForbiddenProvider)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S08.5"],
+        output_dir=work / "s08_5" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S08.5"]},
+        config_hash="fixture",
+    )
+    delta = production.build_production_runners(config)["S08.5"](context)
+    copied = context.output_dir / "densepose_iuv.png"
+    assert copied.read_bytes() == cached.read_bytes()
+    assert delta["densepose_surface_pixel_count"] == 26 * 16
+    assert (
+        json.loads((context.output_dir / "densepose_reuse.json").read_text())["source_stage"]
+        == "S04"
+    )
 
 
 def test_s06_production_runner_forwards_exact_prompt_and_threshold_contract(

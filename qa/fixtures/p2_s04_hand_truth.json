@@ -1,0 +1,229 @@
+{
+    "schema_version": "1.0.0",
+    "item_id": "MF-P2-03.05",
+    "purpose": "Independent visual truth for the S04 view and exact pose-tag acceptance gate",
+    "reviewed_at": "2026-07-12",
+    "review_method": "Whole primary-person context crop reviewed without consulting the classifier output; left/right denotes the visible character side.",
+    "records": [
+        {
+            "id": "img_2ca794d19be9",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_2ca794d19be9/source.jpg",
+            "source_sha256": "ec9c077b061be77fba10940474d61d2bf590dc8db5e6a0f8d115f12965eed164",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Frontal upright subject; both wrists below shoulders."
+        },
+        {
+            "id": "img_3f94e3070bc5",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_3f94e3070bc5/source.jpg",
+            "source_sha256": "f7ef49250534d1300d3802f580e8e31784bba331727e3d9baba304e2019a509a",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down", "leg_overlap"],
+            "review_basis": "Frontal upright subject with crossed/overlapping legs."
+        },
+        {
+            "id": "img_48bda385944c",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_48bda385944c/source.jpg",
+            "source_sha256": "333e5279cae31839bef11eaa751fb826da04c6d37dbc40368b65573a17c8b54a",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": [],
+            "review_basis": "Frontal subject; one arm elevated and one lowered, with no other governed pose tag."
+        },
+        {
+            "id": "img_51945db358cb",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_51945db358cb/source.jpg",
+            "source_sha256": "760bd5c94e3140e327b587ff5701e0a45c799c7710ccb9e15cf4f1112822fb1c",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Frontal static wide stance; symmetric straight legs are not a gait pose."
+        },
+        {
+            "id": "img_63b897293e7c",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_63b897293e7c/source.jpg",
+            "source_sha256": "2b2960fc74353added00f2d6958d3895ef5d495504e689221d44d67e6bdf3276",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down", "seated_or_crouched"],
+            "review_basis": "Frontal cross-legged seated subject."
+        },
+        {
+            "id": "img_66c1030e8750",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_66c1030e8750/source.jpg",
+            "source_sha256": "10a5007f744ebd9b554d7e4081e09d579f7b0311151ccabc64c2341b8091fe19",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "left_profile",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Full left-side profile, upright with arms lowered."
+        },
+        {
+            "id": "img_6d6bb33f01a1",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_6d6bb33f01a1/source.jpg",
+            "source_sha256": "45f866f12724a2db7a929b841f523e776b78748023c87ef83a5888d93dd68f29",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "left_profile",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Full left-side profile from a front/side/back triptych."
+        },
+        {
+            "id": "img_7b7a3c7d5dd3",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_7b7a3c7d5dd3/source.jpg",
+            "source_sha256": "715401f7d8ded038759f2d406f2a5a4185e23448c280c35859f5c7d8c693f31b",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Near-frontal upright subject with arms lowered."
+        },
+        {
+            "id": "img_811bef2231a8",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_811bef2231a8/source.jpg",
+            "source_sha256": "347046afd15c159cbc7361a2c5a000db8e912531e210bd78e961dad5bb65772c",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Frontal target; thumbs-up hands remain below shoulder elevation."
+        },
+        {
+            "id": "img_83d32a7bd7b1",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_83d32a7bd7b1/source.jpg",
+            "source_sha256": "d9426cc4ec53a9c7f03afc625903d26e38947ea5c00f72ca09c9b0b476607f60",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down", "seated_or_crouched", "lying"],
+            "review_basis": "Front-visible reclining landscape pose with bent legs and both support hands below shoulders."
+        },
+        {
+            "id": "img_b2b46c45d8e0",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_b2b46c45d8e0/source.jpg",
+            "source_sha256": "2239c360d8c112a8e0cee03a4e2c11755fd7366098cd8eec7a1288e0ba143137",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Near-frontal static subject; wide straight-leg stance is not walking."
+        },
+        {
+            "id": "img_c39cbacbdce9",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_c39cbacbdce9/source.jpg",
+            "source_sha256": "e9c143d4e517ca0708a4e39a2227cb1ed799bfdece2f1db1cb4aadc82cb1dd56",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Frontal upright target with arms lowered."
+        },
+        {
+            "id": "img_cdab0311dc96",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_cdab0311dc96/source.jpg",
+            "source_sha256": "4194f2b13ff66425611db12fbd95c2ebe40f18554357459a74bc5c08c19305f7",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "left_3_4",
+            "expected_pose_tags": ["arms_down", "leg_overlap"],
+            "review_basis": "Left-side three-quarter torso with static overlapping-leg pose."
+        },
+        {
+            "id": "img_d964a40f82f7",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_d964a40f82f7/source.jpg",
+            "source_sha256": "8ca813570beaae550fb61ca57bc9dc5ef22f978289f71346e83d05b7755ae346",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "back",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Unambiguous full back view with arms lowered and symmetric straight legs."
+        },
+        {
+            "id": "img_dd4151e9a815",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_dd4151e9a815/source.jpg",
+            "source_sha256": "e8b7b4b8ef08605c7f488a91c894e0a80f59a0995d9d1b3f12a42cf0699ffc01",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Frontal upright target with both arms lowered."
+        },
+        {
+            "id": "img_e5163e08baac",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_e5163e08baac/source.jpg",
+            "source_sha256": "1ea7b8bb419968af36468add409638293ee687dde690d55ed31a4fadbcbec139",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "right_3_4",
+            "expected_pose_tags": ["arms_down", "walking"],
+            "review_basis": "Right-side three-quarter subject with asymmetric stepped-leg gait pose; hands are adjacent, not crossed."
+        },
+        {
+            "id": "img_f4da376b850a",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_f4da376b850a/source.jpg",
+            "source_sha256": "6535374078ee328892edb93f289c4fd5f504fb3b28ec3463c07b235c2fd52cec",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "back",
+            "expected_pose_tags": ["arms_down", "leg_overlap"],
+            "review_basis": "Unambiguous back view with lowered arms and overlapping lower legs."
+        },
+        {
+            "id": "img_fa80f4fab5e2",
+            "source_kind": "governed",
+            "source_relpath": "data/images/img_fa80f4fab5e2/source.jpg",
+            "source_sha256": "e112bf33e19a7ce4b3c6fce002f8fe68c9b4f5ebb9bdbb32db0379eb58ceecf7",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "right_profile",
+            "expected_pose_tags": ["arms_raised", "walking"],
+            "review_basis": "Right-side profile with arms above shoulders and one leg flexed in a stepped gait pose."
+        },
+        {
+            "id": "lv_0754",
+            "source_kind": "lv_mhp_v1",
+            "source_relpath": "images/0754.jpg",
+            "source_sha256": "20e5e3732a4d2b31b5f608e020df4ddbaa42314dfbb4ec857ec8031aa78250ba",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Primary adult target is frontal and upright with lowered arms."
+        },
+        {
+            "id": "lv_1165",
+            "source_kind": "lv_mhp_v1",
+            "source_relpath": "images/1165.jpg",
+            "source_sha256": "34e63885a46941627c05eff2a09fda00a57f53f5329893047db26cfc1960cf88",
+            "age_safety": "clear_adult",
+            "visual_review": "pass",
+            "expected_view": "front",
+            "expected_pose_tags": ["arms_down"],
+            "review_basis": "Primary adult target is frontal and upright with lowered arms."
+        }
+    ]
+}

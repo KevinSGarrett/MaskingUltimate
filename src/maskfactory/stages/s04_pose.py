@@ -274,6 +274,8 @@ def run_s04_production(
     use_wsl: bool = True,
     local_cuda_python: Path | None = None,
     ort_gpu_site: Path | None = None,
+    densepose_back_ratio: float | None = None,
+    densepose_side_vote: str | None = None,
 ) -> PoseResult:
     """Execute real DWPose then apply instance ownership/view/tag policy."""
     if use_wsl:
@@ -303,6 +305,8 @@ def run_s04_production(
         person_index=person_index,
         confidence_min=confidence_min,
         degraded_body_fraction=degraded_body_fraction,
+        densepose_back_ratio=densepose_back_ratio,
+        densepose_side_vote=densepose_side_vote,
     )
 
 
@@ -384,6 +388,7 @@ def process_pose_candidates(
     confidence_min: float = 0.3,
     degraded_body_fraction: float = 0.6,
     densepose_back_ratio: float | None = None,
+    densepose_side_vote: str | None = None,
     promoted_instance_bboxes: dict[int, tuple[float, float, float, float]] | None = None,
     person_index: int | None = None,
 ) -> PoseResult:
@@ -419,8 +424,13 @@ def process_pose_candidates(
         keypoints,
         confidence_min=confidence_min,
         densepose_back_ratio=densepose_back_ratio,
+        densepose_side_vote=densepose_side_vote,
     )
-    metrics = pose_metrics(keypoints, confidence_min=confidence_min)
+    metrics = pose_metrics(
+        keypoints,
+        confidence_min=confidence_min,
+        instance_bbox_xyxy=instance_bbox_xyxy,
+    )
     tags = evaluate_pose_tags(metrics, pose_tag_rules)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -439,6 +449,10 @@ def process_pose_candidates(
             for index, point in enumerate(keypoints)
         ],
         "view": view,
+        "view_evidence": {
+            "densepose_back_ratio": densepose_back_ratio,
+            "densepose_side_vote": densepose_side_vote,
+        },
         "pose_tags": list(tags),
         "pose_degraded": degraded,
         "pose_candidate_missing": pose_candidate_missing,
@@ -517,12 +531,15 @@ def classify_view(
     *,
     confidence_min: float = 0.3,
     densepose_back_ratio: float | None = None,
+    densepose_side_vote: str | None = None,
 ) -> str:
     """Classify six stable views from face visibility and torso asymmetry."""
     points = np.asarray(keypoints, dtype=np.float64)
     nose_visible = points[NOSE, 2] >= confidence_min
     if densepose_back_ratio is not None and not 0 <= densepose_back_ratio <= 1:
         raise PoseError("densepose_back_ratio must be in 0..1")
+    if densepose_side_vote not in {None, "left", "right"}:
+        raise PoseError("densepose_side_vote must be left, right, or None")
     if densepose_back_ratio is not None and densepose_back_ratio >= 0.65:
         return "back"
     left_conf = min(points[LEFT_SHOULDER, 2], points[LEFT_HIP, 2])
@@ -535,16 +552,22 @@ def classify_view(
             - (points[LEFT_SHOULDER, 1] + points[RIGHT_SHOULDER, 1]) / 2
         ),
     )
-    side = "left" if left_conf > right_conf else "right"
-    if shoulder_span / torso_height < 0.35 or min(left_conf, right_conf) < confidence_min:
+    side = densepose_side_vote or ("left" if left_conf > right_conf else "right")
+    span_ratio = shoulder_span / torso_height
+    if span_ratio < 0.45 or min(left_conf, right_conf) < confidence_min:
         return f"{side}_profile"
     asymmetry = abs(left_conf - right_conf)
-    if asymmetry >= 0.2:
+    if span_ratio < 0.50 or asymmetry >= 0.2:
         return f"{side}_3_4"
     return "front" if nose_visible else "back"
 
 
-def pose_metrics(keypoints: np.ndarray, *, confidence_min: float = 0.3) -> dict[str, float]:
+def pose_metrics(
+    keypoints: np.ndarray,
+    *,
+    confidence_min: float = 0.3,
+    instance_bbox_xyxy: tuple[float, float, float, float] | None = None,
+) -> dict[str, float]:
     """Calculate the exact scalar inputs consumed by pipeline pose-tag rules."""
     points = np.asarray(keypoints, dtype=np.float64)
     shoulder_y = _mean_coordinate(points, (LEFT_SHOULDER, RIGHT_SHOULDER), 1, confidence_min)
@@ -574,6 +597,7 @@ def pose_metrics(keypoints: np.ndarray, *, confidence_min: float = 0.3) -> dict[
         )
     ]
     knee_angles = [angle for angle in knee_angles if math.isfinite(angle)]
+    knee_asymmetry = abs(knee_angles[0] - knee_angles[1]) if len(knee_angles) == 2 else float("nan")
     shoulder_mid = _mean_point(points, (LEFT_SHOULDER, RIGHT_SHOULDER), confidence_min)
     hip_mid = _mean_point(points, (LEFT_HIP, RIGHT_HIP), confidence_min)
     axis_angle = (
@@ -593,6 +617,31 @@ def pose_metrics(keypoints: np.ndarray, *, confidence_min: float = 0.3) -> dict[
     right_leg = _box_from_points(
         points, (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE), confidence_min, pad=2
     )
+    bbox_landscape_ratio = float("nan")
+    if instance_bbox_xyxy is not None:
+        left, top, right, bottom = instance_bbox_xyxy
+        if right <= left or bottom <= top:
+            raise PoseError("instance bbox must have positive area")
+        bbox_landscape_ratio = (right - left) / (bottom - top)
+    lying_likelihood = float(
+        math.isfinite(axis_angle)
+        and (
+            axis_angle < 30
+            or (
+                math.isfinite(bbox_landscape_ratio)
+                and bbox_landscape_ratio > 1.25
+                and axis_angle < 75
+            )
+        )
+    )
+    walking_likelihood = float(
+        math.isfinite(ankle_separation)
+        and ankle_separation > 0.75
+        and math.isfinite(knee_asymmetry)
+        and knee_asymmetry > 20
+        and math.isfinite(axis_angle)
+        and axis_angle > 60
+    )
     return {
         "shoulder_to_wrist_vertical_fraction": vertical_fraction,
         "wrist_opposite_torso_overlap": sum(cross_hits) / len(cross_hits)
@@ -601,7 +650,11 @@ def pose_metrics(keypoints: np.ndarray, *, confidence_min: float = 0.3) -> dict[
         "mean_hip_knee_ankle_angle_deg": sum(knee_angles) / len(knee_angles)
         if knee_angles
         else float("nan"),
+        "knee_angle_asymmetry_deg": knee_asymmetry,
         "shoulder_hip_axis_from_horizontal_deg": axis_angle,
+        "instance_bbox_landscape_ratio": bbox_landscape_ratio,
+        "lying_likelihood": lying_likelihood,
+        "walking_likelihood": walking_likelihood,
         "ankle_horizontal_separation_over_hip_width": ankle_separation,
         "left_right_leg_bbox_iou": _bbox_iou(left_leg, right_leg)
         if left_leg and right_leg

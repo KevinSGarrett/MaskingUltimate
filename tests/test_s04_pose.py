@@ -67,7 +67,7 @@ def test_s04_selects_instance_pose_suppresses_cosubject_and_serializes_133(
     assert result.view == "front"
     assert not result.pose_degraded
     assert "arms_down" in result.pose_tags
-    assert "walking" in result.pose_tags
+    assert "walking" not in result.pose_tags  # wide, symmetric stance is not a gait pose
     document = json.loads(result.pose_path.read_text())
     assert document["format"] == "COCO-WholeBody-133"
     assert len(document["keypoints"]) == 133
@@ -146,6 +146,7 @@ def test_s04_view_classifier_covers_front_back_profile_and_three_quarter() -> No
     assert classify_view(profile) == "left_profile"
     assert classify_view(three_quarter) == "left_3_4"
     assert classify_view(front, densepose_back_ratio=0.8) == "back"
+    assert classify_view(profile, densepose_side_vote="right") == "right_profile"
 
 
 def test_pose_tags_use_configured_operator_table() -> None:
@@ -174,8 +175,24 @@ def test_pose_metric_geometry_covers_crossing_bend_and_lying() -> None:
     assert metrics["wrist_opposite_torso_overlap"] == 1.0
     assert metrics["mean_hip_knee_ankle_angle_deg"] == pytest.approx(90)
     assert metrics["shoulder_hip_axis_from_horizontal_deg"] == pytest.approx(0)
+    assert metrics["lying_likelihood"] == 1.0
     tags = evaluate_pose_tags(metrics, _rules())
     assert {"arms_crossed", "seated_or_crouched", "lying"} <= set(tags)
+
+
+def test_pose_metrics_require_asymmetric_stride_for_walking_and_landscape_for_lying() -> None:
+    points = _keypoints()
+    points[15, :2] = (0, 100)
+    points[16, :2] = (100, 80)
+    points[14, :2] = (75, 75)
+    walking = pose_metrics(points, instance_bbox_xyxy=(0, 0, 100, 200))
+    assert walking["ankle_horizontal_separation_over_hip_width"] > 0.75
+    assert walking["knee_angle_asymmetry_deg"] > 20
+    assert walking["walking_likelihood"] == 1.0
+
+    lying = pose_metrics(_keypoints(), instance_bbox_xyxy=(0, 0, 200, 100))
+    assert lying["instance_bbox_landscape_ratio"] == 2.0
+    assert lying["lying_likelihood"] == 0.0  # upright torso prevents bbox-only false positive
 
 
 def test_s04_rejects_bad_shape_and_nonoverlapping_candidates(tmp_path: Path) -> None:

@@ -65,6 +65,9 @@ S05 rather than treating an all-background file as healthy merely because it exi
 shoulder/hip keypoint geometry + nose visibility + DensePose back-ratio (after S08.5) →
 {front, back, profiles, ¾}; pose_tags rules (arm elevation angles, hip-knee-ankle angles, overlap
 tests) — deterministic rule table in `pipeline.yaml (pose_tags_rules)`.
+Once the DensePose referee is installed, its view-only inference runs during S04 so the corrected
+view reaches S05 geometry; S08.5 reuses the exact validated IUV bytes/runtime record and MUST NOT
+launch a duplicate inference. DensePose fine torso chart 1 is back and chart 2 is front.
 **Fail:** <60% body kp above conf 0.3 → `pose_degraded=true`; geometry engine falls back to
 parsing-only priors; image auto-tagged for careful review. If DWPose returns no candidate owned
 by the promoted instance, suppress all co-subject candidates and serialize a zero-confidence

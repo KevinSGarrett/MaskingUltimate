@@ -27,6 +27,7 @@ from ..lanes.hand import (
     apply_champion_hand_drafts,
     champion_hand_refresh_required,
 )
+from ..lanes.prior3d import SurfaceVote, surface_vote
 from ..ontology import get_ontology
 from ..orchestrator import (
     SemanticStageError,
@@ -68,7 +69,7 @@ from .s04_pose import run_s04_production
 from .s05_geometry import run_s05_production
 from .s06_openvocab import run_s06_production
 from .s07_sam2 import WslSam2Provider, run_s07_production
-from .s08_5_densepose import WslDensePoseProvider, run_densepose
+from .s08_5_densepose import WslDensePoseProvider, read_densepose_iuv, run_densepose
 from .s08_material import champion_clothing_refresh_required, run_s08_production
 from .s09_5_instance_recon import ReconciliationInstance, reconcile_instances
 from .s09_fusion import run_s09_production
@@ -86,6 +87,37 @@ class MultiPersonProductionResult:
     terminal_outcome: str | None = None
     terminal_reason: str | None = None
     cvat_task_ids: tuple[int, ...] = ()
+
+
+def run_densepose_view_prepass(
+    *,
+    crop_path: Path,
+    target_bbox_xyxy: tuple[float, float, float, float],
+    output_dir: Path,
+    settings: Mapping[str, Any],
+) -> tuple[Path, SurfaceVote]:
+    """Run the governed DensePose referee early enough to inform S05 view geometry."""
+    provider = WslDensePoseProvider(
+        checkpoint=ROOT / "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl",
+        config_path=(
+            "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/"
+            "densepose_rcnn_R_50_FPN_s1x.yaml"
+        ),
+        image_path=crop_path,
+        target_bbox_xyxy=target_bbox_xyxy,
+        work_dir=Path(output_dir) / "densepose_view_provider",
+        local_cuda_python=(
+            Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+        ),
+        source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+        dependency_site=(
+            Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+        ),
+    )
+    image = np.asarray(Image.open(crop_path).convert("RGB"))
+    path = run_densepose(provider, image, Path(output_dir) / "densepose_view")
+    densepose = read_densepose_iuv(path)
+    return path, surface_vote(densepose.part_index > 0, densepose)
 
 
 SINGLE_PERSON_REGRESSION_STAGES = (
@@ -488,6 +520,20 @@ def build_production_runners(
             (prior(context, "S01") / "person_bbox.json").read_text(encoding="utf-8")
         )
         person = selected_person(people)
+        context_box = person["context_bbox_xyxy"]
+        box = person["bbox_xyxy"]
+        crop_box = (
+            box[0] - context_box[0],
+            box[1] - context_box[1],
+            box[2] - context_box[0],
+            box[3] - context_box[1],
+        )
+        _, densepose_vote = run_densepose_view_prepass(
+            crop_path=prior(context, "S01") / instance_name / "person_ctx.png",
+            target_bbox_xyxy=crop_box,
+            output_dir=context.output_dir,
+            settings=config["stages"]["S08.5"],
+        )
         promoted_bboxes = {
             int(item["person_index"]): tuple(item["bbox_xyxy"])
             for item in people["persons"]
@@ -510,12 +556,22 @@ def build_production_runners(
                 Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
             ),
             ort_gpu_site=Path(settings["ort_gpu_site"]) if settings.get("ort_gpu_site") else None,
+            densepose_back_ratio=densepose_vote.back_fraction,
+            densepose_side_vote=densepose_vote.side_vote,
         )
         return {
             "view": result.view,
             "pose_tags": list(result.pose_tags),
             "pose_degraded": result.pose_degraded,
-            "_telemetry": {"model_keys": ["dwpose_yolox_l", "dwpose_133"]},
+            "densepose_back_ratio": densepose_vote.back_fraction,
+            "densepose_side_vote": densepose_vote.side_vote,
+            "_telemetry": {
+                "model_keys": [
+                    "dwpose_yolox_l",
+                    "dwpose_133",
+                    "densepose_rcnn_R_50_FPN_s1x",
+                ]
+            },
         }
 
     def s05(context: StageContext) -> Mapping[str, Any]:
@@ -723,30 +779,49 @@ def build_production_runners(
             box[2] - context_box[0],
             box[3] - context_box[1],
         )
-        provider = WslDensePoseProvider(
-            checkpoint=ROOT / "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl",
-            config_path=(
-                "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/"
-                "densepose_rcnn_R_50_FPN_s1x.yaml"
-            ),
-            image_path=crop_path,
-            target_bbox_xyxy=crop_box,
-            work_dir=context.output_dir / "provider_work",
-            local_cuda_python=(
-                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
-            ),
-            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
-            dependency_site=(
-                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
-            ),
-        )
-        image = np.asarray(Image.open(crop_path).convert("RGB"))
-        path = run_densepose(provider, image, context.output_dir)
-        with Image.open(path) as opened:
-            iuv = np.asarray(opened).copy()
+        cached_path = context.prior_stage_dir("S04") / "densepose_view/densepose_iuv.png"
+        cached_runtime = context.prior_stage_dir("S04") / "densepose_view_provider/runtime.json"
+        if cached_path.is_file() and cached_runtime.is_file():
+            path = context.output_dir / "densepose_iuv.png"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(cached_path, path)
+            runtime_target = context.output_dir / "provider_work/runtime.json"
+            runtime_target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(cached_runtime, runtime_target)
+            reuse = {
+                "schema_version": "1.0.0",
+                "source_stage": "S04",
+                "source_sha256": hashlib.sha256(cached_path.read_bytes()).hexdigest(),
+            }
+            (context.output_dir / "densepose_reuse.json").write_text(
+                json.dumps(reuse, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+        else:
+            provider = WslDensePoseProvider(
+                checkpoint=ROOT / "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl",
+                config_path=(
+                    "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/"
+                    "densepose_rcnn_R_50_FPN_s1x.yaml"
+                ),
+                image_path=crop_path,
+                target_bbox_xyxy=crop_box,
+                work_dir=context.output_dir / "provider_work",
+                local_cuda_python=(
+                    Path(settings["local_cuda_python"])
+                    if settings.get("local_cuda_python")
+                    else None
+                ),
+                source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+                dependency_site=(
+                    Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+                ),
+            )
+            image = np.asarray(Image.open(crop_path).convert("RGB"))
+            path = run_densepose(provider, image, context.output_dir)
+        densepose = read_densepose_iuv(path)
         return {
-            "densepose_surface_pixel_count": int((iuv[:, :, 0] > 0).sum()),
-            "iuv_shape": list(iuv.shape[:2]),
+            "densepose_surface_pixel_count": int((densepose.part_index > 0).sum()),
+            "iuv_shape": list(densepose.part_index.shape),
             "_telemetry": {"model_keys": ["densepose_rcnn_R_50_FPN_s1x"]},
         }
 

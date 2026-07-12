@@ -3979,3 +3979,22 @@ fixture manifest:                qa/fixtures/p2_s01_s02_truth.json
 durable verifier:                tools/verify_p2_s01_s02_fixtures.py
 evidence:                        qa/live_verification/p2_s01_s02_truth_gate_20260712.json
 validation:                      3 focused evaluator tests; fresh 10-image real replay; 681 full tests; Ruff and ruff-format clean
+
+## 2026-07-12 - S04 20-image hand-truth gate closed with production view repair
+
+**Result:** PASS - MF-P2-03.05 is complete at 100% view and exact pose-tag-set accuracy.
+
+hand-truth authority:            exactly 20 unique clear-adult images, hash-bound and visually labeled independently from classifier output; two unevaluable degraded stylized sources excluded and replaced by two governed LV-MHP adults
+coverage:                         front, back, left/right profile, left/right 3/4, arms up/down, seated/crouched, lying, asymmetric gait, and leg overlap
+defect found:                     DensePose fine torso charts were inverted in the referee (chart 1 treated as front and chart 2 as back); controlled front sources measured >99% back while true back sources measured >94% front
+surface correction:              official/fixture-verified mapping is chart 1=back, chart 2=front
+production timing:               governed DensePose view inference now runs inside S04 before S05 geometry; S08.5 reuses the exact validated IUV/runtime bytes without a second model launch
+view repair:                      torso-span profile/3/4 thresholds plus reliable DensePose visible-side vote; high back ratio remains authoritative
+pose-tag repair:                  walking requires asymmetric bent-leg stride, lying accepts a landscape-person fallback only with a sufficiently tilted torso, and arms_crossed requires both wrist crossings
+measured view accuracy:           20/20 = 1.000 (gate >=0.90)
+measured exact tag-set accuracy:  20/20 = 1.000 (gate >=0.90)
+real provider evidence:           18 existing governed CUDA DWPose/DensePose pairs plus two independent LV-MHP sources freshly run through both providers
+truth manifest:                   qa/fixtures/p2_s04_hand_truth.json
+durable verifier:                tools/verify_p2_s04_hand_truth.py
+evidence:                        qa/live_verification/p2_s04_hand_truth_gate_20260712.json
+validation:                      686 full tests; Ruff and ruff-format clean; tracker structurally valid

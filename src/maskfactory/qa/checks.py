@@ -146,7 +146,9 @@ def _qc006(package_root: Path, manifest: dict | None) -> QcResult:
     actual_paths = {
         path.relative_to(package_root).as_posix(): path
         for path in package_root.rglob("*")
-        if path.is_file() and path.name != "manifest.json"
+        if path.is_file()
+        and path.name != "manifest.json"
+        and not path.relative_to(package_root).parts[0].startswith("masks@v")
     }
     missing = sorted(set(expected).difference(actual_paths))
     untracked = sorted(set(actual_paths).difference(expected))

@@ -413,7 +413,11 @@ def _refresh_files(package_root: Path) -> None:
     path = package_root / "manifest.json"
     manifest = json.loads(path.read_text(encoding="utf-8"))
     files = tuple(
-        file for file in package_root.rglob("*") if file.is_file() and file.name != "manifest.json"
+        file
+        for file in package_root.rglob("*")
+        if file.is_file()
+        and file.name != "manifest.json"
+        and not file.relative_to(package_root).parts[0].startswith("masks@v")
     )
     manifest["files"] = sha256_file_map(package_root, files)
     _write_json_atomic(path, manifest)

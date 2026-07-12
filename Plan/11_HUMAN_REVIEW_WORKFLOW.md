@@ -73,6 +73,16 @@ confirmation → stamps review block (reviewer, timestamps, minutes from CVAT), 
 `human_approved_gold`, freezes package, DVC add. Any BLOCK → package bounces to
 `rejected_needs_fix` with the failing panel paths printed.
 
+Post-gold corrections never overwrite the active version in place. Run
+`maskfactory correction begin <image_id> --instance <pN>` to create the next `masks@vN`
+workspace, edit its authoritative PART/MATERIAL maps through the human review process, then run
+`maskfactory correction refresh <image_id> --instance <pN> --version <N>` to regenerate strict
+binary views. Finally, `maskfactory correction promote ... --reviewer <name> --minutes <N>`
+requires a fresh explicit confirmation, reruns the complete format battery, reseals all derived
+artifacts and hashes, DVC-adds the image package, and atomically synchronizes SQLite. The previous
+version remains hash-sealed and deprecated for 30 days; any QA, DVC, filesystem, or database
+failure restores the pre-promotion package and state exactly.
+
 ## SOP-6 — Interperson Contact Review (NEW, doc 17 §9 — multi-person images only)
 
 After each promoted instance's own SOP-1 pass: open the shared image-overview context job →

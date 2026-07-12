@@ -1588,6 +1588,125 @@ def package(
     click.echo(f"approved and frozen: {image_id}")
 
 
+@main.group()
+def correction() -> None:
+    """Create, refresh, and atomically promote post-gold mask versions."""
+
+
+def _correction_package_root(packages_root: Path, image_id: str, instance: str) -> Path:
+    image_root = packages_root / image_id
+    package_root = image_root / "instances" / instance
+    if package_root.is_dir():
+        return package_root
+    if instance == "p0" and (image_root / "manifest.json").is_file():
+        return image_root
+    raise click.ClickException(f"package instance does not exist: {image_id}/{instance}")
+
+
+@correction.command("begin")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+def correction_begin(image_id: str, instance: str, packages_root: Path) -> None:
+    """Branch the current frozen maps into the next editable masks@vN workspace."""
+    from .versioning import VersioningError, begin_correction
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    try:
+        candidate = begin_correction(package_root)
+    except (OSError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(candidate)
+
+
+@correction.command("refresh")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option("--version", type=click.IntRange(min=2), required=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+def correction_refresh(image_id: str, instance: str, version: int, packages_root: Path) -> None:
+    """Regenerate candidate binary views after its authoritative maps are edited."""
+    from .versioning import VersioningError, refresh_correction_branch
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    try:
+        candidate = refresh_correction_branch(package_root, version)
+    except (OSError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(candidate)
+
+
+@correction.command("promote")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option("--version", type=click.IntRange(min=2), required=True)
+@click.option("--reviewer", required=True)
+@click.option("--minutes", type=click.FloatRange(min=0), required=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def correction_promote(
+    image_id: str,
+    instance: str,
+    version: int,
+    reviewer: str,
+    minutes: float,
+    packages_root: Path,
+    database: Path,
+) -> None:
+    """QA, approve, DVC-add, and activate one corrected package version."""
+    from .dvc_runtime import DvcRuntimeError, run_dvc
+    from .versioning import VersioningError, promote_correction
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    image_root = packages_root / image_id
+    if not click.confirm(
+        f"Promote {image_id}/{instance} masks@v{version} as corrected gold?", default=False
+    ):
+        raise click.ClickException("correction promotion cancelled")
+
+    def dvc_add(_package: Path) -> None:
+        result = run_dvc(("add", str(image_root.resolve())), timeout=300)
+        if result.returncode:
+            raise RuntimeError(f"dvc add failed: {result.stderr.strip()}")
+
+    try:
+        promote_correction(
+            package_root,
+            version,
+            human_approved=True,
+            reviewer=reviewer,
+            review_minutes=minutes,
+            database=database,
+            dvc_add=dvc_add,
+        )
+    except (DvcRuntimeError, OSError, RuntimeError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"promoted corrected gold: {image_id}/{instance} masks@v{version}")
+
+
 @main.command("verify-package")
 @click.argument("image_id", required=False)
 @click.option(

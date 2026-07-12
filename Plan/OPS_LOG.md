@@ -3929,3 +3929,19 @@ rerun behavior:                 already-exported packages/images are idempotent;
 live authority:                 approved_gold=0, below the required 200; no bodyparts@v1 build, DVC push, or live exported transition claimed
 evidence:                        qa/live_verification/dataset_export_state_contract_20260712.json
 validation:                      30 focused lifecycle tests; 674 full tests split 196+124+276+78; Ruff and ruff-format clean
+
+## 2026-07-12 - Post-gold correction transaction made production-real
+
+**Result:** PASS implementation readiness; no live human correction or gold mutation claimed.
+
+defect found:                    prior test promoted only an unchanged binary copy; real map corrections could not pass QC-007 and did not refresh package/SQLite authority
+candidate authority:             masks@vN now contains authoritative PART/MATERIAL maps plus regenerated strict binary views
+operator surface:                maskfactory correction begin / refresh / promote with explicit reviewer, minutes, and confirmation
+active immutability:             candidate/archive bytes are version-hashed separately, so active gold remains fully verify-package clean during candidate editing
+promotion transaction:           map authority activates atomically; binaries, derivations, per-label geometry/hashes, review metadata, frozen metadata, and complete active inventory are resealed
+version evidence:                mask_versions.json records per-file hashes for candidate, active, and deprecated versions; v1 retain_until is exactly +30 days
+state synchronization:           exported or approved_gold -> corrected/S12 -> approved_gold/S13 inside the same SQLite writer transaction
+rollback proof:                  seeded DVC failure restores every package byte and rolls SQLite back; invalid candidate binary views are rejected before mutation
+human authority:                 promotion still requires explicit confirmation; no CVAT click, reviewer identity, or minutes were fabricated
+evidence:                        qa/live_verification/post_gold_correction_transaction_20260712.json
+validation:                      23 focused versioning/QC/package/GC tests; 677 full tests split 196+124+276+81; Ruff and ruff-format clean

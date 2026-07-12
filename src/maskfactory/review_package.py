@@ -306,7 +306,9 @@ def refresh_review_package_derivations(package_root: Path) -> bool:
     manifest["files"] = {
         path.relative_to(package_root).as_posix(): sha256_file(path)
         for path in sorted(package_root.rglob("*"))
-        if path.is_file() and path.name != "manifest.json"
+        if path.is_file()
+        and path.name != "manifest.json"
+        and not path.relative_to(package_root).parts[0].startswith("masks@v")
     }
     issues = validate_document(manifest, "manifest")
     if issues:

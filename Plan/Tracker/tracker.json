@@ -1853,10 +1853,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Complete durable lifecycle is enforced through exported: S09 drafted, S10 auto_qa, S11 vlm_qa, S12 in_review/corrected, S13 approved_gold, and only a successfully DVC-published S14 dataset advances exact included package manifests plus SQLite to exported/S14. Seeded DVC-push and second-package failures prove no premature or partial export state; reruns are idempotent. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json, qa/live_verification/corrected_gold_workflow_contract_20260712.json, and qa/live_verification/dataset_export_state_contract_20260712.json; 674 tests pass.",
+      "evidence": "The complete durable lifecycle is enforced through ordinary processing, published export, and post-gold correction: S09 drafted, S10 auto_qa, S11 vlm_qa, S12 in_review/corrected, S13 approved_gold, S14 exported; a corrected approved/exported version cycles transactionally through corrected/S12 back to approved_gold/S13. Package manifests and SQLite synchronize with rollback on partial package, DVC, or database failure. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json, qa/live_verification/corrected_gold_workflow_contract_20260712.json, qa/live_verification/dataset_export_state_contract_20260712.json, and qa/live_verification/post_gold_correction_transaction_20260712.json; 677 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T15:52:21+00:00",
+      "updated_at": "2026-07-12T16:15:02+00:00",
       "orphaned": false
     },
     "MF-P1-02.03": {
@@ -2673,10 +2673,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Frozen corrections branch to masks@v2; atomic promotion runs changed-mask gates, rolls back exact on defect, and retains masks@v1 deprecated for exactly 30 days; tests pass.",
+      "evidence": "Post-gold correction is now map-authoritative and operational through maskfactory correction begin/refresh/promote. Editable masks@vN carries PART/MATERIAL maps and strict regenerated views; active gold remains verifiable during editing because version bytes are separately hash-sealed. Promotion reruns QC-001..010, reseals derivations/manifest/review/frozen metadata, retains deprecated vN-1 for exactly 30 days, DVC-adds, and synchronizes SQLite corrected/S12 -> approved_gold/S13. Invalid candidates and seeded DVC failure restore package/DB exactly. Evidence qa/live_verification/post_gold_correction_transaction_20260712.json; 677 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:15:30+00:00",
+      "updated_at": "2026-07-12T16:15:01+00:00",
       "orphaned": false
     },
     "MF-P1-07.08": {

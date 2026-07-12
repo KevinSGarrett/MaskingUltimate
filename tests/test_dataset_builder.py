@@ -5,10 +5,12 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from click.testing import CliRunner
 from PIL import Image
 
+from maskfactory.cli import main
 from maskfactory.datasets.active_learning import run_active_learning
-from maskfactory.datasets.builder import build_dataset
+from maskfactory.datasets.builder import build_dataset, mark_dataset_exported
 from maskfactory.datasets.cocorle import decode_binary_mask
 from maskfactory.datasets.splits import (
     SplitRecord,
@@ -17,6 +19,7 @@ from maskfactory.datasets.splits import (
     validate_instance_split_integrity,
 )
 from maskfactory.io.png_strict import write_label_map
+from maskfactory.state import initialize_database, reader_connection, writer_connection
 
 
 def test_hash_split_duplicate_groups_synthetic_and_hard_override() -> None:
@@ -102,6 +105,11 @@ def test_builder_keeps_instances_together_isolates_holdout_and_rebuilds_identica
     ]
     assert manifest["splits"]["img_000000000002"] == "train"
     assert manifest["holdout_trainer_read_path"] is None
+    assert manifest["source_packages"] == [
+        "img_000000000001/instances/p0",
+        "img_000000000001/instances/p1",
+        "img_000000000002/instances/p0",
+    ]
     assert (first / "train.txt").read_text().splitlines() == ["img_000000000002_p0"]
     assert not (first / "part_seg/images/img_000000000001_p0.png").exists()
     assert (first / "holdout/hard_case/img_000000000001_p0/source.png").is_file()
@@ -123,6 +131,171 @@ def test_builder_keeps_instances_together_isolates_holdout_and_rebuilds_identica
     card = (first / "dataset_card.md").read_text(encoding="utf-8")
     assert "## Coverage cells" in card
     assert "small_group" in card and "Synthetic ratio" in card
+
+
+def test_mark_dataset_exported_synchronizes_packages_and_sqlite(
+    tmp_path: Path, monkeypatch
+) -> None:
+    packages = tmp_path / "packages"
+    package = packages / "img_export" / "instances" / "p0"
+    package.mkdir(parents=True)
+    manifest_path = package / "manifest.json"
+    manifest_path.write_text(
+        json.dumps({"image_id": "img_export", "workflow_status": "approved_gold"}),
+        encoding="utf-8",
+    )
+    (package / ".maskfactory_frozen.json").write_text("{}\n", encoding="utf-8")
+    dataset = tmp_path / "bodyparts@v1"
+    dataset.mkdir()
+    (dataset / "build_manifest.json").write_text(
+        json.dumps({"source_packages": ["img_export/instances/p0"]}), encoding="utf-8"
+    )
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images "
+            "(image_id, source_sha256, status, current_stage, created_at, updated_at) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            ("img_export", "a" * 64, "approved_gold", "S13", "t0", "t0"),
+        )
+
+    def update(package_root: Path, target: str, *, updated_at: str) -> bool:
+        document = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))
+        document.update({"workflow_status": target, "workflow_updated_at": updated_at})
+        (package_root / "manifest.json").write_text(json.dumps(document), encoding="utf-8")
+        return True
+
+    monkeypatch.setattr("maskfactory.datasets.builder.update_package_workflow_status", update)
+    assert mark_dataset_exported(
+        dataset,
+        packages_root=packages,
+        database=database,
+        updated_at="2026-07-12T20:00:00Z",
+    ) == ("img_export",)
+    assert json.loads(manifest_path.read_text())["workflow_status"] == "exported"
+    with reader_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage, updated_at FROM images WHERE image_id = 'img_export'"
+        ).fetchone()
+    assert tuple(row) == ("exported", "S14", "2026-07-12T20:00:00Z")
+
+
+def test_mark_dataset_exported_rolls_back_package_when_later_update_fails(
+    tmp_path: Path, monkeypatch
+) -> None:
+    packages = tmp_path / "packages"
+    relatives = ["img_export/instances/p0", "img_export/instances/p1"]
+    originals = {}
+    for relative in relatives:
+        package = packages / relative
+        package.mkdir(parents=True)
+        path = package / "manifest.json"
+        path.write_text(
+            json.dumps({"image_id": "img_export", "workflow_status": "approved_gold"}),
+            encoding="utf-8",
+        )
+        originals[path] = path.read_bytes()
+        (package / ".maskfactory_frozen.json").write_text("{}\n", encoding="utf-8")
+    dataset = tmp_path / "bodyparts@v1"
+    dataset.mkdir()
+    (dataset / "build_manifest.json").write_text(
+        json.dumps({"source_packages": relatives}), encoding="utf-8"
+    )
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images "
+            "(image_id, source_sha256, status, current_stage, created_at, updated_at) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            ("img_export", "a" * 64, "approved_gold", "S13", "t0", "t0"),
+        )
+
+    calls = 0
+
+    def update(package_root: Path, target: str, *, updated_at: str) -> bool:
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise RuntimeError("seeded package update failure")
+        (package_root / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "image_id": "img_export",
+                    "workflow_status": target,
+                    "workflow_updated_at": updated_at,
+                }
+            ),
+            encoding="utf-8",
+        )
+        return True
+
+    monkeypatch.setattr("maskfactory.datasets.builder.update_package_workflow_status", update)
+    with pytest.raises(RuntimeError, match="seeded package update failure"):
+        mark_dataset_exported(dataset, packages_root=packages, database=database)
+    assert all(path.read_bytes() == content for path, content in originals.items())
+    with reader_connection(database) as connection:
+        status = connection.execute(
+            "SELECT status FROM images WHERE image_id = 'img_export'"
+        ).fetchone()[0]
+    assert status == "approved_gold"
+
+
+def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
+    tmp_path: Path, monkeypatch
+) -> None:
+    dataset = tmp_path / "datasets" / "bodyparts@v1"
+    dataset.mkdir(parents=True)
+    monkeypatch.setattr("maskfactory.datasets.builder.approved_package_count", lambda _root: 200)
+    monkeypatch.setattr("maskfactory.datasets.builder.next_dataset_version", lambda _root: 1)
+    monkeypatch.setattr("maskfactory.datasets.builder.build_dataset", lambda **_kwargs: dataset)
+    monkeypatch.setattr(
+        "subprocess.run", lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stderr="")
+    )
+    marked = []
+    monkeypatch.setattr(
+        "maskfactory.datasets.builder.mark_dataset_exported",
+        lambda path, **kwargs: marked.append((path, kwargs)),
+    )
+    dvc_results = iter(
+        (
+            SimpleNamespace(returncode=0, stderr=""),
+            SimpleNamespace(returncode=1, stderr="seeded push failure"),
+        )
+    )
+    monkeypatch.setattr(
+        "maskfactory.dvc_runtime.run_dvc", lambda *_args, **_kwargs: next(dvc_results)
+    )
+    args = [
+        "dataset",
+        "build",
+        "--packages-root",
+        str(tmp_path / "packages"),
+        "--output-root",
+        str(tmp_path / "datasets"),
+        "--database",
+        str(tmp_path / "state.sqlite"),
+    ]
+    failed = CliRunner().invoke(main, args)
+    assert failed.exit_code != 0 and "seeded push failure" in failed.output
+    assert marked == []
+
+    monkeypatch.setattr(
+        "maskfactory.dvc_runtime.run_dvc",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stderr=""),
+    )
+    passed = CliRunner().invoke(main, args)
+    assert passed.exit_code == 0, passed.output
+    assert marked == [
+        (
+            dataset,
+            {
+                "packages_root": tmp_path / "packages",
+                "database": tmp_path / "state.sqlite",
+            },
+        )
+    ]
 
 
 def test_builder_preflight_rejects_one_invalid_gold_package(

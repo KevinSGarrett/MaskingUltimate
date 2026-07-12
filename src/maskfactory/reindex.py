@@ -40,7 +40,7 @@ STATUS_STAGE = {
     "in_review": "S12",
     "corrected": "S12",
     "approved_gold": "S13",
-    "exported": "S13",
+    "exported": "S14",
     "deprecated": "S13",
 }
 PACKAGE_REQUIRED_STATUSES = frozenset(

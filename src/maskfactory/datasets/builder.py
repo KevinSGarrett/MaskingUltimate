@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -15,6 +17,8 @@ from PIL import Image
 from ..io.png_strict import write_label_map
 from ..ontology import get_ontology
 from ..packager import verify_packages
+from ..review_package import update_package_workflow_status
+from ..state import transition_image_status, writer_connection
 from .cocorle import encode_binary_mask
 from .coverage import build_coverage_matrix, write_coverage_matrix
 from .splits import SplitRecord, assign_splits, validate_instance_split_integrity
@@ -201,6 +205,9 @@ def build_dataset(
                 "git_sha": _git_sha(),
                 "splits": splits,
                 "instances": split_instances,
+                "source_packages": [
+                    package.relative_to(Path(packages_root)).as_posix() for package in packages
+                ],
                 "trainer_inputs": [
                     "train.txt",
                     "val.txt",
@@ -219,6 +226,98 @@ def build_dataset(
         encoding="utf-8",
     )
     return destination
+
+
+def mark_dataset_exported(
+    dataset_root: Path,
+    *,
+    packages_root: Path,
+    database: Path,
+    updated_at: str | None = None,
+) -> tuple[str, ...]:
+    """Atomically synchronize a successfully published dataset back to package/SQLite state."""
+    build_path = Path(dataset_root) / "build_manifest.json"
+    build = json.loads(build_path.read_text(encoding="utf-8"))
+    relative_packages = build.get("source_packages")
+    if not isinstance(relative_packages, list) or not relative_packages:
+        raise ValueError("dataset build manifest has no source_packages authority")
+
+    root = Path(packages_root).resolve()
+    packages: list[Path] = []
+    manifests: dict[Path, dict[str, Any]] = {}
+    for value in relative_packages:
+        if not isinstance(value, str) or not value:
+            raise ValueError("dataset source_packages entries must be non-empty strings")
+        package = (root / value).resolve()
+        if package == root or root not in package.parents:
+            raise ValueError(f"dataset source package escapes packages root: {value}")
+        if package in manifests:
+            raise ValueError(f"duplicate dataset source package: {value}")
+        manifest_path = package / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("workflow_status") not in {"approved_gold", "exported"}:
+            raise ValueError(f"dataset source package is not approved gold: {value}")
+        if not (package / ".maskfactory_frozen.json").is_file():
+            raise ValueError(f"dataset source package is not frozen: {value}")
+        packages.append(package)
+        manifests[package] = manifest
+
+    image_ids = tuple(sorted({str(manifest["image_id"]) for manifest in manifests.values()}))
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    original_bytes = {
+        package / "manifest.json": (package / "manifest.json").read_bytes() for package in packages
+    }
+    changed = False
+    try:
+        with writer_connection(Path(database)) as connection:
+            rows = {
+                str(row[0]): str(row[1])
+                for row in connection.execute(
+                    f"SELECT image_id, status FROM images WHERE image_id IN "
+                    f"({','.join('?' for _ in image_ids)})",
+                    image_ids,
+                )
+            }
+            missing = sorted(set(image_ids) - set(rows))
+            if missing:
+                raise ValueError(f"dataset source images missing from SQLite: {missing}")
+            invalid = {
+                key: value
+                for key, value in rows.items()
+                if value not in {"approved_gold", "exported"}
+            }
+            if invalid:
+                raise ValueError(f"dataset source images are not approved gold: {invalid}")
+            for package in packages:
+                changed = (
+                    update_package_workflow_status(package, "exported", updated_at=timestamp)
+                    or changed
+                )
+            for image_id in image_ids:
+                if rows[image_id] == "approved_gold":
+                    transition_image_status(
+                        connection,
+                        image_id,
+                        "exported",
+                        updated_at=timestamp,
+                        current_stage="S14",
+                    )
+                    changed = True
+    except BaseException:
+        if changed:
+            for path, content in original_bytes.items():
+                _write_bytes_atomic(path, content)
+        raise
+    return image_ids
+
+
+def _write_bytes_atomic(path: Path, content: bytes) -> None:
+    temporary = path.with_name(f".{path.name}.restore-{uuid.uuid4().hex}")
+    try:
+        temporary.write_bytes(content)
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def approved_package_count(packages_root: Path) -> int:

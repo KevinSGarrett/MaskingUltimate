@@ -3914,3 +3914,18 @@ CLI contracts:                  cvat pull and package both expose explicit --dat
 live authority:                 3 images remain in_review; corrected=0; approved_gold=0; no manual correction or approval claimed
 evidence:                        qa/live_verification/corrected_gold_workflow_contract_20260712.json
 validation:                      43 focused lifecycle tests; 671 full tests; Ruff and ruff-format clean
+
+## 2026-07-12 - Published-dataset export state synchronized
+
+**Result:** PASS implementation readiness; the live P5 entry gate remains honestly unmet.
+
+dataset source authority:       build_manifest.json records every exact approved source-package path included in the immutable build
+publish boundary:               package/SQLite state advances only after dvc add, dataset Git tag, and dvc push all succeed
+package transition:             approved_gold -> exported for every included instance package
+SQLite transition:              approved_gold/S13 -> exported/S14 for every included image
+atomicity:                      all DB rows are preflighted in one writer transaction; any package update failure restores prior manifest bytes and rolls SQLite back
+failure proof:                  seeded dvc push failure leaves export synchronization uncalled; seeded second-package failure restores the first package and preserves approved_gold in SQLite
+rerun behavior:                 already-exported packages/images are idempotent; --no-publish builds never claim exported state
+live authority:                 approved_gold=0, below the required 200; no bodyparts@v1 build, DVC push, or live exported transition claimed
+evidence:                        qa/live_verification/dataset_export_state_contract_20260712.json
+validation:                      30 focused lifecycle tests; 674 full tests split 196+124+276+78; Ruff and ruff-format clean

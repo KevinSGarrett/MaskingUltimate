@@ -1637,11 +1637,27 @@ def dataset() -> None:
     show_default=True,
 )
 @click.option("--publish/--no-publish", default=True, show_default=True)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
 def dataset_build(
-    name: str, ontology: str, packages_root: Path, output_root: Path, publish: bool
+    name: str,
+    ontology: str,
+    packages_root: Path,
+    output_root: Path,
+    publish: bool,
+    database: Path,
 ) -> None:
     """S14: build the training dataset from gold packages."""
-    from .datasets.builder import approved_package_count, build_dataset, next_dataset_version
+    from .datasets.builder import (
+        approved_package_count,
+        build_dataset,
+        mark_dataset_exported,
+        next_dataset_version,
+    )
     from .dvc_runtime import DvcRuntimeError, run_dvc
 
     if name != "bodyparts" or ontology != "body_parts_v1":
@@ -1677,6 +1693,7 @@ def dataset_build(
             push = run_dvc(("push",), timeout=1800)
             if push.returncode:
                 raise RuntimeError(f"dvc push failed: {push.stderr.strip()}")
+            mark_dataset_exported(path, packages_root=packages_root, database=database)
     except (DvcRuntimeError, OSError, RuntimeError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(path)

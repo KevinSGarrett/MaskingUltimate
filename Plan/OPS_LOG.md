@@ -3386,3 +3386,20 @@ literal draft probe:        governed root drop refused, then canonical stripped-
 probe cleanup:              test-only quarantine row/manifest/input removed after exact identity check; real ingested image stayed ingested
 remaining completion gate:  fresh governed incoming original + corrected-gold G2 measurements and visible-part correctness
 ```
+## 2026-07-12 05:25 UTC - Production S10 auto-QA completed for every eligible live instance
+**Item:** MF-P2-06.08 open -> 80% partial (live evidence; exact fixture gate remains open)
+**Result:** All 29 live draft instances produced atomic S10 reports; hard failures remain blocking and no automated result was promoted or approved.
+
+```
+live reports:               29/29 committed with complete stage receipts; zero runner failures; zero temp directories
+overall routing:            27 fail; 2 needs_human; score range 0.870364..0.998934
+hard blocks:                QC-014 left/right vote 27/29; QC-013 protected overlap 8/29
+universal structural pass:  QC-001..004, 011, 012, 016, 018..020, 023, 025..027, 030, 035..038 all pass 29/29
+universal human route:      QC-015 area sanity and QC-029 breast-position evidence route 29/29
+other routes:               QC-017 27; QC-024 26; QC-028 21; QC-031 27; QC-033 8
+warnings:                   QC-021 27; QC-022 3; QC-032 26
+package-only checks:        QC-005..010 and QC-034 remain skipped until S13 package/previous-gold artifacts exist
+authority boundary:         reports cannot approve masks, clear hard blocks, or replace Kevin's CVAT correction/approval
+durable audit:              qa/live_verification/s10_autoqa_corpus_20260712.json
+remaining item gate:        MF-P2-06.08 requires the governed 10-fixture set; live corpus is not substituted for that requirement
+```

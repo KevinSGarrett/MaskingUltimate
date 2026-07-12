@@ -1,0 +1,51 @@
+{
+  "audit_completed_at": "2026-07-12T05:24:00Z",
+  "block_qc_counts": {
+    "QC-013": 8,
+    "QC-014": 27
+  },
+  "hard_block_instances": 27,
+  "overall": {
+    "fail": 27,
+    "needs_human": 2
+  },
+  "reports": 29,
+  "route_qc_counts": {
+    "QC-015": 29,
+    "QC-017": 27,
+    "QC-024": 26,
+    "QC-028": 21,
+    "QC-029": 29,
+    "QC-031": 27,
+    "QC-033": 8
+  },
+  "score_range": [0.8703636118058872, 0.9989344202685246],
+  "temporary_directories": 0,
+  "universal_pass_qcs": [
+    "QC-001",
+    "QC-002",
+    "QC-003",
+    "QC-004",
+    "QC-011",
+    "QC-012",
+    "QC-016",
+    "QC-018",
+    "QC-019",
+    "QC-020",
+    "QC-023",
+    "QC-025",
+    "QC-026",
+    "QC-027",
+    "QC-030",
+    "QC-035",
+    "QC-036",
+    "QC-037",
+    "QC-038"
+  ],
+  "warn_qc_counts": {
+    "QC-021": 27,
+    "QC-022": 3,
+    "QC-032": 26
+  },
+  "warning": "These are automated draft-stage QA outcomes. Hard failures remain blocking and no report approves a mask or replaces Kevin's CVAT correction/approval."
+}

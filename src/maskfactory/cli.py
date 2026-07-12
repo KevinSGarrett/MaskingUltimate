@@ -1,9 +1,6 @@
 """maskfactory command-line interface (doc 05 §3, MF-P0-08.08).
 
-Console entry point ``maskfactory = maskfactory.cli:main``. Every command is a
-stub for now (scaffold): each prints where its real implementation will land and
-exits cleanly, so ``maskfactory --help`` lists the full command surface and CI
-stays green before the stages are wired up.
+Production console entry point ``maskfactory = maskfactory.cli:main``.
 """
 
 from __future__ import annotations
@@ -33,12 +30,6 @@ from .providers.probe import (
     DEFAULT_WORKFLOWS,
     probe_external_sources,
 )
-
-_STUB = "  (stub) not yet implemented — see {spec}"
-
-
-def _todo(spec: str) -> None:
-    click.echo(_STUB.format(spec=spec))
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
@@ -1027,7 +1018,7 @@ def second_review_report(iaa_root: Path, iso_week: str, reports_root: Path) -> N
 def vlmqa(context: click.Context) -> None:
     """S11: local VLM QA + routing (never authoritative)."""
     if context.invoked_subcommand is None:
-        _todo("doc 10")
+        click.echo(context.get_help())
 
 
 @vlmqa.command("build-calibration")

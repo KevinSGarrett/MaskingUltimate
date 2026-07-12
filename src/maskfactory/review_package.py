@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import shutil
 import uuid
@@ -16,6 +15,7 @@ from scipy import ndimage
 from . import __version__
 from .fs_atomic import replace_with_retry
 from .fusion.mapbuild import export_binaries
+from .io.hashing import sha256_file
 from .io.png_strict import read_mask
 from .ontology import get_ontology
 from .validation import ArtifactValidationError, validate_document
@@ -375,4 +375,4 @@ def _instance_relative_band(value: Any, instance_id: str) -> str:
 
 
 def _sha256(path: Path) -> str:
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    return sha256_file(path)

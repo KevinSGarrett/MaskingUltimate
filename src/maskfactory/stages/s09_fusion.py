@@ -14,6 +14,7 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage
 
+from ..fusion.zorder import OcclusionRecord, ZOrderDecision, apply_zorder
 from ..io.png_strict import write_binary_mask, write_grayscale, write_label_map
 from ..models.registry import (
     DEFAULT_MODELS_ROOT,
@@ -26,22 +27,6 @@ from ..ontology import Ontology, OntologyError, get_ontology
 
 class FusionError(ValueError):
     """Fusion evidence cannot satisfy the S09 map contract."""
-
-
-@dataclass(frozen=True)
-class ZOrderDecision:
-    winner: str
-    loser: str
-    reason: str
-
-
-@dataclass(frozen=True)
-class OcclusionRecord:
-    occluding_part: str
-    occluded_part: str
-    reason: str
-    contested_pixels: int
-    occluded_visibility: str = "partially_visible"
 
 
 @dataclass(frozen=True)
@@ -140,7 +125,14 @@ def fuse_consensus(
         raise FusionError("part evidence leaves silhouette pixels unassigned")
 
     contested = _contested(part_stack, contested_threshold) & visible
-    records = _apply_zorder(part_stack, part_names, contested, zorder_decisions, authority)
+    records = apply_zorder(
+        part_stack,
+        part_names,
+        contested,
+        zorder_decisions,
+        authority,
+        error_type=FusionError,
+    )
     part_ids = np.asarray([authority.label(name).id for name in part_names], dtype=np.uint16)
     part_map = part_ids[np.argmax(part_stack, axis=0)]
     part_map[~visible] = 0
@@ -480,27 +472,6 @@ def _score_labels(evidence, weights, shape, authority, map_name):
 
 def _contested(stack: np.ndarray, threshold: float) -> np.ndarray:
     return np.count_nonzero(stack > threshold, axis=0) >= 2
-
-
-def _apply_zorder(stack, names, contested, decisions, authority):
-    indexed = {name: index for index, name in enumerate(names)}
-    records = []
-    # Hair always owns overlap over face/neck/shoulders per configured unconditional rule.
-    automatic = tuple(
-        ZOrderDecision("hair", loser, "hair_front_overlap")
-        for loser in ("head_face", "neck", "left_shoulder", "right_shoulder")
-        if "hair" in indexed and loser in indexed
-    )
-    for decision in (*automatic, *decisions):
-        if decision.winner not in indexed or decision.loser not in indexed:
-            raise FusionError(f"z-order label missing from evidence: {decision}")
-        winner, loser = indexed[decision.winner], indexed[decision.loser]
-        pixels = contested & (stack[winner] > 0.4) & (stack[loser] > 0.4)
-        count = int(pixels.sum())
-        if count:
-            stack[winner, pixels] = np.maximum(stack[winner, pixels], 1.0001)
-            records.append(OcclusionRecord(decision.winner, decision.loser, decision.reason, count))
-    return records
 
 
 def _consensus_summary(names, stack, part_map, authority, quick, normal):

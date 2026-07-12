@@ -19,6 +19,7 @@ from PIL import Image
 from . import __version__
 from .dvc_runtime import DvcRuntimeError, run_dvc
 from .inpaint import derive_inpaint
+from .io.hashing import sha256_file_map
 from .io.png_strict import read_mask
 from .ontology import get_ontology
 from .qa.autofix import run_autofix_once
@@ -288,11 +289,10 @@ def _qa_report(
 def _refresh_files(package_root: Path) -> None:
     path = package_root / "manifest.json"
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    manifest["files"] = {
-        file.relative_to(package_root).as_posix(): hashlib.sha256(file.read_bytes()).hexdigest()
-        for file in package_root.rglob("*")
-        if file.is_file() and file.name != "manifest.json"
-    }
+    files = tuple(
+        file for file in package_root.rglob("*") if file.is_file() and file.name != "manifest.json"
+    )
+    manifest["files"] = sha256_file_map(package_root, files)
     _write_json_atomic(path, manifest)
 
 

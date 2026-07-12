@@ -1,0 +1,46 @@
+{
+  "audit_date": "2026-07-12",
+  "scaffold_markers_remaining": 0,
+  "stage_boundaries": {
+    "S00": "maskfactory.stages.s00_intake.run_s00",
+    "S10": "maskfactory.stages.s10_autoqa.run_s10",
+    "S11": "maskfactory.stages.s11_vlmqa.run_s11",
+    "S12": "maskfactory.stages.s12_review.run_s12",
+    "S13": "maskfactory.stages.s13_export.run_s13",
+    "S14": "maskfactory.stages.s14_dataset.run_s14",
+    "S15": "maskfactory.stages.s15_active_learning.run_s15"
+  },
+  "fusion_boundaries": {
+    "consensus": "public facade over the production S09 weighted consensus implementation",
+    "zorder": "public implementation used directly by S09; validates geometry, ontology labels, configured decisions, automatic hair ownership, and occlusion records"
+  },
+  "io_boundaries": {
+    "hashing": [
+      "streaming sha256_file",
+      "sha256_bytes",
+      "root-confined sha256_file_map",
+      "non-mutating verify_file_map"
+    ],
+    "readers": [
+      "validated JSON",
+      "RGB image",
+      "8/16-bit label map",
+      "strict mask"
+    ],
+    "writers": [
+      "fsynced atomic JSON",
+      "strict binary mask",
+      "strict grayscale",
+      "strict label map"
+    ],
+    "production_consumers_migrated": [
+      "S00 intake source hashing",
+      "S12 review package hashing",
+      "S13 package file-map hashing"
+    ]
+  },
+  "focused_tests_passed": 35,
+  "full_tests_passed": 639,
+  "ruff": "clean",
+  "format": "clean"
+}

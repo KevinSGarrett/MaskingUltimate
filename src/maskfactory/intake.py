@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import io
 import json
 import os
@@ -20,6 +19,7 @@ import numpy as np
 from PIL import Image, UnidentifiedImageError
 
 from .fs_atomic import replace_with_retry
+from .io.hashing import sha256_file
 from .state import DEFAULT_DB_PATH, initialize_database, writer_connection
 
 ALLOWED_EXTENSIONS = frozenset({".png", ".jpg", ".jpeg", ".webp"})
@@ -205,14 +205,6 @@ def _age_screen_review_image(image: Path) -> bytes:
             return output.getvalue()
     except (OSError, UnidentifiedImageError) as exc:
         raise DecodeRejected(f"cannot prepare age-screen review image: {image}") from exc
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with Path(path).open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def source_origin(path: Path, incoming_root: Path) -> str | None:

@@ -3654,3 +3654,16 @@ live route case:              img_2ca794d19be9 -> needs_human, five routes, exit
 live block case:              img_3f94e3070bc5 -> QC-014 blocked, exit 1
 evidence:                     qa/live_verification/qa_cli_live_20260712.json
 validation:                   633 tests passed; Ruff check and format clean
+## 2026-07-12 - Specified stage, fusion, and I/O boundaries activated
+
+**Result:** PASS - the remaining doc-05 scaffold-only modules are production APIs.
+
+stage entries:                S00 and S10-S15 delegate to their verified production implementations
+consensus boundary:           public facade exposes the production weighted S09 engine
+z-order boundary:             arbitration moved out of S09 private code and is called through fusion.zorder
+I/O boundary:                 streaming/root-confined hashes, drift verifier, validated readers, atomic JSON + strict PNG writers
+critical migrations:          intake source hash, review package hash, package manifest file-map hash
+CLI cleanup:                  no scaffold output; bare vlmqa prints its real command help
+source audit:                 zero scaffold/not-yet-implemented markers remain under src/maskfactory
+evidence:                     qa/live_verification/architecture_boundaries_20260712.json
+validation:                   35 focused and 639 full tests passed; Ruff/format clean

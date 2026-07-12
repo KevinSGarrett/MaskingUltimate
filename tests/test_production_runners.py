@@ -15,6 +15,7 @@ from maskfactory.qa.multi_instance import run_multi_instance_qc
 from maskfactory.stages import production
 from maskfactory.stages.s01_person_detection import RankedPerson, S01Result
 from maskfactory.stages.s05_geometry import run_s05_production
+from test_qa_report_schema import valid_report
 
 
 def test_production_runner_factory_executes_real_file_contract_through_s01(
@@ -1193,6 +1194,80 @@ def test_run_through_autoqa_extends_each_instance_through_s10(tmp_path: Path, mo
     assert result.exit_code == 0, result.output
     assert calls[0]["through_autoqa"] is True
     assert "p0: 0 stage execution(s) S02-S10" in result.output
+
+
+def test_qa_command_forces_multi_instance_s10_and_emits_valid_summary(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    report = valid_report()
+    report["checks"] = [report["checks"][0]]
+    report["overall"] = "pass"
+    for instance in ("p0", "p1"):
+        directory = work / "instances" / instance / "s10" / image_id
+        directory.mkdir(parents=True)
+        instance_report = json.loads(json.dumps(report))
+        if instance == "p1":
+            instance_report["checks"].append(
+                {
+                    "id": "QC-015",
+                    "name": "area_sanity",
+                    "scope": "instance",
+                    "result": "route",
+                    "severity": "ROUTE",
+                }
+            )
+            instance_report["overall"] = "needs_human"
+        (directory / "qa_report.json").write_text(json.dumps(instance_report), encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=tmp_path / "image_manifest.json",
+            qc035_passed=True,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(main, ["qa", image_id, "--work-root", str(work)])
+
+    assert result.exit_code == 0, result.output
+    assert captured["through_autoqa"] is True
+    assert captured["force_autoqa"] is True
+    summary = json.loads(result.output)
+    assert summary["status"] == "needs_human"
+    assert summary["instance_count"] == 2
+    assert summary["failed_block_count"] == 0
+    assert sorted(summary["instances"]) == ["p0", "p1"]
+
+
+def test_qa_command_returns_nonzero_and_names_hard_blocks(tmp_path: Path, monkeypatch) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    directory = work / "instances" / "p0" / "s10" / image_id
+    directory.mkdir(parents=True)
+    (directory / "qa_report.json").write_text(json.dumps(valid_report()), encoding="utf-8")
+    monkeypatch.setattr(
+        production,
+        "run_multi_person_production",
+        lambda *args, **kwargs: production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": ()},
+            image_manifest_path=tmp_path / "image_manifest.json",
+            qc035_passed=True,
+        ),
+    )
+
+    result = CliRunner().invoke(main, ["qa", image_id, "--work-root", str(work)])
+
+    assert result.exit_code == 1
+    summary = json.loads(result.output)
+    assert summary["status"] == "blocked"
+    assert summary["failed_block_count"] == 1
+    assert summary["instances"]["p0"]["failed_blocks"] == ["QC-014"]
 
 
 def test_run_through_review_handoff_reports_pending_cvat_tasks(tmp_path: Path, monkeypatch) -> None:

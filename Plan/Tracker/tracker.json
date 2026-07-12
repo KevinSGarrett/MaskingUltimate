@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T10:22:18+00:00",
+    "generated_at": "2026-07-12T10:36:13+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -1578,11 +1578,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "pyproject.toml console script maskfactory=maskfactory.cli:main; pip install -e . rc=0 in maskfactory env; maskfactory --help lists all doc-05 commands (ingest/run/fuse/export-binaries/derive/derive-inpaint/qa/vlmqa/cvat{push,pull}/package/verify-package/dataset{build}/coverage{report}/train/leaderboard/reindex/gc/doctor/models{fetch}).",
+      "notes": [
+        {
+          "ts": "2026-07-12T10:36:11+00:00",
+          "actor": "ai_agent",
+          "text": "The doc-05 qa command has advanced from allowed P0 scaffold to production. maskfactory qa <image_id> cache-validates the multi-instance chain, forces S10, revalidates every pN report schema, emits pass/needs_human/blocked JSON, and exits 1 only for BLOCK failures. Two live images prove route-only exit 0 and QC-014 exit 1."
+        }
+      ],
+      "evidence": "Console entry point and complete doc-05 command surface remain installed. qa/live_verification/qa_cli_live_20260712.json additionally proves the formerly scaffolded qa command on live artifacts: img_2ca794d19be9 needs_human/exit0 and img_3f94e3070bc5 QC-014 blocked/exit1. Full suite: 633 passed; Ruff clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T08:22:25+00:00",
+      "updated_at": "2026-07-12T10:36:11+00:00",
       "orphaned": false
     },
     "MF-P0-08.09": {
@@ -3911,11 +3917,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "qa.semantic implements QC-011 atomic overlap, QC-012 outside<=0.2%, QC-013 protected<=0.5%/skin-clothing=0 BLOCK, QC-014 2-of-3 side votes BLOCK, QC-015 ontology area, QC-016 pose/frame BLOCK; clean and seeded tests plus full 245-test suite passed.",
+      "notes": [
+        {
+          "ts": "2026-07-12T10:36:12+00:00",
+          "actor": "ai_agent",
+          "text": "Activated the dedicated multi-instance S10 CLI. Live forced runs preserve ROUTE versus BLOCK semantics: five route checks produce needs_human with exit 0, while a QC-014 hard failure produces blocked with exit 1. No human approval or block override occurs."
+        }
+      ],
+      "evidence": "Semantic QC-011..016 implementation and seeded tests remain authoritative. qa/live_verification/qa_cli_live_20260712.json now adds live command-level proof that maskfactory qa forces S10, schema-validates every instance report, preserves route-only needs_human, and returns nonzero for QC-014 BLOCK. Full suite: 633 passed; Ruff clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T04:13:15+00:00",
+      "updated_at": "2026-07-12T10:36:12+00:00",
       "orphaned": false
     },
     "MF-P2-07.04": {

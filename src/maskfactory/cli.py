@@ -664,10 +664,121 @@ def derive_inpaint(package_root: Path, labels: tuple[str, ...], config_path: Pat
 
 
 @main.command()
-@click.argument("image_id", required=False)
-def qa(image_id: str | None) -> None:
-    """S10: run the auto-QA battery (QC-001..034)."""
-    _todo("doc 09")
+@click.argument("image_id", required=True)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--work-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("work"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def qa(
+    image_id: str,
+    config_path: Path,
+    images_root: Path,
+    work_root: Path,
+    database: Path,
+) -> None:
+    """Force S10 auto-QA for every promoted instance and report BLOCK outcomes."""
+    from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
+    from .orchestrator import (
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        load_pipeline_config,
+    )
+    from .stages.production import run_multi_person_production
+    from .validation import validate_document
+
+    try:
+        outcome = run_multi_person_production(
+            image_id,
+            config=load_pipeline_config(config_path),
+            images_root=images_root,
+            work_root=work_root,
+            gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
+            through_autoqa=True,
+            force_autoqa=True,
+            database=database,
+        )
+        if outcome.terminal_outcome is not None:
+            document = {
+                "image_id": image_id,
+                "instances": {},
+                "status": outcome.terminal_outcome,
+                "reason": outcome.terminal_reason,
+            }
+            click.echo(json.dumps(document, sort_keys=True))
+            raise click.exceptions.Exit(1)
+        instances = {}
+        block_count = 0
+        for instance in sorted(outcome.per_instance):
+            report_path = work_root / "instances" / instance / "s10" / image_id / "qa_report.json"
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            issues = validate_document(report, "qa_report")
+            if issues:
+                raise ValueError(f"invalid S10 report {report_path}: {issues}")
+            failed_blocks = [
+                check["id"]
+                for check in report["checks"]
+                if check["result"] == "fail" and check["severity"] == "BLOCK"
+            ]
+            routed = [check["id"] for check in report["checks"] if check["result"] == "route"]
+            block_count += len(failed_blocks)
+            instances[instance] = {
+                "failed_blocks": failed_blocks,
+                "overall": report["overall"],
+                "report": str(report_path),
+                "routed": routed,
+                "score": report["score"],
+            }
+        document = {
+            "failed_block_count": block_count,
+            "image_id": image_id,
+            "instance_count": len(instances),
+            "instances": instances,
+            "qc035_passed": outcome.qc035_passed,
+            "status": (
+                "blocked"
+                if block_count
+                else "needs_human"
+                if any(item["overall"] != "pass" for item in instances.values())
+                else "pass"
+            ),
+        }
+        click.echo(json.dumps(document, sort_keys=True))
+        if block_count:
+            raise click.exceptions.Exit(1)
+    except click.exceptions.Exit:
+        raise
+    except (
+        GpuLockError,
+        OSError,
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        ValueError,
+        json.JSONDecodeError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
 
 
 @main.command("manifest-lint")

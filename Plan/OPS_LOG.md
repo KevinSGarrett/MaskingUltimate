@@ -3642,3 +3642,15 @@ warm live battery:            20.3 s; Nuclio SAM2 inference dominated at 13.9 s
 live status:                  PASS=7 / FAIL=4; disk 72.6 GiB remains an ingest BLOCK
 evidence:                     qa/live_verification/doctor_wsl_preflight_20260712.json
 validation:                   631 tests passed; Ruff check and format clean
+## 2026-07-12 - Dedicated S10 QA CLI activated
+
+**Result:** PASS - `maskfactory qa <image_id>` is no longer a scaffold.
+
+execution:                    forces S10 after cache-validating the shared/per-instance chain
+multi-person contract:        reads and validates one qa_report.json for every promoted pN
+summary states:               pass / needs_human / blocked; ROUTE is never mislabeled pass
+process contract:             exit 1 only when one or more BLOCK checks fail
+live route case:              img_2ca794d19be9 -> needs_human, five routes, exit 0
+live block case:              img_3f94e3070bc5 -> QC-014 blocked, exit 1
+evidence:                     qa/live_verification/qa_cli_live_20260712.json
+validation:                   633 tests passed; Ruff check and format clean

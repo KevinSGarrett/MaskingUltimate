@@ -920,6 +920,7 @@ def run_multi_person_production(
     pipeline_runner=run_pipeline,
     runner_factory=build_production_runners,
     through_autoqa: bool = False,
+    force_autoqa: bool = False,
     through_review_handoff: bool = False,
     database: Path | None = None,
     silhouettes_only: bool = False,
@@ -1105,6 +1106,7 @@ def run_multi_person_production(
             autoqa = pipeline_runner(
                 image_id,
                 selected=("S10",),
+                force=("S10",) if force_autoqa else (),
                 config=config,
                 work_root=instance_root,
                 runners=scoped_runners[name],

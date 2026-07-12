@@ -3521,3 +3521,23 @@ no-co-residency regression:  cached SAM2 session is explicitly closed before cha
 remaining latency gates:     /predict all-labels <=4 s and single-label <=2 s require real trained champion roles
 durable audit updated:       qa/live_verification/serve_refine_cuda_20260712.json
 ```
+
+## 2026-07-12 08:30 UTC - Real seven-instance CVAT review handoff created
+**Items:** MF-P8-10.02 remains 20% by source count; MF-P8-10.03 open -> 5% partial
+**Result:** Both qualifying 2-4-person sources advanced through S11 and live S12 handoff; Kevin's correction and approval remain untouched.
+
+```
+S11 execution:              7/7 promoted instances complete; zero stage failures
+review packages:            7 schema-valid draft packages with sealed pre-human baselines
+source img_7b7a3c7d5dd3: tasks 9,10,11 instance review + task 12 overview
+source img_6d6bb33f01a1: tasks 13,14,15,16 instance review + task 17 overview
+live CVAT:                  v2.24.0, nine tasks API-confirmed, remote size=1 each
+preannotations:             166 total shapes across seven authoring tasks
+overview authority:         two context-only tasks, zero authoring shapes, SOP-6 reciprocal review
+semantic failures:          S10 BLOCK findings remain review flags; they were not cleared or auto-approved
+manifest authority:         reviewer=null and approved_at=null in all seven packages
+human status:               correction=false; approval=false; review minutes not fabricated
+durable audit:              qa/live_verification/p8_real_cvat_handoff_20260712.json
+NEEDS KEVIN:                correct tasks 9-11 and 13-16; review overview tasks 12/17; record time; explicitly approve
+remaining set gate:         only 2/10 minimum qualifying sources exist, so MF-P8-10.02 stays 20%
+```

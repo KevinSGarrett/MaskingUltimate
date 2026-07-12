@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T12:08:12+00:00",
+    "generated_at": "2026-07-12T12:26:11+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -6644,19 +6644,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 85,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T09:30:46+00:00",
           "actor": "ai_agent",
           "text": "Implemented champion-ready S09 integration at custom_bodypart=0.45. Indexed S03 custom map is accepted only with sidecar role+checkpoint SHA matching the verified champion_bodypart registry role; invalid/missing provenance and IDs hard-fail. Consensus records the source. Expanded profile without custom artifact is byte-identical to base fusion. 28 focused tests pass; Ruff/diff clean. Live S03 inference/promotion remains gated by training/D6."
+        },
+        {
+          "ts": "2026-07-12T12:26:09+00:00",
+          "actor": "ai_agent",
+          "text": "Completed the previously missing producer side and role-pointer cache semantics. No D6/G7 winner or live champion performance is claimed; that remains MF-P5-07.02."
         }
       ],
-      "evidence": null,
+      "evidence": "S03 now resolves exactly one verified champion_bodypart role, requires the exact ordered 56-class v1 vocabulary, emits validated 16-bit custom_bodypart.png plus checkpoint/config/vocabulary provenance, suppresses co-subject pixels, and closes the provider on every path. Promote/change/rollback invalidates cached S03; S09 consumes the map at weight 0.45. qa/live_verification/custom_bodypart_s03_s09_integration_20260712.json; 64 focused and 650 full tests, Ruff/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T09:30:46+00:00",
+      "updated_at": "2026-07-12T12:26:09+00:00",
       "orphaned": false
     },
     "MF-P5-07.02": {

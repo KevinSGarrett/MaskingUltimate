@@ -3748,3 +3748,21 @@ authority:                      masks remain failed; no threshold override and n
 current S02 corpus:             33 instance records / 20 images; 31 pass, 2 needs_review
 evidence:                       qa/live_verification/s02_review_queue_durability_20260712.json
 validation:                     59 focused and 647 full tests passed; Ruff/format clean
+
+## 2026-07-12 - S03 custom-bodypart champion producer activated
+
+**Result:** PASS for MF-P5-07.01 - the promoted body-part model now has a complete producer-to-consumer path rather than only an S09 fixture seam.
+
+S03 producer:                    exact ordered 56-class v1 vocabulary -> 16-bit custom_bodypart.png
+authority:                       exactly one verified champion_bodypart role; checkpoint/config hashes reverified
+provenance:                      model key, checkpoint SHA, inference-config SHA, exact class_names
+map validation:                  full vocabulary, strict boolean geometry, no overlaps, ontology IDs by name
+co-subject safety:               other_person_protected pixels suppressed before geometry/fusion
+S09 consumer:                    custom_bodypart consensus source at governed weight 0.45
+cache promotion/change:          stale or missing champion provenance forces S03
+cache rollback:                  role removal forces S03 and removes stale custom artifacts atomically
+GPU lifecycle:                   MMSeg slot closes on success and every failure
+current registry:                no champion role; live existing pipeline remains unchanged and needs no refresh
+not claimed:                     no D6/G7 winner or live champion score; MF-P5-07.02 remains open
+evidence:                        qa/live_verification/custom_bodypart_s03_s09_integration_20260712.json
+validation:                      64 focused and 650 full tests passed; Ruff/format clean

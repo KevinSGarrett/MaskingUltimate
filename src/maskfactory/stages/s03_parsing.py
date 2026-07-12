@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import uuid
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
@@ -14,6 +15,14 @@ import numpy as np
 from PIL import Image
 
 from ..io.png_strict import write_binary_mask, write_grayscale, write_label_map
+from ..io.writers import write_json_atomic
+from ..models.registry import (
+    DEFAULT_MODELS_ROOT,
+    DEFAULT_REGISTRY,
+    ModelRegistryError,
+    resolve_registered_role,
+)
+from ..ontology import get_ontology
 
 
 class ParsingError(ValueError):
@@ -30,6 +39,17 @@ class ModelParsing:
 
 class ParsingProvider(Protocol):
     def __call__(self, image: np.ndarray, *, scale: float = 1.0) -> ModelParsing: ...
+
+
+class ChampionBodypartSlot(Protocol):
+    class_names: tuple[str, ...]
+
+    def __call__(self, image: np.ndarray, labels: tuple[str, ...]) -> dict[str, np.ndarray]: ...
+
+    def close(self) -> None: ...
+
+
+ChampionLoader = Callable[..., ChampionBodypartSlot]
 
 
 class WslParserProvider:
@@ -248,6 +268,13 @@ class S03Result:
     sapiens_scale: float | None
 
 
+@dataclass(frozen=True)
+class CustomBodypartResult:
+    map_path: Path
+    provenance_path: Path
+    model_key: str
+
+
 def run_s03_production(
     image_path: Path,
     *,
@@ -292,6 +319,148 @@ def run_s03_production(
         schp_map=schp_map,
         output_dir=output_dir,
     )
+
+
+def run_champion_bodypart_prediction(
+    image_path: Path,
+    output_dir: Path,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    loader: ChampionLoader | None = None,
+) -> CustomBodypartResult | None:
+    """Emit the promoted 56-class S03 prior, or no artifact when no champion exists."""
+    registry_path = Path(registry_path)
+    try:
+        registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ParsingError(f"champion registry is unreadable: {exc}") from exc
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_bodypart" and entry.get("managed") is not True
+    ]
+    if not matches:
+        return None
+    if len(matches) != 1:
+        raise ParsingError("expected exactly one champion_bodypart registry entry")
+    entry = matches[0]
+    try:
+        checkpoint = resolve_registered_role(
+            "champion_bodypart", registry_path=registry_path, models_root=Path(models_root)
+        )
+    except ModelRegistryError as exc:
+        raise ParsingError(f"champion bodypart resolution failed: {exc}") from exc
+    if loader is None:
+        from ..serve.providers import load_production_mmseg_slot
+
+        loader = load_production_mmseg_slot
+    slot = loader(
+        "champion_bodypart",
+        checkpoint,
+        registry_path=registry_path,
+        models_root=Path(models_root),
+    )
+    try:
+        expected = _bodypart_class_names()
+        if tuple(slot.class_names) != expected:
+            raise ParsingError("champion_bodypart class_names differ from the 56-class ontology")
+        requested = tuple(name for name in expected if name != "background")
+        with Image.open(image_path) as opened:
+            image = np.asarray(opened.convert("RGB"))
+        masks = slot(image, requested)
+        map_path = _write_custom_bodypart_map(masks, image.shape[:2], output_dir)
+        provenance = {
+            "schema_version": "1.0.0",
+            "role": "champion_bodypart",
+            "model_key": str(entry.get("key", "")),
+            "checkpoint_sha256": str(entry.get("sha256", "")),
+            "inference_config_sha256": str(entry.get("inference_config_sha256", "")),
+            "class_names": list(expected),
+        }
+        if (
+            not provenance["model_key"]
+            or len(provenance["checkpoint_sha256"]) != 64
+            or len(provenance["inference_config_sha256"]) != 64
+        ):
+            raise ParsingError("champion_bodypart registry provenance is incomplete")
+        provenance_path = write_json_atomic(
+            Path(output_dir) / "custom_bodypart_provenance.json", provenance
+        )
+        return CustomBodypartResult(map_path, provenance_path, provenance["model_key"])
+    finally:
+        slot.close()
+
+
+def custom_bodypart_refresh_required(
+    output_dir: Path,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+) -> bool:
+    """Return whether cached S03 output differs from the current champion role pointer."""
+    try:
+        registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ParsingError(f"champion registry is unreadable: {exc}") from exc
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_bodypart" and entry.get("managed") is not True
+    ]
+    if len(matches) > 1:
+        raise ParsingError("expected at most one champion_bodypart registry entry")
+    root = Path(output_dir)
+    map_path = root / "custom_bodypart.png"
+    provenance_path = root / "custom_bodypart_provenance.json"
+    if not matches:
+        return map_path.exists() or provenance_path.exists()
+    if not map_path.is_file() or not provenance_path.is_file():
+        return True
+    try:
+        provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return True
+    entry = matches[0]
+    return any(
+        provenance.get(key) != entry.get(entry_key)
+        for key, entry_key in (
+            ("model_key", "key"),
+            ("checkpoint_sha256", "sha256"),
+            ("inference_config_sha256", "inference_config_sha256"),
+            ("class_names", "class_names"),
+        )
+    )
+
+
+def _bodypart_class_names() -> tuple[str, ...]:
+    labels = sorted(get_ontology().labels_for_map("part"), key=lambda label: int(label.id))
+    names = tuple(label.name for label in labels)
+    if len(names) != 56 or names[0] != "background":
+        raise ParsingError("active bodypart ontology is not the governed 56-class v1 contract")
+    return names
+
+
+def _write_custom_bodypart_map(
+    masks: Mapping[str, np.ndarray], shape: tuple[int, int], output_dir: Path
+) -> Path:
+    expected = _bodypart_class_names()
+    requested = set(expected) - {"background"}
+    if set(masks) != requested:
+        raise ParsingError("champion_bodypart output does not cover the exact ontology vocabulary")
+    authority = get_ontology()
+    indexed = np.zeros(shape, dtype=np.uint16)
+    claimed = np.zeros(shape, dtype=bool)
+    for name in expected[1:]:
+        mask = np.asarray(masks[name])
+        if mask.dtype != np.bool_ or mask.shape != shape:
+            raise ParsingError(f"champion_bodypart mask {name} has invalid dtype or geometry")
+        if np.any(claimed & mask):
+            raise ParsingError("champion_bodypart masks overlap")
+        indexed[mask] = int(authority.label(name).id)
+        claimed |= mask
+    path = Path(output_dir) / "custom_bodypart.png"
+    write_label_map(path, indexed, bits=16)
+    return path
 
 
 def run_parsing(
@@ -394,16 +563,16 @@ def suppress_co_subject_parsing(
     target = target_full[top:bottom, left:right]
     if protected.shape != target.shape:
         raise ParsingError("invalid context projection for co-subject suppression")
-    for stem in ("sapiens_28", "schp_atr"):
+    for stem, bits in (("sapiens_28", 8), ("schp_atr", 8), ("custom_bodypart", 16)):
         labels_path = output_dir / f"{stem}.png"
         if not labels_path.is_file():
             continue
         labels = np.asarray(Image.open(labels_path))
         if labels.shape != protected.shape:
             raise ParsingError(f"{stem} dimensions differ from co-subject protection")
-        labels = labels.astype(np.uint8, copy=True)
+        labels = labels.astype(np.uint16 if bits == 16 else np.uint8, copy=True)
         labels[protected] = 0
-        write_label_map(labels_path, labels, bits=8)
+        write_label_map(labels_path, labels, bits=bits)
         confidence_paths = sorted((output_dir / f"{stem}_confidence").glob("class_*.png"))
         for index, path in enumerate(confidence_paths):
             confidence = np.asarray(Image.open(path).convert("L")).copy()

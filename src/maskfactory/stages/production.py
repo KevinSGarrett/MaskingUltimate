@@ -39,7 +39,12 @@ from ..state import persist_terminal_image_outcome
 from ..vlm.production import run_s11_production
 from .s01_person_detection import run_s01
 from .s02_silhouette import run_s02
-from .s03_parsing import run_s03_production, suppress_co_subject_parsing
+from .s03_parsing import (
+    custom_bodypart_refresh_required,
+    run_champion_bodypart_prediction,
+    run_s03_production,
+    suppress_co_subject_parsing,
+)
 from .s04_pose import run_s04_production
 from .s05_geometry import run_s05_production
 from .s06_openvocab import run_s06_production
@@ -298,6 +303,7 @@ def build_production_runners(
             ),
             schp_cache=Path(settings["schp_cache"]) if settings.get("schp_cache") else None,
         )
+        custom = run_champion_bodypart_prediction(crop, context.output_dir)
         protection_path = context.prior_stage_dir("S02") / "other_person_protected.png"
         suppression = {"suppressed_px": 0, "ambiguous_px": 0, "careful_review": False}
         if protection_path.is_file():
@@ -317,13 +323,17 @@ def build_production_runners(
                     )["context_bbox_xyxy"]
                 ),
             )
+        model_keys = ["sapiens_0_6b_seg", "schp_atr"]
+        if custom is not None:
+            model_keys.append(custom.model_key)
         return {
             "parsing_degraded": result.parsing_degraded or suppression["careful_review"],
             "sapiens_scale": result.sapiens_scale,
             "co_subject_suppressed_px": suppression["suppressed_px"],
             "co_subject_ambiguous_px": suppression["ambiguous_px"],
             "careful_review": suppression["careful_review"],
-            "_telemetry": {"model_keys": ["sapiens_0_6b_seg", "schp_atr"]},
+            "custom_bodypart": custom is not None,
+            "_telemetry": {"model_keys": model_keys},
         }
 
     def s04(context: StageContext) -> Mapping[str, Any]:
@@ -1034,6 +1044,11 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
+
+    def s03_force(instance_root: Path) -> tuple[str, ...]:
+        cached = instance_root / "s03" / image_id
+        return ("S03",) if custom_bodypart_refresh_required(cached) else ()
+
     if parsing_only or pose_only or openvocab_only or sam2_only or densepose_only:
         if parsing_only:
             selected = ("S03",)
@@ -1055,6 +1070,7 @@ def run_multi_person_production(
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
+                force=s03_force(instance_root),
             )
             per_instance[name] = (*per_instance[name], *tuple(partial))
         return MultiPersonProductionResult(
@@ -1074,6 +1090,7 @@ def run_multi_person_production(
             work_root=instance_root,
             runners=scoped_runners[name],
             gpu_lock_path=gpu_lock_path,
+            force=s03_force(instance_root),
         )
         per_instance[name] = (*per_instance[name], *tuple(remainder))
     manifest, _ = _source(image_id, Path(images_root))

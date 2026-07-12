@@ -1,16 +1,21 @@
+import hashlib
 import json
 import os
 from pathlib import Path
 
 import numpy as np
 import pytest
+from PIL import Image
 
-from maskfactory.io.png_strict import read_mask
+from maskfactory.io.png_strict import read_mask, write_label_map
+from maskfactory.ontology import get_ontology
 from maskfactory.stages.s03_parsing import (
     ModelParsing,
     ParsingError,
     WslParserProvider,
+    custom_bodypart_refresh_required,
     remap_priors,
+    run_champion_bodypart_prediction,
     run_parsing,
     suppress_co_subject_parsing,
 )
@@ -74,6 +79,7 @@ def test_co_subject_pixels_are_removed_from_both_parsers_before_geometry(
         schp_map=SCHP_MAP,
         output_dir=tmp_path,
     )
+    write_label_map(tmp_path / "custom_bodypart.png", np.full((4, 4), 18, np.uint16), bits=16)
     protected = np.zeros((6, 6), dtype=bool)
     protected[1, 1] = True
     protected[2, 2] = True
@@ -86,15 +92,144 @@ def test_co_subject_pixels_are_removed_from_both_parsers_before_geometry(
         context_bbox_xyxy=(1, 1, 5, 5),
     )
     assert result == {"suppressed_px": 2, "ambiguous_px": 1, "careful_review": True}
-    for stem in ("sapiens_28", "schp_atr"):
+    for stem in ("sapiens_28", "schp_atr", "custom_bodypart"):
         indexed = read_mask(tmp_path / f"{stem}.png")
         assert indexed[0, 0] == indexed[1, 1] == 0
+        if stem == "custom_bodypart":
+            continue
         assert read_mask(tmp_path / f"{stem}_confidence/class_00.png")[1, 1] == 255
         assert read_mask(tmp_path / f"{stem}_confidence/class_01.png")[1, 1] == 0
     ambiguity = read_mask(tmp_path / "ambiguous_do_not_use.png") > 0
     assert ambiguity.sum() == 1 and ambiguity[1, 1]
     metrics = json.loads((tmp_path / "parsing_metrics.json").read_text())
     assert metrics["parsing_degraded"] and metrics["co_subject_ambiguous_px"] == 1
+
+
+def test_promoted_bodypart_champion_emits_exact_indexed_prior_and_refreshes(
+    tmp_path: Path,
+) -> None:
+    authority = get_ontology()
+    class_names = tuple(
+        label.name for label in sorted(authority.labels_for_map("part"), key=lambda x: int(x.id))
+    )
+    models = tmp_path / "models"
+    models.mkdir()
+    checkpoint = models / "champion.bin"
+    checkpoint.write_bytes(b"bodypart champion")
+    checkpoint_sha = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+    config = models / "champion.py"
+    config.write_text("model = {}\n", encoding="utf-8")
+    config_sha = hashlib.sha256(config.read_bytes()).hexdigest()
+    registry_document = json.loads(Path("models/model_registry.json").read_text(encoding="utf-8"))
+    entry = dict(registry_document["models"][0])
+    entry.update(
+        {
+            "key": "fixture_champion_bodypart",
+            "role": "champion_bodypart",
+            "file": "champion.bin",
+            "sha256": checkpoint_sha,
+            "verified": True,
+            "inference_config": "models/champion.py",
+            "inference_config_sha256": config_sha,
+            "class_names": list(class_names),
+        }
+    )
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({**registry_document, "models": [entry]}), encoding="utf-8")
+    image = tmp_path / "source.png"
+    Image.new("RGB", (4, 3), "white").save(image)
+
+    class Slot:
+        def __init__(self):
+            self.class_names = class_names
+            self.closed = False
+
+        def __call__(self, source, labels):
+            assert source.shape == (3, 4, 3)
+            masks = {name: np.zeros((3, 4), dtype=bool) for name in labels}
+            masks["hair"][0, 0] = True
+            masks["left_forearm"][1, 1] = True
+            return masks
+
+        def close(self):
+            self.closed = True
+
+    slot = Slot()
+    assert custom_bodypart_refresh_required(tmp_path / "output", registry_path=registry)
+    result = run_champion_bodypart_prediction(
+        image,
+        tmp_path / "output",
+        registry_path=registry,
+        models_root=models,
+        loader=lambda *args, **kwargs: slot,
+    )
+
+    assert result is not None and result.model_key == "fixture_champion_bodypart"
+    indexed = read_mask(result.map_path)
+    assert indexed.dtype == np.uint16
+    assert indexed[0, 0] == authority.label("hair").id
+    assert indexed[1, 1] == authority.label("left_forearm").id
+    assert slot.closed
+    assert not custom_bodypart_refresh_required(tmp_path / "output", registry_path=registry)
+    entry["sha256"] = "f" * 64
+    registry.write_text(json.dumps({**registry_document, "models": [entry]}), encoding="utf-8")
+    assert custom_bodypart_refresh_required(tmp_path / "output", registry_path=registry)
+    entry["role"] = "challenger_bodypart"
+    registry.write_text(json.dumps({**registry_document, "models": [entry]}), encoding="utf-8")
+    assert custom_bodypart_refresh_required(tmp_path / "output", registry_path=registry)
+
+
+def test_bodypart_champion_overlap_fails_closed_and_releases_provider(tmp_path: Path) -> None:
+    authority = get_ontology()
+    class_names = tuple(
+        label.name for label in sorted(authority.labels_for_map("part"), key=lambda x: int(x.id))
+    )
+    models = tmp_path / "models"
+    models.mkdir()
+    checkpoint = models / "champion.bin"
+    checkpoint.write_bytes(b"bodypart champion")
+    document = json.loads(Path("models/model_registry.json").read_text(encoding="utf-8"))
+    entry = dict(document["models"][0])
+    entry.update(
+        {
+            "key": "fixture_champion_bodypart",
+            "role": "champion_bodypart",
+            "file": "champion.bin",
+            "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+            "verified": True,
+            "inference_config": "models/champion.py",
+            "inference_config_sha256": "a" * 64,
+            "class_names": list(class_names),
+        }
+    )
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({**document, "models": [entry]}), encoding="utf-8")
+    image = tmp_path / "source.png"
+    Image.new("RGB", (2, 2), "white").save(image)
+
+    class Slot:
+        def __init__(self):
+            self.class_names = class_names
+            self.closed = False
+
+        def __call__(self, source, labels):
+            masks = {name: np.zeros((2, 2), dtype=bool) for name in labels}
+            masks["hair"][0, 0] = masks["left_forearm"][0, 0] = True
+            return masks
+
+        def close(self):
+            self.closed = True
+
+    slot = Slot()
+    with pytest.raises(ParsingError, match="overlap"):
+        run_champion_bodypart_prediction(
+            image,
+            tmp_path / "output",
+            registry_path=registry,
+            models_root=models,
+            loader=lambda *args, **kwargs: slot,
+        )
+    assert slot.closed
 
 
 def test_s03_oom_retries_half_resolution_then_uses_schp_only(tmp_path: Path) -> None:

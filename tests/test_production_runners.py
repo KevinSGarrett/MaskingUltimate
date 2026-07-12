@@ -984,6 +984,77 @@ def test_multi_person_s02_terminal_is_queued_once_across_cached_reruns(tmp_path:
     assert records[0]["stage"] == "S02"
 
 
+def test_promoted_bodypart_role_forces_stale_cached_s03_refresh(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    image_dir = tmp_path / "images" / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (60, 80), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "status": "ingested",
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 60,
+                    "source_height": 80,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    work = tmp_path / "work"
+    force_calls = []
+
+    def pipeline(image_id_arg, *, selected, work_root, force=(), **kwargs):
+        assert image_id_arg == image_id
+        if tuple(selected) == ("S00", "S01"):
+            directory = Path(work_root) / "s01" / image_id
+            (directory / "p0").mkdir(parents=True)
+            Image.new("RGB", (60, 80), "white").save(directory / "p0/person_ctx.png")
+            (directory / "person_bbox.json").write_text(
+                json.dumps(
+                    {
+                        "persons": [
+                            {
+                                "person_index": 0,
+                                "promoted": True,
+                                "bbox_xyxy": [0, 0, 60, 80],
+                                "context_bbox_xyxy": [0, 0, 60, 80],
+                                "protected_as_part_50": False,
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            return ()
+        instance_root = Path(work_root)
+        if tuple(selected) == ("S02",):
+            directory = instance_root / "s02" / image_id
+            directory.mkdir(parents=True)
+            Image.new("L", (60, 80), 255).save(directory / "person_full_visible.png")
+            return (production.StageExecution("S02", "complete", "a" * 64, str(directory), False),)
+        force_calls.append(tuple(force))
+        return ()
+
+    monkeypatch.setattr(production, "custom_bodypart_refresh_required", lambda path: True)
+    result = production.run_multi_person_production(
+        image_id,
+        config=load_pipeline_config(Path("configs/pipeline.yaml")),
+        images_root=tmp_path / "images",
+        work_root=work,
+        pipeline_runner=pipeline,
+        runner_factory=lambda *args, **kwargs: {},
+        parsing_only=True,
+    )
+
+    assert result.terminal_outcome is None
+    assert force_calls == [("S03",)]
+
+
 def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path) -> None:
     image_id = "img_a3f9c2e17b04"
     legacy = tmp_path / "legacy"

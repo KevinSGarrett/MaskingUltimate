@@ -3481,4 +3481,6 @@ authority manifest:          qa/multi_instance_fixtures/manifest.json status ver
 negative evidence retained: licensed bus fixture canonically intake-cleared four adults but p2 stopped at S02 ratio 0.311724 < required 0.35
 hard-gate behavior:          bus terminal remains needs_review; no silhouette threshold was relaxed and no missing package was counted
 regression:                  configured-cap, tamper, mismatch, and exact-downstream tests pass
+P8 automated-set progress:   MF-P8-10.02 advanced 5% -> 20%; both qualifying 2-4-person sources (2/10 minimum) complete S00-S10
+scope exclusions:            two five-person sources remain outside the 2-4-person set; bus S02 terminal is not counted
 ```

@@ -54,6 +54,14 @@ def test_qc011_017_detect_overlap_containment_votes_area_frame_and_components() 
         "QC-012"
     ].passed
     assert not _by_id(replace(base, protected=abdomen))["QC-013"].passed
+    protected_self = replace(
+        base,
+        atomic_parts={"other_person": abdomen},
+        protected=abdomen,
+        skin_derived=base.skin_derived & False,
+        material_skin=base.material_skin & False,
+    )
+    assert _by_id(protected_self)["QC-013"].passed
 
     left = np.zeros_like(abdomen)
     left[40:50, 40:50] = True

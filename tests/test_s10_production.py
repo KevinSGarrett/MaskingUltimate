@@ -7,8 +7,32 @@ from PIL import Image
 
 from maskfactory.io.png_strict import write_grayscale, write_label_map
 from maskfactory.qa.multi_instance import MultiInstanceQcInputs
-from maskfactory.qa.production import run_s10_production
+from maskfactory.qa.production import run_s10_production, skeleton_side_vote
 from maskfactory.validation import validate_document
+
+
+def test_skeleton_side_vote_uses_anatomical_pose_chains() -> None:
+    keypoints = [{"index": index, "x": 0.0, "y": 0.0, "confidence": 0.0} for index in range(133)]
+    for index, x, y in (
+        (5, 10, 10),
+        (7, 10, 20),
+        (9, 10, 30),
+        (6, 30, 10),
+        (8, 30, 20),
+        (10, 30, 30),
+    ):
+        keypoints[index] = {"index": index, "x": x, "y": y, "confidence": 0.9}
+    left = np.zeros((40, 40), dtype=bool)
+    right = np.zeros_like(left)
+    left[15:25, 7:13] = True
+    right[15:25, 27:33] = True
+
+    assert skeleton_side_vote("left_forearm", left, keypoints, context_origin_xy=(0, 0)) == "left"
+    assert (
+        skeleton_side_vote("right_forearm", right, keypoints, context_origin_xy=(0, 0)) == "right"
+    )
+    keypoints[7]["confidence"] = 0.1
+    assert skeleton_side_vote("left_forearm", left, keypoints, context_origin_xy=(0, 0)) is None
 
 
 def test_s10_production_writes_schema_valid_report_and_preserves_blocks(tmp_path: Path) -> None:
@@ -92,6 +116,48 @@ def test_s10_production_writes_schema_valid_report_and_preserves_blocks(tmp_path
         if check["result"] == "fail"
     }
     assert all(row["failure_reason"] == "qc_fail" for row in failures)
+
+    run_s10_production(
+        image_id="img_a3f9c2e17b04",
+        part_map_path=tmp_path / "part.png",
+        material_map_path=tmp_path / "material.png",
+        disagreement_path=tmp_path / "disagreement.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        parsing_metrics_path=tmp_path / "parsing.json",
+        sam2_metrics_path=tmp_path / "sam2.json",
+        densepose_path=tmp_path / "densepose.png",
+        image_manifest_path=tmp_path / "image_manifest.json",
+        context_bbox_xyxy=(10, 10, 50, 40),
+        person_bbox_xyxy=(10, 10, 50, 40),
+        source_crop_path=tmp_path / "source.png",
+        output_dir=tmp_path / "repeat_output",
+        failure_queue_path=tmp_path / "failure_queue.jsonl",
+    )
+    assert len((tmp_path / "failure_queue.jsonl").read_text().splitlines()) == len(failures)
+
+    for index in (5, 7, 9, 11, 13, 15):
+        pose["keypoints"][index].update({"x": 10, "confidence": 0.9})
+    for index in (6, 8, 10, 12, 14, 16):
+        pose["keypoints"][index].update({"x": 30, "confidence": 0.9})
+    (tmp_path / "pose.json").write_text(json.dumps(pose), encoding="utf-8")
+    voted_report = run_s10_production(
+        image_id="img_a3f9c2e17b04",
+        part_map_path=tmp_path / "part.png",
+        material_map_path=tmp_path / "material.png",
+        disagreement_path=tmp_path / "disagreement.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        parsing_metrics_path=tmp_path / "parsing.json",
+        sam2_metrics_path=tmp_path / "sam2.json",
+        densepose_path=tmp_path / "densepose.png",
+        image_manifest_path=tmp_path / "image_manifest.json",
+        context_bbox_xyxy=(10, 10, 50, 40),
+        person_bbox_xyxy=(10, 10, 50, 40),
+        source_crop_path=tmp_path / "source.png",
+        output_dir=tmp_path / "voted_output",
+    )
+    assert {item["id"]: item for item in voted_report["checks"]}["QC-014"]["result"] == "pass"
 
     p0 = np.zeros((30, 80), dtype=bool)
     p1 = np.zeros_like(p0)

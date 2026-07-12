@@ -24,6 +24,29 @@ from .multi_instance import MultiInstanceQcInputs, run_multi_instance_qc
 from .semantic import SemanticInputs, run_semantic_qc
 from .topology import TopologyInputs, run_topology_qc, run_uncertainty_qc
 
+_SKELETON_SIDE_CHAINS = {
+    "breast": ((5, 11), (6, 12)),
+    "shoulder": ((5,), (6,)),
+    "upper_arm": ((5, 7), (6, 8)),
+    "elbow": ((7,), (8,)),
+    "forearm": ((7, 9), (8, 10)),
+    "wrist": ((9,), (10,)),
+    "hand_base": ((9,), (10,)),
+    "thumb": ((9,), (10,)),
+    "index_finger": ((9,), (10,)),
+    "middle_finger": ((9,), (10,)),
+    "ring_finger": ((9,), (10,)),
+    "pinky": ((9,), (10,)),
+    "glute": ((11,), (12,)),
+    "hip": ((11,), (12,)),
+    "thigh": ((11, 13), (12, 14)),
+    "knee": ((13,), (14,)),
+    "calf": ((13, 15), (14, 16)),
+    "ankle": ((15,), (16,)),
+    "foot_base": ((15,), (16,)),
+    "toes": ((15,), (16,)),
+}
+
 
 def run_s10_production(
     *,
@@ -66,14 +89,25 @@ def run_s10_production(
     material_skin = material_map == int(authority.label("skin").id)
     clothing = np.isin(material_map, tuple(range(3, 16)))
     protected = masks.get("other_person", np.zeros(shape, dtype=bool))
+    pose = json.loads(Path(pose_path).read_text(encoding="utf-8"))
+    keypoints = pose.get("keypoints", ())
     iuv = np.asarray(Image.open(densepose_path).convert("RGB"))
     densepose = DensePoseOutput(iuv[:, :, 0], iuv[:, :, 1], iuv[:, :, 2])
     side_votes: dict[str, tuple[str, ...]] = {}
     front_fractions: dict[str, float] = {}
     for name, mask in masks.items():
+        skeleton = skeleton_side_vote(
+            name,
+            mask,
+            keypoints,
+            context_origin_xy=(x1, y1),
+        )
+        votes = [skeleton] if skeleton else []
         vote = surface_vote(mask, densepose)
         if vote.side_vote:
-            side_votes[name] = (vote.side_vote,)
+            votes.append(vote.side_vote)
+        if votes:
+            side_votes[name] = tuple(votes)
         if vote.front_fraction is not None:
             front_fractions[name] = vote.front_fraction
     breast_skin = (
@@ -100,7 +134,6 @@ def run_s10_production(
             )
         )
     )
-    pose = json.loads(Path(pose_path).read_text(encoding="utf-8"))
     points = {item["index"]: item for item in pose["keypoints"]}
     references = {
         "left": ((points[5]["x"] + points[11]["x"]) / 2) - x1,
@@ -229,6 +262,68 @@ def run_s10_production(
     return report
 
 
+def skeleton_side_vote(
+    name: str,
+    mask: np.ndarray,
+    keypoints: list[dict[str, Any]] | tuple[dict[str, Any], ...],
+    *,
+    context_origin_xy: tuple[int, int],
+    confidence_min: float = 0.3,
+) -> str | None:
+    """Vote anatomical side by proximity to the corresponding pose skeleton chains."""
+    if name.startswith("left_"):
+        suffix = name.removeprefix("left_")
+    elif name.startswith("right_"):
+        suffix = name.removeprefix("right_")
+    else:
+        return None
+    chains = _SKELETON_SIDE_CHAINS.get(suffix)
+    region = np.asarray(mask).astype(bool)
+    if chains is None or not region.any() or len(keypoints) < 17:
+        return None
+    points = {int(item.get("index", -1)): item for item in keypoints}
+    x0, y0 = context_origin_xy
+
+    def chain_points(indices: tuple[int, ...]) -> np.ndarray | None:
+        selected = [points.get(index) for index in indices]
+        if any(
+            item is None or float(item.get("confidence", 0.0)) < confidence_min for item in selected
+        ):
+            return None
+        return np.asarray(
+            [(float(item["x"]) - x0, float(item["y"]) - y0) for item in selected],
+            dtype=np.float64,
+        )
+
+    left = chain_points(chains[0])
+    right = chain_points(chains[1])
+    if left is None or right is None:
+        return None
+    ys, xs = np.nonzero(region)
+    centroid = np.asarray([float(xs.mean()), float(ys.mean())])
+    left_distance = _point_to_chain_distance(centroid, left)
+    right_distance = _point_to_chain_distance(centroid, right)
+    if np.isclose(left_distance, right_distance, atol=1e-6):
+        return None
+    return "left" if left_distance < right_distance else "right"
+
+
+def _point_to_chain_distance(point: np.ndarray, chain: np.ndarray) -> float:
+    if len(chain) == 1:
+        return float(np.linalg.norm(point - chain[0]))
+    distances = []
+    for start, end in zip(chain[:-1], chain[1:], strict=True):
+        vector = end - start
+        denominator = float(np.dot(vector, vector))
+        fraction = (
+            float(np.clip(np.dot(point - start, vector) / denominator, 0.0, 1.0))
+            if denominator
+            else 0.0
+        )
+        distances.append(float(np.linalg.norm(point - (start + fraction * vector))))
+    return min(distances)
+
+
 def _emit_qc_failures(
     report: dict[str, Any], path: Path, *, pose_angle: str, instance_id: str
 ) -> int:
@@ -247,7 +342,7 @@ def _emit_qc_failures(
             body_part=qc_slug,
             reason="qc_fail",
             pose=pose_angle,
-            model=f"s10_autoqa:{instance_id}:{report['run_id']}",
+            model=f"s10_autoqa:{instance_id}",
             correction=f"review_{qc_slug}",
             class_error_rate=1.0,
             coverage_deficit=1.0,

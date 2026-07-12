@@ -25,8 +25,9 @@ procedure in `02_MASK_ONTOLOGY_SPEC.md` §9. Entry template:
 ## [body_parts_v2 evaluation: NO-GO] — 2026-07-12
 - Change: None. Keep `body_parts_v1`; IDs and enabled states remain unchanged.
 - Evidence: `qa/reports/ontology_v2_evidence_review_2026-07-12.{json,md}`. The live failure
-  queue is absent, producing 0/10 qualifying distinct failures for per-toe splits,
-  inner/outer-thigh labels, shin-front labels, and ears 54/55 enablement.
+  queue contains 27 current deduplicated QC-014 failures, but none is attributable to the
+  proposed per-toe, inner/outer-thigh, shin-front, or ear boundaries; every candidate remains
+  at 0/10 qualifying distinct failures.
 - Boundary definition: None authorized.
 - swap_partner: None added or changed.
 - Back-annotation plan: Not applicable because the evidence gate failed.

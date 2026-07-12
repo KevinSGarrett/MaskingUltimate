@@ -3403,3 +3403,24 @@ authority boundary:         reports cannot approve masks, clear hard blocks, or 
 durable audit:              qa/live_verification/s10_autoqa_corpus_20260712.json
 remaining item gate:        MF-P2-06.08 requires the governed 10-fixture set; live corpus is not substituted for that requirement
 ```
+## 2026-07-12 05:47 UTC - S10 QC-013/QC-014 production evidence corrected
+**Item:** MF-P2-06.08 remains 80% partial
+**Result:** Two adapter false-positive sources were repaired; remaining left/right failures stay hard-blocked because live evidence genuinely disagrees or is insufficient.
+
+```
+QC-013 root cause:          protected other_person ID50 was tested against the protected mask itself, producing eight guaranteed 100% self-overlaps
+QC-013 correction:          protected IDs 50..53 are excluded; body atomics remain subject to the ≤0.5% protected-overlap gate
+QC-013 live result:         29/29 PASS after forced rerun (previously 21 pass / 8 false fail)
+QC-014 root cause:          production adapter supplied only DensePose despite the required pose-skeleton + MediaPipe + DensePose vote contract
+QC-014 correction:          anatomical pose-chain proximity now supplies the skeleton signal for breasts, arms/hands/fingers, hips/glutes, and legs/feet
+QC-014 regression:         agreeing skeleton + DensePose votes pass; unavailable or contradictory evidence remains BLOCK
+QC-014 live result:         27 fail / 2 pass remains; all 27 failures contain wrong-side votes and 22 also lack a second usable signal for at least one part
+queue identity fix:         S10 producer identity is stable s10_autoqa:pN; random report run_id no longer defeats append-once deduplication
+queue reconciliation:      66 rows -> 27 current QC-014 rows; removed 8 obsolete QC-013 false positives and 31 duplicate QC-014 rows
+queue idempotency proof:    forced failing instance rerun leaves row count 27 -> 27 and SHA-256 unchanged
+ontology review refresh:    v2 remains NO-GO; 27 QC-014 failures do not qualify for any proposed missing-boundary candidate
+authority boundary:         no masks were edited and no hard block was cleared without the required evidence majority
+forced corpus rerun:        29/29 complete S10 receipts; zero runner failures; zero temporary directories
+focused regression:         12 semantic/S10/DensePose tests pass
+durable audit updated:      qa/live_verification/s10_autoqa_corpus_20260712.json
+```

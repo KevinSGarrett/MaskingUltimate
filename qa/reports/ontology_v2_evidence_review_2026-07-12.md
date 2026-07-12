@@ -2,9 +2,10 @@
 
 Decision: **NO-GO. Keep `body_parts_v1` unchanged.**
 
-The authoritative `qa/failure_queue.jsonl` is absent, so the current count is zero qualifying
-failures for every candidate. The mandatory growth bar is at least 10 distinct failures within
-30 days attributable to the missing boundary.
+The authoritative `qa/failure_queue.jsonl` contains 27 current, deduplicated QC-014 failures.
+None is attributable to a missing per-toe, inner/outer-thigh, shin-front, or ear boundary, so the
+current qualifying count remains zero for every candidate. The mandatory growth bar is at least
+10 distinct failures within 30 days attributable to the missing boundary.
 
 | Candidate | Qualifying failures | Required | Decision |
 |---|---:|---:|---|

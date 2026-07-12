@@ -91,6 +91,8 @@ def _qc012(masks, silhouette):
 def _qc013(masks, protected, skin, clothing):
     violations = {}
     for name, mask in masks.items():
+        if name in {"other_person", "occluding_object", "support_surface", "accessory_or_prop"}:
+            continue
         area = int(mask.sum())
         ratio = int(np.count_nonzero(mask & protected)) / area if area else 0.0
         if ratio > 0.005:

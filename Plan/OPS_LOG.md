@@ -3691,3 +3691,14 @@ authority:                     no block clear, no mask edit, no approval
 handoff isolation:             CVAT task records unchanged at 9; S12 never runs
 evidence:                      qa/live_verification/vlmqa_run_cli_20260712.json
 validation:                    55 focused and 640 full tests passed; Ruff/format clean
+## 2026-07-12 - Disk ingest hard stop cleared with owned-artifact cleanup
+
+**Result:** PASS - free space increased from 72.4581 GiB to 75.3 GiB without deleting governed data.
+
+cleanup authority:              ignored runtime/pytest artifacts and clean pushed publication clone only
+preserved:                      registered models, runtime caches, work, data, packages, datasets, QA, runs evidence, logs
+doctor before:                  PASS=7 / WARN=0 / FAIL=4; disk FAIL below 75 GiB
+doctor after:                   PASS=7 / WARN=1 / FAIL=3; disk WARN at 75.3 GiB
+ingest policy:                  hard stop cleared; <150 GiB warning and junction recommendation remain
+remaining failures:             three identity-scoped Ubuntu-22.04 checks only
+evidence:                       qa/live_verification/disk_headroom_recovery_20260712.json

@@ -891,6 +891,68 @@ def active_learning(
     click.echo(json.dumps(result, indent=2, sort_keys=True))
 
 
+@main.group()
+def review() -> None:
+    """Resolve queued early-stage semantic reviews with human authority."""
+
+
+@review.command("resolve-s02")
+@click.argument("image_id", required=True)
+@click.argument("instance_id", required=True)
+@click.option(
+    "--mask",
+    "reviewed_mask",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--reviewer", required=True)
+@click.option(
+    "--decision",
+    type=click.Choice(["confirmed_valid", "corrected"], case_sensitive=True),
+    required=True,
+)
+@click.option("--note", required=True)
+@click.option(
+    "--work-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("work"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+def review_resolve_s02(
+    image_id: str,
+    instance_id: str,
+    reviewed_mask: Path,
+    reviewer: str,
+    decision: str,
+    note: str,
+    work_root: Path,
+    images_root: Path,
+) -> None:
+    """Seal a reviewed S02 mask; the next draft run replays and verifies it."""
+    from .review_resolution import ReviewResolutionError, create_s02_review_resolution
+
+    try:
+        resolution = create_s02_review_resolution(
+            image_id,
+            instance_id,
+            reviewed_mask,
+            reviewer=reviewer,
+            decision=decision,
+            note=note,
+            work_root=work_root,
+            images_root=images_root,
+        )
+    except (OSError, ReviewResolutionError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({"resolution": str(resolution)}, sort_keys=True))
+
+
 @main.group("second-review")
 def second_review() -> None:
     """Stratified fresh-eyes review workflow (doc 11 §6)."""

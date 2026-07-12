@@ -3816,3 +3816,20 @@ authority:                       neither case was auto-passed and no threshold/a
 durable outcome:                 both remain needs_review; central queue remains two records
 batch credit:                    unchanged at 18/25 completed sources
 evidence:                        qa/live_verification/s02_low_ratio_case_audit_20260712.json
+
+## 2026-07-12 - S02 semantic review return path made executable
+
+**Result:** PASS implementation readiness - queued pre-package silhouette reviews can now return without weakening QC.
+
+prior dead end:                   semantic S02 terminals were durable but had no governed consumer/resume path
+operator command:                maskfactory review resolve-s02 IMAGE_ID pN --mask PNG --reviewer NAME --decision confirmed_valid|corrected --note REASON
+confirmed-valid authority:       mask must be byte-identical to the queued model output
+corrected authority:             mask must be a different native strict binary PNG inside the S01 context
+immutable evidence:              queue identity, config hash, source/mask hashes, reviewer, decision, note, timestamp
+fresh replay:                    forced S02 reruns BiRefNet and must reproduce the reviewed base hash before applying human evidence
+QC honesty:                      model failure and original ratio remain recorded; human_review_passed is separate
+cache lifecycle:                 sealed-but-unapplied evidence forces S02; matching applied evidence restores cacheability
+tamper handling:                 stale config/model, altered mask, conflicting resolution, bad geometry all refuse
+live authority boundary:         zero resolutions sealed; both current cases still await Kevin's semantic review
+evidence:                        qa/live_verification/s02_review_resolution_path_20260712.json
+validation:                      68 focused tests; full suite split 287 + 375 = 662; Ruff/format clean

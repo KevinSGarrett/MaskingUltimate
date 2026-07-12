@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T13:06:51+00:00",
+    "generated_at": "2026-07-12T13:21:23+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -1899,12 +1899,17 @@
           "ts": "2026-07-12T12:08:10+00:00",
           "actor": "ai_agent",
           "text": "Closed a terminal-value routing gap: S02 semantic QC terminals no longer bypass work/queues/review_queue.jsonl, while masks, thresholds, and SQLite image status remain unchanged."
+        },
+        {
+          "ts": "2026-07-12T13:21:22+00:00",
+          "actor": "ai_agent",
+          "text": "Closed the semantic-route lifecycle rather than only its enqueue half. A queued pre-package S02 review can now be sealed by Kevin as byte-identical confirmed_valid or a pixel-different corrected native mask; the next run forces S02, reproduces the exact model/config/base hash, applies separate human authority, preserves model_qc_passed=false, and refuses stale/tampered/conflicting evidence. No live resolution was self-approved."
         }
       ],
-      "evidence": "Orchestrator retains transient retry, semantic review, fatal quarantine, and batch-continuation policies. Per-instance cached S02 needs_review terminals now also append exactly once to the central review queue under an exclusive lock with fsync. Live replay 0->2->2 records; qa/live_verification/s02_review_queue_durability_20260712.json; 647 tests, Ruff/format clean.",
+      "evidence": "Semantic failures still route durably without retry; qa/live_verification/s02_review_queue_durability_20260712.json proves idempotent queueing, and qa/live_verification/s02_review_resolution_path_20260712.json proves immutable fail-closed human resolution/replay. 662 tests; Ruff/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T12:08:10+00:00",
+      "updated_at": "2026-07-12T13:21:22+00:00",
       "orphaned": false
     },
     "MF-P1-02.05": {
@@ -4061,12 +4066,17 @@
           "ts": "2026-07-12T13:06:50+00:00",
           "actor": "ai_agent",
           "text": "Audited both durable S02 routes against source pixels, detector boxes, full masks, tight mask boxes, source-edge contact, and immutable mask hashes. img_cea6df6f0f13/p0 is a complete wide-limbed pose (ratio 0.299361; tight fill 0.301483); img_c02019c4979c/p2 is a complete visible right-edge-truncated pedestrian (ratio 0.311724; tight fill 0.312720). No coordinate/provider defect was found, so both remain needs_review and batch credit remains 18/25."
+        },
+        {
+          "ts": "2026-07-12T13:21:23+00:00",
+          "actor": "ai_agent",
+          "text": "Removed the process dead end for the two S02 needs_review cases: the new immutable resolve-s02 command and forced fresh replay can return a confirmed or corrected mask to S03+ only after exact queue/config/model/mask validation. This does not add batch credit: zero live resolutions are sealed and the item remains 18/25 (72%)."
         }
       ],
-      "evidence": "Live model-major run remains 18/25 completed sources. qa/live_verification/s02_low_ratio_case_audit_20260712.json proves the two additional S02 stops are aligned, complete-looking silhouettes whose intrinsic tight-box fill remains below the exact 0.35 gate; both stay needs_review with no threshold override.",
+      "evidence": "Live model-major completion remains 18/25. qa/live_verification/s02_low_ratio_case_audit_20260712.json proves both additional S02 routes are genuine low-fill cases; qa/live_verification/s02_review_resolution_path_20260712.json proves they now have a governed human-review return path without threshold change. Both remain unresolved pending Kevin review.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T13:06:50+00:00",
+      "updated_at": "2026-07-12T13:21:23+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {

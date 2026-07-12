@@ -39,6 +39,11 @@ from ..packager import verify_packages
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
 from ..review_package import assemble_review_package
+from ..review_resolution import (
+    ReviewResolutionError,
+    apply_s02_review_resolution,
+    s02_review_refresh_required,
+)
 from ..state import persist_terminal_image_outcome
 from ..vlm.production import run_s11_production
 from .s01_person_detection import run_s01
@@ -258,6 +263,34 @@ def build_production_runners(
             ),
             hf_home=Path(settings["hf_home"]) if settings.get("hf_home") else None,
         )
+        resolution_root = (
+            Path(shared_work_root) if shared_work_root is not None else context.work_root
+        )
+        try:
+            review = apply_s02_review_resolution(
+                work_root=resolution_root,
+                image_id=context.image_id,
+                instance_id=instance_name,
+                output_dir=context.output_dir,
+                config_hash=context.config_hash,
+                person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+                full_size=(
+                    manifest["source"]["source_width"],
+                    manifest["source"]["source_height"],
+                ),
+            )
+        except ReviewResolutionError as exc:
+            raise SemanticStageError(f"S02 review resolution refused: {exc}") from exc
+        if review is not None:
+            return {
+                "silhouette_bbox_ratio": review["silhouette_bbox_ratio"],
+                "qc_passed": True,
+                "human_review_passed": True,
+                "review_decision": review["decision"],
+                "reviewer": review["reviewer"],
+                "resolution_sha256": review["resolution_sha256"],
+                "_telemetry": {"model_keys": ["birefnet_general"]},
+            }
         if not result.qc_passed:
             reason = (
                 f"silhouette_bbox_ratio={result.silhouette_bbox_ratio:.6f} outside "
@@ -1032,6 +1065,16 @@ def run_multi_person_production(
                 work_root=instance_root,
                 runners=runners,
                 gpu_lock_path=gpu_lock_path,
+                force=(
+                    ("S02",)
+                    if s02_review_refresh_required(
+                        work_root,
+                        image_id,
+                        name,
+                        instance_root / "s02" / image_id,
+                    )
+                    else ()
+                ),
             )
         )
     routed = {

@@ -144,6 +144,138 @@ def test_s02_production_runner_forwards_entire_governed_stage_contract(
     assert captured["ratio_range"] == (0.35, 0.95)
 
 
+def test_s02_production_runner_returns_verified_human_resolution(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    images = tmp_path / "images"
+    image_dir = images / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (10, 12), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 10,
+                    "source_height": 12,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    work = tmp_path / "work"
+    s01 = work / "s01" / image_id
+    (s01 / "p0").mkdir(parents=True)
+    Image.new("RGB", (8, 12), "white").save(s01 / "p0/person_ctx.png")
+    (s01 / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "context_bbox_xyxy": [1, 0, 9, 12],
+                        "bbox_xyxy": [2, 1, 8, 11],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        production,
+        "run_s02",
+        lambda *args, **kwargs: SimpleNamespace(silhouette_bbox_ratio=0.3, qc_passed=False),
+    )
+    captured = {}
+
+    def apply(**kwargs):
+        captured.update(kwargs)
+        return {
+            "decision": "confirmed_valid",
+            "reviewer": "kevin",
+            "silhouette_bbox_ratio": 0.3,
+            "resolution_sha256": "d" * 64,
+        }
+
+    monkeypatch.setattr(production, "apply_s02_review_resolution", apply)
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S02"],
+        output_dir=work / "s02" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S02"]},
+        config_hash="a" * 64,
+    )
+    delta = production.build_production_runners(config, images_root=images)["S02"](context)
+    assert delta["qc_passed"] is delta["human_review_passed"] is True
+    assert delta["review_decision"] == "confirmed_valid"
+    assert captured["config_hash"] == "a" * 64
+    assert captured["work_root"] == work
+
+    def refuse(**kwargs):
+        raise production.ReviewResolutionError("tampered evidence")
+
+    monkeypatch.setattr(production, "apply_s02_review_resolution", refuse)
+    with pytest.raises(production.SemanticStageError, match="tampered evidence"):
+        production.build_production_runners(config, images_root=images)["S02"](context)
+
+
+def test_s02_review_resolution_forces_cached_terminal_refresh(tmp_path: Path, monkeypatch) -> None:
+    image_id = "img_a3f9c2e17b04"
+    image_dir = tmp_path / "images" / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (10, 12), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "source": {"source_file": "source.png", "source_width": 10, "source_height": 12},
+            }
+        ),
+        encoding="utf-8",
+    )
+    calls = []
+
+    def pipeline(image_id_arg, *, selected, work_root, force=(), **kwargs):
+        assert image_id_arg == image_id
+        calls.append((tuple(selected), tuple(force)))
+        if tuple(selected) == ("S00", "S01"):
+            directory = Path(work_root) / "s01" / image_id
+            (directory / "p0").mkdir(parents=True)
+            (directory / "person_bbox.json").write_text(
+                json.dumps(
+                    {
+                        "persons": [
+                            {
+                                "person_index": 0,
+                                "promoted": True,
+                                "bbox_xyxy": [2, 1, 8, 11],
+                                "context_bbox_xyxy": [1, 0, 9, 12],
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+        return ()
+
+    monkeypatch.setattr(production, "s02_review_refresh_required", lambda *args: True)
+    result = production.run_multi_person_production(
+        image_id,
+        config=load_pipeline_config(Path("configs/pipeline.yaml")),
+        images_root=tmp_path / "images",
+        work_root=tmp_path / "work",
+        pipeline_runner=pipeline,
+        runner_factory=lambda *args, **kwargs: {},
+        silhouettes_only=True,
+    )
+    assert result.terminal_outcome is None
+    assert calls == [(("S00", "S01"), ()), (("S02",), ("S02",))]
+
+
 @pytest.mark.parametrize("key,value", [("model", "other"), ("precision", "fp32")])
 def test_s02_production_runner_refuses_ungoverned_runtime(
     tmp_path: Path, monkeypatch, key: str, value: str

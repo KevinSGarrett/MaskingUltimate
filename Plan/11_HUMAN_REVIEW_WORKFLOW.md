@@ -12,6 +12,16 @@ plus `rejected_needs_fix` (bounced by QA or reviewer) and `deprecated` (supersed
 Package status (SQLite) mirrors the worst part status. Approval order rule: format BLOCKs must be
 clear BEFORE approval is possible (packager enforces, doc 09 §5).
 
+Early semantic routes that occur before a full review package exists (currently S02 silhouette
+ratio review) return through an immutable reviewer artifact rather than a threshold change. The
+operator reviews/corrects the native mask, then runs
+`maskfactory review resolve-s02 <image_id> <pN> --mask <png> --reviewer <name>
+--decision confirmed_valid|corrected --note <reason>`. The next normal draft run forces S02,
+reproduces the exact queued model/config evidence, and applies the reviewed mask only when every
+hash, dimension, context boundary, and queue identity still matches. The model QC remains recorded
+as failed; separate human semantic authority satisfies the review route. Conflicting, stale, or
+tampered resolutions are refused.
+
 ## 2. CVAT Project Setup (scripted — `maskfactory cvat init-project`)
 
 - One CVAT project `MaskFactory_body_parts_v1`; labels auto-created from `ontology.yaml` with

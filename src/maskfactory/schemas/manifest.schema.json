@@ -28,6 +28,10 @@
       "pattern": "^body_parts_v[1-9][0-9]*(?:\\.[0-9]+)?$"
     },
     "left_right_convention": { "const": "character_perspective" },
+    "workflow_status": {
+      "enum": ["drafted", "auto_qa", "vlm_qa", "in_review", "corrected", "approved_gold", "exported", "deprecated"]
+    },
+    "workflow_updated_at": { "$ref": "#/$defs/timestamp" },
     "source": { "$ref": "#/$defs/source" },
     "person": { "$ref": "#/$defs/person" },
     "interperson": {
@@ -95,6 +99,7 @@
       "required": [
         "source_file",
         "source_sha256",
+        "parent_source_sha256",
         "source_width",
         "source_height",
         "source_origin",
@@ -105,6 +110,7 @@
       "properties": {
         "source_file": { "$ref": "#/$defs/relativePath" },
         "source_sha256": { "$ref": "#/$defs/sha256" },
+        "parent_source_sha256": { "$ref": "#/$defs/sha256" },
         "source_width": { "type": "integer", "minimum": 1 },
         "source_height": { "type": "integer", "minimum": 1 },
         "source_origin": {

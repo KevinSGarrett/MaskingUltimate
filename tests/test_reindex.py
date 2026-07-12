@@ -85,7 +85,9 @@ def test_reindex_reports_stale_and_extra_rows_then_rebuild_removes_them(tmp_path
     assert ids == [manifest["image_id"]]
 
 
-def test_reindex_collapses_instances_and_rejects_source_hash_disagreement(tmp_path: Path) -> None:
+def test_reindex_collapses_distinct_instance_crops_by_parent_source_identity(
+    tmp_path: Path,
+) -> None:
     packages = tmp_path / "packages"
     first = valid_manifest()
     second = copy.deepcopy(first)
@@ -95,7 +97,12 @@ def test_reindex_collapses_instances_and_rejects_source_hash_disagreement(tmp_pa
 
     second["source"]["source_sha256"] = "b" * 64
     _write_manifest(packages, second, "p1")
-    with pytest.raises(ReindexError, match="disagree on source_sha256"):
+    rows = expected_image_rows(packages)
+    assert rows[first["image_id"]].source_sha256 == "a" * 64
+
+    second["source"]["parent_source_sha256"] = "b" * 64
+    _write_manifest(packages, second, "p1")
+    with pytest.raises(ReindexError, match="disagree on parent_source_sha256"):
         expected_image_rows(packages)
 
 

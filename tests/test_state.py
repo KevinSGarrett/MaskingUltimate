@@ -12,6 +12,7 @@ from maskfactory.state import (
     WriterBusyError,
     WriterGuard,
     initialize_database,
+    persist_image_progress,
     persist_recovered_image_outcome,
     persist_terminal_image_outcome,
     reader_connection,
@@ -138,6 +139,48 @@ def test_successful_rerun_recovers_only_terminal_images(tmp_path: Path) -> None:
                 "SELECT status, current_stage FROM images WHERE image_id = 'img_active'"
             ).fetchone()
         ) == ("drafted", "S09")
+
+
+def test_pipeline_progress_advances_exact_chain_and_never_regresses(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_progress", "a" * 64, "ingested", "S00", 1, "t0", "t0"),
+        )
+
+    assert persist_image_progress(database, "img_progress", "vlm_qa", updated_at="t1")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("vlm_qa", "S11", "t1")
+    assert not persist_image_progress(database, "img_progress", "drafted", updated_at="t2")
+    assert persist_image_progress(database, "img_progress", "in_review", updated_at="t3")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("in_review", "S12", "t3")
+
+
+def test_pipeline_progress_refuses_invalid_or_terminal_targets(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_terminal", "a" * 64, "rejected", "S01", 1, "t0", "t0"),
+        )
+    with pytest.raises(InvalidStatusTransition, match="invalid pipeline progress target"):
+        persist_image_progress(database, "img_terminal", "approved_gold")
+    with pytest.raises(InvalidStatusTransition, match="rerun S01 recovery"):
+        persist_image_progress(database, "img_terminal", "drafted")
 
 
 def test_writer_guard_refuses_concurrent_orchestrator_and_releases_cleanly(

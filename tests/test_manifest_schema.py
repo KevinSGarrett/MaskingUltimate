@@ -15,9 +15,12 @@ def valid_manifest() -> dict:
         "image_id": "img_a3f9c2e17b04",
         "mask_ontology_version": "body_parts_v1",
         "left_right_convention": "character_perspective",
+        "workflow_status": "approved_gold",
+        "workflow_updated_at": "2026-07-09T15:03:22Z",
         "source": {
             "source_file": "source.png",
             "source_sha256": SHA,
+            "parent_source_sha256": SHA,
             "source_width": 1664,
             "source_height": 2432,
             "source_origin": "generated",

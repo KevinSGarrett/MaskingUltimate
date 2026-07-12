@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T14:29:41+00:00",
+    "generated_at": "2026-07-12T14:40:12+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -1853,10 +1853,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Implemented double-enforced image status transitions: exact ingested→drafted→auto_qa→vlm_qa→in_review→corrected→approved_gold→exported chain plus explicit rejected/quarantined/deprecated branches and recovery edges. API rejects skips, unknown statuses/images, and terminal transitions; SQL CHECK prevents direct bypass. Focused full-chain/branch/bypass tests pass; full pytest 108 passed; OPS_LOG 2026-07-11 00:33 UTC.",
+      "evidence": "The legal state machine and SQL constraints remain enforced, and production success paths now durably invoke it at D1/S09, S10, S11, and S12. A bounded reconciler repaired 20 live rows without skips or regressions: 16 auto_qa, 1 vlm_qa, 3 in_review. Terminal recovery remains explicit at S01. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json; 671-test full suite passes.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T00:30:49+00:00",
+      "updated_at": "2026-07-12T15:04:01+00:00",
       "orphaned": false
     },
     "MF-P1-02.03": {
@@ -4055,7 +4055,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 72,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-12T07:27:09+00:00",
@@ -4081,12 +4081,17 @@
           "ts": "2026-07-12T13:32:05+00:00",
           "actor": "ai_agent",
           "text": "Generated and visually verified local review panels for img_c02019c4979c/p2 and img_cea6df6f0f13/p0. The publishable index reports two queued/two awaiting, exact mask hashes and commands; neither is sealed or applied. Progress remains 18/25."
+        },
+        {
+          "ts": "2026-07-12T15:04:00+00:00",
+          "actor": "ai_agent",
+          "text": "Verified source-level batch progress is now 20/25 (80%); five additional governed sources with completed drafts are required."
         }
       ],
-      "evidence": "18/25 complete. The two S02 cases have audited valid-looking low-fill masks (qa/live_verification/s02_low_ratio_case_audit_20260712.json), a governed resolution path, and live handoffs in qa/review_handoffs/s02/index.json; both remain awaiting_human_review, so no additional batch credit.",
+      "evidence": "20/25 governed sources now have complete S09.5/D1 contracts. The two newly recovered stylized sources add five instance contracts; both reached S10, with one honestly failing QC-035 and the other reaching S12. SQLite progress is reconciled to 16 auto_qa, 1 vlm_qa, and 3 in_review. Two additional sources remain at S02 human review and are not counted. Evidence: qa/live_verification/stylized_multi_person_recovery_20260712.json and qa/live_verification/pipeline_state_and_package_identity_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T13:32:05+00:00",
+      "updated_at": "2026-07-12T15:04:00+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {
@@ -8698,10 +8703,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Multi-instance round-trip fixture assembles p0/p1, reconciles contact, finalizes image/package manifests, then verify_packages discovers exactly both instance folders and every QC-001..010 result passes.",
+      "evidence": "Multi-instance assembly/verify round-trip remains green and package identity is now disaster-recovery safe: each crop has its own verified source_sha256, all pN manifests share required parent_source_sha256, package workflow_status records in_review independently of part statuses, and reindex reports no missing or stale package rows across 9 live manifests. Evidence qa/live_verification/pipeline_state_and_package_identity_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-11T07:38:44+00:00",
+      "updated_at": "2026-07-12T15:04:01+00:00",
       "orphaned": false
     },
     "MF-P8-04.04": {

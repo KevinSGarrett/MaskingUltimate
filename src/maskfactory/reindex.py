@@ -35,9 +35,12 @@ PART_TO_IMAGE_STATUS = {
 STATUS_STAGE = {
     "ingested": "S00",
     "drafted": "S09",
+    "auto_qa": "S10",
+    "vlm_qa": "S11",
     "in_review": "S12",
     "corrected": "S12",
     "approved_gold": "S13",
+    "exported": "S13",
     "deprecated": "S13",
 }
 
@@ -83,6 +86,12 @@ class ReindexDiff:
 
 
 def _manifest_status(manifest: Mapping[str, Any]) -> str:
+    workflow_status = manifest.get("workflow_status")
+    if workflow_status is not None:
+        workflow_status = str(workflow_status)
+        if workflow_status not in STATUS_STAGE:
+            raise ReindexError(f"unsupported package workflow_status: {workflow_status}")
+        return workflow_status
     parts = manifest["parts"]
     statuses = [entry["status"] for entry in parts.values()]
     highest = max(statuses, key=lambda status: STATUS_RANK[status], default="n/a")
@@ -90,6 +99,8 @@ def _manifest_status(manifest: Mapping[str, Any]) -> str:
 
 
 def _manifest_updated_at(manifest: Mapping[str, Any]) -> str:
+    if manifest.get("workflow_updated_at"):
+        return str(manifest["workflow_updated_at"])
     review = manifest["review"]
     return review.get("approved_at") or manifest["source"]["ingested_at"]
 
@@ -123,9 +134,9 @@ def expected_image_rows(packages_root: Path = DEFAULT_PACKAGES_ROOT) -> dict[str
 
     rows: dict[str, ImageIndexRow] = {}
     for image_id, manifests in grouped.items():
-        source_hashes = {manifest["source"]["source_sha256"] for manifest, _ in manifests}
+        source_hashes = {manifest["source"]["parent_source_sha256"] for manifest, _ in manifests}
         if len(source_hashes) != 1:
-            raise ReindexError(f"instances for {image_id} disagree on source_sha256")
+            raise ReindexError(f"instances for {image_id} disagree on parent_source_sha256")
         statuses = [_manifest_status(manifest) for manifest, _ in manifests]
         status = max(statuses, key=lambda value: list(STATUS_STAGE).index(value))
         created = min(manifest["source"]["ingested_at"] for manifest, _ in manifests)

@@ -97,6 +97,7 @@ def test_s02_production_runner_forwards_entire_governed_stage_contract(
                 "status": "ingested",
                 "source": {
                     "source_file": "source.png",
+                    "source_sha256": "a" * 64,
                     "source_width": 100,
                     "source_height": 120,
                 },
@@ -910,6 +911,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     tmp_path: Path,
     person_count: int,
     review_handoff: bool,
+    monkeypatch,
 ) -> None:
     image_id = "img_a3f9c2e17b04"
     images = tmp_path / "images" / image_id
@@ -922,6 +924,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
                 "status": "ingested",
                 "source": {
                     "source_file": "source.png",
+                    "source_sha256": "a" * 64,
                     "source_width": 100,
                     "source_height": 100,
                 },
@@ -933,6 +936,15 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     calls = []
     pipeline_calls = []
     handoff_events = []
+    progress_events = []
+    monkeypatch.setattr(
+        production, "persist_recovered_image_outcome", lambda *args, **kwargs: False
+    )
+    monkeypatch.setattr(
+        production,
+        "persist_image_progress",
+        lambda database, image_id, status, **kwargs: progress_events.append(status) or True,
+    )
 
     def factory(config, *, images_root, person_index=0, shared_work_root=None):
         calls.append((person_index, shared_work_root))
@@ -1026,6 +1038,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
         cvat_pusher=cvat_pusher,
         cvat_client_factory=lambda: object(),
         cvat_task_records=tmp_path / "cvat_tasks",
+        database=tmp_path / "state.sqlite",
     )
     assert set(result.per_instance) == {f"p{index}" for index in range(person_count)}
     assert calls[0] == (0, None)
@@ -1049,6 +1062,9 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
         for _, receipt in handoff_events[-2:]:
             assert receipt["human_approved"] is False
             assert receipt["manual_review_status"] == "pending_kevin_correction_and_approval"
+        assert progress_events == ["drafted", "auto_qa", "vlm_qa", "in_review"]
+    else:
+        assert progress_events == ["drafted", "auto_qa"]
     for contract_path in result.draft_contract_paths:
         contract = json.loads(contract_path.read_text())
         assert contract["atomic_count"] == 56

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import shutil
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,7 @@ from .fs_atomic import replace_with_retry
 from .fusion.mapbuild import export_binaries
 from .io.hashing import sha256_file
 from .io.png_strict import read_mask
+from .io.writers import write_json_atomic
 from .ontology import get_ontology
 from .validation import ArtifactValidationError, validate_document
 
@@ -144,9 +146,12 @@ def assemble_review_package(
         "image_id": image_id,
         "mask_ontology_version": authority.version,
         "left_right_convention": "character_perspective",
+        "workflow_status": "drafted",
+        "workflow_updated_at": report["created_at"],
         "source": {
             "source_file": "source.png",
             "source_sha256": source_sha,
+            "parent_source_sha256": intake_source["source_sha256"],
             "source_width": width,
             "source_height": height,
             "source_origin": intake_source["source_origin"],
@@ -218,6 +223,71 @@ def assemble_review_package(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return package_root
+
+
+def ensure_parent_source_identity(package_root: Path, parent_source_sha256: str) -> bool:
+    """Seal image-level identity into a legacy instance package without touching annotations."""
+    package_root = Path(package_root)
+    manifest_path = package_root / "manifest.json"
+    if not manifest_path.is_file():
+        return False
+    if len(parent_source_sha256) != 64 or any(
+        character not in "0123456789abcdef" for character in parent_source_sha256
+    ):
+        raise ValueError("parent source SHA-256 must be 64 lowercase hex characters")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    source_path = package_root / manifest["source"]["source_file"]
+    if not source_path.is_file() or sha256_file(source_path) != manifest["source"]["source_sha256"]:
+        raise RuntimeError("instance source crop hash does not match its manifest")
+    existing = manifest["source"].get("parent_source_sha256")
+    if existing is not None:
+        if existing != parent_source_sha256:
+            raise RuntimeError("refusing to replace conflicting parent source identity")
+        return False
+    manifest["source"]["parent_source_sha256"] = parent_source_sha256
+    issues = validate_document(manifest, "manifest")
+    if issues:
+        raise RuntimeError(f"parent source identity migration produced invalid manifest: {issues}")
+    write_json_atomic(manifest_path, manifest)
+    return True
+
+
+def update_package_workflow_status(
+    package_root: Path,
+    target_status: str,
+    *,
+    updated_at: str | None = None,
+) -> bool:
+    """Advance package-level workflow authority without mutating per-part review state."""
+    ranks = {
+        "drafted": 0,
+        "auto_qa": 1,
+        "vlm_qa": 2,
+        "in_review": 3,
+        "corrected": 4,
+        "approved_gold": 5,
+        "exported": 6,
+        "deprecated": 7,
+    }
+    if target_status not in ranks:
+        raise ValueError(f"invalid package workflow status: {target_status}")
+    package_root = Path(package_root)
+    manifest_path = package_root / "manifest.json"
+    if not manifest_path.is_file():
+        return False
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    current = manifest.get("workflow_status", "drafted")
+    if current not in ranks:
+        raise RuntimeError(f"invalid existing package workflow status: {current}")
+    if ranks[current] >= ranks[target_status]:
+        return False
+    manifest["workflow_status"] = target_status
+    manifest["workflow_updated_at"] = updated_at or datetime.now(UTC).isoformat()
+    issues = validate_document(manifest, "manifest")
+    if issues:
+        raise RuntimeError(f"workflow status update produced invalid manifest: {issues}")
+    write_json_atomic(manifest_path, manifest)
+    return True
 
 
 def snapshot_draft_baseline(

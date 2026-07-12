@@ -8,6 +8,7 @@ import shutil
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -38,13 +39,21 @@ from ..orchestrator import (
 from ..packager import verify_packages
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
-from ..review_package import assemble_review_package
+from ..review_package import (
+    assemble_review_package,
+    ensure_parent_source_identity,
+    update_package_workflow_status,
+)
 from ..review_resolution import (
     ReviewResolutionError,
     apply_s02_review_resolution,
     s02_review_refresh_required,
 )
-from ..state import persist_recovered_image_outcome, persist_terminal_image_outcome
+from ..state import (
+    persist_image_progress,
+    persist_recovered_image_outcome,
+    persist_terminal_image_outcome,
+)
 from ..vlm.production import run_s11_production
 from .s01_person_detection import run_s01
 from .s02_silhouette import run_s02
@@ -1249,6 +1258,8 @@ def run_multi_person_production(
         manifest=manifest,
         work_root=work_root,
     )
+    if database is not None:
+        persist_image_progress(database, image_id, "drafted")
     if through_autoqa or through_vlmqa or through_review_handoff:
         for person in promoted:
             name = f"p{person['person_index']}"
@@ -1263,6 +1274,8 @@ def run_multi_person_production(
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(autoqa))
+        if database is not None:
+            persist_image_progress(database, image_id, "auto_qa")
     cvat_task_ids: tuple[int, ...] = ()
     if through_vlmqa or through_review_handoff:
         for person in promoted:
@@ -1278,6 +1291,8 @@ def run_multi_person_production(
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(vlmqa))
+        if database is not None:
+            persist_image_progress(database, image_id, "vlm_qa")
         if through_vlmqa and not through_review_handoff:
             return MultiPersonProductionResult(
                 tuple(shared),
@@ -1296,6 +1311,11 @@ def run_multi_person_production(
         package_roots = {
             name: ROOT / "data/packages" / image_id / "instances" / name for name in promoted_names
         }
+        for package_root in package_roots.values():
+            ensure_parent_source_identity(
+                package_root,
+                str(manifest["source"]["source_sha256"]),
+            )
         if not cvat_task_ids:
             for person in promoted:
                 index = int(person["person_index"])
@@ -1357,6 +1377,20 @@ def run_multi_person_production(
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(handoff))
+        review_updated_at = datetime.now(UTC).isoformat()
+        for package_root in package_roots.values():
+            update_package_workflow_status(
+                package_root,
+                "in_review",
+                updated_at=review_updated_at,
+            )
+        if database is not None:
+            persist_image_progress(
+                database,
+                image_id,
+                "in_review",
+                updated_at=review_updated_at,
+            )
     return MultiPersonProductionResult(
         tuple(shared),
         per_instance,

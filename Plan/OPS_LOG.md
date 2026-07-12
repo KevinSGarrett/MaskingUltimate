@@ -3867,3 +3867,19 @@ passing multi-person source:      img_a3d2663ad90d maximum pair IoU=0.096472; bo
 CVAT handoff:                    img_a3d2663ad90d reached S11/S12; live tasks 18,19,20 pending Kevin correction/approval
 Windows UI retry:                computer-control initialization and reset both returned Transport closed; no blind UI input sent
 validation:                      669 tests collected/passed; Ruff and ruff-format clean; tracker structurally valid with 393 items
+
+## 2026-07-12 - Durable pipeline progress and multi-instance package identity repaired
+
+**Result:** PASS - live SQLite and S12 manifests now preserve the actual deepest verified workflow state.
+
+state defect:                    successful S09/S10/S11/S12 runs left image rows at ingested/S00 or S01
+runtime repair:                  D1->drafted/S09; S10->auto_qa; S11->vlm_qa; S12->in_review, advancing every legal intermediate state and never regressing reruns
+live reconciliation:             20 D1 rows repaired: 16 auto_qa, 1 vlm_qa, 3 in_review; 2 S02-review sources remain ingested and 2 age-safety cases remain quarantined
+package identity defect:         per-instance crop SHA-256 values correctly differed, but reindex incorrectly treated them as one image identity
+schema repair:                   source_sha256 authenticates each crop; required parent_source_sha256 authenticates the shared whole ingested image
+workflow authority:              package-level workflow_status/workflow_updated_at records S12 in_review independently of per-part annotation statuses
+live package migration:          9 manifests across img_6d6bb33f01a1, img_7b7a3c7d5dd3, img_a3d2663ad90d sealed without changing masks/tasks
+reindex result:                  missing_in_db=[]; stale_rows={}; remaining extras are 21 intentional non-S12 rows outside the package-only set
+Task Scheduler retry:            service running, but schtasks path failure and native API access denied under kevin\codexsandboxonline
+evidence:                        qa/live_verification/pipeline_state_and_package_identity_20260712.json
+validation:                      671 tests collected/passed; Ruff and ruff-format clean; tracker structurally valid

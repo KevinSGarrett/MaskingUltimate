@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
 
 from maskfactory.cvat_bridge.push import _discover_instances, _review_archive
@@ -11,7 +12,12 @@ from maskfactory.derive import derive_package
 from maskfactory.io.png_strict import write_binary_mask, write_grayscale, write_label_map
 from maskfactory.ontology import get_ontology
 from maskfactory.packager import verify_packages
-from maskfactory.review_package import assemble_review_package, finalize_image_package_index
+from maskfactory.review_package import (
+    assemble_review_package,
+    ensure_parent_source_identity,
+    finalize_image_package_index,
+    update_package_workflow_status,
+)
 from maskfactory.stages.s09_5_instance_recon import (
     ReconciliationInstance,
     reconcile_instances,
@@ -75,6 +81,7 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
         context_bbox_xyxy=(0, 0, 64, 48),
         person_count=1,
         intake_source={
+            "source_sha256": "a" * 64,
             "source_origin": "owned_photo",
             "original_name": "owned.png",
             "ingested_at": "2026-07-11T22:00:00Z",
@@ -84,6 +91,19 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
     )
     manifest = json.loads((package / "manifest.json").read_text())
     assert validate_document(manifest, "manifest") == ()
+    assert manifest["workflow_status"] == "drafted"
+    assert manifest["source"]["parent_source_sha256"] == "a" * 64
+    manifest["source"].pop("parent_source_sha256")
+    (package / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    assert ensure_parent_source_identity(package, "a" * 64)
+    assert not ensure_parent_source_identity(package, "a" * 64)
+    with pytest.raises(RuntimeError, match="conflicting parent"):
+        ensure_parent_source_identity(package, "b" * 64)
+    assert update_package_workflow_status(package, "in_review", updated_at="2026-07-12T15:00:00Z")
+    assert not update_package_workflow_status(package, "drafted")
+    manifest = json.loads((package / "manifest.json").read_text())
+    assert manifest["workflow_status"] == "in_review"
+    assert manifest["workflow_updated_at"] == "2026-07-12T15:00:00Z"
     expected = {
         label.name
         for label in get_ontology().labels_for_map("part", enabled_only=True)
@@ -222,6 +242,7 @@ def _minimal_review_package(
         context_bbox_xyxy=(0, 0, 40, 40),
         person_count=person_count,
         intake_source={
+            "source_sha256": "a" * 64,
             "source_origin": "owned_photo",
             "original_name": "owned.png",
             "ingested_at": "2026-07-12T04:00:00Z",

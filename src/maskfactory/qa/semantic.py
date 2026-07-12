@@ -78,6 +78,15 @@ def _qc011(masks):
     return _result(11, "atomic_exclusivity", overlap == 0, f"overlap_px={overlap}", "BLOCK")
 
 
+def qc011_atomic_exclusivity(masks: Mapping[str, np.ndarray]) -> QcResult:
+    """Public fail-closed entry point for the standalone QC-011 gate."""
+    normalized = {name: np.asarray(mask).astype(bool) for name, mask in masks.items()}
+    if not normalized:
+        raise ValueError("QC-011 requires at least one atomic mask")
+    _common_shape(normalized, next(iter(normalized.values())))
+    return _qc011(normalized)
+
+
 def _qc012(masks, silhouette):
     union = np.logical_or.reduce(tuple(masks.values()))
     area = int(union.sum())

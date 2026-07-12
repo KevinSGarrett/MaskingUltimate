@@ -3998,3 +3998,41 @@ truth manifest:                   qa/fixtures/p2_s04_hand_truth.json
 durable verifier:                tools/verify_p2_s04_hand_truth.py
 evidence:                        qa/live_verification/p2_s04_hand_truth_gate_20260712.json
 validation:                      686 full tests; Ruff and ruff-format clean; tracker structurally valid
+
+## 2026-07-12 - S11 tool-using VLM workhorse implementation
+
+scope:                           high-resolution audit, bounded SAM2 candidate creation, before/after comparison, shadow execution, calibration parity
+visual contract:                 six independent images per label at 1024 crop resolution plus full context; no 1024x205 compressed strip
+tool contract:                   fail confidence >=0.7; 1-12 positive points; 0-12 negative points; full-source coordinate validation
+candidate safety:                original map immutable; <=75% changed area; <=2% protected-neighbor overlap; click polarity enforced; strict binary PNG proposal only
+verification:                    complete six-view BEFORE plus complete six-view AFTER comparison; better/worse/no-change/uncertain closed vocabulary
+authority:                       no gold approval, no BLOCK clearing, no authoritative-map write; human approval remains mandatory
+uncalibrated behavior:           shadow audits/candidates allowed; zero qa_report verdicts; no disagreement queue writes; careful routing only
+calibration repair:              real-gold builder now stores independent workhorse evidence and live evaluator uses the production workhorse parser/prompt path
+validation at log time:          focused VLM/evaluator tests passing; full-suite and formatting verification pending
+live attempt 1:                  img_2ca794d19be9; 13 careful routes retained; shadow failed safely because six images consumed 6148 tokens against Ollama's default 4096 context
+runtime correction:              workhorse-only num_ctx=8192 and num_predict=768; both values included in the model/prompt/options gate fingerprint
+live attempt 2:                  model reload began with the larger context, but the desktop execution host closed the client before Ollama finished loading; no candidate or verdict claimed
+concurrency handoff:              a later retry was not forced because tools/run_p2_core_fixture_gate.py PID 51852 legitimately acquired runs/gpu.lock for img_34e63885a469
+focused validation final:        39 selected VLM/S11/workhorse tests pass; Ruff clean; alphabetical A-F repository group passed; monolithic full suite was interrupted by the desktop long-running stdout boundary and is not claimed
+single-label live audit:          current img_2ca794d19be9 left_forearm completed in 145.058 s with six real images; Qwen still returned pass/confidence=1.0 and made a factually wrong full-context observation
+visible missed defects:           mask includes the hand/wrist and a disconnected underwear fragment; this proves resolution alone does not cure Qwen's pass bias
+controller hardening:             deterministic component metrics and ontology max_components now enter the prompt and veto a false pass; the bounded remove_small_components tool creates an isolated cleanup candidate without SAM2
+additional grounding:             prompt now includes side, parent union, expected area, max components, boundary rule, and up to 20 non-pass deterministic QA findings
+final focused validation:         40 selected VLM/S11/workhorse tests pass; Ruff clean; no real-gold gate pass claimed
+
+## 2026-07-12 - Exact P2 46-core draft and QC-011 ten-fixture gates closed
+
+**Result:** PASS - MF-P2-05.08 and MF-P2-06.08 complete on the exact governed fixture set.
+
+core contract:                    46 PART slots per fixture = ontology ids 0-55 excluding P3-owned per-finger ids 24-33; every slot has drafted/not_visible/disabled state plus a strict binary PNG and hash
+production scope:                 exact ten hash-bound LV-MHP fixtures through real S06 GroundingDINO, S07 SAM2, and S09 fusion; external annotations remain QA-only, non-gold, and never enter prompts or production masks
+material-completeness guard:      at least 12 drafted core parts and one SAM2 refinement per fixture; observed drafted range 20-32 and refinement range 19-29
+defect 1:                         S05 understood Sapiens split limbs but not SCHP broad left/right arm and leg classes; broad-class aliases, pose torso/head/neck/shoulder bases, joint carving, and person-scaled hand/foot bases added
+defect 2:                         a Sapiens result with only 86 foreground pixels was treated as healthy; <1% foreground is now degraded and cached S03 artifacts route to SCHP fail-closed
+defect 3:                         confident pose chains were discarded when parsing contained no limb class; pose-only limb capsules now recover all eight arm/leg segments
+multi-person ownership:           fixture 4512 has 55 co-subject truth pixels inside the padded p0 context, but the final p0 body-authority overlap is exactly 0; annotation was used only for the post-output QA assertion
+QC-011:                           10/10 full PART maps independently expanded to atomic masks; every result overlap_px=0
+runtime provenance:               per-fixture contracts bind S05, production adapter, core-contract writer, S09, and QC-011 implementation hashes; stale-runtime fixtures are refreshed while current receipts resume
+evidence:                         qa/live_verification/p2_core_fixture_gate_20260712.json
+validation:                       704 full tests pass; Ruff check clean; 278 source/test/tool Python files format-clean; tracker validation clean

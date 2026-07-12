@@ -23,6 +23,7 @@ from ..models.registry import (
     resolve_registered_role,
 )
 from ..ontology import Ontology, OntologyError, get_ontology
+from ..qa.core_drafts import write_core_draft_contract
 
 
 class FusionError(ValueError):
@@ -377,7 +378,7 @@ def run_s09_production(
         if "other_person" in evidence
         else ()
     )
-    return fuse_consensus(
+    result = fuse_consensus(
         part_evidence=evidence,
         s08_material_map=material_map,
         silhouette=visible,
@@ -386,6 +387,12 @@ def run_s09_production(
         region_bands=region_bands,
         zorder_decisions=protection_decisions,
     )
+    write_core_draft_contract(
+        np.asarray(Image.open(result.part_map_path)),
+        output_dir,
+        ontology=authority,
+    )
+    return result
 
 
 def _fill_unassigned_geometry(

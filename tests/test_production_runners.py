@@ -794,6 +794,110 @@ def test_s05_selects_schp_when_sapiens_is_degraded(tmp_path: Path) -> None:
     assert provider == "schp_atr"
 
 
+def test_s05_selects_schp_when_cached_sapiens_is_implausibly_sparse(tmp_path: Path) -> None:
+    sparse = np.zeros((20, 20), dtype=np.uint8)
+    sparse[10, 10] = 1
+    Image.fromarray(sparse, mode="L").save(tmp_path / "sapiens_28.png")
+    Image.new("L", (20, 20), 11).save(tmp_path / "schp_atr.png")
+    (tmp_path / "parsing_metrics.json").write_text(
+        json.dumps({"parsing_degraded": False, "sapiens_foreground_px": 1}),
+        encoding="utf-8",
+    )
+
+    path, provider = production._select_s05_parsing(tmp_path)
+
+    assert path == tmp_path / "schp_atr.png"
+    assert provider == "schp_atr"
+
+
+def test_s05_schp_broad_classes_and_pose_recover_material_anatomy(tmp_path: Path) -> None:
+    parsing = np.zeros((120, 100), dtype=np.uint8)
+    parsing[5:20, 40:60] = 2  # hair
+    parsing[15:32, 42:58] = 11  # face
+    parsing[30:78, 30:70] = 4  # clothed torso (SCHP has no torso class)
+    parsing[30:82, 15:30] = 14  # broad left arm
+    parsing[30:82, 70:85] = 15  # broad right arm
+    parsing[75:112, 32:48] = 12  # broad left leg
+    parsing[75:112, 52:68] = 13  # broad right leg
+    Image.fromarray(parsing, mode="L").save(tmp_path / "schp.png")
+    silhouette = np.zeros((120, 100), dtype=np.uint8)
+    silhouette[4:116, 12:88] = 255
+    Image.fromarray(silhouette, mode="L").save(tmp_path / "silhouette.png")
+    coordinates = {
+        0: (50, 20),
+        5: (28, 34),
+        6: (72, 34),
+        7: (22, 56),
+        8: (78, 56),
+        9: (18, 82),
+        10: (82, 82),
+        11: (38, 76),
+        12: (62, 76),
+        13: (38, 94),
+        14: (62, 94),
+        15: (38, 112),
+        16: (62, 112),
+        17: (34, 115),
+        18: (38, 116),
+        19: (42, 115),
+        20: (58, 115),
+        21: (62, 116),
+        22: (66, 115),
+    }
+    pose = {
+        "view": "front",
+        "keypoints": [
+            {
+                "index": index,
+                "x": coordinates.get(index, (0, 0))[0],
+                "y": coordinates.get(index, (0, 0))[1],
+                "confidence": 0.9 if index in coordinates else 0.0,
+            }
+            for index in range(133)
+        ],
+    }
+    (tmp_path / "pose.json").write_text(json.dumps(pose), encoding="utf-8")
+    config = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
+
+    priors, _, _ = run_s05_production(
+        parsing_path=tmp_path / "schp.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        context_bbox_xyxy=(0, 0, 100, 120),
+        parsing_map=config["parsing_map"]["schp_atr"],
+        output_dir=tmp_path / "s05",
+    )
+
+    expected = {
+        "hair",
+        "head_face",
+        "neck",
+        "chest_upper_torso",
+        "left_upper_arm",
+        "left_elbow",
+        "left_forearm",
+        "left_wrist",
+        "right_upper_arm",
+        "right_elbow",
+        "right_forearm",
+        "right_wrist",
+        "left_thigh",
+        "left_knee",
+        "left_calf",
+        "left_ankle",
+        "right_thigh",
+        "right_knee",
+        "right_calf",
+        "right_ankle",
+        "left_hand_base",
+        "right_hand_base",
+        "left_foot_base",
+        "right_foot_base",
+    }
+    assert not (expected - priors.keys()), expected - priors.keys()
+    assert all(np.all(mask <= (silhouette > 0)) for mask in priors.values())
+
+
 def test_s05_pose_capsules_recover_anatomical_sides_from_swapped_parser_classes(
     tmp_path: Path,
 ) -> None:
@@ -832,6 +936,65 @@ def test_s05_pose_capsules_recover_anatomical_sides_from_swapped_parser_classes(
     left_x = np.nonzero(priors["left_forearm"])[1].mean()
     right_x = np.nonzero(priors["right_forearm"])[1].mean()
     assert left_x < 50 < right_x
+
+
+def test_s05_pose_capsules_recover_limbs_when_parser_has_no_limb_classes(
+    tmp_path: Path,
+) -> None:
+    parsing = np.zeros((120, 100), dtype=np.uint8)
+    parsing[28:78, 30:70] = 22  # Sapiens sees torso but misses every limb.
+    Image.fromarray(parsing, mode="L").save(tmp_path / "parsing.png")
+    Image.fromarray(np.full((120, 100), 255, dtype=np.uint8), mode="L").save(
+        tmp_path / "silhouette.png"
+    )
+    coordinates = {
+        5: (30, 30),
+        6: (70, 30),
+        7: (20, 55),
+        8: (80, 55),
+        9: (15, 80),
+        10: (85, 80),
+        11: (38, 76),
+        12: (62, 76),
+        13: (38, 94),
+        14: (62, 94),
+        15: (38, 112),
+        16: (62, 112),
+    }
+    pose = {
+        "view": "front",
+        "keypoints": [
+            {
+                "index": index,
+                "x": coordinates.get(index, (0, 0))[0],
+                "y": coordinates.get(index, (0, 0))[1],
+                "confidence": 0.9 if index in coordinates else 0.0,
+            }
+            for index in range(133)
+        ],
+    }
+    (tmp_path / "pose.json").write_text(json.dumps(pose), encoding="utf-8")
+    config = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
+
+    priors, _, _ = run_s05_production(
+        parsing_path=tmp_path / "parsing.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        context_bbox_xyxy=(0, 0, 100, 120),
+        parsing_map=config["parsing_map"]["sapiens_28"],
+        output_dir=tmp_path / "s05",
+    )
+
+    assert {
+        "left_upper_arm",
+        "left_forearm",
+        "right_upper_arm",
+        "right_forearm",
+        "left_thigh",
+        "left_calf",
+        "right_thigh",
+        "right_calf",
+    } <= priors.keys()
 
 
 def test_s12_runner_assembles_pushes_and_reports_manual_review_pending(

@@ -3701,13 +3701,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-12T20:11:31+00:00",
+          "actor": "ai_agent",
+          "text": "Exact governed 10-fixture production run completed through real S06/S07/S09 after repairing sparse-Sapiens routing and pose-only limb fallback. Every fixture emits the authoritative 46-core-slot contract (PART ids 0-55 excluding P3 finger ids 24-33); materially drafted counts are 20-32 and SAM2 refined counts are 19-29. Runtime contracts bind each fixture to final implementation hashes."
+        }
+      ],
+      "evidence": "qa/live_verification/p2_core_fixture_gate_20260712.json: outcome=pass, fixture_count=10, core_part_count_per_fixture=46, minimum materially drafted=12, observed drafted range 20-32, refined-mask range 19-29; all S06/S07 model receipts present. Full regression: 704 tests passed. Ruff check clean; 278 source/test/tool files format-clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T01:55:22+00:00",
+      "updated_at": "2026-07-12T20:11:31+00:00",
       "orphaned": false
     },
     "MF-P2-06.01": {
@@ -3875,8 +3881,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-12T05:25:35+00:00",
@@ -3902,12 +3908,17 @@
           "ts": "2026-07-12T10:12:17+00:00",
           "actor": "ai_agent",
           "text": "Hardened DensePose QC-014 evidence without weakening the gate: side votes now require at least 32 sided pixels, 1% mask coverage, and a 10% majority margin. A full 29-instance artifact audit remained exactly 13 pass / 16 BLOCK with zero verdict changes; trace/weak overlaps become no-vote and therefore remain fail-closed. Full 630-test suite passed; Ruff check/format clean. The exact governed 10-fixture completion gate remains open."
+        },
+        {
+          "ts": "2026-07-12T20:11:32+00:00",
+          "actor": "ai_agent",
+          "text": "The exact governed 10-fixture set now satisfies QC-011, replacing the prior live-corpus-only partial evidence. Full PART maps were independently expanded to atomic masks and checked; all ten report overlap_px=0. The multi-person padded-context fixture contained 55 co-subject truth pixels but the final p0 body authority claimed zero of them."
         }
       ],
-      "evidence": "Current corpus: qa/live_verification/s10_autoqa_corpus_20260712.json. DensePose reliability audit: qa/live_verification/densepose_side_vote_reliability_20260712.json records 29 instances, unchanged 13 pass / 16 BLOCK, and zero verdict changes after rejecting trace/weak side evidence. Full suite: 630 passed; Ruff clean. Exact governed 10-fixture completion gate remains open.",
+      "evidence": "qa/live_verification/p2_core_fixture_gate_20260712.json: qc011_pass_count=10/10 and every result has qc011_passed=true/detail overlap_px=0; summed output_neighbor_overlap_px=0. Evidence fixture/source/manifest/implementation hashes revalidated. Full regression: 704 tests passed; Ruff clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T10:12:17+00:00",
+      "updated_at": "2026-07-12T20:11:32+00:00",
       "orphaned": false
     },
     "MF-P2-07.01": {
@@ -5735,12 +5746,22 @@
           "ts": "2026-07-12T11:07:48+00:00",
           "actor": "ai_agent",
           "text": "Dedicated live VLM-QA command now enforces this gate at the process boundary. Current approved-gold calibration is absent, so img_2ca794d19be9 correctly returned disabled_gate_unavailable, zero verdicts, 13 careful routes, and exit 1; no production-pass credit is claimed."
+        },
+        {
+          "ts": "2026-07-12T19:14:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 workhorse redesign implemented without claiming a gate pass: S11 now uses six independent 1024px evidence images, strict per-image observations, bounded SAM2 candidate plans, protected-overlap/change/polarity checks, full before/after comparison, and uncalibrated shadow-only execution. Real attempt on img_2ca794d19be9 exposed Ollama 4096 context versus 6148 prompt tokens; workhorse runtime corrected to num_ctx=8192/num_predict=768 and those options plus P-WORKHORSE and P-COMPARE bytes are fingerprint-bound. 39 VLM/S11/workhorse tests and Ruff pass. Actual real-gold calibration and completed live shadow rerun remain pending; no production authority claimed."
+        },
+        {
+          "ts": "2026-07-12T19:21:47+00:00",
+          "actor": "ai_agent",
+          "text": "Live single-label workhorse audit completed on img_2ca794d19be9 left_forearm: 145.058 s, Qwen still falsely passed at confidence 1.0 and missed a disconnected underwear fragment. Controller was therefore hardened with deterministic component metrics, ontology max_components veto, remove_small_components candidate tool, ontology contract, and non-pass auto-QA context. 40 selected VLM/S11/workhorse tests and Ruff pass. Result confirms Qwen alone remains untrusted; hybrid controller work continues under shadow authority."
         }
       ],
       "evidence": "qa/live_verification/vlmqa_run_cli_20260712.json proves live fail-closed gate enforcement and no CVAT side effect. Actual qwen/fallback scoring against the governed 40-panel approved-gold corpus remains required.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T11:07:48+00:00",
+      "updated_at": "2026-07-12T19:21:47+00:00",
       "orphaned": false
     },
     "MF-P4-06.01": {

@@ -385,8 +385,9 @@ def run_s05_production(
         for item in pose["keypoints"]
     }
 
-    def class_mask(class_name: str) -> np.ndarray:
-        ids = [int(index) for index, entry in parsing_map.items() if entry["class"] == class_name]
+    def class_mask(*class_names: str) -> np.ndarray:
+        wanted = set(class_names)
+        ids = [int(index) for index, entry in parsing_map.items() if entry["class"] in wanted]
         return np.isin(labels, ids) if ids else np.zeros(labels.shape, dtype=bool)
 
     def kp(index: int) -> tuple[float, float] | None:
@@ -396,15 +397,72 @@ def run_s05_production(
     priors: dict[str, np.ndarray] = {}
     skeletons: dict[str, tuple[tuple[float, float], ...]] = {}
     segment_defs = (
-        ("left_upper_arm", "left_upper_arm", "right_upper_arm", 5, 7, 0.16),
-        ("left_forearm", "left_lower_arm", "right_lower_arm", 7, 9, 0.14),
-        ("right_upper_arm", "right_upper_arm", "left_upper_arm", 6, 8, 0.16),
-        ("right_forearm", "right_lower_arm", "left_lower_arm", 8, 10, 0.14),
-        ("left_thigh", "left_upper_leg", "right_upper_leg", 11, 13, 0.18),
-        ("left_calf", "left_lower_leg", "right_lower_leg", 13, 15, 0.16),
-        ("right_thigh", "right_upper_leg", "left_upper_leg", 12, 14, 0.18),
-        ("right_calf", "right_lower_leg", "left_lower_leg", 14, 16, 0.16),
+        (
+            "left_upper_arm",
+            ("left_upper_arm", "left_arm"),
+            ("right_upper_arm", "right_arm"),
+            5,
+            7,
+            0.16,
+        ),
+        (
+            "left_forearm",
+            ("left_lower_arm", "left_arm"),
+            ("right_lower_arm", "right_arm"),
+            7,
+            9,
+            0.14,
+        ),
+        (
+            "right_upper_arm",
+            ("right_upper_arm", "right_arm"),
+            ("left_upper_arm", "left_arm"),
+            6,
+            8,
+            0.16,
+        ),
+        (
+            "right_forearm",
+            ("right_lower_arm", "right_arm"),
+            ("left_lower_arm", "left_arm"),
+            8,
+            10,
+            0.14,
+        ),
+        (
+            "left_thigh",
+            ("left_upper_leg", "left_leg"),
+            ("right_upper_leg", "right_leg"),
+            11,
+            13,
+            0.18,
+        ),
+        (
+            "left_calf",
+            ("left_lower_leg", "left_leg"),
+            ("right_lower_leg", "right_leg"),
+            13,
+            15,
+            0.16,
+        ),
+        (
+            "right_thigh",
+            ("right_upper_leg", "right_leg"),
+            ("left_upper_leg", "left_leg"),
+            12,
+            14,
+            0.18,
+        ),
+        (
+            "right_calf",
+            ("right_lower_leg", "right_leg"),
+            ("left_lower_leg", "left_leg"),
+            14,
+            16,
+            0.16,
+        ),
     )
+    segment_widths: dict[str, float] = {}
     for (
         label,
         parsing_class,
@@ -413,13 +471,14 @@ def run_s05_production(
         end_index,
         fallback_radius_fraction,
     ) in segment_defs:
-        side_parsing = class_mask(parsing_class)
-        parsing = side_parsing | class_mask(opposite_class)
+        side_parsing = class_mask(*parsing_class)
+        parsing = side_parsing | class_mask(*opposite_class)
         start, end = kp(start_index), kp(end_index)
         quality = "high"
         if start is not None and end is not None and parsing.any():
             try:
-                prior, _, _ = limb_capsule_prior(parsing, silhouette, start, end)
+                prior, radius, _ = limb_capsule_prior(parsing, silhouette, start, end)
+                segment_widths[label] = 2 * radius
             except GeometryError:
                 prior = skeleton_capsule_prior(
                     silhouette,
@@ -427,18 +486,90 @@ def run_s05_production(
                     end,
                     radius_fraction=fallback_radius_fraction,
                 )
+                segment_widths[label] = 2 * max(
+                    2.0,
+                    fallback_radius_fraction
+                    * float(np.linalg.norm(np.asarray(end) - np.asarray(start))),
+                )
                 quality = "low"
+        elif start is not None and end is not None:
+            prior = skeleton_capsule_prior(
+                silhouette,
+                start,
+                end,
+                radius_fraction=fallback_radius_fraction,
+            )
+            segment_widths[label] = 2 * max(
+                2.0,
+                fallback_radius_fraction
+                * float(np.linalg.norm(np.asarray(end) - np.asarray(start))),
+            )
+            quality = "low"
         else:
             prior, quality = side_parsing & silhouette, "low"
         if prior.any():
             priors[label] = prior
             skeletons[label] = (start, end) if quality == "high" else ()
 
+    # P2 owns broad hand/foot bases; P3 later replaces these boxes with crop-lane detail.
+    for label, indices, class_names in (
+        ("left_hand_base", (9, *range(91, 112)), ("left_hand",)),
+        ("right_hand_base", (10, *range(112, 133)), ("right_hand",)),
+        ("left_foot_base", (15, 17, 18, 19), ("left_foot", "left_shoe", "left_sock")),
+        ("right_foot_base", (16, 20, 21, 22), ("right_foot", "right_shoe", "right_sock")),
+    ):
+        parsing_region = class_mask(*class_names) & silhouette
+        available = tuple(point for index in indices if (point := kp(index)) is not None)
+        pose_region = _padded_point_region(silhouette, available, padding_fraction=0.20)
+        # A lone wrist/ankle keypoint otherwise creates only a 5 px box that the
+        # subsequent joint carve can consume completely. Keep a person-scaled
+        # base beyond the joint so the broad P2 hand/foot slot remains draftable.
+        landmark_radius = 0.04 * float(max(silhouette.shape))
+        for point in available:
+            pose_region |= _disk_region(silhouette, point, landmark_radius)
+        region = parsing_region | pose_region
+        if region.any():
+            priors[label] = region
+            skeletons[label] = available
+
+    # Carve the joint-owned bands out of their neighboring segments.
+    joint_defs = (
+        ("left_elbow", "left_upper_arm", "left_forearm", 5, 7, 9, "elbow"),
+        ("right_elbow", "right_upper_arm", "right_forearm", 6, 8, 10, "elbow"),
+        ("left_wrist", "left_forearm", "left_hand_base", 7, 9, 9, "wrist"),
+        ("right_wrist", "right_forearm", "right_hand_base", 8, 10, 10, "wrist"),
+        ("left_knee", "left_thigh", "left_calf", 11, 13, 15, "knee"),
+        ("right_knee", "right_thigh", "right_calf", 12, 14, 16, "knee"),
+        ("left_ankle", "left_calf", "left_foot_base", 13, 15, 15, "ankle"),
+        ("right_ankle", "right_calf", "right_foot_base", 14, 16, 16, "ankle"),
+    )
+    for joint_label, proximal_label, distal_label, start_i, center_i, end_i, kind in joint_defs:
+        if proximal_label not in priors or distal_label not in priors:
+            continue
+        start, center, end = kp(start_i), kp(center_i), kp(end_i)
+        if start is None or center is None or end is None:
+            continue
+        widths = [
+            segment_widths.get(proximal_label),
+            segment_widths.get(distal_label),
+        ]
+        local_width = float(np.median([width for width in widths if width])) if any(widths) else 8.0
+        band = joint_band(labels.shape, center, start, end, local_width, joint=kind) & silhouette
+        proximal, distal, joint = carve_joint_band(
+            priors[proximal_label], priors[distal_label], band
+        )
+        priors[proximal_label], priors[distal_label] = proximal, distal
+        if joint.any():
+            priors[joint_label] = joint
+            skeletons[joint_label] = (start, center, end)
+
     torso = class_mask("torso") & silhouette
     torso_points = [kp(index) for index in (5, 6, 11, 12)]
-    if torso.any() and all(point is not None for point in torso_points):
+    if all(point is not None for point in torso_points):
         ls, rs, lh, rh = torso_points
         assert ls is not None and rs is not None and lh is not None and rh is not None
+        if not torso.any():
+            torso = _pose_torso_region(silhouette, ls, rs, lh, rh)
         try:
             priors.update(
                 torso_partition_priors(
@@ -468,6 +599,39 @@ def run_s05_production(
             }:
                 skeletons[label] = (ls, rs, lh, rh)
 
+        shoulder_width = max(4.0, float(np.linalg.norm(np.asarray(ls) - np.asarray(rs))))
+        for label, center in (("left_shoulder", ls), ("right_shoulder", rs)):
+            shoulder = _disk_region(silhouette, center, 0.12 * shoulder_width)
+            if shoulder.any():
+                priors[label] = shoulder
+                skeletons[label] = (center,)
+
+    face = class_mask("face", "face_neck") & silhouette
+    face_points = tuple(point for index in range(5) if (point := kp(index)) is not None)
+    head = face | _padded_point_region(silhouette, face_points, padding_fraction=0.45)
+    if head.any():
+        priors["head_face"] = head
+        skeletons["head_face"] = face_points
+    shoulders = [kp(5), kp(6)]
+    nose = kp(0)
+    if nose is not None and all(point is not None for point in shoulders):
+        left_shoulder, right_shoulder = shoulders
+        assert left_shoulder is not None and right_shoulder is not None
+        shoulder_mid = (np.asarray(left_shoulder) + np.asarray(right_shoulder)) / 2
+        neck_center = tuple((0.78 * shoulder_mid + 0.22 * np.asarray(nose)).tolist())
+        neck = (
+            _disk_region(
+                silhouette,
+                neck_center,
+                0.10
+                * float(np.linalg.norm(np.asarray(left_shoulder) - np.asarray(right_shoulder))),
+            )
+            & ~head
+        )
+        if neck.any():
+            priors["neck"] = neck
+            skeletons["neck"] = (tuple(shoulder_mid.tolist()), nose)
+
     hair = class_mask("hair") & silhouette
     if hair.any():
         priors["hair"] = hair
@@ -486,6 +650,7 @@ def run_s05_production(
                 crop_request(label, available, image_size=(labels.shape[1], labels.shape[0]))
             )
 
+    priors = {label: prior for label, prior in priors.items() if np.any(prior)}
     plans = tuple(
         build_prompt_plan(
             label,
@@ -502,6 +667,59 @@ def run_s05_production(
     for plan in plans:
         render_prompt_overlay(source, plan, Path(output_dir) / "debug" / f"{plan.label}.png")
     return priors, plans, tuple(crop_requests)
+
+
+def _padded_point_region(
+    silhouette: np.ndarray,
+    points_xy: Iterable[tuple[float, float]],
+    *,
+    padding_fraction: float,
+) -> np.ndarray:
+    """Broad pose-owned box fallback used only when parser detail is absent."""
+    visible = _binary(silhouette, "silhouette")
+    points = np.asarray(tuple(points_xy), dtype=float)
+    if not len(points):
+        return np.zeros_like(visible)
+    minimum, maximum = points.min(axis=0), points.max(axis=0)
+    span = np.maximum(maximum - minimum, 4.0)
+    padding = max(2.0, padding_fraction * float(max(span)))
+    left = max(0, math.floor(minimum[0] - padding))
+    top = max(0, math.floor(minimum[1] - padding))
+    right = min(visible.shape[1], math.ceil(maximum[0] + padding + 1))
+    bottom = min(visible.shape[0], math.ceil(maximum[1] + padding + 1))
+    region = np.zeros_like(visible)
+    region[top:bottom, left:right] = True
+    return region & visible
+
+
+def _disk_region(
+    silhouette: np.ndarray, center_xy: tuple[float, float], radius: float
+) -> np.ndarray:
+    visible = _binary(silhouette, "silhouette")
+    yy, xx = np.indices(visible.shape, dtype=float)
+    return visible & ((xx - center_xy[0]) ** 2 + (yy - center_xy[1]) ** 2 <= max(2.0, radius) ** 2)
+
+
+def _pose_torso_region(
+    silhouette: np.ndarray,
+    left_shoulder_xy: tuple[float, float],
+    right_shoulder_xy: tuple[float, float],
+    left_hip_xy: tuple[float, float],
+    right_hip_xy: tuple[float, float],
+) -> np.ndarray:
+    """Pose quadrilateral fallback for clothed people when SCHP has no torso class."""
+    visible = _binary(silhouette, "silhouette")
+    shoulders = np.asarray((left_shoulder_xy, right_shoulder_xy), dtype=float)
+    hips = np.asarray((left_hip_xy, right_hip_xy), dtype=float)
+    width = max(4.0, float(np.linalg.norm(shoulders[0] - shoulders[1])))
+    center_x = float(np.mean(np.concatenate((shoulders[:, 0], hips[:, 0]))))
+    points = []
+    for point in (shoulders[0], shoulders[1], hips[1], hips[0]):
+        direction = -1 if point[0] < center_x else 1
+        points.append((float(point[0] + direction * 0.12 * width), float(point[1])))
+    canvas = Image.new("L", (visible.shape[1], visible.shape[0]), 0)
+    ImageDraw.Draw(canvas).polygon(points, fill=255)
+    return (np.asarray(canvas) > 0) & visible
 
 
 def _binary(array: np.ndarray, name: str) -> np.ndarray:

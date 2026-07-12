@@ -267,6 +267,15 @@ def _select_s05_parsing(s03_dir: Path) -> tuple[Path, str]:
     if not bool(metrics.get("parsing_degraded")):
         sapiens = s03_dir / "sapiens_28.png"
         if sapiens.is_file():
+            labels = np.asarray(Image.open(sapiens))
+            foreground_fraction = float(np.count_nonzero(labels)) / float(labels.size)
+            if foreground_fraction < 0.01:
+                schp = s03_dir / "schp_atr.png"
+                if not schp.is_file():
+                    raise SemanticStageError(
+                        "S05 requires SCHP output when Sapiens foreground is implausibly sparse"
+                    )
+                return schp, "schp_atr"
             return sapiens, "sapiens_28"
     schp = s03_dir / "schp_atr.png"
     if not schp.is_file():
@@ -848,6 +857,7 @@ def build_production_runners(
         )
         return {
             "part_count": len(result.consensus_scores),
+            "core_draft_count": 46,
             "review_route_counts": {
                 route: list(result.review_routes.values()).count(route)
                 for route in sorted(set(result.review_routes.values()))
@@ -949,6 +959,8 @@ def build_production_runners(
             failure_queue_path=ROOT / "qa/failure_queue.jsonl",
             pose_angle=str(pose["view"]),
             failure_instance_id=instance_name,
+            workhorse_enabled=True,
+            auto_load_correction_refiner=True,
         )
         return {
             "vlm_enabled": status["enabled"],
@@ -957,6 +969,7 @@ def build_production_runners(
                 route["queue"] == "careful" for route in status["routes"].values()
             ),
             "whole_image_review": status["whole_image_review"],
+            "workhorse": status.get("workhorse", {"enabled": False}),
         }
 
     def s12(context: StageContext) -> Mapping[str, Any]:

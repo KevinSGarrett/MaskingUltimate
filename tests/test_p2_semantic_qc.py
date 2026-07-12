@@ -2,7 +2,7 @@ from dataclasses import replace
 
 import numpy as np
 
-from maskfactory.qa.semantic import SemanticInputs, run_semantic_qc
+from maskfactory.qa.semantic import SemanticInputs, qc011_atomic_exclusivity, run_semantic_qc
 
 
 def _clean() -> SemanticInputs:
@@ -48,6 +48,9 @@ def test_qc011_017_detect_overlap_containment_votes_area_frame_and_components() 
         replace(base, atomic_parts={"abdomen_stomach": abdomen, "chest_upper_torso": abdomen})
     )
     assert not overlap["QC-011"].passed
+    assert not qc011_atomic_exclusivity(
+        {"abdomen_stomach": abdomen, "chest_upper_torso": abdomen}
+    ).passed
     outside_mask = abdomen.copy()
     outside_mask[0:2, 0:2] = True
     assert not _by_id(replace(base, atomic_parts={"abdomen_stomach": outside_mask}))[

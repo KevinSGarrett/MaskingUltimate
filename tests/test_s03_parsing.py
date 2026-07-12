@@ -87,6 +87,25 @@ def test_s03_all_background_sapiens_is_degraded_for_schp_fallback(tmp_path: Path
     assert metrics["sapiens_foreground_px"] == 0
 
 
+def test_s03_implausibly_sparse_sapiens_is_degraded(tmp_path: Path) -> None:
+    sparse = np.zeros((20, 20), dtype=np.uint8)
+    sparse[10, 10] = 1
+    schp_labels = np.ones((20, 20), dtype=np.uint8)
+
+    result = run_parsing(
+        np.zeros((20, 20, 3), dtype=np.uint8),
+        sapiens=lambda image, scale=1.0: _output(sparse),
+        schp=lambda image, scale=1.0: _output(schp_labels),
+        sapiens_map=SAPIENS_MAP,
+        schp_map=SCHP_MAP,
+        output_dir=tmp_path,
+    )
+
+    metrics = json.loads((tmp_path / "parsing_metrics.json").read_text())
+    assert result.parsing_degraded
+    assert metrics["sapiens_foreground_fraction"] == pytest.approx(1 / 400)
+
+
 def test_co_subject_pixels_are_removed_from_both_parsers_before_geometry(
     tmp_path: Path,
 ) -> None:

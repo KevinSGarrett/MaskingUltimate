@@ -9,6 +9,7 @@ import yaml
 from PIL import Image
 
 from maskfactory.io.png_strict import read_mask
+from maskfactory.qa.core_drafts import verify_core_draft_contract
 from maskfactory.stages.s09_fusion import (
     FusionError,
     ZOrderDecision,
@@ -133,6 +134,10 @@ def test_s09_production_assembles_disk_evidence_and_fills_visible_coverage(tmp_p
     assert read_mask(tmp_path / "output/masks_regions/left_finger_occlusion_boundary.png").any()
     metrics = json.loads((tmp_path / "output/work/s09/consensus.json").read_text())
     assert "custom_bodypart" in metrics["sources"]
+    core = verify_core_draft_contract(
+        tmp_path / "output/core_drafts/manifest.json", tmp_path / "output"
+    )
+    assert core["core_part_count"] == 46
 
 
 def test_s09_determinism_setup_fixes_python_numpy_and_torch_contract() -> None:

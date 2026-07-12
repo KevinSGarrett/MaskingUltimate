@@ -3962,3 +3962,20 @@ honest intermediate disclosure: stage durations differ by definition; GDINO floa
 durable verifier:                verify_single_person_draft_regression requires exactly one p0, exact file set/bytes, valid 56-atomic contracts, strict non-overlap, full coverage, and map reproduction on both sides
 evidence:                        qa/live_verification/single_person_real_p8_regression_20260712.json
 validation:                      52 focused production-runner tests; 678 full tests split 196+124+277+81; Ruff and ruff-format clean
+
+## 2026-07-12 - Exact P2 S01/S02 ten-image truth gate closed
+
+**Result:** PASS - MF-P2-01.03 is complete against independent human annotations.
+
+source authority:                LV-MHP v1; governed local non-distributable research/QA fixture use only; external masks remain non-gold and have no production-training authority
+fixture admission:               exactly 10 hash-bound source/mask pairs; every whole image screened clear_adult with qwen2.5vl:7b; every selected primary-person alignment visually reviewed
+production replay:               fresh YOLO11m CPU S01 plus governed CUDA BiRefNet S02 on all ten records
+bbox acceptance:                10/10 >=0.95; minimum 0.9539567671374037
+silhouette acceptance:          10/10 >=0.95; minimum 0.9523425333508453
+S02 internal QC:                10/10 pass
+fail-closed controls:            exact record count, dataset/use-scope authority, non-gold declaration, clear-adult verdicts, visual review, root confinement, source/mask hashes, both independent IoU thresholds
+diagnostic exclusion:            multi-person-contact and below-threshold candidates were retained only under ignored work artifacts and were never admitted by relabeling or threshold changes
+fixture manifest:                qa/fixtures/p2_s01_s02_truth.json
+durable verifier:                tools/verify_p2_s01_s02_fixtures.py
+evidence:                        qa/live_verification/p2_s01_s02_truth_gate_20260712.json
+validation:                      3 focused evaluator tests; fresh 10-image real replay; 681 full tests; Ruff and ruff-format clean

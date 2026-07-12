@@ -23,6 +23,13 @@ def test_s02_governed_contract_is_explicit() -> None:
     }
 
 
+def test_s03_governed_cuda_runtime_is_explicit() -> None:
+    assert CONFIG["stages"]["S03"]["local_cuda_python"] == (
+        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    )
+    assert CONFIG["stages"]["S03"]["schp_cache"] == "models/runtime_cache/schp"
+
+
 def test_pipeline_config_has_all_stages_devices_io_and_determinism() -> None:
     assert CONFIG["seed"] == 1337
     assert CONFIG["gpu_cooldown_sec"] == 3

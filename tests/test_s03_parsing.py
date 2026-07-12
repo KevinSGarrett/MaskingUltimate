@@ -200,6 +200,7 @@ def test_wsl_parser_provider_validates_probabilities_and_restores_half_scale(
                         "tile_size": 1536,
                         "tile_overlap": 128,
                         "device": "NVIDIA fixture",
+                        "torch": "2.11.0+cu128",
                     }
                 )
                 + "\n"
@@ -214,7 +215,9 @@ def test_wsl_parser_provider_validates_probabilities_and_restores_half_scale(
     assert output.probabilities.shape == (28, 8, 6)
     assert np.allclose(output.probabilities.sum(axis=0), 1)
     assert np.all(output.labels == 0)
-    assert not list((tmp_path / "work").iterdir())
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "wsl_cuda"
+    assert runtime["scale"] == 0.5
 
 
 @pytest.mark.parametrize("fault", ["mass", "argmax", "label_dtype"])
@@ -272,6 +275,7 @@ def test_wsl_schp_provider_requires_pinned_companion_contract(
                         "dataset": "atr",
                         "tile_count": 1,
                         "device": "NVIDIA fixture",
+                        "torch": "2.11.0+cu128",
                     }
                 )
                 + "\n"
@@ -286,4 +290,5 @@ def test_wsl_schp_provider_requires_pinned_companion_contract(
 
     assert result.labels.shape == (4, 5)
     assert result.probabilities.shape == (18, 4, 5)
-    assert not list((tmp_path / "work").iterdir())
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["parser"] == "schp_atr"

@@ -3127,6 +3127,25 @@ focused regression:         49 text/VLM/mining/dataset/production tests pass
 full regression:            563 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-12 00:55 UTC - S03 dual parsing activated on local CUDA and completed for every eligible live instance
+**Items:** MF-P2-02.01 95% -> complete; MF-P2-02.02 95% -> complete
+**Result:** The pinned Sapiens/SCHP production boundary now runs on the proven local CUDA venv, and every S02-QC-pass person instance has a complete, auditable S03 package.
+
+```
+runtime:                    C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe; torch 2.11.0+cu128; RTX 5060 Laptop GPU
+Sapiens contract:           revision ea5545c735d1fc994d0d1aafede27df892761322; bf16; 1024x768 model input; 1536/128 tiling
+SCHP contract:              revision eb84c432cc697f494d99662a05f2335eb2f26095; ATR; fp32; 512x512 model input; always run
+SCHP bootstrap:             pinned source cached under models/runtime_cache/schp; Windows clone explicitly selects OpenSSL TLS backend
+live corpus:                29/29 S02-QC-pass instances committed S03; 2 no_person outcomes remain at S01; 1 low-ratio silhouette remains needs_review at S02
+artifact contract:          every package has both indexed maps, 28 Sapiens confidence PNGs, 18 SCHP confidence PNGs, and both runtime documents
+runtime integrity:          29/29 exact model revisions; 29/29 cu128; 29/29 local_cuda; 29/29 Sapiens scale=1.0
+tiling observed:            1..18 Sapiens tiles per crop
+duration:                   median 71.94s; maximum 234.93s; summed committed stage duration 40.73 minutes
+storage:                    29 complete S03 evidence packages occupy 0.111 GiB
+multi-person safety:        8 instances correctly marked careful_review after co-subject ambiguity suppression; no parser fallback was used
+focused regression:         46 S03/config/production tests pass
+quality:                    Ruff check/format clean before live batch; tracker structurally valid
+```
 ## 2026-07-12 00:30 UTC - S02 activated on local CUDA; all 30 promoted instances processed
 **Items:** MF-P2-01.02 95% partial -> complete; MF-P8-10.02 open -> 5% partial
 **Result:** The exact registered BiRefNet model is no longer blocked by the sandbox account's invisible WSL distro. Kevin's existing ComfyUI CUDA venv provides a governed equivalent launcher, and every live promoted instance now has a durable S02 outcome.

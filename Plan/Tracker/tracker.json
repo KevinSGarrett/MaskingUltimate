@@ -2994,8 +2994,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T05:41:26+00:00",
@@ -3006,12 +3006,17 @@
           "ts": "2026-07-11T18:25:51+00:00",
           "actor": "ai_agent",
           "text": "Hardened Sapiens production boundary: governed S03 config reaches provider; WSL metadata must prove pinned model revision, bf16, 1024x768 model input, 1536/128 tiling, class/shape/tile/CUDA identity; archive dtype, normalized probabilities, and label=argmax enforced; scaled outputs renormalized; provider intermediates removed. Tiled inference now loads the 0.6B model once and reuses it across all tiles. 40 focused and 516 full tests pass. Fresh live CUDA invocation remains unavailable in this managed boundary."
+        },
+        {
+          "ts": "2026-07-12T00:25:37+00:00",
+          "actor": "ai_agent",
+          "text": "Activated Sapiens on the explicit local CUDA runtime and ran the entire eligible live corpus through S03. All 29 S02-QC-pass instances produced full-scale bf16 Sapiens output; no half-resolution or SCHP-only fallback was used. Eight multi-person instances were correctly routed careful_review for co-subject ambiguity, independent of parser runtime success."
         }
       ],
-      "evidence": "src/maskfactory/stages/s03_parsing.py + production.py; tools/run_parser_wsl.py + smoke_sapiens_seg_wsl.py; tests/test_s03_parsing.py + test_production_runners.py. Vectorized 2048-square disagreement measured 0.072s. Registry retains real checkpoint SHA-256 86aa2c... and CUDA smoke hash a52baa.... Ruff/format clean, ontology current, 516 tests pass. Missing final evidence: fresh end-to-end authoritative WSL CUDA production invocation.",
+      "evidence": "Live governed batch 2026-07-11: 29/29 eligible instance packages have complete S03 stage stamps, sapiens_28.png, exactly 28 confidence PNGs, local_cuda runtime evidence with RTX 5060 + torch 2.11.0+cu128, exact Sapiens revision ea5545c735d1fc994d0d1aafede27df892761322, scale=1.0, and tile counts 1..18. Median/max S03 duration 71.94/234.93s; tests/ruff/format validated during activation.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T18:25:51+00:00",
+      "updated_at": "2026-07-12T00:25:37+00:00",
       "orphaned": false
     },
     "MF-P2-02.02": {
@@ -3026,8 +3031,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T05:41:26+00:00",
@@ -3038,12 +3043,17 @@
           "ts": "2026-07-11T18:25:52+00:00",
           "actor": "ai_agent",
           "text": "Hardened mandatory SCHP companion boundary: production refuses fallback/model/precision policy drift; SCHP archive must prove pinned eb84c4 revision, ATR dataset, fp32, 512x512 input, 18 classes, CUDA identity, normalized probabilities, and label argmax; SCHP remains first/always-run and survives Sapiens OOM degradation; provider intermediates are removed. 40 focused and 516 full tests pass. Fresh live CUDA invocation remains unavailable."
+        },
+        {
+          "ts": "2026-07-12T00:25:38+00:00",
+          "actor": "ai_agent",
+          "text": "Activated the mandatory SCHP-ATR companion on the same explicit local CUDA runtime. The pinned source checkout is cached project-locally and bootstrapped with an explicit OpenSSL Git backend on Windows."
         }
       ],
-      "evidence": "src/maskfactory/stages/s03_parsing.py + production.py and tools/run_parser_wsl.py implement/verify SCHP-ATR companion contract; tests cover pinned SCHP metadata, output coherence, always-run order, Sapiens double-OOM retention, and config drift refusal. Registry retains checkpoint SHA-256 e9d7c9... and CUDA smoke hash 3dbf93.... Ruff/format clean, ontology current, 516 tests pass. Missing final evidence: fresh end-to-end authoritative WSL CUDA production invocation.",
+      "evidence": "Live governed batch 2026-07-11: 29/29 eligible instance packages have schp_atr.png, exactly 18 confidence PNGs, dataset=atr, fp32, 512x512 model input, exact revision eb84c432cc697f494d99662a05f2335eb2f26095, RTX 5060 identity and torch 2.11.0+cu128 runtime evidence. SCHP ran for every S03 package, including all careful-review multi-person cases.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T18:25:52+00:00",
+      "updated_at": "2026-07-12T00:25:38+00:00",
       "orphaned": false
     },
     "MF-P2-02.03": {

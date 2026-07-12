@@ -138,6 +138,7 @@ def run(
         "tile_size": tile_size if parser == "sapiens" else None,
         "tile_overlap": tile_overlap if parser == "sapiens" else None,
         "device": torch.cuda.get_device_name(0),
+        "torch": torch.__version__,
     }
 
 

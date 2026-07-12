@@ -291,6 +291,10 @@ def build_production_runners(
             sapiens_long_side=int(settings.get("long_side", 1024)),
             tile_size=int(settings.get("tile_size", 1536)),
             tile_overlap=int(settings.get("tile_overlap", 128)),
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            schp_cache=Path(settings["schp_cache"]) if settings.get("schp_cache") else None,
         )
         protection_path = context.prior_stage_dir("S02") / "other_person_protected.png"
         suppression = {"suppressed_px": 0, "ambiguous_px": 0, "careful_review": False}
@@ -831,6 +835,7 @@ def run_multi_person_production(
     through_autoqa: bool = False,
     database: Path | None = None,
     silhouettes_only: bool = False,
+    parsing_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -920,6 +925,25 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
+    if parsing_only:
+        for person in promoted:
+            name = f"p{person['person_index']}"
+            instance_root = work_root / "instances" / name
+            parsing = pipeline_runner(
+                image_id,
+                selected=("S03",),
+                config=config,
+                work_root=instance_root,
+                runners=scoped_runners[name],
+                gpu_lock_path=gpu_lock_path,
+            )
+            per_instance[name] = (*per_instance[name], *tuple(parsing))
+        return MultiPersonProductionResult(
+            tuple(shared),
+            per_instance,
+            s01_dir / "person_bbox.json",
+            False,
+        )
     downstream = ("S03", "S04", "S05", "S06", "S07", "S08", "S08.5", "S09")
     for person in promoted:
         name = f"p{person['person_index']}"

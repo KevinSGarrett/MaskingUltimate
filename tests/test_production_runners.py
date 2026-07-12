@@ -242,6 +242,10 @@ def test_s03_production_runner_forwards_governed_parser_contract(
     assert captured["sapiens_long_side"] == 1024
     assert captured["tile_size"] == 1536
     assert captured["tile_overlap"] == 128
+    assert captured["local_cuda_python"] == Path(
+        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    )
+    assert captured["schp_cache"] == Path("models/runtime_cache/schp")
 
 
 @pytest.mark.parametrize(
@@ -893,6 +897,32 @@ def test_run_through_silhouettes_stops_after_every_instance_s02(
     assert captured["silhouettes_only"] is True
     assert "p0: 0 stage execution(s) S02" in result.output
     assert "S02 batch complete: 2 instance(s)" in result.output
+    assert "S09.5" not in result.output
+
+
+def test_run_through_parsing_stops_after_every_instance_s03(tmp_path: Path, monkeypatch) -> None:
+    manifest = tmp_path / "person_bbox.json"
+    manifest.write_text("{}", encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=False,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(
+        main,
+        ["run", "img_a3f9c2e17b04", "--through-parsing"],
+    )
+    assert result.exit_code == 0, result.output
+    assert captured["parsing_only"] is True
+    assert "p0: 0 stage execution(s) S02-S03" in result.output
+    assert "S03 batch complete: 2 instance(s)" in result.output
     assert "S09.5" not in result.output
 
 

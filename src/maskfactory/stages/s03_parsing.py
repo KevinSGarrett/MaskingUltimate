@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -50,6 +51,8 @@ class WslParserProvider:
         sapiens_long_side: int = 1024,
         tile_size: int = 1536,
         tile_overlap: int = 128,
+        local_cuda_python: Path | None = None,
+        schp_cache: Path | None = None,
     ) -> None:
         if parser not in self.CLASS_COUNTS:
             raise ParsingError(f"unsupported WSL parser: {parser}")
@@ -68,6 +71,12 @@ class WslParserProvider:
         self.sapiens_long_side = sapiens_long_side
         self.tile_size = tile_size
         self.tile_overlap = tile_overlap
+        self.local_cuda_python = Path(local_cuda_python) if local_cuda_python is not None else None
+        self.schp_cache = Path(schp_cache) if schp_cache is not None else None
+        if self.local_cuda_python is not None and not self.local_cuda_python.is_file():
+            raise ParsingError(
+                f"configured local CUDA Python does not exist: {self.local_cuda_python}"
+            )
 
     def __call__(self, image: np.ndarray, *, scale: float = 1.0) -> ModelParsing:
         source = np.asarray(image)
@@ -97,21 +106,15 @@ class WslParserProvider:
         output_path = self.work_dir / f"{self.parser}_{token}.npz"
         Image.fromarray(source.astype(np.uint8), mode="RGB").save(input_path, format="PNG")
         root = Path(__file__).resolve().parents[3]
-        command = [
-            "wsl",
-            "-d",
-            self.wsl_distribution,
-            "--",
-            self.python_path,
-            _wsl_path(root / "tools" / "run_parser_wsl.py"),
+        arguments = [
             "--parser",
             self.parser,
             "--checkpoint",
-            _wsl_path(self.checkpoint),
+            str(self.checkpoint.resolve()),
             "--image",
-            _wsl_path(input_path),
+            str(input_path.resolve()),
             "--output",
-            _wsl_path(output_path),
+            str(output_path.resolve()),
             "--sapiens-long-side",
             str(self.sapiens_long_side),
             "--tile-size",
@@ -119,6 +122,32 @@ class WslParserProvider:
             "--tile-overlap",
             str(self.tile_overlap),
         ]
+        if self.local_cuda_python is not None:
+            command = [
+                str(self.local_cuda_python),
+                str(root / "tools" / "run_parser_wsl.py"),
+                *arguments,
+            ]
+            launcher = "local_cuda"
+            environment = os.environ.copy()
+            if self.schp_cache is not None:
+                environment["MASKFACTORY_SCHP_CACHE"] = str(self.schp_cache.resolve())
+        else:
+            wsl_arguments = [
+                _wsl_path(Path(value)) if index in {3, 5, 7} else value
+                for index, value in enumerate(arguments)
+            ]
+            command = [
+                "wsl",
+                "-d",
+                self.wsl_distribution,
+                "--",
+                self.python_path,
+                _wsl_path(root / "tools" / "run_parser_wsl.py"),
+                *wsl_arguments,
+            ]
+            launcher = "wsl_cuda"
+            environment = None
         try:
             try:
                 process = subprocess.run(
@@ -127,14 +156,15 @@ class WslParserProvider:
                     text=True,
                     timeout=self.timeout_sec,
                     check=False,
+                    **({"env": environment} if environment is not None else {}),
                 )
             except (OSError, subprocess.TimeoutExpired) as exc:
-                raise ParsingError(f"{self.parser} WSL launch failed: {exc}") from exc
+                raise ParsingError(f"{self.parser} {launcher} launch failed: {exc}") from exc
             if process.returncode:
                 detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
                 if "out of memory" in detail.lower():
                     raise RuntimeError(f"CUDA out of memory: {detail}")
-                raise ParsingError(f"{self.parser} WSL inference failed: {detail}")
+                raise ParsingError(f"{self.parser} {launcher} inference failed: {detail}")
             try:
                 metadata = json.loads(process.stdout.strip().splitlines()[-1])
                 with np.load(output_path, allow_pickle=False) as archive:
@@ -183,6 +213,10 @@ class WslParserProvider:
             raise ParsingError(f"{self.parser} metadata requires positive integer tile_count")
         if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
             raise ParsingError(f"{self.parser} metadata requires CUDA device identity")
+        if "+cu128" not in str(metadata.get("torch", "")):
+            raise ParsingError(
+                f"{self.parser} metadata requires the governed cu128 PyTorch runtime"
+            )
         if labels.dtype != np.uint8 or probabilities.dtype != np.float32:
             raise ParsingError(f"{self.parser} archive dtype mismatch")
         if labels.shape != source.shape[:2] or probabilities.shape[1:] != source.shape[:2]:
@@ -191,6 +225,15 @@ class WslParserProvider:
         if source.shape[:2] != original_shape:
             probabilities = _restore_probabilities(probabilities, original_shape)
             labels = probabilities.argmax(axis=0).astype(np.uint8)
+        runtime_document = {
+            "launcher": launcher,
+            "python": str(self.local_cuda_python or self.python_path),
+            "scale": scale,
+            **metadata,
+        }
+        (self.work_dir / "runtime.json").write_text(
+            json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
         return ModelParsing(labels, probabilities)
 
 
@@ -216,6 +259,8 @@ def run_s03_production(
     sapiens_long_side: int = 1024,
     tile_size: int = 1536,
     tile_overlap: int = 128,
+    local_cuda_python: Path | None = None,
+    schp_cache: Path | None = None,
 ) -> S03Result:
     """Execute registered Sapiens primary and mandatory SCHP-ATR companion."""
     with Image.open(image_path) as opened:
@@ -230,6 +275,8 @@ def run_s03_production(
             sapiens_long_side=sapiens_long_side,
             tile_size=tile_size,
             tile_overlap=tile_overlap,
+            local_cuda_python=local_cuda_python,
+            schp_cache=schp_cache,
         ),
         schp=WslParserProvider(
             "schp_atr",
@@ -238,6 +285,8 @@ def run_s03_production(
             sapiens_long_side=sapiens_long_side,
             tile_size=tile_size,
             tile_overlap=tile_overlap,
+            local_cuda_python=local_cuda_python,
+            schp_cache=schp_cache,
         ),
         sapiens_map=sapiens_map,
         schp_map=schp_map,

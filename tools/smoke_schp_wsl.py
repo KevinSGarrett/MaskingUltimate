@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import types
@@ -18,7 +19,11 @@ from torch import nn
 
 REPOSITORY = "https://github.com/GoGoDuck912/Self-Correction-Human-Parsing.git"
 REVISION = "eb84c432cc697f494d99662a05f2335eb2f26095"
-SOURCE = Path.home() / ".cache" / "maskfactory" / "schp" / REVISION
+SOURCE = (
+    Path(os.environ["MASKFACTORY_SCHP_CACHE"])
+    if os.environ.get("MASKFACTORY_SCHP_CACHE")
+    else Path.home() / ".cache" / "maskfactory" / "schp"
+) / REVISION
 SETTINGS = {"atr": (18, 512), "lip": (20, 473)}
 
 
@@ -45,7 +50,15 @@ def _ensure_source() -> None:
         return
     SOURCE.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["git", "clone", "--filter=blob:none", REPOSITORY, str(SOURCE)],
+        [
+            "git",
+            "-c",
+            "http.sslBackend=openssl",
+            "clone",
+            "--filter=blob:none",
+            REPOSITORY,
+            str(SOURCE),
+        ],
         check=True,
         capture_output=True,
         text=True,

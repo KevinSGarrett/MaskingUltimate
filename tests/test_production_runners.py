@@ -1270,6 +1270,58 @@ def test_qa_command_returns_nonzero_and_names_hard_blocks(tmp_path: Path, monkey
     assert summary["instances"]["p0"]["failed_blocks"] == ["QC-014"]
 
 
+def test_vlmqa_run_forces_s10_s11_and_refuses_unavailable_gate(tmp_path: Path, monkeypatch) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    directory = work / "instances" / "p0" / "s11" / image_id
+    directory.mkdir(parents=True)
+    report = valid_report()
+    report["checks"] = [report["checks"][0]]
+    report["overall"] = "needs_human"
+    report["vlm_review"] = {"model": "qwen2.5vl:7b", "verdicts": []}
+    (directory / "qa_report.json").write_text(json.dumps(report), encoding="utf-8")
+    (directory / "vlm_routing.json").write_text(
+        json.dumps(
+            {
+                "enabled": False,
+                "reason": "calibration gate is missing",
+                "routes": {
+                    "left_forearm": {
+                        "queue": "careful",
+                        "priority": "high",
+                        "reason": "vlm_calibration_gate_unavailable",
+                    }
+                },
+                "whole_image_review": {"status": "skipped_gate_unavailable"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": ()},
+            image_manifest_path=tmp_path / "image_manifest.json",
+            qc035_passed=True,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(main, ["vlmqa", "run", image_id, "--work-root", str(work)])
+
+    assert result.exit_code == 1
+    assert captured["through_vlmqa"] is True
+    assert captured["force_autoqa"] is True
+    assert captured["force_vlmqa"] is True
+    summary = json.loads(result.output)
+    assert summary["status"] == "disabled_gate_unavailable"
+    assert summary["instances"]["p0"]["enabled"] is False
+    assert summary["instances"]["p0"]["route_counts"] == {"careful": 1}
+    assert summary["instances"]["p0"]["whole_image_status"] == "skipped_gate_unavailable"
+
+
 def test_run_through_review_handoff_reports_pending_cvat_tasks(tmp_path: Path, monkeypatch) -> None:
     manifest = tmp_path / "image_manifest.json"
     manifest.write_text("{}", encoding="utf-8")

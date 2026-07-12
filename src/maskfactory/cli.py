@@ -1021,6 +1021,139 @@ def vlmqa(context: click.Context) -> None:
         click.echo(context.get_help())
 
 
+@vlmqa.command("run")
+@click.argument("image_id", required=True)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--images-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/images"),
+    show_default=True,
+)
+@click.option(
+    "--work-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("work"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def vlmqa_run(
+    image_id: str,
+    config_path: Path,
+    images_root: Path,
+    work_root: Path,
+    database: Path,
+) -> None:
+    """Force S10+S11 for every promoted instance; refuse an unavailable VLM gate."""
+    from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
+    from .orchestrator import (
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        load_pipeline_config,
+    )
+    from .stages.production import run_multi_person_production
+    from .validation import validate_document
+
+    try:
+        outcome = run_multi_person_production(
+            image_id,
+            config=load_pipeline_config(config_path),
+            images_root=images_root,
+            work_root=work_root,
+            gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
+            through_vlmqa=True,
+            force_autoqa=True,
+            force_vlmqa=True,
+            database=database,
+        )
+        if outcome.terminal_outcome is not None:
+            click.echo(
+                json.dumps(
+                    {
+                        "image_id": image_id,
+                        "instances": {},
+                        "reason": outcome.terminal_reason,
+                        "status": outcome.terminal_outcome,
+                    },
+                    sort_keys=True,
+                )
+            )
+            raise click.exceptions.Exit(1)
+        instances = {}
+        for instance in sorted(outcome.per_instance):
+            directory = work_root / "instances" / instance / "s11" / image_id
+            report_path = directory / "qa_report.json"
+            routing_path = directory / "vlm_routing.json"
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            routing = json.loads(routing_path.read_text(encoding="utf-8"))
+            issues = validate_document(report, "qa_report")
+            if issues:
+                raise ValueError(f"invalid S11 report {report_path}: {issues}")
+            route_counts = {}
+            for route in routing.get("routes", {}).values():
+                queue = str(route["queue"])
+                route_counts[queue] = route_counts.get(queue, 0) + 1
+            instances[instance] = {
+                "enabled": bool(routing["enabled"]),
+                "overall": report["overall"],
+                "reason": routing.get("reason"),
+                "report": str(report_path),
+                "route_counts": dict(sorted(route_counts.items())),
+                "routing": str(routing_path),
+                "verdict_count": len(report["vlm_review"]["verdicts"]),
+                "whole_image_status": routing["whole_image_review"]["status"],
+            }
+        blocked = any(item["overall"] == "fail" for item in instances.values())
+        disabled = any(not item["enabled"] for item in instances.values())
+        needs_human = any(item["overall"] == "needs_human" for item in instances.values())
+        status = (
+            "blocked"
+            if blocked
+            else "disabled_gate_unavailable"
+            if disabled
+            else "needs_human"
+            if needs_human
+            else "pass"
+        )
+        click.echo(
+            json.dumps(
+                {
+                    "image_id": image_id,
+                    "instance_count": len(instances),
+                    "instances": instances,
+                    "status": status,
+                },
+                sort_keys=True,
+            )
+        )
+        if blocked or disabled:
+            raise click.exceptions.Exit(1)
+    except click.exceptions.Exit:
+        raise
+    except (
+        GpuLockError,
+        OSError,
+        SemanticStageError,
+        StageConfigurationError,
+        StagePolicyError,
+        ValueError,
+        json.JSONDecodeError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+
+
 @vlmqa.command("build-calibration")
 @click.option(
     "--selection",

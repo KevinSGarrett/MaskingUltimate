@@ -3679,3 +3679,15 @@ compiler behavior:             live governed configs compile; deliberate 57 drif
 training doctor:               class issue absent; local boundary is CPU torch/no pinned OpenMMLab/CUDA
 evidence:                      qa/live_verification/bodypart_class_contract_20260712.json
 validation:                    21 focused and 639 full tests passed; Ruff/format clean
+## 2026-07-12 - Dedicated multi-instance S11 VLM-QA command activated
+
+**Result:** PASS for orchestration/fail-closed routing; calibration gate remains unavailable.
+
+command:                       maskfactory vlmqa run <image_id>
+execution:                     force S10 then S11 for every promoted pN; revalidate reports
+gate policy:                   missing/deprecated gate -> disabled_gate_unavailable + exit 1
+live result:                   img_2ca794d19be9/p0, 13 careful routes, zero verdicts, no P-IMAGE call
+authority:                     no block clear, no mask edit, no approval
+handoff isolation:             CVAT task records unchanged at 9; S12 never runs
+evidence:                      qa/live_verification/vlmqa_run_cli_20260712.json
+validation:                    55 focused and 640 full tests passed; Ruff/format clean

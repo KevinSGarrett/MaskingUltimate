@@ -921,6 +921,8 @@ def run_multi_person_production(
     runner_factory=build_production_runners,
     through_autoqa: bool = False,
     force_autoqa: bool = False,
+    through_vlmqa: bool = False,
+    force_vlmqa: bool = False,
     through_review_handoff: bool = False,
     database: Path | None = None,
     silhouettes_only: bool = False,
@@ -1099,7 +1101,7 @@ def run_multi_person_production(
         manifest=manifest,
         work_root=work_root,
     )
-    if through_autoqa or through_review_handoff:
+    if through_autoqa or through_vlmqa or through_review_handoff:
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name
@@ -1114,19 +1116,28 @@ def run_multi_person_production(
             )
             per_instance[name] = (*per_instance[name], *tuple(autoqa))
     cvat_task_ids: tuple[int, ...] = ()
-    if through_review_handoff:
+    if through_vlmqa or through_review_handoff:
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name
             vlmqa = pipeline_runner(
                 image_id,
                 selected=("S11",),
+                force=("S11",) if force_vlmqa else (),
                 config=config,
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(vlmqa))
+        if through_vlmqa and not through_review_handoff:
+            return MultiPersonProductionResult(
+                tuple(shared),
+                per_instance,
+                reconciliation.image_manifest_path,
+                reconciliation.qc035_passed,
+                draft_contract_paths,
+            )
         manifest, _ = _source(image_id, Path(images_root))
         promoted_names = tuple(f"p{person['person_index']}" for person in promoted)
         cvat_task_ids = _existing_cvat_handoff_task_ids(

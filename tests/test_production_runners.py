@@ -904,6 +904,86 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
         assert set(regression["p8_only_files"]["s02"]) == {"other_person_protected.png"}
 
 
+def test_multi_person_s02_terminal_is_queued_once_across_cached_reruns(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    image_dir = tmp_path / "images" / image_id
+    image_dir.mkdir(parents=True)
+    Image.new("RGB", (100, 100), "white").save(image_dir / "source.png")
+    (image_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "status": "ingested",
+                "source": {
+                    "source_file": "source.png",
+                    "source_width": 100,
+                    "source_height": 100,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    work = tmp_path / "work"
+
+    def pipeline(image_id_arg, *, selected, work_root, **kwargs):
+        assert image_id_arg == image_id
+        if tuple(selected) == ("S00", "S01"):
+            directory = Path(work_root) / "s01" / image_id
+            directory.mkdir(parents=True, exist_ok=True)
+            (directory / "person_bbox.json").write_text(
+                json.dumps(
+                    {
+                        "persons": [
+                            {
+                                "person_index": index,
+                                "promoted": True,
+                                "bbox_xyxy": [index * 40, 10, index * 40 + 30, 90],
+                                "context_bbox_xyxy": [index * 40, 0, index * 40 + 40, 100],
+                                "protected_as_part_50": False,
+                            }
+                            for index in range(2)
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            return ()
+        instance = Path(work_root).name
+        terminal = instance == "p1"
+        return (
+            production.StageExecution(
+                "S02",
+                "terminal" if terminal else "complete",
+                "b" * 64,
+                str(Path(work_root) / "s02" / image_id),
+                False,
+                terminal_outcome="needs_review" if terminal else None,
+                terminal_reason="silhouette ratio outside range" if terminal else None,
+            ),
+        )
+
+    kwargs = {
+        "config": load_pipeline_config(Path("configs/pipeline.yaml")),
+        "images_root": tmp_path / "images",
+        "work_root": work,
+        "pipeline_runner": pipeline,
+        "runner_factory": lambda *args, **options: {},
+        "silhouettes_only": True,
+    }
+    first = production.run_multi_person_production(image_id, **kwargs)
+    second = production.run_multi_person_production(image_id, **kwargs)
+
+    assert first.terminal_outcome == second.terminal_outcome == "needs_review"
+    records = [
+        json.loads(line)
+        for line in (work / "queues/review_queue.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(records) == 1
+    assert records[0]["image_id"] == image_id
+    assert records[0]["instance_id"] == "p1"
+    assert records[0]["stage"] == "S02"
+
+
 def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path) -> None:
     image_id = "img_a3f9c2e17b04"
     legacy = tmp_path / "legacy"

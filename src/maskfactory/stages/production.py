@@ -28,6 +28,7 @@ from ..orchestrator import (
     StageContext,
     StageExecution,
     StageRunner,
+    append_review_route_once,
     run_pipeline,
 )
 from ..packager import verify_packages
@@ -1004,6 +1005,15 @@ def run_multi_person_production(
         if execution.status == "terminal"
     }
     if routed:
+        for name, execution in sorted(routed.items()):
+            append_review_route_once(
+                work_root / "queues" / "review_queue.jsonl",
+                image_id=image_id,
+                instance_id=name,
+                stage=execution.stage,
+                config_hash=execution.config_hash,
+                error=str(execution.terminal_reason or ""),
+            )
         reason = "; ".join(
             f"{name}:{execution.terminal_reason}" for name, execution in sorted(routed.items())
         )

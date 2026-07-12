@@ -495,12 +495,91 @@ def run_pipeline(
     return tuple(results)
 
 
-def _append_queue(path: Path, record: Mapping[str, Any]) -> None:
+def _append_queue_document(
+    path: Path,
+    record: Mapping[str, Any],
+    *,
+    unique_identity: tuple[Any, ...] | None = None,
+    lock_timeout_sec: float = 5.0,
+) -> bool:
+    path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(dict(record), sort_keys=True) + "\n")
-        handle.flush()
-        os.fsync(handle.fileno())
+    lock = path.with_suffix(path.suffix + ".lock")
+    deadline = time.monotonic() + lock_timeout_sec
+    descriptor = None
+    while descriptor is None:
+        try:
+            descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        except FileExistsError:
+            if time.monotonic() >= deadline:
+                raise TimeoutError(f"queue lock remained busy: {lock}")
+            time.sleep(0.05)
+    try:
+        os.close(descriptor)
+        if unique_identity is not None and path.is_file():
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if not line.strip():
+                    continue
+                try:
+                    existing = json.loads(line)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"invalid queue row {number}: {exc}") from exc
+                identity = tuple(existing.get(key) for key in _REVIEW_ROUTE_IDENTITY_KEYS)
+                if identity == unique_identity:
+                    return False
+        with path.open("a", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(dict(record), sort_keys=True, separators=(",", ":")) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        return True
+    finally:
+        lock.unlink(missing_ok=True)
+
+
+def _append_queue(path: Path, record: Mapping[str, Any]) -> None:
+    _append_queue_document(path, record)
+
+
+_REVIEW_ROUTE_IDENTITY_KEYS = ("image_id", "instance_id", "stage", "config_hash")
+
+
+def append_review_route_once(
+    path: Path,
+    *,
+    image_id: str,
+    instance_id: str,
+    stage: str,
+    config_hash: str,
+    error: str,
+    timestamp: str | None = None,
+) -> bool:
+    """Durably queue one cached per-instance semantic terminal exactly once."""
+    if not image_id.startswith("img_"):
+        raise ValueError("image_id must start with img_")
+    if not instance_id.startswith("p") or not instance_id[1:].isdigit():
+        raise ValueError("instance_id must be pN")
+    if stage not in STAGE_BY_NAME:
+        raise ValueError(f"unknown stage: {stage}")
+    if len(config_hash) != 64 or any(
+        character not in "0123456789abcdef" for character in config_hash
+    ):
+        raise ValueError("config_hash must be lowercase SHA-256")
+    if not error.strip():
+        raise ValueError("review-route error cannot be empty")
+    record = {
+        "ts": timestamp or datetime_now(),
+        "image_id": image_id,
+        "instance_id": instance_id,
+        "stage": stage,
+        "category": "semantic",
+        "attempts": 1,
+        "error": error,
+        "route": "review",
+        "terminal_outcome": "needs_review",
+        "config_hash": config_hash,
+    }
+    identity = tuple(record[key] for key in _REVIEW_ROUTE_IDENTITY_KEYS)
+    return _append_queue_document(Path(path), record, unique_identity=identity)
 
 
 def run_batch(

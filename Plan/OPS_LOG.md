@@ -3732,3 +3732,19 @@ disk:                            WARN at 75.1 GiB; still above the 75 GiB ingest
 observability:                   each completed named result is emitted immediately
 evidence:                        qa/live_verification/doctor_bounded_streaming_20260712.json
 validation:                      12 focused and 645 full tests passed; Ruff/format clean
+
+## 2026-07-12 - S02 semantic terminal routes made durable and idempotent
+
+**Result:** PASS - cached per-instance silhouette failures can no longer remain hidden only inside stage folders.
+
+policy restored:                 semantic failure -> durable central review queue
+queue contract:                 append-only JSONL, fsync, exclusive short lock
+idempotence key:                image_id + instance_id + stage + config_hash
+live first run:                 0 -> 2 records
+live cached replay:             2 -> 2 records; no duplicate route
+routed instances:               img_cea6df6f0f13/p0 ratio 0.299361; img_c02019c4979c/p2 ratio 0.311724
+required S02 range:             [0.35, 0.95]; unchanged
+authority:                      masks remain failed; no threshold override and no database terminal transition
+current S02 corpus:             33 instance records / 20 images; 31 pass, 2 needs_review
+evidence:                       qa/live_verification/s02_review_queue_durability_20260712.json
+validation:                     59 focused and 647 full tests passed; Ruff/format clean

@@ -11,6 +11,7 @@ from maskfactory.orchestrator import (
     SemanticStageError,
     StageConfigurationError,
     StageExecution,
+    append_review_route_once,
     config_digest,
     plan_stages,
     run_batch,
@@ -312,6 +313,38 @@ def test_semantic_failure_routes_review_and_batch_continues(tmp_path: Path) -> N
     ]
     assert records[0]["route"] == "review"
     assert records[0]["attempts"] == 1
+
+
+def test_cached_instance_review_route_is_durable_and_idempotent(tmp_path: Path) -> None:
+    queue = tmp_path / "work/queues/review_queue.jsonl"
+    kwargs = {
+        "image_id": "img_a3f9c2e17b04",
+        "instance_id": "p2",
+        "stage": "S02",
+        "config_hash": "a" * 64,
+        "error": "silhouette_bbox_ratio=0.31 outside [0.35,0.95]",
+        "timestamp": "2026-07-12T12:00:00+00:00",
+    }
+
+    assert append_review_route_once(queue, **kwargs) is True
+    assert append_review_route_once(queue, **kwargs) is False
+
+    records = [json.loads(line) for line in queue.read_text(encoding="utf-8").splitlines()]
+    assert records == [
+        {
+            "attempts": 1,
+            "category": "semantic",
+            "config_hash": "a" * 64,
+            "error": kwargs["error"],
+            "image_id": kwargs["image_id"],
+            "instance_id": "p2",
+            "route": "review",
+            "stage": "S02",
+            "terminal_outcome": "needs_review",
+            "ts": kwargs["timestamp"],
+        }
+    ]
+    assert not queue.with_suffix(".jsonl.lock").exists()
 
 
 def test_fatal_failure_quarantines_image_and_batch_continues(tmp_path: Path) -> None:

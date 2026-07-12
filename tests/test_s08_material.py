@@ -256,6 +256,24 @@ def test_thin_structure_pass_classifies_vertical_shoulder_and_horizontal_iliac()
     assert not (strap & waistband).any()
 
 
+def test_thin_structure_pass_preserves_coordinates_on_large_sparse_canvas() -> None:
+    clothing = np.zeros((2048, 3072), dtype=bool)
+    clothing[900:1000, 1400:1403] = True
+    clothing[1100:1103, 1500:1700] = True
+    shoulder = np.zeros_like(clothing)
+    shoulder[880:930, 1380:1420] = True
+
+    strap, waistband = thin_structure_pass(
+        clothing, torso_width=200, shoulder_region=shoulder, iliac_y=1100
+    )
+
+    assert strap[910, 1401]
+    assert waistband[1101, 1600]
+    assert not (strap & waistband).any()
+    assert not strap[:800].any()
+    assert not waistband[:, :1300].any()
+
+
 def test_sheer_detection_uses_adjacent_skin_chroma_similarity() -> None:
     image = np.zeros((40, 60, 3), dtype=np.uint8)
     skin = np.zeros((40, 60), dtype=bool)

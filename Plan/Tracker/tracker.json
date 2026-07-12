@@ -4678,8 +4678,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T04:47:17+00:00",
@@ -4692,10 +4692,10 @@
           "text": "Production WslDensePoseProvider implemented around registered R50 chart checkpoint/pinned config: CUDA Detectron2 prediction, target instance selected by bbox IoU, co-subject suppression metadata, fine 0..24 surface argmax, per-surface U/V gather, ROI resize/paste to full canvas, strict RGB IUV with background U=V=0. Provider/consumer tests pass. Live attempt uncredited: WSL_E_DISTRO_NOT_FOUND."
         }
       ],
-      "evidence": null,
+      "evidence": "Pinned Detectron2 DensePose source 02b5c4e295e990042a714712c21dc79b731e8833 and checkpoint SHA-256 b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91 run through the production local-CUDA S08.5 adapter. Live audit passed 29/29 eligible promoted instances across 18 source images: complete S08/S08.5 receipts, exact runtime pins, decoded IUV surfaces 329736..17448288 pixels matching runtime counts, owned-candidate bbox IoU 0.882155..0.988823, and zero temporary directories. Focused S08/DensePose/config/runner regression: 58 passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T05:59:40+00:00",
+      "updated_at": "2026-07-12T03:59:39+00:00",
       "orphaned": false
     },
     "MF-P3-05.02": {

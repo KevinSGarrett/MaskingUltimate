@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -13,6 +14,17 @@ from densepose import add_densepose_config
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 from PIL import Image
+
+CHECKPOINT_SHA256 = "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91"
+SOURCE_REVISION = "02b5c4e295e990042a714712c21dc79b731e8833"
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _iou(box: list[float], target: tuple[float, float, float, float]) -> float:
@@ -31,6 +43,9 @@ def run(
     target_bbox: tuple[float, float, float, float],
     output_path: Path,
 ) -> dict:
+    checkpoint_sha = _sha256(checkpoint)
+    if checkpoint_sha != CHECKPOINT_SHA256:
+        raise ValueError("DensePose checkpoint hash mismatch")
     image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
     if image is None:
         raise ValueError(f"cannot read DensePose image: {image_path}")
@@ -83,6 +98,11 @@ def run(
         "suppressed_candidate_indices": [index for index in range(len(boxes)) if index != selected],
         "surface_pixels": int((full_i > 0).sum()),
         "device": torch.cuda.get_device_name(0),
+        "device_type": "cuda",
+        "torch": torch.__version__,
+        "checkpoint_sha256": checkpoint_sha,
+        "source_revision": SOURCE_REVISION,
+        "config": config_path.name,
     }
 
 

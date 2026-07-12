@@ -3343,3 +3343,21 @@ specialist-only edge:       2 packages correctly record one embedding and zero f
 bridge cleanup:             zero embedding/prediction temporaries remain in all 29 packages
 performance:                median 23.40s; pre-optimization compressed-bridge maximum 392.25s; transient archives now exact uncompressed NPZ
 ```
+## 2026-07-12 03:59 UTC - S08 material and S08.5 DensePose completed for every eligible live instance
+**Item:** MF-P3-05.01 90% -> complete
+**Result:** The pinned Detectron2 DensePose R50 provider now runs directly on local CUDA, and every eligible promoted instance has an owned, validated IUV surface package.
+
+```
+source:                     facebookresearch/detectron2@02b5c4e295e990042a714712c21dc79b731e8833 with projects/DensePose
+checkpoint:                 densepose_rcnn_R_50_FPN_s1x.pkl SHA-256 b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91
+runtime:                    local ComfyUI Python; torch 2.11.0+cu128; RTX 5060; project-local source/dependency cache
+live corpus:                29/29 S02-QC-pass instances across 18 source images committed S08/S08.5
+terminal routing:           2 no_person sources remain rejected at S01; 1 low-ratio silhouette remains needs_review at S02
+material evidence:          6..12 non-empty material regions per instance
+ownership:                  target selected from DensePose candidates by owned-bbox IoU; range 0.882155..0.988823
+surface evidence:           329,736..17,448,288 non-background IUV pixels; runtime counts exactly match decoded PNGs
+artifact audit:             29/29 complete receipts, exact checkpoint/source pins, CUDA launcher, shape, ownership, and surface checks
+transaction hygiene:        zero temporary stage directories after the batch
+performance fix:            thin-structure components use bounded label slices instead of rescanning the full frame per component
+focused regression:         58 S08/DensePose/config/production tests pass
+```

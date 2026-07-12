@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -41,6 +42,9 @@ class WslDensePoseProvider:
         wsl_distribution: str = "Ubuntu-22.04",
         python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
         timeout_sec: int = 900,
+        local_cuda_python: Path | None = None,
+        source_path: Path | None = None,
+        dependency_site: Path | None = None,
     ) -> None:
         self.checkpoint = Path(checkpoint)
         self.config_path = config_path
@@ -50,6 +54,9 @@ class WslDensePoseProvider:
         self.wsl_distribution = wsl_distribution
         self.python_path = python_path
         self.timeout_sec = timeout_sec
+        self.local_cuda_python = Path(local_cuda_python) if local_cuda_python is not None else None
+        self.source_path = Path(source_path) if source_path is not None else None
+        self.dependency_site = Path(dependency_site) if dependency_site is not None else None
 
     def infer(self, image: np.ndarray) -> DensePoseOutput:
         source = np.asarray(image)
@@ -63,24 +70,66 @@ class WslDensePoseProvider:
         self.work_dir.mkdir(parents=True, exist_ok=True)
         output_path = self.work_dir / "provider_iuv.png"
         root = Path(__file__).resolve().parents[3]
-        command = [
-            "wsl",
-            "-d",
-            self.wsl_distribution,
-            "--",
-            self.python_path,
-            _wsl_path(root / "tools" / "run_densepose_wsl.py"),
+        arguments = [
             "--checkpoint",
-            _wsl_path(self.checkpoint),
+            str(self.checkpoint.resolve()),
             "--config",
             self.config_path,
             "--image",
-            _wsl_path(self.image_path),
+            str(self.image_path.resolve()),
             "--target-bbox-json",
             json.dumps(self.target_bbox_xyxy),
             "--output",
-            _wsl_path(output_path),
+            str(output_path.resolve()),
         ]
+        if self.local_cuda_python is not None:
+            if not self.local_cuda_python.is_file():
+                raise DensePoseError("configured local CUDA Python is missing")
+            if (
+                self.source_path is None
+                or not (self.source_path / "detectron2/__init__.py").is_file()
+            ):
+                raise DensePoseError("configured Detectron2 source is missing")
+            if self.dependency_site is None or not (self.dependency_site / "cloudpickle").is_dir():
+                raise DensePoseError("configured Detectron2 dependency site is missing")
+            local_config = (
+                self.source_path / "projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml"
+            )
+            if not local_config.is_file():
+                raise DensePoseError("configured DensePose model config is missing")
+            arguments[3] = str(local_config.resolve())
+            command = [
+                str(self.local_cuda_python),
+                str(root / "tools" / "run_densepose_wsl.py"),
+                *arguments,
+            ]
+            launcher = "local_cuda"
+            environment = os.environ.copy()
+            existing = environment.get("PYTHONPATH")
+            environment["PYTHONPATH"] = os.pathsep.join(
+                [
+                    str(self.source_path.resolve()),
+                    str((self.source_path / "projects/DensePose").resolve()),
+                    str(self.dependency_site.resolve()),
+                    *([existing] if existing else []),
+                ]
+            )
+        else:
+            wsl_arguments = [
+                _wsl_path(Path(value)) if index in {1, 5, 9} else value
+                for index, value in enumerate(arguments)
+            ]
+            command = [
+                "wsl",
+                "-d",
+                self.wsl_distribution,
+                "--",
+                self.python_path,
+                _wsl_path(root / "tools" / "run_densepose_wsl.py"),
+                *wsl_arguments,
+            ]
+            launcher = "wsl_cuda"
+            environment = None
         try:
             process = subprocess.run(
                 command,
@@ -88,9 +137,10 @@ class WslDensePoseProvider:
                 text=True,
                 timeout=self.timeout_sec,
                 check=False,
+                **({"env": environment} if environment is not None else {}),
             )
         except (OSError, subprocess.TimeoutExpired) as exc:
-            raise DensePoseError(f"DensePose WSL launch failed: {exc}") from exc
+            raise DensePoseError(f"DensePose {launcher} launch failed: {exc}") from exc
         if process.returncode:
             detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
             raise DensePoseError(f"DensePose inference failed: {detail}")
@@ -104,6 +154,29 @@ class WslDensePoseProvider:
             raise DensePoseError(f"DensePose provider output invalid: {exc}") from exc
         if iuv.shape != (*source.shape[:2], 3) or metadata.get("shape") != list(source.shape[:2]):
             raise DensePoseError("DensePose provider geometry mismatch")
+        expected = {
+            "checkpoint_sha256": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91",
+            "source_revision": "02b5c4e295e990042a714712c21dc79b731e8833",
+            "device_type": "cuda",
+            "config": "densepose_rcnn_R_50_FPN_s1x.yaml",
+        }
+        mismatches = {
+            key: (metadata.get(key), value)
+            for key, value in expected.items()
+            if metadata.get(key) != value
+        }
+        if mismatches or "+cu128" not in str(metadata.get("torch", "")):
+            raise DensePoseError(f"DensePose runtime metadata violates contract: {mismatches}")
+        if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
+            raise DensePoseError("DensePose runtime metadata requires CUDA device identity")
+        runtime_document = {
+            "launcher": launcher,
+            "python": str(self.local_cuda_python or self.python_path),
+            **metadata,
+        }
+        (self.work_dir / "runtime.json").write_text(
+            json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
         output = DensePoseOutput(iuv[:, :, 0], iuv[:, :, 1], iuv[:, :, 2])
         _validate_iuv(output)
         return output

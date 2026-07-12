@@ -144,26 +144,57 @@ def thin_structure_pass(
     shoulder = _shape(shoulder_region, garment.shape, "shoulder_region")
     if torso_width <= 0:
         raise MaterialError("torso_width must be positive")
-    centerline = skeletonize(garment)
-    local_width = 2 * ndimage.distance_transform_edt(garment)
-    thin = centerline & (local_width < 0.04 * torso_width)
-    labels, count = ndimage.label(thin)
     strap = np.zeros_like(garment)
     waistband = np.zeros_like(garment)
-    for index in range(1, count + 1):
-        component = labels == index
-        ys, xs = np.nonzero(component)
+    if not garment.any():
+        return strap, waistband
+    garment_y, garment_x = np.nonzero(garment)
+    y0, y1 = int(garment_y.min()), int(garment_y.max()) + 1
+    x0, x1 = int(garment_x.min()), int(garment_x.max()) + 1
+    dilation_radius = max(1, round(0.02 * torso_width))
+    pad = dilation_radius + 2
+    local_garment = np.pad(garment[y0:y1, x0:x1], pad)
+    local_shoulder = np.pad(shoulder[y0:y1, x0:x1], pad)
+    centerline = skeletonize(local_garment)
+    local_width = 2 * ndimage.distance_transform_edt(local_garment)
+    thin = centerline & (local_width < 0.04 * torso_width)
+    labels, count = ndimage.label(thin)
+    local_strap = np.zeros_like(local_garment)
+    local_waistband = np.zeros_like(local_garment)
+    local_iliac_y = iliac_y - y0 + pad
+    height, width = local_garment.shape
+    for index, component_slice in enumerate(ndimage.find_objects(labels), start=1):
+        if component_slice is None:
+            continue
+        component_view = labels[component_slice] == index
+        ys, xs = np.nonzero(component_view)
         if len(xs) < 2:
             continue
+        ys = ys + component_slice[0].start
+        xs = xs + component_slice[1].start
         vertical = (ys.max() - ys.min()) > (xs.max() - xs.min())
-        expanded = (
-            ndimage.binary_dilation(component, iterations=max(1, round(0.02 * torso_width)))
-            & garment
+        expanded_slice = (
+            slice(
+                max(0, component_slice[0].start - dilation_radius),
+                min(height, component_slice[0].stop + dilation_radius),
+            ),
+            slice(
+                max(0, component_slice[1].start - dilation_radius),
+                min(width, component_slice[1].stop + dilation_radius),
+            ),
         )
-        if vertical and np.any(expanded & shoulder):
-            strap |= expanded
-        elif not vertical and abs(float(ys.mean()) - iliac_y) <= 0.08 * torso_width:
-            waistband |= expanded
+        component = labels[expanded_slice] == index
+        expanded = (
+            ndimage.binary_dilation(component, iterations=dilation_radius)
+            & local_garment[expanded_slice]
+        )
+        if vertical and np.any(expanded & local_shoulder[expanded_slice]):
+            local_strap[expanded_slice] |= expanded
+        elif not vertical and abs(float(ys.mean()) - local_iliac_y) <= 0.08 * torso_width:
+            local_waistband[expanded_slice] |= expanded
+    local_slice = (slice(pad, pad + y1 - y0), slice(pad, pad + x1 - x0))
+    strap[y0:y1, x0:x1] = local_strap[local_slice]
+    waistband[y0:y1, x0:x1] = local_waistband[local_slice]
     return strap, waistband
 
 

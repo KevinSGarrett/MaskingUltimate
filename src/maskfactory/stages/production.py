@@ -530,11 +530,12 @@ def build_production_runners(
             provider=provider,
         )
         return {
-            "material_region_count": sum(mask.any() for mask in draft.regions.values()),
+            "material_region_count": int(sum(bool(mask.any()) for mask in draft.regions.values())),
             "assigned_pixel_count": int((draft.material_map > 0).sum()),
         }
 
     def s08_5(context: StageContext) -> Mapping[str, Any]:
+        settings = context.config["stage"]
         s01_dir = prior(context, "S01")
         crop_path = s01_dir / instance_name / "person_ctx.png"
         people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
@@ -556,6 +557,13 @@ def build_production_runners(
             image_path=crop_path,
             target_bbox_xyxy=crop_box,
             work_dir=context.output_dir / "provider_work",
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+            dependency_site=(
+                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+            ),
         )
         image = np.asarray(Image.open(crop_path).convert("RGB"))
         path = run_densepose(provider, image, context.output_dir)
@@ -870,6 +878,7 @@ def run_multi_person_production(
     pose_only: bool = False,
     openvocab_only: bool = False,
     sam2_only: bool = False,
+    densepose_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -959,15 +968,17 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
-    if parsing_only or pose_only or openvocab_only or sam2_only:
+    if parsing_only or pose_only or openvocab_only or sam2_only or densepose_only:
         if parsing_only:
             selected = ("S03",)
         elif pose_only:
             selected = ("S03", "S04")
         elif openvocab_only:
             selected = ("S03", "S04", "S05", "S06")
-        else:
+        elif sam2_only:
             selected = ("S03", "S04", "S05", "S06", "S07")
+        else:
+            selected = ("S03", "S04", "S05", "S06", "S07", "S08", "S08.5")
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name

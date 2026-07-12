@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -72,7 +73,20 @@ def test_densepose_production_provider_validates_owned_full_canvas_iuv(
         class Process:
             returncode = 0
             stderr = ""
-            stdout = '{"shape":[40,50],"selected_candidate_index":0}\n'
+            stdout = json.dumps(
+                {
+                    "shape": [40, 50],
+                    "selected_candidate_index": 0,
+                    "checkpoint_sha256": (
+                        "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91"
+                    ),
+                    "source_revision": "02b5c4e295e990042a714712c21dc79b731e8833",
+                    "device_type": "cuda",
+                    "device": "NVIDIA fixture",
+                    "torch": "2.11.0+cu128",
+                    "config": "densepose_rcnn_R_50_FPN_s1x.yaml",
+                }
+            )
 
         return Process()
 
@@ -88,6 +102,75 @@ def test_densepose_production_provider_validates_owned_full_canvas_iuv(
     assert output.part_index.shape == (40, 50)
     assert output.part_index.max() == 2
     assert not np.any((output.part_index == 0) & ((output.u != 0) | (output.v != 0)))
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "wsl_cuda"
+
+
+def test_densepose_provider_supports_explicit_local_cuda_runtime(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image_path = tmp_path / "source.png"
+    Image.new("RGB", (50, 40), "white").save(image_path)
+    checkpoint = tmp_path / "densepose.pkl"
+    python = tmp_path / "python.exe"
+    checkpoint.write_bytes(b"fixture")
+    python.write_bytes(b"fixture")
+    source = tmp_path / "source"
+    deps = tmp_path / "deps"
+    (source / "detectron2").mkdir(parents=True)
+    (source / "detectron2/__init__.py").write_text("", encoding="utf-8")
+    config = source / "projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml"
+    config.parent.mkdir(parents=True)
+    config.write_text("fixture", encoding="utf-8")
+    (deps / "cloudpickle").mkdir(parents=True)
+
+    def fake_run(command, **kwargs):
+        assert command[0] == str(python)
+        assert kwargs["env"]["PYTHONPATH"].split(os.pathsep)[:3] == [
+            str(source.resolve()),
+            str((source / "projects/DensePose").resolve()),
+            str(deps.resolve()),
+        ]
+        output_path = Path(command[command.index("--output") + 1])
+        dense = _densepose()
+        Image.fromarray(np.stack((dense.part_index, dense.u, dense.v), axis=2), mode="RGB").save(
+            output_path
+        )
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = json.dumps(
+                {
+                    "shape": [40, 50],
+                    "selected_candidate_index": 0,
+                    "checkpoint_sha256": (
+                        "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91"
+                    ),
+                    "source_revision": "02b5c4e295e990042a714712c21dc79b731e8833",
+                    "device_type": "cuda",
+                    "device": "NVIDIA fixture",
+                    "torch": "2.11.0+cu128",
+                    "config": "densepose_rcnn_R_50_FPN_s1x.yaml",
+                }
+            )
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s08_5_densepose.subprocess.run", fake_run)
+    provider = WslDensePoseProvider(
+        checkpoint=checkpoint,
+        config_path="/pinned/densepose.yaml",
+        image_path=image_path,
+        target_bbox_xyxy=(0, 0, 50, 40),
+        work_dir=tmp_path / "work",
+        local_cuda_python=python,
+        source_path=source,
+        dependency_site=deps,
+    )
+    assert provider.infer(np.zeros((40, 50, 3), dtype=np.uint8)).part_index.max() == 2
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "local_cuda"
 
 
 def test_surface_votes_feed_view_and_left_right_referees() -> None:

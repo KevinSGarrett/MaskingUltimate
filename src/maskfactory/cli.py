@@ -396,6 +396,11 @@ def draft(
     help="Run shared S00/S01 and every promoted instance through S07, then stop.",
 )
 @click.option(
+    "--through-densepose",
+    is_flag=True,
+    help="Run shared S00/S01 and every promoted instance through S08.5, then stop.",
+)
+@click.option(
     "--through-autoqa",
     is_flag=True,
     help="Run the activated multi-instance path through per-instance S10 hard gates.",
@@ -416,6 +421,7 @@ def run(
     through_pose: bool,
     through_openvocab: bool,
     through_sam2: bool,
+    through_densepose: bool,
     through_autoqa: bool,
 ) -> None:
     """Run the governed S00–S15 file-based stage graph for an image."""
@@ -447,6 +453,7 @@ def run(
             or through_pose
             or through_openvocab
             or through_sam2
+            or through_densepose
             or through_drafts
             or through_autoqa
         ):
@@ -458,6 +465,7 @@ def run(
                         through_pose,
                         through_openvocab,
                         through_sam2,
+                        through_densepose,
                         through_drafts,
                         through_autoqa,
                     )
@@ -484,6 +492,7 @@ def run(
                 pose_only=through_pose,
                 openvocab_only=through_openvocab,
                 sam2_only=through_sam2,
+                densepose_only=through_densepose,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
             if outcome.terminal_outcome is not None:
@@ -502,6 +511,8 @@ def run(
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S06")
                 elif through_sam2:
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S07")
+                elif through_densepose:
+                    click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S08.5")
                 else:
                     terminal = "S10" if through_autoqa else "S09"
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
@@ -519,6 +530,9 @@ def run(
                 return
             if through_sam2:
                 click.echo(f"S07 batch complete: {len(outcome.per_instance)} instance(s)")
+                return
+            if through_densepose:
+                click.echo(f"S08.5 batch complete: {len(outcome.per_instance)} instance(s)")
                 return
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
             for contract in outcome.draft_contract_paths:

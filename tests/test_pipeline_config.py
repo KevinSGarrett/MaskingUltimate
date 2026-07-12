@@ -52,6 +52,13 @@ def test_s07_governed_local_cuda_runtime_is_explicit() -> None:
     assert stage["dependency_site"] == "models/runtime_cache/sam2_deps"
 
 
+def test_s08_5_governed_local_cuda_runtime_is_explicit() -> None:
+    stage = CONFIG["stages"]["S08.5"]
+    assert stage["local_cuda_python"] == "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    assert stage["source_path"].endswith("02b5c4e295e990042a714712c21dc79b731e8833")
+    assert stage["dependency_site"] == "models/runtime_cache/detectron2_deps"
+
+
 def test_pipeline_config_has_all_stages_devices_io_and_determinism() -> None:
     assert CONFIG["seed"] == 1337
     assert CONFIG["gpu_cooldown_sec"] == 3

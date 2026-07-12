@@ -12,8 +12,10 @@ from maskfactory.stages.s07_sam2 import SamCandidate
 from maskfactory.stages.s08_material import (
     MaterialError,
     build_material_map,
+    champion_clothing_refresh_required,
     detect_sheer,
     fuse_material_evidence,
+    material_class_names,
     refine_material_regions,
     restore_material_coverage,
     run_s08_production,
@@ -153,6 +155,8 @@ def test_promoted_clothing_model_becomes_primary_with_schp_named_fallback(
             "file": "clothing.bin",
             "sha256": checkpoint_sha,
             "verified": True,
+            "inference_config_sha256": "b" * 64,
+            "class_names": list(material_class_names()),
         }
     )
     registry_document["models"] = [entry]
@@ -164,9 +168,15 @@ def test_promoted_clothing_model_becomes_primary_with_schp_named_fallback(
     events = []
 
     class Champion:
-        def __call__(self, image):
+        class_names = material_class_names()
+
+        def __call__(self, image, labels):
             events.append(("predict", image.shape))
-            return champion_map
+            return {
+                name: champion_map == index
+                for index, name in enumerate(self.class_names)
+                if name in labels
+            }
 
         def close(self):
             events.append(("close",))
@@ -182,7 +192,9 @@ def test_promoted_clothing_model_becomes_primary_with_schp_named_fallback(
         sapiens_map=config["parsing_map"]["sapiens_28"],
         schp_map=config["parsing_map"]["schp_atr"],
         output_dir=tmp_path / "output",
-        champion_loader=lambda path: Champion() if path == checkpoint else None,
+        champion_loader=lambda role, path, **kwargs: (
+            Champion() if role == "champion_clothing" and path == checkpoint else None
+        ),
         model_registry_path=registry,
         models_root=models_root,
     )
@@ -206,10 +218,43 @@ def test_promoted_clothing_model_becomes_primary_with_schp_named_fallback(
             sapiens_map=config["parsing_map"]["sapiens_28"],
             schp_map=config["parsing_map"]["schp_atr"],
             output_dir=tmp_path / "tampered",
-            champion_loader=lambda _path: Champion(),
+            champion_loader=lambda *args, **kwargs: Champion(),
             model_registry_path=registry,
             models_root=models_root,
         )
+
+
+def test_champion_clothing_cache_refresh_tracks_promote_change_and_rollback(tmp_path: Path) -> None:
+    registry = tmp_path / "registry.json"
+    output = tmp_path / "s08"
+    output.mkdir()
+    registry.write_text('{"models": []}\n', encoding="utf-8")
+    assert not champion_clothing_refresh_required(output, registry_path=registry)
+
+    entry = {
+        "key": "clothing_v1",
+        "role": "champion_clothing",
+        "sha256": "a" * 64,
+        "inference_config_sha256": "b" * 64,
+        "class_names": list(material_class_names()),
+    }
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    assert champion_clothing_refresh_required(output, registry_path=registry)
+    evidence = {
+        "primary": "champion_clothing",
+        "model_key": entry["key"],
+        "checkpoint_sha256": entry["sha256"],
+        "inference_config_sha256": entry["inference_config_sha256"],
+        "class_names": entry["class_names"],
+    }
+    (output / "material_evidence.json").write_text(json.dumps(evidence), encoding="utf-8")
+    assert not champion_clothing_refresh_required(output, registry_path=registry)
+
+    entry["key"] = "clothing_v2"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    assert champion_clothing_refresh_required(output, registry_path=registry)
+    registry.write_text('{"models": []}\n', encoding="utf-8")
+    assert champion_clothing_refresh_required(output, registry_path=registry)
 
 
 def test_s08_fusion_skin_excludes_clothing_and_specifics_require_evidence() -> None:

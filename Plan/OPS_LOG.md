@@ -3766,3 +3766,21 @@ current registry:                no champion role; live existing pipeline remain
 not claimed:                     no D6/G7 winner or live champion score; MF-P5-07.02 remains open
 evidence:                        qa/live_verification/custom_bodypart_s03_s09_integration_20260712.json
 validation:                      64 focused and 650 full tests passed; Ruff/format clean
+
+## 2026-07-12 - S08 clothing champion production authority activated
+
+**Result:** PASS for MF-P5-04.03 - a governed clothing winner can now become the real S08 primary, with SCHP retained as the named fallback.
+
+S08 producer:                    exact ordered 16-class material-v1 vocabulary -> 8-bit material_draft.png
+authority:                       exactly one verified champion_clothing role; checkpoint/config hashes reverified
+provenance:                      model key, checkpoint SHA, inference-config SHA, exact class_names
+map validation:                  strict boolean geometry, no overlap, silhouette containment and complete coverage
+fallback:                        schp_plus_s08_heuristics remains active whenever no champion role exists
+cache promotion/change:          missing or stale champion provenance forces S08
+cache rollback:                  role removal forces S08 when cached evidence names the champion
+partial runs:                    cache forcing is scoped to selections that actually include S08
+GPU lifecycle:                   MMSeg slot closes after success and contract refusal
+current registry:                no champion role; 29 cached S08 outputs remain valid and need no refresh
+not claimed:                     no D6/G7 winner or live champion score; MF-P5-04.02 remains open
+evidence:                        qa/live_verification/champion_clothing_s08_integration_20260712.json
+validation:                      55 focused and 652 full tests passed; Ruff/format clean

@@ -20,6 +20,7 @@ from ..models.registry import (
     ModelRegistryError,
     resolve_registered_role,
 )
+from ..ontology import get_ontology
 from .s05_geometry import PromptPlan, build_prompt_plan
 from .s07_sam2 import RefinedPart, Sam2Provider, build_embedding, refine_part
 
@@ -50,6 +51,53 @@ MATERIAL_IDS = {
     "lace_or_sheer": 12,
     "glove_or_sock": 15,
 }
+
+
+def material_class_names() -> tuple[str, ...]:
+    """Return the governed 16-class material vocabulary in label-map order."""
+    labels = sorted(get_ontology().labels_for_map("material"), key=lambda label: int(label.id))
+    names = tuple(label.name for label in labels)
+    if len(names) != 16 or names[0] != "none_background":
+        raise MaterialError("active material ontology is not the governed 16-class v1 contract")
+    return names
+
+
+def champion_clothing_refresh_required(
+    output_dir: Path,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+) -> bool:
+    """Return whether cached S08 output differs from the current clothing role pointer."""
+    try:
+        registry = json.loads(Path(registry_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise MaterialError(f"champion registry is unreadable: {exc}") from exc
+    matches = [
+        entry
+        for entry in registry.get("models", [])
+        if entry.get("role") == "champion_clothing" and entry.get("managed") is not True
+    ]
+    if len(matches) > 1:
+        raise MaterialError("expected at most one champion_clothing registry entry")
+    evidence_path = Path(output_dir) / "material_evidence.json"
+    if not evidence_path.is_file():
+        return bool(matches)
+    try:
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return bool(matches)
+    if not matches:
+        return evidence.get("primary") == "champion_clothing"
+    entry = matches[0]
+    return evidence.get("primary") != "champion_clothing" or any(
+        evidence.get(key) != entry.get(entry_key)
+        for key, entry_key in (
+            ("model_key", "key"),
+            ("checkpoint_sha256", "sha256"),
+            ("inference_config_sha256", "inference_config_sha256"),
+            ("class_names", "class_names"),
+        )
+    )
 
 
 def fuse_material_evidence(
@@ -347,15 +395,11 @@ def run_s08_production(
     champion_entries = [
         entry
         for entry in registry_document.get("models", [])
-        if entry.get("role") == "champion_clothing"
+        if entry.get("role") == "champion_clothing" and entry.get("managed") is not True
     ]
     if champion_entries:
         if len(champion_entries) != 1:
             raise MaterialError("expected exactly one champion_clothing registry entry")
-        if champion_loader is None:
-            raise MaterialError(
-                "champion_clothing is promoted but no production loader is configured"
-            )
         try:
             checkpoint = resolve_registered_role(
                 "champion_clothing",
@@ -364,9 +408,34 @@ def run_s08_production(
             )
         except ModelRegistryError as exc:
             raise MaterialError(f"champion clothing resolution failed: {exc}") from exc
-        model = champion_loader(checkpoint)
+        if champion_loader is None:
+            from ..serve.providers import load_production_mmseg_slot
+
+            champion_loader = load_production_mmseg_slot
+        expected = material_class_names()
+        model = champion_loader(
+            "champion_clothing",
+            checkpoint,
+            registry_path=Path(model_registry_path),
+            models_root=Path(models_root),
+        )
         try:
-            champion_map = np.asarray(model(source))
+            if tuple(model.class_names) != expected:
+                raise MaterialError(
+                    "champion_clothing class_names differ from the 16-class ontology"
+                )
+            requested = tuple(name for name in expected if name != "none_background")
+            masks = model(source, requested)
+            champion_map = np.zeros(source.shape[:2], dtype=np.uint8)
+            occupied = np.zeros(source.shape[:2], dtype=bool)
+            for material_id, name in enumerate(expected[1:], start=1):
+                mask = np.asarray(masks.get(name))
+                if mask.shape != source.shape[:2] or mask.dtype != np.bool_:
+                    raise MaterialError(f"champion clothing mask {name} must be boolean HxW")
+                if np.any(occupied & mask):
+                    raise MaterialError("champion clothing masks overlap")
+                champion_map[mask] = material_id
+                occupied |= mask
         finally:
             close = getattr(model, "close", None)
             if callable(close):
@@ -380,18 +449,34 @@ def run_s08_production(
         champion_map = champion_map.astype(np.uint8, copy=True)
         if np.any(champion_map[~visible] != 0) or np.any(champion_map[visible] == 0):
             raise MaterialError("champion clothing map violates silhouette containment/coverage")
-        regions = {name: champion_map == material_id for name, material_id in MATERIAL_IDS.items()}
+        regions = {
+            name: champion_map == material_id
+            for material_id, name in enumerate(expected[1:], start=1)
+        }
         evidence = {name: ("champion_clothing",) for name in regions}
         output_dir = Path(output_dir)
         write_label_map(output_dir / "material_draft.png", champion_map, bits=8)
         checkpoint_sha = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+        entry = champion_entries[0]
+        provenance = {
+            "model_key": str(entry.get("key", "")),
+            "checkpoint_sha256": str(entry.get("sha256", "")),
+            "inference_config_sha256": str(entry.get("inference_config_sha256", "")),
+            "class_names": list(expected),
+        }
+        if (
+            not provenance["model_key"]
+            or provenance["checkpoint_sha256"] != checkpoint_sha
+            or len(provenance["inference_config_sha256"]) != 64
+        ):
+            raise MaterialError("champion_clothing registry provenance is incomplete")
         (output_dir / "material_evidence.json").write_text(
             json.dumps(
                 {
                     "schema_version": "1.0.0",
                     "primary": "champion_clothing",
                     "fallback": "schp_plus_s08_heuristics",
-                    "checkpoint_sha256": checkpoint_sha,
+                    **provenance,
                     "evidence": evidence,
                     "sam2_refinement": {},
                     "pixel_counts": {name: int(mask.sum()) for name, mask in regions.items()},

@@ -50,7 +50,7 @@ from .s05_geometry import run_s05_production
 from .s06_openvocab import run_s06_production
 from .s07_sam2 import WslSam2Provider, run_s07_production
 from .s08_5_densepose import WslDensePoseProvider, run_densepose
-from .s08_material import run_s08_production
+from .s08_material import champion_clothing_refresh_required, run_s08_production
 from .s09_5_instance_recon import ReconciliationInstance, reconcile_instances
 from .s09_fusion import run_s09_production
 
@@ -541,9 +541,16 @@ def build_production_runners(
             output_dir=context.output_dir,
             provider=provider,
         )
+        evidence = json.loads((context.output_dir / "material_evidence.json").read_text())
+        model_keys = (
+            [str(evidence["model_key"])]
+            if evidence.get("primary") == "champion_clothing"
+            else ["sam2.1_hiera_large"]
+        )
         return {
             "material_region_count": int(sum(bool(mask.any()) for mask in draft.regions.values())),
             "assigned_pixel_count": int((draft.material_map > 0).sum()),
+            "_telemetry": {"model_keys": model_keys},
         }
 
     def s08_5(context: StageContext) -> Mapping[str, Any]:
@@ -1049,6 +1056,14 @@ def run_multi_person_production(
         cached = instance_root / "s03" / image_id
         return ("S03",) if custom_bodypart_refresh_required(cached) else ()
 
+    def runtime_forces(instance_root: Path, selected: tuple[str, ...]) -> tuple[str, ...]:
+        forces = list(s03_force(instance_root))
+        if "S08" in selected:
+            cached = instance_root / "s08" / image_id
+            if champion_clothing_refresh_required(cached):
+                forces.append("S08")
+        return tuple(forces)
+
     if parsing_only or pose_only or openvocab_only or sam2_only or densepose_only:
         if parsing_only:
             selected = ("S03",)
@@ -1070,7 +1085,7 @@ def run_multi_person_production(
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
-                force=s03_force(instance_root),
+                force=runtime_forces(instance_root, selected),
             )
             per_instance[name] = (*per_instance[name], *tuple(partial))
         return MultiPersonProductionResult(
@@ -1090,7 +1105,7 @@ def run_multi_person_production(
             work_root=instance_root,
             runners=scoped_runners[name],
             gpu_lock_path=gpu_lock_path,
-            force=s03_force(instance_root),
+            force=runtime_forces(instance_root, downstream),
         )
         per_instance[name] = (*per_instance[name], *tuple(remainder))
     manifest, _ = _source(image_id, Path(images_root))

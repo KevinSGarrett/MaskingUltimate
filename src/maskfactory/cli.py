@@ -381,6 +381,11 @@ def draft(
     help="Run shared S00/S01 and every promoted instance through S03, then stop.",
 )
 @click.option(
+    "--through-pose",
+    is_flag=True,
+    help="Run shared S00/S01 and every promoted instance through S04, then stop.",
+)
+@click.option(
     "--through-autoqa",
     is_flag=True,
     help="Run the activated multi-instance path through per-instance S10 hard gates.",
@@ -398,6 +403,7 @@ def run(
     through_drafts: bool,
     through_silhouettes: bool,
     through_parsing: bool,
+    through_pose: bool,
     through_autoqa: bool,
 ) -> None:
     """Run the governed S00–S15 file-based stage graph for an image."""
@@ -423,8 +429,25 @@ def run(
             for stage in plan:
                 click.echo(stage.name)
             return
-        if through_silhouettes or through_parsing or through_drafts or through_autoqa:
-            if sum((through_silhouettes, through_parsing, through_drafts, through_autoqa)) > 1:
+        if (
+            through_silhouettes
+            or through_parsing
+            or through_pose
+            or through_drafts
+            or through_autoqa
+        ):
+            if (
+                sum(
+                    (
+                        through_silhouettes,
+                        through_parsing,
+                        through_pose,
+                        through_drafts,
+                        through_autoqa,
+                    )
+                )
+                > 1
+            ):
                 raise StageConfigurationError("through modes are mutually exclusive")
             if selected or force or skip:
                 raise StageConfigurationError(
@@ -442,6 +465,7 @@ def run(
                 database=database,
                 silhouettes_only=through_silhouettes,
                 parsing_only=through_parsing,
+                pose_only=through_pose,
             )
             click.echo(f"S00/S01: {len(outcome.shared)} execution(s)")
             if outcome.terminal_outcome is not None:
@@ -454,6 +478,8 @@ def run(
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02")
                 elif through_parsing:
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S03")
+                elif through_pose:
+                    click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S04")
                 else:
                     terminal = "S10" if through_autoqa else "S09"
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
@@ -462,6 +488,9 @@ def run(
                 return
             if through_parsing:
                 click.echo(f"S03 batch complete: {len(outcome.per_instance)} instance(s)")
+                return
+            if through_pose:
+                click.echo(f"S04 batch complete: {len(outcome.per_instance)} instance(s)")
                 return
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
             for contract in outcome.draft_contract_paths:

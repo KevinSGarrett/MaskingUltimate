@@ -305,6 +305,7 @@ def test_dwpose_wsl_bridge_validates_pinned_archive_and_cleans_up(
                     "detection_confidence": 0.3,
                     "nms_iou": 0.45,
                     "device": "NVIDIA fixture",
+                    "torch": "2.11.0+cu128",
                 }
             )
 
@@ -321,7 +322,68 @@ def test_dwpose_wsl_bridge_validates_pinned_archive_and_cleans_up(
 
     assert len(candidates) == 1
     assert candidates[0].keypoints.shape == (133, 3)
-    assert not list(work.iterdir())
+    runtime = json.loads((work / "runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "wsl_cuda"
+
+
+def test_dwpose_bridge_supports_explicit_local_cuda_runtime(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image = tmp_path / "source.png"
+    detector = tmp_path / "det.onnx"
+    pose = tmp_path / "pose.onnx"
+    python = tmp_path / "python.exe"
+    ort_site = tmp_path / "ort"
+    (ort_site / "onnxruntime").mkdir(parents=True)
+    (ort_site / "onnxruntime/__init__.py").write_text("", encoding="utf-8")
+    for path in (image, detector, pose, python):
+        path.write_bytes(b"fixture")
+
+    def fake_run(command, **kwargs):
+        output = Path(command[command.index("--output") + 1])
+        boxes = np.array([[10, 20, 100, 220]], dtype=np.float32)
+        keypoints = np.zeros((1, 133, 3), dtype=np.float32)
+        keypoints[:, :, 2] = 0.9
+        np.savez_compressed(output, bboxes=boxes, keypoints=keypoints)
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = json.dumps(
+                {
+                    "protocol_version": 1,
+                    "detector_sha256": (
+                        "7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411"
+                    ),
+                    "pose_sha256": (
+                        "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843"
+                    ),
+                    "provider": "CUDAExecutionProvider",
+                    "candidate_count": 1,
+                    "bboxes_shape": [1, 4],
+                    "keypoints_shape": [1, 133, 3],
+                    "detection_confidence": 0.3,
+                    "nms_iou": 0.45,
+                    "device": "NVIDIA fixture",
+                    "torch": "2.11.0+cu128",
+                }
+            )
+
+        assert kwargs["env"]["PYTHONPATH"].split(os.pathsep)[0] == str(ort_site.resolve())
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s04_pose.subprocess.run", fake_run)
+    candidates = infer_dwpose_candidates_wsl(
+        image,
+        detector_checkpoint=detector,
+        pose_checkpoint=pose,
+        work_dir=tmp_path / "work",
+        local_cuda_python=python,
+        ort_gpu_site=ort_site,
+    )
+    assert len(candidates) == 1
+    runtime = json.loads((tmp_path / "work/runtime.json").read_text(encoding="utf-8"))
+    assert runtime["launcher"] == "local_cuda"
 
 
 def test_s04_production_uses_authoritative_wsl_provider(

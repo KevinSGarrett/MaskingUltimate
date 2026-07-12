@@ -351,6 +351,10 @@ def build_production_runners(
             confidence_min=float(settings.get("keypoint_confidence", 0.3)),
             degraded_body_fraction=float(settings.get("degraded_body_keypoint_fraction", 0.6)),
             use_wsl=True,
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            ort_gpu_site=Path(settings["ort_gpu_site"]) if settings.get("ort_gpu_site") else None,
         )
         return {
             "view": result.view,
@@ -836,6 +840,7 @@ def run_multi_person_production(
     database: Path | None = None,
     silhouettes_only: bool = False,
     parsing_only: bool = False,
+    pose_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -925,19 +930,20 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
-    if parsing_only:
+    if parsing_only or pose_only:
+        selected = ("S03",) if parsing_only else ("S03", "S04")
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name
-            parsing = pipeline_runner(
+            partial = pipeline_runner(
                 image_id,
-                selected=("S03",),
+                selected=selected,
                 config=config,
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
             )
-            per_instance[name] = (*per_instance[name], *tuple(parsing))
+            per_instance[name] = (*per_instance[name], *tuple(partial))
         return MultiPersonProductionResult(
             tuple(shared),
             per_instance,

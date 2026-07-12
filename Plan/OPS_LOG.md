@@ -3288,3 +3288,21 @@ focused regression:         11 text/scheduling tests pass
 full regression:            569 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
 ```
+## 2026-07-12 01:25 UTC - S04 DWPose activated on local CUDA and completed for every eligible live instance
+**Item:** MF-P2-03.01 95% -> complete
+**Result:** The pinned YOLOX-L + DWPose-133 boundary now runs through a project-local GPU ONNX Runtime site, and every S02-QC-pass instance has an owned 133-keypoint pose package.
+
+```
+runtime Python:             C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe
+GPU runtime:                onnxruntime-gpu 1.20.2 in models/runtime_cache/onnxruntime_gpu; CUDAExecutionProvider; torch 2.11.0+cu128
+environment isolation:      external ComfyUI venv unchanged; exact GPU wheel installed into ignored project cache with uv
+detector:                   yolox_l.onnx SHA-256 7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411
+pose model:                 dw-ll_ucoco_384.onnx SHA-256 724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843
+live corpus:                29/29 S02-QC-pass instances committed S04; 2 no_person remain at S01; 1 low-ratio silhouette remains needs_review at S02
+output contract:            29/29 pose133.json files contain exactly 133 keypoints with confidence values
+ownership:                  1..5 candidates per image; minimum selected candidate/person-bbox IoU 0.964125
+quality:                    minimum body-keypoint fraction 0.882353; 0/29 pose_degraded
+views:                      front 27; left_profile 2
+duration:                   median 49.72s; maximum 53.87s; summed committed stage duration 24.03 minutes
+focused regression:         50 S04/config/production tests pass
+```

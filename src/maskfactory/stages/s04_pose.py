@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -131,6 +132,8 @@ def infer_dwpose_candidates_wsl(
     wsl_distribution: str = "Ubuntu-22.04",
     python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
     timeout_sec: int = 900,
+    local_cuda_python: Path | None = None,
+    ort_gpu_site: Path | None = None,
 ) -> list[PoseCandidate]:
     """Execute the strict decoder in authoritative WSL CUDA and validate its archive."""
     for name, path in (
@@ -146,26 +149,49 @@ def infer_dwpose_candidates_wsl(
     work_dir.mkdir(parents=True, exist_ok=True)
     output_path = work_dir / f"dwpose_{uuid.uuid4().hex}.npz"
     root = Path(__file__).resolve().parents[3]
-    command = [
-        "wsl",
-        "-d",
-        wsl_distribution,
-        "--",
-        python_path,
-        _wsl_path(root / "tools" / "run_dwpose_wsl.py"),
+    arguments = [
         "--image",
-        _wsl_path(image_path),
+        str(Path(image_path).resolve()),
         "--detector",
-        _wsl_path(detector_checkpoint),
+        str(Path(detector_checkpoint).resolve()),
         "--pose",
-        _wsl_path(pose_checkpoint),
+        str(Path(pose_checkpoint).resolve()),
         "--output",
-        _wsl_path(output_path),
+        str(output_path.resolve()),
         "--detection-confidence",
         str(detection_confidence),
         "--nms-iou",
         str(nms_iou),
     ]
+    local_python = Path(local_cuda_python) if local_cuda_python is not None else None
+    if local_python is not None:
+        if not local_python.is_file():
+            raise PoseError(f"configured local CUDA Python does not exist: {local_python}")
+        if ort_gpu_site is None or not (Path(ort_gpu_site) / "onnxruntime/__init__.py").is_file():
+            raise PoseError("configured local ONNX Runtime GPU site is missing")
+        command = [str(local_python), str(root / "tools" / "run_dwpose_wsl.py"), *arguments]
+        launcher = "local_cuda"
+        environment = os.environ.copy()
+        existing = environment.get("PYTHONPATH")
+        environment["PYTHONPATH"] = os.pathsep.join(
+            [str(Path(ort_gpu_site).resolve()), *([existing] if existing else [])]
+        )
+    else:
+        wsl_arguments = [
+            _wsl_path(Path(value)) if index in {1, 3, 5, 7} else value
+            for index, value in enumerate(arguments)
+        ]
+        command = [
+            "wsl",
+            "-d",
+            wsl_distribution,
+            "--",
+            python_path,
+            _wsl_path(root / "tools" / "run_dwpose_wsl.py"),
+            *wsl_arguments,
+        ]
+        launcher = "wsl_cuda"
+        environment = None
     try:
         try:
             process = subprocess.run(
@@ -174,12 +200,13 @@ def infer_dwpose_candidates_wsl(
                 text=True,
                 timeout=timeout_sec,
                 check=False,
+                **({"env": environment} if environment is not None else {}),
             )
         except (OSError, subprocess.TimeoutExpired) as exc:
-            raise PoseError(f"DWPose WSL launch failed: {exc}") from exc
+            raise PoseError(f"DWPose {launcher} launch failed: {exc}") from exc
         if process.returncode:
             detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
-            raise PoseError(f"DWPose WSL inference failed: {detail}")
+            raise PoseError(f"DWPose {launcher} inference failed: {detail}")
         try:
             metadata = json.loads(process.stdout.strip().splitlines()[-1])
             with np.load(output_path, allow_pickle=False) as archive:
@@ -209,12 +236,22 @@ def infer_dwpose_candidates_wsl(
         raise PoseError(f"DWPose WSL metadata violates governed contract: {mismatches}")
     if not isinstance(metadata.get("device"), str) or not metadata["device"].strip():
         raise PoseError("DWPose WSL metadata requires CUDA device identity")
+    if "+cu128" not in str(metadata.get("torch", "")):
+        raise PoseError("DWPose metadata requires the governed cu128 PyTorch runtime")
     if boxes.dtype != np.float32 or keypoints.dtype != np.float32:
         raise PoseError("DWPose WSL archive dtype mismatch")
     if boxes.ndim != 2 or boxes.shape[1:] != (4,):
         raise PoseError("DWPose WSL boxes must have shape Nx4")
     if keypoints.shape != (boxes.shape[0], 133, 3):
         raise PoseError("DWPose WSL keypoints must have shape Nx133x3")
+    runtime_document = {
+        "launcher": launcher,
+        "python": str(local_python or python_path),
+        **metadata,
+    }
+    (work_dir / "runtime.json").write_text(
+        json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return [
         _validate_candidate(PoseCandidate(tuple(box.tolist()), points))
         for box, points in zip(boxes, keypoints, strict=True)
@@ -235,6 +272,8 @@ def run_s04_production(
     confidence_min: float = 0.3,
     degraded_body_fraction: float = 0.6,
     use_wsl: bool = True,
+    local_cuda_python: Path | None = None,
+    ort_gpu_site: Path | None = None,
 ) -> PoseResult:
     """Execute real DWPose then apply instance ownership/view/tag policy."""
     if use_wsl:
@@ -245,6 +284,8 @@ def run_s04_production(
             detector_checkpoint=detector_checkpoint,
             pose_checkpoint=pose_checkpoint,
             work_dir=Path(output_dir) / "provider_work",
+            local_cuda_python=local_cuda_python,
+            ort_gpu_site=ort_gpu_site,
         )
     else:
         candidates = infer_dwpose_candidates(

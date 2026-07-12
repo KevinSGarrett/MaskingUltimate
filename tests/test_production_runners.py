@@ -340,6 +340,10 @@ def test_s04_production_runner_forwards_governed_pose_contract(tmp_path: Path, m
     assert captured["require_cuda"] is True and captured["use_wsl"] is True
     assert captured["confidence_min"] == 0.3
     assert captured["degraded_body_fraction"] == 0.6
+    assert captured["local_cuda_python"] == Path(
+        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    )
+    assert captured["ort_gpu_site"] == Path("models/runtime_cache/onnxruntime_gpu")
 
 
 def test_s04_production_runner_refuses_model_drift(tmp_path: Path) -> None:
@@ -923,6 +927,29 @@ def test_run_through_parsing_stops_after_every_instance_s03(tmp_path: Path, monk
     assert captured["parsing_only"] is True
     assert "p0: 0 stage execution(s) S02-S03" in result.output
     assert "S03 batch complete: 2 instance(s)" in result.output
+    assert "S09.5" not in result.output
+
+
+def test_run_through_pose_stops_after_every_instance_s04(tmp_path: Path, monkeypatch) -> None:
+    manifest = tmp_path / "person_bbox.json"
+    manifest.write_text("{}", encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=False,
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(main, ["run", "img_a3f9c2e17b04", "--through-pose"])
+    assert result.exit_code == 0, result.output
+    assert captured["pose_only"] is True
+    assert "p0: 0 stage execution(s) S02-S04" in result.output
+    assert "S04 batch complete: 2 instance(s)" in result.output
     assert "S09.5" not in result.output
 
 

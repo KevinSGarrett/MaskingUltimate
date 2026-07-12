@@ -1,0 +1,43 @@
+{
+  "audit": "MF-P8 multi-person review-handoff coordinator",
+  "date_utc": "2026-07-12",
+  "command": "maskfactory run IMAGE_ID --through-review-handoff",
+  "transaction_order": [
+    "S10_all_promoted_instances",
+    "S11_all_promoted_instances",
+    "assemble_all_review_packages",
+    "create_or_reuse_exact_image_level_cvat_fanout",
+    "commit_S12_pending_human_receipts_per_instance"
+  ],
+  "retry_policy": {
+    "exact_existing_handoff": "reuse",
+    "partial_or_malformed_task_records": "fail_closed",
+    "duplicate_task_creation_allowed": false
+  },
+  "live_runs": [
+    {
+      "image_id": "img_7b7a3c7d5dd3",
+      "promoted_instances": ["p0", "p1", "p2"],
+      "cvat_task_ids": [9, 10, 11, 12],
+      "qc035_passed": true,
+      "exit_code": 0
+    },
+    {
+      "image_id": "img_6d6bb33f01a1",
+      "promoted_instances": ["p0", "p1", "p2", "p3"],
+      "cvat_task_ids": [13, 14, 15, 16, 17],
+      "qc035_passed": true,
+      "exit_code": 0
+    }
+  ],
+  "task_record_count_before": 9,
+  "task_record_count_after": 9,
+  "human_correction_completed": false,
+  "human_approval_completed": false,
+  "verification": {
+    "focused_tests": 40,
+    "full_suite_passed": true,
+    "ruff_passed": true,
+    "tracker_validate_passed": true
+  }
+}

@@ -405,6 +405,11 @@ def draft(
     is_flag=True,
     help="Run the activated multi-instance path through per-instance S10 hard gates.",
 )
+@click.option(
+    "--through-review-handoff",
+    is_flag=True,
+    help="Run every promoted instance through S11 and create the pending S12 CVAT handoff.",
+)
 def run(
     image_id: str | None,
     selected: tuple[str, ...],
@@ -423,6 +428,7 @@ def run(
     through_sam2: bool,
     through_densepose: bool,
     through_autoqa: bool,
+    through_review_handoff: bool,
 ) -> None:
     """Run the governed S00–S15 file-based stage graph for an image."""
     from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
@@ -456,6 +462,7 @@ def run(
             or through_densepose
             or through_drafts
             or through_autoqa
+            or through_review_handoff
         ):
             if (
                 sum(
@@ -468,6 +475,7 @@ def run(
                         through_densepose,
                         through_drafts,
                         through_autoqa,
+                        through_review_handoff,
                     )
                 )
                 > 1
@@ -486,6 +494,7 @@ def run(
                 work_root=work_root,
                 gpu_lock_path=DEFAULT_GPU_LOCK_PATH,
                 through_autoqa=through_autoqa,
+                through_review_handoff=through_review_handoff,
                 database=database,
                 silhouettes_only=through_silhouettes,
                 parsing_only=through_parsing,
@@ -514,7 +523,9 @@ def run(
                 elif through_densepose:
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-S08.5")
                 else:
-                    terminal = "S10" if through_autoqa else "S09"
+                    terminal = (
+                        "S12" if through_review_handoff else "S10" if through_autoqa else "S09"
+                    )
                     click.echo(f"{instance}: {len(executions)} stage execution(s) S02-{terminal}")
             if through_silhouettes:
                 click.echo(f"S02 batch complete: {len(outcome.per_instance)} instance(s)")
@@ -537,6 +548,11 @@ def run(
             click.echo(f"S09.5: {outcome.image_manifest_path} qc035={outcome.qc035_passed}")
             for contract in outcome.draft_contract_paths:
                 click.echo(f"D1: {contract}")
+            if through_review_handoff:
+                task_ids = ",".join(str(task_id) for task_id in outcome.cvat_task_ids)
+                click.echo(
+                    "S12 CVAT tasks: " f"{task_ids}; status=pending_kevin_correction_and_approval"
+                )
             return
         with PipelineRunLog(image_ids=(image_id,), config=config) as run_log:
             from .stages.production import build_production_runners

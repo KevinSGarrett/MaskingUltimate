@@ -3541,3 +3541,22 @@ durable audit:              qa/live_verification/p8_real_cvat_handoff_20260712.j
 NEEDS KEVIN:                correct tasks 9-11 and 13-16; review overview tasks 12/17; record time; explicitly approve
 remaining set gate:         only 2/10 minimum qualifying sources exist, so MF-P8-10.02 stays 20%
 ```
+
+## 2026-07-12 09:00 UTC - Transactional multi-person review handoff activated
+**Items:** MF-P8-10.02 remains 20% by source count; MF-P8-10.03 remains 5% pending human work
+**Result:** The generic production CLI now owns the complete machine path through S12 and safely reuses the nine live CVAT tasks.
+
+```
+one-command path:           maskfactory run IMAGE_ID --through-review-handoff
+transaction boundary:       S10 all -> S11 all -> all packages -> image-level CVAT fan-out -> per-instance S12 receipts
+retry behavior:             exact durable handoffs are reused; partial/malformed records fail closed
+source img_7b7a3c7d5dd3: live exit 0; p0-p2 through S12; reused tasks 9-12
+source img_6d6bb33f01a1: live exit 0; p0-p3 through S12; reused tasks 13-17
+duplicate proof:            local task-record count remained 9 before and after both live runs
+receipt semantics:          pending_kevin_correction_and_approval; human_approved=false
+focused regression:         40 passed
+full regression:            all tests passed; Ruff clean
+tracker validation:         PASS; 393 items; five hard blockers remain unresolved
+durable audit:              qa/live_verification/p8_review_handoff_coordinator_20260712.json
+NEEDS KEVIN unchanged:      correct tasks 9-11 and 13-16; review 12/17; record time; explicitly approve
+```

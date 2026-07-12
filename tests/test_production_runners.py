@@ -736,10 +736,14 @@ def test_s14_runner_enforces_200_gold_entry_gate(tmp_path: Path, monkeypatch) ->
     assert not list((tmp_path / "datasets").glob("bodyparts@v*"))
 
 
-@pytest.mark.parametrize("person_count", (1, 2, 3))
+@pytest.mark.parametrize(
+    ("person_count", "review_handoff"),
+    ((1, False), (2, False), (3, False), (2, True)),
+)
 def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     tmp_path: Path,
     person_count: int,
+    review_handoff: bool,
 ) -> None:
     image_id = "img_a3f9c2e17b04"
     images = tmp_path / "images" / image_id
@@ -762,6 +766,7 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     work = tmp_path / "work"
     calls = []
     pipeline_calls = []
+    handoff_events = []
 
     def factory(config, *, images_root, person_index=0, shared_work_root=None):
         calls.append((person_index, shared_work_root))
@@ -822,7 +827,16 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
                 silhouette = np.zeros((100, 100), dtype=np.uint8)
                 silhouette[10:90, index * 30 : index * 30 + 20] = 255
                 Image.fromarray(silhouette, mode="L").save(s02 / "person_full_visible.png")
+            if tuple(selected) == ("S12",):
+                handoff_events.append(("s12", runners["S12"](None)))
         return ()
+
+    def package_assembler(**kwargs):
+        handoff_events.append(("package", kwargs["instance_index"]))
+
+    def cvat_pusher(*args, **kwargs):
+        handoff_events.append(("push", image_id))
+        return tuple(range(101, 101 + person_count + (1 if person_count > 1 else 0)))
 
     legacy_root = work / "legacy"
     if person_count == 1:
@@ -840,7 +854,12 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
         work_root=work,
         pipeline_runner=pipeline,
         runner_factory=factory,
-        through_autoqa=True,
+        through_autoqa=not review_handoff,
+        through_review_handoff=review_handoff,
+        package_assembler=package_assembler,
+        cvat_pusher=cvat_pusher,
+        cvat_client_factory=lambda: object(),
+        cvat_task_records=tmp_path / "cvat_tasks",
     )
     assert set(result.per_instance) == {f"p{index}" for index in range(person_count)}
     assert calls[0] == (0, None)
@@ -850,6 +869,20 @@ def test_multi_person_outer_loop_runs_every_promoted_instance_then_reconciles(
     assert result.qc035_passed
     assert len(result.draft_contract_paths) == person_count
     assert sum(selected == ("S10",) for _, selected in pipeline_calls) == person_count
+    if review_handoff:
+        assert sum(selected == ("S11",) for _, selected in pipeline_calls) == person_count
+        assert sum(selected == ("S12",) for _, selected in pipeline_calls) == person_count
+        assert result.cvat_task_ids == (101, 102, 103)
+        assert [event[0] for event in handoff_events] == [
+            "package",
+            "package",
+            "push",
+            "s12",
+            "s12",
+        ]
+        for _, receipt in handoff_events[-2:]:
+            assert receipt["human_approved"] is False
+            assert receipt["manual_review_status"] == "pending_kevin_correction_and_approval"
     for contract_path in result.draft_contract_paths:
         contract = json.loads(contract_path.read_text())
         assert contract["atomic_count"] == 56
@@ -886,6 +919,59 @@ def test_single_person_regression_verifier_rejects_one_byte_drift(tmp_path: Path
         production.verify_single_person_regression(
             image_id, legacy_work_root=legacy, p8_work_root=activated
         )
+
+
+def test_existing_cvat_handoff_is_reused_only_when_exact(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    records = tmp_path / "tasks"
+    records.mkdir()
+    for task_id, name in ((21, "p0"), (22, "p1")):
+        (records / f"task_{task_id}.json").write_text(
+            json.dumps(
+                {
+                    "task_id": task_id,
+                    "job_type": "instance_review",
+                    "frames": [{"image_id": image_id, "instance_id": f"{image_id}_{name}"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+    (records / "task_23.json").write_text(
+        json.dumps(
+            {
+                "task_id": 23,
+                "job_type": "image_overview",
+                "frames": [
+                    {
+                        "image_id": image_id,
+                        "instance_ids": [f"{image_id}_p0", f"{image_id}_p1"],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert production._existing_cvat_handoff_task_ids(
+        image_id, ("p0", "p1"), task_records=records
+    ) == (21, 22, 23)
+
+
+def test_existing_cvat_handoff_fails_closed_on_partial_records(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    records = tmp_path / "tasks"
+    records.mkdir()
+    (records / "task_21.json").write_text(
+        json.dumps(
+            {
+                "task_id": 21,
+                "job_type": "instance_review",
+                "frames": [{"image_id": image_id, "instance_id": f"{image_id}_p0"}],
+            }
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(production.SemanticStageError, match="partial CVAT handoff"):
+        production._existing_cvat_handoff_task_ids(image_id, ("p0", "p1"), task_records=records)
 
 
 def test_run_through_drafts_exposes_one_command_multi_instance_path(
@@ -1107,6 +1193,33 @@ def test_run_through_autoqa_extends_each_instance_through_s10(tmp_path: Path, mo
     assert result.exit_code == 0, result.output
     assert calls[0]["through_autoqa"] is True
     assert "p0: 0 stage execution(s) S02-S10" in result.output
+
+
+def test_run_through_review_handoff_reports_pending_cvat_tasks(tmp_path: Path, monkeypatch) -> None:
+    manifest = tmp_path / "image_manifest.json"
+    manifest.write_text("{}", encoding="utf-8")
+    captured = {}
+
+    def fake_run(*args, **kwargs):
+        captured.update(kwargs)
+        return production.MultiPersonProductionResult(
+            shared=(),
+            per_instance={"p0": (), "p1": ()},
+            image_manifest_path=manifest,
+            qc035_passed=True,
+            cvat_task_ids=(31, 32, 33),
+        )
+
+    monkeypatch.setattr(production, "run_multi_person_production", fake_run)
+    result = CliRunner().invoke(
+        main,
+        ["run", "img_a3f9c2e17b04", "--through-review-handoff"],
+    )
+    assert result.exit_code == 0, result.output
+    assert captured["through_review_handoff"] is True
+    assert "p0: 0 stage execution(s) S02-S12" in result.output
+    assert "S12 CVAT tasks: 31,32,33" in result.output
+    assert "status=pending_kevin_correction_and_approval" in result.output
 
 
 def test_multi_instance_s10_inputs_project_maps_and_exclude_other_person(

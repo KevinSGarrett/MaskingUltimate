@@ -60,6 +60,7 @@ class MultiPersonProductionResult:
     draft_contract_paths: tuple[Path, ...] = ()
     terminal_outcome: str | None = None
     terminal_reason: str | None = None
+    cvat_task_ids: tuple[int, ...] = ()
 
 
 SINGLE_PERSON_REGRESSION_STAGES = (
@@ -862,6 +863,53 @@ def build_production_runners(
     }
 
 
+def _existing_cvat_handoff_task_ids(
+    image_id: str,
+    promoted_names: tuple[str, ...],
+    *,
+    task_records: Path,
+) -> tuple[int, ...]:
+    """Reuse an exact durable handoff and fail closed on partial local task state."""
+    expected_instances = {f"{image_id}_{name}" for name in promoted_names}
+    instances: dict[str, int] = {}
+    overviews: list[tuple[int, set[str]]] = []
+    for path in sorted(Path(task_records).glob("task_*.json")):
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            raise SemanticStageError(f"invalid CVAT task record {path}: {exc}") from exc
+        frames = record.get("frames", [])
+        if not any(frame.get("image_id") == image_id for frame in frames):
+            continue
+        task_id = int(record["task_id"])
+        if record.get("job_type") == "instance_review":
+            matching = [
+                frame.get("instance_id") for frame in frames if frame.get("image_id") == image_id
+            ]
+            if len(matching) != 1 or matching[0] in instances:
+                raise SemanticStageError(
+                    f"duplicate or malformed CVAT instance task for {image_id}"
+                )
+            instances[str(matching[0])] = task_id
+        elif record.get("job_type") == "image_overview":
+            matching = [frame for frame in frames if frame.get("image_id") == image_id]
+            if len(matching) != 1:
+                raise SemanticStageError(f"malformed CVAT overview task for {image_id}")
+            overviews.append((task_id, set(matching[0].get("instance_ids", []))))
+    if not instances and not overviews:
+        return ()
+    expected_overviews = 1 if len(promoted_names) > 1 else 0
+    if set(instances) != expected_instances or len(overviews) != expected_overviews:
+        raise SemanticStageError(
+            f"partial CVAT handoff records exist for {image_id}; reconcile them before retrying"
+        )
+    if overviews and overviews[0][1] != expected_instances:
+        raise SemanticStageError(f"CVAT overview instance set differs for {image_id}")
+    ordered = [instances[f"{image_id}_{name}"] for name in promoted_names]
+    ordered.extend(task_id for task_id, _ in overviews)
+    return tuple(ordered)
+
+
 def run_multi_person_production(
     image_id: str,
     *,
@@ -872,6 +920,7 @@ def run_multi_person_production(
     pipeline_runner=run_pipeline,
     runner_factory=build_production_runners,
     through_autoqa: bool = False,
+    through_review_handoff: bool = False,
     database: Path | None = None,
     silhouettes_only: bool = False,
     parsing_only: bool = False,
@@ -879,6 +928,10 @@ def run_multi_person_production(
     openvocab_only: bool = False,
     sam2_only: bool = False,
     densepose_only: bool = False,
+    package_assembler=assemble_review_package,
+    cvat_pusher=push_images,
+    cvat_client_factory=None,
+    cvat_task_records: Path = ROOT / "data/cvat/tasks",
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -1045,7 +1098,7 @@ def run_multi_person_production(
         manifest=manifest,
         work_root=work_root,
     )
-    if through_autoqa:
+    if through_autoqa or through_review_handoff:
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name
@@ -1058,12 +1111,98 @@ def run_multi_person_production(
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(autoqa))
+    cvat_task_ids: tuple[int, ...] = ()
+    if through_review_handoff:
+        for person in promoted:
+            name = f"p{person['person_index']}"
+            instance_root = work_root / "instances" / name
+            vlmqa = pipeline_runner(
+                image_id,
+                selected=("S11",),
+                config=config,
+                work_root=instance_root,
+                runners=scoped_runners[name],
+                gpu_lock_path=gpu_lock_path,
+            )
+            per_instance[name] = (*per_instance[name], *tuple(vlmqa))
+        manifest, _ = _source(image_id, Path(images_root))
+        promoted_names = tuple(f"p{person['person_index']}" for person in promoted)
+        cvat_task_ids = _existing_cvat_handoff_task_ids(
+            image_id,
+            promoted_names,
+            task_records=cvat_task_records,
+        )
+        package_roots = {
+            name: ROOT / "data/packages" / image_id / "instances" / name for name in promoted_names
+        }
+        if not cvat_task_ids:
+            for person in promoted:
+                index = int(person["person_index"])
+                name = f"p{index}"
+                instance_root = work_root / "instances" / name
+                package_assembler(
+                    image_id=image_id,
+                    instance_index=index,
+                    source_crop_path=work_root / "s01" / image_id / name / "person_ctx.png",
+                    part_map_path=instance_root / "s09" / image_id / "label_map_part.png",
+                    material_map_path=instance_root / "s09" / image_id / "label_map_material.png",
+                    s09_dir=instance_root / "s09" / image_id,
+                    s11_dir=instance_root / "s11" / image_id,
+                    pose_path=instance_root / "s04" / image_id / "pose133.json",
+                    person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+                    context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+                    person_count=len(people["persons"]),
+                    intake_source=manifest["source"],
+                    package_root=package_roots[name],
+                    ambiguity_path=instance_root / "s03" / image_id / "ambiguous_do_not_use.png",
+                )
+            client = (
+                cvat_client_factory()
+                if cvat_client_factory is not None
+                else CvatClient.from_config(ROOT / "configs/cvat.yaml")
+            )
+            cvat_task_ids = tuple(
+                cvat_pusher(
+                    client,
+                    (image_id,),
+                    config_path=ROOT / "configs/cvat.yaml",
+                    packages_root=ROOT / "data/packages",
+                    task_records=cvat_task_records,
+                )
+            )
+        if len(cvat_task_ids) != len(promoted) + (1 if len(promoted) > 1 else 0):
+            raise SemanticStageError("S12 CVAT task fan-out differs from promoted instance count")
+        for person in promoted:
+            name = f"p{person['person_index']}"
+            instance_root = work_root / "instances" / name
+
+            def completed_s12(_context, *, _name=name):
+                return {
+                    "package_root": str(package_roots[_name]),
+                    "cvat_task_ids": list(cvat_task_ids),
+                    "manual_review_status": "pending_kevin_correction_and_approval",
+                    "human_approved": False,
+                }
+
+            runners = dict(scoped_runners[name])
+            runners["S12"] = completed_s12
+            handoff = pipeline_runner(
+                image_id,
+                selected=("S12",),
+                force=("S12",),
+                config=config,
+                work_root=instance_root,
+                runners=runners,
+                gpu_lock_path=gpu_lock_path,
+            )
+            per_instance[name] = (*per_instance[name], *tuple(handoff))
     return MultiPersonProductionResult(
         tuple(shared),
         per_instance,
         reconciliation.image_manifest_path,
         reconciliation.qc035_passed,
         draft_contract_paths,
+        cvat_task_ids=cvat_task_ids,
     )
 
 

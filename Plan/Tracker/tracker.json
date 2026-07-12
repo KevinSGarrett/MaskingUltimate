@@ -3446,8 +3446,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 95,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-11T03:56:29+00:00",
@@ -3463,12 +3463,17 @@
           "ts": "2026-07-11T18:49:08+00:00",
           "actor": "ai_agent",
           "text": "Hardened the complete S06 authority/runtime boundary: exact 11-prompt vocabulary and duplicate threshold sources are enforced; WSL runner proves pinned checkpoint/source revision, documented CPU fallback, one model load, prompts/thresholds/image geometry, and proposal-only flags; proposals must be configured, finite, in-canvas, positive-area, and thresholded. Downstream S08 now refuses any nonempty GDINO evidence without typed box-only metadata and a SAM2 provider, preventing direct box-to-map promotion. 40 focused and 524 full tests pass. Live WSL probe correctly failed WSL_E_DISTRO_NOT_FOUND, so fresh production inference remains unclaimed."
+        },
+        {
+          "ts": "2026-07-12T02:23:58+00:00",
+          "actor": "ai_agent",
+          "text": "Activated the pinned GroundingDINO source locally under the documented pure-PyTorch CPU fallback. Exact locked Transformers 4.47.1/tokenizers/Hub/safetensors and supporting utilities live in the ignored project runtime cache; a narrow YAPF pretty-print shim avoids an inaccessible Windows profile lookup without changing model construction or inference."
         }
       ],
-      "evidence": "src/maskfactory/stages/s06_openvocab.py, tools/run_groundingdino_wsl.py, production.py, and s08_material.py enforce exact prompt/runtime/authority/consumer contracts. Tests test_s06_s07.py, test_s08_material.py, and test_production_runners.py prove box-only serialization, prompt/threshold drift refusal, metadata validation, and mandatory SAM2 before map output. Registry retains checkpoint SHA-256 3b3ca2... and prior WSL smoke hash bed324... under documented CPU fallback. Current: Ruff/format clean across 247 files, ontology current, 524 tests pass. Missing: fresh production WSL run because Ubuntu-22.04 is invisible here.",
+      "evidence": "Live governed batch 2026-07-12: 29/29 S02-QC-pass instances have complete S06 stage stamps, gdino_boxes.json, and groundingdino_runtime.json. All prove checkpoint SHA-256 3b3ca256..., source revision 856dde20..., device_type=cpu, launcher=local_cpu, model_load_count=1, and exact 11-prompt vocabulary. 351 finite thresholded proposals total (6..17/package); every configured prompt represented. 29/29 retain authority=proposal_boxes_only, may_write_final_masks=false, and zero PNG/mask outputs. Median/max duration 43.25/74.89s.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T18:49:08+00:00",
+      "updated_at": "2026-07-12T02:23:58+00:00",
       "orphaned": false
     },
     "MF-P2-05.02": {

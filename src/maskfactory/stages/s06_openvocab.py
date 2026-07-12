@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -51,6 +52,11 @@ def infer_gdino_proposals(
     wsl_distribution: str = "Ubuntu-22.04",
     python_path: str = "/home/kevin/miniforge3/envs/maskfactory/bin/python",
     timeout_sec: int = 900,
+    local_python: Path | None = None,
+    source_path: Path | None = None,
+    dependency_site: Path | None = None,
+    hf_home: Path | None = None,
+    runtime_path: Path | None = None,
 ) -> list[BoxProposal]:
     """Run all configured text prompts through one pinned GroundingDINO load."""
     if not Path(image_path).is_file():
@@ -69,17 +75,11 @@ def infer_gdino_proposals(
     except OSError as exc:
         raise OpenVocabError(f"GroundingDINO input image invalid: {exc}") from exc
     root = Path(__file__).resolve().parents[3]
-    command = [
-        "wsl",
-        "-d",
-        wsl_distribution,
-        "--",
-        python_path,
-        _wsl_path(root / "tools" / "run_groundingdino_wsl.py"),
+    arguments = [
         "--checkpoint",
-        _wsl_path(checkpoint),
+        str(Path(checkpoint).resolve()),
         "--image",
-        _wsl_path(image_path),
+        str(Path(image_path).resolve()),
         "--prompts-json",
         json.dumps(prompts),
         "--box-threshold",
@@ -87,6 +87,50 @@ def infer_gdino_proposals(
         "--text-threshold",
         str(text_threshold),
     ]
+    local_runtime = Path(local_python) if local_python is not None else None
+    if local_runtime is not None:
+        if not local_runtime.is_file():
+            raise OpenVocabError(f"configured local Python is missing: {local_runtime}")
+        if source_path is None or not (Path(source_path) / "groundingdino/__init__.py").is_file():
+            raise OpenVocabError("configured GroundingDINO source is missing")
+        if dependency_site is None or not (Path(dependency_site) / "transformers").is_dir():
+            raise OpenVocabError("configured GroundingDINO dependency site is missing")
+        command = [
+            str(local_runtime),
+            str(root / "tools" / "run_groundingdino_wsl.py"),
+            *arguments,
+        ]
+        launcher = "local_cpu"
+        environment = os.environ.copy()
+        existing = environment.get("PYTHONPATH")
+        environment["PYTHONPATH"] = os.pathsep.join(
+            [
+                str(Path(source_path).resolve()),
+                str(Path(dependency_site).resolve()),
+                *([existing] if existing else []),
+            ]
+        )
+        if hf_home is not None:
+            cache = str(Path(hf_home).resolve())
+            environment["HF_HOME"] = cache
+            environment["HF_HUB_CACHE"] = str(Path(cache) / "hub")
+        environment["MPLCONFIGDIR"] = str((root / ".runtime_tmp/matplotlib").resolve())
+    else:
+        wsl_arguments = [
+            _wsl_path(Path(value)) if index in {1, 3} else value
+            for index, value in enumerate(arguments)
+        ]
+        command = [
+            "wsl",
+            "-d",
+            wsl_distribution,
+            "--",
+            python_path,
+            _wsl_path(root / "tools" / "run_groundingdino_wsl.py"),
+            *wsl_arguments,
+        ]
+        launcher = "wsl_cpu"
+        environment = None
     try:
         process = subprocess.run(
             command,
@@ -94,9 +138,10 @@ def infer_gdino_proposals(
             text=True,
             timeout=timeout_sec,
             check=False,
+            **({"env": environment} if environment is not None else {}),
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
-        raise OpenVocabError(f"GroundingDINO WSL launch failed: {exc}") from exc
+        raise OpenVocabError(f"GroundingDINO {launcher} launch failed: {exc}") from exc
     if process.returncode:
         detail = process.stderr.strip()[-2000:] or process.stdout.strip()[-2000:]
         raise OpenVocabError(f"GroundingDINO inference failed: {detail}")
@@ -153,6 +198,17 @@ def infer_gdino_proposals(
             or not text_threshold <= proposal.text_score <= 1
         ):
             raise OpenVocabError("GroundingDINO proposal violates prompt/box/score authority")
+    if runtime_path is not None:
+        runtime_document = {
+            "launcher": launcher,
+            "python": str(local_runtime or python_path),
+            "proposal_count": len(proposals),
+            **{key: value for key, value in document.items() if key != "proposals"},
+        }
+        Path(runtime_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(runtime_path).write_text(
+            json.dumps(runtime_document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
     return proposals
 
 
@@ -164,6 +220,10 @@ def run_s06_production(
     prompts: tuple[str, ...],
     box_threshold: float = 0.30,
     text_threshold: float = 0.25,
+    local_python: Path | None = None,
+    source_path: Path | None = None,
+    dependency_site: Path | None = None,
+    hf_home: Path | None = None,
 ) -> Path:
     """Infer then persist proposal boxes through the only typed S06 output API."""
     if prompts != REQUIRED_PROMPTS:
@@ -174,6 +234,11 @@ def run_s06_production(
         prompts=prompts,
         box_threshold=box_threshold,
         text_threshold=text_threshold,
+        local_python=local_python,
+        source_path=source_path,
+        dependency_site=dependency_site,
+        hf_home=hf_home,
+        runtime_path=Path(output_dir) / "groundingdino_runtime.json",
     )
     return write_gdino_proposals(
         proposals,

@@ -3306,3 +3306,21 @@ views:                      front 27; left_profile 2
 duration:                   median 49.72s; maximum 53.87s; summed committed stage duration 24.03 minutes
 focused regression:         50 S04/config/production tests pass
 ```
+## 2026-07-12 02:05 UTC - S06 GroundingDINO activated locally and completed for every eligible live instance
+**Item:** MF-P2-05.01 95% -> complete
+**Result:** The pinned 11-prompt GroundingDINO proposal boundary now runs through its documented pure-PyTorch CPU fallback, and every eligible instance has auditable box-only evidence with no mask authority.
+
+```
+source:                     IDEA-Research/GroundingDINO@856dde20aee659246248e20734ef9ba5214f5e44
+checkpoint:                 groundingdino_swint_ogc.pth SHA-256 3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799
+runtime:                    local ComfyUI Python; pure-PyTorch CPU deformable-attention fallback; one model load/package
+locked compatibility:       transformers 4.47.1; tokenizers 0.21.4; huggingface-hub 0.27.1; safetensors 0.5.2
+runtime isolation:          source/dependencies/BERT cache live only under ignored models/runtime_cache
+Windows compatibility:      narrow no-op YAPF FormatCode shim avoids inaccessible platformdirs lookup; inference/config semantics unchanged
+live corpus:                29/29 S02-QC-pass instances committed S05/S06; 2 no_person remain at S01; 1 low-ratio silhouette remains needs_review at S02
+proposal totals:            351 total; 6..17 per instance; all 11 configured prompts represented
+authority:                  29/29 authority=proposal_boxes_only; may_write_final_masks=false; zero PNG/mask outputs
+runtime evidence:           29/29 exact checkpoint/source, local_cpu, CPU device type, one load, exact prompt vocabulary
+duration:                   median 43.25s; maximum 74.89s; summed committed stage duration 22.63 minutes
+focused regression:         52 S06/S07/config/production tests pass
+```

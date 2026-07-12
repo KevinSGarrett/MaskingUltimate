@@ -411,6 +411,12 @@ def build_production_runners(
             prompts=tuple(gdino["prompts"]),
             box_threshold=stage_thresholds[0],
             text_threshold=stage_thresholds[1],
+            local_python=(Path(settings["local_python"]) if settings.get("local_python") else None),
+            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+            dependency_site=(
+                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+            ),
+            hf_home=Path(settings["hf_home"]) if settings.get("hf_home") else None,
         )
         document = json.loads(path.read_text(encoding="utf-8"))
         if document["authority"] != "proposal_boxes_only" or document["may_write_final_masks"]:
@@ -841,6 +847,7 @@ def run_multi_person_production(
     silhouettes_only: bool = False,
     parsing_only: bool = False,
     pose_only: bool = False,
+    openvocab_only: bool = False,
 ) -> MultiPersonProductionResult:
     """Run shared detection and every promoted instance through drafts or S10 auto-QA."""
     work_root = Path(work_root)
@@ -930,8 +937,13 @@ def run_multi_person_production(
             False,
         )
     _inject_other_person_protection(image_id, promoted, people["persons"], work_root)
-    if parsing_only or pose_only:
-        selected = ("S03",) if parsing_only else ("S03", "S04")
+    if parsing_only or pose_only or openvocab_only:
+        if parsing_only:
+            selected = ("S03",)
+        elif pose_only:
+            selected = ("S03", "S04")
+        else:
+            selected = ("S03", "S04", "S05", "S06")
         for person in promoted:
             name = f"p{person['person_index']}"
             instance_root = work_root / "instances" / name

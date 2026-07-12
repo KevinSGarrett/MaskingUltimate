@@ -184,6 +184,71 @@ def test_s06_production_refuses_prompt_vocabulary_drift(tmp_path: Path) -> None:
         )
 
 
+def test_s06_provider_supports_pinned_local_cpu_runtime(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    image = tmp_path / "image.png"
+    Image.new("RGB", (40, 40), "white").save(image)
+    checkpoint = tmp_path / "gdino.pth"
+    checkpoint.write_bytes(b"fixture")
+    python = tmp_path / "python.exe"
+    python.write_bytes(b"fixture")
+    source = tmp_path / "source"
+    deps = tmp_path / "deps"
+    (source / "groundingdino").mkdir(parents=True)
+    (source / "groundingdino/__init__.py").write_text("", encoding="utf-8")
+    (deps / "transformers").mkdir(parents=True)
+
+    def fake_run(command, **kwargs):
+        assert command[0] == str(python)
+        assert kwargs["env"]["PYTHONPATH"].split(os.pathsep)[:2] == [
+            str(source.resolve()),
+            str(deps.resolve()),
+        ]
+
+        class Process:
+            returncode = 0
+            stderr = ""
+            stdout = json.dumps(
+                {
+                    "protocol_version": 1,
+                    "checkpoint_sha256": (
+                        "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799"
+                    ),
+                    "source_revision": "856dde20aee659246248e20734ef9ba5214f5e44",
+                    "device_type": "cpu",
+                    "device": "CPU fixture",
+                    "model_load_count": 1,
+                    "prompts": ["hair"],
+                    "box_threshold": 0.3,
+                    "text_threshold": 0.25,
+                    "image_size": [40, 40],
+                    "authority": "proposal_boxes_only",
+                    "may_write_final_masks": False,
+                    "proposals": [],
+                }
+            )
+
+        return Process()
+
+    monkeypatch.setattr("maskfactory.stages.s06_openvocab.subprocess.run", fake_run)
+    runtime = tmp_path / "runtime.json"
+    assert not infer_gdino_proposals(
+        image,
+        checkpoint=checkpoint,
+        prompts=("hair",),
+        local_python=python,
+        source_path=source,
+        dependency_site=deps,
+        hf_home=tmp_path / "hf",
+        runtime_path=runtime,
+    )
+    document = json.loads(runtime.read_text(encoding="utf-8"))
+    assert document["launcher"] == "local_cpu"
+    assert document["proposal_count"] == 0
+    assert "proposals" not in document
+
+
 def test_s07_embedding_uses_one_primary_or_one_oom_fallback() -> None:
     normal = FakeProvider([])
     embedding, model = build_embedding(normal, np.zeros((4, 4, 3)))

@@ -37,6 +37,14 @@ def test_s04_governed_cuda_runtime_is_explicit() -> None:
     assert CONFIG["stages"]["S04"]["ort_gpu_site"] == ("models/runtime_cache/onnxruntime_gpu")
 
 
+def test_s06_governed_local_runtime_is_explicit() -> None:
+    stage = CONFIG["stages"]["S06"]
+    assert stage["local_python"] == "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    assert stage["source_path"].endswith("856dde20aee659246248e20734ef9ba5214f5e44")
+    assert stage["dependency_site"] == "models/runtime_cache/groundingdino_deps"
+    assert stage["hf_home"] == "models/runtime_cache/huggingface"
+
+
 def test_pipeline_config_has_all_stages_devices_io_and_determinism() -> None:
     assert CONFIG["seed"] == 1337
     assert CONFIG["gpu_cooldown_sec"] == 3

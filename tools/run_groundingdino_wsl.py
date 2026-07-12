@@ -6,11 +6,25 @@ import argparse
 import hashlib
 import json
 import platform
+import sys
+import types
 from pathlib import Path
 
-import groundingdino
-from groundingdino.util.inference import load_image, load_model, predict
-from PIL import Image
+# GroundingDINO imports YAPF only for SLConfig.pretty_text. On managed Windows,
+# YAPF's platformdirs lookup can block on an inaccessible user-profile API.
+# Inference never calls pretty_text, so provide the exact no-op formatting API
+# before importing the pinned source package.
+yapf_module = types.ModuleType("yapf")
+yapflib_module = types.ModuleType("yapf.yapflib")
+yapf_api_module = types.ModuleType("yapf.yapflib.yapf_api")
+yapf_api_module.FormatCode = lambda text, **kwargs: (text, False)
+sys.modules.setdefault("yapf", yapf_module)
+sys.modules.setdefault("yapf.yapflib", yapflib_module)
+sys.modules.setdefault("yapf.yapflib.yapf_api", yapf_api_module)
+
+import groundingdino  # noqa: E402
+from groundingdino.util.inference import load_image, load_model, predict  # noqa: E402
+from PIL import Image  # noqa: E402
 
 SOURCE_REVISION = "856dde20aee659246248e20734ef9ba5214f5e44"
 

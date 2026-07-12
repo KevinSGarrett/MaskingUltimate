@@ -8,6 +8,7 @@ from maskfactory.qa.metrics import (
     boundary_f,
     compute_part_metrics,
     hausdorff_percentile,
+    hole_ratio,
     package_qa_score,
 )
 
@@ -34,6 +35,13 @@ def test_boundary_and_hausdorff_metrics_have_exact_geometry() -> None:
     second[10:30, 12:32] = True
     assert boundary_f(first, second, tolerance_px=2) == pytest.approx(1.0)
     assert hausdorff_percentile(first, second) == pytest.approx(2.0)
+
+
+def test_hole_ratio_saturates_at_report_unit_interval() -> None:
+    ring = np.zeros((20, 20), dtype=bool)
+    ring[2:18, 2] = ring[2:18, 17] = True
+    ring[2, 2:18] = ring[17, 2:18] = True
+    assert hole_ratio(ring) == 1.0
 
 
 def test_per_part_metrics_and_hard_class_weighted_package_score() -> None:

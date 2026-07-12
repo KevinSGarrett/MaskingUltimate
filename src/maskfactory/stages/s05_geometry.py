@@ -134,21 +134,44 @@ def limb_capsule_prior(
     end_xy: tuple[float, float],
     *,
     stations: int = 5,
+    max_radius_fraction: float = 0.35,
 ) -> tuple[np.ndarray, float, tuple[float, ...]]:
-    """Measure five cross-sections, rasterize their median-radius capsule, and clip it."""
+    """Measure five cross-sections, bound pathological widths, rasterize, and clip."""
     parsing = _binary(parsing_superset, "parsing_superset")
     visible = _binary(silhouette, "silhouette")
     if parsing.shape != visible.shape:
         raise GeometryError("parsing and silhouette dimensions differ")
+    segment_length = float(np.linalg.norm(np.asarray(end_xy) - np.asarray(start_xy)))
+    if not 0 < max_radius_fraction <= 0.5:
+        raise GeometryError("limb capsule max radius fraction must be in (0, 0.5]")
     widths = sample_cross_section_half_widths(parsing, start_xy, end_xy, stations=stations)
     valid = [width for width in widths if width > 0]
     if not valid:
         raise GeometryError("no parsing cross-section intersects the limb segment")
-    radius = float(np.median(valid))
+    radius = min(float(np.median(valid)), max_radius_fraction * segment_length)
     yy, xx = np.indices(parsing.shape, dtype=np.float64)
     distance = _distance_to_segment(xx, yy, start_xy, end_xy)
     capsule = distance <= radius
     return capsule & parsing & visible, radius, widths
+
+
+def skeleton_capsule_prior(
+    silhouette: np.ndarray,
+    start_xy: tuple[float, float],
+    end_xy: tuple[float, float],
+    *,
+    radius_fraction: float,
+) -> np.ndarray:
+    """Pose-only low-quality fallback when parsing misses a confident limb chain."""
+    visible = _binary(silhouette, "silhouette")
+    if not 0 < radius_fraction <= 0.5:
+        raise GeometryError("skeleton capsule radius fraction must be in (0, 0.5]")
+    length = float(np.linalg.norm(np.asarray(end_xy) - np.asarray(start_xy)))
+    if length <= 0:
+        raise GeometryError("skeleton capsule segment has zero length")
+    radius = max(2.0, radius_fraction * length)
+    yy, xx = np.indices(visible.shape, dtype=np.float64)
+    return (_distance_to_segment(xx, yy, start_xy, end_xy) <= radius) & visible
 
 
 def sample_cross_section_half_widths(
@@ -373,26 +396,40 @@ def run_s05_production(
     priors: dict[str, np.ndarray] = {}
     skeletons: dict[str, tuple[tuple[float, float], ...]] = {}
     segment_defs = (
-        ("left_upper_arm", "left_upper_arm", 5, 7),
-        ("left_forearm", "left_lower_arm", 7, 9),
-        ("right_upper_arm", "right_upper_arm", 6, 8),
-        ("right_forearm", "right_lower_arm", 8, 10),
-        ("left_thigh", "left_upper_leg", 11, 13),
-        ("left_calf", "left_lower_leg", 13, 15),
-        ("right_thigh", "right_upper_leg", 12, 14),
-        ("right_calf", "right_lower_leg", 14, 16),
+        ("left_upper_arm", "left_upper_arm", "right_upper_arm", 5, 7, 0.16),
+        ("left_forearm", "left_lower_arm", "right_lower_arm", 7, 9, 0.14),
+        ("right_upper_arm", "right_upper_arm", "left_upper_arm", 6, 8, 0.16),
+        ("right_forearm", "right_lower_arm", "left_lower_arm", 8, 10, 0.14),
+        ("left_thigh", "left_upper_leg", "right_upper_leg", 11, 13, 0.18),
+        ("left_calf", "left_lower_leg", "right_lower_leg", 13, 15, 0.16),
+        ("right_thigh", "right_upper_leg", "left_upper_leg", 12, 14, 0.18),
+        ("right_calf", "right_lower_leg", "left_lower_leg", 14, 16, 0.16),
     )
-    for label, parsing_class, start_index, end_index in segment_defs:
-        parsing = class_mask(parsing_class)
+    for (
+        label,
+        parsing_class,
+        opposite_class,
+        start_index,
+        end_index,
+        fallback_radius_fraction,
+    ) in segment_defs:
+        side_parsing = class_mask(parsing_class)
+        parsing = side_parsing | class_mask(opposite_class)
         start, end = kp(start_index), kp(end_index)
         quality = "high"
         if start is not None and end is not None and parsing.any():
             try:
                 prior, _, _ = limb_capsule_prior(parsing, silhouette, start, end)
             except GeometryError:
-                prior, quality = parsing & silhouette, "low"
+                prior = skeleton_capsule_prior(
+                    silhouette,
+                    start,
+                    end,
+                    radius_fraction=fallback_radius_fraction,
+                )
+                quality = "low"
         else:
-            prior, quality = parsing & silhouette, "low"
+            prior, quality = side_parsing & silhouette, "low"
         if prior.any():
             priors[label] = prior
             skeletons[label] = (start, end) if quality == "high" else ()

@@ -12,8 +12,8 @@ from ..stages.s08_5_densepose import DensePoseOutput
 
 FRONT_SURFACES = frozenset({1})
 BACK_SURFACES = frozenset({2})
-LEFT_SURFACES = frozenset({4, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23})
-RIGHT_SURFACES = frozenset({3, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24})
+LEFT_SURFACES = frozenset({4, 5, 8, 10, 12, 14, 15, 17, 19, 21})
+RIGHT_SURFACES = frozenset({3, 6, 7, 9, 11, 13, 16, 18, 20, 22})
 
 
 @dataclass(frozen=True)
@@ -50,6 +50,30 @@ def surface_vote(mask: np.ndarray, densepose: DensePoseOutput) -> SurfaceVote:
 
 def densepose_back_ratio(torso_mask: np.ndarray, densepose: DensePoseOutput) -> float | None:
     return surface_vote(torso_mask, densepose).back_fraction
+
+
+def paired_torso_uv_side_votes(
+    left_mask: np.ndarray,
+    right_mask: np.ndarray,
+    densepose: DensePoseOutput,
+    *,
+    min_pixels: int = 64,
+    min_mean_u_separation: float = 2 / 255,
+) -> tuple[str | None, str | None]:
+    """Use torso-chart U ordering as a paired L/R vote when chart IDs are unsided."""
+    left_region, index = _region_index(left_mask, densepose)
+    right_region, _ = _region_index(right_mask, densepose)
+    if min_pixels < 1 or not 0 < min_mean_u_separation <= 1:
+        raise ValueError("invalid paired torso UV vote thresholds")
+    torso = np.isin(index, tuple(FRONT_SURFACES | BACK_SURFACES))
+    left_values = np.asarray(densepose.u, dtype=np.float32)[left_region & torso] / 255
+    right_values = np.asarray(densepose.u, dtype=np.float32)[right_region & torso] / 255
+    if len(left_values) < min_pixels or len(right_values) < min_pixels:
+        return None, None
+    delta = float(right_values.mean() - left_values.mean())
+    if abs(delta) < min_mean_u_separation:
+        return None, None
+    return ("left", "right") if delta > 0 else ("right", "left")
 
 
 def uv_continuity(

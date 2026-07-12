@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image
 
 from .. import __version__
-from ..lanes.prior3d import surface_vote
+from ..lanes.prior3d import paired_torso_uv_side_votes, surface_vote
 from ..ontology import get_ontology
 from ..stages.s08_5_densepose import DensePoseOutput
 from ..validation import ArtifactValidationError, validate_document
@@ -110,6 +110,13 @@ def run_s10_production(
             side_votes[name] = tuple(votes)
         if vote.front_fraction is not None:
             front_fractions[name] = vote.front_fraction
+    left_breast = masks.get("left_breast")
+    right_breast = masks.get("right_breast")
+    if left_breast is not None and right_breast is not None:
+        paired_votes = paired_torso_uv_side_votes(left_breast, right_breast, densepose)
+        for name, paired_vote in zip(("left_breast", "right_breast"), paired_votes, strict=True):
+            if paired_vote:
+                side_votes[name] = (*side_votes.get(name, ()), paired_vote)
     breast_skin = (
         masks.get("left_breast", np.zeros(shape, bool))
         | masks.get("right_breast", np.zeros(shape, bool))

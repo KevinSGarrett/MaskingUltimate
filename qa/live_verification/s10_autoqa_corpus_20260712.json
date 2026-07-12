@@ -1,39 +1,39 @@
 {
   "adapter_corrections": {
     "QC-013": "Protected ontology labels are excluded from body-part intrusion checks; other_person no longer self-overlaps itself.",
-    "QC-014": "Pose-skeleton anatomical chain vote is now supplied alongside the DensePose surface vote."
+    "QC-014": "Official DensePose 1..24 side semantics, pose-skeleton anatomical-chain votes, paired torso UV votes, side-paired parser geometry, bounded limb capsules, and empty-candidate suppression are active."
   },
-  "audit_completed_at": "2026-07-12T05:47:00Z",
+  "audit_completed_at": "2026-07-12T07:25:58.016420Z",
   "block_qc_counts": {
-    "QC-014": 27
+    "QC-014": 16
   },
-  "hard_block_instances": 27,
+  "hard_block_instances": 16,
   "failure_queue_reconciliation": {
-    "after_rows": 27,
-    "after_sha256": "540eb2b5da21d81e1cfda41e9c40423251b524c99101e33a2adfe2fbd76b65d2",
-    "before_rows": 66,
-    "before_sha256": "f49e02e36689a3f583ae26a71f0193200923a6991cf99e86556a6a421707ee67",
-    "removed_duplicate_or_obsolete_s10_rows": 39,
-    "repeat_force_run_rows_after": 27,
-    "repeat_force_run_rows_before": 27
+    "after_rows": 16,
+    "after_sha256": "ed5e5c20b816c7aae40e47b457a13bb73987c0826aa89937fef9840f196e06a8",
+    "before_rows": 27,
+    "before_sha256": "540eb2b5da21d81e1cfda41e9c40423251b524c99101e33a2adfe2fbd76b65d2",
+    "removed_duplicate_or_obsolete_s10_rows": 11,
+    "repeat_force_run_rows_after": 16,
+    "repeat_force_run_rows_before": 16
   },
   "overall": {
-    "fail": 27,
-    "needs_human": 2
+    "fail": 16,
+    "needs_human": 13
   },
   "reports": 29,
   "route_qc_counts": {
     "QC-015": 29,
     "QC-017": 27,
     "QC-024": 26,
-    "QC-028": 21,
+    "QC-028": 14,
     "QC-029": 29,
     "QC-031": 27,
     "QC-033": 8
   },
-  "score_range": [0.8703636118058872, 0.9989344202685246],
-  "qc014_failed_instances_with_insufficient_evidence": 22,
-  "qc014_failed_instances_with_wrong_side_votes": 27,
+  "score_range": [0.8667395908007077, 0.9989344202685246],
+  "qc014_failed_instances_with_insufficient_evidence": 8,
+  "qc014_failed_instances_with_wrong_side_votes": 10,
   "temporary_directories": 0,
   "universal_pass_qcs": [
     "QC-001",
@@ -58,8 +58,8 @@
     "QC-038"
   ],
   "warn_qc_counts": {
-    "QC-021": 27,
-    "QC-022": 3,
+    "QC-021": 26,
+    "QC-022": 2,
     "QC-032": 26
   },
   "warning": "These are automated draft-stage QA outcomes. The remaining QC-014 contradictions/insufficient votes remain blocking; no report approves a mask or replaces Kevin's CVAT correction/approval."

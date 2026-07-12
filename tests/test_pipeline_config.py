@@ -52,6 +52,10 @@ def test_s07_governed_local_cuda_runtime_is_explicit() -> None:
     assert stage["dependency_site"] == "models/runtime_cache/sam2_deps"
 
 
+def test_s05_side_parser_policy_versions_pose_capsule_cache() -> None:
+    assert CONFIG["stages"]["S05"]["side_parser_policy"] == "paired_union_pose_capsule_v2"
+
+
 def test_s08_5_governed_local_cuda_runtime_is_explicit() -> None:
     stage = CONFIG["stages"]["S08.5"]
     assert stage["local_cuda_python"] == "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"

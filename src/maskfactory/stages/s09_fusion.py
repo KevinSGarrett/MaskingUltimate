@@ -281,6 +281,12 @@ def run_s09_production(
         array = np.asarray(value)
         if array.shape != shape:
             raise FusionError(f"S09 evidence dimensions differ for {label}/{source}")
+        # An empty upstream artifact is evidence that the producer ran, not evidence
+        # that the atomic label exists.  Registering it as a candidate lets broad
+        # parser classes instantiate fine labels (notably left/right hips) from
+        # nothing, defeating the body-aware candidate gate below.
+        if not np.any(array > 0):
+            return
         current = evidence.setdefault(label, {}).get(source)
         evidence[label][source] = array if current is None else np.maximum(current, array)
 
@@ -344,8 +350,8 @@ def run_s09_production(
     if iuv.shape[:2] != shape:
         raise FusionError("S09 DensePose and context artifacts differ")
     surfaces = iuv[:, :, 0]
-    left_surfaces = np.isin(surfaces, (4, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23))
-    right_surfaces = np.isin(surfaces, (3, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24))
+    left_surfaces = np.isin(surfaces, (4, 5, 8, 10, 12, 14, 15, 17, 19, 21))
+    right_surfaces = np.isin(surfaces, (3, 6, 7, 9, 11, 13, 16, 18, 20, 22))
     for label, sources in tuple(evidence.items()):
         seed = np.maximum.reduce([np.asarray(value) for value in sources.values()]) > 0
         side = authority.label(label).side

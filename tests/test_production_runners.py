@@ -562,6 +562,46 @@ def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_pa
     assert (output / "debug/left_forearm.png").is_file()
 
 
+def test_s05_pose_capsules_recover_anatomical_sides_from_swapped_parser_classes(
+    tmp_path: Path,
+) -> None:
+    parsing = np.zeros((100, 100), dtype=np.uint8)
+    parsing[20:80, 65:76] = 6  # parser says left, but this is the right pose chain
+    parsing[20:80, 25:36] = 16  # parser says right, but this is the left pose chain
+    Image.fromarray(parsing, mode="L").save(tmp_path / "parsing.png")
+    Image.fromarray(np.full((100, 100), 255, dtype=np.uint8), mode="L").save(
+        tmp_path / "silhouette.png"
+    )
+    coordinates = {7: (30, 25), 9: (30, 75), 8: (70, 25), 10: (70, 75)}
+    pose = {
+        "view": "front",
+        "keypoints": [
+            {
+                "index": index,
+                "x": coordinates.get(index, (0, 0))[0],
+                "y": coordinates.get(index, (0, 0))[1],
+                "confidence": 0.9 if index in coordinates else 0.0,
+            }
+            for index in range(133)
+        ],
+    }
+    (tmp_path / "pose.json").write_text(json.dumps(pose), encoding="utf-8")
+    config = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
+
+    priors, _, _ = run_s05_production(
+        parsing_path=tmp_path / "parsing.png",
+        silhouette_path=tmp_path / "silhouette.png",
+        pose_path=tmp_path / "pose.json",
+        context_bbox_xyxy=(0, 0, 100, 100),
+        parsing_map=config["parsing_map"]["sapiens_28"],
+        output_dir=tmp_path / "s05",
+    )
+
+    left_x = np.nonzero(priors["left_forearm"])[1].mean()
+    right_x = np.nonzero(priors["right_forearm"])[1].mean()
+    assert left_x < 50 < right_x
+
+
 def test_s12_runner_assembles_pushes_and_reports_manual_review_pending(
     tmp_path: Path, monkeypatch
 ) -> None:

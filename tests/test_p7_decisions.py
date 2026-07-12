@@ -7,7 +7,7 @@ def test_ontology_v2_no_go_matches_live_failure_evidence() -> None:
     report = json.loads(Path("qa/reports/ontology_v2_evidence_review_2026-07-12.json").read_text())
     queue = Path(report["failure_queue_path"])
     assert report["failure_queue_present"] == queue.is_file() is True
-    assert report["failure_queue_records"] == len(queue.read_text().splitlines()) == 27
+    assert report["failure_queue_records"] == len(queue.read_text().splitlines())
     assert report["failure_queue_sha256"] == hashlib.sha256(queue.read_bytes()).hexdigest()
     assert report["required_distinct_failures"] == 10
     assert report["changes_authorized"] == []

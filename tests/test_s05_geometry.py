@@ -16,6 +16,7 @@ from maskfactory.stages.s05_geometry import (
     limb_capsule_prior,
     render_prompt_overlay,
     sample_cross_section_half_widths,
+    skeleton_capsule_prior,
     torso_partition_priors,
     write_geometry_artifacts,
 )
@@ -81,6 +82,25 @@ def test_joint_band_exact_height_factors_and_carve_ownership() -> None:
     carved_a, carved_b, owned = carve_joint_band(proximal, distal, elbow)
     assert not (carved_a & owned).any() and not (carved_b & owned).any()
     assert owned.any()
+
+
+def test_limb_capsule_bounds_pathological_parser_width_by_segment_length() -> None:
+    parsing = np.ones((120, 120), dtype=bool)
+    capsule, radius, widths = limb_capsule_prior(parsing, parsing, (40, 40), (40, 80))
+
+    assert max(widths) > 40
+    assert radius == pytest.approx(14.0)
+    assert capsule[:, 55:].sum() == 0
+
+
+def test_skeleton_capsule_fallback_follows_pose_when_parser_misses_limb() -> None:
+    silhouette = np.ones((100, 100), dtype=bool)
+    fallback = skeleton_capsule_prior(silhouette, (25, 20), (25, 80), radius_fraction=0.15)
+
+    ys, xs = np.nonzero(fallback)
+    assert 15 <= xs.min() < 25 < xs.max() <= 35
+    assert ys.min() == 11 and ys.max() == 89
+    assert not fallback[:, 60:].any()
 
 
 def test_crop_hair_prompt_artifacts_and_debug_overlay(tmp_path: Path) -> None:

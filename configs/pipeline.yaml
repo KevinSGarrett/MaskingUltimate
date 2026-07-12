@@ -25,7 +25,7 @@ stages:
   S02: {enabled: true, model: birefnet_general, precision: fp16, long_side: 2048, tile_overlap: 128, threshold: 0.5, connected_min_person_pct: 0.01, silhouette_bbox_ratio: [0.35, 0.95], local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", hf_home: "models/runtime_cache/huggingface"}
   S03: {enabled: true, model: sapiens_0_6b_seg, precision: bf16, long_side: 1024, tile_size: 1536, tile_overlap: 128, oom_half_res_retry: true, fallback: schp_atr, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", schp_cache: "models/runtime_cache/schp"}
   S04: {enabled: true, model: dwpose_133, keypoint_confidence: 0.3, degraded_body_keypoint_fraction: 0.6, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", ort_gpu_site: "models/runtime_cache/onnxruntime_gpu"}
-  S05: {enabled: true}
+  S05: {enabled: true, side_parser_policy: paired_union_pose_capsule_v2}
   S06: {enabled: true, box_threshold: 0.30, text_threshold: 0.25, local_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/groundingdino/856dde20aee659246248e20734ef9ba5214f5e44", dependency_site: "models/runtime_cache/groundingdino_deps", hf_home: "models/runtime_cache/huggingface"}
   S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
   S08: {enabled: true, coverage_policy: seed_then_nearest}

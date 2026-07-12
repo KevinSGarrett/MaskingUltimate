@@ -64,7 +64,10 @@ def hole_ratio(mask: np.ndarray) -> float:
     binary = _mask(mask)
     area = int(binary.sum())
     holes = ndimage.binary_fill_holes(binary) & ~binary
-    return int(holes.sum()) / area if area else 0.0
+    # The QA report contract is a unit interval.  A thin closed contour can enclose
+    # more background than foreground, so the raw holes/foreground ratio is
+    # legitimately greater than one; saturate it instead of emitting invalid JSON.
+    return min(1.0, int(holes.sum()) / area) if area else 0.0
 
 
 def component_count(mask: np.ndarray) -> int:

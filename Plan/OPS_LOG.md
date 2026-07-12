@@ -3424,3 +3424,25 @@ forced corpus rerun:        29/29 complete S10 receipts; zero runner failures; z
 focused regression:         12 semantic/S10/DensePose tests pass
 durable audit updated:      qa/live_verification/s10_autoqa_corpus_20260712.json
 ```
+
+## 2026-07-12 07:26 UTC - Side-aware geometry and fusion corrected across live corpus
+**Items:** MF-P2-06.08 remains 80% partial; MF-P2-08.01 open -> 72% partial
+**Result:** Unsupported fine-label invention and inverted DensePose side semantics were removed; ordered live QA improved to 16 BLOCK / 13 needs_human without overriding a single hard gate.
+
+```
+DensePose authority:        fine chart IDs 1..24 now follow the pinned Detectron2 source's official left/right mapping
+geometry correction:        paired parser-side unions feed pose capsules; radii are bounded; confident pose chains can recover parser-missed limbs
+torso side evidence:        separated torso-chart U distributions provide paired left/right breast votes
+fusion correction:          all-zero upstream artifacts no longer register candidates, so broad torso parsers cannot invent fine hip labels
+metric correction:          hole_ratio saturates at the report schema's [0,1] boundary for thin closed contours
+focused real proof:         img_2ca794d19be9/p0 QC-014 changed BLOCK -> PASS and unsupported zero-prior hip masks disappeared
+model-major live run:       forced S05 29/29, persistent-SAM2 S07 29/29, and S09 29/29 across 18 eligible sources
+required ordering proof:    S09.5 reran after every S09; 18/18 reconciliations and QC-035 PASS before S10
+final S10 pass:             29/29 complete, zero final stage failures; 16 fail / 13 needs_human
+QC-014 remaining evidence:  16 BLOCK instances; 10 contain wrong-side contradictions and 8 insufficient evidence (categories overlap)
+queue reconciliation:      27 -> 16 current QC-014 rows; SHA-256 ed5e5c20b816c7aae40e47b457a13bb73987c0826aa89937fef9840f196e06a8
+ontology decision:          v2 remains NO-GO; zero failures qualify for a proposed new boundary
+MF-P2-08.01 boundary:       model-major execution is proven, but only 18/25 required source images exist; seven remain
+human authority boundary:   no report approves a mask or substitutes for Kevin's CVAT correction/approval
+durable audit:              qa/live_verification/s10_autoqa_corpus_20260712.json
+```

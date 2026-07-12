@@ -5,8 +5,8 @@
   "required_distinct_failures": 10,
   "failure_queue_path": "qa/failure_queue.jsonl",
   "failure_queue_present": true,
-  "failure_queue_records": 27,
-  "failure_queue_sha256": "540eb2b5da21d81e1cfda41e9c40423251b524c99101e33a2adfe2fbd76b65d2",
+  "failure_queue_records": 16,
+  "failure_queue_sha256": "ed5e5c20b816c7aae40e47b457a13bb73987c0826aa89937fef9840f196e06a8",
   "candidates": {
     "per_toe_splits": {"distinct_qualifying_failures": 0, "decision": "no_go"},
     "inner_outer_thigh": {"distinct_qualifying_failures": 0, "decision": "no_go"},
@@ -14,6 +14,6 @@
     "enable_ears_54_55": {"distinct_qualifying_failures": 0, "decision": "no_go"}
   },
   "overall_decision": "no_go_keep_body_parts_v1",
-  "reason": "The queue contains 27 current QC-014 failures, but none is attributable to a proposed v2 boundary; no candidate reaches the mandatory 10-distinct-failures-in-30-days growth bar.",
+  "reason": "The queue contains 16 current QC-014 failures, but none is attributable to a proposed v2 boundary; no candidate reaches the mandatory 10-distinct-failures-in-30-days growth bar.",
   "changes_authorized": []
 }

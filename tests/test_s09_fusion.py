@@ -33,6 +33,14 @@ def test_s09_production_assembles_disk_evidence_and_fills_visible_coverage(tmp_p
     right[4:16, 10:18] = 255
     Image.fromarray(left, mode="L").save(tmp_path / "s05/prior_left_forearm.png")
     Image.fromarray(right, mode="L").save(tmp_path / "s05/prior_right_forearm.png")
+    # Empty geometry artifacts must not authorize broad parser classes to invent
+    # fine-grained side labels.
+    Image.fromarray(np.zeros(shape, dtype=np.uint8), mode="L").save(
+        tmp_path / "s05/prior_left_hip.png"
+    )
+    Image.fromarray(np.zeros(shape, dtype=np.uint8), mode="L").save(
+        tmp_path / "s05/prior_right_hip.png"
+    )
     Image.fromarray(left, mode="L").save(tmp_path / "s07/sam2_left_forearm.png")
     Image.fromarray(right, mode="L").save(tmp_path / "s07/sam2_right_forearm.png")
     hand_boundary = np.zeros(shape, dtype=np.uint8)

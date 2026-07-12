@@ -10,6 +10,7 @@ from maskfactory.lanes.prior3d import (
     SmplxV2Reservation,
     densepose_back_ratio,
     impossible_adjacency_evidence,
+    paired_torso_uv_side_votes,
     surface_vote,
     uv_continuity,
 )
@@ -183,6 +184,37 @@ def test_surface_votes_feed_view_and_left_right_referees() -> None:
     side_index[front] = 4  # configured left surface
     side = DensePoseOutput(side_index, dense.u, dense.v)
     assert surface_vote(front, side).side_vote == "left"
+
+
+def test_surface_side_votes_match_official_densepose_fine_segmentation() -> None:
+    left = {4, 5, 8, 10, 12, 14, 15, 17, 19, 21}
+    right = {3, 6, 7, 9, 11, 13, 16, 18, 20, 22}
+    neutral = {1, 2, 23, 24}
+    mask = np.ones((4, 4), dtype=bool)
+
+    for surface in range(1, 25):
+        index = np.full(mask.shape, surface, dtype=np.uint8)
+        vote = surface_vote(mask, DensePoseOutput(index, index.copy(), index.copy())).side_vote
+        expected = "left" if surface in left else "right" if surface in right else None
+        assert vote == expected, surface
+    assert left | right | neutral == set(range(1, 25))
+
+
+def test_paired_torso_uv_supplies_side_vote_only_with_separated_evidence() -> None:
+    index = np.ones((20, 20), dtype=np.uint8)
+    u = np.zeros_like(index)
+    left = np.zeros_like(index, dtype=bool)
+    right = np.zeros_like(index, dtype=bool)
+    left[:, :10] = True
+    right[:, 10:] = True
+    u[left] = 50
+    u[right] = 100
+    dense = DensePoseOutput(index, u, np.zeros_like(index))
+
+    assert paired_torso_uv_side_votes(left, right, dense) == ("left", "right")
+    u[right] = 51
+    close = DensePoseOutput(index, u, np.zeros_like(index))
+    assert paired_torso_uv_side_votes(left, right, close) == (None, None)
 
 
 def test_uv_continuity_and_impossible_adjacency_evidence() -> None:

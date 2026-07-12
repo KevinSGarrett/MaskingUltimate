@@ -3702,3 +3702,17 @@ doctor after:                   PASS=7 / WARN=1 / FAIL=3; disk WARN at 75.3 GiB
 ingest policy:                  hard stop cleared; <150 GiB warning and junction recommendation remain
 remaining failures:             three identity-scoped Ubuntu-22.04 checks only
 evidence:                       qa/live_verification/disk_headroom_recovery_20260712.json
+
+## 2026-07-12 - Image-level gold approval made atomic
+
+**Result:** PASS - S13 cannot leave a multi-person image partially approved when finalization or DVC registration fails.
+
+preflight:                      every pN must clear the same non-overridable QC gates
+commit unit:                    all instances beneath one image, not one pN at a time
+DVC boundary:                   one add at the common image root after every instance is prepared
+rollback:                       single and multi-instance seeded DVC failures restore exact pre-approval bytes
+success path:                   all instances freeze together; image root registered exactly once
+ordering:                       numeric pN discovery remains correct for p10 and above
+human authority:                no CVAT correction/approval claimed; live review remains pending Kevin
+evidence:                       qa/live_verification/atomic_image_approval_20260712.json
+validation:                     22 focused and 643 full tests passed; Ruff/format clean

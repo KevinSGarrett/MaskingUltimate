@@ -1408,10 +1408,18 @@ def cvat_pull(image_ids: tuple[str, ...], config_path: Path, task_records: Path)
 )
 def package(image_id: str, reviewer: str, minutes: float, packages_root: Path) -> None:
     """S13: package + freeze an approved gold image (re-runs QA)."""
-    from .packager import ApprovalRequiredError, PackageBlockedError, approve_package
+    from .packager import (
+        ApprovalRequiredError,
+        PackageBlockedError,
+        approve_package,
+        approve_packages_atomically,
+    )
 
     image_root = packages_root / image_id
-    instances = sorted((image_root / "instances").glob("p*"))
+    instances = sorted(
+        (path for path in (image_root / "instances").glob("p*") if path.name[1:].isdigit()),
+        key=lambda path: int(path.name[1:]),
+    )
     if not instances and (image_root / "manifest.json").is_file():
         instances = [image_root]
     if not instances:
@@ -1432,13 +1440,12 @@ def package(image_id: str, reviewer: str, minutes: float, packages_root: Path) -
             f"Approve {len(instances)} instance package(s) as gold?", default=False
         ):
             raise click.ClickException("approval cancelled")
-        for instance in instances:
-            approve_package(
-                instance,
-                reviewer=reviewer,
-                review_minutes=minutes,
-                approved=True,
-            )
+        approve_packages_atomically(
+            tuple(instances),
+            reviewer=reviewer,
+            review_minutes=minutes,
+            approved=True,
+        )
     except PackageBlockedError as exc:
         for result in exc.results:
             if not result.passed:

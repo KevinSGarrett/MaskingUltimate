@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import uuid
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
@@ -84,7 +85,93 @@ def approve_package(
         raise ApprovalRequiredError("QA passed; explicit human approval confirmation required")
     if dvc_add is None:
         _require_dvc()
+    backup = _snapshot_directory(package_root, "approval")
+    try:
+        result = _finalize_approval(
+            package_root,
+            reviewer=reviewer,
+            review_minutes=review_minutes,
+            first_results=first_results,
+            dvc_callback=dvc_callback,
+            now=now,
+        )
+    except BaseException:
+        _restore_directory_snapshot(package_root, backup)
+        raise
+    shutil.rmtree(backup)
+    return result
 
+
+def approve_packages_atomically(
+    package_roots: tuple[Path, ...],
+    *,
+    reviewer: str,
+    review_minutes: float,
+    approved: bool,
+    dvc_add: DvcAdd | None = None,
+    now: Callable[[], datetime] | None = None,
+) -> tuple[PackageVerification, ...]:
+    """Approve every pN for one image or restore every package byte-for-byte."""
+    roots = tuple(Path(root) for root in package_roots)
+    if not roots or len(set(roots)) != len(roots):
+        raise ValueError("atomic approval requires one or more distinct package roots")
+    for root in roots:
+        try:
+            approve_package(
+                root,
+                reviewer=reviewer,
+                review_minutes=review_minutes,
+                approved=False,
+                dvc_add=lambda _path: None,
+                now=now,
+            )
+        except ApprovalRequiredError:
+            continue
+    if not approved:
+        raise ApprovalRequiredError("all package gates passed; explicit approval required")
+    tracked_root = _common_image_root(roots)
+    callback = dvc_add or _dvc_add
+    if dvc_add is None:
+        _require_dvc()
+    backups: dict[Path, Path] = {}
+    try:
+        for root in roots:
+            backups[root] = _snapshot_directory(root, "image-approval")
+    except BaseException:
+        for backup in backups.values():
+            shutil.rmtree(backup, ignore_errors=True)
+        raise
+    try:
+        results = tuple(
+            approve_package(
+                root,
+                reviewer=reviewer,
+                review_minutes=review_minutes,
+                approved=True,
+                dvc_add=lambda _path: None,
+                now=now,
+            )
+            for root in roots
+        )
+        callback(tracked_root)
+    except BaseException:
+        for root in reversed(roots):
+            _restore_directory_snapshot(root, backups[root])
+        raise
+    for backup in backups.values():
+        shutil.rmtree(backup)
+    return results
+
+
+def _finalize_approval(
+    package_root: Path,
+    *,
+    reviewer: str,
+    review_minutes: float,
+    first_results: tuple[QcResult, ...],
+    dvc_callback: DvcAdd,
+    now: Callable[[], datetime] | None,
+) -> PackageVerification:
     _regenerate_final_artifacts(package_root)
     _refresh_files(package_root)
     prepared_results = run_qc001_010(package_root)
@@ -116,6 +203,35 @@ def approve_package(
         raise PackageBlockedError(final_results, _failing_panels(package_root, final_failed))
     dvc_callback(package_root)
     return PackageVerification(package_root, True, final_results)
+
+
+def _snapshot_directory(root: Path, purpose: str) -> Path:
+    backup = root.parent / f".{root.name}.{purpose}-{uuid.uuid4().hex}"
+    shutil.copytree(root, backup, copy_function=shutil.copy2)
+    return backup
+
+
+def _restore_directory_snapshot(root: Path, backup: Path) -> None:
+    failed = root.parent / f".{root.name}.failed-{uuid.uuid4().hex}"
+    os.replace(root, failed)
+    try:
+        os.replace(backup, root)
+    except BaseException:
+        os.replace(failed, root)
+        raise
+    shutil.rmtree(failed)
+
+
+def _common_image_root(roots: tuple[Path, ...]) -> Path:
+    if len(roots) == 1 and roots[0].parent.name != "instances":
+        return roots[0]
+    parents = {root.parent.resolve() for root in roots}
+    if len(parents) != 1 or next(iter(parents)).name != "instances":
+        raise ValueError("multi-package approval roots must share one image instances directory")
+    names = {root.name for root in roots}
+    if names != {f"p{index}" for index in range(len(names))}:
+        raise ValueError("multi-package approval roots must be contiguous p0..pN")
+    return next(iter(parents)).parent
 
 
 def _existing_report_blocks(package_root: Path) -> tuple[QcResult, ...]:

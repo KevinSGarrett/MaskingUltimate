@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T11:22:57+00:00",
+    "generated_at": "2026-07-12T11:34:29+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -2603,11 +2603,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Packager enforces auto-fix/QC before confirmation, stamps review+gold+QA, freezes, hashes every file, rechecks, then requires DVC add; BLOCK override test proves no freeze/DVC call.",
+      "notes": [
+        {
+          "ts": "2026-07-12T11:34:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 hardening: multi-person approval is now all-or-nothing across every pN; no partial gold state can survive a seeded image-level DVC failure."
+        }
+      ],
+      "evidence": "Packager enforces non-overridable QC before confirmation, stamps review/gold/QA, freezes and hashes all files, then DVC-adds. Image-level transaction now preflights every pN, freezes all instances together, registers the common image root once, and restores every package byte-for-byte on finalization/DVC failure. Seeded failure and success tests: qa/live_verification/atomic_image_approval_20260712.json.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T03:15:30+00:00",
+      "updated_at": "2026-07-12T11:34:27+00:00",
       "orphaned": false
     },
     "MF-P1-07.06": {
@@ -9203,12 +9209,17 @@
           "ts": "2026-07-12T08:45:34+00:00",
           "actor": "ai_agent",
           "text": "Machine handoff receipts are now reproducible through the production CLI. Live reruns reused tasks 9-12 and 13-17 with record count unchanged at 9. NEEDS KEVIN remains unchanged: correction, overview review, minutes, and explicit approval are still pending."
+        },
+        {
+          "ts": "2026-07-12T11:34:29+00:00",
+          "actor": "ai_agent",
+          "text": "Machine-owned S13 approval path is now atomic across all promoted instances and DVC registration, with exact rollback evidence. NEEDS KEVIN remains unchanged: manual SOP-1 through SOP-6 correction, minutes, and explicit CVAT approval are still pending; no human-review credit claimed."
         }
       ],
       "evidence": "Live CVAT v2.24 handoff is ready for every current promoted instance: task IDs 9,10,11 and overview 12 for img_7b7a3c7d5dd3; task IDs 13,14,15,16 and overview 17 for img_6d6bb33f01a1. Seven package manifests have reviewer=null and approved_at=null. Audit explicitly records human_correction_completed=false and human_approval_completed=false.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T08:45:34+00:00",
+      "updated_at": "2026-07-12T11:34:29+00:00",
       "orphaned": false
     },
     "MF-P8-10.04": {

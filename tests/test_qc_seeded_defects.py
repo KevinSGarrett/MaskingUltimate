@@ -15,6 +15,7 @@ from maskfactory.packager import (
     ApprovalRequiredError,
     PackageBlockedError,
     approve_package,
+    approve_packages_atomically,
     verify_packages,
 )
 from maskfactory.qa.checks import run_qc001_010
@@ -30,6 +31,14 @@ def _refresh_hashes(package: Path) -> None:
         if path.is_file() and path.name != "manifest.json"
     }
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+
+def _tree_bytes(root: Path) -> dict[str, bytes]:
+    return {
+        path.relative_to(root).as_posix(): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
 
 
 @pytest.fixture
@@ -217,3 +226,96 @@ def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
     shutil.copytree(package, sample_root / "approved_second")
     sampled = verify_packages(sample_root, sample=1)
     assert len(sampled) == 1 and sampled[0].passed
+
+
+def test_single_package_dvc_failure_restores_prepared_package_exactly(
+    clean_package: Path, tmp_path: Path
+) -> None:
+    package = tmp_path / "dvc_failure"
+    shutil.copytree(clean_package, package)
+    with pytest.raises(ApprovalRequiredError):
+        approve_package(
+            package,
+            reviewer="kevin",
+            review_minutes=9,
+            approved=False,
+            dvc_add=lambda _path: None,
+        )
+    before = _tree_bytes(package)
+
+    def fail_dvc(_path: Path) -> None:
+        raise RuntimeError("seeded DVC failure")
+
+    with pytest.raises(RuntimeError, match="seeded DVC failure"):
+        approve_package(
+            package,
+            reviewer="kevin",
+            review_minutes=9,
+            approved=True,
+            dvc_add=fail_dvc,
+        )
+
+    assert _tree_bytes(package) == before
+    assert not (package / ".maskfactory_frozen.json").exists()
+    assert not tuple(package.parent.glob(f".{package.name}.*"))
+
+
+def test_multi_instance_dvc_failure_restores_every_prepared_instance(
+    clean_package: Path, tmp_path: Path
+) -> None:
+    image_root = tmp_path / "img_a3f9c2e17b04"
+    roots = tuple(image_root / "instances" / f"p{index}" for index in range(2))
+    for root in roots:
+        shutil.copytree(clean_package, root)
+        with pytest.raises(ApprovalRequiredError):
+            approve_package(
+                root,
+                reviewer="kevin",
+                review_minutes=12,
+                approved=False,
+                dvc_add=lambda _path: None,
+            )
+    before = {root: _tree_bytes(root) for root in roots}
+    dvc_calls = []
+
+    def fail_dvc(path: Path) -> None:
+        dvc_calls.append(path)
+        raise RuntimeError("seeded image-level DVC failure")
+
+    with pytest.raises(RuntimeError, match="image-level DVC failure"):
+        approve_packages_atomically(
+            roots,
+            reviewer="kevin",
+            review_minutes=12,
+            approved=True,
+            dvc_add=fail_dvc,
+        )
+
+    assert dvc_calls == [image_root]
+    assert {root: _tree_bytes(root) for root in roots} == before
+    assert not any((root / ".maskfactory_frozen.json").exists() for root in roots)
+    assert not tuple((image_root / "instances").glob(".*.image-approval-*"))
+
+
+def test_multi_instance_approval_freezes_all_and_registers_image_once(
+    clean_package: Path, tmp_path: Path
+) -> None:
+    image_root = tmp_path / "img_b4e8d3f26c15"
+    roots = tuple(image_root / "instances" / f"p{index}" for index in range(2))
+    for root in roots:
+        shutil.copytree(clean_package, root)
+    dvc_calls = []
+
+    results = approve_packages_atomically(
+        roots,
+        reviewer="kevin",
+        review_minutes=15,
+        approved=True,
+        dvc_add=dvc_calls.append,
+    )
+
+    assert tuple(result.package_root for result in results) == roots
+    assert all(result.passed for result in results)
+    assert dvc_calls == [image_root]
+    assert all((root / ".maskfactory_frozen.json").is_file() for root in roots)
+    assert not tuple((image_root / "instances").glob(".*.image-approval-*"))

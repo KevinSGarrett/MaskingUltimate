@@ -23,6 +23,7 @@ from .inpaint import derive_inpaint
 from .io.hashing import sha256_file_map
 from .io.png_strict import read_mask
 from .ontology import get_ontology
+from .ontology_v2_manifest import require_v2_supervision_eligible
 from .qa.autofix import run_autofix_once
 from .qa.checks import QcResult, run_qc001_010
 from .qa.panels import render_boundary_panel, render_part_overlays
@@ -352,6 +353,8 @@ def _stamp_gold_manifest(
     manifest["qa"] = {"qa_report_file": "qa_report.json", "qa_overall": "pass", "qa_score": 1.0}
     manifest["workflow_status"] = "approved_gold"
     manifest["workflow_updated_at"] = timestamp.isoformat()
+    if manifest.get("mask_ontology_version") == "body_parts_v2":
+        require_v2_supervision_eligible(manifest)
     _write_json_atomic(path, manifest)
 
 

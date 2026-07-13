@@ -24,6 +24,8 @@ jobs:
         run: python tools/generate_ontology.py --check
       - name: Assert inactive ontology-v2 artifacts have no drift
         run: python tools/generate_ontology_v2.py --check
+      - name: Assert inactive manifest-v2 schema has no drift
+        run: python tools/generate_manifest_v2_schema.py --check
       - name: Block training merges on ontology-aware flip invariant
         run: pytest -q tests/test_training_augmentations.py
       - name: Pytest

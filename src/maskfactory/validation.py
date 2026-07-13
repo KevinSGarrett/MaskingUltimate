@@ -14,6 +14,7 @@ SCHEMA_DIR = Path(__file__).with_name("schemas")
 SCHEMA_NAMES = frozenset(
     {
         "manifest",
+        "manifest_v2",
         "qa_report",
         "model_registry",
         "failure_queue",

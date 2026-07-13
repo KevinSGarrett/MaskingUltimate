@@ -15,7 +15,12 @@ import numpy as np
 from PIL import Image
 
 from ..io.png_strict import write_label_map
-from ..ontology import get_ontology
+from ..ontology import Ontology, get_ontology, load_ontology
+from ..ontology_v2 import DEFAULT_ONTOLOGY_V2
+from ..ontology_v2_manifest import (
+    OntologyV2ManifestError,
+    require_v2_supervision_eligible,
+)
 from ..packager import verify_packages
 from ..review_package import update_package_workflow_status
 from ..state import transition_image_status, writer_connection
@@ -42,9 +47,20 @@ def build_dataset(
         if not verification.passed:
             raise ValueError(f"gold package verification failed: {package}")
     by_image: dict[str, list[tuple[Path, dict[str, Any]]]] = {}
+    ontology_versions: set[str] = set()
     for package in packages:
         manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+        ontology_versions.add(str(manifest.get("mask_ontology_version", "body_parts_v1")))
         by_image.setdefault(manifest["image_id"], []).append((package, manifest))
+    if len(ontology_versions) != 1:
+        raise ValueError(f"dataset cannot mix ontology versions: {sorted(ontology_versions)}")
+    ontology_version = next(iter(ontology_versions))
+    if ontology_version == "body_parts_v1":
+        ontology = get_ontology()
+    elif ontology_version == "body_parts_v2":
+        ontology = load_ontology(DEFAULT_ONTOLOGY_V2)
+    else:
+        raise ValueError(f"unsupported dataset ontology version: {ontology_version}")
     records = tuple(
         SplitRecord(
             image_id,
@@ -91,9 +107,9 @@ def build_dataset(
                 else destination
             )
             if split.endswith("holdout"):
-                _copy_sample(package, target_root, sample_id, holdout=True)
+                _copy_sample(package, target_root, sample_id, holdout=True, ontology=ontology)
                 continue
-            _copy_sample(package, target_root, sample_id, holdout=False)
+            _copy_sample(package, target_root, sample_id, holdout=False, ontology=ontology)
             with Image.open(package / "source.png") as opened:
                 width, height = opened.size
             image_number = len(coco_images) + 1
@@ -106,7 +122,7 @@ def build_dataset(
                 }
             )
             part = np.asarray(Image.open(package / "label_map_part.png"))
-            for label in get_ontology().labels_for_map("part", enabled_only=True):
+            for label in ontology.labels_for_map("part", enabled_only=True):
                 if not label.id:
                     continue
                 mask = part == int(label.id)
@@ -150,7 +166,6 @@ def build_dataset(
             for instance_id in instance_ids
         }
     )
-    ontology = get_ontology()
     coco = {
         "images": coco_images,
         "annotations": coco_annotations,
@@ -191,6 +206,7 @@ def build_dataset(
         records,
         class_annotations=coco_annotations,
         coverage=coverage,
+        ontology=ontology,
     )
     (destination / "dataset_card.md").write_text(card, encoding="utf-8")
     (destination / "build_manifest.json").write_text(
@@ -339,6 +355,15 @@ def _approved_packages(root: Path) -> tuple[Path, ...]:
         if not (package / ".maskfactory_frozen.json").is_file():
             continue
         manifest = json.loads(path.read_text(encoding="utf-8"))
+        if manifest.get("mask_ontology_version") == "body_parts_v2":
+            try:
+                require_v2_supervision_eligible(manifest)
+            except OntologyV2ManifestError as exc:
+                raise ValueError(
+                    f"frozen v2 package is ineligible for supervision: {package}"
+                ) from exc
+            results.append(package)
+            continue
         visible = [
             entry for entry in manifest.get("parts", {}).values() if entry.get("status") != "n/a"
         ]
@@ -347,8 +372,15 @@ def _approved_packages(root: Path) -> tuple[Path, ...]:
     return tuple(results)
 
 
-def _copy_sample(package: Path, root: Path, sample_id: str, *, holdout: bool) -> None:
-    part, material = _training_label_maps(package)
+def _copy_sample(
+    package: Path,
+    root: Path,
+    sample_id: str,
+    *,
+    holdout: bool,
+    ontology: Ontology,
+) -> None:
+    part, material = _training_label_maps(package, ontology=ontology)
     if holdout:
         target = root / sample_id
         target.mkdir(parents=True, exist_ok=True)
@@ -362,14 +394,16 @@ def _copy_sample(package: Path, root: Path, sample_id: str, *, holdout: bool) ->
         write_label_map(root / "material_seg/annotations" / f"{sample_id}.png", material, bits=8)
 
 
-def _training_label_maps(package: Path) -> tuple[np.ndarray, np.ndarray]:
+def _training_label_maps(
+    package: Path, *, ontology: Ontology | None = None
+) -> tuple[np.ndarray, np.ndarray]:
     """Return maps with every honestly ambiguous part region burned to ignore 255."""
     part = np.asarray(Image.open(package / "label_map_part.png")).copy()
     material = np.asarray(Image.open(package / "label_map_material.png")).copy()
     if part.shape != material.shape:
         raise ValueError(f"gold label-map dimensions differ: {package}")
     manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
-    authority = get_ontology()
+    authority = ontology or get_ontology()
     ambiguity = np.zeros(part.shape, dtype=bool)
     for name, entry in manifest.get("parts", {}).items():
         if entry.get("visibility") != "ambiguous_do_not_use":
@@ -399,7 +433,15 @@ def _fallback_phash(image_id: str) -> str:
 
 
 def _dataset_card(
-    version, ontology_version, splits, split_instances, records, *, class_annotations, coverage
+    version,
+    ontology_version,
+    splits,
+    split_instances,
+    records,
+    *,
+    class_annotations,
+    coverage,
+    ontology: Ontology,
 ) -> str:
     synthetic = sum(record.source_origin in {"synthetic", "generated"} for record in records)
     ratio = synthetic / len(records)
@@ -426,7 +468,7 @@ def _dataset_card(
     for annotation in class_annotations:
         counts[annotation["category_id"]] = counts.get(annotation["category_id"], 0) + 1
     lines.extend(("", "## Visible instance masks", ""))
-    for label in get_ontology().labels_for_map("part", enabled_only=True):
+    for label in ontology.labels_for_map("part", enabled_only=True):
         if label.id:
             lines.append(f"- {label.name}: {counts.get(int(label.id), 0)}")
     lines.extend(("", "## Coverage cells", ""))

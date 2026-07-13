@@ -42,14 +42,22 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## C. Visibility, manifest, and migration
 
-- [ ] Add `occluded_by_clothing`, `not_applicable`, and `unreviewed_for_v2` to v2 schema only.
-- [ ] Implement state/mask invariants from doc 18 §4.
-- [ ] Add `reviewed_ontology_version` and per-label review authority.
-- [ ] Implement idempotent v1→v2 migration: pixels unchanged; nine labels unreviewed.
-- [ ] Never auto-convert unreviewed to absent/not-visible/not-applicable.
-- [ ] Refuse v2 gold/dataset inclusion while any label remains unreviewed.
-- [ ] Add migration dry-run report, hashes, collision detection, and rollback.
-- [ ] Test every v2 state, including ambiguity and clothing occlusion.
+- [x] Add `occluded_by_clothing`, `not_applicable`, and `unreviewed_for_v2` to v2 schema only.
+  Evidence: generated `manifest_v2.schema.json` carries the v2-only states; the active v1 schema is unchanged and tests assert the separation.
+- [x] Implement state/mask invariants from doc 18 §4.
+  Evidence: schema conditionals plus `v2_manifest_issues` enforce nonempty visible masks, null-mask states, separate ambiguity authority, hash-map membership, and human evidence for `not_applicable`.
+- [x] Add `reviewed_ontology_version` and per-label review authority.
+  Evidence: v2 manifests require root review version and exact per-entry reviewed/reviewer/time/source/ontology provenance.
+- [x] Implement idempotent v1→v2 migration: pixels unchanged; nine labels unreviewed.
+  Evidence: `migrate_v1_manifest_document` preserves the files map, appends exactly nine null-mask entries, downgrades the workflow to review, and returns byte-for-document identical output when rerun.
+- [x] Never auto-convert unreviewed to absent/not-visible/not-applicable.
+  Evidence: migrated additions are exactly `unreviewed_for_v2`; schema/custom invariants prevent that state from carrying a mask or reviewed authority.
+- [x] Refuse v2 gold/dataset inclusion while any label remains unreviewed.
+  Evidence: packager gold stamping and frozen-package dataset discovery both call the shared 65-label human-authority gate; tests prove rejection leaves the manifest unchanged.
+- [x] Add migration dry-run report, hashes, collision detection, and rollback.
+  Evidence: `tools/migrate_manifest_v2.py` defaults to dry-run, records source/target/files-map hashes, refuses append collisions and post-migration drift, and restores the exact source bytes from a hash-verified backup.
+- [x] Test every v2 state, including ambiguity and clothing occlusion.
+  Evidence: parameterized tests cover all nine doc-18 states, visible/null/ignore contracts, `occluded_by_clothing`, `not_applicable`, and forbidden `n/a` use on appended labels.
 
 ## D. CVAT and human review
 

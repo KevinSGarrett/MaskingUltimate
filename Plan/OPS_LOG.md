@@ -4274,3 +4274,17 @@ rollback rehearsal:              registry plus all shipped ComfyUI workflows wer
 safety boundary:                 new labels default to unreviewed_for_v2; confirmed-adult governance remains mandatory; no v2 gold, CVAT pilot, training, champion, serving, or activation claim was made
 verification:                    9 focused and 764 live-root full tests passed; clean publish 758 passed plus 3 expected runtime-artifact skips across 761 collected; Ruff clean; exact locked Black 26.5.1 clean across 306 Python/tool files; v1 and inactive-v2 drift checks pass
 evidence:                        qa/evidence/ontology_v2/v1_baseline.json; qa/evidence/ontology_v2/v1_rollback_rehearsal.json; qa/live_verification/ontology_v2_inactive_authority_20260713.json
+
+## 2026-07-13 - Ontology-v2 manifest migration and supervision gates landed
+
+**Result:** PASS for inactive manifest/migration mechanics; no package was migrated or promoted.
+
+schema separation:               generated manifest_v2.schema.json adds v2-only states, reviewed_ontology_version, per-label review provenance, visible/null/ambiguity invariants, and leaves the production v1 schema unchanged
+migration behavior:              v1->v2 is append-only and idempotent; nine additions are null-mask unreviewed_for_v2, legacy review authority remains explicitly v1, prior gold is downgraded to in_review, and the files hash map is unchanged
+state contract:                  all nine doc-18 states are fixture-tested; appended labels reject n/a, null-mask leakage, missing ambiguity hashes, and inferred not_applicable without human evidence
+gold boundary:                   packager stamping refuses incomplete v2 review before writing; dataset discovery refuses incomplete frozen v2 packages and uses the 65-class inactive ontology only for fully eligible v2 data
+recovery:                        migration CLI defaults to dry-run, records source/target/files-map hashes, refuses append collisions and post-apply drift, and exact-byte rollback is tested
+real dry-run:                    img_2ca794d19be9/p0 planned successfully with nine additions; source manifest SHA-256 stayed 193c2b0289d0fa8c3b594e7b1f267e531397aa2284f9d441f844e21b285bedc8 and files-map SHA-256 stayed e43cf993852721e98825bb6b5d64ec2695609c65f151b8a41ad299690479be52
+verification:                    15 focused migration tests and 789 live-root full tests passed; clean publish 773 passed plus 3 expected runtime-artifact skips across 776 collected; Ruff full-repository clean; exact Black 26.5.1 clean across the seven changed Python/tool files; v2 ontology/schema drift checks pass
+authority unchanged:             production remains body_parts_v1; dry-run applied=false; no v2 gold, dataset, model, serving, or activation claim
+evidence:                        qa/live_verification/ontology_v2_real_package_dry_run_20260713.json; qa/live_verification/ontology_v2_manifest_migration_20260713.json

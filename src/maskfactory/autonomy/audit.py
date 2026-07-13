@@ -59,6 +59,15 @@ def evaluate_immediate_revocation(
     required = {"record_id", "human_defect", "serious_defect", "distribution_drift"}
     if any(not isinstance(outcome, dict) or set(outcome) != required for outcome in outcomes):
         raise ValueError("audit outcome has the wrong shape")
+    if any(
+        not isinstance(outcome["human_defect"], bool)
+        or not isinstance(outcome["serious_defect"], bool)
+        or not isinstance(outcome["distribution_drift"], bool)
+        or outcome["serious_defect"] is True
+        and outcome["human_defect"] is not True
+        for outcome in outcomes
+    ):
+        raise ValueError("audit outcome booleans are invalid")
     reasons = []
     if revoke_on_first_serious_false_accept and any(
         outcome["serious_defect"] is True for outcome in outcomes

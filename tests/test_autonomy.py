@@ -527,6 +527,9 @@ def test_serious_failure_or_drift_immediately_revokes_autonomy():
         True,
         ("distribution_drift",),
     )
+    malformed = ({**outcomes[0], "serious_defect": "true"},)
+    with pytest.raises(ValueError, match="booleans are invalid"):
+        evaluate_immediate_revocation(malformed, revoke_on_first_serious_false_accept=True)
 
 
 def test_real_mask_adapter_and_lifecycle_sidecar_connect_tournament_artifacts(tmp_path: Path):
@@ -624,22 +627,37 @@ def test_autonomous_review_draft_promotes_only_after_full_map_qa_and_rolls_back(
 def test_weekly_audit_queue_revokes_and_writes_retraining_plan(tmp_path: Path):
     lifecycle_root = tmp_path / "lifecycle"
     lifecycle_root.mkdir()
-    for index in range(30):
-        (lifecycle_root / f"hair_{index}.json").write_text(
-            json.dumps(
-                {
-                    "status": "calibrated_auto_accepted",
-                    "image_id": f"img_{index}",
-                    "instance_id": "p0",
-                    "label": "hair",
-                    "context": "solo",
-                    "pipeline_fingerprint": "v1",
-                    "winner_mask_path": f"masks/{index}.png",
-                    "winner_mask_sha256": f"hash_{index}",
-                }
-            )
-        )
     config = _config()
+    certificate = build_autonomy_certificate(
+        _audit(tmp_path / "audit", 600),
+        label="hair",
+        context="solo",
+        pipeline_fingerprint="pipeline-v1",
+        policy=config["calibration"],
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
+    )
+    for index in range(30):
+        mask_path = write_binary_mask(
+            tmp_path / f"masks/{index}.png",
+            np.pad(np.ones((8, 8), dtype=np.uint8) * 255, ((4, 4), (4, 4))),
+        )
+        mask_hash = hashlib.sha256(mask_path.read_bytes()).hexdigest()
+        decision = run_candidate_tournament(
+            (_candidate(mask_path=str(mask_path), mask_sha256=mask_hash),),
+            label="hair",
+            context="solo",
+            pipeline_fingerprint="pipeline-v1",
+            config=config,
+            certificate=certificate,
+        )
+        write_lifecycle_sidecar(
+            lifecycle_root / f"hair_{index}.json",
+            image_id=f"img_{index:012x}",
+            instance_id="p0",
+            pipeline_fingerprint="pipeline-v1",
+            decision=decision,
+        )
     queue_path = tmp_path / "queue.json"
     queue = build_weekly_audit_queue(
         lifecycle_root,
@@ -659,7 +677,7 @@ def test_weekly_audit_queue_revokes_and_writes_retraining_plan(tmp_path: Path):
                         "human_defect": index == 0,
                         "serious_defect": index == 0,
                         "distribution_drift": False,
-                        "corrected_gold_sha256": "corrected" if index == 0 else None,
+                        "corrected_gold_sha256": "a" * 64 if index == 0 else None,
                     }
                     for index, record in enumerate(queue["records"])
                 ],
@@ -711,7 +729,7 @@ def test_revocations_preserve_multiple_pipeline_fingerprints_for_one_scope(tmp_p
                         "human_defect": True,
                         "serious_defect": True,
                         "distribution_drift": False,
-                        "corrected_gold_sha256": f"gold-{index}",
+                        "corrected_gold_sha256": ("a" if index == 1 else "b") * 64,
                     }
                     for index in (1, 2)
                 ],
@@ -737,6 +755,54 @@ def test_revocations_preserve_multiple_pipeline_fingerprints_for_one_scope(tmp_p
             context="solo",
             pipeline_fingerprint=fingerprint,
         )
+
+
+def test_audit_processing_rejects_nonboolean_outcomes_and_fake_gold_hash(tmp_path: Path):
+    queue_path = tmp_path / "queue.json"
+    queue_path.write_text(
+        json.dumps(
+            {
+                "records": [
+                    {
+                        "record_id": "r1",
+                        "label": "hair",
+                        "context": "solo",
+                        "pipeline_fingerprint": "pipeline-v1",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    outcome = {
+        "record_id": "r1",
+        "human_defect": False,
+        "serious_defect": False,
+        "distribution_drift": False,
+        "corrected_gold_sha256": "not-a-hash",
+    }
+    outcomes_path = tmp_path / "outcomes.json"
+    outcomes_path.write_text(
+        json.dumps({"schema_version": "1.0.0", "records": [outcome]}),
+        encoding="utf-8",
+    )
+    config = _config()
+    arguments = {
+        "revocations_root": tmp_path / "revocations",
+        "retraining_policy": config["retraining"],
+        "operations_policy": config["operations"],
+        "retraining_output_path": tmp_path / "retrain.json",
+    }
+    with pytest.raises(ValueError, match="corrected-gold hash is invalid"):
+        process_audit_outcomes(queue_path, outcomes_path, **arguments)
+    outcome["corrected_gold_sha256"] = None
+    outcome["human_defect"] = "false"
+    outcomes_path.write_text(
+        json.dumps({"schema_version": "1.0.0", "records": [outcome]}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="outcome booleans are invalid"):
+        process_audit_outcomes(queue_path, outcomes_path, **arguments)
 
 
 def test_calibrated_pseudo_manifest_is_hash_verified_train_only_and_holdout_safe(tmp_path: Path):
@@ -799,6 +865,20 @@ def test_calibrated_pseudo_manifest_is_hash_verified_train_only_and_holdout_safe
         build_weighted_pseudo_manifest(
             lifecycle_root,
             tmp_path / "forbidden.json",
+            certificate_root=certificate_root,
+            revocations_root=tmp_path / "revocations",
+            human_holdout_ids_path=holdout,
+            operations_policy=config["operations"],
+        )
+    holdout.write_text("img_ffffffffffff\n")
+    lifecycle_path = lifecycle_root / "hair.json"
+    escaped = json.loads(lifecycle_path.read_text(encoding="utf-8"))
+    escaped["winner_mask_path"] = "../outside.png"
+    lifecycle_path.write_text(json.dumps(escaped), encoding="utf-8")
+    with pytest.raises(ValueError, match="relative and contained"):
+        build_weighted_pseudo_manifest(
+            lifecycle_root,
+            tmp_path / "escaped.json",
             certificate_root=certificate_root,
             revocations_root=tmp_path / "revocations",
             human_holdout_ids_path=holdout,

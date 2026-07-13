@@ -9,8 +9,9 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from ..io.hashing import sha256_file
 from .audit import evaluate_immediate_revocation, select_sparse_human_audits
-from .lifecycle import revocation_marker_path
+from .lifecycle import revocation_marker_path, verified_lifecycle_winner_mask
 
 
 def build_weekly_audit_queue(
@@ -20,14 +21,16 @@ def build_weekly_audit_queue(
     period_id: str,
     operations_policy: dict[str, Any],
 ) -> dict[str, Any]:
+    lifecycle_root = Path(lifecycle_root)
     records = []
-    for path in sorted(Path(lifecycle_root).rglob("*.json")):
+    for path in sorted(lifecycle_root.rglob("*.json")):
         try:
             document = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
             raise ValueError(f"invalid autonomy lifecycle sidecar {path}: {exc}") from exc
         if document.get("status") != operations_policy["calibrated_status"]:
             continue
+        winner_mask = verified_lifecycle_winner_mask(document, lifecycle_root)
         identity = (
             f"{document['image_id']}:{document['instance_id']}:{document['label']}:"
             f"{document['winner_mask_sha256']}:{document['pipeline_fingerprint']}"
@@ -43,6 +46,8 @@ def build_weekly_audit_queue(
                 "winner_mask_path": document["winner_mask_path"],
                 "winner_mask_sha256": document["winner_mask_sha256"],
                 "lifecycle_path": str(path),
+                "lifecycle_sha256": sha256_file(path),
+                "verified_winner_mask_path": str(winner_mask),
             }
         )
     selection = select_sparse_human_audits(
@@ -77,13 +82,22 @@ def process_audit_outcomes(
 ) -> dict[str, Any]:
     queue = json.loads(Path(queue_path).read_text(encoding="utf-8"))
     outcomes = json.loads(Path(outcomes_path).read_text(encoding="utf-8"))
-    expected = {record["record_id"] for record in queue["records"]}
+    queue_rows = queue.get("records")
+    if not isinstance(queue_rows, list) or any(not isinstance(row, dict) for row in queue_rows):
+        raise ValueError("autonomy audit queue records are invalid")
+    expected = {record.get("record_id") for record in queue_rows}
+    if None in expected or len(expected) != len(queue_rows):
+        raise ValueError("autonomy audit queue record IDs must be present and unique")
     rows = outcomes.get("records")
-    if outcomes.get("schema_version") != "1.0.0" or not isinstance(rows, list):
+    if (
+        outcomes.get("schema_version") != "1.0.0"
+        or not isinstance(rows, list)
+        or any(not isinstance(row, dict) for row in rows)
+    ):
         raise ValueError("autonomy audit outcomes have the wrong contract")
     if {row.get("record_id") for row in rows} != expected:
         raise ValueError("autonomy audit outcomes must cover the exact selected queue")
-    by_id = {record["record_id"]: record for record in queue["records"]}
+    by_id = {record["record_id"]: record for record in queue_rows}
     revocations = []
     groups: dict[tuple[str, str, str], list[dict]] = {}
     for row in rows:
@@ -96,6 +110,21 @@ def process_audit_outcomes(
         }
         if set(row) != required:
             raise ValueError("autonomy audit outcome row has the wrong shape")
+        if (
+            not isinstance(row["human_defect"], bool)
+            or not isinstance(row["serious_defect"], bool)
+            or not isinstance(row["distribution_drift"], bool)
+            or row["serious_defect"] is True
+            and row["human_defect"] is not True
+        ):
+            raise ValueError("autonomy audit outcome booleans are invalid")
+        corrected = row["corrected_gold_sha256"]
+        if corrected is not None and (
+            not isinstance(corrected, str)
+            or len(corrected) != 64
+            or any(character not in "0123456789abcdef" for character in corrected)
+        ):
+            raise ValueError("autonomy audit corrected-gold hash is invalid")
         source = by_id[row["record_id"]]
         key = (source["label"], source["context"], source["pipeline_fingerprint"])
         groups.setdefault(key, []).append(row)

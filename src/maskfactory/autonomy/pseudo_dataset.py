@@ -11,7 +11,11 @@ from typing import Any
 
 from ..io.hashing import sha256_file
 from .calibration import verify_autonomy_certificate
-from .lifecycle import certificate_is_revoked, load_scoped_certificate
+from .lifecycle import (
+    certificate_is_revoked,
+    load_scoped_certificate,
+    verified_lifecycle_winner_mask,
+)
 
 
 def build_weighted_pseudo_manifest(
@@ -34,6 +38,7 @@ def build_weighted_pseudo_manifest(
         document = json.loads(path.read_text(encoding="utf-8"))
         if document.get("status") != operations_policy["calibrated_status"]:
             continue
+        mask_path = verified_lifecycle_winner_mask(document, lifecycle_root)
         if document["image_id"] in holdout_ids:
             raise ValueError(
                 f"calibrated pseudo-label overlaps a human holdout: {document['image_id']}"
@@ -56,14 +61,6 @@ def build_weighted_pseudo_manifest(
         )
         if not valid:
             continue
-        recorded_mask_path = Path(document["winner_mask_path"])
-        mask_path = (
-            recorded_mask_path
-            if recorded_mask_path.is_absolute()
-            else lifecycle_root.parent / recorded_mask_path
-        )
-        if not mask_path.is_file() or sha256_file(mask_path) != document["winner_mask_sha256"]:
-            raise ValueError(f"calibrated pseudo-label mask hash failed: {mask_path}")
         records.append(
             {
                 "image_id": document["image_id"],

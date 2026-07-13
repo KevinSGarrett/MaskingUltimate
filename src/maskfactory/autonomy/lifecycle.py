@@ -8,6 +8,7 @@ import os
 import uuid
 from pathlib import Path
 
+from ..io.hashing import sha256_file
 from ..validation import ArtifactValidationError, validate_document
 from .tournament import TournamentDecision
 
@@ -69,6 +70,41 @@ def write_lifecycle_sidecar(
     return document
 
 
+def verified_lifecycle_winner_mask(document: dict, lifecycle_root: Path) -> Path:
+    """Validate a lifecycle sidecar and return its hash-verified contained winner mask."""
+    issues = validate_document(document, "autonomy_lifecycle")
+    if issues:
+        raise ArtifactValidationError(issues)
+    recorded = document.get("winner_mask_path")
+    digest = document.get("winner_mask_sha256")
+    if (
+        not isinstance(recorded, str)
+        or not recorded
+        or not isinstance(digest, str)
+        or len(digest) != 64
+        or any(character not in "0123456789abcdef" for character in digest)
+    ):
+        raise ValueError("lifecycle winner mask identity is invalid")
+    relative = Path(recorded)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ValueError("lifecycle winner mask path must be relative and contained")
+    stage_root = Path(lifecycle_root).resolve().parent
+    mask_path = (stage_root / relative).resolve()
+    try:
+        mask_path.relative_to(stage_root)
+    except ValueError as exc:
+        raise ValueError("lifecycle winner mask escapes its stage root") from exc
+    if not mask_path.is_file() or sha256_file(mask_path) != digest:
+        raise ValueError(f"lifecycle winner mask hash failed: {mask_path}")
+    winner_id = document.get("winner_id")
+    winner_rows = [
+        row for row in document.get("ranking", ()) if row.get("candidate_id") == winner_id
+    ]
+    if len(winner_rows) != 1 or winner_rows[0].get("mask_sha256") != digest:
+        raise ValueError("lifecycle ranking does not prove its winner mask")
+    return mask_path
+
+
 def _portable_artifact_path(value: str, root: Path) -> str:
     candidate = Path(value)
     try:
@@ -123,4 +159,5 @@ __all__ = [
     "load_scoped_certificate",
     "revocation_marker_path",
     "write_lifecycle_sidecar",
+    "verified_lifecycle_winner_mask",
 ]

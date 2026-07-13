@@ -102,13 +102,16 @@ human-reference IoU/boundary F and pass all hard vetoes.
 - `src/maskfactory/autonomy/adapters.py`: converts real strict-PNG candidates and protected anatomy
   into hash-bound tournament evidence with consensus, boundary, topology, and overlap measurements.
 - `src/maskfactory/autonomy/lifecycle.py` plus `autonomy_lifecycle.schema.json`: writes validated,
-  non-gold lifecycle sidecars and enforces scoped certificate/revocation lookup.
+  non-gold lifecycle sidecars, enforces scoped certificate/revocation lookup, and resolves winner masks
+  only after schema, ranking, SHA-256, and stage-root containment verification.
 - `src/maskfactory/autonomy/operations.py`: builds deterministic weekly audit queues, processes exact
   human outcomes, immediately revokes unsafe strata, and emits governed retraining tasks. Revocation
   markers are pipeline-fingerprint-specific so concurrent or historical scopes cannot overwrite and
-  accidentally re-enable one another.
+  accidentally re-enable one another. Malformed queue identities, non-boolean outcomes, serious-without-
+  defect claims, and non-SHA corrected-gold references fail closed.
 - `src/maskfactory/autonomy/pseudo_dataset.py`: builds hash-verified train-only pseudo-label manifests;
-  frozen human holdout overlap is a hard error and calibrated masks retain reduced loss weight.
+  frozen human holdout overlap, invalid lifecycle/ranking evidence, mask hash drift, and paths outside the
+  lifecycle stage root are hard errors; calibrated masks retain reduced loss weight.
 - `maskfactory autonomy build-certificate`: creates a hash-bound label/context certificate.
 - `maskfactory autonomy tournament`: creates an auditable selection decision.
 - `maskfactory autonomy build-audit-queue`, `process-audits`, and `build-pseudo-dataset`: operate the

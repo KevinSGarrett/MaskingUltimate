@@ -4245,3 +4245,18 @@ verification:                    real approve_package output and real machine li
 quality:                         Ruff clean; exact Black 26.5.1 clean across 297 source/test/tool Python files
 authority unchanged:             approved_gold_count remains 0; no certificate was minted and no machine tier was promoted to gold
 evidence:                        qa/live_verification/autonomy_human_gold_authority_hardening_20260713.json
+
+## 2026-07-13 - Recurring autonomy audit and pseudo-label lifecycle hardened
+
+**Result:** PASS - malformed audit outcomes and uncontained lifecycle mask paths now fail closed.
+
+revocation defect:               string-valued booleans could avoid `is True` revocation checks; serious=true with human_defect=false was not rejected
+outcome repair:                  human_defect/serious_defect/distribution_drift require exact booleans; serious implies human defect; corrected gold is null or lowercase SHA-256
+queue repair:                    missing and duplicate audit record IDs are rejected before exact-coverage comparison
+lifecycle proof:                 weekly sampling and pseudo-label ingestion share schema, relative-path containment, current mask hash, unique winner-row, and ranking-hash verification
+path repair:                     absolute and parent-traversing winner paths cannot escape the lifecycle stage root
+training boundary:               only lifecycle-proven, unrevoked, exact-certificate masks can enter the reduced-weight train-only pseudo manifest; human holdout exclusion is unchanged
+verification:                    clean publish worktree 19 focused pass; 751 pass plus 3 expected runtime-artifact skips across 754 collected; settled live root 757 full pass including concurrent pre-review improvements
+quality:                         Ruff clean; exact Black 26.5.1 clean on the changed autonomy surface
+authority unchanged:             machine tiers remain non-gold; approved_gold_count remains 0; no performance certificate claimed
+evidence:                        qa/live_verification/autonomy_recurring_lifecycle_hardening_20260713.json

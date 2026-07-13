@@ -2,7 +2,7 @@
 
 Decision: **NO-GO. Keep `body_parts_v1` unchanged.**
 
-The authoritative `qa/failure_queue.jsonl` contains 17 current records: 16 deduplicated QC-014
+The authoritative `qa/failure_queue.jsonl` contains 19 current records: 18 deduplicated QC-014
 failures and one QC-035 multi-instance overlap failure. None is attributable to a missing
 per-toe, inner/outer-thigh, shin-front, or ear boundary, so the
 current qualifying count remains zero for every candidate. The mandatory growth bar is at least

@@ -1,0 +1,105 @@
+# Adult Anatomy Ontology v2 — Implementation Checklist
+
+This checklist is the executable companion to doc 18. It remains outside the live 393-item
+tracker until a clean parent-thread session imports it, because activating IDs while v1
+pipeline/tracker files have uncommitted work would be unsafe.
+
+Every checkbox requires specific evidence. Do not mark an item complete from code presence alone.
+
+## A. Freeze and compatibility baseline
+
+- [ ] Hash/archive active v1 ontology, schemas, CVAT label map, derived config, registry, champions, and a representative package.
+- [ ] Record v1 PART mapping `0..55` and prove migration never changes an old ID/name.
+- [ ] Resolve every literal 56/57 reference: v1 has 56 logits including background; v2 has 65.
+- [ ] Add byte-compatibility test for v1 package/map/derived outputs after v2-capable code lands.
+- [ ] Add rollback rehearsal restoring v1 champion roles and workflows.
+
+## B. Ontology generator and machine authority
+
+- [ ] Import nine proposed labels append-only from `ontology_v2_additions.yaml`.
+- [ ] Add boundary rules for areola ring, nipple carve-out, external vulva, shaft/glans, and scrotal midline.
+- [ ] Add reciprocal swaps for areolae, nipples, and scrotal regions.
+- [ ] Add alias resolver with warnings/provenance; aliases never enter maps/manifests.
+- [ ] Add all derived formulas and regenerate `configs/derived.yaml`.
+- [ ] Extend visualization colors with distinct, accessible, stable values.
+- [ ] Generate `configs/ontology_v2.yaml`; retain active v1 until activation.
+- [ ] CI proves IDs `0..55` unchanged and IDs `56..64` contiguous.
+- [ ] Tests prove exactly 65 class names including background and correct flips.
+
+## C. Visibility, manifest, and migration
+
+- [ ] Add `occluded_by_clothing`, `not_applicable`, and `unreviewed_for_v2` to v2 schema only.
+- [ ] Implement state/mask invariants from doc 18 §4.
+- [ ] Add `reviewed_ontology_version` and per-label review authority.
+- [ ] Implement idempotent v1→v2 migration: pixels unchanged; nine labels unreviewed.
+- [ ] Never auto-convert unreviewed to absent/not-visible/not-applicable.
+- [ ] Refuse v2 gold/dataset inclusion while any label remains unreviewed.
+- [ ] Add migration dry-run report, hashes, collision detection, and rollback.
+- [ ] Test every v2 state, including ambiguity and clothing occlusion.
+
+## D. CVAT and human review
+
+- [ ] Create versioned v2 CVAT project; never mutate open v1 tasks in place.
+- [ ] Add canonical labels and v2 visibility attributes.
+- [ ] Surface aliases as help/search text only.
+- [ ] Update task descriptions with doc 18 SOP and character-perspective reminder.
+- [ ] Add chest/pelvic review crop presets.
+- [ ] Push migrated tasks with additions explicitly unreviewed.
+- [ ] Pull exact v2 states/masks; reject aliases and unknown values.
+- [ ] Block export when visible masks are absent or null-mask states contain masks.
+- [ ] Pilot 20–30 adult images covering all states and applicable classes.
+- [ ] Record review time/ambiguities and revise guidelines before scale annotation.
+
+## E. Drafting and fusion
+
+- [ ] Add anatomy crop proposals without asserting hidden anatomy.
+- [ ] Add canonical open-vocabulary prompts with adult-only routing.
+- [ ] Route prompts through SAM2/fusion; detector boxes never become final masks directly.
+- [ ] Add same-side chest and pelvic geometry priors.
+- [ ] Enforce breast/pelvic carve-outs before PART-map write.
+- [ ] Preserve ambiguity/clothing occlusion rather than forcing candidates.
+- [ ] Produce panels, provenance, confidence, and correction instructions.
+- [ ] Test nude, clothed, partial, distant, hair-occluded, side-view, and cropped fixtures.
+
+## F. QA and calibration
+
+- [ ] Implement QC-V2-001 through QC-V2-012.
+- [ ] Seed a good case and defects for every new check.
+- [ ] Extend topology, left/right, exclusivity, state consistency, and containment reports.
+- [ ] Add clothed false-positive sweep.
+- [ ] Extend VLM vocabulary while preserving QA-only governance.
+- [ ] Build real adult calibration panels; synthetic near-duplicates are not gate authority.
+- [ ] Pass calibrated recall/precision before anatomy routing is enabled.
+
+## G. Dataset and training
+
+- [ ] Accept only fully reviewed v2 packages for 65-class supervision.
+- [ ] Preserve v1 data without treating new labels as negatives.
+- [ ] Burn ambiguity to 255 and test IDs 56–64 export exactly.
+- [ ] Add anatomy-focused crops and whole-body anti-forgetting batches.
+- [ ] Update flip/rotation/crop/color/class-weight tests.
+- [ ] Author 65-class configs and eliminate the old 57-class conflict.
+- [ ] Build identity-separated positive and clothed-negative holdouts.
+- [ ] Reach 50–100 clear positives per new class before production claims.
+- [ ] Publish IoU, boundary-F, recall, clothed false positives, and side-swap rates.
+- [ ] Refuse promotion when any class lacks evidence or systematically fires on clothing.
+
+## H. Registry, serving, and ComfyUI
+
+- [ ] Registry stores ontology version, exact 65-name vocabulary, and artifact hashes.
+- [ ] Serving rejects v2 labels unless loaded champion declares exact v2 vocabulary.
+- [ ] Health/models/predict responses expose ontology version.
+- [ ] Add canonical labels/unions to ComfyUI selectors and package browser.
+- [ ] Canonicalize UI/API aliases and return canonical provenance.
+- [ ] Add anatomy and clothed-negative workflow fixtures.
+- [ ] Re-run latency/residency and Mode A/Mode B end-to-end tests.
+
+## I. Operations and activation
+
+- [ ] Add coverage targets for every class/state/view/pose/occlusion context.
+- [ ] Add failure reasons and acquisition actions for boundary/side/clothing errors.
+- [ ] Update backup, restore, GC, reindex, DVC, and incident drills.
+- [ ] Update docs 00–17, SOPs, schemas, CLI help, generated references, tracker, and DoD.
+- [ ] Full tests, drift, schemas, seeded QA, migration, rollback, CVAT pilot, dataset, training,
+  leaderboard, serving, and ComfyUI evidence all pass.
+- [ ] Only then switch active ontology/champions to `body_parts_v2` and record activation.

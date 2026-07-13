@@ -24,6 +24,12 @@ DETERMINISTIC_GENERATION_OPTIONS = {
     "seed": 1337,
     "num_predict": 192,
 }
+WORKHORSE_GENERATION_OPTIONS = {
+    "temperature": 0,
+    "seed": 1337,
+    "num_predict": 768,
+    "num_ctx": 32768,
+}
 ALLOWED_PROBLEMS = {
     "wrong_part",
     "wrong_side",
@@ -80,6 +86,7 @@ class OllamaClient:
         prompt: str,
         images: tuple[Path, ...] = (),
         options: dict[str, Any] | None = None,
+        think: bool | str | None = None,
     ) -> str:
         payload = {
             "model": model,
@@ -90,6 +97,7 @@ class OllamaClient:
             "stream": False,
             "format": "json",
             **({"options": options} if options is not None else {}),
+            **({"think": think} if think is not None else {}),
         }
         request = urllib.request.Request(
             f"{self.base_url}/api/generate",
@@ -107,6 +115,10 @@ class OllamaClient:
             raise VlmClientError(f"local Ollama request failed: {exc}") from exc
         if not isinstance(document.get("response"), str):
             raise VlmClientError("Ollama response field unavailable")
+        if not document["response"].strip() and document.get("thinking"):
+            raise VlmClientError(
+                "thinking consumed the generation budget without a final response; disable thinking"
+            )
         return document["response"]
 
 

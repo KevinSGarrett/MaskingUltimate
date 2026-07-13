@@ -180,6 +180,12 @@ Doc 10. Builds review panels, queries local VLM per hard part + whole-image sani
 verdicts into qa_report, adjusts routing (agree → quick-pass queue; disagree → careful queue).
 Status → `vlm_qa`.
 
+Workhorse amendment: S11 renders independent high-resolution evidence per present label, obtains a
+structured visual audit, optionally invokes the governed on-demand SAM2 refiner with bounded
+positive/negative points, writes proposals only to `correction_candidates/`, and compares complete
+before/after evidence. S09 maps are read-only in S11. Without a current calibration gate the same
+loop is shadow-only and every route remains careful.
+
 ## S12 — Human Review (CVAT)
 Doc 11. `maskfactory cvat push` uploads image + draft masks as pre-annotations; human corrects with
 SAM2 interactor; `cvat pull` retrieves; re-fuse (S09 on corrected inputs) → re-QA (S10 minimal set)

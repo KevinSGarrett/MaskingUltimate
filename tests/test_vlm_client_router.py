@@ -49,7 +49,13 @@ def test_versioned_prompts_and_config_cover_all_three_contracts() -> None:
         "gpu_slot": "exclusive",
         "generation_options": DETERMINISTIC_GENERATION_OPTIONS,
     }
-    assert set(config["prompts"]) == {"p_part", "p_image", "p_manifest"}
+    assert set(config["prompts"]) == {
+        "p_part",
+        "p_image",
+        "p_manifest",
+        "p_workhorse",
+        "p_compare",
+    }
     for name in ("p_part", "p_image", "p_manifest"):
         text = (PROMPT_ROOT / f"{name}.txt").read_text()
         assert "PROMPT_VERSION:" in text and "STRICT JSON only" in text

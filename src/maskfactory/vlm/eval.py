@@ -18,8 +18,8 @@ from scipy import ndimage
 from ..io.png_strict import read_mask, write_binary_mask
 from ..ontology import get_ontology
 from ..packager import verify_packages
-from ..qa.panels import render_boundary_panel
-from .client import DETERMINISTIC_GENERATION_OPTIONS
+from ..qa.panels import render_boundary_panel, render_workhorse_evidence
+from .client import DETERMINISTIC_GENERATION_OPTIONS, WORKHORSE_GENERATION_OPTIONS
 
 DEFECT_TAXONOMY = (
     "wrong_side",
@@ -47,6 +47,9 @@ class EvalCase:
     label: str
     expected_defect: bool
     seeded_problem: str | None
+    evidence_dir: str | None = None
+    crop_xyxy: tuple[int, int, int, int] | None = None
+    source_size: tuple[int, int] | None = None
 
 
 @dataclass(frozen=True)
@@ -201,8 +204,23 @@ def build_calibration_from_seed_manifest(
     cases = []
     source_records = []
     for index, (seed, source, good, defect, paths) in enumerate(validated):
+        good_evidence_dir = f"evidence/good_{index:02d}"
+        defect_evidence_dir = f"evidence/defect_{index:02d}"
+        good_evidence = render_workhorse_evidence(
+            source, good, np.zeros_like(good), root / good_evidence_dir
+        )
+        defect_evidence = render_workhorse_evidence(
+            source, defect, np.zeros_like(good), root / defect_evidence_dir
+        )
         good_case = EvalCase(
-            f"good_{index:02d}", f"panels/good_{index:02d}.png", seed["label"], False, None
+            f"good_{index:02d}",
+            f"panels/good_{index:02d}.png",
+            seed["label"],
+            False,
+            None,
+            good_evidence_dir,
+            good_evidence.crop_xyxy,
+            good_evidence.source_size,
         )
         defect_case = EvalCase(
             f"defect_{index:02d}",
@@ -210,6 +228,9 @@ def build_calibration_from_seed_manifest(
             seed["label"],
             True,
             seed["defect_type"],
+            defect_evidence_dir,
+            defect_evidence.crop_xyxy,
+            defect_evidence.source_size,
         )
         protected = np.zeros_like(good)
         render_boundary_panel(source, good, protected, root / good_case.panel_file)
@@ -407,7 +428,16 @@ def build_calibration_from_gold_selection(
 
 def load_cases(root: Path) -> tuple[EvalCase, ...]:
     document = json.loads((Path(root) / "manifest.json").read_text(encoding="utf-8"))
-    cases = tuple(EvalCase(**case) for case in document["cases"])
+    cases = tuple(
+        EvalCase(
+            **case
+            | {
+                "crop_xyxy": tuple(case["crop_xyxy"]) if case.get("crop_xyxy") else None,
+                "source_size": tuple(case["source_size"]) if case.get("source_size") else None,
+            }
+        )
+        for case in document["cases"]
+    )
     if (
         len(cases) != 40
         or sum(not case.expected_defect for case in cases) != 20
@@ -514,12 +544,30 @@ def gate_fingerprint(
     prompt_path: Path,
     generation_options: Mapping[str, int | float] | None = None,
 ) -> str:
-    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
+    options = _resolved_generation_options(prompt_path, generation_options)
+    prompt_path = Path(prompt_path)
+    prompt_payloads = [prompt_path.read_bytes()]
+    if prompt_path.name == "p_workhorse.txt":
+        compare_path = prompt_path.with_name("p_compare.txt")
+        if not compare_path.is_file():
+            raise VlmEvalError("workhorse gate requires the P-COMPARE prompt")
+        prompt_payloads.append(compare_path.read_bytes())
+        prompt_payloads.extend(
+            path.read_bytes()
+            for path in (
+                Path(__file__).with_name("workhorse.py"),
+                Path(__file__).with_name("client.py"),
+                Path(__file__).parents[1] / "qa" / "panels.py",
+                Path(__file__).with_name("production.py"),
+                Path(__file__).with_name("prompts") / "p_image.txt",
+            )
+        )
+        prompt_payloads.append(b"ollama_think=false")
     payload = b"\0".join(
         (
             model.encode(),
             prompt_version.encode(),
-            Path(prompt_path).read_bytes(),
+            *prompt_payloads,
             json.dumps(options, sort_keys=True, separators=(",", ":")).encode(),
         )
     )
@@ -546,7 +594,7 @@ def evaluate_gate(
     defect_count = sum(case.expected_defect for case in cases)
     recall = tp / defect_count
     precision = tp / (tp + fp) if tp + fp else 0.0
-    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
+    options = _resolved_generation_options(prompt_path, generation_options)
     report = EvalReport(
         model=model,
         prompt_version=prompt_version,
@@ -586,29 +634,62 @@ def predict_live(
     gpu_lock_path: Path,
 ) -> dict[str, str]:
     """Run the fixed set through the local-only production part-review path."""
+    from ..qa.panels import WorkhorseEvidence
     from .client import OllamaClient, prepare_panel_input, review_part
+    from .workhorse import review_part_workhorse
 
     prompt = Path(prompt_path).read_text(encoding="utf-8")
     prepared_root = Path(output_dir) / "prepared"
     predictions: dict[str, str] = {}
     verdicts: list[dict] = []
     client = OllamaClient()
+    workhorse_mode = Path(prompt_path).name == "p_workhorse.txt"
     for case in cases:
-        prepared = prepare_panel_input(
-            Path(calibration_root) / case.panel_file,
-            prepared_root / f"{case.case_id}.png",
-        )
-        verdict = review_part(
-            client,
-            label=case.label,
-            panel_path=prepared,
-            panel_file=case.panel_file,
-            model=model,
-            prompt_template=prompt,
-            prompt_version="calibration",
-            gpu_lock_path=gpu_lock_path,
-            generation_options=DETERMINISTIC_GENERATION_OPTIONS,
-        )
+        if workhorse_mode:
+            if case.evidence_dir is None or case.crop_xyxy is None or case.source_size is None:
+                raise VlmEvalError("workhorse calibration case lacks independent evidence metadata")
+            evidence_root = Path(calibration_root) / case.evidence_dir
+            names = (
+                "full_context.png",
+                "source_crop.png",
+                "mask.png",
+                "overlay.png",
+                "contour.png",
+                "neighbor_overlap.png",
+            )
+            evidence = WorkhorseEvidence(
+                tuple(evidence_root / name for name in names),
+                tuple(case.crop_xyxy),
+                tuple(case.source_size),
+            )
+            if any(not path.is_file() for path in evidence.images):
+                raise VlmEvalError("workhorse calibration evidence image missing")
+            verdict = review_part_workhorse(
+                client,
+                label=case.label,
+                evidence=evidence,
+                model=model,
+                prompt_template=prompt,
+                prompt_version="calibration",
+                gpu_lock_path=gpu_lock_path,
+                generation_options=WORKHORSE_GENERATION_OPTIONS,
+            )
+        else:
+            prepared = prepare_panel_input(
+                Path(calibration_root) / case.panel_file,
+                prepared_root / f"{case.case_id}.png",
+            )
+            verdict = review_part(
+                client,
+                label=case.label,
+                panel_path=prepared,
+                panel_file=case.panel_file,
+                model=model,
+                prompt_template=prompt,
+                prompt_version="calibration",
+                gpu_lock_path=gpu_lock_path,
+                generation_options=DETERMINISTIC_GENERATION_OPTIONS,
+            )
         predictions[case.case_id] = verdict.verdict
         verdicts.append(asdict(verdict) | {"problems": list(verdict.problems)})
     _atomic_json(
@@ -630,7 +711,7 @@ def require_current_gate(
         gate = json.loads(Path(gate_path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise VlmEvalError("VLM production gate unavailable") from exc
-    options = dict(generation_options or DETERMINISTIC_GENERATION_OPTIONS)
+    options = _resolved_generation_options(prompt_path, generation_options)
     current = gate_fingerprint(
         model=model,
         prompt_version=prompt_version,
@@ -650,6 +731,20 @@ def require_current_gate(
     ):
         raise VlmEvalError("VLM production use refused: calibration threshold not passed")
     return gate
+
+
+def _resolved_generation_options(
+    prompt_path: Path,
+    generation_options: Mapping[str, int | float] | None,
+) -> dict[str, int | float]:
+    if generation_options is not None:
+        return dict(generation_options)
+    defaults = (
+        WORKHORSE_GENERATION_OPTIONS
+        if Path(prompt_path).name == "p_workhorse.txt"
+        else DETERMINISTIC_GENERATION_OPTIONS
+    )
+    return dict(defaults)
 
 
 def _render_case(path: Path, problem: str | None, variant: int) -> None:

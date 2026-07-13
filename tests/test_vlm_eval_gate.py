@@ -63,12 +63,12 @@ def _gold_selection_fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
             mask[12:52, left : left + 16] = 255
             Image.fromarray(mask, mode="L").save(directory / f"{name}.png")
             parts[name] = {
-                "visibility": "not_visible"
-                if definition.mask_type == "protected_qa"
-                else "visible",
-                "status": "n/a"
-                if definition.mask_type == "protected_qa"
-                else "human_approved_gold",
+                "visibility": (
+                    "not_visible" if definition.mask_type == "protected_qa" else "visible"
+                ),
+                "status": (
+                    "n/a" if definition.mask_type == "protected_qa" else "human_approved_gold"
+                ),
             }
         manifest = {
             "image_id": image_id,

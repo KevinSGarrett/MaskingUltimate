@@ -340,14 +340,16 @@ class MFMaskStats:
         document = {
             "area_px": int(array.sum()),
             "area_pct": float(100 * array.mean()),
-            "bbox_xyxy": None
-            if not len(xs)
-            else [
-                int(xs.min()),
-                int(ys.min()),
-                int(xs.max()) + 1,
-                int(ys.max()) + 1,
-            ],
+            "bbox_xyxy": (
+                None
+                if not len(xs)
+                else [
+                    int(xs.min()),
+                    int(ys.min()),
+                    int(xs.max()) + 1,
+                    int(ys.max()) + 1,
+                ]
+            ),
             "components": _component_count(array),
         }
         return (json.dumps(document, sort_keys=True),)

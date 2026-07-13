@@ -58,6 +58,7 @@ def test_s11_current_gate_runs_local_verdict_and_quick_pass_route(tmp_path: Path
     class Client:
         def generate(self, **kwargs):
             if "VISIBLE LABEL DIGEST" in kwargs["prompt"]:
+                assert len(kwargs["images"]) == 2 and kwargs["think"] is False
                 return json.dumps(
                     {
                         "missing": [],

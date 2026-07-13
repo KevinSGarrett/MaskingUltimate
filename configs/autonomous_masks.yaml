@@ -1,0 +1,53 @@
+schema_version: 1.0.0
+enabled: true
+mode: calibrated_progressive_autonomy
+
+tournament:
+  minimum_score: 0.88
+  minimum_winner_margin: 0.03
+  minimum_independent_sources: 3
+  maximum_rounds: 3
+  maximum_candidates_per_label: 12
+  weights:
+    consensus_iou: 0.25
+    boundary_agreement: 0.20
+    pose_consistency: 0.15
+    source_diversity: 0.15
+    critic_support: 0.25
+  hard_veto:
+    maximum_protected_overlap: 0.01
+    maximum_exclusive_overlap: 0.005
+    require_format_valid: true
+    reject_any_block_qc: true
+    reject_component_overflow: true
+
+calibration:
+  confidence_level: 0.95
+  minimum_autoaccepted_audits_per_label_context: 300
+  maximum_false_accept_upper_bound: 0.01
+  maximum_serious_false_accept_upper_bound: 0.005
+  maximum_certificate_age_days: 30
+  require_image_disjoint_holdout: true
+  require_frozen_human_truth: true
+  require_exact_pipeline_fingerprint: true
+
+operations:
+  uncalibrated_status: machine_verified_candidate
+  calibrated_status: calibrated_auto_accepted
+  calibrated_status_is_human_gold: false
+  random_human_audit_fraction: 0.02
+  minimum_random_audits_per_week: 20
+  revoke_on_first_serious_false_accept: true
+  revoke_on_distribution_drift: true
+  cloud_disagreement_forces_residual_queue: true
+  allow_training_as_pseudo_label: true
+  pseudo_label_loss_weight: 0.25
+  human_gold_loss_weight: 1.0
+  holdout_may_use_machine_labels: false
+
+retraining:
+  minimum_new_human_corrections: 50
+  minimum_audit_failures: 5
+  task_root: qa/autonomy/retrain_tasks
+  include_calibrated_pseudo_labels: true
+  require_frozen_human_holdout_evaluation: true

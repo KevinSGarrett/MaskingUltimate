@@ -644,21 +644,21 @@ def pose_metrics(
     )
     return {
         "shoulder_to_wrist_vertical_fraction": vertical_fraction,
-        "wrist_opposite_torso_overlap": sum(cross_hits) / len(cross_hits)
-        if cross_hits
-        else float("nan"),
-        "mean_hip_knee_ankle_angle_deg": sum(knee_angles) / len(knee_angles)
-        if knee_angles
-        else float("nan"),
+        "wrist_opposite_torso_overlap": (
+            sum(cross_hits) / len(cross_hits) if cross_hits else float("nan")
+        ),
+        "mean_hip_knee_ankle_angle_deg": (
+            sum(knee_angles) / len(knee_angles) if knee_angles else float("nan")
+        ),
         "knee_angle_asymmetry_deg": knee_asymmetry,
         "shoulder_hip_axis_from_horizontal_deg": axis_angle,
         "instance_bbox_landscape_ratio": bbox_landscape_ratio,
         "lying_likelihood": lying_likelihood,
         "walking_likelihood": walking_likelihood,
         "ankle_horizontal_separation_over_hip_width": ankle_separation,
-        "left_right_leg_bbox_iou": _bbox_iou(left_leg, right_leg)
-        if left_leg and right_leg
-        else float("nan"),
+        "left_right_leg_bbox_iou": (
+            _bbox_iou(left_leg, right_leg) if left_leg and right_leg else float("nan")
+        ),
     }
 
 

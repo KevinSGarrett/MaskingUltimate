@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
@@ -14,6 +15,16 @@ from ..ontology import Ontology, get_ontology
 
 class PanelError(ValueError):
     """Visual QA inputs violate the panel contract."""
+
+
+@dataclass(frozen=True)
+class WorkhorseEvidence:
+    """Lossless-enough, separately addressable visual evidence for tool-using VLM QA."""
+
+    images: tuple[Path, ...]
+    crop_xyxy: tuple[int, int, int, int]
+    source_size: tuple[int, int]
+    metrics: tuple[tuple[str, float], ...] = ()
 
 
 def render_part_overlays(
@@ -102,6 +113,88 @@ def render_boundary_panel(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     panel.save(output_path, format="PNG")  # png-strict: allow (RGB QA panel, never mask)
     return output_path
+
+
+def render_workhorse_evidence(
+    source: Image.Image,
+    mask: np.ndarray,
+    protected_neighbor: np.ndarray,
+    output_dir: Path,
+    *,
+    tile_size: int = 1024,
+    zoom_multiplier: float = 2.0,
+) -> WorkhorseEvidence:
+    """Render six independent high-resolution inputs instead of one compressed strip.
+
+    Image order is a stable contract: full context, source crop, binary mask, overlay,
+    contour, protected-neighbor overlap. The crop box lets a model's normalized points
+    be mapped back to full-resolution SAM2 coordinates without guessing.
+    """
+    target = np.asarray(mask).astype(bool)
+    protected = np.asarray(protected_neighbor).astype(bool)
+    if target.shape != protected.shape or source.size != (target.shape[1], target.shape[0]):
+        raise PanelError("workhorse evidence source/mask dimensions differ")
+    if not target.any() or tile_size < 512 or tile_size > 1536:
+        raise PanelError("workhorse evidence requires a nonempty mask and 512..1536 tiles")
+    crop = _zoom_box(target, zoom_multiplier)
+    source_crop = source.convert("RGB").crop(crop)
+    target_crop = target[crop[1] : crop[3], crop[0] : crop[2]]
+    protected_crop = protected[crop[1] : crop[3], crop[0] : crop[2]]
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    context = source.convert("RGB").copy()
+    context_array = np.asarray(context).copy()
+    x1, y1, x2, y2 = crop
+    width = max(2, round(max(source.size) / 512))
+    context_array[max(0, y1 - width) : min(source.height, y1 + width), x1:x2] = (0, 255, 255)
+    context_array[max(0, y2 - width) : min(source.height, y2 + width), x1:x2] = (0, 255, 255)
+    context_array[y1:y2, max(0, x1 - width) : min(source.width, x1 + width)] = (0, 255, 255)
+    context_array[y1:y2, max(0, x2 - width) : min(source.width, x2 + width)] = (0, 255, 255)
+    context = Image.fromarray(context_array, mode="RGB")
+    context.thumbnail((1536, 1536), Image.Resampling.LANCZOS)
+
+    tiles = (
+        context,
+        source_crop.resize((tile_size, tile_size), Image.Resampling.LANCZOS),
+        Image.fromarray(target_crop.astype(np.uint8) * 255, mode="L")
+        .resize((tile_size, tile_size), Image.Resampling.NEAREST)
+        .convert("RGB"),
+        _overlay(source_crop, target_crop, (255, 64, 64), 110, 1).resize(
+            (tile_size, tile_size), Image.Resampling.LANCZOS
+        ),
+        _overlay(
+            source_crop,
+            target_crop ^ ndimage.binary_erosion(target_crop),
+            (0, 255, 255),
+            255,
+            1,
+        ).resize((tile_size, tile_size), Image.Resampling.LANCZOS),
+        _overlay(source_crop, target_crop & protected_crop, (255, 0, 255), 220, 1).resize(
+            (tile_size, tile_size), Image.Resampling.LANCZOS
+        ),
+    )
+    names = ("full_context", "source_crop", "mask", "overlay", "contour", "neighbor_overlap")
+    paths = []
+    for name, tile in zip(names, tiles, strict=True):
+        path = output_dir / f"{name}.png"
+        tile.save(path, format="PNG")  # png-strict: allow (RGB VLM evidence, never mask)
+        paths.append(path)
+    labels, component_count = ndimage.label(target)
+    component_areas = sorted(
+        (int(np.count_nonzero(labels == index)) for index in range(1, component_count + 1)),
+        reverse=True,
+    )
+    metrics = (
+        ("mask_area_px", float(target.sum())),
+        ("component_count", float(component_count)),
+        (
+            "largest_component_fraction",
+            float(component_areas[0] / max(1, int(target.sum()))) if component_areas else 0.0,
+        ),
+        ("protected_overlap_px", float(np.count_nonzero(target & protected))),
+    )
+    return WorkhorseEvidence(tuple(paths), crop, source.size, metrics)
 
 
 def _overlay(source, mask, color, alpha, contour_width):

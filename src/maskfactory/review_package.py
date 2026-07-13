@@ -40,6 +40,7 @@ def assemble_review_package(
     intake_source: dict[str, Any],
     package_root: Path,
     ambiguity_path: Path | None = None,
+    baseline_part_map_path: Path | None = None,
 ) -> Path:
     """Create the schema-valid draft instance consumed by cvat push/pull."""
     package_root = Path(package_root)
@@ -55,7 +56,10 @@ def assemble_review_package(
             raise RuntimeError("refusing to overwrite a human-corrected or approved review package")
     package_root.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source_crop_path, package_root / "source.png")
-    shutil.copy2(part_map_path, package_root / "label_map_part.png")
+    shutil.copy2(
+        baseline_part_map_path or part_map_path,
+        package_root / "label_map_part.png",
+    )
     shutil.copy2(material_map_path, package_root / "label_map_material.png")
     snapshot_draft_baseline(
         package_root,
@@ -63,10 +67,20 @@ def assemble_review_package(
         instance_id=f"p{instance_index}",
         allow_replace=True,
     )
+    if baseline_part_map_path is not None:
+        shutil.copy2(part_map_path, package_root / "label_map_part.png")
     export_binaries(package_root)
     overlays = package_root / "overlays"
     overlays.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(Path(s11_dir) / "qa_panels/all_parts.png", overlays / "all_parts.png")
+    review_overlay = Path(s11_dir) / "autonomy_review_draft/qa_panels/all_parts.png"
+    shutil.copy2(
+        (
+            review_overlay
+            if baseline_part_map_path is not None and review_overlay.is_file()
+            else Path(s11_dir) / "qa_panels/all_parts.png"
+        ),
+        overlays / "all_parts.png",
+    )
     shutil.copy2(
         Path(s09_dir) / "work/s09/disagreement.png",
         overlays / "disagreement_heatmap.png",
@@ -84,6 +98,28 @@ def assemble_review_package(
             package_root / "qa_panels",
             dirs_exist_ok=True,
         )
+    autonomy_root = package_root / "annotations" / "autonomy"
+    for name in (
+        "autonomy",
+        "autonomy_candidates",
+        "autonomy_review_draft",
+        "candidate_qa",
+        "candidate_full_qa",
+        "cloud_teacher_candidates",
+        "cloud_teacher_evidence_after",
+        "cloud_teacher_reports",
+        "correction_candidates",
+        "workhorse_evidence",
+        "workhorse_evidence_after",
+    ):
+        source_path = Path(s11_dir) / name
+        if source_path.is_dir():
+            shutil.copytree(source_path, autonomy_root / name, dirs_exist_ok=True)
+    for name in ("workhorse_report.json", "vlm_routing.json"):
+        source_path = Path(s11_dir) / name
+        if source_path.is_file():
+            autonomy_root.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_path, autonomy_root / name)
     derive_package(package_root)
     pose = json.loads(Path(pose_path).read_text(encoding="utf-8"))
     report = json.loads((package_root / "qa_report.json").read_text(encoding="utf-8"))
@@ -106,6 +142,17 @@ def assemble_review_package(
     )
     if ambiguity.shape != (height, width):
         raise ValueError("S12 ambiguity mask dimensions differ from source crop")
+    review_draft_report_path = Path(s11_dir) / "autonomy_review_draft" / "report.json"
+    review_draft_report = (
+        json.loads(review_draft_report_path.read_text(encoding="utf-8"))
+        if review_draft_report_path.is_file()
+        else {}
+    )
+    applied_drafts = {
+        str(item["label"]): item
+        for item in review_draft_report.get("applied", ())
+        if isinstance(item, dict) and item.get("label")
+    }
     parts = {}
     for label in authority.labels_for_map("part", enabled_only=True):
         if label.id == 0:
@@ -119,11 +166,9 @@ def assemble_review_package(
         authoritative_mask = visible and not (ambiguous and label.mask_type == "atomic_exclusive")
         parts[label.name] = {
             "mask_type": label.mask_type,
-            "visibility": "ambiguous_do_not_use"
-            if ambiguous
-            else "visible"
-            if visible
-            else "not_visible",
+            "visibility": (
+                "ambiguous_do_not_use" if ambiguous else "visible" if visible else "not_visible"
+            ),
             "mask_file": relative.as_posix() if authoritative_mask else None,
             "mask_sha256": (_sha256(package_root / relative) if authoritative_mask else None),
             "mask_area_px": int(mask.sum()) if authoritative_mask else None,
@@ -137,11 +182,19 @@ def assemble_review_package(
             "annotated_on": "full",
             "occlusion": {"occluded_by": [], "occludes": [], "layer": "unknown"},
             "provenance": {
-                "draft_source": "s09_weighted_consensus",
+                "draft_source": (
+                    f"s11_autonomy_review_draft:{applied_drafts[label.name]['candidate_id']}"
+                    if label.name in applied_drafts
+                    else "s09_weighted_consensus"
+                ),
                 "sam2_prompt_id": label.name if authoritative_mask else None,
                 "human_edit": False,
             },
-            "notes": "Co-subject overlap requires careful human review." if ambiguous else "",
+            "notes": (
+                "Machine-selected non-gold correction applied before CVAT; human review required."
+                if label.name in applied_drafts
+                else "Co-subject overlap requires careful human review." if ambiguous else ""
+            ),
         }
     _complete_nonmaterial_part_states(parts, package_root, authority)
     manifest = {
@@ -363,9 +416,7 @@ def _complete_nonmaterial_part_states(parts: dict[str, Any], package_root: Path,
             visibility = (
                 "n/a"
                 if label.mask_type == "projected_amodal"
-                else "visible"
-                if area
-                else "not_visible"
+                else "visible" if area else "not_visible"
             )
             entry = {
                 "mask_type": label.mask_type,
@@ -383,9 +434,11 @@ def _complete_nonmaterial_part_states(parts: dict[str, Any], package_root: Path,
                 "annotated_on": "full",
                 "occlusion": {"occluded_by": [], "occludes": [], "layer": "unknown"},
                 "provenance": {
-                    "draft_source": "derived_script"
-                    if label.mask_type == "derived_union"
-                    else "s09_weighted_consensus",
+                    "draft_source": (
+                        "derived_script"
+                        if label.mask_type == "derived_union"
+                        else "s09_weighted_consensus"
+                    ),
                     "sam2_prompt_id": None,
                     "human_edit": False,
                 },

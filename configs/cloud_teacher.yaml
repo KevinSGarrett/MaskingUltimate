@@ -1,0 +1,99 @@
+config_version: 1.0.0
+
+# Cloud execution is a separately approved, opt-in shadow subsystem. Setting this
+# true is not sufficient: a provider, credential, per-image eligibility record,
+# and remaining daily budget must also exist.
+enabled: true
+mode: shadow_only
+
+budget:
+  timezone: America/Chicago
+  operational_limit_usd: 14.50
+  hard_limit_usd: 15.00
+  emergency_reserve_usd: 0.00
+  ledger_path: logs/cloud_teacher_costs.jsonl
+  lock_timeout_sec: 5
+  maximum_calls_per_image: 3
+
+selection:
+  strategy: cascade
+  always_escalate_labels:
+    - hair
+    - left_hand_base
+    - right_hand_base
+    - left_breast
+    - right_breast
+    - left_foot_base
+    - right_foot_base
+  escalate_local_verdicts: [fail, uncertain]
+  escalate_on_autoqa_nonpass: true
+  escalate_on_component_override: true
+  minimum_disagreement_fraction: 0.03
+  primary_provider: gemini
+  disagreement_critic: openai
+  tie_breaker: anthropic
+
+governance:
+  eligibility_registry: configs/cloud_eligibility.yaml
+  require_explicit_image_opt_in: true
+  require_clear_adult: true
+  require_rights_evidence: true
+  require_source_sha256_match: true
+  may_approve_gold: false
+  may_clear_blocks: false
+  may_write_authoritative_masks: false
+  human_approval_required_for_learning: true
+  store_raw_provider_response: false
+
+providers:
+  gemini:
+    enabled: true
+    model: gemini-3.5-flash
+    api_key_env: GEMINI_API_KEY
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    input_usd_per_million: 0.75
+    output_usd_per_million: 4.50
+    maximum_reserved_cost_usd: 1.00
+    timeout_sec: 120
+    role: segmentation_polygon_teacher
+  openai:
+    enabled: true
+    model: gpt-5.6-luna
+    api_key_env: OPENAI_API_KEY
+    base_url: https://api.openai.com/v1
+    input_usd_per_million: 1.00
+    output_usd_per_million: 6.00
+    maximum_reserved_cost_usd: 1.00
+    timeout_sec: 120
+    role: semantic_disagreement_critic
+  anthropic:
+    enabled: true
+    model: claude-sonnet-5
+    api_key_env: ANTHROPIC_API_KEY
+    base_url: https://api.anthropic.com/v1
+    input_usd_per_million: 2.00
+    output_usd_per_million: 10.00
+    maximum_reserved_cost_usd: 1.00
+    timeout_sec: 120
+    role: high_resolution_tie_breaker
+
+learning:
+  records_path: qa/teacher_learning/resolutions.jsonl
+  minimum_balanced_records_for_prompt_exemplars: 50
+  minimum_balanced_records_for_lora_candidate: 500
+  frozen_holdout_fraction: 0.20
+  require_human_approved_gold: true
+  require_frozen_package: true
+  cloud_outputs_are_training_authority: false
+
+evaluation:
+  minimum_cases: 200
+  minimum_serious_defect_recall: 0.95
+  minimum_overall_defect_recall: 0.90
+  minimum_precision: 0.80
+  maximum_false_pass_rate: 0.02
+  minimum_incremental_recall_over_local: 0.05
+  minimum_correction_usefulness: 0.70
+  maximum_cost_per_useful_correction_usd: 0.50
+  require_frozen_human_truth: true
+  promotion_grants_mask_authority: false

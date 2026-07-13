@@ -1,0 +1,13 @@
+schema_version: 1.0.0
+default: deny
+
+# Add records only after Kevin explicitly approves cloud transmission for that
+# exact governed source hash. No wildcard or origin-wide admission is supported.
+images:
+  img_684faa498391:
+    source_sha256: 684faa49839192aa2d2bf93d0919e3895280f1acd0555c1360bfaaff4753ded9
+    age_safety: clear_adult
+    rights_evidence: Kevin supplied the image and requested its use as the Image1 golden reference; external license artifact is not recorded.
+    approved_by: kevin
+    approved_at: 2026-07-12T23:57:36Z
+    providers: [gemini, openai, anthropic]

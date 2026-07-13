@@ -16,6 +16,7 @@ import numpy as np
 import yaml
 from PIL import Image
 
+from ..autonomy.review_draft import CandidateQaOutcome
 from ..cvat_bridge.client import CvatClient
 from ..cvat_bridge.push import push_images
 from ..datasets.active_learning import run_active_learning
@@ -977,9 +978,55 @@ def build_production_runners(
         }
 
     def s11(context: StageContext) -> Mapping[str, Any]:
+        s01_dir = prior(context, "S01")
+        people = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
+        person = selected_person(people)
         pose = json.loads((context.prior_stage_dir("S04") / "pose133.json").read_text())
+
+        def validate_autonomy_map(map_path: Path, tag: str) -> CandidateQaOutcome:
+            safe_tag = "".join(
+                character if character.isalnum() or character in "-_" else "_" for character in tag
+            )
+            qa_dir = context.output_dir / "candidate_full_qa" / safe_tag
+            report = run_s10_production(
+                image_id=context.image_id,
+                part_map_path=map_path,
+                material_map_path=context.prior_stage_dir("S09") / "label_map_material.png",
+                disagreement_path=context.prior_stage_dir("S09") / "work/s09/disagreement.png",
+                silhouette_path=context.prior_stage_dir("S02") / "person_full_visible.png",
+                pose_path=context.prior_stage_dir("S04") / "pose133.json",
+                parsing_metrics_path=context.prior_stage_dir("S03") / "parsing_metrics.json",
+                sam2_metrics_path=context.prior_stage_dir("S07") / "sam2_metrics.json",
+                densepose_path=context.prior_stage_dir("S08.5") / "densepose_iuv.png",
+                image_manifest_path=prior(context, "S09.5") / "image_manifest.json",
+                context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
+                person_bbox_xyxy=tuple(person["bbox_xyxy"]),
+                source_crop_path=s01_dir / instance_name / "person_ctx.png",
+                output_dir=qa_dir,
+                multi_instance_inputs=(
+                    build_multi_instance_qc_inputs(
+                        context.image_id,
+                        people=people["persons"],
+                        work_root=Path(shared_work_root),
+                        image_manifest_path=prior(context, "S09.5") / "image_manifest.json",
+                        configured_cap=int(config["stages"]["S01"]["max_instances_per_image"]),
+                        part_map_overrides={instance_name: map_path},
+                    )
+                    if shared_work_root is not None
+                    else None
+                ),
+                failure_queue_path=None,
+                failure_instance_id=instance_name,
+            )
+            blocks = tuple(
+                str(check["id"])
+                for check in report["checks"]
+                if check.get("result") == "fail" and check.get("severity") == "BLOCK"
+            )
+            return CandidateQaOutcome(blocks, str(qa_dir / "qa_report.json"), report["overall"])
+
         status = run_s11_production(
-            source_crop_path=prior(context, "S01") / instance_name / "person_ctx.png",
+            source_crop_path=s01_dir / instance_name / "person_ctx.png",
             part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
             s10_report_path=context.prior_stage_dir("S10") / "qa_report.json",
             output_dir=context.output_dir,
@@ -989,6 +1036,7 @@ def build_production_runners(
             failure_instance_id=instance_name,
             workhorse_enabled=True,
             auto_load_correction_refiner=True,
+            map_qa_validator=validate_autonomy_map,
         )
         return {
             "vlm_enabled": status["enabled"],
@@ -1011,14 +1059,29 @@ def build_production_runners(
             )
         person = selected_person(people)
         package_root = ROOT / "data/packages" / context.image_id / "instances" / instance_name
+        s09_part_map = context.prior_stage_dir("S09") / "label_map_part.png"
+        s11_dir = context.prior_stage_dir("S11")
+        autonomy_review_map = s11_dir / "autonomy_review_draft" / "label_map_part.png"
+        autonomy_report_path = s11_dir / "autonomy_review_draft" / "report.json"
+        autonomy_report = (
+            json.loads(autonomy_report_path.read_text(encoding="utf-8"))
+            if autonomy_report_path.is_file()
+            else {}
+        )
+        review_part_map = (
+            autonomy_review_map
+            if autonomy_report.get("promoted_for_human_review") is True
+            and autonomy_review_map.is_file()
+            else s09_part_map
+        )
         assemble_review_package(
             image_id=context.image_id,
             instance_index=person_index,
             source_crop_path=s01_dir / instance_name / "person_ctx.png",
-            part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
+            part_map_path=review_part_map,
             material_map_path=context.prior_stage_dir("S09") / "label_map_material.png",
             s09_dir=context.prior_stage_dir("S09"),
-            s11_dir=context.prior_stage_dir("S11"),
+            s11_dir=s11_dir,
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             person_bbox_xyxy=tuple(person["bbox_xyxy"]),
             context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
@@ -1026,6 +1089,7 @@ def build_production_runners(
             intake_source=manifest["source"],
             package_root=package_root,
             ambiguity_path=context.prior_stage_dir("S03") / "ambiguous_do_not_use.png",
+            baseline_part_map_path=s09_part_map,
         )
         task_ids = push_images(
             CvatClient.from_config(ROOT / "configs/cvat.yaml"),
@@ -1512,14 +1576,30 @@ def run_multi_person_production(
                 index = int(person["person_index"])
                 name = f"p{index}"
                 instance_root = work_root / "instances" / name
+                s09_root = instance_root / "s09" / image_id
+                s11_root = instance_root / "s11" / image_id
+                s09_part_map = s09_root / "label_map_part.png"
+                autonomy_review_map = s11_root / "autonomy_review_draft" / "label_map_part.png"
+                autonomy_report_path = s11_root / "autonomy_review_draft" / "report.json"
+                autonomy_report = (
+                    json.loads(autonomy_report_path.read_text(encoding="utf-8"))
+                    if autonomy_report_path.is_file()
+                    else {}
+                )
+                review_part_map = (
+                    autonomy_review_map
+                    if autonomy_report.get("promoted_for_human_review") is True
+                    and autonomy_review_map.is_file()
+                    else s09_part_map
+                )
                 package_assembler(
                     image_id=image_id,
                     instance_index=index,
                     source_crop_path=work_root / "s01" / image_id / name / "person_ctx.png",
-                    part_map_path=instance_root / "s09" / image_id / "label_map_part.png",
-                    material_map_path=instance_root / "s09" / image_id / "label_map_material.png",
-                    s09_dir=instance_root / "s09" / image_id,
-                    s11_dir=instance_root / "s11" / image_id,
+                    part_map_path=review_part_map,
+                    material_map_path=s09_root / "label_map_material.png",
+                    s09_dir=s09_root,
+                    s11_dir=s11_root,
                     pose_path=instance_root / "s04" / image_id / "pose133.json",
                     person_bbox_xyxy=tuple(person["bbox_xyxy"]),
                     context_bbox_xyxy=tuple(person["context_bbox_xyxy"]),
@@ -1527,6 +1607,7 @@ def run_multi_person_production(
                     intake_source=manifest["source"],
                     package_root=package_roots[name],
                     ambiguity_path=instance_root / "s03" / image_id / "ambiguous_do_not_use.png",
+                    baseline_part_map_path=s09_part_map,
                 )
             client = (
                 cvat_client_factory()
@@ -1599,6 +1680,7 @@ def build_multi_instance_qc_inputs(
     work_root: Path,
     image_manifest_path: Path,
     configured_cap: int,
+    part_map_overrides: Mapping[str, Path] | None = None,
 ) -> MultiInstanceQcInputs:
     """Project every instance's S02/S09/contact evidence to one full source canvas."""
     promoted = sorted(
@@ -1629,7 +1711,12 @@ def build_multi_instance_qc_inputs(
         x1, y1, x2, y2 = (int(value) for value in person["context_bbox_xyxy"])
         if not (0 <= x1 < x2 <= shape[1] and 0 <= y1 < y2 <= shape[0]):
             raise SemanticStageError(f"S10 invalid context bbox for {name}")
-        part = read_mask(work_root / "instances" / name / "s09" / image_id / "label_map_part.png")
+        part_path = (
+            Path(part_map_overrides[name])
+            if part_map_overrides is not None and name in part_map_overrides
+            else work_root / "instances" / name / "s09" / image_id / "label_map_part.png"
+        )
+        part = read_mask(part_path)
         if part.shape != (y2 - y1, x2 - x1):
             raise SemanticStageError(f"S10 {name} PART map differs from context geometry")
         full_union = np.zeros(shape, dtype=bool)

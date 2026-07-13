@@ -37,9 +37,11 @@ def _package(root: Path, name: str, *, retain_until: str, referenced: bool = Fal
     (package / "manifest.json").write_text(
         json.dumps(
             {
-                "files": {"masks@v1/old.png": "a" * 64}
-                if referenced
-                else {"masks/current.png": "b" * 64}
+                "files": (
+                    {"masks@v1/old.png": "a" * 64}
+                    if referenced
+                    else {"masks/current.png": "b" * 64}
+                )
             }
         ),
         encoding="utf-8",

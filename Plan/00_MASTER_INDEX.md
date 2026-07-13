@@ -22,7 +22,7 @@ boundaries, hair, feet/toes, occlusion, and clothing — and which ultimately tr
 custom fine-tuned segmentation models and integrates directly into ComfyUI.
 
 Every decision has been made. There are no open questions. A developer (or AI coding agent)
-can build the entire system from these 18 documents without asking a single design question.
+can build the entire system from these 21 documents without asking a single design question.
 
 ---
 
@@ -48,6 +48,9 @@ can build the entire system from these 18 documents without asking a single desi
 | 15 | 15_RISKS_OPERATIONS_RUNBOOK.md | Risk register, daily operations, troubleshooting, backup policy, glossary |
 | 16 | 16_EXTERNAL_FOUNDATION_BOOTSTRAP.md | Existing model, workflow, and dataset bootstrap plan for Sapiens, SCHP, DensePose, DWPose, SAM2, Civitai, and public parsing datasets |
 | 17 | 17_MULTI_PERSON_MULTI_CHARACTER_MASKING_SPEC.md | Multi-instance masking: person promotion/ranking, per-instance package layout, interperson occlusion, new QA checks, split-integrity rule, Phase P8 |
+| 18 | 18_ADULT_ANATOMY_ONTOLOGY_V2_SPEC.md | Approved body_parts_v2 extension for observable adult anatomy, clothed/nude visibility semantics, v1 migration, QA, CVAT, training, serving, and ComfyUI |
+| 19 | 19_MULTI_PROVIDER_TEACHER_AND_CONTINUOUS_IMPROVEMENT_SPEC.md | Governed local-Qwen + Gemini + OpenAI + Anthropic shadow teachers, correction tools, <$20/day budget circuit breaker, frozen evaluation, and human-gold-only improvement loop |
+| 20 | 20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md | Candidate tournaments, correction rounds, machine-verified masks, label/context-specific 95%-confidence certificates, random audits, drift revocation, and calibrated autonomous acceptance |
 
 ---
 
@@ -93,3 +96,4 @@ The system is DONE when all of the following are true:
 - **Bootstrapping from existing tools/datasets:** doc 16 → `Plan\Civitai\README.md` → instructions 09 → items `MF-P0-09.*` through `MF-P0-12.*`.
 - **Multi-person / multi-character images:** doc 17 (full spec) → items `Plan\Items\10_ITEMS_P8_MULTI_PERSON_MASKING.md` (Phase P8, builds after the single-person system is proven).
 - **Adding a new label later:** doc 02 §9 (ontology change procedure). Never edit labels ad hoc.
+- **Adult-anatomy ontology v2:** doc 18 plus `Plan\OntologyV2\IMPLEMENTATION_CHECKLIST.md`; the active v1 map must not change until the migration gate passes.

@@ -70,12 +70,15 @@ def _sapiens_tiled(
     finally:
         del model
         torch.cuda.empty_cache()
-    return np.divide(
-        total,
-        weights[None, :, :],
-        out=np.zeros_like(total),
-        where=weights[None, :, :] > 0,
-    ), tile_count
+    return (
+        np.divide(
+            total,
+            weights[None, :, :],
+            out=np.zeros_like(total),
+            where=weights[None, :, :] > 0,
+        ),
+        tile_count,
+    )
 
 
 def run(

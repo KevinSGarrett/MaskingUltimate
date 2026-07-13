@@ -484,7 +484,7 @@ def run_pipeline(
             results.append(execution)
             # A freshly produced artifact generation invalidates every later stage in
             # this selected topological chain, even when its own configuration did
-            # not change. Reusing a downstream cache in that situation can combine
+            # not change.  Reusing a downstream cache in that situation can combine
             # incompatible geometry from two generations.
             if execution.status == "complete":
                 upstream_changed = True

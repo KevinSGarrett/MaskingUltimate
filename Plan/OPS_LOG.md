@@ -4069,6 +4069,93 @@ optional work:                   P5 hair/chest/AWS triggers and P7 synthetic boo
 authority preserved:             no source acquisition, age override, CVAT clicks, human-review impersonation, paid launch, or active-VHD mutation occurred
 evidence:                        qa/live_verification/remaining_dependency_audit_20260712.json
 
+## 2026-07-12 — Multi-provider shadow teachers and gold-only improvement controls implemented
+
+**Result:** The local-Qwen/Gemini/OpenAI/Anthropic strategy is implemented as disabled-by-default,
+shadow-only infrastructure. No paid API request or external image transmission occurred.
+
+provider layer:                  strict Gemini/OpenAI/Anthropic JSON adapters over six independent bounded images
+authority:                       candidates only; no gold approval, block clearance, quick-pass authority, or authoritative map write
+eligibility:                     default deny; exact source SHA-256, clear-adult authority, rights evidence, approver, timestamp, and provider allowlist required
+budget:                          hash-chained locked ledger; $19.50 hard daily cap; $1 pre-dispatch reservation; unknown post-dispatch usage charges full reservation
+candidate tools:                 normalized polygons or bounded SAM points; empty/geometry/area/protected-overlap safeguards; isolated output only
+learning:                        frozen human-approved gold only; image-disjoint holdout; balanced 50-record prompt and 500-record LoRA-candidate readiness gates
+evaluation:                      offline >=200-case human-truth gate measures serious/overall recall, precision, false passes, incremental recall, correction usefulness, and useful-correction cost
+operations:                      nonbillable cloud-status, frozen evaluator, gold-resolution harvest, and distillation-readiness CLI commands
+specification:                   doc 19 added; docs 10 and 12 amended; default configs keep all providers and cloud execution disabled
+verification at log time:        64 focused cloud/S11/workhorse/VLM/architecture tests passed; Ruff format/check clean; monolithic host closed stdout before completion, so no full-suite claim; no real-provider quality claim made
+
+## 2026-07-12 — Kevin Image1 reference collection normalized without false gold promotion
+
+**Result:** `Golden/Image1` was imported into a lossless, hash-verified MaskFactory reference tree. It
+is useful evidence and a calibration seed, but it is not counted as a full package gold.
+
+source:                           Original.png, 1496x4376 RGB, image_id img_684faa498391
+input inventory:                  65 BW masks + 65 solid overlays + source-colored layer views and export logs
+encoding proof:                   all 65 BW masks strict grayscale `{0,255}`; every solid changed-pixel region equals its BW mask at IoU 1.0
+normalized output:                Golden/Image1/MaskFactory_reference; 65 compact L-mode masks; verifier PASS; total normalized tree about 0.66 MB
+ontology mapping:                 19 direct PART candidates + skin/top_garment/underwear_bottom material candidates
+honest defects:                   34 required PART targets missing/not direct; 25 direct-candidate overlaps; Layer 1 duplicate; ambiguous left-index/hand/toe names
+authority:                        user-supplied reference requiring MaskFactory adjudication; not training, package gold, or cloud-teacher truth
+cloud readiness:                  exact source registered clear-adult for Gemini/OpenAI/Anthropic; all three credentials detected locally; providers and cloud execution remain disabled; spend $0
+implementation:                   golden_reference.py, golden_image1_mapping.yaml, CLI import/verify, focused tests
+verification:                     61 selected reference/cloud/S11/workhorse/VLM tests pass; Ruff format/check clean; tracker validation pending log update
+security note:                    provider credentials are read without logging and legacy `Provider: key` syntax is supported; canonical `*_API_KEY=` remains preferred
+
+## 2026-07-12 — First authorized multi-provider Image1 mask audit completed
+
+**Result:** Real Gemini, OpenAI, and Anthropic image contracts were repaired and exercised on Kevin's
+human-authored hair reference. No provider received mask or gold authority.
+
+authorization:                    Kevin confirmed transmission rights and approved a strict $15/day ceiling
+budget enforcement:               config hard limit reduced to exactly $15; final conservative ledger $13.049201 committed, $1.950799 unused
+contract smoke:                    model-list credentials/entitlements valid; first payloads exposed unsupported shared JSON-schema keywords
+contract repair:                   common schema reduced to provider-supported structure; strict coordinate/confidence/taxonomy validation remains local
+Gemini result:                     pass, confidence .95, $0.0065415, 19.846 s
+OpenAI result:                     fail, confidence .86, $0.012737, 10.755 s; background/hair-edge/loose-boundary claims
+Anthropic result:                  pass, confidence .83, $0.029922, 16.650 s
+human-reference score:             Gemini/Anthropic agree with Kevin's asserted pass; OpenAI is a one-case false positive
+correction test:                   OpenAI points invoked local SAM2; candidate attempted 13.002578x changed area versus .75 maximum and was rejected before write
+failure accounting:               invalid/interrupted dispatched calls charged full $1 reservations; no retry hides or understates uncertain billing
+authority:                         original hair reference unchanged; no candidate created; no quick pass; no promotion claim from one case
+evidence:                          qa/teacher_learning/image1_live_comparison_20260712.json plus provider reports and SAM rejection report
+
+## 2026-07-12 — Progressive autonomous mask tournament and 95%-confidence gate implemented
+
+**Result:** MaskFactory now has a deterministic control plane for graduating labels from residual review
+to machine-verified candidates and eventually calibrated autonomous acceptance.
+
+tournament:                       max 12 candidates / 3 rounds; consensus, boundary, pose, source diversity, critic support
+hard vetoes:                      invalid format, BLOCK, protected/exclusive overlap, component overflow, <3 independent sources
+winner gate:                      score >=.88 and margin >=.03; critic disagreement remains residual
+certificate:                      one-sided 95% Wilson upper bounds <=1% overall and <=.5% serious false accept
+scope:                            exact label + context + pipeline fingerprint; hash-bound; expires after 30 days
+effective evidence:              >=300 audited autoaccepts minimum; serious bound normally requires about 600 zero-serious-failure cases
+lifecycle:                       residual_human_queue -> machine_verified_candidate -> calibrated_auto_accepted; none is human gold
+audit reduction:                 calibrated strata use deterministic 2% random audit, minimum 20/week, with immediate serious-failure revocation
+training:                        calibrated pseudo-labels weight .25; human gold 1.0; no machine labels in holdouts/calibration
+S11 integration:                autonomy mode/status emitted; residual-only without exact certificate
+CLI:                            autonomy build-certificate; autonomy tournament
+verification:                    71 focused autonomy/cloud/reference/S11/VLM tests pass; Ruff clean after import-order repair
+honest readiness:                implementation is ready; no label/context currently has the hundreds of audits required for a 95%-confidence certificate
+
+## 2026-07-12 - Autonomous S11 lifecycle, auditing, and retraining wiring completed
+
+**Result:** The autonomy control plane now consumes real S11 mask files and operates through recurring
+machine lifecycle, audit, revocation, and train-only pseudo-label contracts rather than report-only logic.
+
+candidate adapters:              strict-PNG hashes, consensus IoU, boundary F, topology, protected/exclusive overlap, pose/critic evidence, and source provenance
+S11 execution:                   baseline/local/cloud candidates isolated per label; deterministic tournament writes schema-validated autonomy sidecars
+lifecycle authority:             residual_human_queue / machine_verified_candidate / calibrated_auto_accepted remain explicitly non-gold
+certificate safety:              exact label/context/pipeline fingerprint, expiry, and revocation overlays checked before autoaccept or pseudo-label use
+weekly operations:               registered weekly QA script creates deterministic pre-outcome 2% audit queues with minimum 20 samples
+audit ingestion:                 exact queue coverage required; serious false accepts and drift create immediate stratum revocation markers
+retraining control:              thresholded retraining tasks require frozen human holdout evaluation before promotion
+pseudo-label isolation:          only calibrated, unrevoked, hash-valid winners enter train-only manifests at .25 weight; any human-holdout collision hard-fails
+CLI:                             autonomy build-audit-queue, process-audits, build-pseudo-dataset added to certificate/tournament commands
+verification:                    78 focused autonomy/cloud/reference/S11/VLM/architecture/operations tests passed; Ruff format and lint clean
+honest readiness:                operational wiring is complete for these paths; statistical 95%-confidence remains unclaimed until each stratum accumulates the required independent human audits
+
 ## 2026-07-12 - Kevin-confirmed S02 reviews recovered two source drafts
 
 **Result:** PASS - both pending S02 semantic reviews are sealed, applied, and replayed through D1.
@@ -4129,3 +4216,16 @@ truth authority:                  input img_7b7a3c7d5dd3/p2 remains in_review an
 verification:                     30 focused ComfyUI/export tests passed; Ruff and Black clean
 tracker:                          MF-P6-03.02 advances to 98% but remains blocked until the same shipped human_approved_gold-default graph runs against an actually approved package
 evidence:                         qa/live_verification/comfy_bodypart_conditioned_draft_smoke_20260713.json
+
+## 2026-07-13 - Progressive-autonomy certificate and revocation scope hardened
+
+**Result:** PASS - two pre-publication authority defects were repaired without granting machine gold.
+
+certificate defect:              S11 previously reused the VLM gate fingerprint as the autonomy pipeline fingerprint, so controller/source/config changes outside that gate could leave an old certificate apparently in scope
+certificate repair:              the runtime fingerprint now binds the VLM gate, full MaskFactory source tree, autonomy/VLM/cloud/pipeline/ontology configs, model registry, dependency lock, and project manifest
+revocation defect:               label/context-only marker filenames allowed two pipeline fingerprints in one audit to overwrite one another
+revocation repair:               markers are now fingerprint-specific; legacy markers remain recognized, and a two-fingerprint regression proves both scopes stay revoked
+evidence drift repair:            the ontology-v2 no-go report was refreshed from the live 19-record failure queue (18 QC-014, one QC-035) with exact queue hash 05d7817e65b876a6bb607dcea61d344abadcef5ce8015e1accf70f105f86ef39
+authority:                        machine_verified_candidate and calibrated_auto_accepted remain non-gold; approved_gold_count remains 0 and no human-review gate changed
+verification:                     750 full tests passed; Ruff clean; exact locked Black 26.5.1 reports all 297 Python/tool files format-clean
+evidence:                         qa/live_verification/autonomy_certificate_scope_hardening_20260713.json

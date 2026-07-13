@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-12T20:23:51+00:00",
+    "generated_at": "2026-07-13T10:47:33+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 393,
     "total_tracked_including_orphaned": 393
@@ -1421,7 +1421,7 @@
           "text": "Current sandbox-identity doctor after owned-artifact cleanup: PASS=7 WARN=1 FAIL=3. Disk improved from FAIL at 72.5 GiB to WARN at 75.3 GiB, clearing ingest stop. CVAT API/project, Nuclio SAM2, Ollama image, PNG, SQLite, and GPU lock pass. The three failures are exclusively the current identity's unavailable Ubuntu-22.04 registration; historical full-machine all-green evidence remains authoritative for completion."
         },
         {
-          "ts": "2026-07-13T01:25:23+00:00",
+          "ts": "2026-07-13T01:23:03+00:00",
           "actor": "ai_agent",
           "text": "Restored-machine doctor now reports PASS=10 WARN=1 FAIL=0 after repairing Nuclio storage-reader state, warming the local Qwen image model, and reclaiming disk from 20.2 to 85.9 GiB without deleting governed data. The sole WARN is the specified <150 GiB junction-move threshold; the <75 GiB ingest block is cleared."
         }
@@ -1429,7 +1429,7 @@
       "evidence": "qa/live_verification/restored_machine_doctor_20260713.json and qa/reports/cvat_sam2_smoke.json; full WSL suite passes and Ruff check/format are clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:23+00:00",
+      "updated_at": "2026-07-13T01:23:03+00:00",
       "orphaned": false
     },
     "MF-P0-08.01": {
@@ -2780,6 +2780,11 @@
       "percent_complete": 0,
       "notes": [
         {
+          "ts": "2026-07-13T00:01:16+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 Kevin supplied a human-authored 65-layer Image1 reference. Structural audit PASSed all BW/solid equivalence and strict-mask checks, but the set does not yet satisfy SOP-1: shoulder/elbow/forearm/wrist, knee/ankle, separate head/neck and other atomics are absent, 25 candidate overlaps require adjudication, and several names are ambiguous. Preserved losslessly under Golden/Image1/MaskFactory_reference; no human clicks or approval evidence were impersonated, so item remains blocked."
+        },
+        {
           "ts": "2026-07-13T10:03:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-13: Automated preparation is complete for the first governed single-person package (img_2ca794d19be9/p0): QC035 PASS, D1 56-atomic contract present, package in_review, live CVAT task/job 21 state=new. Evidence: qa/live_verification/five_single_person_cvat_handoffs_20260713.json. human_approved remains false."
@@ -2882,7 +2887,7 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:21+00:00",
+          "ts": "2026-07-12T23:59:18+00:00",
           "actor": "ai_agent",
           "text": "Registered and queried the live daily 02:00 MaskFactory_NightlyBackupIntegrity task under KEVIN\\kevin. Its action preserves B5-before-B1 ordering and WSL integrity sampling. No D: media/run is claimed; MF-P1-09.05 remains the restore/media gate."
         }
@@ -2890,7 +2895,7 @@
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:21+00:00",
+      "updated_at": "2026-07-12T23:59:18+00:00",
       "orphaned": false
     },
     "MF-P1-09.02": {
@@ -2909,7 +2914,7 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:22+00:00",
+          "ts": "2026-07-12T23:59:19+00:00",
           "actor": "ai_agent",
           "text": "The registered nightly task invokes the tested seven-rotation online SQLite B5 backup before every robocopy mirror."
         }
@@ -2917,7 +2922,7 @@
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:22+00:00",
+      "updated_at": "2026-07-12T23:59:19+00:00",
       "orphaned": false
     },
     "MF-P1-09.03": {
@@ -2936,7 +2941,7 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:22+00:00",
+          "ts": "2026-07-12T23:59:19+00:00",
           "actor": "ai_agent",
           "text": "The registered nightly action invokes Ubuntu-22.04 WSL verify-package --root data/packages --sample 10 after B5/B1; the distro is now live and visible to this account."
         }
@@ -2944,7 +2949,7 @@
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:22+00:00",
+      "updated_at": "2026-07-12T23:59:19+00:00",
       "orphaned": false
     },
     "MF-P1-09.04": {
@@ -2963,7 +2968,7 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:22+00:00",
+          "ts": "2026-07-12T23:59:20+00:00",
           "actor": "ai_agent",
           "text": "Registered and queried the enabled Monday 09:00 LIMITED offline-SSD cold-copy reminder task."
         }
@@ -2971,7 +2976,7 @@
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:22+00:00",
+      "updated_at": "2026-07-12T23:59:20+00:00",
       "orphaned": false
     },
     "MF-P1-09.05": {
@@ -5606,7 +5611,7 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:23+00:00",
+          "ts": "2026-07-12T23:59:20+00:00",
           "actor": "ai_agent",
           "text": "Registered and queried the enabled nightly manifest-lint and weekly QA-mining tasks alongside the two P1 operations tasks under the live Kevin account."
         }
@@ -5614,7 +5619,7 @@
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:23+00:00",
+      "updated_at": "2026-07-12T23:59:20+00:00",
       "orphaned": false
     },
     "MF-P4-04.01": {
@@ -5714,12 +5719,17 @@
           "ts": "2026-07-12T09:02:25+00:00",
           "actor": "ai_agent",
           "text": "Verification count correction after adding the CLI contract regression: focused VLM suite is 18 passed (9 calibration-gate tests plus 9 client/router/config tests); full suite remains green."
+        },
+        {
+          "ts": "2026-07-13T00:01:15+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 Kevin supplied Golden/Image1. The new golden-reference importer normalized 65 strict BW masks, proved each solid-overlay changed-pixel region exactly equivalent, and produced a hash-verifying reference manifest (img_684faa498391). It maps 19 direct PART candidates and 3 material candidates, but honestly records 34 missing/non-direct required PART targets, 25 mapped PART overlaps, one exact duplicate, and ambiguous left-index/hand/toe layers. It is a useful real-image calibration seed but is not a frozen complete package and cannot satisfy the 20-distinct-gold gate. 61 selected tests and Ruff pass."
         }
       ],
       "evidence": "Implementation and tests: src/maskfactory/vlm/eval.py, src/maskfactory/cli.py, tests/test_vlm_eval_gate.py. Durable contract audit: qa/live_verification/vlm_gold_calibration_builder_20260712.json. The builder is verified; the item remains partial until 20 approved distinct gold images exist and the real qa/vlm_eval corpus is built.",
       "blocked_reason": "NEEDS KEVIN: the fail-closed builder requires exactly 20 distinct frozen QA-passing human-approved gold packages. Current approved_gold_count is 0; deprecated synthetic panels are diagnostic-only and cannot be substituted.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:53+00:00",
+      "updated_at": "2026-07-13T00:01:15+00:00",
       "orphaned": false
     },
     "MF-P4-05.02": {
@@ -5819,12 +5829,52 @@
           "ts": "2026-07-12T20:19:33+00:00",
           "actor": "ai_agent",
           "text": "2026-07-12 adversarial replacement-model check did not justify promotion. Qwen3-VL 8B instruct falsely passed known-bad real img_6d6bb33f01a1 left_forearm at confidence 1.0 in 266.9 s; Qwen3.5 9B timed out on six images at 180 s and three images at 300 s. S11 now gives label-specific deterministic BLOCK/ROUTE/WARN findings veto authority over model passes, sends clean source plus overlay to whole-image review, disables thinking for structured review, and fingerprints controller/renderer/client/prompt code. Evidence: qa/live_verification/vlm_workhorse_model_controller_review_20260712.json. 31 focused tests plus Ruff format/check pass. Real approved-gold calibration remains absent and this item remains 25%."
+        },
+        {
+          "ts": "2026-07-12T20:54:55+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 multi-provider teacher foundation added without claiming calibration: cloud execution remains disabled/default-deny and shadow-only; Gemini/OpenAI/Anthropic adapters use six bounded images, exact-hash eligibility, isolated polygon/SAM proposals, and a hash-chained .50/day circuit breaker. Human-gold-only resolution harvesting, image-disjoint prompt/LoRA readiness, and a >=200-case incremental-value gate were implemented. 64 focused VLM/cloud/S11 tests plus Ruff format/check pass; the monolithic pytest host again closed stdout before completion. No paid call or image transmission occurred; approved-gold calibration remains absent and status stays blocked at 25%."
+        },
+        {
+          "ts": "2026-07-13T00:33:26+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 Kevin authorized Image1 transmission and a /day API ceiling. First real multi-provider hair-reference audit completed after provider-schema repair: Gemini pass .95 (.0065415/19.846s), OpenAI fail .86 (.012737/10.755s), Anthropic pass .83 (.029922/16.650s). Against Kevin's asserted pass reference, OpenAI is a one-case false positive; its point-guided SAM2 proposal attempted 13.002578x area change and was rejected by the .75 safeguard before any candidate write. Conservative ledger is .049201 due full  accounting for failed/interrupted dispatched calls, leaving .950799. Evidence qa/teacher_learning/image1_live_comparison_20260712.json. One case cannot satisfy calibration; status remains blocked."
+        },
+        {
+          "ts": "2026-07-13T00:53:30+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 progressive autonomy control plane implemented under doc 20: bounded 12-candidate/3-round tournament, deterministic hard vetoes, score/margin gates, exact label/context/pipeline 95%-confidence Wilson certificates, 30-day expiry, drift/serious-failure revocation policy, machine_verified_candidate and calibrated_auto_accepted non-gold tiers, 2% random audit policy, and .25-weight pseudo-label training isolation. S11 reports residual-only autonomy until a valid certificate exists. 67 focused tests and Ruff pass. No label is claimed 95%-certified because Image1 supplies one reference and the gate requires hundreds of independent audited autoaccepts."
+        },
+        {
+          "ts": "2026-07-13T00:55:52+00:00",
+          "actor": "ai_agent",
+          "text": "Verification follow-up: bounded autonomous correction controller now requests novel tool candidates between tournaments, deduplicates by candidate ID and mask hash, and stops on selection, no novel candidate, 3 rounds, or 12 candidates. Final selected suite is 69 passed with Ruff clean. This expands implementation capability but does not change the honest absence of a 95%-confidence label certificate."
+        },
+        {
+          "ts": "2026-07-13T00:58:06+00:00",
+          "actor": "ai_agent",
+          "text": "Final autonomy hardening: deterministic confidence-blind 2% audit sampling (minimum 20/week) and immediate certificate revocation on the first serious false accept or distribution drift are now implemented and tested. Final selected verification is 71 passed with Ruff clean. Current performance remains uncertified pending the required independent audited cases."
+        },
+        {
+          "ts": "2026-07-13T01:25:53+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-12 autonomy production wiring extended: S11 now adapts real baseline/local/cloud masks into the bounded tournament and writes schema-validated non-gold lifecycle sidecars. Exact scoped certificates plus revocation overlays gate autoaccept. Weekly deterministic audit queues, exact outcome ingestion, immediate serious/drift revocation, thresholded retraining plans, and hash-verified train-only .25-weight pseudo-label manifests with hard human-holdout exclusion are implemented. 78 focused autonomy/cloud/reference/S11/VLM/architecture/operations tests and Ruff pass. The item remains blocked because no label/context has the required hundreds of independent human-truthed audits and the governed 40-panel Qwen calibration corpus is still absent."
+        },
+        {
+          "ts": "2026-07-13T11:07:15+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-13 pre-publication autonomy audit repaired two fail-open risks: S11 certificates now bind a complete source/config/model/lock fingerprint rather than only the VLM gate, and revocation markers are pipeline-fingerprint-specific so scopes cannot overwrite each other. The live ontology-v2 report was also reconciled to the 19-record queue. Full regression: 750 passed; Ruff clean; locked Black 26.5.1 clean across 297 files. Statistical Qwen authority remains unclaimed."
+        },
+        {
+          "ts": "2026-07-13T11:14:39+00:00",
+          "actor": "ai_agent",
+          "text": "Log correction: an earlier tracker note lost the currency amount through shell interpolation. Kevin authorized Image1 transmission under a strict $15/day API ceiling; the live run conservatively committed $13.049201 and left $1.950799 unused. This correction changes no authority or calibration status."
         }
       ],
-      "evidence": "qa/live_verification/vlmqa_run_cli_20260712.json proves live fail-closed gate enforcement and no CVAT side effect. Actual qwen/fallback scoring against the governed 40-panel approved-gold corpus remains required.",
+      "evidence": "qa/live_verification/vlmqa_run_cli_20260712.json proves live fail-closed VLM gate enforcement. qa/live_verification/autonomy_certificate_scope_hardening_20260713.json proves complete pipeline certificate binding, collision-free multi-fingerprint revocation, refreshed live evidence, 750 full tests, Ruff, and locked Black. Actual qwen/fallback scoring against the governed 40-panel approved-gold corpus remains required.",
       "blocked_reason": "NEEDS KEVIN: Qwen and fallback scoring cannot be authoritative until MF-P4-05.01 has a real 20-gold/40-panel corpus. Current live diagnostics correctly fail the gate.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:53+00:00",
+      "updated_at": "2026-07-13T11:14:39+00:00",
       "orphaned": false
     },
     "MF-P4-06.01": {
@@ -6164,15 +6214,15 @@
           "text": "Resolved the obsolete 56/57 blocker from approved doc 18: active v1 IDs 0..55 include background 0 and therefore require 56 logits; v2 IDs 0..64 require 65. Both governed v1 configs now match the adapter's 56-class vocabulary and compile directly. Final 1% is only the real pinned full-MMCV CUDA BaseSegDataset execution in Kevin's WSL runtime; training-doctor confirms this Windows process lacks that stack."
         },
         {
-          "ts": "2026-07-13T01:25:23+00:00",
+          "ts": "2026-07-13T00:23:34+00:00",
           "actor": "ai_agent",
           "text": "Closed the final live-runtime gate in Kevin's Ubuntu-22.04: built full MMCV 2.1.0 from locked commit 57c4e25 for CUDA 12.8/sm_120, imported mmcv._ext, ran CUDA NMS, and loaded a 512x512 BaseSegDataset sample through the exact governed pipeline. The live proof exposed and fixed duplicated BaseSegDataset kwargs and registry-scope collisions."
         }
       ],
-      "evidence": "qa/live_verification/openmmlab_cuda_runtime_20260712.json: training doctor ready with zero issues; exact MMEngine 0.10.7/MMCV 2.1.0/MMSeg 1.2.2/MMDet 3.3.0; torch 2.11.0+cu128 on RTX 5060 capability 12.0; mmcv._ext hash 22067ce6...; real CUDA NMS returned keep [0,2]; MaskFactoryBodyPartDataset loaded the exact 7-stage pipeline at 512x512 with ignore_index 255. Full WSL suite passes; Ruff check/format clean.",
+      "evidence": "qa/live_verification/openmmlab_cuda_runtime_20260712.json: training doctor ready with zero issues; exact MMEngine 0.10.7/MMCV 2.1.0/MMSeg 1.2.2/MMDet 3.3.0; torch 2.11.0+cu128 on RTX 5060 capability 12.0; mmcv._ext hash 22067ce6...; real CUDA NMS returned keep [0,2]; MaskFactoryBodyPartDataset loaded the exact 7-stage pipeline at 512x512 with ignore_index 255. 30 focused tests pass; Ruff check/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:23+00:00",
+      "updated_at": "2026-07-13T00:23:34+00:00",
       "orphaned": false
     },
     "MF-P5-02.02": {
@@ -6322,7 +6372,7 @@
           "text": "Class-count blocker removed: active SegFormer training config now compiles at the authoritative v1 56 logits. Remaining gates are unchanged and real: >=200 approved gold, pinned full-MMCV CUDA runtime in Kevin's WSL identity, long thermal run, holdout evaluation, and champion decision."
         },
         {
-          "ts": "2026-07-13T01:25:23+00:00",
+          "ts": "2026-07-13T01:23:04+00:00",
           "actor": "ai_agent",
           "text": "The pinned full-MMCV CUDA runtime blocker is closed by qa/live_verification/openmmlab_cuda_runtime_20260712.json. Real SegFormer training remains blocked only on the >=200 human-approved bodyparts dataset and its frozen split/DVC identity."
         }
@@ -6330,7 +6380,7 @@
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: real SegFormer-B3 training requires bodyparts@v1 from at least 200 verified human-approved gold packages; approved_gold_count is 0. The CUDA/OpenMMLab runtime is now ready.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:23+00:00",
+      "updated_at": "2026-07-13T01:23:04+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -6364,7 +6414,7 @@
           "text": "Class-count blocker removed from the challenger: Mask2Former-SwinB now declares and compiles 56 v1 classes; its matcher retains the framework-required extra no-object classification weight. Remaining work is the actual >=200-gold CUDA challenger run/evaluation; Swin-L remains AWS-only."
         },
         {
-          "ts": "2026-07-13T01:25:24+00:00",
+          "ts": "2026-07-13T01:23:04+00:00",
           "actor": "ai_agent",
           "text": "The local CUDA/OpenMMLab runtime is now ready; the challenger remains blocked on the approved dataset and completed baseline run. Optional AWS execution still requires spending approval."
         }
@@ -6372,7 +6422,7 @@
       "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves corrected SegFormer and Mask2Former configs plus drift refusal. Mask2Former compiler structure remains focused-test covered; no run/checkpoint is claimed.",
       "blocked_reason": "NEEDS KEVIN: the real Mask2Former challenger requires the >=200 approved-gold bodyparts dataset and completed baseline evaluation. Optional AWS execution additionally requires explicit spending approval; the local CUDA runtime is ready.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:24+00:00",
+      "updated_at": "2026-07-13T01:23:04+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {
@@ -6459,7 +6509,7 @@
           "text": "Implemented fail-closed clothing promotion evaluator against exact schp_atr_plus_s08_heuristics baseline on identical frozen test_holdout: candidate material mIoU must be strictly higher and strap/waistband IoU each >=0.55. Atomic evidence writer and invalid/missing/noncomparable refusal included. 27 focused clothing-gate/S08/config tests pass; Ruff format/check and diff check clean. Real 30k training and measured holdout rows await eligible gold dataset."
         },
         {
-          "ts": "2026-07-13T01:25:24+00:00",
+          "ts": "2026-07-13T01:23:04+00:00",
           "actor": "ai_agent",
           "text": "CUDA/OpenMMLab runtime is now verified; the clothing gate remains data-bound."
         }
@@ -6467,7 +6517,7 @@
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: clothing training and the measured material/strap/waistband gate require the human-approved frozen dataset; approved_gold_count is 0. The CUDA runtime is ready.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:24+00:00",
+      "updated_at": "2026-07-13T01:23:04+00:00",
       "orphaned": false
     },
     "MF-P5-04.03": {
@@ -6560,7 +6610,7 @@
       "percent_complete": 0,
       "notes": [
         {
-          "ts": "2026-07-13T01:25:24+00:00",
+          "ts": "2026-07-13T01:23:05+00:00",
           "actor": "ai_agent",
           "text": "CUDA/OpenMMLab runtime is now verified; hand training remains blocked on approved hand-crop truth."
         }
@@ -6568,7 +6618,7 @@
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: hand-crop training/evaluation requires human-approved hand crops from the gold corpus; approved_gold_count is 0. The CUDA runtime is ready.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:24+00:00",
+      "updated_at": "2026-07-13T01:23:05+00:00",
       "orphaned": false
     },
     "MF-P5-05.04": {
@@ -7254,7 +7304,7 @@
           "text": "Loopback-only CLI execution is now fixture-proven: maskfactory serve passes exact host 127.0.0.1, requested port, and info logging to uvicorn with no host override. Fixed authoritative lock omission by pinning python-multipart==0.0.32 beside FastAPI/Uvicorn. 8 serving tests pass; Ruff/diff clean. Live probe uncredited: Windows Python lacks FastAPI and exact workspace-target install timed out after 300s without index response; WSL remains absent."
         },
         {
-          "ts": "2026-07-13T01:25:23+00:00",
+          "ts": "2026-07-13T00:30:41+00:00",
           "actor": "ai_agent",
           "text": "Ran the literal MaskFactory CLI inside Kevin's Ubuntu-22.04, verified ss shows only 127.0.0.1:8765, reached /health and /models through Windows localhost, then shut down gracefully and verified runs/gpu.lock released. The live probe found and fixed /models serialization for governed Ollama entries."
         }
@@ -7262,7 +7312,7 @@
       "evidence": "qa/live_verification/wsl_localhost_serving_20260713.json: Uvicorn startup/listener proof, Windows localhost HTTP 200 for /health and /models, RTX 5060 VRAM telemetry, 17 verified registry models, graceful shutdown and GPU-lock release. 31 focused serving tests pass in the pinned WSL environment; Ruff check/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:23+00:00",
+      "updated_at": "2026-07-13T00:30:41+00:00",
       "orphaned": false
     },
     "MF-P6-02.03": {
@@ -7369,7 +7419,7 @@
           "text": "Corrected the prior 9.42s stateless failure by retaining one image embedding for the interactive session while preserving no-co-residency: predictor requests explicitly close SAM2 first. Refine and cold targets now PASS; predict targets remain open."
         },
         {
-          "ts": "2026-07-13T01:25:24+00:00",
+          "ts": "2026-07-13T01:23:05+00:00",
           "actor": "ai_agent",
           "text": "Literal Ubuntu loopback serving and /health+/models are now verified by qa/live_verification/wsl_localhost_serving_20260713.json. Only champion-backed /predict latency remains unavailable."
         }
@@ -7377,7 +7427,7 @@
       "evidence": "Live audit qa/live_verification/serve_refine_cuda_20260712.json: SAM2 cold load+embedding 7.979531s <=60s cold target and warm multipart click 0.058920s <=1.2s refine target, HTTP 200 strict mask. All-label <=4s and single-label <=2s /predict remain unmeasured without trained champion roles.",
       "blocked_reason": "NEEDS KEVIN: /refine warm latency and the WSL serving boundary pass, but /predict latency targets require real trained champion_bodypart/champion_hand/champion_clothing roles from P5.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:25:24+00:00",
+      "updated_at": "2026-07-13T01:23:05+00:00",
       "orphaned": false
     },
     "MF-P6-02.06": {
@@ -7453,7 +7503,7 @@
           "text": "Completed skin-only graph validated against actual installed ComfyUI INPUT_TYPES; removed incompatible UI-only KSampler field found by the live check. Evidence qa/live_verification/comfy_workflow_compatibility_20260711.json. Generation remains pending without checkpoint/package."
         },
         {
-          "ts": "2026-07-13T10:43:41+00:00",
+          "ts": "2026-07-13T10:41:09+00:00",
           "actor": "ai_agent",
           "text": "2026-07-13: Installed the node pack into native Windows ComfyUI and ran the full skin-only workflow on img_7b7a3c7d5dd3/p2 using a real SDXL checkpoint. The live run exposed and fixed VAE-grid composite leakage: generated content is now resized to source geometry before applying the original full-resolution mask. Exact audit: 53,570/53,570 conditioned pixels changed, 0 outside-mask changes, 0/11,011 clothing pixels changed, source/output both 353x1378. This is explicitly non-gold draft evidence; no package truth was written."
         }
@@ -7461,7 +7511,7 @@
       "evidence": "qa/live_verification/comfy_bodypart_conditioned_draft_smoke_20260713.json; prompt 9c0f34f6-d5f9-41b3-bd92-bfd4f7e9df2f; workflow hash 8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1; 30 focused tests passed; Ruff/Black clean.",
       "blocked_reason": "NEEDS KEVIN: the graph and exact pixel-isolation behavior are live-verified on a non-gold in_review package. Final completion requires rerunning the shipped human_approved_gold-default workflow after Kevin approves at least one package.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T10:43:41+00:00",
+      "updated_at": "2026-07-13T10:41:09+00:00",
       "orphaned": false
     },
     "MF-P6-03.03": {

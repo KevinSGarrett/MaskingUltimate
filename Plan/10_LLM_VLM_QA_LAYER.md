@@ -1,9 +1,13 @@
 # Document 10: LLM / VLM QA Layer
 
-Role (constitutional): the LLM/VLM layer is the **brain / QA / router — never the scalpel**.
+Role (constitutional): the LLM/VLM layer is the **brain / QA / router / tool controller — never
+unreviewed pixel authority**.
 It decides which masks are required, reads manifests, catches missing labels, compares overlay
 panels, produces QA reports, routes hard cases, generates correction instructions, checks L/R
-naming, and detects impossible claims. It never authors pixel masks.
+naming, and detects impossible claims. It never directly authors or approves gold pixel masks.
+It may direct a governed segmentation tool (initially SAM2) to create a separate correction
+candidate, compare before/after evidence, reject an unsafe candidate, and send a bounded proposal
+to human review. The authoritative PART map is unchanged until normal human review accepts it.
 
 ---
 
@@ -14,14 +18,18 @@ naming, and detects impossible claims. It never authors pixel masks.
 | Primary VLM | **Qwen2.5-VL 7B Q4** | Ollama (Docker, 127.0.0.1:11434) | All image-panel review — local, private, no content-block friction on body-part QA |
 | Fallback VLM | llama3.2-vision 11B Q4 | Ollama | If Qwen unavailable/regresses on eval set |
 | Text LLM (local) | qwen2.5:7b-instruct | Ollama | Manifest lint, correction-instruction drafting |
-| Cloud LLM (optional) | Claude API | text-only | Non-sensitive reasoning: QA report summarization, ontology consistency review, roadmap/ops docs. **Never receives source images or overlays** (`vlm.cloud_enabled: false` default) |
+| Cloud teachers (optional) | Gemini / OpenAI / Anthropic | Provider APIs, disabled by default | Per-image-opt-in shadow review and bounded correction proposals under doc 19. They never approve gold or overwrite a mask. |
 
 VRAM: VLM runs in its own exclusive GPU slot (doc 05 §5). Batch S11 model-major.
 
 ## 2. Inputs Per Review
 
-- Per hard part: the 5-tile zoom panel (doc 09 §6), downscaled to 1024 long side for the VLM.
-- Whole image: source + all-parts color overlay + compact manifest digest (label:state:area% table).
+- Legacy compatibility: the 5-tile zoom panel.
+- Workhorse mode: six separately encoded images — full-person context with crop box, source crop,
+  binary mask, overlay, contour, and protected-neighbor overlap. Diagnostic images are individually
+  1024×1024 and MUST NOT be compressed into one 1024×205 strip.
+- Whole image: clean source and all-parts color overlay as two independent images + compact predicted
+  presence digest. An absent prediction is explicitly unknown, never evidence that anatomy is not visible.
 - The relevant qa_report excerpts (which QCs warned/routed).
 
 ## 3. Prompt Suite (versioned in `src\maskfactory\vlm\prompts\`, version stamped in reports)
@@ -35,18 +43,31 @@ includes_background, includes_neighbor_part, missing_visible_area, mask_on_hidde
 finger_merge, hair_edge_bad, occlusion_error, other]], evidence: '<≤25 words pointing at panel
 location>', correction_instruction: '<≤30 words imperative for the annotator>'}."
 
-**P-IMAGE (whole-image sanity):**
-"Given the overlay and this manifest digest, list: (a) labels marked visible whose mask appears
-missing/misplaced, (b) visible body parts with no visible-state entry, (c) any left/right naming
-that contradicts the character's orientation, (d) any mask claiming an area that is clearly
-clothing-covered or out of frame. STRICT JSON: {missing:[], mislabeled:[], lr_suspect:[],
-impossible_claims:[], notes: ''}."
+**P-IMAGE (whole-image sanity):** receives clean source first and color overlay second. It compares
+visible anatomy against predicted presence, flags missing/misplaced/LR/impossible claims, treats
+prediction absence as unknown, and never infers hidden pixels.
 
 **P-MANIFEST (text LLM):** lint manifest vs ontology (states complete, subsets consistent,
 occlusion graph acyclic, notes quality) → JSON findings.
 
 Parsing: responses must parse as JSON; one retry with "JSON only" reminder; still bad → verdict
 `uncertain` (never guess).
+
+**P-WORKHORSE:** requires a nonempty observation for every one of the six images, then emits the
+ordinary verdict plus a bounded correction plan: `none | sam2_refine | human_review`, up to 12
+full-source positive points, up to 12 full-source negative points, and a rationale. Points are
+strictly range-checked; invalid output becomes `uncertain` and cannot invoke a tool.
+
+**P-COMPARE:** receives the complete six-image set for the current mask followed by the complete
+six-image set for the correction candidate. It reports `better | worse | no_material_change |
+uncertain`, fixed problems, remaining problems, and localized evidence. Presentation order alone
+is not evidence.
+
+Controller authority is independent of model confidence. A label-specific non-pass deterministic
+finding (side, protected overlap, area, components, chain geometry, model disagreement, etc.) vetoes
+a VLM pass. BLOCK becomes fail; ROUTE/WARN becomes uncertain. Package-wide findings are not falsely
+attributed to an individual label. The raw model verdict/confidence and every controller override are
+stored separately for calibration and debugging.
 
 ## 4. Verdict Schema & Calibration
 
@@ -56,7 +77,13 @@ correction_instruction, latency_ms}`.
 Calibration set: 40 panels with known ground truth (20 good / 20 seeded-defect) maintained under
 `qa\vlm_eval\`; `maskfactory vlmqa eval` must show ≥ 0.90 recall on defects and ≥ 0.80 precision
 before a model/prompt version is allowed in production (gate MF-P4-05). Re-run on every model or
-prompt change.
+prompt change. In workhorse mode the fingerprint also binds the comparison and whole-image prompts,
+client behavior, evidence renderer, production controller, and workhorse implementation; controller
+or evidence drift invalidates the gate.
+
+The 40-panel gate is the minimum enablement check, not proof of incremental value. A separate blinded
+real-image decision set must compare auto-QA alone, auto-QA+VLM, and human truth for catastrophic
+false-pass rate, incremental defect recall, correction usefulness, latency, and reviewer time.
 
 ## 5. Routing Logic (`vlm/router.py`)
 
@@ -70,11 +97,35 @@ prompt change.
 VLM can NEVER approve gold, NEVER clear a BLOCK, NEVER edit a mask. Its correction instructions
 are suggestions shown to the human, marked as machine-generated.
 
+The tool-controller extension does not weaken that authority boundary. SAM2 may write only under
+`S11/correction_candidates/`; S11 never overwrites `label_map_part.png`, a package mask, or a
+human-approved artifact. Candidate generation requires a fail verdict at confidence ≥0.7, valid
+prompt points, prompt-polarity satisfaction, changed area ≤75% of the prior, protected-neighbor
+overlap ≤2%, and recorded before/after evidence. Quick-pass is disabled for workhorse output until
+the real approved-gold calibration gate and a separate incremental-value study support it.
+
+Without a current calibration gate, workhorse execution is uncalibrated shadow work only: it may
+render evidence and create isolated review candidates, but emits no authoritative `qa_report`
+verdict, creates no disagreement failure record, cannot alter careful routing, and cannot advance
+package state.
+
+Doc 20 adds progressive autonomy without weakening this default. S11 candidates may enter a governed
+tournament and become `machine_verified_candidate`. A label/context may become
+`calibrated_auto_accepted` only under a current hash-bound 95%-confidence certificate. Neither status is
+human gold. Provider disagreement, any BLOCK, certificate drift/expiry, or insufficient winner margin
+forces the residual queue.
+
 ## 6. Cloud Boundary & Privacy Rules
 
-Hard rules: source images, crops, overlays, panels never leave the machine. Cloud LLM (if
-enabled) receives only: text manifests with image_id (hash-derived, no PII), QA statistics,
-ontology text, code. Toggle + audit log at `logs\cloud_calls.jsonl` (payload hashes recorded).
+Cloud image transmission is an explicit, separately governed exception defined by doc 19. The
+default remains deny/disabled. An image may leave the machine only when an exact SHA-256 registry
+record proves clear-adult intake authority, rights evidence, human approval, and the named provider.
+The request carries six bounded diagnostic images, no unnecessary metadata, and no credential or raw
+response is logged. A hash-chained pre-dispatch reservation ledger enforces the daily circuit breaker.
+Provider output is untrusted shadow evidence: it cannot approve gold, clear a blocker, alter routing,
+or overwrite the PART map. Images lacking the exact opt-in remain local-only without reducing normal
+pipeline functionality. Provider retention/content restrictions are operational constraints, not
+evidence of mask correctness.
 
 ## 7. Intake Safety Screen (referenced by S00 step 5)
 
@@ -89,3 +140,17 @@ non-configurable (doc 01 §7).
 - Weekly: failure_queue clustering — text LLM groups failure_reason strings, proposes coverage
   targets (feeds doc 12 §7), drafts the weekly QA summary markdown.
 - On ontology change: consistency review of ontology.yaml vs doc 02 tables (diff explanation).
+
+## 9. Pixel Workhorse Strategy
+
+The VLM is an investigator and tool planner, not the pixel model. Pixel candidates come from SAM2,
+specialist parsing/hand/hair/feet lanes, trained body-part models, deterministic cleanup, and model
+consensus. The next concept-segmentation backend to evaluate is official SAM 3.1 because it accepts
+text concepts, exemplars, boxes, points, and masks. It remains uninstalled until checkpoint access and
+its separate Python 3.12/PyTorch 2.7+/CUDA 12.6+ runtime are governed and a measured hardware smoke
+passes. No provider is promoted on benchmark claims alone.
+
+General VLM model upgrades are likewise evidence-gated. Qwen3-VL 8B and Qwen3.5 9B were tested on a
+known-bad real left-forearm mask in July 2026: Qwen3-VL still returned a confidence-1.0 pass, while
+Qwen3.5 could not complete either the six-image or reduced three-image audit within 180/300 seconds.
+Neither model is a production replacement on the current 8 GB GPU.

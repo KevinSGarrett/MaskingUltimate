@@ -44,7 +44,7 @@ prompts:
       - evidence
       - correction_instruction
   p_image:
-    version: "p-image-v1-doc10"
+    version: "p-image-v2-source-overlay"
     max_image_long_side: 1024
     retry_on_invalid_json: 1
     required_keys: [missing, mislabeled, lr_suspect, impossible_claims, notes]
@@ -52,6 +52,33 @@ prompts:
     version: "p-manifest-v1-doc10"
     retry_on_invalid_json: 1
     required_keys: [findings, overall]
+  p_workhorse:
+    version: "p-workhorse-v1-multimage-tools"
+    path: "src/maskfactory/vlm/prompts/p_workhorse.txt"
+    independent_image_long_side: 1024
+    retry_on_invalid_json: 1
+  p_compare:
+    version: "p-compare-v1-before-after"
+    path: "src/maskfactory/vlm/prompts/p_compare.txt"
+    retry_on_invalid_json: 1
+
+workhorse:
+  enabled: true
+  mode: "gated_candidate_generation"
+  max_iterations_per_part: 3
+  max_points_per_polarity: 12
+  min_failure_confidence: 0.7
+  max_changed_fraction: 0.75
+  max_protected_overlap_fraction: 0.02
+  authoritative_map_write: false
+  human_approval_required: true
+  quick_pass_enabled: false
+  think: false
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 768
+    num_ctx: 32768
 
 routing:
   quick_pass_min_confidence: 0.7

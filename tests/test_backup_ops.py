@@ -60,3 +60,5 @@ def test_p4_nightly_and_weekly_jobs_cross_the_governed_wsl_boundary() -> None:
     assert "--state qa/reports/manifest_lint_state.json" in nightly
     assert "active-learning" in weekly
     assert "--report-date $Date" in weekly
+    assert "autonomy build-audit-queue" in weekly
+    assert "qa/autonomy/audit_queues/$Week.json" in weekly

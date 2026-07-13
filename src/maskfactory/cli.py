@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import click
+import yaml
 
 from . import __version__
 from .doctor import LOCAL_INFERENCE_TIMEOUT_SECONDS, run_doctor
@@ -752,9 +753,11 @@ def qa(
             "status": (
                 "blocked"
                 if block_count
-                else "needs_human"
-                if any(item["overall"] != "pass" for item in instances.values())
-                else "pass"
+                else (
+                    "needs_human"
+                    if any(item["overall"] != "pass" for item in instances.values())
+                    else "pass"
+                )
             ),
         }
         click.echo(json.dumps(document, sort_keys=True))
@@ -1227,11 +1230,11 @@ def vlmqa_run(
         status = (
             "blocked"
             if blocked
-            else "disabled_gate_unavailable"
-            if disabled
-            else "needs_human"
-            if needs_human
-            else "pass"
+            else (
+                "disabled_gate_unavailable"
+                if disabled
+                else "needs_human" if needs_human else "pass"
+            )
         )
         click.echo(
             json.dumps(
@@ -1392,6 +1395,527 @@ def vlmqa_eval(
     click.echo(json.dumps(report.__dict__, sort_keys=True))
     if not report.passed:
         raise click.ClickException("VLM production gate failed calibration thresholds")
+
+
+@vlmqa.command("cloud-status")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cloud_teacher.yaml"),
+    show_default=True,
+)
+def vlmqa_cloud_status(config_path: Path) -> None:
+    """Report cloud-teacher readiness and spend without making an API call."""
+    from .vlm.cloud_budget import CloudBudgetError, DailyBudgetLedger
+    from .vlm.cloud_providers import credential_present
+    from .vlm.cloud_teacher import CloudTeacherError, load_cloud_teacher_config
+
+    try:
+        config = load_cloud_teacher_config(config_path)
+        budget = config["budget"]
+        snapshot = DailyBudgetLedger(
+            Path(budget["ledger_path"]),
+            timezone_name=budget["timezone"],
+            hard_limit_usd=budget["hard_limit_usd"],
+            lock_timeout_sec=float(budget["lock_timeout_sec"]),
+        ).snapshot()
+        providers = {
+            name: {
+                "enabled": settings["enabled"],
+                "model": settings["model"],
+                "credential_present": credential_present(settings["api_key_env"], name),
+            }
+            for name, settings in config["providers"].items()
+        }
+    except (OSError, ValueError, CloudBudgetError, CloudTeacherError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "enabled": config["enabled"],
+                "mode": config["mode"],
+                "providers": providers,
+                "budget": {
+                    "local_date": snapshot.local_date,
+                    "committed_usd": str(snapshot.committed_usd),
+                    "reserved_usd": str(snapshot.reserved_usd),
+                    "available_usd": str(snapshot.available_usd),
+                    "hard_limit_usd": str(snapshot.hard_limit_usd),
+                    "request_count": snapshot.request_count,
+                },
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@vlmqa.command("harvest-teacher-resolution")
+@click.argument("package_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.argument("teacher_report", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--output",
+    "output_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/teacher_learning/resolutions.jsonl"),
+    show_default=True,
+)
+def vlmqa_harvest_teacher_resolution(
+    package_root: Path, teacher_report: Path, output_path: Path
+) -> None:
+    """Append one cloud-teacher learning record from frozen human-approved gold."""
+    from .vlm.cloud_teacher import CloudTeacherError, harvest_human_teacher_resolution
+
+    try:
+        record = harvest_human_teacher_resolution(
+            package_root=package_root,
+            teacher_report_path=teacher_report,
+            output_path=output_path,
+        )
+    except (OSError, ValueError, CloudTeacherError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, sort_keys=True))
+
+
+@vlmqa.command("build-distillation")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cloud_teacher.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--records",
+    "records_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/teacher_learning/resolutions.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    "output_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/teacher_learning/distillation_manifest.json"),
+    show_default=True,
+)
+def vlmqa_build_distillation(config_path: Path, records_path: Path, output_path: Path) -> None:
+    """Build image-disjoint prompt/LoRA readiness evidence from human-gold records."""
+    from .vlm.cloud_teacher import (
+        CloudTeacherError,
+        build_teacher_distillation_manifest,
+        load_cloud_teacher_config,
+    )
+
+    try:
+        config = load_cloud_teacher_config(config_path)
+        learning = config["learning"]
+        document = build_teacher_distillation_manifest(
+            records_path=records_path,
+            output_path=output_path,
+            minimum_prompt_records=int(learning["minimum_balanced_records_for_prompt_exemplars"]),
+            minimum_lora_records=int(learning["minimum_balanced_records_for_lora_candidate"]),
+            holdout_fraction=float(learning["frozen_holdout_fraction"]),
+        )
+    except (OSError, ValueError, CloudTeacherError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(document, sort_keys=True))
+
+
+@vlmqa.command("evaluate-cloud-teacher")
+@click.argument("corpus", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cloud_teacher.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    "output_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/teacher_learning/cloud_teacher_eval.json"),
+    show_default=True,
+)
+def vlmqa_evaluate_cloud_teacher(corpus: Path, config_path: Path, output_path: Path) -> None:
+    """Evaluate a provider offline against frozen human truth; never call an API."""
+    from .vlm.cloud_eval import (
+        CloudTeacherEvalError,
+        evaluate_cloud_teacher_corpus,
+        write_cloud_teacher_eval_report,
+    )
+    from .vlm.cloud_teacher import CloudTeacherError, load_cloud_teacher_config
+
+    try:
+        config = load_cloud_teacher_config(config_path)
+        report = evaluate_cloud_teacher_corpus(corpus, thresholds=config["evaluation"])
+        write_cloud_teacher_eval_report(report, output_path)
+    except (
+        OSError,
+        ValueError,
+        json.JSONDecodeError,
+        CloudTeacherError,
+        CloudTeacherEvalError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report.__dict__, sort_keys=True))
+    if not report.passed:
+        raise click.ClickException("cloud teacher failed frozen human-truth thresholds")
+
+
+@main.group()
+def autonomy() -> None:
+    """Progressive autonomous mask calibration and candidate tournaments."""
+
+
+@autonomy.command("build-certificate")
+@click.argument("audit", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option("--label", required=True)
+@click.option("--context", required=True)
+@click.option("--pipeline-fingerprint", required=True)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_build_certificate(
+    audit: Path,
+    label: str,
+    context: str,
+    pipeline_fingerprint: str,
+    config_path: Path,
+    output: Path,
+) -> None:
+    """Build a 95%-confidence label/context autoaccept certificate."""
+    from .autonomy.calibration import (
+        AutonomyCalibrationError,
+        build_autonomy_certificate,
+        load_autonomy_config,
+    )
+
+    try:
+        config = load_autonomy_config(config_path)
+        certificate = build_autonomy_certificate(
+            audit,
+            label=label,
+            context=context,
+            pipeline_fingerprint=pipeline_fingerprint,
+            policy=config["calibration"],
+        )
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            json.dumps(certificate, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    except (AutonomyCalibrationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(certificate, sort_keys=True))
+
+
+@autonomy.command("tournament")
+@click.argument("input_path", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--certificate", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=False
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_tournament(
+    input_path: Path, certificate: Path | None, config_path: Path, output: Path
+) -> None:
+    """Select a hard-vetoed candidate and apply any valid autonomy certificate."""
+    from .autonomy.calibration import load_autonomy_config
+    from .autonomy.tournament import (
+        AutonomyTournamentError,
+        CandidateEvidence,
+        run_candidate_tournament,
+    )
+
+    try:
+        document = json.loads(input_path.read_text(encoding="utf-8"))
+        config = load_autonomy_config(config_path)
+        cert = json.loads(certificate.read_text(encoding="utf-8")) if certificate else None
+        candidates = tuple(CandidateEvidence(**candidate) for candidate in document["candidates"])
+        decision = run_candidate_tournament(
+            candidates,
+            label=document["label"],
+            context=document["context"],
+            pipeline_fingerprint=document["pipeline_fingerprint"],
+            config=config,
+            certificate=cert,
+        )
+        payload = decision.as_dict()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except (
+        AutonomyTournamentError,
+        OSError,
+        ValueError,
+        TypeError,
+        KeyError,
+        json.JSONDecodeError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(payload, sort_keys=True))
+
+
+@autonomy.command("build-audit-queue")
+@click.option(
+    "--lifecycle-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("work/instances"),
+    show_default=True,
+)
+@click.option("--period-id", required=True, help="Stable ISO period such as 2026-W28.")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_build_audit_queue(
+    lifecycle_root: Path, period_id: str, config_path: Path, output: Path
+) -> None:
+    """Select the deterministic weekly sample from calibrated autoaccepted masks."""
+    from .autonomy.calibration import AutonomyCalibrationError, load_autonomy_config
+    from .autonomy.operations import build_weekly_audit_queue
+
+    try:
+        config = load_autonomy_config(config_path)
+        queue = build_weekly_audit_queue(
+            lifecycle_root,
+            output,
+            period_id=period_id,
+            operations_policy=config["operations"],
+        )
+    except (AutonomyCalibrationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(queue, sort_keys=True))
+
+
+@autonomy.command("process-audits")
+@click.argument("queue", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.argument("outcomes", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--revocations-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/autonomy/revocations"),
+    show_default=True,
+)
+@click.option("--retraining-output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_process_audits(
+    queue: Path,
+    outcomes: Path,
+    config_path: Path,
+    revocations_root: Path,
+    retraining_output: Path,
+) -> None:
+    """Ingest exact audit outcomes, revoke failures, and create a retraining plan."""
+    from .autonomy.calibration import AutonomyCalibrationError, load_autonomy_config
+    from .autonomy.operations import process_audit_outcomes
+
+    try:
+        config = load_autonomy_config(config_path)
+        result = process_audit_outcomes(
+            queue,
+            outcomes,
+            revocations_root=revocations_root,
+            retraining_policy=config["retraining"],
+            operations_policy=config["operations"],
+            retraining_output_path=retraining_output,
+        )
+    except (AutonomyCalibrationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
+
+
+@autonomy.command("build-pseudo-dataset")
+@click.option(
+    "--lifecycle-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--certificate-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--revocations-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/autonomy/revocations"),
+    show_default=True,
+)
+@click.option(
+    "--human-holdout-ids",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_build_pseudo_dataset(
+    lifecycle_root: Path,
+    certificate_root: Path,
+    revocations_root: Path,
+    human_holdout_ids: Path,
+    config_path: Path,
+    output: Path,
+) -> None:
+    """Build a hash-verified train-only manifest for calibrated pseudo-labels."""
+    from .autonomy.calibration import AutonomyCalibrationError, load_autonomy_config
+    from .autonomy.pseudo_dataset import build_weighted_pseudo_manifest
+
+    try:
+        config = load_autonomy_config(config_path)
+        manifest = build_weighted_pseudo_manifest(
+            lifecycle_root,
+            output,
+            certificate_root=certificate_root,
+            revocations_root=revocations_root,
+            human_holdout_ids_path=human_holdout_ids,
+            operations_policy=config["operations"],
+        )
+    except (AutonomyCalibrationError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(manifest, sort_keys=True))
+
+
+@main.group("golden-reference")
+def golden_reference() -> None:
+    """Audit and normalize user-authored mask reference collections."""
+
+
+@golden_reference.command("import")
+@click.argument("source_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option(
+    "--mapping",
+    "mapping_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--output", "output_root", type=click.Path(path_type=Path, file_okay=False), required=True
+)
+def golden_reference_import(source_root: Path, mapping_path: Path, output_root: Path) -> None:
+    """Losslessly normalize strict BW masks and produce an authority audit."""
+    from .golden_reference import GoldenReferenceError, import_golden_reference
+
+    try:
+        manifest = import_golden_reference(source_root, output_root, mapping_path=mapping_path)
+    except (GoldenReferenceError, OSError, ValueError, yaml.YAMLError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "authority": manifest["authority"],
+                "blocker_count": len(manifest["blockers"]),
+                "collection_id": manifest["collection_id"],
+                "eligible_for_package_gold": manifest["eligible_for_package_gold"],
+                "layer_count": manifest["layer_count"],
+                "missing_part_count": len(manifest["missing_part_targets"]),
+                "overlap_count": len(manifest["part_candidate_overlaps"]),
+                "output": str(output_root),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@golden_reference.command("verify")
+@click.argument("output_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+def golden_reference_verify(output_root: Path) -> None:
+    """Verify all normalized reference hashes and strict binary-mask invariants."""
+    from .golden_reference import GoldenReferenceError, verify_golden_reference
+
+    try:
+        issues = verify_golden_reference(output_root)
+    except (GoldenReferenceError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({"issues": issues, "passed": not issues}, sort_keys=True))
+    if issues:
+        raise click.ClickException("golden reference verification failed")
+
+
+@golden_reference.command("cloud-benchmark")
+@click.argument("reference_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--label", "labels", multiple=True, required=True)
+@click.option(
+    "--provider",
+    "provider_names",
+    multiple=True,
+    type=click.Choice(["gemini", "openai", "anthropic"]),
+    help="Restrict a diagnostic run to named providers; default is all three.",
+)
+@click.option(
+    "--cloud-config",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cloud_teacher.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output", "output_root", type=click.Path(path_type=Path, file_okay=False), required=True
+)
+def golden_reference_cloud_benchmark(
+    reference_root: Path,
+    labels: tuple[str, ...],
+    provider_names: tuple[str, ...],
+    cloud_config: Path,
+    output_root: Path,
+) -> None:
+    """Run explicitly authorized shadow teacher calls on selected reference labels."""
+    from .golden_reference import GoldenReferenceError, run_reference_cloud_benchmark
+    from .vlm.cloud_budget import CloudBudgetError
+    from .vlm.cloud_teacher import CloudTeacherError
+
+    try:
+        summary = run_reference_cloud_benchmark(
+            reference_root,
+            labels=labels,
+            cloud_config_path=cloud_config,
+            output_root=output_root,
+            provider_names=provider_names or ("gemini", "openai", "anthropic"),
+        )
+    except (GoldenReferenceError, CloudBudgetError, CloudTeacherError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "budget": summary["budget"],
+                "completed": sum(
+                    result["status"] == "complete" for result in summary["provider_results"]
+                ),
+                "failed": sum(
+                    result["status"] != "complete" for result in summary["provider_results"]
+                ),
+                "output": str(output_root),
+                "result_count": len(summary["provider_results"]),
+            },
+            sort_keys=True,
+        )
+    )
 
 
 @main.group()

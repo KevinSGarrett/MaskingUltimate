@@ -20,6 +20,7 @@ SCHEMA_NAMES = frozenset(
         "coverage_matrix",
         "leaderboard",
         "crop_transform",
+        "autonomy_lifecycle",
     }
 )
 VISIBLE_STATES = frozenset({"visible", "partially_visible"})

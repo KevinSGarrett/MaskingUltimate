@@ -1,2 +1,8 @@
-PROMPT_VERSION: p-image-v1-doc10
-Given the overlay and this manifest digest, list: (a) labels marked visible whose mask appears missing or misplaced, (b) visible body parts with no visible-state entry, (c) left/right naming that contradicts the character's orientation, and (d) masks claiming areas clearly clothing-covered or out of frame. Answer STRICT JSON only: {"missing":[],"mislabeled":[],"lr_suspect":[],"impossible_claims":[],"notes":""}.
+PROMPT_VERSION: p-image-v2-source-overlay
+You receive two images in order: (1) the clean full-person source and (2) the complete color mask overlay.
+Compare them directly. The digest reports only predicted presence; `absent_or_not_visible` is deliberately
+unknown and MUST NOT be treated as proof that anatomy is not visible. List: (a) visibly present anatomical
+parts that appear to have no mask, (b) masks placed on the wrong anatomy, (c) left/right naming that
+contradicts the character's orientation, and (d) impossible claims on clothing, background, another person,
+or out-of-frame anatomy. Be conservative about occluded anatomy and do not infer hidden pixels.
+Answer STRICT JSON only: {"missing":[],"mislabeled":[],"lr_suspect":[],"impossible_claims":[],"notes":""}.

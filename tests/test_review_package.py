@@ -135,6 +135,98 @@ def test_review_package_is_schema_valid_complete_and_cvat_discoverable(tmp_path:
     assert any("all_parts_overlay.png" in name for name in names)
 
 
+def test_review_package_uses_autonomy_draft_but_seals_s09_baseline(tmp_path: Path) -> None:
+    image_id = "img_d3f9c2e17b04"
+    source = tmp_path / "source.png"
+    Image.new("RGB", (32, 24), "gray").save(source)
+    baseline = np.zeros((24, 32), dtype=np.uint16)
+    baseline[6:18, 6:12] = 18
+    review = baseline.copy()
+    review[4:20, 6:12] = 18
+    material = np.zeros((24, 32), dtype=np.uint8)
+    baseline_path = write_label_map(tmp_path / "baseline.png", baseline, bits=16)
+    review_path = write_label_map(tmp_path / "review.png", review, bits=16)
+    material_path = write_label_map(tmp_path / "material.png", material, bits=8)
+    s09 = tmp_path / "s09"
+    write_grayscale(
+        s09 / "work/s09/disagreement.png",
+        np.zeros((24, 32), dtype=np.uint8),
+        source_size=(32, 24),
+    )
+    s11 = tmp_path / "s11"
+    (s11 / "qa_panels").mkdir(parents=True)
+    Image.new("RGB", (32, 24), "gray").save(s11 / "qa_panels/all_parts.png")
+    (s11 / "qa_report.json").write_text(
+        json.dumps(
+            {
+                "image_id": image_id,
+                "run_id": "qa_fixture",
+                "pipeline_version": "maskfactory test",
+                "created_at": "2026-07-13T00:00:00Z",
+                "checks": [],
+                "metrics_per_part": {},
+                "consensus": {"method": "weighted_vote_v1", "sources": ["sam2"]},
+                "vlm_review": {"model": "qwen", "verdicts": []},
+                "overall": "needs_human",
+                "score": 0.9,
+            }
+        ),
+        encoding="utf-8",
+    )
+    autonomy = s11 / "autonomy_review_draft"
+    autonomy.mkdir()
+    (autonomy / "qa_panels").mkdir()
+    Image.new("RGB", (32, 24), "red").save(autonomy / "qa_panels/all_parts.png")
+    (autonomy / "report.json").write_text(
+        json.dumps(
+            {
+                "promoted_for_human_review": True,
+                "applied": [
+                    {
+                        "label": "left_forearm",
+                        "candidate_id": "local_correction_r2",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    pose = tmp_path / "pose.json"
+    pose.write_text(json.dumps({"view": "front", "pose_tags": ["standing"]}))
+    package = assemble_review_package(
+        image_id=image_id,
+        instance_index=0,
+        source_crop_path=source,
+        part_map_path=review_path,
+        baseline_part_map_path=baseline_path,
+        material_map_path=material_path,
+        s09_dir=s09,
+        s11_dir=s11,
+        pose_path=pose,
+        person_bbox_xyxy=(0, 0, 32, 24),
+        context_bbox_xyxy=(0, 0, 32, 24),
+        person_count=1,
+        intake_source={
+            "source_sha256": "a" * 64,
+            "source_origin": "owned_photo",
+            "original_name": "owned.png",
+            "ingested_at": "2026-07-13T00:00:00Z",
+        },
+        package_root=tmp_path / "package",
+    )
+    assert np.array_equal(np.asarray(Image.open(package / "label_map_part.png")), review)
+    assert np.array_equal(
+        np.asarray(Image.open(package / "annotations/draft_baseline/label_map_part.png")),
+        baseline,
+    )
+    manifest = json.loads((package / "manifest.json").read_text())
+    assert manifest["parts"]["left_forearm"]["provenance"]["draft_source"] == (
+        "s11_autonomy_review_draft:local_correction_r2"
+    )
+    assert (package / "annotations/autonomy/autonomy_review_draft/report.json").is_file()
+    assert Image.open(package / "overlays/all_parts.png").getpixel((0, 0)) == (255, 0, 0)
+
+
 def test_multi_instance_package_index_round_trip_and_trivial_n1(tmp_path: Path) -> None:
     image_id = "img_b3f9c2e17b04"
     image_root = tmp_path / "packages" / image_id

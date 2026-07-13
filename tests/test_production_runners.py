@@ -10,6 +10,7 @@ from PIL import Image
 
 from maskfactory.cli import main
 from maskfactory.intake import IntakeResult
+from maskfactory.io.png_strict import write_label_map
 from maskfactory.orchestrator import STAGE_BY_NAME, StageContext, load_pipeline_config, run_pipeline
 from maskfactory.qa.multi_instance import run_multi_instance_qc
 from maskfactory.stages import production
@@ -2116,6 +2117,20 @@ def test_multi_instance_s10_inputs_project_maps_and_exclude_other_person(
     results = {item.qc_id: item for item in run_multi_instance_qc(inputs)}
     assert not inputs.atomic_unions["p0"][p1_silhouette > 0].any()
     assert all(results[qc].passed for qc in ("QC-035", "QC-036", "QC-037", "QC-038"))
+
+    candidate = np.zeros(shape, dtype=np.uint16)
+    candidate[10:20, 10:20] = 18
+    candidate_path = write_label_map(tmp_path / "p0_candidate.png", candidate, bits=16)
+    candidate_inputs = production.build_multi_instance_qc_inputs(
+        image_id,
+        people=people,
+        work_root=work,
+        image_manifest_path=image_manifest,
+        configured_cap=4,
+        part_map_overrides={"p0": candidate_path},
+    )
+    assert np.array_equal(candidate_inputs.atomic_unions["p0"], candidate != 0)
+    assert np.array_equal(candidate_inputs.atomic_unions["p1"], inputs.atomic_unions["p1"])
 
 
 def test_d1_materializer_emits_full_resolution_all_56_atomic_contract(

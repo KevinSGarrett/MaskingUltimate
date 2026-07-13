@@ -492,9 +492,7 @@ def _consensus_summary(names, stack, part_map, authority, quick, normal):
         routes[name] = (
             "quick_pass"
             if score >= quick
-            else "normal"
-            if score >= normal
-            else "model_disagreement_high"
+            else "normal" if score >= normal else "model_disagreement_high"
         )
     return scores, routes
 

@@ -165,6 +165,19 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
    error ↑ > 5 pts for 2 weeks · ontology version change. Trigger opens a P5 task automatically.
 5. Curriculum note: new gold from failure mining enters train immediately (next dataset build);
    holdouts stay frozen — improvement is measured against an unmoving bar.
+6. Cloud/local teacher outcomes may prioritize review and propose correction tools, but are never
+   labels. Only a frozen package whose target part is `human_approved_gold` may enter the teacher
+   resolution ledger. Records are image-disjoint before prompt-example or Qwen-adapter readiness is
+   declared. Cloud agreement, confidence, or a cheaper correction never substitutes for human truth.
+7. Self-hosted-Qwen improvement has two stages: first, promote human-gold resolutions as retrieval or
+   prompt exemplars after the balanced 50-record gate; second, permit a Qwen LoRA *candidate* after the
+   balanced 500-record gate. Either change is a new model/prompt version and must pass the frozen local
+   VLM gate plus doc 19's real-image incremental-value gate before deployment. Holdout examples can
+   never appear in prompts, fine-tuning, provider selection, or threshold tuning.
+8. A doc-20 `calibrated_auto_accepted` mask may enter a semi-supervised training lane at loss weight
+   0.25 while human gold remains weight 1.0. Machine labels never enter validation/test/hard-case
+   holdouts and never satisfy gold-count gates. A promoted model must still win on untouched human gold;
+   otherwise pseudo-label volume can amplify rather than correct systematic errors.
 
 ## 8. Failure-Driven Label Additions (Controlled Ontology Growth)
 

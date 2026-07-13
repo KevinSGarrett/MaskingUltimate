@@ -1,0 +1,105 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_684faa498391",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.86,
+      "correction": {
+        "negative_points": [
+          [
+            565,
+            42
+          ],
+          [
+            590,
+            55
+          ],
+          [
+            615,
+            75
+          ],
+          [
+            275,
+            55
+          ],
+          [
+            250,
+            90
+          ],
+          [
+            275,
+            130
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            450,
+            110
+          ],
+          [
+            500,
+            145
+          ],
+          [
+            390,
+            180
+          ],
+          [
+            300,
+            230
+          ],
+          [
+            280,
+            320
+          ],
+          [
+            290,
+            420
+          ],
+          [
+            310,
+            510
+          ]
+        ],
+        "rationale": "Use positive points throughout the crown and long rear hair mass, with negative points in the surrounding orange background to suppress the thin halo and stray protrusions. Point refinement is safer than a polygon because the hair edge contains fine strands.",
+        "tool": "points"
+      },
+      "defects": [
+        "includes_background",
+        "hair_edge_bad",
+        "boundary_too_loose"
+      ],
+      "evidence": "The main hair region is correctly selected, but the contour extends into orange background around the upper crown and left outer edge as thin stray protrusions. These should be removed while retaining the visible hair mass.",
+      "latency_ms": 10755,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour is generally aligned with the hair boundary but is visibly jagged and loose around stray hairs at the crown and outer edge.",
+        "full_context": "The character has long, dark hair extending from the crown down behind the neck to the left shoulder; the visible hair is clearly separable from the orange background and white clothing.",
+        "mask": "The mask covers the main hair mass and appears anatomically correct, but has thin irregular protrusions and a faint halo beyond the actual hair along the crown and outer left edge.",
+        "neighbor_overlap": "No meaningful overlap with the face, skin, or white top is apparent; the primary issue is background inclusion rather than neighbor-part contamination.",
+        "overlay": "The red overlay follows the main hairline well, but visible red/outlined wispy extensions project into the orange background, especially above the crown and along the upper-left edge.",
+        "source_crop": "Hair is fully visible in the crop, including the crown, front hairline, ear-side region, and long rear section ending near the shoulder."
+      },
+      "provider": "openai",
+      "response_sha256": "5f5a6df716cd67c5433f8648a870b764941de583bbda6e0003b5cff891d7af95",
+      "usage": {
+        "cost_usd": 0.012737,
+        "input_tokens": 7889,
+        "output_tokens": 808
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "hair",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "uncertain",
+    "model": "reference_seed",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "c66f53abea4df41102f8dc7c42eceee93907a59499300ebc3fd26c9fdcda3748",
+  "source_sha256": "684faa49839192aa2d2bf93d0919e3895280f1acd0555c1360bfaaff4753ded9"
+}

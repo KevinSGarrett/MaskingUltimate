@@ -365,18 +365,16 @@ def _check_document(result: QcResult) -> dict[str, Any]:
     outcome = (
         "pass"
         if result.passed
-        else "fail"
-        if result.severity == "BLOCK"
-        else result.severity.lower()
+        else "fail" if result.severity == "BLOCK" else result.severity.lower()
     )
     action = (
         "none"
         if result.passed
-        else "block_package"
-        if result.severity == "BLOCK"
-        else "route_human"
-        if result.severity == "ROUTE"
-        else "warn"
+        else (
+            "block_package"
+            if result.severity == "BLOCK"
+            else "route_human" if result.severity == "ROUTE" else "warn"
+        )
     )
     return {
         "id": result.qc_id,

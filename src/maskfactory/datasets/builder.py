@@ -175,11 +175,9 @@ def build_dataset(
                     "status": "human_approved_gold",
                     "view": person["view"],
                     "pose_tags": person.get("pose_tags", ()),
-                    "instance_context": "solo"
-                    if count == 1
-                    else "duo"
-                    if count == 2
-                    else "small_group",
+                    "instance_context": (
+                        "solo" if count == 1 else "duo" if count == 2 else "small_group"
+                    ),
                     "attributes": (),
                 }
             )

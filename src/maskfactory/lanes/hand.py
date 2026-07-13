@@ -602,9 +602,9 @@ def apply_and_record_s07_hand_merges(
         zeros = np.zeros(shape, dtype=bool)
         geometry = HandGeometry(
             {
-                name: np.asarray(results[name].mask).astype(bool)
-                if name in results
-                else zeros.copy()
+                name: (
+                    np.asarray(results[name].mask).astype(bool) if name in results else zeros.copy()
+                )
                 for name in finger_labels
             },
             np.asarray(results[base_label].mask).astype(bool),

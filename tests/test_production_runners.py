@@ -282,6 +282,25 @@ def test_s02_review_resolution_forces_cached_terminal_refresh(tmp_path: Path, mo
     assert calls == [(("S00", "S01"), ()), (("S02",), ("S02",))]
 
 
+def test_s02_cache_tracks_shared_s01_artifact_generation(tmp_path: Path) -> None:
+    image_id = "img_a3f9c2e17b04"
+    shared = tmp_path / "work"
+    s01 = shared / "s01" / image_id
+    (s01 / "p0").mkdir(parents=True)
+    (s01 / "person_bbox.json").write_text('{"generation":1}\n', encoding="utf-8")
+    Image.new("RGB", (8, 12), "white").save(s01 / "p0/person_ctx.png")
+    s02 = shared / "instances/p0/s02" / image_id
+    s02.mkdir(parents=True)
+
+    assert production._s02_shared_refresh_required(shared, image_id, "p0", s02)
+    hashes = production._s02_shared_input_hashes(shared, image_id, "p0")
+    (s02 / "manifest_delta.json").write_text(json.dumps(hashes), encoding="utf-8")
+    assert not production._s02_shared_refresh_required(shared, image_id, "p0", s02)
+
+    (s01 / "person_bbox.json").write_text('{"generation":2}\n', encoding="utf-8")
+    assert production._s02_shared_refresh_required(shared, image_id, "p0", s02)
+
+
 @pytest.mark.parametrize("key,value", [("model", "other"), ("precision", "fp32")])
 def test_s02_production_runner_refuses_ungoverned_runtime(
     tmp_path: Path, monkeypatch, key: str, value: str
@@ -1522,7 +1541,7 @@ def test_promoted_specialist_roles_force_their_cached_stage_refresh(
             directory = Path(work_root) / "s02" / image_id
             directory.mkdir(parents=True)
             Image.new("L", (60, 80), 255).save(directory / "person_full_visible.png")
-            return (production.StageExecution("S02", "complete", "a" * 64, str(directory), False),)
+            return (production.StageExecution("S02", "cached", "a" * 64, str(directory), False),)
         force_calls.append(tuple(force))
         return ()
 

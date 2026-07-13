@@ -89,6 +89,28 @@ class MultiPersonProductionResult:
     cvat_task_ids: tuple[int, ...] = ()
 
 
+def _s02_shared_input_hashes(
+    shared_work_root: Path, image_id: str, instance_name: str
+) -> dict[str, str]:
+    s01_dir = Path(shared_work_root) / "s01" / image_id
+    return {
+        "s01_person_bbox_sha256": _sha256_file(s01_dir / "person_bbox.json"),
+        "s01_person_ctx_sha256": _sha256_file(s01_dir / instance_name / "person_ctx.png"),
+    }
+
+
+def _s02_shared_refresh_required(
+    shared_work_root: Path, image_id: str, instance_name: str, output_dir: Path
+) -> bool:
+    """Reject an S02 cache produced from a different shared S01 generation."""
+    try:
+        cached = json.loads((Path(output_dir) / "manifest_delta.json").read_text(encoding="utf-8"))
+        current = _s02_shared_input_hashes(shared_work_root, image_id, instance_name)
+    except (OSError, json.JSONDecodeError):
+        return True
+    return any(cached.get(key) != value for key, value in current.items())
+
+
 def run_densepose_view_prepass(
     *,
     crop_path: Path,
@@ -380,6 +402,9 @@ def build_production_runners(
 
     def s02(context: StageContext) -> Mapping[str, Any]:
         s01_dir = prior(context, "S01")
+        shared_inputs = _s02_shared_input_hashes(
+            s01_dir.parent.parent, context.image_id, instance_name
+        )
         document = json.loads((s01_dir / "person_bbox.json").read_text(encoding="utf-8"))
         person = selected_person(document)
         manifest, _ = _source(context.image_id, images_root)
@@ -430,6 +455,7 @@ def build_production_runners(
             raise SemanticStageError(f"S02 review resolution refused: {exc}") from exc
         if review is not None:
             return {
+                **shared_inputs,
                 "silhouette_bbox_ratio": review["silhouette_bbox_ratio"],
                 "qc_passed": True,
                 "human_review_passed": True,
@@ -444,6 +470,7 @@ def build_production_runners(
                 f"[{float(ratio_range[0]):.2f},{float(ratio_range[1]):.2f}]"
             )
             return {
+                **shared_inputs,
                 "silhouette_bbox_ratio": result.silhouette_bbox_ratio,
                 "qc_passed": False,
                 "reason": reason,
@@ -451,6 +478,7 @@ def build_production_runners(
                 "_telemetry": {"model_keys": ["birefnet_general"]},
             }
         return {
+            **shared_inputs,
             "silhouette_bbox_ratio": result.silhouette_bbox_ratio,
             "qc_passed": True,
             "_telemetry": {"model_keys": ["birefnet_general"]},
@@ -1209,6 +1237,7 @@ def run_multi_person_production(
         runners=shared_runners,
         gpu_lock_path=gpu_lock_path,
     )
+    shared_changed = any(execution.status == "complete" for execution in shared)
     s01_dir = work_root / "s01" / image_id
     terminal = next((execution for execution in shared if execution.status == "terminal"), None)
     if terminal is not None:
@@ -1239,6 +1268,7 @@ def run_multi_person_production(
     if not promoted or [item["person_index"] for item in promoted] != list(range(len(promoted))):
         raise SemanticStageError("S01 promoted person indices must be contiguous from p0")
     per_instance: dict[str, tuple[StageExecution, ...]] = {}
+    instance_changed: dict[str, bool] = {}
     scoped_runners = {}
     for person in promoted:
         index = int(person["person_index"])
@@ -1251,6 +1281,12 @@ def run_multi_person_production(
             shared_work_root=work_root,
         )
         scoped_runners[name] = runners
+        s02_dir = instance_root / "s02" / image_id
+        refresh_s02 = (
+            shared_changed
+            or _s02_shared_refresh_required(work_root, image_id, name, s02_dir)
+            or s02_review_refresh_required(work_root, image_id, name, s02_dir)
+        )
         per_instance[name] = tuple(
             pipeline_runner(
                 image_id,
@@ -1259,17 +1295,11 @@ def run_multi_person_production(
                 work_root=instance_root,
                 runners=runners,
                 gpu_lock_path=gpu_lock_path,
-                force=(
-                    ("S02",)
-                    if s02_review_refresh_required(
-                        work_root,
-                        image_id,
-                        name,
-                        instance_root / "s02" / image_id,
-                    )
-                    else ()
-                ),
+                force=("S02",) if refresh_s02 else (),
             )
+        )
+        instance_changed[name] = shared_changed or any(
+            execution.status == "complete" for execution in per_instance[name]
         )
     routed = {
         name: execution
@@ -1312,8 +1342,10 @@ def run_multi_person_production(
         cached = instance_root / "s03" / image_id
         return ("S03",) if custom_bodypart_refresh_required(cached) else ()
 
-    def runtime_forces(instance_root: Path, selected: tuple[str, ...]) -> tuple[str, ...]:
-        forces = list(s03_force(instance_root))
+    def runtime_forces(
+        instance_root: Path, selected: tuple[str, ...], *, upstream_changed: bool
+    ) -> tuple[str, ...]:
+        forces = list(selected) if upstream_changed else list(s03_force(instance_root))
         if "S07" in selected:
             cached = instance_root / "s07" / image_id
             if champion_hand_refresh_required(cached):
@@ -1322,7 +1354,7 @@ def run_multi_person_production(
             cached = instance_root / "s08" / image_id
             if champion_clothing_refresh_required(cached):
                 forces.append("S08")
-        return tuple(forces)
+        return tuple(dict.fromkeys(forces))
 
     if parsing_only or pose_only or openvocab_only or sam2_only or densepose_only:
         if parsing_only:
@@ -1345,7 +1377,9 @@ def run_multi_person_production(
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
-                force=runtime_forces(instance_root, selected),
+                force=runtime_forces(
+                    instance_root, selected, upstream_changed=instance_changed[name]
+                ),
             )
             per_instance[name] = (*per_instance[name], *tuple(partial))
         return MultiPersonProductionResult(
@@ -1365,9 +1399,14 @@ def run_multi_person_production(
             work_root=instance_root,
             runners=scoped_runners[name],
             gpu_lock_path=gpu_lock_path,
-            force=runtime_forces(instance_root, downstream),
+            force=runtime_forces(
+                instance_root, downstream, upstream_changed=instance_changed[name]
+            ),
         )
         per_instance[name] = (*per_instance[name], *tuple(remainder))
+        instance_changed[name] = instance_changed[name] or any(
+            execution.status == "complete" for execution in remainder
+        )
     manifest, _ = _source(image_id, Path(images_root))
     recon_inputs = tuple(
         ReconciliationInstance(
@@ -1412,13 +1451,16 @@ def run_multi_person_production(
             autoqa = pipeline_runner(
                 image_id,
                 selected=("S10",),
-                force=("S10",) if force_autoqa else (),
+                force=("S10",) if force_autoqa or instance_changed[name] else (),
                 config=config,
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(autoqa))
+            instance_changed[name] = instance_changed[name] or any(
+                execution.status == "complete" for execution in autoqa
+            )
         if database is not None:
             persist_image_progress(database, image_id, "auto_qa")
     cvat_task_ids: tuple[int, ...] = ()
@@ -1429,13 +1471,16 @@ def run_multi_person_production(
             vlmqa = pipeline_runner(
                 image_id,
                 selected=("S11",),
-                force=("S11",) if force_vlmqa else (),
+                force=("S11",) if force_vlmqa or instance_changed[name] else (),
                 config=config,
                 work_root=instance_root,
                 runners=scoped_runners[name],
                 gpu_lock_path=gpu_lock_path,
             )
             per_instance[name] = (*per_instance[name], *tuple(vlmqa))
+            instance_changed[name] = instance_changed[name] or any(
+                execution.status == "complete" for execution in vlmqa
+            )
         if database is not None:
             persist_image_progress(database, image_id, "vlm_qa")
         if through_vlmqa and not through_review_handoff:

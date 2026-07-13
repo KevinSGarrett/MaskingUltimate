@@ -453,19 +453,21 @@ def run_pipeline(
         else nullcontext()
     )
     results: list[StageExecution] = []
+    upstream_changed = False
     with lease:
         for stage in plan:
             runner = available.get(stage.name)
             if runner is None:
                 raise StageRunnerMissingError(f"no runner registered for {stage.name}")
             try:
+                effective_forced = stage.name in force_names or upstream_changed
                 execution = _execute_with_policy(
                     image_id=image_id,
                     stage=stage,
                     config=config,
                     work_root=Path(work_root),
                     runner=runner,
-                    forced=stage.name in force_names,
+                    forced=effective_forced,
                     retry_delays=retry_delays,
                     sleeper=sleeper,
                 )
@@ -480,6 +482,12 @@ def run_pipeline(
                     )
                 raise
             results.append(execution)
+            # A freshly produced artifact generation invalidates every later stage in
+            # this selected topological chain, even when its own configuration did
+            # not change. Reusing a downstream cache in that situation can combine
+            # incompatible geometry from two generations.
+            if execution.status == "complete":
+                upstream_changed = True
             if run_log is not None:
                 run_log.record_stage(
                     image_id=image_id,

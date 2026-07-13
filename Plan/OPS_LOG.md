@@ -4101,3 +4101,18 @@ doctor final:                    10 PASS, 1 WARN (<150 GiB junction-move thresho
 regression:                      full WSL suite passes with 11 expected skips; Ruff check clean and 292 Python files format-clean
 tracker:                         329/393 complete (83.7%); 60 blocked; 4 deferred; nothing autonomously actionable remains
 evidence:                        qa/live_verification/windows_task_registration_20260712.json; qa/live_verification/openmmlab_cuda_runtime_20260712.json; qa/live_verification/wsl_localhost_serving_20260713.json; qa/live_verification/restored_machine_doctor_20260713.json
+
+## 2026-07-13 - Five single-person SOP-1 review packages staged in live CVAT
+
+**Result:** PASS for automated review readiness; human correction and approval remain explicitly pending.
+
+source set:                      five distinct governed clear-adult single-person images: img_2ca794d19be9, img_b2b46c45d8e0, img_cdab0311dc96, img_51945db358cb, img_e5163e08baac
+pipeline proof:                  all five QC-035 PASS; all five D1 contracts contain the complete 56-atomic output contract; S11 and S12 completed
+live CVAT:                       tasks/jobs 21-25 exist in project 1, job state=new, package workflow_status=in_review
+authority:                       all five S12 receipts record human_approved=false; no machine draft was promoted to gold or treated as Kevin approval
+cache integrity repair:          a fresh upstream stage now invalidates later selected-stage caches; S02 additionally fingerprints shared S01 bbox and context-crop artifacts across the shared/per-instance root boundary
+failure recovered:               img_cdab0311dc96 originally exposed mixed S01/S09 generations; replay after the repair regenerated S02-S11, passed D1 with current geometry, and created task 23
+verification:                    73 focused orchestrator/production tests passed; Ruff check and Black check clean; all 38 existing S09 maps audited against current S01 context dimensions with no remaining mismatch
+tracker state:                   MF-P1-08.02/.03/.04 remain blocked at 0% because their clauses require Kevin's actual SOP-1 annotation/correction/approval, not merely ready drafts
+machine health:                  post-handoff doctor PASS=10 WARN=1 FAIL=0; 75.25 GiB free after removing only verified disposable external temp/cache files
+evidence:                        qa/live_verification/five_single_person_cvat_handoffs_20260713.json; qa/live_verification/post_handoff_machine_health_20260713.json

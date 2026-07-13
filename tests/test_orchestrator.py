@@ -191,6 +191,33 @@ def test_config_change_invalidates_cache(tmp_path: Path) -> None:
     assert calls == 2
 
 
+def test_fresh_upstream_generation_invalidates_selected_downstream_cache(tmp_path: Path) -> None:
+    generations = {"S01": 0, "S02": 0}
+
+    def runner(stage):
+        def execute(context):
+            generations[stage] += 1
+            return {"generation": generations[stage]}
+
+        return execute
+
+    common = {
+        "image_id": "img_a3f9c2e17b04",
+        "selected": ("S01", "S02"),
+        "work_root": tmp_path,
+        "runners": {"S01": runner("S01"), "S02": runner("S02")},
+    }
+    first = run_pipeline(**common)
+    second = run_pipeline(**common)
+    third = run_pipeline(**common, force=("S01",))
+
+    assert [result.status for result in first] == ["complete", "complete"]
+    assert [result.status for result in second] == ["cached", "cached"]
+    assert [result.status for result in third] == ["complete", "complete"]
+    assert generations == {"S01": 2, "S02": 2}
+    assert third[1].forced is True
+
+
 def test_downstream_stage_reads_prior_files_not_in_memory_results(tmp_path: Path) -> None:
     def s01(context):
         (context.output_dir / "person_bbox.json").write_text(

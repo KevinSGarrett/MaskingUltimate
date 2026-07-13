@@ -61,14 +61,14 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## D. CVAT and human review
 
-- [ ] Create versioned v2 CVAT project; never mutate open v1 tasks in place.
-- [ ] Add canonical labels and v2 visibility attributes.
-- [ ] Surface aliases as help/search text only.
-- [ ] Update task descriptions with doc 18 SOP and character-perspective reminder.
-- [ ] Add chest/pelvic review crop presets.
-- [ ] Push migrated tasks with additions explicitly unreviewed.
-- [ ] Pull exact v2 states/masks; reject aliases and unknown values.
-- [ ] Block export when visible masks are absent or null-mask states contain masks.
+- [x] Create versioned v2 CVAT project; never mutate open v1 tasks in place.
+- [x] Add canonical labels and v2 visibility attributes.
+- [x] Surface aliases as help/search text only.
+- [x] Update task descriptions with doc 18 SOP and character-perspective reminder.
+- [x] Add chest/pelvic review crop presets.
+- [x] Push migrated tasks with additions explicitly unreviewed.
+- [x] Pull exact v2 states/masks; reject aliases and unknown values.
+- [x] Block export when visible masks are absent or null-mask states contain masks.
 - [ ] Pilot 20–30 adult images covering all states and applicable classes.
 - [ ] Record review time/ambiguities and revise guidelines before scale annotation.
 

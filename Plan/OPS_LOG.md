@@ -4288,3 +4288,18 @@ real dry-run:                    img_2ca794d19be9/p0 planned successfully with n
 verification:                    15 focused migration tests and 789 live-root full tests passed; clean publish 773 passed plus 3 expected runtime-artifact skips across 776 collected; Ruff full-repository clean; exact Black 26.5.1 clean across the seven changed Python/tool files; v2 ontology/schema drift checks pass
 authority unchanged:             production remains body_parts_v1; dry-run applied=false; no v2 gold, dataset, model, serving, or activation claim
 evidence:                        qa/live_verification/ontology_v2_real_package_dry_run_20260713.json; qa/live_verification/ontology_v2_manifest_migration_20260713.json
+
+## 2026-07-13 - Isolated ontology-v2 CVAT project and fail-closed review bridge landed
+
+**Result:** PASS for the first eight machine-side CVAT-v2 checklist items; the adult pilot and human guideline revision remain open.
+
+project isolation:                  live CVAT project 2 is MaskFactory_body_parts_v2_pilot with separate config, mapping, and task-record roots; project 1 remains MaskFactory_body_parts_v1 with its existing 17 tasks
+label/state authority:              exactly 65 canonical PART labels (IDs 0-64) use one explicit state tag per label with visibility, review_complete, and notes; aliases are persisted only as local help text
+human SOP:                          task descriptions carry Document 18 visible-surface, clothing, ambiguity, carve-out, and character-perspective rules; chest and pelvic crops are attached as related review images
+migration push:                     all nine additions enter every migrated task as unreviewed_for_v2 with review_complete=false; legacy masks remain drafts and cannot transfer v1 approval authority
+fail-closed pull:                   all 65 tags must be complete and canonical; visible masks are required, null-mask states reject shapes, ambiguity requires a separate ignore region and note, atomic overlap and stale manifests are rejected before package writes
+authority boundary:                 a successful pull writes body_parts_v2 human-review provenance and corrected workflow only; it never approves gold, bypasses QA, or activates v2
+live API proof:                     disposable synthetic task 26 round-tripped 65 tags plus one mask shape through CVAT 2.24.0 and was deleted; v2 returned to zero tasks and receives no human, gold, or pilot credit
+verification:                       41 focused CVAT/migration tests and 794 full live-root tests passed; clean publish passed 778 with 3 expected runtime-artifact skips across 781 collected; Ruff clean; exact Black 26.5.1 clean on the seven changed Python/tool files
+open human work:                    the 20-30 confirmed-adult pilot and review-time/ambiguity guideline revision remain unchecked
+evidence:                           qa/live_verification/ontology_v2_cvat_bridge_20260713.json

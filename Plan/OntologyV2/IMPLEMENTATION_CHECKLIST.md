@@ -74,14 +74,14 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## E. Drafting and fusion
 
-- [ ] Add anatomy crop proposals without asserting hidden anatomy.
-- [ ] Add canonical open-vocabulary prompts with adult-only routing.
-- [ ] Route prompts through SAM2/fusion; detector boxes never become final masks directly.
-- [ ] Add same-side chest and pelvic geometry priors.
-- [ ] Enforce breast/pelvic carve-outs before PART-map write.
-- [ ] Preserve ambiguity/clothing occlusion rather than forcing candidates.
-- [ ] Produce panels, provenance, confidence, and correction instructions.
-- [ ] Test nude, clothed, partial, distant, hair-occluded, side-view, and cropped fixtures.
+- [x] Add anatomy crop proposals without asserting hidden anatomy.
+- [x] Add canonical open-vocabulary prompts with adult-only routing.
+- [x] Route prompts through SAM2/fusion; detector boxes never become final masks directly.
+- [x] Add same-side chest and pelvic geometry priors.
+- [x] Enforce breast/pelvic carve-outs before PART-map write.
+- [x] Preserve ambiguity/clothing occlusion rather than forcing candidates.
+- [x] Produce panels, provenance, confidence, and correction instructions.
+- [x] Test nude, clothed, partial, distant, hair-occluded, side-view, and cropped fixtures.
 
 ## F. QA and calibration
 

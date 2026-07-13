@@ -4303,3 +4303,18 @@ live API proof:                     disposable synthetic task 26 round-tripped 6
 verification:                       41 focused CVAT/migration tests and 794 full live-root tests passed; clean publish passed 778 with 3 expected runtime-artifact skips across 781 collected; Ruff clean; exact Black 26.5.1 clean on the seven changed Python/tool files
 open human work:                    the 20-30 confirmed-adult pilot and review-time/ambiguity guideline revision remain unchecked
 evidence:                           qa/live_verification/ontology_v2_cvat_bridge_20260713.json
+
+## 2026-07-13 - Inactive ontology-v2 anatomy drafting and carve-out fusion landed
+
+**Result:** PASS for checklist E review-draft mechanics; body_parts_v2 remains inactive and non-gold.
+
+adult/visibility gate:              crop, prompt, SAM2, and fusion paths require clear_adult provenance; only observable exposed surface is eligible and clothing/hair/ambiguity remove authority
+proposal authority:                 nine canonical prompts emit detector boxes only; geometry provides same-side chest/pelvic gates only; neither source can write a mask or enter fusion without SAM2 refinement
+low-confidence behavior:            SAM2 multimask is mandatory and low predicted-IoU suppresses the candidate instead of using the detector/prior seed as a fallback mask
+fusion ownership:                   nipples carve same-side areolae, glans carves shaft, all nine additions carve their breast/pelvic parents before map construction, and incompatible/unrelated overlaps route to ambiguity
+review evidence:                    writer emits nine strict candidate masks, an inactive-v2 part map, source/candidate/ambiguity panel, per-label confidence/provenance, and canonical correction instructions with human_review_required=true and gold_approved=false
+scenario coverage:                  nude, clothed, partial, distant, hair-occluded, character-side profile, and frame-cropped fixtures all exercise prompt/prior suppression and visible-only behavior
+verification:                       13 focused tests and 52 adjacent S05/S06/S07/S09/map/generator regressions passed; ontology-v2 drift check, Ruff, and exact Black 26.5.1 checks pass
+root-suite disclosure:              806/807 pass; the sole unrelated failure is concurrent cloud_enabled=true config versus an old false assertion, outside this isolated change and intentionally not overwritten
+authority unchanged:                production remains body_parts_v1; no adult image was processed, no human review or gold credit was claimed, and no v2 activation occurred
+evidence:                           qa/live_verification/ontology_v2_drafting_fusion_20260713.json

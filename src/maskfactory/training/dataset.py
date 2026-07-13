@@ -131,6 +131,18 @@ def _load_mmseg_components(
     return datasets_module.BaseSegDataset, registry_module.DATASETS
 
 
+def _validated_base_dataset_kwargs(kwargs: Mapping[str, Any]) -> dict[str, Any]:
+    """Consume duplicated config contracts before calling BaseSegDataset."""
+    forwarded = dict(kwargs)
+    reduce_zero_label = forwarded.pop("reduce_zero_label", False)
+    ignore_index = forwarded.pop("ignore_index", IGNORE_INDEX)
+    if reduce_zero_label is not False:
+        raise ValueError("MaskFactory MMSeg datasets require reduce_zero_label=false")
+    if int(ignore_index) != IGNORE_INDEX:
+        raise ValueError(f"MaskFactory MMSeg datasets require ignore_index={IGNORE_INDEX}")
+    return forwarded
+
+
 BaseSegDataset, DATASETS = _load_mmseg_components()
 
 if DATASETS is not None and BaseSegDataset is not None:
@@ -146,7 +158,11 @@ if DATASETS is not None and BaseSegDataset is not None:
         }
 
         def __init__(self, **kwargs) -> None:
-            super().__init__(reduce_zero_label=False, ignore_index=IGNORE_INDEX, **kwargs)
+            super().__init__(
+                reduce_zero_label=False,
+                ignore_index=IGNORE_INDEX,
+                **_validated_base_dataset_kwargs(kwargs),
+            )
 
     @DATASETS.register_module()
     class MaskFactoryMaterialDataset(BaseSegDataset):
@@ -159,4 +175,8 @@ if DATASETS is not None and BaseSegDataset is not None:
         }
 
         def __init__(self, **kwargs) -> None:
-            super().__init__(reduce_zero_label=False, ignore_index=IGNORE_INDEX, **kwargs)
+            super().__init__(
+                reduce_zero_label=False,
+                ignore_index=IGNORE_INDEX,
+                **_validated_base_dataset_kwargs(kwargs),
+            )

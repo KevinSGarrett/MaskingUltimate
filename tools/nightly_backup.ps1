@@ -8,7 +8,7 @@ $Log = Join-Path $LogRoot ("nightly_backup_{0:yyyyMMdd}.log" -f (Get-Date))
 function Invoke-RobocopyMirror([string]$Source, [string]$Destination) {
     New-Item -ItemType Directory -Force -Path $Destination | Out-Null
     & robocopy.exe $Source $Destination /MIR /COPY:DAT /DCOPY:T /R:2 /W:2 /NP /NFL /NDL *>> $Log
-    if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code $LASTEXITCODE: $Source" }
+    if ($LASTEXITCODE -ge 8) { throw "robocopy failed with exit code ${LASTEXITCODE}: $Source" }
 }
 
 # B5 is deliberately first: the mirror never races a live SQLite WAL database.

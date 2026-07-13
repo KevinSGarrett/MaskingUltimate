@@ -225,11 +225,22 @@ class InferenceRuntime:
 
     def models(self) -> dict[str, Any]:
         document = json.loads(Path(self.registry_path).read_text(encoding="utf-8"))
+
+        def version_tag(item: Mapping[str, Any]) -> str:
+            # File-backed checkpoints use version_tag; governed Ollama entries use
+            # their immutable model name/digest contract instead.
+            return str(
+                item.get("version_tag")
+                or item.get("ollama_name")
+                or item.get("digest")
+                or item["key"]
+            )
+
         models = [
             {
                 "key": item["key"],
                 "role": item["role"],
-                "version_tag": item["version_tag"],
+                "version_tag": version_tag(item),
                 "sha256": item.get("sha256"),
             }
             for item in document.get("models", [])
@@ -238,7 +249,7 @@ class InferenceRuntime:
         champions = {
             item["role"]: {
                 "key": item["key"],
-                "version_tag": item["version_tag"],
+                "version_tag": version_tag(item),
                 "sha256": item.get("sha256"),
             }
             for item in document.get("models", [])

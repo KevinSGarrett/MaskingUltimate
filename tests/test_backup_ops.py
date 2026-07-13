@@ -29,6 +29,10 @@ def test_nightly_script_orders_b5_before_mirrors_and_wsl_integrity_sample() -> N
     assert text.count("Invoke-RobocopyMirror (Join-Path") == 3
     assert "wsl.exe -d Ubuntu-22.04" in text
     assert "verify-package --root data/packages --sample 10" in text
+    # A colon immediately after an unbraced variable name is a PowerShell
+    # parser error (it is interpreted as a drive-qualified variable).
+    assert "$LASTEXITCODE:" not in text
+    assert "${LASTEXITCODE}:" in text
 
 
 def test_task_registration_defines_nightly_and_weekly_limited_tasks() -> None:

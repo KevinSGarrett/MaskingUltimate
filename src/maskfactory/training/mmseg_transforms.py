@@ -267,26 +267,30 @@ def mmseg_augmentation_config(config: Mapping[str, Any], *, map_name: str) -> di
         raise AugmentationError("release rotation policy must remain +/-15, nearest, border 255")
     pipeline = [
         {"type": "LoadImageFromFile"},
-        {"type": "LoadAnnotations", "reduce_zero_label": False},
+        {"type": "mmseg.LoadAnnotations", "reduce_zero_label": False},
         {
-            "type": "MaskFactoryRandomResizedCrop",
+            "type": "mmseg.MaskFactoryRandomResizedCrop",
             "map_name": map_name,
             "output_size": 512,
             "scale": (0.5, 2.0),
             "rare_force_probability": 0.4,
             "rare_ids": _rare_ids(map_name),
         },
-        {"type": "MaskFactoryHorizontalFlip", "map_name": map_name, "probability": 0.5},
         {
-            "type": "MaskFactoryPhotometricJitter",
+            "type": "mmseg.MaskFactoryHorizontalFlip",
+            "map_name": map_name,
+            "probability": 0.5,
+        },
+        {
+            "type": "mmseg.MaskFactoryPhotometricJitter",
             "brightness": 0.25,
             "contrast": 0.25,
             "saturation": 0.25,
             "hue": 0.05,
             "channel_order": "bgr",
         },
-        {"type": "MaskFactoryRotate", "map_name": map_name, "degrees": 15.0},
-        {"type": "PackSegInputs"},
+        {"type": "mmseg.MaskFactoryRotate", "map_name": map_name, "degrees": 15.0},
+        {"type": "mmseg.PackSegInputs"},
     ]
     return {
         "custom_imports": {

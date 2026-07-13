@@ -91,12 +91,12 @@ def test_mmseg_pipeline_compiler_is_exact_and_refuses_drift() -> None:
     types = [item["type"] for item in compiled["train_pipeline"]]
     assert types == [
         "LoadImageFromFile",
-        "LoadAnnotations",
-        "MaskFactoryRandomResizedCrop",
-        "MaskFactoryHorizontalFlip",
-        "MaskFactoryPhotometricJitter",
-        "MaskFactoryRotate",
-        "PackSegInputs",
+        "mmseg.LoadAnnotations",
+        "mmseg.MaskFactoryRandomResizedCrop",
+        "mmseg.MaskFactoryHorizontalFlip",
+        "mmseg.MaskFactoryPhotometricJitter",
+        "mmseg.MaskFactoryRotate",
+        "mmseg.PackSegInputs",
     ]
     rare_ids = compiled["train_pipeline"][2]["rare_ids"]
     assert set(rare_ids) == {8, *range(24, 34), 46, 47}

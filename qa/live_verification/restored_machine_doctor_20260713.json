@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T01:23:00+00:00",
+  "outcome": "pass_with_disk_warning",
+  "final_doctor": {
+    "pass": 10,
+    "warn": 1,
+    "skip": 0,
+    "fail": 0,
+    "checks": {
+      "torch_cuda": "PASS torch 2.11.0+cu128, CUDA 12.8, capability 12.0",
+      "registered_models": "PASS 14/14 file-backed smoke hashes",
+      "cvat_api": "PASS v2.24.0",
+      "cvat_project": "PASS project_count=1",
+      "nuclio_interactor": "PASS pth-sam2 foreground=21491",
+      "ollama_image": "PASS qwen2.5vl:7b strict image JSON",
+      "disk_free": "WARN 85.9 GiB; above 75 GiB block and below 150 GiB warning threshold",
+      "wsl_roundtrip": "PASS",
+      "png_strict": "PASS",
+      "sqlite_writable": "PASS",
+      "gpu_lock": "PASS no lock present"
+    }
+  },
+  "repairs": {
+    "nuclio": {
+      "cause": "nuclio-local-storage-reader reported running but Docker exec returned cannot exec in a stopped state",
+      "action": "restart only nuclio-local-storage-reader",
+      "verification": "tools/smoke_cvat_sam2.py passed in 19.299 seconds"
+    },
+    "ollama": {
+      "cause": "cold qwen2.5vl:7b load requires about 112 seconds while doctor requests are bounded at 45 seconds",
+      "action": "local prewarm with keep_alive=30m",
+      "verification": "subsequent bounded doctor image request passed"
+    },
+    "disk": {
+      "free_gib_before": 20.2,
+      "free_gib_after": 85.9,
+      "root_test_trees_removed": 316,
+      "pip_cache_removed_mb": 7027.9,
+      "docker_build_cache_reclaimed_gb": 9.928,
+      "uv_cache_removed": false,
+      "uv_cache_reason": "active AWS MCP uv process held the cache lock; no force override used",
+      "governed_data_removed": false,
+      "photoshop_temp_removed": false
+    }
+  },
+  "runtime_gates_closed": [
+    "MF-P1-09.01",
+    "MF-P1-09.02",
+    "MF-P1-09.03",
+    "MF-P1-09.04",
+    "MF-P4-03.05",
+    "MF-P5-02.01",
+    "MF-P6-02.02"
+  ],
+  "regression": {
+    "full_suite": "pass in Ubuntu-22.04 pinned maskfactory environment",
+    "expected_skips": 11,
+    "ruff_check": "pass",
+    "ruff_format": "292 files clean"
+  }
+}

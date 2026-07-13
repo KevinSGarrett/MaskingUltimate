@@ -130,6 +130,36 @@ def test_serving_predictor_resolves_verified_champion_role_only(tmp_path: Path) 
         untrusted.configure_champion_predictor(loader)
 
 
+def test_models_endpoint_supports_governed_ollama_registry_entries(tmp_path: Path) -> None:
+    registry = tmp_path / "registry.json"
+    registry.write_text(
+        json.dumps(
+            {
+                "models": [
+                    {
+                        "key": "ollama_qwen",
+                        "role": "local_vlm",
+                        "ollama_name": "qwen2.5vl:7b",
+                        "digest": "a" * 64,
+                        "sha256": "a" * 64,
+                        "verified": True,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    runtime = InferenceRuntime(registry_path=registry)
+    assert runtime.models()["models"] == [
+        {
+            "key": "ollama_qwen",
+            "role": "local_vlm",
+            "version_tag": "qwen2.5vl:7b",
+            "sha256": "a" * 64,
+        }
+    ]
+
+
 def test_sequential_champion_slots_and_sam2_on_demand_never_coreside(tmp_path: Path) -> None:
     models_root = tmp_path / "models"
     models_root.mkdir()

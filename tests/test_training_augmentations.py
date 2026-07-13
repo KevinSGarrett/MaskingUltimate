@@ -20,7 +20,11 @@ from maskfactory.training.augmentations import (
     validate_augmentation_config,
     write_rare_sampling_metrics,
 )
-from maskfactory.training.dataset import MaskFactorySegmentationDataset, mmseg_dataset_config
+from maskfactory.training.dataset import (
+    MaskFactorySegmentationDataset,
+    _validated_base_dataset_kwargs,
+    mmseg_dataset_config,
+)
 
 
 @pytest.mark.parametrize("map_name", ["part", "material"])
@@ -175,3 +179,13 @@ def test_mmseg_configs_target_exact_export_layout_and_ignore_contract(tmp_path: 
     }
     with pytest.raises(ValueError, match="unknown MaskFactory MMSeg target"):
         mmseg_dataset_config(tmp_path, "train", "depth")
+
+
+def test_mmseg_dataset_subclass_consumes_and_validates_constitutional_kwargs() -> None:
+    assert _validated_base_dataset_kwargs(
+        {"reduce_zero_label": False, "ignore_index": 255, "ann_file": "train.txt"}
+    ) == {"ann_file": "train.txt"}
+    with pytest.raises(ValueError, match="reduce_zero_label=false"):
+        _validated_base_dataset_kwargs({"reduce_zero_label": True})
+    with pytest.raises(ValueError, match="ignore_index=255"):
+        _validated_base_dataset_kwargs({"ignore_index": 0})

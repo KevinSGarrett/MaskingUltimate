@@ -4081,3 +4081,23 @@ D1 verification:                4/4 contracts independently verified; 56 strict 
 batch progress:                  complete governed source drafts increased from 20/25 to 22/25; three additional governed clear-adult originals remain required
 handoff state:                   qa/review_handoffs/s02/index.json reports two resolved_applied and zero awaiting human review
 evidence:                        qa/live_verification/s02_review_recovery_20260712.json
+
+## 2026-07-13 - Restored Windows/WSL runtime gates closed and doctor recovered
+
+**Result:** PASS - seven stale external-runtime blockers closed; final doctor PASS=10 WARN=1 FAIL=0.
+
+Task Scheduler:                  four LIMITED tasks registered/enabled/Ready under KEVIN\kevin; P1 B1/B5/integrity/B2 reminder plus P4 manifest/mining cadence
+backup caveat:                   D: or NAS media is not attached, so registration items are complete but the real B1 restore drill remains blocked and no backup execution is claimed
+PowerShell repair:               fixed parser-invalid `$LASTEXITCODE:` interpolation in nightly_backup.ps1; parser and four backup tests pass
+OpenMMLab runtime:               full MMCV 2.1.0 built from locked commit 57c4e25 with CUDA 12.8/sm_120; MMEngine .10.7, MMSeg 1.2.2, MMDet 3.3.0
+live training proof:             mmcv._ext imported; CUDA NMS ran on RTX 5060; real MaskFactoryBodyPartDataset loaded 512x512 through the exact seven-stage governed pipeline
+integration repairs:             consume/validate duplicate ignore_index/reduce_zero_label kwargs; explicitly scope MMSeg and custom transform registry names
+WSL serving proof:               literal maskfactory serve bound only 127.0.0.1:8765; Windows localhost /health and /models returned 200; graceful stop released gpu.lock
+serving repair:                  /models now handles governed Ollama entries through ollama_name/digest fallback instead of assuming checkpoint version_tag
+Nuclio repair:                   restarted a logically-running but exec-broken local-storage-reader; real CVAT->Nuclio->SAM2 smoke passed in 19.299 s
+Ollama verification:             cold Qwen load measured 111.597 s; 30-minute local warm lease allowed the normal bounded 45 s doctor image request to pass
+disk recovery:                   20.2 -> 85.9 GiB free; removed 316 ignored test trees, 7.0 GB pip cache, and 9.928 GB Docker build cache; no governed data or active Photoshop temp removed
+doctor final:                    10 PASS, 1 WARN (<150 GiB junction-move threshold), 0 FAIL; the <75 GiB ingest block is cleared
+regression:                      full WSL suite passes with 11 expected skips; Ruff check clean and 292 Python files format-clean
+tracker:                         329/393 complete (83.7%); 60 blocked; 4 deferred; nothing autonomously actionable remains
+evidence:                        qa/live_verification/windows_task_registration_20260712.json; qa/live_verification/openmmlab_cuda_runtime_20260712.json; qa/live_verification/wsl_localhost_serving_20260713.json; qa/live_verification/restored_machine_doctor_20260713.json

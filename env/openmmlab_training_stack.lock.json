@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "status": "selected_pending_live_mmcv_source_build",
+  "status": "verified_live_cuda",
   "compatibility": {
     "mmcv": ">=2.0.0rc4,<2.2.0",
     "mmengine": ">=0.7.1,<1.0.0",
@@ -54,7 +54,15 @@
       "CUDA_HOME": "$CONDA_PREFIX",
       "FORCE_CUDA": "1",
       "MMCV_WITH_OPS": "1",
-      "TORCH_CUDA_ARCH_LIST": "12.0"
-    }
+      "TORCH_CUDA_ARCH_LIST": "12.0",
+      "CPATH": "$CONDA_PREFIX/targets/x86_64-linux/include",
+      "CPLUS_INCLUDE_PATH": "$CONDA_PREFIX/targets/x86_64-linux/include",
+      "LIBRARY_PATH": "$CONDA_PREFIX/targets/x86_64-linux/lib",
+      "LD_LIBRARY_PATH": "$CONDA_PREFIX/targets/x86_64-linux/lib"
+    },
+    "verified_at": "2026-07-12T23:59:00+00:00",
+    "verified_device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "verified_compute_capability": [12, 0],
+    "evidence": "qa/live_verification/openmmlab_cuda_runtime_20260712.json"
   }
 }

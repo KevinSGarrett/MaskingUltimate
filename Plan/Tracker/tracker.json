@@ -7435,7 +7435,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 92,
+      "percent_complete": 98,
       "notes": [
         {
           "ts": "2026-07-11T08:03:30+00:00",
@@ -7451,12 +7451,17 @@
           "ts": "2026-07-11T09:17:50+00:00",
           "actor": "ai_agent",
           "text": "Completed skin-only graph validated against actual installed ComfyUI INPUT_TYPES; removed incompatible UI-only KSampler field found by the live check. Evidence qa/live_verification/comfy_workflow_compatibility_20260711.json. Generation remains pending without checkpoint/package."
+        },
+        {
+          "ts": "2026-07-13T10:43:41+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-13: Installed the node pack into native Windows ComfyUI and ran the full skin-only workflow on img_7b7a3c7d5dd3/p2 using a real SDXL checkpoint. The live run exposed and fixed VAE-grid composite leakage: generated content is now resized to source geometry before applying the original full-resolution mask. Exact audit: 53,570/53,570 conditioned pixels changed, 0 outside-mask changes, 0/11,011 clothing pixels changed, source/output both 353x1378. This is explicitly non-gold draft evidence; no package truth was written."
         }
       ],
-      "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: workflow structure is implemented; live verification requires real champion prediction and Kevin's interactive ComfyUI run.",
+      "evidence": "qa/live_verification/comfy_bodypart_conditioned_draft_smoke_20260713.json; prompt 9c0f34f6-d5f9-41b3-bd92-bfd4f7e9df2f; workflow hash 8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1; 30 focused tests passed; Ruff/Black clean.",
+      "blocked_reason": "NEEDS KEVIN: the graph and exact pixel-isolation behavior are live-verified on a non-gold in_review package. Final completion requires rerunning the shipped human_approved_gold-default workflow after Kevin approves at least one package.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:33:01+00:00",
+      "updated_at": "2026-07-13T10:43:41+00:00",
       "orphaned": false
     },
     "MF-P6-03.03": {

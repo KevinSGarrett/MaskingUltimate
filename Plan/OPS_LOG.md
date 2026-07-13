@@ -4116,3 +4116,16 @@ verification:                    73 focused orchestrator/production tests passed
 tracker state:                   MF-P1-08.02/.03/.04 remain blocked at 0% because their clauses require Kevin's actual SOP-1 annotation/correction/approval, not merely ready drafts
 machine health:                  post-handoff doctor PASS=10 WARN=1 FAIL=0; 75.25 GiB free after removing only verified disposable external temp/cache files
 evidence:                        qa/live_verification/five_single_person_cvat_handoffs_20260713.json; qa/live_verification/post_handoff_machine_health_20260713.json
+
+## 2026-07-13 - Live ComfyUI skin-only workflow isolation repaired and verified
+
+**Result:** PASS for installed-graph/runtime behavior on a non-gold draft; approved-gold completion remains pending.
+
+live runtime:                     native Windows ComfyUI 0.27.0 at git 7747c34, RTX 5060, MaskFactory node pack installed with source/installed workflow hashes identical
+execution:                        realvisxlV50_v50Bakedvae, 20 steps, prompt 9c0f34f6-d5f9-41b3-bd92-bfd4f7e9df2f, success in 13.904 s
+repair:                           added an explicit original-source composite; generated candidate is resized to source geometry before the original full-resolution binary mask is applied
+pixel proof:                      353x1378 preserved; all 53,570 conditioned pixels changed; 0 pixels changed outside; 0/11,011 clothing pixels changed; outside maximum channel delta 0
+truth authority:                  input img_7b7a3c7d5dd3/p2 remains in_review and non-gold; workflow output stayed under ComfyUI/output and did not touch data/packages
+verification:                     30 focused ComfyUI/export tests passed; Ruff and Black clean
+tracker:                          MF-P6-03.02 advances to 98% but remains blocked until the same shipped human_approved_gold-default graph runs against an actually approved package
+evidence:                         qa/live_verification/comfy_bodypart_conditioned_draft_smoke_20260713.json

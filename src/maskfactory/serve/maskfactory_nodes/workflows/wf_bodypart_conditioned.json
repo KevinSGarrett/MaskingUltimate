@@ -54,7 +54,14 @@
     "inputs": {"samples": ["10", 0], "vae": ["6", 2]}
   },
   "12": {
+    "class_type": "ImageCompositeMasked",
+    "inputs": {
+      "destination": ["2", 0], "source": ["11", 0], "x": 0, "y": 0,
+      "resize_source": true, "mask": ["5", 0]
+    }
+  },
+  "13": {
     "class_type": "SaveImage",
-    "inputs": {"filename_prefix": "MaskFactory_skin_only", "images": ["11", 0]}
+    "inputs": {"filename_prefix": "MaskFactory_skin_only", "images": ["12", 0]}
   }
 }

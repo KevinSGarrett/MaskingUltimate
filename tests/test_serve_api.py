@@ -771,7 +771,14 @@ def test_bodypart_conditioned_workflow_is_complete_skin_only_img2img_graph() -> 
     assert sampler["inputs"]["latent_image"] == [encode_id, 0]
     decode_id, decode = by_type["VAEDecode"][0]
     assert decode["inputs"]["samples"] == [sampler_id, 0]
-    assert by_type["SaveImage"][0][1]["inputs"]["images"] == [decode_id, 0]
+    composite_id, composite = by_type["ImageCompositeMasked"][0]
+    assert composite["inputs"]["destination"] == [by_type["MFLoadSource"][0][0], 0]
+    assert composite["inputs"]["source"] == [decode_id, 0]
+    assert composite["inputs"]["mask"] == [combine_id, 0]
+    # VAE decode crops to its latent grid. Resize only the generated candidate back
+    # to source geometry before applying the original full-resolution binary mask.
+    assert composite["inputs"]["resize_source"] is True
+    assert by_type["SaveImage"][0][1]["inputs"]["images"] == [composite_id, 0]
 
 
 def test_gold_hand_workflow_uses_gold_inpaint_mask_through_composite() -> None:

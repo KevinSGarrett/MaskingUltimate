@@ -19,6 +19,7 @@ from maskfactory.autonomy.calibration import (
     build_autonomy_certificate,
     build_autonomy_pipeline_fingerprint,
     verify_autonomy_certificate,
+    verify_machine_audit_record,
 )
 from maskfactory.autonomy.controller import run_autonomous_correction_loop
 from maskfactory.autonomy.lifecycle import (
@@ -56,6 +57,17 @@ def _audit(tmp_path: Path, count: int, *, defects=(), serious=()) -> Path:
                 "human_defect": index in defects,
                 "serious_defect": index in serious,
                 "pipeline_fingerprint": "pipeline-v1",
+                "audit_authority": "human_approved_gold_only",
+                "auditor": "kevin",
+                "audited_at": "2026-07-12T12:00:00Z",
+                "gold_package_path": f"img_{index:04d}/instances/p0",
+                "gold_manifest_sha256": "a" * 64,
+                "gold_freeze_sha256": "b" * 64,
+                "gold_mask_sha256": "c" * 64,
+                "machine_lifecycle_path": f"img_{index:04d}/hair.lifecycle.json",
+                "machine_lifecycle_sha256": "e" * 64,
+                "machine_mask_path": f"img_{index:04d}/hair.png",
+                "machine_mask_sha256": "d" * 64,
             }
         )
     path = tmp_path / "audit.json"
@@ -71,6 +83,14 @@ def _audit(tmp_path: Path, count: int, *, defects=(), serious=()) -> Path:
         encoding="utf-8",
     )
     return path
+
+
+def _accept_test_gold(_record: dict, _packages_root: Path) -> None:
+    """Unit-only authority stub; production certificate creation uses the real verifier."""
+
+
+def _accept_test_machine(_record: dict, _artifacts_root: Path) -> None:
+    """Unit-only machine-proof stub; dedicated tests exercise the real verifier."""
 
 
 def _candidate(candidate_id="winner", **overrides):
@@ -124,6 +144,8 @@ def test_95_percent_certificate_requires_enough_zero_failure_human_audits(tmp_pa
         pipeline_fingerprint="pipeline-v1",
         policy=policy,
         now=datetime(2026, 7, 12, tzinfo=UTC),
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
     )
     assert not insufficient["passed"]
     assert "serious_false_accept_upper_bound_exceeded" in insufficient["failures"]
@@ -135,6 +157,8 @@ def test_95_percent_certificate_requires_enough_zero_failure_human_audits(tmp_pa
         pipeline_fingerprint="pipeline-v1",
         policy=policy,
         now=datetime(2026, 7, 12, tzinfo=UTC),
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
     )
     assert passed["passed"]
     assert passed["false_accept_upper_bound"] < 0.01
@@ -150,6 +174,8 @@ def test_certificate_is_hash_scope_fingerprint_and_expiry_bound(tmp_path: Path):
         pipeline_fingerprint="pipeline-v1",
         policy=_config()["calibration"],
         now=issued,
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
     )
     assert verify_autonomy_certificate(
         certificate,
@@ -190,6 +216,89 @@ def test_certificate_is_hash_scope_fingerprint_and_expiry_bound(tmp_path: Path):
     )
 
 
+def test_certificate_rejects_audit_rows_without_real_gold_packages(tmp_path: Path):
+    with pytest.raises(AutonomyCalibrationError, match="manifest or freeze marker is missing"):
+        build_autonomy_certificate(
+            _audit(tmp_path / "audit", 1),
+            label="hair",
+            context="solo",
+            pipeline_fingerprint="pipeline-v1",
+            policy=_config()["calibration"],
+            gold_packages_root=tmp_path / "packages",
+        )
+
+
+def test_machine_audit_row_is_bound_to_real_lifecycle_winner_and_mask(tmp_path: Path):
+    artifacts = tmp_path / "artifacts"
+    machine_mask = write_binary_mask(
+        artifacts / "masks/hair.png",
+        np.pad(np.ones((8, 8), dtype=np.uint8) * 255, ((4, 4), (4, 4))),
+    )
+    mask_hash = hashlib.sha256(machine_mask.read_bytes()).hexdigest()
+    decision = run_candidate_tournament(
+        (_candidate(mask_path=str(machine_mask), mask_sha256=mask_hash),),
+        label="hair",
+        context="solo",
+        pipeline_fingerprint="pipeline-v1",
+        config=_config(),
+    )
+    lifecycle_path = artifacts / "lifecycle/hair.json"
+    write_lifecycle_sidecar(
+        lifecycle_path,
+        image_id="img_a3f9c2e17b04",
+        instance_id="p0",
+        pipeline_fingerprint="pipeline-v1",
+        decision=decision,
+    )
+    record = {
+        "image_id": "img_a3f9c2e17b04",
+        "label": "hair",
+        "context": "solo",
+        "pipeline_fingerprint": "pipeline-v1",
+        "machine_lifecycle_path": "lifecycle/hair.json",
+        "machine_lifecycle_sha256": hashlib.sha256(lifecycle_path.read_bytes()).hexdigest(),
+        "machine_mask_path": "masks/hair.png",
+        "machine_mask_sha256": mask_hash,
+    }
+    verify_machine_audit_record(record, artifacts)
+    write_binary_mask(machine_mask, np.ones((16, 16), dtype=np.uint8) * 255)
+    with pytest.raises(AutonomyCalibrationError, match="machine mask hash mismatch"):
+        verify_machine_audit_record(record, artifacts)
+
+
+def test_legacy_certificate_cannot_authorize_autonomy(tmp_path: Path):
+    issued = datetime(2026, 7, 12, tzinfo=UTC)
+    certificate = build_autonomy_certificate(
+        _audit(tmp_path, 600),
+        label="hair",
+        context="solo",
+        pipeline_fingerprint="pipeline-v1",
+        policy=_config()["calibration"],
+        now=issued,
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
+    )
+    certificate["schema_version"] = "1.0.0"
+    certificate.pop("audit_authority")
+    certificate["sha256"] = hashlib.sha256(
+        json.dumps(
+            {key: value for key, value in certificate.items() if key != "sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    assert (
+        verify_autonomy_certificate(
+            certificate,
+            label="hair",
+            context="solo",
+            pipeline_fingerprint="pipeline-v1",
+            now=issued,
+        )[1]
+        == "certificate_human_gold_authority_missing"
+    )
+
+
 def test_tournament_progresses_from_machine_verified_to_calibrated_autoaccept(tmp_path: Path):
     config = _config()
     challenger = _candidate(
@@ -214,6 +323,8 @@ def test_tournament_progresses_from_machine_verified_to_calibrated_autoaccept(tm
         context="solo",
         pipeline_fingerprint="pipeline-v1",
         policy=config["calibration"],
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
     )
     calibrated = run_candidate_tournament(
         (_candidate(), challenger),
@@ -259,7 +370,17 @@ def test_hard_veto_disagreement_and_small_margin_prevent_autonomous_acceptance()
     assert tied.status == "residual_human_queue"
 
 
-def test_autonomy_cli_builds_certificate_and_runs_tournament(tmp_path: Path):
+def test_autonomy_cli_builds_certificate_and_runs_tournament(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(
+        "maskfactory.autonomy.calibration.verify_human_gold_audit_record",
+        _accept_test_gold,
+    )
+    monkeypatch.setattr(
+        "maskfactory.autonomy.calibration.verify_machine_audit_record",
+        _accept_test_machine,
+    )
     audit = _audit(tmp_path, 600)
     certificate = tmp_path / "certificate.json"
     built = CliRunner().invoke(
@@ -638,6 +759,8 @@ def test_calibrated_pseudo_manifest_is_hash_verified_train_only_and_holdout_safe
         context="solo",
         pipeline_fingerprint="pipeline-v1",
         policy=config["calibration"],
+        gold_authority_validator=_accept_test_gold,
+        machine_authority_validator=_accept_test_machine,
     )
     certificate_root = tmp_path / "certificates"
     certificate_root.mkdir()

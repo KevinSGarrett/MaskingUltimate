@@ -4229,3 +4229,19 @@ evidence drift repair:            the ontology-v2 no-go report was refreshed fro
 authority:                        machine_verified_candidate and calibrated_auto_accepted remain non-gold; approved_gold_count remains 0 and no human-review gate changed
 verification:                     750 full tests passed; Ruff clean; exact locked Black 26.5.1 reports all 297 Python/tool files format-clean
 evidence:                         qa/live_verification/autonomy_certificate_scope_hardening_20260713.json
+
+## 2026-07-13 - Autonomy certificates anchored to immutable human gold
+
+**Result:** PASS - statistical autonomy can no longer be authorized by self-asserted audit JSON.
+
+authority defect:                audit rows previously carried human_defect booleans but did not prove that their claimed truth came from actual frozen human-approved packages
+row contract:                    human_approved_gold_only authority, named auditor, timezone-aware timestamp, and exact manifest/freeze/gold-mask/machine-mask/lifecycle SHA-256 values are mandatory
+package proof:                   each row resolves below the governed package root; path escape, missing artifacts, duplicate image truth, and hash drift fail closed
+hard-QA proof:                   QC-001 through QC-010 rerun for each referenced package; approved_gold workflow, passing QA, reviewer, approval timestamp, label status, part hash, and exhaustive file map must agree
+machine proof:                   each row also resolves a real autonomy lifecycle and winner mask below the machine-artifact root; schema, image, label, context, pipeline fingerprint, status, winner ID, ranking hash, and mask bytes must agree
+certificate migration:           schema 1.1.0 carries human_approved_gold_only authority; legacy schema 1.0.0 is rejected even when its internal certificate hash is valid
+CLI:                             autonomy build-certificate now exposes --gold-packages-root and --machine-artifacts-root
+verification:                    real approve_package output and real machine lifecycle winner accepted; missing/tampered artifacts and legacy certificates rejected; 33 focused and 753 full tests passed
+quality:                         Ruff clean; exact Black 26.5.1 clean across 297 source/test/tool Python files
+authority unchanged:             approved_gold_count remains 0; no certificate was minted and no machine tier was promoted to gold
+evidence:                        qa/live_verification/autonomy_human_gold_authority_hardening_20260713.json

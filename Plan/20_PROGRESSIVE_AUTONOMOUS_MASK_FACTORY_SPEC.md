@@ -46,6 +46,14 @@ would have accepted. The one-sided 95% Wilson upper confidence bound must show:
 - no holdout leakage;
 - certificate age <=30 days.
 
+Certificate rows are not self-asserting evidence. Every selected row must identify a distinct
+human-approved image and carry the exact SHA-256 values of its current package manifest, immutable
+freeze marker, gold label mask, audited machine mask, and machine lifecycle sidecar. Certificate
+construction resolves both roots safely, reruns the complete hard-QA battery, verifies the approved-gold
+workflow, reviewer, label status, file map, lifecycle schema/scope/selected winner, and artifact hashes,
+and fails closed on any mismatch. Certificate schema
+1.1 records `audit_authority=human_approved_gold_only`; legacy certificates cannot authorize autonomy.
+
 Any pipeline change, expiry, serious audited failure, distribution drift, or hash mismatch revokes the
 certificate. A hair certificate cannot authorize fingers, occlusion, or multi-person contact.
 
@@ -82,7 +90,7 @@ human-reference IoU/boundary F and pass all hard vetoes.
 ## 8. Implemented Control Surface
 
 - `configs/autonomous_masks.yaml`: tournament, certificate, audit, and pseudo-label policy.
-- `src/maskfactory/autonomy/calibration.py`: frozen audit certificates, Wilson bounds, and the complete
+- `src/maskfactory/autonomy/calibration.py`: hash-linked human-gold audit certificates, Wilson bounds, and the complete
   autonomy-pipeline fingerprint. The fingerprint binds the VLM gate plus the MaskFactory source tree,
   autonomy/VLM/cloud/pipeline/ontology configs, model registry, dependency lock, and project manifest;
   a change to any component invalidates the prior certificate scope.

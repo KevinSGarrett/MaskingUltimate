@@ -1581,6 +1581,18 @@ def autonomy() -> None:
     default=Path("configs/autonomous_masks.yaml"),
     show_default=True,
 )
+@click.option(
+    "--gold-packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--machine-artifacts-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+)
 @click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
 def autonomy_build_certificate(
     audit: Path,
@@ -1588,6 +1600,8 @@ def autonomy_build_certificate(
     context: str,
     pipeline_fingerprint: str,
     config_path: Path,
+    gold_packages_root: Path,
+    machine_artifacts_root: Path,
     output: Path,
 ) -> None:
     """Build a 95%-confidence label/context autoaccept certificate."""
@@ -1605,6 +1619,8 @@ def autonomy_build_certificate(
             context=context,
             pipeline_fingerprint=pipeline_fingerprint,
             policy=config["calibration"],
+            gold_packages_root=gold_packages_root,
+            machine_artifacts_root=machine_artifacts_root,
         )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(

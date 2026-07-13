@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
+from maskfactory.autonomy.calibration import verify_human_gold_audit_record
 from maskfactory.derive import derive_package
 from maskfactory.fusion.mapbuild import export_binaries
 from maskfactory.io.png_strict import read_mask, write_binary_mask, write_label_map
@@ -185,7 +186,14 @@ def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
     shutil.copytree(clean_package, package)
     manifest_path = package / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["parts"]["left_forearm"]["status"] = "human_corrected"
+    gold_mask = package / "masks" / "left_forearm.png"
+    manifest["parts"]["left_forearm"].update(
+        {
+            "mask_file": "masks/left_forearm.png",
+            "mask_sha256": hashlib.sha256(gold_mask.read_bytes()).hexdigest(),
+            "status": "human_corrected",
+        }
+    )
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ApprovalRequiredError):
         approve_package(
@@ -224,6 +232,19 @@ def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
     assert (package / "overlays/all_parts.png").is_file()
     assert (package / "qa_panels/left_forearm.png").is_file()
     assert verify_packages(package)[0].passed
+    verify_human_gold_audit_record(
+        {
+            "image_id": manifest["image_id"],
+            "label": "left_forearm",
+            "gold_package_path": package.relative_to(tmp_path).as_posix(),
+            "gold_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+            "gold_freeze_sha256": hashlib.sha256(
+                (package / ".maskfactory_frozen.json").read_bytes()
+            ).hexdigest(),
+            "gold_mask_sha256": hashlib.sha256(gold_mask.read_bytes()).hexdigest(),
+        },
+        tmp_path,
+    )
     sample_root = tmp_path / "sample_root"
     shutil.copytree(package, sample_root / "approved_first")
     shutil.copytree(package, sample_root / "approved_second")

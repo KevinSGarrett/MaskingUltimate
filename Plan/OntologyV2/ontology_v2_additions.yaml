@@ -25,6 +25,7 @@ labels:
 
 aliases:
   vagina: {canonical: vulva, warning: external_visible_anatomy_only}
+  penis head: {canonical: glans_penis}
   penis_head: {canonical: glans_penis}
   penis: {canonical: penis_visible, kind: derived_union}
   testicles: {canonical: scrotum_visible, kind: derived_union, warning: external_scrotal_surface_not_internal_organs}

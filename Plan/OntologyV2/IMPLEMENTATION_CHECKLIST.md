@@ -8,23 +8,37 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## A. Freeze and compatibility baseline
 
-- [ ] Hash/archive active v1 ontology, schemas, CVAT label map, derived config, registry, champions, and a representative package.
-- [ ] Record v1 PART mapping `0..55` and prove migration never changes an old ID/name.
-- [ ] Resolve every literal 56/57 reference: v1 has 56 logits including background; v2 has 65.
-- [ ] Add byte-compatibility test for v1 package/map/derived outputs after v2-capable code lands.
-- [ ] Add rollback rehearsal restoring v1 champion roles and workflows.
+- [x] Hash/archive active v1 ontology, schemas, CVAT label map, derived config, registry, champions, and a representative package.
+  Evidence: `qa/evidence/ontology_v2/v1_baseline.json`; `tools/freeze_ontology_v1_baseline.py --check` verifies the exact authority and immutable draft-baseline package tree.
+- [x] Record v1 PART mapping `0..55` and prove migration never changes an old ID/name.
+  Evidence: the baseline records every ID/name and `tests/test_ontology_v2_generation.py` proves the v2 prefix is byte-for-record append-only.
+- [x] Resolve every literal 56/57 reference: v1 has 56 logits including background; v2 has 65.
+  Evidence: active configs remain 56; inactive v2 generation requires exactly 65; drifted 57-class configs remain rejection fixtures only.
+- [x] Add byte-compatibility test for v1 package/map/derived outputs after v2-capable code lands.
+  Evidence: `tests/test_ontology_v2_baseline.py` binds active v1 config bytes and mapping to the frozen baseline; v2 writes separate inactive artifacts.
+- [x] Add rollback rehearsal restoring v1 champion roles and workflows.
+  Evidence: `qa/evidence/ontology_v2/v1_rollback_rehearsal.json` proves deliberate isolated drift and atomic exact-byte restoration of the registry and all shipped workflows without mutating production sources.
 
 ## B. Ontology generator and machine authority
 
-- [ ] Import nine proposed labels append-only from `ontology_v2_additions.yaml`.
-- [ ] Add boundary rules for areola ring, nipple carve-out, external vulva, shaft/glans, and scrotal midline.
-- [ ] Add reciprocal swaps for areolae, nipples, and scrotal regions.
-- [ ] Add alias resolver with warnings/provenance; aliases never enter maps/manifests.
+- [x] Import nine proposed labels append-only from `ontology_v2_additions.yaml`.
+  Evidence: `src/maskfactory/ontology_v2.py` generates inactive `configs/ontology_v2.yaml` with contiguous IDs `56..64` after unchanged v1 IDs.
+- [x] Add boundary rules for areola ring, nipple carve-out, external vulva, shaft/glans, and scrotal midline.
+  Evidence: every appended atomic references a validated machine-readable rule in `configs/ontology_v2.yaml`; unknown rules fail generation.
+- [x] Add reciprocal swaps for areolae, nipples, and scrotal regions.
+  Evidence: generator validation and `tests/test_ontology_v2_generation.py` require reciprocal character-side mappings.
+- [x] Add alias resolver with warnings/provenance; aliases never enter maps/manifests.
+  Evidence: `resolve_v2_alias` emits requested/canonical/alias/kind/warning provenance; tests cover spaced and underscored aliases, warnings, canonical pass-through, unknown refusal, and non-persistence as labels.
 - [ ] Add all derived formulas and regenerate `configs/derived.yaml`.
-- [ ] Extend visualization colors with distinct, accessible, stable values.
-- [ ] Generate `configs/ontology_v2.yaml`; retain active v1 until activation.
-- [ ] CI proves IDs `0..55` unchanged and IDs `56..64` contiguous.
-- [ ] Tests prove exactly 65 class names including background and correct flips.
+  Progress: all formulas are generated in inactive `configs/derived_v2.yaml`; active `configs/derived.yaml` intentionally remains byte-identical until the activation gate.
+- [x] Extend visualization colors with distinct, accessible, stable values.
+  Evidence: inactive `configs/viz_v2.yaml` preserves every v1 color and appends unique fixed colors for every new atomic/union.
+- [x] Generate `configs/ontology_v2.yaml`; retain active v1 until activation.
+  Evidence: `tools/generate_ontology_v2.py --check` is drift-clean and the artifact declares `approved_design_not_active`; the runtime default remains `configs/ontology.yaml` / `body_parts_v1`.
+- [x] CI proves IDs `0..55` unchanged and IDs `56..64` contiguous.
+  Evidence: CI drift-checks all inactive v2 artifacts and pytest enforces the exact append-only mapping.
+- [x] Tests prove exactly 65 class names including background and correct flips.
+  Evidence: `tests/test_ontology_v2_generation.py` loads the generated ontology through the production loader and proves 65 PART records plus every reciprocal swap.
 
 ## C. Visibility, manifest, and migration
 

@@ -4260,3 +4260,17 @@ verification:                    clean publish worktree 19 focused pass; 751 pas
 quality:                         Ruff clean; exact Black 26.5.1 clean on the changed autonomy surface
 authority unchanged:             machine tiers remain non-gold; approved_gold_count remains 0; no performance certificate claimed
 evidence:                        qa/live_verification/autonomy_recurring_lifecycle_hardening_20260713.json
+
+## 2026-07-13 - Inactive adult-anatomy ontology v2 authority and v1 rollback baseline landed
+
+**Result:** PASS for the pre-activation machine-authority tranche; body_parts_v2 remains inactive.
+
+append-only authority:           generated exactly nine atomics at IDs 56-64 after an unchanged v1 ID/name prefix 0-55; v2 has exactly 65 PART classes including background
+boundary/flip authority:         all six anatomy boundary rules are machine-readable; areola, nipple, and scrotal side pairs are reciprocal and generator-enforced
+alias authority:                 spaced/underscored user aliases resolve to canonical atomics/unions with requested/canonical/warning provenance; aliases cannot become label-map or manifest classes
+inactive artifacts:              configs/ontology_v2.yaml, configs/derived_v2.yaml, and configs/viz_v2.yaml are deterministic and CI drift-checked; every v1 visualization color is preserved
+v1 freeze:                       active ontology, derived/viz/CVAT configs, live CVAT label map, schemas, registry/champion state, and an immutable representative draft package tree are hash-archived
+rollback rehearsal:              registry plus all shipped ComfyUI workflows were deliberately drifted in isolated copies, atomically restored byte-exactly, and production sources rehashed unchanged
+safety boundary:                 new labels default to unreviewed_for_v2; confirmed-adult governance remains mandatory; no v2 gold, CVAT pilot, training, champion, serving, or activation claim was made
+verification:                    9 focused and 764 live-root full tests passed; clean publish 758 passed plus 3 expected runtime-artifact skips across 761 collected; Ruff clean; exact locked Black 26.5.1 clean across 306 Python/tool files; v1 and inactive-v2 drift checks pass
+evidence:                        qa/evidence/ontology_v2/v1_baseline.json; qa/evidence/ontology_v2/v1_rollback_rehearsal.json; qa/live_verification/ontology_v2_inactive_authority_20260713.json

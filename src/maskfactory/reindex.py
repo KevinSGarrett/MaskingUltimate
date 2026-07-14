@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Mapping
 
+from .ontology_v2_manifest import require_valid_v2_manifest
 from .state import DEFAULT_DB_PATH, initialize_database, reader_connection, writer_connection
 from .validation import require_valid_document
 
@@ -128,7 +129,11 @@ def expected_image_rows(packages_root: Path = DEFAULT_PACKAGES_ROOT) -> dict[str
         manifest = json.loads(path.read_text(encoding="utf-8"))
         if not all(key in manifest for key in ("image_id", "source", "parts", "files")):
             continue
-        require_valid_document(manifest, "manifest")
+        if manifest.get("mask_ontology_version") == "body_parts_v2":
+            require_valid_document(manifest, "manifest_v2")
+            require_valid_v2_manifest(manifest)
+        else:
+            require_valid_document(manifest, "manifest")
         image_id = manifest["image_id"]
         relative = path.relative_to(packages_root)
         if not relative.parts or relative.parts[0] != image_id:

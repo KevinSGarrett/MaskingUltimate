@@ -136,7 +136,8 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
   Evidence: an inactive exact-vocabulary matrix binds all 64 foreground classes to nine review states, six views, seven poses, and eight occlusion contexts (1,920 cells), plus explicit 50/100 clear-positive rows for IDs 56-64; non-gold, unreviewed, stale, duplicate, incomplete, or target-drifted evidence fails closed.
 - [x] Add failure reasons and acquisition actions for boundary/side/clothing errors.
   Evidence: nine canonical reasons deterministically map to governed state/view/occlusion targets and hard-case actions; weekly plans and local clustering understand the v2 vocabulary, while aliases, fabricated positives, unreviewed negatives, and projected/amodal positives are refused. Machine evidence: `qa/live_verification/ontology_v2_coverage_failure_acquisition_20260713.json`.
-- [ ] Update backup, restore, GC, reindex, DVC, and incident drills.
+- [x] Update backup, restore, GC, reindex, DVC, and incident drills.
+  Evidence: nightly restore sampling now dispatches v1/v2 verification; v2 restores fail on schema, semantic, exhaustive-hash, strict-mask, QA, or review-authority drift; reindex selects the schema by ontology; GC sandbox proof protects active/ambiguity authority; dataset builds select one ontology and refuse reused paths/tags, push before tagging, and mark exported only after success; copy-only v2 reindex plus exact-byte v1 rollback drills leave production sources unchanged. Machine evidence: `qa/live_verification/ontology_v2_recovery_operations_20260714.json`.
 - [ ] Update docs 00–17, SOPs, schemas, CLI help, generated references, tracker, and DoD.
 - [ ] Full tests, drift, schemas, seeded QA, migration, rollback, CVAT pilot, dataset, training,
   leaderboard, serving, and ComfyUI evidence all pass.

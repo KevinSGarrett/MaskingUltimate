@@ -21,7 +21,7 @@ Invoke-RobocopyMirror (Join-Path $Root "data\packages") (Join-Path $BackupRoot "
 Invoke-RobocopyMirror (Join-Path $Root "qa") (Join-Path $BackupRoot "qa")
 Invoke-RobocopyMirror (Join-Path $Root "configs") (Join-Path $BackupRoot "configs")
 
-# The integrity sample runs through the requested WSL boundary after B5 and B1.
+# The ontology-aware integrity sample dispatches v1 QC or v2 restore checks after B5 and B1.
 & wsl.exe -d Ubuntu-22.04 -- bash -lc `
     "cd /mnt/c/Comfy_UI_Main_Masking && PYTHONPATH=src python -m maskfactory.cli verify-package --root data/packages --sample 10" *>> $Log
 if ($LASTEXITCODE -ne 0) { throw "nightly WSL integrity sweep failed" }

@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 import uuid
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -29,17 +30,26 @@ from .coverage import build_coverage_matrix, write_coverage_matrix
 from .splits import SplitRecord, assign_splits, validate_instance_split_integrity
 
 
+@dataclass(frozen=True)
+class DatasetPublicationPlan:
+    version: int
+    ontology_version: str
+    destination: Path
+    git_tag: str
+
+
 def build_dataset(
     *,
     packages_root: Path,
     output_root: Path,
     version: int,
     hard_case_file: Path | None = None,
+    ontology_version: str | None = None,
 ) -> Path:
     """Verify approved gold and export MMSeg/COCO layouts without holdout trainer paths."""
     if version < 1:
         raise ValueError("dataset version must be positive")
-    packages = _approved_packages(Path(packages_root))
+    packages = _approved_packages(Path(packages_root), ontology_version=ontology_version)
     if not packages:
         raise ValueError("no frozen human-approved gold packages")
     for package in packages:
@@ -334,8 +344,8 @@ def _write_bytes_atomic(path: Path, content: bytes) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def approved_package_count(packages_root: Path) -> int:
-    return len(_approved_packages(Path(packages_root)))
+def approved_package_count(packages_root: Path, *, ontology_version: str | None = None) -> int:
+    return len(_approved_packages(Path(packages_root), ontology_version=ontology_version))
 
 
 def next_dataset_version(output_root: Path) -> int:
@@ -348,13 +358,37 @@ def next_dataset_version(output_root: Path) -> int:
     return max(versions, default=0) + 1
 
 
-def _approved_packages(root: Path) -> tuple[Path, ...]:
+def plan_dataset_publication(
+    output_root: Path,
+    *,
+    ontology_version: str,
+    existing_tags: tuple[str, ...] = (),
+) -> DatasetPublicationPlan:
+    """Plan a never-reused dataset path/tag before any build or DVC mutation."""
+    if ontology_version not in {"body_parts_v1", "body_parts_v2"}:
+        raise ValueError(f"unsupported dataset ontology version: {ontology_version}")
+    version = next_dataset_version(output_root)
+    destination = Path(output_root) / f"bodyparts@v{version}"
+    tag = f"dataset/bodyparts-v{version}"
+    if destination.exists():
+        raise FileExistsError(f"dataset version already exists: {destination}")
+    if tag in set(existing_tags):
+        raise FileExistsError(f"dataset git tag already exists and cannot be rewritten: {tag}")
+    return DatasetPublicationPlan(version, ontology_version, destination, tag)
+
+
+def _approved_packages(root: Path, *, ontology_version: str | None = None) -> tuple[Path, ...]:
+    if ontology_version not in {None, "body_parts_v1", "body_parts_v2"}:
+        raise ValueError(f"unsupported dataset ontology version: {ontology_version}")
     results = []
     for path in sorted(root.rglob("manifest.json")):
         package = path.parent
         if not (package / ".maskfactory_frozen.json").is_file():
             continue
         manifest = json.loads(path.read_text(encoding="utf-8"))
+        package_ontology = str(manifest.get("mask_ontology_version", "body_parts_v1"))
+        if ontology_version is not None and package_ontology != ontology_version:
+            continue
         if manifest.get("mask_ontology_version") == "body_parts_v2":
             try:
                 require_v2_supervision_eligible(manifest)

@@ -2315,33 +2315,57 @@ def dataset_build(
         approved_package_count,
         build_dataset,
         mark_dataset_exported,
-        next_dataset_version,
+        plan_dataset_publication,
     )
     from .dvc_runtime import DvcRuntimeError, run_dvc
 
-    if name != "bodyparts" or ontology != "body_parts_v1":
-        raise click.ClickException("S14 v1 supports exactly bodyparts/body_parts_v1")
-    count = approved_package_count(packages_root)
+    if name != "bodyparts" or ontology not in {"body_parts_v1", "body_parts_v2"}:
+        raise click.ClickException(
+            "S14 supports bodyparts with an explicit body_parts_v1 or body_parts_v2 ontology"
+        )
+    count = approved_package_count(packages_root, ontology_version=ontology)
     if count < 200:
         raise click.ClickException(
             f"P5 entry gate requires >=200 approved gold instances; found {count}"
         )
-    version = next_dataset_version(output_root)
     try:
+        existing_tags: tuple[str, ...] = ()
+        if publish:
+            import subprocess
+
+            listed = subprocess.run(
+                ["git", "tag", "--list", "dataset/bodyparts-v*"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            if listed.returncode:
+                raise RuntimeError(f"git tag preflight failed: {listed.stderr.strip()}")
+            existing_tags = tuple(
+                line.strip() for line in listed.stdout.splitlines() if line.strip()
+            )
+        plan = plan_dataset_publication(
+            output_root,
+            ontology_version=ontology,
+            existing_tags=existing_tags,
+        )
         path = build_dataset(
             packages_root=packages_root,
             output_root=output_root,
-            version=version,
+            version=plan.version,
             hard_case_file=output_root / "hard_case_holdout.txt",
+            ontology_version=ontology,
         )
         if publish:
             add = run_dvc(("add", str(path.resolve())), timeout=1800)
             if add.returncode:
                 raise RuntimeError(f"dvc add failed: {add.stderr.strip()}")
-            import subprocess
-
+            push = run_dvc(("push",), timeout=1800)
+            if push.returncode:
+                raise RuntimeError(f"dvc push failed: {push.stderr.strip()}")
             tag = subprocess.run(
-                ["git", "tag", f"dataset/bodyparts-v{version}"],
+                ["git", "tag", plan.git_tag],
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -2349,9 +2373,6 @@ def dataset_build(
             )
             if tag.returncode:
                 raise RuntimeError(f"git tag failed: {tag.stderr.strip()}")
-            push = run_dvc(("push",), timeout=1800)
-            if push.returncode:
-                raise RuntimeError(f"dvc push failed: {push.stderr.strip()}")
             mark_dataset_exported(path, packages_root=packages_root, database=database)
     except (DvcRuntimeError, OSError, RuntimeError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc

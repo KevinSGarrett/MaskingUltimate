@@ -109,3 +109,29 @@ acquisition_invariants:
   aliases_allowed_in_failure_queue: false
   unreviewed_counts_as_negative: false
   projected_or_amodal_counts_as_positive: false
+
+operations:
+  backup:
+    required_layers: [packages, qa, configs, sqlite_snapshot]
+    ontology_aware_package_verification: true
+  restore:
+    schema: manifest_v2
+    require_exhaustive_file_hashes: true
+    require_strict_binary_masks: true
+    gold_requires_v2_review_authority: true
+  gc:
+    eligible_path_pattern: masks@vN
+    protected_roots: [masks, masks_ignore, masks_derived, qa, qa_panels, annotations]
+    dry_run_required: true
+  reindex:
+    schema_by_ontology:
+      body_parts_v1: manifest
+      body_parts_v2: manifest_v2
+    packages_are_authority: true
+  dvc:
+    dataset_name: bodyparts
+    new_version_only: true
+    rewrite_existing_path_or_tag: false
+  incident_drills:
+    required: [restore_copy, v2_reindex_copy, gc_sandbox, v1_rollback]
+    production_mutation_allowed: false

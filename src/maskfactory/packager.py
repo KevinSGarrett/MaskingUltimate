@@ -314,11 +314,19 @@ def verify_packages(root: Path, *, sample: int | None = None) -> tuple[PackageVe
         )[:sample]
     if not candidates:
         raise FileNotFoundError(f"no package manifests under {root}")
-    return tuple(
-        PackageVerification(package, all(result.passed for result in results), results)
-        for package in candidates
-        for results in (run_qc001_010(package),)
-    )
+    verifications = []
+    for package in candidates:
+        manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+        if manifest.get("mask_ontology_version") == "body_parts_v2":
+            from .ontology_v2_operations import run_v2_restore_integrity
+
+            results = run_v2_restore_integrity(package)
+        else:
+            results = run_qc001_010(package)
+        verifications.append(
+            PackageVerification(package, all(result.passed for result in results), results)
+        )
+    return tuple(verifications)
 
 
 def _is_package_manifest(path: Path) -> bool:

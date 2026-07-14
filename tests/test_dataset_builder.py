@@ -245,14 +245,23 @@ def test_mark_dataset_exported_rolls_back_package_when_later_update_fails(
 def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
     tmp_path: Path, monkeypatch
 ) -> None:
-    dataset = tmp_path / "datasets" / "bodyparts@v1"
-    dataset.mkdir(parents=True)
-    monkeypatch.setattr("maskfactory.datasets.builder.approved_package_count", lambda _root: 200)
-    monkeypatch.setattr("maskfactory.datasets.builder.next_dataset_version", lambda _root: 1)
-    monkeypatch.setattr("maskfactory.datasets.builder.build_dataset", lambda **_kwargs: dataset)
+    def fake_build_dataset(**kwargs):
+        dataset = kwargs["output_root"] / f"bodyparts@v{kwargs['version']}"
+        dataset.mkdir(parents=True)
+        return dataset
+
     monkeypatch.setattr(
-        "subprocess.run", lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stderr="")
+        "maskfactory.datasets.builder.approved_package_count",
+        lambda _root, *, ontology_version=None: 200,
     )
+    monkeypatch.setattr("maskfactory.datasets.builder.build_dataset", fake_build_dataset)
+    events = []
+
+    def fake_subprocess(args, **_kwargs):
+        events.append("git-preflight" if "--list" in args else "git-tag")
+        return SimpleNamespace(returncode=0, stderr="", stdout="")
+
+    monkeypatch.setattr("subprocess.run", fake_subprocess)
     marked = []
     monkeypatch.setattr(
         "maskfactory.datasets.builder.mark_dataset_exported",
@@ -264,9 +273,12 @@ def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
             SimpleNamespace(returncode=1, stderr="seeded push failure"),
         )
     )
-    monkeypatch.setattr(
-        "maskfactory.dvc_runtime.run_dvc", lambda *_args, **_kwargs: next(dvc_results)
-    )
+
+    def failed_dvc(args, **_kwargs):
+        events.append("dvc-" + args[0])
+        return next(dvc_results)
+
+    monkeypatch.setattr("maskfactory.dvc_runtime.run_dvc", failed_dvc)
     args = [
         "dataset",
         "build",
@@ -280,16 +292,21 @@ def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
     failed = CliRunner().invoke(main, args)
     assert failed.exit_code != 0 and "seeded push failure" in failed.output
     assert marked == []
+    assert events == ["git-preflight", "dvc-add", "dvc-push"]
 
+    events.clear()
     monkeypatch.setattr(
         "maskfactory.dvc_runtime.run_dvc",
-        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stderr=""),
+        lambda args, **_kwargs: (
+            events.append("dvc-" + args[0]) or SimpleNamespace(returncode=0, stderr="")
+        ),
     )
     passed = CliRunner().invoke(main, args)
     assert passed.exit_code == 0, passed.output
+    assert events == ["git-preflight", "dvc-add", "dvc-push", "git-tag"]
     assert marked == [
         (
-            dataset,
+            tmp_path / "datasets" / "bodyparts@v2",
             {
                 "packages_root": tmp_path / "packages",
                 "database": tmp_path / "state.sqlite",

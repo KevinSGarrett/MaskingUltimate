@@ -4373,3 +4373,18 @@ operator surface:                    `maskfactory coverage v2-report` ranks exac
 verification:                       41 focused and all 852 live-root tests passed; clean publish passed 825 plus 3 expected runtime-artifact skips across 828 collected; one unrelated S11 test failed once, then passed alone, with adjacent suites, and in the clean full rerun; Ruff and exact Black 26.5.1 clean
 authority unchanged:                 production remains body_parts_v1; backup/restore/GC/reindex/DVC/incident drill updates and every activation gate remain open
 evidence:                           qa/live_verification/ontology_v2_coverage_failure_acquisition_20260713.json
+
+## 2026-07-14 - Inactive ontology-v2 recovery operations made fail-closed
+
+**Result:** PASS for backup/restore/GC/reindex/DVC/incident mechanics; body_parts_v2 remains inactive.
+
+restore dispatch:                   `verify-package` selects v1 QC or five v2 recovery checks from the manifest ontology; v2 checks cover schema/custom invariants, exhaustive hashes, full-size strict binaries, reviewed-gold/QA authority, and the inactive policy
+tamper proof:                       a changed restored mask independently failed hash and strict-image verification
+backup contract:                   nightly B5 remains first, B1 mirrors packages/QA/configs, and the post-mirror WSL sample is ontology-aware
+GC proof:                           an isolated v2 sandbox selected and removed only expired unreferenced `masks@v1`; active masks, ambiguity evidence, and the manifest remained intact
+reindex/incident:                   schema dispatch is v1=`manifest`, v2=`manifest_v2`; copy-only v2 IP-3 rebuild ended clean and left the source SQLite bytes unchanged
+DVC immutability:                   dataset discovery filters by the requested ontology; an existing dataset tag is refused; publish order is tag preflight -> DVC add -> DVC push -> git tag -> exported state, so failed push creates no tag or exported authority
+rollback:                           the existing v1 registry/workflow rehearsal restored exact bytes without touching production sources
+verification:                       6 focused recovery tests pass; DVC sequencing/retry plus focused set 7 pass; v1 rollback 1 pass; full live root 861 pass; clean publish tree 831 pass plus 3 expected runtime-artifact skips; Ruff and changed-file Black clean
+authority boundary:                 no live v2 gold, production activation, paid DVC push, destructive production GC, or production restore was claimed
+evidence:                           `qa/live_verification/ontology_v2_recovery_operations_20260714.json`

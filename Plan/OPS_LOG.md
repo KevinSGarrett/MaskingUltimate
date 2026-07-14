@@ -4332,3 +4332,17 @@ verification:                       15 focused tests, 76 adjacent v2/manifest/to
 open evidence gates:                no real adult calibration panel was built and no anatomy recall/precision threshold or production routing claim was made
 authority unchanged:                production remains body_parts_v1 and the body_parts_v2 QA battery remains approved_design_not_active
 evidence:                           qa/live_verification/ontology_v2_qa_machine_gates_20260713.json
+
+## 2026-07-13 - Inactive ontology-v2 dataset and training contracts landed
+
+**Result:** PASS for checklist-G machine mechanics; real inventory and trained-model evidence remain open.
+
+supervision boundary:               v1 packages are explicitly 56-class pretraining-only and provide no inferred negatives for IDs 56-64; only fully human-reviewed v2 packages may enter 65-class fine-tuning
+export repair:                      separate v2 ambiguity masks now burn their exact regions to ignore 255; a fixture proves every non-ambiguous ID 56-64 exports unchanged
+sampling:                           reviewed-v2 batch plans guarantee >=50% anatomy-positive crops once inventory exists plus >=25% whole-body anti-forgetting draws, and never fabricate hidden positives
+configs:                            separate inactive SegFormer-B3 and Mask2Former-SwinB YAMLs carry exact IDs/names 0-64, ignore 255, inverse-sqrt weights capped x8, all required metrics, and explicit 57-class refusal
+holdouts:                           positive and explicit clothed-negative cohorts are identity- and pHash-grouped; any group crossing train/val/holdout boundaries fails closed
+metrics/gate:                       per-class IoU, boundary-F@2px, recall, clothed image/pixel false positives, and sided swap rates are emitted; promotion refuses missing rows/metrics, <50 positive inventory, missing holdouts, or any clothed false positive under the pre-calibration zero-tolerance policy
+verification:                       48 focused and all 833 live-root tests passed; clean publish passed 814 plus 3 expected runtime-artifact skips across 817 collected; Ruff clean; exact Black 26.5.1 clean on 332 root / 323 publish files
+open real gates:                    no v2 training was launched; 50-100 positives per class and publication of real challenger holdout metrics remain unchecked; production stays body_parts_v1
+evidence:                           qa/live_verification/ontology_v2_training_contracts_20260713.json

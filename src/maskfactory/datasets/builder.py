@@ -408,6 +408,25 @@ def _training_label_maps(
     for name, entry in manifest.get("parts", {}).items():
         if entry.get("visibility") != "ambiguous_do_not_use":
             continue
+        ambiguity_file = entry.get("ambiguity_file")
+        if ambiguity_file is not None:
+            if not isinstance(ambiguity_file, str) or not ambiguity_file:
+                raise ValueError(f"ambiguous training label has invalid ignore path: {name}")
+            ignore_path = package / ambiguity_file
+            if not ignore_path.is_file():
+                raise ValueError(f"ambiguous training ignore mask is missing: {ignore_path}")
+            with Image.open(ignore_path) as opened:
+                if opened.format != "PNG" or opened.mode != "L":
+                    raise ValueError(
+                        f"ambiguous training ignore mask must be mode-L PNG: {ignore_path}"
+                    )
+                ignore = np.asarray(opened)
+            if ignore.shape != part.shape or not set(np.unique(ignore).tolist()).issubset({0, 255}):
+                raise ValueError(
+                    f"ambiguous training ignore mask must be same-size strict binary: {ignore_path}"
+                )
+            ambiguity |= ignore > 0
+            continue
         label = authority.label(name)
         if label.map != "part" or label.id is None:
             raise ValueError(f"ambiguous training label is not an indexed part: {name}")

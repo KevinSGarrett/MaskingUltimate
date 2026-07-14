@@ -95,16 +95,24 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## G. Dataset and training
 
-- [ ] Accept only fully reviewed v2 packages for 65-class supervision.
-- [ ] Preserve v1 data without treating new labels as negatives.
-- [ ] Burn ambiguity to 255 and test IDs 56–64 export exactly.
-- [ ] Add anatomy-focused crops and whole-body anti-forgetting batches.
-- [ ] Update flip/rotation/crop/color/class-weight tests.
-- [ ] Author 65-class configs and eliminate the old 57-class conflict.
-- [ ] Build identity-separated positive and clothed-negative holdouts.
+- [x] Accept only fully reviewed v2 packages for 65-class supervision.
+  Evidence: the shared manifest eligibility gate remains mandatory at frozen-package discovery and the inactive fine-tune contract refuses any sample without complete v2 review authority.
+- [x] Preserve v1 data without treating new labels as negatives.
+  Evidence: v1 is explicitly 56-class pretraining-only; the contract exposes no negative IDs 56–64 and cannot place v1 packages into v2 fine-tuning.
+- [x] Burn ambiguity to 255 and test IDs 56–64 export exactly.
+  Evidence: dataset export now consumes separate v2 ambiguity masks; the fixture preserves all non-ambiguous IDs 56–64 byte-for-value and burns only the explicit region to 255.
+- [x] Add anatomy-focused crops and whole-body anti-forgetting batches.
+  Evidence: the deterministic reviewed-v2 sampler guarantees at least 50% positive anatomy crops once inventory exists and at least 25% whole-body draws, with zero fabricated positives.
+- [x] Update flip/rotation/crop/color/class-weight tests.
+  Evidence: v2 fixtures cover every appended flip, forced anatomy retention, rotation/ignore border, label-invariant color jitter, and 65-entry inverse-square-root weights capped at x8.
+- [x] Author 65-class configs and eliminate the old 57-class conflict.
+  Evidence: separate inactive SegFormer-B3 and Mask2Former-SwinB configs carry the exact 65-name vocabulary; validation rejects 57 while active v1 configs remain 56.
+- [x] Build identity-separated positive and clothed-negative holdouts.
+  Evidence: holdout manifests reject identity or pHash-connected groups crossing train/val/positive/clothed-negative cohorts and require explicit reviewed clothed negatives.
 - [ ] Reach 50–100 clear positives per new class before production claims.
 - [ ] Publish IoU, boundary-F, recall, clothed false positives, and side-swap rates.
-- [ ] Refuse promotion when any class lacks evidence or systematically fires on clothing.
+- [x] Refuse promotion when any class lacks evidence or systematically fires on clothing.
+  Evidence: the inactive gate requires all nine exact rows, >=50 clear positives per class, finite positive/clothed holdout metrics, and zero clothed false-positive images until real calibration authorizes otherwise. Machine evidence: `qa/live_verification/ontology_v2_training_contracts_20260713.json`.
 
 ## H. Registry, serving, and ComfyUI
 

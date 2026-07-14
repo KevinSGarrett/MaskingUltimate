@@ -14,6 +14,13 @@ from typing import Any, Callable
 import yaml
 
 from ..gpu import GpuLock
+from ..models.ontology_contract import (
+    V1_ONTOLOGY_VERSION,
+    V1_PART_CLASS_NAMES,
+    V2_ONTOLOGY_VERSION,
+    V2_PART_CLASS_NAMES,
+    class_names_sha256,
+)
 from .mmseg_compile import TrainingCompileError, compile_mmseg_config, write_mmengine_config
 from .run import initialize_training_run, transition_training_run
 from .runtime import TrainingRuntimeReport, probe_openmmlab_runtime
@@ -157,6 +164,15 @@ def write_candidate_artifact(
         or len(class_names) != len(set(class_names))
     ):
         raise TrainingLaunchError("compiled config lacks a valid class_names vocabulary")
+    vocabulary = tuple(class_names)
+    if vocabulary == V1_PART_CLASS_NAMES:
+        ontology_version = V1_ONTOLOGY_VERSION
+    elif vocabulary == V2_PART_CLASS_NAMES:
+        ontology_version = V2_ONTOLOGY_VERSION
+    else:
+        raise TrainingLaunchError("compiled body-part class_names are not exact v1 or v2 authority")
+    checkpoint_sha256 = _file_sha256(checkpoint)
+    inference_config_sha256 = _file_sha256(config)
     document = {
         "schema_version": "1.0.0",
         "run_id": run["run_id"],
@@ -165,10 +181,16 @@ def write_candidate_artifact(
         "dataset_dvc_md5": run["dataset_dvc_md5"],
         "target_champion_role": "champion_bodypart",
         "checkpoint": str(checkpoint.relative_to(root).as_posix()),
-        "checkpoint_sha256": _file_sha256(checkpoint),
+        "checkpoint_sha256": checkpoint_sha256,
         "inference_config": str(config.relative_to(root).as_posix()),
-        "inference_config_sha256": _file_sha256(config),
+        "inference_config_sha256": inference_config_sha256,
         "class_names": class_names,
+        "class_names_sha256": class_names_sha256(class_names),
+        "ontology_version": ontology_version,
+        "artifact_hashes": {
+            "checkpoint_sha256": checkpoint_sha256,
+            "inference_config_sha256": inference_config_sha256,
+        },
     }
     path = root / "candidate_artifact.json"
     temporary = path.with_name(f".{path.name}.tmp-{uuid.uuid4().hex}")

@@ -17,8 +17,17 @@ from PIL import Image
 from .. import __version__
 from ..gpu import DEFAULT_GPU_LOCK_PATH, GpuLock
 from ..inpaint import feathered_dilation
-from ..models.registry import DEFAULT_MODELS_ROOT, ModelRegistryError, resolve_registered_role
-from ..ontology import get_ontology
+from ..models.ontology_contract import (
+    V1_ONTOLOGY_VERSION,
+    ModelOntologyContractError,
+    canonicalize_served_selector,
+    ontology_for_version,
+)
+from ..models.registry import (
+    DEFAULT_MODELS_ROOT,
+    ModelRegistryError,
+    resolve_registered_role_contract,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY = ROOT / "models/model_registry.json"
@@ -75,17 +84,26 @@ class SequentialChampionPredictor:
 
     ROLE_ORDER = ("champion_bodypart", "champion_hand", "champion_clothing")
 
-    def __init__(self, checkpoints: Mapping[str, Path], loader: SlotPredictorLoader) -> None:
+    def __init__(
+        self,
+        checkpoints: Mapping[str, Path],
+        loader: SlotPredictorLoader,
+        *,
+        ontology_version: str = V1_ONTOLOGY_VERSION,
+    ) -> None:
         if set(checkpoints) != set(self.ROLE_ORDER):
             raise ServingError(f"sequential serving requires exactly {list(self.ROLE_ORDER)}")
         self.checkpoints = {role: Path(path) for role, path in checkpoints.items()}
         self.loader = loader
+        self.ontology_version = ontology_version
         self.load_history: list[str] = []
 
     def __call__(self, image: np.ndarray, labels: tuple[str, ...]) -> dict[str, np.ndarray]:
         grouped = {role: [] for role in self.ROLE_ORDER}
         for label in labels:
-            grouped[_champion_role_for_label(label)].append(label)
+            grouped[_champion_role_for_label(label, ontology_version=self.ontology_version)].append(
+                label
+            )
         outputs: dict[str, np.ndarray] = {}
         for role in self.ROLE_ORDER:
             requested = tuple(grouped[role])
@@ -140,6 +158,7 @@ class InferenceRuntime:
     gpu_lock_path: Path = DEFAULT_GPU_LOCK_PATH
     loaded_models: list[str] = field(default_factory=list)
     configured_models: list[str] = field(default_factory=list)
+    model_contracts: dict[str, dict[str, Any]] = field(default_factory=dict)
     vram_probe: Callable[[], dict[str, Any]] = probe_vram
     _lease: GpuLock | None = None
     _request_lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
@@ -158,8 +177,8 @@ class InferenceRuntime:
         if any(not role.startswith("champion_") for role in roles):
             raise ServingError("serving predictor may load champion_* roles only")
         try:
-            checkpoints = {
-                role: resolve_registered_role(
+            resolved = {
+                role: resolve_registered_role_contract(
                     role,
                     registry_path=self.registry_path,
                     models_root=self.models_root,
@@ -168,11 +187,14 @@ class InferenceRuntime:
             }
         except ModelRegistryError as exc:
             raise ServingError(f"champion model resolution failed: {exc}") from exc
+        checkpoints = {role: value[0] for role, value in resolved.items()}
+        contracts = {role: value[1] for role, value in resolved.items()}
         self.predictor = loader(checkpoints)
         if self.predictor is None:
             raise ServingError("champion predictor loader returned no predictor")
         self.loaded_models = list(roles)
         self.configured_models = list(roles)
+        self.model_contracts = contracts
 
     def configure_sequential_champions(self, loader: SlotPredictorLoader) -> None:
         """Resolve the required serving champions without co-residency."""
@@ -180,17 +202,25 @@ class InferenceRuntime:
             raise ServingError("cannot reconfigure champion models while serving")
         roles = SequentialChampionPredictor.ROLE_ORDER
         try:
-            checkpoints = {
-                role: resolve_registered_role(
+            resolved = {
+                role: resolve_registered_role_contract(
                     role, registry_path=self.registry_path, models_root=self.models_root
                 )
                 for role in roles
             }
         except ModelRegistryError as exc:
             raise ServingError(f"champion model resolution failed: {exc}") from exc
-        self.predictor = SequentialChampionPredictor(checkpoints, loader)
+        checkpoints = {role: value[0] for role, value in resolved.items()}
+        contracts = {role: value[1] for role, value in resolved.items()}
+        ontology_version = str(
+            contracts.get("champion_bodypart", {}).get("ontology_version") or V1_ONTOLOGY_VERSION
+        )
+        self.predictor = SequentialChampionPredictor(
+            checkpoints, loader, ontology_version=ontology_version
+        )
         self.loaded_models = []
         self.configured_models = list(roles)
+        self.model_contracts = contracts
 
     def configure_on_demand_refiner(self, loader: RefinerLoader) -> None:
         if self._lease is not None:
@@ -212,11 +242,18 @@ class InferenceRuntime:
             self._lease.release()
             self._lease = None
 
+    def ontology_version(self) -> str:
+        return str(
+            self.model_contracts.get("champion_bodypart", {}).get("ontology_version")
+            or V1_ONTOLOGY_VERSION
+        )
+
     def health(self) -> dict[str, Any]:
         return {
             "status": "ok" if self._lease is not None else "not_started",
             "pipeline_version": __version__,
             "versions": {"pipeline": __version__, "mode_b_api": "1.0.0"},
+            "ontology_version": self.ontology_version(),
             "loaded_models": list(self.loaded_models),
             "configured_models": list(self.configured_models),
             "gpu_lock": str(self.gpu_lock_path),
@@ -242,6 +279,11 @@ class InferenceRuntime:
                 "role": item["role"],
                 "version_tag": version_tag(item),
                 "sha256": item.get("sha256"),
+                "ontology_version": (
+                    item.get("ontology_version")
+                    or (V1_ONTOLOGY_VERSION if item.get("role") == "champion_bodypart" else None)
+                ),
+                "class_names_sha256": item.get("class_names_sha256"),
             }
             for item in document.get("models", [])
             if item.get("verified")
@@ -251,6 +293,11 @@ class InferenceRuntime:
                 "key": item["key"],
                 "version_tag": version_tag(item),
                 "sha256": item.get("sha256"),
+                "ontology_version": (
+                    item.get("ontology_version")
+                    or (V1_ONTOLOGY_VERSION if item.get("role") == "champion_bodypart" else None)
+                ),
+                "class_names_sha256": item.get("class_names_sha256"),
             }
             for item in document.get("models", [])
             if item.get("verified") and str(item.get("role", "")).startswith("champion_")
@@ -260,6 +307,8 @@ class InferenceRuntime:
             "champions": champions,
             "loaded_models": list(self.loaded_models),
             "configured_models": list(self.configured_models),
+            "ontology_version": self.ontology_version(),
+            "model_contracts": self.model_contracts,
         }
 
     def predict(
@@ -276,25 +325,37 @@ class InferenceRuntime:
             raise ServingError("champion prediction provider is not configured")
         if return_mode not in {"binaries", "label_maps", "both"}:
             raise ServingError("return_mode must be binaries, label_maps, or both")
+        ontology_version = self.ontology_version()
+        try:
+            selector_provenance = tuple(
+                canonicalize_served_selector(label, ontology_version=ontology_version)
+                for label in labels
+            )
+        except ModelOntologyContractError as exc:
+            raise ServingError(str(exc)) from exc
+        canonical_labels = tuple(item["canonical"] for item in selector_provenance)
+        if len(set(canonical_labels)) != len(canonical_labels):
+            raise ServingError("requested selectors collapse to duplicate canonical labels")
         dilation, feather = _validate_inpaint_request(inpaint)
         image = _decode_rgb(image_bytes)
         with self._request_lock:
             close = getattr(self.refiner, "close", None)
             if callable(close):
                 close()
-            outputs = self.predictor(image, labels)
-        if set(outputs) != set(labels):
+            outputs = self.predictor(image, canonical_labels)
+        if set(outputs) != set(canonical_labels):
             raise ServingError("predictor output labels differ from the request")
         masks = {}
         mask_arrays = {}
         metadata = {}
-        for label in labels:
+        provenance_by_canonical = {item["canonical"]: item for item in selector_provenance}
+        for label in canonical_labels:
             mask = _validated_mask(outputs[label], image.shape[:2], label)
             mask_arrays[label] = mask
             if return_mode in {"binaries", "both"}:
                 masks[label] = _png_base64(mask)
             source_models = (
-                [_champion_role_for_label(label)]
+                [_champion_role_for_label(label, ontology_version=ontology_version)]
                 if isinstance(self.predictor, SequentialChampionPredictor)
                 else list(self.loaded_models)
             )
@@ -302,18 +363,25 @@ class InferenceRuntime:
                 "visibility": "visible" if mask.any() else "not_visible",
                 "area_px": int(mask.sum()),
                 "status": "draft_model_generated",
+                "ontology_version": ontology_version,
+                "selector_provenance": provenance_by_canonical[label],
                 "provenance": {"source": "champion_models", "models": source_models},
             }
         response = {
             "status": "draft_model_generated",
-            "labels": list(labels),
+            "ontology_version": ontology_version,
+            "requested_labels": list(labels),
+            "labels": list(canonical_labels),
+            "selector_provenance": list(selector_provenance),
             "width": image.shape[1],
             "height": image.shape[0],
             "masks": masks,
             "manifest": metadata,
         }
         if return_mode in {"label_maps", "both"}:
-            response["label_maps"] = _encoded_label_maps(mask_arrays, image.shape[:2])
+            response["label_maps"] = _encoded_label_maps(
+                mask_arrays, image.shape[:2], ontology_version=ontology_version
+            )
         if inpaint is not None:
             response["inpaint_masks"] = {
                 label: _grayscale_png_base64(
@@ -446,9 +514,9 @@ def _decode_rgb(value: bytes) -> np.ndarray:
         raise ServingError("request image is not a readable raster") from exc
 
 
-def _champion_role_for_label(name: str) -> str:
+def _champion_role_for_label(name: str, *, ontology_version: str = V1_ONTOLOGY_VERSION) -> str:
     try:
-        label = get_ontology().label(name)
+        label = ontology_for_version(ontology_version).label(name)
     except Exception as exc:
         raise ServingError(f"unknown ontology label requested: {name}") from exc
     if label.map == "material":
@@ -496,10 +564,16 @@ def _validate_inpaint_request(value: Mapping[str, int] | None) -> tuple[int, int
     return dilation, feather
 
 
-def _encoded_label_maps(masks: Mapping[str, np.ndarray], shape: tuple[int, int]) -> dict[str, str]:
+def _encoded_label_maps(
+    masks: Mapping[str, np.ndarray],
+    shape: tuple[int, int],
+    *,
+    ontology_version: str = V1_ONTOLOGY_VERSION,
+) -> dict[str, str]:
     maps: dict[str, np.ndarray] = {}
+    ontology = ontology_for_version(ontology_version)
     for name, mask in masks.items():
-        label = get_ontology().label(name)
+        label = ontology.label(name)
         if label.map not in {"part", "material"} or label.id is None:
             raise ServingError(f"label-map return requires indexed atomic label: {name}")
         target = maps.setdefault(label.map, np.zeros(shape, dtype=np.uint16))

@@ -23,6 +23,11 @@ import yaml
 
 from ..fs_atomic import replace_with_retry
 from ..ontology import get_ontology
+from .ontology_contract import (
+    ModelOntologyContractError,
+    ontology_for_version,
+    validate_bodypart_model_contract,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CATALOG = PROJECT_ROOT / "models" / "model_sources.yaml"
@@ -31,7 +36,7 @@ DEFAULT_MODELS_ROOT = PROJECT_ROOT / "models"
 CHUNK_SIZE = 1024 * 1024
 OLLAMA_MODEL_NAMES = (
     "qwen2.5vl:7b",
-    "llama3.2-vision:11b",
+    "llava:13b",
     "qwen2.5:7b-instruct",
 )
 SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
@@ -225,7 +230,17 @@ def register_ollama_models(
             check=False,
         )
         if process.returncode != 0:
-            raise ModelRegistryError(f"ollama list failed: {process.stderr.strip()}")
+            process = subprocess.run(
+                ["ollama", "list"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+        if process.returncode != 0:
+            raise ModelRegistryError(
+                f"ollama list failed through Docker and native CLI: {process.stderr.strip()}"
+            )
         list_output = process.stdout
 
     api_models = {
@@ -254,7 +269,11 @@ def register_ollama_models(
         details = model.get("details") if isinstance(model.get("details"), dict) else {}
         entry = {
             "key": _ollama_key(name),
-            "role": ("local_vlm" if "vision" in name or "vl" in name else "manifest_linter"),
+            "role": (
+                "local_vlm"
+                if "vision" in name or "vl" in name or "llava" in name
+                else "manifest_linter"
+            ),
             "managed": True,
             "manager": "ollama",
             "ollama_name": name,
@@ -527,6 +546,36 @@ def resolve_registered_role(
     )
 
 
+def resolve_registered_role_contract(
+    role: str,
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+) -> tuple[Path, dict[str, Any]]:
+    """Resolve one role plus immutable ontology/vocabulary metadata for serving."""
+    registry = _load_registry(registry_path)
+    matches = [
+        item
+        for item in registry["models"]
+        if item.get("role") == role and item.get("managed") is not True
+    ]
+    if len(matches) != 1:
+        raise ModelRegistryError(
+            f"expected exactly one registered model for role {role!r}, found {len(matches)}"
+        )
+    entry = matches[0]
+    path = resolve_registered_model(
+        str(entry["key"]), registry_path=registry_path, models_root=models_root
+    )
+    contract: dict[str, Any] = {"ontology_version": None}
+    if role == "champion_bodypart":
+        try:
+            contract = validate_bodypart_model_contract(entry)
+        except ModelOntologyContractError as exc:
+            raise ModelRegistryError(str(exc)) from exc
+    return path, contract
+
+
 def register_training_candidate(
     run_root: Path,
     candidate_key: str,
@@ -561,6 +610,9 @@ def register_training_candidate(
     if _sha256(config) != artifact.get("inference_config_sha256"):
         raise ModelRegistryError("training candidate inference config hash mismatch")
     class_names = artifact.get("class_names")
+    ontology_version = artifact.get("ontology_version")
+    class_names_digest = artifact.get("class_names_sha256")
+    artifact_hashes = artifact.get("artifact_hashes")
     registry = _load_registry(Path(registry_path))
     if any(item.get("key") == candidate_key for item in registry["models"]):
         raise ModelRegistryError(f"training candidate key already exists: {candidate_key}")
@@ -599,6 +651,9 @@ def register_training_candidate(
             ),
             "inference_config_sha256": artifact["inference_config_sha256"],
             "class_names": class_names,
+            "class_names_sha256": class_names_digest,
+            "ontology_version": ontology_version,
+            "artifact_hashes": artifact_hashes,
             "version_tag": run["run_id"],
             "training_run": run["run_id"],
             "dataset_ref": run["dataset_ref"],
@@ -718,8 +773,15 @@ def _validate_serving_champion_metadata(
         raise ModelRegistryError(
             "champion_hand class_names differ from the governed 14-class crop contract"
         )
+    if role == "champion_bodypart":
+        try:
+            contract = validate_bodypart_model_contract(entry, require_explicit=True)
+        except ModelOntologyContractError as exc:
+            raise ModelRegistryError(str(exc)) from exc
+        ontology = ontology_for_version(str(contract["ontology_version"]))
+    else:
+        ontology = get_ontology()
     expected_map = "material" if role == "champion_clothing" else "part"
-    ontology = get_ontology()
     for name in class_names:
         if name == "background" or (
             role == "champion_hand" and name == "finger_occlusion_boundary"
@@ -762,6 +824,8 @@ def champion_status(
             "key": item["key"],
             "version_tag": item.get("version_tag"),
             "sha256": item.get("sha256"),
+            "ontology_version": item.get("ontology_version"),
+            "class_names_sha256": item.get("class_names_sha256"),
         }
         for item in registry["models"]
         if str(item.get("role", "")).startswith("champion_")

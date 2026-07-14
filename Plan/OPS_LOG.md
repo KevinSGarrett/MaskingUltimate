@@ -4346,3 +4346,16 @@ metrics/gate:                       per-class IoU, boundary-F@2px, recall, cloth
 verification:                       48 focused and all 833 live-root tests passed; clean publish passed 814 plus 3 expected runtime-artifact skips across 817 collected; Ruff clean; exact Black 26.5.1 clean on 332 root / 323 publish files
 open real gates:                    no v2 training was launched; 50-100 positives per class and publication of real challenger holdout metrics remain unchecked; production stays body_parts_v1
 evidence:                           qa/live_verification/ontology_v2_training_contracts_20260713.json
+
+## 2026-07-13 - Inactive ontology-v2 registry, serving, and ComfyUI contracts landed
+
+**Result:** PASS for the first six checklist-H mechanics; real v2 champion latency and end-to-end execution remain open.
+
+registry authority:                  body-part training artifacts and registered challengers now carry ontology version, exact ordered vocabulary, vocabulary digest, checkpoint/config digests, and a matching artifact-hash map; champion promotion revalidates the complete contract
+serving fail-closed boundary:        a v1 champion rejects v2-only labels, a v2 champion must declare the exact 65 names in ID order, and derived unions cannot be sent as direct model-logit selectors
+response provenance:                health, models, and predict expose ontology version; model listings expose vocabulary digest; predictions preserve requested labels and return canonical labels plus alias/class/map provenance
+ComfyUI compatibility:              the read-only dependency-light node pack accepts package major 1/2, filters packages by ontology, resolves v2 atomic/union aliases, follows contained manifest mask paths, and retains v1 missing-mask behavior
+workflow fixtures:                  one canonical anatomy-selector flow and one clothed-negative intersection guard ship with the installed node pack
+verification:                       50 focused and all 837 live-root tests passed; clean publish passed 818 plus 3 expected runtime-artifact skips across 821 collected; Ruff clean; exact Black 26.5.1 clean
+open real gate:                     no trained body_parts_v2 champion exists, so real v2 Mode A/Mode B latency, residency, and end-to-end tests remain unchecked; production stays body_parts_v1
+evidence:                           qa/live_verification/ontology_v2_registry_serving_comfy_20260713.json

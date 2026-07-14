@@ -29,7 +29,8 @@ def install_node_pack(
     config = {
         "packages_root": str(Path(packages_root).resolve()),
         "api_url": api_url,
-        "format_version": "1.x",
+        "format_version": "1.x-2.x",
+        "supported_ontology_versions": ["body_parts_v1", "body_parts_v2"],
     }
     (target / "config.json").write_text(
         json.dumps(config, indent=2, sort_keys=True) + "\n", encoding="utf-8"

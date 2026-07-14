@@ -9,6 +9,11 @@ from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
+from maskfactory.models.ontology_contract import (
+    V1_ONTOLOGY_VERSION,
+    V1_PART_CLASS_NAMES,
+    class_names_sha256,
+)
 from maskfactory.models.registry import (
     CHAMPION_HAND_CLASS_NAMES,
     ModelFetchError,
@@ -303,7 +308,13 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
         {
             "inference_config": "models/challenger_inference.py",
             "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
-            "class_names": ["background", "hair"],
+            "ontology_version": V1_ONTOLOGY_VERSION,
+            "class_names": list(V1_PART_CLASS_NAMES),
+            "class_names_sha256": class_names_sha256(list(V1_PART_CLASS_NAMES)),
+            "artifact_hashes": {
+                "checkpoint_sha256": challenger["sha256"],
+                "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+            },
         }
     )
     document["models"].append(challenger)
@@ -357,6 +368,7 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
         "inference_config": "models/candidate.py",
         "inference_config_sha256": "0" * 64,
         "class_names": ["background", "hair"],
+        "ontology_version": V1_ONTOLOGY_VERSION,
     }
     registry = tmp_path / "registry.json"
     registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
@@ -372,7 +384,7 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
     entry["inference_config_sha256"] = hashlib.sha256(config.read_bytes()).hexdigest()
     entry["class_names"] = ["background", "clothing_generic"]
     registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
-    with pytest.raises(ModelRegistryError, match="belongs to material"):
+    with pytest.raises(ModelRegistryError, match="vocabulary must be exact"):
         promote_model_role(
             "candidate",
             "champion_bodypart",
@@ -415,7 +427,7 @@ def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
 
 
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):
-    names = ["qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"]
+    names = ["qwen2.5vl:7b", "llava:13b", "qwen2.5:7b-instruct"]
     digests = ["a" * 64, "b" * 64, "c" * 64]
     inventory = {
         "models": [
@@ -473,7 +485,7 @@ def test_register_ollama_models_rejects_digest_mismatch(tmp_path: Path):
         "models": [
             {"name": name, "digest": character * 64, "details": {}}
             for name, character in zip(
-                ("qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"),
+                ("qwen2.5vl:7b", "llava:13b", "qwen2.5:7b-instruct"),
                 "abc",
                 strict=True,
             )
@@ -482,7 +494,7 @@ def test_register_ollama_models_rejects_digest_mismatch(tmp_path: Path):
     bad_list = (
         "NAME ID SIZE MODIFIED\n"
         "qwen2.5vl:7b deadbeefdead 1 GB now\n"
-        f"llama3.2-vision:11b {'b' * 12} 1 GB now\n"
+        f"llava:13b {'b' * 12} 1 GB now\n"
         f"qwen2.5:7b-instruct {'c' * 12} 1 GB now\n"
     )
     try:

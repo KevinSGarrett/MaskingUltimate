@@ -19,7 +19,51 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PACKAGES_ROOT = ROOT / "data/packages"
-FORMAT_MAJOR = 1
+FORMAT_MAJOR = 2
+V1_ONTOLOGY_VERSION = "body_parts_v1"
+V2_ONTOLOGY_VERSION = "body_parts_v2"
+V2_ANATOMY_ATOMICS = (
+    "left_areola",
+    "right_areola",
+    "left_nipple",
+    "right_nipple",
+    "vulva",
+    "penis_shaft",
+    "glans_penis",
+    "left_scrotal_region",
+    "right_scrotal_region",
+)
+V2_ANATOMY_UNIONS = (
+    "both_areolae",
+    "both_nipples",
+    "left_nipple_areola_complex",
+    "right_nipple_areola_complex",
+    "both_nipple_areola_complexes",
+    "left_breast_full",
+    "right_breast_full",
+    "both_breasts_full",
+    "penis_visible",
+    "scrotum_visible",
+    "external_genitalia_visible",
+    "pelvic_anatomy_visible",
+)
+V2_SELECTOR_ALIASES = {
+    "vagina": ("vulva", "external_visible_anatomy_only"),
+    "penis head": ("glans_penis", None),
+    "penis_head": ("glans_penis", None),
+    "penis": ("penis_visible", None),
+    "testicles": ("scrotum_visible", "external_scrotal_surface_not_internal_organs"),
+    "left_testicle": (
+        "left_scrotal_region",
+        "external_scrotal_surface_not_internal_organ",
+    ),
+    "right_testicle": (
+        "right_scrotal_region",
+        "external_scrotal_surface_not_internal_organ",
+    ),
+    "areolas": ("both_areolae", None),
+    "nipples": ("both_nipples", None),
+}
 
 
 class ComfyPackageError(ValueError):
@@ -43,6 +87,7 @@ def list_package_pairs(
     *,
     status: str = "human_approved_gold",
     search: str = "",
+    ontology_version: str = "any",
 ) -> tuple[tuple[str, int], ...]:
     """List approved (image_id, person_index) pairs, including legacy p0 packages."""
     root = Path(root or packages_root())
@@ -59,6 +104,9 @@ def list_package_pairs(
             if not manifest_path.is_file():
                 continue
             manifest = _manifest(package)
+            package_ontology = str(manifest.get("mask_ontology_version", V1_ONTOLOGY_VERSION))
+            if ontology_version != "any" and package_ontology != ontology_version:
+                continue
             statuses = {
                 str(entry.get("status"))
                 for entry in manifest.get("parts", {}).values()
@@ -102,6 +150,53 @@ def assert_workflow_output_target(target: Path, root: Path | None = None) -> Pat
     )
 
 
+def canonicalize_v2_selector(value: str, *, allow_derived: bool = True) -> dict[str, Any]:
+    if not isinstance(value, str) or not value.strip():
+        raise ComfyPackageError("ontology-v2 selector must be a non-empty string")
+    requested = value.strip()
+    if requested in V2_SELECTOR_ALIASES:
+        canonical, warning = V2_SELECTOR_ALIASES[requested]
+        was_alias = True
+    else:
+        canonical, warning, was_alias = requested, None, False
+    if canonical in V2_ANATOMY_ATOMICS:
+        kind = "atomic"
+    elif canonical in V2_ANATOMY_UNIONS:
+        kind = "derived_union"
+    else:
+        raise ComfyPackageError(f"unknown ontology-v2 anatomy selector: {requested!r}")
+    if kind == "derived_union" and not allow_derived:
+        raise ComfyPackageError(f"selector requires a derived-union loader: {canonical}")
+    return {
+        "requested": requested,
+        "canonical": canonical,
+        "was_alias": was_alias,
+        "kind": kind,
+        "warning": warning,
+        "ontology_version": V2_ONTOLOGY_VERSION,
+    }
+
+
+class MFV2CanonicalSelector:
+    CATEGORY = "MaskFactory/Ontology v2 (INACTIVE)"
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("canonical_selector", "provenance_json")
+    FUNCTION = "select"
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        selectors = [
+            *V2_ANATOMY_ATOMICS,
+            *V2_ANATOMY_UNIONS,
+            *V2_SELECTOR_ALIASES,
+        ]
+        return {"required": {"selector": (selectors, {"default": "left_areola"})}}
+
+    def select(self, selector: str):
+        provenance = canonicalize_v2_selector(selector)
+        return provenance["canonical"], json.dumps(provenance, sort_keys=True)
+
+
 class MFPackageBrowser:
     CATEGORY = "MaskFactory/Package"
     RETURN_TYPES = ("STRING", "INT", "INT")
@@ -114,12 +209,16 @@ class MFPackageBrowser:
             "required": {
                 "status": ("STRING", {"default": "human_approved_gold"}),
                 "search": ("STRING", {"default": ""}),
+                "ontology_version": (
+                    ["any", V1_ONTOLOGY_VERSION, V2_ONTOLOGY_VERSION],
+                    {"default": "any"},
+                ),
                 "index": ("INT", {"default": 0, "min": 0}),
             }
         }
 
-    def browse(self, status: str, search: str, index: int):
-        pairs = list_package_pairs(status=status, search=search)
+    def browse(self, status: str, search: str, index: int, ontology_version: str = "any"):
+        pairs = list_package_pairs(status=status, search=search, ontology_version=ontology_version)
         if not pairs:
             raise ComfyPackageError("no packages match the requested status/search")
         image_id, person_index = pairs[index % len(pairs)]
@@ -172,9 +271,14 @@ class MFLoadGoldMask(_ImagePackageNode):
         label: str = "left_forearm",
         on_missing: str = "error",
     ):
+        package = resolve_package(image_id, person_index)
+        canonical = _canonical_package_selector(package, label, allow_derived=False)["canonical"]
+        path = _manifest_atomic_mask(package, canonical)
         return (
-            _load_mask(
-                resolve_package(image_id, person_index), Path("masks") / f"{label}.png", on_missing
+            (
+                _mask_tensor(path, package)
+                if path is not None and path.is_file()
+                else _missing_mask(package, canonical, on_missing)
             ),
         )
 
@@ -190,11 +294,12 @@ class MFLoadUnionMask(MFLoadGoldMask):
         on_missing: str = "error",
     ):
         package = resolve_package(image_id, person_index)
+        canonical = _canonical_package_selector(package, label, allow_derived=True)["canonical"]
         for directory in ("masks_derived", "masks_regions"):
-            candidate = package / directory / f"{label}.png"
+            candidate = package / directory / f"{canonical}.png"
             if candidate.is_file():
                 return (_mask_tensor(candidate, package),)
-        return (_missing_mask(package, label, on_missing),)
+        return (_missing_mask(package, canonical, on_missing),)
 
 
 class MFLoadProjectedRegion(MFLoadGoldMask):
@@ -399,12 +504,17 @@ class MFPredictMasks:
             raise ComfyPackageError(
                 "MaskFactory API unavailable; run `maskfactory serve --port 8765`: " + str(exc)
             ) from exc
-        if response.get("status") != "draft_model_generated" or response.get("labels") != list(
-            requested
+        if (
+            response.get("status") != "draft_model_generated"
+            or response.get("requested_labels", response.get("labels")) != list(requested)
+            or not isinstance(response.get("labels"), list)
         ):
             raise ComfyPackageError("MaskFactory API response metadata does not match the request")
+        canonical = tuple(response["labels"])
+        if len(canonical) != len(requested) or len(set(canonical)) != len(canonical):
+            raise ComfyPackageError("MaskFactory API canonical label response is invalid")
         masks = []
-        for label in requested:
+        for label in canonical:
             try:
                 decoded = base64.b64decode(response["masks"][label], validate=True)
                 mask = np.asarray(Image.open(io.BytesIO(decoded)).convert("L"))
@@ -413,7 +523,7 @@ class MFPredictMasks:
             if mask.shape != array.shape[:2]:
                 raise ComfyPackageError(f"API mask dimensions differ for {label}")
             masks.append(torch.from_numpy(mask.astype(np.float32) / 255.0))
-        return torch.stack(masks), ",".join(requested), json.dumps(response, sort_keys=True)
+        return torch.stack(masks), ",".join(canonical), json.dumps(response, sort_keys=True)
 
 
 def _manifest(package: Path) -> dict[str, Any]:
@@ -428,6 +538,51 @@ def _manifest(package: Path) -> dict[str, Any]:
             f"package format {version} is newer than node-pack major {FORMAT_MAJOR}"
         )
     return manifest
+
+
+def _canonical_package_selector(
+    package: Path, value: str, *, allow_derived: bool
+) -> dict[str, Any]:
+    manifest = _manifest(package)
+    version = str(manifest.get("mask_ontology_version", V1_ONTOLOGY_VERSION))
+    requested = value.strip() if isinstance(value, str) else ""
+    if version == V2_ONTOLOGY_VERSION and (
+        requested in V2_SELECTOR_ALIASES
+        or requested in V2_ANATOMY_ATOMICS
+        or requested in V2_ANATOMY_UNIONS
+    ):
+        return canonicalize_v2_selector(requested, allow_derived=allow_derived)
+    if (
+        not requested
+        or Path(requested).name != requested
+        or not all(character.isalnum() or character == "_" for character in requested)
+    ):
+        raise ComfyPackageError("package selector must be one safe canonical name or alias")
+    parts = manifest.get("parts", {})
+    return {
+        "requested": requested,
+        "canonical": requested,
+        "was_alias": False,
+        "kind": "derived_union" if allow_derived and requested not in parts else "atomic",
+        "warning": None,
+        "ontology_version": version,
+    }
+
+
+def _manifest_atomic_mask(package: Path, canonical: str) -> Path | None:
+    manifest = _manifest(package)
+    entry = manifest.get("parts", {}).get(canonical)
+    relative = entry.get("mask_file") if isinstance(entry, dict) else None
+    if relative is None:
+        fallback = package / "masks" / f"{canonical}.png"
+        return fallback if fallback.is_file() else None
+    if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+        raise ComfyPackageError(f"manifest mask path is unsafe for {canonical}")
+    candidate = (package / Path(*relative.split("\\"))).resolve()
+    root = package.resolve()
+    if candidate == root or root not in candidate.parents:
+        raise ComfyPackageError(f"manifest mask path escapes package for {canonical}")
+    return candidate
 
 
 def _source(package: Path) -> Path:
@@ -558,6 +713,7 @@ def _multipart_predict(
 
 NODE_CLASS_MAPPINGS = {
     "MFPackageBrowser": MFPackageBrowser,
+    "MFV2CanonicalSelector": MFV2CanonicalSelector,
     "MFLoadSource": MFLoadSource,
     "MFLoadGoldMask": MFLoadGoldMask,
     "MFLoadUnionMask": MFLoadUnionMask,

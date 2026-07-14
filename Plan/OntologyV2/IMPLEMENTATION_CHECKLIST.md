@@ -116,12 +116,18 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## H. Registry, serving, and ComfyUI
 
-- [ ] Registry stores ontology version, exact 65-name vocabulary, and artifact hashes.
-- [ ] Serving rejects v2 labels unless loaded champion declares exact v2 vocabulary.
-- [ ] Health/models/predict responses expose ontology version.
-- [ ] Add canonical labels/unions to ComfyUI selectors and package browser.
-- [ ] Canonicalize UI/API aliases and return canonical provenance.
-- [ ] Add anatomy and clothed-negative workflow fixtures.
+- [x] Registry stores ontology version, exact 65-name vocabulary, and artifact hashes.
+  Evidence: training artifacts and registered challengers bind the exact ordered vocabulary, its digest, checkpoint/config digests, and a matching artifact-hash map; promotion revalidates the complete contract.
+- [x] Serving rejects v2 labels unless loaded champion declares exact v2 vocabulary.
+  Evidence: v1 rejects v2-only labels, v2 refuses any reordered or incomplete 65-name vocabulary, and derived unions cannot masquerade as model logits.
+- [x] Health/models/predict responses expose ontology version.
+  Evidence: runtime tests assert `body_parts_v2` plus vocabulary digest and model contracts across all three response surfaces.
+- [x] Add canonical labels/unions to ComfyUI selectors and package browser.
+  Evidence: the dependency-light node pack reads package-major 1/2, filters by ontology, loads v2 manifest mask paths, and exposes the nine anatomy atomics plus governed unions.
+- [x] Canonicalize UI/API aliases and return canonical provenance.
+  Evidence: `penis head` resolves to canonical `glans_penis`/ID 62 while preserving requested text, alias status, warning, ontology, map, and class ID; union aliases route only to union loaders.
+- [x] Add anatomy and clothed-negative workflow fixtures.
+  Evidence: installed fixtures `wf_v2_anatomy_selector.json` and `wf_v2_clothed_negative_guard.json` are exercised by focused tests. Machine evidence: `qa/live_verification/ontology_v2_registry_serving_comfy_20260713.json`.
 - [ ] Re-run latency/residency and Mode A/Mode B end-to-end tests.
 
 ## I. Operations and activation

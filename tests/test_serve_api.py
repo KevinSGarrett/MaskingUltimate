@@ -16,6 +16,11 @@ from PIL import Image
 
 from maskfactory.cli import main
 from maskfactory.gpu import GpuLock, GpuLockBusyError
+from maskfactory.models.ontology_contract import (
+    V1_ONTOLOGY_VERSION,
+    V1_PART_CLASS_NAMES,
+    class_names_sha256,
+)
 from maskfactory.models.registry import CHAMPION_HAND_CLASS_NAMES
 from maskfactory.serve.api import (
     InferenceRuntime,
@@ -156,6 +161,8 @@ def test_models_endpoint_supports_governed_ollama_registry_entries(tmp_path: Pat
             "role": "local_vlm",
             "version_tag": "qwen2.5vl:7b",
             "sha256": "a" * 64,
+            "ontology_version": None,
+            "class_names_sha256": None,
         }
     ]
 
@@ -262,7 +269,13 @@ def test_production_mmseg_slot_requires_hashed_config_and_maps_explicit_classes(
         "verified": True,
         "inference_config": "models/body.py",
         "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
-        "class_names": ["background", "hair", "left_upper_arm"],
+        "ontology_version": V1_ONTOLOGY_VERSION,
+        "class_names": list(V1_PART_CLASS_NAMES),
+        "class_names_sha256": class_names_sha256(list(V1_PART_CLASS_NAMES)),
+        "artifact_hashes": {
+            "checkpoint_sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+            "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+        },
     }
     registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
     calls = []
@@ -272,7 +285,7 @@ def test_production_mmseg_slot_requires_hashed_config_and_maps_explicit_classes(
             return self
 
         def cpu(self):
-            return np.array([[[0, 1], [2, 1]]], dtype=np.int64)
+            return np.array([[[0, 1], [14, 1]]], dtype=np.int64)
 
     model = SimpleNamespace(to=lambda device: calls.append(("to", device)))
     slot = load_production_mmseg_slot(
@@ -295,6 +308,7 @@ def test_production_mmseg_slot_requires_hashed_config_and_maps_explicit_classes(
     assert calls[-1] == ("to", "cpu")
 
     entry["inference_config_sha256"] = "0" * 64
+    entry["artifact_hashes"]["inference_config_sha256"] = "0" * 64
     registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
     with pytest.raises(ServingProviderError, match="config hash mismatch"):
         load_production_mmseg_slot(

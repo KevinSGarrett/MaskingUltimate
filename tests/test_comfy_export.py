@@ -156,7 +156,7 @@ def test_nodes_refuse_dimension_mismatch_and_newer_package_format(
         MFLoadGoldMask().load(image_id, 0, "left_forearm")
     manifest_path = package / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
-    manifest["format_version"] = "2.0.0"
+    manifest["format_version"] = "3.0.0"
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ComfyPackageError, match="newer than node-pack"):
         MFLoadSource().load(image_id, 0)
@@ -206,13 +206,16 @@ def test_installer_copies_standalone_pack_workflows_and_config(
     config = json.loads((target / "config.json").read_text())
     assert config == {
         "api_url": "http://127.0.0.1:8765",
-        "format_version": "1.x",
+        "format_version": "1.x-2.x",
         "packages_root": str(package_root.resolve()),
+        "supported_ontology_versions": ["body_parts_v1", "body_parts_v2"],
     }
     assert (target / "__init__.py").is_file()
     assert {path.name for path in (target / "workflows").glob("*.json")} >= {
         "wf_person_index_default_p0.json",
         "wf_multi_instance_p1.json",
+        "wf_v2_anatomy_selector.json",
+        "wf_v2_clothed_negative_guard.json",
     }
     monkeypatch.delenv("MASKFACTORY_PACKAGES_ROOT", raising=False)
     spec = importlib.util.spec_from_file_location(

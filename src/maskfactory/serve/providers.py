@@ -11,6 +11,11 @@ from typing import Any
 
 import numpy as np
 
+from ..models.ontology_contract import (
+    ModelOntologyContractError,
+    ontology_for_version,
+    validate_bodypart_model_contract,
+)
 from ..models.registry import (
     CHAMPION_HAND_CLASS_NAMES,
     DEFAULT_MODELS_ROOT,
@@ -128,7 +133,14 @@ def load_production_mmseg_slot(
         or len(class_names) != len(set(class_names))
     ):
         raise ServingProviderError(f"{role} lacks a valid explicit class_names vocabulary")
-    ontology = get_ontology()
+    if role == "champion_bodypart":
+        try:
+            contract = validate_bodypart_model_contract(entry, require_explicit=True)
+        except ModelOntologyContractError as exc:
+            raise ServingProviderError(str(exc)) from exc
+        ontology = ontology_for_version(str(contract["ontology_version"]))
+    else:
+        ontology = get_ontology()
     if role == "champion_hand" and tuple(class_names) != CHAMPION_HAND_CLASS_NAMES:
         raise ServingProviderError(
             "champion_hand class_names differ from the governed 14-class crop contract"

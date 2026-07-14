@@ -85,11 +85,11 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 
 ## F. QA and calibration
 
-- [ ] Implement QC-V2-001 through QC-V2-012.
-- [ ] Seed a good case and defects for every new check.
-- [ ] Extend topology, left/right, exclusivity, state consistency, and containment reports.
-- [ ] Add clothed false-positive sweep.
-- [ ] Extend VLM vocabulary while preserving QA-only governance.
+- [x] Implement QC-V2-001 through QC-V2-012.
+- [x] Seed a good case and defects for every new check.
+- [x] Extend topology, left/right, exclusivity, state consistency, and containment reports.
+- [x] Add clothed false-positive sweep.
+- [x] Extend VLM vocabulary while preserving QA-only governance.
 - [ ] Build real adult calibration panels; synthetic near-duplicates are not gate authority.
 - [ ] Pass calibrated recall/precision before anatomy routing is enabled.
 

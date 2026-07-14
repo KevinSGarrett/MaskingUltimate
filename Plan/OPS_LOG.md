@@ -4318,3 +4318,17 @@ verification:                       13 focused tests and 52 adjacent S05/S06/S07
 root-suite disclosure:              806/807 pass; the sole unrelated failure is concurrent cloud_enabled=true config versus an old false assertion, outside this isolated change and intentionally not overwritten
 authority unchanged:                production remains body_parts_v1; no adult image was processed, no human review or gold credit was claimed, and no v2 activation occurred
 evidence:                           qa/live_verification/ontology_v2_drafting_fusion_20260713.json
+
+## 2026-07-13 - Inactive ontology-v2 automatic QA machine gates landed
+
+**Result:** PASS for the first five checklist-F mechanics; real adult calibration and routing activation remain open.
+
+hard QA:                            QC-V2-001 through QC-V2-012 now cover state completeness/consistency, exact exclusivity, nipple/areola and penis topology, breast/pelvic carve-outs, scrotal character-side integrity, clothing authority, hidden-authority rejection, adult governance, and alias canonicalization
+seeded defects:                     one all-pass 65-class fixture plus twelve named mutations prove every new hard check fires; synthetic fixtures receive no calibration, human-review, gold, or activation credit
+clothed sweep:                      explicitly reviewed garment regions require garment-material pixels and tolerate zero IDs 56-64; a clean case passes and a four-pixel anatomy false positive fails
+VLM boundary:                       nine canonical additions and five anatomy problem types are available to an inactive QA-only vocabulary; aliases cannot persist and the VLM may not author masks, approve gold, or clear blocks
+reporting:                          exact twelve-check reports retain topology/side/exclusivity/state/containment details, incorporate the clothed sweep result, and always stamp production_activation_granted=false
+verification:                       15 focused tests, 76 adjacent v2/manifest/topology tests, and the full 825-test live-root suite passed; Ruff and exact Black 26.5.1 checks are clean
+open evidence gates:                no real adult calibration panel was built and no anatomy recall/precision threshold or production routing claim was made
+authority unchanged:                production remains body_parts_v1 and the body_parts_v2 QA battery remains approved_design_not_active
+evidence:                           qa/live_verification/ontology_v2_qa_machine_gates_20260713.json

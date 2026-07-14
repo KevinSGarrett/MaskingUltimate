@@ -19,6 +19,7 @@ SCHEMA_NAMES = frozenset(
         "model_registry",
         "failure_queue",
         "coverage_matrix",
+        "coverage_matrix_v2",
         "leaderboard",
         "crop_transform",
         "autonomy_lifecycle",

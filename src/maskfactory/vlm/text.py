@@ -40,6 +40,9 @@ ALLOWED_THEMES = frozenset(
         "human_correction",
         "semantic_qc",
         "general_boundary",
+        "anatomy_boundary",
+        "anatomy_side",
+        "anatomy_clothing_negative",
     }
 )
 ALLOWED_COVERAGE_TARGETS = frozenset(
@@ -72,6 +75,22 @@ ALLOWED_COVERAGE_TARGETS = frozenset(
         "fingers_spread",
         "fingers_merged",
         "props_present",
+        "visible",
+        "partially_visible",
+        "occluded",
+        "occluded_by_clothing",
+        "cropped_out",
+        "not_visible",
+        "not_applicable",
+        "ambiguous_do_not_use",
+        "none_visible",
+        "self_occlusion",
+        "other_body_part",
+        "hair",
+        "prop",
+        "clothing",
+        "frame_crop",
+        "interperson_contact",
     }
 )
 _MANIFEST_SEVERITIES = frozenset({"BLOCK", "ROUTE", "WARN"})
@@ -282,7 +301,10 @@ def _prompt(reasons: tuple[str, ...]) -> str:
         "its string value; never invert that mapping, never use arrays, and never add or omit "
         "reasons. finger_merge concerns hands/fingers; hair_edge concerns hair boundaries; "
         "occlusion_confusion concerns occlusion/contact; lr_swap concerns left/right; "
-        "human_edit_delta concerns human correction. "
+        "human_edit_delta concerns human correction. v2_boundary, areola/nipple, and "
+        "shaft/glans reasons concern anatomy_boundary; v2_lr_swap and scrotal-side reasons "
+        "concern anatomy_side; v2_clothing and hidden-anatomy reasons concern "
+        "anatomy_clothing_negative. "
         "Return JSON only with exact keys: clusters (object reason->theme), coverage_targets "
         "(array), weekly_summary (nonempty string).\nALLOWED THEMES:\n"
         + json.dumps(sorted(ALLOWED_THEMES), separators=(",", ":"))

@@ -2383,6 +2383,45 @@ def coverage_report(matrix: Path, target_per_cell: int) -> None:
     click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
+@coverage.command("v2-report")
+@click.option(
+    "--matrix",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/coverage_matrix_v2.json"),
+    show_default=True,
+)
+def coverage_v2_report(matrix: Path) -> None:
+    """Report inactive v2 per-class state/view/pose/occlusion deficits."""
+    from .datasets.coverage_v2 import (
+        OntologyV2OperationsError,
+        coverage_v2_deficit_report,
+    )
+
+    try:
+        document = json.loads(matrix.read_text(encoding="utf-8"))
+        report = coverage_v2_deficit_report(document)
+    except (OSError, OntologyV2OperationsError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@coverage.command("v2-acquisition")
+@click.option("--reason", required=True, help="Canonical ontology-v2 failure reason.")
+@click.option("--label", required=True, help="Canonical body_parts_v2 foreground label.")
+def coverage_v2_acquisition(reason: str, label: str) -> None:
+    """Resolve one v2 failure into its governed hard-case acquisition action."""
+    from .datasets.coverage_v2 import (
+        OntologyV2OperationsError,
+        acquisition_action_for_v2_failure,
+    )
+
+    try:
+        action = acquisition_action_for_v2_failure(reason, label=label)
+    except (OSError, OntologyV2OperationsError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(action, indent=2, sort_keys=True))
+
+
 @main.command()
 @click.argument("model", required=True)
 @click.option(

@@ -423,6 +423,25 @@ def write_weekly_qa_summary(
 
 
 def _action(record: FailureRecord) -> str:
+    if record.failure_reason.startswith("v2_"):
+        from ..datasets.coverage_v2 import (
+            OntologyV2OperationsError,
+            acquisition_action_for_v2_failure,
+        )
+
+        try:
+            governed = acquisition_action_for_v2_failure(
+                record.failure_reason, label=record.failed_body_part
+            )
+        except OntologyV2OperationsError as exc:
+            raise FailureMiningError(str(exc)) from exc
+        return (
+            f"{governed['action']}; target states "
+            f"{','.join(governed['required_review_states'])}; views "
+            f"{','.join(governed['required_views'])}; occlusion contexts "
+            f"{','.join(governed['required_occlusion_contexts'])}; route governed clear-adult "
+            "human-reviewed evidence to hard_case_holdout; never fabricate hidden positives"
+        )
     if record.failure_reason in {"finger_merge", "hair_edge", "occlusion_confusion"}:
         return f"collect cell {record.pose_angle}; re-annotate {record.correction_needed}; promote persistent failures to hard_case_holdout"
     if record.failure_reason in {"lr_swap", "topology"}:

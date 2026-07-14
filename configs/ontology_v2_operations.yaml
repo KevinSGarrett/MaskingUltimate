@@ -1,0 +1,111 @@
+schema_version: 1.0.0
+ontology_version: body_parts_v2
+activation_status: approved_design_not_active
+
+coverage:
+  excluded_class_ids:
+    0: background_is_not_a_body_part_acquisition_target
+  foreground_class_ids: [1, 64]
+  minimum_clear_positive_instances_per_new_class: 50
+  target_clear_positive_instances_per_new_class: 100
+  dimensions:
+    review_state:
+      visible: 8
+      partially_visible: 4
+      occluded: 4
+      occluded_by_clothing: 8
+      cropped_out: 2
+      not_visible: 4
+      not_applicable: 2
+      ambiguous_do_not_use: 2
+      unreviewed_for_v2: 0
+    view:
+      front: 8
+      back: 8
+      left_profile: 8
+      right_profile: 8
+      left_3_4: 8
+      right_3_4: 8
+    pose:
+      arms_raised: 8
+      arms_down: 8
+      arms_crossed: 8
+      seated_or_crouched: 8
+      lying: 8
+      walking: 8
+      leg_overlap: 8
+    occlusion_context:
+      none_visible: 8
+      self_occlusion: 4
+      other_body_part: 4
+      hair: 4
+      prop: 4
+      clothing: 8
+      frame_crop: 4
+      interperson_contact: 4
+
+failure_acquisition:
+  v2_boundary_loose:
+    category: boundary
+    action: collect_close_boundary_visible
+    required_review_states: [visible, partially_visible]
+    required_views: [front, left_3_4, right_3_4]
+    required_occlusion_contexts: [none_visible]
+  v2_boundary_tight:
+    category: boundary
+    action: collect_partial_and_edge_boundaries
+    required_review_states: [visible, partially_visible, ambiguous_do_not_use]
+    required_views: [front, left_profile, right_profile]
+    required_occlusion_contexts: [none_visible, self_occlusion]
+  v2_areola_nipple_boundary:
+    category: boundary
+    action: collect_zoomed_nipple_areola_carveouts
+    required_review_states: [visible, partially_visible, ambiguous_do_not_use]
+    required_views: [front, left_3_4, right_3_4]
+    required_occlusion_contexts: [none_visible, hair]
+  v2_shaft_glans_boundary:
+    category: boundary
+    action: collect_zoomed_shaft_glans_carveouts
+    required_review_states: [visible, partially_visible, ambiguous_do_not_use]
+    required_views: [front, left_3_4, right_3_4]
+    required_occlusion_contexts: [none_visible, self_occlusion]
+  v2_lr_swap:
+    category: side
+    action: collect_character_side_views
+    required_review_states: [visible, partially_visible]
+    required_views: [left_profile, right_profile, left_3_4, right_3_4]
+    required_occlusion_contexts: [none_visible, other_body_part]
+  v2_scrotal_side_ambiguous:
+    category: side
+    action: collect_defensible_scrotal_midlines
+    required_review_states: [visible, partially_visible, ambiguous_do_not_use]
+    required_views: [front, left_3_4, right_3_4]
+    required_occlusion_contexts: [none_visible, self_occlusion]
+  v2_clothing_false_positive:
+    category: clothing
+    action: collect_reviewed_clothed_negatives
+    required_review_states: [occluded_by_clothing]
+    required_views: [front, back, left_profile, right_profile, left_3_4, right_3_4]
+    required_occlusion_contexts: [clothing]
+  v2_clothing_authority_conflict:
+    category: clothing
+    action: reannotate_garment_material_authority
+    required_review_states: [occluded_by_clothing, ambiguous_do_not_use]
+    required_views: [front, back, left_3_4, right_3_4]
+    required_occlusion_contexts: [clothing]
+  v2_hidden_anatomy_leak:
+    category: clothing
+    action: collect_hidden_authority_negatives
+    required_review_states: [occluded, occluded_by_clothing, not_visible]
+    required_views: [front, back, left_profile, right_profile]
+    required_occlusion_contexts: [clothing, other_body_part, prop]
+
+acquisition_invariants:
+  destination: hard_case_holdout
+  human_review_required: true
+  clear_adult_required: true
+  governed_source_required: true
+  fabricated_positive_allowed: false
+  aliases_allowed_in_failure_queue: false
+  unreviewed_counts_as_negative: false
+  projected_or_amodal_counts_as_positive: false

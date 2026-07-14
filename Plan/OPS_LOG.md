@@ -4359,3 +4359,17 @@ workflow fixtures:                  one canonical anatomy-selector flow and one 
 verification:                       50 focused and all 837 live-root tests passed; clean publish passed 818 plus 3 expected runtime-artifact skips across 821 collected; Ruff clean; exact Black 26.5.1 clean
 open real gate:                     no trained body_parts_v2 champion exists, so real v2 Mode A/Mode B latency, residency, and end-to-end tests remain unchecked; production stays body_parts_v1
 evidence:                           qa/live_verification/ontology_v2_registry_serving_comfy_20260713.json
+
+## 2026-07-13 - Inactive ontology-v2 coverage and failure-acquisition contracts landed
+
+**Result:** PASS for the first two checklist-I mechanics; v2 operations drills and activation remain open.
+
+coverage authority:                  all 64 foreground classes receive exact per-class targets across nine review states, six views, seven poses, and eight occlusion contexts (1,920 cells); background ID 0 is explicitly excluded as a non-body-part acquisition target
+positive inventory:                  IDs 56-64 each carry a minimum 50 and target 100 clear-positive row; unreviewed_for_v2 has a hard maximum of zero and never acts as a negative
+fail-closed matrix:                  only body_parts_v2-approved gold contributes; exact 0-64 package vocabulary and per-label contexts are mandatory; stale policy hashes, duplicate/missing cells, target drift, unsafe state/context pairs, and non-gold inflation are refused
+failure routing:                     nine canonical boundary/side/clothing reasons map deterministically to required states, views, occlusion contexts, and named hard-case acquisition actions
+acquisition authority:               every action requires governed clear-adult sources and human review, routes to hard_case_holdout, and forbids fabricated, hidden, unreviewed, projected, or amodal positives
+operator surface:                    `maskfactory coverage v2-report` ranks exact deficits and `maskfactory coverage v2-acquisition` resolves one canonical failure; weekly mining uses the same deterministic action authority
+verification:                       41 focused and all 852 live-root tests passed; clean publish passed 825 plus 3 expected runtime-artifact skips across 828 collected; one unrelated S11 test failed once, then passed alone, with adjacent suites, and in the clean full rerun; Ruff and exact Black 26.5.1 clean
+authority unchanged:                 production remains body_parts_v1; backup/restore/GC/reindex/DVC/incident drill updates and every activation gate remain open
+evidence:                           qa/live_verification/ontology_v2_coverage_failure_acquisition_20260713.json

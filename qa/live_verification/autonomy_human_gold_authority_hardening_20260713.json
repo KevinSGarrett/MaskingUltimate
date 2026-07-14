@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-13T11:28:51Z",
+  "scope": "progressive_autonomy_certificate_human_gold_authority",
+  "result": "pass",
+  "defect": "Certificate construction previously trusted frozen JSON audit rows without proving that each row resolved to real immutable human gold and the actual pipeline-selected machine winner.",
+  "repairs": [
+    "Require explicit human_approved_gold_only audit authority, auditor identity, timezone-aware audit timestamp, and SHA-256 identities for the gold manifest, freeze marker, gold mask, machine lifecycle, and audited machine mask.",
+    "Resolve every selected audit row beneath the governed package root and reject path escape.",
+    "Rerun QC-001 through QC-010 on every referenced package and require approved_gold workflow, passing QA, a human reviewer, approval timestamp, and human_approved_gold label status.",
+    "Verify current manifest, freeze marker, label mask, manifest part entry, and exhaustive file-map hashes.",
+    "Resolve the machine lifecycle and winner mask below a separate governed root; require a valid lifecycle contract whose image, label, context, pipeline fingerprint, status, winner, ranking hash, and mask bytes match the audit row.",
+    "Emit schema 1.1.0 certificates carrying human_approved_gold_only authority and reject legacy certificates even when their internal certificate hash is valid.",
+    "Expose --gold-packages-root and --machine-artifacts-root on the certificate CLI."
+  ],
+  "verification": {
+    "focused_tests": {
+      "command": "uv run pytest tests/test_autonomy.py tests/test_qc_seeded_defects.py -q",
+      "result": "33 passed"
+    },
+    "full_tests": {
+      "command": "uv run pytest -q",
+      "result": "753 passed"
+    },
+    "ruff": {
+      "command": "uv run ruff check .",
+      "result": "pass"
+    },
+    "black": {
+      "command": "uvx --from black==26.5.1 black --check src tests tools",
+      "result": "297 files unchanged"
+    },
+    "production_verifier_tests": [
+      "A real approve_package output with a frozen, hard-QA-passing left_forearm mask is accepted.",
+      "A real machine_verified_candidate lifecycle and its selected mask are accepted, then mask tampering is rejected.",
+      "Synthetic audit rows without package artifacts fail closed.",
+      "A hash-valid legacy schema 1.0.0 certificate cannot authorize autonomy."
+    ]
+  },
+  "file_sha256": {
+    "src/maskfactory/autonomy/calibration.py": "c88f7af487f2f871577cf13355175e3ba9ae970f120a2fa95f7fec1342750f90",
+    "src/maskfactory/cli.py": "4a8a543ba3d64ebe6a309506fb56e687ad3de5c9e3aab117a12eaef0210ebf62",
+    "tests/test_autonomy.py": "3829a5694ef0942745f256f702f17eccccb251272210bb63c044c20bac2a9323",
+    "tests/test_qc_seeded_defects.py": "bb2b5b797f67e271eaba7ed10f1890370e9b9ce6e907b4331592f313c06a79c0"
+  },
+  "authority": {
+    "approved_gold_count": 0,
+    "autonomy_certificate_minted": false,
+    "machine_tiers_are_human_gold": false,
+    "tracker_status_changed": false,
+    "reason": "The implementation gate is hardened, but no label/context has the required hundreds of independent human-truthed audits."
+  }
+}

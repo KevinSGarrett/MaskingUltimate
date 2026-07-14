@@ -3,12 +3,18 @@
 /models/*
 !/models/model_sources.yaml
 !/models/model_registry.json
-data/
-runs/
-logs/
-datasets/
-work/
+/data/*
+!/data/.gitignore
+!/data/packages.dvc
+/runs/
+/logs/
+/datasets/*
+!/datasets/.gitignore
+!/datasets/*.dvc
+/work/
 qa/reports/maskedwarehouse_alignment/
+# Local operator review panels contain governed source imagery; publish only their JSON indexes.
+qa/review_handoffs/**/*.png
 .env
 mfwork/
 
@@ -53,8 +59,17 @@ __pycache__/
 build/
 dist/
 .pytest_cache/
+.pytest*/
+.pytest_*/
 .ruff_cache/
+.black_cache/
+.runtime_tmp/
+.tools/
+.publish_tmp/
+.pt_*/
 .mypy_cache/
 .venv/
 venv/
 *.log
+*.sqlite-shm
+*.sqlite-wal

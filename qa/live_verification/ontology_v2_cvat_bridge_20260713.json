@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T23:05:58.4507537Z",
+  "outcome": "pass",
+  "scope": "inactive body_parts_v2 CVAT project and machine-side review bridge",
+  "authority_boundary": {
+    "production_ontology": "body_parts_v1",
+    "v2_activation_claimed": false,
+    "human_review_claimed": false,
+    "gold_approval_claimed": false,
+    "pilot_image_credit": 0,
+    "remaining_human_checklist_items": [
+      "Pilot 20-30 confirmed-adult images covering all states and applicable classes",
+      "Record review time/ambiguities and revise guidelines before scale annotation"
+    ]
+  },
+  "live_cvat": {
+    "api_version": "v2.24.0",
+    "v1_project": {
+      "id": 1,
+      "name": "MaskFactory_body_parts_v1",
+      "task_count_after_v2_provisioning": 17,
+      "mutated_by_v2_bridge": false
+    },
+    "v2_project": {
+      "id": 2,
+      "name": "MaskFactory_body_parts_v2_pilot",
+      "created": true,
+      "idempotent_second_init_created": false,
+      "canonical_part_label_count": 65,
+      "task_count_after_disposable_cleanup": 0
+    },
+    "mapping": {
+      "path": "data/cvat_v2/label_mapping.json",
+      "sha256": "cae000c0c3e2c1f33c98ecd14f29829412569d3a876716a151f2da482b72478c",
+      "ontology_version": "body_parts_v2",
+      "label_scope": "part_ids_0_64",
+      "alias_help_count": 9,
+      "aliases_persisted_as_labels": false
+    },
+    "config_sha256": "e3308de4c45b3cd51ebfb1a28684820fe704597188c1c180614d5f2fa6365d26"
+  },
+  "disposable_api_smoke": {
+    "task_id": 26,
+    "fixture": "synthetic color field; no anatomy evidence",
+    "tag_count_round_tripped": 65,
+    "mask_shape_count_round_tripped": 1,
+    "track_count": 0,
+    "all_nine_additions_explicitly_unreviewed": true,
+    "task_deleted": true,
+    "human_review_credit": false,
+    "gold_credit": false,
+    "pilot_image_credit": false
+  },
+  "implemented_contract": {
+    "project_and_task_storage_separate_from_v1": true,
+    "canonical_part_ids": [0, 64],
+    "visibility_states": [
+      "visible",
+      "partially_visible",
+      "occluded",
+      "occluded_by_clothing",
+      "cropped_out",
+      "not_visible",
+      "not_applicable",
+      "unreviewed_for_v2",
+      "ambiguous_do_not_use"
+    ],
+    "one_state_tag_per_part": true,
+    "review_complete_required_per_part": true,
+    "aliases_help_only": true,
+    "document_18_sop_in_task_description": true,
+    "character_perspective_reminder": true,
+    "review_crop_presets": ["chest", "pelvic"],
+    "visible_without_mask_rejected": true,
+    "null_state_with_mask_rejected": true,
+    "ambiguous_without_ignore_region_rejected": true,
+    "unknown_label_or_state_rejected": true,
+    "atomic_overlap_rejected": true,
+    "stale_manifest_pull_rejected": true,
+    "successful_pull_stages_corrected_not_gold": true,
+    "raw_annotations_manifest_backup_and_cvat_backup_retained": true
+  },
+  "verification": {
+    "focused_cvat_and_migration_tests_passed": 41,
+    "new_v2_cvat_tests_passed": 5,
+    "full_live_root_tests_passed": 794,
+    "clean_publish_tests_collected": 781,
+    "clean_publish_tests_passed": 778,
+    "clean_publish_expected_runtime_artifact_skips": 3,
+    "ruff": "pass",
+    "black_26_5_1_changed_surface": "pass",
+    "tracker_validation_after_checklist_update": "pass; 402 tracked items; 5 unresolved hard-blocker items"
+  }
+}

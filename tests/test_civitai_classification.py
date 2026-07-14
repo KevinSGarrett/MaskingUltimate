@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +27,8 @@ def _classified_entries(classification: dict) -> list[tuple[str, dict]]:
 
 
 def test_every_civitai_manifest_id_is_classified_once():
+    if not MANIFEST.is_file():
+        pytest.skip("external Plan/Civitai bootstrap manifest is not mounted in this checkout")
     classification = _load_yaml(CLASSIFICATION)
     classified = _classified_entries(classification)
     ids = [int(entry["id"]) for _, entry in classified]

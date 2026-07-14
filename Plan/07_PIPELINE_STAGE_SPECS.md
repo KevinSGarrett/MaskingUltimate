@@ -24,8 +24,12 @@ Contract format per stage: **In** (files/state) → **Out** (files/state) → **
 ## S01 — Person Detection & Context Crops
 **In:** source. **Out:** `work\s01\person_bbox.json` (all persons, scores, ranks), one promoted
 context crop per instance `work\s01\p<N>\person_ctx.png` (bbox × 1.25 pad, clamped).
-**Algorithm — AMENDED, doc 17 §4:** YOLO11m person class, conf ≥ 0.5; score every detection by
-area × centeredness (unchanged metric). Apply prominence floor `instance_min_area_pct` (4% of
+**Algorithm — AMENDED, doc 17 §4:** YOLO11m person class, conf ≥ 0.5. When and only when
+YOLO returns zero raw boxes, the pinned GroundingDINO checkpoint supplies proposal-only boxes for
+the exact prompt `person`; those proposals still must satisfy confidence ≥ 0.5 and every normal
+S01 policy below. This zero-box fallback covers generated/stylized human characters without
+changing YOLO authority on photographic inputs. Score every detection by area × centeredness
+(unchanged metric). Apply prominence floor `instance_min_area_pct` (4% of
 frame); rank the rest; **promote** the top `max_instances_per_image` (default 4) as
 `person_index` 0..N-1, descending score, left-to-right tie-break. Non-promoted persons above the
 floor become `other_person_protected` background for every promoted instance's own run (doc 02
@@ -48,7 +52,10 @@ universe for material labeling. **QC hook:** silhouette area vs bbox area ∈ [0
 argmax + per-class prob maps (saved 8-bit). SCHP-ATR run always (cheap) — provides clothing
 classes + cross-check. Class-name → ontology mapping table lives in `configs\pipeline.yaml
 (parsing_map)`, e.g. Sapiens `left_lower_arm`→forearm prior, `torso`→front-torso superset.
-**Fail:** OOM → half-res retry → fallback SCHP-only with `parsing_degraded=true` flag.
+**Fail:** OOM → half-res retry → fallback SCHP-only with `parsing_degraded=true` flag. A Sapiens
+result containing no foreground for an S01/S02-confirmed person is also a semantic provider
+failure: preserve it for audit, set `parsing_degraded=true`, and feed the always-run SCHP map to
+S05 rather than treating an all-background file as healthy merely because it exists.
 
 ## S04 — Whole-Body Pose + Hand Landmarks
 **In:** person_ctx (+S01 bbox). **Out:** `work\s04\pose133.json` (COCO-WholeBody 133 kp with conf),
@@ -58,8 +65,14 @@ classes + cross-check. Class-name → ontology mapping table lives in `configs\p
 shoulder/hip keypoint geometry + nose visibility + DensePose back-ratio (after S08.5) →
 {front, back, profiles, ¾}; pose_tags rules (arm elevation angles, hip-knee-ankle angles, overlap
 tests) — deterministic rule table in `pipeline.yaml (pose_tags_rules)`.
+Once the DensePose referee is installed, its view-only inference runs during S04 so the corrected
+view reaches S05 geometry; S08.5 reuses the exact validated IUV bytes/runtime record and MUST NOT
+launch a duplicate inference. DensePose fine torso chart 1 is back and chart 2 is front.
 **Fail:** <60% body kp above conf 0.3 → `pose_degraded=true`; geometry engine falls back to
-parsing-only priors; image auto-tagged for careful review.
+parsing-only priors; image auto-tagged for careful review. If DWPose returns no candidate owned
+by the promoted instance, suppress all co-subject candidates and serialize a zero-confidence
+133-keypoint degraded record (`pose_candidate_missing=true`) so this same parsing-only path is
+used; never assign a neighboring person's pose to satisfy the instance.
 **AMENDED (doc 17 §5):** in a multi-person image, S03 and S04 must identify which detected human
 each parsing/pose result belongs to (bbox/silhouette match against this instance's own defining
 bbox) and suppress any result belonging to a different person before it can leak into this
@@ -166,6 +179,12 @@ attempt (regenerate from maps) else `rejected_needs_fix`; semantic fail → revi
 Doc 10. Builds review panels, queries local VLM per hard part + whole-image sanity, writes
 verdicts into qa_report, adjusts routing (agree → quick-pass queue; disagree → careful queue).
 Status → `vlm_qa`.
+
+Workhorse amendment: S11 renders independent high-resolution evidence per present label, obtains a
+structured visual audit, optionally invokes the governed on-demand SAM2 refiner with bounded
+positive/negative points, writes proposals only to `correction_candidates/`, and compares complete
+before/after evidence. S09 maps are read-only in S11. Without a current calibration gate the same
+loop is shadow-only and every route remains careful.
 
 ## S12 — Human Review (CVAT)
 Doc 11. `maskfactory cvat push` uploads image + draft masks as pre-annotations; human corrects with

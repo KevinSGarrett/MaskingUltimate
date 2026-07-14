@@ -40,6 +40,16 @@ MAIN_STATUS_CHAIN = (
     "approved_gold",
     "exported",
 )
+PIPELINE_PROGRESS_STAGE = {
+    "ingested": "S00",
+    "drafted": "S09",
+    "auto_qa": "S10",
+    "vlm_qa": "S11",
+    "in_review": "S12",
+    "corrected": "S12",
+    "approved_gold": "S13",
+    "exported": "S14",
+}
 ALLOWED_STATUS_TRANSITIONS: dict[str, frozenset[str]] = {
     status: frozenset({MAIN_STATUS_CHAIN[index + 1], "rejected", "quarantined"})
     for index, status in enumerate(MAIN_STATUS_CHAIN[:-1])
@@ -224,6 +234,107 @@ def transition_image_status(
         "UPDATE images SET status = ?, current_stage = ?, updated_at = ? WHERE image_id = ?",
         (new_status, current_stage, updated_at, image_id),
     )
+
+
+def persist_terminal_image_outcome(
+    database: Path,
+    image_id: str,
+    outcome: str,
+    *,
+    reason: str,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Persist a cacheable terminal stage outcome exactly once."""
+    if outcome not in {"rejected", "quarantined"}:
+        raise InvalidStatusTransition(f"invalid terminal outcome: {outcome}")
+    if not reason.strip():
+        raise ValueError("terminal outcome reason cannot be empty")
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) == outcome and str(row[1]) == current_stage:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            outcome,
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
+def persist_recovered_image_outcome(
+    database: Path,
+    image_id: str,
+    *,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Return a previously terminal image to the main chain after a verified rerun."""
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) not in {"rejected", "quarantined"}:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            "ingested",
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
+def persist_image_progress(
+    database: Path,
+    image_id: str,
+    target_status: str,
+    *,
+    updated_at: str | None = None,
+) -> bool:
+    """Advance durable pipeline progress without skipping states or regressing reruns."""
+    if target_status not in PIPELINE_PROGRESS_STAGE or target_status == "ingested":
+        raise InvalidStatusTransition(f"invalid pipeline progress target: {target_status}")
+    target_index = MAIN_STATUS_CHAIN.index(target_status)
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        current_status = str(row[0])
+        if current_status not in MAIN_STATUS_CHAIN:
+            raise InvalidStatusTransition(
+                f"cannot advance terminal image status {current_status}; rerun S01 recovery first"
+            )
+        current_index = MAIN_STATUS_CHAIN.index(current_status)
+        if current_index >= target_index:
+            return False
+        for next_status in MAIN_STATUS_CHAIN[current_index + 1 : target_index + 1]:
+            if next_status not in PIPELINE_PROGRESS_STAGE:
+                raise InvalidStatusTransition(
+                    f"pipeline progress cannot infer stage for {next_status}"
+                )
+            transition_image_status(
+                connection,
+                image_id,
+                next_status,
+                updated_at=timestamp,
+                current_stage=PIPELINE_PROGRESS_STAGE[next_status],
+            )
+    return True
 
 
 @contextmanager

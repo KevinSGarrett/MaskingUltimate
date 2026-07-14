@@ -1,0 +1,43 @@
+{
+  "audit_date": "2026-07-12",
+  "result": "VALID_REVIEW_ROUTES_NO_THRESHOLD_CHANGE",
+  "scope": "the two live S02 silhouette_bbox_ratio failures in the governed supplied corpus",
+  "governed_range": [0.35, 0.95],
+  "cases": [
+    {
+      "image_id": "img_cea6df6f0f13",
+      "instance_id": "p0",
+      "source_size": [1640, 2560],
+      "detector_bbox_xyxy": [189, 118, 1423, 2414],
+      "silhouette_area_px": 848170,
+      "silhouette_bbox_ratio": 0.29936144319766883,
+      "tight_mask_bbox_xyxy": [194, 118, 1429, 2396],
+      "tight_mask_fill_ratio": 0.301483,
+      "touches_source_edge": false,
+      "mask_sha256": "2880d5ae0d6e9e1e89243c163d8d7ebe8b00e758e8b0bcd8f33a131f4605dfde",
+      "visual_finding": "BiRefNet follows the complete visible person, including spread arms, hands, separated legs, and feet; the low fill ratio is intrinsic to the wide-limbed pose rather than detector-box padding or missing silhouette regions."
+    },
+    {
+      "image_id": "img_c02019c4979c",
+      "instance_id": "p2",
+      "source_size": [810, 1080],
+      "detector_bbox_xyxy": [669, 391, 810, 881],
+      "silhouette_area_px": 21537,
+      "silhouette_bbox_ratio": 0.3117238384715588,
+      "tight_mask_bbox_xyxy": [668, 393, 810, 878],
+      "tight_mask_fill_ratio": 0.31272,
+      "touches_source_edge": true,
+      "touching_edge": "right",
+      "mask_sha256": "dbe9777fb8fabfa90ab539fc4d2bcef316c9265cc2c07aa205b0ef3f0d4b10e0",
+      "visual_finding": "BiRefNet follows the visible frame-truncated pedestrian at the right edge; the low fill ratio persists in the tight mask box and is not a coordinate-placement defect."
+    }
+  ],
+  "conclusion": {
+    "pipeline_defect_found": false,
+    "threshold_changed": false,
+    "automatic_pass_granted": false,
+    "routes_remain": "needs_review",
+    "review_queue_expected_records": 2,
+    "batch_credit": "unchanged at 18/25"
+  }
+}

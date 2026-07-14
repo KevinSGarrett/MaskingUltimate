@@ -3,20 +3,31 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
 import yaml
 from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
+from maskfactory.models.ontology_contract import (
+    V1_ONTOLOGY_VERSION,
+    V1_PART_CLASS_NAMES,
+    class_names_sha256,
+)
 from maskfactory.models.registry import (
+    CHAMPION_HAND_CLASS_NAMES,
     ModelFetchError,
     ModelRegistryError,
+    champion_status,
     fetch_models,
     load_registered_model,
+    promote_model_role,
     register_ollama_models,
     register_smoke_runner,
     resolve_registered_managed_model,
     resolve_registered_model,
+    resolve_registered_role,
+    rollback_model_role,
     verify_registered_model_smokes,
 )
 
@@ -276,8 +287,147 @@ def test_models_fetch_cli_requires_exactly_key_or_all(tmp_path: Path):
     assert "provide exactly one model KEY or --all" in both.output
 
 
+def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> None:
+    _, _, catalog = _fixture(tmp_path)
+    models_root = tmp_path / "models"
+    registry = models_root / "registry.json"
+    register_smoke_runner("fixture_image_inference", _smoke)
+    fetch_models(
+        ["fixture"],
+        catalog_path=catalog,
+        registry_path=registry,
+        models_root=models_root,
+    )
+    document = json.loads(registry.read_text())
+    incumbent = document["models"][0]
+    incumbent["role"] = "champion_bodypart"
+    challenger = {**incumbent, "key": "challenger", "role": "challenger_bodypart"}
+    config = models_root / "challenger_inference.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    challenger.update(
+        {
+            "inference_config": "models/challenger_inference.py",
+            "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+            "ontology_version": V1_ONTOLOGY_VERSION,
+            "class_names": list(V1_PART_CLASS_NAMES),
+            "class_names_sha256": class_names_sha256(list(V1_PART_CLASS_NAMES)),
+            "artifact_hashes": {
+                "checkpoint_sha256": challenger["sha256"],
+                "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+            },
+        }
+    )
+    document["models"].append(challenger)
+    registry.write_text(json.dumps(document), encoding="utf-8")
+    history = tmp_path / "champion_history.jsonl"
+    record = promote_model_role(
+        "challenger",
+        "champion_bodypart",
+        registry_path=registry,
+        models_root=models_root,
+        history_path=history,
+    )
+    promoted = json.loads(registry.read_text())
+    roles = {item["key"]: item["role"] for item in promoted["models"]}
+    assert roles == {"fixture": "challenger_bodypart", "challenger": "champion_bodypart"}
+    assert resolve_registered_role(
+        "champion_bodypart", registry_path=registry, models_root=models_root
+    ).is_file()
+    assert json.loads(history.read_text())["incumbent_key"] == "fixture"
+    visible = champion_status(registry_path=registry, history_path=history)
+    assert visible["champions"]["champion_bodypart"]["key"] == "challenger"
+    assert len(visible["history"]) == 1
+    cli = CliRunner().invoke(
+        main,
+        ["models", "champions", "--registry", str(registry), "--history", str(history)],
+    )
+    assert cli.exit_code == 0, cli.output
+    assert json.loads(cli.output)["champions"]["champion_bodypart"]["key"] == "challenger"
+    rollback_model_role(record, registry_path=registry)
+    rolled_back = json.loads(registry.read_text())
+    assert {item["key"]: item["role"] for item in rolled_back["models"]} == {
+        "fixture": "champion_bodypart",
+        "challenger": "challenger_bodypart",
+    }
+
+
+def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "candidate.pth"
+    checkpoint.write_bytes(b"candidate")
+    config = models_root / "candidate.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    entry = {
+        "key": "candidate",
+        "file": "models/candidate.pth",
+        "role": "challenger_bodypart",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/candidate.py",
+        "inference_config_sha256": "0" * 64,
+        "class_names": ["background", "hair"],
+        "ontology_version": V1_ONTOLOGY_VERSION,
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="inference_config hash mismatch"):
+        promote_model_role(
+            "candidate",
+            "champion_bodypart",
+            registry_path=registry,
+            models_root=models_root,
+        )
+    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_bodypart"
+
+    entry["inference_config_sha256"] = hashlib.sha256(config.read_bytes()).hexdigest()
+    entry["class_names"] = ["background", "clothing_generic"]
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="vocabulary must be exact"):
+        promote_model_role(
+            "candidate",
+            "champion_bodypart",
+            registry_path=registry,
+            models_root=models_root,
+        )
+
+
+def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
+    tmp_path: Path,
+) -> None:
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    checkpoint = models_root / "hand.pth"
+    checkpoint.write_bytes(b"hand")
+    config = models_root / "hand.py"
+    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
+    entry = {
+        "key": "hand",
+        "file": "models/hand.pth",
+        "role": "challenger_hand",
+        "version_tag": "fixture-v1",
+        "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "verified": True,
+        "inference_config": "models/hand.py",
+        "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
+        "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+    assert json.loads(registry.read_text())["models"][0]["role"] == "champion_hand"
+
+    entry["class_names"] = list(CHAMPION_HAND_CLASS_NAMES[:-1])
+    entry["role"] = "challenger_hand"
+    registry.write_text(json.dumps({"models": [entry]}), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="14-class crop contract"):
+        promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_hand"
+
+
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):
-    names = ["qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"]
+    names = ["qwen2.5vl:7b", "llava:13b", "qwen2.5:7b-instruct"]
     digests = ["a" * 64, "b" * 64, "c" * 64]
     inventory = {
         "models": [
@@ -335,7 +485,7 @@ def test_register_ollama_models_rejects_digest_mismatch(tmp_path: Path):
         "models": [
             {"name": name, "digest": character * 64, "details": {}}
             for name, character in zip(
-                ("qwen2.5vl:7b", "llama3.2-vision:11b", "qwen2.5:7b-instruct"),
+                ("qwen2.5vl:7b", "llava:13b", "qwen2.5:7b-instruct"),
                 "abc",
                 strict=True,
             )
@@ -344,7 +494,7 @@ def test_register_ollama_models_rejects_digest_mismatch(tmp_path: Path):
     bad_list = (
         "NAME ID SIZE MODIFIED\n"
         "qwen2.5vl:7b deadbeefdead 1 GB now\n"
-        f"llama3.2-vision:11b {'b' * 12} 1 GB now\n"
+        f"llava:13b {'b' * 12} 1 GB now\n"
         f"qwen2.5:7b-instruct {'c' * 12} 1 GB now\n"
     )
     try:

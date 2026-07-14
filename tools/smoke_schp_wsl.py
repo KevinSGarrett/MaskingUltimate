@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import types
@@ -18,7 +19,11 @@ from torch import nn
 
 REPOSITORY = "https://github.com/GoGoDuck912/Self-Correction-Human-Parsing.git"
 REVISION = "eb84c432cc697f494d99662a05f2335eb2f26095"
-SOURCE = Path.home() / ".cache" / "maskfactory" / "schp" / REVISION
+SOURCE = (
+    Path(os.environ["MASKFACTORY_SCHP_CACHE"])
+    if os.environ.get("MASKFACTORY_SCHP_CACHE")
+    else Path.home() / ".cache" / "maskfactory" / "schp"
+) / REVISION
 SETTINGS = {"atr": (18, 512), "lip": (20, 473)}
 
 
@@ -45,7 +50,15 @@ def _ensure_source() -> None:
         return
     SOURCE.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["git", "clone", "--filter=blob:none", REPOSITORY, str(SOURCE)],
+        [
+            "git",
+            "-c",
+            "http.sslBackend=openssl",
+            "clone",
+            "--filter=blob:none",
+            REPOSITORY,
+            str(SOURCE),
+        ],
         check=True,
         capture_output=True,
         text=True,
@@ -58,7 +71,7 @@ def _ensure_source() -> None:
     )
 
 
-def run(checkpoint: Path, image_path: Path, dataset: str) -> dict[str, object]:
+def infer(checkpoint: Path, image_path: Path, dataset: str) -> np.ndarray:
     _ensure_source()
     num_classes, input_size = SETTINGS[dataset]
     compatibility_module = types.ModuleType("modules")
@@ -88,15 +101,23 @@ def run(checkpoint: Path, image_path: Path, dataset: str) -> dict[str, object]:
         output = model(tensor)
     logits = output[0][-1]
     if logits.ndim != 4 or logits.shape[:2] != (1, num_classes):
-        return {
-            "passed": False,
-            "output_sha256": "",
-            "reason": f"unexpected logits shape {list(logits.shape)}",
-        }
+        raise ValueError(f"unexpected logits shape {list(logits.shape)}")
     logits = torch.nn.functional.interpolate(
         logits.float(), size=(input_size, input_size), mode="bilinear", align_corners=True
     )
-    labels = logits.argmax(dim=1)[0].to(torch.uint8).cpu().numpy()
+    probabilities = logits.softmax(dim=1)[0].cpu().numpy().astype(np.float32)
+    del tensor, logits, output, model
+    torch.cuda.empty_cache()
+    return probabilities
+
+
+def run(checkpoint: Path, image_path: Path, dataset: str) -> dict[str, object]:
+    num_classes, input_size = SETTINGS[dataset]
+    try:
+        probabilities = infer(checkpoint, image_path, dataset)
+    except ValueError as exc:
+        return {"passed": False, "output_sha256": "", "reason": str(exc)}
+    labels = probabilities.argmax(axis=0).astype(np.uint8)
     unique_labels = sorted(int(value) for value in np.unique(labels))
     foreground_fraction = float((labels != 0).mean())
     output_hash = hashlib.sha256(labels.tobytes()).hexdigest()
@@ -106,7 +127,7 @@ def run(checkpoint: Path, image_path: Path, dataset: str) -> dict[str, object]:
         "output_sha256": output_hash if passed else "",
         "dataset": dataset,
         "num_classes": num_classes,
-        "logits_shape": list(logits.shape),
+        "logits_shape": [1, num_classes, input_size, input_size],
         "label_map_shape": list(labels.shape),
         "unique_labels": unique_labels,
         "foreground_fraction": round(foreground_fraction, 6),

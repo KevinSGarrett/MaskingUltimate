@@ -1,6 +1,7 @@
 from hashlib import sha256
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +30,8 @@ def test_registry_covers_every_stress_fixture_resource():
 
 def test_fixture_archives_hash_and_extracted_paths_match_disk():
     registry = _load_yaml(REGISTRY)
+    if not all((ROOT / fixture["archive_path"]).exists() for fixture in registry["fixtures"]):
+        pytest.skip("external Plan/Civitai pose cache is not mounted in this checkout")
 
     for fixture in registry["fixtures"]:
         archive = ROOT / fixture["archive_path"]

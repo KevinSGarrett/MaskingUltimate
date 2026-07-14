@@ -1,0 +1,27 @@
+{
+  "audit_date": "2026-07-12",
+  "scope": "S13 single- and multi-instance gold approval transaction",
+  "result": "PASS",
+  "invariants": [
+    "every instance passes the non-overridable QC preflight before approval",
+    "all pN packages for one image are approved and frozen as one transaction",
+    "DVC registration is invoked once at the image root, never once per instance",
+    "any package-finalization or DVC exception restores every prepared package byte-for-byte",
+    "partial snapshot creation cleans up all snapshots already created",
+    "pN discovery and validation remain correct above nine instances"
+  ],
+  "tests": {
+    "focused": "22 passed",
+    "full_suite": "643 passed",
+    "rollback_cases": [
+      "single-package DVC failure restores the exact prepared tree",
+      "multi-instance image-level DVC failure restores every exact prepared tree"
+    ],
+    "success_case": "two instances freeze together and DVC receives exactly the common image root"
+  },
+  "static_validation": {
+    "ruff": "pass",
+    "format": "229 files clean"
+  },
+  "human_authority": "No CVAT correction or approval credit claimed; the current live task set remains pending Kevin's manual review."
+}

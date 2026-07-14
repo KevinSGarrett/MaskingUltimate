@@ -1,0 +1,231 @@
+{
+  "count_authority": "manual_visual_review_plus_s01_exact_match",
+  "downstream_status": "verified_exact_promoted_draft_packages",
+  "fixture_count": 2,
+  "fixtures": [
+    {
+      "age_evidence": "Non-configurable qwen2.5vl:7b intake screen: clear_adult, person_count=3",
+      "age_safety": "clear_adult",
+      "downstream_package_count_verified": true,
+      "key": "supplied_adult_triptych_3",
+      "manual_visible_instance_count": 3,
+      "model_key": "yolo11m",
+      "persons": [
+        {
+          "area_px": 358868,
+          "bbox_xyxy": [
+            454,
+            73,
+            746,
+            1302
+          ],
+          "centeredness": 0.9983581987226343,
+          "confidence": 0.9235813021659851,
+          "context_bbox_xyxy": [
+            417,
+            0,
+            783,
+            1378
+          ],
+          "detection_index": 1,
+          "frame_area_fraction": 0.21702225447508466,
+          "person_index": 0,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 358278.81005919434
+        },
+        {
+          "area_px": 387135,
+          "bbox_xyxy": [
+            49,
+            73,
+            364,
+            1302
+          ],
+          "centeredness": 0.5692976690217708,
+          "confidence": 0.9323405027389526,
+          "context_bbox_xyxy": [
+            9,
+            0,
+            404,
+            1378
+          ],
+          "detection_index": 0,
+          "frame_area_fraction": 0.23411647314949202,
+          "person_index": 1,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 220395.05309674324
+        },
+        {
+          "area_px": 345911,
+          "bbox_xyxy": [
+            862,
+            74,
+            1143,
+            1305
+          ],
+          "centeredness": 0.559449650656231,
+          "confidence": 0.9109693169593811,
+          "context_bbox_xyxy": [
+            826,
+            0,
+            1179,
+            1378
+          ],
+          "detection_index": 2,
+          "frame_area_fraction": 0.20918662312530237,
+          "person_index": 2,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 193519.7881081475
+        }
+      ],
+      "promoted_instance_count": 3,
+      "promoted_instances": [
+        "p0",
+        "p1",
+        "p2"
+      ],
+      "raw_detection_count": 3,
+      "reviewed_at": "2026-07-11T20:13:50Z",
+      "reviewer": "ai_agent_visual_review",
+      "rights_evidence": "Kevin-supplied governed project source; intake manifest records generated origin",
+      "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
+      "s01_evidence_path": "work/s01/img_7b7a3c7d5dd3/person_bbox.json",
+      "s01_evidence_sha256": "aea56c45ccdf5d4bc5e34ea962ee02e68d47a2b095711424737f1bb868205e4d",
+      "source_origin": "generated",
+      "source_path": "data/images/img_7b7a3c7d5dd3/source.jpg",
+      "source_sha256": "715401f7d8ded038759f2d406f2a5a4185e23448c280c35859f5c7d8c693f31b",
+      "source_size": [
+        1200,
+        1378
+      ]
+    },
+    {
+      "age_evidence": "Non-configurable qwen2.5vl:7b intake rescreen: clear_adult, person_count=4",
+      "age_safety": "clear_adult",
+      "downstream_package_count_verified": true,
+      "key": "supplied_adult_four_view_4",
+      "manual_visible_instance_count": 4,
+      "model_key": "yolo11m",
+      "persons": [
+        {
+          "area_px": 3514875,
+          "bbox_xyxy": [
+            2280,
+            282,
+            3155,
+            4299
+          ],
+          "centeredness": 0.84040443933275,
+          "confidence": 0.9332402348518372,
+          "context_bbox_xyxy": [
+            2170,
+            0,
+            3265,
+            4480
+          ],
+          "detection_index": 2,
+          "frame_area_fraction": 0.11675153459821429,
+          "person_index": 0,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 2953916.5536996997
+        },
+        {
+          "area_px": 2895504,
+          "bbox_xyxy": [
+            3661,
+            253,
+            4377,
+            4297
+          ],
+          "centeredness": 0.836579184821532,
+          "confidence": 0.8729757070541382,
+          "context_bbox_xyxy": [
+            3571,
+            0,
+            4467,
+            4480
+          ],
+          "detection_index": 3,
+          "frame_area_fraction": 0.0961782525510204,
+          "person_index": 1,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 2422318.3759674854
+        },
+        {
+          "area_px": 4175035,
+          "bbox_xyxy": [
+            4811,
+            340,
+            5872,
+            4275
+          ],
+          "centeredness": 0.5090285753674355,
+          "confidence": 0.9476074576377869,
+          "context_bbox_xyxy": [
+            4678,
+            0,
+            6005,
+            4480
+          ],
+          "detection_index": 0,
+          "frame_area_fraction": 0.1386796808567177,
+          "person_index": 2,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 2125212.118159181
+        },
+        {
+          "area_px": 4205512,
+          "bbox_xyxy": [
+            712,
+            259,
+            1754,
+            4295
+          ],
+          "centeredness": 0.47320276134788697,
+          "confidence": 0.9422540664672852,
+          "context_bbox_xyxy": [
+            581,
+            0,
+            1885,
+            4480
+          ],
+          "detection_index": 1,
+          "frame_area_fraction": 0.1396920174319728,
+          "person_index": 3,
+          "promoted": true,
+          "protected_as_part_50": false,
+          "score": 1990059.8912816748
+        }
+      ],
+      "promoted_instance_count": 4,
+      "promoted_instances": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "raw_detection_count": 4,
+      "reviewed_at": "2026-07-12T07:50:00Z",
+      "reviewer": "ai_agent_visual_review",
+      "rights_evidence": "Kevin-supplied governed project source; intake manifest records generated origin",
+      "s01_config_hash": "27844dbaca8ec2ff29c9e93ab572e8dcb6632193e9da472e3db6f68892133fcb",
+      "s01_evidence_path": "work/s01/img_6d6bb33f01a1/person_bbox.json",
+      "s01_evidence_sha256": "6bb96b7a0073b6300568bacd9034974645ed8d216f3e0a211265720c4e6eacde",
+      "source_origin": "generated",
+      "source_path": "data/images/img_6d6bb33f01a1/source.jpg",
+      "source_sha256": "45f866f12724a2db7a929b841f523e776b78748023c87ef83a5888d93dd68f29",
+      "source_size": [
+        6720,
+        4480
+      ]
+    }
+  ],
+  "max_instances_per_image": 4,
+  "schema_version": "1.0.0"
+}

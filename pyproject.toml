@@ -21,6 +21,14 @@ dependencies = [
     "loguru",
     "mediapipe==0.10.35",
     "rich",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+    "scipy",
+    "scikit-image",
+    "torch",
+    "ultralytics",
+    "onnxruntime",
 ]
 
 [project.scripts]
@@ -42,11 +50,14 @@ extend-exclude = ["Plan", "cvat", "env", "build", "dist"]
 select = ["E", "F", "I", "W"]
 ignore = ["E501"]  # long spec-reference lines in docstrings; black owns code width
 
+[tool.ruff.lint.isort]
+known-first-party = ["maskfactory"]
+
 [tool.black]
 line-length = 100
 target-version = ["py311"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-q"

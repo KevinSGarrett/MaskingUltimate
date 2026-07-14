@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T10:40:14.5853197Z",
+  "outcome": "pass_with_authority_caveat",
+  "scope": "live native-Windows ComfyUI execution of wf_bodypart_conditioned on a non-gold review draft",
+  "authority": {
+    "input_workflow_status": "in_review",
+    "input_part_status_filter": "draft_model_generated",
+    "human_approved_gold": false,
+    "completes_MF-P6-03.02": false,
+    "note": "This proves the installed graph and pixel-isolation contract. The shipped workflow still defaults to human_approved_gold; completion requires rerunning it on an actually approved package."
+  },
+  "runtime": {
+    "comfy_root": "C:/Comfy_UI_Main/ComfyUI",
+    "comfy_git_sha": "7747c342d4143f35e7c8031dddf3ee4455f10a2e",
+    "comfy_version": "0.27.0",
+    "python_version": "3.11.9",
+    "pytorch_version": "2.11.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "listen_url": "http://127.0.0.1:8188",
+    "installed_nodes_verified": [
+      "MFPackageBrowser",
+      "MFLoadSource",
+      "MFLoadUnionMask",
+      "MFMaskFromLabelMap",
+      "MFCombineMasks"
+    ]
+  },
+  "workflow": {
+    "source_path": "src/maskfactory/serve/maskfactory_nodes/workflows/wf_bodypart_conditioned.json",
+    "installed_path": "C:/Comfy_UI_Main/ComfyUI/custom_nodes/maskfactory_nodes/workflows/wf_bodypart_conditioned.json",
+    "source_sha256": "8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1",
+    "installed_sha256": "8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1",
+    "shipped_status_default": "human_approved_gold",
+    "runtime_status_override": "draft_model_generated",
+    "runtime_search": "img_7b7a3c7d5dd3",
+    "runtime_index": 2,
+    "runtime_instance": "p2",
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "checkpoint_sha256": "6a35a7855770ae9820a3c931d4964c3817b6d9e3c6f9c4dabb5b3a94e5643b80",
+    "prompt_id": "9c0f34f6-d5f9-41b3-bd92-bfd4f7e9df2f",
+    "execution_status": "success",
+    "duration_sec": 13.904,
+    "steps": 20,
+    "denoise": 0.35
+  },
+  "pixel_verification": {
+    "source_size": [353, 1378],
+    "output_size": [353, 1378],
+    "visible_body_skin_pixels": 53570,
+    "clothing_material_id": 3,
+    "clothing_material_pixels": 11011,
+    "conditioned_mask_pixels": 53570,
+    "conditioned_mask_clothing_overlap_pixels": 0,
+    "inside_mask_changed_pixels": 53570,
+    "outside_mask_changed_pixels": 0,
+    "clothing_changed_pixels": 0,
+    "outside_mask_max_channel_delta": 0,
+    "source_sha256": "8f9628f7c3f487c5983e9a6e9be95b0f64cda69b2b31fb764d3ec636d91d1621",
+    "visible_body_skin_sha256": "4a43406840593b8ef90d905b3ec750116ae060b5156c3c56f2e7c2ed40757afd",
+    "material_map_sha256": "e76b36d29d589093dcc8b0d32fcb919e3a18a49d265c8a4192d7fbf670eededb",
+    "output_path": "C:/Comfy_UI_Main/ComfyUI/output/MaskFactory_skin_only_00004_.png",
+    "output_sha256": "858947e68b520b4581b9ff22583f1854c1c346d0b3c20f05c3a5cfb4198463c6"
+  },
+  "repair": {
+    "problem": "Directly saving VAEDecode output could alter pixels outside the governed skin mask; compositing without resizing the candidate also spatially resampled the mask after VAE grid cropping.",
+    "resolution": "Resize only the generated candidate back to source geometry, then ImageCompositeMasked against the original source with the original full-resolution binary conditioned mask.",
+    "regression": "tests/test_comfy_export.py and tests/test_serve_api.py: 30 passed; Ruff and Black clean"
+  },
+  "truth_chain": {
+    "package_writes": false,
+    "output_is_outside_packages_root": true,
+    "output_is_gold": false
+  }
+}

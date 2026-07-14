@@ -9,6 +9,7 @@ import shutil
 import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
+from contextlib import nullcontext
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -16,6 +17,8 @@ from typing import Any
 
 import yaml
 
+from .fs_atomic import replace_with_retry
+from .gpu import GpuLock
 from .state import transition_image_status, writer_connection
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -116,6 +119,11 @@ class StageExecution:
     config_hash: str
     output_dir: str
     forced: bool
+    model_keys: tuple[str, ...] = ()
+    duration_sec: float = 0.0
+    vram_peak_mb: float = 0.0
+    terminal_outcome: str | None = None
+    terminal_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -239,15 +247,22 @@ def _replace_directory(staging: Path, destination: Path) -> None:
     backup = destination.with_name(destination.name + f".old-{uuid.uuid4().hex}")
     had_destination = destination.exists()
     if had_destination:
-        os.replace(destination, backup)
+        replace_with_retry(destination, backup)
     try:
-        os.replace(staging, destination)
+        replace_with_retry(staging, destination)
     except Exception:
         if had_destination and backup.exists():
-            os.replace(backup, destination)
+            replace_with_retry(backup, destination)
         raise
     if backup.exists():
         shutil.rmtree(backup)
+
+
+def _cleanup_abandoned_staging(destination: Path) -> None:
+    """Remove only this image/stage's private directories left by a hard-killed owner."""
+    for candidate in destination.parent.glob(destination.name + ".tmp-*"):
+        if candidate.is_dir():
+            shutil.rmtree(candidate)
 
 
 def _execute_stage(
@@ -265,13 +280,25 @@ def _execute_stage(
     if (
         not forced
         and stamp is not None
-        and stamp.get("status") == "complete"
+        and stamp.get("status") in {"complete", "terminal"}
         and stamp.get("config_hash") == digest
         and (destination / "manifest_delta.json").is_file()
     ):
-        return StageExecution(stage.name, "cached", digest, str(destination), False)
+        return StageExecution(
+            stage.name,
+            "terminal" if stamp["status"] == "terminal" else "cached",
+            digest,
+            str(destination),
+            False,
+            tuple(stamp.get("model_keys", [])),
+            0.0,
+            float(stamp.get("vram_peak_mb", 0.0)),
+            stamp.get("terminal_outcome"),
+            stamp.get("terminal_reason"),
+        )
 
     destination.parent.mkdir(parents=True, exist_ok=True)
+    _cleanup_abandoned_staging(destination)
     staging = destination.with_name(destination.name + f".tmp-{uuid.uuid4().hex}")
     staging.mkdir(parents=False, exist_ok=False)
     context = StageContext(
@@ -283,10 +310,37 @@ def _execute_stage(
         config_hash=digest,
     )
     try:
+        started = time.perf_counter()
         delta = runner(context)
         if not isinstance(delta, Mapping):
             raise TypeError(f"{stage.name} runner must return a manifest-delta mapping")
-        _write_json(staging / "manifest_delta.json", dict(delta))
+        delta_document = dict(delta)
+        telemetry = delta_document.pop("_telemetry", {})
+        if not isinstance(telemetry, Mapping):
+            raise TypeError(f"{stage.name} _telemetry must be a mapping")
+        terminal = delta_document.pop("_terminal", None)
+        terminal_outcome = None
+        terminal_reason = None
+        if terminal is not None:
+            if (
+                not isinstance(terminal, Mapping)
+                or set(terminal) != {"outcome", "reason"}
+                or terminal.get("outcome") not in {"rejected", "quarantined", "needs_review"}
+                or not isinstance(terminal.get("reason"), str)
+                or not terminal["reason"].strip()
+            ):
+                raise TypeError(
+                    f"{stage.name} _terminal must contain a governed outcome and reason"
+                )
+            terminal_outcome = str(terminal["outcome"])
+            terminal_reason = terminal["reason"].strip()
+        configured_models = context.config["stage"].get("model_keys", [])
+        model_keys = tuple(sorted(set(telemetry.get("model_keys", configured_models))))
+        vram_peak_mb = float(telemetry.get("vram_peak_mb", 0.0))
+        if vram_peak_mb < 0:
+            raise ValueError("vram_peak_mb cannot be negative")
+        duration_sec = time.perf_counter() - started
+        _write_json(staging / "manifest_delta.json", delta_document)
         files = sorted(
             path.relative_to(staging).as_posix() for path in staging.rglob("*") if path.is_file()
         )
@@ -298,15 +352,31 @@ def _execute_stage(
                 "dependencies": list(stage.dependencies),
                 "config_hash": digest,
                 "forced": forced,
-                "status": "complete",
+                "status": "terminal" if terminal_outcome else "complete",
+                "model_keys": list(model_keys),
+                "duration_sec": duration_sec,
+                "vram_peak_mb": vram_peak_mb,
                 "files": files,
+                "terminal_outcome": terminal_outcome,
+                "terminal_reason": terminal_reason,
             },
         )
         _replace_directory(staging, destination)
     except Exception:
         shutil.rmtree(staging, ignore_errors=True)
         raise
-    return StageExecution(stage.name, "complete", digest, str(destination), forced)
+    return StageExecution(
+        stage.name,
+        "terminal" if terminal_outcome else "complete",
+        digest,
+        str(destination),
+        forced,
+        model_keys,
+        duration_sec,
+        vram_peak_mb,
+        terminal_outcome,
+        terminal_reason,
+    )
 
 
 def _is_transient(exc: BaseException) -> bool:
@@ -367,6 +437,8 @@ def run_pipeline(
     runners: Mapping[str, StageRunner] | None = None,
     retry_delays: Sequence[float] = (1.0, 2.0),
     sleeper: Callable[[float], None] = time.sleep,
+    gpu_lock_path: Path | None = None,
+    run_log: Any | None = None,
 ) -> tuple[StageExecution, ...]:
     """Run selected stages; downstream communication remains entirely on disk."""
     if not image_id.startswith("img_"):
@@ -375,32 +447,147 @@ def run_pipeline(
     force_names = _normalize_stages(force)
     plan = plan_stages(selected=selected, force=force, skip=skip, config=config)
     available = runners if runners is not None else STAGE_RUNNERS
+    lease = (
+        GpuLock(Path(gpu_lock_path), purpose="pipeline", image_id=image_id)
+        if gpu_lock_path is not None
+        else nullcontext()
+    )
     results: list[StageExecution] = []
-    for stage in plan:
-        runner = available.get(stage.name)
-        if runner is None:
-            raise StageRunnerMissingError(f"no runner registered for {stage.name}")
-        results.append(
-            _execute_with_policy(
-                image_id=image_id,
-                stage=stage,
-                config=config,
-                work_root=Path(work_root),
-                runner=runner,
-                forced=stage.name in force_names,
-                retry_delays=retry_delays,
-                sleeper=sleeper,
-            )
-        )
+    upstream_changed = False
+    with lease:
+        for stage in plan:
+            runner = available.get(stage.name)
+            if runner is None:
+                raise StageRunnerMissingError(f"no runner registered for {stage.name}")
+            try:
+                effective_forced = stage.name in force_names or upstream_changed
+                execution = _execute_with_policy(
+                    image_id=image_id,
+                    stage=stage,
+                    config=config,
+                    work_root=Path(work_root),
+                    runner=runner,
+                    forced=effective_forced,
+                    retry_delays=retry_delays,
+                    sleeper=sleeper,
+                )
+            except StagePolicyError as exc:
+                if run_log is not None:
+                    run_log.record_failure(
+                        image_id=image_id,
+                        stage=exc.stage,
+                        category=exc.category,
+                        attempts=exc.attempts,
+                        error=str(exc.cause),
+                    )
+                raise
+            results.append(execution)
+            # A freshly produced artifact generation invalidates every later stage in
+            # this selected topological chain, even when its own configuration did
+            # not change.  Reusing a downstream cache in that situation can combine
+            # incompatible geometry from two generations.
+            if execution.status == "complete":
+                upstream_changed = True
+            if run_log is not None:
+                run_log.record_stage(
+                    image_id=image_id,
+                    stage=execution.stage,
+                    status=execution.status,
+                    config_hash=execution.config_hash,
+                    model_keys=execution.model_keys,
+                    duration_sec=execution.duration_sec,
+                    vram_peak_mb=execution.vram_peak_mb,
+                )
+            if execution.status == "terminal":
+                break
     return tuple(results)
 
 
-def _append_queue(path: Path, record: Mapping[str, Any]) -> None:
+def _append_queue_document(
+    path: Path,
+    record: Mapping[str, Any],
+    *,
+    unique_identity: tuple[Any, ...] | None = None,
+    lock_timeout_sec: float = 5.0,
+) -> bool:
+    path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(dict(record), sort_keys=True) + "\n")
-        handle.flush()
-        os.fsync(handle.fileno())
+    lock = path.with_suffix(path.suffix + ".lock")
+    deadline = time.monotonic() + lock_timeout_sec
+    descriptor = None
+    while descriptor is None:
+        try:
+            descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        except FileExistsError:
+            if time.monotonic() >= deadline:
+                raise TimeoutError(f"queue lock remained busy: {lock}")
+            time.sleep(0.05)
+    try:
+        os.close(descriptor)
+        if unique_identity is not None and path.is_file():
+            for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if not line.strip():
+                    continue
+                try:
+                    existing = json.loads(line)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"invalid queue row {number}: {exc}") from exc
+                identity = tuple(existing.get(key) for key in _REVIEW_ROUTE_IDENTITY_KEYS)
+                if identity == unique_identity:
+                    return False
+        with path.open("a", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(dict(record), sort_keys=True, separators=(",", ":")) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        return True
+    finally:
+        lock.unlink(missing_ok=True)
+
+
+def _append_queue(path: Path, record: Mapping[str, Any]) -> None:
+    _append_queue_document(path, record)
+
+
+_REVIEW_ROUTE_IDENTITY_KEYS = ("image_id", "instance_id", "stage", "config_hash")
+
+
+def append_review_route_once(
+    path: Path,
+    *,
+    image_id: str,
+    instance_id: str,
+    stage: str,
+    config_hash: str,
+    error: str,
+    timestamp: str | None = None,
+) -> bool:
+    """Durably queue one cached per-instance semantic terminal exactly once."""
+    if not image_id.startswith("img_"):
+        raise ValueError("image_id must start with img_")
+    if not instance_id.startswith("p") or not instance_id[1:].isdigit():
+        raise ValueError("instance_id must be pN")
+    if stage not in STAGE_BY_NAME:
+        raise ValueError(f"unknown stage: {stage}")
+    if len(config_hash) != 64 or any(
+        character not in "0123456789abcdef" for character in config_hash
+    ):
+        raise ValueError("config_hash must be lowercase SHA-256")
+    if not error.strip():
+        raise ValueError("review-route error cannot be empty")
+    record = {
+        "ts": timestamp or datetime_now(),
+        "image_id": image_id,
+        "instance_id": instance_id,
+        "stage": stage,
+        "category": "semantic",
+        "attempts": 1,
+        "error": error,
+        "route": "review",
+        "terminal_outcome": "needs_review",
+        "config_hash": config_hash,
+    }
+    identity = tuple(record[key] for key in _REVIEW_ROUTE_IDENTITY_KEYS)
+    return _append_queue_document(Path(path), record, unique_identity=identity)
 
 
 def run_batch(

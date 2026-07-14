@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/coverage_matrix_v2.schema.json",
+  "title": "MaskFactory inactive body_parts_v2 per-class coverage matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ontology_version",
+    "activation_status",
+    "generated_at",
+    "approved_package_count",
+    "foreground_class_count",
+    "policy_sha256",
+    "cells",
+    "new_class_positive_targets",
+    "production_activation_granted"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "ontology_version": {"const": "body_parts_v2"},
+    "activation_status": {"const": "approved_design_not_active"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "approved_package_count": {"type": "integer", "minimum": 0},
+    "foreground_class_count": {"const": 64},
+    "policy_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "cells": {
+      "type": "array",
+      "minItems": 1920,
+      "maxItems": 1920,
+      "items": {"$ref": "#/$defs/cell"}
+    },
+    "new_class_positive_targets": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {"$ref": "#/$defs/newClassPositiveTarget"}
+    },
+    "production_activation_granted": {"const": false}
+  },
+  "$defs": {
+    "label": {
+      "enum": [
+        "hair",
+        "head_face",
+        "neck",
+        "chest_upper_torso",
+        "left_breast",
+        "right_breast",
+        "abdomen_stomach",
+        "belly_button",
+        "pelvic_region",
+        "left_hip",
+        "right_hip",
+        "left_shoulder",
+        "right_shoulder",
+        "left_upper_arm",
+        "right_upper_arm",
+        "left_elbow",
+        "right_elbow",
+        "left_forearm",
+        "right_forearm",
+        "left_wrist",
+        "right_wrist",
+        "left_hand_base",
+        "right_hand_base",
+        "left_thumb",
+        "right_thumb",
+        "left_index_finger",
+        "right_index_finger",
+        "left_middle_finger",
+        "right_middle_finger",
+        "left_ring_finger",
+        "right_ring_finger",
+        "left_pinky",
+        "right_pinky",
+        "left_glute",
+        "right_glute",
+        "left_thigh",
+        "right_thigh",
+        "left_knee",
+        "right_knee",
+        "left_calf",
+        "right_calf",
+        "left_ankle",
+        "right_ankle",
+        "left_foot_base",
+        "right_foot_base",
+        "left_toes",
+        "right_toes",
+        "back_upper_torso",
+        "back_lower_torso",
+        "other_person",
+        "occluding_object",
+        "support_surface",
+        "accessory_or_prop",
+        "left_ear",
+        "right_ear",
+        "left_areola",
+        "right_areola",
+        "left_nipple",
+        "right_nipple",
+        "vulva",
+        "penis_shaft",
+        "glans_penis",
+        "left_scrotal_region",
+        "right_scrotal_region"
+      ]
+    },
+    "reviewState": {
+      "enum": [
+        "visible",
+        "partially_visible",
+        "occluded",
+        "occluded_by_clothing",
+        "cropped_out",
+        "not_visible",
+        "not_applicable",
+        "unreviewed_for_v2",
+        "ambiguous_do_not_use"
+      ]
+    },
+    "view": {
+      "enum": ["front", "back", "left_profile", "right_profile", "left_3_4", "right_3_4"]
+    },
+    "pose": {
+      "enum": [
+        "arms_raised",
+        "arms_down",
+        "arms_crossed",
+        "seated_or_crouched",
+        "lying",
+        "walking",
+        "leg_overlap"
+      ]
+    },
+    "occlusionContext": {
+      "enum": [
+        "none_visible",
+        "self_occlusion",
+        "other_body_part",
+        "hair",
+        "prop",
+        "clothing",
+        "frame_crop",
+        "interperson_contact"
+      ]
+    },
+    "newClassLabel": {
+      "enum": [
+        "left_areola",
+        "right_areola",
+        "left_nipple",
+        "right_nipple",
+        "vulva",
+        "penis_shaft",
+        "glans_penis",
+        "left_scrotal_region",
+        "right_scrotal_region"
+      ]
+    },
+    "newClassPositiveTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "clear_positive_count",
+        "minimum_required",
+        "target",
+        "minimum_deficit",
+        "target_deficit"
+      ],
+      "properties": {
+        "label": {"$ref": "#/$defs/newClassLabel"},
+        "clear_positive_count": {"type": "integer", "minimum": 0},
+        "minimum_required": {"const": 50},
+        "target": {"const": 100},
+        "minimum_deficit": {"type": "integer", "minimum": 0},
+        "target_deficit": {"type": "integer", "minimum": 0}
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "dimension",
+        "value",
+        "approved_gold_count",
+        "target",
+        "deficit",
+        "target_kind"
+      ],
+      "properties": {
+        "label": {"$ref": "#/$defs/label"},
+        "dimension": {"enum": ["review_state", "view", "pose", "occlusion_context"]},
+        "value": {"type": "string"},
+        "approved_gold_count": {"type": "integer", "minimum": 0},
+        "target": {"type": "integer", "minimum": 0},
+        "deficit": {"type": "integer", "minimum": 0},
+        "target_kind": {"enum": ["minimum", "maximum"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"dimension": {"const": "review_state"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/reviewState"}}}
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "view"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/view"}}}
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "pose"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/pose"}}}
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "occlusion_context"}}},
+          "then": {"properties": {"value": {"$ref": "#/$defs/occlusionContext"}}}
+        }
+      ]
+    }
+  }
+}

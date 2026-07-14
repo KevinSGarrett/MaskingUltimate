@@ -14,11 +14,15 @@ SCHEMA_DIR = Path(__file__).with_name("schemas")
 SCHEMA_NAMES = frozenset(
     {
         "manifest",
+        "manifest_v2",
         "qa_report",
         "model_registry",
         "failure_queue",
         "coverage_matrix",
+        "coverage_matrix_v2",
+        "leaderboard",
         "crop_transform",
+        "autonomy_lifecycle",
     }
 )
 VISIBLE_STATES = frozenset({"visible", "partially_visible"})

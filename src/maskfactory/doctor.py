@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import base64
 import contextlib
+import ctypes
+import getpass
 import io
 import json
 import os
@@ -21,11 +23,14 @@ from urllib.request import Request, urlopen
 
 import numpy as np
 
+from .gpu import lock_state
 from .io import png_strict
 from .models import verify_registered_model_smokes
 
 ROOT = Path(__file__).resolve().parents[2]
 CVAT_BASE_URL = "http://localhost:8080"
+LOCAL_API_TIMEOUT_SECONDS = 10
+LOCAL_INFERENCE_TIMEOUT_SECONDS = 45
 Status = Literal["PASS", "WARN", "SKIP", "FAIL"]
 
 
@@ -46,13 +51,46 @@ def _result(name: str, status: Status, detail: str, hint: str = "") -> CheckResu
     return CheckResult(name=name, status=status, detail=detail, hint=hint)
 
 
+def _clean_wsl_text(value: str) -> str:
+    """Normalize WSL's UTF-16-looking redirected diagnostics into readable evidence."""
+    return str(value or "").replace("\x00", "").replace("\\x00", "").strip()
+
+
+def _windows_identity() -> str:
+    """Return the process token identity, not merely the shared profile owner."""
+    username = getpass.getuser()
+    if os.name == "nt":
+        size = ctypes.c_ulong(256)
+        buffer = ctypes.create_unicode_buffer(size.value)
+        if ctypes.windll.advapi32.GetUserNameW(buffer, ctypes.byref(size)):
+            username = buffer.value
+    domain = os.environ.get("USERDOMAIN", "")
+    return f"{domain}\\{username}" if domain and "\\" not in username else username
+
+
+def _wsl_failure(process: subprocess.CompletedProcess[str]) -> tuple[str, str]:
+    detail = _clean_wsl_text(process.stderr) or _clean_wsl_text(process.stdout)
+    detail = detail or f"wsl.exe exited {process.returncode} without diagnostics"
+    missing = (
+        "WSL_E_DISTRO_NOT_FOUND" in detail or "no distribution with the supplied name" in detail
+    )
+    if missing:
+        identity = _windows_identity()
+        return (
+            f"Windows identity {identity!r} cannot resolve Ubuntu-22.04: {detail}",
+            "Run this command in the Windows user session that owns the Ubuntu-22.04 WSL "
+            "registration; do not import or attach its VHD while another WSL instance is active.",
+        )
+    return detail, "Repair the Ubuntu-22.04 WSL runtime and /mnt/c integration."
+
+
 def _json_request(
     url: str,
     *,
     method: str = "GET",
     payload: dict | None = None,
     token: str | None = None,
-    timeout: int = 30,
+    timeout: int = LOCAL_API_TIMEOUT_SECONDS,
 ) -> dict | list:
     headers = {"User-Agent": "MaskFactory/0.0.1"}
     if token:
@@ -107,10 +145,21 @@ def check_torch_cuda() -> CheckResult:
     ]
     try:
         process = subprocess.run(command, capture_output=True, text=True, timeout=30, check=False)
-        payload = json.loads(process.stdout.strip().splitlines()[-1])
-    except (OSError, subprocess.TimeoutExpired, IndexError, json.JSONDecodeError) as exc:
+    except (OSError, subprocess.TimeoutExpired) as exc:
         return _result(
             "torch_cuda", "FAIL", str(exc), "Start WSL Ubuntu-22.04 and activate maskfactory."
+        )
+    if process.returncode:
+        detail, hint = _wsl_failure(process)
+        return _result("torch_cuda", "FAIL", detail, hint)
+    try:
+        payload = json.loads(_clean_wsl_text(process.stdout).splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as exc:
+        return _result(
+            "torch_cuda",
+            "FAIL",
+            f"WSL torch probe returned invalid JSON: {exc}",
+            "Repair the maskfactory Python environment inside Ubuntu-22.04.",
         )
     valid = (
         process.returncode == 0
@@ -133,10 +182,20 @@ def check_registered_models() -> CheckResult:
     try:
         results = verify_registered_model_smokes()
     except Exception as exc:  # noqa: BLE001 - doctor must convert all failures to evidence
+        detail = _clean_wsl_text(str(exc))
+        if "WSL_E_DISTRO_NOT_FOUND" in detail or "no distribution with the supplied name" in detail:
+            return _result(
+                "registered_models",
+                "FAIL",
+                f"Windows identity {_windows_identity()!r} cannot run registered WSL model smokes: "
+                + detail,
+                "Rerun doctor in the Windows user session that owns Ubuntu-22.04; the registered "
+                "checkpoint hashes are not implicated by this identity-scoped failure.",
+            )
         return _result(
             "registered_models",
             "FAIL",
-            str(exc),
+            detail,
             "Run `maskfactory models fetch --all`, repair the failing runtime, then rerun doctor.",
         )
     return _result(
@@ -208,7 +267,7 @@ def check_nuclio_interactor() -> CheckResult:
             base + "/api/lambda/functions/pth-sam2",
             method="POST",
             token=token,
-            timeout=120,
+            timeout=LOCAL_INFERENCE_TIMEOUT_SECONDS,
             payload={
                 "task": int(task["id"]),
                 "frame": 0,
@@ -238,7 +297,7 @@ def check_ollama_image() -> CheckResult:
         response = _json_request(
             "http://127.0.0.1:11434/api/chat",
             method="POST",
-            timeout=240,
+            timeout=LOCAL_INFERENCE_TIMEOUT_SECONDS,
             payload={
                 "model": "qwen2.5vl:7b",
                 "stream": False,
@@ -314,8 +373,11 @@ def check_wsl_roundtrip() -> CheckResult:
             timeout=30,
             check=False,
         )
-        if process.returncode != 0 or path.read_text(encoding="utf-8") != token + "|wsl":
-            raise RuntimeError(process.stderr.strip() or "round-trip content mismatch")
+        if process.returncode != 0:
+            detail, hint = _wsl_failure(process)
+            return _result("wsl_roundtrip", "FAIL", detail, hint)
+        if path.read_text(encoding="utf-8") != token + "|wsl":
+            raise RuntimeError("round-trip content mismatch")
     except Exception as exc:  # noqa: BLE001 - OS boundary
         return _result(
             "wsl_roundtrip", "FAIL", str(exc), "Repair WSL /mnt/c integration and permissions."
@@ -361,30 +423,19 @@ def check_sqlite(path: Path = ROOT / "data" / "maskfactory.sqlite") -> CheckResu
     return _result("sqlite_writable", "PASS", str(path))
 
 
-def _pid_exists(pid: int) -> bool:
-    if pid <= 0:
-        return False
-    try:
-        os.kill(pid, 0)
-    except OSError:
-        return False
-    return True
-
-
 def check_gpu_lock(
     path: Path = ROOT / "runs" / "gpu.lock", stale_seconds: int = 7200
 ) -> CheckResult:
-    if not path.exists():
+    state, document, age = lock_state(path, stale_seconds=stale_seconds)
+    if state == "absent":
         return _result("gpu_lock", "PASS", "no gpu.lock present")
-    age = max(0.0, time.time() - path.stat().st_mtime)
     try:
-        document = json.loads(path.read_text(encoding="utf-8"))
-        pid = int(document.get("pid", -1))
-    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        pid = int(document.get("pid", -1)) if document else -1
+    except (ValueError, TypeError):
         pid = -1
-    if _pid_exists(pid):
+    if state == "active":
         return _result("gpu_lock", "WARN", f"active lock pid={pid}; age={age:.0f}s")
-    if age >= stale_seconds or pid > 0:
+    if state == "stale":
         return _result(
             "gpu_lock",
             "FAIL",
@@ -408,15 +459,67 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_gpu_lock,
 )
 
+_WSL_DEPENDENT_CHECKS = frozenset(
+    {"check_torch_cuda", "check_registered_models", "check_wsl_roundtrip"}
+)
 
-def run_doctor(checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS) -> list[CheckResult]:
+
+def _wsl_preflight_failure() -> tuple[str, str] | None:
+    """Return one shared WSL failure so doctor does not repeat an unavailable boundary."""
+    try:
+        process = subprocess.run(
+            ["wsl", "-d", "Ubuntu-22.04", "--", "true"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return str(exc), "Start the Ubuntu-22.04 WSL distribution and rerun doctor."
+    if process.returncode:
+        return _wsl_failure(process)
+    return None
+
+
+def _wsl_short_circuit(check_name: str, detail: str, hint: str) -> CheckResult:
+    if check_name == "check_registered_models":
+        return _result(
+            "registered_models",
+            "FAIL",
+            f"Registered WSL model smokes not run because the shared WSL preflight failed: {detail}",
+            "Rerun doctor in the Windows user session that owns Ubuntu-22.04; the registered "
+            "checkpoint hashes are not implicated by this identity-scoped failure.",
+        )
+    result_name = "torch_cuda" if check_name == "check_torch_cuda" else "wsl_roundtrip"
+    return _result(result_name, "FAIL", detail, hint)
+
+
+def run_doctor(
+    checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS,
+    *,
+    preflight_wsl: bool | None = None,
+    on_result: Callable[[CheckResult], None] | None = None,
+) -> list[CheckResult]:
     """Run checks in stable order and convert unexpected exceptions to actionable FAILs."""
+    if preflight_wsl is None:
+        preflight_wsl = checks is DEFAULT_CHECKS
+    wsl_failure = _wsl_preflight_failure() if preflight_wsl else None
     results: list[CheckResult] = []
+
+    def record(result: CheckResult) -> None:
+        results.append(result)
+        if on_result is not None:
+            on_result(result)
+
     for check in checks:
+        if wsl_failure is not None and check.__name__ in _WSL_DEPENDENT_CHECKS:
+            record(_wsl_short_circuit(check.__name__, *wsl_failure))
+            continue
         try:
-            results.append(check())
+            result = check()
         except Exception as exc:  # noqa: BLE001 - never crash without a named doctor result
-            results.append(
-                _result(check.__name__, "FAIL", str(exc), "Inspect the failing check traceback.")
+            result = _result(
+                check.__name__, "FAIL", str(exc), "Inspect the failing check traceback."
             )
+        record(result)
     return results

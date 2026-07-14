@@ -13,16 +13,25 @@ Schemas live in `src\maskfactory\schemas\*.schema.json`; this doc is their norma
   "image_id": "img_a3f9c2e17b04",
   "mask_ontology_version": "body_parts_v1",
   "left_right_convention": "character_perspective",
+  "workflow_status": "drafted | auto_qa | vlm_qa | in_review | corrected | approved_gold | exported | deprecated",
+  "workflow_updated_at": "2026-07-09T14:03:22Z",
 
   "source": {
     "source_file": "source.png",
     "source_sha256": "…64 hex…",
+    "parent_source_sha256": "…64 hex of the original whole ingested image…",
     "source_width": 1664, "source_height": 2432,
     "source_origin": "generated | owned_photo | licensed | consented_subject",
     "origin_note": "ComfyUI run 2026-07-02 charA seed 8812",
     "ingested_at": "2026-07-09T14:03:22Z",
     "exif_stripped": true
   },
+
+  // In instances\pN packages, source_sha256 authenticates that instance's source crop while
+  // parent_source_sha256 is identical across every pN and is the image-level identity used by
+  // SQLite reindex/recovery. For a legacy full-image package the hashes may be identical.
+  // workflow_status is package-level authority; per-part statuses describe annotation state and
+  // must not be overloaded to infer whether S10/S11/S12 has run.
 
   "person": {
     "primary_person_bbox": [x, y, w, h],

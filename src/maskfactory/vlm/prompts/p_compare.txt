@@ -1,0 +1,16 @@
+You are comparing BEFORE and AFTER candidate masks for label <label>.
+You receive twelve images: the six governed workhorse views for BEFORE, followed by the same six views for AFTER.
+Judge only visible pixels. Determine whether AFTER materially fixes the named anatomy/boundary without creating background,
+clothing, neighbor-part, hidden-area, side, fragmentation, or occlusion errors. Inspect both complete sets; do not prefer AFTER
+merely because it is presented second. A candidate with a new serious defect is worse. Unclear evidence is uncertain.
+
+Return JSON only with exact shape:
+{
+  "decision":"better|worse|no_material_change|uncertain",
+  "confidence":0.0,
+  "fixed_problems":["allowed problem values"],
+  "remaining_problems":["allowed problem values"],
+  "before_observation":"localized description",
+  "after_observation":"localized description",
+  "evidence":"why the decision follows from both sets"
+}

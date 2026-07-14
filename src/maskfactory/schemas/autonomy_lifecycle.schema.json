@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomy_lifecycle.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "image_id", "instance_id", "label", "context",
+    "pipeline_fingerprint", "status", "winner_id", "winner_mask_path",
+    "winner_mask_sha256", "winner_score", "certificate_valid",
+    "certificate_reason", "human_audit_required", "authoritative_human_gold",
+    "serve_eligible", "pseudo_train_eligible", "reason", "ranking"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "image_id": { "type": "string", "pattern": "^img_[0-9a-f]{12}$" },
+    "instance_id": { "type": "string", "pattern": "^p[0-9]+$" },
+    "label": { "type": "string", "minLength": 1 },
+    "context": { "enum": ["solo", "duo", "small_group"] },
+    "pipeline_fingerprint": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["residual_human_queue", "machine_verified_candidate", "calibrated_auto_accepted"] },
+    "winner_id": { "type": ["string", "null"] },
+    "winner_mask_path": { "type": ["string", "null"] },
+    "winner_mask_sha256": { "type": ["string", "null"] },
+    "winner_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "certificate_valid": { "type": "boolean" },
+    "certificate_reason": { "type": "string" },
+    "human_audit_required": { "type": "boolean" },
+    "authoritative_human_gold": { "const": false },
+    "serve_eligible": { "type": "boolean" },
+    "pseudo_train_eligible": { "type": "boolean" },
+    "reason": { "type": "string" },
+    "ranking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["candidate_id", "score", "eligible", "vetoes", "mask_sha256"],
+        "properties": {
+          "candidate_id": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "eligible": { "type": "boolean" },
+          "vetoes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "mask_sha256": { "type": "string" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "calibrated_auto_accepted" } } },
+      "then": {
+        "properties": {
+          "certificate_valid": { "const": true },
+          "human_audit_required": { "const": false },
+          "serve_eligible": { "const": true },
+          "pseudo_train_eligible": { "const": true }
+        }
+      }
+    }
+  ]
+}

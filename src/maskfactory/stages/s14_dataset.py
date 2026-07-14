@@ -1,6 +1,9 @@
-"""S14 Dataset Build.
-
-Spec: doc 07 S14, doc 12. Scaffold stub (MF-P0-08.07) -- implementation lands in its phase.
-"""
+"""Stable S14 verified-gold dataset build boundary (docs 07/12)."""
 
 from __future__ import annotations
+
+from ..datasets.builder import approved_package_count, build_dataset, next_dataset_version
+
+run_s14 = build_dataset
+
+__all__ = ["approved_package_count", "build_dataset", "next_dataset_version", "run_s14"]

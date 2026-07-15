@@ -71,5 +71,19 @@
     "focused_doctor_and_provider_policy_tests": "pass",
     "ruff": "pass"
   },
+  "docker_retry_evidence": {
+    "observed_at": "2026-07-15T04:45:22Z",
+    "operation": "create /root/.docker/desktop inside Ubuntu-22.04",
+    "result": "input/output error",
+    "interpretation": "the ext4 filesystem inside the registered VHD was not writable; this is not a Docker helper permission failure"
+  },
+  "safe_shutdown": {
+    "method": "docker desktop stop",
+    "elevated": false,
+    "docker_desktop_process_count": 0,
+    "wsl_related_process_count": 0,
+    "physical_drive_reseat_safe": true,
+    "restart_before_storage_check_allowed": false
+  },
   "authority": "incident_and_partial_rescue_evidence_only_no_runtime_recovery_or_model_install_authority"
 }

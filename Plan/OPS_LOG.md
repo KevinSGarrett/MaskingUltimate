@@ -5684,3 +5684,23 @@ Verification:                       54 focused provider/serve/preflight tests an
 Production safety:                  `configs/pipeline.yaml`, `configs/external_sources.yaml`, and `models/model_registry.json` are unchanged; no lifecycle, active provider, serving route, mask, truth, or gold authority changed
 Remaining work:                     refactor legacy batch S07 from its SAM2-only runner to the provider-neutral InteractiveSegmenter contract, then implement the serialized multi-file promotion/rollback transaction and perform the real benchmark-gated SAM3.1 event
 Evidence:                           `qa/live_verification/interactive_selection_promotion_readiness_20260715.json`
+
+## 2026-07-15 19:51 UTC - Batch interactive runtime made provider-neutral
+
+**Result:** MF-P2-11.04 and MF-P6-06.03 advance to 80%; both production batch
+consumers of interactive refinement now follow the validated provider-role selection
+without changing the live incumbent.
+
+S07 routing:                        resolves the active `interactive_segmenter` against both authoritative registries and refuses stage/role drift
+S08 routing:                        uses the identical selected provider and forwards the exact primary/fallback identities into material refinement
+Incumbent compatibility:            live `sam2_1_large` still executes through the pinned `sam2.1_hiera_large` runtime with `sam2.1_hiera_base_plus` as the only governed local OOM fallback
+Provider-neutral adapter:           canonical point/box prompts enter `InteractiveSegmenter`; returned provider identity, boolean masks, confidence, embedding route, and prompt provenance are checked before legacy candidate scoring
+Future promotion fixture:           a registry-valid promoted official SAM3.1 selection runs through an injected canonical loader in S07 and S08 while SAM2.1 large remains rollback/challenger and LiteText remains shadow-only
+Fail-closed coverage:               missing promoted-provider loader, foreign identity, stale embedding, unknown route/model, selection/config drift, invalid proposals, and non-OOM failures are rejected
+Telemetry:                          S08 records the provider that actually refined material regions, including governed fallback use, instead of hard-coding the incumbent
+Verification:                       122 focused interactive/production/provider/serve tests and complete repository 1,640/1,640 pass; Ruff lint, Ruff/Black-compatible formatting, and diff check pass
+Machine state:                      Docker Engine 29.4.3, Ubuntu-22.04, docker-desktop, CVAT/Traefik, Nuclio, and the SAM2 interactor were confirmed running by read-only probes; no restart, VHDX mutation, elevation, or UAC action was performed
+Production safety:                 pipeline, external registry, model registry, lifecycle states, and active provider are unchanged; no official SAM3.1 inference, promotion, mask, truth, or gold claim is made
+Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Remaining work:                    serialized hash-sealed interactive promotion/rollback transaction, official gated checkpoint and exact benchmark, live GPU production smoke, live rollback rehearsal, and repair orchestration
+Evidence:                          `qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json`

@@ -12,6 +12,8 @@ from maskfactory.cli import main
 from maskfactory.intake import IntakeResult
 from maskfactory.io.png_strict import write_label_map
 from maskfactory.orchestrator import STAGE_BY_NAME, StageContext, load_pipeline_config, run_pipeline
+from maskfactory.providers.adapters import InteractiveSegmenterAdapter
+from maskfactory.providers.contracts import ProviderIdentity
 from maskfactory.qa.multi_instance import run_multi_instance_qc
 from maskfactory.stages import production
 from maskfactory.stages.s01_person_detection import RankedPerson, S01Result
@@ -746,6 +748,145 @@ def test_s07_production_runner_refuses_model_alias_drift(tmp_path: Path) -> None
 
     with pytest.raises(production.SemanticStageError, match="not governed"):
         production.build_production_runners(config)["S07"](context)
+
+
+def test_s07_and_s08_use_promoted_provider_neutral_interactive_selection(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    crop_dir = work / "s01" / image_id / "p0"
+    crop_dir.mkdir(parents=True)
+    Image.new("RGB", (20, 30), "white").save(crop_dir / "person_ctx.png")
+    (crop_dir.parent / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "promoted": True,
+                        "bbox_xyxy": [0, 0, 20, 30],
+                        "context_bbox_xyxy": [0, 0, 20, 30],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    external = yaml.safe_load(Path("configs/external_sources.yaml").read_text(encoding="utf-8"))
+    external["providers"]["sam3_1"]["lifecycle_state"] = "promoted"
+    external_path = tmp_path / "external_sources.yaml"
+    external_path.write_text(yaml.safe_dump(external, sort_keys=False), encoding="utf-8")
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    interactive_role = config["provider_roles"]["interactive_segmenter"]
+    interactive_role["active"] = "sam3_1"
+    interactive_role["challengers"] = ["sam2_1_large", "sam3_litetext_s0"]
+    interactive_role["rollback"] = "sam2_1_large"
+    config["stages"]["S07"]["primary_model"] = "sam3_1"
+    identity = ProviderIdentity(
+        "sam3_1",
+        "interactive_segmenter",
+        "sam3",
+        "fixture-commit",
+        "fixture-runtime",
+    )
+    loader_calls = []
+
+    def load_sam31():
+        loader_calls.append("sam3_1")
+        return InteractiveSegmenterAdapter(identity, lambda image: image, lambda *_a, **_k: ())
+
+    captured = {}
+
+    def fake_s07(*args, **kwargs):
+        captured["s07"] = kwargs
+        return {}, kwargs["primary_model"]
+
+    def fake_s08(**kwargs):
+        captured["s08"] = kwargs
+        kwargs["output_dir"].mkdir(parents=True, exist_ok=True)
+        (kwargs["output_dir"] / "material_evidence.json").write_text(
+            json.dumps(
+                {
+                    "primary": "schp_plus_s08_heuristics",
+                    "sam2_refinement": {"skin": {"model": kwargs["primary_model"]}},
+                }
+            ),
+            encoding="utf-8",
+        )
+        return SimpleNamespace(
+            regions={"skin": np.ones((2, 2), dtype=bool)},
+            material_map=np.ones((2, 2), dtype=np.uint8),
+        )
+
+    monkeypatch.setattr(production, "run_s07_production", fake_s07)
+    monkeypatch.setattr(
+        production,
+        "apply_and_record_s07_hand_merges",
+        lambda *_args, **_kwargs: {"failure_record_count": 0},
+    )
+    monkeypatch.setattr(production, "run_s08_production", fake_s08)
+    runners = production.build_production_runners(
+        config,
+        external_registry_path=external_path,
+        interactive_provider_loaders={"sam3_1": load_sam31},
+    )
+    s07_context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S07"],
+        output_dir=work / "s07" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S07"]},
+        config_hash="fixture",
+    )
+    s08_context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S08"],
+        output_dir=work / "s08" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S08"]},
+        config_hash="fixture",
+    )
+
+    s07_delta = runners["S07"](s07_context)
+    s08_delta = runners["S08"](s08_context)
+
+    assert loader_calls == ["sam3_1", "sam3_1"]
+    assert isinstance(captured["s07"]["provider"], production.ProviderNeutralInteractiveProvider)
+    assert isinstance(captured["s08"]["provider"], production.ProviderNeutralInteractiveProvider)
+    assert captured["s07"]["primary_model"] == "sam3_1"
+    assert captured["s08"]["primary_model"] == "sam3_1"
+    assert captured["s07"]["fallback_model"] == "sam2.1_hiera_base_plus"
+    assert captured["s08"]["fallback_model"] == "sam2.1_hiera_base_plus"
+    assert s07_delta["model"] == "sam3_1"
+    assert s08_delta["_telemetry"]["model_keys"] == ["sam3_1"]
+
+
+def test_s07_refuses_promoted_interactive_provider_without_loader(
+    tmp_path: Path,
+) -> None:
+    external = yaml.safe_load(Path("configs/external_sources.yaml").read_text(encoding="utf-8"))
+    external["providers"]["sam3_1"]["lifecycle_state"] = "promoted"
+    external_path = tmp_path / "external_sources.yaml"
+    external_path.write_text(yaml.safe_dump(external, sort_keys=False), encoding="utf-8")
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    role = config["provider_roles"]["interactive_segmenter"]
+    role["active"] = "sam3_1"
+    role["challengers"] = ["sam2_1_large", "sam3_litetext_s0"]
+    config["stages"]["S07"]["primary_model"] = "sam3_1"
+    context = StageContext(
+        image_id="img_a3f9c2e17b04",
+        stage=STAGE_BY_NAME["S07"],
+        output_dir=tmp_path / "work/s07/img_a3f9c2e17b04",
+        work_root=tmp_path / "work",
+        config={"global": {}, "stage": config["stages"]["S07"]},
+        config_hash="fixture",
+    )
+
+    with pytest.raises(production.SemanticStageError, match="no injected production loader"):
+        production.build_production_runners(config, external_registry_path=external_path)["S07"](
+            context
+        )
 
 
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:

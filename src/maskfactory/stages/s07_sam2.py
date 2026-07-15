@@ -17,6 +17,7 @@ from PIL import Image
 from scipy import ndimage
 
 from ..io.png_strict import write_binary_mask
+from ..providers.contracts import InteractiveSegmenter
 from .s05_geometry import PromptPlan
 
 
@@ -36,6 +37,88 @@ class Sam2Provider(Protocol):
     def predict(
         self, embedding: Any, plan: PromptPlan, *, multimask_output: bool
     ) -> list[SamCandidate]: ...
+
+
+@dataclass(frozen=True)
+class ProviderNeutralEmbedding:
+    route: str
+    payload: Any
+
+
+class ProviderNeutralInteractiveProvider:
+    """Adapt a canonical InteractiveSegmenter with a governed SAM2 OOM fallback."""
+
+    def __init__(
+        self,
+        primary: InteractiveSegmenter,
+        fallback: Sam2Provider,
+        *,
+        primary_model: str,
+        fallback_model: str = "sam2.1_hiera_base_plus",
+    ) -> None:
+        if not isinstance(primary, InteractiveSegmenter):
+            raise Sam2Error("primary provider does not satisfy InteractiveSegmenter")
+        if primary.identity.role != "interactive_segmenter":
+            raise Sam2Error("primary provider identity has the wrong role")
+        if primary.identity.provider_key != primary_model:
+            raise Sam2Error("primary provider identity differs from governed selection")
+        if primary_model == fallback_model:
+            raise Sam2Error("primary and fallback provider identities must differ")
+        self.primary = primary
+        self.fallback = fallback
+        self.primary_model = primary_model
+        self.fallback_model = fallback_model
+
+    def embed(self, image: np.ndarray, *, model: str, precision: str) -> ProviderNeutralEmbedding:
+        if precision != "fp16":
+            raise Sam2Error("provider-neutral S07 requires fp16 request semantics")
+        if model == self.primary_model:
+            return ProviderNeutralEmbedding("primary", self.primary.embed(np.asarray(image)))
+        if model == self.fallback_model:
+            return ProviderNeutralEmbedding(
+                "fallback",
+                self.fallback.embed(np.asarray(image), model=model, precision=precision),
+            )
+        raise Sam2Error(f"interactive provider model is not governed: {model}")
+
+    def predict(
+        self, embedding: ProviderNeutralEmbedding, plan: PromptPlan, *, multimask_output: bool
+    ) -> list[SamCandidate]:
+        if not isinstance(embedding, ProviderNeutralEmbedding):
+            raise Sam2Error("provider-neutral embedding is stale or foreign")
+        if embedding.route == "fallback":
+            return self.fallback.predict(embedding.payload, plan, multimask_output=multimask_output)
+        if embedding.route != "primary":
+            raise Sam2Error("provider-neutral embedding route is invalid")
+        prompt = {
+            "positive_points": list(plan.positive_points),
+            "negative_points": list(plan.negative_points),
+            "box_xyxy": list(plan.box_xyxy),
+            "mask_prompt": None,
+        }
+        try:
+            proposals = tuple(self.primary.refine(embedding.payload, prompt=prompt))
+        except (TypeError, ValueError) as exc:
+            raise Sam2Error(f"interactive provider refinement failed: {exc}") from exc
+        if not proposals:
+            raise Sam2Error("interactive provider returned no mask proposals")
+        candidates: list[SamCandidate] = []
+        for proposal in proposals:
+            if proposal.provider != self.primary.identity:
+                raise Sam2Error("interactive proposal identity differs from active provider")
+            logits = np.where(proposal.mask, 1.0, -1.0).astype(np.float32)
+            candidates.append(SamCandidate(logits, float(proposal.confidence)))
+        return candidates
+
+    def close(self, embedding: ProviderNeutralEmbedding) -> None:
+        if embedding.route == "fallback":
+            close = getattr(self.fallback, "close", None)
+            if callable(close):
+                close(embedding.payload)
+            return
+        close = getattr(self.primary, "close", None)
+        if callable(close):
+            close(embedding.payload)
 
 
 @dataclass

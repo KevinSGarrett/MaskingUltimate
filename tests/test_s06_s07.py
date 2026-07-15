@@ -7,6 +7,8 @@ import pytest
 import yaml
 from PIL import Image
 
+from maskfactory.providers.adapters import InteractiveSegmenterAdapter
+from maskfactory.providers.contracts import MaskProposal, ProviderIdentity
 from maskfactory.stages.s05_geometry import PromptPlan
 from maskfactory.stages.s06_openvocab import (
     BoxProposal,
@@ -17,6 +19,7 @@ from maskfactory.stages.s06_openvocab import (
 )
 from maskfactory.stages.s07_sam2 import (
     MODEL_CONFIGS,
+    ProviderNeutralInteractiveProvider,
     Sam2Error,
     SamCandidate,
     WslSam2Provider,
@@ -52,6 +55,83 @@ def _plan() -> PromptPlan:
 
 def _logits(mask: np.ndarray) -> np.ndarray:
     return np.where(mask, 1.0, -1.0).astype(np.float32)
+
+
+def test_provider_neutral_adapter_runs_canonical_interactive_segmenter() -> None:
+    identity = ProviderIdentity(
+        "sam3_1",
+        "interactive_segmenter",
+        "sam3",
+        "source-fixture",
+        "runtime-fixture",
+    )
+    captured: list[dict] = []
+    mask = np.zeros((100, 100), dtype=bool)
+    mask[30:70, 30:70] = True
+
+    def refine(_embedding, *, prompt):
+        captured.append(prompt)
+        return (MaskProposal(mask, 0.92, identity, "prompt-fixture"),)
+
+    primary = InteractiveSegmenterAdapter(identity, lambda image: image.shape, refine)
+    fallback = FakeProvider([])
+    provider = ProviderNeutralInteractiveProvider(
+        primary,
+        fallback,
+        primary_model="sam3_1",
+    )
+    embedding, model = build_embedding(
+        provider,
+        np.zeros((100, 100, 3), dtype=np.uint8),
+        primary_model="sam3_1",
+        fallback_model="sam2.1_hiera_base_plus",
+    )
+    prior = mask.astype(np.uint8) * 255
+    result = refine_part(provider, embedding, _plan(), prior, model=model)
+
+    assert model == "sam3_1"
+    assert result.model == "sam3_1"
+    assert np.array_equal(result.mask, mask)
+    assert captured == [
+        {
+            "positive_points": [(50, 50)],
+            "negative_points": [(5, 5)],
+            "box_xyxy": [20, 20, 80, 80],
+            "mask_prompt": None,
+        }
+    ]
+    assert fallback.embed_calls == []
+
+
+def test_provider_neutral_adapter_uses_governed_sam2_fallback_only_on_oom() -> None:
+    identity = ProviderIdentity(
+        "sam3_1",
+        "interactive_segmenter",
+        "sam3",
+        "source-fixture",
+        "runtime-fixture",
+    )
+
+    def oom(_image):
+        raise RuntimeError("CUDA out of memory")
+
+    primary = InteractiveSegmenterAdapter(identity, oom, lambda *_args, **_kwargs: ())
+    fallback = FakeProvider([])
+    provider = ProviderNeutralInteractiveProvider(
+        primary,
+        fallback,
+        primary_model="sam3_1",
+    )
+    embedding, model = build_embedding(
+        provider,
+        np.zeros((100, 100, 3), dtype=np.uint8),
+        primary_model="sam3_1",
+        fallback_model="sam2.1_hiera_base_plus",
+    )
+
+    assert model == "sam2.1_hiera_base_plus"
+    assert embedding.route == "fallback"
+    assert fallback.embed_calls == [("sam2.1_hiera_base_plus", "fp16")]
 
 
 def test_s07_production_writes_strict_masks_metrics_and_one_embedding(tmp_path: Path) -> None:

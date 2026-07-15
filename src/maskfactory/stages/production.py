@@ -6,7 +6,7 @@ import hashlib
 import json
 import shutil
 import uuid
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -46,6 +46,8 @@ from ..providers.civitai_auxiliary import (
     render_auxiliary_review_overlay,
     run_auxiliary_providers,
 )
+from ..providers.contracts import InteractiveSegmenter
+from ..providers.selection import validate_provider_selection
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
 from ..review_package import (
@@ -76,7 +78,11 @@ from .s03_parsing import (
 from .s04_pose import run_s04_production
 from .s05_geometry import run_s05_production
 from .s06_openvocab import run_s06_production
-from .s07_sam2 import WslSam2Provider, run_s07_production
+from .s07_sam2 import (
+    ProviderNeutralInteractiveProvider,
+    WslSam2Provider,
+    run_s07_production,
+)
 from .s08_5_densepose import WslDensePoseProvider, read_densepose_iuv, run_densepose
 from .s08_material import champion_clothing_refresh_required, run_s08_production
 from .s09_5_instance_recon import ReconciliationInstance, reconcile_instances
@@ -319,6 +325,9 @@ def build_production_runners(
     images_root: Path = ROOT / "data" / "images",
     person_index: int = 0,
     shared_work_root: Path | None = None,
+    interactive_provider_loaders: Mapping[str, Callable[[], InteractiveSegmenter]] | None = None,
+    external_registry_path: Path = ROOT / "configs" / "external_sources.yaml",
+    model_registry_path: Path = ROOT / "models" / "model_registry.json",
 ) -> dict[str, StageRunner]:
     """Return production runners scoped to one promoted person (p0 by default)."""
     if person_index < 0:
@@ -328,6 +337,78 @@ def build_production_runners(
     parsing_map = config.get("parsing_map", {})
     pose_rules = config.get("pose_tags_rules", {})
     prompting = yaml.safe_load((ROOT / "configs" / "prompting.yaml").read_text(encoding="utf-8"))
+    interactive_provider_loaders = dict(interactive_provider_loaders or {})
+
+    def interactive_provider(settings: Mapping[str, Any], work_dir: Path) -> tuple[Any, str, str]:
+        """Resolve the governed active segmenter and its local SAM2 OOM fallback."""
+        try:
+            selection = validate_provider_selection(
+                config,
+                external_registry_path=Path(external_registry_path),
+                model_registry_path=Path(model_registry_path),
+            )
+        except (OSError, ValueError) as exc:
+            raise SemanticStageError(
+                f"interactive provider selection is not governed: {exc}"
+            ) from exc
+        try:
+            active = selection["active"]["interactive_segmenter"]
+            fallback = selection["fallbacks"]["interactive_segmenter"]["oom_fallback"]
+        except KeyError as exc:
+            raise SemanticStageError(
+                "interactive provider selection lacks active or OOM fallback authority"
+            ) from exc
+        if settings.get("primary_model") != active:
+            raise SemanticStageError(
+                "S07 primary_model is not governed by the active interactive provider selection"
+            )
+        if settings.get("oom_fallback") != fallback:
+            raise SemanticStageError(
+                "S07 oom_fallback is not governed by the interactive provider selection"
+            )
+        if fallback != "sam2_1_base_plus":
+            raise SemanticStageError(
+                "interactive provider OOM fallback must remain governed SAM2.1 base-plus"
+            )
+        sam2_provider = WslSam2Provider(
+            checkpoints={
+                "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
+                "sam2.1_hiera_base_plus": ROOT / "models/sam2/sam2.1_hiera_base_plus.pt",
+            },
+            configs={
+                "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
+                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
+            },
+            work_dir=Path(work_dir),
+            local_cuda_python=(
+                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
+            ),
+            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
+            dependency_site=(
+                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
+            ),
+        )
+        fallback_runtime = "sam2.1_hiera_base_plus"
+        if active == "sam2_1_large":
+            return sam2_provider, "sam2.1_hiera_large", fallback_runtime
+        loader = interactive_provider_loaders.get(active)
+        if loader is None:
+            raise SemanticStageError(
+                f"active interactive provider {active!r} has no injected production loader"
+            )
+        try:
+            primary_provider = loader()
+            provider = ProviderNeutralInteractiveProvider(
+                primary_provider,
+                sam2_provider,
+                primary_model=active,
+                fallback_model=fallback_runtime,
+            )
+        except (TypeError, ValueError) as exc:
+            raise SemanticStageError(
+                f"active interactive provider {active!r} failed its production contract: {exc}"
+            ) from exc
+        return provider, active, fallback_runtime
 
     def prior(context: StageContext, stage_name: str) -> Path:
         if shared_work_root is not None and stage_name in {"S01", "S09.5"}:
@@ -732,34 +813,8 @@ def build_production_runners(
 
     def s07(context: StageContext) -> Mapping[str, Any]:
         settings = context.config["stage"]
-        model_aliases = {
-            "sam2_1_large": "sam2.1_hiera_large",
-            "sam2_1_base_plus": "sam2.1_hiera_base_plus",
-        }
-        try:
-            primary = model_aliases[settings["primary_model"]]
-            fallback = model_aliases[settings["oom_fallback"]]
-        except KeyError as exc:
-            raise SemanticStageError(f"S07 model configuration is not governed: {exc}") from exc
-        if primary == fallback:
-            raise SemanticStageError("S07 primary and OOM fallback must differ")
-        provider = WslSam2Provider(
-            checkpoints={
-                "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
-                "sam2.1_hiera_base_plus": ROOT / "models/sam2/sam2.1_hiera_base_plus.pt",
-            },
-            configs={
-                "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
-                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
-            },
-            work_dir=context.output_dir / "provider_work",
-            local_cuda_python=(
-                Path(settings["local_cuda_python"]) if settings.get("local_cuda_python") else None
-            ),
-            source_path=Path(settings["source_path"]) if settings.get("source_path") else None,
-            dependency_site=(
-                Path(settings["dependency_site"]) if settings.get("dependency_site") else None
-            ),
+        provider, primary, fallback = interactive_provider(
+            settings, context.output_dir / "provider_work"
         )
         assisted_s05 = context.prior_stage_dir("S06") / "assisted_s05"
         prompts_path = (
@@ -824,29 +879,8 @@ def build_production_runners(
         s03_dir = context.prior_stage_dir("S03")
         sapiens_path = s03_dir / "sapiens_28.png"
         sam_settings = config["stages"]["S07"]
-        provider = WslSam2Provider(
-            checkpoints={
-                "sam2.1_hiera_large": ROOT / "models/sam2/sam2.1_hiera_large.pt",
-                "sam2.1_hiera_base_plus": ROOT / "models/sam2/sam2.1_hiera_base_plus.pt",
-            },
-            configs={
-                "sam2.1_hiera_large": "configs/sam2.1/sam2.1_hiera_l.yaml",
-                "sam2.1_hiera_base_plus": "configs/sam2.1/sam2.1_hiera_b+.yaml",
-            },
-            work_dir=context.output_dir / "provider_work",
-            local_cuda_python=(
-                Path(sam_settings["local_cuda_python"])
-                if sam_settings.get("local_cuda_python")
-                else None
-            ),
-            source_path=(
-                Path(sam_settings["source_path"]) if sam_settings.get("source_path") else None
-            ),
-            dependency_site=(
-                Path(sam_settings["dependency_site"])
-                if sam_settings.get("dependency_site")
-                else None
-            ),
+        provider, primary, fallback = interactive_provider(
+            sam_settings, context.output_dir / "provider_work"
         )
         draft = run_s08_production(
             source_path=s01_dir / instance_name / "person_ctx.png",
@@ -861,13 +895,20 @@ def build_production_runners(
             output_dir=context.output_dir,
             provider=provider,
             auxiliary_dir=context.prior_stage_dir("S06") / "auxiliary",
+            primary_model=primary,
+            fallback_model=fallback,
         )
         evidence = json.loads((context.output_dir / "material_evidence.json").read_text())
-        model_keys = (
-            [str(evidence["model_key"])]
-            if evidence.get("primary") == "champion_clothing"
-            else ["sam2.1_hiera_large"]
-        )
+        if evidence.get("primary") == "champion_clothing":
+            model_keys = [str(evidence["model_key"])]
+        else:
+            model_keys = sorted(
+                {
+                    str(metrics["model"])
+                    for metrics in evidence.get("sam2_refinement", {}).values()
+                    if isinstance(metrics, Mapping) and metrics.get("model")
+                }
+            )
         return {
             "material_region_count": int(sum(bool(mask.any()) for mask in draft.regions.values())),
             "assigned_pixel_count": int((draft.material_map > 0).sum()),

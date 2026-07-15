@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T14:36:24+00:00",
+    "generated_at": "2026-07-15T15:36:19+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -13951,13 +13951,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-15T15:26:53+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: live parallel CVAT 2.69 now exposes and executes pth-sam2 against an exact preserved migrated task; fresh target-only stop/restart proves production CVAT 2.24 and SAM2 remain healthy. Remaining 15% is official SAM3.1 assistance after MF-P0-17.04 checkpoint authorization; no SAM3.1 or completion authority claimed."
+        }
+      ],
+      "evidence": "qa/live_verification/cvat_parallel_assistance_recovery_bundle_20260715.json; versions 2.24.0/2.69.0, identical 21 tasks/21 jobs/367 shapes, target SAM2 strict 256x256 mask SHA-256 48a57d6a... in 4.219s, target-only rollback and 18-service restart pass; 49 focused tests pass. SAM3.1 remains gated.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T15:26:53+00:00",
       "orphaned": false
     },
     "MF-P6-06.08": {

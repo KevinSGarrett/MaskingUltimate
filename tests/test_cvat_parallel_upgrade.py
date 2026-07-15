@@ -49,6 +49,19 @@ def test_parallel_traefik_routes_are_globally_unique() -> None:
     assert "cvat269.localhost" in ui_labels["traefik.http.routers.cvat269-ui.rule"]
 
 
+def test_parallel_server_reuses_host_published_nuclio_without_network_collapse() -> None:
+    services = _load_override()["services"]
+    assert services["cvat_server"]["environment"] == {"CVAT_SERVERLESS": 1}
+    expected_hosts = [
+        "host.docker.internal:host-gateway",
+        "nuclio:host-gateway",
+    ]
+    assert services["cvat_server"]["extra_hosts"] == expected_hosts
+    assert services["cvat_worker_annotation"]["extra_hosts"] == expected_hosts
+    assert "networks" not in services["cvat_server"]
+    assert "networks" not in services["cvat_worker_annotation"]
+
+
 def test_parallel_migration_evidence_proves_copy_and_rollback() -> None:
     evidence = json.loads(EVIDENCE_PATH.read_text(encoding="utf-8"))
     assert evidence["result"] == "pass"

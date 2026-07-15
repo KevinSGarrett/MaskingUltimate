@@ -1,12 +1,12 @@
 {
-  "measured_at": "2026-07-13T00:36:42.380968+00:00",
+  "measured_at": "2026-07-15T15:15:17.645651+00:00",
   "function_id": "pth-sam2",
   "function_name": "Segment Anything 2.1 (CPU)",
   "function_version": 2,
   "task_id": 1,
   "task_name": "MaskFactory SAM2 synthetic smoke",
   "fixture": "programmatically generated 256x256 synthetic image",
-  "latency_seconds": 19.299,
+  "latency_seconds": 4.595,
   "mask_shape": [
     256,
     256

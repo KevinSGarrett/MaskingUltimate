@@ -18,6 +18,15 @@ services:
 
   cvat_server:
     container_name: cvat269_server
+    # Reuse the already-published, independently healthy Nuclio dashboard on
+    # host port 8070.  This mirrors CVAT's upstream serverless override while
+    # keeping the parallel stack isolated from production CVAT networks and
+    # volumes.
+    environment:
+      CVAT_SERVERLESS: 1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "nuclio:host-gateway"
     # Replace (do not merge) upstream's globally named Traefik routes. Both
     # Traefik instances watch the Docker socket, so duplicate `cvat` router
     # names would disable routing in a genuinely parallel deployment.
@@ -47,6 +56,9 @@ services:
 
   cvat_worker_annotation:
     container_name: cvat269_worker_annotation
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "nuclio:host-gateway"
     volumes:
       - ${MASKFACTORY_DATA_PATH:-/mnt/c/Comfy_UI_Main_Masking/data}:/home/django/share:ro
 

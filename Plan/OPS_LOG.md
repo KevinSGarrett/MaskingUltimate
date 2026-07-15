@@ -5503,3 +5503,21 @@ Verification:                       dedicated execution/bridge 15/15; focused mu
 Runtime safety:                     no WSL, Docker, CVAT, `F:`, external VHD/storage, elevation, UAC, restart, or machine-service action
 Remaining work:                     official SAM3.1 checkpoint qualification, governed real multi-person candidate generation/tournaments, live lifecycle/audit receipts, D11/G9 measurement, and rollback
 Evidence:                           `qa/live_verification/multi_person_lifecycle_route_contract_20260715.json`
+
+## 2026-07-15 15:25 UTC - Parallel CVAT 2.69 SAM2 assistance and rollback recovered
+
+**Result:** MF-P6-06.07 advances from open to 85%; the isolated CVAT 2.69 target now
+exposes and executes the incumbent SAM2 interactor against an exactly preserved migrated task,
+and a fresh parallel stop/restart rollback rehearsal passes. Official SAM3.1 remains gated.
+
+Live versions:                      production CVAT 2.24.0 at localhost:8080; isolated CVAT 2.69.0 at cvat269.localhost:18080
+Preserved data:                     both databases report 21 tasks, 21 jobs, and 367 shapes; task 1 identity/size/mode/dimension match exactly through both authenticated APIs
+Root cause repaired:                target lacked `CVAT_SERVERLESS=1` and `nuclio` resolution; override now uses the Docker Desktop host gateway without joining production/target networks
+Isolation:                          target retains 18 prefixed services, unique loopback ports, target-only volumes, and no production network or volume reuse
+Target SAM2 smoke:                  pth-sam2 catalog HTTP 200; preserved task 1 frame 0 produced strict 256x256 {0,255} mask, 21,491 foreground pixels, SHA-256 48a57d6a..., 4.219 seconds
+Rollback rehearsal:                stopping project cvat269 made port 18080 unreachable while production CVAT stayed HTTP 200/version 2.24.0 and production SAM2 stayed healthy; all 18 target services restarted and target inference passed again
+Incumbent continuity:              SAM2.1-large remains active/promoted, base-plus remains installed OOM fallback, and attempted SAM3.1 activation still fails closed without mutating provider selection
+SAM3.1 boundary:                   assistance remains pending MF-P0-17.04 gated checkpoint authorization; no substitute or completion claim
+Verification:                       49 focused CVAT/doctor/provider/runtime tests and all 1,591 repository tests pass; Ruff, Black, and diff check pass; live verifier passed before and after rollback
+Mutation boundary:                 no production annotations, task status, gold, provider role, database content, or volume contents were intentionally changed; only isolated target server/annotation containers were recreated
+Evidence:                           `qa/live_verification/cvat_parallel_assistance_recovery_bundle_20260715.json`

@@ -5379,3 +5379,25 @@ Verification:                       dedicated metrics 19/19; focused matrix/spec
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining real evidence:            completed MF-P2-11.13 manifest, every real cell run, raw artifacts/counts, and a sealed finite-measurement report
 Evidence:                           `qa/live_verification/provider_benchmark_matrix_metrics_contract_20260715.json`
+
+## 2026-07-15 12:00 UTC - Signed matrix-bound promotion prerequisite gate implemented
+
+**Result:** MF-P2-11.15 advances to 75% complete; its complete signed prerequisite
+contract is executable and fail-closed, while real human-anchor winners, production-event
+certification, role mutations, and observed live rollback remain open.
+
+Aggregate role set:                 exactly nine specialist promotion packets plus the custom-segmenter certificate; missing or extra roles fail
+Matrix recomputation:               every build and verification recomputes the exact 66-plus-cell report from the sealed manifest and raw observations
+Specialist binding:                 each checkpoint hash must equal its named shared provider artifact, and that artifact must be present in the uniquely selected matrix cell
+Custom binding:                     the custom segmenter is explicitly a pipeline-context cell, not falsely labeled as a top-level provider artifact; evaluation-set, hardware, and QA identities must match
+Rollback binding:                   every role retains a distinct incumbent, full rollback-document hash, and tested timestamp; certificate issuance before a rehearsal fails
+Signature boundary:                 dedicated Ed25519 promotion-event key, canonical payload hash, certificate hash, signer hash, and signature; no private key is committed
+Reuse/tamper boundary:              ten distinct cells are mandatory; stale packets, rebound candidates, custom identity drift, report edits, duplicate cells, signature edits, and live-input drift fail
+Authority boundary:                 validation grants prerequisite evidence only and cannot mutate registry/lifecycle, change serving, author a mask, clear the hard blocker, or create gold authority
+Completion-policy rebind:           pre-result `modernization_completion_v1` supersedes `aed53657...` with `23495c62...` only to bind amended Document 22; no domain, threshold, or authority changed and no eligible final bundle existed
+Operational surface:               `tools/generate_provider_role_promotion_key.py` creates a dedicated keypair; `tools/certify_provider_role_promotions.py` builds or verifies the exact aggregate certificate; CI runs the named gate
+Signed governance:                 current review `e89fa70126325b6ac1f86652`, SHA-256 `1d83cab589ffd7611c253f2902864bbfeb120229cc7b2f3bc2b63edd3f9178dc`, chains archived `47bd5d7f...`, verifies, and remains honestly FAIL on missing real active-role benchmark/rollback evidence
+Verification:                       dedicated 5/5; focused promotion/matrix/schema 98/98; completion-plus-promotion 34/34; complete repository 1,532/1,532 in 310.23s against the final tree; Ruff, Black, CI YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining real evidence:            real matrix and role benchmarks, measured winners, observed rollback rehearsals, production-event signed certificate, transactional promotions, and live one-command rollback
+Evidence:                           `qa/live_verification/matrix_promotion_certificate_contract_20260715.json`

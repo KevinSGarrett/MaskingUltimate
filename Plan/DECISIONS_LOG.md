@@ -360,6 +360,30 @@ instead of relying on configuration intent.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Require one signed matrix-bound certificate before role promotion
+
+**Item(s) affected:** MF-P2-11.15, MF-P3-08.08, MF-P5-10.09, specialist and
+custom-segmenter role promotion
+
+**Decision:** Require one dedicated Ed25519-signed aggregate prerequisite certificate before any
+provider-role promotion transaction. The verifier must recompute the complete top-level provider
+matrix report from its sealed manifest and observations; validate all nine specialist promotion
+packets plus the custom-segmenter certificate; bind every specialist checkpoint to an exact provider
+artifact present in its named matrix cell; bind the custom segmenter to the matrix evaluation-set,
+hardware, and QA identities through an explicitly labeled pipeline-context cell; require the exact ten
+governed roles and ten distinct matrix cells; bind every prerequisite, derived summary, cell result,
+and full rollback-evidence hash; and reject a certificate issued before any recorded rollback test.
+The signature uses a dedicated promotion-event key whose private half is not committed. Validation
+returns prerequisites-only evidence and performs no registry mutation.
+
+**Why:** The role-specific gates and matrix compiler were individually fail-closed but did not prove
+that a proposed set of promotions came from the same exact matrix execution or that one result was not
+reused across roles. A signed aggregate closes that join boundary while preserving the separate
+transactional mutation and live rollback requirements. Fixture certificates prove only enforcement;
+they confer no winner, promotion, serving, mask, production, blocker-clearance, or gold authority.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Freeze MediaPipe handedness-vote ablation before holdout results
 
 **Item(s) affected:** MF-P3-08.06, QC-014, MF-P3-08.10, specialist benchmark evidence
@@ -756,5 +780,24 @@ top-level compiler that recomputes every matrix row. Freezing that compiler befo
 manifest or result opens closes a reproducibility gap without changing a threshold or reacting
 to performance. No real matrix manifest, screening result, metric output, finalist, or winner
 exists at this refreeze point.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Administratively rebind final completion policy after promotion-contract amendment
+
+**Item(s) affected:** MF-P2-11.15, MF-P7-07.09, final modernization evidence index
+
+**Decision:** Supersede pre-result `modernization_completion_v1` SHA-256
+`aed53657c856f259d629d9f8dff588ccd9bde6226996d3e85c873df102ccb1c9` with
+`23495c6296f248d12a2ff82f3ed47f24a832d9b97aeb5baf11b558d315fb71db` solely to bind the
+amended Document 22 source hash. The 15 evidence domains, verifier identities, measurement rules,
+freshness limits, artifact floors, tracker terminal-state requirements, D1-D11, G1-G9, and authority
+boundary are unchanged. No eligible final completion bundle existed before this administrative
+rebind.
+
+**Why:** Document 22 now specifies the signed matrix-bound prerequisite certificate required before
+role promotion. The final evidence index intentionally detects any authoritative-source change, so
+its pre-result source digest must be updated before later primary completion receipts exist. This is
+not a threshold change and grants no completion, promotion, serving, mask, or gold authority.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

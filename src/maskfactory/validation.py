@@ -34,6 +34,7 @@ SCHEMA_NAMES = frozenset(
         "provider_benchmark_matrix_observations",
         "provider_benchmark_matrix_policy",
         "provider_benchmark_matrix_report",
+        "matrix_promotion_certificate",
         "qwen_challenger_benchmark_cases",
         "qwen_challenger_benchmark_policy",
         "qwen_challenger_benchmark_report",

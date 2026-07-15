@@ -163,6 +163,18 @@ certificate validator binds the benchmark result and current source, checkpoint,
 content, dataset, evaluation-set, prompt, hardware, QA, and measurement-code hashes. Validation is
 prerequisite evidence only; it cannot change a lifecycle, provider role, serving route, or truth tier.
 
+Before any role mutation, aggregate the nine specialist promotion packets and the custom-segmenter
+certificate into one dedicated Ed25519-signed matrix-promotion certificate. Recompute the complete
+top-level matrix report from its sealed manifest and raw observations; bind each specialist packet's
+exact checkpoint hash to a provider artifact present in its selected matrix cell; bind the custom
+segmenter to the matrix's evaluation-set, hardware, and QA identities as an explicit pipeline-context
+cell rather than misrepresenting it as a top-level provider artifact. Every governed role must appear
+exactly once, use a distinct matrix cell, retain its exact prerequisite and rollback-evidence hashes,
+and name a distinct incumbent whose rollback and restore were observed before certificate issuance.
+The certificate signer uses a dedicated key supplied at the promotion event; the private key is never
+stored in the repository. Certificate validation is still prerequisites-only: it cannot mutate a
+registry, grant a provider role, alter serving, author a mask, or create gold authority.
+
 Installed, benchmarked, and promoted states are recorded independently. A model card, catalog entry,
 download, or smoke test alone cannot produce a promotion.
 

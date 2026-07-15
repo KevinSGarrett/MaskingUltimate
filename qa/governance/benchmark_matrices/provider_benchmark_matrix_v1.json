@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "provider_benchmark_matrix_v1",
+  "frozen_at": "2026-07-15T11:05:00Z",
+  "authority": "pre_result_matrix_design_only_no_benchmark_promotion_serving_mask_or_gold_authority",
+  "truth_contract": {
+    "tier": "human_anchor_gold",
+    "partition": "holdout",
+    "image_disjoint": true
+  },
+  "screening_routes": [
+    {"route_id": "sam2_1_only", "candidate_source": "frozen_baseline_prompts", "refinement": "sam2_1"},
+    {"route_id": "sam3_1_only", "candidate_source": "sam3_1_direct", "refinement": "none"},
+    {"route_id": "sam3_1_discovery_sam2_1_refinement", "candidate_source": "sam3_1_discovery", "refinement": "sam2_1"},
+    {"route_id": "sam3_1_discovery_sam3_1_refinement", "candidate_source": "sam3_1_discovery", "refinement": "sam3_1"},
+    {"route_id": "rfdetr_detection_sam2_1_refinement", "candidate_source": "rfdetr_detection", "refinement": "sam2_1"},
+    {"route_id": "rfdetr_detection_sam3_1_refinement", "candidate_source": "rfdetr_detection", "refinement": "sam3_1"}
+  ],
+  "finalist_contract": {
+    "minimum_count": 1,
+    "maximum_count": 6,
+    "selection_requires_hash_sealed_screening_result": true,
+    "every_selected_route_must_expand_full_grid": true
+  },
+  "enrichment_dimensions": {
+    "geometry": ["densepose_only", "densepose_plus_sam3d_body"],
+    "silhouette": ["birefnet_general", "birefnet_dynamic", "birefnet_hr", "birefnet_hr_matting", "vitmatte"],
+    "pose": ["dwpose_133", "rtmw_x_384", "rtmo_l_640"],
+    "mediapipe_hand_vote": [false, true]
+  },
+  "required_provider_artifact_keys": [
+    "birefnet_dynamic",
+    "birefnet_general",
+    "birefnet_hr",
+    "birefnet_hr_matting",
+    "densepose",
+    "dwpose_133",
+    "mediapipe_hands",
+    "rfdetr",
+    "rtmo_l_640",
+    "rtmw_x_384",
+    "sam2_1",
+    "sam3_1",
+    "sam3d_body",
+    "vitmatte"
+  ],
+  "required_measurements": [
+    "per_label_iou",
+    "boundary_f_2px",
+    "small_part_recall",
+    "person_instance_recall",
+    "part_instance_recall",
+    "cross_person_bleed_rate",
+    "left_right_error_rate",
+    "front_back_error_rate",
+    "anatomy_clothing_confusion_rate",
+    "missing_part_rate",
+    "hallucinated_part_rate",
+    "hard_qa_failure_rate",
+    "correction_pixels_per_100k",
+    "audit_seconds_per_case",
+    "peak_vram_bytes",
+    "cold_latency_ms",
+    "warm_latency_ms",
+    "oom_crash_rate",
+    "deterministic_repeatability"
+  ],
+  "source_hashes": {
+    "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "6818856f7bdd2f034967043b2b7fef363e5b13676def797c05189b4e871253ec",
+    "configs/external_sources.yaml": "439192dc1153df323cb3801feb0d2a25ff7c4f3486b6f54357e86842ae339e8a",
+    "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/pipeline.yaml": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
+    "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
+    "env/provider_runtime_matrix.json": "cc7654b5e3c34f8e93a8012f09d9ca10f718c518214907f2126d93751f6f691d",
+    "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+    "qa/governance/benchmark_matrices/geometry_variant_benchmark_v1.json": "f70c47f2bb052d9910bbbec916765fca81b6f404ae4d3060297446f2080c870d",
+    "qa/governance/benchmark_matrices/mediapipe_vote_ablation_v1.json": "a5773153cd5a66f0c16e51f0e7148d0634b3d0d00f4b77947572ba7e5b4ebbf4",
+    "qa/governance/benchmark_matrices/pose_variant_benchmark_v1.json": "9f58144624e65851248e140bd8e96238c2dae4b4021c4bb03253ca709dc23bc5",
+    "qa/governance/benchmark_matrices/silhouette_variant_benchmark_v1.json": "90f99b004843d45e245c94e238ccab311b9765b1d624c8554498ff94a758a12f",
+    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "6c61c3cf46abfbebf7d2c3a231e2e5e09cdb10cd42c11bf1af21f95329e4ba36",
+    "src/maskfactory/providers/benchmark_policy.py": "d490d8d2bf368ba9067badb100f1386214b6fd7637f6bc60e845ae7c1683862b",
+    "src/maskfactory/providers/geometry_benchmark.py": "862c6a00a598316945764e28171a26bfd8d7383b87e4fdfaa05608f951955a3f",
+    "src/maskfactory/providers/mediapipe_ablation.py": "bc3fef7e64a1339dbd13671a5577151ebf7a07f7b2ca3bb00b17e81377367db1",
+    "src/maskfactory/providers/pose_benchmark.py": "d5b62edfa58a019a216ec95e1100d987e8be67b0ed3f7f06107eef61ad54055c",
+    "src/maskfactory/providers/silhouette_benchmark.py": "ab2d8b307934f9dd9463e793bdc73638d9a8d9a434a24a89095d5b1a8871cd15",
+    "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
+  },
+  "sha256": "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a"
+}

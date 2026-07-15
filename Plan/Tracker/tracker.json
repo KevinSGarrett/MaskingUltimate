@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T10:56:07+00:00",
+    "generated_at": "2026-07-15T11:09:51+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12053,13 +12053,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-15T11:09:51+00:00",
+          "actor": "ai_agent",
+          "text": "Frozen and implemented the two-stage top-level matrix: six exact screening routes, hash-bound finalist selection, and a mandatory 60-cell geometry/silhouette/pose/MediaPipe expansion per selected route, all under one truth/prompt/part/hardware/QA/pipeline/measurement/artifact identity. Real holdout/artifacts and populated matrix remain pending."
+        }
+      ],
+      "evidence": "qa/live_verification/provider_benchmark_matrix_contract_20260715.json; provider_benchmark_matrix_v1 canonical SHA-256 65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a; dedicated 22/22; underlying matrix/specialist 144/144; full repository 1,508/1,508; Ruff/Black/CI/schema checks pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T11:09:51+00:00",
       "orphaned": false
     },
     "MF-P2-11.14": {
@@ -12304,7 +12310,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T01:13:15+00:00",
@@ -12315,12 +12321,17 @@
           "ts": "2026-07-15T02:09:35+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 administrative refreeze: mandatory EOF normalization changed only the autonomy-risk source bytes. The nine roles, 406 buckets, thresholds, margin directions, zero-regression metrics, and pre-result freeze time are unchanged; no real benchmark result was opened."
+        },
+        {
+          "ts": "2026-07-15T11:09:51+00:00",
+          "actor": "ai_agent",
+          "text": "The frozen top-level provider-matrix policy now source-hash-binds the exact specialist margin manifest and requires full enrichment expansion before results. Remaining 10% is the actual image-disjoint human-anchor matrix manifest/result binding; no result was opened."
         }
       ],
-      "evidence": "qa/governance/benchmark_matrices/specialist_margins_v1.json is now hash-locked at 605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739; Plan/DECISIONS_LOG.md preserves the original hash and explicit administrative supersession; focused 111-test reconciliation and full 1,110/1,110 suite pass; Ruff clean. Remaining 15% is still the actual image-disjoint human-anchor matrix binding.",
+      "evidence": "qa/governance/benchmark_matrices/specialist_margins_v1.json canonical SHA-256 605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739; top-level provider_benchmark_matrix_v1 SHA-256 65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a; qa/live_verification/provider_benchmark_matrix_contract_20260715.json; full repository 1,508/1,508.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T02:09:35+00:00",
+      "updated_at": "2026-07-15T11:09:51+00:00",
       "orphaned": false
     },
     "MF-P3-08.09": {

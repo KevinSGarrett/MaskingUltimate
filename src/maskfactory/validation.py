@@ -30,6 +30,8 @@ SCHEMA_NAMES = frozenset(
         "pose_variant_benchmark_cases",
         "pose_variant_benchmark_policy",
         "pose_variant_benchmark_report",
+        "provider_benchmark_matrix_manifest",
+        "provider_benchmark_matrix_policy",
         "qwen_challenger_benchmark_cases",
         "qwen_challenger_benchmark_policy",
         "qwen_challenger_benchmark_report",

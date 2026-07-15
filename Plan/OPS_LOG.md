@@ -5337,3 +5337,24 @@ Historical observation boundary:   doctor PASS=11 WARN=0 SKIP=0 FAIL=0 and 14/14
 Runtime safety:                     repository metadata only; no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     official SAM 3.1 and SAM 3D Body checkpoint gates plus their live qualification; no progress percentage was inflated
 Evidence:                           `env/provider_runtime_matrix.json`, `qa/live_verification/provider_runtime_matrix_20260715.json`
+
+## 2026-07-15 11:09 UTC - Top-level provider benchmark matrix frozen and executable
+
+**Result:** MF-P2-11.13 advances to 75% and MF-P3-08.08 to 90%; the complete
+pre-result matrix identity and expansion contract is executable, while the real human-anchor
+matrix, gated Meta artifacts, screening result, and enrichment runs remain open.
+
+Pre-result policy:                  `provider_benchmark_matrix_v1`, canonical SHA-256 `65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a`, frozen before any eligible aggregate result
+Screening stage:                    exact SAM2.1-only, SAM3.1 direct, SAM3.1 discovery to SAM2.1/SAM3.1, and RF-DETR detection to SAM2.1/SAM3.1 routes
+Finalist stage:                     one to six routes selected only by a hash-sealed screening result; every selected route expands exactly 60 cells
+Enrichment grid:                    DensePose with/without SAM 3D Body × five BiRefNet/ViTMatte variants × DWPose/RTMW-X/RTMO-L × MediaPipe Hands off/on
+Shared identity:                    one image-disjoint human-anchor holdout, prompt set, part set, hardware profile, ontology, QA, pipeline, measurement bundle, and 14 provider artifact hashes across every cell
+Measurement freeze:                19 required quality, instance, safety, labor, VRAM, latency, failure, and determinism measurement families are named before results
+Fail-closed behavior:               altered/conflated shared identities, provider substitutions, missing/reordered routes, invalid finalist evidence, partial grids, source drift, late policy edits, and seal tampering are rejected
+Operational surface:               `tools/provider_benchmark_matrix.py` seals or verifies immutable manifests; CI runs the named 22-case gate
+Signed governance:                 current review `7e57c2395675c63a71ebfa92`, SHA-256 `9e47aafa837cf924b02c7371d5e4ab3b4bb4fa98e38837f1bc7fa938606f10d6`, chains archived `63270b91...`, verifies, and remains honestly FAIL on missing real active-role evidence
+Verification:                       dedicated 22/22; focused matrix and underlying specialist contracts 144/144; complete repository 1,508/1,508 with exit 0; Ruff, Black, CI YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Authority boundary:                fixtures grant no real matrix identity, result, finalist, winner, promotion, serving, mask, production, or gold authority
+Remaining real evidence:            governed human-anchor set, official Meta artifacts, exact shared identities, six screening runs, finalist selection, and complete enrichment grid runs
+Evidence:                           `qa/live_verification/provider_benchmark_matrix_contract_20260715.json`

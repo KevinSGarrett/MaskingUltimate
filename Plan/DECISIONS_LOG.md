@@ -712,3 +712,28 @@ do not train or evaluate any model; MF-P5-10.07 remains incomplete until all thr
 runs and immutable measurements exist.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze the two-stage top-level provider benchmark matrix
+
+**Item(s) affected:** MF-P2-11.13, MF-P2-11.14, MF-P2-11.15, MF-P3-08.08,
+provider screening, specialist enrichment, and role promotion
+
+**Decision:** Freeze `provider_benchmark_matrix_v1` at canonical SHA-256
+`65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a` before any
+eligible aggregate result. Screen exactly six routes: SAM2.1-only, SAM3.1 direct,
+SAM3.1 discovery into SAM2.1 or SAM3.1 refinement, and RF-DETR detection into SAM2.1
+or SAM3.1 refinement. Bind every cell to the same image-disjoint human-anchor holdout,
+prompt set, part set, hardware profile, ontology, QA, pipeline, measurement bundle, and
+14 exact provider artifacts. A hash-sealed screening result selects one to six finalists;
+every selected route must then expand the complete 60-cell grid across DensePose with and
+without SAM 3D Body, five silhouette/matting variants, three pose variants, and MediaPipe
+Hands off/on. Freeze all 19 required measurement families before results.
+
+**Why:** A flat all-combinations run would consume heavyweight runtime unnecessarily, while
+an informal post-screening choice would permit route or specialist cherry-picking. The
+two-stage contract freezes the route set, selection evidence, and full finalist expansion
+in advance. Its synthetic fixtures validate matrix identity only; they do not supply the
+human-anchor holdout, open screening results, install gated Meta artifacts, measure any
+provider, select a winner, authorize promotion or serving, author a mask, or create gold.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

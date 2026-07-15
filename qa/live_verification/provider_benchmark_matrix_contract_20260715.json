@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P2-11.13",
+  "verified_at": "2026-07-15T11:09:00Z",
+  "result": "PASS_PRE_RESULT_MATRIX_CONTRACT_REAL_MATRIX_PENDING",
+  "policy": {
+    "policy_id": "provider_benchmark_matrix_v1",
+    "path": "qa/governance/benchmark_matrices/provider_benchmark_matrix_v1.json",
+    "canonical_sha256": "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a",
+    "file_sha256": "c338f33c19b0a22301aeb2367e09d5dc9713ad822077f9e9d12316b9216d2bfd",
+    "frozen_at": "2026-07-15T11:05:00Z",
+    "truth_tier": "human_anchor_gold",
+    "truth_partition": "holdout",
+    "image_disjoint": true
+  },
+  "two_stage_design": {
+    "screening_route_count": 6,
+    "screening_routes": [
+      "sam2_1_only",
+      "sam3_1_only",
+      "sam3_1_discovery_sam2_1_refinement",
+      "sam3_1_discovery_sam3_1_refinement",
+      "rfdetr_detection_sam2_1_refinement",
+      "rfdetr_detection_sam3_1_refinement"
+    ],
+    "selected_finalist_minimum": 1,
+    "selected_finalist_maximum": 6,
+    "enrichment_cells_per_finalist": 60,
+    "enrichment_dimensions": {
+      "geometry_count": 2,
+      "silhouette_matting_count": 5,
+      "pose_count": 3,
+      "mediapipe_hand_vote_count": 2
+    }
+  },
+  "shared_identity_requirements": [
+    "evaluation_set_sha256",
+    "prompt_set_sha256",
+    "part_set_sha256",
+    "hardware_profile_sha256",
+    "qa_sha256",
+    "pipeline_sha256",
+    "ontology_sha256",
+    "measurement_bundle_sha256",
+    "fourteen_provider_artifact_sha256_values"
+  ],
+  "required_measurement_count": 19,
+  "implementation_hashes": {
+    "src/maskfactory/providers/provider_matrix.py": "bc1fb7f42ada445b2294fef264fb93a14839cd96a895ccef2c8177a5ceaab4a6",
+    "src/maskfactory/schemas/provider_benchmark_matrix_policy.schema.json": "6f6e93310e352f1b56e40dee29bdd650fa50506cb46ed36d165c1b078dd59b4e",
+    "src/maskfactory/schemas/provider_benchmark_matrix_manifest.schema.json": "f998de9e127e316f66980f95716b744a0c152707337530ed22f2b7aaab083ec0",
+    "tools/provider_benchmark_matrix.py": "22827500c7861f68dc5f1e526e769b4a0c91558d61892090bab9cc2be0059260",
+    "tests/test_provider_benchmark_matrix.py": "23b6e49047498530691daf141abfb4adabbf988ef32e7e139c7924b954d0e46f"
+  },
+  "verification": {
+    "dedicated_provider_matrix_tests": {
+      "collected": 22,
+      "passed": 22,
+      "failed": 0
+    },
+    "focused_matrix_and_underlying_specialist_contracts": {
+      "passed": 144,
+      "failed": 0
+    },
+    "full_repository_suite": {
+      "collected": 1508,
+      "passed": 1508,
+      "failed": 0,
+      "exit_code": 0,
+      "duration_seconds": 206.28
+    },
+    "repository_ruff": "pass",
+    "targeted_black": "pass",
+    "ci_yaml": "pass",
+    "schemas_json": "pass"
+  },
+  "signed_governance": {
+    "archived_review_id": "63270b91a0192684391ce2db",
+    "archived_review_sha256": "73fb72a66d6da5df69d668cd27aa746393e67eeaf494fcc23cff0ffa63a8a1df",
+    "current_review_id": "7e57c2395675c63a71ebfa92",
+    "current_review_sha256": "9e47aafa837cf924b02c7371d5e4ab3b4bb4fa98e38837f1bc7fa938606f10d6",
+    "current_review_status": "fail",
+    "verification": "pass_with_failed_review_allowed"
+  },
+  "runtime_safety": {
+    "wsl_accessed": false,
+    "docker_accessed": false,
+    "cvat_accessed": false,
+    "external_vhd_accessed": false,
+    "external_drive_accessed": false
+  },
+  "claims_not_made": [
+    "a real human-anchor evaluation set, prompt set, part set, or hardware profile was frozen",
+    "SAM 3.1 or SAM 3D Body gated checkpoints were installed",
+    "screening or enrichment inference ran",
+    "any route or provider produced performance metrics",
+    "any finalist or winner was selected",
+    "any provider was promoted, served, or granted mask or gold authority",
+    "MF-P2-11.13 is complete"
+  ],
+  "remaining_work": [
+    "Kevin supplies/governs the image-disjoint human-anchor source set and accepts the two official Meta checkpoint gates",
+    "freeze exact evaluation, prompt, part, hardware, and fourteen provider artifact identities",
+    "run the six screening cells and hash-seal the screening result",
+    "select finalists by the frozen rule and seal every required sixty-cell enrichment grid per finalist"
+  ]
+}

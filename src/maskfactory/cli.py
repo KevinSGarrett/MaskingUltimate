@@ -3152,6 +3152,114 @@ def models_champions(registry_path: Path, history_path: Path) -> None:
     click.echo(json.dumps(status, indent=2, sort_keys=True))
 
 
+@models.command("promote-custom-segmenter")
+@click.argument("candidate_key")
+@click.option(
+    "--certificate",
+    "certificate_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--identity-hashes",
+    "identity_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Current 12-hash identity document, independently recomputed by the caller.",
+)
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("runs/champion_history.jsonl"),
+    show_default=True,
+)
+def models_promote_custom_segmenter(
+    candidate_key: str,
+    certificate_path: Path,
+    identity_path: Path,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+) -> None:
+    """Transactionally promote a certified custom body-part segmenter."""
+    from .models.registry import promote_custom_segmenter_role
+
+    try:
+        certificate = json.loads(certificate_path.read_text(encoding="utf-8"))
+        identities = json.loads(identity_path.read_text(encoding="utf-8"))
+        if not isinstance(certificate, dict) or not isinstance(identities, dict):
+            raise ValueError("certificate and identity hashes must be JSON objects")
+        record = promote_custom_segmenter_role(
+            candidate_key,
+            certificate,
+            identities,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+        )
+    except (OSError, ValueError, json.JSONDecodeError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, indent=2, sort_keys=True))
+
+
+@models.command("rollback-custom-segmenter")
+@click.argument("transaction_id")
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("runs/champion_history.jsonl"),
+    show_default=True,
+)
+def models_rollback_custom_segmenter(
+    transaction_id: str,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+) -> None:
+    """Rollback one custom-segmenter promotion by immutable transaction id."""
+    from .models.registry import load_promotion_transaction, rollback_custom_segmenter_role
+
+    try:
+        record = load_promotion_transaction(transaction_id, history_path=history_path)
+        rollback = rollback_custom_segmenter_role(
+            record,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+        )
+    except (OSError, ValueError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(rollback, indent=2, sort_keys=True))
+
+
 @main.group()
 def external() -> None:
     """External foundation provider operations (doc 16)."""

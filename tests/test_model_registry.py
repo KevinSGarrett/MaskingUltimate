@@ -11,7 +11,6 @@ from PIL import Image
 from maskfactory.cli import main
 from maskfactory.models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
-    V1_PART_CLASS_NAMES,
     class_names_sha256,
 )
 from maskfactory.models.registry import (
@@ -354,13 +353,17 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
     )
     document = json.loads(registry.read_text())
     incumbent = document["models"][0]
-    incumbent["role"] = "champion_bodypart"
-    challenger = {**incumbent, "key": "challenger", "role": "challenger_bodypart"}
+    incumbent["role"] = "champion_hand"
+    incumbent["lifecycle_state"] = "promoted"
+    incumbent["content_compatibility"] = dict(_CONTENT_COMPATIBILITY)
+    incumbent["license_review"] = {"status": "not_required"}
+    incumbent["license"] = "MaskFactory-internal"
+    challenger = {**incumbent, "key": "challenger", "role": "challenger_hand"}
     config = models_root / "challenger_inference.py"
     config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
     challenger.update(
         {
-            "lifecycle_state": "installed",
+            "lifecycle_state": "benchmarked",
             "content_compatibility": dict(_CONTENT_COMPATIBILITY),
             "license": "MaskFactory-internal",
             "license_review": {"status": "not_required"},
@@ -370,13 +373,13 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
             "inference_config": "models/challenger_inference.py",
             "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
             "ontology_version": V1_ONTOLOGY_VERSION,
-            "class_names": list(V1_PART_CLASS_NAMES),
-            "class_names_sha256": class_names_sha256(list(V1_PART_CLASS_NAMES)),
+            "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+            "class_names_sha256": class_names_sha256(list(CHAMPION_HAND_CLASS_NAMES)),
             "artifact_hashes": {
                 "checkpoint_sha256": challenger["sha256"],
                 "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
             },
-            "benchmark_certificate": _benchmark_certificate("champion_bodypart"),
+            "benchmark_certificate": _benchmark_certificate("champion_hand"),
         }
     )
     document["models"].append(challenger)
@@ -384,32 +387,32 @@ def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> Non
     history = tmp_path / "champion_history.jsonl"
     record = promote_model_role(
         "challenger",
-        "champion_bodypart",
+        "champion_hand",
         registry_path=registry,
         models_root=models_root,
         history_path=history,
     )
     promoted = json.loads(registry.read_text())
     roles = {item["key"]: item["role"] for item in promoted["models"]}
-    assert roles == {"fixture": "challenger_bodypart", "challenger": "champion_bodypart"}
+    assert roles == {"fixture": "challenger_hand", "challenger": "champion_hand"}
     assert resolve_registered_role(
-        "champion_bodypart", registry_path=registry, models_root=models_root
+        "champion_hand", registry_path=registry, models_root=models_root
     ).is_file()
     assert json.loads(history.read_text())["incumbent_key"] == "fixture"
     visible = champion_status(registry_path=registry, history_path=history)
-    assert visible["champions"]["champion_bodypart"]["key"] == "challenger"
+    assert visible["champions"]["champion_hand"]["key"] == "challenger"
     assert len(visible["history"]) == 1
     cli = CliRunner().invoke(
         main,
         ["models", "champions", "--registry", str(registry), "--history", str(history)],
     )
     assert cli.exit_code == 0, cli.output
-    assert json.loads(cli.output)["champions"]["champion_bodypart"]["key"] == "challenger"
+    assert json.loads(cli.output)["champions"]["champion_hand"]["key"] == "challenger"
     rollback_model_role(record, registry_path=registry)
     rolled_back = json.loads(registry.read_text())
     assert {item["key"]: item["role"] for item in rolled_back["models"]} == {
-        "fixture": "champion_bodypart",
-        "challenger": "challenger_bodypart",
+        "fixture": "champion_hand",
+        "challenger": "challenger_hand",
     }
 
 
@@ -424,13 +427,14 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
         **{
             "key": "candidate",
             "file": "models/candidate.pth",
-            "role": "challenger_bodypart",
+            "role": "challenger_clothing",
+            "lifecycle_state": "benchmarked",
             "version_tag": "fixture-v1",
             "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
             "verified": True,
             "inference_config": "models/candidate.py",
             "inference_config_sha256": "0" * 64,
-            "class_names": ["background", "hair"],
+            "class_names": ["background", "clothing_generic"],
             "ontology_version": V1_ONTOLOGY_VERSION,
         }
     )
@@ -439,21 +443,33 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
     with pytest.raises(ModelRegistryError, match="inference_config hash mismatch"):
         promote_model_role(
             "candidate",
-            "champion_bodypart",
+            "champion_clothing",
             registry_path=registry,
             models_root=models_root,
         )
-    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_bodypart"
+    assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_clothing"
 
     entry["inference_config_sha256"] = hashlib.sha256(config.read_bytes()).hexdigest()
-    entry["class_names"] = ["background", "clothing_generic"]
+    entry["class_names"] = ["background", "hair"]
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
-    with pytest.raises(ModelRegistryError, match="vocabulary must be exact"):
+    with pytest.raises(ModelRegistryError, match="belongs to part, expected material"):
+        promote_model_role(
+            "candidate",
+            "champion_clothing",
+            registry_path=registry,
+            models_root=models_root,
+        )
+
+
+def test_legacy_promotion_cannot_bypass_custom_segmenter_transaction(tmp_path: Path) -> None:
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps(_registry_document([])), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="strict custom-segmenter"):
         promote_model_role(
             "candidate",
             "champion_bodypart",
             registry_path=registry,
-            models_root=models_root,
+            models_root=tmp_path,
         )
 
 
@@ -477,6 +493,7 @@ def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
             "inference_config": "models/hand.py",
             "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
             "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+            "lifecycle_state": "benchmarked",
             "benchmark_certificate": _benchmark_certificate("champion_hand"),
         }
     )
@@ -487,6 +504,7 @@ def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
 
     entry["class_names"] = list(CHAMPION_HAND_CLASS_NAMES[:-1])
     entry["role"] = "challenger_hand"
+    entry["lifecycle_state"] = "benchmarked"
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
     with pytest.raises(ModelRegistryError, match="14-class crop contract"):
         promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
@@ -511,6 +529,7 @@ def test_promotion_rejects_hard_bucket_regression(tmp_path: Path) -> None:
             "inference_config": "models/hand.py",
             "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
             "class_names": list(CHAMPION_HAND_CLASS_NAMES),
+            "lifecycle_state": "benchmarked",
             "benchmark_certificate": _benchmark_certificate("champion_hand", passed=False),
         }
     )

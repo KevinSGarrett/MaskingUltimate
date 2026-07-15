@@ -5,6 +5,7 @@ Spec: doc 06 section 3 and doc 04 section 3 (MF-P0-06.01).
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import os
@@ -12,7 +13,10 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
+import uuid
 from collections.abc import Callable, Iterable
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, BinaryIO
@@ -61,6 +65,7 @@ CHAMPION_HAND_CLASS_NAMES = (
 TRAINED_CANDIDATE_KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{2,79}$")
 
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
+ServingSmokeRunner = Callable[[Path, Path, str, str], dict[str, Any]]
 _SMOKE_RUNNERS: dict[str, SmokeRunner] = {}
 _ALLOWED_CONTENT_COMPATIBILITY = {
     "adult_nonexplicit": "allowed",
@@ -198,6 +203,150 @@ def _atomic_json(path: Path, document: dict[str, Any]) -> None:
         os.replace(temporary, path)
     finally:
         Path(temporary).unlink(missing_ok=True)
+
+
+def _canonical_sha256(document: dict[str, Any]) -> str:
+    return hashlib.sha256(
+        json.dumps(document, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _registry_sha256(document: dict[str, Any]) -> str:
+    return _canonical_sha256(document)
+
+
+@contextmanager
+def _registry_write_lock(registry_path: Path, *, timeout_seconds: float = 10.0):
+    """Serialize governed role transactions across concurrent MaskFactory sessions."""
+    lock_path = Path(f"{registry_path}.promotion.lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    deadline = time.monotonic() + timeout_seconds
+    descriptor: int | None = None
+    while descriptor is None:
+        try:
+            descriptor = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                stale = time.time() - lock_path.stat().st_mtime > 300
+            except FileNotFoundError:
+                continue
+            if stale:
+                try:
+                    lock_path.unlink()
+                except FileNotFoundError:
+                    pass
+                continue
+            if time.monotonic() >= deadline:
+                raise ModelRegistryError("timed out waiting for the model promotion lock")
+            time.sleep(0.05)
+    try:
+        os.write(descriptor, f"pid={os.getpid()} started={time.time()}\n".encode())
+        os.fsync(descriptor)
+        yield
+    finally:
+        os.close(descriptor)
+        lock_path.unlink(missing_ok=True)
+
+
+def _smoke_proposed_registry(
+    document: dict[str, Any],
+    *,
+    registry_path: Path,
+    models_root: Path,
+    role: str,
+    expected_key: str,
+    smoke_runner: ServingSmokeRunner,
+) -> dict[str, Any]:
+    """Validate and smoke an exact proposed registry without activating it."""
+    _validate_registry_document(document, path=registry_path)
+    registry_path = Path(registry_path)
+    registry_path.parent.mkdir(parents=True, exist_ok=True)
+    handle, temporary = tempfile.mkstemp(
+        prefix=f".{registry_path.name}.smoke.", suffix=".json", dir=registry_path.parent
+    )
+    proposed_path = Path(temporary)
+    try:
+        with os.fdopen(handle, "w", encoding="utf-8", newline="\n") as stream:
+            json.dump(document, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        result = smoke_runner(proposed_path, Path(models_root), role, expected_key)
+        if not isinstance(result, dict) or result.get("result") != "pass":
+            raise ModelRegistryError("serving smoke did not return a passing result")
+        json.dumps(result, sort_keys=True)
+        return result
+    except ModelRegistryError:
+        raise
+    except Exception as exc:
+        raise ModelRegistryError(f"serving smoke failed: {exc}") from exc
+    finally:
+        proposed_path.unlink(missing_ok=True)
+
+
+def registry_resolution_smoke(
+    registry_path: Path,
+    models_root: Path,
+    role: str,
+    expected_key: str,
+) -> dict[str, Any]:
+    """Smoke the serving registry contract and exact checkpoint resolution."""
+    registry = _load_registry(Path(registry_path))
+    owners = [entry for entry in registry["models"] if entry.get("role") == role]
+    if len(owners) != 1 or owners[0].get("key") != expected_key:
+        raise ModelRegistryError(f"serving smoke expected {expected_key} to own {role}")
+    resolved = resolve_registered_role(
+        role, registry_path=Path(registry_path), models_root=Path(models_root)
+    )
+    entry = owners[0]
+    if role in SERVING_CHAMPION_ROLES:
+        _validate_serving_champion_metadata(entry, role=role, models_root=Path(models_root))
+    return {
+        "result": "pass",
+        "smoke": "registry_resolution_and_serving_contract",
+        "role": role,
+        "model_key": expected_key,
+        "checkpoint_sha256": _sha256(resolved),
+    }
+
+
+def production_bodypart_serving_smoke(
+    registry_path: Path,
+    models_root: Path,
+    role: str,
+    expected_key: str,
+) -> dict[str, Any]:
+    """Run an actual fixed-image inference through the production body-part loader."""
+    if role != "champion_bodypart":
+        raise ModelRegistryError("production body-part smoke received the wrong role")
+    contract = registry_resolution_smoke(registry_path, models_root, role, expected_key)
+    fixture = PROJECT_ROOT / "qa" / "fixtures" / "smoke" / "ultralytics_bus_adults.jpg"
+    if not fixture.is_file():
+        raise ModelRegistryError("production body-part smoke fixture is missing")
+    from ..stages.s03_parsing import ParsingError, run_champion_bodypart_prediction
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="maskfactory-champion-smoke-") as directory:
+            output_dir = Path(directory)
+            result = run_champion_bodypart_prediction(
+                fixture,
+                output_dir,
+                registry_path=Path(registry_path),
+                models_root=Path(models_root),
+            )
+            if result is None or result.model_key != expected_key:
+                raise ModelRegistryError("production body-part smoke returned the wrong model")
+            map_hash = _sha256(result.map_path)
+            provenance_hash = _sha256(result.provenance_path)
+    except ParsingError as exc:
+        raise ModelRegistryError(f"production body-part smoke failed: {exc}") from exc
+    return {
+        **contract,
+        "smoke": "production_fixed_image_inference",
+        "fixture": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "output_map_sha256": map_hash,
+        "output_provenance_sha256": provenance_hash,
+    }
 
 
 def _registry_entry_path(entry: dict[str, Any], models_root: Path) -> Path:
@@ -791,6 +940,10 @@ def promote_model_role(
     """Atomically swap a verified challenger into a champion role and record rollback data."""
     if not role.startswith("champion_"):
         raise ModelRegistryError("promotion target must be a champion_* role")
+    if role == "champion_bodypart":
+        raise ModelRegistryError(
+            "champion_bodypart requires the strict custom-segmenter promotion transaction"
+        )
     registry = _load_registry(registry_path)
     candidate = next(
         (item for item in registry["models"] if item.get("key") == candidate_key), None
@@ -803,6 +956,8 @@ def promote_model_role(
         raise ModelRegistryError(
             f"promotion candidate is not a verified checkpoint: {candidate_key}"
         )
+    if candidate.get("lifecycle_state") != "benchmarked":
+        raise ModelRegistryError("promotion candidate lifecycle must be benchmarked")
     resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
     if role in SERVING_CHAMPION_ROLES:
         _validate_serving_champion_metadata(candidate, role=role, models_root=models_root)
@@ -813,6 +968,8 @@ def promote_model_role(
     incumbent = incumbents[0] if incumbents else None
     if incumbent is candidate:
         raise ModelRegistryError(f"candidate already owns {role}")
+    if incumbent is not None and incumbent.get("lifecycle_state") != "promoted":
+        raise ModelRegistryError("incumbent champion lifecycle must be promoted")
     candidate_previous_role = str(candidate["role"])
     candidate_previous_lifecycle_state = str(candidate["lifecycle_state"])
     candidate["role"] = role
@@ -971,6 +1128,353 @@ def rollback_model_role(record: dict[str, Any], *, registry_path: Path = DEFAULT
         incumbent["role"] = record["champion_role"]
         incumbent["lifecycle_state"] = record.get("incumbent_previous_lifecycle_state", "promoted")
     _atomic_json(registry_path, registry)
+
+
+def _promote_custom_segmenter_role_unlocked(
+    candidate_key: str,
+    certificate: dict[str, Any],
+    expected_identity_hashes: dict[str, Any],
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    promoted_at: str | None = None,
+) -> dict[str, Any]:
+    """Promote one benchmarked custom segmenter with an atomic, smoke-first swap.
+
+    Certificate validation grants prerequisites only.  This function is the
+    separate authority boundary that mutates the body-part champion role.
+    """
+    from ..training.promotion_policy import (
+        CustomSegmenterPromotionError,
+        validate_custom_segmenter_promotion_certificate,
+    )
+
+    try:
+        summary = validate_custom_segmenter_promotion_certificate(
+            certificate,
+            expected_identity_hashes=expected_identity_hashes,
+        )
+    except CustomSegmenterPromotionError as exc:
+        raise ModelRegistryError(str(exc)) from exc
+    if summary["candidate_key"] != candidate_key:
+        raise ModelRegistryError("promotion candidate differs from the validated certificate")
+    if smoke_runner is None:
+        smoke_runner = production_bodypart_serving_smoke
+
+    registry_path = Path(registry_path)
+    models_root = Path(models_root)
+    history_path = Path(history_path)
+    before = _load_registry(registry_path)
+    proposed = copy.deepcopy(before)
+    by_key = {str(entry["key"]): entry for entry in proposed["models"]}
+    candidate = by_key.get(candidate_key)
+    if (
+        candidate is None
+        or candidate.get("managed") is True
+        or candidate.get("verified") is not True
+    ):
+        raise ModelRegistryError(
+            f"promotion candidate is not a verified checkpoint: {candidate_key}"
+        )
+    if candidate.get("lifecycle_state") != "benchmarked":
+        raise ModelRegistryError("custom segmenter promotion requires lifecycle benchmarked")
+    if candidate.get("role") == "champion_bodypart":
+        raise ModelRegistryError("custom segmenter candidate already owns champion_bodypart")
+    resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
+    _validate_serving_champion_metadata(
+        candidate, role="champion_bodypart", models_root=models_root
+    )
+    checkpoint_hash = expected_identity_hashes.get("checkpoint_sha256")
+    if checkpoint_hash != candidate.get("sha256"):
+        raise ModelRegistryError("current checkpoint identity differs from the registry candidate")
+
+    incumbents = [entry for entry in proposed["models"] if entry.get("role") == "champion_bodypart"]
+    if len(incumbents) != 1:
+        raise ModelRegistryError("custom segmenter promotion requires exactly one incumbent")
+    incumbent = incumbents[0]
+    if incumbent.get("key") != summary["rollback_provider"]:
+        raise ModelRegistryError("certificate rollback provider differs from the incumbent")
+    if incumbent.get("lifecycle_state") != "promoted":
+        raise ModelRegistryError("custom segmenter incumbent must have lifecycle promoted")
+
+    candidate_previous_role = str(candidate["role"])
+    candidate["role"] = "champion_bodypart"
+    candidate["lifecycle_state"] = "promoted"
+    incumbent["role"] = candidate_previous_role
+    incumbent["lifecycle_state"] = "benchmarked"
+    smoke = _smoke_proposed_registry(
+        proposed,
+        registry_path=registry_path,
+        models_root=models_root,
+        role="champion_bodypart",
+        expected_key=candidate_key,
+        smoke_runner=smoke_runner,
+    )
+    timestamp = promoted_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    record: dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "action": "promote",
+        "transaction_id": uuid.uuid4().hex,
+        "recorded_at": timestamp,
+        "candidate_key": candidate_key,
+        "candidate_previous_role": candidate_previous_role,
+        "candidate_previous_lifecycle_state": "benchmarked",
+        "incumbent_key": str(incumbent["key"]),
+        "incumbent_previous_role": "champion_bodypart",
+        "incumbent_previous_lifecycle_state": "promoted",
+        "champion_role": "champion_bodypart",
+        "certificate_sha256": str(certificate["sha256"]),
+        "registry_before_sha256": _registry_sha256(before),
+        "registry_after_sha256": _registry_sha256(proposed),
+        "serving_smoke": smoke,
+    }
+    record["sha256"] = _canonical_sha256(record)
+
+    _atomic_json(registry_path, proposed)
+    try:
+        _append_jsonl(history_path, record)
+    except Exception as exc:
+        try:
+            _atomic_json(registry_path, before)
+        except Exception as restore_exc:
+            raise ModelRegistryError(
+                "promotion history failed and exact registry restoration also failed: "
+                f"history={exc}; restore={restore_exc}"
+            ) from restore_exc
+        raise ModelRegistryError(f"promotion history failed; registry restored: {exc}") from exc
+    return record
+
+
+def promote_custom_segmenter_role(
+    candidate_key: str,
+    certificate: dict[str, Any],
+    expected_identity_hashes: dict[str, Any],
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    promoted_at: str | None = None,
+) -> dict[str, Any]:
+    """Serialize and execute the strict custom-segmenter promotion transaction."""
+    with _registry_write_lock(Path(registry_path)):
+        return _promote_custom_segmenter_role_unlocked(
+            candidate_key,
+            certificate,
+            expected_identity_hashes,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+            smoke_runner=smoke_runner,
+            promoted_at=promoted_at,
+        )
+
+
+def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> None:
+    required = {
+        "schema_version",
+        "action",
+        "transaction_id",
+        "recorded_at",
+        "candidate_key",
+        "candidate_previous_role",
+        "candidate_previous_lifecycle_state",
+        "incumbent_key",
+        "incumbent_previous_role",
+        "incumbent_previous_lifecycle_state",
+        "champion_role",
+        "certificate_sha256",
+        "registry_before_sha256",
+        "registry_after_sha256",
+        "serving_smoke",
+        "sha256",
+    }
+    if set(record) != required or record.get("schema_version") != "2.0.0":
+        raise ModelRegistryError("custom segmenter transaction record is incomplete")
+    if (
+        record.get("action") != "promote"
+        or record.get("champion_role") != "champion_bodypart"
+        or record.get("candidate_previous_lifecycle_state") != "benchmarked"
+        or record.get("incumbent_previous_role") != "champion_bodypart"
+        or record.get("incumbent_previous_lifecycle_state") != "promoted"
+        or not isinstance(record.get("transaction_id"), str)
+        or not record["transaction_id"]
+    ):
+        raise ModelRegistryError("custom segmenter transaction record scope is invalid")
+    if not re.fullmatch(r"[a-f0-9]{32}", record["transaction_id"]):
+        raise ModelRegistryError("custom segmenter transaction id is invalid")
+    if (
+        not isinstance(record.get("candidate_key"), str)
+        or not record["candidate_key"]
+        or not isinstance(record.get("incumbent_key"), str)
+        or not record["incumbent_key"]
+        or record["candidate_key"] == record["incumbent_key"]
+        or not isinstance(record.get("candidate_previous_role"), str)
+        or not record["candidate_previous_role"]
+        or record["candidate_previous_role"] == "champion_bodypart"
+    ):
+        raise ModelRegistryError("custom segmenter transaction providers are invalid")
+    for field in (
+        "certificate_sha256",
+        "registry_before_sha256",
+        "registry_after_sha256",
+    ):
+        if not isinstance(record.get(field), str) or not re.fullmatch(
+            r"[a-f0-9]{64}", record[field]
+        ):
+            raise ModelRegistryError(f"custom segmenter transaction {field} is invalid")
+    smoke = record.get("serving_smoke")
+    if (
+        not isinstance(smoke, dict)
+        or smoke.get("result") != "pass"
+        or smoke.get("model_key") != record["candidate_key"]
+    ):
+        raise ModelRegistryError("custom segmenter transaction serving smoke is invalid")
+    try:
+        recorded_at = datetime.fromisoformat(str(record["recorded_at"]).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ModelRegistryError("custom segmenter transaction timestamp is invalid") from exc
+    if recorded_at.tzinfo is None:
+        raise ModelRegistryError("custom segmenter transaction timestamp lacks timezone")
+    claimed = record["sha256"]
+    payload = {key: value for key, value in record.items() if key != "sha256"}
+    if claimed != _canonical_sha256(payload):
+        raise ModelRegistryError("custom segmenter transaction record hash mismatch")
+
+
+def _rollback_custom_segmenter_role_unlocked(
+    record: dict[str, Any],
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    rolled_back_at: str | None = None,
+) -> dict[str, Any]:
+    """Restore the exact incumbent role/lifecycle after a smoke-first check."""
+    _validate_custom_segmenter_transaction_record(record)
+    if smoke_runner is None:
+        smoke_runner = production_bodypart_serving_smoke
+    registry_path = Path(registry_path)
+    models_root = Path(models_root)
+    history_path = Path(history_path)
+    before = _load_registry(registry_path)
+    if _registry_sha256(before) != record["registry_after_sha256"]:
+        raise ModelRegistryError("cannot rollback: registry changed after the promotion")
+    proposed = copy.deepcopy(before)
+    by_key = {str(entry["key"]): entry for entry in proposed["models"]}
+    candidate = by_key.get(str(record["candidate_key"]))
+    incumbent = by_key.get(str(record["incumbent_key"]))
+    if candidate is None or incumbent is None:
+        raise ModelRegistryError("cannot rollback: recorded provider is missing")
+    if (
+        candidate.get("role") != "champion_bodypart"
+        or candidate.get("lifecycle_state") != "promoted"
+        or incumbent.get("role") != record["candidate_previous_role"]
+        or incumbent.get("lifecycle_state") != "benchmarked"
+    ):
+        raise ModelRegistryError("cannot rollback: role or lifecycle changed after promotion")
+    candidate["role"] = record["candidate_previous_role"]
+    candidate["lifecycle_state"] = record["candidate_previous_lifecycle_state"]
+    incumbent["role"] = record["incumbent_previous_role"]
+    incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
+    if _registry_sha256(proposed) != record["registry_before_sha256"]:
+        raise ModelRegistryError(
+            "cannot rollback: exact pre-promotion registry is not reproducible"
+        )
+    smoke = _smoke_proposed_registry(
+        proposed,
+        registry_path=registry_path,
+        models_root=models_root,
+        role="champion_bodypart",
+        expected_key=str(record["incumbent_key"]),
+        smoke_runner=smoke_runner,
+    )
+    timestamp = rolled_back_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    rollback_record: dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "action": "rollback",
+        "transaction_id": uuid.uuid4().hex,
+        "promotion_transaction_id": record["transaction_id"],
+        "recorded_at": timestamp,
+        "candidate_key": record["candidate_key"],
+        "incumbent_key": record["incumbent_key"],
+        "champion_role": "champion_bodypart",
+        "registry_before_sha256": record["registry_after_sha256"],
+        "registry_after_sha256": record["registry_before_sha256"],
+        "serving_smoke": smoke,
+    }
+    rollback_record["sha256"] = _canonical_sha256(rollback_record)
+    _atomic_json(registry_path, proposed)
+    try:
+        _append_jsonl(history_path, rollback_record)
+    except Exception as exc:
+        try:
+            _atomic_json(registry_path, before)
+        except Exception as restore_exc:
+            raise ModelRegistryError(
+                "rollback history failed and promoted registry restoration also failed: "
+                f"history={exc}; restore={restore_exc}"
+            ) from restore_exc
+        raise ModelRegistryError(
+            f"rollback history failed; promoted registry restored: {exc}"
+        ) from exc
+    return rollback_record
+
+
+def rollback_custom_segmenter_role(
+    record: dict[str, Any],
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    rolled_back_at: str | None = None,
+) -> dict[str, Any]:
+    """Serialize and execute one exact custom-segmenter rollback transaction."""
+    with _registry_write_lock(Path(registry_path)):
+        return _rollback_custom_segmenter_role_unlocked(
+            record,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+            smoke_runner=smoke_runner,
+            rolled_back_at=rolled_back_at,
+        )
+
+
+def load_promotion_transaction(transaction_id: str, *, history_path: Path) -> dict[str, Any]:
+    """Load one unrolled custom-segmenter promotion by immutable transaction id."""
+    if not transaction_id:
+        raise ModelRegistryError("promotion transaction id is required")
+    records: list[dict[str, Any]] = []
+    for number, line in enumerate(Path(history_path).read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ModelRegistryError(f"invalid champion history row {number}: {exc}") from exc
+        if isinstance(value, dict):
+            records.append(value)
+    matches = [
+        value
+        for value in records
+        if value.get("action") == "promote" and value.get("transaction_id") == transaction_id
+    ]
+    if len(matches) != 1:
+        raise ModelRegistryError("promotion transaction id is missing or ambiguous")
+    if any(
+        value.get("action") == "rollback"
+        and value.get("promotion_transaction_id") == transaction_id
+        for value in records
+    ):
+        raise ModelRegistryError("promotion transaction was already rolled back")
+    record = matches[0]
+    _validate_custom_segmenter_transaction_record(record)
+    return record
 
 
 def champion_status(

@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T05:05:25+00:00",
+    "generated_at": "2026-07-15T05:30:54+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -13485,13 +13485,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 90,
+      "notes": [
+        {
+          "ts": "2026-07-15T05:25:45+00:00",
+          "actor": "ai_agent",
+          "text": "Control-plane verify clauses pass; real winner/runtime observation intentionally unclaimed."
+        }
+      ],
+      "evidence": "Strict custom-segmenter transaction is implemented: legacy body-part promotion bypass blocked; benchmarked winner/promoted incumbent role+lifecycle swap is smoke-first and lock-serialized; history has sealed before/after hashes; one-command rollback proves restored incumbent inference and exact registry restoration; smoke/history/tamper/stale/reuse failures fail closed. 8 dedicated, 101 focused, full 1,195/1,195, Ruff/CI YAML/diff clean. qa/live_verification/custom_segmenter_promotion_transaction_20260715.json. Remaining 10%: first real image-disjoint human-anchor winner and observed live winner promotion/rollback; no live role change claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T05:30:54+00:00",
       "orphaned": false
     },
     "MF-P5-10.12": {

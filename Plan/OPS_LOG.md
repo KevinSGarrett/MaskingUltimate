@@ -5037,3 +5037,20 @@ Certificate safety:                 every missing and every stale identity was t
 Authority boundary:                validation grants prerequisites-only evidence and performs no role/lifecycle mutation, serving activation, or gold authorization
 CI and verification:                named governance CI includes the 40-case dedicated suite; focused policy/schema/training/tracker bundle passed 92/92; complete repository suite passed 1,186/1,186; Ruff passed
 Evidence:                           `qa/live_verification/custom_segmenter_promotion_policy_20260715.json`; no human-anchor result, benchmark winner, promotion, or serving claim exists
+
+## 2026-07-15 05:24 UTC - Custom-segmenter promotion and rollback transactions enforced
+
+**Result:** MF-P5-10.11 control-plane implementation is complete and fail-closed; the tracker remains honestly partial pending the first real human-anchor winner and its observed live promotion/rollback.
+
+Authority boundary:                the custom-segmenter certificate remains prerequisites-only; no test fixture, model card, download, or smoke result can mutate the live role, serving path, or gold authority
+Exclusive role path:               `champion_bodypart` now refuses the legacy promotion API and can change only through the strict custom-segmenter transaction after the current 12-hash certificate validates
+Lifecycle transaction:             candidate must be `benchmarked`, incumbent must be `promoted`; success makes the winner promoted and displaced incumbent benchmarked, while rollback restores the exact prior role/lifecycle registry hash
+Runtime smokes:                     both promotion and rollback build a temporary proposed registry and run the fixed bus image through the production MMSeg body-part loader before activating either direction; output/provenance hashes are sealed into history
+Failure atomicity:                  candidate/rollback smoke failures mutate nothing; history-write failure restores the prior registry; exclusive promotion locking serializes concurrent project sessions
+History integrity:                 promotion and rollback have separate self-hashed records with transaction IDs and exact registry before/after hashes; tampered, reused, ambiguous, or stale/intervening-state rollback is rejected
+One-command rollback:              `maskfactory models rollback-custom-segmenter TRANSACTION_ID` loads the immutable promotion record, proves incumbent inference, restores the exact pre-promotion hash, and appends rollback history
+Legacy hardening:                   all other champion promotions now also require a benchmarked candidate and a promoted incumbent; the old body-part certificate route is explicitly blocked
+CI and verification:               named registry-governance CI includes the 8-case transaction suite; focused registry/policy/schema/serving bundle passed 101/101; complete repository suite passed 1,195/1,195; Ruff, CI YAML parse, and diff check passed
+Honest remaining boundary:          no real human-anchor benchmark winner, production registry swap, or live winner rollback is claimed; those require the blocked training/holdout inputs and a healthy model runtime
+Storage safety:                     WSL, Docker Desktop, the USB-backed Ubuntu VHD, and the Seagate volume were not touched while physical reconnect remains pending
+Evidence:                           `qa/live_verification/custom_segmenter_promotion_transaction_20260715.json`

@@ -166,6 +166,20 @@ prerequisite evidence only; it cannot change a lifecycle, provider role, serving
 Installed, benchmarked, and promoted states are recorded independently. A model card, catalog entry,
 download, or smoke test alone cannot produce a promotion.
 
+The custom-segmenter role is served by the `champion_bodypart` registry pointer. That pointer can only
+change through `maskfactory models promote-custom-segmenter`; the legacy champion mutation API refuses
+this role. The strict transaction validates the current 12-hash certificate, requires a benchmarked
+candidate and promoted incumbent, writes neither role until the proposed candidate passes fixed-image
+production inference, and records before/after registry hashes plus smoke hashes in append-only history.
+Concurrent promotion sessions are serialized by an exclusive registry lock. If history publication
+fails, the original registry is restored. The displaced incumbent remains benchmarked.
+
+`maskfactory models rollback-custom-segmenter TRANSACTION_ID` is the one-command rollback. It refuses
+tampered or already-used records and any intervening registry change, reconstructs the exact
+pre-promotion registry hash, runs fixed-image production inference against the restored incumbent before
+activation, and appends a separately hash-sealed rollback record. A failed rollback smoke leaves the
+promoted registry untouched.
+
 ## 8. Currency Review
 
 Review models, runtimes, dependencies, licenses, content compatibility, benchmark certificates, and

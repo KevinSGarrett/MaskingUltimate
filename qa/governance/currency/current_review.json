@@ -128,7 +128,7 @@
     }
   ],
   "event": "scheduled_90_day",
-  "expires_at": "2026-10-13T02:02:38.045482Z",
+  "expires_at": "2026-10-13T06:12:20.095496Z",
   "global_findings": [],
   "input_hashes": {
     "dependencies": {
@@ -137,19 +137,19 @@
       "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
       "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
     },
-    "external_registry": "f845479ebff3973cff4b766f51b544eae7fe9fe102f1b02c92b2f0ecbe7dde06",
+    "external_registry": "439192dc1153df323cb3801feb0d2a25ff7c4f3486b6f54357e86842ae339e8a",
     "model_registry": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
-    "pipeline": "769eafb462a6fd30a0e1e9122e2dcfa83a8fa59e37637c6844a7b474b155eed5",
+    "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
     "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
   },
-  "payload_sha256": "fea6c0cf44415dc6d64d61f6b8071a8cb97b67b3a600e1051ee76f8e4441a87f",
-  "previous_review_sha256": "baa7f8031c721263f15ba3d9f8e4b01ab51c155ef6608beffad61dabd98af938",
-  "review_id": "0013b1ef98195149fa02d07d",
-  "review_sha256": "cfc6be7404f9d1a9a547c9b5b6c908cb1583c6185e0914e1d0d08ce10b7e2d4d",
-  "reviewed_at": "2026-07-15T02:02:38.045482Z",
-  "reviewer": "maskfactory-governance-agent",
+  "payload_sha256": "c3c91e449c8988538bd1327a6c1d137650739fbfd005f7f625042cffcd0b1e51",
+  "previous_review_sha256": "cfc6be7404f9d1a9a547c9b5b6c908cb1583c6185e0914e1d0d08ce10b7e2d4d",
+  "review_id": "a64c662434b74be29a7a48f0",
+  "review_sha256": "eaf6e2ec8091c5b36651a4fdc83d57c59fb68dbb999f8b6dafc377765b4952f3",
+  "reviewed_at": "2026-07-15T06:12:20.095496Z",
+  "reviewer": "maskfactory-governance",
   "schema_version": "1.0.0",
-  "signature": "OJS1K3D/KLT8XAc4NTQb/OQqJ6xr8yVtZWExUWZ4FBSeNNSl1bkAu22I2g91gC6RCuaNxQB18tZqhSVdGaLnDQ==",
+  "signature": "7Q3azPKWqkYsNuqZ8fVJNiTU30kxTtw5WWEEZk7w4oiIF+89sNO3eBa1K8UXl1lyNYqlQGz0sNpd39ezziGgAg==",
   "signature_algorithm": "ed25519",
   "signer_public_key_sha256": "854d4ee9f9b07505306651b528dcc6da73897ff2c687656d17e77173cf1e79fe",
   "status": "fail"

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-15T04:40:00Z",
+  "captured_at": "2026-07-15T05:59:09Z",
   "incident": "Ubuntu-22.04 backing volume disappeared during WSL/Docker use",
   "classification": "observed_external_storage_path_loss_and_io_retries",
   "backing_store": {
@@ -40,6 +40,18 @@
       "provider": "disk",
       "event_id": 153,
       "finding": "four additional source-disk reads were retried during the rescue copy; no later warning was observed before the copy was stopped"
+    },
+    {
+      "observed_at_local": "2026-07-15T00:38:13-05:00",
+      "provider": "UASPStor/disk",
+      "event_id": "129/153",
+      "finding": "Windows reset the external USB storage device and logged another burst of logical-block I/O retries"
+    },
+    {
+      "observed_at_local": "2026-07-15T00:51:41-05:00",
+      "provider": "UASPStor/disk",
+      "event_id": "129/153",
+      "finding": "Windows reset the device again and recorded additional logical-block I/O retries after Docker's ext4 input/output error"
     }
   ],
   "recovery_boundary": {
@@ -84,6 +96,17 @@
     "wsl_related_process_count": 0,
     "physical_drive_reseat_safe": true,
     "restart_before_storage_check_allowed": false
+  },
+  "current_windows_state": {
+    "observed_at": "2026-07-15T00:59:09-05:00",
+    "volume": "F:",
+    "device": "Seagate BUP Slim BK",
+    "windows_health_status": "Healthy",
+    "windows_operational_status": "Online",
+    "docker_desktop_process_count": 0,
+    "wsl_related_process_count": 0,
+    "interpretation": "the volume is presently enumerated but is not cleared for VHD access because device resets and I/O retries recurred minutes earlier",
+    "required_next_step": "keep Docker and WSL stopped; physically stabilize the cable/port, then prove a quiet observation interval before resuming the rescue copy"
   },
   "authority": "incident_and_partial_rescue_evidence_only_no_runtime_recovery_or_model_install_authority"
 }

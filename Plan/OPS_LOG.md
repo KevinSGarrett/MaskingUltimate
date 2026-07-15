@@ -5069,3 +5069,28 @@ Failure atomicity:                  seeded second-file replacement failure and p
 Activation boundary:               no v2 production activation occurred and no registry, champion, workflow, schema, or active config was changed; complete MF-P7-06.06 remains the only production authority
 CI and verification:               named ontology-v2 drift CI includes the 8-case activation bundle; focused v2/derive/anatomy suite passed 78/78; complete repository suite passed 1,203/1,203; Ruff, CI YAML, generator drift, and diff checks pass
 Evidence:                           `qa/live_verification/ontology_v2_derived_activation_20260715.json`, sealed SHA-256 `130bd5be058ec0f069acc05b9b36aaff2d930de5fd2cd5b355fe99cd666fadeb`
+
+## 2026-07-15 05:59 UTC - Ubuntu external-VHD failure isolated below Docker
+
+**Result:** Docker/WSL remain safely stopped; the new Docker Desktop message is confirmed as an external-storage I/O incident, not a Docker helper permission-only failure.
+
+Linux symptom:                      Docker could not create `/root/.docker/desktop` because ext4 returned `input/output error`
+Windows correlation:               the Seagate USB disk logged UASPStor reset event 129 and repeated disk event 153 logical-block retries at 00:38 and 00:51 local, after the earlier NTFS delayed-write and transaction-log failures
+Current enumeration:                Windows presently reports `F:` online and healthy, but this administrative status does not clear the VHD because resets recurred minutes before observation
+Safe boundary:                      Docker Desktop and WSL-related process counts are zero; no WSL launch, Docker restart, elevated service action, VHD registration, filesystem repair, or source-VHD read was attempted
+Rescue boundary:                    the `C:\MaskFactory_WSL_Backup\Ubuntu-22.04\ext4.vhdx` copy remains incomplete at 29,396,828,160 bytes (58.72%), unhashed, and without boot authority
+Required physical step:             keep Docker's restart prompt declined, stabilize the Seagate cable/port, then prove a quiet Windows observation interval before completing and hashing the rescue copy
+Evidence:                           `qa/live_verification/wsl_external_vhd_storage_incident_20260715.json`
+
+## 2026-07-15 06:13 UTC - Currency CI negative coverage made exhaustive
+
+**Result:** MF-P7-07.03 is 95% complete; every stale/missing category now has an exact fail-closed regression, while live require-pass remains honestly gated by MF-P7-07.01.
+
+Active-path coverage:               exact seeded failures cover binding, authority, promoted lifecycle, artifact hash, runtime identity, both approved adult-content lanes, license decision, benchmark hash/scope/primary/hard-bucket/freshness, and rollback provider/authority/artifact/evidence/freshness
+Current-input coverage:             missing pipeline, external registry, model registry, rollback document, and governance-decision dependency each fail with their exact `input_missing:*` code; signed input drift still fails `active_input_hash_mismatch`
+Review coverage:                    missing review file, signature/payload tamper, expiry/staleness, role recomputation drift, and forged pass all fail closed
+Test isolation:                     every destructive missing-file fixture now operates on a private temporary copy of each authority input and cannot mutate the live registry
+Signed refresh:                     current review `a64c662434b74be29a7a48f0`, SHA-256 `eaf6e2ec8091c5b36651a4fdc83d57c59fb68dbb999f8b6dafc377765b4952f3`, chains archived review `0013b1ef98195149fa02d07d` and passes signature/current-input recomputation
+Strict boundary:                    require-pass still exits 1 only for `benchmark_certificate_missing`, `rollback_evidence_missing`, `rollback_provider_not_distinct`, and aggregate `currency_review_not_passing`
+Verification:                       focused currency suite passed 33/33; complete repository suite passed 1,224/1,224; repository Ruff and targeted Black passed; tracker rebuilt 609/609 with zero structural problems
+Evidence:                           `qa/live_verification/currency_ci_gate_20260715.json`, signed current review plus immutable history, workflow, and exhaustive seeded tests

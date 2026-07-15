@@ -49,12 +49,13 @@ def _benchmark(*, issued_at: datetime = NOW):
 
 def _write_fixture(tmp_path: Path):
     pipeline_path = tmp_path / "pipeline.yaml"
-    external_path = Path("configs/external_sources.yaml").resolve()
+    external_path = tmp_path / "external_sources.yaml"
     model_path = tmp_path / "model_registry.json"
     rollback_path = tmp_path / "rollback_evidence.json"
     dependency_path = tmp_path / "requirements.lock.txt"
     private_key = tmp_path / "secret/currency_private.pem"
     public_key = tmp_path / "currency_public.pem"
+    external_path.write_bytes(Path("configs/external_sources.yaml").resolve().read_bytes())
     pipeline = {
         "provider_roles": {
             "role_a": {
@@ -125,6 +126,77 @@ def _write_fixture(tmp_path: Path):
         "private_key_path": private_key,
         "public_key_path": public_key,
     }
+
+
+def _seed_active_failure(paths, mutation: str) -> None:
+    pipeline = yaml.safe_load(paths["pipeline_path"].read_text(encoding="utf-8"))
+    models = json.loads(paths["model_registry_path"].read_text(encoding="utf-8"))
+    rollback = json.loads(paths["rollback_evidence_path"].read_text(encoding="utf-8"))
+    active = next(row for row in models["models"] if row["key"] == "incumbent_model")
+    fallback = next(row for row in models["models"] if row["key"] == "fallback_model")
+
+    if mutation == "active_binding_missing":
+        pipeline["provider_roles"]["role_a"]["active"] = "unknown"
+    elif mutation == "active_authority_missing":
+        pipeline["provider_catalog"]["incumbent"]["key"] = "unknown_model"
+    elif mutation == "active_lifecycle_not_promoted":
+        active["lifecycle_state"] = "benchmarked"
+    elif mutation == "missing_artifact_hash":
+        active.pop("sha256")
+    elif mutation == "missing_runtime_identity":
+        active.pop("runtime")
+    elif mutation == "unresolved_content":
+        active["content_compatibility"]["consensual_explicit_adult"] = "unclear"
+    elif mutation == "unresolved_license":
+        active["license_review"] = {"status": "pending"}
+    elif mutation == "missing_benchmark":
+        active.pop("benchmark_certificate")
+    elif mutation == "invalid_benchmark":
+        active["benchmark_certificate"]["sha256"] = "f" * 64
+    elif mutation == "wrong_benchmark_scope":
+        certificate = active["benchmark_certificate"]
+        certificate["target_role"] = "other_role"
+        certificate["sha256"] = _canonical_sha256(
+            {key: value for key, value in certificate.items() if key != "sha256"}
+        )
+    elif mutation == "failed_benchmark_primary":
+        certificate = active["benchmark_certificate"]
+        certificate["primary_win_or_labor_reduction"] = False
+        certificate["sha256"] = _canonical_sha256(
+            {key: value for key, value in certificate.items() if key != "sha256"}
+        )
+    elif mutation == "failed_benchmark_hard_bucket":
+        certificate = active["benchmark_certificate"]
+        certificate["hard_bucket_results"][0]["passed"] = False
+        certificate["sha256"] = _canonical_sha256(
+            {key: value for key, value in certificate.items() if key != "sha256"}
+        )
+    elif mutation == "stale_benchmark":
+        active["benchmark_certificate"] = _benchmark(issued_at=NOW - timedelta(days=91))
+    elif mutation == "rollback_provider_missing":
+        pipeline["provider_roles"]["role_a"].pop("rollback")
+    elif mutation == "rollback_provider_not_distinct":
+        pipeline["provider_roles"]["role_a"]["rollback"] = "incumbent"
+    elif mutation == "rollback_provider_authority_missing":
+        pipeline["provider_catalog"]["fallback"]["key"] = "unknown_model"
+    elif mutation == "rollback_provider_artifact_hash_missing":
+        fallback.pop("sha256")
+    elif mutation == "missing_rollback":
+        rollback["records"] = []
+    elif mutation == "invalid_rollback":
+        rollback["records"][0]["result"] = "fail"
+    elif mutation == "stale_rollback":
+        record = rollback["records"][0]
+        record["tested_at"] = (NOW - timedelta(days=91)).isoformat().replace("+00:00", "Z")
+        record["sha256"] = _canonical_sha256(
+            {key: value for key, value in record.items() if key != "sha256"}
+        )
+    else:  # pragma: no cover - the parametrized table is the authority
+        raise AssertionError(f"unknown mutation: {mutation}")
+
+    paths["pipeline_path"].write_text(yaml.safe_dump(pipeline, sort_keys=False), encoding="utf-8")
+    paths["model_registry_path"].write_text(json.dumps(models, indent=2), encoding="utf-8")
+    paths["rollback_evidence_path"].write_text(json.dumps(rollback, indent=2), encoding="utf-8")
 
 
 def _build(paths, **overrides):
@@ -229,38 +301,69 @@ def test_review_expires_at_ninety_days(tmp_path: Path):
 @pytest.mark.parametrize(
     ("mutation", "expected"),
     [
+        ("active_binding_missing", "active_binding_missing"),
+        ("active_authority_missing", "active_authority_missing"),
+        ("active_lifecycle_not_promoted", "active_lifecycle_not_promoted"),
         ("missing_artifact_hash", "active_artifact_hash_missing"),
+        ("missing_runtime_identity", "active_runtime_identity_missing"),
         ("unresolved_content", "content_compatibility_unresolved"),
+        ("unresolved_license", "license_decision_unresolved"),
         ("missing_benchmark", "benchmark_certificate_missing"),
+        ("invalid_benchmark", "benchmark_certificate_invalid"),
+        ("wrong_benchmark_scope", "benchmark_certificate_scope_mismatch"),
+        ("failed_benchmark_primary", "benchmark_certificate_primary_gate_failed"),
+        ("failed_benchmark_hard_bucket", "benchmark_certificate_hard_bucket_failed"),
         ("stale_benchmark", "benchmark_certificate_stale"),
+        ("rollback_provider_missing", "rollback_provider_missing"),
+        ("rollback_provider_not_distinct", "rollback_provider_not_distinct"),
+        ("rollback_provider_authority_missing", "rollback_provider_authority_missing"),
+        (
+            "rollback_provider_artifact_hash_missing",
+            "rollback_provider_artifact_hash_missing",
+        ),
         ("missing_rollback", "rollback_evidence_missing"),
+        ("invalid_rollback", "rollback_evidence_invalid"),
+        ("stale_rollback", "rollback_evidence_stale"),
     ],
 )
 def test_each_seeded_active_path_failure_reports_the_exact_gate(
     tmp_path: Path, mutation: str, expected: str
 ):
     paths = _write_fixture(tmp_path)
-    models = json.loads(paths["model_registry_path"].read_text(encoding="utf-8"))
-    active = next(row for row in models["models"] if row["key"] == "incumbent_model")
-    if mutation == "missing_artifact_hash":
-        active.pop("sha256")
-    elif mutation == "unresolved_content":
-        active["content_compatibility"]["consensual_explicit_adult"] = "unclear"
-    elif mutation == "missing_benchmark":
-        active.pop("benchmark_certificate")
-    elif mutation == "stale_benchmark":
-        active["benchmark_certificate"] = _benchmark(issued_at=NOW - timedelta(days=91))
-    elif mutation == "missing_rollback":
-        paths["rollback_evidence_path"].write_text(
-            json.dumps({"schema_version": "1.0.0", "records": []}), encoding="utf-8"
-        )
-    paths["model_registry_path"].write_text(json.dumps(models, indent=2), encoding="utf-8")
+    _seed_active_failure(paths, mutation)
     review = _build(paths)
     assert review["status"] == "fail"
     with pytest.raises(CurrencyReviewError) as caught:
         _verify(review, paths)
     assert expected in caught.value.codes
     _verify(review, paths, require_pass=False)
+
+
+@pytest.mark.parametrize(
+    ("missing_input", "expected"),
+    [
+        ("pipeline_path", "input_missing:pipeline"),
+        ("external_registry_path", "input_missing:external_registry"),
+        ("model_registry_path", "input_missing:model_registry"),
+        ("rollback_evidence_path", "input_missing:rollback_evidence"),
+        ("dependency", "input_missing:dependency:governance_decisions"),
+    ],
+)
+def test_each_missing_current_input_fails_with_exact_gate(
+    tmp_path: Path, missing_input: str, expected: str
+):
+    paths = _write_fixture(tmp_path)
+    decisions = tmp_path / "DECISIONS_LOG.md"
+    decisions.write_text("# Frozen decisions\n", encoding="utf-8")
+    paths["dependency_paths"]["governance_decisions"] = decisions
+    review = _build(paths)
+    if missing_input == "dependency":
+        decisions.unlink()
+    else:
+        paths[missing_input].unlink()
+    with pytest.raises(CurrencyReviewError) as caught:
+        _verify(review, paths)
+    assert caught.value.codes == (expected,)
 
 
 def test_review_cannot_fabricate_pass_over_derived_failure(tmp_path: Path):
@@ -325,3 +428,29 @@ def test_currency_review_cli_builds_and_verifies_exact_fixture(tmp_path: Path):
         ],
     )
     assert verified.exit_code == 0, verified.output
+
+
+def test_currency_review_cli_fails_closed_when_review_file_is_missing(tmp_path: Path):
+    paths = _write_fixture(tmp_path)
+    missing_review = tmp_path / "missing_review.json"
+    result = CliRunner().invoke(
+        main,
+        [
+            "governance",
+            "verify-currency-review",
+            str(missing_review),
+            "--public-key",
+            str(paths["public_key_path"]),
+            "--pipeline",
+            str(paths["pipeline_path"]),
+            "--external-registry",
+            str(paths["external_registry_path"]),
+            "--model-registry",
+            str(paths["model_registry_path"]),
+            "--rollback-evidence",
+            str(paths["rollback_evidence_path"]),
+        ],
+    )
+    assert result.exit_code != 0
+    assert "does not exist" in result.output
+    assert missing_review.name in result.output

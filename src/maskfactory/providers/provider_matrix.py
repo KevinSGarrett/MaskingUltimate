@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "provider_benchmark_matrix_v1.json"
 )
-POLICY_SHA256 = "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a"
+POLICY_SHA256 = "d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538"
 SCREENING_ROUTES = (
     ("sam2_1_only", "frozen_baseline_prompts", "sam2_1"),
     ("sam3_1_only", "sam3_1_direct", "none"),
@@ -65,6 +65,7 @@ MEASUREMENT_SOURCE_FILES = (
     "src/maskfactory/providers/geometry_benchmark.py",
     "src/maskfactory/providers/mediapipe_ablation.py",
     "src/maskfactory/providers/pose_benchmark.py",
+    "src/maskfactory/providers/provider_matrix_metrics.py",
     "src/maskfactory/providers/silhouette_benchmark.py",
     "src/maskfactory/qa/metrics.py",
 )
@@ -140,6 +141,19 @@ def validate_policy(
         raise ProviderMatrixError("provider matrix enrichment grid drifted")
     if tuple(document["required_provider_artifact_keys"]) != PROVIDER_ARTIFACT_KEYS:
         raise ProviderMatrixError("provider matrix artifact vocabulary drifted")
+    if document["measurement_contract"] != {
+        "required_label_count": 65,
+        "required_cell_artifact_keys": [
+            "determinism_outputs",
+            "metric_observations",
+            "prediction_manifest",
+            "runtime_log",
+        ],
+        "required_deterministic_repeats": 2,
+        "explicit_raw_count_denominators_required": True,
+        "finite_nonnegative_runtime_required": True,
+    }:
+        raise ProviderMatrixError("provider matrix measurement contract drifted")
     finalist = document["finalist_contract"]
     if finalist != {
         "minimum_count": 1,

@@ -737,3 +737,24 @@ human-anchor holdout, open screening results, install gated Meta artifacts, meas
 provider, select a winner, authorize promotion or serving, author a mask, or create gold.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Administratively refreeze provider matrix with measurement compiler
+
+**Item(s) affected:** MF-P2-11.13, MF-P2-11.14, aggregate matrix reproducibility
+
+**Decision:** Supersede the pre-result `provider_benchmark_matrix_v1` policy hash
+`65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a` with canonical
+SHA-256 `d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538`.
+The route set, finalist rule, enrichment grid, truth contract, provider vocabulary, and 19
+measurement families are unchanged. The superseding policy adds the exact aggregate metric
+compiler source hash and explicitly requires 65 label rows, four evidence artifacts per cell,
+two deterministic repeats, raw count denominators, and finite nonnegative runtime measurements.
+The repository pre-commit formatter's canonical output is the source identity bound by this hash.
+
+**Why:** The original policy bound the underlying metric implementations but not the new
+top-level compiler that recomputes every matrix row. Freezing that compiler before any
+manifest or result opens closes a reproducibility gap without changing a threshold or reacting
+to performance. No real matrix manifest, screening result, metric output, finalist, or winner
+exists at this refreeze point.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

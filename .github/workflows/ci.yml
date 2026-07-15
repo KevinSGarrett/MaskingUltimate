@@ -41,7 +41,10 @@ jobs:
       - name: Block incomplete geometry-variant benchmark evidence
         run: pytest -q tests/test_geometry_variant_benchmark.py
       - name: Block incomplete top-level provider benchmark matrices
-        run: pytest -q tests/test_provider_benchmark_matrix.py
+        run: >-
+          pytest -q
+          tests/test_provider_benchmark_matrix.py
+          tests/test_provider_benchmark_matrix_metrics.py
       - name: Block incomparable custom-segmenter training tournaments
         run: pytest -q tests/test_custom_segmenter_training_tournament.py
       - name: Block incomplete silhouette and matting benchmark evidence

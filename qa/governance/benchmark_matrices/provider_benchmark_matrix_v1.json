@@ -44,6 +44,18 @@
     "sam3d_body",
     "vitmatte"
   ],
+  "measurement_contract": {
+    "required_label_count": 65,
+    "required_cell_artifact_keys": [
+      "determinism_outputs",
+      "metric_observations",
+      "prediction_manifest",
+      "runtime_log"
+    ],
+    "required_deterministic_repeats": 2,
+    "explicit_raw_count_denominators_required": true,
+    "finite_nonnegative_runtime_required": true
+  },
   "required_measurements": [
     "per_label_iou",
     "boundary_f_2px",
@@ -83,8 +95,9 @@
     "src/maskfactory/providers/geometry_benchmark.py": "862c6a00a598316945764e28171a26bfd8d7383b87e4fdfaa05608f951955a3f",
     "src/maskfactory/providers/mediapipe_ablation.py": "bc3fef7e64a1339dbd13671a5577151ebf7a07f7b2ca3bb00b17e81377367db1",
     "src/maskfactory/providers/pose_benchmark.py": "d5b62edfa58a019a216ec95e1100d987e8be67b0ed3f7f06107eef61ad54055c",
+    "src/maskfactory/providers/provider_matrix_metrics.py": "214c1585de297adf57426743e8cbea3019d02036976933043914e354f3424a22",
     "src/maskfactory/providers/silhouette_benchmark.py": "ab2d8b307934f9dd9463e793bdc73638d9a8d9a434a24a89095d5b1a8871cd15",
     "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
   },
-  "sha256": "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a"
+  "sha256": "d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538"
 }

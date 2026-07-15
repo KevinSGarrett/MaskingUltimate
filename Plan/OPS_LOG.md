@@ -5358,3 +5358,24 @@ Runtime safety:                     no WSL, Docker, CVAT, external VHD, or exter
 Authority boundary:                fixtures grant no real matrix identity, result, finalist, winner, promotion, serving, mask, production, or gold authority
 Remaining real evidence:            governed human-anchor set, official Meta artifacts, exact shared identities, six screening runs, finalist selection, and complete enrichment grid runs
 Evidence:                           `qa/live_verification/provider_benchmark_matrix_contract_20260715.json`
+
+## 2026-07-15 11:25 UTC - Complete provider-matrix measurement compiler implemented
+
+**Result:** MF-P2-11.14 advances to 75%; every sealed screening/enrichment cell now has
+a fail-closed raw-observation and finite-metric report contract, while real model execution
+and human-anchor observations remain open.
+
+Administrative refreeze:            `provider_benchmark_matrix_v1` supersedes pre-result SHA-256 `65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a` with `d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538` solely to bind the pre-commit-normalized aggregate compiler and explicit measurement contract before results
+Cell coverage:                       exact six screening cells plus every 60-cell finalist enrichment grid; missing, extra, reordered, or substituted cells fail
+Label evidence:                      all 65 body-parts-v2 labels per cell with truth/prediction/intersection/union and boundary TP/FP/FN counts
+Aggregate evidence:                  explicit denominators for small-part, person/part instance, bleed, side, front/back, anatomy/clothing, missing/hallucinated part, hard-QA, correction labor, and runtime-failure rates
+Runtime evidence:                    finite cold/warm latency, peak VRAM, execution attempts, OOM/crash counts, audit seconds/cases, and exactly two deterministic output hashes
+Artifacts:                           exact hashes for prediction manifest, raw metric observations, runtime log, and determinism outputs in every cell
+Measurement behavior:                all 19 frozen metrics are recomputed; a bad or nondeterministic model receives bad finite measurements rather than being hidden or rejected as an incomplete row
+Authority boundary:                 the report contains no winner or promotion decision and grants no serving, mask, production, semantic, blocker-clearance, or gold authority
+Operational surface:               `tools/evaluate_provider_benchmark_matrix.py` builds or exactly verifies reports; CI runs the combined 41-case identity/metrics gate
+Signed governance:                 current review `47bd5d7ffbde841e6934a6d8`, SHA-256 `64e2cfdb1084843078567d7d10e5e04b4bdbc4aa6194f27ab2ad0715c0a7de99`, chains archived `0480a5ef...`, verifies, and remains honestly FAIL on missing real active-role evidence
+Verification:                       dedicated metrics 19/19; focused matrix/specialist/currency 196/196; complete repository 1,527/1,527 with exit 0; Ruff, Black, CI YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining real evidence:            completed MF-P2-11.13 manifest, every real cell run, raw artifacts/counts, and a sealed finite-measurement report
+Evidence:                           `qa/live_verification/provider_benchmark_matrix_metrics_contract_20260715.json`

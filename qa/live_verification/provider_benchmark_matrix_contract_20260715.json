@@ -1,13 +1,14 @@
 {
   "schema_version": "1.0.0",
   "item_id": "MF-P2-11.13",
-  "verified_at": "2026-07-15T11:09:00Z",
+  "verified_at": "2026-07-15T11:35:23Z",
   "result": "PASS_PRE_RESULT_MATRIX_CONTRACT_REAL_MATRIX_PENDING",
   "policy": {
     "policy_id": "provider_benchmark_matrix_v1",
     "path": "qa/governance/benchmark_matrices/provider_benchmark_matrix_v1.json",
-    "canonical_sha256": "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a",
-    "file_sha256": "c338f33c19b0a22301aeb2367e09d5dc9713ad822077f9e9d12316b9216d2bfd",
+    "canonical_sha256": "d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538",
+    "superseded_pre_result_sha256": "65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a",
+    "file_sha256": "9c071d4b877936823cba83ec6e259ce5b98b7443cfb03c5be70ffe06321a8876",
     "frozen_at": "2026-07-15T11:05:00Z",
     "truth_tier": "human_anchor_gold",
     "truth_partition": "holdout",
@@ -45,9 +46,17 @@
     "fourteen_provider_artifact_sha256_values"
   ],
   "required_measurement_count": 19,
+  "measurement_contract": {
+    "label_rows_per_cell": 65,
+    "artifact_hashes_per_cell": 4,
+    "deterministic_repeats_per_cell": 2,
+    "explicit_raw_denominators": true,
+    "finite_nonnegative_runtime": true,
+    "aggregate_compiler_source_sha256": "214c1585de297adf57426743e8cbea3019d02036976933043914e354f3424a22"
+  },
   "implementation_hashes": {
-    "src/maskfactory/providers/provider_matrix.py": "bc1fb7f42ada445b2294fef264fb93a14839cd96a895ccef2c8177a5ceaab4a6",
-    "src/maskfactory/schemas/provider_benchmark_matrix_policy.schema.json": "6f6e93310e352f1b56e40dee29bdd650fa50506cb46ed36d165c1b078dd59b4e",
+    "src/maskfactory/providers/provider_matrix.py": "703bfc9cb4a0abd312c1a41e1de099e7243def25650326baa11cc90c4631ce82",
+    "src/maskfactory/schemas/provider_benchmark_matrix_policy.schema.json": "dfcc20f50874503915da2291d5eb2246bac8bac0c3c67e93305efbd72e6fd6a9",
     "src/maskfactory/schemas/provider_benchmark_matrix_manifest.schema.json": "f998de9e127e316f66980f95716b744a0c152707337530ed22f2b7aaab083ec0",
     "tools/provider_benchmark_matrix.py": "22827500c7861f68dc5f1e526e769b4a0c91558d61892090bab9cc2be0059260",
     "tests/test_provider_benchmark_matrix.py": "23b6e49047498530691daf141abfb4adabbf988ef32e7e139c7924b954d0e46f"
@@ -59,15 +68,15 @@
       "failed": 0
     },
     "focused_matrix_and_underlying_specialist_contracts": {
-      "passed": 144,
+      "passed": 196,
       "failed": 0
     },
     "full_repository_suite": {
-      "collected": 1508,
-      "passed": 1508,
+      "collected": 1527,
+      "passed": 1527,
       "failed": 0,
       "exit_code": 0,
-      "duration_seconds": 206.28
+      "duration_seconds": 234.76
     },
     "repository_ruff": "pass",
     "targeted_black": "pass",
@@ -75,10 +84,10 @@
     "schemas_json": "pass"
   },
   "signed_governance": {
-    "archived_review_id": "63270b91a0192684391ce2db",
-    "archived_review_sha256": "73fb72a66d6da5df69d668cd27aa746393e67eeaf494fcc23cff0ffa63a8a1df",
-    "current_review_id": "7e57c2395675c63a71ebfa92",
-    "current_review_sha256": "9e47aafa837cf924b02c7371d5e4ab3b4bb4fa98e38837f1bc7fa938606f10d6",
+    "archived_review_id": "0480a5ef81edd192b1705da4",
+    "archived_review_sha256": "7d6a4ad19ddb255573ae8083aba4f5e8c58e5e97c78bba7a15cbaf1b94ef616e",
+    "current_review_id": "47bd5d7ffbde841e6934a6d8",
+    "current_review_sha256": "64e2cfdb1084843078567d7d10e5e04b4bdbc4aa6194f27ab2ad0715c0a7de99",
     "current_review_status": "fail",
     "verification": "pass_with_failed_review_allowed"
   },

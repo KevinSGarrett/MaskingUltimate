@@ -3,7 +3,7 @@
   "$id": "https://maskfactory.local/schemas/provider_benchmark_matrix_policy.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "policy_id", "frozen_at", "authority", "truth_contract", "screening_routes", "finalist_contract", "enrichment_dimensions", "required_provider_artifact_keys", "required_measurements", "source_hashes", "sha256"],
+  "required": ["schema_version", "policy_id", "frozen_at", "authority", "truth_contract", "screening_routes", "finalist_contract", "enrichment_dimensions", "required_provider_artifact_keys", "measurement_contract", "required_measurements", "source_hashes", "sha256"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "policy_id": {"const": "provider_benchmark_matrix_v1"},
@@ -14,6 +14,7 @@
     "finalist_contract": {"type": "object"},
     "enrichment_dimensions": {"type": "object"},
     "required_provider_artifact_keys": {"type": "array", "minItems": 14, "maxItems": 14, "uniqueItems": true, "items": {"type": "string"}},
+    "measurement_contract": {"type": "object"},
     "required_measurements": {"type": "array", "minItems": 19, "uniqueItems": true, "items": {"type": "string"}},
     "source_hashes": {"type": "object", "minProperties": 19, "additionalProperties": {"$ref": "#/$defs/sha256"}},
     "sha256": {"$ref": "#/$defs/sha256"}

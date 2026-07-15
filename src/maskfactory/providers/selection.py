@@ -123,12 +123,13 @@ def _validate_shadow_only_experiment(
             "active, fallback, or rollback"
         )
     challengers = role_config.get("challengers", ())
-    if forbidden not in challengers:
+    official_is_active = role_config.get("active") == forbidden
+    if forbidden not in challengers and not official_is_active:
         raise ProviderSelectionError(
-            f"{role}.challengers must retain {forbidden!r} when screening "
+            f"{role} must retain {forbidden!r} as active or as a challenger when screening "
             f"shadow-only experiment {provider_key!r}"
         )
-    if challengers.index(forbidden) > challengers.index(provider_key):
+    if forbidden in challengers and challengers.index(forbidden) > challengers.index(provider_key):
         raise ProviderSelectionError(
             f"{role}.challengers must list official provider {forbidden!r} before "
             f"shadow-only experiment {provider_key!r}"

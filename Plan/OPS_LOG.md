@@ -5670,3 +5670,17 @@ Production safety:                 `models/model_registry.json` was not modified
 Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
 Remaining work:                    real image-disjoint human-anchor matrix results, measured winners, production-event certificate, observed live promotions/rollbacks, and the distinct interactive-SAM rollback path
 Evidence:                          `qa/live_verification/custom_segmenter_matrix_bound_transaction_20260715.json`
+
+## 2026-07-15 19:35 UTC - Official interactive-provider promotion state made representable
+
+**Result:** MF-P6-06.03 advances from 70% to 75%; provider selection no longer
+contains a logical deadlock that made a valid official SAM3.1 promoted state impossible.
+
+Prior contradiction:                a shadow-only experiment required official SAM3.1 to remain in `challengers`, while active-role validation forbids an active provider from also remaining a challenger
+Corrected invariant:                LiteText may remain a shadow challenger when official SAM3.1 is either active or precedes it in the challenger list
+Promotion fixture:                  official SAM3.1 lifecycle promoted + active; SAM2.1 large retained as rollback and benchmark challenger; SAM2.1 base-plus retained as OOM fallback; LiteText retained shadow-only
+Fail-closed preservation:           LiteText still cannot become active, fallback, or rollback; removing official SAM3.1 from both active and challengers fails
+Verification:                       54 focused provider/serve/preflight tests and complete repository 1,636/1,636 pass; pre-commit Ruff/Black/whitespace hooks pass
+Production safety:                  `configs/pipeline.yaml`, `configs/external_sources.yaml`, and `models/model_registry.json` are unchanged; no lifecycle, active provider, serving route, mask, truth, or gold authority changed
+Remaining work:                     refactor legacy batch S07 from its SAM2-only runner to the provider-neutral InteractiveSegmenter contract, then implement the serialized multi-file promotion/rollback transaction and perform the real benchmark-gated SAM3.1 event
+Evidence:                           `qa/live_verification/interactive_selection_promotion_readiness_20260715.json`

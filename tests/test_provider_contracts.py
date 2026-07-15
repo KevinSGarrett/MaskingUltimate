@@ -211,6 +211,43 @@ def test_shadow_only_experiment_requires_distinct_registry_identity(tmp_path: Pa
         )
 
 
+def test_official_provider_can_be_active_while_litetext_remains_shadow_only(
+    tmp_path: Path,
+) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    registry = yaml.safe_load(registry_path.read_text(encoding="utf-8"))
+    registry["providers"]["sam3_1"]["lifecycle_state"] = "promoted"
+    registry_path.write_text(yaml.safe_dump(registry, sort_keys=False), encoding="utf-8")
+    role = config["provider_roles"]["interactive_segmenter"]
+    role["active"] = "sam3_1"
+    role["challengers"] = ["sam2_1_large", "sam3_litetext_s0"]
+    role["rollback"] = "sam2_1_large"
+
+    result = validate_provider_selection(
+        config,
+        external_registry_path=registry_path,
+        model_registry_path=ROOT / "models/model_registry.json",
+    )
+    assert result["active"]["interactive_segmenter"] == "sam3_1"
+    assert result["rollback"]["interactive_segmenter"] == "sam2_1_large"
+    assert result["shadow"]["interactive_segmenter"] == (
+        "sam2_1_large",
+        "sam3_litetext_s0",
+    )
+
+
+def test_litetext_requires_official_provider_active_or_challenging(tmp_path: Path) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    config["provider_roles"]["interactive_segmenter"]["challengers"] = ["sam3_litetext_s0"]
+
+    with pytest.raises(ProviderSelectionError, match="as active or as a challenger"):
+        validate_provider_selection(
+            config,
+            external_registry_path=registry_path,
+            model_registry_path=ROOT / "models/model_registry.json",
+        )
+
+
 def test_shadow_tournament_runs_installed_challenger_and_records_planned_skips() -> None:
     config = yaml.safe_load((ROOT / "configs/pipeline.yaml").read_text(encoding="utf-8"))
     calls: list[tuple[str, str]] = []

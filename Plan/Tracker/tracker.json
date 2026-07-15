@@ -13943,18 +13943,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-15T00:56:56+00:00",
           "actor": "ai_agent",
           "text": "Remaining 30% is the genuine post-benchmark SAM3.1 promotion plus one-command rollback rehearsal required by MF-P2-11.15; current evidence is incumbent continuity and fail-closed recovery only."
+        },
+        {
+          "ts": "2026-07-15T19:36:35+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: removed the provider-selection contradiction that prevented official SAM3.1 from being active while LiteText remained shadow-only. No provider or lifecycle was changed."
         }
       ],
-      "evidence": "2026-07-15: qa/live_verification/sam2_incumbent_rollback_20260715.json proves SAM2.1-large remains promoted/active, base-plus is installed/local OOM fallback, both checkpoint hashes resolve exactly, live CVAT pth-sam2 returns a mask, an attempted planned SAM3.1 activation fails closed, and production selection remains byte-identical. Provider selection now validates and exposes active/fallback/rollback paths; focused 93 tests passed, full suite 1098/1098 and Ruff clean. Full displaced-incumbent rollback is not claimed until MF-P2-11.15 benchmark/promotion gate passes.",
+      "evidence": "qa/live_verification/interactive_selection_promotion_readiness_20260715.json SHA-256 7b7d1c2aba7ee1bb882152780cda2eb433fc67a7c43267fc0463457bc20de566; valid future state proves SAM3.1 active, SAM2.1-large rollback/benchmarked challenger, base-plus OOM fallback, and LiteText shadow-only. 54 focused and full 1636/1636 pass. Remaining 25%: provider-neutral legacy S07, serialized promotion/rollback control plane, official checkpoint benchmark, and live round trip.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T00:56:56+00:00",
+      "updated_at": "2026-07-15T19:36:35+00:00",
       "orphaned": false
     },
     "MF-P6-06.04": {

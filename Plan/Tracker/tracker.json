@@ -12170,7 +12170,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-15T12:02:17+00:00",
@@ -12191,12 +12191,17 @@
           "ts": "2026-07-15T19:23:33+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: closed the final implemented model-role mutation bypass; champion_bodypart now requires the same current signed aggregate ten-role matrix bundle as hand/clothing. No real winner or live role event is claimed."
+        },
+        {
+          "ts": "2026-07-15T20:29:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: added the distinct interactive-provider path required by the SAM modernization: a same-signer matrix-bound certificate plus serialized smoke-first promotion/rollback across pipeline, external registry, and model registry with exact byte restoration. No real winner or live role event is claimed."
         }
       ],
-      "evidence": "qa/live_verification/custom_segmenter_matrix_bound_transaction_20260715.json SHA-256 802eb70f52aef00fbd7b254716c8d9b367548f51084575d4207f603dd6b2c4e1; all implemented body-part/hand/clothing champion mutations require the signed aggregate bundle. Custom v3 promotion/rollback schemas, real Ed25519 bundle integration, tamper/replay/drift/concurrency failures, 58 focused and full 1634/1634 pass. Remaining 10%: real human-anchor matrix results, measured winners, production-event certificate, and observed live role promotion/rollback.",
+      "evidence": "All implemented role mutations now require signed matrix-bound evidence and hash-sealed smoke-first transactions, including interactive provider selection across all three authoritative files. qa/live_verification/interactive_provider_transaction_contract_20260715.json SHA-256 70f631c79fab23c5907ebf4fdb7d4711dfee9de13fad77e51a378c234af1963e; 189 focused and full 1653/1653 pass. Remaining 5%: real image-disjoint human-anchor winner certificate and observed live promotion/rollback.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T19:23:33+00:00",
+      "updated_at": "2026-07-15T20:34:00+00:00",
       "orphaned": false
     },
     "MF-P3-08.01": {
@@ -13711,12 +13716,17 @@
           "ts": "2026-07-15T19:23:34+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: custom body-part transaction is now aggregate-matrix-bound and schema-sealed in both directions. Percentage remains 90 because the verify clause still requires a real winner and observed live role/serving round trip."
+        },
+        {
+          "ts": "2026-07-15T20:29:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: transaction coverage now also includes the provider-selected interactive role and exact three-file rollback. Percentage remains 90 because the verify clause requires a real measured winner and observed live role/lifecycle/serving round trip."
         }
       ],
-      "evidence": "qa/live_verification/custom_segmenter_promotion_transaction_20260715.json; qa/live_verification/specialist_champion_transaction_contract_20260715.json; qa/live_verification/custom_segmenter_matrix_bound_transaction_20260715.json SHA-256 802eb70f52aef00fbd7b254716c8d9b367548f51084575d4207f603dd6b2c4e1. Strict atomic smoke-first promotion/rollback now covers body-part, hand, and clothing with aggregate certificate binding; full 1634/1634. Remaining 10%: first real image-disjoint human-anchor winner and observed live promotion/rollback; no live role change claimed.",
+      "evidence": "Strict matrix-bound, smoke-first promotion and rollback control planes cover body-part, hand, clothing, and interactive roles. Interactive evidence: qa/live_verification/interactive_provider_transaction_contract_20260715.json SHA-256 70f631c79fab23c5907ebf4fdb7d4711dfee9de13fad77e51a378c234af1963e; full 1653/1653. Remaining 10%: first real image-disjoint human-anchor winner and observed live promotion/rollback; no live role change claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T19:23:34+00:00",
+      "updated_at": "2026-07-15T20:34:01+00:00",
       "orphaned": false
     },
     "MF-P5-10.12": {
@@ -13948,7 +13958,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T00:56:56+00:00",
@@ -13964,12 +13974,17 @@
           "ts": "2026-07-15T19:52:45+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: legacy S07 and its S08 refinement consumer now share governed provider-neutral selection with current SAM2 compatibility and base-plus OOM fallback. Simulated promoted SAM3.1 routing and missing-loader fail-closed tests pass; no provider was activated."
+        },
+        {
+          "ts": "2026-07-15T20:29:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: the serialized, schema-valid one-command interactive promotion/rollback now spans provider selection, S07 primary, external candidate lifecycle, model incumbent lifecycle, exact snapshots, and smoke evidence under one lock. Live SAM2.1 remains unchanged."
         }
       ],
-      "evidence": "Selection contradiction fix plus provider-neutral S07/S08 runtime: qa/live_verification/interactive_selection_promotion_readiness_20260715.json and qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json SHA-256 c6830990a00dcd015ff8e713bd4641099b309c7ccdbbcc2a2ea4c56df758f487. Focused 122/122 and full 1640/1640 pass. Remaining 20%: serialized promotion/rollback transaction, official checkpoint benchmark, live promotion and rollback rehearsal.",
+      "evidence": "Provider-neutral S07/S08 plus signed interactive transaction/rollback: qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json and qa/live_verification/interactive_provider_transaction_contract_20260715.json SHA-256 70f631c79fab23c5907ebf4fdb7d4711dfee9de13fad77e51a378c234af1963e. 189 focused and full 1653/1653 pass. Remaining 10%: official checkpoint, real benchmark winner, live production smoke/promotion, and observed rollback.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T19:52:45+00:00",
+      "updated_at": "2026-07-15T20:34:02+00:00",
       "orphaned": false
     },
     "MF-P6-06.04": {

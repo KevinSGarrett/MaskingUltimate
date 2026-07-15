@@ -956,3 +956,33 @@ frozen source identity includes `src/maskfactory/models/registry.py`, now SHA-25
 threshold, authority, eligibility decision, or result changed.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Require a signed three-file transaction for interactive-provider promotion
+
+**Item(s) affected:** MF-P2-11.15, MF-P5-10.11, MF-P6-06.03, official SAM 3.1
+interactive promotion and SAM2.1 rollback
+
+**Decision:** Keep the signed aggregate ten-role matrix certificate unchanged and require a
+same-signer interactive companion certificate before the `interactive_segmenter` role can mutate.
+The companion binds the exact aggregate certificate and recomputed matrix report/manifest/
+observations, candidate and incumbent matrix artifacts, the hash-valid interactive benchmark
+certificate with all hard buckets passing, both checkpoints, the candidate runtime lock, and an
+observed isolated candidate-promotion/incumbent-restoration rehearsal. Promotion must then serialize
+under one exclusive lock, run an exact-input candidate serving smoke, and change
+`configs/pipeline.yaml`, `configs/external_sources.yaml`, and `models/model_registry.json` through a
+single hash-sealed transaction. Publish the external candidate first, the active pipeline selection
+second, and the incumbent lifecycle demotion last so readers never observe an active unpromoted
+provider. Rollback uses the inverse safe order, requires an exact-input incumbent smoke, and restores
+all three original byte streams from hash-verified immutable snapshots. Both directions append
+schema-valid records and restore the prior state if history publication fails. Expose the operations
+as `maskfactory models promote-interactive` and `rollback-interactive`.
+
+**Why:** Provider-neutral routing alone made a future SAM3.1 selection executable but did not make the
+multi-file role/lifecycle change atomic, signed, smoke-first, or exactly reversible. Reusing only the
+ten-role aggregate would not bind the distinct interactive winner, while expanding that frozen
+ten-role certificate would rewrite an already approved contract. The companion closes the join
+without changing the aggregate. This decision authorizes no current provider change: official SAM3.1
+still needs its gated checkpoint, real image-disjoint human-anchor win, live smoke receipts, and an
+observed production promotion/rollback.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

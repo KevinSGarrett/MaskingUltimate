@@ -5704,3 +5704,25 @@ Production safety:                 pipeline, external registry, model registry, 
 Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
 Remaining work:                    serialized hash-sealed interactive promotion/rollback transaction, official gated checkpoint and exact benchmark, live GPU production smoke, live rollback rehearsal, and repair orchestration
 Evidence:                          `qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json`
+
+## 2026-07-15 20:28 UTC - Interactive provider promotion and exact rollback transaction enforced
+
+**Result:** MF-P2-11.15 advances to 95%, MF-P6-06.03 advances to 90%, and
+MF-P5-10.11 remains honestly at 90%; the final missing interactive mutation path now has
+the same signed, smoke-first, reversible governance as model champion roles.
+
+Signed prerequisite:               same Ed25519 signer as the complete aggregate ten-role matrix certificate; exact matrix report/manifest/observations, interactive benchmark, hard buckets, candidate/incumbent artifacts, checkpoints, runtime lock, and isolated rollback rehearsal are bound
+Promotion scope:                   `provider_roles.interactive_segmenter.active`, `stages.S07.primary_model`, official external candidate lifecycle, and model-registry incumbent lifecycle change together under one exclusive lock
+Lifecycle contract:                benchmarked candidate -> promoted; promoted incumbent -> benchmarked; SAM2.1 base-plus remains the local non-billable OOM fallback
+Safe publication:                  external candidate -> pipeline selection -> model incumbent, avoiding an active provider whose authoritative lifecycle is not promoted
+Snapshots/history:                 exact before/after bytes for pipeline, external registry, and model registry; manifest and both transaction records are hash sealed; failed history publication restores exact inputs
+Rollback:                          incumbent smoke first, then model registry -> pipeline -> external registry restoration; post-promotion drift, snapshot drift, replay, or tampering refuses mutation
+CLI/tooling:                       `maskfactory models promote-interactive`; `maskfactory models rollback-interactive`; `tools/certify_interactive_provider_promotion.py`
+Smoke receipts:                    bind the actual proposed pipeline/external/model file hashes, provider, action, checkpoint, runtime, and output before either command may publish
+Concurrency/failure proof:         simultaneous promotions serialize to one history row; failed smoke and seeded history failure leave every authoritative input byte-identical
+Verification:                      189 focused provider/registry/serving tests and complete repository 1,653/1,653 pass; Ruff, formatting compatibility, schema compilation, and diff check pass
+Machine safety:                    no WSL/Docker restart, VHDX operation, elevation, UAC prompt, or infrastructure mutation was performed
+Production safety:                 live pipeline, external registry, model registry, lifecycle states, and active provider remain unchanged; no official SAM3.1 inference or winner is claimed
+Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Remaining work:                    gated official checkpoint, frozen human-anchor matrix execution, real signed winner certificate, exact-input live candidate/incumbent smokes, observed production promotion, and observed one-command rollback
+Evidence:                          `qa/live_verification/interactive_provider_transaction_contract_20260715.json`

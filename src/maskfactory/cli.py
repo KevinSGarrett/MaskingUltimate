@@ -3461,6 +3461,187 @@ def models_rollback_custom_segmenter(
     click.echo(json.dumps(rollback, indent=2, sort_keys=True))
 
 
+@models.command("promote-interactive")
+@click.argument("candidate_key")
+@click.option(
+    "--promotion-certificate",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--matrix-bundle",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--candidate-checkpoint",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--candidate-runtime-lock",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--smoke-evidence",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Exact-input live smoke receipt for the proposed three-file state.",
+)
+@click.option(
+    "--pipeline",
+    "pipeline_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--external-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/external_sources.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--model-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("models/model_registry.json"),
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("runs/interactive_provider_history.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--snapshot-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs/interactive_provider_transactions"),
+    show_default=True,
+)
+@click.option(
+    "--project-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("."),
+    show_default=True,
+)
+def models_promote_interactive(
+    candidate_key: str,
+    promotion_certificate: Path,
+    matrix_bundle: Path,
+    candidate_checkpoint: Path,
+    candidate_runtime_lock: Path,
+    smoke_evidence: Path,
+    pipeline_path: Path,
+    external_registry: Path,
+    model_registry: Path,
+    history_path: Path,
+    snapshot_root: Path,
+    project_root: Path,
+) -> None:
+    """Promote one signed, matrix-bound interactive provider transactionally."""
+    from .providers.interactive_transaction import (
+        InteractiveProviderTransactionError,
+        load_smoke_evidence_runner,
+        promote_interactive_provider,
+    )
+
+    try:
+        certificate = json.loads(promotion_certificate.read_text(encoding="utf-8"))
+        smoke_runner = load_smoke_evidence_runner(smoke_evidence)
+        record = promote_interactive_provider(
+            candidate_key,
+            promotion_certificate=certificate,
+            matrix_bundle_root=matrix_bundle,
+            candidate_checkpoint_path=candidate_checkpoint,
+            candidate_runtime_lock_path=candidate_runtime_lock,
+            smoke_runner=smoke_runner,
+            pipeline_path=pipeline_path,
+            external_registry_path=external_registry,
+            model_registry_path=model_registry,
+            history_path=history_path,
+            snapshot_root=snapshot_root,
+            project_root=project_root,
+        )
+    except (OSError, ValueError, json.JSONDecodeError, InteractiveProviderTransactionError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, indent=2, sort_keys=True))
+
+
+@models.command("rollback-interactive")
+@click.argument("transaction_id")
+@click.option(
+    "--smoke-evidence",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Exact-input live smoke receipt for the restored three-file state.",
+)
+@click.option(
+    "--pipeline",
+    "pipeline_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--external-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/external_sources.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--model-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("models/model_registry.json"),
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("runs/interactive_provider_history.jsonl"),
+    show_default=True,
+)
+@click.option(
+    "--snapshot-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("runs/interactive_provider_transactions"),
+    show_default=True,
+)
+def models_rollback_interactive(
+    transaction_id: str,
+    smoke_evidence: Path,
+    pipeline_path: Path,
+    external_registry: Path,
+    model_registry: Path,
+    history_path: Path,
+    snapshot_root: Path,
+) -> None:
+    """Rollback all interactive provider files by immutable transaction id."""
+    from .providers.interactive_transaction import (
+        InteractiveProviderTransactionError,
+        load_smoke_evidence_runner,
+        rollback_interactive_provider,
+    )
+
+    try:
+        smoke_runner = load_smoke_evidence_runner(smoke_evidence)
+        record = rollback_interactive_provider(
+            transaction_id,
+            smoke_runner=smoke_runner,
+            pipeline_path=pipeline_path,
+            external_registry_path=external_registry,
+            model_registry_path=model_registry,
+            history_path=history_path,
+            snapshot_root=snapshot_root,
+        )
+    except (OSError, ValueError, json.JSONDecodeError, InteractiveProviderTransactionError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, indent=2, sort_keys=True))
+
+
 @main.group()
 def external() -> None:
     """External foundation provider operations (doc 16)."""

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T06:52:24.427325Z",
+  "item_id": "MF-P3-08.10",
+  "result": "implementation_pass_real_package_pending",
+  "enabled_lane_authority": {
+    "source": "qa/governance/benchmark_matrices/specialist_margins_v1.json",
+    "source_canonical_sha256": "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739",
+    "required_lane_count": 9,
+    "required_lanes": [
+      "chest_pelvic_segmentation",
+      "clothing_accessory_segmentation",
+      "foot_toe_segmentation",
+      "geometry_provider",
+      "hair_matting",
+      "hand_finger_segmentation",
+      "pose_provider",
+      "repeated_instance_segmentation",
+      "silhouette_provider"
+    ]
+  },
+  "per_lane_requirements": {
+    "validated_noninferiority_result": true,
+    "role_specific_evidence_artifact": true,
+    "provider_keys": "at_least_two_unique",
+    "visual_artifacts": [
+      "overlay_montage",
+      "disagreement_heatmap",
+      "correction_diff"
+    ],
+    "disagreement": "pixel_count_and_denominator_recomputed",
+    "correction_pixels": "changed_pixels_per_100k_recomputed",
+    "review_time": "baseline_challenger_seconds_and_case_denominator_recomputed",
+    "leaderboard": "baseline_and_challenger_rows_same_hash_named_evaluation"
+  },
+  "fail_closed_coverage": [
+    "missing_or_extra_lane",
+    "missing_benchmark_result",
+    "hard_bucket_noninferiority_failure",
+    "benchmark_result_hash_drift",
+    "wrong_role_evidence_kind",
+    "missing_visual_artifact_kind",
+    "missing_path_or_path_escape",
+    "artifact_hash_drift_or_path_reuse",
+    "disagreement_fraction_assertion",
+    "correction_pixel_denominator_assertion",
+    "review_time_denominator_assertion",
+    "leaderboard_file_or_run_drift",
+    "evaluation_or_pipeline_fingerprint_drift",
+    "sealed_package_tamper"
+  ],
+  "artifact_hashes": {
+    "implementation": "e98b9882671d94ab72358f1b486b77c3349aa570bf7e98fce31a7c0b76a44e3d",
+    "schema": "5b5f6cced85eb902284cb96b31b2857e2381653fe7128fea729fd6a753c0794c",
+    "tests": "958db98373a0e0d8211bae888c75677860ce8e1dd012e7446caad68a5baf3419",
+    "tool": "f2da80312291b40edf81ae0011959125f2a034ca118a20ca8cf56127082ac88f",
+    "ci_workflow": "6dc3fc7ac687cd816daf48fe72849f14a4d0cbb93bb27bd3ff1635ee717196a6"
+  },
+  "verification": {
+    "dedicated_tests_passed": 17,
+    "focused_specialist_leaderboard_tests_passed": 79,
+    "full_repository_tests_passed": 1257,
+    "ruff": "pass",
+    "black_changed_files": "pass",
+    "ci_yaml_parse": "pass",
+    "wsl_docker_external_vhd_accessed": false
+  },
+  "authority_boundary": "Synthetic fixtures prove only package completeness and tamper enforcement. No real all-lane specialist package, performance result, promotion, serving authority, certificate, or gold authority is claimed; real publication remains blocked by MF-P3-08.03 through MF-P3-08.06 and their human-anchor holdouts."
+}

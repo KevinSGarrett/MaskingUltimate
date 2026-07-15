@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/specialist_evidence_package.schema.json",
+  "title": "Complete provider-neutral specialist evidence package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "created_at",
+    "evaluation_set_sha256",
+    "pipeline_fingerprint_sha256",
+    "specialist_margin_manifest_sha256",
+    "enabled_lanes",
+    "leaderboard",
+    "lanes",
+    "authority",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "package_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "evaluation_set_sha256": {"$ref": "#/$defs/sha256"},
+    "pipeline_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+    "specialist_margin_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "enabled_lanes": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/role"}
+    },
+    "leaderboard": {"$ref": "#/$defs/artifact"},
+    "lanes": {
+      "type": "object",
+      "minProperties": 9,
+      "maxProperties": 9,
+      "additionalProperties": {"$ref": "#/$defs/lane"}
+    },
+    "authority": {"const": "measured_evidence_no_automatic_promotion_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "role": {
+      "enum": [
+        "chest_pelvic_segmentation",
+        "clothing_accessory_segmentation",
+        "foot_toe_segmentation",
+        "geometry_provider",
+        "hair_matting",
+        "hand_finger_segmentation",
+        "pose_provider",
+        "repeated_instance_segmentation",
+        "silhouette_provider"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "typedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "sha256"],
+      "properties": {
+        "kind": {
+          "enum": ["correction_diff", "disagreement_heatmap", "overlay_montage"]
+        },
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "roleEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "sha256"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "geometry_variant_benchmark",
+            "mediapipe_vote_ablation_report",
+            "pose_variant_benchmark",
+            "silhouette_variant_benchmark",
+            "specialist_role_benchmark"
+          ]
+        },
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "disagreement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compared_pixels", "disagree_pixels", "fraction"],
+      "properties": {
+        "compared_pixels": {"type": "integer", "minimum": 1},
+        "disagree_pixels": {"type": "integer", "minimum": 0},
+        "fraction": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "correctionPixels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["predicted_pixels", "changed_pixels", "changed_pixels_per_100k"],
+      "properties": {
+        "predicted_pixels": {"type": "integer", "minimum": 1},
+        "changed_pixels": {"type": "integer", "minimum": 0},
+        "changed_pixels_per_100k": {"type": "number", "minimum": 0}
+      }
+    },
+    "reviewTime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_count",
+        "baseline_seconds",
+        "challenger_seconds",
+        "delta_seconds_per_case"
+      ],
+      "properties": {
+        "case_count": {"type": "integer", "minimum": 1},
+        "baseline_seconds": {"type": "number", "minimum": 0},
+        "challenger_seconds": {"type": "number", "minimum": 0},
+        "delta_seconds_per_case": {"type": "number"}
+      }
+    },
+    "leaderboardRuns": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline_run_id", "challenger_run_id"],
+      "properties": {
+        "baseline_run_id": {"type": "string", "minLength": 1},
+        "challenger_run_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "provider_keys",
+        "sample_count",
+        "distinct_image_count",
+        "evaluation_set_sha256",
+        "pipeline_fingerprint_sha256",
+        "benchmark_result_sha256",
+        "role_evidence",
+        "artifacts",
+        "disagreement",
+        "correction_pixels",
+        "review_time",
+        "leaderboard"
+      ],
+      "properties": {
+        "role": {"$ref": "#/$defs/role"},
+        "provider_keys": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "sample_count": {"type": "integer", "minimum": 1},
+        "distinct_image_count": {"type": "integer", "minimum": 1},
+        "evaluation_set_sha256": {"$ref": "#/$defs/sha256"},
+        "pipeline_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+        "benchmark_result_sha256": {"$ref": "#/$defs/sha256"},
+        "role_evidence": {"$ref": "#/$defs/roleEvidence"},
+        "artifacts": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/typedArtifact"}
+        },
+        "disagreement": {"$ref": "#/$defs/disagreement"},
+        "correction_pixels": {"$ref": "#/$defs/correctionPixels"},
+        "review_time": {"$ref": "#/$defs/reviewTime"},
+        "leaderboard": {"$ref": "#/$defs/leaderboardRuns"}
+      }
+    }
+  }
+}

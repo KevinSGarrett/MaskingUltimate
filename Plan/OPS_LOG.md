@@ -5112,3 +5112,20 @@ Verification:                       dedicated 16/16; focused hand/provider/schem
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
 Authority boundary:                fixture reports prove enforcement only; no real incremental-value result, provider promotion, serving authority, certificate, or gold authority is claimed
 Evidence:                           `qa/live_verification/mediapipe_vote_ablation_contract_20260715.json`
+
+## 2026-07-15 06:52 UTC - All-lane specialist evidence package made fail-closed
+
+**Result:** MF-P3-08.10 is 75% complete; one immutable package contract now covers every enabled specialist lane, while real publication remains gated by the underlying human-anchor benchmarks.
+
+Lane authority:                     exactly nine roles from frozen `specialist_noninferiority_v1`; omitted, extra, duplicated, or renamed lanes fail
+Benchmark binding:                  every lane must reference a current passing result whose complete hard-label, high-risk-context, and zero-regression buckets validate against frozen margin SHA-256 `605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739`
+Role evidence:                      each lane carries the appropriate geometry, pose, silhouette, MediaPipe-ablation, or specialist-role evidence file with a verified in-root path and exact SHA-256
+Visual evidence:                    overlay montage, disagreement heatmap, and correction diff are all mandatory per lane; missing kinds, path escapes, hash drift, or cross-lane path reuse fail
+Measured denominators:              disagreement fraction, changed pixels per 100,000 predicted pixels, and baseline/challenger review-time delta per case are recomputed from explicit integer/seconds denominators
+Leaderboard binding:               one hash-locked JSONL must contain distinct baseline and challenger rows for every lane on the same `sha256:<evaluation_set>` reference and split
+Package authority:                 the canonical hash-sealed package is measured evidence only and cannot itself promote a provider, alter serving, mint a certificate, or author gold
+Operational surface:               `tools/specialist_evidence_package.py` atomically seals a complete draft or recomputes and verifies an existing package; CI runs the named 17-case gate
+Verification:                       dedicated 17/17; focused specialist/policy/provenance/promotion/leaderboard/MediaPipe 79/79; complete repository 1,257/1,257; Ruff, targeted Black, CI YAML, tracker rebuild/validation pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
+Authority boundary:                no real all-lane package or performance result exists; completion still requires MF-P3-08.03 through MF-P3-08.06 human-anchor evidence
+Evidence:                           `qa/live_verification/specialist_evidence_package_contract_20260715.json`

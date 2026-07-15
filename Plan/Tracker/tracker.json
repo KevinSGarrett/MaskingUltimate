@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T06:36:07+00:00",
+    "generated_at": "2026-07-15T06:53:19+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12324,13 +12324,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-15T06:53:18+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: implemented the strict all-lane specialist evidence-package contract. Schema, seal/verify tool, benchmark-policy integration, real artifact/hash/path verification, denominator recomputation, and leaderboard evaluation binding are CI-enforced. Remaining 25% is the real package assembled from completed MF-P3-08.03 through .06 human-anchor benchmarks; no fixture performance is claimed."
+        }
+      ],
+      "evidence": "qa/live_verification/specialist_evidence_package_contract_20260715.json; all 9 frozen specialist roles are mandatory; 17/17 dedicated and 79/79 focused specialist/leaderboard tests pass; full repository 1,257/1,257; Ruff, targeted Black, CI YAML clean. No real all-lane report, promotion, serving, certificate, or gold authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T06:53:18+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {
@@ -14087,12 +14093,17 @@
           "ts": "2026-07-15T06:36:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: currency CI evidence refreshed after adding the named MediaPipe vote-ablation gate and governance decision; signed review 4302d2a4943b70e644a28441 is current. Strict require-pass remains correctly withheld pending MF-P7-07.01 evidence."
+        },
+        {
+          "ts": "2026-07-15T06:53:19+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: CI evidence refreshed after adding the named all-lane specialist evidence-package gate; signed review inputs remain current because no bound authority input changed."
         }
       ],
-      "evidence": "qa/live_verification/currency_ci_gate_20260715.json; live Ed25519/current-input verification passes; 33/33 currency gates, 16/16 MediaPipe ablation gates, and full repository 1,240/1,240 pass; Ruff clean. Strict review-pass remains gated by real active-role benchmark/rollback evidence.",
+      "evidence": "qa/live_verification/currency_ci_gate_20260715.json; live Ed25519/current-input verification passes; 33 currency, 16 MediaPipe ablation, 17 specialist package gates and full repository 1,257/1,257 pass; Ruff clean. Strict review-pass remains gated by real active-role benchmark/rollback evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T06:36:07+00:00",
+      "updated_at": "2026-07-15T06:53:19+00:00",
       "orphaned": false
     },
     "MF-P7-07.04": {

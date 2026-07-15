@@ -35,6 +35,7 @@ SCHEMA_NAMES = frozenset(
         "serving_provenance",
         "serving_route",
         "specialist_benchmark_margins",
+        "specialist_evidence_package",
     }
 )
 VISIBLE_STATES = frozenset({"visible", "partially_visible"})

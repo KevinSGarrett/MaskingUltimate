@@ -10555,11 +10555,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 35,
-      "notes": [],
-      "evidence": null,
+      "notes": [
+        {
+          "ts": "2026-07-15T02:19:18+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 access reprobe: no HF token is configured; the repository visibly requires login plus contact-sharing terms acceptance; no legal/terms action was submitted. Existing Chrome session could not be inspected because the ChatGPT Chrome Extension is not installed."
+        }
+      ],
+      "evidence": "Official source/runtime remains installed and verified per env/sam31_runtime.lock.json and qa/live_verification/sam31_source_runtime_20260714.json. qa/live_verification/meta_checkpoint_access_reprobe_20260715.json proves the current unauthenticated human gate without exposing credentials or claiming checkpoint inference.",
       "blocked_reason": "NEEDS KEVIN: official source/runtime is installed and verified, but facebook/sam3.1 is manually gated and unauthenticated checkpoint access returns HTTP 401. Kevin must accept Meta's Hugging Face contact-information/license form and authorize the resulting account access; then the exact frozen checkpoint can be downloaded and live 8 GB VRAM/latency/determinism/failure smokes run.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T19:01:20+00:00",
+      "updated_at": "2026-07-15T02:19:18+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -11879,12 +11885,17 @@
           "ts": "2026-07-15T00:18:03+00:00",
           "actor": "ai_agent",
           "text": "Frozen clean official source commit/tree and exact gated Hugging Face revision; DensePose remains active and rollback with no SAM 3D Body authority."
+        },
+        {
+          "ts": "2026-07-15T02:19:20+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 access reprobe: facebook/sam-3d-body-dinov3 still visibly requires Hugging Face login and Meta contact-sharing/license acceptance; no acceptance was submitted and no checkpoint inference is claimed."
         }
       ],
-      "evidence": "qa/live_verification/sam3d_body_source_gate_20260715.json; configs/external_sources.yaml exact source/revision/tree/license/gate fields; live unauthenticated probes returned HTTP 401 GatedRepo for all inference assets.",
+      "evidence": "qa/live_verification/sam3d_body_source_gate_20260715.json plus qa/live_verification/meta_checkpoint_access_reprobe_20260715.json; source/license/revision are frozen, but checkpoint/MHR assets remain inaccessible and live geometry qualification has not run.",
       "blocked_reason": "NEEDS KEVIN: accept Meta SAM License/contact-sharing terms at https://huggingface.co/facebook/sam-3d-body-dinov3. Official source commit b5c765a and public license metadata are frozen, but model.ckpt, model_config.yaml, and MHR assets return HTTP 401 GatedRepo; runtime/coordinate/identity/OOM qualification cannot honestly run without those exact assets.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T00:18:03+00:00",
+      "updated_at": "2026-07-15T02:19:20+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {

@@ -173,7 +173,14 @@ class _FormulaContext:
         if token in self.derived:
             return self.derived[token]
         if token == "silhouette:person_full_visible":
-            return np.isin(self.part, range(1, 50))
+            if self.ontology.version == "body_parts_v1":
+                return np.isin(self.part, range(1, 50))
+            visible_part_ids = tuple(
+                label.id
+                for label in self.ontology.labels_for_map("part")
+                if label.id != 0 and label.mask_type == "atomic_exclusive"
+            )
+            return np.isin(self.part, visible_part_ids)
         if token == "projected:amodal_body_estimates":
             return self._projected_union()
         raise DeriveError(f"unknown formula operand: {token!r}")

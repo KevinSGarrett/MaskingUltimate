@@ -257,8 +257,10 @@ def build_derived_v2(path: Path | str = DEFAULT_PROPOSAL) -> dict[str, Any]:
         if label["mask_type"] == "derived_union"
     }
     formulas.update(proposal["derived_formulas"])
-    formulas["full_body_parts_visible"] = "part_ids:1-49 | part_ids:56-64"
-    formulas["visible_body_skin"] = "((part_ids:1-49 | part_ids:56-64) & material:skin) - part:hair"
+    formulas["full_body_parts_visible"] = "part_ids:1-49 | part_ids:54-55 | part_ids:56-64"
+    formulas["visible_body_skin"] = (
+        "((part_ids:1-49 | part_ids:54-55 | part_ids:56-64) & material:skin) - part:hair"
+    )
     return {
         "config_version": "2.0.0",
         "mask_ontology_version": "body_parts_v2",

@@ -84,6 +84,19 @@ These outputs are script-generated and never manually annotated:
 Existing `both_breasts` remains the v1 union of IDs 5 and 6 for compatibility. New callers that
 need complete v2 breast surface use `both_breasts_full`.
 
+The inactive machine authority is `configs/derived_v2.yaml`; it must remain byte-identical to the
+generator before activation. It contains exactly one executable formula for every v2
+`derived_union`. `full_body_parts_visible`, `person_full_visible`, and `visible_body_skin` cover all
+visible atomic PART IDs `1..49`, `54..55`, and `56..64`, while protected QA IDs `50..53` remain
+excluded. The active `configs/ontology.yaml` and `configs/derived.yaml` remain v1 until the complete
+MF-P7-06.06 gate passes.
+
+Activation readiness is rehearsed only on isolated copies. The ontology/derived pair is staged and
+validated together, exact post-replace bytes are verified, and any first-write, second-write, or
+post-replace validation failure restores both exact v1 inputs. Rehearsal evidence cannot activate v2;
+the eventual production switch must remain part of the complete atomic registry/config/workflow/model
+activation and one-command rollback transaction.
+
 ## 4. Visibility and review states
 
 The v2 manifest vocabulary is:

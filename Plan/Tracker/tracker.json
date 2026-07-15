@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T05:30:54+00:00",
+    "generated_at": "2026-07-15T05:55:52+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -10910,13 +10910,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 90,
+      "notes": [
+        {
+          "ts": "2026-07-15T05:49:16+00:00",
+          "actor": "ai_agent",
+          "text": "Activation-ready control and executable formulas pass; active derived.yaml correctly remains v1 until the complete v2 gate."
+        }
+      ],
+      "evidence": "Inactive body_parts_v2 authority is generator-drift-clean with 65 PART classes and 52 executable derived formulas, including all 12 approved anatomy unions. V2 visible-body formulas cover atomic IDs 1..49, 54..55, and 56..64 while excluding protected 50..53; active v1 silhouette behavior is explicitly regression-preserved. Isolated paired switch proves exact post-replace bytes and exact v1 restoration after seeded second-write and post-validation failures; active production v1 bytes remain unchanged. 8 dedicated, 78 focused, full 1,203/1,203; Ruff/CI YAML/generator/diff clean. qa/live_verification/ontology_v2_derived_activation_20260715.json. Remaining 10% is the real complete MF-P7-06.06 registry/config/workflow/model activation and rollback; no production activation claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T05:55:52+00:00",
       "orphaned": false
     },
     "MF-P1-10.06": {

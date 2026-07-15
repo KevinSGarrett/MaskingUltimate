@@ -5054,3 +5054,18 @@ CI and verification:               named registry-governance CI includes the 8-c
 Honest remaining boundary:          no real human-anchor benchmark winner, production registry swap, or live winner rollback is claimed; those require the blocked training/holdout inputs and a healthy model runtime
 Storage safety:                     WSL, Docker Desktop, the USB-backed Ubuntu VHD, and the Seagate volume were not touched while physical reconnect remains pending
 Evidence:                           `qa/live_verification/custom_segmenter_promotion_transaction_20260715.json`
+
+## 2026-07-15 05:48 UTC - Ontology-v2 derived authority made activation-ready without activation
+
+**Result:** MF-P1-10.05 is 90% complete: all v2 formulas execute and the ontology/derived pair passes isolated failure-atomic switch rehearsal; production remains exact v1 pending MF-P7-06.06.
+
+Formula authority:                  inactive `derived_v2.yaml` is generator-current with 52 exact formulas, including all 12 approved anatomy unions and one formula for every v2 `derived_union`
+Coverage correction:                `full_body_parts_visible` and `visible_body_skin` now include atomic ears 54/55 as well as anatomy IDs 56..64; protected QA IDs 50..53 remain excluded
+Evaluator correction:               under body_parts_v2, `silhouette:person_full_visible` derives IDs dynamically from non-background `atomic_exclusive` PART labels; active body_parts_v1 deliberately retains its legacy 1..49 behavior until formal activation
+Executable proof:                    a synthetic indexed map containing IDs 0..64 evaluates all 52 formulas and proves exact areola, nipple, breast-full, genital, scrotal, pelvic, silhouette, and visible-body unions
+Drift gate:                          inactive ontology/derived bytes must exactly match their generators; semantic drift in any required anatomy formula, incomplete class/formula sets, and wrong activation status fail
+Pair rehearsal:                      isolated v1 copies switch together to active-rendered 65-class/52-formula bytes; exact post-replace hashes validate before success
+Failure atomicity:                  seeded second-file replacement failure and post-replace corruption both restore exact original v1 ontology and derived bytes; active production sources are hash-verified unchanged
+Activation boundary:               no v2 production activation occurred and no registry, champion, workflow, schema, or active config was changed; complete MF-P7-06.06 remains the only production authority
+CI and verification:               named ontology-v2 drift CI includes the 8-case activation bundle; focused v2/derive/anatomy suite passed 78/78; complete repository suite passed 1,203/1,203; Ruff, CI YAML, generator drift, and diff checks pass
+Evidence:                           `qa/live_verification/ontology_v2_derived_activation_20260715.json`, sealed SHA-256 `130bd5be058ec0f069acc05b9b36aaff2d930de5fd2cd5b355fe99cd666fadeb`

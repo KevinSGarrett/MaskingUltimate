@@ -23,7 +23,9 @@ jobs:
       - name: Assert generated ontology has no drift
         run: python tools/generate_ontology.py --check
       - name: Assert inactive ontology-v2 artifacts have no drift
-        run: python tools/generate_ontology_v2.py --check
+        run: >-
+          python tools/generate_ontology_v2.py --check
+          && pytest -q tests/test_ontology_v2_derived_activation.py
       - name: Assert inactive manifest-v2 schema has no drift
         run: python tools/generate_manifest_v2_schema.py --check
       - name: Assert provider runtime isolation matrix has no drift

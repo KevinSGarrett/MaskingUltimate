@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
+from maskfactory.autonomy.lifecycle import stratum_revocation_marker_path
 from maskfactory.autonomy.multi_person_evidence import (
     MultiPersonCandidateRecord,
     MultiPersonEvidenceError,
@@ -26,6 +27,13 @@ from maskfactory.autonomy.multi_person_execution import (
 from maskfactory.autonomy.multi_person_gate import (
     MultiPersonCandidateGateResult,
     MultiPersonGateCheck,
+)
+from maskfactory.autonomy.multi_person_outcome import (
+    MEASUREMENT_AUTHORITY,
+    OUTCOME_AUTHORITY,
+    MultiPersonOutcomeError,
+    verify_multi_person_lifecycle_route,
+    write_multi_person_lifecycle_route,
 )
 from maskfactory.autonomy.multi_person_scope import MultiPersonCertificationScopeResult
 from maskfactory.autonomy.tournament import CandidateEvidence
@@ -92,7 +100,7 @@ def _certificate() -> dict:
         "risk_bucket": "contact",
         "instance_context": "duo",
         "covered_labels": ["hair"],
-        "covered_contexts": ["contact"],
+        "covered_contexts": ["duo"],
         "pipeline_fingerprint": PIPELINE,
         "expires_at": (datetime.now(UTC) + timedelta(days=30)).isoformat(),
     }
@@ -114,7 +122,7 @@ def _fixture(tmp_path: Path):
         ),
     )
     evidence = write_multi_person_tournament_evidence(
-        image_id="img_execution_fixture",
+        image_id="img_0000000000aa",
         source_image_path=source,
         instance_context="duo",
         pipeline_fingerprint=PIPELINE,
@@ -126,10 +134,10 @@ def _fixture(tmp_path: Path):
     certificate = _certificate()
     controls = {
         ("person-0", "part-instance-0", "hair"): TargetTournamentControl(
-            "p0", "contact", scope, certificate
+            "p0", "duo", scope, certificate
         ),
         ("person-1", "part-instance-1", "hair"): TargetTournamentControl(
-            "p1", "contact", scope, certificate
+            "p1", "duo", scope, certificate
         ),
     }
     checks = tuple(
@@ -332,5 +340,295 @@ def test_report_seal_recomputation_and_evidence_binding_fail_closed(tmp_path: Pa
             expected_pipeline_fingerprint=PIPELINE,
             controls=controls,
             gate=gate,
+            source_image_path=source,
+        )
+
+
+def _lifecycle_paths(
+    report_path: Path, artifact_root: Path, stage_root: Path
+) -> dict[tuple[str, str, str], Path]:
+    execution = json.loads(report_path.read_text(encoding="utf-8"))
+    lifecycle_root = stage_root / "lifecycle"
+    lifecycle_root.mkdir(parents=True, exist_ok=True)
+    paths = {}
+    for target in execution["targets"]:
+        decision = target["decision"]
+        winner = next(
+            (row for row in decision["ranking"] if row["candidate_id"] == decision["winner_id"]),
+            None,
+        )
+        winner_path = artifact_root / "masks" / f"{decision['winner_id']}.png" if winner else None
+        document = {
+            "schema_version": "2.0.0",
+            "image_id": execution["image_id"],
+            "instance_id": target["promoted_instance_id"],
+            "label": target["label"],
+            "context": target["semantic_context"],
+            "pipeline_fingerprint": execution["pipeline_fingerprint"],
+            "status": decision["status"],
+            "truth_tier": decision["truth_tier"],
+            "training_loss_weight": decision["training_loss_weight"],
+            "holdout_eligible": False,
+            "winner_id": decision["winner_id"],
+            "winner_mask_path": (
+                winner_path.relative_to(stage_root).as_posix() if winner_path else None
+            ),
+            "winner_mask_sha256": winner["mask_sha256"] if winner else None,
+            "winner_score": decision["winner_score"],
+            "certificate_valid": decision["certificate_valid"],
+            "certificate_reason": decision["certificate_reason"],
+            "human_audit_required": decision["human_audit_required"],
+            "authoritative_human_gold": False,
+            "serve_eligible": decision["truth_tier"] == "autonomous_certified_gold",
+            "pseudo_train_eligible": decision["truth_tier"] == "autonomous_certified_gold",
+            "reason": decision["reason"],
+            "ranking": [
+                {
+                    "candidate_id": row["candidate_id"],
+                    "score": row["score"],
+                    "eligible": row["eligible"],
+                    "vetoes": row["vetoes"],
+                    "mask_sha256": row["mask_sha256"],
+                }
+                for row in decision["ranking"]
+            ],
+        }
+        key = (target["person_id"], target["instance_id"], target["label"])
+        path = lifecycle_root / ("__".join(key) + ".json")
+        path.write_text(json.dumps(document, sort_keys=True), encoding="utf-8")
+        paths[key] = path
+    return paths
+
+
+def _outcome_fixture(tmp_path: Path):
+    report, evidence, root, source, controls, gate = _write(tmp_path)
+    lifecycles = _lifecycle_paths(report, root, tmp_path)
+    revocations = tmp_path / "revocations"
+    return report, evidence, root, source, controls, gate, lifecycles, revocations
+
+
+def _write_outcome(tmp_path: Path, *, selected_for_audit: bool = False):
+    fixture = _outcome_fixture(tmp_path)
+    report, evidence, root, source, controls, gate, lifecycles, revocations = fixture
+    output = tmp_path / "lifecycle-route.json"
+    write_multi_person_lifecycle_route(
+        report,
+        evidence_manifest_path=evidence,
+        artifact_root=root,
+        expected_pipeline_fingerprint=PIPELINE,
+        controls=controls,
+        gate=gate,
+        lifecycle_paths=lifecycles,
+        revocations_root=revocations,
+        selected_for_audit=selected_for_audit,
+        evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+        source_image_path=source,
+        output_path=output,
+    )
+    return output, fixture
+
+
+def test_execution_lifecycle_and_routes_are_bound_without_authority_escalation(
+    tmp_path: Path,
+) -> None:
+    output, fixture = _write_outcome(tmp_path)
+    document = json.loads(output.read_text(encoding="utf-8"))
+    assert not validate_document(document, "multi_person_lifecycle_route")
+    assert document["target_count"] == 2
+    assert document["served_target_count"] == 2
+    assert document["residual_target_count"] == document["audit_target_count"] == 0
+    assert document["image_truth_partition"] == "train"
+    assert set(document["instance_truth_partitions"].values()) == {"train"}
+    assert document["authority"] == OUTCOME_AUTHORITY
+    assert document["measurement_binding"]["authority"] == MEASUREMENT_AUTHORITY
+    report, evidence, root, source, controls, gate, lifecycles, revocations = fixture
+    summary = verify_multi_person_lifecycle_route(
+        output,
+        execution_report_path=report,
+        evidence_manifest_path=evidence,
+        artifact_root=root,
+        expected_pipeline_fingerprint=PIPELINE,
+        controls=controls,
+        gate=gate,
+        lifecycle_paths=lifecycles,
+        revocations_root=revocations,
+        selected_for_audit=False,
+        evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+        source_image_path=source,
+    )
+    assert summary["served_target_count"] == 2 and summary["authority"] == OUTCOME_AUTHORITY
+
+
+def test_preselected_audit_withholds_complete_image_without_claiming_performance(
+    tmp_path: Path,
+) -> None:
+    output, _ = _write_outcome(tmp_path, selected_for_audit=True)
+    document = json.loads(output.read_text(encoding="utf-8"))
+    assert document["audit_target_count"] == 2
+    assert document["served_target_count"] == document["residual_target_count"] == 0
+    assert {row["route"]["routing"]["destination"] for row in document["targets"]} == {
+        "cvat_preselected_audit"
+    }
+    assert document["measurement_binding"]["preselected_audit"] is True
+
+
+def test_revoked_multi_person_stratum_routes_residual_and_partitions_whole_image(
+    tmp_path: Path,
+) -> None:
+    report, evidence, root, source, controls, gate, lifecycles, revocations = _outcome_fixture(
+        tmp_path
+    )
+    marker = stratum_revocation_marker_path(
+        revocations,
+        risk_bucket="contact",
+        instance_context="duo",
+        pipeline_fingerprint=PIPELINE,
+    )
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    marker.write_text(
+        json.dumps(
+            {
+                "status": "revoked_residual_only",
+                "risk_bucket": "contact",
+                "instance_context": "duo",
+                "pipeline_fingerprint": PIPELINE,
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "revoked-route.json"
+    write_multi_person_lifecycle_route(
+        report,
+        evidence_manifest_path=evidence,
+        artifact_root=root,
+        expected_pipeline_fingerprint=PIPELINE,
+        controls=controls,
+        gate=gate,
+        lifecycle_paths=lifecycles,
+        revocations_root=revocations,
+        selected_for_audit=False,
+        evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+        source_image_path=source,
+        output_path=output,
+    )
+    document = json.loads(output.read_text(encoding="utf-8"))
+    assert document["residual_target_count"] == 2
+    assert document["image_truth_partition"] == "residual"
+    assert set(document["instance_truth_partitions"].values()) == {"residual"}
+    assert document["revocation_snapshot"]["files"]
+
+
+def test_lifecycle_coverage_and_exact_decision_projection_fail_closed(tmp_path: Path) -> None:
+    report, evidence, root, source, controls, gate, lifecycles, revocations = _outcome_fixture(
+        tmp_path
+    )
+    missing = dict(lifecycles)
+    missing.pop(next(iter(missing)))
+    with pytest.raises(MultiPersonOutcomeError, match="exactly cover"):
+        write_multi_person_lifecycle_route(
+            report,
+            evidence_manifest_path=evidence,
+            artifact_root=root,
+            expected_pipeline_fingerprint=PIPELINE,
+            controls=controls,
+            gate=gate,
+            lifecycle_paths=missing,
+            revocations_root=revocations,
+            selected_for_audit=False,
+            evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+            source_image_path=source,
+            output_path=tmp_path / "missing.json",
+        )
+    lifecycle_path = next(iter(lifecycles.values()))
+    lifecycle = json.loads(lifecycle_path.read_text(encoding="utf-8"))
+    lifecycle["winner_score"] = 0.5
+    lifecycle_path.write_text(json.dumps(lifecycle), encoding="utf-8")
+    with pytest.raises(MultiPersonOutcomeError, match="decision differs"):
+        write_multi_person_lifecycle_route(
+            report,
+            evidence_manifest_path=evidence,
+            artifact_root=root,
+            expected_pipeline_fingerprint=PIPELINE,
+            controls=controls,
+            gate=gate,
+            lifecycle_paths=lifecycles,
+            revocations_root=revocations,
+            selected_for_audit=False,
+            evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+            source_image_path=source,
+            output_path=tmp_path / "rebound.json",
+        )
+
+
+def test_bridge_recomputes_execution_instead_of_trusting_a_forged_seal(tmp_path: Path) -> None:
+    report, evidence, root, source, controls, gate, lifecycles, revocations = _outcome_fixture(
+        tmp_path
+    )
+    execution = json.loads(report.read_text(encoding="utf-8"))
+    execution["targets"][0]["decision"]["reason"] = "forged-but-resealed"
+    execution["sha256"] = canonical_sha256(
+        {key: value for key, value in execution.items() if key != "sha256"}
+    )
+    report.write_text(json.dumps(execution), encoding="utf-8")
+    with pytest.raises(MultiPersonExecutionError, match="recomputation mismatch"):
+        write_multi_person_lifecycle_route(
+            report,
+            evidence_manifest_path=evidence,
+            artifact_root=root,
+            expected_pipeline_fingerprint=PIPELINE,
+            controls=controls,
+            gate=gate,
+            lifecycle_paths=lifecycles,
+            revocations_root=revocations,
+            selected_for_audit=False,
+            evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+            source_image_path=source,
+            output_path=tmp_path / "forged.json",
+        )
+
+
+def test_route_report_tamper_and_resealed_rebinding_are_detected(tmp_path: Path) -> None:
+    output, fixture = _write_outcome(tmp_path)
+    report, evidence, root, source, controls, gate, lifecycles, revocations = fixture
+    actual = json.loads(output.read_text(encoding="utf-8"))
+    actual["served_target_count"] = 1
+    output.write_text(json.dumps(actual), encoding="utf-8")
+    with pytest.raises(MultiPersonOutcomeError, match="hash mismatch"):
+        verify_multi_person_lifecycle_route(
+            output,
+            execution_report_path=report,
+            evidence_manifest_path=evidence,
+            artifact_root=root,
+            expected_pipeline_fingerprint=PIPELINE,
+            controls=controls,
+            gate=gate,
+            lifecycle_paths=lifecycles,
+            revocations_root=revocations,
+            selected_for_audit=False,
+            evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
+            source_image_path=source,
+        )
+
+    output, fixture = _write_outcome(tmp_path / "resealed")
+    report, evidence, root, source, controls, gate, lifecycles, revocations = fixture
+    actual = json.loads(output.read_text(encoding="utf-8"))
+    actual["measurement_binding"]["preselected_audit"] = True
+    actual["sha256"] = canonical_sha256(
+        {key: value for key, value in actual.items() if key != "sha256"}
+    )
+    output.write_text(json.dumps(actual), encoding="utf-8")
+    with pytest.raises(MultiPersonOutcomeError, match="recomputation mismatch"):
+        verify_multi_person_lifecycle_route(
+            output,
+            execution_report_path=report,
+            evidence_manifest_path=evidence,
+            artifact_root=root,
+            expected_pipeline_fingerprint=PIPELINE,
+            controls=controls,
+            gate=gate,
+            lifecycle_paths=lifecycles,
+            revocations_root=revocations,
+            selected_for_audit=False,
+            evaluated_at=datetime(2026, 7, 15, 12, tzinfo=UTC),
             source_image_path=source,
         )

@@ -267,6 +267,43 @@ def verify_multi_person_tournament_execution(
     runtime_matrix_path: Path = DEFAULT_RUNTIME_MATRIX,
 ) -> dict[str, Any]:
     """Recompute every decision and require byte-equivalent structured evidence."""
+    actual = load_verified_multi_person_tournament_execution(
+        report_path,
+        evidence_manifest_path=evidence_manifest_path,
+        artifact_root=artifact_root,
+        expected_pipeline_fingerprint=expected_pipeline_fingerprint,
+        controls=controls,
+        gate=gate,
+        source_image_path=source_image_path,
+        config_path=config_path,
+        availability_policy_path=availability_policy_path,
+        model_registry_path=model_registry_path,
+        runtime_matrix_path=runtime_matrix_path,
+    )
+    return {
+        "image_id": actual["image_id"],
+        "target_count": actual["target_count"],
+        "status_counts": actual["status_counts"],
+        "sha256": actual["sha256"],
+        "authority": EXECUTION_AUTHORITY,
+    }
+
+
+def load_verified_multi_person_tournament_execution(
+    report_path: Path,
+    *,
+    evidence_manifest_path: Path,
+    artifact_root: Path,
+    expected_pipeline_fingerprint: str,
+    controls: Mapping[tuple[str, str, str], TargetTournamentControl],
+    gate: MultiPersonCandidateGateResult,
+    source_image_path: Path | None = None,
+    config_path: Path = DEFAULT_AUTONOMY_CONFIG,
+    availability_policy_path: Path = DEFAULT_POLICY,
+    model_registry_path: Path = DEFAULT_MODEL_REGISTRY,
+    runtime_matrix_path: Path = DEFAULT_RUNTIME_MATRIX,
+) -> dict[str, Any]:
+    """Return a report only after exact source-input recomputation succeeds."""
     actual = json.loads(Path(report_path).read_text(encoding="utf-8"))
     try:
         require_valid_document(actual, "multi_person_tournament_execution")
@@ -289,13 +326,7 @@ def verify_multi_person_tournament_execution(
     )
     if actual != expected:
         raise MultiPersonExecutionError("multi-person execution report recomputation mismatch")
-    return {
-        "image_id": actual["image_id"],
-        "target_count": actual["target_count"],
-        "status_counts": actual["status_counts"],
-        "sha256": actual["sha256"],
-        "authority": EXECUTION_AUTHORITY,
-    }
+    return actual
 
 
 __all__ = [
@@ -303,6 +334,7 @@ __all__ = [
     "MANDATORY_GATE_CHECKS",
     "MultiPersonExecutionError",
     "TargetTournamentControl",
+    "load_verified_multi_person_tournament_execution",
     "verify_multi_person_tournament_execution",
     "write_multi_person_tournament_execution",
 ]

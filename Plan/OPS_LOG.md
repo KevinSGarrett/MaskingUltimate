@@ -5484,3 +5484,22 @@ Verification:                       dedicated execution 9/9; focused multi-perso
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     SAM3.1 qualification, governed multi-person sources/current certificates, real all-family candidates/tournaments, and lifecycle/residual/audit/headline binding
 Evidence:                           `qa/live_verification/multi_person_tournament_execution_contract_20260715.json`
+
+## 2026-07-15 14:35 UTC - Multi-person lifecycle and routing bridge sealed
+
+**Result:** MF-P8-11.03 advances to 90%; source-recomputed tournament decisions now bind
+exactly to lifecycle artifacts, current certificate/revocation state, whole-image residual or
+preselected-audit routing, and future headline receipt identities. Live provider runs remain open.
+
+Execution trust boundary:           the bridge invokes full source-input tournament recomputation; a forged but canonically resealed execution report fails
+Lifecycle binding:                  every person/instance/label target has exactly one schema-valid lifecycle with identical `pN`, context, fingerprint, decision, winner, ranking, truth tier, and authority flags
+Artifact integrity:                 lifecycle file/document hashes, winner PNG hash/path, certificate full-document hash/internal seal, execution seal, and recursive revocation snapshot are preserved
+Routing behavior:                   valid certificate-covered targets serve without routine review; a preselected audit withholds the complete image; revoked or invalid targets route residual
+Partition integrity:                all promoted instances receive one image-level train or residual truth partition, preventing per-instance split leakage
+Measurement boundary:              source, execution, and route receipt hashes are emitted for later D11/G9 accounting but carry no metric or performance authority
+Fixture correction:                semantic context is `duo`; `contact` remains the separate risk bucket, matching the lifecycle schema and certificate model
+Authority boundary:                evidence contract only; no serving, publication, training, audit selection/outcome, mask, gold, headline-performance, rollback, or completion authority
+Verification:                       dedicated execution/bridge 15/15; focused multi-person stack 59/59; complete repository 1,590/1,590 with exit 0; all-file pre-commit, Ruff, Black, YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, `F:`, external VHD/storage, elevation, UAC, restart, or machine-service action
+Remaining work:                     official SAM3.1 checkpoint qualification, governed real multi-person candidate generation/tournaments, live lifecycle/audit receipts, D11/G9 measurement, and rollback
+Evidence:                           `qa/live_verification/multi_person_lifecycle_route_contract_20260715.json`

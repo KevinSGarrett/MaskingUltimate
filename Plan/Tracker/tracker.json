@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T13:32:40+00:00",
+    "generated_at": "2026-07-15T14:36:24+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -14463,7 +14463,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T12:52:48+00:00",
@@ -14479,12 +14479,17 @@
           "ts": "2026-07-15T13:32:39+00:00",
           "actor": "ai_agent",
           "text": "Fixture execution only. Valid synthetic certificate, failed-gate, and missing-certificate paths are exercised, but no real source, inference, calibration, winner authority, serving, training, mask, or gold claim is made."
+        },
+        {
+          "ts": "2026-07-15T14:36:23+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: fixture-contract lifecycle/routing bridge only. It source-recomputes execution and binds exact lifecycle, winner artifact, certificate, revocation snapshot, whole-image route/partition, and measurement receipt identities; it grants no real inference, serving, training, audit, mask, gold, headline, rollback, or completion authority."
         }
       ],
-      "evidence": "Verified multi-person manifests now execute per target through the existing mandatory image gate, exact scope/certificate verifier, and tournament, with bijective person-to-pN identity, full certificate document binding, sealed rankings, mask hashes, provider keys, and model-family provenance; reports are fully recomputed. Dedicated 9/9; focused 54/54; full 1,584/1,584; qa/live_verification/multi_person_tournament_execution_contract_20260715.json. Remaining: SAM3.1 live qualification, governed real multi-person candidates/tournaments, and lifecycle/residual/audit/headline binding.",
+      "evidence": "qa/live_verification/multi_person_lifecycle_route_contract_20260715.json; exact execution-to-lifecycle/certificate/revocation/route recomputation; dedicated 15/15, focused multi-person 59/59, full repository 1590/1590, and all pre-commit hooks pass. Remaining: SAM3.1 live qualification and governed real multi-person candidates/tournaments/lifecycle receipts/D11-G9 evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T13:32:39+00:00",
+      "updated_at": "2026-07-15T14:36:23+00:00",
       "orphaned": false
     },
     "MF-P8-11.04": {

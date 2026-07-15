@@ -1,7 +1,7 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "provider": "sam3_litetext_s0",
-  "status": "inputs_frozen_not_installed_not_qualified",
+  "status": "installed_live_smoke_official_comparison_pending",
   "source": {
     "repository": "https://github.com/SimonZeng7108/efficientsam3",
     "commit": "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a"
@@ -13,7 +13,7 @@
     "sha256": "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906",
     "size_bytes": 2117074488,
     "gating": "none",
-    "downloaded": false
+    "downloaded": true
   },
   "license_review": {
     "effective_scope": "checkpoint",
@@ -37,25 +37,30 @@
     "source_commit": "4626421dc6b741a329300682a6408246ee465490",
     "wheel_sha256": "53f0ea8aa397e29244c2377ba981bcaf0c87adcf44fbdd447ef6306522afcacd",
     "platform_target": "WSL Ubuntu-22.04 linux-64",
-    "environment_status": "not_created",
-    "environment_path": null,
-    "python": null,
-    "torch": null,
-    "torchvision": null,
-    "cuda": null,
-    "requirements_lock": null
+    "environment_status": "installed_verified",
+    "environment_path": "/home/kevin/mfenvs/sam3-litetext-b09766e5",
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "cuda": "12.8",
+    "requirements_lock": "env/sam3_litetext_s0_runtime.requirements.lock.txt",
+    "requirements_lock_sha256": "511ba2864defea1b3858587c040d8bd66e8e7a3ee02d30af173541846cad0dbd"
   },
   "qualification": {
-    "installation_verified": false,
-    "import_verified": false,
-    "checkpoint_inference_verified": false,
-    "peak_vram_mb": null,
-    "latency_ms": null,
-    "determinism_verified": false,
+    "installation_verified": true,
+    "import_verified": true,
+    "checkpoint_inference_verified": true,
+    "peak_allocated_bytes": 1479608320,
+    "peak_reserved_bytes": 1660944384,
+    "inference_seconds": [2.148611, 0.323472],
+    "instance_count": 4,
+    "output_sha256": "dc6dc62a2c3bf9d47396a61970cb2ac0896f40c065a0ee67dceac48a9ecd0733",
+    "determinism_verified": true,
+    "failure_behavior": "local_missing_checkpoint_refused_without_network_fallback",
+    "live_smoke_evidence": "qa/live_verification/sam3_litetext_s0_runtime_20260715.json",
+    "live_smoke_evidence_sha256": "f3711cac810781ad02b2cd8ec4ec538d82f580b129c9999ed6dcb2b2717cae12",
     "quality_benchmark": null,
     "claims_not_made": [
-      "SAM3-LiteText is installed",
-      "SAM3-LiteText runs on this machine",
       "SAM3-LiteText uses less VRAM than official SAM 3.1",
       "SAM3-LiteText is non-inferior to official SAM 3.1"
     ]
@@ -75,5 +80,5 @@
       "semantic_authority"
     ]
   },
-  "manifest_sha256": "ca0a362329aec9bda933bf88d0ac352eca2022002366de74455c3219c496eede"
+  "manifest_sha256": "f449bf80c44d44b96d198f07540c555276ee92eaadcd5860b9324080c4f53b01"
 }

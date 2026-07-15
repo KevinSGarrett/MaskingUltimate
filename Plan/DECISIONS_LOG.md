@@ -337,6 +337,33 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Install SAM3-LiteText S0 as a shadow-only optional experiment
+
+**Item(s) affected:** MF-P3-08.02, MF-P0-17.13, concept-detector and
+interactive-segmenter challenger inventory
+
+**Decision:** Advance exact `vil-uob/sam3-litetext-s0` revision
+`b09766e54f5d2eba021119ec7feff13e74c0f8fc` from planned to installed in the
+isolated WSL environment `/home/kevin/mfenvs/sam3-litetext-b09766e5`. Bind
+checkpoint SHA-256 `69c86fda...`, Transformers 5.13.1 wheel SHA-256
+`53f0ea8a...`, the complete installed dependency lock, CUDA smoke evidence,
+and the expanded eight-family runtime matrix. Its only eligible role remains
+`shadow_only_experiment`; active, fallback, OOM-fallback, rollback, production,
+semantic, mask-authority, and gold-authority substitution for official
+`sam3_1` remain forbidden.
+
+**Why:** The previously storage-blocked public checkpoint is ungated and now
+runs deterministically on the recovered 8 GiB machine, producing four strict
+person masks on the governed adult multi-person fixture with 1,479,608,320
+peak allocated bytes. This establishes installation and local feasibility only.
+Official SAM 3.1 remains checkpoint-gated, so no relative lower-memory claim,
+quality non-inferiority claim, benchmark win, provider promotion, or substitute
+authority is supportable yet. Keeping those comparisons explicitly pending
+preserves the approved amendment's requirement that LiteText never masquerade
+as official SAM 3.1.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Freeze RTM pose-variant comparison before human-anchor results
 
 **Item(s) affected:** MF-P3-08.04, MF-P2-11.13, pose-provider promotion and rollback
@@ -799,5 +826,44 @@ rebind.
 role promotion. The final evidence index intentionally detects any authoritative-source change, so
 its pre-result source digest must be updated before later primary completion receipts exist. This is
 not a threshold change and grants no completion, promotion, serving, mask, or gold authority.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Rotate the currency-review signer with explicit predecessor trust
+
+**Item(s) affected:** MF-P7-07.01, MF-P7-07.03, signed currency-review history
+
+**Decision:** Retire public signer `8cbbb8d8...`, preserve its public key under
+`configs/governance/`, and activate signer `5892e515...` with its private key stored only
+outside the repository under Kevin's profile. Chain the first review under the new signer to
+valid predecessor review `e89fa70126325b6ac1f86652` / SHA-256 `1d83cab5...`. Record both
+signers and their status in `currency_review_key_history.json`.
+
+**Why:** The repository public key had been rotated repeatedly, but the matching latest private
+key was not durably retained; the only remaining private key matched the original signer rather
+than the current signed review. Reusing a mismatched key or accepting an invalid signature would
+defeat the hard gate. An explicit, documented rotation preserves predecessor verification while
+restoring a durable matching signer for current and future reviews.
+
+**Approved by:** Kevin's autonomous execution mandate and the existing fail-closed currency policy
+
+## 2026-07-15 - Administratively rebind unopened benchmark policies after LiteText installation
+
+**Item(s) affected:** MF-P2-11.13, MF-P4-10.12, provider-matrix and local-Qwen
+benchmark reproducibility
+
+**Decision:** Supersede unopened `provider_benchmark_matrix_v1` canonical SHA-256
+`d0e2e85e...` with `f76605c7...` and unopened `qwen_challenger_benchmark_v1`
+canonical SHA-256 `cba85192...` with `3425c746...`. Change only their frozen source
+hashes for `configs/external_sources.yaml` and, for the provider matrix, the expanded
+`env/provider_runtime_matrix.json`.
+
+**Why:** Installing the previously frozen SAM3-LiteText experiment legitimately changed the
+governed provider registry and expanded the runtime matrix from seven to eight families. Both
+pre-result policies intentionally failed closed on that drift. No eligible human-anchor manifest,
+observation, screening result, finalist, Qwen result, or winner exists; routes, providers under
+comparison, datasets, truth partitions, metrics, thresholds, margins, rollback rules, and authority
+boundaries are unchanged. Rebinding before results restores reproducibility without reacting to
+performance.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

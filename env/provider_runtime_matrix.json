@@ -36,6 +36,18 @@
       ]
     },
     {
+      "provider": "sam3_litetext_s0",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "wsl_venv_sam3_litetext_b09766e5",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam3_litetext_s0_runtime.lock.json", "sha256": "df9a329106032f7b3e7e3fd732bd5aa372c575e9985c329dbc54812b9e4a71c8"},
+        {"kind": "evidence", "path": "qa/live_verification/sam3_litetext_s0_runtime_20260715.json", "sha256": "f3711cac810781ad02b2cd8ec4ec538d82f580b129c9999ed6dcb2b2717cae12"}
+      ]
+    },
+    {
       "provider": "qwen3_vl",
       "status": "live_smoke_passed",
       "isolation_boundary": "native_ollama_service",
@@ -96,5 +108,5 @@
       ]
     }
   ],
-  "manifest_sha256": "5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0"
+  "manifest_sha256": "547c7c91733853f38c16d6dab6bdf5a0aede66c9300a3fea82bf814143466864"
 }

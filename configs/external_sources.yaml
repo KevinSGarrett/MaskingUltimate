@@ -214,7 +214,7 @@ providers:
 
   sam3_litetext_s0:
     component: "optional lower-memory concept/interactive experiment"
-    lifecycle_state: planned
+    lifecycle_state: installed
     source_url: "https://huggingface.co/vil-uob/sam3-litetext-s0"
     repo: "https://github.com/SimonZeng7108/efficientsam3"
     source_revision: "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a"
@@ -245,9 +245,12 @@ providers:
       sha256: "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906"
       size_bytes: 2117074488
       gating: none
-      downloaded: false
+      downloaded: true
     runtime_lock: "env/sam3_litetext_s0_runtime.lock.json"
-    local_path: "not installed; governed optional screen"
+    runtime_environment: "/home/kevin/mfenvs/sam3-litetext-b09766e5"
+    runtime_requirements_lock: "env/sam3_litetext_s0_runtime.requirements.lock.txt"
+    runtime_evidence: "qa/live_verification/sam3_litetext_s0_runtime_20260715.json"
+    local_path: "//wsl.localhost/Ubuntu-22.04/home/kevin/mfmodels/sam3-litetext-s0-b09766e5"
     output_type: "concept instances, boxes, masks, and prompt refinements"
     role: "optional shadow experiment screened beside official SAM 3.1"
     capabilities:

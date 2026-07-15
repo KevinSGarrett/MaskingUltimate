@@ -14,6 +14,7 @@ from maskfactory.providers.currency import (
     build_currency_review,
     generate_currency_signing_key,
     verify_currency_review,
+    verify_currency_review_signature,
 )
 from maskfactory.validation import validate_document
 from registry_helpers import governed_file_model, governed_registry
@@ -454,3 +455,45 @@ def test_currency_review_cli_fails_closed_when_review_file_is_missing(tmp_path: 
     assert result.exit_code != 0
     assert "does not exist" in result.output
     assert missing_review.name in result.output
+
+
+def test_live_signer_rotation_preserves_current_and_predecessor_signatures() -> None:
+    history = json.loads(
+        Path("configs/governance/currency_review_key_history.json").read_text(encoding="utf-8")
+    )
+    assert history["schema_version"] == "1.0.0"
+    assert [row["status"] for row in history["keys"]] == ["retired", "active"]
+    for row in history["keys"]:
+        public_key = Path(row["public_key_path"])
+        assert (
+            hashlib.sha256(public_key.read_bytes()).hexdigest() == row["signer_public_key_sha256"]
+        )
+
+    retired, active = history["keys"]
+    predecessor = json.loads(
+        Path(f"qa/governance/currency/reviews/{retired['last_review_id']}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    current = json.loads(
+        Path("qa/governance/currency/current_review.json").read_text(encoding="utf-8")
+    )
+    first_active = json.loads(
+        Path(f"qa/governance/currency/reviews/{active['first_review_id']}.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    predecessor_result = verify_currency_review_signature(
+        predecessor, public_key_path=Path(retired["public_key_path"])
+    )
+    first_active_result = verify_currency_review_signature(
+        first_active, public_key_path=Path(active["public_key_path"])
+    )
+    current_result = verify_currency_review_signature(
+        current, public_key_path=Path(active["public_key_path"])
+    )
+    assert predecessor_result["review_sha256"] == retired["last_review_sha256"]
+    assert first_active_result["review_sha256"] == active["first_review_sha256"]
+    assert first_active["previous_review_sha256"] == predecessor_result["review_sha256"]
+    assert current["previous_review_sha256"] == first_active_result["review_sha256"]
+    assert current_result["signer_public_key_sha256"] == history["active_signer_public_key_sha256"]

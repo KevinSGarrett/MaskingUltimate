@@ -504,6 +504,46 @@ def build_currency_review(
     return base
 
 
+def verify_currency_review_signature(
+    review: Mapping[str, Any], *, public_key_path: Path
+) -> dict[str, str]:
+    """Verify an immutable current or historical review without recomputing live inputs."""
+    findings: list[str] = []
+    try:
+        require_valid_document(dict(review), "currency_review")
+    except ArtifactValidationError:
+        raise CurrencyReviewError(["currency_review_schema_invalid"]) from None
+    if review.get("review_sha256") != _canonical_sha256(
+        {key: value for key, value in review.items() if key != "review_sha256"}
+    ):
+        findings.append("currency_review_hash_mismatch")
+    signed_payload = {
+        key: value
+        for key, value in review.items()
+        if key not in {"payload_sha256", "signature", "review_sha256"}
+    }
+    payload = _canonical_bytes(signed_payload)
+    if review.get("payload_sha256") != hashlib.sha256(payload).hexdigest():
+        findings.append("currency_review_payload_hash_mismatch")
+    public_bytes = Path(public_key_path).read_bytes()
+    if review.get("signer_public_key_sha256") != hashlib.sha256(public_bytes).hexdigest():
+        findings.append("currency_review_signer_mismatch")
+    try:
+        public_key = serialization.load_pem_public_key(public_bytes)
+        if not isinstance(public_key, Ed25519PublicKey):
+            raise TypeError
+        public_key.verify(base64.b64decode(str(review["signature"]), validate=True), payload)
+    except (ValueError, TypeError, InvalidSignature):
+        findings.append("currency_review_signature_invalid")
+    if findings:
+        raise CurrencyReviewError(findings)
+    return {
+        "review_id": str(review["review_id"]),
+        "review_sha256": str(review["review_sha256"]),
+        "signer_public_key_sha256": str(review["signer_public_key_sha256"]),
+    }
+
+
 def verify_currency_review(
     review: Mapping[str, Any],
     *,
@@ -615,4 +655,5 @@ __all__ = [
     "build_currency_review",
     "generate_currency_signing_key",
     "verify_currency_review",
+    "verify_currency_review_signature",
 ]

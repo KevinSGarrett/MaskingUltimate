@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T15:46:40+00:00",
+    "generated_at": "2026-07-15T16:45:59+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -10805,12 +10805,17 @@
           "ts": "2026-07-15T10:56:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 metadata refresh: EoMT's fair-training contract changed its runtime-lock hash; the aggregate seven-provider matrix was rehashed to 5562d24c... and reverified without accessing any runtime. The two official Meta checkpoint gates remain the only 10% gap."
+        },
+        {
+          "ts": "2026-07-15T16:45:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: aggregate isolated-runtime matrix now covers 8 provider families, 6 live-qualified runtimes, 2 explicit human gates, and 17 exact artifacts after SAM3-LiteText shadow qualification. Doctor PASS=11 WARN=1 FAIL=0 and 14/14 registered model smokes pass. The only remaining gap is the official SAM3.1 and SAM 3D Body gated checkpoints."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json manifest SHA-256 5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0; qa/live_verification/provider_runtime_matrix_20260715.json refreshed at 2026-07-15T10:55:21Z; focused matrix 4/4; full repository 1,486/1,486; Ruff clean; signed currency review verifies. Doctor PASS=11 WARN=0 SKIP=0 FAIL=0 and 14/14 model smokes are preserved historical observations from 2026-07-15T02:08:54Z, not rerun. Remaining 10% is the two official Meta checkpoint gates and live qualification.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 547c7c91733853f38c16d6dab6bdf5a0aede66c9300a3fea82bf814143466864; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T10:56:07+00:00",
+      "updated_at": "2026-07-15T16:45:52+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -12102,12 +12107,17 @@
           "ts": "2026-07-15T11:30:26+00:00",
           "actor": "ai_agent",
           "text": "Pre-commit canonical formatting changed only the aggregate compiler source bytes before commit or results; the final pre-result policy is SHA-256 d0e2e85e... with unchanged routes, grids, measurements, and authority boundary."
+        },
+        {
+          "ts": "2026-07-15T16:45:54+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 pre-result administrative refreeze: installing the governed SAM3-LiteText shadow runtime changed registry/runtime source identity only. No eligible result existed; routes, thresholds, truth, metrics, and authority remain unchanged. Current policy canonical SHA-256 is f76605c7...."
         }
       ],
-      "evidence": "qa/live_verification/provider_benchmark_matrix_contract_20260715.json refreshed for final provider_benchmark_matrix_v1 SHA-256 d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538; identity/metrics 41/41; focused 196/196; full repository 1,527/1,527. Real manifest and runs remain pending.",
+      "evidence": "qa/governance/benchmark_matrices/provider_benchmark_matrix_v1.json canonical SHA-256 f76605c75aa28b3e3ca1730fb09a33fb8e94d5e9bc65d923e0026afd0c831c4f; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; 63 affected-policy and 1593 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T11:30:26+00:00",
+      "updated_at": "2026-07-15T16:45:54+00:00",
       "orphaned": false
     },
     "MF-P2-11.14": {
@@ -12204,7 +12214,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T04:42:58+00:00",
@@ -12215,12 +12225,17 @@
           "ts": "2026-07-15T10:01:51+00:00",
           "actor": "ai_agent",
           "text": "Pre-install lock gap closed on Windows without accessing WSL/Docker/CVAT/F:/external VHD. Installation, exact installed dependency lock, checkpoint smoke, VRAM/latency/determinism, and human-anchor quality comparison remain unclaimed pending explicit storage reconnection."
+        },
+        {
+          "ts": "2026-07-15T16:45:51+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: installed and live-qualified exact SAM3-LiteText S0 in an isolated WSL runtime as shadow-only. Deterministic strict-binary person smoke passed with 4 masks, 0.323472 s warm inference, and 1,479,608,320 peak allocated bytes. No lower-memory or quality comparison is claimed; official SAM3.1 qualification and the frozen image-disjoint human-anchor comparison remain."
         }
       ],
-      "evidence": "2026-07-15: exact source/checkpoint/Transformers candidate inputs are sealed by env/sam3_litetext_s0_runtime.lock.json (canonical SHA-256 ca0a362329aec9bda933bf88d0ac352eca2022002366de74455c3219c496eede) and fail-closed verifier tests. Both concept_detector and interactive_segmenter reject shadow-only active/rollback substitution; interactive also rejects OOM fallback. Dedicated 7/7, provider-plus-lock 29/29, named governance gate 140/140, full suite 1415/1415 exit 0, Ruff/Black/CI YAML pass. qa/live_verification/sam3_litetext_preinstall_lock_20260715.json.",
+      "evidence": "qa/live_verification/sam3_litetext_installation_bundle_20260715.json; exact checkpoint SHA-256 69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906; runtime lock df9a3291...; requirements lock 511ba286...; live smoke f3711cac...; 94 focused, 63 affected-policy, and 1593 full repository tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T10:01:51+00:00",
+      "updated_at": "2026-07-15T16:45:51+00:00",
       "orphaned": false
     },
     "MF-P3-08.03": {
@@ -12396,12 +12411,17 @@
           "ts": "2026-07-15T11:30:26+00:00",
           "actor": "ai_agent",
           "text": "Final pre-commit-normalized top-level policy SHA-256 is d0e2e85e...; the specialist margin identity and every substantive threshold remain unchanged. Actual human-anchor result binding remains the final 10%."
+        },
+        {
+          "ts": "2026-07-15T16:45:54+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: top-level provider policy administratively rebound to canonical SHA-256 f76605c7... after registry/runtime identity changed. Specialist margins and every substantive threshold are unchanged; actual image-disjoint human-anchor result binding remains the final 10%."
         }
       ],
-      "evidence": "specialist_margins_v1 canonical SHA-256 605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739; provider_benchmark_matrix_v1 SHA-256 d0e2e85e50bb67096bf2c3838f62fdddfe0f4e7b785d626b2f74c71344351538; qa/live_verification/provider_benchmark_matrix_contract_20260715.json; full repository 1,527/1,527.",
+      "evidence": "specialist_margins_v1 canonical SHA-256 605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739; provider_benchmark_matrix_v1 f76605c75aa28b3e3ca1730fb09a33fb8e94d5e9bc65d923e0026afd0c831c4f; qa/live_verification/sam3_litetext_installation_bundle_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T11:30:26+00:00",
+      "updated_at": "2026-07-15T16:45:54+00:00",
       "orphaned": false
     },
     "MF-P3-08.09": {
@@ -12867,12 +12887,17 @@
           "ts": "2026-07-15T08:54:16+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: froze and CI-enforced qwen_challenger_benchmark_v1 before eligible results. Exact Qwen2.5-VL/Qwen3 4B/8B identities, three image-disjoint human-anchor partitions, complete case observations, absolute and per-stratum quality/labor/runtime gates, deterministic winner selection, and injected Qwen2.5 rollback are now executable. Remaining 20% is the real teacher holdout, balanced 40-panel and >=200-case observations, measured winner, promotion certificate, and live rollback; fixtures grant no authority."
+        },
+        {
+          "ts": "2026-07-15T16:45:54+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 pre-result administrative refreeze: the external provider registry identity changed after shadow-runtime installation. Challenger routes, thresholds, truth, metrics, rollback design, and authority are unchanged; current canonical policy SHA-256 is 3425c746.... Real human-anchor observations remain pending."
         }
       ],
-      "evidence": "qa/live_verification/qwen_challenger_benchmark_contract_20260715.json; frozen canonical policy cba85192e7ed558b5632b05952e80edfa6e88da155b0460e1a0798d27c3d2792; strict policy/cases/report schemas; one-command evaluator; 17 dedicated, 63 focused Qwen/VLM/teacher, and full 1,352-test repository suite pass; Ruff/format/CI YAML clean; signed review 5c61f723f62a8d962de2df2b verifies. Real human-anchor benchmark remains pending.",
+      "evidence": "qa/governance/benchmark_matrices/qwen_challenger_benchmark_v1.json canonical SHA-256 3425c7464035eb012e6c4220748103d61df6b7bb8a69cef24e14b6fdfa163ffd; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; 63 affected-policy and 1593 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T08:54:16+00:00",
+      "updated_at": "2026-07-15T16:45:54+00:00",
       "orphaned": false
     },
     "MF-P4-11.01": {
@@ -14157,12 +14182,17 @@
           "ts": "2026-07-15T06:36:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: signed review refreshed after the frozen MediaPipe ablation decision and CI gate. Review 4302d2a4943b70e644a28441 is current-input/signature valid and chains a64c6624...; strict findings remain unchanged and honest."
+        },
+        {
+          "ts": "2026-07-15T16:45:53+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: rotated the currency-review signer without weakening verification, preserved the retired public key and immutable predecessor chain, and issued current review 25e86920da0e4f72914e73b0. Signature/current-input verification passes; status honestly remains FAIL on missing role certificates and distinct tested rollback providers."
         }
       ],
-      "evidence": "qa/governance/currency/current_review.json review_id 4302d2a4943b70e644a28441 review_sha256 100e9854dbc342cccf916f0c71507799544992f069c8823c16be390067cf2152; immutable predecessors under qa/governance/currency/reviews/. Integrity/current-input verification passes; strict verification fails only benchmark_certificate_missing, rollback_evidence_missing, rollback_provider_not_distinct, currency_review_not_passing. Full 1,240/1,240; Ruff clean.",
+      "evidence": "qa/governance/currency/current_review.json review_id 25e86920da0e4f72914e73b0, review SHA-256 0ed66af07673b071ba7c447835ef551fd287a7100de1cf5a5d7ef464fe23cf24; configs/governance/currency_review_key_history.json; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T06:36:07+00:00",
+      "updated_at": "2026-07-15T16:45:53+00:00",
       "orphaned": false
     },
     "MF-P7-07.02": {
@@ -14235,12 +14265,17 @@
           "ts": "2026-07-15T06:53:19+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: CI evidence refreshed after adding the named all-lane specialist evidence-package gate; signed review inputs remain current because no bound authority input changed."
+        },
+        {
+          "ts": "2026-07-15T16:45:53+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: historical and active currency signatures now verify across explicit signer rotation; registry/runtime source drift failed closed and both frozen policies were administratively rebound before any eligible result. Strict require-pass remains correctly withheld pending MF-P7-07.01 evidence."
         }
       ],
-      "evidence": "qa/live_verification/currency_ci_gate_20260715.json; live Ed25519/current-input verification passes; 33 currency, 16 MediaPipe ablation, 17 specialist package gates and full repository 1,257/1,257 pass; Ruff clean. Strict review-pass remains gated by real active-role benchmark/rollback evidence.",
+      "evidence": "configs/governance/currency_review_key_history.json; archived reviews e89fa70126325b6ac1f86652 and cebf6935cb7d8467eb7da630; current review 25e86920da0e4f72914e73b0; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T06:53:19+00:00",
+      "updated_at": "2026-07-15T16:45:53+00:00",
       "orphaned": false
     },
     "MF-P7-07.04": {

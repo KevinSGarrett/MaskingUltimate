@@ -5536,3 +5536,23 @@ Cold-start observation:            the first doctor CUDA subprocess timed out at
 Repeat doctor:                     PASS=11 WARN=1 SKIP=0 FAIL=0; all 14 registered model smoke hashes match; CVAT, SAM2, Ollama image, PNG, SQLite, and gpu-lock checks pass
 Only warning:                      130.9 GiB free is below the 150 GiB junction-planning threshold but above the 75 GiB ingest-block threshold
 Evidence:                          `qa/live_verification/wsl_docker_recovery_confirmation_20260715.json`
+
+## 2026-07-15 16:42 UTC - SAM3-LiteText shadow runtime live-qualified
+
+**Result:** MF-P3-08.02 advances to 90%; the optional SAM3-LiteText S0 challenger is
+installed, hash-locked, and live-qualified as an isolated shadow experiment. It has no
+production, fallback, rollback, semantic, mask, training-truth, or gold authority.
+
+Supply chain:                      the initial mixed-index dependency attempt failed closed on a hash mismatch before installation; no bypass was used; the clean cu128-index retry and `pip check` passed
+Exact identities:                  `vil-uob/sam3-litetext-s0` revision `b09766e...`; checkpoint SHA-256 `69c86fda...`; source commit `bef17f5c...`; Transformers 5.13.1 wheel SHA-256 `53f0ea8a...`
+Isolated runtime:                  Python 3.12.13, Torch 2.10.0+cu128, torchvision 0.25.0+cu128, Transformers 5.13.1, CUDA 12.8 under `/home/kevin/mfenvs/sam3-litetext-b09766e5`
+Live smoke:                        adult bus fixture, prompt `person`, 4 masks; cold 2.148611 s, warm 0.323472 s; peak allocated 1,479,608,320 bytes; exact two-run determinism and strict binary PNG round-trip pass
+Fail-closed behavior:              a missing local checkpoint cannot fall back to network download; provider-role tests continue to reject silent active, fallback, rollback, and official-SAM3.1 substitution
+Runtime matrix:                    8 provider families, 6 live-qualified, 2 explicit human-gated, and 17 bound artifacts; only official SAM3.1 and SAM 3D Body checkpoints remain human-gated
+Governance maintenance:            provider and Qwen benchmark policies were administratively rebound to changed registry/runtime identities before any eligible result; routes, thresholds, truth, metrics, and authority are unchanged
+Currency chain:                    signer rotation preserves the retired predecessor and both active-key reviews; current review `25e86920da0e4f72914e73b0` verifies but honestly remains FAIL on missing role certificates and distinct tested rollback providers
+Machine health:                    doctor PASS=11 WARN=1 SKIP=0 FAIL=0; all 14 registered model smokes match; the only warning is 128.7 GiB free, above the 75 GiB ingest block
+Verification:                      94 focused runtime/governance, 63 affected frozen-policy, and all 1,593 repository tests pass
+Claims withheld:                   no lower-memory, quality-noninferiority, human-anchor win, official substitution, or completion claim is made
+Remaining work:                    Kevin must accept the official SAM3.1 terms; then live-qualify it and run the frozen image-disjoint human-anchor memory/quality comparison
+Evidence:                          `qa/live_verification/sam3_litetext_installation_bundle_20260715.json`

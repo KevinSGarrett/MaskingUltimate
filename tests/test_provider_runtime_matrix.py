@@ -25,10 +25,10 @@ def _rehash(document: dict) -> None:
 
 def test_live_runtime_matrix_is_hash_exact_and_explicit_about_human_gates():
     result = verify_runtime_matrix()
-    assert result["provider_count"] == 7
-    assert result["qualified_runtime_count"] == 5
+    assert result["provider_count"] == 8
+    assert result["qualified_runtime_count"] == 6
     assert result["human_gated_runtime_count"] == 2
-    assert result["artifact_count"] == 15
+    assert result["artifact_count"] == 17
     assert result["core_torch"] == "2.11.0+cu128"
     assert result["status"] == "pass_with_explicit_human_gates"
 

@@ -5149,3 +5149,23 @@ Verification:                       dedicated 23/23; focused pose/specialist 52/
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
 Authority boundary:                synthetic fixtures grant no real performance result, winner, promotion, serving, certificate, production-mask, or gold authority; human-anchor pose observations remain required
 Evidence:                           `qa/live_verification/pose_variant_benchmark_contract_20260715.json`
+
+## 2026-07-15 07:49 UTC - Silhouette and matting role benchmark contract frozen
+
+**Result:** MF-P3-08.03 is 80% complete; the five-provider silhouette/hair-edge/matting comparison is executable, while real image-disjoint human-anchor observations and reviewed auxiliary alpha references remain open.
+
+Pre-result policy:                  `silhouette_variant_benchmark_v1`, canonical SHA-256 `04a13fef0de84b0db3895437163b33866ca1a553b916a5b1397681f84972ebab`, frozen before any eligible result and bound to specialist margins `605f79e0...`
+Eligible truth:                     only `human_anchor_gold` holdout; alpha metrics additionally require reviewed auxiliary alpha references without making auxiliary mattes binary-gold authority
+Role matrix:                        BiRefNet-general is silhouette/hair-edge baseline; ViTMatte-S is trimap-matting baseline; Dynamic/HR/HR-matting enter only roles their governed outputs support
+Context coverage:                   hair boundaries, multi-person overlap, contact/occlusion, small parts, and truncation are mandatory for every provider/role/label Cartesian product
+Pixel metrics:                      foreground IoU, background leakage, boundary-F@2px, and correction pixels per 100k are recomputed from explicit intersection, foreground/background, boundary TP/FP/FN, correction, and total-pixel denominators
+Alpha metrics:                      matting roles require full alpha-reference denominators and recompute MAE/MSE; binary silhouette/hair-edge rows carrying alpha-only measurements fail
+Runtime evidence:                   exact artifact/runtime/resolution identity, cold/warm latency, peak VRAM, OOM/crash, and exactly two identical deterministic output hashes are mandatory
+Memory boundary:                    HR and HR-matting remain at governed 1024 under the 8 GB cap; their prior 2048 oversubscription cannot qualify for this machine
+Fallback matrix:                    eight exact role/challenger routes must inject failure, return the role incumbent with a hash-bound output, and preserve active/rollback identity
+Tamper boundary:                    policy, observations, and report are schema-valid/canonical-hash sealed; the verifier recomputes every result byte-for-byte and CI runs the named 29-case suite
+Signed governance:                 currency review `02c191eb484fde917f4dcc64`, SHA-256 `2ac2a85726cdad5d7405ffda26e403c8cdbc249ac3473e62005ecf63f0a0d0a3`, chains archived review `7b85bf35...` and passes signature/current-input verification
+Verification:                       dedicated 29/29; focused provider/hair/specialist 71/71; complete repository 1,309/1,309; repository Ruff, targeted Black, CI YAML parse, tracker rebuild/validation pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
+Authority boundary:                fixtures grant no real quality result, winner, promotion, serving, certificate, production-mask, alpha-truth, or gold authority
+Evidence:                           `qa/live_verification/silhouette_variant_benchmark_contract_20260715.json`

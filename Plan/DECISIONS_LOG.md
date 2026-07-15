@@ -523,3 +523,27 @@ refreeze preserves the original decision and records the byte-only normalization
 human-anchor benchmark output exists.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze silhouette, hair-edge, and matting provider comparisons
+
+**Item(s) affected:** MF-P3-08.03, MF-P2-11.13, silhouette/matting provider promotion and rollback
+
+**Decision:** Freeze `silhouette_variant_benchmark_v1` at canonical SHA-256
+`04a13fef0de84b0db3895437163b33866ca1a553b916a5b1397681f84972ebab` before any
+eligible result. Use BiRefNet-general as the incumbent for person-silhouette and binary hair-edge
+roles, and ViTMatte-S as the incumbent for trimap-guided alpha matting. Compare BiRefNet Dynamic,
+HR, and HR-matting only where their governed outputs support the role: all three for silhouette and
+hair edge, Dynamic and HR-matting for alpha matting. Require every provider/role/label across hair
+boundaries, multi-person overlap, contact/occlusion, small parts, and truncation. Recompute
+foreground IoU, foreground leakage, boundary-F@2px, correction pixels, alpha MAE/MSE, latency,
+VRAM, OOM/crash, two-repeat determinism, and eight exact role-specific fallback drills from explicit
+denominators. Keep HR and HR-matting at 1024 under the 8 GB profile; 2048 evidence cannot qualify on
+this machine.
+
+**Why:** Single-image smoke masks prove shape, determinism, and runtime feasibility but cannot prove
+boundary quality or leakage across the hard contexts. ViTMatte requires a trimap and therefore is
+not a silent full-silhouette substitute, while BiRefNet HR has no governed alpha-matting output.
+Freezing the capability matrix prevents invalid cross-role comparisons, denominator-free quality
+claims, or post-result margin changes from becoming promotion evidence.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

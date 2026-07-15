@@ -38,6 +38,8 @@ jobs:
         run: pytest -q tests/test_mediapipe_vote_ablation.py
       - name: Block incomplete pose-variant benchmark evidence
         run: pytest -q tests/test_pose_variant_benchmark.py
+      - name: Block incomplete silhouette and matting benchmark evidence
+        run: pytest -q tests/test_silhouette_variant_benchmark.py
       - name: Block incomplete specialist evidence packages
         run: pytest -q tests/test_specialist_evidence_package.py
       - name: Block registry governance and lifecycle drift

@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T02:54:23+00:00",
+    "generated_at": "2026-07-15T03:25:15+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12274,13 +12274,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 90,
+      "notes": [
+        {
+          "ts": "2026-07-15T03:25:13+00:00",
+          "actor": "ai_agent",
+          "text": "Remaining 10% is the first real packet validation after MF-P2-11.13/MF-P3-08.08 produces the frozen human-anchor matrix and measured results; no synthetic packet is claimed as a promotion."
+        }
+      ],
+      "evidence": "2026-07-15: src/maskfactory/providers/promotion.py validates a hash-bound specialist promotion packet against benchmarked lifecycle, five exact provenance hashes, both allowed adult lanes, resolved checkpoint license, the frozen specialist margin/results contract, deterministic 8 GiB reliability or Kevin-approved alternate runtime, and a distinct observed rollback/restore. 28 dedicated negative cases and named CI enforcement reject every missing prerequisite, model-card/download/smoke-only authority, hard-bucket loss, runtime failure, and tamper. Focused bundle 47/47; full suite 1138/1138; Ruff/CI YAML clean. Evidence: qa/live_verification/specialist_promotion_gate_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T03:25:13+00:00",
       "orphaned": false
     },
     "MF-P3-08.10": {

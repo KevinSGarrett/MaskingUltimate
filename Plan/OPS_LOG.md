@@ -4989,3 +4989,20 @@ Docker verification:               Docker Desktop reports `running`; Engine 29.4
 Service preservation:              production CVAT 2.24, parallel CVAT 2.69, both databases/volumes, Nuclio/SAM2, and the auxiliary Nuclio storage reader returned without reset
 Final doctor:                       `PASS=11 WARN=0 SKIP=0 FAIL=0`; all 14 registered model hashes, CVAT API/project, SAM2 Nuclio, Ollama image JSON, WSL round-trip, strict PNG, SQLite, disk, CUDA, and GPU-lock checks passed
 Evidence:                           `qa/live_verification/wsl_docker_systemd_recovery_20260715.json`
+
+## 2026-07-15 03:24 UTC - Specialist promotion prerequisites fail closed
+
+**Result:** MF-P3-08.09 is 90% complete: the provider-level promotion gate and exhaustive negative fixtures are enforced in CI; only validation against the first real frozen human-anchor result packet remains.
+
+Authority boundary:                 model cards, downloads, installation, and smoke tests grant shadow evidence only and cannot produce a production role, mask authority, or gold authority
+Lifecycle gate:                     a candidate must already be `benchmarked`; an `installed` challenger is rejected even when its smoke passed
+Identity binding:                   exact source-tree, checkpoint, runtime-lock, license-evidence, and content-decision SHA-256 values are mandatory and packet-hash bound
+Content/license:                    both `adult_nonexplicit` and `consensual_explicit_adult` are allowed; activation still requires the exact checkpoint license decision to be resolved and allowed
+Benchmark gate:                     validation reuses the frozen specialist margin manifest and rejects missing buckets, margin drift, a missing primary win/labor reduction, or any hard-bucket regression
+Runtime gate:                       at least two deterministic runs, zero OOM/crash, and peak reservation within 8 GiB are required unless Kevin approves an exact hash-bound alternate runtime
+Rollback gate:                      the incumbent must be distinct; one-command rollback and restore must both be observed with passing, timestamped, hash-bound evidence
+Negative fixtures:                  28 dedicated cases cover evidence-only candidates, every missing prerequisite/hash, license/content failures, lifecycle overclaim, runtime failures, budget breach, invalid alternate approval, same-provider/unobserved rollback, hard-bucket loss, and packet tamper
+CI enforcement:                     the named registry-governance job now runs both `test_specialist_benchmark_policy.py` and `test_specialist_promotion.py`
+Verification:                       focused promotion/margin/model-role bundle passed 47/47; complete repository suite passed 1,138/1,138; repository-wide Ruff and CI YAML validation passed
+Honest boundary:                    no real promotion packet is claimed before MF-P2-11.13/MF-P3-08.08 produces the frozen human-anchor matrix and measured results
+Evidence:                           `qa/live_verification/specialist_promotion_gate_20260715.json`

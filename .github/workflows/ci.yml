@@ -40,6 +40,8 @@ jobs:
           tests/test_model_registry.py
           tests/test_external_probe.py
           tests/test_provider_contracts.py
+          tests/test_specialist_benchmark_policy.py
+          tests/test_specialist_promotion.py
       - name: Verify signed currency review integrity and current input binding
         run: >-
           python -m maskfactory.cli governance verify-currency-review

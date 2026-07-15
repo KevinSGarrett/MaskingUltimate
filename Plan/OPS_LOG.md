@@ -5129,3 +5129,23 @@ Verification:                       dedicated 17/17; focused specialist/policy/p
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
 Authority boundary:                no real all-lane package or performance result exists; completion still requires MF-P3-08.03 through MF-P3-08.06 human-anchor evidence
 Evidence:                           `qa/live_verification/specialist_evidence_package_contract_20260715.json`
+
+## 2026-07-15 07:22 UTC - Pose-variant human-anchor benchmark contract frozen
+
+**Result:** MF-P3-08.04 is 80% complete; the complete RTMW-X/RTMO-versus-DWPose benchmark and fallback contract is executable, while the real image-disjoint human-anchor pose result remains open.
+
+Pre-result policy:                  `pose_variant_benchmark_v1`, canonical SHA-256 `3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517`, frozen before any eligible result
+Eligible truth:                     only `human_anchor_gold` holdout; observations bind the exact truth manifest, pipeline fingerprint, hardware fingerprint, provider artifacts, runtimes, and frozen governing sources
+Context coverage:                   whole-body, hands, feet, rear, contact, occlusion, and crowded scene are mandatory for every provider/joint Cartesian product
+Joint coverage:                     DWPose and RTMW-X require exact COCO-WholeBody-133; RTMO requires exact CrowdPose-14; per-joint and per-context PCK@0.05/PCK@0.10 plus normalized error are recomputed from explicit visible/correct/error-sum counts
+RTMO comparison boundary:           all 14 RTMO joints remain measured, but DWPose comparison uses only the 12 exact-name shared joints; `top_head` and `neck` are not silently mapped to unrelated points
+Side/identity evidence:             every provider and context must reconcile character-anatomical side correct/error counts and person-identity correct/cross-person counts; missing or duplicate contexts fail
+Runtime evidence:                   cold/warm latency, peak VRAM, OOM, crash, and exactly two identical deterministic output hashes are mandatory
+Non-inferiority:                    RTMW-X is compared across all seven roles; RTMO only in crowded scenes; PCK@0.10 drop is capped at 0.02 and side/cross-person/runtime regressions have zero tolerance
+Fallback drills:                    both challengers must survive an injected primary failure by returning a hash-bound DWPose output while active and rollback authority remain `dwpose_133`
+Tamper boundary:                    policy, cases, and report are schema-valid/canonical-hash sealed; the verifier recomputes the entire report byte-for-byte and a named CI gate runs the 23-case dedicated suite
+Signed governance:                 currency review `7b85bf3511a920a82f17d035`, SHA-256 `58a139e09a660b03a415392a9f5e607707cb067a5286167b716df156357ce10c`, chains archived review `4302d2a4...` and passes signature/current-input verification
+Verification:                       dedicated 23/23; focused pose/specialist 52/52; complete repository 1,280/1,280; repository Ruff, targeted Black, CI YAML parse, tracker rebuild/validation pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
+Authority boundary:                synthetic fixtures grant no real performance result, winner, promotion, serving, certificate, production-mask, or gold authority; human-anchor pose observations remain required
+Evidence:                           `qa/live_verification/pose_variant_benchmark_contract_20260715.json`

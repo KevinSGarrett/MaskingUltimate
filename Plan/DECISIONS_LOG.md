@@ -337,6 +337,29 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Freeze RTM pose-variant comparison before human-anchor results
+
+**Item(s) affected:** MF-P3-08.04, MF-P2-11.13, pose-provider promotion and rollback
+
+**Decision:** Freeze `pose_variant_benchmark_v1` at canonical SHA-256
+`3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517`. Compare
+RTMW-X to DWPose across whole-body, hands, feet, rear, contact, occlusion, and crowded-scene
+contexts using all 133 COCO-WholeBody joints. Measure all 14 RTMO CrowdPose joints in every context,
+but compare RTMO to DWPose only on the 12 exact-name shared joints and only for its crowded-scene
+role; do not invent mappings for CrowdPose `top_head` or `neck`. Normalize joint error by the truth
+person-box diagonal, report PCK@0.05 and PCK@0.10 from explicit counts, preserve character-anatomical
+side semantics, and require side, cross-person identity, latency, VRAM, crash/OOM, two-repeat
+determinism, and injected-failure fallback evidence. Keep DWPose active and rollback regardless of a
+fixture report; real authority requires an image-disjoint human-anchor holdout report.
+
+**Why:** Smoke success proves that the installed challengers execute, not that they are accurate or
+safe in every hard context. A pre-result, hash-locked evaluator prevents missing joints, absent
+contexts, denominator-free rates, post-result threshold changes, or a fabricated RTMO/DWPose joint
+mapping from becoming promotion evidence. Explicit DWPose failure drills also prove reversibility
+instead of relying on configuration intent.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Freeze MediaPipe handedness-vote ablation before holdout results
 
 **Item(s) affected:** MF-P3-08.06, QC-014, MF-P3-08.10, specialist benchmark evidence

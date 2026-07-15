@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T07:19:15.3747401Z",
+  "item_id": "MF-P3-08.04",
+  "result": "implementation_pass_real_human_anchor_benchmark_pending",
+  "frozen_policy": {
+    "policy_id": "pose_variant_benchmark_v1",
+    "canonical_sha256": "3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517",
+    "file_sha256": "9f58144624e65851248e140bd8e96238c2dae4b4021c4bb03253ca709dc23bc5",
+    "frozen_before_results": true,
+    "eligible_truth_tier": "human_anchor_gold",
+    "eligible_partition": "holdout",
+    "contexts": [
+      "whole_body",
+      "hands",
+      "feet",
+      "rear",
+      "contact",
+      "occlusion",
+      "crowded_scene"
+    ],
+    "normalization": "euclidean_pixels_over_truth_person_bbox_diagonal",
+    "pck_thresholds": [0.05, 0.1],
+    "side_semantics": "character_anatomical_left_right",
+    "rtmw_x_measured_joint_count": 133,
+    "rtmw_x_comparison_joint_count": 133,
+    "rtmo_measured_joint_count": 14,
+    "rtmo_exact_name_comparison_joint_count": 12,
+    "rtmo_nonmapped_joints": ["top_head", "neck"]
+  },
+  "provider_authority": {
+    "dwpose_133": "active_and_rollback",
+    "rtmw_x": "installed_shadow_only",
+    "rtmo_crowd": "installed_shadow_only",
+    "comparison_model_family_accounting": "rtmw_x_and_rtmo_crowd_are_one_correlated_rtmpose_family"
+  },
+  "enforcement": {
+    "strict_policy_schema": "pass",
+    "strict_observation_schema": "pass",
+    "strict_report_schema": "pass",
+    "locked_policy_and_governing_source_hashes": "pass",
+    "exact_provider_artifact_and_runtime_identity": "pass",
+    "all_joint_context_cartesian_products_required": "pass",
+    "explicit_visible_and_correct_pck_denominators": "pass",
+    "side_count_reconciliation_for_all_contexts": "pass",
+    "identity_count_reconciliation_for_all_contexts": "pass",
+    "latency_vram_crash_oom_and_repeat_evidence": "pass",
+    "two_identical_deterministic_output_hashes": "pass",
+    "challenger_noninferiority_recomputed": "pass",
+    "injected_failure_fallback_to_dwpose_for_each_challenger": "pass",
+    "active_and_rollback_provider_preservation": "pass",
+    "report_canonical_hash_and_full_recomputation": "pass",
+    "one_command_build_and_verify": "pass",
+    "ci_named_gate": "enabled"
+  },
+  "artifact_hashes": {
+    "implementation": "d5b62edfa58a019a216ec95e1100d987e8be67b0ed3f7f06107eef61ad54055c",
+    "cases_schema": "7354d6262aea13cb6dbde91c146b5144dfd7e446709ce9d3e26c1f77237384e3",
+    "policy_schema": "22a75f462c76dcd4b364120c2f67844e929822d37b15159c3e861dadd4b52749",
+    "report_schema": "5c90a099d465c0b1eb6d81342cbf38f624b31ff927fdda54d895f7b7484a32ce",
+    "tests": "026cd474d012cd94b82d52cae9cba7510e2e44c2dca3a8c4d7e11696ec9ff0bb",
+    "tool": "8241ce9815484b7aada4e7522793097efe1cbf96cb15427d296376dec82dd46e",
+    "ci_workflow": "fdeeb950c83685037d677429f73e72645e22ee172bee27bf33283710c533069e",
+    "decision_log": "b1d1ced2e70e2ca392250f5bdd31091c34e08e62bc15e7379c58872cdfc6cf6b"
+  },
+  "verification": {
+    "dedicated_tests_passed": 23,
+    "focused_pose_specialist_tests_passed": 52,
+    "full_repository_tests_passed": 1280,
+    "ruff_repository": "pass",
+    "black_changed_files": "pass",
+    "ci_yaml_parse": "pass",
+    "wsl_docker_external_vhd_accessed": false
+  },
+  "authority_boundary": "Synthetic fixtures prove only completeness, recomputation, non-inferiority, and fallback enforcement. No real human-anchor pose holdout report, measured winner, provider promotion, serving authority, certificate, production-mask authority, or gold authority is claimed."
+}

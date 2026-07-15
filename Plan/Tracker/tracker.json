@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T06:53:19+00:00",
+    "generated_at": "2026-07-15T07:21:08+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12175,13 +12175,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-15T07:21:08+00:00",
+          "actor": "ai_agent",
+          "text": "Structural benchmark implementation is complete. RTMO comparison is exact-name intersection only (12 shared joints); top_head and neck remain measured but are not inventively mapped to DWPose."
+        }
+      ],
+      "evidence": "Frozen pose_variant_benchmark_v1 canonical SHA-256 3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517; exact 133-joint RTMW-X and 14-joint RTMO measurement matrices across all seven required contexts, explicit PCK/side/identity/runtime denominators, DWPose fallback drills, schemas, recomputing CLI, named CI gate, and 23 dedicated/52 focused/1,280 full tests pass. Evidence qa/live_verification/pose_variant_benchmark_contract_20260715.json. Real image-disjoint human-anchor pose holdout observations remain pending; no winner or promotion claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T07:21:08+00:00",
       "orphaned": false
     },
     "MF-P3-08.05": {

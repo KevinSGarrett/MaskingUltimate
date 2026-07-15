@@ -4975,3 +4975,17 @@ Policy rebinding:                  autonomy risk/stability config hashes were up
 Runtime matrix:                    normalized lock artifacts refroze the aggregate matrix at `3fb4e9d2fac03b8ebccabf4a34b062eec1d4060b3e982fad7d5db1283dbef877`; verifier and negative tests pass
 Currency review:                   decision-log drift was detected and review `0013b1ef98195149fa02d07d` was signed over the new exact inputs; integrity/current-input verification passes and strict status remains honestly failed on benchmark/rollback evidence only
 Verification:                       111 formerly failing focused autonomy/specialist/VLM tests passed after hash reconciliation; complete repository suite passed 1,110/1,110; repository-wide Ruff passed
+
+## 2026-07-15 02:53 UTC - WSL systemd boot blocker removed; Docker integration cold-recovered
+
+**Result:** PASS - the recurring Ubuntu/Docker integration failure is repaired at its host and distro boot causes; no Docker reset, distro re-registration, governed-volume deletion, or model deletion was used.
+
+Reported symptom:                   Docker Desktop could not launch `/mnt/wsl/docker-desktop/docker-desktop-user-distro`, first reporting `Permission denied`, then timing out while listing or entering Ubuntu-22.04
+Host cause:                         stale `WslService`/Host Compute state produced `HCS_E_CONNECTION_TIMEOUT`; both services were replaced through the normal elevated service-control path while Docker was stopped
+Distro cause:                       enabled, unregistered `landscape-client.service` held `multi-user.target` while its `landscape-config --is-registered` condition ran for 28 seconds; total readiness crossed WSL's 10-second init and Docker's 60-second integration deadlines
+Boot repair:                        disabled only `landscape-client.service`; systemd now reports `running`, zero failed units, 3.010-second userspace startup, and `graphical.target` at 2.975 seconds
+Cold verification:                 measured Ubuntu cold starts of 6.526 and 8.603 seconds; exact torch/CUDA probe exits 0 in 3.897 seconds with torch 2.11.0+cu128, CUDA 12.8, and sm_120
+Docker verification:               Docker Desktop reports `running`; Engine 29.4.3 responds from Windows and Ubuntu; the integration helper is root-owned mode 0755 on exec-enabled ext4
+Service preservation:              production CVAT 2.24, parallel CVAT 2.69, both databases/volumes, Nuclio/SAM2, and the auxiliary Nuclio storage reader returned without reset
+Final doctor:                       `PASS=11 WARN=0 SKIP=0 FAIL=0`; all 14 registered model hashes, CVAT API/project, SAM2 Nuclio, Ollama image JSON, WSL round-trip, strict PNG, SQLite, disk, CUDA, and GPU-lock checks passed
+Evidence:                           `qa/live_verification/wsl_docker_systemd_recovery_20260715.json`

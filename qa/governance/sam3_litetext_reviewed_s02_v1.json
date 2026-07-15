@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "sam3_litetext_reviewed_s02_v1",
+  "frozen_at": "2026-07-15T17:26:00Z",
+  "results_existed_at_freeze": false,
+  "purpose": "absolute diagnostic agreement of the shadow-only SAM3-LiteText S0 provider against two Kevin-reviewed S02 semantic silhouettes",
+  "provider": {
+    "provider_key": "sam3_litetext_s0",
+    "lifecycle_state": "installed",
+    "role_eligibility": "shadow_only_experiment",
+    "checkpoint_revision": "b09766e54f5d2eba021119ec7feff13e74c0f8fc",
+    "checkpoint_sha256": "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906",
+    "checkpoint_size_bytes": 2117074488
+  },
+  "execution": {
+    "prompt": "person",
+    "score_threshold": 0.5,
+    "mask_threshold": 0.5,
+    "deterministic_repetitions": 2,
+    "instance_match": "maximum_iou_then_lowest_index",
+    "boundary_tolerance_px": 2,
+    "boundary_distance": "chebyshev",
+    "persist_strict_binary_matched_mask": true,
+    "measure_latency_and_peak_vram": true,
+    "pass_thresholds": null
+  },
+  "metrics": [
+    "iou",
+    "dice",
+    "precision",
+    "recall",
+    "spill_fraction",
+    "miss_fraction",
+    "boundary_precision_2px",
+    "boundary_recall_2px",
+    "boundary_f_2px"
+  ],
+  "references": [
+    {
+      "case_id": "img_c02019c4979c_p2",
+      "image_id": "img_c02019c4979c",
+      "instance_id": "p2",
+      "source_path": "data/images/img_c02019c4979c/source.jpg",
+      "source_file_sha256": "abbfc4b80ee947c090e40d0a6f4efb270d01c48cfad67a5812121077bad1f095",
+      "source_size": [810, 1080],
+      "mask_path": "work/instances/p2/s02/img_c02019c4979c/person_full_visible.png",
+      "mask_file_sha256": "dbe9777fb8fabfa90ab539fc4d2bcef316c9265cc2c07aa205b0ef3f0d4b10e0",
+      "resolution_path": "work/review_resolutions/img_c02019c4979c/p2/S02/resolution.json",
+      "resolution_file_sha256": "a25c29654439990e3d946f52b198d859c3aa69db7853d3dcbe579dba59296af1",
+      "reviewer": "kevin",
+      "decision": "confirmed_valid",
+      "truth_tier": "reviewed_s02_diagnostic_reference_not_gold"
+    },
+    {
+      "case_id": "img_cea6df6f0f13_p0",
+      "image_id": "img_cea6df6f0f13",
+      "instance_id": "p0",
+      "source_path": "data/images/img_cea6df6f0f13/source.jpg",
+      "source_file_sha256": "bdddbc26631edfbf57de008b2711517c06165c29ab25c0ca23e48315ad6bd5ef",
+      "source_size": [1640, 2560],
+      "mask_path": "work/instances/p0/s02/img_cea6df6f0f13/person_full_visible.png",
+      "mask_file_sha256": "2880d5ae0d6e9e1e89243c163d8d7ebe8b00e758e8b0bcd8f33a131f4605dfde",
+      "resolution_path": "work/review_resolutions/img_cea6df6f0f13/p0/S02/resolution.json",
+      "resolution_file_sha256": "72deaf2da64d620a755c896a7f087635df0cc39322345076735e9f8c37f66117",
+      "reviewer": "kevin",
+      "decision": "confirmed_valid",
+      "truth_tier": "reviewed_s02_diagnostic_reference_not_gold"
+    }
+  ],
+  "authority_limits": {
+    "human_anchor_gold_claimed": false,
+    "benchmark_holdout_claimed": false,
+    "official_sam31_comparison_claimed": false,
+    "lower_memory_claimed": false,
+    "quality_noninferiority_claimed": false,
+    "promotion_claimed": false,
+    "production_authority": false,
+    "gold_authority": false
+  },
+  "sha256": "f42edcfcacc6f8aecdb3d65e108a28043bc6264e92fbcb391694234ca296080f"
+}

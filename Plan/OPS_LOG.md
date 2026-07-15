@@ -5575,3 +5575,18 @@ Currency review:                   current review `b83bb5c7a27da05ea5d71aa0` is 
 Authority boundary:                pre-result contract only; no real performance, champion, serving, package, mask, truth, gold, promotion, D8, blocker-clearance, phase-exit, or completion claim
 Remaining work:                    trained promoted champions, distinct benchmarked rollback providers, governed unseen single/multi sources, eligible packages, six live executions, and four live rollback rehearsals
 Evidence:                          `qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json`
+
+## 2026-07-15 17:26 UTC - Reviewed-S02 LiteText diagnostic contract frozen pre-result
+
+**Result:** MF-P3-08.02 remains 90%; a narrow absolute-agreement measurement is
+predeclared before any eligible LiteText output is generated.
+
+References:                        exactly the two immutable S02 silhouettes Kevin confirmed valid, with source, mask, resolution, reviewer, decision, and byte hashes bound
+Provider:                          installed shadow-only SAM3-LiteText S0 revision `b09766e...`, checkpoint SHA-256 `69c86fda...`
+Execution:                         prompt `person`; score/mask thresholds 0.5; two deterministic repetitions; maximum-IoU instance match with lowest-index tie-break
+Metrics:                           IoU, Dice, precision/recall, spill/miss fractions, and Chebyshev-tolerant 2 px boundary precision/recall/F; latency and peak VRAM are measured
+Threshold boundary:                diagnostic only, with no pass threshold selected before or after the run
+Authority withheld:                the references are not labeled human-anchor gold or benchmark holdout; no official SAM3.1, lower-memory, noninferiority, promotion, production, or gold claim is permitted
+Policy identity:                   canonical SHA-256 `f42edcfcacc6f8aecdb3d65e108a28043bc6264e92fbcb391694234ca296080f`
+Pre-result verification:           7 dedicated policy/metric/matching tests pass; current source/reference/resolution bytes validate
+Remaining work:                    commit this frozen contract, then run the exact isolated WSL/CUDA runtime and verify persisted strict-binary matched masks

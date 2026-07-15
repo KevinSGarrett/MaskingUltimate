@@ -42,6 +42,8 @@ jobs:
         run: pytest -q tests/test_silhouette_variant_benchmark.py
       - name: Block operational metrics denominator and conflation drift
         run: pytest -q tests/test_autonomy_metrics.py
+      - name: Block local-Qwen challenger benchmark contract drift
+        run: pytest -q tests/test_qwen_challenger_benchmark.py
       - name: Block incomplete specialist evidence packages
         run: pytest -q tests/test_specialist_evidence_package.py
       - name: Block registry governance and lifecycle drift

@@ -573,3 +573,32 @@ not an accuracy or certification claim. Synthetic fixtures validate enforcement 
 performance remains pending a genuine autonomous cohort and blinded human-anchor audit.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze the local-Qwen replacement benchmark before human-anchor results
+
+**Item(s) affected:** MF-P4-10.12, local VLM reviewer promotion, Qwen2.5-VL rollback,
+Qwen3-VL 4B/8B challenger evaluation
+
+**Decision:** Freeze `qwen_challenger_benchmark_v1` at canonical SHA-256
+`cba85192e7ed558b5632b05952e80edfa6e88da155b0460e1a0798d27c3d2792` before
+opening any eligible quality result. Compare the exact installed Qwen3-VL 4B and quantized 8B
+identities against Qwen2.5-VL on three independently frozen, source-image-disjoint human-anchor
+partitions: the untouched teacher holdout, the exact balanced 40-panel local gate, and at least 200
+naturally occurring incremental-value cases. Require complete serious/good/error/context coverage,
+closed observations for every provider/case, per-label and high-risk non-regression, absolute recall,
+precision, false-pass, usefulness and reviewer-time gates, reliable operation within 8 GiB,
+deterministic repeats, and an injected-failure return to Qwen2.5-VL. A measured win requires at least
+one-percent recall improvement or five-percent median reviewer-time reduction with no gate regression.
+Choose deterministically if both challengers qualify. Keep Qwen2.5-VL active and rollback, preserve
+LLaVA-13B as fallback, and grant no mask, gold, blocker-clearance, or quick-pass authority from the
+benchmark itself.
+
+**Why:** Installation and single-fixture runtime smokes prove identity and feasibility, not replacement
+value. The existing cloud-teacher evaluator does not join the teacher holdout, local panel gate,
+incremental corpus, model identity, reviewer labor, runtime, per-stratum regression, and rollback into
+one exact local-model decision. Freezing those requirements now prevents data leakage, missing
+denominators, post-result threshold changes, a fast-but-worse replacement, or model-card confidence
+from silently displacing the incumbent. Test fixtures demonstrate enforcement only; a real result still
+requires Kevin-supplied human-anchor evidence and the upstream frozen corpus.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

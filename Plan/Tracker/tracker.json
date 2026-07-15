@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T08:27:18+00:00",
+    "generated_at": "2026-07-15T08:54:16+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12753,12 +12753,18 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 10,
-      "notes": [],
-      "evidence": "Local-Qwen challenger installation/identity and machine performance prerequisites are now measured: exact Qwen3-VL 4B/8B Q4_K_M manifests, strict schema/provider smokes, VRAM, cold/warm latency, post-warm-up determinism, incumbent preservation, and failure behavior are hash-bound in env/qwen3_vl_ollama.lock.json and qa/live_verification/qwen3_vl_ollama_runtime_20260714.json. The untouched teacher holdout, 40-panel gate, >=200-case incremental set, per-label/serious metrics, reviewer time, certificate, and rollback benchmark remain outstanding, so no promotion is claimed.",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-15T08:54:16+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: froze and CI-enforced qwen_challenger_benchmark_v1 before eligible results. Exact Qwen2.5-VL/Qwen3 4B/8B identities, three image-disjoint human-anchor partitions, complete case observations, absolute and per-stratum quality/labor/runtime gates, deterministic winner selection, and injected Qwen2.5 rollback are now executable. Remaining 20% is the real teacher holdout, balanced 40-panel and >=200-case observations, measured winner, promotion certificate, and live rollback; fixtures grant no authority."
+        }
+      ],
+      "evidence": "qa/live_verification/qwen_challenger_benchmark_contract_20260715.json; frozen canonical policy cba85192e7ed558b5632b05952e80edfa6e88da155b0460e1a0798d27c3d2792; strict policy/cases/report schemas; one-command evaluator; 17 dedicated, 63 focused Qwen/VLM/teacher, and full 1,352-test repository suite pass; Ruff/format/CI YAML clean; signed review 5c61f723f62a8d962de2df2b verifies. Real human-anchor benchmark remains pending.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T20:53:56+00:00",
+      "updated_at": "2026-07-15T08:54:16+00:00",
       "orphaned": false
     },
     "MF-P4-11.01": {

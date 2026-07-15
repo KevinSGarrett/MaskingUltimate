@@ -5187,3 +5187,21 @@ Verification:                       dedicated 40/40; focused currency/metrics 73
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed; Ubuntu remains stopped after the recorded ext4 input/output error
 Authority boundary:                no operational target, accuracy, confidence, certificate, production-mask authority, or gold authority is claimed from fixtures; real live numerators/denominators remain required
 Evidence:                           `qa/live_verification/autonomy_metrics_v3_contract_20260715.json`
+
+## 2026-07-15 08:54 UTC - Local-Qwen replacement benchmark frozen and executable
+
+**Result:** MF-P4-10.12 is 80% complete; the exact Qwen2.5-VL versus Qwen3-VL 4B/8B replacement decision is now reproducible and fail-closed, while eligible human-anchor observations and a real winner remain pending.
+
+Pre-result policy:                  `qwen_challenger_benchmark_v1`, canonical SHA-256 `cba85192e7ed558b5632b05952e80edfa6e88da155b0460e1a0798d27c3d2792`, frozen before any eligible quality result
+Immutable identities:              incumbent Qwen2.5-VL plus both installed Qwen3-VL GGUF variants bind exact model manifest, blob, source revision, prompt identity, runtime lock, generation options, and governing source bytes
+Eligible truth:                     only frozen, source-image-disjoint `human_anchor_gold` holdouts; training/evaluation leakage and cross-partition source reuse fail
+Three-part gate:                    untouched teacher holdout; exactly 20 good plus 20 defect local panels from 20 sources; at least 200 incremental cases with naturally occurring defects and complete serious/good/high-risk coverage
+Recomputed metrics:                 serious/overall recall, precision, false-pass rate, correction usefulness, per-label/context regressions, median reviewer time, latency, VRAM, OOM/crash, and determinism all derive from explicit case observations
+Measured-win rule:                 at least 0.01 recall improvement or 0.05 median reviewer-time reduction, while every absolute gate, serious/stratum non-regression, time budget, 8 GiB runtime limit, and deterministic-repeat rule passes
+Rollback:                          each challenger must survive injected failure by returning Qwen2.5-VL output while incumbent identity remains unchanged; LLaVA-13B fallback is preserved
+Operational surface:               `tools/evaluate_qwen_challenger_benchmark.py` atomically builds or exactly verifies one hash-sealed report; CI runs the named 17-case gate
+Signed governance:                 currency review `5c61f723f62a8d962de2df2b`, SHA-256 `be84e9dd4965f362a9fe4bf6bc5aca00aa639de625b6ee8036cb235011665c96`, chains archived `f819a91e...` and passes signature/current-input verification; review remains honestly FAIL on unrelated real active-role evidence
+Verification:                       dedicated 17/17; focused Qwen/VLM/teacher 63/63; complete repository 1,352/1,352 with exit 0; repository Ruff, targeted format, CI YAML parse pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate path was accessed
+Authority boundary:                fixtures grant no provider promotion, mask, gold, blocker-clearance, quick-pass, or production authority; no real winner is claimed
+Evidence:                           `qa/live_verification/qwen_challenger_benchmark_contract_20260715.json`

@@ -5324,3 +5324,16 @@ Runtime safety:                     no WSL, Docker, CVAT, external VHD, or exter
 Authority boundary:                fixtures and the pre-run report grant no training result, winner, promotion, serving, mask, semantic, production, blocker-clearance, or gold authority
 Remaining real evidence:            certified corpus/holdout freeze, three genuine identical-hardware runs, complete observations/artifacts, and the hash-sealed comparable-runs report
 Evidence:                           `qa/live_verification/custom_segmenter_training_tournament_contract_20260715.json`
+
+## 2026-07-15 10:55 UTC - Runtime-matrix evidence rebound after EoMT contract update
+
+**Result:** MF-P0-17.13 and MF-P0-EXIT remain honestly at 90%; their current evidence now
+binds runtime-matrix manifest SHA-256
+`5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0` after the
+EoMT fair-training contract changed its runtime-lock hash.
+
+Verification:                       dedicated runtime-matrix gate 4/4; complete repository 1,486/1,486; Ruff and signed currency verification pass
+Historical observation boundary:   doctor PASS=11 WARN=0 SKIP=0 FAIL=0 and 14/14 model smokes remain explicitly timestamped at 2026-07-15T02:08:54Z; they were not rerun or presented as new observations
+Runtime safety:                     repository metadata only; no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     official SAM 3.1 and SAM 3D Body checkpoint gates plus their live qualification; no progress percentage was inflated
+Evidence:                           `env/provider_runtime_matrix.json`, `qa/live_verification/provider_runtime_matrix_20260715.json`

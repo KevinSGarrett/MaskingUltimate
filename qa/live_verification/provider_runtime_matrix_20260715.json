@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0.0",
-  "verified_at": "2026-07-15T02:08:54.580192Z",
+  "verified_at": "2026-07-15T10:55:21Z",
   "item_id": "MF-P0-17.13",
   "result": "pass_with_explicit_human_gates",
   "matrix": {
     "path": "env/provider_runtime_matrix.json",
-    "file_sha256": "e357d52b849643d480ff179b3bc3ae62b0c73b0d30d5387bda6543d3a4b133d0",
-    "manifest_sha256": "3fb4e9d2fac03b8ebccabf4a34b062eec1d4060b3e982fad7d5db1283dbef877",
+    "file_sha256": "cc7654b5e3c34f8e93a8012f09d9ca10f718c518214907f2126d93751f6f691d",
+    "manifest_sha256": "5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0",
     "provider_count": 7,
     "qualified_runtime_count": 5,
     "human_gated_runtime_count": 2,
@@ -26,6 +26,7 @@
     "sam3d_body"
   ],
   "doctor": {
+    "observed_at": "2026-07-15T02:08:54.580192Z",
     "summary": "PASS=11 WARN=0 SKIP=0 FAIL=0",
     "torch_cuda": "2.11.0+cu128; CUDA 12.8; capability 12.0",
     "registered_model_smokes": "14/14 exact output hashes matched",
@@ -36,9 +37,17 @@
   },
   "verification": {
     "focused_runtime_matrix_tests_passed": 4,
-    "full_repository_tests_passed": 1110,
+    "full_repository_tests_passed": 1486,
     "ruff": "pass",
-    "currency_review_integrity_after_changes": "pass"
+    "currency_review_integrity_after_changes": "pass",
+    "reverification_scope": "repository_metadata_only_no_runtime_or_doctor_rerun"
+  },
+  "runtime_safety": {
+    "wsl_accessed_during_refresh": false,
+    "docker_accessed_during_refresh": false,
+    "cvat_accessed_during_refresh": false,
+    "external_vhd_accessed_during_refresh": false,
+    "external_drive_accessed_during_refresh": false
   },
   "authority_boundary": "The matrix proves exact current lock/evidence binding and isolation for five live-qualified runtime families. SAM 3.1 and SAM 3D Body remain source-only and may not claim checkpoint inference, promotion, serving, or gold authority until Kevin completes their official interactive terms gates and the subsequent live qualification passes."
 }

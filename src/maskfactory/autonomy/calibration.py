@@ -126,37 +126,71 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
     ):
         raise AutonomyCalibrationError("autonomy operational targets are invalid")
     reporting = document["reporting"]
-    if (
-        not isinstance(reporting, dict)
-        or reporting.get("schema_version") != "1.0.0"
-        or reporting.get("throughput")
-        != {
+    expected_reporting = {
+        "schema_version": "2.0.0",
+        "throughput": {
             "field": "zero_touch_fraction",
             "label": "Zero-touch throughput",
             "numerator": "zero_touch_packages",
             "denominator": "eligible_packages",
-        }
-        or reporting.get("blinded_quality")
-        != {
+        },
+        "truth_tier_breakdown": {
+            "label": "Final truth-tier package counts",
+            "denominator": "eligible_packages",
+            "fields": [
+                "human_anchor_gold_packages",
+                "autonomous_certified_gold_packages",
+                "machine_candidate_packages",
+                "weighted_pseudo_label_packages",
+            ],
+        },
+        "human_workload": {
+            "label": "Human intervention workload",
+            "metrics": {
+                "routine_human_touch_fraction": [
+                    "routine_human_touched_packages",
+                    "eligible_packages",
+                ],
+                "audited_fraction": ["audited_packages", "eligible_packages"],
+                "residual_review_fraction": [
+                    "residual_review_packages",
+                    "eligible_packages",
+                ],
+                "human_touches_per_100_images": [
+                    "human_touch_count",
+                    "eligible_packages",
+                ],
+                "manual_changed_pixels_per_100k": [
+                    "manually_changed_pixels",
+                    "predicted_pixels",
+                ],
+            },
+        },
+        "blinded_quality": {
             "label": "Blinded quality against human-anchor holdout",
             "truth_tier": "human_anchor_gold",
             "truth_partition": "holdout",
-            "fields": ["mean_mask_iou", "mean_boundary_f1"],
-        }
-        or reporting.get("statistical_confidence")
-        != {
+            "metrics": {
+                "mean_mask_iou": ["mask_iou_sum", "evaluated_packages"],
+                "mean_boundary_f1": ["boundary_f1_sum", "evaluated_packages"],
+            },
+        },
+        "statistical_confidence": {
             "label": "95% one-sided failure-rate upper bounds",
             "confidence_level": 0.95,
-            "fields": [
-                "false_accept_upper_bound",
-                "serious_false_accept_upper_bound",
-            ],
-        }
-        or reporting.get("prohibited_zero_touch_label_terms")
-        != ["accuracy", "confidence", "quality"]
-    ):
+            "denominator": "audited_packages",
+            "observed_numerators": ["false_accepts", "serious_false_accepts"],
+            "bound_methods": {
+                "false_accept_upper_bound": "one_sided_wilson",
+                "serious_false_accept_upper_bound": "one_sided_clopper_pearson",
+            },
+        },
+        "prohibited_zero_touch_label_terms": ["accuracy", "confidence", "quality"],
+    }
+    if not isinstance(reporting, dict) or reporting != expected_reporting:
         raise AutonomyCalibrationError(
-            "autonomy reporting must keep throughput, blinded quality, and confidence separate"
+            "autonomy reporting must preserve exact denominators and keep throughput, truth "
+            "tiers, workload, blinded quality, and confidence separate"
         )
     weights = document["tournament"]["weights"]
     if abs(sum(float(value) for value in weights.values()) - 1.0) > 1e-9:

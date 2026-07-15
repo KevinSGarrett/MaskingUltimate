@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomy_metrics_inputs.schema.json",
+  "title": "MaskFactory autonomy metrics source inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "cohort_id",
+    "observed_at",
+    "input_manifest_sha256",
+    "pipeline_fingerprint_sha256",
+    "truth_tier_counts",
+    "zero_touch_packages",
+    "eligible_packages",
+    "routine_human_touched_packages",
+    "residual_review_packages",
+    "human_touch_count",
+    "manually_changed_pixels",
+    "predicted_pixels",
+    "blinded_evaluated_packages",
+    "mask_iou_sum",
+    "boundary_f1_sum",
+    "audited_packages",
+    "false_accepts",
+    "serious_false_accepts",
+    "confidence_level"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "cohort_id": {"type": "string", "minLength": 1},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "input_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pipeline_fingerprint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "truth_tier_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_anchor_gold_packages",
+        "autonomous_certified_gold_packages",
+        "machine_candidate_packages",
+        "weighted_pseudo_label_packages"
+      ],
+      "properties": {
+        "human_anchor_gold_packages": {"type": "integer", "minimum": 0},
+        "autonomous_certified_gold_packages": {"type": "integer", "minimum": 0},
+        "machine_candidate_packages": {"type": "integer", "minimum": 0},
+        "weighted_pseudo_label_packages": {"type": "integer", "minimum": 0}
+      }
+    },
+    "zero_touch_packages": {"type": "integer", "minimum": 0},
+    "eligible_packages": {"type": "integer", "minimum": 1},
+    "routine_human_touched_packages": {"type": "integer", "minimum": 0},
+    "residual_review_packages": {"type": "integer", "minimum": 0},
+    "human_touch_count": {"type": "integer", "minimum": 0},
+    "manually_changed_pixels": {"type": "integer", "minimum": 0},
+    "predicted_pixels": {"type": "integer", "minimum": 1},
+    "blinded_evaluated_packages": {"type": "integer", "minimum": 1},
+    "mask_iou_sum": {"type": "number", "minimum": 0},
+    "boundary_f1_sum": {"type": "number", "minimum": 0},
+    "audited_packages": {"type": "integer", "minimum": 1},
+    "false_accepts": {"type": "integer", "minimum": 0},
+    "serious_false_accepts": {"type": "integer", "minimum": 0},
+    "confidence_level": {"const": 0.95}
+  }
+}

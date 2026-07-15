@@ -5169,3 +5169,21 @@ Verification:                       dedicated 29/29; focused provider/hair/speci
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
 Authority boundary:                fixtures grant no real quality result, winner, promotion, serving, certificate, production-mask, alpha-truth, or gold authority
 Evidence:                           `qa/live_verification/silhouette_variant_benchmark_contract_20260715.json`
+
+## 2026-07-15 08:27 UTC - Operational autonomy metrics made denominator-exact
+
+**Result:** MF-P7-07.05 is 95% complete; its report/dashboard contract is fully executable and fail-closed, while actual performance remains pending one genuine autonomous cohort and blinded human-anchor audit.
+
+Cohort binding:                     every report records cohort ID/time plus exact input-manifest and pipeline-fingerprint SHA-256 values; source inputs and the report are independently canonical-hash sealed
+Truth authority:                    four explicit final truth-tier counts must sum exactly to the eligible cohort; synthetic fixtures never become project performance or gold authority
+Population reconciliation:         zero-touch plus routine-touch packages equals the eligible cohort; residual reviews are a subset of routine touches; workload and confidence audit denominators must match
+Workload metrics:                   zero-touch, routine touch, audited fraction, residual review, human touches/100, and changed pixels/100k are recomputed from their explicit integer numerators and denominators
+Quality metrics:                    blinded human-anchor IoU and boundary-F means are recomputed from stored sums and evaluated-package denominators
+Confidence metrics:                 observed rates and the one-sided 95% Wilson/Clopper-Pearson upper bounds are recomputed; positive serious-failure counts no longer collapse to an uninformative bound of 1
+Operational surface:               `tools/autonomy_metrics_report.py` atomically builds a v3 report/Markdown dashboard from schema-bound inputs or verifies an existing report; CI runs the named 40-case gate
+Semantic boundary:                 extra accuracy/quality/confidence fields, conflated labels, missing denominators, cross-domain drift, tier mismatch, source/report tamper, and stale derived values all fail
+Signed governance:                 currency review `f819a91ee85d7e0bee6ecf6c`, SHA-256 `9c3c7f66d6d215a3532d8945e845adb620f9bb52f0363fa72a7db9a7286d70c8`, chains archived `02c191eb...` and passes signature/current-input verification; review result remains honestly FAIL on real active-role benchmark/rollback evidence
+Verification:                       dedicated 40/40; focused currency/metrics 73/73; focused autonomy 134/134; complete repository 1,335/1,335 with exit 0; repository Ruff, targeted Ruff format, CI YAML parse pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed; Ubuntu remains stopped after the recorded ext4 input/output error
+Authority boundary:                no operational target, accuracy, confidence, certificate, production-mask authority, or gold authority is claimed from fixtures; real live numerators/denominators remain required
+Evidence:                           `qa/live_verification/autonomy_metrics_v3_contract_20260715.json`

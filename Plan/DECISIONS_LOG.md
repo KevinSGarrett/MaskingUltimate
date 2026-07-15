@@ -547,3 +547,29 @@ Freezing the capability matrix prevents invalid cross-role comparisons, denomina
 claims, or post-result margin changes from becoming promotion evidence.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Make operational autonomy metrics cohort-bound and denominator-exact
+
+**Item(s) affected:** MF-P7-07.05, MF-P3-07.03, revised autonomous headline evidence
+
+**Decision:** Supersede the structural autonomy metrics v2 report with hash-sealed v3. Every report
+must bind one cohort ID, observation timestamp, input-manifest SHA-256, complete pipeline-fingerprint
+SHA-256, and an exact four-tier package breakdown that reconciles to the eligible cohort. Zero-touch
+throughput, routine human touch, audit workload, residual review, human touches, manual changed pixels,
+blinded human-anchor quality, and failure confidence remain separate domains with explicit integer or
+sum numerators and denominators. Derived rates and means are always recomputed. Aggregate false accepts
+use the predeclared one-sided 95% Wilson upper bound; serious false accepts use a one-sided 95%
+Clopper-Pearson upper bound for both zero and positive observed failures. The report and its normalized
+source-input document each carry a canonical SHA-256. A CLI must build or verify the exact contract,
+and CI must reject missing denominators, cross-domain population drift, truth-tier mismatch, residual
+reviews outside the routine-touch subset, conflated zero-touch claims, or any recomputation/hash drift.
+
+**Why:** A displayed percentage is not reproducible evidence unless its population, numerator,
+denominator, truth authority, pipeline identity, and observation cohort are fixed. The earlier v2
+contract left quality numerators implicit and did not recompute stored confidence bounds, allowing a
+well-formed but stale or misleading report to survive structural validation. V3 makes those failures
+deterministic while preserving the governing rule that a 95% zero-touch rate is a throughput result,
+not an accuracy or certification claim. Synthetic fixtures validate enforcement only; actual project
+performance remains pending a genuine autonomous cohort and blinded human-anchor audit.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

@@ -34,6 +34,7 @@ SCHEMA_NAMES = frozenset(
         "autonomy_lifecycle",
         "autonomy_multi_person_risk_buckets",
         "autonomy_metrics",
+        "autonomy_metrics_inputs",
         "autonomy_risk_buckets",
         "autonomy_stability",
         "currency_review",

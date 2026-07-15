@@ -4,9 +4,23 @@
   "title": "MaskFactory autonomy metrics report",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "throughput", "human_workload", "blinded_quality", "statistical_confidence"],
+  "required": ["schema_version", "source_input_sha256", "cohort", "throughput", "truth_tier_breakdown", "human_workload", "blinded_quality", "statistical_confidence", "sha256"],
   "properties": {
-    "schema_version": {"const": "2.0.0"},
+    "schema_version": {"const": "3.0.0"},
+    "source_input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cohort_id", "observed_at", "input_manifest_sha256", "pipeline_fingerprint_sha256", "eligible_packages"],
+      "properties": {
+        "cohort_id": {"type": "string", "minLength": 1},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "input_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "pipeline_fingerprint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "eligible_packages": {"type": "integer", "minimum": 1}
+      }
+    },
     "throughput": {
       "type": "object",
       "additionalProperties": false,
@@ -16,6 +30,19 @@
         "zero_touch_packages": {"type": "integer", "minimum": 0},
         "eligible_packages": {"type": "integer", "minimum": 1},
         "zero_touch_fraction": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "truth_tier_breakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "eligible_packages", "human_anchor_gold_packages", "autonomous_certified_gold_packages", "machine_candidate_packages", "weighted_pseudo_label_packages"],
+      "properties": {
+        "label": {"const": "Final truth-tier package counts"},
+        "eligible_packages": {"type": "integer", "minimum": 1},
+        "human_anchor_gold_packages": {"type": "integer", "minimum": 0},
+        "autonomous_certified_gold_packages": {"type": "integer", "minimum": 0},
+        "machine_candidate_packages": {"type": "integer", "minimum": 0},
+        "weighted_pseudo_label_packages": {"type": "integer", "minimum": 0}
       }
     },
     "human_workload": {
@@ -41,14 +68,16 @@
     "blinded_quality": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["label", "truth_tier", "truth_partition", "blinded", "evaluated_packages", "mean_mask_iou", "mean_boundary_f1"],
+      "required": ["label", "truth_tier", "truth_partition", "blinded", "evaluated_packages", "mask_iou_sum", "mean_mask_iou", "boundary_f1_sum", "mean_boundary_f1"],
       "properties": {
         "label": {"const": "Blinded quality against human-anchor holdout"},
         "truth_tier": {"const": "human_anchor_gold"},
         "truth_partition": {"const": "holdout"},
         "blinded": {"const": true},
         "evaluated_packages": {"type": "integer", "minimum": 1},
+        "mask_iou_sum": {"type": "number", "minimum": 0},
         "mean_mask_iou": {"type": "number", "minimum": 0, "maximum": 1},
+        "boundary_f1_sum": {"type": "number", "minimum": 0},
         "mean_boundary_f1": {"type": "number", "minimum": 0, "maximum": 1}
       }
     },

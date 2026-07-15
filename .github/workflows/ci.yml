@@ -74,6 +74,7 @@ jobs:
           tests/test_specialist_promotion.py
           tests/test_matrix_promotion.py
           tests/test_sam31_shadow.py
+          tests/test_sam31_candidates.py
       - name: Verify signed currency review integrity and current input binding
         run: >-
           python -m maskfactory.cli governance verify-currency-review

@@ -5416,3 +5416,19 @@ Verification:                       dedicated 12/12; focused SAM/provider contra
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     Kevin checkpoint authorization, storage recovery, exact checkpoint download, live runtime executor binding/smokes, strict persisted PNG packages, and specialist-lane routing
 Evidence:                           `qa/live_verification/sam31_shadow_adapter_contract_20260715.json`
+
+## 2026-07-15 12:36 UTC - Strict SAM 3.1 seven-lane candidate packages implemented
+
+**Result:** MF-P2-11.03 and MF-P2-11.04 advance to 75%, and MF-P3-08.01 advances
+to 70%; official SAM 3.1 discovery/refinement proposals now have a strict persisted
+shadow-package boundary for every required specialist lane, while checkpoint access,
+live GPU inference, and production orchestration remain open.
+
+Package integrity:                  source identity/dimensions, current pipeline hash before/after, runtime/source/checkpoint identity, candidate route/prompt/provider identity, strict PNG path/hash/pixel count/bbox, and canonical manifest seal are fail-closed
+Seven exact lanes:                  hand/finger, chest/pelvic, hair, foot/toe, clothing, accessory, and repeated-instance; clothing/accessory stay separate operational lanes under their frozen shared benchmark role
+Adversarial behavior:               stale runtime or active-map identity, wrong lane/label/role/provider, duplicate IDs/paths/routes, path escape, non-binary PNG, geometry/count/hash drift, schema drift, and seal tampering fail
+Authority boundary:                 isolated shadow candidates only; fixtures grant no inference, training-data, serving, mask, semantic, production, certificate, blocker-clearance, or gold authority
+Verification:                       dedicated package 9/9; focused SAM/provider/schema 52/52; complete repository 1,553/1,553 with exit 0; all-file pre-commit, Ruff, Black, YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     official checkpoint authorization/download, installed runtime executor, real seven-lane GPU inference and smokes, and production repair-orchestration connection
+Evidence:                           `qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json`

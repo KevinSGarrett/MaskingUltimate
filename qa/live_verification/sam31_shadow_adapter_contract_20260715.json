@@ -3,6 +3,8 @@
   "item_ids": ["MF-P2-11.03", "MF-P2-11.04"],
   "verified_at": "2026-07-15T12:17:09Z",
   "result": "PASS_OFFICIAL_SAM31_SHADOW_ADAPTER_CONTRACT_CHECKPOINT_INFERENCE_PENDING",
+  "historical_implementation_commit": "c2f3c47d83f2795210f7161e3de2e9c0f7819cc3",
+  "superseded_by": "qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json",
   "official_identity": {
     "provider_key": "sam3_1",
     "model_family": "sam3",

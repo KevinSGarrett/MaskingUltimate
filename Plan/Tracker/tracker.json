@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T12:22:39+00:00",
+    "generated_at": "2026-07-15T12:36:59+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -11821,18 +11821,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 60,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
           "actor": "ai_agent",
           "text": "No official checkpoint inference, active-map change, production mask, or gold authority claimed."
+        },
+        {
+          "ts": "2026-07-15T12:36:59+00:00",
+          "actor": "ai_agent",
+          "text": "Fixture-contract evidence only; no official checkpoint inference, active-map mutation, production-mask authority, or gold authority claimed."
         }
       ],
-      "evidence": "Official SAM 3.1 ConceptDetector adapter binds exact source/checkpoint/runtime identities, source image and exemplar hashes, unique instances, strict box/mask geometry, canonical prompt fingerprints, and shadow-only authority. Dedicated 12/12; focused 37/37; full 1,544/1,544; qa/live_verification/sam31_shadow_adapter_contract_20260715.json. Remaining: gated checkpoint, installed executor binding/live inference, persisted strict candidate packages, and active-map invariance under real runtime.",
+      "evidence": "Official SAM 3.1 discovery adapter plus hash-sealed strict candidate packages bind source/runtime/checkpoint/prompt/provider/artifact provenance and prove active pipeline hash invariance across all seven governed lanes in fixtures. Dedicated 9/9; focused 52/52; full 1,553/1,553; qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json. Remaining: gated checkpoint, installed executor/live inference, real GPU smokes, and production orchestration.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T12:22:39+00:00",
+      "updated_at": "2026-07-15T12:36:59+00:00",
       "orphaned": false
     },
     "MF-P2-11.04": {
@@ -11848,18 +11853,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 60,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
           "actor": "ai_agent",
           "text": "No official checkpoint inference, active-map change, production mask, or gold authority claimed."
+        },
+        {
+          "ts": "2026-07-15T12:36:59+00:00",
+          "actor": "ai_agent",
+          "text": "Strict persisted fixture packages pass; live runtime inference and production repair integration remain open."
         }
       ],
-      "evidence": "Official SAM 3.1 InteractiveSegmenter adapter binds embedding/runtime identity and validates uint8 RGB geometry, point polarity, box containment, mask prompts, exact boolean output shape, confidence, and shadow-only provenance. Dedicated 12/12; focused 37/37; full 1,544/1,544; qa/live_verification/sam31_shadow_adapter_contract_20260715.json. Remaining: gated checkpoint/live executor, strict persisted PNG/hash packages, GPU smokes, and repair integration.",
+      "evidence": "Official SAM 3.1 InteractiveSegmenter plus strict persisted PNG package validation enforces prompt polarity, geometry, containment, current provider identity, path containment, binary values, dimensions, artifact hash, pixel count, bbox, and manifest seal. Dedicated 9/9; focused 52/52; full 1,553/1,553; qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json. Remaining: gated checkpoint/live executor, real GPU smokes, and repair orchestration.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T12:22:39+00:00",
+      "updated_at": "2026-07-15T12:36:59+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {
@@ -12156,13 +12166,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-15T12:36:59+00:00",
+          "actor": "ai_agent",
+          "text": "All seven lane routes are executable with fixtures only; no specialist lane is claimed live or authoritative."
+        }
+      ],
+      "evidence": "All seven required SAM 3.1 specialist lanes have exact governed label routing and emit isolated strict hash-sealed candidates in executable fixture tests; clothing/accessory remain separate lanes under their frozen shared benchmark role. Dedicated 9/9; focused 52/52; full 1,553/1,553; qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json. Remaining: official checkpoint/live executor, real lane outputs, runtime smokes, and production orchestration.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T12:36:59+00:00",
       "orphaned": false
     },
     "MF-P3-08.02": {

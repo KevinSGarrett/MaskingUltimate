@@ -86,6 +86,16 @@ def _identity(lock: Mapping[str, Any], lock_sha256: str, role: str) -> ProviderI
     )
 
 
+def sam31_provider_identity(
+    role: str, *, lock_path: Path = DEFAULT_RUNTIME_LOCK
+) -> ProviderIdentity:
+    """Return the exact official identity for one supported SAM 3.1 contract role."""
+    if role not in {"concept_detector", "interactive_segmenter"}:
+        raise Sam31ShadowError("SAM 3.1 provider role is unsupported")
+    lock, digest = _load_lock(lock_path)
+    return _identity(lock, digest, role)
+
+
 def _image(path: Path) -> np.ndarray:
     with Image.open(path) as image:
         value = np.asarray(image.convert("RGB"))
@@ -320,4 +330,5 @@ __all__ = [
     "Sam31Embedding",
     "Sam31InteractiveSegmenter",
     "Sam31ShadowError",
+    "sam31_provider_identity",
 ]

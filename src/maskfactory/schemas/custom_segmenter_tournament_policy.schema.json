@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/custom_segmenter_tournament_policy.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "frozen_at", "authority", "eligible_data", "shared_contract_hashes", "shared_values", "providers", "required_run_artifact_keys", "required_contexts", "required_error_families", "source_hashes", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "custom_segmenter_training_tournament_v1"},
+    "frozen_at": {"type": "string", "format": "date-time"},
+    "authority": {"const": "pre_run_comparability_contract_only_no_training_result_winner_promotion_or_gold_authority"},
+    "eligible_data": {"type": "object"},
+    "shared_contract_hashes": {"type": "object", "minProperties": 5, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+    "shared_values": {"type": "object"},
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["segformer_b3", "mask2former_swin_b", "eomt_dinov3_small_640"],
+      "properties": {
+        "segformer_b3": {"$ref": "#/$defs/provider"},
+        "mask2former_swin_b": {"$ref": "#/$defs/provider"},
+        "eomt_dinov3_small_640": {"$ref": "#/$defs/provider"}
+      }
+    },
+    "required_run_artifact_keys": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+    "required_contexts": {"type": "array", "minItems": 17, "maxItems": 17, "uniqueItems": true, "items": {"type": "string"}},
+    "required_error_families": {"type": "array", "minItems": 12, "maxItems": 12, "uniqueItems": true, "items": {"type": "string"}},
+    "source_hashes": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "provider": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_family", "config_path", "config_sha256", "frozen_initial_artifact_hashes"],
+      "properties": {
+        "model_family": {"type": "string", "minLength": 1},
+        "config_path": {"type": "string", "minLength": 1},
+        "config_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_initial_artifact_hashes": {"type": "object", "additionalProperties": {"$ref": "#/$defs/sha256"}}
+      }
+    }
+  }
+}

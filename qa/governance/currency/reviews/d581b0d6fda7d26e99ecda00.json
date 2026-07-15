@@ -128,12 +128,12 @@
     }
   ],
   "event": "scheduled_90_day",
-  "expires_at": "2026-10-13T10:41:23.113609Z",
+  "expires_at": "2026-10-13T10:15:52.741077Z",
   "global_findings": [],
   "input_hashes": {
     "dependencies": {
       "conda_environment": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5",
-      "governance_decisions": "9e46dc29ff84e70db103beea4470e7b7b4cb00564d2e4cdd7705ffce911bc86f",
+      "governance_decisions": "d8822c2f8432dcdce4a4a0702c39fc2281b13d764c5641da9e068a8b32426ee4",
       "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
       "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
     },
@@ -142,15 +142,15 @@
     "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
     "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
   },
-  "payload_sha256": "b147be8e061fae3298b8fbbe42fbeb8930eb33cfcffe63ff0e5aa76487d7f868",
-  "previous_review_sha256": "47add76fec8586bcd65f5ffe77377d3447164f54a0a1a72a9f7bd3eb4d8c8c8a",
-  "review_id": "63270b91a0192684391ce2db",
-  "review_sha256": "73fb72a66d6da5df69d668cd27aa746393e67eeaf494fcc23cff0ffa63a8a1df",
-  "reviewed_at": "2026-07-15T10:41:23.113609Z",
-  "reviewer": "maskfactory-autonomous-governance",
+  "payload_sha256": "725c9df4b396d032f13f80473d097e616e8a0c1d098c688b772e50e10bf99a49",
+  "previous_review_sha256": "425d9212c32d5b05a8541f85dc7630d7da8d3b589d06716c40587e735c18125a",
+  "review_id": "d581b0d6fda7d26e99ecda00",
+  "review_sha256": "47add76fec8586bcd65f5ffe77377d3447164f54a0a1a72a9f7bd3eb4d8c8c8a",
+  "reviewed_at": "2026-07-15T10:15:52.741077Z",
+  "reviewer": "ai_agent",
   "schema_version": "1.0.0",
-  "signature": "KB4SyWijMYHRk8nVCGCOMeAUBgVnvUzX2vzpYqjS62MQWVG76yu1zXb8+SOpkJSDhxCikmBVsT1eX+Za622jDw==",
+  "signature": "6lQSfgr/D3tMpEPrVnT/XEOiR05C5VsYjvF8Zu/LjAX6oK4jD9rvepBe/IXVo1CpLq9AneMJu1S6I3b2rV22CA==",
   "signature_algorithm": "ed25519",
-  "signer_public_key_sha256": "c042712f01aa698acadf7c353e0ea6d0467952adfbaad98cc815da4a693484ed",
+  "signer_public_key_sha256": "1ee0401fd6f7c02e2698628d1e3e2590dffce8f3acb67ac7ad0e2825abd531ee",
   "status": "fail"
 }

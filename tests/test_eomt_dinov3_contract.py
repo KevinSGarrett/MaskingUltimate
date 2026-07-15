@@ -40,6 +40,10 @@ def test_eomt_contract_binds_exact_v2_vocabulary_and_discards_coco_head() -> Non
         ("target_head", "class_names_sha256", "0" * 64, "target head"),
         ("selection", "active", "eomt_dinov3_small_640", "active/rollback"),
         ("selection", "baselines", ["eomt"], "baseline preservation"),
+        ("data", "seed", 42, "fair-training data"),
+        ("training", "iterations", 1, "fair-training schedule"),
+        ("evaluation", "interval_iters", 1, "fair-evaluation"),
+        ("thermal", "max_celsius", 99, "thermal contract"),
     ],
 )
 def test_eomt_contract_fails_closed_on_authority_or_ontology_drift(

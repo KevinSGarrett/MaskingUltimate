@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P5-10.07",
+  "verified_at": "2026-07-15T10:51:16Z",
+  "result": "PASS_PRE_RUN_COMPARABILITY_CONTRACT_REAL_TRAINING_PENDING",
+  "policy": {
+    "policy_id": "custom_segmenter_training_tournament_v1",
+    "path": "qa/governance/benchmark_matrices/custom_segmenter_training_tournament_v1.json",
+    "canonical_sha256": "550ff7c9efce0bef8cddc55c943dacb8d90ab066fd18a11e004984cfedfee983",
+    "file_sha256": "107a5eb314eab2e5da28757894bc37dda5d1db25f8e826616e3256b3132c2c77",
+    "frozen_at": "2026-07-15T10:30:00Z",
+    "eligible_training_package_floor": 200,
+    "eligible_truth_tier": "human_anchor_gold",
+    "eligible_truth_partition": "holdout",
+    "train_holdout_overlap_allowed": false
+  },
+  "providers": [
+    "segformer_b3",
+    "mask2former_swin_b",
+    "eomt_dinov3_small_640"
+  ],
+  "shared_training_contract": {
+    "data_sha256": "ba9551dde6f9260089a209ccd1939b2d9528c69f148328e754d1d92bd2e4498e",
+    "augmentations_sha256": "5a83e39e9b81292dca92806366379ceac304ceb18818dc3005a1ed91ff40ca4e",
+    "training_sha256": "96e7461646b6cc1d257eec95a4e7df116e46de9c119f70254777a6b2d2cbc663",
+    "evaluation_sha256": "7b9d0ed2384ef6c9bd438f25003eb186418ceb6312c41bcb52d6076669d93de5",
+    "thermal_sha256": "3b45fe5070488a18b45c0ad5f23a68760aee52c6c67b6e6701d41d49399ad183",
+    "seed": 1337,
+    "iterations": 40000,
+    "iterations_at_500_gold": 80000,
+    "batch_per_gpu": 2,
+    "gradient_accumulation": 8,
+    "amp": "bf16",
+    "evaluation_interval_iters": 4000,
+    "required_deterministic_repeats": 2,
+    "max_temperature_celsius": 87
+  },
+  "artifact_binding": {
+    "segformer_config_sha256": "cd36c8d23fb1b27ed17a9b943ebb29bed9eb88226fa26c4b3f62c64c18c1673f",
+    "mask2former_config_sha256": "55022d26a2e11c4e3c160e91c1d745525eb67a2db730bc64e3e8203dd8c8cc10",
+    "eomt_config_sha256": "6ac527c41e165a58d77bf163ae2be5ad9346353f114b7a9839990bd72de69a8c",
+    "eomt_runtime_lock_sha256": "4ad5ea6b8f53bf541c06f14379b01ca4cf4685381f57716662ea9b6e34098ed0",
+    "eomt_contract_sha256": "b45c8b4e171d30f123f486dcaff8208b9956868c1354f136720792059abf49c4",
+    "eomt_initial_checkpoint_sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+    "runtime_matrix_manifest_sha256": "5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0"
+  },
+  "required_measurements": {
+    "class_observation_count_per_provider": 65,
+    "high_risk_context_count_per_provider": 17,
+    "error_family_count_per_provider": 12,
+    "metrics": [
+      "per_class_iou",
+      "boundary_f_2px",
+      "small_part_recall",
+      "correction_pixels_per_100k",
+      "error_family_rates",
+      "cold_latency_ms",
+      "warm_latency_ms",
+      "peak_vram_bytes",
+      "oom_count",
+      "crash_count",
+      "deterministic_repeat_hashes"
+    ]
+  },
+  "implementation_hashes": {
+    "src/maskfactory/training/custom_segmenter_tournament.py": "e403fe54f37c202229599afa407e7a4bcd710920a35530056568966fac7fe41e",
+    "src/maskfactory/schemas/custom_segmenter_tournament_policy.schema.json": "efc7decb52c85ab1ec116d3490b82713874a926f74e043c6b359d34d6d8d53f1",
+    "src/maskfactory/schemas/custom_segmenter_tournament_runs.schema.json": "a798f52afc47c9e12f2f85d12e597d8a8e5be969aadd38edd68b233463501221",
+    "src/maskfactory/schemas/custom_segmenter_tournament_report.schema.json": "7e6c0ff36375373e97223633f7ced51871c3ccb015618b00b9796ed7a454daba",
+    "tools/evaluate_custom_segmenter_tournament.py": "edb45a9dcd4f5427d48eba2fbe5c7ebbd4696ca11106e398a67b98807cc80c13",
+    "tests/test_custom_segmenter_training_tournament.py": "8edd0798297a894e1bab6cec83322278f081e8931abed206171417f3b72d27e2"
+  },
+  "verification": {
+    "dedicated_tournament_tests": {
+      "collected": 37,
+      "passed": 37,
+      "failed": 0
+    },
+    "focused_tournament_eomt_v2_promotion_currency_tests": {
+      "passed": 138,
+      "failed": 0
+    },
+    "runtime_matrix_reconciliation_tests": {
+      "passed": 53,
+      "failed": 0
+    },
+    "full_repository_suite": {
+      "collected": 1486,
+      "passed": 1486,
+      "failed": 0,
+      "exit_code": 0,
+      "duration_seconds": 245.54
+    },
+    "repository_ruff": "pass",
+    "targeted_black": "pass",
+    "ci_yaml": "pass",
+    "schemas_json": "pass",
+    "git_diff_check": "pass"
+  },
+  "signed_governance": {
+    "archived_review_id": "d581b0d6fda7d26e99ecda00",
+    "archived_review_sha256": "47add76fec8586bcd65f5ffe77377d3447164f54a0a1a72a9f7bd3eb4d8c8c8a",
+    "current_review_id": "63270b91a0192684391ce2db",
+    "current_review_sha256": "73fb72a66d6da5df69d668cd27aa746393e67eeaf494fcc23cff0ffa63a8a1df",
+    "current_review_status": "fail",
+    "verification": "pass_with_failed_review_allowed"
+  },
+  "runtime_safety": {
+    "wsl_accessed": false,
+    "docker_accessed": false,
+    "cvat_accessed": false,
+    "external_vhd_accessed": false,
+    "external_drive_accessed": false
+  },
+  "claims_not_made": [
+    "the synthetic fixtures are training or performance evidence",
+    "the certified training corpus currently contains 200 eligible packages",
+    "any of the three tournament training runs occurred",
+    "any provider won, was promoted, or was served",
+    "any provider gained mask, semantic, production, or gold authority",
+    "MF-P5-10.07 is complete"
+  ],
+  "remaining_work": [
+    "assemble at least 200 certified training packages and freeze an image-disjoint human-anchor holdout",
+    "run all three providers for 40000 iterations on the same recorded hardware identity",
+    "capture every required immutable run artifact, class, context, error-family, runtime, and determinism observation",
+    "build and verify the hash-sealed comparable-runs report without inferring a promotion decision"
+  ]
+}

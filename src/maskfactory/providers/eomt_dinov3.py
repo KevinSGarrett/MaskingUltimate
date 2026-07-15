@@ -9,6 +9,7 @@ from typing import Any
 
 import yaml
 
+from ..training.augmentations import validate_augmentation_config
 from ..training.bodypart.v2_contract import V2_CLASS_NAMES
 from .contracts import ProviderIdentity
 
@@ -96,7 +97,76 @@ class EomtDinov3TrainingContract:
             raise EomtDinov3ContractError("EoMT baseline preservation drift")
         if selection.get("pretraining_output_may_author_gold") is not False:
             raise EomtDinov3ContractError("EoMT pretraining output cannot author gold")
+        self._validate_fair_training_surface(config)
         return self.compile_head_spec()
+
+    @staticmethod
+    def _validate_fair_training_surface(config: dict[str, Any]) -> None:
+        """Require the same data/evaluation surface used by both retained baselines."""
+        if config.get("data") != {
+            "dataset": "maskfactory_bodyparts_v2",
+            "crop_size": [512, 512],
+            "ignore_index": 255,
+            "seed": 1337,
+            "supervision": {
+                "v1": "v1_pretraining_only",
+                "v2": "fully_reviewed_65_class_only",
+            },
+            "sampler": {
+                "anatomy_ids": list(range(56, 65)),
+                "anatomy_crop_min_fraction": 0.5,
+                "whole_body_min_fraction": 0.25,
+                "fabricate_hidden_positive": False,
+            },
+        }:
+            raise EomtDinov3ContractError("EoMT fair-training data contract drift")
+        validate_augmentation_config(config.get("augmentations", ()))
+        training = config.get("training", {})
+        shared_training = {
+            key: training.get(key)
+            for key in (
+                "iterations",
+                "iterations_at_500_gold",
+                "batch_per_gpu",
+                "gradient_accumulation",
+                "amp",
+                "class_weights",
+            )
+        }
+        if shared_training != {
+            "iterations": 40000,
+            "iterations_at_500_gold": 80000,
+            "batch_per_gpu": 2,
+            "gradient_accumulation": 8,
+            "amp": "bf16",
+            "class_weights": {
+                "formula": "inverse_sqrt_pixel_frequency",
+                "cap_multiplier": 8.0,
+            },
+        }:
+            raise EomtDinov3ContractError("EoMT fair-training schedule drift")
+        if config.get("evaluation") != {
+            "interval_iters": 4000,
+            "metrics": [
+                "per_class_iou",
+                "boundary_f_2px",
+                "positive_recall",
+                "clothed_false_positive_rate",
+                "left_right_swap_rate",
+            ],
+            "final_splits": [
+                "positive_holdout",
+                "clothed_negative_holdout",
+                "hard_case_holdout",
+            ],
+        }:
+            raise EomtDinov3ContractError("EoMT fair-evaluation contract drift")
+        if config.get("thermal") != {
+            "poll_interval_minutes": 30,
+            "max_celsius": 87,
+            "cooldown_seconds": 60,
+        }:
+            raise EomtDinov3ContractError("EoMT thermal contract drift")
 
     def compile_head_spec(self) -> dict[str, Any]:
         return {

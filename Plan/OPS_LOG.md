@@ -5302,3 +5302,25 @@ Verification:                       dedicated 30/30; focused geometry/currency/s
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, Seagate source path, or external-drive file was accessed
 Authority boundary:                fixtures grant no installation, performance result, promotion, serving, mask, semantic, production, blocker-clearance, or gold authority
 Evidence:                           `qa/live_verification/geometry_variant_benchmark_contract_20260715.json`
+
+## 2026-07-15 10:51 UTC - Fair custom-segmenter training tournament frozen
+
+**Result:** MF-P5-10.07 advances to 75% complete; the complete pre-run comparability
+contract for SegFormer, Mask2Former, and EoMT-DINOv3 is executable and fail-closed, while
+the certified corpus and all three genuine training/evaluation runs remain open.
+
+Pre-run policy:                     `custom_segmenter_training_tournament_v1`, canonical SHA-256 `550ff7c9efce0bef8cddc55c943dacb8d90ab066fd18a11e004984cfedfee983`, frozen before any eligible result
+Eligible data:                      at least 200 certified training packages; `train` versus image-disjoint `human_anchor_gold` `holdout`; overlap is forbidden
+Provider set:                       exact SegFormer-B3, Mask2Former-Swin-B, and EoMT-DINOv3-Small-640 identities; EoMT retains checkpoint SHA-256 `1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f`
+Fairness surface:                   identical data, crop, seed, augmentations, shared schedule, ontology, QA, measurement code, evaluation cadence/splits, thermal ceiling, and hardware identity
+Immutable evidence:                complete manifest and six artifact hashes per provider; unique run IDs; ordered timestamps; 40,000 completed iterations; exact shared corpus/holdout/policy identities
+Measurement coverage:              all 65 classes, 17 high-risk contexts, and 12 error families per provider with explicit count invariants and recomputed IoU, boundary F, small-part recall, correction labor, runtime, VRAM, OOM/crash, and determinism
+Determinism:                        exactly two repeat outputs with identical SHA-256 per provider
+Operational surface:               `tools/evaluate_custom_segmenter_tournament.py` builds or exactly verifies the schema/hash-sealed comparable-runs report; CI runs the named 37-case adversarial gate
+EoMT reconciliation:               the trainable shadow config now carries the common training/evaluation surface; runtime lock and provider runtime matrix were rehashed and verified
+Signed governance:                 current review `63270b91a0192684391ce2db`, SHA-256 `73fb72a66d6da5df69d668cd27aa746393e67eeaf494fcc23cff0ffa63a8a1df`, chains archived `d581b0d6...`, verifies, and remains honestly FAIL on missing real active-role evidence
+Verification:                       dedicated 37/37; focused tournament/EoMT/v2/promotion/currency 138/138; runtime-matrix reconciliation 53/53; complete repository 1,486/1,486 with exit 0; repository Ruff, targeted Black, CI YAML, schemas, and diff checks pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
+Authority boundary:                fixtures and the pre-run report grant no training result, winner, promotion, serving, mask, semantic, production, blocker-clearance, or gold authority
+Remaining real evidence:            certified corpus/holdout freeze, three genuine identical-hardware runs, complete observations/artifacts, and the hash-sealed comparable-runs report
+Evidence:                           `qa/live_verification/custom_segmenter_training_tournament_contract_20260715.json`

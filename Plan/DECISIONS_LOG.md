@@ -685,3 +685,30 @@ that the contract fails closed; they do not install SAM 3D Body, measure perform
 provider, author a mask, or create gold authority.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment, 8 GB reliability requirement, and autonomous execution mandate
+
+## 2026-07-15 - Freeze the fair custom-segmenter training tournament
+
+**Item(s) affected:** MF-P5-10.07, MF-P5-10.08, MF-P5-10.09, custom-segmenter
+selection, promotion, and rollback
+
+**Decision:** Freeze `custom_segmenter_training_tournament_v1` at canonical SHA-256
+`550ff7c9efce0bef8cddc55c943dacb8d90ab066fd18a11e004984cfedfee983` before any
+eligible training result. Compare SegFormer-B3, Mask2Former-Swin-B, and
+EoMT-DINOv3-Small-640 only after all three bind the same certified training manifest,
+image-disjoint human-anchor holdout, body-parts-v2 ontology, QA policy, hardware identity,
+seed, crop, augmentations, 40,000-iteration schedule, evaluation code, and thermal limit.
+Require complete hash-sealed manifests and artifacts, all 65 class observations, all 17
+high-risk context observations, all 12 error-family observations, explicit metric
+denominators, runtime/VRAM/failure measurements, and exactly two identical deterministic
+outputs per provider. Preserve EoMT's exact installed initial checkpoint identity.
+
+**Why:** Architecture labels and aggregate mIoU do not establish a fair result. A mutable
+dataset, different augmentation/schedule, missing hard contexts, denominator-free rates,
+or substituted starting checkpoint could make one provider appear better without measuring
+the same task. The frozen contract makes future run records comparable and reproducible,
+while its generated report deliberately grants no winner, promotion, serving, mask,
+semantic, production, or gold authority. Synthetic fixtures and a passing pre-run verifier
+do not train or evaluate any model; MF-P5-10.07 remains incomplete until all three genuine
+runs and immutable measurements exist.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

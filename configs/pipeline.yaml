@@ -26,12 +26,14 @@ provider_roles:
     rollback: yolo11m_person
   concept_detector:
     active: null
-    challengers: [sam3_1]
+    challengers: [sam3_1, sam3_litetext_s0]
+    shadow_only_experiments: [sam3_litetext_s0]
     offline_fallback: groundingdino_local
     rollback: groundingdino_local
   interactive_segmenter:
     active: sam2_1_large
-    challengers: [sam3_1]
+    challengers: [sam3_1, sam3_litetext_s0]
+    shadow_only_experiments: [sam3_litetext_s0]
     oom_fallback: sam2_1_base_plus
     rollback: sam2_1_large
   geometry_provider:
@@ -63,6 +65,7 @@ provider_catalog:
   yolo26_person: {registry: external_sources, key: yolo26, execution: local, billing: none}
   groundingdino_local: {registry: model_registry, key: groundingdino_swint_ogc, execution: local, billing: none}
   sam3_1: {registry: external_sources, key: sam3_1, execution: local, billing: none}
+  sam3_litetext_s0: {registry: external_sources, key: sam3_litetext_s0, execution: local, billing: none}
   sam2_1_large: {registry: model_registry, key: sam2_1_hiera_large, execution: local, billing: none}
   sam2_1_base_plus: {registry: model_registry, key: sam2_1_hiera_base_plus, execution: local, billing: none}
   densepose_r50_fpn_s1x: {registry: model_registry, key: densepose_rcnn_r50_fpn_s1x, execution: local, billing: none}

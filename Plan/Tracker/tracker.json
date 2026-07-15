@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T03:25:15+00:00",
+    "generated_at": "2026-07-15T04:43:04+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -1366,12 +1366,17 @@
           "ts": "2026-07-15T02:54:22+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 recurrence repaired at host/distro boot cause: replaced stale WslService/vmcompute state, disabled unregistered landscape-client.service that delayed multi-user.target, measured cold Ubuntu starts at 6.526/8.603 seconds, and re-ran live doctor PASS=11 WARN=0 SKIP=0 FAIL=0 with all 14 model smokes. Evidence: qa/live_verification/wsl_docker_systemd_recovery_20260715.json."
+        },
+        {
+          "ts": "2026-07-15T04:42:56+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 incident hardening: doctor now resolves Ubuntu-22.04's registered VHD before boot and emits the exact unavailable backing path. This preserves the completed doctor implementation contract but does not claim the currently USB-affected WSL runtime is healthy; see qa/live_verification/wsl_external_vhd_storage_incident_20260715.json."
         }
       ],
       "evidence": "Doctor retains the full 11-check contract and shared WSL preflight. Local API waits are now bounded (10s ordinary, 45s inference), and each completed named result streams immediately. Live warm battery finished in 17.966s with CVAT/SAM2/Qwen passing; measured cold Qwen load was 33.012s. qa/live_verification/doctor_bounded_streaming_20260712.json; 645 tests and Ruff/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-15T02:54:22+00:00",
+      "updated_at": "2026-07-15T04:42:56+00:00",
       "orphaned": false
     },
     "MF-P0-07.02": {
@@ -12110,13 +12115,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 60,
+      "notes": [
+        {
+          "ts": "2026-07-15T04:42:58+00:00",
+          "actor": "ai_agent",
+          "text": "Runtime/checkpoint installation and lower-memory smoke/benchmark remain unclaimed because the F:-hosted Ubuntu VHD suffered a USB storage incident; qa/live_verification/wsl_external_vhd_storage_incident_20260715.json."
+        }
+      ],
+      "evidence": "2026-07-15: primary authors' source commit bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a, HF checkpoint revision b09766e54f5d2eba021119ec7feff13e74c0f8fc/model LFS SHA-256 69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906, Transformers 5.13.1 wheel/source and two-layer license evidence are frozen. Registry and role selection now reject active/fallback/rollback use, catalog aliasing, missing/late official sam3_1, and declaration mismatch; focused tests and full suite pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T04:42:58+00:00",
       "orphaned": false
     },
     "MF-P3-08.03": {

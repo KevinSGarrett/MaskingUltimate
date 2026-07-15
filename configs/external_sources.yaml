@@ -212,6 +212,61 @@ providers:
       consensual_explicit_adult: allowed
     authority_level: "concept/interactive candidate; never sole semantic authority (doc 16 §7)"
 
+  sam3_litetext_s0:
+    component: "optional lower-memory concept/interactive experiment"
+    lifecycle_state: planned
+    source_url: "https://huggingface.co/vil-uob/sam3-litetext-s0"
+    repo: "https://github.com/SimonZeng7108/efficientsam3"
+    source_revision: "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a"
+    checkpoint_revision: "b09766e54f5d2eba021119ec7feff13e74c0f8fc"
+    runtime_source: "transformers==5.13.1@4626421dc6b741a329300682a6408246ee465490"
+    runtime_wheel_sha256: "53f0ea8aa397e29244c2377ba981bcaf0c87adcf44fbdd447ef6306522afcacd"
+    license: "Apache-2.0 checkpoint/model card; runtime source reviewed separately"
+    verify_license: false
+    license_source: "https://huggingface.co/vil-uob/sam3-litetext-s0/blob/b09766e54f5d2eba021119ec7feff13e74c0f8fc/README.md"
+    license_snapshot_sha256: "c9a60d622cd059a45230889d5ca526f39e52eb433dd99e41609b6780c5180d43"
+    license_reviewed_at: "2026-07-15T04:30:00Z"
+    license_layers:
+      repository:
+        decision: allowed
+        source_url: "https://raw.githubusercontent.com/huggingface/transformers/4626421dc6b741a329300682a6408246ee465490/LICENSE"
+        snapshot_sha256: "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049"
+        reviewed_at: "2026-07-15T04:30:00Z"
+      checkpoint:
+        decision: allowed
+        source_url: "https://huggingface.co/vil-uob/sam3-litetext-s0/blob/b09766e54f5d2eba021119ec7feff13e74c0f8fc/README.md"
+        snapshot_sha256: "c9a60d622cd059a45230889d5ca526f39e52eb433dd99e41609b6780c5180d43"
+        reviewed_at: "2026-07-15T04:30:00Z"
+      effective_scope: checkpoint
+      evidence_bundle_sha256: "5c690e11a9dce2d355bc7dbfb3dd48e6a8d38776aaf290275afb1e8b1a37fb58"
+    version: "vil-uob/sam3-litetext-s0@b09766e54f5d2eba021119ec7feff13e74c0f8fc"
+    checkpoint:
+      filename: "model.safetensors"
+      sha256: "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906"
+      size_bytes: 2117074488
+      gating: none
+      downloaded: false
+    runtime_lock: "env/sam3_litetext_s0_runtime.lock.json"
+    local_path: "not installed; governed optional screen"
+    output_type: "concept instances, boxes, masks, and prompt refinements"
+    role: "optional shadow experiment screened beside official SAM 3.1"
+    capabilities:
+      - concept_detection
+      - interactive_segmentation
+    roles:
+      - concept_detector_shadow_experiment
+      - interactive_segmenter_shadow_experiment
+    role_eligibility: shadow_only_experiment
+    substitution_forbidden_for: sam3_1
+    authority_constraints:
+      - "never active, fallback, rollback, or a substitute for official SAM 3.1"
+      - "evaluation-only candidate within frozen blinded tournaments"
+      - "never decides semantic labels or gold status"
+    content_compatibility:
+      adult_nonexplicit: allowed
+      consensual_explicit_adult: allowed
+    authority_level: "optional shadow-only experiment; no production or gold authority"
+
   birefnet:
     component: "M2 — silhouette (primary)"
     lifecycle_state: promoted

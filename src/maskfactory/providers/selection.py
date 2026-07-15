@@ -85,6 +85,66 @@ def _authority_entry(
     return authority
 
 
+def _validate_shadow_only_experiment(
+    authority: Mapping[str, Any],
+    *,
+    role: str,
+    provider_key: str,
+    usage: str,
+    role_config: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+) -> None:
+    """Prevent optional experiments from becoming silent incumbent substitutes."""
+    declared = role_config.get("shadow_only_experiments", [])
+    if not isinstance(declared, list) or not all(
+        isinstance(value, str) and value for value in declared
+    ):
+        raise ProviderSelectionError(
+            f"{role}.shadow_only_experiments must be an array of provider keys"
+        )
+    declared_shadow_only = provider_key in declared
+    authority_shadow_only = authority.get("role_eligibility") == "shadow_only_experiment"
+    if declared_shadow_only != authority_shadow_only:
+        raise ProviderSelectionError(
+            f"{role}.{usage} provider {provider_key!r} shadow-only role declaration "
+            "and distinct registry identity must agree"
+        )
+    if not authority_shadow_only:
+        return
+    forbidden = authority.get("substitution_forbidden_for")
+    if not isinstance(forbidden, str) or not forbidden:
+        raise ProviderSelectionError(
+            f"{role}.{usage} provider {provider_key!r} is a shadow-only experiment "
+            "without substitution_forbidden_for"
+        )
+    if usage != "challengers":
+        raise ProviderSelectionError(
+            f"{role}.{usage} provider {provider_key!r} is shadow-only and cannot be "
+            "active, fallback, or rollback"
+        )
+    challengers = role_config.get("challengers", ())
+    if forbidden not in challengers:
+        raise ProviderSelectionError(
+            f"{role}.challengers must retain {forbidden!r} when screening "
+            f"shadow-only experiment {provider_key!r}"
+        )
+    if challengers.index(forbidden) > challengers.index(provider_key):
+        raise ProviderSelectionError(
+            f"{role}.challengers must list official provider {forbidden!r} before "
+            f"shadow-only experiment {provider_key!r}"
+        )
+    _, experiment_binding = _catalog_entry(catalog, provider_key, usage=f"{role}.challengers")
+    _, official_binding = _catalog_entry(catalog, forbidden, usage=f"{role}.challengers")
+    if (
+        experiment_binding["registry"] == official_binding["registry"]
+        and experiment_binding["key"] == official_binding["key"]
+    ):
+        raise ProviderSelectionError(
+            f"shadow-only experiment {provider_key!r} must have a distinct registry "
+            f"identity from {forbidden!r}"
+        )
+
+
 def validate_provider_selection(
     pipeline: Mapping[str, Any],
     *,
@@ -140,6 +200,14 @@ def validate_provider_selection(
                 provider_key=active_key,
                 usage="active",
             )
+            _validate_shadow_only_experiment(
+                authority,
+                role=role,
+                provider_key=active_key,
+                usage="active",
+                role_config=role_config,
+                catalog=catalog,
+            )
             lifecycle = authority.get("lifecycle_state")
             if lifecycle != "promoted":
                 raise ProviderSelectionError(
@@ -164,6 +232,14 @@ def validate_provider_selection(
                 role=role,
                 provider_key=challenger,
                 usage="challengers",
+            )
+            _validate_shadow_only_experiment(
+                authority,
+                role=role,
+                provider_key=challenger,
+                usage="challengers",
+                role_config=role_config,
+                catalog=catalog,
             )
             lifecycle = authority.get("lifecycle_state")
             if lifecycle not in {"planned", "installed", "benchmarked", "promoted"}:
@@ -195,6 +271,14 @@ def validate_provider_selection(
                 provider_key=rollback_key,
                 usage="rollback",
             )
+            _validate_shadow_only_experiment(
+                authority,
+                role=role,
+                provider_key=rollback_key,
+                usage="rollback",
+                role_config=role_config,
+                catalog=catalog,
+            )
             lifecycle = authority.get("lifecycle_state")
             if lifecycle not in {"installed", "benchmarked", "promoted"}:
                 raise ProviderSelectionError(
@@ -224,6 +308,14 @@ def validate_provider_selection(
                 role=role,
                 provider_key=fallback_key,
                 usage=fallback_name,
+            )
+            _validate_shadow_only_experiment(
+                authority,
+                role=role,
+                provider_key=fallback_key,
+                usage=fallback_name,
+                role_config=role_config,
+                catalog=catalog,
             )
             lifecycle = authority.get("lifecycle_state")
             if lifecycle not in {"installed", "benchmarked", "promoted"}:

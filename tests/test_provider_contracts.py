@@ -55,7 +55,8 @@ def test_pipeline_role_registry_keeps_incumbents_challengers_and_rollback_explic
     roles = config["provider_roles"]
     assert roles["interactive_segmenter"] == {
         "active": "sam2_1_large",
-        "challengers": ["sam3_1"],
+        "challengers": ["sam3_1", "sam3_litetext_s0"],
+        "shadow_only_experiments": ["sam3_litetext_s0"],
         "oom_fallback": "sam2_1_base_plus",
         "rollback": "sam2_1_large",
     }
@@ -128,6 +129,71 @@ def test_provider_selection_rejects_unpromoted_active_provider(
     config["provider_roles"]["person_detector"]["active"] = "rf_detr_medium"
 
     with pytest.raises(ProviderSelectionError, match="active roles require promoted"):
+        validate_provider_selection(
+            config,
+            external_registry_path=registry_path,
+            model_registry_path=ROOT / "models/model_registry.json",
+        )
+
+
+def _shadow_only_experiment_fixture(tmp_path: Path) -> tuple[dict, Path]:
+    config = yaml.safe_load((ROOT / "configs/pipeline.yaml").read_text(encoding="utf-8"))
+    registry = yaml.safe_load((ROOT / "configs/external_sources.yaml").read_text(encoding="utf-8"))
+    registry["providers"]["sam3_litetext_s0"]["lifecycle_state"] = "installed"
+    registry_path = tmp_path / "external_sources.yaml"
+    registry_path.write_text(yaml.safe_dump(registry, sort_keys=False), encoding="utf-8")
+    return config, registry_path
+
+
+def test_shadow_only_experiment_is_distinct_and_evaluation_only(tmp_path: Path) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    result = validate_provider_selection(
+        config,
+        external_registry_path=registry_path,
+        model_registry_path=ROOT / "models/model_registry.json",
+    )
+    assert result["shadow"]["interactive_segmenter"] == (
+        "sam3_1",
+        "sam3_litetext_s0",
+    )
+    assert result["provider_states"]["sam3_litetext_s0"] == "installed"
+
+
+@pytest.mark.parametrize("selection_field", ["active", "rollback", "oom_fallback"])
+def test_shadow_only_experiment_cannot_substitute_for_official_provider(
+    tmp_path: Path, selection_field: str
+) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    config["provider_roles"]["interactive_segmenter"][selection_field] = "sam3_litetext_s0"
+
+    with pytest.raises(ProviderSelectionError, match="shadow-only"):
+        validate_provider_selection(
+            config,
+            external_registry_path=registry_path,
+            model_registry_path=ROOT / "models/model_registry.json",
+        )
+
+
+def test_shadow_only_experiment_requires_official_provider_first(tmp_path: Path) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    config["provider_roles"]["interactive_segmenter"]["challengers"] = [
+        "sam3_litetext_s0",
+        "sam3_1",
+    ]
+
+    with pytest.raises(ProviderSelectionError, match="official provider 'sam3_1' before"):
+        validate_provider_selection(
+            config,
+            external_registry_path=registry_path,
+            model_registry_path=ROOT / "models/model_registry.json",
+        )
+
+
+def test_shadow_only_experiment_requires_distinct_registry_identity(tmp_path: Path) -> None:
+    config, registry_path = _shadow_only_experiment_fixture(tmp_path)
+    config["provider_catalog"]["sam3_litetext_s0"]["key"] = "sam3_1"
+
+    with pytest.raises(ProviderSelectionError, match="distinct registry identity"):
         validate_provider_selection(
             config,
             external_registry_path=registry_path,

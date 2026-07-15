@@ -5006,3 +5006,17 @@ CI enforcement:                     the named registry-governance job now runs b
 Verification:                       focused promotion/margin/model-role bundle passed 47/47; complete repository suite passed 1,138/1,138; repository-wide Ruff and CI YAML validation passed
 Honest boundary:                    no real promotion packet is claimed before MF-P2-11.13/MF-P3-08.08 produces the frozen human-anchor matrix and measured results
 Evidence:                           `qa/live_verification/specialist_promotion_gate_20260715.json`
+
+## 2026-07-15 04:40 UTC - External Ubuntu VHD storage incident contained
+
+**Result:** WSL/Docker remains deliberately unclaimed after the USB-backed Ubuntu VHD disappeared and Windows recorded delayed-write and paging-I/O failures; risky elevated recovery was stopped, the VHD mount handle was released, and the failure mode now has an explicit doctor preflight.
+
+Observed storage failure:            Windows Disk 153/51 and NTFS 140/50 events prove retries, a vanished USB device, transaction-log flush failure, and a delayed write failure to `F:\$Mft` on the Seagate volume hosting Ubuntu-22.04
+User safety boundary:                Kevin reported that the laptop crashed after the earlier elevated PowerShell acceptance prompt; causality is not asserted, but no further elevated service restart or forced WSL/compute-service termination is authorized or attempted in this recovery
+Rescue status:                       a restartable read-only copy to `C:\MaskFactory_WSL_Backup\Ubuntu-22.04\ext4.vhdx` was stopped to release WSL exclusivity at 29,396,828,160 valid bytes (58.72%); it is incomplete, unhashed, and has no boot authority
+Mount isolation:                     after stopping only the rescue process, an exclusive source-VHD open passed, proving that the copy no longer caused Docker's `ERROR_SHARING_VIOLATION`
+Runtime boundary:                    one ordinary non-elevated Ubuntu start still failed to reach userspace within 60 seconds; WSL/Docker recovery and all model-runtime claims remain open
+Durable diagnosis:                   doctor now resolves the registered Ubuntu VHD without starting WSL and fails with the exact unavailable backing path instead of misdiagnosing the symptom as a Docker helper permission problem
+Modernization progress:              SAM3-LiteText S0 has an immutable primary-source/checkpoint/runtime/license identity and a dual-declared shadow-only policy; active, fallback, rollback, alias, ordering, or missing-official-provider substitutions fail closed
+Verification:                       focused doctor/provider/governance tests pass; complete repository suite exits 0; Ruff passes on changed Python files
+Evidence:                           `qa/live_verification/wsl_external_vhd_storage_incident_20260715.json`; no complete VHD backup, WSL boot, Docker recovery, or SAM3-LiteText runtime smoke is claimed

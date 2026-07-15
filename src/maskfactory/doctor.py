@@ -388,6 +388,69 @@ def check_disk_free(path: Path = ROOT / "data") -> CheckResult:
     return _result("disk_free", "PASS", detail)
 
 
+def _registered_ubuntu_vhd() -> Path | None:
+    """Resolve the registered Ubuntu VHD without trying to start the distro."""
+    if os.name != "nt":
+        return None
+    import winreg
+
+    root_path = r"Software\Microsoft\Windows\CurrentVersion\Lxss"
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, root_path) as root:
+            index = 0
+            while True:
+                try:
+                    key_name = winreg.EnumKey(root, index)
+                except OSError:
+                    break
+                index += 1
+                with winreg.OpenKey(root, key_name) as distro:
+                    try:
+                        name = winreg.QueryValueEx(distro, "DistributionName")[0]
+                    except OSError:
+                        continue
+                    if name != "Ubuntu-22.04":
+                        continue
+                    base_path = str(winreg.QueryValueEx(distro, "BasePath")[0])
+                    try:
+                        filename = str(winreg.QueryValueEx(distro, "VhdFileName")[0])
+                    except OSError:
+                        filename = "ext4.vhdx"
+                    if base_path.startswith("\\\\?\\"):
+                        base_path = base_path[4:]
+                    return Path(base_path) / filename
+    except OSError:
+        return None
+    return None
+
+
+def check_wsl_backing_store() -> CheckResult:
+    """Fail clearly when WSL's registered VHD volume vanished before boot."""
+    if os.name != "nt":
+        return _result("wsl_backing_store", "SKIP", "Windows-only WSL registration check")
+    path = _registered_ubuntu_vhd()
+    if path is None:
+        return _result(
+            "wsl_backing_store",
+            "FAIL",
+            "Ubuntu-22.04 has no readable per-user WSL registration",
+            "Restore the existing Ubuntu-22.04 registration; do not import a second shadow distro.",
+        )
+    if not path.is_file():
+        return _result(
+            "wsl_backing_store",
+            "FAIL",
+            f"registered Ubuntu VHD is unavailable: {path}",
+            "Reconnect or remount the backing volume before restarting WSL/Docker; repeated boots "
+            "cannot repair a missing VHD path.",
+        )
+    return _result(
+        "wsl_backing_store",
+        "PASS",
+        f"registered Ubuntu VHD is readable: {path}",
+    )
+
+
 def _wsl_path(path: Path) -> str:
     resolved = path.resolve()
     drive = resolved.drive.rstrip(":").lower()
@@ -495,6 +558,7 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_nuclio_interactor,
     check_ollama_image,
     check_disk_free,
+    check_wsl_backing_store,
     check_wsl_roundtrip,
     check_png_strict,
     check_sqlite,

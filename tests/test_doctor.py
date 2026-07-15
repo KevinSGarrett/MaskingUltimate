@@ -19,6 +19,7 @@ from maskfactory.doctor import (
     check_gpu_lock,
     check_registered_models,
     check_torch_cuda,
+    check_wsl_backing_store,
     check_wsl_roundtrip,
     run_doctor,
 )
@@ -42,6 +43,7 @@ def test_default_doctor_battery_covers_every_p0_requirement() -> None:
         "check_nuclio_interactor",
         "check_ollama_image",
         "check_disk_free",
+        "check_wsl_backing_store",
         "check_wsl_roundtrip",
         "check_png_strict",
         "check_sqlite",
@@ -129,6 +131,32 @@ def test_disk_thresholds_match_operations_runbook(tmp_path: Path) -> None:
         with patch("maskfactory.doctor.shutil.disk_usage") as disk_usage:
             disk_usage.return_value = type("Usage", (), {"free": free * gib})()
             assert check_disk_free(tmp_path).status == expected
+
+
+def test_wsl_backing_store_reports_missing_vhd_before_boot(tmp_path: Path) -> None:
+    missing = tmp_path / "detached" / "ext4.vhdx"
+    with (
+        patch("maskfactory.doctor.os.name", "nt"),
+        patch("maskfactory.doctor._registered_ubuntu_vhd", return_value=missing),
+    ):
+        result = check_wsl_backing_store()
+
+    assert result.status == "FAIL"
+    assert str(missing) in result.detail
+    assert "Reconnect or remount" in result.hint
+
+
+def test_wsl_backing_store_accepts_readable_registered_vhd(tmp_path: Path) -> None:
+    vhd = tmp_path / "ext4.vhdx"
+    vhd.touch()
+    with (
+        patch("maskfactory.doctor.os.name", "nt"),
+        patch("maskfactory.doctor._registered_ubuntu_vhd", return_value=vhd),
+    ):
+        result = check_wsl_backing_store()
+
+    assert result.status == "PASS"
+    assert str(vhd) in result.detail
 
 
 def test_gpu_lock_distinguishes_absent_active_and_stale(tmp_path: Path) -> None:

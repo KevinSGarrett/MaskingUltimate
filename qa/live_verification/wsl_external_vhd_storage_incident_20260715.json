@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-15T04:40:00Z",
+  "incident": "Ubuntu-22.04 backing volume disappeared during WSL/Docker use",
+  "classification": "observed_external_storage_path_loss_and_io_retries",
+  "backing_store": {
+    "distro": "Ubuntu-22.04",
+    "registered_vhd": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04\\ext4.vhdx",
+    "device": "Seagate BUP Slim BK",
+    "bus": "USB",
+    "vhd_size_bytes": 50062163968
+  },
+  "windows_event_evidence": [
+    {
+      "observed_at_local": "2026-07-14T22:56:12-05:00",
+      "provider": "disk",
+      "event_id": 153,
+      "finding": "multiple Disk 1 logical-block I/O operations were retried"
+    },
+    {
+      "observed_at_local": "2026-07-14T22:56:13-05:00",
+      "provider": "Microsoft-Windows-Ntfs",
+      "event_id": 140,
+      "finding": "transaction-log flush failed because the USB device no longer existed"
+    },
+    {
+      "observed_at_local": "2026-07-14T22:56:14-05:00",
+      "provider": "Ntfs",
+      "event_id": 50,
+      "finding": "delayed write to F:\\$Mft failed and Windows warned that data was lost"
+    },
+    {
+      "observed_at_local": "2026-07-14T22:56:14-05:00",
+      "provider": "disk",
+      "event_id": 51,
+      "finding": "Disk 1 paging I/O errors were recorded"
+    },
+    {
+      "observed_at_local": "2026-07-14T23:07:22-05:00",
+      "provider": "disk",
+      "event_id": 153,
+      "finding": "four additional source-disk reads were retried during the rescue copy; no later warning was observed before the copy was stopped"
+    }
+  ],
+  "recovery_boundary": {
+    "user_report": "the laptop crashed after an elevated PowerShell acceptance prompt during an earlier WSL service recovery attempt",
+    "causality": "not asserted; the elevated recovery preceded the crash and will not be repeated without new explicit approval",
+    "forbidden_for_current_recovery": [
+      "elevated WSL service restart",
+      "forced WslService or vmcompute termination",
+      "registering an incomplete VHD copy",
+      "claiming WSL or Docker recovered without a bounded live boot"
+    ]
+  },
+  "rescue_copy": {
+    "destination": "C:\\MaskFactory_WSL_Backup\\Ubuntu-22.04\\ext4.vhdx",
+    "method": "robocopy /J /Z read-only source copy",
+    "stopped_to_release_wsl_mount_exclusivity": true,
+    "destination_valid_data_bytes": 29396828160,
+    "destination_valid_data_percent": 58.72,
+    "complete": false,
+    "hash_verified": false,
+    "boot_authority": false
+  },
+  "post_copy_checks": {
+    "source_path_readable": true,
+    "source_exclusive_open_after_copy_stop": true,
+    "ordinary_non_elevated_wsl_boot_timeout_seconds": 60,
+    "ordinary_non_elevated_wsl_boot_reached_userspace": false,
+    "full_repository_tests_exit_code": 0,
+    "focused_doctor_and_provider_policy_tests": "pass",
+    "ruff": "pass"
+  },
+  "authority": "incident_and_partial_rescue_evidence_only_no_runtime_recovery_or_model_install_authority"
+}

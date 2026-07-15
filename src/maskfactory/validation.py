@@ -28,6 +28,7 @@ SCHEMA_NAMES = frozenset(
         "autonomy_risk_buckets",
         "autonomy_stability",
         "currency_review",
+        "custom_segmenter_benchmark_margins",
         "serving_provenance",
         "serving_route",
         "specialist_benchmark_margins",

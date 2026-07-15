@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T04:43:04+00:00",
+    "generated_at": "2026-07-15T05:05:25+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -13416,13 +13416,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 90,
+      "notes": [
+        {
+          "ts": "2026-07-15T05:05:15+00:00",
+          "actor": "ai_agent",
+          "text": "Remaining 10% is binding the still-unavailable frozen human-anchor evaluation-set hash. No metric output or benchmark result has been opened."
+        }
+      ],
+      "evidence": "2026-07-15: custom_segmenter_noninferiority_v1 frozen before results at SHA-256 04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be. Six governing source hashes bind 26 hard labels, 17 high-risk contexts, 12 zero-regression families, 158 expanded buckets, primary macro-IoU >=0.005 and labor reduction >=0.05. Dedicated/focused/full tests pass; qa/live_verification/custom_segmenter_promotion_policy_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T05:05:15+00:00",
       "orphaned": false
     },
     "MF-P5-10.09": {
@@ -13437,13 +13443,13 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "src/maskfactory/training/promotion_policy.py derives primary/labor passes from finite observed improvements and requires every exact frozen label/context/zero-regression row. Average-win fixtures with label, context, or zero-regression loss all fail; omission, duplicate, margin drift, NaN, stale inputs, determinism, crash/OOM, bleed, side/front-back, protected-region, hard-QA, and rollback regressions fail closed. 40 dedicated tests, 92 focused tests, full 1,186/1,186, Ruff clean; qa/live_verification/custom_segmenter_promotion_policy_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T05:05:17+00:00",
       "orphaned": false
     },
     "MF-P5-10.10": {
@@ -13458,13 +13464,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Custom segmenter certificate requires lifecycle benchmarked and 12 exact current hashes: benchmark result, source, checkpoint, runtime, license, content, dataset, evaluation set, prompt, hardware, QA, and measurement code. Each missing and each stale identity is independently rejected; result input rebinding, unresolved content/license, same/unobserved rollback, and packet tamper fail. Validation grants no role/serving/gold authority. 40 dedicated tests, 92 focused tests, full 1,186/1,186, Ruff clean; qa/live_verification/custom_segmenter_promotion_policy_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T05:05:18+00:00",
       "orphaned": false
     },
     "MF-P5-10.11": {

@@ -155,6 +155,14 @@ that exact manifest hash, contain every expanded label/context/zero-regression b
 predeclared margin, and postdate the freeze. Recomputing a manifest self-hash does not authorize a
 post-freeze threshold edit. A primary average or labor win cannot override one failed bucket.
 
+Custom-segmenter margins are independently predeclared in
+`qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json`. The manifest is locked at
+SHA-256 `04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be` before any result is
+opened and covers every governed hard label, high-risk context, and zero-regression family. Its
+certificate validator binds the benchmark result and current source, checkpoint, runtime, license,
+content, dataset, evaluation-set, prompt, hardware, QA, and measurement-code hashes. Validation is
+prerequisite evidence only; it cannot change a lifecycle, provider role, serving route, or truth tier.
+
 Installed, benchmarked, and promoted states are recorded independently. A model card, catalog entry,
 download, or smoke test alone cannot produce a promotion.
 

@@ -5022,3 +5022,18 @@ Durable diagnosis:                   doctor now resolves the registered Ubuntu V
 Modernization progress:              SAM3-LiteText S0 has an immutable primary-source/checkpoint/runtime/license identity and a dual-declared shadow-only policy; active, fallback, rollback, alias, ordering, or missing-official-provider substitutions fail closed
 Verification:                       focused doctor/provider/governance tests pass; complete repository suite exits 0; Ruff passes on changed Python files
 Evidence:                           `qa/live_verification/wsl_external_vhd_storage_incident_20260715.json`; no complete VHD backup, WSL boot, Docker recovery, or SAM3-LiteText runtime smoke is claimed
+
+## 2026-07-15 05:04 UTC - Custom-segmenter promotion policy frozen before results
+
+**Result:** MF-P5-10.08 and MF-P5-10.10 are policy-complete but remain partial pending the first real human-anchor result/certificate; MF-P5-10.09's fail-closed win/non-inferiority rule is fully implemented and verified.
+
+Frozen manifest:                    `custom_segmenter_noninferiority_v1`, frozen at 2026-07-15 04:54 UTC, SHA-256 `04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be`, explicitly sealed before results
+Coverage:                           26 governed hard labels, 17 high-risk contexts including every multi-person stratum, and 12 zero-regression families expand to 158 exact result buckets
+Objectives:                         primary `macro_mean_iou` improvement >=0.005 or material `correction_pixels_per_100k` improvement >=0.05; validators derive both pass flags from finite observations
+Margins:                            label/context boundary-F, IoU, small-part recall, and instance recall tolerances are immutable and source-hash-bound; bleed, side/front-back, protected-region, hard-QA, determinism, hallucination/confusion, identity, crash, OOM, and rollback failures have zero tolerance
+Average-win rejection:              positive aggregate improvement cannot override a failed label, context, or zero-regression row; omitted/duplicate buckets, margin drift, NaN, stale inputs, and pre-freeze results fail closed
+Certificate identity:               12 exact hashes bind benchmark results, source tree, checkpoint, runtime, license, content, dataset, evaluation set, prompts, hardware, QA, and measurement code to lifecycle `benchmarked`
+Certificate safety:                 every missing and every stale identity was tested; both adult content lanes and checkpoint license must be allowed; rollback and restore must be observed against a distinct incumbent
+Authority boundary:                validation grants prerequisites-only evidence and performs no role/lifecycle mutation, serving activation, or gold authorization
+CI and verification:                named governance CI includes the 40-case dedicated suite; focused policy/schema/training/tracker bundle passed 92/92; complete repository suite passed 1,186/1,186; Ruff passed
+Evidence:                           `qa/live_verification/custom_segmenter_promotion_policy_20260715.json`; no human-anchor result, benchmark winner, promotion, or serving claim exists

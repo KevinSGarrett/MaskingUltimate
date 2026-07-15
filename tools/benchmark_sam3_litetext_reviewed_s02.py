@@ -21,6 +21,7 @@ from maskfactory.benchmarking.reviewed_s02 import (  # noqa: E402
     DEFAULT_POLICY,
     EXPECTED_CHECKPOINT_SHA256,
     EXPECTED_CHECKPOINT_SIZE,
+    PRE_RESULT_POLICY_COMMIT,
     canonical_sha256,
     file_sha256,
     load_policy,
@@ -198,6 +199,11 @@ def main() -> int:
         "result": "pass_diagnostic_measurement_completed",
         "policy_id": policy["policy_id"],
         "policy_sha256": policy["sha256"],
+        "execution_identity": {
+            "tool_path": _relative(Path(__file__)),
+            "tool_file_sha256": file_sha256(Path(__file__)),
+            "pre_result_policy_commit": PRE_RESULT_POLICY_COMMIT,
+        },
         "provider": {
             **policy["provider"],
             "checkpoint_path": str(checkpoint),

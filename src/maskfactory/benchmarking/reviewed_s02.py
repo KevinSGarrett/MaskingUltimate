@@ -18,6 +18,7 @@ LOCKED_POLICY_SHA256 = "f42edcfcacc6f8aecdb3d65e108a28043bc6264e92fbcb391694234c
 CASE_IDS = ("img_c02019c4979c_p2", "img_cea6df6f0f13_p0")
 EXPECTED_CHECKPOINT_SHA256 = "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906"
 EXPECTED_CHECKPOINT_SIZE = 2_117_074_488
+PRE_RESULT_POLICY_COMMIT = "17728d61eee2123999b2516e77f4808ab99c3485"
 
 
 class ReviewedS02BenchmarkError(ValueError):
@@ -218,6 +219,14 @@ def verify_evidence(
         raise ReviewedS02BenchmarkError("reviewed-S02 diagnostic did not complete")
     if document.get("authority_limits") != policy["authority_limits"]:
         raise ReviewedS02BenchmarkError("reviewed-S02 evidence overclaims authority")
+    execution_identity = document.get("execution_identity", {})
+    tool_path = (Path(root) / execution_identity.get("tool_path", "")).resolve()
+    if not tool_path.is_file() or file_sha256(tool_path) != execution_identity.get(
+        "tool_file_sha256"
+    ):
+        raise ReviewedS02BenchmarkError("reviewed-S02 execution tool identity drifted")
+    if execution_identity.get("pre_result_policy_commit") != PRE_RESULT_POLICY_COMMIT:
+        raise ReviewedS02BenchmarkError("reviewed-S02 pre-result commit identity drifted")
     provider = document.get("provider", {})
     if provider.get("checkpoint_sha256") != EXPECTED_CHECKPOINT_SHA256:
         raise ReviewedS02BenchmarkError("evidence checkpoint identity drifted")

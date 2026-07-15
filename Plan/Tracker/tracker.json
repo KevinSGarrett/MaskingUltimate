@@ -12219,7 +12219,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 95,
       "notes": [
         {
           "ts": "2026-07-15T04:42:58+00:00",
@@ -12235,12 +12235,17 @@
           "ts": "2026-07-15T16:45:51+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: installed and live-qualified exact SAM3-LiteText S0 in an isolated WSL runtime as shadow-only. Deterministic strict-binary person smoke passed with 4 masks, 0.323472 s warm inference, and 1,479,608,320 peak allocated bytes. No lower-memory or quality comparison is claimed; official SAM3.1 qualification and the frozen image-disjoint human-anchor comparison remain."
+        },
+        {
+          "ts": "2026-07-15T17:32:32+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: predeclared reviewed-S02 diagnostic completed on both Kevin-confirmed silhouettes. Exact shadow LiteText produced deterministic strict masks with minimum IoU 0.955980, mean IoU 0.969735, minimum 2 px boundary F 0.930384, about 0.286-0.301 s warm inference, and 1,479,608,320 peak allocated bytes. References remain diagnostic-not-gold; official SAM3.1 relative human-anchor comparison remains."
         }
       ],
-      "evidence": "qa/live_verification/sam3_litetext_installation_bundle_20260715.json; exact checkpoint SHA-256 69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906; runtime lock df9a3291...; requirements lock 511ba286...; live smoke f3711cac...; 94 focused, 63 affected-policy, and 1593 full repository tests pass.",
+      "evidence": "qa/live_verification/sam3_litetext_reviewed_s02_20260715.json (file SHA-256 2fb9ecb8012eb89e8bf39a384fb2b576b8d0c84a5d588e66ac1ad7d3687660bf; manifest ff3b6244...); frozen policy f42edcfc... committed pre-result at 17728d61...; persisted masks 9214ef4b... and e49aa536...; 10 dedicated and 1616/1616 complete repository tests pass. Prior installation evidence remains qa/live_verification/sam3_litetext_installation_bundle_20260715.json. No official SAM3.1/lower-memory/noninferiority/gold/promotion claim.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T16:45:51+00:00",
+      "updated_at": "2026-07-15T17:37:48+00:00",
       "orphaned": false
     },
     "MF-P3-08.03": {

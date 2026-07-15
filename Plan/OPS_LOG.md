@@ -5590,3 +5590,23 @@ Authority withheld:                the references are not labeled human-anchor g
 Policy identity:                   canonical SHA-256 `f42edcfcacc6f8aecdb3d65e108a28043bc6264e92fbcb391694234ca296080f`
 Pre-result verification:           7 dedicated policy/metric/matching tests pass; current source/reference/resolution bytes validate
 Remaining work:                    commit this frozen contract, then run the exact isolated WSL/CUDA runtime and verify persisted strict-binary matched masks
+
+## 2026-07-15 17:31 UTC - Reviewed-S02 LiteText diagnostic completed
+
+**Result:** MF-P3-08.02 advances from 90% to 95%; the exact installed shadow
+provider completed the predeclared absolute diagnostic on both Kevin-reviewed S02
+silhouettes with deterministic, high-agreement strict masks.
+
+Pre-result proof:                   policy and executable contract committed/pushed first as `17728d61eee2123999b2516e77f4808ab99c3485`; policy SHA-256 `f42edcfc...`
+Multi-person/right-edge case:       4 person instances; maximum-IoU match selected p2 instance 0; IoU 0.955980, Dice 0.977495, precision 0.990327, recall 0.964990, 2 px boundary F 0.954564
+Single-person case:                 1 person instance; IoU 0.983490, Dice 0.991676, precision 0.995862, recall 0.987525, 2 px boundary F 0.930384
+Aggregate:                          mean IoU 0.969735; minimum IoU 0.955980; mean Dice 0.984585; minimum 2 px boundary F 0.930384
+Runtime:                            exact checkpoint SHA-256 `69c86fda...`; Python 3.12.13, Torch 2.10.0+cu128, Transformers 5.13.1, bfloat16, RTX 5060 Laptop GPU
+Performance observed:               model load 1.687918 s; multi case 1.450752/0.300580 s; single case 0.285784/0.285490 s; peak allocated 1,479,608,320 bytes
+Determinism/artifacts:              both two-run mask/box/score identities match; two persisted matched PNGs are strict binary and independently recompute every recorded metric
+Fail-closed verification:           10 dedicated tests cover frozen references, authority limits, geometry/degeneracy, matching/tie-break, live recomputation, metric tampering, and tool-identity tampering; complete repository 1,616/1,616 passes
+Machine health:                    doctor PASS=11 WARN=1 SKIP=0 FAIL=0; all 14 registered model smokes, CVAT 2.24.0, SAM2 Nuclio, Qwen image probe, WSL backing store/round trip, CUDA, PNG, SQLite, and GPU-lock checks pass; disk is the sole warning at 126.7 GiB free
+Evidence identity:                  report file SHA-256 `2fb9ecb8012eb89e8bf39a384fb2b576b8d0c84a5d588e66ac1ad7d3687660bf`; canonical manifest SHA-256 `ff3b624483420acf77a11c6d60d758f7fe89c9a2bdaf92444e669d7bf6591870`
+Authority boundary:                absolute reviewed-S02 diagnostic only; these two references are not human-anchor gold or a frozen benchmark holdout, and no official SAM3.1, lower-memory, noninferiority, promotion, production, gold, blocker-clearance, or completion claim is made
+Remaining work:                    obtain/live-qualify official SAM3.1 and run the already-frozen image-disjoint human-anchor relative quality/memory comparison
+Evidence:                          `qa/live_verification/sam3_litetext_reviewed_s02_20260715.json`

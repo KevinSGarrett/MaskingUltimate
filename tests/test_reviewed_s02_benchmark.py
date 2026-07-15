@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -16,7 +17,11 @@ from maskfactory.benchmarking.reviewed_s02 import (
     mask_metrics,
     match_best_instance,
     validate_policy,
+    verify_evidence,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
+LIVE_EVIDENCE = ROOT / "qa" / "live_verification" / "sam3_litetext_reviewed_s02_20260715.json"
 
 
 def _reseal(document: dict) -> None:
@@ -102,3 +107,32 @@ def test_geometry_and_degenerate_masks_fail_closed() -> None:
         mask_metrics(np.zeros_like(valid), valid)
     with pytest.raises(ReviewedS02BenchmarkError, match="no person instances"):
         match_best_instance([], valid)
+
+
+def test_live_evidence_recomputes_metrics_from_persisted_strict_masks() -> None:
+    document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
+    result = verify_evidence(document)
+    assert result["status"] == "pass_diagnostic_measurement_completed"
+    assert result["case_count"] == 2
+    assert result["minimum_iou"] > 0
+    assert result["minimum_boundary_f_2px"] > 0
+
+
+def test_live_evidence_rejects_resealed_metric_tampering() -> None:
+    document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
+    document["cases"][0]["metrics"]["iou"] = 1.0
+    document["manifest_sha256"] = canonical_sha256(
+        {key: value for key, value in document.items() if key != "manifest_sha256"}
+    )
+    with pytest.raises(ReviewedS02BenchmarkError, match="iou drifted"):
+        verify_evidence(document)
+
+
+def test_live_evidence_rejects_resealed_tool_identity_tampering() -> None:
+    document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
+    document["execution_identity"]["tool_file_sha256"] = "0" * 64
+    document["manifest_sha256"] = canonical_sha256(
+        {key: value for key, value in document.items() if key != "manifest_sha256"}
+    )
+    with pytest.raises(ReviewedS02BenchmarkError, match="tool identity"):
+        verify_evidence(document)

@@ -1,0 +1,141 @@
+{
+  "aggregate": {
+    "mean_boundary_f_2px": 0.9424737805127535,
+    "mean_dice": 0.9845853329124469,
+    "mean_iou": 0.9697347286405614,
+    "mean_precision": 0.9930946465123531,
+    "mean_recall": 0.9762576940302508,
+    "minimum_boundary_f_2px": 0.9303839241097988,
+    "minimum_dice": 0.977494532370717,
+    "minimum_iou": 0.9559797608095676,
+    "minimum_precision": 0.9903268845897265,
+    "minimum_recall": 0.9649904814969588
+  },
+  "authority_limits": {
+    "benchmark_holdout_claimed": false,
+    "gold_authority": false,
+    "human_anchor_gold_claimed": false,
+    "lower_memory_claimed": false,
+    "official_sam31_comparison_claimed": false,
+    "production_authority": false,
+    "promotion_claimed": false,
+    "quality_noninferiority_claimed": false
+  },
+  "captured_at": "2026-07-15T17:31:27.547379+00:00",
+  "cases": [
+    {
+      "boxes_sha256": "4f8a3e3d6b4236dd5b2f91070f375000303d287de8bcaee0061a3b28747350e6",
+      "case_id": "img_c02019c4979c_p2",
+      "deterministic_two_run": true,
+      "image_id": "img_c02019c4979c",
+      "inference_seconds": [
+        1.450752,
+        0.30058
+      ],
+      "instance_count": 4,
+      "instance_id": "p2",
+      "mask_stack_sha256": "dc6dc62a2c3bf9d47396a61970cb2ac0896f40c065a0ee67dceac48a9ecd0733",
+      "matched_box_xyxy": [
+        672.0,
+        394.0,
+        816.0,
+        876.0
+      ],
+      "matched_instance_index": 0,
+      "matched_mask_array_sha256": "cfe5c73767292a53a5578999c88070b1a01ad6d00db2cacd9fe45c8318ad70f7",
+      "matched_mask_file_sha256": "9214ef4be600cfe5ac68323f276ab79e746ff9d499c164d5d49fc4324355a1f4",
+      "matched_mask_path": "qa/live_verification/sam3_litetext_reviewed_s02_masks/img_c02019c4979c_p2_matched.png",
+      "matched_score": 0.94921875,
+      "metrics": {
+        "boundary_f_2px": 0.9545636369157083,
+        "boundary_precision_2px": 0.9550641940085592,
+        "boundary_recall_2px": 0.9540636042402827,
+        "dice": 0.977494532370717,
+        "intersection_pixels": 20783,
+        "iou": 0.9559797608095676,
+        "miss_fraction": 0.03500951850304124,
+        "precision": 0.9903268845897265,
+        "prediction_pixels": 20986,
+        "recall": 0.9649904814969588,
+        "reference_pixels": 21537,
+        "spill_fraction": 0.009673115410273492
+      },
+      "peak_allocated_bytes": 1479608320,
+      "peak_reserved_bytes": 1660944384,
+      "scores_sha256": "d3dd86458fe3656440de1e8c9c41467def268565aab0a7f4457c6e63011352c9"
+    },
+    {
+      "boxes_sha256": "cb0a80fab822f6841c7ae255e4ef5da3c4a95e5cb5ee116b7a20ce0cc2cda72b",
+      "case_id": "img_cea6df6f0f13_p0",
+      "deterministic_two_run": true,
+      "image_id": "img_cea6df6f0f13",
+      "inference_seconds": [
+        0.285784,
+        0.28549
+      ],
+      "instance_count": 1,
+      "instance_id": "p0",
+      "mask_stack_sha256": "250f1c2da8399d260fec62af6132eb4c978b3c4e3ed2b2ff127e47a99110f99a",
+      "matched_box_xyxy": [
+        195.0,
+        115.0,
+        1424.0,
+        2400.0
+      ],
+      "matched_instance_index": 0,
+      "matched_mask_array_sha256": "250f1c2da8399d260fec62af6132eb4c978b3c4e3ed2b2ff127e47a99110f99a",
+      "matched_mask_file_sha256": "e49aa536eefbb1a9feeaca78ab0f2779bb83783ecb44f782487da92f7717b900",
+      "matched_mask_path": "qa/live_verification/sam3_litetext_reviewed_s02_masks/img_cea6df6f0f13_p0_matched.png",
+      "matched_score": 0.6328125,
+      "metrics": {
+        "boundary_f_2px": 0.9303839241097988,
+        "boundary_precision_2px": 0.9388685449517973,
+        "boundary_recall_2px": 0.9220512820512821,
+        "dice": 0.9916761334541767,
+        "intersection_pixels": 837589,
+        "iou": 0.9834896964715553,
+        "miss_fraction": 0.012475093436457363,
+        "precision": 0.9958624084349798,
+        "prediction_pixels": 841069,
+        "recall": 0.9875249065635426,
+        "reference_pixels": 848170,
+        "spill_fraction": 0.004137591565020249
+      },
+      "peak_allocated_bytes": 1479608320,
+      "peak_reserved_bytes": 1677721600,
+      "scores_sha256": "f8f11526ba049f94b90992faf4b4708446cfcb1eb32a136282fb899729df9249"
+    }
+  ],
+  "execution_identity": {
+    "pre_result_policy_commit": "17728d61eee2123999b2516e77f4808ab99c3485",
+    "tool_file_sha256": "dd7c4555b056300b75fa650279e389aca6d1c49fa06eaa651809b2a812ffd515",
+    "tool_path": "tools/benchmark_sam3_litetext_reviewed_s02.py"
+  },
+  "interpretation": "Absolute diagnostic agreement against two Kevin-reviewed S02 semantic silhouettes; not gold, not a frozen holdout, and not an official SAM3.1 comparison.",
+  "manifest_sha256": "ff3b624483420acf77a11c6d60d758f7fe89c9a2bdaf92444e669d7bf6591870",
+  "policy_id": "sam3_litetext_reviewed_s02_v1",
+  "policy_sha256": "f42edcfcacc6f8aecdb3d65e108a28043bc6264e92fbcb391694234ca296080f",
+  "provider": {
+    "checkpoint_path": "/home/kevin/mfmodels/sam3-litetext-s0-b09766e5/model.safetensors",
+    "checkpoint_revision": "b09766e54f5d2eba021119ec7feff13e74c0f8fc",
+    "checkpoint_sha256": "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906",
+    "checkpoint_size_bytes": 2117074488,
+    "lifecycle_state": "installed",
+    "provider_key": "sam3_litetext_s0",
+    "role_eligibility": "shadow_only_experiment"
+  },
+  "result": "pass_diagnostic_measurement_completed",
+  "runtime": {
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "device_free_before_bytes": 7374635008,
+    "device_total_bytes": 8546484224,
+    "dtype": "bfloat16",
+    "environment": "/home/kevin/mfenvs/sam3-litetext-b09766e5",
+    "model_load_seconds": 1.687918,
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.13.1"
+  },
+  "schema_version": "1.0.0"
+}

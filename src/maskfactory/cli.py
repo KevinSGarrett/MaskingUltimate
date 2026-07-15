@@ -3329,6 +3329,107 @@ def models_promote_custom_segmenter(
     click.echo(json.dumps(record, indent=2, sort_keys=True))
 
 
+@models.command("promote-specialist")
+@click.argument("candidate_key")
+@click.option(
+    "--role",
+    type=click.Choice(["champion_hand", "champion_clothing"]),
+    required=True,
+)
+@click.option(
+    "--matrix-bundle",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("runs/champion_history.jsonl"),
+    show_default=True,
+)
+def models_promote_specialist(
+    candidate_key: str,
+    role: str,
+    matrix_bundle: Path,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+) -> None:
+    """Promote a matrix-certified hand or clothing specialist transactionally."""
+    from .models.registry import promote_model_role
+
+    try:
+        record = promote_model_role(
+            candidate_key,
+            role,
+            matrix_bundle_root=matrix_bundle,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+        )
+    except (OSError, ValueError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, indent=2, sort_keys=True))
+
+
+@models.command("rollback-specialist")
+@click.argument("transaction_id")
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+@click.option(
+    "--history",
+    "history_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("runs/champion_history.jsonl"),
+    show_default=True,
+)
+def models_rollback_specialist(
+    transaction_id: str,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+) -> None:
+    """Rollback one specialist promotion by immutable transaction id."""
+    from .models.registry import load_specialist_promotion_transaction, rollback_model_role
+
+    try:
+        record = load_specialist_promotion_transaction(transaction_id, history_path=history_path)
+        rollback = rollback_model_role(
+            record,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+        )
+    except (OSError, ValueError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(rollback, indent=2, sort_keys=True))
+
+
 @models.command("rollback-custom-segmenter")
 @click.argument("transaction_id")
 @click.option(

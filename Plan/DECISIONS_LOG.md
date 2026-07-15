@@ -337,6 +337,39 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Require signed matrix-bound specialist champion transactions
+
+**Item(s) affected:** MF-P2-11.15, MF-P5-10.11, MF-P6-06.08, specialist
+hand/clothing champion promotion and rollback
+
+**Decision:** Remove the legacy direct role-swap path for `champion_hand` and
+`champion_clothing`. A specialist promotion now requires the complete signed aggregate
+matrix bundle, exact role/candidate/incumbent binding, current checkpoint/content/source/
+runtime/license identities, a promoted incumbent, a benchmarked candidate, and a passing
+smoke of the proposed registry before activation. Publish the role/lifecycle swap and a
+hash-sealed transaction history atomically under a registry lock. Permit rollback only from
+that unused sealed transaction, only when no intervening registry or role drift exists, and
+only after the restored incumbent passes its production smoke. Expose both directions as
+one-command CLI operations. The existing strict custom body-part transaction remains
+unchanged; connecting its mutation event to the aggregate matrix certificate remains open.
+
+**Why:** The prior hand/clothing helper could mutate production roles without the signed
+ten-role matrix prerequisite, transaction serialization, exact registry-history sealing, or
+tested restoration. That bypass contradicted Document 22. The replacement fails closed on
+bundle drift, identity substitution, smoke failure, concurrent promotion, history publication
+failure, replay, tampering, and intervening registry changes. This decision creates no winner
+and authorizes no live role change; real image-disjoint human-anchor results and a production
+promotion/rollback event are still required.
+
+**Administrative compatibility rebind:** `retraining_compatibility_v1` is rebound before
+any eligible retraining result from canonical SHA-256 `f02ac133...` to
+`5650b8f2e5b523032b37da98ac10cf0741ce5fe7dd99d7ce356042726ddc290c` solely because its
+frozen source identity includes `src/maskfactory/models/registry.py`, now SHA-256
+`d7f2382a0f757383103800adb7f73d25b053c8f4d9cb473fedf1a3cfc733de88`. No retraining
+rule, threshold, authority, eligible result, or decision changed.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Freeze the provider-neutral Mode A/Mode B workflow performance contract
 
 **Item(s) affected:** MF-P6-02.05, MF-P6-05.07, MF-P6-06.08, MF-P6-EXIT

@@ -46,6 +46,10 @@ OLLAMA_MODEL_NAMES = (
     "qwen2.5:7b-instruct",
 )
 SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
+SPECIALIST_CHAMPION_MATRIX_ROLES = {
+    "champion_hand": "hand_finger_segmentation",
+    "champion_clothing": "clothing_accessory_segmentation",
+}
 CHAMPION_HAND_CLASS_NAMES = (
     "background",
     "left_hand_base",
@@ -346,6 +350,60 @@ def production_bodypart_serving_smoke(
         "fixture": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
         "output_map_sha256": map_hash,
         "output_provenance_sha256": provenance_hash,
+    }
+
+
+def production_specialist_serving_smoke(
+    registry_path: Path,
+    models_root: Path,
+    role: str,
+    expected_key: str,
+) -> dict[str, Any]:
+    """Load a promoted specialist in its production slot and run fixed-image inference."""
+    if role not in SPECIALIST_CHAMPION_MATRIX_ROLES:
+        raise ModelRegistryError("production specialist smoke received an unsupported role")
+    contract = registry_resolution_smoke(registry_path, models_root, role, expected_key)
+    fixture = PROJECT_ROOT / "qa" / "fixtures" / "smoke" / "ultralytics_bus_adults.jpg"
+    if not fixture.is_file():
+        raise ModelRegistryError("production specialist smoke fixture is missing")
+    try:
+        import numpy as np
+        from PIL import Image
+
+        from ..serve.providers import ServingProviderError, load_production_mmseg_slot
+    except ImportError as exc:
+        raise ModelRegistryError(
+            f"production specialist smoke runtime is unavailable: {exc}"
+        ) from exc
+
+    try:
+        checkpoint = resolve_registered_role(
+            role, registry_path=Path(registry_path), models_root=Path(models_root)
+        )
+        slot = load_production_mmseg_slot(
+            role,
+            checkpoint,
+            registry_path=Path(registry_path),
+            models_root=Path(models_root),
+        )
+        image = np.asarray(Image.open(fixture).convert("RGB"))
+        label = next(name for name in slot.class_names if name != "background")
+        masks = slot(image, (label,))
+        mask = np.asarray(masks[label])
+        if mask.shape != image.shape[:2] or mask.dtype != np.bool_:
+            raise ModelRegistryError("production specialist smoke returned an invalid mask")
+        output_sha256 = hashlib.sha256(mask.astype(np.uint8).tobytes()).hexdigest()
+    except (OSError, ServingProviderError, StopIteration) as exc:
+        raise ModelRegistryError(f"production specialist smoke failed: {exc}") from exc
+    finally:
+        if "slot" in locals():
+            slot.close()
+    return {
+        **contract,
+        "smoke": "production_fixed_image_specialist_inference",
+        "fixture": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+        "requested_label": label,
+        "output_mask_sha256": output_sha256,
     }
 
 
@@ -929,71 +987,6 @@ def _safe_run_artifact(root: Path, value: Any, *, expected_parent: str | None = 
     return path
 
 
-def promote_model_role(
-    candidate_key: str,
-    role: str,
-    *,
-    registry_path: Path = DEFAULT_REGISTRY,
-    models_root: Path = DEFAULT_MODELS_ROOT,
-    history_path: Path | None = None,
-) -> dict[str, Any]:
-    """Atomically swap a verified challenger into a champion role and record rollback data."""
-    if not role.startswith("champion_"):
-        raise ModelRegistryError("promotion target must be a champion_* role")
-    if role == "champion_bodypart":
-        raise ModelRegistryError(
-            "champion_bodypart requires the strict custom-segmenter promotion transaction"
-        )
-    registry = _load_registry(registry_path)
-    candidate = next(
-        (item for item in registry["models"] if item.get("key") == candidate_key), None
-    )
-    if (
-        candidate is None
-        or candidate.get("managed") is True
-        or candidate.get("verified") is not True
-    ):
-        raise ModelRegistryError(
-            f"promotion candidate is not a verified checkpoint: {candidate_key}"
-        )
-    if candidate.get("lifecycle_state") != "benchmarked":
-        raise ModelRegistryError("promotion candidate lifecycle must be benchmarked")
-    resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
-    if role in SERVING_CHAMPION_ROLES:
-        _validate_serving_champion_metadata(candidate, role=role, models_root=models_root)
-    _validate_promotion_certificate(candidate, role=role)
-    incumbents = [item for item in registry["models"] if item.get("role") == role]
-    if len(incumbents) > 1:
-        raise ModelRegistryError(f"multiple incumbent models already claim {role}")
-    incumbent = incumbents[0] if incumbents else None
-    if incumbent is candidate:
-        raise ModelRegistryError(f"candidate already owns {role}")
-    if incumbent is not None and incumbent.get("lifecycle_state") != "promoted":
-        raise ModelRegistryError("incumbent champion lifecycle must be promoted")
-    candidate_previous_role = str(candidate["role"])
-    candidate_previous_lifecycle_state = str(candidate["lifecycle_state"])
-    candidate["role"] = role
-    candidate["lifecycle_state"] = "promoted"
-    incumbent_previous_lifecycle_state = None
-    if incumbent is not None:
-        incumbent_previous_lifecycle_state = str(incumbent["lifecycle_state"])
-        incumbent["role"] = candidate_previous_role
-        incumbent["lifecycle_state"] = "benchmarked"
-    record = {
-        "schema_version": "1.0.0",
-        "candidate_key": candidate_key,
-        "candidate_previous_role": candidate_previous_role,
-        "candidate_previous_lifecycle_state": candidate_previous_lifecycle_state,
-        "incumbent_key": incumbent.get("key") if incumbent else None,
-        "incumbent_previous_lifecycle_state": incumbent_previous_lifecycle_state,
-        "champion_role": role,
-    }
-    _atomic_json(registry_path, registry)
-    if history_path is not None:
-        _append_jsonl(Path(history_path), record)
-    return record
-
-
 def _validate_serving_champion_metadata(
     entry: dict[str, Any], *, role: str, models_root: Path
 ) -> None:
@@ -1111,23 +1104,469 @@ def _validate_promotion_certificate(entry: dict[str, Any], *, role: str) -> None
         raise ModelRegistryError("promotion benchmark certificate hash mismatch")
 
 
-def rollback_model_role(record: dict[str, Any], *, registry_path: Path = DEFAULT_REGISTRY) -> None:
-    """Reverse exactly one recorded promotion, refusing if roles changed meanwhile."""
-    registry = _load_registry(registry_path)
-    by_key = {str(item["key"]): item for item in registry["models"]}
+def _validate_specialist_transaction_record(record: dict[str, Any]) -> None:
+    schema_issues = validate_document(record, "specialist_champion_transaction")
+    if schema_issues:
+        detail = "; ".join(
+            f"{issue.pointer or '/'} [{issue.validator}] {issue.message}" for issue in schema_issues
+        )
+        raise ModelRegistryError(f"specialist transaction schema is invalid: {detail}")
+    required = {
+        "schema_version",
+        "action",
+        "transaction_kind",
+        "transaction_id",
+        "recorded_at",
+        "candidate_key",
+        "candidate_previous_role",
+        "candidate_previous_lifecycle_state",
+        "incumbent_key",
+        "incumbent_previous_role",
+        "incumbent_previous_lifecycle_state",
+        "champion_role",
+        "matrix_role",
+        "matrix_certificate_id",
+        "matrix_certificate_sha256",
+        "specialist_packet_sha256",
+        "benchmark_certificate_sha256",
+        "candidate_checkpoint_sha256",
+        "incumbent_checkpoint_sha256",
+        "registry_before_sha256",
+        "registry_after_sha256",
+        "serving_smoke",
+        "sha256",
+    }
+    if set(record) != required or record.get("schema_version") != "2.0.0":
+        raise ModelRegistryError("specialist transaction record is incomplete")
+    champion_role = record.get("champion_role")
+    if (
+        record.get("action") != "promote"
+        or record.get("transaction_kind") != "specialist_champion"
+        or champion_role not in SPECIALIST_CHAMPION_MATRIX_ROLES
+        or record.get("matrix_role") != SPECIALIST_CHAMPION_MATRIX_ROLES.get(champion_role)
+        or record.get("candidate_previous_lifecycle_state") != "benchmarked"
+        or record.get("incumbent_previous_role") != champion_role
+        or record.get("incumbent_previous_lifecycle_state") != "promoted"
+        or not isinstance(record.get("transaction_id"), str)
+        or not re.fullmatch(r"[a-f0-9]{32}", record["transaction_id"])
+    ):
+        raise ModelRegistryError("specialist transaction record scope is invalid")
+    if (
+        not isinstance(record.get("candidate_key"), str)
+        or not record["candidate_key"]
+        or not isinstance(record.get("incumbent_key"), str)
+        or not record["incumbent_key"]
+        or record["candidate_key"] == record["incumbent_key"]
+        or not isinstance(record.get("candidate_previous_role"), str)
+        or not record["candidate_previous_role"]
+        or record["candidate_previous_role"] == champion_role
+    ):
+        raise ModelRegistryError("specialist transaction providers are invalid")
+    if not isinstance(record.get("matrix_certificate_id"), str) or not re.fullmatch(
+        r"[a-f0-9]{24}", record["matrix_certificate_id"]
+    ):
+        raise ModelRegistryError("specialist transaction matrix certificate id is invalid")
+    for field in (
+        "matrix_certificate_sha256",
+        "specialist_packet_sha256",
+        "benchmark_certificate_sha256",
+        "candidate_checkpoint_sha256",
+        "incumbent_checkpoint_sha256",
+        "registry_before_sha256",
+        "registry_after_sha256",
+    ):
+        if not isinstance(record.get(field), str) or not re.fullmatch(
+            r"[a-f0-9]{64}", record[field]
+        ):
+            raise ModelRegistryError(f"specialist transaction {field} is invalid")
+    smoke = record.get("serving_smoke")
+    if (
+        not isinstance(smoke, dict)
+        or smoke.get("result") != "pass"
+        or smoke.get("role") != champion_role
+        or smoke.get("model_key") != record["candidate_key"]
+    ):
+        raise ModelRegistryError("specialist transaction serving smoke is invalid")
+    try:
+        recorded_at = datetime.fromisoformat(str(record["recorded_at"]).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ModelRegistryError("specialist transaction timestamp is invalid") from exc
+    if recorded_at.tzinfo is None:
+        raise ModelRegistryError("specialist transaction timestamp lacks timezone")
+    payload = {key: value for key, value in record.items() if key != "sha256"}
+    if record["sha256"] != _canonical_sha256(payload):
+        raise ModelRegistryError("specialist transaction record hash mismatch")
+
+
+def _validate_specialist_rollback_record(record: dict[str, Any]) -> None:
+    schema_issues = validate_document(record, "specialist_champion_rollback")
+    if schema_issues:
+        detail = "; ".join(
+            f"{issue.pointer or '/'} [{issue.validator}] {issue.message}" for issue in schema_issues
+        )
+        raise ModelRegistryError(f"specialist rollback schema is invalid: {detail}")
+    required = {
+        "schema_version",
+        "action",
+        "transaction_kind",
+        "transaction_id",
+        "promotion_transaction_id",
+        "recorded_at",
+        "candidate_key",
+        "incumbent_key",
+        "champion_role",
+        "registry_before_sha256",
+        "registry_after_sha256",
+        "serving_smoke",
+        "sha256",
+    }
+    if set(record) != required or record.get("schema_version") != "2.0.0":
+        raise ModelRegistryError("specialist rollback record is incomplete")
+    if (
+        record.get("action") != "rollback"
+        or record.get("transaction_kind") != "specialist_champion"
+        or record.get("champion_role") not in SPECIALIST_CHAMPION_MATRIX_ROLES
+        or not isinstance(record.get("transaction_id"), str)
+        or not re.fullmatch(r"[a-f0-9]{32}", record["transaction_id"])
+        or not isinstance(record.get("promotion_transaction_id"), str)
+        or not re.fullmatch(r"[a-f0-9]{32}", record["promotion_transaction_id"])
+        or record["transaction_id"] == record["promotion_transaction_id"]
+        or not isinstance(record.get("candidate_key"), str)
+        or not record["candidate_key"]
+        or not isinstance(record.get("incumbent_key"), str)
+        or not record["incumbent_key"]
+        or record["candidate_key"] == record["incumbent_key"]
+    ):
+        raise ModelRegistryError("specialist rollback record scope is invalid")
+    for field in ("registry_before_sha256", "registry_after_sha256"):
+        if not isinstance(record.get(field), str) or not re.fullmatch(
+            r"[a-f0-9]{64}", record[field]
+        ):
+            raise ModelRegistryError(f"specialist rollback {field} is invalid")
+    smoke = record.get("serving_smoke")
+    if (
+        not isinstance(smoke, dict)
+        or smoke.get("result") != "pass"
+        or smoke.get("role") != record["champion_role"]
+        or smoke.get("model_key") != record["incumbent_key"]
+    ):
+        raise ModelRegistryError("specialist rollback serving smoke is invalid")
+    try:
+        recorded_at = datetime.fromisoformat(str(record["recorded_at"]).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ModelRegistryError("specialist rollback timestamp is invalid") from exc
+    if recorded_at.tzinfo is None:
+        raise ModelRegistryError("specialist rollback timestamp lacks timezone")
+    payload = {key: value for key, value in record.items() if key != "sha256"}
+    if record["sha256"] != _canonical_sha256(payload):
+        raise ModelRegistryError("specialist rollback record hash mismatch")
+
+
+def _promote_specialist_role_unlocked(
+    candidate_key: str,
+    role: str,
+    *,
+    matrix_bundle_root: Path,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+    smoke_runner: ServingSmokeRunner,
+    promoted_at: str | None,
+) -> dict[str, Any]:
+    from ..providers.matrix_promotion import (
+        MatrixPromotionCertificateError,
+        load_and_verify_matrix_promotion_bundle,
+    )
+
+    matrix_role = SPECIALIST_CHAMPION_MATRIX_ROLES.get(role)
+    if matrix_role is None:
+        raise ModelRegistryError("strict specialist promotion supports hand or clothing champions")
+    try:
+        bundle = load_and_verify_matrix_promotion_bundle(matrix_bundle_root)
+    except MatrixPromotionCertificateError as exc:
+        raise ModelRegistryError(str(exc)) from exc
+    certificate = bundle["certificate"]
+    packet = bundle["specialist_packets"][matrix_role]
+    bindings = [row for row in certificate["role_bindings"] if row["role"] == matrix_role]
+    if len(bindings) != 1:
+        raise ModelRegistryError(
+            "matrix certificate specialist role binding is missing or ambiguous"
+        )
+    binding = bindings[0]
+
+    registry_path = Path(registry_path)
+    models_root = Path(models_root)
+    history_path = Path(history_path)
+    before = _load_registry(registry_path)
+    proposed = copy.deepcopy(before)
+    by_key = {str(entry["key"]): entry for entry in proposed["models"]}
+    candidate = by_key.get(candidate_key)
+    if (
+        candidate is None
+        or candidate.get("managed") is True
+        or candidate.get("verified") is not True
+        or candidate.get("lifecycle_state") != "benchmarked"
+    ):
+        raise ModelRegistryError("specialist promotion requires a verified benchmarked candidate")
+    if candidate.get("role") == role:
+        raise ModelRegistryError(f"candidate already owns {role}")
+    incumbents = [entry for entry in proposed["models"] if entry.get("role") == role]
+    if len(incumbents) != 1 or incumbents[0].get("lifecycle_state") != "promoted":
+        raise ModelRegistryError("specialist promotion requires exactly one promoted incumbent")
+    incumbent = incumbents[0]
+    if (
+        packet.get("candidate_key") != candidate_key
+        or binding.get("candidate_key") != candidate_key
+        or packet.get("rollback_evidence", {}).get("incumbent_provider") != incumbent.get("key")
+        or binding.get("incumbent_provider") != incumbent.get("key")
+        or binding.get("prerequisite_sha256") != packet.get("sha256")
+    ):
+        raise ModelRegistryError("matrix promotion candidate or incumbent binding is stale")
+    identities = packet.get("identity_hashes", {})
+    if identities.get("checkpoint_sha256") != candidate.get("sha256"):
+        raise ModelRegistryError("specialist packet checkpoint differs from registry candidate")
+    artifact_hashes = candidate.get("artifact_hashes")
+    if not isinstance(artifact_hashes, dict) or any(
+        artifact_hashes.get(field) != identities.get(field)
+        for field in (
+            "source_tree_sha256",
+            "runtime_lock_sha256",
+            "license_evidence_sha256",
+            "content_decision_sha256",
+        )
+    ):
+        raise ModelRegistryError("specialist registry artifact hashes differ from signed packet")
+    if candidate.get("content_compatibility") != packet.get("content_compatibility"):
+        raise ModelRegistryError("specialist registry content decision differs from signed packet")
+    resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
+    _validate_serving_champion_metadata(candidate, role=role, models_root=models_root)
+    _validate_promotion_certificate(candidate, role=role)
+    benchmark_certificate = candidate["benchmark_certificate"]
+
+    candidate_previous_role = str(candidate["role"])
+    candidate["role"] = role
+    candidate["lifecycle_state"] = "promoted"
+    incumbent["role"] = candidate_previous_role
+    incumbent["lifecycle_state"] = "benchmarked"
+    smoke = _smoke_proposed_registry(
+        proposed,
+        registry_path=registry_path,
+        models_root=models_root,
+        role=role,
+        expected_key=candidate_key,
+        smoke_runner=smoke_runner,
+    )
+    timestamp = promoted_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
+    record: dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "action": "promote",
+        "transaction_kind": "specialist_champion",
+        "transaction_id": uuid.uuid4().hex,
+        "recorded_at": timestamp,
+        "candidate_key": candidate_key,
+        "candidate_previous_role": candidate_previous_role,
+        "candidate_previous_lifecycle_state": "benchmarked",
+        "incumbent_key": str(incumbent["key"]),
+        "incumbent_previous_role": role,
+        "incumbent_previous_lifecycle_state": "promoted",
+        "champion_role": role,
+        "matrix_role": matrix_role,
+        "matrix_certificate_id": str(certificate["certificate_id"]),
+        "matrix_certificate_sha256": str(certificate["certificate_sha256"]),
+        "specialist_packet_sha256": str(packet["sha256"]),
+        "benchmark_certificate_sha256": str(benchmark_certificate["sha256"]),
+        "candidate_checkpoint_sha256": str(candidate["sha256"]),
+        "incumbent_checkpoint_sha256": str(incumbent["sha256"]),
+        "registry_before_sha256": _registry_sha256(before),
+        "registry_after_sha256": _registry_sha256(proposed),
+        "serving_smoke": smoke,
+    }
+    record["sha256"] = _canonical_sha256(record)
+    _validate_specialist_transaction_record(record)
+    _atomic_json(registry_path, proposed)
+    try:
+        _append_jsonl(history_path, record)
+    except Exception as exc:
+        try:
+            _atomic_json(registry_path, before)
+        except Exception as restore_exc:
+            raise ModelRegistryError(
+                "specialist promotion history failed and registry restoration also failed: "
+                f"history={exc}; restore={restore_exc}"
+            ) from restore_exc
+        raise ModelRegistryError(
+            f"specialist promotion history failed; registry restored: {exc}"
+        ) from exc
+    return record
+
+
+def promote_model_role(
+    candidate_key: str,
+    role: str,
+    *,
+    matrix_bundle_root: Path | None = None,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    promoted_at: str | None = None,
+) -> dict[str, Any]:
+    """Transactionally promote a signed matrix-bound hand or clothing specialist."""
+    if role == "champion_bodypart":
+        raise ModelRegistryError(
+            "champion_bodypart requires the strict custom-segmenter promotion transaction"
+        )
+    if matrix_bundle_root is None:
+        raise ModelRegistryError("specialist promotion requires a verified matrix bundle")
+    with _registry_write_lock(Path(registry_path)):
+        return _promote_specialist_role_unlocked(
+            candidate_key,
+            role,
+            matrix_bundle_root=matrix_bundle_root,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+            smoke_runner=smoke_runner or production_specialist_serving_smoke,
+            promoted_at=promoted_at,
+        )
+
+
+def _rollback_specialist_role_unlocked(
+    record: dict[str, Any],
+    *,
+    registry_path: Path,
+    models_root: Path,
+    history_path: Path,
+    smoke_runner: ServingSmokeRunner,
+    rolled_back_at: str | None,
+) -> dict[str, Any]:
+    _validate_specialist_transaction_record(record)
+    registry_path = Path(registry_path)
+    before = _load_registry(registry_path)
+    if _registry_sha256(before) != record["registry_after_sha256"]:
+        raise ModelRegistryError("cannot rollback specialist: registry changed after promotion")
+    proposed = copy.deepcopy(before)
+    by_key = {str(entry["key"]): entry for entry in proposed["models"]}
     candidate = by_key.get(str(record["candidate_key"]))
-    if candidate is None or candidate.get("role") != record["champion_role"]:
-        raise ModelRegistryError("cannot rollback: candidate no longer owns the recorded role")
-    incumbent_key = record.get("incumbent_key")
-    incumbent = by_key.get(str(incumbent_key)) if incumbent_key else None
-    if incumbent is not None and incumbent.get("role") != record["candidate_previous_role"]:
-        raise ModelRegistryError("cannot rollback: incumbent role changed after promotion")
+    incumbent = by_key.get(str(record["incumbent_key"]))
+    if candidate is None or incumbent is None:
+        raise ModelRegistryError("cannot rollback specialist: recorded provider is missing")
+    if (
+        candidate.get("role") != record["champion_role"]
+        or candidate.get("lifecycle_state") != "promoted"
+        or incumbent.get("role") != record["candidate_previous_role"]
+        or incumbent.get("lifecycle_state") != "benchmarked"
+    ):
+        raise ModelRegistryError("cannot rollback specialist: role or lifecycle changed")
     candidate["role"] = record["candidate_previous_role"]
-    candidate["lifecycle_state"] = record.get("candidate_previous_lifecycle_state", "benchmarked")
-    if incumbent is not None:
-        incumbent["role"] = record["champion_role"]
-        incumbent["lifecycle_state"] = record.get("incumbent_previous_lifecycle_state", "promoted")
-    _atomic_json(registry_path, registry)
+    candidate["lifecycle_state"] = record["candidate_previous_lifecycle_state"]
+    incumbent["role"] = record["incumbent_previous_role"]
+    incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
+    if _registry_sha256(proposed) != record["registry_before_sha256"]:
+        raise ModelRegistryError(
+            "cannot rollback specialist: original registry is not reproducible"
+        )
+    smoke = _smoke_proposed_registry(
+        proposed,
+        registry_path=registry_path,
+        models_root=Path(models_root),
+        role=str(record["champion_role"]),
+        expected_key=str(record["incumbent_key"]),
+        smoke_runner=smoke_runner,
+    )
+    rollback: dict[str, Any] = {
+        "schema_version": "2.0.0",
+        "action": "rollback",
+        "transaction_kind": "specialist_champion",
+        "transaction_id": uuid.uuid4().hex,
+        "promotion_transaction_id": record["transaction_id"],
+        "recorded_at": rolled_back_at or datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        "candidate_key": record["candidate_key"],
+        "incumbent_key": record["incumbent_key"],
+        "champion_role": record["champion_role"],
+        "registry_before_sha256": record["registry_after_sha256"],
+        "registry_after_sha256": record["registry_before_sha256"],
+        "serving_smoke": smoke,
+    }
+    rollback["sha256"] = _canonical_sha256(rollback)
+    _validate_specialist_rollback_record(rollback)
+    _atomic_json(registry_path, proposed)
+    try:
+        _append_jsonl(Path(history_path), rollback)
+    except Exception as exc:
+        try:
+            _atomic_json(registry_path, before)
+        except Exception as restore_exc:
+            raise ModelRegistryError(
+                "specialist rollback history failed and promoted registry restoration also failed: "
+                f"history={exc}; restore={restore_exc}"
+            ) from restore_exc
+        raise ModelRegistryError(
+            f"specialist rollback history failed; promoted registry restored: {exc}"
+        ) from exc
+    return rollback
+
+
+def rollback_model_role(
+    record: dict[str, Any],
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    models_root: Path = DEFAULT_MODELS_ROOT,
+    history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
+    smoke_runner: ServingSmokeRunner | None = None,
+    rolled_back_at: str | None = None,
+) -> dict[str, Any]:
+    """Rollback one strict specialist transaction with smoke-before-activation."""
+    with _registry_write_lock(Path(registry_path)):
+        return _rollback_specialist_role_unlocked(
+            record,
+            registry_path=registry_path,
+            models_root=models_root,
+            history_path=history_path,
+            smoke_runner=smoke_runner or production_specialist_serving_smoke,
+            rolled_back_at=rolled_back_at,
+        )
+
+
+def load_specialist_promotion_transaction(
+    transaction_id: str, *, history_path: Path
+) -> dict[str, Any]:
+    """Load one unused strict specialist promotion from append-only history."""
+    if not transaction_id or not re.fullmatch(r"[a-f0-9]{32}", transaction_id):
+        raise ModelRegistryError("specialist promotion transaction id is invalid")
+    records: list[dict[str, Any]] = []
+    for number, line in enumerate(Path(history_path).read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ModelRegistryError(f"invalid champion history row {number}: {exc}") from exc
+        if isinstance(value, dict):
+            records.append(value)
+    matches = [
+        value
+        for value in records
+        if value.get("action") == "promote"
+        and value.get("transaction_kind") == "specialist_champion"
+        and value.get("transaction_id") == transaction_id
+    ]
+    if len(matches) != 1:
+        raise ModelRegistryError("specialist promotion transaction id is missing or ambiguous")
+    rollback_matches = [
+        value
+        for value in records
+        if value.get("action") == "rollback"
+        and value.get("transaction_kind") == "specialist_champion"
+        and value.get("promotion_transaction_id") == transaction_id
+    ]
+    for rollback in rollback_matches:
+        _validate_specialist_rollback_record(rollback)
+    if rollback_matches:
+        raise ModelRegistryError("specialist promotion transaction was already rolled back")
+    record = matches[0]
+    _validate_specialist_transaction_record(record)
+    return record
 
 
 def _promote_custom_segmenter_role_unlocked(
@@ -1508,8 +1947,19 @@ def champion_status(
 
 
 def _append_jsonl(path: Path, document: dict[str, Any]) -> None:
+    """Publish one append-only row by atomically replacing the complete preserved history."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8", newline="\n") as stream:
-        stream.write(json.dumps(document, sort_keys=True, separators=(",", ":")) + "\n")
-        stream.flush()
-        os.fsync(stream.fileno())
+    existing = path.read_bytes() if path.is_file() else b""
+    if existing and not existing.endswith(b"\n"):
+        raise ModelRegistryError("champion history is not newline terminated")
+    row = json.dumps(document, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+    handle, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    try:
+        with os.fdopen(handle, "wb") as stream:
+            stream.write(existing)
+            stream.write(row)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)

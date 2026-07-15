@@ -9,15 +9,13 @@ from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
-from maskfactory.models.ontology_contract import (
-    V1_ONTOLOGY_VERSION,
-    class_names_sha256,
-)
+from maskfactory.models.ontology_contract import V1_ONTOLOGY_VERSION
 from maskfactory.models.registry import (
     CHAMPION_HAND_CLASS_NAMES,
     ModelFetchError,
     ModelRegistryError,
-    champion_status,
+    _validate_promotion_certificate,
+    _validate_serving_champion_metadata,
     fetch_models,
     load_registered_model,
     promote_model_role,
@@ -25,8 +23,6 @@ from maskfactory.models.registry import (
     register_smoke_runner,
     resolve_registered_managed_model,
     resolve_registered_model,
-    resolve_registered_role,
-    rollback_model_role,
     verify_registered_model_smokes,
 )
 
@@ -340,80 +336,16 @@ def test_models_fetch_cli_requires_exactly_key_or_all(tmp_path: Path):
     assert "provide exactly one model KEY or --all" in both.output
 
 
-def test_champion_role_promotion_and_single_edit_rollback(tmp_path: Path) -> None:
-    _, _, catalog = _fixture(tmp_path)
-    models_root = tmp_path / "models"
-    registry = models_root / "registry.json"
-    register_smoke_runner("fixture_image_inference", _smoke)
-    fetch_models(
-        ["fixture"],
-        catalog_path=catalog,
-        registry_path=registry,
-        models_root=models_root,
-    )
-    document = json.loads(registry.read_text())
-    incumbent = document["models"][0]
-    incumbent["role"] = "champion_hand"
-    incumbent["lifecycle_state"] = "promoted"
-    incumbent["content_compatibility"] = dict(_CONTENT_COMPATIBILITY)
-    incumbent["license_review"] = {"status": "not_required"}
-    incumbent["license"] = "MaskFactory-internal"
-    challenger = {**incumbent, "key": "challenger", "role": "challenger_hand"}
-    config = models_root / "challenger_inference.py"
-    config.write_text("model = dict(type='fixture')\n", encoding="utf-8")
-    challenger.update(
-        {
-            "lifecycle_state": "benchmarked",
-            "content_compatibility": dict(_CONTENT_COMPATIBILITY),
-            "license": "MaskFactory-internal",
-            "license_review": {"status": "not_required"},
-            "registered_at": "2026-07-14T00:00:00Z",
-            "training_run": "pytest-run",
-            "dataset_ref": "pytest-dataset",
-            "inference_config": "models/challenger_inference.py",
-            "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
-            "ontology_version": V1_ONTOLOGY_VERSION,
-            "class_names": list(CHAMPION_HAND_CLASS_NAMES),
-            "class_names_sha256": class_names_sha256(list(CHAMPION_HAND_CLASS_NAMES)),
-            "artifact_hashes": {
-                "checkpoint_sha256": challenger["sha256"],
-                "inference_config_sha256": hashlib.sha256(config.read_bytes()).hexdigest(),
-            },
-            "benchmark_certificate": _benchmark_certificate("champion_hand"),
-        }
-    )
-    document["models"].append(challenger)
-    registry.write_text(json.dumps(document), encoding="utf-8")
-    history = tmp_path / "champion_history.jsonl"
-    record = promote_model_role(
-        "challenger",
-        "champion_hand",
-        registry_path=registry,
-        models_root=models_root,
-        history_path=history,
-    )
-    promoted = json.loads(registry.read_text())
-    roles = {item["key"]: item["role"] for item in promoted["models"]}
-    assert roles == {"fixture": "challenger_hand", "challenger": "champion_hand"}
-    assert resolve_registered_role(
-        "champion_hand", registry_path=registry, models_root=models_root
-    ).is_file()
-    assert json.loads(history.read_text())["incumbent_key"] == "fixture"
-    visible = champion_status(registry_path=registry, history_path=history)
-    assert visible["champions"]["champion_hand"]["key"] == "challenger"
-    assert len(visible["history"]) == 1
-    cli = CliRunner().invoke(
-        main,
-        ["models", "champions", "--registry", str(registry), "--history", str(history)],
-    )
-    assert cli.exit_code == 0, cli.output
-    assert json.loads(cli.output)["champions"]["champion_hand"]["key"] == "challenger"
-    rollback_model_role(record, registry_path=registry)
-    rolled_back = json.loads(registry.read_text())
-    assert {item["key"]: item["role"] for item in rolled_back["models"]} == {
-        "fixture": "champion_hand",
-        "challenger": "challenger_hand",
-    }
+def test_legacy_specialist_promotion_cannot_bypass_signed_matrix_bundle(tmp_path: Path) -> None:
+    registry = tmp_path / "registry.json"
+    registry.write_text(json.dumps(_registry_document([])), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="verified matrix bundle"):
+        promote_model_role(
+            "candidate",
+            "champion_hand",
+            registry_path=registry,
+            models_root=tmp_path,
+        )
 
 
 def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -> None:
@@ -441,11 +373,8 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
     registry = tmp_path / "registry.json"
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
     with pytest.raises(ModelRegistryError, match="inference_config hash mismatch"):
-        promote_model_role(
-            "candidate",
-            "champion_clothing",
-            registry_path=registry,
-            models_root=models_root,
+        _validate_serving_champion_metadata(
+            entry, role="champion_clothing", models_root=models_root
         )
     assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_clothing"
 
@@ -453,11 +382,8 @@ def test_serving_champion_promotion_refuses_unusable_artifacts(tmp_path: Path) -
     entry["class_names"] = ["background", "hair"]
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
     with pytest.raises(ModelRegistryError, match="belongs to part, expected material"):
-        promote_model_role(
-            "candidate",
-            "champion_clothing",
-            registry_path=registry,
-            models_root=models_root,
+        _validate_serving_champion_metadata(
+            entry, role="champion_clothing", models_root=models_root
         )
 
 
@@ -499,15 +425,14 @@ def test_champion_hand_promotion_accepts_only_exact_14_class_crop_contract(
     )
     registry = tmp_path / "registry.json"
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
-    promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
-    assert json.loads(registry.read_text())["models"][0]["role"] == "champion_hand"
+    _validate_serving_champion_metadata(entry, role="champion_hand", models_root=models_root)
 
     entry["class_names"] = list(CHAMPION_HAND_CLASS_NAMES[:-1])
     entry["role"] = "challenger_hand"
     entry["lifecycle_state"] = "benchmarked"
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
     with pytest.raises(ModelRegistryError, match="14-class crop contract"):
-        promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+        _validate_serving_champion_metadata(entry, role="champion_hand", models_root=models_root)
     assert json.loads(registry.read_text())["models"][0]["role"] == "challenger_hand"
 
 
@@ -536,7 +461,7 @@ def test_promotion_rejects_hard_bucket_regression(tmp_path: Path) -> None:
     registry = tmp_path / "registry.json"
     registry.write_text(json.dumps(_registry_document([entry])), encoding="utf-8")
     with pytest.raises(ModelRegistryError, match="hard-bucket non-inferiority failed"):
-        promote_model_role("hand", "champion_hand", registry_path=registry, models_root=models_root)
+        _validate_promotion_certificate(entry, role="champion_hand")
 
 
 def test_register_ollama_models_cross_checks_full_and_list_digests(tmp_path: Path):

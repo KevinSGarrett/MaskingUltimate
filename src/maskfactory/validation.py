@@ -71,6 +71,8 @@ SCHEMA_NAMES = frozenset(
         "serving_workflow_execution_input",
         "serving_workflow_preflight_report",
         "specialist_benchmark_margins",
+        "specialist_champion_rollback",
+        "specialist_champion_transaction",
         "specialist_evidence_package",
     }
 )

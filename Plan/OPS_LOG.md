@@ -5627,3 +5627,24 @@ Adult-content boundary:            the regression fixture explicitly uses a gove
 Verification:                      7 focused preflight tests, 120 affected serving/ComfyUI/provider/governance/currency tests, and all 1,623 repository tests pass; Ruff, Black, JSON parsing, schema validation, and diff check pass
 Current readiness:                 false until promoted body-part/hand/clothing champions and distinct tested rollback providers exist; official SAM3.1 terms/token access is also still absent
 Evidence file:                     `qa/live_verification/provider_neutral_workflow_preflight_20260715.json`
+
+## 2026-07-15 18:55 UTC - Matrix-bound specialist champion transactions enforced
+
+**Result:** MF-P2-11.15 advances to 85% and MF-P5-10.11 remains honestly at 90%;
+the hand/clothing mutation bypass is gone, and both specialist champion roles now use a
+signed, serialized, smoke-first promotion plus exact one-command rollback transaction.
+
+Matrix prerequisite:               reverify the fixed complete bundle, Ed25519 certificate, matrix report/observations/manifest, all nine exact specialist packets, custom certificate/identities, and role bindings inside the locked transaction
+Promotion:                         benchmarked candidate and exactly one promoted incumbent; exact role/checkpoint/config/class/content/source/runtime/license/certificate identities; proposed-registry production smoke before atomic activation
+History:                           v2 hash-sealed transaction binds matrix certificate, role packet, benchmark certificate, both checkpoints, before/after registries, and smoke evidence; incomplete history publication restores the registry
+Rollback:                          refuses tampering, reuse, ambiguity, lifecycle/role drift, or intervening registry changes; restored incumbent must smoke before activation and must reconstruct the exact pre-promotion registry hash
+CLI:                               `maskfactory models promote-specialist ... --matrix-bundle ...`; `maskfactory models rollback-specialist <transaction-id>`
+Concurrency:                       two simultaneous attempts serialize to one promotion and one history record
+Retraining policy:                 administrative pre-result source rebind only, canonical `5650b8f2...`; rules, thresholds, authority, and results unchanged
+Currency review:                   archived `b83bb5c7a27da05ea5d71aa0`; current signed review `1cb8f3fc9c0d2725870beb2a` verifies against current inputs and honestly remains FAIL on missing real role certificates and distinct tested rollback providers
+Verification:                      6 specialist transaction, 2 new matrix-bundle, 292 affected integration, and complete repository 1,631/1,631 tests pass; Ruff, targeted Black, schemas, and diff check pass
+Live machine:                      Docker 29.4.3 and Ubuntu-22.04 healthy; CVAT 2.24, SAM2 Nuclio, CUDA, all 14 model smokes, WSL backing store/round-trip, Ollama, PNG, SQLite, and GPU lock pass; doctor `PASS=11 WARN=1 FAIL=0`
+Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Authority withheld:                no real human-anchor result, winner, signed production promotion bundle, registry mutation, serving change, mask, truth, or gold authority is claimed
+Remaining work:                    real role-specific results and winner; production-event signed aggregate certificate; observed live promotion/rollback; aggregate matrix binding for the custom body-part mutation and interactive-SAM rollback path
+Evidence:                          `qa/live_verification/specialist_champion_transaction_contract_20260715.json`

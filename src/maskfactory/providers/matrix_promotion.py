@@ -383,6 +383,66 @@ def verify_matrix_promotion_certificate(
     }
 
 
+def load_and_verify_matrix_promotion_bundle(bundle_root: Path) -> dict[str, Any]:
+    """Load the fixed promotion-event bundle layout and recompute every signed input."""
+    root = Path(bundle_root).resolve()
+    if not root.is_dir():
+        raise MatrixPromotionCertificateError(f"matrix promotion bundle is missing: {root}")
+
+    def load_object(relative: str) -> dict[str, Any]:
+        path = root / relative
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise MatrixPromotionCertificateError(
+                f"matrix promotion bundle artifact is unreadable: {relative}: {exc}"
+            ) from exc
+        if not isinstance(value, dict):
+            raise MatrixPromotionCertificateError(
+                f"matrix promotion bundle artifact must be an object: {relative}"
+            )
+        return value
+
+    packet_root = root / "specialist_packets"
+    expected_packet_names = {f"{role}.json" for role in SPECIALIST_ROLES}
+    if not packet_root.is_dir():
+        raise MatrixPromotionCertificateError(
+            "matrix promotion specialist packet directory is missing"
+        )
+    observed_packet_names = {path.name for path in packet_root.glob("*.json") if path.is_file()}
+    if observed_packet_names != expected_packet_names:
+        raise MatrixPromotionCertificateError(
+            "matrix promotion specialist packet filenames are incomplete or unexpected"
+        )
+    specialist_packets = {
+        role: load_object(f"specialist_packets/{role}.json") for role in sorted(SPECIALIST_ROLES)
+    }
+    certificate = load_object("certificate.json")
+    matrix_report = load_object("matrix_report.json")
+    matrix_observations = load_object("matrix_observations.json")
+    matrix_manifest = load_object("matrix_manifest.json")
+    custom_certificate = load_object("custom_segmenter_certificate.json")
+    custom_identities = load_object("custom_segmenter_identities.json")
+    role_bindings = load_object("role_matrix_bindings.json")
+    summary = verify_matrix_promotion_certificate(
+        certificate,
+        public_key_path=root / "public_key.pem",
+        matrix_report=matrix_report,
+        matrix_observations=matrix_observations,
+        matrix_manifest=matrix_manifest,
+        specialist_packets=specialist_packets,
+        custom_segmenter_certificate=custom_certificate,
+        custom_segmenter_expected_identity_hashes=custom_identities,
+        role_matrix_bindings=role_bindings,
+    )
+    return {
+        "certificate": certificate,
+        "summary": summary,
+        "specialist_packets": specialist_packets,
+        "bundle_root": str(root),
+    }
+
+
 __all__ = [
     "CERTIFICATE_AUTHORITY",
     "CUSTOM_SEGMENTER_ROLE",
@@ -390,5 +450,6 @@ __all__ = [
     "MatrixPromotionCertificateError",
     "build_matrix_promotion_certificate",
     "generate_matrix_promotion_signing_key",
+    "load_and_verify_matrix_promotion_bundle",
     "verify_matrix_promotion_certificate",
 ]

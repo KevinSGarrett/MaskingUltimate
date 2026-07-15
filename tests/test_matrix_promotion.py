@@ -19,6 +19,7 @@ from maskfactory.providers.matrix_promotion import (
     MatrixPromotionCertificateError,
     build_matrix_promotion_certificate,
     generate_matrix_promotion_signing_key,
+    load_and_verify_matrix_promotion_bundle,
     verify_matrix_promotion_certificate,
 )
 from maskfactory.providers.provider_matrix import canonical_sha256
@@ -158,6 +159,27 @@ def _verify(certificate: dict, inputs: dict) -> dict:
     return verify_matrix_promotion_certificate(certificate, **arguments)
 
 
+def _bundle(tmp_path: Path, inputs: dict, certificate: dict) -> Path:
+    root = tmp_path / "promotion_bundle"
+    packet_root = root / "specialist_packets"
+    packet_root.mkdir(parents=True)
+    artifacts = {
+        "certificate.json": certificate,
+        "matrix_report.json": inputs["matrix_report"],
+        "matrix_observations.json": inputs["matrix_observations"],
+        "matrix_manifest.json": inputs["matrix_manifest"],
+        "custom_segmenter_certificate.json": inputs["custom_segmenter_certificate"],
+        "custom_segmenter_identities.json": inputs["custom_segmenter_expected_identity_hashes"],
+        "role_matrix_bindings.json": inputs["role_matrix_bindings"],
+    }
+    for name, value in artifacts.items():
+        (root / name).write_text(json.dumps(value), encoding="utf-8")
+    for role, packet in inputs["specialist_packets"].items():
+        (packet_root / f"{role}.json").write_text(json.dumps(packet), encoding="utf-8")
+    (root / "public_key.pem").write_bytes(inputs["public_key_path"].read_bytes())
+    return root
+
+
 def test_valid_certificate_binds_all_roles_but_grants_no_authority(tmp_path: Path) -> None:
     inputs = _fixture(tmp_path)
     certificate = _build(inputs)
@@ -171,6 +193,34 @@ def test_valid_certificate_binds_all_roles_but_grants_no_authority(tmp_path: Pat
     assert len({row["matrix_cell_id"] for row in certificate["role_bindings"]}) == 10
     assert summary["authority"] == CERTIFICATE_AUTHORITY
     assert "no_role_promotion_serving_mask_or_gold_authority" in certificate["authority"]
+
+
+def test_fixed_bundle_layout_recomputes_signature_and_rejects_packet_drift(
+    tmp_path: Path,
+) -> None:
+    inputs = _fixture(tmp_path)
+    certificate = _build(inputs)
+    bundle = _bundle(tmp_path, inputs, certificate)
+    loaded = load_and_verify_matrix_promotion_bundle(bundle)
+    assert loaded["summary"]["certificate_sha256"] == certificate["certificate_sha256"]
+    assert set(loaded["specialist_packets"]) == set(SPECIALIST_ROLES)
+
+    packet = bundle / "specialist_packets" / f"{sorted(SPECIALIST_ROLES)[0]}.json"
+    document = json.loads(packet.read_text(encoding="utf-8"))
+    document["identity_hashes"]["checkpoint_sha256"] = "0" * 64
+    packet.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(MatrixPromotionCertificateError):
+        load_and_verify_matrix_promotion_bundle(bundle)
+
+
+def test_fixed_bundle_layout_rejects_missing_or_unexpected_packet(tmp_path: Path) -> None:
+    inputs = _fixture(tmp_path)
+    bundle = _bundle(tmp_path, inputs, _build(inputs))
+    packet_root = bundle / "specialist_packets"
+    next(packet_root.glob("*.json")).unlink()
+    (packet_root / "unexpected.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(MatrixPromotionCertificateError, match="filenames"):
+        load_and_verify_matrix_promotion_bundle(bundle)
 
 
 def test_missing_role_duplicate_cell_and_candidate_rebinding_fail_closed(tmp_path: Path) -> None:

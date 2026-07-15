@@ -5094,3 +5094,21 @@ Signed refresh:                     current review `a64c662434b74be29a7a48f0`, S
 Strict boundary:                    require-pass still exits 1 only for `benchmark_certificate_missing`, `rollback_evidence_missing`, `rollback_provider_not_distinct`, and aggregate `currency_review_not_passing`
 Verification:                       focused currency suite passed 33/33; complete repository suite passed 1,224/1,224; repository Ruff and targeted Black passed; tracker rebuilt 609/609 with zero structural problems
 Evidence:                           `qa/live_verification/currency_ci_gate_20260715.json`, signed current review plus immutable history, workflow, and exhaustive seeded tests
+
+## 2026-07-15 06:35 UTC - MediaPipe handedness incremental-value contract frozen
+
+**Result:** MF-P3-08.06 is 80% complete; the independent MediaPipe vote now has a frozen, reproducible ablation and side-swap gate, while real performance remains pending the human-anchor hand holdout.
+
+Pre-result policy:                  `mediapipe_hand_vote_ablation_v1`, canonical SHA-256 `8589e73549b26529505e4888e504cfe5024c1cb6c2bb21b2578ab71746e6f1c2`, frozen before any eligible result
+Eligible truth:                     only image-disjoint `human_anchor_gold` holdout authority; autonomous, pseudo-label, candidate, synthetic, or mirror-fixture rows cannot enter performance denominators
+Ablation:                           baseline is DensePose-surface plus pose-skeleton; full path adds MediaPipe handedness at score >=0.5; both use character perspective, require two matching votes, and otherwise abstain
+Incremental gate:                   a real pass must add at least one correct decision and add zero wrong-side decisions; coverage alone cannot qualify
+Side-swap proof:                    paired fixtures must swap truth labels and every available vote, x-mirror all 21 normalized landmarks exactly, use distinct evidence/source/truth hashes, and remain excluded from quality counts
+Provenance:                         policy binds the exact MediaPipe HandLandmarker artifact, provider pipeline, QC-014 config, model registry, and hand-lane implementation bytes; result cases bind truth manifest and pipeline fingerprint hashes
+Fail-closed report:                 schema-valid reports are canonical-hash sealed and exactly recomputed from source cases; low-confidence votes, stale/pre-policy results, wrong truth tier, source drift, duplicate hands, mirror errors, and report tamper fail
+Operational surface:               `tools/evaluate_mediapipe_vote_ablation.py` builds or verifies one report atomically; CI runs the named 16-case gate
+Signed governance:                 currency review `4302d2a4943b70e644a28441`, SHA-256 `100e9854dbc342cccf916f0c71507799544992f069c8823c16be390067cf2152`, chains archived `a64c6624...` and passes current-input/signature verification
+Verification:                       dedicated 16/16; focused hand/provider/schema 53/53; complete repository 1,240/1,240; Ruff, targeted Black, CI YAML, tracker rebuild/validation pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate source path was accessed
+Authority boundary:                fixture reports prove enforcement only; no real incremental-value result, provider promotion, serving authority, certificate, or gold authority is claimed
+Evidence:                           `qa/live_verification/mediapipe_vote_ablation_contract_20260715.json`

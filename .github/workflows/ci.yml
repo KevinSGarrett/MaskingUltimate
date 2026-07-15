@@ -34,6 +34,8 @@ jobs:
           && pytest -q tests/test_provider_runtime_matrix.py
       - name: Block training merges on ontology-aware flip invariant
         run: pytest -q tests/test_training_augmentations.py
+      - name: Block MediaPipe vote-ablation and side-swap drift
+        run: pytest -q tests/test_mediapipe_vote_ablation.py
       - name: Block registry governance and lifecycle drift
         run: >-
           pytest -q

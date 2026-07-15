@@ -337,6 +337,27 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Freeze MediaPipe handedness-vote ablation before holdout results
+
+**Item(s) affected:** MF-P3-08.06, QC-014, MF-P3-08.10, specialist benchmark evidence
+
+**Decision:** Freeze `mediapipe_hand_vote_ablation_v1` at SHA-256
+`8589e73549b26529505e4888e504cfe5024c1cb6c2bb21b2578ab71746e6f1c2` before any
+human-anchor hand result is opened. Compare the character-perspective two-source baseline
+(`pose_skeleton` plus `densepose_surface`) against the three-source path that adds
+`mediapipe_handedness`, requiring two matching votes and abstention without a strict majority.
+MediaPipe must score at least 0.5 to vote. A passing real ablation must add at least one correct
+decision and add zero wrong-side decisions. At least one exact x-mirrored side-swap fixture must swap
+the truth label and every available vote; fixture rows are excluded from performance denominators.
+
+**Why:** Keeping MediaPipe installed or displaying 21 landmarks does not establish incremental value.
+The frozen ablation separates a genuinely rescued decision from coverage inflation, makes new
+wrong-side decisions an absolute regression, proves character-side flip behavior geometrically, and
+prevents synthetic mirror pairs from masquerading as independent human-anchor performance evidence.
+Only image-disjoint `human_anchor_gold` holdout truth may complete the measured benchmark.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-14 - Use exact Qwen3-VL Instruct Q4_K_M tags as shadow reviewers
 
 **Item(s) affected:** MF-P0-17.09, MF-P0-17.13, MF-P2-11.09, MF-P4-10.12,

@@ -17,6 +17,12 @@ from ..io.hashing import sha256_file
 from ..providers.contracts import ProviderIdentity
 from ..validation import ArtifactValidationError, require_valid_document
 from .calibration import load_autonomy_config
+from .multi_person_availability import (
+    DEFAULT_MODEL_REGISTRY,
+    DEFAULT_POLICY,
+    DEFAULT_RUNTIME_MATRIX,
+    build_multi_person_availability_snapshot,
+)
 from .tournament import CandidateEvidence
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -63,7 +69,6 @@ class MultiPersonTournamentTarget:
     person_id: str
     instance_id: str
     label: str
-    family_availability: Mapping[str, str | None]
     candidates: tuple[MultiPersonCandidateRecord, ...]
 
 
@@ -143,21 +148,6 @@ def _evidence_document(evidence: CandidateEvidence, mask_path: str) -> dict[str,
     return document
 
 
-def _availability_document(values: Mapping[str, str | None]) -> dict[str, Any]:
-    if set(values) != set(MULTI_PERSON_FUNCTIONAL_FAMILIES):
-        raise MultiPersonEvidenceError("target family availability must name every governed family")
-    output = {}
-    for family in MULTI_PERSON_FUNCTIONAL_FAMILIES:
-        reason = values[family]
-        if reason is not None and (not isinstance(reason, str) or not reason.strip()):
-            raise MultiPersonEvidenceError("unavailable family requires a nonempty reason")
-        output[family] = {
-            "available": reason is None,
-            "unavailable_reason": reason,
-        }
-    return output
-
-
 def _bounds(config_path: Path) -> tuple[int, int, str]:
     config = load_autonomy_config(Path(config_path))
     tournament = config["tournament"]
@@ -178,6 +168,9 @@ def write_multi_person_tournament_evidence(
     artifact_root: Path,
     output_path: Path,
     config_path: Path = DEFAULT_AUTONOMY_CONFIG,
+    availability_policy_path: Path = DEFAULT_POLICY,
+    model_registry_path: Path = DEFAULT_MODEL_REGISTRY,
+    runtime_matrix_path: Path = DEFAULT_RUNTIME_MATRIX,
 ) -> Path:
     """Write a sealed per-target evidence manifest around existing tournament candidates."""
     if instance_context not in {"duo", "small_group"}:
@@ -187,6 +180,11 @@ def write_multi_person_tournament_evidence(
     with Image.open(source_image_path) as image:
         width, height = image.size
     maximum_rounds, maximum_candidates, config_sha256 = _bounds(config_path)
+    availability_snapshot = build_multi_person_availability_snapshot(
+        policy_path=availability_policy_path,
+        model_registry_path=model_registry_path,
+        runtime_matrix_path=runtime_matrix_path,
+    )
     rows = []
     for target in sorted(
         targets, key=lambda value: (value.person_id, value.instance_id, value.label)
@@ -216,12 +214,11 @@ def write_multi_person_tournament_evidence(
                 "person_id": target.person_id,
                 "instance_id": target.instance_id,
                 "label": target.label,
-                "family_availability": _availability_document(target.family_availability),
                 "candidates": candidates,
             }
         )
     document: dict[str, Any] = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "image_id": image_id,
         "source_image_sha256": sha256_file(Path(source_image_path)),
         "source_width": width,
@@ -231,6 +228,7 @@ def write_multi_person_tournament_evidence(
         "autonomy_config_sha256": config_sha256,
         "maximum_rounds": maximum_rounds,
         "maximum_candidates_per_target": maximum_candidates,
+        "availability_snapshot": availability_snapshot,
         "target_count": len(rows),
         "candidate_count": sum(len(row["candidates"]) for row in rows),
         "targets": rows,
@@ -248,6 +246,9 @@ def write_multi_person_tournament_evidence(
         expected_pipeline_fingerprint=pipeline_fingerprint,
         source_image_path=source_image_path,
         config_path=config_path,
+        availability_policy_path=availability_policy_path,
+        model_registry_path=model_registry_path,
+        runtime_matrix_path=runtime_matrix_path,
     )
     return Path(output_path)
 
@@ -259,6 +260,9 @@ def verify_multi_person_tournament_evidence(
     expected_pipeline_fingerprint: str,
     source_image_path: Path | None = None,
     config_path: Path = DEFAULT_AUTONOMY_CONFIG,
+    availability_policy_path: Path = DEFAULT_POLICY,
+    model_registry_path: Path = DEFAULT_MODEL_REGISTRY,
+    runtime_matrix_path: Path = DEFAULT_RUNTIME_MATRIX,
 ) -> dict[str, Any]:
     """Verify seals, current config, strict artifacts, identities, bounds, and family coverage."""
     document = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
@@ -277,6 +281,13 @@ def verify_multi_person_tournament_evidence(
         or document["maximum_candidates_per_target"] != maximum_candidates
     ):
         raise MultiPersonEvidenceError("multi-person evidence policy identity is stale")
+    current_availability = build_multi_person_availability_snapshot(
+        policy_path=availability_policy_path,
+        model_registry_path=model_registry_path,
+        runtime_matrix_path=runtime_matrix_path,
+    )
+    if document["availability_snapshot"] != current_availability:
+        raise MultiPersonEvidenceError("multi-person provider availability identity is stale")
     if source_image_path is not None:
         with Image.open(source_image_path) as image:
             source_size = image.size
@@ -297,17 +308,13 @@ def verify_multi_person_tournament_evidence(
     seen_ids: set[str] = set()
     seen_paths: set[str] = set()
     total = 0
+    availability = document["availability_snapshot"]["families"]
+    available = {family for family, state in availability.items() if state["available"]}
+    unavailable = set(MULTI_PERSON_FUNCTIONAL_FAMILIES) - available
     for target in targets:
         candidates = target["candidates"]
         if not candidates or len(candidates) > maximum_candidates:
             raise MultiPersonEvidenceError("target candidate count violates tournament bounds")
-        availability = target["family_availability"]
-        available = {family for family, state in availability.items() if state["available"]}
-        unavailable = set(MULTI_PERSON_FUNCTIONAL_FAMILIES) - available
-        if any(
-            availability[family]["unavailable_reason"] is not None for family in available
-        ) or any(not availability[family]["unavailable_reason"] for family in unavailable):
-            raise MultiPersonEvidenceError("family availability reason is inconsistent")
         contributed: set[str] = set()
         local_rows = {row["evidence"]["candidate_id"]: row for row in candidates}
         if len(local_rows) != len(candidates):
@@ -388,6 +395,9 @@ def load_multi_person_tournament_candidates(
     expected_pipeline_fingerprint: str,
     source_image_path: Path | None = None,
     config_path: Path = DEFAULT_AUTONOMY_CONFIG,
+    availability_policy_path: Path = DEFAULT_POLICY,
+    model_registry_path: Path = DEFAULT_MODEL_REGISTRY,
+    runtime_matrix_path: Path = DEFAULT_RUNTIME_MATRIX,
 ) -> dict[tuple[str, str, str], tuple[CandidateEvidence, ...]]:
     """Return existing tournament evidence only after the complete envelope verifies."""
     verify_multi_person_tournament_evidence(
@@ -396,6 +406,9 @@ def load_multi_person_tournament_candidates(
         expected_pipeline_fingerprint=expected_pipeline_fingerprint,
         source_image_path=source_image_path,
         config_path=config_path,
+        availability_policy_path=availability_policy_path,
+        model_registry_path=model_registry_path,
+        runtime_matrix_path=runtime_matrix_path,
     )
     document = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
     return {

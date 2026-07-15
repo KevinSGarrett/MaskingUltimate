@@ -8,9 +8,9 @@ import numpy as np
 import pytest
 from PIL import Image
 
+from maskfactory.autonomy.multi_person_availability import DEFAULT_RUNTIME_MATRIX
 from maskfactory.autonomy.multi_person_evidence import (
     EVIDENCE_AUTHORITY,
-    MULTI_PERSON_FUNCTIONAL_FAMILIES,
     MultiPersonCandidateRecord,
     MultiPersonEvidenceError,
     MultiPersonTournamentTarget,
@@ -128,14 +128,53 @@ def _target(root: Path, person: str, instance: str, offset: int) -> MultiPersonT
         person,
         instance,
         "hair",
-        {family: None for family in MULTI_PERSON_FUNCTIONAL_FAMILIES},
         (first, second, third),
     )
 
 
-def _build(tmp_path: Path) -> tuple[Path, Path, Path, dict]:
+def _drop_contributions(
+    candidate: MultiPersonCandidateRecord,
+    *families: str,
+    generator: str | None = None,
+) -> MultiPersonCandidateRecord:
+    contributions = tuple(
+        item for item in candidate.contributions if item.functional_family not in families
+    )
+    provider_keys = tuple(sorted({item.provider.provider_key for item in contributions}))
+    model_families = tuple(sorted({item.provider.model_family for item in contributions}))
+    evidence = copy.copy(candidate.evidence)
+    object.__setattr__(evidence, "source_provider_keys", provider_keys)
+    object.__setattr__(evidence, "source_model_families", model_families)
+    object.__setattr__(evidence, "independent_sources", len(model_families))
+    return MultiPersonCandidateRecord(
+        generator or candidate.generator_family,
+        candidate.round_number,
+        candidate.parent_candidate_id,
+        contributions,
+        evidence,
+    )
+
+
+def _runtime_matrix(tmp_path: Path, *, qualify_sam31: bool = True) -> Path:
+    document = json.loads(DEFAULT_RUNTIME_MATRIX.read_text(encoding="utf-8"))
+    if qualify_sam31:
+        runtime = next(row for row in document["runtimes"] if row["provider"] == "sam3_1")
+        runtime["status"] = "live_smoke_passed"
+        runtime["checkpoint_status"] = "installed"
+        runtime["smoke_status"] = "pass"
+        runtime.pop("needs_kevin", None)
+    document["manifest_sha256"] = canonical_sha256(
+        {key: value for key, value in document.items() if key != "manifest_sha256"}
+    )
+    path = tmp_path / "provider_runtime_matrix.json"
+    path.write_text(json.dumps(document, indent=2), encoding="utf-8")
+    return path
+
+
+def _build(tmp_path: Path) -> tuple[Path, Path, Path, Path, dict]:
     root = tmp_path / "artifacts"
     source = _source(tmp_path)
+    runtime_matrix = _runtime_matrix(tmp_path)
     manifest = write_multi_person_tournament_evidence(
         image_id="img_fixture_duo",
         source_image_path=source,
@@ -147,8 +186,15 @@ def _build(tmp_path: Path) -> tuple[Path, Path, Path, dict]:
         ),
         artifact_root=root,
         output_path=tmp_path / "multi_person_evidence.json",
+        runtime_matrix_path=runtime_matrix,
     )
-    return manifest, root, source, json.loads(manifest.read_text(encoding="utf-8"))
+    return (
+        manifest,
+        root,
+        source,
+        runtime_matrix,
+        json.loads(manifest.read_text(encoding="utf-8")),
+    )
 
 
 def _reseal(path: Path, document: dict) -> None:
@@ -161,12 +207,13 @@ def _reseal(path: Path, document: dict) -> None:
 def test_duo_evidence_preserves_targets_provider_identity_and_independent_families(
     tmp_path: Path,
 ) -> None:
-    manifest, root, source, document = _build(tmp_path)
+    manifest, root, source, runtime_matrix, document = _build(tmp_path)
     summary = verify_multi_person_tournament_evidence(
         manifest,
         artifact_root=root,
         expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
         source_image_path=source,
+        runtime_matrix_path=runtime_matrix,
     )
     assert not validate_document(document, "multi_person_tournament_evidence")
     assert summary == {
@@ -182,6 +229,7 @@ def test_duo_evidence_preserves_targets_provider_identity_and_independent_famili
         artifact_root=root,
         expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
         source_image_path=source,
+        runtime_matrix_path=runtime_matrix,
     )
     assert set(loaded) == {
         ("person-0", "instance-0", "hair"),
@@ -193,38 +241,22 @@ def test_duo_evidence_preserves_targets_provider_identity_and_independent_famili
     assert repair.source_model_families == ("deterministic", "sam3")
 
 
-def test_explicitly_unavailable_family_is_not_silently_required(tmp_path: Path) -> None:
+def test_gated_sam31_is_derived_unavailable_and_not_silently_required(tmp_path: Path) -> None:
     root = tmp_path / "artifacts"
     source = _source(tmp_path)
     targets = []
     for person, instance, offset in (("person-0", "instance-0", 0), ("person-1", "instance-1", 5)):
         target = _target(root, person, instance, offset)
-        availability = dict(target.family_availability)
-        availability["geometry"] = "governed provider is not installed"
-        first = target.candidates[0]
-        contributions = tuple(
-            item for item in first.contributions if item.functional_family != "geometry"
+        first = _drop_contributions(
+            target.candidates[0], "sam31_exhaustive_discovery", generator="rf_detr_detection"
         )
-        provider_keys = tuple(sorted({item.provider.provider_key for item in contributions}))
-        model_families = tuple(sorted({item.provider.model_family for item in contributions}))
-        evidence = copy.copy(first.evidence)
-        object.__setattr__(evidence, "source_provider_keys", provider_keys)
-        object.__setattr__(evidence, "source_model_families", model_families)
-        object.__setattr__(evidence, "independent_sources", len(model_families))
-        first = MultiPersonCandidateRecord(
-            first.generator_family,
-            first.round_number,
-            first.parent_candidate_id,
-            contributions,
-            evidence,
-        )
+        third = _drop_contributions(target.candidates[2], "sam31_refinement")
         targets.append(
             MultiPersonTournamentTarget(
                 target.person_id,
                 target.instance_id,
                 target.label,
-                availability,
-                (first, *target.candidates[1:]),
+                (first, target.candidates[1], third),
             )
         )
     manifest = write_multi_person_tournament_evidence(
@@ -235,6 +267,13 @@ def test_explicitly_unavailable_family_is_not_silently_required(tmp_path: Path) 
         targets=targets,
         artifact_root=root,
         output_path=tmp_path / "unavailable.json",
+    )
+    document = json.loads(manifest.read_text(encoding="utf-8"))
+    families = document["availability_snapshot"]["families"]
+    assert families["sam31_exhaustive_discovery"]["available"] is False
+    assert families["sam31_refinement"]["available"] is False
+    assert all(
+        state["available"] for family, state in families.items() if not family.startswith("sam31_")
     )
     assert (
         verify_multi_person_tournament_evidence(
@@ -264,6 +303,9 @@ def test_explicitly_unavailable_family_is_not_silently_required(tmp_path: Path) 
         ),
         lambda doc: doc["targets"][0]["candidates"][2].update(parent_candidate_id="missing"),
         lambda doc: doc.update(autonomy_config_sha256="0" * 64),
+        lambda doc: doc["availability_snapshot"]["families"]["sam31_refinement"].update(
+            available=False
+        ),
         lambda doc: doc["targets"][0]["candidates"][0]["evidence"].update(
             mask_path="../outside.png"
         ),
@@ -272,7 +314,7 @@ def test_explicitly_unavailable_family_is_not_silently_required(tmp_path: Path) 
 def test_identity_reuse_provenance_rebinding_round_policy_and_path_escape_fail(
     tmp_path: Path, mutation
 ) -> None:
-    manifest, root, _, document = _build(tmp_path)
+    manifest, root, _, runtime_matrix, document = _build(tmp_path)
     mutation(document)
     _reseal(manifest, document)
     with pytest.raises(MultiPersonEvidenceError):
@@ -280,11 +322,12 @@ def test_identity_reuse_provenance_rebinding_round_policy_and_path_escape_fail(
             manifest,
             artifact_root=root,
             expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
+            runtime_matrix_path=runtime_matrix,
         )
 
 
 def test_artifact_source_pipeline_and_manifest_drift_fail(tmp_path: Path) -> None:
-    manifest, root, source, document = _build(tmp_path)
+    manifest, root, source, runtime_matrix, document = _build(tmp_path)
     path = root / document["targets"][0]["candidates"][0]["evidence"]["mask_path"]
     Image.fromarray(np.full((20, 24), 128, dtype=np.uint8), "L").save(path)
     with pytest.raises(MultiPersonEvidenceError, match="strict PNG"):
@@ -292,9 +335,10 @@ def test_artifact_source_pipeline_and_manifest_drift_fail(tmp_path: Path) -> Non
             manifest,
             artifact_root=root,
             expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
+            runtime_matrix_path=runtime_matrix,
         )
 
-    manifest, root, source, document = _build(tmp_path / "source-drift")
+    manifest, root, source, runtime_matrix, document = _build(tmp_path / "source-drift")
     Image.fromarray(np.ones((20, 24, 3), dtype=np.uint8), "RGB").save(source)
     with pytest.raises(MultiPersonEvidenceError, match="source image identity"):
         verify_multi_person_tournament_evidence(
@@ -302,17 +346,19 @@ def test_artifact_source_pipeline_and_manifest_drift_fail(tmp_path: Path) -> Non
             artifact_root=root,
             expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
             source_image_path=source,
+            runtime_matrix_path=runtime_matrix,
         )
 
-    manifest, root, _, _ = _build(tmp_path / "pipeline-drift")
+    manifest, root, _, runtime_matrix, _ = _build(tmp_path / "pipeline-drift")
     with pytest.raises(MultiPersonEvidenceError, match="policy identity"):
         verify_multi_person_tournament_evidence(
             manifest,
             artifact_root=root,
             expected_pipeline_fingerprint="e" * 64,
+            runtime_matrix_path=runtime_matrix,
         )
 
-    manifest, root, _, document = _build(tmp_path / "seal-drift")
+    manifest, root, _, runtime_matrix, document = _build(tmp_path / "seal-drift")
     document["image_id"] = "rebound"
     manifest.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(MultiPersonEvidenceError, match="hash mismatch"):
@@ -320,39 +366,30 @@ def test_artifact_source_pipeline_and_manifest_drift_fail(tmp_path: Path) -> Non
             manifest,
             artifact_root=root,
             expected_pipeline_fingerprint=PIPELINE_FINGERPRINT,
+            runtime_matrix_path=runtime_matrix,
         )
 
 
-def test_writer_rejects_missing_family_inventory_outside_artifact_and_solo_context(
+def test_writer_rejects_unavailable_family_outside_artifact_and_solo_context(
     tmp_path: Path,
 ) -> None:
     root = tmp_path / "artifacts"
     source = _source(tmp_path)
-    target = _target(root, "person-0", "instance-0", 0)
-    missing = dict(target.family_availability)
-    missing.pop("geometry")
-    target = MultiPersonTournamentTarget(
-        target.person_id,
-        target.instance_id,
-        target.label,
-        missing,
-        target.candidates,
+    targets = (
+        _target(root, "person-0", "instance-0", 0),
+        _target(root, "person-1", "instance-1", 5),
     )
-    with pytest.raises(MultiPersonEvidenceError, match="every governed family"):
+    with pytest.raises(MultiPersonEvidenceError, match="unavailable or unbound"):
         write_multi_person_tournament_evidence(
             image_id="img",
             source_image_path=source,
             instance_context="duo",
             pipeline_fingerprint=PIPELINE_FINGERPRINT,
-            targets=(target,),
+            targets=targets,
             artifact_root=root,
-            output_path=tmp_path / "missing.json",
+            output_path=tmp_path / "unavailable-family.json",
         )
 
-    targets = (
-        _target(root, "person-0", "instance-0", 0),
-        _target(root, "person-1", "instance-1", 5),
-    )
     with pytest.raises(MultiPersonEvidenceError, match="duo or small_group"):
         write_multi_person_tournament_evidence(
             image_id="img",

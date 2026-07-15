@@ -5449,3 +5449,20 @@ Verification:                       dedicated 11/11; focused autonomy/multi-pers
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     live provider qualification/availability, governed multi-person sources, real tournament execution, and certificate/residual/audit/headline binding
 Evidence:                           `qa/live_verification/multi_person_tournament_evidence_contract_20260715.json`
+
+## 2026-07-15 13:13 UTC - Multi-person family availability bound to governance
+
+**Result:** MF-P8-11.03 advances to 75%; “when available” is now an executable,
+frozen governance rule rather than a caller assertion, while live SAM 3.1 qualification
+and real multi-person tournament execution remain open.
+
+Frozen policy:                      canonical SHA-256 `860d1e1300737102b9c4f954d06112e74c45d79a805c2cbbda1a1a1a4827fa8d`, frozen before real tournament results
+Governed derivation:                registry families require eligible lifecycle, verified artifact identity, verified license review, and both permitted content lanes; runtime families require live-smoke-passed, installed checkpoint, passing smoke, and no gold authority; internal families require every frozen source file
+Current repository state:           deterministic repair, fusion, geometry, pose, RF-DETR detection, SAM2.1 refinement, silhouette, and specialist are eligible; SAM3.1 discovery/refinement remain unavailable under the exact source-only/manual-checkpoint-gate runtime record
+Fail-closed behavior:               caller availability overrides no longer exist; missing/stale policy, registry identity, runtime manifest/artifact, internal source, lifecycle, license, content, checkpoint, or smoke evidence prevents eligibility or verification
+Per-target enforcement:             every governed-available family must contribute to every target; unavailable families cannot appear; newly qualified families become mandatory automatically
+Authority boundary:                governed repository eligibility is not live reachability and grants no inference, selection, certificate, serving, training, semantic, mask, blocker-clearance, or gold authority
+Verification:                       dedicated availability/evidence 22/22; focused availability/evidence/schema 28/28; complete repository 1,575/1,575 with exit 0; all-file pre-commit, Ruff, Black, YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     SAM3.1 checkpoint authorization/qualification, runtime-matrix refresh, governed multi-person sources, real all-family tournaments, and downstream certificate/residual/audit/headline evidence
+Evidence:                           `qa/live_verification/multi_person_family_availability_contract_20260715.json`

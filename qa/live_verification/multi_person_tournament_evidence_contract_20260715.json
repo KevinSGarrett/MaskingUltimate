@@ -3,6 +3,8 @@
   "item_ids": ["MF-P8-11.03"],
   "verified_at": "2026-07-15T12:52:03Z",
   "result": "PASS_MULTI_PERSON_IDENTITY_AND_INDEPENDENT_FAMILY_FIXTURE_CONTRACT_LIVE_TOURNAMENT_PENDING",
+  "historical_implementation_commit": "a525fcd81db8611de2d82233c11972f1c8b74d34",
+  "superseded_by": "qa/live_verification/multi_person_family_availability_contract_20260715.json",
   "functional_family_inventory": [
     "deterministic_repair",
     "fusion",

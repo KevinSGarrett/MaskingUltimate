@@ -5466,3 +5466,21 @@ Verification:                       dedicated availability/evidence 22/22; focus
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     SAM3.1 checkpoint authorization/qualification, runtime-matrix refresh, governed multi-person sources, real all-family tournaments, and downstream certificate/residual/audit/headline evidence
 Evidence:                           `qa/live_verification/multi_person_family_availability_contract_20260715.json`
+
+## 2026-07-15 13:31 UTC - Per-target multi-person tournament execution sealed
+
+**Result:** MF-P8-11.03 advances to 85%; verified multi-person candidate manifests now
+execute deterministically through the existing gate, exact certification scope, certificate,
+and tournament logic without losing target or provider-family identity, while real runs remain open.
+
+Target binding:                     controls exactly cover every image/person/instance/label target; people map bijectively to contiguous promoted `p0..pN` identities
+Mandatory gate:                     exact ordered QC-035, QC-036, AUT-MP-001, AUT-MP-002, and AUT-MP-003 evidence is required; missing, duplicate, reordered, wrong-context, or rebound gates fail before scoring
+Scope/certificate binding:          instance context and pipeline fingerprint are exact; complete certificate document hash and its claimed internal seal are both preserved
+Tournament reuse:                   existing hard vetoes, scoring, minimum source count, winner threshold/margin, disagreement behavior, scope, and certificate verification run unchanged per target
+Decision report:                    candidate manifest, governed availability snapshot, gate/scope/certificate, winner/status/tier/audit outcome, mask hashes, provider keys, and true model families are sealed and fully recomputed on verification
+Fixture behavior:                   valid fixture certificate path executes; failed gate and missing certificate route every target residual; target/control/gate/scope/report/evidence rebinding fails
+Authority boundary:                decision evidence only; fixture certificates grant no real performance claim and reports cannot finalize, serve, train, decide semantics, author masks, clear blockers, or create gold authority
+Verification:                       dedicated execution 9/9; focused multi-person stack 54/54; complete repository 1,584/1,584 with exit 0; all-file pre-commit, Ruff, Black, YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     SAM3.1 qualification, governed multi-person sources/current certificates, real all-family candidates/tournaments, and lifecycle/residual/audit/headline binding
+Evidence:                           `qa/live_verification/multi_person_tournament_execution_contract_20260715.json`

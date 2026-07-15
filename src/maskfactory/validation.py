@@ -37,6 +37,7 @@ SCHEMA_NAMES = frozenset(
         "matrix_promotion_certificate",
         "multi_person_family_availability_policy",
         "multi_person_tournament_evidence",
+        "multi_person_tournament_execution",
         "sam31_shadow_candidate_package",
         "qwen_challenger_benchmark_cases",
         "qwen_challenger_benchmark_policy",

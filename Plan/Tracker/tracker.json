@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T13:14:34+00:00",
+    "generated_at": "2026-07-15T13:32:40+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -14463,7 +14463,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-15T12:52:48+00:00",
@@ -14474,12 +14474,17 @@
           "ts": "2026-07-15T13:14:34+00:00",
           "actor": "ai_agent",
           "text": "Repository-governed eligibility only, not current live reachability. SAM3.1 remains correctly unavailable under its checkpoint-gated runtime record; no inference, winner, certificate, serving, training, mask, or gold authority claimed."
+        },
+        {
+          "ts": "2026-07-15T13:32:39+00:00",
+          "actor": "ai_agent",
+          "text": "Fixture execution only. Valid synthetic certificate, failed-gate, and missing-certificate paths are exercised, but no real source, inference, calibration, winner authority, serving, training, mask, or gold claim is made."
         }
       ],
-      "evidence": "Governed multi-person family availability is now derived from a pre-result locked policy plus current model registry, provider runtime matrix/artifact hashes, and internal source hashes; caller assertions are impossible. Every eligible family is mandatory per target, ineligible families are forbidden, and independent credit remains model-family deduplicated. Dedicated 22/22; focused 28/28; full 1,575/1,575; qa/live_verification/multi_person_family_availability_contract_20260715.json. Remaining: SAM3.1 gate/live qualification, governed multi-person inference, real tournaments, and certificate/residual/audit/headline integration.",
+      "evidence": "Verified multi-person manifests now execute per target through the existing mandatory image gate, exact scope/certificate verifier, and tournament, with bijective person-to-pN identity, full certificate document binding, sealed rankings, mask hashes, provider keys, and model-family provenance; reports are fully recomputed. Dedicated 9/9; focused 54/54; full 1,584/1,584; qa/live_verification/multi_person_tournament_execution_contract_20260715.json. Remaining: SAM3.1 live qualification, governed real multi-person candidates/tournaments, and lifecycle/residual/audit/headline binding.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T13:14:34+00:00",
+      "updated_at": "2026-07-15T13:32:39+00:00",
       "orphaned": false
     },
     "MF-P8-11.04": {

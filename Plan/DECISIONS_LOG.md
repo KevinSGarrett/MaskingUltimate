@@ -602,3 +602,32 @@ from silently displacing the incumbent. Test fixtures demonstrate enforcement on
 requires Kevin-supplied human-anchor evidence and the upstream frozen corpus.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze compatibility-scoped retraining lifecycle evidence
+
+**Item(s) affected:** MF-P7-07.06, autonomy retraining, recertification, model-role promotion,
+serving rollback
+
+**Decision:** Freeze `retraining_compatibility_v1` at canonical SHA-256
+`f02a057c45d76a5e586f1758c94e9df895e20afdaf22edf33d9cc10c13d19107` before any
+eligible retraining result. A qualifying operation must start from an actionable immutable audit
+trigger, bind a successful training run into a recomputed pipeline fingerprint different from the
+incumbent, and record one explicit versioned decision for every evidence category. Frozen
+human-anchor holdouts, approved human-gold training packages, immutable audit history, and benchmark
+observations may be reused only under exact artifact and complete scope identity. Autonomy
+certificates, serving/promotion evidence, and pseudo-label eligibility never carry across the new
+fingerprint. Every affected risk-bucket/instance-context stratum must either receive a new-fingerprint
+human-anchor certificate or remain residual-only with no certificate. Promotion additionally
+requires frozen-holdout and benchmark passes, an identity-matched transactional registry mutation,
+and a rollback drill that restores the exact prior registry hash, incumbent provider, and passing
+serving smoke. A rejected challenger carries no synthetic promotion or rollback record.
+
+**Why:** A retraining task and new checkpoint are not sufficient operations evidence. Without an
+explicit compatibility policy, stale certificates or evaluation results could silently authorize a
+new pipeline, while a nominal rollback could restore the wrong registry or provider. The frozen
+contract makes every authority transfer and abstention decision reproducible while preserving the
+boundary that fixtures and a passing contract do not themselves train, promote, serve, mint gold, or
+complete the tracker item. Real completion still requires a certified corpus, genuine audit trigger,
+real retraining run, human-anchor revalidation, role decision, and observed rollback.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

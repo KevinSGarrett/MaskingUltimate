@@ -44,6 +44,8 @@ jobs:
         run: pytest -q tests/test_autonomy_metrics.py
       - name: Block local-Qwen challenger benchmark contract drift
         run: pytest -q tests/test_qwen_challenger_benchmark.py
+      - name: Block incomplete retraining lifecycle evidence
+        run: pytest -q tests/test_retraining_operations.py
       - name: Block incomplete specialist evidence packages
         run: pytest -q tests/test_specialist_evidence_package.py
       - name: Block registry governance and lifecycle drift

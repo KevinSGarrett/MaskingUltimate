@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T08:54:16+00:00",
+    "generated_at": "2026-07-15T09:18:33+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -14193,13 +14193,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-15T09:18:32+00:00",
+          "actor": "ai_agent",
+          "text": "Frozen compatibility-scoped retraining lifecycle contract is implemented: actionable audit trigger, reproducible new fingerprint bound to training outputs, explicit reuse/invalidation decisions, complete recertification-or-abstention strata, transactional promote/reject, and exact rollback are schema/hash/CLI/CI enforced. Fixtures grant no operational authority; real certified-corpus trigger, retraining, human-anchor recertification, role decision, and rollback remain."
+        }
+      ],
+      "evidence": "qa/live_verification/retraining_operations_contract_20260715.json; 24 dedicated and 98 focused tests pass; full repository 1376/1376 exit 0",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T09:18:32+00:00",
       "orphaned": false
     },
     "MF-P7-07.07": {

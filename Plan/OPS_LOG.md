@@ -5205,3 +5205,24 @@ Verification:                       dedicated 17/17; focused Qwen/VLM/teacher 63
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or Seagate path was accessed
 Authority boundary:                fixtures grant no provider promotion, mask, gold, blocker-clearance, quick-pass, or production authority; no real winner is claimed
 Evidence:                           `qa/live_verification/qwen_challenger_benchmark_contract_20260715.json`
+
+## 2026-07-15 09:15 UTC - Trigger-driven retraining lifecycle contract frozen
+
+**Result:** MF-P7-07.06 is 75% complete; the complete immutable operations contract is executable and
+fail-closed, while a real certified-corpus retraining cycle remains pending.
+
+Pre-result policy:                  `retraining_compatibility_v1`, canonical SHA-256 `f02a057c45d76a5e586f1758c94e9df895e20afdaf22edf33d9cc10c13d19107`, frozen before eligible retraining output
+Trigger binding:                    exact queue, outcomes, and retraining-task hashes plus configured failure/correction thresholds, open status, and frozen human-holdout requirement
+Fingerprint proof:                 old and new identities are independently recomputed from exact gate, code-tree, dataset-manifest, model-checkpoint, and training-config identities; equality or unreproducible claims fail
+Training binding:                  successful run, dataset, checkpoint, config, code, frozen-holdout result, and benchmark-result hashes are mandatory; the new fingerprint must contain the exact training identities
+Compatibility reuse:               frozen human-anchor holdout, approved human gold, immutable audit history, and benchmark observations require byte-identical artifacts and complete exact scope identity
+Forced invalidation:                autonomy certificates, serving/promotion evidence, and pseudo-label eligibility cannot be rebound across the new fingerprint
+Affected strata:                   every risk-bucket/instance-context pair is unique and must be newly certified on the new fingerprint or explicitly remain residual-only without a certificate
+Role decision:                     promotion requires both frozen-holdout and benchmark passes plus an exact candidate/incumbent transaction; rejection requires at least one failed gate and cannot fabricate transaction evidence
+Rollback:                          promoted registry, transaction, exact baseline registry, restored incumbent, serving smoke, and rollback-record hashes are jointly bound; any mismatch fails
+Operational surface:               `tools/retraining_operations_report.py` atomically builds or exactly verifies the canonical report; CI runs the named 24-case adversarial gate
+Verification:                       dedicated 24/24; focused retraining/autonomy/promotion 98/98; complete repository 1,376/1,376 with exit 0; Ruff and targeted Black pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed by this work; only two accidentally concurrent pytest processes started by this task were stopped before one clean suite run
+Authority boundary:                fixtures and the pre-result report grant no training, provider promotion, serving, certificate, gold, production-mask, blocker-clearance, or tracker-completion authority
+Remaining real evidence:            certified training corpus, genuine audit trigger/outcomes, real run/new fingerprint, human-anchor holdout and benchmark results, complete recertification/abstention, transactional role decision, and observed rollback
+Evidence:                           `qa/live_verification/retraining_operations_contract_20260715.json`

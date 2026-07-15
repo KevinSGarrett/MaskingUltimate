@@ -631,3 +631,30 @@ complete the tracker item. Real completion still requires a certified corpus, ge
 real retraining run, human-anchor revalidation, role decision, and observed rollback.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze the final modernization completion evidence index
+
+**Item(s) affected:** MF-P7-07.09, MF-P7-EXIT, MF-P8-EXIT, D1-D11, G1-G9, final
+modernization declaration
+
+**Decision:** Freeze `modernization_completion_v1` at canonical SHA-256
+`aed53657c856f259d629d9f8dff588ccd9bde6226996d3e85c873df102ccb1c9` before any
+eligible final bundle. Require exactly one current, hash-sealed, `real_operation` receipt for each of
+15 non-collapsible domains: doctor, live provider smokes, isolated runtime matrix, frozen
+human-anchor benchmarks, CVAT migration, CVAT rollback, autonomy certification, serious-failure
+revocation, trigger-driven retraining, operational labor/quality/confidence metrics, single-person
+headline, multi-person headline, signed currency review, complete test/lint/format/drift suite, and
+tracker validation. Each receipt must use its frozen verifier identity, link the minimum distinct
+source artifacts by contained relative path and exact SHA-256, satisfy domain-specific measured
+thresholds, and remain within its predeclared freshness window. One artifact cannot satisfy multiple
+domains. The live tracker must contain at least 609 items; every non-orphaned item except the bundle
+item itself must be `complete` or `not_applicable`; D1-D11 and measured G1-G9 must all be `met`.
+Only MF-P7-07.09 may be excluded to avoid circular self-authorization.
+
+**Why:** A directory of evidence files, green fixture suite, or implementation-ready contract cannot
+prove project completion. Final declaration requires a current, exact index whose primary evidence
+cannot be silently omitted, duplicated across roles, replaced by synthetic/pre-result artifacts, or
+contradicted by the tracker. This contract deliberately fails against the current live tracker and
+grants no completion authority until every real upstream operation and measurement exists.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

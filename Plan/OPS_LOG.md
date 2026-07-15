@@ -5240,3 +5240,22 @@ Preserved boundary:                 the independent apparent-minor intake quaran
 Verification:                       focused drafting/QA/cloud/governance/Civitai suite 76/76; focused anatomy/tracker 33/33; complete repository 1,376/1,376 with exit 0; targeted Ruff pass
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
 Evidence:                           `qa/live_verification/anatomy_v2_context_and_adult_lane_regression_20260715.json`
+
+## 2026-07-15 09:39 UTC - Final modernization completion index made fail-closed
+
+**Result:** MF-P7-07.09 is 75% complete; the dated completion-bundle verifier is executable, while
+the bundle correctly cannot pass until every primary live gate and tracker requirement is complete.
+
+Pre-result policy:                  `modernization_completion_v1`, canonical SHA-256 `aed53657c856f259d629d9f8dff588ccd9bde6226996d3e85c873df102ccb1c9`
+Evidence domains:                   doctor, provider smokes, runtime matrix, frozen benchmarks, CVAT migration/rollback, certificate/revocation, retraining, operational metrics, both headline tests, signed currency, full CI, and tracker
+Receipt authority:                  only current hash-sealed `real_operation` primary-domain receipts qualify; fixture, synthetic, pre-result, failed, stale, future-dated, or self-asserted receipts fail
+Artifact binding:                   contained relative paths and exact SHA-256 values are verified; missing, escaped, drifted, repeated, or cross-domain reused artifacts fail
+Measured gates:                     every domain has frozen exact/minimum/maximum measurements; test collected/pass counts must agree and headline/benchmark/certificate claims require real human-anchor authority
+Tracker completion:                at least 609 items; every non-orphaned item except MF-P7-07.09 terminal complete/not-applicable; D1-D11 met; G1-G9 measured and met
+Circularity boundary:               only MF-P7-07.09 may be excluded from tracker resolution; P7/P8 exits and every other upstream item remain mandatory
+Current-state honesty:              the verifier explicitly rejects the current live tracker because unresolved items, DoD, goals, and real evidence remain; no completion report was fabricated
+Operational surface:               `tools/completion_bundle_report.py` atomically builds or exactly verifies a report; CI runs the named 29-case adversarial gate
+Verification:                       dedicated 29/29; focused completion/tracker/retraining/currency 92/92; complete repository 1,405/1,405 with exit 0; repository Ruff and targeted Black pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
+Remaining real evidence:            all upstream modernization gates, both real headline demonstrations, D1-D11, G1-G9, and a passing primary-domain bundle
+Evidence:                           `qa/live_verification/modernization_completion_bundle_contract_20260715.json`

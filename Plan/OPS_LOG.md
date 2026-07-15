@@ -5280,3 +5280,25 @@ Evidence hygiene:                   an earlier detached full-suite console was e
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, Seagate source path, or external-drive file was accessed
 Remaining work:                     governed install, exact installed environment lock, checkpoint smoke, and frozen human-anchor VRAM/latency/determinism/quality comparison after Kevin confirms storage recovery
 Evidence:                           `qa/live_verification/sam3_litetext_preinstall_lock_20260715.json`
+
+## 2026-07-15 10:20 UTC - SAM 3D Body geometry benchmark frozen and executable
+
+**Result:** MF-P3-08.05 is 80% complete; the complete SAM 3D Body versus DensePose
+human-anchor benchmark contract is executable and fail-closed, while checkpoint access,
+installation, and real observations remain open.
+
+Pre-result policy:                  `geometry_variant_benchmark_v1`, canonical SHA-256 `98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef`, frozen before any eligible result
+Provider roles:                     DensePose R50-FPN remains the exact active/rollback baseline; SAM 3D Body remains a planned source-only challenger until its human checkpoint gate and governed installation pass
+Eligible truth:                     image-disjoint `human_anchor_gold` holdout only, bound to exact truth-manifest, pipeline, hardware, provider-source, checkpoint-revision, artifact, and runtime identities
+Context coverage:                   geometry prior, contact, crowding, identity ambiguity, occlusion, rear view, front view, scale disparity, and truncation are mandatory for both providers
+Geometry metrics:                   projection consistency and visible-surface recall are recomputed from explicit projected-point denominators; background/cross-person bleed, side, front/back, identity, and hard-QA rates each retain separate denominators
+Runtime metrics:                    cold/warm latency, peak VRAM, OOM, crash, and exactly two identical deterministic output hashes are mandatory
+Frozen gates:                       at least 0.01 overall projection-consistency improvement; no context may exceed 0.02 projection/visibility drop; six safety/error rates have zero regression tolerance; challenger must fit 8 GiB with no OOM/crash
+Fallback:                           an injected SAM 3D Body failure must return a hash-bound DensePose output while active and rollback identities remain DensePose
+Human gate:                         checkpoint, model config, and MHR assets remain HTTP-401 gated behind Kevin's Meta SAM License/contact-sharing acceptance; no acceptance or live inference is claimed
+Operational surface:               `tools/evaluate_geometry_variant_benchmark.py` atomically builds or exactly verifies the schema/hash-sealed report; CI runs the named 30-case gate
+Signed governance:                 current review `d581b0d6fda7d26e99ecda00`, SHA-256 `47add76fec8586bcd65f5ffe77377d3447164f54a0a1a72a9f7bd3eb4d8c8c8a`, chains archived `8ff33dea...`, verifies, and remains honestly FAIL on missing real active-role evidence
+Verification:                       dedicated 30/30; focused geometry/currency/specialist/provider 139/139; complete repository 1,445/1,445 with exit 0; repository Ruff, targeted Black, CI YAML, and diff checks pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, Seagate source path, or external-drive file was accessed
+Authority boundary:                fixtures grant no installation, performance result, promotion, serving, mask, semantic, production, blocker-clearance, or gold authority
+Evidence:                           `qa/live_verification/geometry_variant_benchmark_contract_20260715.json`

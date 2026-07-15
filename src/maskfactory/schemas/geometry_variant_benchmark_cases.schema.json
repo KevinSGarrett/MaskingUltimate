@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/geometry_variant_benchmark_cases.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "benchmark_id", "results_opened_at", "policy_sha256", "truth_tier", "truth_partition", "truth_manifest_sha256", "pipeline_fingerprint_sha256", "hardware_fingerprint_sha256", "providers", "fallback_drill", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "benchmark_id": {"type": "string", "minLength": 1},
+    "results_opened_at": {"type": "string", "format": "date-time"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "truth_tier": {"const": "human_anchor_gold"},
+    "truth_partition": {"const": "holdout"},
+    "truth_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "pipeline_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+    "hardware_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["densepose_r50_fpn_s1x", "sam3d_body"],
+      "properties": {
+        "densepose_r50_fpn_s1x": {"$ref": "#/$defs/providerEvidence"},
+        "sam3d_body": {"$ref": "#/$defs/providerEvidence"}
+      }
+    },
+    "fallback_drill": {"$ref": "#/$defs/fallback"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "context": {"enum": ["geometry_prior", "contact", "crowding", "identity_ambiguity", "occlusion", "rear_view", "front_view", "scale_disparity", "truncation"]},
+    "observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["context", "evaluated_projection_count", "consistent_projection_count", "visible_surface_truth_count", "visible_surface_hit_count", "predicted_surface_count", "background_bleed_count", "cross_person_bleed_count", "side_eligible_count", "left_right_error_count", "front_back_eligible_count", "front_back_error_count", "identity_eligible_count", "identity_assignment_error_count", "hard_qa_eligible_count", "hard_qa_failure_count"],
+      "properties": {
+        "context": {"$ref": "#/$defs/context"},
+        "evaluated_projection_count": {"type": "integer", "minimum": 1},
+        "consistent_projection_count": {"type": "integer", "minimum": 0},
+        "visible_surface_truth_count": {"type": "integer", "minimum": 1},
+        "visible_surface_hit_count": {"type": "integer", "minimum": 0},
+        "predicted_surface_count": {"type": "integer", "minimum": 1},
+        "background_bleed_count": {"type": "integer", "minimum": 0},
+        "cross_person_bleed_count": {"type": "integer", "minimum": 0},
+        "side_eligible_count": {"type": "integer", "minimum": 0},
+        "left_right_error_count": {"type": "integer", "minimum": 0},
+        "front_back_eligible_count": {"type": "integer", "minimum": 0},
+        "front_back_error_count": {"type": "integer", "minimum": 0},
+        "identity_eligible_count": {"type": "integer", "minimum": 0},
+        "identity_assignment_error_count": {"type": "integer", "minimum": 0},
+        "hard_qa_eligible_count": {"type": "integer", "minimum": 0},
+        "hard_qa_failure_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cold_latency_ms", "warm_latency_ms", "peak_vram_bytes", "oom_count", "crash_count", "repeat_count", "deterministic_output_sha256"],
+      "properties": {
+        "cold_latency_ms": {"type": "number", "minimum": 0},
+        "warm_latency_ms": {"type": "number", "minimum": 0},
+        "peak_vram_bytes": {"type": "integer", "minimum": 0},
+        "oom_count": {"type": "integer", "minimum": 0},
+        "crash_count": {"type": "integer", "minimum": 0},
+        "repeat_count": {"type": "integer", "minimum": 1},
+        "deterministic_output_sha256": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sha256"}}
+      }
+    },
+    "providerEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_revision", "checkpoint_revision", "artifact_hashes", "runtime_fingerprint", "observations", "runtime_metrics"],
+      "properties": {
+        "source_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "checkpoint_revision": {"type": "string", "minLength": 1},
+        "artifact_hashes": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+        "runtime_fingerprint": {"type": "string", "minLength": 1},
+        "observations": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/observation"}},
+        "runtime_metrics": {"$ref": "#/$defs/runtime"}
+      }
+    },
+    "fallback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["challenger", "injected_failure", "expected_provider", "observed_provider", "output_sha256", "active_provider_after", "rollback_provider_after"],
+      "properties": {
+        "challenger": {"const": "sam3d_body"},
+        "injected_failure": {"type": "string", "minLength": 1},
+        "expected_provider": {"const": "densepose_r50_fpn_s1x"},
+        "observed_provider": {"type": "string", "minLength": 1},
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "active_provider_after": {"type": "string", "minLength": 1},
+        "rollback_provider_after": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

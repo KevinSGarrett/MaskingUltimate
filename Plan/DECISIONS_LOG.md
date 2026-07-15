@@ -658,3 +658,30 @@ contradicted by the tracker. This contract deliberately fails against the curren
 grants no completion authority until every real upstream operation and measurement exists.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Freeze the SAM 3D Body versus DensePose geometry benchmark
+
+**Item(s) affected:** MF-P3-08.05, MF-P2-11.07, MF-P2-11.13, geometry-provider
+promotion and rollback
+
+**Decision:** Freeze `geometry_variant_benchmark_v1` at canonical SHA-256
+`98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef` before any
+eligible result. Compare SAM 3D Body only as the modern challenger to the exact promoted DensePose
+R50-FPN incumbent/rollback. Require image-disjoint human-anchor holdout observations across geometry
+priors, contact, crowding, identity ambiguity, occlusion, rear view, front view, scale disparity, and
+truncation. Bind the exact source revision, checkpoint revision, installed checkpoint/config/MHR/source
+archive hashes, runtime and hardware identities. Recompute image-projection consistency, visible-surface
+recall, background and cross-person bleed, character-side errors, front/back errors, person-identity
+assignment errors, hard-QA failures, cold/warm latency, peak VRAM, OOM/crash, and two-repeat determinism
+from explicit counts. Require at least a 0.01 overall projection-consistency win, the frozen 0.02
+per-context non-inferiority margins, zero regression on every safety/error rate, reliable operation
+within 8 GiB, and an injected-failure return to DensePose without changing active or rollback identity.
+
+**Why:** The public source and exact gated Hugging Face revision are known, but Meta's checkpoint,
+configuration, and MHR assets still require Kevin's human license/contact-sharing acceptance. Freezing
+the complete comparison before that gate opens prevents later artifact substitution, missing-context
+averages, denominator-free 3D claims, or post-result threshold changes. Synthetic fixtures prove only
+that the contract fails closed; they do not install SAM 3D Body, measure performance, promote a
+provider, author a mask, or create gold authority.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment, 8 GB reliability requirement, and autonomous execution mandate

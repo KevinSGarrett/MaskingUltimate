@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T10:01:51+00:00",
+    "generated_at": "2026-07-15T10:21:32+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12218,13 +12218,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-15T10:21:32+00:00",
+          "actor": "ai_agent",
+          "text": "Frozen and implemented the complete pre-result SAM 3D Body versus DensePose geometry benchmark. Exact checkpoint/runtime installation and real human-anchor observations remain unclaimed; upstream Meta license/contact-sharing acceptance is still NEEDS KEVIN and no WSL/F:/external VHD access occurred."
+        }
+      ],
+      "evidence": "2026-07-15: geometry_variant_benchmark_v1 canonical SHA-256 98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef binds nine contexts, exact artifact/runtime identities, projection/visibility/bleed/side/front-back/identity/QA denominators, latency/VRAM/OOM/determinism, 8 GiB gate, and DensePose fallback. Dedicated 30/30, focused 139/139, full 1445/1445 exit 0; Ruff/Black/CI YAML pass. Signed currency review d581b0d6fda7d26e99ecda00 verifies and remains honestly FAIL. qa/live_verification/geometry_variant_benchmark_contract_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T10:21:32+00:00",
       "orphaned": false
     },
     "MF-P3-08.06": {

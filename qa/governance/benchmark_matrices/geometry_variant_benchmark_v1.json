@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "geometry_variant_benchmark_v1",
+  "frozen_at": "2026-07-15T10:05:00Z",
+  "eligible_truth": {
+    "tier": "human_anchor_gold",
+    "partition": "holdout"
+  },
+  "required_contexts": [
+    "geometry_prior",
+    "contact",
+    "crowding",
+    "identity_ambiguity",
+    "occlusion",
+    "rear_view",
+    "front_view",
+    "scale_disparity",
+    "truncation"
+  ],
+  "providers": {
+    "densepose_r50_fpn_s1x": {
+      "role": "incumbent_rollback",
+      "model_family": "densepose",
+      "source_revision": "02b5c4e295e990042a714712c21dc79b731e8833",
+      "checkpoint_revision": "detectron2-densepose-model-165712039",
+      "required_artifact_keys": ["checkpoint"],
+      "frozen_artifact_hashes": {
+        "checkpoint": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91"
+      },
+      "authority": "active_and_rollback"
+    },
+    "sam3d_body": {
+      "role": "modern_challenger",
+      "model_family": "sam3d_body",
+      "source_revision": "b5c765a0d89d789985e186d396315e7590887b94",
+      "checkpoint_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+      "required_artifact_keys": ["checkpoint", "mhr_model", "model_config", "source_archive"],
+      "frozen_artifact_hashes": {},
+      "authority": "planned_source_only_until_governed_installation"
+    }
+  },
+  "normalization": {
+    "projection_consistency": "consistent_projected_points_over_evaluated_projected_points",
+    "visible_surface_recall": "visible_surface_hit_points_over_visible_surface_truth_points",
+    "bleed": "background_or_cross_person_points_over_predicted_surface_points",
+    "side_semantics": "character_anatomical_left_right",
+    "view_semantics": "source_image_front_back_truth"
+  },
+  "pass_requirements": {
+    "minimum_overall_projection_consistency_improvement": 0.01,
+    "max_context_projection_consistency_drop": 0.02,
+    "max_context_visible_surface_recall_drop": 0.02,
+    "max_zero_regression_rate_delta": 0.0,
+    "max_peak_vram_bytes": 8589934592,
+    "max_oom_or_crash_count": 0,
+    "require_deterministic_repeats": 2,
+    "require_fallback_to": "densepose_r50_fpn_s1x"
+  },
+  "zero_regression_metrics": [
+    "background_bleed_rate",
+    "cross_person_bleed_rate",
+    "front_back_error_rate",
+    "hard_qa_failure_rate",
+    "identity_assignment_error_rate",
+    "left_right_error_rate"
+  ],
+  "source_hashes": {
+    "env/source_builds.lock": "2ac1032a2d40f0adaf028d26ae3a32833cc63e28fb5903f0e5aa301e9c50893c",
+    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "6c61c3cf46abfbebf7d2c3a231e2e5e09cdb10cd42c11bf1af21f95329e4ba36",
+    "qa/live_verification/sam3d_body_source_gate_20260715.json": "2e84034a199cabded783935a1fe54cfa38ba0ea879175e383320e16c28033c13",
+    "src/maskfactory/lanes/prior3d.py": "cd8d174a2963ad7fbcef9d2d367bb2b5ce07dfc960e35da9537a3d4b1913e0fa",
+    "src/maskfactory/providers/contracts.py": "75677305f78c629767a3347effa82e1f7b0efa2f012384b7533fd8e2ca0a3de7"
+  },
+  "authority_boundary": "pre_result_contract_only_no_installation_performance_promotion_mask_or_gold_authority",
+  "sha256": "98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef"
+}

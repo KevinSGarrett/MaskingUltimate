@@ -193,8 +193,6 @@ class Sam31ConceptDetector:
             }
         )
         raw = tuple(self._executor(path, concepts=normalized, exemplars=exemplar_paths))
-        if not raw:
-            raise Sam31ShadowError("SAM 3.1 discovery returned no candidate evidence")
         results: list[BoxProposal | MaskProposal] = []
         instance_keys: set[str] = set()
         for index, item in enumerate(raw):
@@ -212,6 +210,8 @@ class Sam31ConceptDetector:
             instance_keys.add(instance)
             confidence = float(item["confidence"])
             label = str(item["label"])
+            if label not in normalized:
+                raise Sam31ShadowError("SAM 3.1 discovery result label was not requested")
             if item["kind"] == "box":
                 results.append(
                     BoxProposal(_box(item["value"], image.shape[:2]), confidence, label, instance)

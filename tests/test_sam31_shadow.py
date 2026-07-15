@@ -62,6 +62,28 @@ def test_official_discovery_emits_strict_shadow_candidates_with_exact_provenance
     assert len(results[1].prompt_fingerprint) == 64
 
 
+def test_official_discovery_allows_absent_concept_but_rejects_unrequested_label(
+    tmp_path: Path,
+) -> None:
+    source = _image(tmp_path)
+    detector = Sam31ConceptDetector(lambda *args, **kwargs: ())
+    assert detector.discover(source, concepts=("visible left hand",)) == ()
+
+    detector = Sam31ConceptDetector(
+        lambda *args, **kwargs: (
+            {
+                "kind": "box",
+                "confidence": 0.8,
+                "label": "unrequested concept",
+                "instance_key": "foreign",
+                "value": (1, 1, 4, 4),
+            },
+        )
+    )
+    with pytest.raises(Sam31ShadowError, match="was not requested"):
+        detector.discover(source, concepts=("visible left hand",))
+
+
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [

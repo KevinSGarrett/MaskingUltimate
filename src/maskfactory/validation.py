@@ -43,6 +43,7 @@ SCHEMA_NAMES = frozenset(
         "multi_person_tournament_evidence",
         "multi_person_tournament_execution",
         "sam31_shadow_candidate_package",
+        "sam31_shadow_orchestration",
         "qwen_challenger_benchmark_cases",
         "qwen_challenger_benchmark_policy",
         "qwen_challenger_benchmark_report",

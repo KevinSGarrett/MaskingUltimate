@@ -5726,3 +5726,21 @@ Production safety:                 live pipeline, external registry, model regis
 Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
 Remaining work:                    gated official checkpoint, frozen human-anchor matrix execution, real signed winner certificate, exact-input live candidate/incumbent smokes, observed production promotion, and observed one-command rollback
 Evidence:                          `qa/live_verification/interactive_provider_transaction_contract_20260715.json`
+
+## 2026-07-15 23:20 UTC - Official SAM3.1 production shadow orchestration connected
+
+**Result:** MF-P2-11.03 advances to 85%, MF-P3-08.01 advances to 85%, and
+MF-P8-11.03 advances to 92%; official SAM3.1 discovery/refinement is no longer
+fixture-only at the production orchestration boundary.
+
+Production path:                    S06 now owns an isolated official-SAM3.1 sidecar behind the exact governed `ConceptDetector` and `InteractiveSegmenter` identities
+Route coverage:                     59 unique visible-surface requests cover all frozen labels across hand/finger, chest/pelvic, hair, foot/toe, clothing, accessory, and repeated-instance lanes
+Candidate contract:                discovery boxes and masks enter exact-shape box/mask refinement; completed runs persist strict PNGs plus the existing hash-sealed candidate package and a new schema-valid orchestration record
+No-result/failure evidence:         planned/unavailable, complete-with-no-candidate, missing-loader, and runtime-failure states are explicit zero-authority records; partial candidate trees are removed
+Active-path isolation:              the sidecar cannot feed S07, change active maps, serve masks, assign semantics, or grant truth/gold authority; production GroundingDINO and SAM2.1 incumbents remain unchanged
+Content governance:                 general, adult-nonexplicit, and consensual-explicit-adult routes remain eligible without an age gate; Sapiens2 remains independently prohibited
+Pre-result rebinds:                 pipeline-bound MediaPipe, silhouette, serving-workflow, and aggregate provider-matrix policies were administratively rebound before any eligible result; final aggregate SHA-256 `263c4472...`; measurements, thresholds, truth, finalist, rollback, and authority rules unchanged
+Currency chain:                     reviews `422bb732...`, `e6327cd9...`, and `308c7c46...` archived; current Ed25519-valid/current-input review `7cdb252d06da682a71ca3ca4` remains honestly FAIL only on missing real role certificates and distinct tested rollbacks
+Verification:                       146 affected production/provider/schema tests, 65 pipeline-bound policy tests, 62 aggregate transaction tests, 96 final currency/aggregate tests, and complete repository 1,659/1,659 pass; Ruff, pre-commit Black, JSON parsing, and diff check pass
+Runtime boundary:                   official SAM3.1 remains lifecycle `planned` because its checkpoint is gated; no checkpoint download, official inference, real candidate quality, benchmark win, promotion, mask, truth, or gold claim is made
+Evidence:                           `qa/live_verification/sam31_production_shadow_orchestration_20260715.json` SHA-256 `c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7`

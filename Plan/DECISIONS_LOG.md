@@ -337,6 +337,44 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Execute official SAM3.1 as an isolated production shadow sidecar
+
+**Item(s) affected:** MF-P2-11.03, MF-P3-08.01, MF-P8-11.03, S06 production
+orchestration, provider benchmark reproducibility
+
+**Decision:** Add a governed S06 sidecar that derives unique visible-surface concepts for every
+frozen specialist label across hand/finger, chest/pelvic, hair, foot/toe, clothing, accessory, and
+repeated-instance lanes. A runnable official SAM3.1 challenger must enter through exact
+`ConceptDetector` and `InteractiveSegmenter` identities, execute discovery and box/mask refinement,
+and persist only isolated strict-PNG candidates plus a schema-valid hash-sealed orchestration record.
+Planned/unavailable, no-candidate, loader-failure, and runtime-failure outcomes remain explicit
+zero-authority records. None may change active maps, feed S07, serve a mask, decide semantics, or
+grant truth/gold authority. Adult-nonexplicit and consensual-explicit-adult labels remain eligible;
+there is no age-eligibility filter. Sapiens2 remains independently excluded.
+
+**Administrative pre-result rebind:** `provider_benchmark_matrix_v1` is rebound from canonical
+SHA-256 `f76605c75aa28b3e3ca1730fb09a33fb8e94d5e9bc65d923e0026afd0c831c4f` to
+`263c4472008b8def97a2d4dcc61fca587b123c7b3109b426e8f525a4eef4464d`. Its frozen
+`configs/pipeline.yaml` identity changed to
+`0484443725cc9d2784acb370e83e5a373cc6d3a158791ebbde00956cbd8f0769`; its transitive
+MediaPipe/silhouette policy and verifier identities were then rebound to their pipeline-current
+bytes. No benchmark result has been opened; routes, providers, truth partition, measurements,
+margins, thresholds, finalist rules, and authority are unchanged.
+
+The same pipeline-only source rebind applies to three other unopened policies:
+`mediapipe_vote_ablation_v1` from `8589e735...` to `a4091b17...`,
+`silhouette_variant_benchmark_v1` from `04a13fef...` to `7532c4d1...`, and
+`serving_workflow_performance_v1` from `0bd10772...` to `144a6cce...`. Their
+truth sets, provider/role matrices, metrics, thresholds, fallback/rollback requirements,
+determinism rules, and authority boundaries are unchanged, and no eligible result exists.
+
+**Why:** The official adapters and candidate package contract existed, but production S06 never
+invoked them, so all seven required specialist lanes remained fixture-only. The sidecar closes that
+orchestration gap while preserving SAM2.1/GroundingDINO incumbency and making unavailable or failed
+challenger execution auditable instead of silently absent.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Require signed matrix-bound specialist champion transactions
 
 **Item(s) affected:** MF-P2-11.15, MF-P5-10.11, MF-P6-06.08, specialist

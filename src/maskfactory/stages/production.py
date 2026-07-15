@@ -46,7 +46,14 @@ from ..providers.civitai_auxiliary import (
     render_auxiliary_review_overlay,
     run_auxiliary_providers,
 )
-from ..providers.contracts import InteractiveSegmenter
+from ..providers.contracts import ConceptDetector, InteractiveSegmenter
+from ..providers.sam31_orchestration import (
+    ORCHESTRATION_AUTHORITY,
+    RUNNABLE_LIFECYCLES,
+    Sam31OrchestrationError,
+    run_sam31_shadow_orchestration,
+    write_sam31_shadow_noncompletion,
+)
 from ..providers.selection import validate_provider_selection
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
@@ -325,6 +332,7 @@ def build_production_runners(
     images_root: Path = ROOT / "data" / "images",
     person_index: int = 0,
     shared_work_root: Path | None = None,
+    concept_provider_loaders: Mapping[str, Callable[[], ConceptDetector]] | None = None,
     interactive_provider_loaders: Mapping[str, Callable[[], InteractiveSegmenter]] | None = None,
     external_registry_path: Path = ROOT / "configs" / "external_sources.yaml",
     model_registry_path: Path = ROOT / "models" / "model_registry.json",
@@ -337,6 +345,7 @@ def build_production_runners(
     parsing_map = config.get("parsing_map", {})
     pose_rules = config.get("pose_tags_rules", {})
     prompting = yaml.safe_load((ROOT / "configs" / "prompting.yaml").read_text(encoding="utf-8"))
+    concept_provider_loaders = dict(concept_provider_loaders or {})
     interactive_provider_loaders = dict(interactive_provider_loaders or {})
 
     def interactive_provider(settings: Mapping[str, Any], work_dir: Path) -> tuple[Any, str, str]:
@@ -409,6 +418,84 @@ def build_production_runners(
                 f"active interactive provider {active!r} failed its production contract: {exc}"
             ) from exc
         return provider, active, fallback_runtime
+
+    def sam31_shadow_candidates(
+        *, source_image_path: Path, context: StageContext
+    ) -> dict[str, Any]:
+        """Run or explicitly skip the isolated official-SAM3.1 S06 sidecar."""
+        settings = context.config["stage"].get("shadow_candidates")
+        required = {
+            "enabled": True,
+            "provider": "sam3_1",
+            "authority": ORCHESTRATION_AUTHORITY,
+        }
+        if not isinstance(settings, Mapping) or dict(settings) != required:
+            raise SemanticStageError("S06 SAM 3.1 shadow-candidate configuration drift")
+        try:
+            selection = validate_provider_selection(
+                config,
+                external_registry_path=Path(external_registry_path),
+                model_registry_path=Path(model_registry_path),
+            )
+            if (
+                "sam3_1" not in selection["shadow"]["concept_detector"]
+                or "sam3_1" not in selection["shadow"]["interactive_segmenter"]
+            ):
+                raise Sam31OrchestrationError(
+                    "official SAM 3.1 is not governed in both shadow roles"
+                )
+            lifecycle = str(selection["provider_states"]["sam3_1"])
+            output_dir = context.output_dir / "sam31_shadow"
+            if lifecycle not in RUNNABLE_LIFECYCLES:
+                path = write_sam31_shadow_noncompletion(
+                    source_image_path=source_image_path,
+                    parent_instance_key=instance_name,
+                    lifecycle_state=lifecycle,
+                    output_dir=output_dir,
+                    status="skipped_unavailable",
+                    reason=f"official SAM 3.1 lifecycle_state={lifecycle}",
+                )
+            else:
+                concept_loader = concept_provider_loaders.get("sam3_1")
+                interactive_loader = interactive_provider_loaders.get("sam3_1")
+                if concept_loader is None or interactive_loader is None:
+                    path = write_sam31_shadow_noncompletion(
+                        source_image_path=source_image_path,
+                        parent_instance_key=instance_name,
+                        lifecycle_state=lifecycle,
+                        output_dir=output_dir,
+                        status="failed",
+                        reason="runnable official SAM 3.1 lacks injected concept/interactive loaders",
+                    )
+                else:
+                    try:
+                        path = run_sam31_shadow_orchestration(
+                            source_image_path=source_image_path,
+                            parent_instance_key=instance_name,
+                            lifecycle_state=lifecycle,
+                            concept_detector=concept_loader(),
+                            interactive_segmenter=interactive_loader(),
+                            output_dir=output_dir,
+                        )
+                    except Exception as exc:
+                        path = write_sam31_shadow_noncompletion(
+                            source_image_path=source_image_path,
+                            parent_instance_key=instance_name,
+                            lifecycle_state=lifecycle,
+                            output_dir=output_dir,
+                            status="failed",
+                            reason=f"official SAM 3.1 shadow execution failed: {exc}",
+                        )
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+            raise SemanticStageError(f"S06 SAM 3.1 shadow contract failed: {exc}") from exc
+        return {
+            "status": document["status"],
+            "candidate_count": document["candidate_count"],
+            "requested_lanes": document["requested_lanes"],
+            "manifest_sha256": document["sha256"],
+            "authority": document["authority"],
+        }
 
     def prior(context: StageContext, stage_name: str) -> Path:
         if shared_work_root is not None and stage_name in {"S01", "S09.5"}:
@@ -727,6 +814,7 @@ def build_production_runners(
     def s06(context: StageContext) -> Mapping[str, Any]:
         gdino = prompting["grounding_dino"]
         settings = context.config["stage"]
+        source_crop = prior(context, "S01") / instance_name / "person_ctx.png"
         if gdino.get("role") != "proposal_boxes_only" or gdino.get("may_write_final_masks"):
             raise SemanticStageError("S06 prompting authority must remain proposal boxes only")
         configured_thresholds = (
@@ -740,7 +828,7 @@ def build_production_runners(
         if configured_thresholds != stage_thresholds:
             raise SemanticStageError("S06 pipeline/prompt threshold configuration drift")
         path = run_s06_production(
-            prior(context, "S01") / instance_name / "person_ctx.png",
+            source_crop,
             context.output_dir,
             checkpoint=ROOT / "models" / "gdino" / "groundingdino_swint_ogc.pth",
             prompts=tuple(gdino["prompts"]),
@@ -756,6 +844,7 @@ def build_production_runners(
         document = json.loads(path.read_text(encoding="utf-8"))
         if document["authority"] != "proposal_boxes_only" or document["may_write_final_masks"]:
             raise SemanticStageError("S06 proposal-only authority boundary violated")
+        sam31 = sam31_shadow_candidates(source_image_path=source_crop, context=context)
         auxiliary = settings.get("auxiliary", {})
         auxiliary_result = None
         if auxiliary.get("enabled", False):
@@ -773,7 +862,7 @@ def build_production_runners(
                 raise SemanticStageError("S06 auxiliary registry SHA-256 drift")
             try:
                 auxiliary_result = run_auxiliary_providers(
-                    image_path=prior(context, "S01") / instance_name / "person_ctx.png",
+                    image_path=source_crop,
                     priors_dir=context.prior_stage_dir("S05"),
                     pose_path=context.prior_stage_dir("S04") / "pose133.json",
                     output_dir=context.output_dir / "auxiliary",
@@ -787,7 +876,7 @@ def build_production_runners(
                     output_dir=context.output_dir / "assisted_s05",
                 )
                 render_auxiliary_review_overlay(
-                    image_path=prior(context, "S01") / instance_name / "person_ctx.png",
+                    image_path=source_crop,
                     auxiliary_dir=context.output_dir / "auxiliary",
                     output_path=context.output_dir / "auxiliary" / "review_overlay.png",
                 )
@@ -796,6 +885,11 @@ def build_production_runners(
         return {
             "proposal_count": len(document["proposals"]),
             "authority": document["authority"],
+            "sam31_shadow_status": sam31["status"],
+            "sam31_shadow_candidate_count": sam31["candidate_count"],
+            "sam31_shadow_lanes": sam31["requested_lanes"],
+            "sam31_shadow_manifest_sha256": sam31["manifest_sha256"],
+            "sam31_shadow_authority": sam31["authority"],
             "auxiliary_selected_count": (
                 len(auxiliary_result.selected_keys) if auxiliary_result is not None else 0
             ),
@@ -808,7 +902,12 @@ def build_production_runners(
             "auxiliary_detection_count": (
                 auxiliary_result.detection_count if auxiliary_result is not None else 0
             ),
-            "_telemetry": {"model_keys": ["groundingdino_swint_ogc"]},
+            "_telemetry": {
+                "model_keys": [
+                    "groundingdino_swint_ogc",
+                    *(["sam3_1"] if sam31["status"] == "complete" else []),
+                ]
+            },
         }
 
     def s07(context: StageContext) -> Mapping[str, Any]:

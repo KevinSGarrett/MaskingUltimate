@@ -69,7 +69,8 @@ def _runtime_identity(path: Path) -> dict[str, str]:
     }
 
 
-def _labels() -> dict[str, frozenset[str]]:
+def governed_lane_labels() -> dict[str, frozenset[str]]:
+    """Return the frozen semantic-label vocabulary for each SAM 3.1 lane."""
     manifest, _ = load_specialist_margin_manifest()
     roles = manifest["roles"]
     mapping = {lane: frozenset(roles[role]["hard_labels"]) for lane, role in LANE_TO_ROLE.items()}
@@ -142,7 +143,7 @@ def write_sam31_candidate_package(
     shape = (height, width)
     pipeline_before = sha256_file(pipeline_path)
     runtime = _runtime_identity(runtime_lock_path)
-    allowed = _labels()
+    allowed = governed_lane_labels()
     seen_ids: set[str] = set()
     seen_routes: set[tuple[str, str, str]] = set()
     rows = []
@@ -246,7 +247,7 @@ def verify_sam31_candidate_package(
         or document["pipeline_sha256_after"] != pipeline
     ):
         raise Sam31CandidatePackageError("candidate package active-map identity is stale")
-    allowed = _labels()
+    allowed = governed_lane_labels()
     seen_paths: set[str] = set()
     seen_ids: set[str] = set()
     seen_routes: set[tuple[str, str, str]] = set()
@@ -292,6 +293,7 @@ __all__ = [
     "PACKAGE_AUTHORITY",
     "Sam31CandidatePackageError",
     "Sam31LaneCandidate",
+    "governed_lane_labels",
     "verify_sam31_candidate_package",
     "write_sam31_candidate_package",
 ]

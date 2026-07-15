@@ -131,7 +131,7 @@
     "require_deterministic_repeats": 2
   },
   "source_hashes": {
-    "configs/pipeline.yaml": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
+    "configs/pipeline.yaml": "0484443725cc9d2784acb370e83e5a373cc6d3a158791ebbde00956cbd8f0769",
     "env/birefnet_variants.lock.json": "d1d229f90b5d7998ee3b0126d91faab3d05ab9715dee064c41bb97ef46e42983",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
     "qa/governance/benchmark_matrices/specialist_margins_v1.json": "6c61c3cf46abfbebf7d2c3a231e2e5e09cdb10cd42c11bf1af21f95329e4ba36",
@@ -139,5 +139,5 @@
     "src/maskfactory/providers/birefnet_variants.py": "6916f277e99ac43dd9fcf61362dc8aeffa039cfb16d824a52c7c99a3bcdaaf83"
   },
   "authority_boundary": "Pre-result role matrix only. Synthetic fixtures prove enforcement but grant no measured performance, promotion, serving, certificate, production-mask, alpha-truth, or gold authority; completion requires an image-disjoint human-anchor holdout with reviewed auxiliary alpha references.",
-  "sha256": "04a13fef0de84b0db3895437163b33866ca1a553b916a5b1397681f84972ebab"
+  "sha256": "7532c4d159c6b5e4a506ae1d560fe7ad4ef5c3648e89fb9dd0025fd2c9521a35"
 }

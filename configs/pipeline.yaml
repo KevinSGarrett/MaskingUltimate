@@ -96,6 +96,10 @@ stages:
     enabled: true
     box_threshold: 0.30
     text_threshold: 0.25
+    shadow_candidates:
+      enabled: true
+      provider: sam3_1
+      authority: production_orchestration_shadow_evidence_only_no_active_map_serving_semantic_mask_or_gold_authority
     local_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
     source_path: "models/runtime_cache/groundingdino/856dde20aee659246248e20734ef9ba5214f5e44"
     dependency_site: "models/runtime_cache/groundingdino_deps"

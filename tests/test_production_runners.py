@@ -14,6 +14,8 @@ from maskfactory.io.png_strict import write_label_map
 from maskfactory.orchestrator import STAGE_BY_NAME, StageContext, load_pipeline_config, run_pipeline
 from maskfactory.providers.adapters import InteractiveSegmenterAdapter
 from maskfactory.providers.contracts import ProviderIdentity
+from maskfactory.providers.sam31_orchestration import canonical_sam31_concept_routes
+from maskfactory.providers.sam31_shadow import Sam31ConceptDetector, Sam31InteractiveSegmenter
 from maskfactory.qa.multi_instance import run_multi_instance_qc
 from maskfactory.stages import production
 from maskfactory.stages.s01_person_detection import RankedPerson, S01Result
@@ -651,6 +653,84 @@ def test_s06_production_runner_forwards_exact_prompt_and_threshold_contract(
     )
     assert captured["dependency_site"] == Path("models/runtime_cache/groundingdino_deps")
     assert captured["hf_home"] == Path("models/runtime_cache/huggingface")
+    assert delta["sam31_shadow_status"] == "skipped_unavailable"
+    assert delta["sam31_shadow_candidate_count"] == 0
+    assert len(delta["sam31_shadow_lanes"]) == 7
+
+
+def test_s06_production_runner_executes_installed_official_sam31_as_isolated_sidecar(
+    tmp_path: Path, monkeypatch
+) -> None:
+    image_id = "img_a3f9c2e17b04"
+    work = tmp_path / "work"
+    crop_dir = work / "s01" / image_id / "p0"
+    crop_dir.mkdir(parents=True)
+    Image.new("RGB", (20, 30), "white").save(crop_dir / "person_ctx.png")
+
+    def fake_s06(_image_path, output_dir, **_kwargs):
+        path = Path(output_dir) / "gdino_boxes.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(
+                {
+                    "authority": "proposal_boxes_only",
+                    "may_write_final_masks": False,
+                    "proposals": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        return path
+
+    def discover(_path, *, concepts, exemplars):
+        return (
+            {
+                "kind": "box",
+                "confidence": 0.9,
+                "label": concepts[0],
+                "instance_key": "route-box",
+                "value": (2, 2, 12, 18),
+            },
+        )
+
+    def refine(_embedding, *, prompt):
+        mask = np.zeros((30, 20), dtype=bool)
+        x1, y1, x2, y2 = (int(value) for value in prompt["box_xyxy"])
+        mask[y1:y2, x1:x2] = True
+        return ((mask, 0.95),)
+
+    external = yaml.safe_load(Path("configs/external_sources.yaml").read_text(encoding="utf-8"))
+    external["providers"]["sam3_1"]["lifecycle_state"] = "installed"
+    external_path = tmp_path / "external_sources.yaml"
+    external_path.write_text(yaml.safe_dump(external, sort_keys=False), encoding="utf-8")
+    config = load_pipeline_config(Path("configs/pipeline.yaml"))
+    config["stages"]["S06"]["auxiliary"]["enabled"] = False
+    context = StageContext(
+        image_id=image_id,
+        stage=STAGE_BY_NAME["S06"],
+        output_dir=work / "s06" / image_id,
+        work_root=work,
+        config={"global": {}, "stage": config["stages"]["S06"]},
+        config_hash="fixture",
+    )
+    monkeypatch.setattr(production, "run_s06_production", fake_s06)
+    runners = production.build_production_runners(
+        config,
+        external_registry_path=external_path,
+        concept_provider_loaders={"sam3_1": lambda: Sam31ConceptDetector(discover)},
+        interactive_provider_loaders={
+            "sam3_1": lambda: Sam31InteractiveSegmenter(lambda image: image.shape, refine)
+        },
+    )
+    pipeline_before = Path("configs/pipeline.yaml").read_bytes()
+
+    delta = runners["S06"](context)
+
+    assert delta["sam31_shadow_status"] == "complete"
+    assert delta["sam31_shadow_candidate_count"] == len(canonical_sam31_concept_routes())
+    assert delta["_telemetry"]["model_keys"] == ["groundingdino_swint_ogc", "sam3_1"]
+    assert (context.output_dir / "sam31_shadow/orchestration.json").is_file()
+    assert Path("configs/pipeline.yaml").read_bytes() == pipeline_before
 
 
 def test_s06_production_runner_refuses_threshold_source_drift(tmp_path: Path) -> None:

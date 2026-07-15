@@ -128,28 +128,28 @@
     }
   ],
   "event": "scheduled_90_day",
-  "expires_at": "2026-10-13T23:11:31.094046Z",
+  "expires_at": "2026-10-13T19:22:31.740643Z",
   "global_findings": [],
   "input_hashes": {
     "dependencies": {
       "conda_environment": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5",
-      "governance_decisions": "1134292ccc2eb0e7b3eeeda94e292a16f68c9c7eae7a06784468e462d97b9ffd",
+      "governance_decisions": "59e755d09b2350e7dc2ae6a3e047e13f28cc3062cd1c727f4077a7c8b6ef81ac",
       "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
       "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
     },
     "external_registry": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
     "model_registry": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
-    "pipeline": "0484443725cc9d2784acb370e83e5a373cc6d3a158791ebbde00956cbd8f0769",
+    "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
     "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
   },
-  "payload_sha256": "113a10755885df04b82e9cafb529647a1cdd457d17e938c695dfb2d711061cb2",
-  "previous_review_sha256": "e382f5b0e0425c6b19668b40d07074454c040c30130db0de2bd87872d7fe0404",
-  "review_id": "7cdb252d06da682a71ca3ca4",
-  "review_sha256": "44d7e793bc23aa87dd1b114f0fa6b59c1c92786978088ae8f02f4971bf80aadb",
-  "reviewed_at": "2026-07-15T23:11:31.094046Z",
+  "payload_sha256": "f54dfdca8e4add5295aa2e2f2fcdcdf4742763249fef555f087990bd7666c70e",
+  "previous_review_sha256": "e9bd11f9b38d854d2a8915fef748b8dec2e9ff1de31ecc89ad3d45e82162bf28",
+  "review_id": "422bb732e8738a6038124ce1",
+  "review_sha256": "22bd56e85a5c37d97bd953b84a2e3b62b7d80bf44abccdfe2f1c2e9cd6191e4c",
+  "reviewed_at": "2026-07-15T19:22:31.740643Z",
   "reviewer": "ai_agent",
   "schema_version": "1.0.0",
-  "signature": "luY6govqBDDJuxPBnTMmYB9K+hjdfvm46MrKSjwDgKx0ZxLzCkodjnbta6P+vzcY9IOibiXiyCuP5b67HOzFBw==",
+  "signature": "w8pnwvem5Lrl7Ng0xVRB+2fHkuuooOv1EPT2NdeYpqjToRS58yM/IwWXsiDsJL5Atnk7RnDT3nP84XAVPWqqAQ==",
   "signature_algorithm": "ed25519",
   "signer_public_key_sha256": "5892e5151e01dc1264ad1dab8009f4d746568828a417e4b2f34835f03eb84512",
   "status": "fail"

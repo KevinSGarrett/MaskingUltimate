@@ -68,6 +68,8 @@ SCHEMA_NAMES = frozenset(
         "serving_route",
         "serving_workflow_performance_policy",
         "serving_workflow_performance_report",
+        "serving_workflow_execution_input",
+        "serving_workflow_preflight_report",
         "specialist_benchmark_margins",
         "specialist_evidence_package",
     }

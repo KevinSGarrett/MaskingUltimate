@@ -3016,6 +3016,86 @@ def verify_serving_workflows(report: Path, policy: Path, artifact_root: Path) ->
     click.echo(json.dumps(result, sort_keys=True))
 
 
+@main.command("preflight-serving-workflows")
+@click.argument("input_document", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("qa/governance/serving_workflow_performance_v1.json"),
+    show_default=True,
+)
+@click.option(
+    "--artifact-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("."),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("models/model_registry.json"),
+    show_default=True,
+)
+@click.option(
+    "--pipeline",
+    "pipeline_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/pipeline.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--external-registry",
+    "external_registry_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/external_sources.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False))
+def preflight_serving_workflows(
+    input_document: Path,
+    policy: Path,
+    artifact_root: Path,
+    registry_path: Path,
+    pipeline_path: Path,
+    external_registry_path: Path,
+    packages_root: Path,
+    output: Path | None,
+) -> None:
+    """Fail closed before launching the frozen MF-P6-06.08 workflow run."""
+    from .serve.workflow_preflight import WorkflowPreflightError, preflight_workflow_execution
+
+    try:
+        document = json.loads(input_document.read_text(encoding="utf-8"))
+        if not isinstance(document, dict):
+            raise WorkflowPreflightError("workflow execution input must be a JSON object")
+        report = preflight_workflow_execution(
+            document,
+            artifact_root=artifact_root,
+            policy_path=policy,
+            registry_path=registry_path,
+            pipeline_path=pipeline_path,
+            external_registry_path=external_registry_path,
+            packages_root=packages_root,
+        )
+        rendered = json.dumps(report, indent=2, sort_keys=True) + "\n"
+        if output is not None:
+            output.parent.mkdir(parents=True, exist_ok=True)
+            with output.open("x", encoding="utf-8", newline="\n") as stream:
+                stream.write(rendered)
+    except (FileExistsError, OSError, json.JSONDecodeError, WorkflowPreflightError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(rendered, nl=False)
+    if not report["ready"]:
+        raise click.exceptions.Exit(1)
+
+
 # --- environment / model management (P0) ---
 @main.command()
 def doctor() -> None:

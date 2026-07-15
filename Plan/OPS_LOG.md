@@ -5610,3 +5610,20 @@ Evidence identity:                  report file SHA-256 `2fb9ecb8012eb89e8bf39a3
 Authority boundary:                absolute reviewed-S02 diagnostic only; these two references are not human-anchor gold or a frozen benchmark holdout, and no official SAM3.1, lower-memory, noninferiority, promotion, production, gold, blocker-clearance, or completion claim is made
 Remaining work:                    obtain/live-qualify official SAM3.1 and run the already-frozen image-disjoint human-anchor relative quality/memory comparison
 Evidence:                          `qa/live_verification/sam3_litetext_reviewed_s02_20260715.json`
+
+## 2026-07-15 18:11 UTC - Provider-neutral workflow execution preflight enforced
+
+**Result:** MF-P6-06.08 advances from 70% to 75%; the frozen six-case workflow
+contract now has a schema-valid, hash-sealed, fail-closed execution preflight. The
+champion-backed run and rollback rehearsals remain pending and are not claimed.
+
+Sources/packages:                  exact governed single/multi sources, adult/NSFW-eligible content-lane decisions, image disjointness, eligible truth tier, manifest identity, and full package-tree identity are checked before launch
+Truth isolation:                   output under `data/packages` or either selected package is rejected; preflight has no serving, package-write, truth, gold, or promotion authority
+Active roles:                      body-part, hand, clothing, and interactive providers require promoted lifecycle plus active checkpoint/runtime files matching authoritative registry identities
+Certificates/rollback:            every role requires a passing role-bound certificate, a distinct benchmarked/promoted rollback provider, a rollback checkpoint file matching registry identity, and a governed one-command declaration
+Control plane/API:                 provider selection is recomputed from the authoritative registries; only credential-free loopback HTTP base URLs are accepted
+Evidence:                          both ready and not-ready reports are schema-valid and hash sealed; CLI output uses exclusive creation and refuses overwrite
+Adult-content boundary:            the regression fixture explicitly uses a governed adult-explicit lane; no adult/NSFW exclusion was added, while the independent Sapiens2 prohibition remains unchanged
+Verification:                      7 focused preflight tests, 120 affected serving/ComfyUI/provider/governance/currency tests, and all 1,623 repository tests pass; Ruff, Black, JSON parsing, schema validation, and diff check pass
+Current readiness:                 false until promoted body-part/hand/clothing champions and distinct tested rollback providers exist; official SAM3.1 terms/token access is also still absent
+Evidence file:                     `qa/live_verification/provider_neutral_workflow_preflight_20260715.json`

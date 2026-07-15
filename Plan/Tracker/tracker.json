@@ -14030,18 +14030,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-15T17:14:13+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: froze and implemented the complete pre-result provider-neutral workflow contract before eligible champion results. It requires six live Mode A/Mode B single/multi-person cases, actual source/governance/provider/checkpoint/runtime/certificate/provenance/output/package bindings, existing latency gates, finite Mode A timing, VRAM/OOM/crash/determinism evidence, package-tree immutability, and four distinct transactional role rollbacks. Real champion/source/package execution remains unclaimed."
+        },
+        {
+          "ts": "2026-07-15T18:12:22+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: implemented and verified a fail-closed execution preflight for the frozen six-case workflow contract. It schema/hash-binds governed adult/NSFW-eligible single/multi sources, package truth trees, output isolation, promoted active checkpoint/runtime identities, passing role certificates, distinct rollback providers/checkpoints, and authoritative selection before launch. Live champion execution and rollback rehearsals remain unclaimed."
         }
       ],
-      "evidence": "qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json; policy canonical SHA-256 0bd10772a72672f0f55df7a9148892f4ae8437dbb80740d8dd4436b3a46468c9; 13 dedicated, 62 focused serving/ComfyUI, and 1606 full repository tests pass. No live result, D8, or completion claim.",
+      "evidence": "qa/live_verification/provider_neutral_workflow_preflight_20260715.json (file SHA-256 3aad902090fc6c1f00e58e32a0d9178154edea551ef943671578393a834c57aa); 7 dedicated, 120 affected, and 1623/1623 complete repository tests pass; Ruff, Black, JSON schemas, and diff check pass. Frozen policy remains 0bd10772.... No live workflow, rollback, D8, or completion claim.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T17:14:13+00:00",
+      "updated_at": "2026-07-15T18:12:22+00:00",
       "orphaned": false
     },
     "MF-P7-06.01": {

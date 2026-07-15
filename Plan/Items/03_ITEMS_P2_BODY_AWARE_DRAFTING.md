@@ -1,9 +1,10 @@
 # ITEMS — Phase P2: Body-Aware Drafting (Weeks 2–4)
 
-Goal: automatic drafts for all 56 parts from one command (D1) + first G2 measurement. Parent IDs from doc 14 §3.
+Goal: automatic drafts for every selected production PART from one command (D1: 56 active v1;
+65 only after gated v2 activation) + first G2 measurement. Parent IDs from doc 14 §3.
 
 ## MF-P2-01 — S01 person detection + S02 silhouette (spec: 07 S01–S02)
-- [ ] MF-P2-01.01 S01: YOLO11m person class conf ≥ 0.5 · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · >3 → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\s01\`
+- [ ] MF-P2-01.01 S01: YOLO11m person class conf ≥ 0.5, with proposal-only GroundingDINO `person` fallback only when YOLO returns zero raw boxes · primary = largest area × centeredness · other persons recorded for PART 50 · 0 persons → `rejected(no_person)` · crowd threshold → `quarantined(multi_person_review)` · context crop = bbox × 1.25 clamped → `work\s01\`
 - [ ] MF-P2-01.02 S02: BiRefNet fp16, long side 2048 (tiled beyond) · threshold 0.5 · keep largest component + components ≥ 1% person area touching it · paste to full canvas → `person_full_visible` candidate + confidence map · QC hook: silhouette/bbox area ratio ∈ [0.35, 0.95]
 - [ ] MF-P2-01.03 Fixture set: 10 images with hand-truth bboxes + silhouettes · detection and silhouette IoU ≥ 0.95
 
@@ -11,14 +12,14 @@ Goal: automatic drafts for all 56 parts from one command (D1) + first G2 measure
 - [ ] MF-P2-02.01 Sapiens-0.6B-seg bf16, input long-side 1024 (tile 1536 / 128 overlap) · argmax + per-class prob maps saved 8-bit
 - [ ] MF-P2-02.02 SCHP-ATR always-run companion pass (clothing classes + cross-check)
 - [ ] MF-P2-02.03 Author `configs\pipeline.yaml`: stage toggles · device · tile sizes · thresholds · `seed: 1337` · `io.workdir` · `gpu_cooldown_sec: 3` · `parsing_map` (Sapiens-28 + SCHP-ATR → ontology priors) · `pose_tags_rules` · fusion weights (sam2 .40 / sapiens .25 / geometry .15 / schp .10 / densepose .10) · `fusion.zorder_rules`
-- [ ] MF-P2-02.04 OOM path: half-res retry → SCHP-only + `parsing_degraded: true`
+- [ ] MF-P2-02.04 OOM path: half-res retry → SCHP-only + `parsing_degraded: true`; all-background Sapiens output for an S01/S02-confirmed person is likewise degraded and S05 selects SCHP
 - [ ] MF-P2-02.05 Remap unit tests green · Sapiens↔SCHP disagreement % logged per image
 
 ## MF-P2-03 — S04 pose + view/pose_tags (spec: 07 S04)
 - [ ] MF-P2-03.01 DWPose via onnxruntime-gpu (yolox_l det + dw-ll_ucoco_384) → `pose133.json` with confidences (133 kp incl. 21×2 hands, 6 feet)
 - [ ] MF-P2-03.02 View classifier: shoulder/hip geometry + nose visibility (+ DensePose back-ratio once S08.5 lands in P3) → {front, back, left/right_profile, left/right_3_4}
 - [ ] MF-P2-03.03 pose_tags deterministic rules (arm elevation angles, hip-knee-ankle angles, overlap tests) per `pose_tags_rules`
-- [ ] MF-P2-03.04 Degraded path: < 60% body kp above conf 0.3 → `pose_degraded: true` · parsing-only priors · auto careful-review tag
+- [ ] MF-P2-03.04 Degraded path: < 60% body kp above conf 0.3 or no owned DWPose candidate → `pose_degraded: true` · missing candidate serialized as zero-confidence 133-kp evidence · parsing-only priors · auto careful-review tag; co-subject poses remain suppressed
 - [ ] MF-P2-03.05 20-image hand-tagged eval set · view + pose_tags ≥ 90% correct
 
 ## MF-P2-04 — S05 geometry engine (spec: 07 S05, 02 §6)
@@ -60,11 +61,22 @@ Goal: automatic drafts for all 56 parts from one command (D1) + first G2 measure
 - [ ] MF-P2-07.05 Author `configs\qa.yaml` (every threshold, severities, class-tier weights fingers/hair/chest ×2, qa_score formula) · metrics module: iou_vs_consensus, boundary_f_2px, hausdorff_95 (hard classes), hole_ratio, components, disagreement_score, protected/exclusive overlaps
 - [ ] MF-P2-07.06 Seeded L/R-swap fixture → QC-014 BLOCKs it
 
-## MF-P2-08 — 25-image draft→gold run + baseline (spec: 12 §10)
+## MF-P2-08 — 25-image draft→human-anchor run + baseline (spec: 12 §10; 22 §5)
 - [ ] MF-P2-08.01 Ingest + draft 25 images end-to-end, model-major batching (one heavy model resident at a time; runtime ≈2.5–3.5 min/img verified vs doc 07 budget table)
-- [ ] MF-P2-08.02 Review/correct/approve in CVAT → ~30 total gold
+- [ ] MF-P2-08.02 Review/correct the calibration subset in CVAT → approximately 30 human-anchor packages with explicit train/calibration/holdout partitions
 - [ ] MF-P2-08.03 Create `runs\leaderboard.jsonl` · publish `draft_pipeline_full` row: draft-vs-gold per-part IoU + boundary-F on these packages
-- [ ] MF-P2-08.04 Record G2 initial numbers in OPS_LOG · verify **D1**: one CLI command takes a new incoming image to drafts for all 56 atomics
+- [ ] MF-P2-08.04 Record G2 initial numbers in OPS_LOG · verify **D1**: one CLI command takes a new incoming image to every indexed PART draft in the selected production ontology (56 active v1; 65 after gated v2 activation)
+
+## MF-P2-09 — Governed Civitai auxiliary specialists (spec: 16 §8, 07 S06–S09)
+- [ ] MF-P2-09.01 Author explicit runtime mappings for all 24 registered auxiliary detectors: embedded task/classes, mode, priority, ROI/gates, output kind/target; anime/domain-specific and redundant person models disabled by default
+- [ ] MF-P2-09.02 Runtime validates registry/payload hashes + embedded classes, runs selected models sequentially, preserves raw masks/boxes/confidence/ROI/source+runtime provenance, and fails optional providers into recorded evidence without granting authority
+- [ ] MF-P2-09.03 Consume S05 specialist crop requests for ROI selection and character-left/right hand/foot assignment; no auxiliary model may invent handedness
+- [ ] MF-P2-09.04 `assist` wiring: specialist hand/foot/hair candidates create bounded S05 priors/prompts → SAM2 refinement; protected eye/face/mouth/nail outputs remain QA-only
+- [ ] MF-P2-09.05 S08 consumes only explicit segmentation material seeds before SAM2; live false-positive probes demote harmful sock/headwear/clothing candidates to shadow/protected-only
+- [ ] MF-P2-09.06 Promotion certificates require ≥30 gold instances, mean-IoU gain ≥0.01, boundary-F gain ≥0.01, no hard-class regression, exact checkpoint/runtime/dataset identity; certified S09 auxiliary weight capped at 0.05
+- [ ] MF-P2-09.07 Add auxiliary/protected/disagreement overlays to review packages and rebuild the downloaded mask-add/subtract graph as a controlled import adapter that writes canonical maps, reruns QA, and still requires human approval
+- [ ] MF-P2-09.08 Consume the 22 registered pose/control packs in deterministic stress/acquisition plans for contact, occlusion, rear, from-below, hands-on-body, and multi-person coverage
+- [ ] MF-P2-09.09 Benchmark baseline vs each enabled assist on ≥30 image-disjoint human-anchor instances; publish per-label IoU, boundary-F, false-positive rate, latency, correction-pixel/labor delta, and hard-bucket non-inferiority; promote only measured winners and retain one-command rollback
 
 ## P2 Exit Gate
-- [ ] MF-P2-EXIT Drafts measurably cut annotation minutes vs P1 baseline (G1 trend) · doc 14 §3 checkboxes updated
+- [ ] MF-P2-EXIT Drafts measurably reduce human touches, changed pixels, residual-review fraction, and review minutes versus the P1 human-anchor baseline without quality regression · doc 14 §3 checkboxes updated

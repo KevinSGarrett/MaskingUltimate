@@ -154,9 +154,9 @@ models:
     version_tag: zllrunning/face-parsing.PyTorch@d2e684cf1588b46145635e8fe7bcc29544e5537e
     license: MIT
     role: hair_and_face_detail_fallback
-    runtime: WSL-face-parsing-PyTorch+torch-2.11.0+cu128
+    runtime: local-face-parsing-PyTorch@d2e684c+torch-2.11.0+cu128
     vram_note: 19-class 512x512 BiSeNet face crop; specialist fallback only
-    smoke_test: faceparse_bisenet_cuda_wsl
+    smoke_test: faceparse_bisenet_cuda_local
     smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
   vitmatte_small_composition_1k:
     url: https://huggingface.co/hustvl/vitmatte-small-composition-1k/resolve/6a58ad7646403c1df626fbd746900aec7361ea1d/pytorch_model.bin

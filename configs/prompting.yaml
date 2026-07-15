@@ -1,0 +1,73 @@
+config_version: 2.0.0
+
+provider_contract:
+  concept_discovery: [sam3_1, groundingdino_local]
+  interactive_refinement: [sam3_1, sam2_1_large, sam2_1_base_plus]
+  legacy_manifest_aliases:
+    sam2_refine: {provider_role: interactive_segmenter, provider_key: sam2_1_large}
+  sam3_1:
+    text_and_exemplar_discovery: true
+    point_box_mask_refinement: true
+    exhaustive_instance_discovery: true
+    silent_replacement_of_sam2: false
+
+grounding_dino:
+  box_threshold: 0.30
+  text_threshold: 0.25
+  role: proposal_boxes_only
+  may_write_final_masks: false
+  prompts:
+    - hair
+    - bra
+    - underwear
+    - shoe
+    - sock
+    - glove
+    - necklace
+    - handheld object
+    - chair
+    - bed
+    - surface
+
+sam2:
+  box_scale: 1.10
+  multimask_output: true
+  positives:
+    include_prior_peak: true
+    skeleton_samples_min: 3
+    skeleton_samples_max: 7
+  negatives:
+    include_neighbor_peaks: true
+    include_background_ring: true
+    background_ring_samples: 8
+    background_ring_offset_px: 4
+
+part_recipes:
+  head:
+    parts: [hair, head_face, neck, left_ear, right_ear]
+    skeleton_samples: 3
+    neighbor_groups: [torso, protected]
+  torso:
+    parts: [chest_upper_torso, left_breast, right_breast, abdomen_stomach, belly_button, pelvic_region, left_hip, right_hip, left_glute, right_glute, back_upper_torso, back_lower_torso]
+    skeleton_samples: 5
+    neighbor_groups: [upper_limb, lower_limb, protected]
+  upper_limb:
+    parts: [left_shoulder, right_shoulder, left_upper_arm, right_upper_arm, left_elbow, right_elbow, left_forearm, right_forearm, left_wrist, right_wrist]
+    skeleton_samples: 5
+    neighbor_groups: [torso, hand, protected]
+  hand:
+    parts: [left_hand_base, right_hand_base, left_thumb, right_thumb, left_index_finger, right_index_finger, left_middle_finger, right_middle_finger, left_ring_finger, right_ring_finger, left_pinky, right_pinky]
+    skeleton_samples: 7
+    neighbor_groups: [upper_limb, protected]
+  lower_limb:
+    parts: [left_thigh, right_thigh, left_knee, right_knee, left_calf, right_calf, left_ankle, right_ankle]
+    skeleton_samples: 5
+    neighbor_groups: [torso, foot, protected]
+  foot:
+    parts: [left_foot_base, right_foot_base, left_toes, right_toes]
+    skeleton_samples: 5
+    neighbor_groups: [lower_limb, protected]
+  protected:
+    parts: [other_person, occluding_object, support_surface, accessory_or_prop]
+    skeleton_samples: 3
+    neighbor_groups: [head, torso, upper_limb, hand, lower_limb, foot]

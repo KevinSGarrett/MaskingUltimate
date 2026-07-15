@@ -18,6 +18,8 @@ from typing import Any
 
 import yaml
 
+from ..governance import provider_activation_issues, validate_external_source_registry
+
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG = ROOT / "configs" / "external_sources.yaml"
 DEFAULT_WORKFLOWS = ROOT / "configs" / "civitai_classifications.json"
@@ -187,10 +189,18 @@ def probe_external_sources(
     """Inspect configured providers and write a JSON evidence report."""
     config_bytes = config_path.read_bytes()
     config = yaml.safe_load(config_bytes)
-    providers = [
-        _provider_record(name, provider_config, root)
-        for name, provider_config in config.get("providers", {}).items()
-    ]
+    policy = validate_external_source_registry(config)
+    providers = []
+    for name, provider_config in config.get("providers", {}).items():
+        record = _provider_record(name, provider_config, root)
+        record["activation"] = {}
+        for lane in ("adult_nonexplicit", "consensual_explicit_adult"):
+            blockers = provider_activation_issues(provider_config, content_lane=lane)
+            record["activation"][lane] = {
+                "eligible": not blockers,
+                "blockers": list(blockers),
+            }
+        providers.append(record)
     workflow_config_sha256, workflows = _workflow_records(workflow_path)
     counts = {
         status: sum(provider["status"] == status for provider in providers)
@@ -201,6 +211,7 @@ def probe_external_sources(
         "generated_at": datetime.now(UTC).isoformat(),
         "read_only": True,
         "downloads_attempted": 0,
+        "governance": policy,
         "config_path": str(config_path),
         "config_sha256": hashlib.sha256(config_bytes).hexdigest(),
         "workflow_config_path": str(workflow_path),

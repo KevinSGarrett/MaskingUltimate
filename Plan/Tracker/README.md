@@ -1,10 +1,10 @@
 # MaskFactory Project Tracker — README
 
 This folder is the **live, machine-readable status tracker** for the entire
-Ultimate Masking System build-out: all 393 action items from
+Ultimate Masking System build-out: all 609 action items from
 `Plan\Items\*.md`, plus the Definition-of-Done (D1–D11) and Goals (G1–G9)
-rollups from docs 00 and 01, plus a handful of free-form project metrics
-(like the running approved-gold-package count).
+rollups from docs 00 and 01, plus tier-separated truth, labor, audit, coverage,
+and certified-package metrics.
 
 **If you are an AI agent picking up this project cold, read this file
 first, then run `python tracker.py report` and open `DASHBOARD.md` to see
@@ -16,7 +16,7 @@ exactly where the project currently stands.**
 
 | What | Lives in | Who edits it | How |
 |---|---|---|---|
-| **Item metadata** (id, description, phase, spec reference, hard-blocker / conditional / exit-gate flags) | `Plan\Items\*.md` (the 8 checklist files) | A human, deliberately, when the plan itself changes | Edit the markdown, then run `python tracker.py rebuild` |
+| **Item metadata** (id, description, phase, spec reference, verify/blocker clauses, hard-blocker / conditional / exit-gate flags) | `Plan\Items\*.md` (19 parsed checklist files plus the master/traceability documents) | A human, deliberately, when the plan itself changes | Edit the markdown, then run `python tracker.py rebuild` |
 | **Item state** (status, percent, evidence, notes, blocked reason, timestamps) | `Tracker\tracker.json` | Anyone (human or AI) working the project | **Only** via `python tracker.py set ...` / `metrics` / `goal` |
 
 `tracker.json` is never hand-edited. `Plan\Items\*.md` is never used to record
@@ -47,7 +47,7 @@ python tracker.py <command> ...
 python tracker.py rebuild
 ```
 Run this once to initialize (already done — `tracker.json` exists with all
-348 items after external-bootstrap expansion). Rerun it any time `Plan\Items\*.md` is
+609 items after the docs 18–22/SAM 3.1 reconciliation). Rerun it any time `Plan\Items\*.md` is
 edited (labels added, items split, etc.). It **preserves all existing
 status/evidence/notes** for ids that still exist, marks ids no longer found
 in the source as `orphaned: true` (never deletes their history), and adds
@@ -101,7 +101,7 @@ python tracker.py set MF-P5-08.01 --status not_applicable --evidence "trigger ne
 python tracker.py list [--phase P0..P8] [--status open,blocked] [--hard-blockers]
                         [--conditional] [--blocked] [--search "sam2"]
 ```
-Statuses can be comma-separated. No filters = list everything (393 lines).
+Statuses can be comma-separated. No filters = list everything (609 lines).
 
 ### `next` — what should I work on
 ```
@@ -118,16 +118,20 @@ exit gates are usually worth tackling before moving deeper into a phase.
 
 ### `metrics` — free-form project counters
 ```
-python tracker.py metrics --set approved_gold_count=42
+python tracker.py metrics --set human_anchor_train_count=42
+python tracker.py metrics --set autonomous_certified_gold_count=180
 python tracker.py metrics --show
 ```
 Currently tracked keys (seeded at rebuild, editable any time):
-`approved_gold_count`, `target_gold_p5_entry` (200), `target_gold_d5` (300),
-`target_gold_g6_stretch` (500), `coverage_cells_at_target_pct`. Add any new
-key you need with `--set key=value`; it's stored as free text. Update
-`approved_gold_count` every time a new package reaches
-`human_approved_gold` — it's what the P5 entry gate and D5/G6 checks are
-watching.
+the three `human_anchor_*_count` partitions, `autonomous_certified_gold_count`,
+`weighted_pseudo_label_count`, `machine_candidate_count`,
+`certified_training_package_count`, `effective_training_weight_units`, zero-touch, routine-touch,
+audited/residual fractions, human touches per 100 images, manually changed pixels per 100,000,
+and audit failure rates,
+certified-package targets, and coverage. Metric values are stored as scalar JSON values.
+`certified_training_package_count` is automatically recomputed as
+`human_anchor_train_count + autonomous_certified_gold_count`; pseudo-labels and calibration/holdout
+anchors never satisfy P5 or D5.
 
 ### `goal` — record a measured Goal (G1–G9)
 ```
@@ -142,7 +146,7 @@ they are not auto-computed the way DoD items are (see §5).
 ```
 python tracker.py validate
 ```
-Confirms 348 non-orphaned items, no duplicate/invalid statuses, flags
+Confirms 609 non-orphaned items, no duplicate/invalid statuses, flags
 `complete` items missing evidence, `blocked` items missing a reason, and any
 orphaned items. Exits non-zero only on a structural problem (never on
 warnings) — safe to run in CI or as a pre-commit check.
@@ -154,7 +158,7 @@ python tracker.py report
 Regenerates `DASHBOARD.md` (project-wide rollup: overall %, per-phase
 progress, hard-blocker status, currently-blocked list, DoD table, Goals
 table, tracked metrics, recent activity, suggested next actions) and
-`phases\P0.md` … `phases\P7.md` (every single item in that phase, live
+`phases\P0.md` … `phases\P8.md` (every single item in that phase, live
 status glyph, evidence, notes — a full-detail mirror of the original
 `Plan\Items\*.md` file but reflecting current real state).
 
@@ -186,9 +190,10 @@ a finer-grained number for your own reference).
 
 ## 5. Hard Blockers, Conditional Items, and Phase Gates
 
-**9 hard-blocker clusters** (31 individual items) are called out because the
-project's own spec docs are explicit that these cannot be skipped, worked
-around, or approved past:
+Hard-blocker items are called out because the project's own spec docs are
+explicit that they cannot be skipped, worked around, or approved past. The
+legacy blocker clusters remain active, and modernization addenda declare
+additional atomic blockers with the literal `HARD BLOCKER` marker:
 
 - `MF-P0-07.*` — the `doctor` command must be all-green before real work starts
 - `MF-P1-03.*` — the ontology.yaml CI assert (label authority integrity)
@@ -199,6 +204,9 @@ around, or approved past:
 - `MF-P5-07.02` — the D6 gate (champion model beats the draft pipeline)
 - `MF-P8-05.01` / `.02` — QC-035/036 instance exclusivity + cross-instance bleed (doc 17)
 - `MF-P8-07.*` — the multi-person dataset split-integrity CI test (doc 17 §8)
+- modernization blockers cover ontology-v2 activation, per-provider governance,
+  autonomous certification, truth-tier training eligibility, hard-bucket
+  non-inferiority, serving rollback, and recurring currency review
 
 `python tracker.py list --hard-blockers` shows all of them at any time.
 
@@ -209,7 +217,7 @@ outcome. Use `--status not_applicable --evidence "trigger not met: ..."`.
 
 **Phase entry gates** are informational (shown in `DASHBOARD.md` and each
 `phases\P#.md`) but not mechanically enforced by the CLI — nothing stops you
-from marking a P5 item complete before `approved_gold_count` hits 200. The
+from marking a P5 item complete before `certified_training_package_count` hits 200. The
 gates exist so an agent reads them and *chooses* not to start P5 work early,
 per the project's own critical-path rules in doc 14 §9. Check
 `metrics --show` and the DoD table before starting a gated phase.
@@ -223,16 +231,18 @@ per the project's own critical-path rules in doc 14 §9. Check
 - **DoD (D1–D11)** status is **computed automatically** from the status of
   each entry's `driven_by` item(s) — you never set a DoD status directly.
   If a computed status looks wrong, the fix is to correct the `driven_by`
-  mapping inside `tracker.py`'s `DOD` dict, not to hand-set anything.
-- **Goals (G1–G9)** are continuous measured metrics (mean IoU, minutes per
+   mapping inside `tracker.py`'s `DOD` dict, not to hand-set anything. D1 is version-aware:
+   56 indexed PART drafts for active v1 and 65 only after gated v2 activation.
+- **Goals (G1–G9)** are continuous measured metrics (mean IoU, human touches,
+  audited/residual fractions, changed pixels, review minutes, and other measured
   image, etc.) that genuinely require a human/AI to go measure something
   (e.g. run the leaderboard, time an annotation session) and record it with
   `tracker.py goal <Gid> --measured "..." --status {pending,met,not_met}`.
 
-The project's true finish line is two-part: `MF-P7-EXIT` (all D1–D10 hold,
-the 20-never-seen-image single-person headline test passes, doc 01 §10 /
-doc 14 §8) **and** `MF-P8-EXIT` (D11 holds on real multi-person images,
-doc 17 §14 / doc 14 §11).
+The project's true finish line is two-part: `MF-P7-07.07` plus `MF-P7-EXIT`
+(all D1–D10 hold and the 20-unseen-image selective-autonomy/blinded-audit headline
+test passes) **and** `MF-P8-11.07` plus `MF-P8-EXIT` (D11 holds on real
+multi-person images with certificate-covered/residual/audit routing).
 
 ---
 
@@ -260,16 +270,15 @@ doc 17 §14 / doc 14 §11).
    blocked-reasons, unexpected item-count changes).
 6. **Respect phase gates even though the CLI won't stop you.** Check
    `DASHBOARD.md`'s Entry Gate column and the DoD table before starting work
-   in a later phase — starting P5 training before 200 gold packages exist,
+   in a later phase — starting P5 training before 200 certified training packages exist,
    for instance, produces a champion model with no chance of meaningfully
    beating the draft pipeline, wasting the D6/D7 gate attempts.
 7. **When in doubt about an item's meaning, go to the spec.** Every item
    carries a `spec_ref` (e.g. `06 §1`) pointing at the exact section of the
-   16 numbered documents in `Plan\` that defines it in full. The item text
+   numbered documents in `Plan\` that define it in full. The item text
    in the tracker is a compressed checklist line, not the full contract.
-8. **This is Kevin's real project status.** Nothing has been built as of
-   this tracker's creation — every item starts `open` and stays that way
-   until real, verifiable work happens. Do not simulate progress.
+8. **This is Kevin's real project status.** Never infer zero progress or completion from when the
+   tracker was created; read the live item state and evidence. Do not simulate progress.
 
 ---
 
@@ -282,6 +291,6 @@ doc 17 §14 / doc 14 §11).
 | `CHANGELOG.jsonl` | Append-only audit log — one JSON line per `set`/`metrics`/`goal` call ever made, with timestamp, actor, old/new status. Never edited or truncated by the tool. |
 | `backups\` | Timestamped snapshots of `tracker.json`, written automatically before every save. Safe to prune manually if it grows large; never required for normal operation. |
 | `DASHBOARD.md` | Auto-generated project-wide rollup. Regenerate with `report`. |
-| `phases\P0.md` … `P7.md` | Auto-generated, full-detail live mirror of each phase's items with current status/evidence/notes. Regenerate with `report`. |
+| `phases\P0.md` … `P8.md` | Auto-generated, full-detail live mirror of each phase's items with current status/evidence/notes. Regenerate with `report`. |
 | `README.md` | This file. |
 | `SCHEMA.md` | Formal field-by-field reference for `tracker.json`'s structure. |

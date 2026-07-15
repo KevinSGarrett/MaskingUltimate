@@ -1,0 +1,1225 @@
+{
+  "$defs": {
+    "autonomousCertification": {
+      "additionalProperties": false,
+      "properties": {
+        "certificates": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "certificate_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "certificate_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "covered_labels": {
+                "items": {
+                  "$ref": "#/$defs/labelName"
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "risk_bucket": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "certificate_id",
+              "risk_bucket",
+              "certificate_sha256",
+              "covered_labels"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "certified_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "final_mask_set_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "pipeline_fingerprint": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "2.0.0"
+        }
+      },
+      "required": [
+        "schema_version",
+        "certificates",
+        "pipeline_fingerprint",
+        "evidence_sha256",
+        "final_mask_set_sha256",
+        "certified_at"
+      ],
+      "type": "object"
+    },
+    "bbox": {
+      "items": false,
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "minimum": 1,
+          "type": "integer"
+        }
+      ],
+      "type": "array"
+    },
+    "files": {
+      "additionalProperties": {
+        "$ref": "#/$defs/sha256"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/relativePath"
+      },
+      "type": "object"
+    },
+    "imageId": {
+      "pattern": "^img_[a-f0-9]{12}$",
+      "type": "string"
+    },
+    "inpaintDerivative": {
+      "additionalProperties": false,
+      "properties": {
+        "dilate_px": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "feather_px": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "file": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "label": {
+          "$ref": "#/$defs/labelName"
+        },
+        "ref_scale": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "source_gold_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "label",
+        "file",
+        "dilate_px",
+        "feather_px",
+        "ref_scale",
+        "source_gold_sha256"
+      ],
+      "type": "object"
+    },
+    "instanceId": {
+      "pattern": "^img_[a-f0-9]{12}_p[0-9]+$",
+      "type": "string"
+    },
+    "interpersonRelationship": {
+      "additionalProperties": false,
+      "properties": {
+        "contact_band_file": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "other_instance_id": {
+          "$ref": "#/$defs/instanceId"
+        },
+        "relationship": {
+          "enum": [
+            "contact",
+            "occludes",
+            "occluded_by"
+          ]
+        }
+      },
+      "required": [
+        "other_instance_id",
+        "relationship",
+        "contact_band_file"
+      ],
+      "type": "object"
+    },
+    "labelName": {
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "occlusion": {
+      "additionalProperties": false,
+      "properties": {
+        "layer": {
+          "enum": [
+            "front_layer",
+            "middle_layer",
+            "back_layer",
+            "unknown"
+          ]
+        },
+        "occluded_by": {
+          "items": {
+            "$ref": "#/$defs/labelName"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "occludes": {
+          "items": {
+            "$ref": "#/$defs/labelName"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "occluded_by",
+        "occludes",
+        "layer"
+      ],
+      "type": "object"
+    },
+    "ontologyMigration": {
+      "additionalProperties": false,
+      "properties": {
+        "added_labels": {
+          "items": {
+            "$ref": "#/$defs/labelName"
+          },
+          "maxItems": 9,
+          "minItems": 9,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "delta_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "from_ontology": {
+          "const": "body_parts_v1"
+        },
+        "migration_id": {
+          "pattern": "^v1v2_[a-f0-9]{16}$",
+          "type": "string"
+        },
+        "previous_workflow_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "source_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "status": {
+          "const": "awaiting_v2_human_review"
+        },
+        "to_ontology": {
+          "const": "body_parts_v2"
+        }
+      },
+      "required": [
+        "schema_version",
+        "migration_id",
+        "from_ontology",
+        "to_ontology",
+        "source_manifest_sha256",
+        "delta_sha256",
+        "previous_workflow_status",
+        "added_labels",
+        "status"
+      ],
+      "type": "object"
+    },
+    "partEntry": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mask_type": {
+                "const": "atomic_exclusive"
+              },
+              "visibility": {
+                "enum": [
+                  "partially_visible",
+                  "visible"
+                ]
+              }
+            },
+            "required": [
+              "mask_type",
+              "visibility"
+            ]
+          },
+          "then": {
+            "properties": {
+              "mask_area_px": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "mask_file": {
+                "$ref": "#/$defs/relativePath"
+              },
+              "mask_sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            },
+            "required": [
+              "mask_sha256",
+              "mask_area_px"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mask_type": {
+                "const": "atomic_exclusive"
+              },
+              "visibility": {
+                "enum": [
+                  "cropped_out",
+                  "not_applicable",
+                  "not_visible",
+                  "occluded_by_clothing",
+                  "unreviewed_for_v2"
+                ]
+              }
+            },
+            "required": [
+              "mask_type",
+              "visibility"
+            ]
+          },
+          "then": {
+            "properties": {
+              "components": {
+                "maximum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "mask_area_px": {
+                "maximum": 0,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "mask_bbox": {
+                "type": "null"
+              },
+              "mask_file": {
+                "type": "null"
+              },
+              "mask_sha256": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mask_type": {
+                "const": "atomic_exclusive"
+              },
+              "visibility": {
+                "const": "ambiguous_do_not_use"
+              }
+            },
+            "required": [
+              "mask_type",
+              "visibility"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ambiguity_file": {
+                "$ref": "#/$defs/relativePath"
+              },
+              "ambiguity_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "mask_file": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "ambiguity_file",
+              "ambiguity_sha256"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mask_type": {
+                "const": "atomic_exclusive"
+              },
+              "visibility": {
+                "const": "unreviewed_for_v2"
+              }
+            },
+            "required": [
+              "mask_type",
+              "visibility"
+            ]
+          },
+          "then": {
+            "properties": {
+              "review_authority": {
+                "properties": {
+                  "ontology_version": {
+                    "const": "body_parts_v2"
+                  },
+                  "reviewed": {
+                    "const": false
+                  },
+                  "source": {
+                    "const": "migrated_unreviewed"
+                  }
+                }
+              },
+              "status": {
+                "const": "unreviewed_for_v2"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mask_type": {
+                "const": "atomic_exclusive"
+              },
+              "visibility": {
+                "const": "not_applicable"
+              }
+            },
+            "required": [
+              "mask_type",
+              "visibility"
+            ]
+          },
+          "then": {
+            "properties": {
+              "review_authority": {
+                "properties": {
+                  "ontology_version": {
+                    "const": "body_parts_v2"
+                  },
+                  "reviewed": {
+                    "const": true
+                  },
+                  "source": {
+                    "enum": [
+                      "human_review",
+                      "autonomous_certification",
+                      "weighted_pseudo_label"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "ambiguity_file": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ambiguity_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "annotated_on": {
+          "pattern": "^(?:full|crop:[a-z][a-z0-9]*(?:_[a-z0-9]+)*)$",
+          "type": "string"
+        },
+        "basis": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "components": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "mask_area_px": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "mask_bbox": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bbox"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mask_file": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mask_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mask_type": {
+          "enum": [
+            "atomic_exclusive",
+            "protected_qa",
+            "region_band",
+            "derived_union",
+            "projected_amodal"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        },
+        "occlusion": {
+          "$ref": "#/$defs/occlusion"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "review_authority": {
+          "$ref": "#/$defs/reviewAuthority"
+        },
+        "status": {
+          "$ref": "#/$defs/partStatus"
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        }
+      },
+      "required": [
+        "mask_type",
+        "visibility",
+        "mask_file",
+        "status",
+        "review_authority"
+      ],
+      "type": "object"
+    },
+    "partStatus": {
+      "enum": [
+        "draft_model_generated",
+        "human_corrected",
+        "human_approved_gold",
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate",
+        "rejected_needs_fix",
+        "deprecated",
+        "n/a",
+        "unreviewed_for_v2"
+      ]
+    },
+    "person": {
+      "additionalProperties": false,
+      "properties": {
+        "estimated_person_height_px": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "person_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "pose_tags": {
+          "items": {
+            "$ref": "#/$defs/labelName"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "primary_person_bbox": {
+          "$ref": "#/$defs/bbox"
+        },
+        "view": {
+          "enum": [
+            "front",
+            "back",
+            "left_profile",
+            "right_profile",
+            "left_3_4",
+            "right_3_4"
+          ]
+        }
+      },
+      "required": [
+        "primary_person_bbox",
+        "person_count",
+        "view",
+        "pose_tags",
+        "estimated_person_height_px"
+      ],
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "draft_source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "human_edit": {
+          "type": "boolean"
+        },
+        "sam2_prompt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "draft_source",
+        "sam2_prompt_id",
+        "human_edit"
+      ],
+      "type": "object"
+    },
+    "qa": {
+      "additionalProperties": false,
+      "properties": {
+        "qa_overall": {
+          "enum": [
+            "pass",
+            "fail",
+            "needs_human",
+            "pending"
+          ]
+        },
+        "qa_report_file": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "qa_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "qa_report_file",
+        "qa_overall",
+        "qa_score"
+      ],
+      "type": "object"
+    },
+    "relativePath": {
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$",
+      "type": "string"
+    },
+    "review": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "review_time_sec": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "second_review": {
+          "$ref": "#/$defs/secondReview"
+        }
+      },
+      "required": [
+        "reviewer",
+        "approved_at",
+        "second_review",
+        "review_time_sec"
+      ],
+      "type": "object"
+    },
+    "reviewAuthority": {
+      "additionalProperties": false,
+      "properties": {
+        "ontology_version": {
+          "enum": [
+            "body_parts_v1",
+            "body_parts_v2"
+          ]
+        },
+        "reviewed": {
+          "type": "boolean"
+        },
+        "reviewed_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "enum": [
+            "legacy_v1_human_review",
+            "legacy_v1_unreviewed",
+            "migrated_unreviewed",
+            "human_review",
+            "autonomous_certification",
+            "weighted_pseudo_label",
+            "n/a"
+          ]
+        }
+      },
+      "required": [
+        "reviewed",
+        "reviewer",
+        "reviewed_at",
+        "source",
+        "ontology_version"
+      ],
+      "type": "object"
+    },
+    "secondReview": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "pending",
+            "not_required"
+          ]
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "required",
+        "reviewer",
+        "result",
+        "at"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "exif_stripped": {
+          "const": true
+        },
+        "ingested_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "origin_note": {
+          "type": "string"
+        },
+        "parent_source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "phash64": {
+          "pattern": "^[a-fA-F0-9]{16}$",
+          "type": "string"
+        },
+        "source_file": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "source_height": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "source_origin": {
+          "enum": [
+            "generated",
+            "owned_photo",
+            "licensed",
+            "consented_subject"
+          ]
+        },
+        "source_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "source_width": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source_file",
+        "source_sha256",
+        "parent_source_sha256",
+        "source_width",
+        "source_height",
+        "source_origin",
+        "origin_note",
+        "ingested_at",
+        "exif_stripped"
+      ],
+      "type": "object"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "tooling": {
+      "additionalProperties": false,
+      "properties": {
+        "annotation_tool": {
+          "const": "cvat"
+        },
+        "annotation_tool_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "config_hashes": {
+          "additionalProperties": {
+            "$ref": "#/$defs/sha256"
+          },
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[^/\\\\]+\\.(?:ya?ml|json)$"
+          },
+          "type": "object"
+        },
+        "model_versions_used": {
+          "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "pipeline_version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "annotation_tool",
+        "annotation_tool_version",
+        "pipeline_version",
+        "model_versions_used",
+        "config_hashes"
+      ],
+      "type": "object"
+    },
+    "truthPartition": {
+      "enum": [
+        "train",
+        "calibration",
+        "holdout",
+        "residual"
+      ]
+    },
+    "truthTier": {
+      "enum": [
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "visible",
+        "partially_visible",
+        "occluded",
+        "cropped_out",
+        "not_visible",
+        "ambiguous_do_not_use",
+        "n/a",
+        "occluded_by_clothing",
+        "not_applicable",
+        "unreviewed_for_v2"
+      ]
+    }
+  },
+  "$id": "https://maskfactory.local/schemas/manifest_v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "truth_tier": {
+            "const": "human_anchor_gold"
+          }
+        },
+        "required": [
+          "truth_tier"
+        ]
+      },
+      "then": {
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "truth_partition": {
+                  "const": "train"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "training_loss_weight": {
+                  "const": 1.0
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "truth_partition": {
+                  "enum": [
+                    "calibration",
+                    "holdout"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "training_loss_weight": {
+                  "const": 0.0
+                }
+              }
+            }
+          }
+        ],
+        "required": [
+          "truth_partition",
+          "training_loss_weight"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "truth_tier": {
+            "const": "autonomous_certified_gold"
+          }
+        },
+        "required": [
+          "truth_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "training_loss_weight": {
+            "maximum": 0.75,
+            "minimum": 0.5,
+            "type": "number"
+          },
+          "truth_partition": {
+            "const": "train"
+          }
+        },
+        "required": [
+          "truth_partition",
+          "training_loss_weight",
+          "certification"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "truth_tier": {
+            "const": "weighted_pseudo_label"
+          }
+        },
+        "required": [
+          "truth_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "training_loss_weight": {
+            "maximum": 0.25,
+            "minimum": 0.1,
+            "type": "number"
+          },
+          "truth_partition": {
+            "const": "train"
+          }
+        },
+        "required": [
+          "truth_partition",
+          "training_loss_weight"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "truth_tier": {
+            "const": "machine_candidate"
+          }
+        },
+        "required": [
+          "truth_tier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "training_loss_weight": {
+            "const": 0.0
+          },
+          "truth_partition": {
+            "const": "residual"
+          }
+        },
+        "required": [
+          "truth_partition",
+          "training_loss_weight"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "workflow_status": {
+            "enum": [
+              "approved_gold",
+              "exported"
+            ]
+          }
+        },
+        "required": [
+          "workflow_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reviewed_ontology_version": {
+            "const": "body_parts_v2"
+          }
+        }
+      }
+    }
+  ],
+  "description": "Inactive v2 manifest authority from doc 18; production remains v1 until activation.",
+  "properties": {
+    "certification": {
+      "$ref": "#/$defs/autonomousCertification"
+    },
+    "files": {
+      "$ref": "#/$defs/files"
+    },
+    "image_id": {
+      "$ref": "#/$defs/imageId"
+    },
+    "inpaint_derivatives": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/inpaintDerivative"
+      },
+      "type": "array"
+    },
+    "interperson": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/interpersonRelationship"
+      },
+      "type": "array"
+    },
+    "left_right_convention": {
+      "const": "character_perspective"
+    },
+    "mask_ontology_version": {
+      "const": "body_parts_v2"
+    },
+    "ontology_migration": {
+      "$ref": "#/$defs/ontologyMigration"
+    },
+    "parts": {
+      "additionalProperties": {
+        "$ref": "#/$defs/partEntry"
+      },
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/labelName"
+      },
+      "type": "object"
+    },
+    "person": {
+      "$ref": "#/$defs/person"
+    },
+    "qa": {
+      "$ref": "#/$defs/qa"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "reviewed_ontology_version": {
+      "enum": [
+        "body_parts_v1",
+        "body_parts_v2"
+      ]
+    },
+    "schema_version": {
+      "const": "2.0.0"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "tooling": {
+      "$ref": "#/$defs/tooling"
+    },
+    "training_loss_weight": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "truth_partition": {
+      "$ref": "#/$defs/truthPartition"
+    },
+    "truth_tier": {
+      "$ref": "#/$defs/truthTier"
+    },
+    "workflow_status": {
+      "enum": [
+        "drafted",
+        "auto_qa",
+        "vlm_qa",
+        "in_review",
+        "corrected",
+        "approved_gold",
+        "autonomous_certified",
+        "weighted_pseudo",
+        "machine_candidate",
+        "exported",
+        "deprecated"
+      ]
+    },
+    "workflow_updated_at": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "schema_version",
+    "image_id",
+    "mask_ontology_version",
+    "left_right_convention",
+    "source",
+    "person",
+    "interperson",
+    "parts",
+    "inpaint_derivatives",
+    "tooling",
+    "review",
+    "qa",
+    "files",
+    "reviewed_ontology_version",
+    "ontology_migration"
+  ],
+  "title": "MaskFactory body_parts_v2 per-instance package manifest",
+  "type": "object"
+}

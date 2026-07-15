@@ -10,7 +10,8 @@ requires-python = ">=3.11"
 # NOTE: the authoritative, fully-pinned runtime environment is
 # env/requirements.lock.txt + env/maskfactory_env.yml (D9 reproducibility).
 # The loose list here is only so `pip install -e .` works in a plain venv/CI.
-dependencies = [
+  dependencies = [
+    "cryptography==49.0.0",
     "click",
     "gdown==5.2.0",
     "numpy",
@@ -21,6 +22,14 @@ dependencies = [
     "loguru",
     "mediapipe==0.10.35",
     "rich",
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+    "scipy",
+    "scikit-image",
+    "torch",
+    "ultralytics",
+    "onnxruntime",
 ]
 
 [project.scripts]
@@ -42,11 +51,14 @@ extend-exclude = ["Plan", "cvat", "env", "build", "dist"]
 select = ["E", "F", "I", "W"]
 ignore = ["E501"]  # long spec-reference lines in docstrings; black owns code width
 
+[tool.ruff.lint.isort]
+known-first-party = ["maskfactory"]
+
 [tool.black]
 line-length = 100
 target-version = ["py311"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-q"

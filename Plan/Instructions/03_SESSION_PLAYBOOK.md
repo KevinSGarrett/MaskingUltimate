@@ -24,7 +24,7 @@ because the work is done or because context/time is running out.
 4. Before starting work in a phase you haven't touched yet, confirm its
    entry gate is actually satisfied (see `DASHBOARD.md`'s Entry Gate column
    and `07_PHASE_QUICK_REFERENCE.md`) — e.g. don't start P5 training items
-   before `metrics.approved_gold_count >= 200`, don't start P6 before D6 is
+   before `metrics.certified_training_package_count >= 200`, don't start P6 before D6 is
    satisfied.
 5. Decide the scope for this session: usually a full item cluster (e.g. all
    of `MF-P2-05.*`) rather than a single isolated item, since items within a
@@ -66,11 +66,11 @@ Repeat for each item or cluster:
 
 ## 3. Updating Metrics and Goals As You Go
 
-- The moment a package genuinely reaches `human_approved_gold` status
-  (once the pipeline exists, from P1 onward), update the running count:
-  `python tracker.py metrics --set approved_gold_count=<N>`. This number
-  gates P5 entry and feeds the D5/G6 rollups — keep it current, not just
-  updated in a batch at the end of a phase.
+- When a package genuinely reaches a truth tier, update that tier's count immediately. Use
+  `human_anchor_train_count`, `human_anchor_calibration_count`, `human_anchor_holdout_count`,
+  `autonomous_certified_gold_count`, or `weighted_pseudo_label_count` as applicable. The tracker
+  derives `certified_training_package_count` from the training-anchor and autonomous-certified
+  counts; pseudo-label and holdout/calibration counts never satisfy P5 or D5.
 - Whenever you complete an actual measurement the spec calls a "Goal"
   against (mean IoU on a holdout, minutes-per-image timing, a boundary
   F-score run), record it: `python tracker.py goal G<n> --measured "..."
@@ -85,7 +85,7 @@ Repeat for each item or cluster:
    state.
 2. `python tracker.py validate` — confirm no missing-evidence or
    missing-blocked-reason drift crept in, and that the item count still
-   matches expectations (326, unless `Plan\Items\*.md` was deliberately
+   matches expectations (609, unless `Plan\Items\*.md` was deliberately
    edited and rebuilt).
 3. If you're stopping mid-item, leave a clean handoff:
    `python tracker.py set <id> --status in_progress --percent <N> --note

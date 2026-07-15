@@ -1,0 +1,486 @@
+{
+  "created_at": "2026-07-12T08:30:29.309588+00:00",
+  "cvat_api_version": "2.24.0",
+  "human_approval_completed": false,
+  "human_correction_completed": false,
+  "image_ids": [
+    "img_7b7a3c7d5dd3",
+    "img_6d6bb33f01a1"
+  ],
+  "instance_review_task_count": 7,
+  "item_progress": [
+    "MF-P8-10.02",
+    "MF-P8-10.03"
+  ],
+  "next_authority": "Kevin performs SOP-1 through SOP-6 corrections and explicit approval",
+  "overview_shape_count": 0,
+  "overview_task_count": 2,
+  "packages": [
+    {
+      "approved_at": null,
+      "image_id": "img_6d6bb33f01a1",
+      "instance_id": "p0",
+      "manifest_path": "data/packages/img_6d6bb33f01a1/instances/p0/manifest.json",
+      "manifest_sha256": "98c4045dc1ad7d108f62b7cde1c0bb455c6a614ae1560b4dd7cbc28467480632",
+      "qa_overall": "needs_human",
+      "reviewer": null,
+      "visible_part_count": 13
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_6d6bb33f01a1",
+      "instance_id": "p1",
+      "manifest_path": "data/packages/img_6d6bb33f01a1/instances/p1/manifest.json",
+      "manifest_sha256": "f8793decd91884d74997348120693ba2ca77d6ce32bce8cd5bfc6568322f5c73",
+      "qa_overall": "fail",
+      "reviewer": null,
+      "visible_part_count": 12
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_6d6bb33f01a1",
+      "instance_id": "p2",
+      "manifest_path": "data/packages/img_6d6bb33f01a1/instances/p2/manifest.json",
+      "manifest_sha256": "e201c5621868737aa45defcf127086da2c62b62385735936a560cd00586c37d0",
+      "qa_overall": "fail",
+      "reviewer": null,
+      "visible_part_count": 14
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_6d6bb33f01a1",
+      "instance_id": "p3",
+      "manifest_path": "data/packages/img_6d6bb33f01a1/instances/p3/manifest.json",
+      "manifest_sha256": "e3316a00b6f90c709f498c610d3459f207e0e9d18402034d18d69de98047307a",
+      "qa_overall": "needs_human",
+      "reviewer": null,
+      "visible_part_count": 13
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_7b7a3c7d5dd3",
+      "instance_id": "p0",
+      "manifest_path": "data/packages/img_7b7a3c7d5dd3/instances/p0/manifest.json",
+      "manifest_sha256": "1b2382160a6c643c47abbd90c9322f12558e37ba9f02db9b1c0f4713cc078979",
+      "qa_overall": "needs_human",
+      "reviewer": null,
+      "visible_part_count": 8
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_7b7a3c7d5dd3",
+      "instance_id": "p1",
+      "manifest_path": "data/packages/img_7b7a3c7d5dd3/instances/p1/manifest.json",
+      "manifest_sha256": "754c81cdfe4fc85b3b1b08df126756d7f0d201b258cf2e00bd08e9fe10ec8b85",
+      "qa_overall": "needs_human",
+      "reviewer": null,
+      "visible_part_count": 12
+    },
+    {
+      "approved_at": null,
+      "image_id": "img_7b7a3c7d5dd3",
+      "instance_id": "p2",
+      "manifest_path": "data/packages/img_7b7a3c7d5dd3/instances/p2/manifest.json",
+      "manifest_sha256": "16731c382ee06d6b71d185f2f46be32f29345a73e13cdfd332784335f0418656",
+      "qa_overall": "fail",
+      "reviewer": null,
+      "visible_part_count": 6
+    }
+  ],
+  "promoted_instance_count": 7,
+  "schema_version": "1.0.0",
+  "task_count": 9,
+  "task_ids": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "tasks": [
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_7b7a3c7d5dd3_p0.png",
+          "frame": 0,
+          "height": 1378,
+          "image_id": "img_7b7a3c7d5dd3",
+          "instance_id": "img_7b7a3c7d5dd3_p0",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_7b7a3c7d5dd3\\instances\\p0",
+          "pushed_labels": [
+            "chest_upper_torso",
+            "hair",
+            "left_calf",
+            "left_forearm",
+            "left_thigh",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "bottom_garment",
+            "bra",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 366
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_7b7a3c7d5dd3_p0",
+      "remote_size": 1,
+      "shape_count": 20,
+      "task_id": 9
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_7b7a3c7d5dd3_p1.png",
+          "frame": 0,
+          "height": 1378,
+          "image_id": "img_7b7a3c7d5dd3",
+          "instance_id": "img_7b7a3c7d5dd3_p1",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_7b7a3c7d5dd3\\instances\\p1",
+          "pushed_labels": [
+            "chest_upper_torso",
+            "hair",
+            "left_breast",
+            "left_calf",
+            "left_forearm",
+            "left_thigh",
+            "left_upper_arm",
+            "right_breast",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "clothing_generic",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "strap",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 395
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_7b7a3c7d5dd3_p1",
+      "remote_size": 1,
+      "shape_count": 26,
+      "task_id": 10
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_7b7a3c7d5dd3_p2.png",
+          "frame": 0,
+          "height": 1378,
+          "image_id": "img_7b7a3c7d5dd3",
+          "instance_id": "img_7b7a3c7d5dd3_p2",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_7b7a3c7d5dd3\\instances\\p2",
+          "pushed_labels": [
+            "left_calf",
+            "left_forearm",
+            "left_upper_arm",
+            "right_calf",
+            "right_forearm",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "clothing_generic",
+            "footwear",
+            "none_background",
+            "skin",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 353
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_7b7a3c7d5dd3_p2",
+      "remote_size": 1,
+      "shape_count": 16,
+      "task_id": 11
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_promoted_instances_overlay"
+          ],
+          "filename": "000_img_7b7a3c7d5dd3_overview.png",
+          "frame": 0,
+          "image_id": "img_7b7a3c7d5dd3",
+          "instance_ids": [
+            "img_7b7a3c7d5dd3_p0",
+            "img_7b7a3c7d5dd3_p1",
+            "img_7b7a3c7d5dd3_p2"
+          ]
+        }
+      ],
+      "job_type": "image_overview",
+      "name": "MaskFactory_overview_img_7b7a3c7d5dd3",
+      "remote_size": 1,
+      "shape_count": 0,
+      "task_id": 12
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_6d6bb33f01a1_p0.png",
+          "frame": 0,
+          "height": 4480,
+          "image_id": "img_6d6bb33f01a1",
+          "instance_id": "img_6d6bb33f01a1_p0",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_6d6bb33f01a1\\instances\\p0",
+          "pushed_labels": [
+            "abdomen_stomach",
+            "chest_upper_torso",
+            "hair",
+            "left_breast",
+            "left_calf",
+            "left_forearm",
+            "left_thigh",
+            "left_upper_arm",
+            "right_breast",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 1095
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_6d6bb33f01a1_p0",
+      "remote_size": 1,
+      "shape_count": 25,
+      "task_id": 13
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_6d6bb33f01a1_p1.png",
+          "frame": 0,
+          "height": 4480,
+          "image_id": "img_6d6bb33f01a1",
+          "instance_id": "img_6d6bb33f01a1_p1",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_6d6bb33f01a1\\instances\\p1",
+          "pushed_labels": [
+            "abdomen_stomach",
+            "belly_button",
+            "chest_upper_torso",
+            "hair",
+            "left_calf",
+            "left_forearm",
+            "left_thigh",
+            "left_upper_arm",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "clothing_generic",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 896
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_6d6bb33f01a1_p1",
+      "remote_size": 1,
+      "shape_count": 25,
+      "task_id": 14
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_6d6bb33f01a1_p2.png",
+          "frame": 0,
+          "height": 4480,
+          "image_id": "img_6d6bb33f01a1",
+          "instance_id": "img_6d6bb33f01a1_p2",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_6d6bb33f01a1\\instances\\p2",
+          "pushed_labels": [
+            "abdomen_stomach",
+            "chest_upper_torso",
+            "hair",
+            "left_breast",
+            "left_calf",
+            "left_forearm",
+            "left_hip",
+            "left_thigh",
+            "left_upper_arm",
+            "right_breast",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "clothing_generic",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "strap",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 1327
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_6d6bb33f01a1_p2",
+      "remote_size": 1,
+      "shape_count": 28,
+      "task_id": 15
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_parts_overlay.png",
+            "disagreement_heatmap.png"
+          ],
+          "filename": "000_img_6d6bb33f01a1_p3.png",
+          "frame": 0,
+          "height": 4480,
+          "image_id": "img_6d6bb33f01a1",
+          "instance_id": "img_6d6bb33f01a1_p3",
+          "package_root": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_6d6bb33f01a1\\instances\\p3",
+          "pushed_labels": [
+            "abdomen_stomach",
+            "chest_upper_torso",
+            "hair",
+            "left_breast",
+            "left_calf",
+            "left_forearm",
+            "left_thigh",
+            "left_upper_arm",
+            "right_breast",
+            "right_calf",
+            "right_forearm",
+            "right_thigh",
+            "right_upper_arm",
+            "bottom_garment",
+            "bra",
+            "clothing_generic",
+            "footwear",
+            "hair_material",
+            "lace_or_sheer",
+            "none_background",
+            "skin",
+            "top_garment",
+            "underwear_bottom",
+            "overlap_occlusion_boundary",
+            "waist",
+            "background"
+          ],
+          "width": 1304
+        }
+      ],
+      "job_type": "instance_review",
+      "name": "MaskFactory_review_img_6d6bb33f01a1_p3",
+      "remote_size": 1,
+      "shape_count": 26,
+      "task_id": 16
+    },
+    {
+      "frames": [
+        {
+          "context": [
+            "all_promoted_instances_overlay"
+          ],
+          "filename": "000_img_6d6bb33f01a1_overview.png",
+          "frame": 0,
+          "image_id": "img_6d6bb33f01a1",
+          "instance_ids": [
+            "img_6d6bb33f01a1_p0",
+            "img_6d6bb33f01a1_p1",
+            "img_6d6bb33f01a1_p2",
+            "img_6d6bb33f01a1_p3"
+          ]
+        }
+      ],
+      "job_type": "image_overview",
+      "name": "MaskFactory_overview_img_6d6bb33f01a1",
+      "remote_size": 1,
+      "shape_count": 0,
+      "task_id": 17
+    }
+  ],
+  "total_preannotation_shapes": 166
+}

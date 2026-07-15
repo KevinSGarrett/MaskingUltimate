@@ -47,7 +47,7 @@ Every atomic item to complete P0. Check `[x]` only when the verify clause passes
 ## MF-P0-05 — Ollama + local VLM stack (spec: 06 §5, 10 §1)
 - [ ] MF-P0-05.01 `docker run -d --name ollama --gpus all -v ollama:/root/.ollama -p 127.0.0.1:11434:11434 ollama/ollama`
 - [ ] MF-P0-05.02 `docker exec ollama ollama pull qwen2.5vl:7b` (primary VLM, Q4)
-- [ ] MF-P0-05.03 `docker exec ollama ollama pull llama3.2-vision:11b` (fallback VLM)
+- [ ] MF-P0-05.03 Install and live-smoke the configured fallback VLM; `llava:13b` supersedes unloadable `llama3.2-vision:11b` on the active Ollama 0.31.2 runner
 - [ ] MF-P0-05.04 `docker exec ollama ollama pull qwen2.5:7b-instruct` (text LLM for manifest lint)
 - [ ] MF-P0-05.05 Smoke: send P-PART-style prompt + a sample image to 127.0.0.1:11434 → response parses as strict JSON
 

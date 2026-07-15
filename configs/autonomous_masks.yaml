@@ -1,0 +1,147 @@
+schema_version: 2.0.0
+enabled: true
+mode: autonomous_certified_gold
+
+truth_tiers:
+  human_anchor_gold:
+    training_weight: 1.0
+    training_eligible: true
+    holdout_eligible: true
+    dataset_volume_eligible: true
+  autonomous_certified_gold:
+    training_weight: 0.65
+    training_eligible: true
+    holdout_eligible: false
+    dataset_volume_eligible: true
+  weighted_pseudo_label:
+    training_weight: 0.20
+    training_eligible: true
+    holdout_eligible: false
+    dataset_volume_eligible: false
+  machine_candidate:
+    training_weight: 0.0
+    training_eligible: false
+    holdout_eligible: false
+    dataset_volume_eligible: false
+
+operational_targets:
+  target_zero_touch_fraction: 0.95
+  maximum_routine_human_touch_fraction: 0.05
+  target_manual_pixel_edit_fraction: 0.01
+
+reporting:
+  schema_version: 1.0.0
+  throughput:
+    field: zero_touch_fraction
+    label: Zero-touch throughput
+    numerator: zero_touch_packages
+    denominator: eligible_packages
+  blinded_quality:
+    label: Blinded quality against human-anchor holdout
+    truth_tier: human_anchor_gold
+    truth_partition: holdout
+    fields: [mean_mask_iou, mean_boundary_f1]
+  statistical_confidence:
+    label: 95% one-sided failure-rate upper bounds
+    confidence_level: 0.95
+    fields: [false_accept_upper_bound, serious_false_accept_upper_bound]
+  prohibited_zero_touch_label_terms: [accuracy, confidence, quality]
+
+tournament:
+  minimum_score: 0.88
+  minimum_winner_margin: 0.03
+  minimum_independent_sources: 3
+  maximum_rounds: 3
+  maximum_candidates_per_label: 12
+  weights:
+    consensus_iou: 0.25
+    boundary_agreement: 0.20
+    pose_consistency: 0.15
+    source_diversity: 0.15
+    critic_support: 0.25
+  hard_veto:
+    maximum_protected_overlap: 0.01
+    maximum_exclusive_overlap: 0.005
+    require_format_valid: true
+    reject_any_block_qc: true
+    reject_component_overflow: true
+
+calibration:
+  confidence_level: 0.95
+  evidence_scope: pooled_risk_bucket
+  risk_bucket_registry: configs/autonomy_risk_buckets.yaml
+  risk_bucket_registry_sha256: 7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a
+  stability_registry: configs/autonomy_stability.yaml
+  stability_registry_sha256: 19ab8bfe68d9e757b5f33e9e48fc231303ee02570f64cb6c154a317c914939e5
+  require_candidate_stability: true
+  minimum_audits_per_risk_bucket: 30
+  aggregate_false_accept_bound_method: one_sided_wilson
+  serious_false_accept_bound_method: exact_zero_failure
+  maximum_false_accept_upper_bound: 0.01
+  maximum_serious_false_accept_upper_bound: 0.005
+  maximum_certificate_age_days: 30
+  require_image_disjoint_holdout: true
+  require_frozen_human_truth: true
+  require_exact_pipeline_fingerprint: true
+
+operations:
+  uncalibrated_status: machine_verified_candidate
+  calibrated_status: calibrated_auto_accepted
+  uncalibrated_truth_tier: machine_candidate
+  calibrated_truth_tier: autonomous_certified_gold
+  residual_truth_tier: machine_candidate
+  calibrated_status_is_human_gold: false
+  random_human_audit_fraction: 0.02
+  minimum_random_audits_per_week: 20
+  risk_oversample_fraction: 0.02
+  minimum_audits_per_high_risk_bucket: 5
+  revoke_on_first_serious_false_accept: true
+  revoke_on_distribution_drift: true
+  cloud_disagreement_forces_residual_queue: true
+  allow_training_as_pseudo_label: true
+  pseudo_label_loss_weight: 0.20
+  autonomous_certified_loss_weight: 0.65
+  human_gold_loss_weight: 1.0
+  holdout_may_use_machine_labels: false
+  review_draft:
+    enabled: true
+    status: pre_review_improvement
+    minimum_score: 0.65
+    minimum_score_delta: 0.03
+    minimum_verified_better_confidence: 0.70
+    apply_if_baseline_hard_vetoed: true
+    require_incremental_full_map_qa: true
+    require_final_full_map_qa: true
+
+repair:
+  enabled: true
+  coordinate_space: roi_normalized_0_1000
+  roi_source_priority: [s05_geometry_prompt, specialist_box, pose_chain, current_mask]
+  roi_padding_fraction: 0.12
+  maximum_outside_roi_fraction: 0.005
+  ordinary_max_changed_fraction: 0.75
+  reconstruction_max_changed_fraction: 2.00
+  reconstruction_area_tolerance_multiplier: 2.0
+  expected_area_slack: 0.50
+  maximum_protected_overlap_fraction: 0.01
+  allow_transactional_draft_reassignment: true
+  immutable_labels: [other_person, accessory_or_prop, occluding_object, support_surface]
+  maximum_displaced_labels_per_transaction: 8
+  require_no_new_block_qc: true
+  require_non_regressing_complete_map_score: true
+  complete_map_score_tolerance: 0.001
+  allow_non_gold_repair_progress_with_existing_blocks: true
+  publish_only_to_reversible_review_draft: true
+  maximum_committee_rounds_per_label: 3
+  maximum_total_candidates_per_label: 12
+  target_reviewer_pass_confidence: 0.95
+  minimum_advisory_pass_confidence: 0.80
+  minimum_independent_pass_reviewers: 3
+  require_all_available_reviewers_for_experimental_convergence: true
+
+retraining:
+  minimum_new_human_corrections: 50
+  minimum_audit_failures: 5
+  task_root: qa/autonomy/retrain_tasks
+  include_calibrated_pseudo_labels: true
+  require_frozen_human_holdout_evaluation: true

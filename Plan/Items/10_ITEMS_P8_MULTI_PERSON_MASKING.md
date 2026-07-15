@@ -2,7 +2,7 @@
 
 Goal: activate true multi-instance execution on top of the already-proven single-instance
 system, so photos with 2 to `max_instances_per_image` people get correctly-instanced, non-
-bleeding gold for every promoted person. Parent IDs from doc 14 §11. Governing spec: doc 17
+bleeding certified or residual human-anchor truth for every promoted person. Parent IDs from doc 14 §11. Governing specs: doc 17 as amended by docs 20/22.
 (complete decision record) — every cluster below cites the exact doc 17 section.
 
 **Entry gate:** P7 substantially complete (D1–D10 satisfied). This phase generalizes a working
@@ -64,13 +64,13 @@ system; it is not a from-scratch parallel build.
 - [ ] MF-P8-09.03 Regression test: existing single-person workflows re-run byte-identical with the new default parameter present
 - [ ] MF-P8-09.04 New multi-instance workflow test: correctly loads instance p1's masks from a 2-person package
 
-## MF-P8-10 — First multi-person gold packages (spec: 17 §14)
-- [ ] MF-P8-10.01 Curate/collect 10–20 real 2–4-person images, governance-compliant (doc 01 §7 — generated/owned/licensed/consented, adults only, same intake gate as everything else)
+## MF-P8-10 — First real multi-person certified/residual evidence set (spec: 17 §14; 20 §§5–6; 22 §5)
+- [ ] MF-P8-10.01 Curate/collect 10–20 real 2–4-person images with generated/owned/licensed/consented provenance and permitted content-lane decisions; do not add an age-eligibility gate
 - [ ] MF-P8-10.02 Run the full activated pipeline end-to-end on this set
-- [ ] MF-P8-10.03 CVAT review + approval per SOP-1 through SOP-6 for every promoted instance
-- [ ] MF-P8-10.04 Confirm QC-035/036 clean on every approved package in this set
+- [ ] MF-P8-10.03 Automatically accept only certificate-covered instances; route residual cases and preselected audits through SOP-1–SOP-6 without routine CVAT review of every instance
+- [ ] MF-P8-10.04 Confirm QC-035/036 clean on every autonomous-certified or human-anchor package in this set
 - [ ] MF-P8-10.05 Record **D11** demonstration evidence; measure **G9** (cross-instance bleed rate — target 0)
-- [ ] MF-P8-10.06 Update `metrics.approved_gold_count` per the counting convention (doc 17 §14): each approved instance counts as one unit, not one per image
+- [ ] MF-P8-10.06 Update tier-separated metrics per instance: human-anchor partitions, autonomous-certified, pseudo, and machine candidates; each instance counts once in its own tier and only active certified tiers satisfy volume gates
 
 ## P8 Exit Gate
 - [ ] MF-P8-EXIT **D11/G9** hold on real multi-person images (not just synthetic fixtures) · doc 00 §4 and doc 01 §3 both reflect this as demonstrated · doc 14 §11 checkboxes updated

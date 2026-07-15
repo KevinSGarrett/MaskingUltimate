@@ -12,15 +12,18 @@ from maskfactory.state import (
     WriterBusyError,
     WriterGuard,
     initialize_database,
+    persist_image_progress,
+    persist_recovered_image_outcome,
+    persist_terminal_image_outcome,
     reader_connection,
     transition_image_status,
     writer_connection,
 )
 
-EXPECTED_TABLES = {"images", "stage_runs", "review_tasks", "training_runs"}
+EXPECTED_TABLES = {"images", "stage_runs", "review_tasks", "training_runs", "package_truth"}
 
 
-def test_initialize_database_creates_four_tables_wal_and_foreign_keys(tmp_path: Path) -> None:
+def test_initialize_database_creates_governed_tables_wal_and_foreign_keys(tmp_path: Path) -> None:
     database = tmp_path / "maskfactory.sqlite"
     initialize_database(database)
 
@@ -71,6 +74,122 @@ def test_writer_connection_persists_related_rows_and_enforces_foreign_keys(
                 "INSERT INTO stage_runs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 ("run_bad", "img_missing", "S00", "now", None, None, None, sha, 0),
             )
+
+
+def test_terminal_outcome_transition_is_idempotent_and_governed(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_a3f9c2e17b04", "a" * 64, "ingested", "S00", 1, "t0", "t0"),
+        )
+    assert persist_terminal_image_outcome(
+        database,
+        "img_a3f9c2e17b04",
+        "rejected",
+        reason="no_person",
+        current_stage="S01",
+        updated_at="t1",
+    )
+    assert not persist_terminal_image_outcome(
+        database,
+        "img_a3f9c2e17b04",
+        "rejected",
+        reason="no_person",
+        current_stage="S01",
+        updated_at="t2",
+    )
+    with pytest.raises(InvalidStatusTransition, match="invalid terminal"):
+        persist_terminal_image_outcome(
+            database,
+            "img_a3f9c2e17b04",
+            "drafted",
+            reason="bad",
+            current_stage="S01",
+        )
+
+
+def test_successful_rerun_recovers_only_terminal_images(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.executemany(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (
+                ("img_rejected", "a" * 64, "rejected", "S01", 1, "t0", "t0"),
+                ("img_active", "b" * 64, "drafted", "S09", 1, "t0", "t0"),
+            ),
+        )
+
+    assert persist_recovered_image_outcome(
+        database, "img_rejected", current_stage="S01", updated_at="t1"
+    )
+    assert not persist_recovered_image_outcome(
+        database, "img_active", current_stage="S01", updated_at="t1"
+    )
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage FROM images WHERE image_id = 'img_rejected'"
+            ).fetchone()
+        ) == ("ingested", "S01")
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage FROM images WHERE image_id = 'img_active'"
+            ).fetchone()
+        ) == ("drafted", "S09")
+
+
+def test_pipeline_progress_advances_exact_chain_and_never_regresses(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_progress", "a" * 64, "ingested", "S00", 1, "t0", "t0"),
+        )
+
+    assert persist_image_progress(database, "img_progress", "vlm_qa", updated_at="t1")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("vlm_qa", "S11", "t1")
+    assert not persist_image_progress(database, "img_progress", "drafted", updated_at="t2")
+    assert persist_image_progress(database, "img_progress", "in_review", updated_at="t3")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("in_review", "S12", "t3")
+    assert persist_image_progress(database, "img_progress", "corrected", updated_at="t4")
+    assert persist_image_progress(database, "img_progress", "approved_gold", updated_at="t5")
+    with reader_connection(database) as connection:
+        assert tuple(
+            connection.execute(
+                "SELECT status, current_stage, updated_at FROM images WHERE image_id = ?",
+                ("img_progress",),
+            ).fetchone()
+        ) == ("approved_gold", "S13", "t5")
+
+
+def test_pipeline_progress_refuses_invalid_or_terminal_targets(tmp_path: Path) -> None:
+    database = tmp_path / "state.sqlite"
+    initialize_database(database)
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO images VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("img_terminal", "a" * 64, "rejected", "S01", 1, "t0", "t0"),
+        )
+    with pytest.raises(InvalidStatusTransition, match="invalid pipeline progress target"):
+        persist_image_progress(database, "img_terminal", "deprecated")
+    with pytest.raises(InvalidStatusTransition, match="rerun S01 recovery"):
+        persist_image_progress(database, "img_terminal", "drafted")
 
 
 def test_writer_guard_refuses_concurrent_orchestrator_and_releases_cleanly(

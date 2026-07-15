@@ -30,8 +30,8 @@ def _validate_governance(config: dict[str, Any]) -> None:
     forbidden_flags = ("may_author_masks", "may_approve_gold", "may_clear_blocks")
     if any(governance[flag] for flag in forbidden_flags):
         raise RuntimeError(f"VLM governance must remain non-authoritative: {governance}")
-    if governance["source_images_leave_machine"]:
-        raise RuntimeError("VLM smoke requires local-only image handling")
+    if governance["source_images_leave_machine"] not in {False, "exact_hash_opt_in_only"}:
+        raise RuntimeError("VLM smoke requires local or exact-hash-governed image handling")
 
 
 def _synthetic_panel_png() -> bytes:

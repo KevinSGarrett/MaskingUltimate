@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-12T23:43:31.718046+00:00",
+  "outcome": "pass",
+  "item_id": "MF-P2-08.01",
+  "authority": {
+    "reviewer": "kevin",
+    "decision": "confirmed_valid",
+    "source": "Kevin explicitly confirmed in project chat that both full-body masks look good",
+    "model_ratio_threshold_changed": false,
+    "model_qc_failure_preserved": true,
+    "pipeline_gate_satisfied_by": "human_semantic_review"
+  },
+  "handoff": {
+    "index": "qa/review_handoffs/s02/index.json",
+    "case_count": 2,
+    "awaiting_human_review": 0,
+    "resolved_applied": 2
+  },
+  "cases": [
+    {
+      "image_id": "img_cea6df6f0f13",
+      "instance_id": "p0",
+      "reason": "complete wide-limbed standing silhouette",
+      "silhouette_bbox_ratio": 0.29936144319766883,
+      "base_model_mask_sha256": "2880d5ae0d6e9e1e89243c163d8d7ebe8b00e758e8b0bcd8f33a131f4605dfde",
+      "resolution_sha256": "72deaf2da64d620a755c896a7f087635df0cc39322345076735e9f8c37f66117",
+      "applied_resolution_sha256": "72deaf2da64d620a755c896a7f087635df0cc39322345076735e9f8c37f66117",
+      "s09_5_manifest_sha256": "3eab94641c21c135abfaa17f3ec8bef070ddd6937f5a7e3fde4af920a5a1f248",
+      "qc035_passed": true,
+      "d1_contracts": [
+        {
+          "instance_id": "p0",
+          "atomic_count": 56,
+          "sha256": "7944c040a16a3b51db6be2fbe92ef09010a0b320287e1c16539bb635fdec4999"
+        }
+      ]
+    },
+    {
+      "image_id": "img_c02019c4979c",
+      "instance_id": "p2",
+      "reason": "complete visible right-edge-truncated pedestrian silhouette",
+      "silhouette_bbox_ratio": 0.3117238384715588,
+      "base_model_mask_sha256": "dbe9777fb8fabfa90ab539fc4d2bcef316c9265cc2c07aa205b0ef3f0d4b10e0",
+      "resolution_sha256": "a25c29654439990e3d946f52b198d859c3aa69db7853d3dcbe579dba59296af1",
+      "applied_resolution_sha256": "a25c29654439990e3d946f52b198d859c3aa69db7853d3dcbe579dba59296af1",
+      "s09_5_manifest_sha256": "ce5738e86558b7690ec298227ec39c33d7630fc690aa3a22fb0b4ee680df1f50",
+      "qc035_passed": true,
+      "d1_contracts": [
+        {
+          "instance_id": "p0",
+          "atomic_count": 56,
+          "sha256": "b629279cfc918fb7d24510036633b8789a4ad2ddfbd39408e75a198db32b5777"
+        },
+        {
+          "instance_id": "p1",
+          "atomic_count": 56,
+          "sha256": "548fc8ad4cc1ac5ba99b2ea5d91d20604b7e9937cf926b320d66fdb95b55ddfa"
+        },
+        {
+          "instance_id": "p2",
+          "atomic_count": 56,
+          "sha256": "184992524466b65fd13d822faed6f1df82246c6294ee0abbc83f5d085b89387a"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "source_draft_count_before": 20,
+    "source_draft_count_after": 22,
+    "source_target": 25,
+    "remaining_governed_sources_required": 3,
+    "recovered_instance_contracts": 4,
+    "recovered_atomic_masks_independently_verified": 224,
+    "d1_contract": "exactly 56 strict, non-overlapping, full-size atomic masks reproduce each authoritative PART map",
+    "qc035_pass_count": 2
+  }
+}

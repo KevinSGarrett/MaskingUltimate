@@ -1,0 +1,35 @@
+config_version: 1.0.0
+lifecycle_state: installed
+authority: trainable_shadow_challenger_only
+architecture: EomtDinov3ForUniversalSegmentation
+variant: eomt_dinov3_small_640
+snapshot:
+  repository: tue-mps/eomt-dinov3-coco-panoptic-small-640
+  revision: 602edaa2839daf6cb3de3ad46c176098c3be9090
+  local_path: models/runtime_cache/eomt_dinov3_small_602edaa
+  checkpoint_sha256: 1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f
+  config_sha256: 8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3
+  preprocessor_sha256: ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e
+  license: MIT
+pretraining:
+  vocabulary: COCO-panoptic-133
+  label_count: 133
+  maskfactory_label_authority: false
+target_head:
+  ontology_version: body_parts_v2
+  vocabulary_source: configs/ontology_v2.yaml
+  class_count: 65
+  class_names_sha256: 7f78e0c3405c8bd05e23522ccb453faa7f4a2bbba0a9b29493c7e7d0d19a6124
+  ignore_index: 255
+  initialization: random_new_segmentation_head
+runtime:
+  python: C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe
+  torch: 2.11.0+cu128
+  transformers: 5.13.0
+  precision: float16_shadow_inference_float32_training
+selection:
+  active: null
+  baselines: [segformer_b3, mask2former_swin_b]
+  rollback: null
+  benchmark_required_for_promotion: true
+  pretraining_output_may_author_gold: false

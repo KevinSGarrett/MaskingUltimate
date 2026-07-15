@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "rfdetr",
+  "result": "pass",
+  "captured_at": "2026-07-14T20:11:02Z",
+  "source_revision": "6e1620e751f3c814ead8648cada51ceff9029e5c",
+  "checkpoint": {
+    "variant": "medium",
+    "bytes": 404992918,
+    "md5": "7223f764a87b863f02eb8d52bf0ce2ee",
+    "sha256": "749ff6071828aaffac63e204c4f4135ed3d6cdae4d702e086c360edc3b5768c8"
+  },
+  "fixture": {
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "bytes": 137419,
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "width": 810,
+    "height": 1080
+  },
+  "environment": {
+    "rfdetr": "1.7.1",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "compute_capability": [12, 0]
+  },
+  "optimized_fp16": {
+    "compile": false,
+    "optimization_seconds": 0.158113,
+    "cold_build_seconds": 56.660377,
+    "first_inference_seconds": 1.896815,
+    "warm_inference_seconds": [0.041308, 0.032015],
+    "peak_allocated_bytes": 277367808,
+    "peak_reserved_bytes": 308281344,
+    "person_count": 4,
+    "total_detection_count": 5,
+    "output_sha256": "79e07b7fbe97c4eee994f42262be4a2d0b761ee8f894f96bcef673e8d9eed287",
+    "within_process_repeats": 3,
+    "within_process_deterministic": true,
+    "cross_process_replay_output_sha256": "79e07b7fbe97c4eee994f42262be4a2d0b761ee8f894f96bcef673e8d9eed287",
+    "cross_process_replay_person_count": 4,
+    "cross_process_deterministic": true
+  },
+  "unoptimized_fp32_reference": {
+    "warm_inference_seconds": [0.064074, 0.07139],
+    "peak_allocated_bytes": 206509056,
+    "peak_reserved_bytes": 232783872,
+    "person_count": 4,
+    "output_sha256": "70146feb4195162f33855f307427e5df1f144a32e22002fb77f384bdb847e538",
+    "deterministic": true
+  },
+  "detections": [
+    {
+      "class_id": 1,
+      "class_name": "person",
+      "confidence": 0.94726562,
+      "xyxy": [223.125, 406.0, 345.25, 860.5]
+    },
+    {
+      "class_id": 1,
+      "class_name": "person",
+      "confidence": 0.94580078,
+      "xyxy": [49.75, 398.25, 247.625, 905.5]
+    },
+    {
+      "class_id": 1,
+      "class_name": "person",
+      "confidence": 0.9453125,
+      "xyxy": [669.0, 394.25, 810.0, 879.5]
+    },
+    {
+      "class_id": 1,
+      "class_name": "person",
+      "confidence": 0.89257812,
+      "xyxy": [0.19775, 555.0, 78.3125, 865.0]
+    },
+    {
+      "class_id": 6,
+      "class_name": "bus",
+      "confidence": 0.95458984,
+      "xyxy": [10.875, 231.375, 803.5, 727.5]
+    }
+  ],
+  "failure_behavior": {
+    "probe": "missing input image",
+    "exception": "FileNotFoundError",
+    "exit_code": 1,
+    "failed_before_model_load": true
+  },
+  "authority_boundary": {
+    "lifecycle_state": "installed",
+    "shadow_only": true,
+    "incumbent_person_detector": "yolo11",
+    "promotion_claimed": false
+  }
+}

@@ -30,8 +30,10 @@ of 3" versus "the only person in the photo."
 
 **In scope, fully:** photos containing **2 to `max_instances_per_image`** (config, default 4)
 clearly visible, sufficiently prominent people — duos, small groups, family-photo-scale scenes.
-Every promoted person gets the complete treatment: all 56 atomic parts, all specialist lanes, the
-full 34+ QA checks (plus the new checks in §7), VLM review, CVAT human review, and inclusion in
+Every promoted person gets the complete treatment for the package ontology: all 56 v1 PART IDs
+while `body_parts_v1` is active, or all 65 after a `body_parts_v2` package has passed the doc-18
+review/activation gates; all specialist lanes, the full QA battery (plus the new checks in §7),
+VLM review, CVAT human review, and inclusion in
 the training dataset.
 
 **Explicitly still out of scope, with a documented threshold rather than an ambiguous failure
@@ -131,9 +133,10 @@ Per image, the orchestrator now runs:
 
 ## 6. Ontology & Package/Manifest Amendments — Amends doc 02, doc 03, doc 04
 
-- **No new atomic PART or MATERIAL IDs.** The 56-part / 16-material ontology is unchanged and
-  fully reused per instance — a left hand is a left hand whether it belongs to instance 0 or
-  instance 1.
+- **No instance-specific atomic PART or MATERIAL IDs.** Multi-person support itself adds no
+  labels. Each instance uses one complete declared ontology: 56 PART IDs / 16 MATERIAL IDs for
+  v1, or the append-only 65 PART IDs / same 16 MATERIAL IDs for v2 (doc 18). A left hand is a
+  left hand whether it belongs to instance 0 or instance 1; versions may not mix within an image.
 - **Clarification, not a new ID:** PART 50 (`other_person`) / MATERIAL 13
   (`other_person_material`) now explicitly mean "any human visible in *this instance's* crop who
   is not this instance" — true whether that other human is a promoted instance processed

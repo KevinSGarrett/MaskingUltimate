@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomy_stability.schema.json",
+  "title": "MaskFactory candidate perturbation stability evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "candidate_id", "pipeline_fingerprint", "risk_bucket", "label",
+    "policy_id", "policy_sha256", "base_mask_sha256", "variants", "passed", "failures", "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "candidate_id": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$" },
+    "pipeline_fingerprint": { "type": "string", "minLength": 1 },
+    "risk_bucket": { "$ref": "#/$defs/riskBucket" },
+    "label": { "type": "string", "minLength": 1 },
+    "policy_id": { "const": "candidate_stability_v1" },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "base_mask_sha256": { "$ref": "#/$defs/sha256" },
+    "variants": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["perturbation", "mask_sha256", "reported_label", "expected_label", "iou", "boundary_f", "area_delta", "passed", "failures"],
+        "properties": {
+          "perturbation": { "enum": ["resize", "crop", "color", "prompt", "horizontal_flip"] },
+          "mask_sha256": { "$ref": "#/$defs/sha256" },
+          "reported_label": { "type": "string", "minLength": 1 },
+          "expected_label": { "type": "string", "minLength": 1 },
+          "iou": { "type": "number", "minimum": 0, "maximum": 1 },
+          "boundary_f": { "type": "number", "minimum": 0, "maximum": 1 },
+          "area_delta": { "type": "number", "minimum": 0 },
+          "passed": { "type": "boolean" },
+          "failures": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "passed": { "type": "boolean" },
+    "failures": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "riskBucket": {
+      "enum": ["large_parts", "small_parts", "hands_feet", "hair_boundaries", "clothing_materials", "sensitive_anatomy", "occlusion_contact", "multi_person_overlap", "out_of_distribution"]
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "tracker_item": "MF-P0-17.12",
+  "captured_at": "2026-07-14T19:43:10Z",
+  "result": "pass",
+  "release_selection": {
+    "latest_observed": {
+      "version": "v2.70.0",
+      "published_at": "2026-07-14T06:56:40Z",
+      "decision": "not_selected_day_zero_release"
+    },
+    "selected": {
+      "version": "v2.69.0",
+      "published_at": "2026-06-22T16:55:30Z",
+      "release_url": "https://github.com/cvat-ai/cvat/releases/tag/v2.69.0",
+      "source_url": "https://github.com/cvat-ai/cvat.git",
+      "source_commit": "f6ae1dca443b94dd01288dfc9ac6ffe988218f0c",
+      "source_path": "F:\\MaskFactory_Offload_20260714\\CVAT\\cvat-v2.69.0"
+    }
+  },
+  "source": {
+    "version": "v2.24.0",
+    "source_commit": "9fafd98f0c0588b775db8f98648569dfa48292b5",
+    "server_image": "cvat/server:v2.24.0",
+    "server_image_id": "sha256:509fcc2711ab6fe0c47184a9503e54004319ff36ea6d52770628bdb6b3aab51a",
+    "ui_image": "cvat/ui:v2.24.0",
+    "ui_image_id": "sha256:442aab923731f6c69b7ce6d32b397ebad8509705b4082b4682777d929dae44fa",
+    "url": "http://localhost:8080",
+    "preserved_as_active_incumbent": true
+  },
+  "backup": {
+    "method": "all seven CVAT Docker volumes stopped and archived independently with pinned alpine:3.20",
+    "path": "F:\\MaskFactory_Offload_20260714\\CVAT\\backups\\cvat-v2.24.0-20260714T1933Z",
+    "started_at": "2026-07-14T19:33:11Z",
+    "completed_at": "2026-07-14T19:33:57Z",
+    "archives": [
+      {
+        "name": "cvat_cvat_cache_db.tar.gz",
+        "bytes": 21824390,
+        "sha256": "aefb18050e913fe61439496bbcd887d9df25798dc8681fe9a5960e1b6e3d5320"
+      },
+      {
+        "name": "cvat_cvat_data.tar.gz",
+        "bytes": 215780083,
+        "sha256": "2aa00947a9a192c8ab0e49fa267771c129bf51f15293f29a8a80fd33587dfacd"
+      },
+      {
+        "name": "cvat_cvat_db.tar.gz",
+        "bytes": 13419583,
+        "sha256": "9b3c2f667d769f6ad902f9ac1cefe163a63e02ec194aedcfa275aa1af6e8ce0e"
+      },
+      {
+        "name": "cvat_cvat_events_db.tar.gz",
+        "bytes": 142815959,
+        "sha256": "7942613a1d534a05d6d9a6194d491827ebd8fb7736895a80388ce23ea0814b6f"
+      },
+      {
+        "name": "cvat_cvat_inmem_db.tar.gz",
+        "bytes": 888348,
+        "sha256": "68f139da8400f82761a3c316c9f5e9cd773094a76fa0648d2d41e54eddbd4696"
+      },
+      {
+        "name": "cvat_cvat_keys.tar.gz",
+        "bytes": 368,
+        "sha256": "593778794a3ae25e5ee98235031f705d798bbdca375f36aa49bf2bdb0eb26daa"
+      },
+      {
+        "name": "cvat_cvat_logs.tar.gz",
+        "bytes": 2127578,
+        "sha256": "55dd62e883fe1fb9e8af42764068470cd716112d8a82dadbee2e48ee48673afe"
+      }
+    ]
+  },
+  "parallel_target": {
+    "project": "cvat269",
+    "url": "http://cvat269.localhost:18080",
+    "services_running": 18,
+    "volumes": 7,
+    "authoritative_restored_volumes": [
+      "cvat269_cvat_db",
+      "cvat269_cvat_data",
+      "cvat269_cvat_keys",
+      "cvat269_cvat_logs",
+      "cvat269_cvat_events_db"
+    ],
+    "volatile_volumes_started_clean": [
+      "cvat269_cvat_inmem_db",
+      "cvat269_cvat_cache_db"
+    ],
+    "server_image": "cvat/server:v2.69.0",
+    "server_image_id": "sha256:bb7140df428053f51db5beb974bc06d9355a31962fb9dc127ae66603cbafd613",
+    "ui_image": "cvat/ui:v2.69.0",
+    "ui_image_id": "sha256:15e90c846b8319c220f92ab1f4488e64916a7cf3b4f7218a045059f284a26c44",
+    "loopback_ports": [18080, 18090],
+    "production_volumes_reused": false,
+    "production_container_names_reused": false,
+    "generic_traefik_router_names_reused": false
+  },
+  "migration_verification": {
+    "django_migrate_check_exit": 0,
+    "pending_migrations": 0,
+    "database": {
+      "source_sha256": "8c1693fd160674960dab350d3ff472785846c07dc10c6ed1c8c00ce6382ea4d9",
+      "target_sha256": "8c1693fd160674960dab350d3ff472785846c07dc10c6ed1c8c00ce6382ea4d9",
+      "users": 2,
+      "projects": 2,
+      "tasks": 21,
+      "jobs": 21,
+      "labeled_shapes": 367
+    },
+    "media": {
+      "source_sha256": "73eaa7204e00b1d11daed83a521c97325ba5a03463ac4f7ee42c26c5c651ee82",
+      "target_sha256": "73eaa7204e00b1d11daed83a521c97325ba5a03463ac4f7ee42c26c5c651ee82",
+      "files": 95,
+      "bytes": 216949704
+    },
+    "authenticated_task_api": {
+      "source_count": 21,
+      "target_count": 21,
+      "source_sha256": "8244eae24fe917a8362add9ed8cc0db00374743ac1c85ff5df62ed41ae3ceb55",
+      "target_sha256": "8244eae24fe917a8362add9ed8cc0db00374743ac1c85ff5df62ed41ae3ceb55"
+    },
+    "source_about_http": 200,
+    "target_about_http": 200,
+    "target_ui_http": 200,
+    "target_reported_version": "2.69.0"
+  },
+  "rollback_verification": {
+    "command_scope": "docker compose project cvat269 stop",
+    "target_about_while_stopped": "connection_refused",
+    "source_about_while_target_stopped_http": 200,
+    "source_sam2_while_target_stopped": "running_healthy",
+    "parallel_restart_reported_version": "2.69.0",
+    "source_state_after_restart_unchanged": true
+  },
+  "authority_boundary": {
+    "production_promotion_performed": false,
+    "parallel_target_is_challenger_only": true,
+    "production_sam2_nuclio_remained_on_v2_24": true,
+    "human_gold_or_task_status_mutated": false
+  }
+}

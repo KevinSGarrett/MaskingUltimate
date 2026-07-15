@@ -1,0 +1,77 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.86,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No executable correction is justified; the visible target coverage and boundary are acceptable.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate is anatomically the character's right foot per COCO semantic chain evidence, and the mask provides continuous coverage of the visible foot with a clean outer silhouette and no substantial neighbor contamination.",
+      "latency_ms": 11674,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour is generally aligned with the skin/background boundary. The straight upper ankle cutoff is plausible for the atomic foot-base boundary rather than an attempt to include the lower leg.",
+        "full_context": "The highlighted target is the character's right foot, consistent with the supplied semantic pose-chain evidence. It is the forward foot and is clearly visible without clothing overlap.",
+        "mask": "The mask covers the visible foot, ankle region, heel, instep, and toes. It does not extend into the neighboring rear foot or clothing.",
+        "neighbor_overlap": "No meaningful overlap with the rear foot, lower leg outside the target boundary, clothing, or background objects is evident.",
+        "overlay": "The red overlay follows the visible foot silhouette closely along the heel, instep, toe tips, and lower edge. No obvious background spill is visible.",
+        "source_crop": "The crop shows the complete visible foot and lower ankle transition, with a clear silhouette against the gray background. The ankle boundary is partially defined by the crop framing and pose."
+      },
+      "provider": "openai",
+      "response_sha256": "394e3512a09a879d9016941a459b056d4ebf94e6a7433e52ae3eaf7dd746a180",
+      "usage": {
+        "cost_usd": 0.014683,
+        "input_tokens": 9727,
+        "output_tokens": 826
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.83,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "The mask boundary already tightly follows the visible right foot silhouette with correct side assignment per pose-chain evidence; no correction is needed despite unrelated global QA flags concerning other body parts (shoulder/knee/thigh chain integrity).",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask corresponds to the character's right foot (nearest_semantic_chain=right, expected_character_side=right), fully covering the visible dorsal foot and toes with a tight, accurate boundary and no contamination from background, floor, or the other foot.",
+      "latency_ms": 46867,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "White contour line tracks the ankle joint notch, lateral foot edge, and toe tips accurately, following the true anatomical boundary of the visible foot.",
+        "full_context": "Cyan ROI box captures the forward-leaning right foot in the full-body pose; pose-chain evidence confirms this limb belongs to the character's right side (distance_to_chain_px right=263 vs left=788).",
+        "mask": "Binary mask outlines a foot-shaped silhouette including ankle notch, arch, and five-toe front edge, with no stray blobs or holes.",
+        "neighbor_overlap": "No visible overlap with the trailing left foot/ankle or any clothing; the crop is isolated to the single right foot region.",
+        "overlay": "Red overlay aligns closely with the foot's visible skin boundary, covering the dorsal foot and toes without bleeding onto the gray floor or the other leg.",
+        "source_crop": "High-res crop shows a bare foot from ankle to toe-tips, with visible tendons, toenails, and ground shadow; no clothing or other limb overlaps this region."
+      },
+      "provider": "anthropic",
+      "response_sha256": "12ed73cdca30684cd3b229267f8260ee3ca95f8c53f7a7b3d1f0df78a0849425",
+      "usage": {
+        "cost_usd": 0.084906,
+        "input_tokens": 25078,
+        "output_tokens": 3475
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "pass",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "484d0293726e4d538ce9d18502bf76188efc30dcbe2b49e9fb9817a217bc2846",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

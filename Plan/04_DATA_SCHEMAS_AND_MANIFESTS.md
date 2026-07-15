@@ -5,7 +5,14 @@ Schemas live in `src\maskfactory\schemas\*.schema.json`; this doc is their norma
 
 ---
 
-## 1. `manifest.json` (per image — THE authority)
+## 1. `manifest.json` (per instance — THE authority)
+
+Schema selection is versioned and fail-closed. `body_parts_v1` uses schema version `1.0.0` and
+`manifest.schema.json`. `body_parts_v2` uses schema version `2.0.0` and
+`manifest_v2.schema.json`, adds `reviewed_ontology_version`, per-label `review_authority`, the
+doc-18 visibility states, and separate ambiguity-mask authority. Reindex, restore verification,
+dataset export, CVAT pull, and packaging select the schema from `mask_ontology_version`; they do
+not coerce one version into the other. The JSONC example below is the active v1 shape.
 
 ```jsonc
 {
@@ -13,16 +20,25 @@ Schemas live in `src\maskfactory\schemas\*.schema.json`; this doc is their norma
   "image_id": "img_a3f9c2e17b04",
   "mask_ontology_version": "body_parts_v1",
   "left_right_convention": "character_perspective",
+  "workflow_status": "drafted | auto_qa | vlm_qa | in_review | corrected | approved_gold | exported | deprecated",
+  "workflow_updated_at": "2026-07-09T14:03:22Z",
 
   "source": {
     "source_file": "source.png",
     "source_sha256": "…64 hex…",
+    "parent_source_sha256": "…64 hex of the original whole ingested image…",
     "source_width": 1664, "source_height": 2432,
     "source_origin": "generated | owned_photo | licensed | consented_subject",
     "origin_note": "ComfyUI run 2026-07-02 charA seed 8812",
     "ingested_at": "2026-07-09T14:03:22Z",
     "exif_stripped": true
   },
+
+  // In instances\pN packages, source_sha256 authenticates that instance's source crop while
+  // parent_source_sha256 is identical across every pN and is the image-level identity used by
+  // SQLite reindex/recovery. For a legacy full-image package the hashes may be identical.
+  // workflow_status is package-level authority; per-part statuses describe annotation state and
+  // must not be overloaded to infer whether S10/S11/S12 has run.
 
   "person": {
     "primary_person_bbox": [x, y, w, h],
@@ -94,6 +110,11 @@ Schemas live in `src\maskfactory\schemas\*.schema.json`; this doc is their norma
 Validation invariants (enforced by packager): every enabled ontology label appears in `parts`;
 `visibility != visible/partially_visible` ⇒ `mask_file == null` for atomics; status
 `human_approved_gold` requires `qa_overall == "pass"` and review block present.
+
+For a v2-approved package, all 65 PART entries must carry complete v2 human-review authority,
+the QA report must declare `ontology_version: body_parts_v2` and pass QC-V2-001..012, and every
+file named by either a visible mask or ambiguity region must appear in the exhaustive `files{}`
+hash map. Migrated-but-unreviewed packages stay `in_review` and are ineligible for v2 datasets.
 
 ## 2. `qa_report.json` (per image)
 
@@ -167,7 +188,9 @@ per-image authority; the DB is the queue/workflow index and is rebuildable from 
 
 ## 7. `configs\` File Inventory
 
-`ontology.yaml` (labels, doc 02 §10) • `pipeline.yaml` (stage toggles, device, tile sizes,
+`ontology.yaml` (active v1 labels, doc 02 §10) • `ontology_v2.yaml`, `derived_v2.yaml`,
+`viz_v2.yaml`, `anatomy_v2_qa.yaml`, `ontology_v2_operations.yaml` (explicit inactive-v2
+authority, doc 18) • `pipeline.yaml` (stage toggles, device, tile sizes,
 thresholds) • `prompting.yaml` (SAM2 point/box strategies per part) • `qa.yaml` (all QC
 thresholds, doc 09) • `derived.yaml` (union formulas) • `inpaint.yaml` (dilate/feather per label)
 • `viz.yaml` (colors, panel layout) • `training\*.yaml` (per-model fine-tune configs, doc 12)

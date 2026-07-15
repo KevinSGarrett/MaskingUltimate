@@ -1,10 +1,10 @@
 {
-  "measured_at": "2026-07-10T19:20:36.441149+00:00",
+  "measured_at": "2026-07-13T23:44:19.640330+00:00",
   "base_url": "http://127.0.0.1:11434",
   "model": "qwen2.5vl:7b",
-  "prompt_version": "p-part-v0-doc10",
+  "prompt_version": "p-part-v1-doc10",
   "fixture": "programmatically generated 1024x256 four-tile synthetic P-PART panel",
-  "latency_seconds": 139.347,
+  "latency_seconds": 16.802,
   "response": {
     "verdict": "pass",
     "confidence": 1,
@@ -41,6 +41,6 @@
     "may_author_masks": false,
     "may_approve_gold": false,
     "may_clear_blocks": false,
-    "source_images_leave_machine": false
+    "source_images_leave_machine": "exact_hash_opt_in_only"
   }
 }

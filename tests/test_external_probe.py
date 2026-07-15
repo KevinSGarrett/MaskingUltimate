@@ -14,8 +14,35 @@ def _write_probe_inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
     weight.parent.mkdir()
     weight.write_bytes(b"fixture-model-weights")
     config = {
+        "schema_version": "2.0.0",
+        "use_profile": "private_personal_noncommercial",
+        "distribution_allowed": False,
+        "commercial_deployment": False,
+        "content_compatibility": {
+            "adult_nonexplicit": "allowed",
+            "consensual_explicit_adult": "allowed",
+        },
+        "hard_exclusions": {
+            "sapiens2": {
+                "install_allowed": False,
+                "benchmark_allowed": False,
+                "content_compatibility": {
+                    "adult_nonexplicit": "unclear",
+                    "consensual_explicit_adult": "prohibited",
+                },
+            }
+        },
         "providers": {
             "installed_provider": {
+                "lifecycle_state": "installed",
+                "verify_license": False,
+                "license_source": "https://example.invalid/license",
+                "license_snapshot_sha256": "b" * 64,
+                "license_reviewed_at": "2026-07-14T00:00:00Z",
+                "content_compatibility": {
+                    "adult_nonexplicit": "allowed",
+                    "consensual_explicit_adult": "allowed",
+                },
                 "source_url": "https://example.invalid/model",
                 "license": "fixture",
                 "version": "v1",
@@ -25,6 +52,11 @@ def _write_probe_inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
                 "authority_level": "proposal only",
             },
             "missing_provider": {
+                "lifecycle_state": "planned",
+                "content_compatibility": {
+                    "adult_nonexplicit": "allowed",
+                    "consensual_explicit_adult": "allowed",
+                },
                 "source_url": "https://example.invalid/missing",
                 "license": "fixture",
                 "version": "v2",
@@ -34,6 +66,11 @@ def _write_probe_inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
                 "authority_level": "proposal only",
             },
             "openpose": {
+                "lifecycle_state": "reference_only",
+                "content_compatibility": {
+                    "adult_nonexplicit": "allowed",
+                    "consensual_explicit_adult": "allowed",
+                },
                 "source_url": "https://example.invalid/reference",
                 "license": "fixture",
                 "version": "reference",
@@ -42,7 +79,7 @@ def _write_probe_inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
                 "role": "reference only",
                 "authority_level": "geometry reference",
             },
-        }
+        },
     }
     config_path = tmp_path / "external_sources.yaml"
     config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
@@ -93,6 +130,11 @@ def test_probe_hashes_files_and_reports_explicit_statuses(tmp_path: Path) -> Non
     )
     assert providers["missing_provider"]["degraded"] is True
     assert providers["openpose"]["fallback_providers"] == ["dwpose"]
+    assert providers["installed_provider"]["activation"]["adult_nonexplicit"] == {
+        "eligible": True,
+        "blockers": [],
+    }
+    assert providers["missing_provider"]["activation"]["adult_nonexplicit"]["eligible"] is False
     assert report["workflow_references"][0]["sha256"] == "a" * 64
 
 

@@ -47,7 +47,7 @@ Freeze after first success: `pip freeze > env/requirements.lock.txt` + `conda en
 | M9 | 3D surface prior | detectron2 + DensePose (`pip install 'git+https://github.com/facebookresearch/detectron2'` then densepose project) | `densepose_rcnn_R_50_FPN_s1x.pkl` | build from source on cu128 — see §8 pitfalls |
 | M10 | Hair/face parsing | Sapiens covers hair/face classes; face-parsing BiSeNet (`zllrunning/face-parsing.PyTorch`) as detail fallback | `79999_iter.pth` | tiny |
 | M11 | Matting | **ViTMatte** (hustvl/ViTMatte-S via HF) seeded by trimap | `vitmatte_s.pth` | small |
-| M12 | Local VLM | Ollama container: `ollama pull qwen2.5vl:7b` (Q4) — fallback `llama3.2-vision:11b` | managed by Ollama | ≈6 GB, runs alone in slot |
+| M12 | Local VLM | Ollama: `qwen2.5vl:7b` (Q4) — verified fallback `llava:13b`; text `qwen2.5:7b-instruct` | managed by Ollama | runs alone in slot |
 
 Download procedure (uniform): `maskfactory models fetch <key>` → downloads to `models\<family>\`,
 computes SHA-256, writes registry entry with url/version/license/date, runs a 1-image smoke test,

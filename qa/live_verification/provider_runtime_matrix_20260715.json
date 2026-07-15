@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T02:08:54.580192Z",
+  "item_id": "MF-P0-17.13",
+  "result": "pass_with_explicit_human_gates",
+  "matrix": {
+    "path": "env/provider_runtime_matrix.json",
+    "file_sha256": "e357d52b849643d480ff179b3bc3ae62b0c73b0d30d5387bda6543d3a4b133d0",
+    "manifest_sha256": "3fb4e9d2fac03b8ebccabf4a34b062eec1d4060b3e982fad7d5db1283dbef877",
+    "provider_count": 7,
+    "qualified_runtime_count": 5,
+    "human_gated_runtime_count": 2,
+    "artifact_count": 15,
+    "core_torch": "2.11.0+cu128",
+    "core_cuda": "12.8"
+  },
+  "qualified_runtimes": [
+    "maskfactory_core",
+    "qwen3_vl",
+    "rfdetr",
+    "eomt_dinov3",
+    "rtm_pose"
+  ],
+  "human_gated_source_only_runtimes": [
+    "sam3_1",
+    "sam3d_body"
+  ],
+  "doctor": {
+    "summary": "PASS=11 WARN=0 SKIP=0 FAIL=0",
+    "torch_cuda": "2.11.0+cu128; CUDA 12.8; capability 12.0",
+    "registered_model_smokes": "14/14 exact output hashes matched",
+    "provider_lifecycle": "planned=5 installed=12 benchmarked=0 promoted=10 reference_only=2 retired=0",
+    "cvat": "2.24.0 reachable; project_count=2",
+    "sam2_nuclio_foreground_pixels": 21491,
+    "wsl_roundtrip": "pass"
+  },
+  "verification": {
+    "focused_runtime_matrix_tests_passed": 4,
+    "full_repository_tests_passed": 1110,
+    "ruff": "pass",
+    "currency_review_integrity_after_changes": "pass"
+  },
+  "authority_boundary": "The matrix proves exact current lock/evidence binding and isolation for five live-qualified runtime families. SAM 3.1 and SAM 3D Body remain source-only and may not claim checkpoint inference, promotion, serving, or gold authority until Kevin completes their official interactive terms gates and the subsequent live qualification passes."
+}

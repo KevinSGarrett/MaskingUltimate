@@ -1,15 +1,15 @@
 # ITEMS — Phase P7: Scale & Continuous Operation
 
-Goal: D5 (≥300 gold, coverage ≥80%) + D10 (every runbook operation executed at least once). Parent IDs from doc 14 §8.
+Goal: D5 (≥300 certified packages, coverage ≥80%) + D10 (every runbook operation executed at least once) with truth tiers and labor/quality/confidence reported separately. Parent IDs from doc 14 §8 as amended by docs 20/22.
 
-## MF-P7-01 — Scale gold 300 → 500 (spec: 12 §2, 01 G6)
-- [ ] MF-P7-01.01 Weekly acquisition driven by mining plans (top-10 coverage-deficit cells define what to generate/collect) until **300** approved gold packages exist
+## MF-P7-01 — Scale certified packages 300 → 500 (spec: 12 §2, 01 G6, 22 §5)
+- [ ] MF-P7-01.01 Weekly acquisition driven by mining plans until **300 certified packages** exist, counting only human-anchor train plus active autonomous-certified packages and reporting both tiers separately
 - [ ] MF-P7-01.02 Verify coverage matrix ≥ 80% of view×pose cells at target (≥8/cell) and every attribute ≥ 40 — together with 01.01 this closes **D5**
 - [ ] MF-P7-01.03 Continue cadence toward the 500-package stretch target (G6)
 - [ ] MF-P7-01.04 (If used) Synthetic bootstrapping for stubborn deficit cells: scripted/3D-rendered images per doc 12 §9 · `source_origin: synthetic` · ≤ 30% mix cap · train-only · same QA battery
 
 ## MF-P7-02 — Retrain cadence live (spec: 12 §7)
-- [ ] MF-P7-02.01 Retrain triggers wired to auto-open a P5 task: +50 new approved gold since champion's dataset · any tracked class error ↑ > 5 pts for 2 weeks · ontology version change
+- [ ] MF-P7-02.01 Retrain triggers wired to auto-open a P5 task: +50 new certified training packages since champion dataset · tracked class error ↑ >5 pts for 2 weeks · ontology/fingerprint change · material drift/revocation
 - [ ] MF-P7-02.02 Execute ≥ 1 trigger-driven retrain end-to-end (build @vN+1 → train → leaderboard → promote/reject) · champion history visible in registry
 
 ## MF-P7-03 — Operations drills → D10 (spec: 15)
@@ -32,4 +32,4 @@ Goal: D5 (≥300 gold, coverage ≥80%) + D10 (every runbook operation executed 
 Mon mining review (30 min) → Tue–Thu build → Fri annotation block + backup verify → every session: `doctor` at start, `git push` + `dvc push` at end · nightly automation (B1/B5/integrity/lint) and weekly (B2, IAA, coverage, gc dry-run) keep running from P1-09/P4-03 setup.
 
 ## P7 / PROJECT Exit Gate
-- [ ] MF-P7-EXIT All D1–D10 boxes in doc 00 §4 checked with evidence · **headline test passed:** 20 never-seen images → full pipeline → approved gold in ≤ 4 h operator time with zero format or L/R failures (doc 01 §10)
+- [ ] MF-P7-EXIT All D1–D10 boxes in doc 00 §4 checked with evidence · **revised headline test passed:** 20 unseen images → selective autonomous certification/residual routing → preselected blinded mixed audit, no routine per-image correction, zero format/L/R failures, and separate labor/quality/confidence metrics (docs 20/22; MF-P7-07.07)

@@ -15,9 +15,40 @@ jobs:
       - name: Install package (CPU-only; GPU deps live in env/ lockfiles)
         run: |
           python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install -e .
           pip install ruff pytest
       - name: Ruff lint
         run: ruff check .
+      - name: Assert generated ontology has no drift
+        run: python tools/generate_ontology.py --check
+      - name: Assert inactive ontology-v2 artifacts have no drift
+        run: python tools/generate_ontology_v2.py --check
+      - name: Assert inactive manifest-v2 schema has no drift
+        run: python tools/generate_manifest_v2_schema.py --check
+      - name: Assert provider runtime isolation matrix has no drift
+        run: >-
+          python tools/verify_provider_runtime_matrix.py
+          && pytest -q tests/test_provider_runtime_matrix.py
+      - name: Block training merges on ontology-aware flip invariant
+        run: pytest -q tests/test_training_augmentations.py
+      - name: Block registry governance and lifecycle drift
+        run: >-
+          pytest -q
+          tests/test_governance_policy.py
+          tests/test_model_registry_schema.py
+          tests/test_model_registry.py
+          tests/test_external_probe.py
+          tests/test_provider_contracts.py
+      - name: Verify signed currency review integrity and current input binding
+        run: >-
+          python -m maskfactory.cli governance verify-currency-review
+          qa/governance/currency/current_review.json
+          --public-key configs/governance/currency_review_ed25519_public.pem
+          --rollback-evidence qa/governance/currency/rollback_evidence.json
+          --required-event scheduled_90_day
+          --allow-failed-review
+      - name: Block currency governance gate regressions
+        run: pytest -q tests/test_currency_review.py
       - name: Pytest
         run: pytest

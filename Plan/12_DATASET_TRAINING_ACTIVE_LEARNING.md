@@ -45,8 +45,10 @@ DensePose. All training configs live in `configs\training\*.yaml`; all runs log 
 
 ## 3. Dataset Build & DVC Versioning
 
-`maskfactory dataset build --name bodyparts --ontology body_parts_v1` produces
-`datasets\bodyparts@vN\` (N auto-increments):
+`maskfactory dataset build --name bodyparts --ontology body_parts_v1` builds the active 56-logit
+dataset. The same command with `--ontology body_parts_v2` builds a separate 65-logit dataset only
+after at least 200 frozen, fully reviewed v2 packages exist. A build selects exactly one ontology;
+mixing versions is forbidden. Both produce a new `datasets\bodyparts@vN\` (N auto-increments):
 
 ```
 datasets\bodyparts@vN\
@@ -61,10 +63,15 @@ datasets\bodyparts@vN\
   holdout\                   # test + hard_case exports (read-only flag set)
 ```
 
-- Only `human_approved_gold` packages are eligible; builder re-runs `verify-package` on each and
-  hard-fails the build on any hash/format mismatch (a dataset can never contain unverified gold).
-- Versioning: `dvc add datasets\bodyparts@vN && git tag dataset/bodyparts-vN`; remote is S3
-  `maskfactory-dvc-dev` (dev acct 548846591581, doc 06 §6). `dvc push` after every build.
+- Only `human_approved_gold` packages for the explicitly requested ontology are eligible; v2
+  additionally requires all 65 per-label v2 review authorities. The builder re-runs the
+  ontology-aware `verify-package` on each and hard-fails on any hash/format mismatch (a dataset
+  can never contain unverified gold).
+- Versioning is immutable: preflight that neither `datasets\bodyparts@vN` nor
+  `dataset/bodyparts-vN` exists, then `dvc add`, successful `dvc push`, and only then create the
+  git tag and mark source packages exported. A failed push creates no tag or exported authority;
+  retries use a new N rather than rewriting a path/tag. Remote is S3 `maskfactory-dvc-dev`
+  (dev acct 548846591581, doc 06 §6); launching a billable remote still requires Kevin approval.
   Rebuilding vN from the same package set is byte-identical (G8: sorted inputs, seed 1337,
   zip timestamps zeroed).
 - Every training run records `dataset@vN` + its DVC md5 in `runs\<run_id>\run.json` — a metric is
@@ -105,7 +112,9 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
 ## 6. The Five Fine-Tuned Models (Specs & Gates)
 
 ### 6.1 Body-part segmenter (primary)
-- Task: 57-class semantic seg (56 PART IDs + background) on `label_map_part.png`.
+- Task: 56-class v1 semantic segmentation on `label_map_part.png`: contiguous IDs `0..55`,
+  with background already represented by ID 0. The approved append-only v2 migration uses
+  65 logits for IDs `0..64` (doc 18); the obsolete 57-class wording is invalid.
 - Arch A (default): **SegFormer-B3**, ImageNet-pretrained, 512 crops — fits 8 GB comfortably.
 - Arch B (challenger): **Mask2Former-SwinB** (local, ckpt-activated) or Swin-L (AWS burst only).
 - Schedule: AdamW lr 6e-5 poly 1.0, 40k iters (≈300 gold) / 80k (≈500), warmup 1.5k; loss CE +
@@ -163,6 +172,19 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
    error ↑ > 5 pts for 2 weeks · ontology version change. Trigger opens a P5 task automatically.
 5. Curriculum note: new gold from failure mining enters train immediately (next dataset build);
    holdouts stay frozen — improvement is measured against an unmoving bar.
+6. Cloud/local teacher outcomes may prioritize review and propose correction tools, but are never
+   labels. Only a frozen package whose target part is `human_approved_gold` may enter the teacher
+   resolution ledger. Records are image-disjoint before prompt-example or Qwen-adapter readiness is
+   declared. Cloud agreement, confidence, or a cheaper correction never substitutes for human truth.
+7. Self-hosted-Qwen improvement has two stages: first, promote human-gold resolutions as retrieval or
+   prompt exemplars after the balanced 50-record gate; second, permit a Qwen LoRA *candidate* after the
+   balanced 500-record gate. Either change is a new model/prompt version and must pass the frozen local
+   VLM gate plus doc 19's real-image incremental-value gate before deployment. Holdout examples can
+   never appear in prompts, fine-tuning, provider selection, or threshold tuning.
+8. A doc-20 `calibrated_auto_accepted` mask may enter a semi-supervised training lane at loss weight
+   0.25 while human gold remains weight 1.0. Machine labels never enter validation/test/hard-case
+   holdouts and never satisfy gold-count gates. A promoted model must still win on untouched human gold;
+   otherwise pseudo-label volume can amplify rather than correct systematic errors.
 
 ## 8. Failure-Driven Label Additions (Controlled Ontology Growth)
 

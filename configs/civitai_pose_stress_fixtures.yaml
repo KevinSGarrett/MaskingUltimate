@@ -21,6 +21,7 @@ required_coverage:
   - rear_body
   - from_below
   - difficult_body_visibility
+  - multi_person
 fixtures:
   - key: openpose_nsfw_525_pose_pack
     civitai_id: 297881
@@ -111,7 +112,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/120408_OpenPose_2girls_breast_press_v149173_openpose2girlsBreast_v11
     file_counts: {total: 9, png: 6}
     content: openpose_png_assets
-    coverage: [contact, occlusion, difficult_body_visibility]
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
   - key: two_girls_portrait_side_breast_press
     civitai_id: 180134
     name: OpenPose 2girls portrait side-by-side symmetrical docking breast press
@@ -121,7 +122,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/x_180134_202170
     file_counts: {total: 16, png: 15}
     content: openpose_png_assets
-    coverage: [contact, occlusion, difficult_body_visibility]
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
   - key: ass_support
     civitai_id: 147261
     name: OpenPose Ass support
@@ -141,7 +142,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/167364_OpenPose_Cover_multiple_characters_v188255_OpenposeCoverMultiple_v10
     file_counts: {total: 42, json: 14, png: 28}
     content: openpose_json_png
-    coverage: [occlusion, hands_on_body, difficult_body_visibility]
+    coverage: [occlusion, hands_on_body, difficult_body_visibility, multi_person]
   - key: carrying_person
     civitai_id: 140628
     name: OpenPose Carrying person
@@ -151,7 +152,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/140628_OpenPose_Carrying_person_v155860_OpenposeCarrying_carryingPersonV10
     file_counts: {total: 24, json: 8, png: 16}
     content: openpose_json_png
-    coverage: [contact, occlusion, difficult_body_visibility]
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
   - key: hug
     civitai_id: 136853
     name: OpenPose Hug
@@ -161,7 +162,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/136853_OpenPose_Hug_v150996_OpenposeHug_hugV10
     file_counts: {total: 54, json: 18, png: 36}
     content: openpose_json_png
-    coverage: [contact, occlusion, difficult_body_visibility]
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
   - key: three_girls_from_below_arms_behind
     civitai_id: 149843
     name: OpenPose 3girls from below arms behind back
@@ -171,7 +172,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/x_149843_167416
     file_counts: {total: 13, png: 11}
     content: openpose_png_assets
-    coverage: [occlusion, from_below, difficult_body_visibility]
+    coverage: [occlusion, from_below, difficult_body_visibility, multi_person]
   - key: two_girls_from_behind_from_below
     civitai_id: 148751
     name: OpenPose 2girls from behind from below
@@ -181,7 +182,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/148751_OpenPose_2girls_from_behind_from_below_v166017_openpose2girlsFrom_v10
     file_counts: {total: 27, png: 16}
     content: openpose_png_assets
-    coverage: [rear_body, from_below, occlusion, difficult_body_visibility]
+    coverage: [rear_body, from_below, occlusion, difficult_body_visibility, multi_person]
   - key: two_girls_all_fours
     civitai_id: 128689
     name: OpenPose 2girls all fours
@@ -191,7 +192,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/128689_OpenPose_2girls_all_fours_v149155_openpose2girlsAll_v11
     file_counts: {total: 14, png: 8}
     content: openpose_png_assets
-    coverage: [occlusion, difficult_body_visibility]
+    coverage: [occlusion, difficult_body_visibility, multi_person]
   - key: two_girls_from_above_sitting
     civitai_id: 118999
     name: OpenPose 2girls from above sitting
@@ -201,7 +202,7 @@ fixtures:
     extracted_path: Plan/Civitai/extracted/118999_OpenPose_2girls_from_above_sitting_v149180_openpose2girlsFrom_v11
     file_counts: {total: 16, png: 10}
     content: openpose_png_assets
-    coverage: [occlusion, difficult_body_visibility]
+    coverage: [occlusion, difficult_body_visibility, multi_person]
   - key: strangling_pov_hands_neck
     civitai_id: 138964
     name: OpenPose strangling pov hands hands on another's neck

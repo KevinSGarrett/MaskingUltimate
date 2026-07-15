@@ -1,0 +1,11 @@
+{
+  "1": {
+    "class_type": "MFLoadGoldMask",
+    "inputs": {
+      "image_id": "__IMAGE_ID__",
+      "person_index": 1,
+      "label": "left_forearm",
+      "on_missing": "error"
+    }
+  }
+}

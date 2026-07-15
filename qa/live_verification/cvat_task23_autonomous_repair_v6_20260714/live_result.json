@@ -1,0 +1,293 @@
+{
+  "autonomy": {
+    "authoritative_gold": false,
+    "context": "solo",
+    "convergence": {
+      "right_foot_base": {
+        "authoritative_gold": false,
+        "calibrated_95_claim": false,
+        "converged": true,
+        "enabled": true,
+        "final_votes": [
+          {
+            "candidate_id": "committee_r1_gemini",
+            "confidence": 0.9,
+            "defects": [],
+            "model": "qwen2.5vl:7b",
+            "participated": true,
+            "provider": "self_hosted_qwen",
+            "round": 2,
+            "verdict": "pass"
+          },
+          {
+            "candidate_id": "committee_r1_gemini",
+            "confidence": 0.98,
+            "defects": [],
+            "model": "gemini-3.5-flash",
+            "participated": true,
+            "provider": "gemini",
+            "round": 2,
+            "verdict": "pass"
+          },
+          {
+            "candidate_id": "committee_r1_gemini",
+            "confidence": 0.9,
+            "defects": [],
+            "model": "gpt-5.6-luna",
+            "participated": true,
+            "provider": "openai",
+            "round": 2,
+            "verdict": "pass"
+          },
+          {
+            "candidate_id": "committee_r1_gemini",
+            "confidence": 0.87,
+            "defects": [],
+            "model": "claude-sonnet-5",
+            "participated": true,
+            "provider": "anthropic",
+            "round": 2,
+            "verdict": "pass"
+          }
+        ],
+        "minimum_advisory_pass_confidence": 0.8,
+        "publication_target": "reversible_non_gold_review_draft",
+        "remaining_uncertainties": [],
+        "round_count": 2,
+        "rounds_report": "autonomy/convergence_right_foot_base.json",
+        "stop_reason": "all_required_reviewers_passed_exact_candidate",
+        "target_confidence": 0.95,
+        "target_confidence_kind": "requires_gold_calibration_not_raw_provider_scores"
+      }
+    },
+    "decision_count": 1,
+    "enabled": true,
+    "lifecycle_dir": "autonomy",
+    "mode": "autonomous_certified_gold",
+    "pipeline_fingerprint": "aa1c127d1e94de5fe5e03b78bf15ba164237bb550c67ec61e9c6784953fb4967",
+    "review_draft": {
+      "applied": [
+        {
+          "after_metrics": {
+            "eligible": true,
+            "evidence": {
+              "block_qc_ids": [],
+              "boundary_agreement": 0.1187724890510659,
+              "candidate_id": "committee_r1_gemini",
+              "component_count": 1,
+              "consensus_iou": 0.4537320643727867,
+              "critic_disagreement": false,
+              "critic_pass_weight": 1.0,
+              "exclusive_overlap": 0.0,
+              "format_valid": true,
+              "independent_sources": 6,
+              "mask_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v6_20260714\\committee_candidates\\right_foot_base\\round_1_gemini.png",
+              "mask_sha256": "f7ba1b067224b3bfbbacf88be5077f408095c9ee90ca617630eb3785c4fdf074",
+              "ontology_max_components": 1,
+              "pose_consistency": 1.0,
+              "protected_overlap": 0.0
+            },
+            "score": 0.6871875139034098,
+            "vetoes": []
+          },
+          "allow_label_reassignment": true,
+          "baseline_score": 0.336119782649953,
+          "before_metrics": {
+            "eligible": false,
+            "evidence": {
+              "block_qc_ids": [
+                "unknown_block"
+              ],
+              "boundary_agreement": 0.06062238537692722,
+              "candidate_id": "s09_baseline",
+              "component_count": 220,
+              "consensus_iou": 0.09598122229827025,
+              "critic_disagreement": true,
+              "critic_pass_weight": 0.0,
+              "exclusive_overlap": 0.0,
+              "format_valid": true,
+              "independent_sources": 5,
+              "mask_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v6_20260714\\autonomy_candidates\\right_foot_base\\s09_baseline.png",
+              "mask_sha256": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+              "ontology_max_components": 1,
+              "pose_consistency": 1.0,
+              "protected_overlap": 0.0
+            },
+            "score": 0.336119782649953,
+            "vetoes": [
+              "block_qc",
+              "component_overflow"
+            ]
+          },
+          "candidate_complete_map": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v6_20260714\\autonomy_review_draft\\candidate_maps\\001_right_foot_base_committee_r1_gemini.png",
+          "candidate_complete_map_sha256": "6a829fa176591d870c3fb941150a623ab99d70c93b4dd7f60f242941fe804c75",
+          "candidate_id": "committee_r1_gemini",
+          "changed_pixel_count": 977879,
+          "changed_pixel_fraction": 0.09255281652815468,
+          "displaced_label_pixel_counts": {
+            "2": 1451,
+            "41": 12223,
+            "43": 52313,
+            "44": 6700
+          },
+          "immutable_label_ids": [
+            50,
+            53,
+            51,
+            52
+          ],
+          "incremental_qa": {
+            "all_block_qc_ids": [
+              "QC-014"
+            ],
+            "baseline_score": 0.8587051878870733,
+            "block_qc_ids": [],
+            "non_regressing": true,
+            "overall": "fail",
+            "report_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v6_20260714\\candidate_full_qa\\autonomy_review_draft_right_foot_base_committee_r1_gemini\\qa_report.json",
+            "score": 0.8584139937075733
+          },
+          "label": "right_foot_base",
+          "mask_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v6_20260714\\committee_candidates\\right_foot_base\\round_1_gemini.png",
+          "mask_sha256": "f7ba1b067224b3bfbbacf88be5077f408095c9ee90ca617630eb3785c4fdf074",
+          "maximum_displaced_labels": 8,
+          "provider_votes": [
+            {
+              "candidate_id": "committee_r1_gemini",
+              "confidence": 0.9,
+              "defects": [],
+              "model": "qwen2.5vl:7b",
+              "participated": true,
+              "provider": "self_hosted_qwen",
+              "round": 2,
+              "verdict": "pass"
+            },
+            {
+              "candidate_id": "committee_r1_gemini",
+              "confidence": 0.98,
+              "defects": [],
+              "model": "gemini-3.5-flash",
+              "participated": true,
+              "provider": "gemini",
+              "round": 2,
+              "verdict": "pass"
+            },
+            {
+              "candidate_id": "committee_r1_gemini",
+              "confidence": 0.9,
+              "defects": [],
+              "model": "gpt-5.6-luna",
+              "participated": true,
+              "provider": "openai",
+              "round": 2,
+              "verdict": "pass"
+            },
+            {
+              "candidate_id": "committee_r1_gemini",
+              "confidence": 0.87,
+              "defects": [],
+              "model": "claude-sonnet-5",
+              "participated": true,
+              "provider": "anthropic",
+              "round": 2,
+              "verdict": "pass"
+            }
+          ],
+          "remaining_uncertainties": [
+            "best candidate is below the tournament score threshold"
+          ],
+          "repair_roi_xyxy": [
+            672,
+            5029,
+            1583,
+            5449
+          ],
+          "score": 0.6871875139034098,
+          "score_delta": 0.3510677312534568,
+          "selection_reason": "candidate_clears_baseline_hard_veto",
+          "status": "pre_review_improvement"
+        }
+      ],
+      "authoritative_human_gold": false,
+      "authority": "machine_generated_review_draft_non_gold",
+      "base_part_map": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_cdab0311dc96\\instances\\p0\\label_map_part.png",
+      "base_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "changed_labels": [
+        "right_foot_base"
+      ],
+      "changed_pixel_count": 977879,
+      "changed_pixel_fraction": 0.09255281652815468,
+      "human_gold_approval_required": true,
+      "promoted_for_human_review": true,
+      "proposed_part_map": "autonomy_review_draft/proposed_label_map_part.png",
+      "proposed_part_map_sha256": "6a829fa176591d870c3fb941150a623ab99d70c93b4dd7f60f242941fe804c75",
+      "qa": {
+        "block_qc_ids": [],
+        "overall": "fail",
+        "report_path": "candidate_full_qa/autonomy_review_draft_final/qa_report.json"
+      },
+      "review_part_map": "autonomy_review_draft/label_map_part.png",
+      "review_part_map_sha256": "6a829fa176591d870c3fb941150a623ab99d70c93b4dd7f60f242941fe804c75",
+      "rolled_back": [],
+      "schema_version": "1.0.0",
+      "skipped": []
+    },
+    "status_counts": {
+      "residual_human_queue": 1
+    }
+  },
+  "cloud_teacher": {
+    "candidate_created_count": 0,
+    "enabled": true,
+    "errors": [],
+    "judgment_count": 1,
+    "may_approve_gold": false,
+    "may_write_authoritative_masks": false,
+    "mode": "shadow_only",
+    "provider_count": 3
+  },
+  "enabled": true,
+  "gate_fingerprint": "live-shadow-uncalibrated-task23-v6",
+  "manifest_review": {
+    "status": "skipped_until_draft_manifest"
+  },
+  "model": "qwen2.5vl:7b",
+  "routes": {
+    "right_foot_base": {
+      "correction_hint": null,
+      "may_approve_gold": false,
+      "may_clear_block": false,
+      "may_edit_mask": false,
+      "pin_disagreement_heatmap": true,
+      "priority": "high",
+      "queue": "careful",
+      "specialist_disagreement_fraction": 0.9039526755516073,
+      "specialist_disagreement_reason": "raw_specialist_vs_final_mask"
+    }
+  },
+  "whole_image_review": {
+    "impossible_claims": [],
+    "latency_ms": 15335,
+    "lr_suspect": [],
+    "mislabeled": [],
+    "missing": [
+      "left_toes",
+      "right_toes"
+    ],
+    "model": "qwen2.5vl:7b",
+    "notes": "",
+    "prompt_version": "p-image-v2-source-overlay",
+    "status": "complete"
+  },
+  "workhorse": {
+    "audit_count": 1,
+    "authoritative_map_write": false,
+    "candidate_better_count": 0,
+    "candidate_created_count": 0,
+    "enabled": true,
+    "human_approval_required": true,
+    "mode": "gated_candidate_generation",
+    "non_gold_review_draft_write": true,
+    "report": "workhorse_report.json"
+  }
+}

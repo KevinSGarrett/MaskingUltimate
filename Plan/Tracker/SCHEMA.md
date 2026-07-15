@@ -29,30 +29,34 @@ tool against it.
   "schema_version": "1.0.0",
   "generated_at": "2026-07-10T01:55:22+00:00",   // last `rebuild` timestamp
   "generator": "tracker.py rebuild",
-  "total_items": 326,                             // parsed from Items/*.md at last rebuild
-  "total_tracked_including_orphaned": 326          // includes any orphaned ids
+  "total_items": 609,                             // parsed from Items/*.md at last rebuild
+  "total_tracked_including_orphaned": 609          // includes any orphaned ids
 }
 ```
 
 ## `phase_meta`
 
-One entry per phase P0–P7: `{name, file, entry_gate}`. `file` points to the
-corresponding `Plan\Items\*.md`. `entry_gate` is free text describing the
+One entry per phase P0–P8: `{name, file, entry_gate}`. `file` identifies the
+legacy primary phase file; additional phase-native addendum files are discovered by the parser.
+`entry_gate` is free text describing the
 condition that should hold before starting that phase (see README §5) — not
 mechanically enforced.
 
 ## `hard_blocker_prefixes`
 
-The literal list of id-prefixes used to compute each item's `hard_blocker`
-flag at rebuild time (see README §5 for what they are and why).
+The literal list of legacy id-prefixes used to compute each item's `hard_blocker`
+flag at rebuild time. Addendum items also become hard blockers when their source
+description contains the exact `HARD BLOCKER` marker.
 
 ## `metrics`
 
-Free-form `{key: value}` map, all values stored as strings after a `--set`.
-Seeded at first rebuild with:
-`approved_gold_count`, `target_gold_p5_entry`, `target_gold_d5`,
-`target_gold_g6_stretch`, `coverage_cells_at_target_pct`. Any new key can be
-added via `metrics --set newkey=value`.
+Free-form `{key: value}` map with scalar JSON values preserved by `--set`.
+Seeded at rebuild with separate human-anchor partitions, autonomous-certified, pseudo-label, and
+machine-candidate counts; `certified_training_package_count`; `effective_training_weight_units`;
+zero-touch/routine-touch/audited/residual fractions, human touches per 100 images, manually changed
+pixels per 100,000, audit failure rates, certified-package targets, and coverage. The certified package count
+is derived from the human-anchor training count plus autonomous-certified count. Pseudo-labels and
+calibration/holdout anchors never contribute to that gate.
 
 ## `dod` (Definition of Done, D1–D11)
 
@@ -135,7 +139,7 @@ One JSON object per line, append-only, one of three shapes:
  "note": null, "evidence": "...", "blocked_reason": null}
 
 // a `metrics --set` call
-{"ts": "...", "metrics_update": {"approved_gold_count": "42", ...}}
+{"ts": "...", "metrics_update": {"human_anchor_train_count": 42, "certified_training_package_count": 42, ...}}
 
 // a `goal` call
 {"ts": "...", "goal": "G2", "measured": "0.87 body / 0.71 fingers", "status": "met"}

@@ -1,0 +1,107 @@
+vocabulary_version: 1.0.0
+extension_rule: "Unknown values use unknown plus raw source text; new canonical values require a vocabulary revision."
+generations: [genesis_9, genesis_8_1, genesis_8, generation_neutral, other_or_unknown]
+primary_asset_classes:
+  - figure_base
+  - character_preset
+  - full_character_shape
+  - head_morph
+  - body_morph
+  - combined_morph
+  - age_morph
+  - corrective_morph
+  - hd_morph
+  - expression
+  - pose_full_body
+  - pose_partial_upper
+  - pose_partial_lower
+  - pose_hand_left
+  - pose_hand_right
+  - pose_foot
+  - animation
+  - material_skin
+  - material_eye
+  - material_makeup
+  - material_body_detail
+  - hair_fitted
+  - hair_prop
+  - facial_hair
+  - wardrobe_top
+  - wardrobe_bottom
+  - wardrobe_one_piece
+  - wardrobe_underwear
+  - wardrobe_swimwear
+  - wardrobe_outerwear
+  - wardrobe_glove
+  - wardrobe_sock
+  - wardrobe_footwear
+  - wardrobe_headwear
+  - accessory_wearable
+  - anatomy_geograft
+  - other_geograft
+  - prop_handheld
+  - prop_occluder
+  - support_surface
+  - environment_indoor
+  - environment_outdoor
+  - backdrop
+  - camera_preset
+  - light_preset
+  - hdri
+  - scene_preset
+  - render_preset
+  - simulation_preset
+  - script
+  - plugin
+  - converter
+  - compatibility_resource
+  - documentation_support
+  - unknown
+file_roles:
+  - user_facing_preset
+  - asset_definition
+  - scene
+  - figure
+  - geometry
+  - morph_delta
+  - rig
+  - weight_map
+  - uv_set
+  - material
+  - shader
+  - texture_base_color
+  - texture_normal
+  - texture_bump
+  - texture_displacement
+  - texture_roughness
+  - texture_glossiness
+  - texture_metallicity
+  - texture_opacity
+  - texture_translucency
+  - texture_emission
+  - texture_other
+  - pose
+  - animation
+  - simulation
+  - thumbnail
+  - metadata
+  - install_manifest
+  - script
+  - plugin_binary
+  - documentation
+  - license_text
+  - support
+  - unknown
+component_types: [node, figure, bone, object, geometry, shape, modifier, morph, material, shader, camera, light, environment, prop, simulation_object, renderer_setting, unknown]
+property_value_types: [float, integer, boolean, string, color, image, enum, unknown]
+morph_subtypes: [shape, expression, jcm, mcm, corrective, hd, pose_control, material_control, fit_adjustment, unknown]
+body_relationships: [targets, changes_shape, covers, attaches_to, poses, occludes, textures, creates, supports]
+sides: [left, right, bilateral, midline, not_applicable, unknown]
+dependency_relations: [requires, recommends, conflicts, supersedes, fits_to, autofits_to, loads_with, converted_from, uses_texture, controlled_by]
+mapping_relationships: [exact, contains, contained_by, overlaps, derived, none]
+evidence_methods: [runtime_api, dson_parse, cms_query, install_manifest, archive_scan, file_signature, render_test, simulation_test, name_inference, description_inference, manual_entry]
+confidence_bands:
+  observed: [0.95, 1.0]
+  strongly_inferred: [0.80, 0.949999]
+  weakly_inferred: [0.50, 0.799999]
+  unknown: [0.0, 0.499999]

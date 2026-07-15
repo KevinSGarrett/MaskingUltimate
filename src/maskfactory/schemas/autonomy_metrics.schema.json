@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomy_metrics.schema.json",
+  "title": "MaskFactory autonomy metrics report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "throughput", "human_workload", "blinded_quality", "statistical_confidence"],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "throughput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "zero_touch_packages", "eligible_packages", "zero_touch_fraction"],
+      "properties": {
+        "label": {"const": "Zero-touch throughput"},
+        "zero_touch_packages": {"type": "integer", "minimum": 0},
+        "eligible_packages": {"type": "integer", "minimum": 1},
+        "zero_touch_fraction": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "human_workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "eligible_packages", "routine_human_touched_packages", "routine_human_touch_fraction", "audited_packages", "audited_fraction", "residual_review_packages", "residual_review_fraction", "human_touch_count", "human_touches_per_100_images", "manually_changed_pixels", "predicted_pixels", "manual_changed_pixels_per_100k"],
+      "properties": {
+        "label": {"const": "Human intervention workload"},
+        "eligible_packages": {"type": "integer", "minimum": 1},
+        "routine_human_touched_packages": {"type": "integer", "minimum": 0},
+        "routine_human_touch_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "audited_packages": {"type": "integer", "minimum": 1},
+        "audited_fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "residual_review_packages": {"type": "integer", "minimum": 0},
+        "residual_review_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "human_touch_count": {"type": "integer", "minimum": 0},
+        "human_touches_per_100_images": {"type": "number", "minimum": 0},
+        "manually_changed_pixels": {"type": "integer", "minimum": 0},
+        "predicted_pixels": {"type": "integer", "minimum": 1},
+        "manual_changed_pixels_per_100k": {"type": "number", "minimum": 0, "maximum": 100000}
+      }
+    },
+    "blinded_quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "truth_tier", "truth_partition", "blinded", "evaluated_packages", "mean_mask_iou", "mean_boundary_f1"],
+      "properties": {
+        "label": {"const": "Blinded quality against human-anchor holdout"},
+        "truth_tier": {"const": "human_anchor_gold"},
+        "truth_partition": {"const": "holdout"},
+        "blinded": {"const": true},
+        "evaluated_packages": {"type": "integer", "minimum": 1},
+        "mean_mask_iou": {"type": "number", "minimum": 0, "maximum": 1},
+        "mean_boundary_f1": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "statistical_confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "confidence_level", "audited_packages", "false_accepts", "serious_false_accepts", "audit_false_accept_rate", "serious_false_accept_rate", "false_accept_upper_bound", "serious_false_accept_upper_bound"],
+      "properties": {
+        "label": {"const": "95% one-sided failure-rate upper bounds"},
+        "confidence_level": {"const": 0.95},
+        "audited_packages": {"type": "integer", "minimum": 1},
+        "false_accepts": {"type": "integer", "minimum": 0},
+        "serious_false_accepts": {"type": "integer", "minimum": 0},
+        "audit_false_accept_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "serious_false_accept_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "false_accept_upper_bound": {"type": "number", "minimum": 0, "maximum": 1},
+        "serious_false_accept_upper_bound": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  }
+}

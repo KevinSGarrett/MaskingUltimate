@@ -24,8 +24,12 @@ Contract format per stage: **In** (files/state) → **Out** (files/state) → **
 ## S01 — Person Detection & Context Crops
 **In:** source. **Out:** `work\s01\person_bbox.json` (all persons, scores, ranks), one promoted
 context crop per instance `work\s01\p<N>\person_ctx.png` (bbox × 1.25 pad, clamped).
-**Algorithm — AMENDED, doc 17 §4:** YOLO11m person class, conf ≥ 0.5; score every detection by
-area × centeredness (unchanged metric). Apply prominence floor `instance_min_area_pct` (4% of
+**Algorithm — AMENDED, doc 17 §4:** YOLO11m person class, conf ≥ 0.5. When and only when
+YOLO returns zero raw boxes, the pinned GroundingDINO checkpoint supplies proposal-only boxes for
+the exact prompt `person`; those proposals still must satisfy confidence ≥ 0.5 and every normal
+S01 policy below. This zero-box fallback covers generated/stylized human characters without
+changing YOLO authority on photographic inputs. Score every detection by area × centeredness
+(unchanged metric). Apply prominence floor `instance_min_area_pct` (4% of
 frame); rank the rest; **promote** the top `max_instances_per_image` (default 4) as
 `person_index` 0..N-1, descending score, left-to-right tie-break. Non-promoted persons above the
 floor become `other_person_protected` background for every promoted instance's own run (doc 02
@@ -48,7 +52,10 @@ universe for material labeling. **QC hook:** silhouette area vs bbox area ∈ [0
 argmax + per-class prob maps (saved 8-bit). SCHP-ATR run always (cheap) — provides clothing
 classes + cross-check. Class-name → ontology mapping table lives in `configs\pipeline.yaml
 (parsing_map)`, e.g. Sapiens `left_lower_arm`→forearm prior, `torso`→front-torso superset.
-**Fail:** OOM → half-res retry → fallback SCHP-only with `parsing_degraded=true` flag.
+**Fail:** OOM → half-res retry → fallback SCHP-only with `parsing_degraded=true` flag. A Sapiens
+result containing no foreground for an S01/S02-confirmed person is also a semantic provider
+failure: preserve it for audit, set `parsing_degraded=true`, and feed the always-run SCHP map to
+S05 rather than treating an all-background file as healthy merely because it exists.
 
 ## S04 — Whole-Body Pose + Hand Landmarks
 **In:** person_ctx (+S01 bbox). **Out:** `work\s04\pose133.json` (COCO-WholeBody 133 kp with conf),
@@ -58,8 +65,14 @@ classes + cross-check. Class-name → ontology mapping table lives in `configs\p
 shoulder/hip keypoint geometry + nose visibility + DensePose back-ratio (after S08.5) →
 {front, back, profiles, ¾}; pose_tags rules (arm elevation angles, hip-knee-ankle angles, overlap
 tests) — deterministic rule table in `pipeline.yaml (pose_tags_rules)`.
+Once the DensePose referee is installed, its view-only inference runs during S04 so the corrected
+view reaches S05 geometry; S08.5 reuses the exact validated IUV bytes/runtime record and MUST NOT
+launch a duplicate inference. DensePose fine torso chart 1 is back and chart 2 is front.
 **Fail:** <60% body kp above conf 0.3 → `pose_degraded=true`; geometry engine falls back to
-parsing-only priors; image auto-tagged for careful review.
+parsing-only priors; image auto-tagged for careful review. If DWPose returns no candidate owned
+by the promoted instance, suppress all co-subject candidates and serialize a zero-confidence
+133-keypoint degraded record (`pose_candidate_missing=true`) so this same parsing-only path is
+used; never assign a neighboring person's pose to satisfy the instance.
 **AMENDED (doc 17 §5):** in a multi-person image, S03 and S04 must identify which detected human
 each parsing/pose result belongs to (bbox/silhouette match against this instance's own defining
 bbox) and suppress any result belonging to a different person before it can leak into this
@@ -88,12 +101,18 @@ instance." Everywhere else in S02–S09, no internal logic changes (doc 17 §5).
    box = prior bbox × 1.1. Prompt recipes per part class in `configs\prompting.yaml`.
 **Fail:** missing kp for a part → prior from parsing only, `prior_quality=low` recorded.
 
-## S06 — Open-Vocab Assist (boxes only)
-**In:** person_ctx. **Out:** `work\s06\gdino_boxes.json`.
+## S06 — Open-Vocab and Auxiliary Specialist Assist
+**In:** person_ctx, S04 view/pose tags, S05 priors/crop requests. **Out:**
+`work\s06\gdino_boxes.json`, `work\s06\auxiliary\auxiliary_predictions.json`, preserved raw
+specialist outputs, and `work\s06\assisted_s05\`.
 **Algorithm:** GroundingDINO prompts: "hair", "bra", "underwear", "shoe", "sock", "glove",
 "necklace", "handheld object", "chair/bed/surface" (list in `prompting.yaml`), box_thresh 0.30,
 text_thresh 0.25. Boxes feed S05 priors (hair) + S08 material seeds + PART 51–53 candidates.
 **Hard rule:** GDINO output is never a final mask and never overrides pose/parsing on body parts.
+The same authority boundary applies to Civitai auxiliary specialists. Context-selected `assist`
+models may create bounded SAM2 prompts, material seeds, protected masks, and QA evidence. Only an
+exact gold-backed promotion certificate permits a 0.05 `auxiliary` vote in S09; otherwise raw
+output remains shadow/assist evidence. Embedded model classes and hashes are checked before use.
 
 ## S07 — SAM2 Refinement (full-frame lane)
 **In:** person_ctx, `prompts.json`. **Out:** `work\s07\sam2_<label>.png` + per-mask predicted IoU.
@@ -107,6 +126,9 @@ text_thresh 0.25. Boxes feed S05 priors (hair) + S08 material seeds + PART 51–
 3. Post: threshold logits at 0, remove components < max(64 px², 0.02·part area), fill holes
    < 0.5% part area, **no smoothing/AA**.
 4. Joint bands are cut from limb results geometrically (bands own their pixels).
+5. Governed specialist hand/foot segmentations may seed sided `hand_base`/`foot_base` plans only
+   after side assignment by overlap with the existing character-left/right S05 crop requests.
+   A governed hair segmentation may strengthen the hair prior; SAM2 still owns boundary refinement.
 **Fail:** predicted_iou < 0.5 → mark `sam2_low_conf`, keep prior as draft, flag for review.
 
 ## S08 — Clothing / Material Parse
@@ -119,6 +141,9 @@ skeletonize clothing regions, width < 4% torso width → strap/waistband by orie
 clothing region where skin-tone chroma similarity to adjacent skin > 0.8 → lace_or_sheer 12.
 SAM2 edge-refine each material region (same recipe as S07). Glove/sock: hand/foot region ∧
 clothing-texture → 15 (protects hand lane from labeling fabric as skin).
+Explicit auxiliary material segmentations may be added as pre-SAM2 seeds in `assist` mode. Raw
+boxes never become material pixels. Any provider that expands into visibly wrong material (for
+example a sock detector firing on bare legs) is demoted to `shadow` until gold-backed promotion.
 
 ## S08.5 — DensePose Surface Prior
 **In:** person_ctx. **Out:** `work\s08_5\densepose_iuv.png`.
@@ -132,6 +157,8 @@ signal), scapula/spine band seeding, impossible-assignment detection (doc 08 §5
 **Algorithm:**
 1. Stack per-part evidence (S07 masks, priors, parsing, DensePose votes) → per-pixel candidate
    scores per PART id (weights doc 05 §4).
+   A certificate-backed auxiliary specialist may contribute only through the explicit
+   `auxiliary=0.05` source; uncertified auxiliary output cannot enter this stack.
 2. **Z-order arbitration** for contested pixels (two parts both score > 0.4):
    depth ranking rules (`fusion.zorder_rules`): (a) hands/fingers in front of torso/thighs when
    wrist kp depth-cue (kp ordering + occlusion edge direction) says so; (b) hair in front of
@@ -167,10 +194,22 @@ Doc 10. Builds review panels, queries local VLM per hard part + whole-image sani
 verdicts into qa_report, adjusts routing (agree → quick-pass queue; disagree → careful queue).
 Status → `vlm_qa`.
 
+Workhorse amendment: S11 renders independent high-resolution evidence per present label, obtains a
+structured visual audit, optionally invokes the governed on-demand SAM2 refiner with bounded
+positive/negative points, writes proposals only to `correction_candidates/`, and compares complete
+before/after evidence. S09 maps are read-only in S11. Without a current calibration gate every route
+remains careful. Safe candidates may still be composed label-by-label into a reversible non-gold
+review draft after incremental and final complete-map hard QA; this never changes S09 or grants gold.
+
 ## S12 — Human Review (CVAT)
-Doc 11. `maskfactory cvat push` uploads image + draft masks as pre-annotations; human corrects with
+Doc 11. `maskfactory cvat push` uploads the image + optimized S11 non-gold review draft (falling back
+to S09 when no safe improvement survives) as pre-annotations; human corrects with
 SAM2 interactor; `cvat pull` retrieves; re-fuse (S09 on corrected inputs) → re-QA (S10 minimal set)
 → approval statuses set. Status → `in_review`/`corrected`.
+The review package also carries the source-aligned auxiliary-specialist overlay and normalized
+proposal evidence. A controlled mask add/subtract importer may update only a mutable review map;
+subtraction requires an explicit replacement label, then derivations and hard-block QA rerun.
+This import never supplies approval authority.
 
 ## S13 — Gold Export & Packaging
 Regenerate all binaries/derived/inpaint from final maps; build overlays + qa_panels; write final

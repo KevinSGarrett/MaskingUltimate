@@ -1,5 +1,5 @@
 # Document 02: Mask Ontology Specification
-**mask_ontology_version: body_parts_v1** | left/right = character perspective | atomic = visible-pixel-only
+**Active mask_ontology_version: `body_parts_v1`** | **Approved inactive extension: `body_parts_v2` (doc 18)** | left/right = character perspective | atomic = visible-pixel-only
 
 ---
 
@@ -30,6 +30,10 @@ can be enforced by construction.
 
 `label_map_part.png` (16-bit grayscale indexed) assigns every pixel exactly one ID below.
 Binary gold PNGs are generated as `(part_map == ID) * 255`.
+
+This table is the active v1 registry: 56 indexed PART records, IDs `0..55`, with background
+already occupying ID 0. Document 18 appends IDs `56..64` for v2 without changing any row below;
+the generated cross-version mirror is `Plan\OntologyV2\VERSIONED_REFERENCE.md`.
 
 | ID | label | ID | label |
 |----|-------|----|-------|
@@ -145,7 +149,8 @@ elbow/knee/wrist/ankle deterministic, exclusive, and reproducible.
 - If fingers are pressed together and boundaries are truly indistinguishable → label the merged
   region `hand_base` + set finger states `ambiguous_do_not_use` + flag `fingers_merged_or_ambiguous: true` (doc 08 §2.6). Never guess finger splits.
 - `toes` start at the metatarsophalangeal line; per-toe splitting is OUT of v1 atomic scope
-  (all-toes region only); per-toe reserved IDs come in ontology v2 if failure mining demands.
+  (all-toes region only). Document-18 v2 does not add per-toe IDs; any future split requires a
+  separate evidence-backed append-only ontology change.
 
 ### 6.4 Hair / face / skin edges
 - `hair` claims pixels where hair occludes face/body (z-order: hair in front). Wispy strand zone
@@ -157,6 +162,9 @@ elbow/knee/wrist/ankle deterministic, exclusive, and reproducible.
 - Front-vs-back torso assignment is decided by DensePose surface (I,U,V) majority vote (doc 08 §5); never label both for one pixel.
 
 ## 7. Derived Union Registry (script-generated, `masks_derived\`)
+
+The list below is the active v1 registry. V2 preserves these formulas and adds the anatomy
+surface unions in doc 18 §3 through inactive `configs\derived_v2.yaml` until activation.
 
 both_breasts, breast_skin (=(5∪6)∩mat1), left_breast_skin, right_breast_skin,
 left_hand, right_hand, both_hands, all_fingers, all_thumbs, all_index_fingers,
@@ -177,6 +185,10 @@ declarative expressions), writes PNGs + records formula string + input hashes in
 
 `visible | partially_visible | occluded | cropped_out | not_visible | ambiguous_do_not_use`
 
+That is the active v1 vocabulary. V2 uses the separate schema and adds
+`occluded_by_clothing | not_applicable | unreviewed_for_v2` under doc 18 §4; those values are
+invalid in a v1 manifest and `unreviewed_for_v2` can never become negative supervision.
+
 - `visible`: ≥90% of expected part area present (expected from amodal estimate).
 - `partially_visible`: 10–90% present; mask contains only visible pixels.
 - `occluded`: <10% visible due to object/body/clothing occlusion; no gold mask; projected/amodal may exist.
@@ -190,11 +202,18 @@ declarative expressions), writes PNGs + records formula string + input hashes in
 2. Any change bumps `mask_ontology_version` (v1 → v1.1 additive; v2 breaking) and adds a migration note in `Plan\CHANGELOG_ONTOLOGY.md`.
 3. Every manifest stores the ontology version it was authored under; training configs declare which versions they accept and how deprecated labels map.
 4. Left/right convention, visible-only rule, and binary format are constitutional — they cannot change within body_parts_v*.
+5. The approved `body_parts_v2` change is governed by doc 18 and
+   `Plan\OntologyV2\IMPLEMENTATION_CHECKLIST.md`; generated v2 artifacts remain inactive until
+   every activation gate passes and the active runtime/champions are switched together.
 
 ## 10. Canonical Machine-Readable Ontology
 
-`configs\ontology.yaml` is the single source of truth consumed by all code: every label with
+`configs\ontology.yaml` is the active v1 source of truth consumed by production code. The
+append-only v2 candidate is generated separately at `configs\ontology_v2.yaml`; it is selected
+only by explicit version-aware paths until activation. Every ontology carries every label with
 {id, name, mask_type, map (part/material/none), side (left/right/center/na), parent_union,
 enabled, expected_area_pct_range, max_components, exclusivity_group, swap_partner (for flip
 augmentation), visibility_default}. The tables in this document are the human mirror of that file;
-task MF-P1-03 (doc 14) generates the YAML from these tables and asserts consistency in CI.
+task MF-P1-03 (doc 14) generates the active YAML from these tables and asserts consistency in CI;
+the v2 generator and `tools\generate_ontology_version_reference.py --check` independently prove
+the 56-row prefix is unchanged and the nine additions are contiguous.

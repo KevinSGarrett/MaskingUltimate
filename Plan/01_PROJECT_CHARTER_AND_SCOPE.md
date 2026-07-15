@@ -1,5 +1,5 @@
 # Document 01: Project Charter & Scope
-**MaskFactory — Ultimate Masking System** | Blueprint v1.0.0 | Ontology body_parts_v1
+**MaskFactory — Ultimate Masking System** | Blueprint v1.0.0 | Active ontology `body_parts_v1`; approved inactive target `body_parts_v2` (doc 18)
 
 ---
 
@@ -18,8 +18,9 @@ mask-driven editing workflows in ComfyUI.
   boundary bleed, hair fuzz, masks that "see through" clothing, and silent format drift.
 - Inpainting quality in ComfyUI is capped by mask quality. Precise, semantically-correct,
   visible-pixel-only masks with clean derived edit regions are the single highest-leverage input.
-- No off-the-shelf model matches this exact ontology (56 atomic parts incl. per-finger, per-toe,
-  joint bands, breast/chest split, back regions) — so the system must manufacture its own
+- No off-the-shelf model matches either governed vocabulary (active v1: 56 PART IDs including
+  background; approved inactive v2: 65, doc 18, with per-finger/per-toe regions, joint bands,
+  breast/chest and visible-anatomy carve-outs, and back regions) — so the system must manufacture its own
   training data and fine-tune its own models.
 
 ## 3. Goals (Measurable)

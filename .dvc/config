@@ -1,0 +1,4 @@
+[core]
+    remote = maskfactory-dvc-dev
+['remote "maskfactory-dvc-dev"']
+    url = s3://maskfactory-dvc-dev

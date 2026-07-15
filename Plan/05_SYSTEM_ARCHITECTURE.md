@@ -95,6 +95,8 @@ surface patch, (hands) landmark polygons, (clothing lanes) material parse. Metho
 1. Rasterize all sources to full res; compute pairwise IoU matrix.
 2. `agreement = mean pairwise IoU of top-k sources` (k=3, weights in `pipeline.yaml`:
    sam2 0.40, sapiens 0.25, geometry 0.15, schp 0.10, densepose 0.10; hand lane overrides).
+   A promoted auxiliary specialist may add a bounded 0.05 vote for its explicitly mapped label;
+   it is optional evidence and does not reduce the governed base profile globally.
 3. `agreement ≥ 0.85` → auto-accept draft (still human-approved later, but pre-marked "quick pass").
    `0.60–0.85` → normal review. `< 0.60` → flagged `model_disagreement_high`, red in CVAT,
    disagreement heatmap saved to `qa_panels\`.
@@ -123,5 +125,6 @@ surface patch, (hands) landmark polygons, (clothing lanes) material parse. Metho
 ## 7. Security & Privacy Posture
 
 Local-only data plane; CVAT bound to 127.0.0.1; no telemetry from pipeline; cloud LLM calls
-(text-only, doc 10 §6) behind an allowlist flag `vlm.cloud_enabled: false` by default; secrets
+(text-only, doc 10 §6) behind a reconciled teacher-subsystem enablement flag; actual image
+transmission remains default-deny and requires exact-hash/rights/provider authorization; secrets
 (CVAT token) in `.env` (git-ignored) — never in configs or code.

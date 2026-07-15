@@ -1,0 +1,149 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.95,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "The current mask is highly accurate and requires no modifications.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask is anatomically accurate and conforms perfectly to the 'foot_mtp' boundary rule, excluding the toes and ankle/leg sections correctly.",
+      "latency_ms": 14589,
+      "model": "gemini-3.5-flash",
+      "observations": {
+        "contour": "The contour is smooth and precisely traces the foot's bottom profile, heel, ankle cut, and MTP division line.",
+        "full_context": "The full-person context shows the male character standing in profile, with his right foot flat on the ground in the foreground.",
+        "mask": "The binary mask has a clean shape, correctly excluding the toes and terminating horizontally at the ankle boundary.",
+        "neighbor_overlap": "No neighboring part overlap or interference is present in this region.",
+        "overlay": "The red overlay perfectly aligns with the character's right foot base, ending accurately at the metatarsophalangeal (MTP) line.",
+        "source_crop": "The high-resolution crop shows the right foot clearly, with visible MTP joint areas and toes."
+      },
+      "provider": "gemini",
+      "response_sha256": "d1e8416a5b9253fd069ee2e92fe0ef9857db4ff9cee96ecf2f180f68afc53071",
+      "usage": {
+        "cost_usd": 0.008619,
+        "input_tokens": 9656,
+        "output_tokens": 306
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.98,
+      "correction": {
+        "negative_points": [
+          [
+            350,
+            80
+          ],
+          [
+            500,
+            120
+          ],
+          [
+            180,
+            300
+          ],
+          [
+            780,
+            720
+          ],
+          [
+            870,
+            820
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            410,
+            520
+          ],
+          [
+            500,
+            610
+          ],
+          [
+            590,
+            660
+          ],
+          [
+            330,
+            700
+          ]
+        ],
+        "rationale": "Use positive points through the visible foreground ankle, heel, and proximal/midfoot, with negatives across the lower shin, adjacent rear foot, and distal toes. Refinement should remove the horizontal shin inclusion and stop at the MTP line rather than selecting the whole foot silhouette.",
+        "tool": "points"
+      },
+      "defects": [
+        "boundary_too_loose",
+        "mask_on_hidden_area",
+        "missing_visible_area"
+      ],
+      "evidence": "Fail: the candidate is the correct semantic right foot, but the mask extends into the lower shin and does not reliably follow the foot_mtp atomic boundary. A point-based refinement is safer than attempting a full polygon from the supplied views.",
+      "latency_ms": 12976,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour follows the external foot silhouette reasonably on the heel and dorsum but includes too much proximal lower leg and has an implausible straight upper boundary.",
+        "full_context": "The character-side pose evidence identifies this as the character's right foot. The front/right foot is visible in front of the crossed opposite foot.",
+        "mask": "The mask has an artificial horizontal top edge across the lower shin rather than ending at the visible ankle boundary. It also does not cleanly encode the foot_base split from the toes and is an overly broad parent-like region.",
+        "neighbor_overlap": "The crossed rear foot is adjacent behind the heel and requires careful exclusion; the current mask is close to this neighbor and should be refined with negative guidance near the rear-foot region.",
+        "overlay": "The red overlay visibly covers substantial lower-leg/ankle area above the foot and terminates with a geometric vertical edge near the forefoot instead of following the anatomical MTP separation.",
+        "source_crop": "The target is the foreground right foot. Its visible ankle-to-midfoot region is clear, while the toes extend distally to the right and should be excluded at the metatarsophalangeal line."
+      },
+      "provider": "openai",
+      "response_sha256": "147c251f2fedef260d4f2ac83bb165404340f2cf76c7e2312d4b3e4d26169e44",
+      "usage": {
+        "cost_usd": 0.016174,
+        "input_tokens": 9796,
+        "output_tokens": 1063
+      },
+      "verdict": "fail"
+    },
+    {
+      "confidence": 0.83,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Mask boundary, side assignment, and MTP exclusion all appear correct on visual inspection; unrelated QA flags (shoulder side-coherence, hand_base area, chain breaks) pertain to other body parts, not this right_foot_base instance, so no correction is warranted.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "Pose-chain evidence confirms this foot is the character's right foot (nearest right ankle joint, dist 178.6 vs 692.9), and the mask correctly follows the foot_mtp boundary rule by covering the dorsum/heel/sole while excluding the visible toes, with no clothing, background, or neighbor contamination observed.",
+      "latency_ms": 26187,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "White contour line traces the ankle top, lateral/medial foot edges, heel curve, and sole, then cuts vertically near the ball of the foot before the toes, matching the MTP exclusion boundary.",
+        "full_context": "Cyan ROI box marks the front-most foot (character's right foot per pose-chain evidence, distance 178.6px vs 692px to left chain) at the base of the crossed-leg stance; ankle-to-heel area is fully visible against the grey backdrop.",
+        "mask": "Binary mask covers the ankle/dorsum/heel/sole region with a clean vertical cut on the right edge that terminates before the toe segments begin, consistent with the foot_mtp boundary rule.",
+        "neighbor_overlap": "No bleed into the rear/background foot or into toe segments is visible; the straight vertical cut at the MTP line avoids finger/toe merge artifacts.",
+        "overlay": "Red overlay fills the foot base area precisely up to the toe crease; the five toes remain unmasked natural skin color, confirming toes are excluded as required by the ontology contract.",
+        "source_crop": "High-res crop shows full dorsum, ankle, heel and sole of the foot with visible toes (with nails) extending past the MTP crease; skin texture, veins and shading are clear and unoccluded."
+      },
+      "provider": "anthropic",
+      "response_sha256": "360ff1c631d2da7464e24f27966cb7aa588af5ba17bedd509b940a6c498217e9",
+      "usage": {
+        "cost_usd": 0.045674,
+        "input_tokens": 12667,
+        "output_tokens": 2034
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "pass",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "3e82f6b1df9d5fd3a8dfb422389f4581040169f58c1df6949696bc4434cbdb96",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

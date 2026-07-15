@@ -14,7 +14,7 @@ from typing import Iterator
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DB_PATH = ROOT / "data" / "maskfactory.sqlite"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 IMAGE_STATUSES = frozenset(
     {
         "ingested",
@@ -40,6 +40,16 @@ MAIN_STATUS_CHAIN = (
     "approved_gold",
     "exported",
 )
+PIPELINE_PROGRESS_STAGE = {
+    "ingested": "S00",
+    "drafted": "S09",
+    "auto_qa": "S10",
+    "vlm_qa": "S11",
+    "in_review": "S12",
+    "corrected": "S12",
+    "approved_gold": "S13",
+    "exported": "S14",
+}
 ALLOWED_STATUS_TRANSITIONS: dict[str, frozenset[str]] = {
     status: frozenset({MAIN_STATUS_CHAIN[index + 1], "rejected", "quarantined"})
     for index, status in enumerate(MAIN_STATUS_CHAIN[:-1])
@@ -100,6 +110,22 @@ CREATE TABLE IF NOT EXISTS training_runs (
     metrics_json TEXT NOT NULL DEFAULT '{}' CHECK(json_valid(metrics_json)),
     promoted INTEGER NOT NULL DEFAULT 0 CHECK(promoted IN (0, 1))
 );
+
+CREATE TABLE IF NOT EXISTS package_truth (
+    image_id TEXT NOT NULL REFERENCES images(image_id) ON DELETE CASCADE,
+    package_path TEXT NOT NULL,
+    truth_tier TEXT NOT NULL CHECK(truth_tier IN (
+        'human_anchor_gold', 'autonomous_certified_gold',
+        'weighted_pseudo_label', 'machine_candidate'
+    )),
+    truth_partition TEXT CHECK(truth_partition IN ('train', 'calibration', 'holdout', 'residual')),
+    training_loss_weight REAL NOT NULL CHECK(training_loss_weight >= 0 AND training_loss_weight <= 1),
+    certificate_bundle_sha256 TEXT CHECK(
+        certificate_bundle_sha256 IS NULL OR length(certificate_bundle_sha256) = 64
+    ),
+    PRIMARY KEY (image_id, package_path)
+);
+CREATE INDEX IF NOT EXISTS idx_package_truth_tier ON package_truth(truth_tier, truth_partition);
 """
 
 
@@ -224,6 +250,149 @@ def transition_image_status(
         "UPDATE images SET status = ?, current_stage = ?, updated_at = ? WHERE image_id = ?",
         (new_status, current_stage, updated_at, image_id),
     )
+
+
+def persist_terminal_image_outcome(
+    database: Path,
+    image_id: str,
+    outcome: str,
+    *,
+    reason: str,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Persist a cacheable terminal stage outcome exactly once."""
+    if outcome not in {"rejected", "quarantined"}:
+        raise InvalidStatusTransition(f"invalid terminal outcome: {outcome}")
+    if not reason.strip():
+        raise ValueError("terminal outcome reason cannot be empty")
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) == outcome and str(row[1]) == current_stage:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            outcome,
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
+def persist_recovered_image_outcome(
+    database: Path,
+    image_id: str,
+    *,
+    current_stage: str,
+    updated_at: str | None = None,
+) -> bool:
+    """Return a previously terminal image to the main chain after a verified rerun."""
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        if str(row[0]) not in {"rejected", "quarantined"}:
+            return False
+        transition_image_status(
+            connection,
+            image_id,
+            "ingested",
+            updated_at=timestamp,
+            current_stage=current_stage,
+        )
+    return True
+
+
+def persist_image_progress(
+    database: Path,
+    image_id: str,
+    target_status: str,
+    *,
+    updated_at: str | None = None,
+) -> bool:
+    """Advance durable pipeline progress without skipping states or regressing reruns."""
+    if target_status not in PIPELINE_PROGRESS_STAGE or target_status == "ingested":
+        raise InvalidStatusTransition(f"invalid pipeline progress target: {target_status}")
+    target_index = MAIN_STATUS_CHAIN.index(target_status)
+    timestamp = updated_at or datetime.now(UTC).isoformat()
+    with writer_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status FROM images WHERE image_id = ?", (image_id,)
+        ).fetchone()
+        if row is None:
+            raise UnknownImageError(image_id)
+        current_status = str(row[0])
+        if current_status not in MAIN_STATUS_CHAIN:
+            raise InvalidStatusTransition(
+                f"cannot advance terminal image status {current_status}; rerun S01 recovery first"
+            )
+        current_index = MAIN_STATUS_CHAIN.index(current_status)
+        if current_index >= target_index:
+            return False
+        for next_status in MAIN_STATUS_CHAIN[current_index + 1 : target_index + 1]:
+            if next_status not in PIPELINE_PROGRESS_STAGE:
+                raise InvalidStatusTransition(
+                    f"pipeline progress cannot infer stage for {next_status}"
+                )
+            transition_image_status(
+                connection,
+                image_id,
+                next_status,
+                updated_at=timestamp,
+                current_stage=PIPELINE_PROGRESS_STAGE[next_status],
+            )
+    return True
+
+
+def upsert_package_truth(
+    database: Path,
+    *,
+    image_id: str,
+    package_path: str,
+    truth_tier: str,
+    truth_partition: str | None,
+    training_loss_weight: float,
+    certificate_bundle_sha256: str | None = None,
+) -> None:
+    """Persist non-collapsing package truth authority beside workflow state."""
+    if truth_tier not in {
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate",
+    }:
+        raise ValueError(f"unknown truth tier: {truth_tier}")
+    if truth_partition not in {None, "train", "calibration", "holdout", "residual"}:
+        raise ValueError(f"unknown truth partition: {truth_partition}")
+    if not 0 <= float(training_loss_weight) <= 1:
+        raise ValueError("training loss weight must be inside 0..1")
+    with writer_connection(database) as connection:
+        connection.execute(
+            "INSERT INTO package_truth "
+            "(image_id, package_path, truth_tier, truth_partition, training_loss_weight, "
+            "certificate_bundle_sha256) VALUES (?, ?, ?, ?, ?, ?) "
+            "ON CONFLICT(image_id, package_path) DO UPDATE SET "
+            "truth_tier=excluded.truth_tier, truth_partition=excluded.truth_partition, "
+            "training_loss_weight=excluded.training_loss_weight, "
+            "certificate_bundle_sha256=excluded.certificate_bundle_sha256",
+            (
+                image_id,
+                package_path,
+                truth_tier,
+                truth_partition,
+                float(training_loss_weight),
+                certificate_bundle_sha256,
+            ),
+        )
 
 
 @contextmanager

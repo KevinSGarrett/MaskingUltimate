@@ -1,0 +1,55 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.98,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Replace the mask with a segmentation of only the visible portions of the rear character-right foot. Because much of that foot is occluded and the exact boundary is not fully recoverable from the crop, human review is safer than proposing a complete polygon or SAM point correction.",
+        "tool": "human_review"
+      },
+      "defects": [
+        "wrong_side",
+        "wrong_part",
+        "missing_visible_area",
+        "includes_neighbor_part"
+      ],
+      "evidence": "The foreground foot is character-left based on the shoulder and leg chain. The character-right foot is the rear foot at viewer-left and is only partially visible, so the current mask is a wrong-side segmentation.",
+      "latency_ms": 11027,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour follows the foreground foot boundary reasonably closely, but it is the wrong anatomical instance and therefore cannot pass.",
+        "full_context": "The masked foreground foot is on the viewer-right side. Tracing the limb chain and applying character-perspective left/right, this is the character's left foot; the character's right foot is the partially occluded rear foot toward viewer-left.",
+        "mask": "The binary mask covers nearly the entire large foreground foot, including its ankle and toes, but does not cover the visible rear right-foot area.",
+        "neighbor_overlap": "The proposal overlaps the neighboring/occluding left foot region rather than isolating the character's right foot; the true right foot is partly hidden behind it.",
+        "overlay": "The red overlay aligns tightly with the foreground foot silhouette, confirming that the proposal segments the opposite foot.",
+        "source_crop": "The crop clearly shows a large foreground foot and only a partial rear foot at the far left edge. The requested right_foot_base corresponds to the rear, partially hidden foot, not the large foreground foot."
+      },
+      "provider": "openai",
+      "response_sha256": "c924ddd4fa0fcb1f69a0b4752aca17be1a5f20421dfcac53af283dd2c10f41f4",
+      "usage": {
+        "cost_usd": 0.014379,
+        "input_tokens": 9363,
+        "output_tokens": 836
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "autoqa_qc_028",
+      "autoqa_qc_031"
+    ],
+    "final_verdict": "uncertain",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "92608d52e0cf1f4280ead1d743c170bb1517b232bd95516bdb186b6971aa6c11",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

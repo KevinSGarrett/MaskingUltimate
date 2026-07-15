@@ -10,8 +10,8 @@ you will build starting in Phase P0.
 
 | Layer | Location | What it is | Who edits it, and when |
 |---|---|---|---|
-| **Spec** | `Plan\00`–`16` (17 files) | The complete, authoritative technical blueprint. Every model, threshold, format, and algorithm decision, made in advance. | Essentially frozen. Only changes via the deliberate ontology/spec change procedures described inside (e.g. doc 02 §9). If you think a spec doc is wrong, that's a `06`-style escalation, not a silent edit. |
-| **Checklist** | `Plan\Items\00`–`08` (9 files, 348 action items) | The spec atomized into checkable build items, each tagged with its phase and the exact spec section that defines it. | Edit only if the plan itself changes (rare, deliberate). After editing, run `python tracker.py rebuild` in `Tracker\`. |
+| **Spec** | `Plan\00`–`22`, plus approved handoffs | The complete technical blueprint, including ontology-v2, multi-provider teachers, autonomous certification/repair, technology currency, and SAM 3.1 modernization. | Changes only through deliberate spec/owner amendments. Later approved decisions outrank conflicting earlier text and must be recorded in traceability. |
+| **Checklist** | `Plan\Items\` (19 parsed phase files, 609 action items) | The spec atomized into checkable build items, each tagged with its phase, governing source, explicit verification, and blockers. | Edit only when the plan itself changes. After editing, run `python tracker.py rebuild` in `Tracker\`. |
 | **State** | `Plan\Tracker\` | The live, mutable status of every item: open/blocked/complete/etc., evidence, notes, timestamps — plus Definition-of-Done and Goals rollups. | You update this constantly, through `tracker.py` only. Never hand-edit `tracker.json`. |
 | **Operating Manual** | `Plan\Instructions\` (this folder) | How you, the building AI, actually conduct yourself session to session. | Static reference for you. Not something you update as part of normal building work. |
 
@@ -29,7 +29,7 @@ gold." Both matter; they answer different questions.
 
 ---
 
-## 2. The 17 Spec Documents (`Plan\00`–`16`)
+## 2. The Specification Set (`Plan\00`–`22` plus approved handoffs)
 
 | # | File | Contents |
 |---|------|----------|
@@ -50,39 +50,38 @@ gold." Both matter; they answer different questions.
 | 14 | `14_IMPLEMENTATION_ROADMAP_WBS.md` | Phases P0–P7, every task ID, deliverable, acceptance criteria |
 | 15 | `15_RISKS_OPERATIONS_RUNBOOK.md` | Risk register, daily ops, **troubleshooting table**, backup/restore, glossary |
 | 16 | `16_EXTERNAL_FOUNDATION_BOOTSTRAP.md` | Existing model, workflow, and dataset bootstrap sources |
+| 17 | `17_MULTI_PERSON_MULTI_CHARACTER_MASKING_SPEC.md` | Multi-person identity, instance isolation, QA, and serving |
+| 18 | `18_ADULT_ANATOMY_ONTOLOGY_V2_SPEC.md` | Ontology-v2 contract, migration, QA, training, serving, and operations |
+| 19 | `19_MULTI_PROVIDER_TEACHER_AND_CONTINUOUS_IMPROVEMENT_SPEC.md` | Provider-neutral cloud teachers, eligibility, adjudication, and learning |
+| 20 | `20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md` | Truth tiers, autonomous certification, audits, revocation, and promotion |
+| 21 | `21_AUTONOMOUS_REPAIR_EXECUTION_SPEC.md` | Guarded repair execution, rollback, and repair evidence |
+| 22 | `22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md` | Challenger lifecycle, governance, benchmarking, and recurring currency review |
+
+The approved SAM 3.1/autonomous-gold handoff is also authoritative. Its full
+requirement mapping is maintained in `Plan\Items\TRACEABILITY_18_22_SAM31.md`.
 
 Plus `Plan\CHANGELOG_ONTOLOGY.md` (ontology version history) and, once you
 create them per §5 below, `Plan\OPS_LOG.md` and `Plan\DECISIONS_LOG.md`.
 
-## 3. The Checklist (`Plan\Items\00`–`08`)
+## 3. The Checklist (`Plan\Items\`)
 
-| File | Phase | Items | Closes |
-|---|---|---|---|
-| `00_ITEMS_MASTER_INDEX.md` | — | (index, no checkboxes) | — |
-| `01_ITEMS_P0_ENVIRONMENT.md` | P0 | 68 | D9 groundwork |
-| `02_ITEMS_P1_GOLD_FACTORY_MVP.md` | P1 | 61 | D2 core, first gold |
-| `03_ITEMS_P2_BODY_AWARE_DRAFTING.md` | P2 | 49 | D1, G2 baseline |
-| `04_ITEMS_P3_SPECIALIST_LANES.md` | P3 | 45 | 100 gold, G1 ≤25 min |
-| `05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md` | P4 | 28 | D4 |
-| `06_ITEMS_P5_TRAINING.md` | P5 | 38 | D6, D7 |
-| `07_ITEMS_P6_COMFYUI_SERVING.md` | P6 | 20 | D8 |
-| `08_ITEMS_P7_SCALE_OPERATIONS.md` | P7 | 17 | D5, D10, headline test |
-| `09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md` | P0 | 22 | Existing-model/dataset foundation |
-
-348 total action items. Each line carries an id (`MF-P<phase>-<task>.<item>`),
-a description, and (via its cluster header) a `spec_ref` pointing at the
-exact spec section that defines it.
+The parsed checklist contains **609 atomic items across 19 phase files**.
+`Plan\Items\00_ITEMS_MASTER_INDEX.md` is the authoritative file/count map,
+and `Plan\Items\TRACEABILITY_18_22_SAM31.md` maps every requirement in docs
+18–22 and the SAM 3.1 handoff to an existing or newly added item. Each item
+has an id (`MF-P<phase>-<task>.<item>`), a governing source, an explicit
+verification clause, and explicit blockers.
 
 ## 4. The Tracker (`Plan\Tracker\`)
 
 | File/dir | What |
 |---|---|
 | `tracker.py` | The CLI. `rebuild`, `show`, `set`, `list`, `next`, `metrics`, `goal`, `validate`, `report`. |
-| `tracker.json` | Canonical live state of all 348 items + DoD + Goals + metrics. |
+| `tracker.json` | Canonical live state of all 609 items + DoD + Goals + metrics. |
 | `CHANGELOG.jsonl` | Append-only audit trail of every state change ever made. |
 | `backups\` | Auto-snapshots of `tracker.json` before every write. |
 | `DASHBOARD.md` | Auto-generated project-wide rollup. Regenerate with `report`. |
-| `phases\P0.md`…`P7.md` | Auto-generated full-detail live status per phase. |
+| `phases\P0.md`…`P8.md` | Auto-generated full-detail live status per phase. |
 | `README.md` | The formal command reference (read this for full CLI detail). |
 | `SCHEMA.md` | Field-by-field `tracker.json` reference. |
 

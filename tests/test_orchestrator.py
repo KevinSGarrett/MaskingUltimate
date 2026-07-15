@@ -10,6 +10,8 @@ from maskfactory.orchestrator import (
     FatalStageError,
     SemanticStageError,
     StageConfigurationError,
+    StageExecution,
+    append_review_route_once,
     config_digest,
     plan_stages,
     run_batch,
@@ -96,6 +98,80 @@ def test_rerun_cache_and_force_atomically_replace_stage_owned_work(tmp_path: Pat
     assert stamp["config_hash"] == third[0].config_hash
 
 
+def test_terminal_stage_is_cached_preserves_evidence_and_stops_downstream(tmp_path: Path) -> None:
+    calls = {"S01": 0, "S02": 0}
+
+    def terminal(context):
+        calls["S01"] += 1
+        (context.output_dir / "person_bbox.json").write_text('{"outcome":"rejected"}')
+        return {
+            "outcome": "rejected",
+            "reason": "no_person",
+            "_terminal": {"outcome": "rejected", "reason": "no_person"},
+        }
+
+    def downstream(_context):
+        calls["S02"] += 1
+        return {"must_not_run": True}
+
+    kwargs = {
+        "image_id": "img_a3f9c2e17b04",
+        "selected": ("S01", "S02"),
+        "work_root": tmp_path,
+        "runners": {"S01": terminal, "S02": downstream},
+    }
+    first = run_pipeline(**kwargs)
+    second = run_pipeline(**kwargs)
+    assert len(first) == len(second) == 1
+    assert first[0].status == second[0].status == "terminal"
+    assert first[0].terminal_outcome == second[0].terminal_outcome == "rejected"
+    assert first[0].terminal_reason == second[0].terminal_reason == "no_person"
+    assert calls == {"S01": 1, "S02": 0}
+    output = tmp_path / "s01/img_a3f9c2e17b04"
+    assert (output / "person_bbox.json").is_file()
+    assert json.loads((output / "stage_run.json").read_text())["status"] == "terminal"
+
+
+def test_run_cli_persists_terminal_s01_outcome_once(tmp_path: Path, monkeypatch) -> None:
+    database = tmp_path / "state.sqlite"
+    _batch_database(database, ("img_a3f9c2e17b04",))
+    execution = StageExecution(
+        "S01",
+        "terminal",
+        "a" * 64,
+        str(tmp_path / "work/s01/img_a3f9c2e17b04"),
+        False,
+        ("yolo11m",),
+        1.0,
+        0.0,
+        "rejected",
+        "no_person",
+    )
+    monkeypatch.setattr(
+        "maskfactory.orchestrator.run_pipeline", lambda *args, **kwargs: (execution,)
+    )
+    args = [
+        "run",
+        "img_a3f9c2e17b04",
+        "--stage",
+        "S01",
+        "--database",
+        str(database),
+        "--work-root",
+        str(tmp_path / "work"),
+        "--images-root",
+        str(tmp_path / "images"),
+    ]
+    first = CliRunner().invoke(main, args)
+    second = CliRunner().invoke(main, args)
+    assert first.exit_code == second.exit_code == 0
+    with reader_connection(database) as connection:
+        row = connection.execute(
+            "SELECT status, current_stage FROM images WHERE image_id = 'img_a3f9c2e17b04'"
+        ).fetchone()
+    assert tuple(row) == ("rejected", "S01")
+
+
 def test_config_change_invalidates_cache(tmp_path: Path) -> None:
     calls = 0
 
@@ -113,6 +189,33 @@ def test_config_change_invalidates_cache(tmp_path: Path) -> None:
     run_pipeline(**common, config={"stages": {"S02": {"threshold": 0.5}}})
     run_pipeline(**common, config={"stages": {"S02": {"threshold": 0.6}}})
     assert calls == 2
+
+
+def test_fresh_upstream_generation_invalidates_selected_downstream_cache(tmp_path: Path) -> None:
+    generations = {"S01": 0, "S02": 0}
+
+    def runner(stage):
+        def execute(context):
+            generations[stage] += 1
+            return {"generation": generations[stage]}
+
+        return execute
+
+    common = {
+        "image_id": "img_a3f9c2e17b04",
+        "selected": ("S01", "S02"),
+        "work_root": tmp_path,
+        "runners": {"S01": runner("S01"), "S02": runner("S02")},
+    }
+    first = run_pipeline(**common)
+    second = run_pipeline(**common)
+    third = run_pipeline(**common, force=("S01",))
+
+    assert [result.status for result in first] == ["complete", "complete"]
+    assert [result.status for result in second] == ["cached", "cached"]
+    assert [result.status for result in third] == ["complete", "complete"]
+    assert generations == {"S01": 2, "S02": 2}
+    assert third[1].forced is True
 
 
 def test_downstream_stage_reads_prior_files_not_in_memory_results(tmp_path: Path) -> None:
@@ -183,6 +286,23 @@ def test_transient_failure_retries_exactly_twice_with_backoff(tmp_path: Path) ->
     assert delays == [1.0, 2.0]
 
 
+def test_pipeline_holds_and_releases_configured_gpu_lock(tmp_path: Path) -> None:
+    lock_path = tmp_path / "runs" / "gpu.lock"
+
+    def runner(context):
+        assert lock_path.is_file()
+        return {"ok": True}
+
+    run_pipeline(
+        "img_a3f9c2e17b04",
+        selected=("S02",),
+        work_root=tmp_path / "work",
+        runners={"S02": runner},
+        gpu_lock_path=lock_path,
+    )
+    assert not lock_path.exists()
+
+
 def _batch_database(path: Path, image_ids: tuple[str, ...]) -> None:
     initialize_database(path)
     with writer_connection(path) as connection:
@@ -220,6 +340,38 @@ def test_semantic_failure_routes_review_and_batch_continues(tmp_path: Path) -> N
     ]
     assert records[0]["route"] == "review"
     assert records[0]["attempts"] == 1
+
+
+def test_cached_instance_review_route_is_durable_and_idempotent(tmp_path: Path) -> None:
+    queue = tmp_path / "work/queues/review_queue.jsonl"
+    kwargs = {
+        "image_id": "img_a3f9c2e17b04",
+        "instance_id": "p2",
+        "stage": "S02",
+        "config_hash": "a" * 64,
+        "error": "silhouette_bbox_ratio=0.31 outside [0.35,0.95]",
+        "timestamp": "2026-07-12T12:00:00+00:00",
+    }
+
+    assert append_review_route_once(queue, **kwargs) is True
+    assert append_review_route_once(queue, **kwargs) is False
+
+    records = [json.loads(line) for line in queue.read_text(encoding="utf-8").splitlines()]
+    assert records == [
+        {
+            "attempts": 1,
+            "category": "semantic",
+            "config_hash": "a" * 64,
+            "error": kwargs["error"],
+            "image_id": kwargs["image_id"],
+            "instance_id": "p2",
+            "route": "review",
+            "stage": "S02",
+            "terminal_outcome": "needs_review",
+            "ts": kwargs["timestamp"],
+        }
+    ]
+    assert not queue.with_suffix(".jsonl.lock").exists()
 
 
 def test_fatal_failure_quarantines_image_and_batch_continues(tmp_path: Path) -> None:

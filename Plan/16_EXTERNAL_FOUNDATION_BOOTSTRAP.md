@@ -144,3 +144,53 @@ The external bootstrap foundation is usable only when:
 - Do not use Dataset Ninja previews as source masks unless the dataset license and original files are obtained correctly.
 - Do not let Florence2/GroundingDINO boxes override pose, parsing, or DensePose on body parts.
 - Do not let SAM2 decide semantic labels.
+
+## 8. Governed Auxiliary Specialist Runtime
+
+Downloaded Civitai detector checkpoints become useful only through the controlled runtime in
+`src\maskfactory\providers\civitai_auxiliary.py` and
+`configs\civitai_auxiliary_runtime.yaml`. Registration alone is not runtime integration.
+
+The runtime has three non-disabled authority tiers:
+
+- `shadow`: execute and preserve raw output for evaluation; no draft influence.
+- `assist`: may improve bounded S05/S07 prompts, S08 material seeds, protected-region QA, or
+  review overlays. It may not enter S09 as an independent vote.
+- `vote`: all `assist` uses plus a maximum 0.05 S09 evidence weight, but only while an exact
+  checkpoint/runtime/dataset promotion certificate is current.
+
+Every checkpoint runs sequentially and is selected by explicit view, pose-tag, domain, prior,
+or specialist-crop gates. The embedded task and class vocabulary must exactly match config.
+Raw masks, boxes, confidence, checkpoint SHA-256, source SHA-256, ROI, and runtime-config hash are
+preserved before remapping. Character-left/right hand and foot support is resolved only by overlap
+with S05's already-sided crop requests; an auxiliary detector never invents handedness.
+
+Promotion to `vote` requires at least 30 human-approved gold instances, positive mean-IoU and
+boundary-F gains of at least 0.01 versus the same pipeline without that detector, and no tracked
+hard-class regression. A failed or stale certificate falls back to shadow. Review-time change is
+recorded separately and determines whether a technically accurate provider is worth its latency.
+
+Live bootstrap evidence must be treated honestly. On the first governed real-person probe, the
+hand/foot/hair specialists produced useful bounded proposals, while the sock detector falsely
+labeled bare legs and the headwear detector mislabeled hair. The latter outputs therefore remain
+shadow/protected-only until gold evidence supports promotion.
+
+S12 packages include the source-aligned specialist overlay, normalized protected/QA proposals,
+and the existing disagreement heatmap so reviewers can judge each proposal independently. The
+downloaded mask add/subtract idea is implemented as a controlled canonical-label-map delta: it
+accepts strict binary operations, requires an explicit ontology replacement for subtraction,
+stages under `work`, refuses frozen gold, regenerates derived masks, reruns hard-block QA, and
+still cannot approve the package without the normal human gate.
+
+S11 consumes the same validated auxiliary summary before S12 packaging. Exact ontology candidates
+are rendered as separately identified evidence for the local Qwen reviewer and every explicitly
+eligible cloud teacher, while protected-only proposals join collision checking. Exact specialist
+masks are also registered as proposal-only tournament candidates with their real checkpoint
+provenance and complete-map QA results. A specialist/final union disagreement of at least 0.03
+forces careful routing and pinned evidence; it does not grant the specialist additional authority.
+
+The 22 pose/control packs are consumed by `datasets/civitai_stress.py`, not merely inventoried.
+It verifies archive identity, enumerates deterministic sample assets from every pack, and emits a
+reproducible S15 stress/acquisition plan covering contact, occlusion, hands-on-body, rear-body,
+from-below, difficult visibility, and multi-person cases. These controls are test inputs; source
+images can enter training or reviewed gold only through the separately governed intake path.

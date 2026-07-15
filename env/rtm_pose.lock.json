@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T23:35:00Z",
+  "sources": {
+    "mmpose": {
+      "repository": "https://github.com/open-mmlab/mmpose",
+      "release": "v1.3.2",
+      "commit": "5408bc76f5b848cf925a0d1857899011d8c5b497",
+      "tree": "592d7336c9dd65a3f19f96c8bbcf0956bcf97426",
+      "license": "Apache-2.0",
+      "license_sha256": "d125421b289cd79bf03e8590858fa81c22dc95e2753b20bf80e6a3cc80a893f9"
+    },
+    "rtmlib": {
+      "repository": "https://github.com/Tau-J/rtmlib",
+      "release": "v0.0.15",
+      "commit": "f1bac7d80c88305534dbcdde12da39f6db4c3953",
+      "tree": "aa0ac704492788c82c37bc323ba98fff45edbf26",
+      "license": "Apache-2.0",
+      "license_sha256": "fe6aadc681443c2cb0a95f7f2f2dbf6e624dfaeba1932e710b6933340a1e1e7e",
+      "runtime_role": "frozen reference only; governed execution uses the signed MMPose source"
+    }
+  },
+  "runtime": {
+    "kind": "isolated_target_layer_over_existing_cuda_python",
+    "dependency_layer": "models/runtime_cache/rtm_pose_deps",
+    "runtime_fingerprint": "0e5374ea0427e07891e87219e9f207e72a2c668fbf47aa9427bdbe728a8deee9",
+    "fingerprint_payload": {
+      "cuda": "12.8",
+      "mmcv-lite": "2.1.0",
+      "mmdet": "3.2.0",
+      "mmengine": "0.10.7",
+      "mmpose": "1.3.2",
+      "numpy": "1.26.4",
+      "python": "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+      "rtmo_sha256": "5bafdc11e43fba1a834e1323013108831b3e1e0761681dbe7a37896a179f2183",
+      "rtmw_sha256": "f840f2044fe46cb3821b7cea86be83e1f6cba406ccd28f5475ac010412dcda95",
+      "source_commit": "5408bc76f5b848cf925a0d1857899011d8c5b497",
+      "torch": "2.11.0+cu128"
+    },
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "compute_capability": [12, 0],
+    "compiled_mmcv_ops_required": false,
+    "disabled_unrelated_optional_head": "EDPoseHead",
+    "base_comfy_environment_unchanged": true
+  },
+  "variants": {
+    "rtmw_x": {
+      "checkpoint_path": "models/pose/rtm/rtmw-x_simcc-cocktail14_pt-ucoco_270e-384x288-f840f204_20231122.pth",
+      "checkpoint_source": "https://download.openmmlab.com/mmpose/v1/projects/rtmw/rtmw-x_simcc-cocktail14_pt-ucoco_270e-384x288-f840f204_20231122.pth",
+      "checkpoint_bytes": 369720404,
+      "checkpoint_sha256": "f840f2044fe46cb3821b7cea86be83e1f6cba406ccd28f5475ac010412dcda95",
+      "config_path": "models/runtime_cache/mmpose_v1.3.2/projects/rtmpose/rtmpose/wholebody_2d_keypoint/rtmw-x_8xb320-270e_cocktail14-384x288.py",
+      "config_sha256": "3317ddf7b9ad9d8046422254b8549276e25c07170e02e5d1ccad09c0cf8a3623",
+      "joint_vocabulary": "COCO-WholeBody-133",
+      "confidence_transform": "native_score/(1+native_score)",
+      "peak_reserved_bytes": 471859200
+    },
+    "rtmo_crowd": {
+      "checkpoint_path": "models/pose/rtm/rtmo-l_16xb16-700e_body7-crowdpose-640x640-5bafdc11_20231219.pth",
+      "checkpoint_source": "https://download.openmmlab.com/mmpose/v1/projects/rtmo/rtmo-l_16xb16-700e_body7-crowdpose-640x640-5bafdc11_20231219.pth",
+      "checkpoint_bytes": 178452521,
+      "checkpoint_sha256": "5bafdc11e43fba1a834e1323013108831b3e1e0761681dbe7a37896a179f2183",
+      "config_path": "models/runtime_cache/mmpose_v1.3.2/configs/body_2d_keypoint/rtmo/crowdpose/rtmo-l_16xb16-700e_body7-crowdpose-640x640.py",
+      "config_sha256": "0360c8a3e085f1a8958833df44310b7e132946cf400f51834f48387e5b7eb957",
+      "joint_vocabulary": "CrowdPose-14",
+      "live_candidate_count": 7,
+      "peak_reserved_bytes": 717225984
+    }
+  },
+  "reproduction": {
+    "requirements": "env/rtm_pose.requirements.lock.txt",
+    "requirements_sha256": "2d3b6717980bafb9628ce4496f1ddc2bf6cf166a18c0334091077c74771120bd",
+    "setup_script": "tools/setup_rtm_pose.py",
+    "setup_script_sha256": "1444eeaae9fd72923a548474fbf3d299fd03679c77017b7e56bcb71bd8e1ec9e",
+    "smoke_script": "tools/smoke_rtm_pose.py",
+    "smoke_script_sha256": "8207e656e6336e6bb4114e565facc1c07d8c272fe840bc53781a7e5485217aaf",
+    "runner": "tools/run_rtm_pose.py",
+    "runner_sha256": "a80e13f78df536935b63d2bf47dc7c2d5931fab76f47f83379f0a8af9a709d40",
+    "provider_adapter": "src/maskfactory/providers/rtm_pose.py",
+    "provider_adapter_sha256": "4a59e14dd783d2d43a53675edf5fbf9b3c600473ebd64d073778774c312f9007",
+    "integration_script": "tools/verify_rtm_pose_provider.py",
+    "integration_script_sha256": "d73d3a1fb6bd536e41759eb0618ab8e53934868f14c1e6a7fc50454afc7a3711",
+    "provider_tests": "tests/test_rtm_pose_provider.py",
+    "provider_tests_sha256": "5b5f5b8bce792e958376c86df0140c1cde76e312cb15e0a5bb43169ae1a5f36e"
+  },
+  "evidence": {
+    "installation": "qa/live_verification/rtm_pose_install_20260714.json",
+    "installation_sha256": "78dc31e8453166e4f6c7b1ee25712376b38f8fa606f227fae95aefed2ea08967",
+    "runtime": "qa/live_verification/rtm_pose_runtime_20260714.json",
+    "runtime_sha256": "e94c81a4cc28772fdf5a6449a637e61feab5d898b3cac92d1de76e307690483e",
+    "provider_integration": "qa/live_verification/rtm_pose_provider_20260714.json",
+    "provider_integration_sha256": "1978c78770002d755fbf01aaf9338c7a01cb2a89a7da622b798b180735a15f9c"
+  },
+  "authority": {
+    "lifecycle_state": "installed",
+    "shadow_only": true,
+    "active": "dwpose_133",
+    "independent_vote": "mediapipe_hands",
+    "rollback": "dwpose_133",
+    "promotion_claimed": false
+  }
+}

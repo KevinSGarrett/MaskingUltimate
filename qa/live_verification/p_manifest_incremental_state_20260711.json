@@ -1,0 +1,7 @@
+{
+  "manifest_sha256": {
+    "img_fixture/instances/p0/manifest.json": "d798616938848f02997950058ca21d741ede49dc5f3a20624f49b34dccc0a40c"
+  },
+  "packages_root": ".runtime_tmp\\pmanifest_live",
+  "schema_version": "1.0.0"
+}

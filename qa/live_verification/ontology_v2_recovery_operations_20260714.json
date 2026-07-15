@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T01:51:16.6630485Z",
+  "outcome": "pass",
+  "checklist_item": "Plan/OntologyV2/IMPLEMENTATION_CHECKLIST.md I.3",
+  "ontology_version": "body_parts_v2",
+  "activation_status": "approved_design_not_active",
+  "production_activation_granted": false,
+  "operations": {
+    "backup": {
+      "result": "pass",
+      "evidence": "The nightly B1/B5 sequence still snapshots SQLite before mirrors and now invokes an ontology-aware package verifier over mirrored packages; packages, QA, and configuration authority remain included.",
+      "production_backup_executed_by_this_check": false
+    },
+    "restore": {
+      "result": "pass",
+      "checks": [
+        "manifest_v2 schema plus semantic invariants",
+        "exhaustive restored-file SHA-256 inventory",
+        "full-size mode-L binary masks",
+        "gold-only v2 review authority and QA report",
+        "inactive operations policy"
+      ],
+      "tamper_probe": "A modified restored mask failed both the hash and strict-image checks."
+    },
+    "gc": {
+      "result": "pass",
+      "mode": "isolated sandbox",
+      "removed": "expired unreferenced masks@v1 only",
+      "protected": [
+        "active masks",
+        "masks_ignore ambiguity evidence",
+        "manifest"
+      ]
+    },
+    "reindex": {
+      "result": "pass",
+      "schema_dispatch": {
+        "body_parts_v1": "manifest",
+        "body_parts_v2": "manifest_v2"
+      },
+      "incident_mode": "copy_only",
+      "source_database_unchanged": true,
+      "post_rebuild_diff_clean": true
+    },
+    "dvc": {
+      "result": "pass",
+      "dataset_selection_is_ontology_specific": true,
+      "new_path_and_tag_only": true,
+      "existing_tag_rewrite_refused": true,
+      "publication_order": [
+        "git_tag_preflight",
+        "dvc_add",
+        "dvc_push",
+        "git_tag",
+        "mark_packages_exported"
+      ],
+      "failed_push_creates_tag": false,
+      "remote_push_executed_by_this_check": false
+    },
+    "incident_drills": {
+      "result": "pass",
+      "v2_state_reindex_copy": true,
+      "v2_gc_sandbox": true,
+      "v1_registry_workflow_rollback_exact_bytes": true,
+      "production_mutation_allowed": false
+    }
+  },
+  "verification": {
+    "focused_recovery": "6 passed in 2.78s",
+    "dvc_order_and_recovery_plus_focused": "7 passed in 3.47s",
+    "v1_rollback": "1 passed in 0.09s",
+    "full_repository": "861 passed in 112.40s",
+    "clean_publish_tree": "831 passed, 3 skipped in 110.78s",
+    "collection": "861 tests collected",
+    "ruff": "All checks passed",
+    "black": "changed-file check passed"
+  },
+  "authority_boundary": {
+    "fixtures_are_gold_or_training_authority": false,
+    "live_v2_gold_claimed": false,
+    "paid_remote_operation_launched": false,
+    "active_ontology_changed": false
+  }
+}

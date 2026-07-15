@@ -26,7 +26,7 @@ do not renumber.
 | R13 | VLM hallucinated verdicts steering reviewers | M | M | calibration gate (≥0.90/0.80), VLM can never approve/clear/edit, uncertain→no hints | eval regression |
 | R14 | Laptop thermal throttling corrupts long runs | M | L | cooldown policy (sleep >87 °C), stage idempotency makes resume safe | temp logs |
 | R15 | Scope creep (video, per-toe splits, dense crowd scenes) | H | M | v1 out-of-scope list (doc 01 §5), ontology growth gate (doc 12 §8), P7-05 formal go/no-go for video · **AMENDED (doc 17):** multi-person masking graduated out of this guard-list into fully-specced Phase P8 | any "quick add" |
-| R16 | Privacy leak via cloud LLM | L | H | cloud_enabled=false default, text-only boundary, audit log `logs\cloud_calls.jsonl` (doc 10 §6) | audit review |
+| R16 | Privacy leak via cloud LLM | L | H | teacher runtime may be enabled, but image transmission is exact-hash/rights/provider default-deny; hash-chained cost/audit ledger (doc 10 §6) | audit review |
 | R17 | State DB corruption/drift vs packages | L | M | packages are truth, `maskfactory reindex` rebuilds DB, nightly integrity sweep | reindex diff ≠ 0 |
 | R18 | Instance mis-split (one real person falsely detected as two) or cross-instance mask bleed | M | H | QC-035/036 hard BLOCKs, deterministic ranking/tie-break, S09.5 reconciliation runs before any review time is spent (doc 17 §7, §15) | any QC-035/036 fire on approved gold = incident |
 

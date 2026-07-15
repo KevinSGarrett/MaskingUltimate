@@ -1,0 +1,122 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.91,
+      "correction": {
+        "negative_points": [
+          [
+            700,
+            610
+          ],
+          [
+            700,
+            700
+          ],
+          [
+            700,
+            790
+          ],
+          [
+            735,
+            680
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            800,
+            820
+          ],
+          [
+            855,
+            845
+          ],
+          [
+            910,
+            850
+          ],
+          [
+            960,
+            820
+          ],
+          [
+            985,
+            760
+          ],
+          [
+            850,
+            760
+          ]
+        ],
+        "rationale": "Use positive points centered within each visible toe and along the distal toe region, with negative points in the proximal dorsal forefoot/metatarsal area. SAM refinement is safer than a coarse polygon because the five toe separations and the MTP boundary are curved and partially subtle.",
+        "tool": "points"
+      },
+      "defects": [
+        "boundary_too_loose",
+        "includes_neighbor_part"
+      ],
+      "evidence": "The target side is correct per semantic evidence, and all five visible toes are included. The localized defect is the proximal boundary: it crosses into the forefoot instead of following the visible foot-MTP line.",
+      "latency_ms": 11483,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour follows the outer dorsal and plantar silhouette reasonably well, but the proximal contour does not follow the anatomical MTP split and is overly proximal.",
+        "full_context": "The semantic pose-chain identifies this visible foot as the character's right foot; the target is the forward foot with toes extending toward the viewer-right.",
+        "mask": "The mask is a single connected component covering all visible toes, but its nearly vertical proximal boundary is too far back and includes a substantial portion of the forefoot/metatarsal region rather than starting at the foot-MTP line.",
+        "neighbor_overlap": "The mask directly abuts and partially includes the neighboring right foot-base/metatarsal region at the proximal boundary; no background or clothing contamination is apparent.",
+        "overlay": "The red overlay covers the toes completely but extends proximally over dorsal forefoot skin. Distal toe edges appear generally aligned with the visible silhouette.",
+        "source_crop": "The crop clearly shows five visible right toes, with an anatomical transition from the metatarsal/forefoot into the toes. The proximal forefoot is visually distinct from the distal toes."
+      },
+      "provider": "openai",
+      "response_sha256": "96c748f890412a18e43d5719aab355443a3a2c1e06151c334173db0c68d80359",
+      "usage": {
+        "cost_usd": 0.015374,
+        "input_tokens": 9872,
+        "output_tokens": 917
+      },
+      "verdict": "fail"
+    },
+    {
+      "confidence": 0.7,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Mask boundary and coverage are anatomically correct for right_toes; no correction needed.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask correctly isolates the right toes from the foot base along the MTP boundary, with coverage matching visible toe pixels and no contamination from neighboring foot_base or background.",
+      "latency_ms": 34835,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "Contour tightly traces the toe cluster boundary including individual toe curvature at the tips.",
+        "full_context": "The cyan ROI box highlights the forward foot's toe region, consistent with the right foot per pose-chain evidence (nearest_semantic_chain=right).",
+        "mask": "Mask covers the toe cluster region only, triangular shape extending from mid-foot to toe tips, excluding the heel/ankle area.",
+        "neighbor_overlap": "Magenta overlap shows mask confined to toes with no bleed into foot_base or ankle region, small gap at top consistent with MTP line.",
+        "overlay": "Red overlay aligns well with the visible toes, following the MTP boundary line separating toes from foot base.",
+        "source_crop": "High-res crop shows a foot with toes extending to the right, ankle and midfoot visible on the left side."
+      },
+      "provider": "anthropic",
+      "response_sha256": "f1ae2feecdfa694ebc3d3c57cfc3266b4d5b882d5e0430bbcfe374a2951a7cf4",
+      "usage": {
+        "cost_usd": 0.076188,
+        "input_tokens": 25619,
+        "output_tokens": 2495
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_toes",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "uncertain",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "e63ff3b64123bf278b8594b30c86295378919335c64223a45664d1b58132701f",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

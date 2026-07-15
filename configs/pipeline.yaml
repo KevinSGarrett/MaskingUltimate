@@ -1,0 +1,187 @@
+config_version: 2.0.0
+seed: 1337
+gpu_cooldown_sec: 3
+
+io:
+  workdir: work
+  packages_root: data/packages
+  runs_root: runs
+
+intake:
+  min_side: 512
+
+devices:
+  detector: cpu
+  silhouette: cuda
+  parsing: cuda
+  pose: cuda
+  sam2: cuda
+  densepose: cuda
+  fusion: cpu
+
+provider_roles:
+  person_detector:
+    active: yolo11m_person
+    challengers: [rf_detr_medium, yolo26_person]
+    rollback: yolo11m_person
+  concept_detector:
+    active: null
+    challengers: [sam3_1]
+    offline_fallback: groundingdino_local
+    rollback: groundingdino_local
+  interactive_segmenter:
+    active: sam2_1_large
+    challengers: [sam3_1]
+    oom_fallback: sam2_1_base_plus
+    rollback: sam2_1_large
+  geometry_provider:
+    active: densepose_r50_fpn_s1x
+    challengers: [sam3d_body]
+    rollback: densepose_r50_fpn_s1x
+  pose_provider:
+    active: dwpose_133
+    challengers: [rtmw_x, rtmo_crowd]
+    independent_vote: mediapipe_hands
+    rollback: dwpose_133
+  silhouette_provider:
+    active: birefnet_general
+    challengers: [birefnet_dynamic, birefnet_hr, birefnet_hr_matting]
+    rollback: birefnet_general
+  vlm_reviewer:
+    active: null
+    challengers: [qwen2_5_vl_7b, qwen3_vl_4b, qwen3_vl_8b_quantized]
+    rollback: qwen2_5_vl_7b
+  custom_segmenter:
+    active: null
+    challengers: [segformer_b2, mask2former_swin_t, eomt_dinov3]
+    rollback: null
+  challenger_policy: shadow_only_until_benchmark_certificate
+
+provider_catalog:
+  yolo11m_person: {registry: model_registry, key: yolo11m, execution: local, billing: none}
+  rf_detr_medium: {registry: external_sources, key: rfdetr, execution: local, billing: none}
+  yolo26_person: {registry: external_sources, key: yolo26, execution: local, billing: none}
+  groundingdino_local: {registry: model_registry, key: groundingdino_swint_ogc, execution: local, billing: none}
+  sam3_1: {registry: external_sources, key: sam3_1, execution: local, billing: none}
+  sam2_1_large: {registry: model_registry, key: sam2_1_hiera_large, execution: local, billing: none}
+  sam2_1_base_plus: {registry: model_registry, key: sam2_1_hiera_base_plus, execution: local, billing: none}
+  densepose_r50_fpn_s1x: {registry: model_registry, key: densepose_rcnn_r50_fpn_s1x, execution: local, billing: none}
+  sam3d_body: {registry: external_sources, key: sam3d_body, execution: local, billing: none}
+  dwpose_133: {registry: model_registry, key: dwpose_133, execution: local, billing: none}
+  rtmw_x: {registry: external_sources, key: rtmw_x, execution: local, billing: none}
+  rtmo_crowd: {registry: external_sources, key: rtmo, execution: local, billing: none}
+  mediapipe_hands: {registry: model_registry, key: mediapipe_hand_landmarker, execution: local, billing: none}
+  birefnet_general: {registry: model_registry, key: birefnet_general, execution: local, billing: none}
+  birefnet_dynamic: {registry: external_sources, key: birefnet_dynamic, execution: local, billing: none}
+  birefnet_hr: {registry: external_sources, key: birefnet_hr, execution: local, billing: none}
+  birefnet_hr_matting: {registry: external_sources, key: birefnet_hr_matting, execution: local, billing: none}
+  qwen2_5_vl_7b: {registry: model_registry, key: ollama_qwen2_5vl_7b, execution: local, billing: none}
+  qwen3_vl_4b: {registry: external_sources, key: qwen3_vl, execution: local, billing: none}
+  qwen3_vl_8b_quantized: {registry: external_sources, key: qwen3_vl, execution: local, billing: none}
+  segformer_b2: {registry: external_sources, key: segformer_b2, execution: local, billing: none}
+  mask2former_swin_t: {registry: external_sources, key: mask2former_swin_t, execution: local, billing: none}
+  eomt_dinov3: {registry: external_sources, key: eomt_dinov3, execution: local, billing: none}
+
+stages:
+  S00: {enabled: true}
+  S01: {enabled: true, model: yolo11m_person, confidence: 0.5, instance_min_area_pct: 0.04, max_instances_per_image: 4, crowd_scene_threshold: 8, context_scale: 1.25, zero_box_fallback: groundingdino_person, fallback_prompt: person, fallback_box_threshold: 0.30, fallback_text_threshold: 0.25}
+  S02: {enabled: true, model: birefnet_general, precision: fp16, long_side: 2048, tile_overlap: 128, threshold: 0.5, connected_min_person_pct: 0.01, silhouette_bbox_ratio: [0.35, 0.95], local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", hf_home: "models/runtime_cache/huggingface"}
+  S03: {enabled: true, model: sapiens_0_6b_seg, precision: bf16, long_side: 1024, tile_size: 1536, tile_overlap: 128, oom_half_res_retry: true, fallback: schp_atr, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", schp_cache: "models/runtime_cache/schp"}
+  S04: {enabled: true, model: dwpose_133, keypoint_confidence: 0.3, degraded_body_keypoint_fraction: 0.6, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", ort_gpu_site: "models/runtime_cache/onnxruntime_gpu"}
+  S05: {enabled: true, side_parser_policy: paired_union_pose_capsule_v2}
+  S06:
+    enabled: true
+    box_threshold: 0.30
+    text_threshold: 0.25
+    local_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    source_path: "models/runtime_cache/groundingdino/856dde20aee659246248e20734ef9ba5214f5e44"
+    dependency_site: "models/runtime_cache/groundingdino_deps"
+    hf_home: "models/runtime_cache/huggingface"
+    auxiliary:
+      enabled: true
+      domain: photo
+      registry: configs/civitai_auxiliary_detectors.yaml
+      registry_sha256: 9aabeb56ee9cac2d0720dfc748391f357200357c9a88ccdfb53780978255dd44
+      runtime: configs/civitai_auxiliary_runtime.yaml
+      runtime_sha256: 6f7feda1fd0358f26d723aa3a3457fe8336a606873d817fef99b2cc8b83907e9
+  S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
+  S08: {enabled: true, coverage_policy: seed_then_nearest}
+  S08.5: {enabled: true, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/detectron2/02b5c4e295e990042a714712c21dc79b731e8833", dependency_site: "models/runtime_cache/detectron2_deps"}
+  S09: {enabled: true}
+  S09.5: {enabled: true}
+  S10: {enabled: true}
+  S11: {enabled: true}
+  S12: {enabled: true}
+  S13: {enabled: true}
+  S14: {enabled: true}
+  S15: {enabled: true}
+
+parsing_map:
+  sapiens_28:
+    0: {class: background, part_priors: [background], material_priors: [none_background]}
+    1: {class: apparel, part_priors: [], material_priors: [clothing_generic]}
+    2: {class: face_neck, part_priors: [head_face, neck], material_priors: [skin]}
+    3: {class: hair, part_priors: [hair], material_priors: [hair_material]}
+    4: {class: left_foot, part_priors: [left_foot_base, left_toes], material_priors: [skin]}
+    5: {class: left_hand, part_priors: [left_hand_base, left_thumb, left_index_finger, left_middle_finger, left_ring_finger, left_pinky], material_priors: [skin]}
+    6: {class: left_lower_arm, part_priors: [left_forearm, left_wrist], material_priors: [skin]}
+    7: {class: left_lower_leg, part_priors: [left_calf, left_ankle], material_priors: [skin]}
+    8: {class: left_shoe, part_priors: [left_foot_base, left_toes], material_priors: [footwear]}
+    9: {class: left_sock, part_priors: [left_calf, left_ankle, left_foot_base], material_priors: [glove_or_sock]}
+    10: {class: left_upper_arm, part_priors: [left_shoulder, left_upper_arm], material_priors: [skin]}
+    11: {class: left_upper_leg, part_priors: [left_hip, left_thigh], material_priors: [skin]}
+    12: {class: lower_clothing, part_priors: [], material_priors: [bottom_garment, underwear_bottom]}
+    13: {class: lower_lip, part_priors: [head_face], material_priors: [skin]}
+    14: {class: right_foot, part_priors: [right_foot_base, right_toes], material_priors: [skin]}
+    15: {class: right_hand, part_priors: [right_hand_base, right_thumb, right_index_finger, right_middle_finger, right_ring_finger, right_pinky], material_priors: [skin]}
+    16: {class: right_lower_arm, part_priors: [right_forearm, right_wrist], material_priors: [skin]}
+    17: {class: right_lower_leg, part_priors: [right_calf, right_ankle], material_priors: [skin]}
+    18: {class: right_shoe, part_priors: [right_foot_base, right_toes], material_priors: [footwear]}
+    19: {class: right_sock, part_priors: [right_calf, right_ankle, right_foot_base], material_priors: [glove_or_sock]}
+    20: {class: right_upper_arm, part_priors: [right_shoulder, right_upper_arm], material_priors: [skin]}
+    21: {class: right_upper_leg, part_priors: [right_hip, right_thigh], material_priors: [skin]}
+    22: {class: torso, part_priors: [chest_upper_torso, left_breast, right_breast, abdomen_stomach, belly_button, pelvic_region, left_hip, right_hip, back_upper_torso, back_lower_torso], material_priors: [skin]}
+    23: {class: upper_clothing, part_priors: [], material_priors: [top_garment, bra]}
+    24: {class: upper_lip, part_priors: [head_face], material_priors: [skin]}
+    25: {class: lower_teeth, part_priors: [head_face], material_priors: [skin]}
+    26: {class: upper_teeth, part_priors: [head_face], material_priors: [skin]}
+    27: {class: tongue, part_priors: [head_face], material_priors: [skin]}
+  schp_atr:
+    0: {class: background, part_priors: [background], material_priors: [none_background]}
+    1: {class: hat, part_priors: [accessory_or_prop], material_priors: [accessory]}
+    2: {class: hair, part_priors: [hair], material_priors: [hair_material]}
+    3: {class: sunglasses, part_priors: [accessory_or_prop], material_priors: [accessory]}
+    4: {class: upper_clothes, part_priors: [], material_priors: [top_garment]}
+    5: {class: skirt, part_priors: [], material_priors: [bottom_garment]}
+    6: {class: pants, part_priors: [], material_priors: [bottom_garment]}
+    7: {class: dress, part_priors: [], material_priors: [clothing_generic]}
+    8: {class: belt, part_priors: [], material_priors: [waistband]}
+    9: {class: left_shoe, part_priors: [left_foot_base, left_toes], material_priors: [footwear]}
+    10: {class: right_shoe, part_priors: [right_foot_base, right_toes], material_priors: [footwear]}
+    11: {class: face, part_priors: [head_face], material_priors: [skin]}
+    12: {class: left_leg, part_priors: [left_thigh, left_knee, left_calf, left_ankle], material_priors: [skin]}
+    13: {class: right_leg, part_priors: [right_thigh, right_knee, right_calf, right_ankle], material_priors: [skin]}
+    14: {class: left_arm, part_priors: [left_shoulder, left_upper_arm, left_elbow, left_forearm, left_wrist], material_priors: [skin]}
+    15: {class: right_arm, part_priors: [right_shoulder, right_upper_arm, right_elbow, right_forearm, right_wrist], material_priors: [skin]}
+    16: {class: bag, part_priors: [accessory_or_prop], material_priors: [accessory]}
+    17: {class: scarf, part_priors: [accessory_or_prop], material_priors: [accessory]}
+
+pose_tags_rules:
+  arms_raised: {metric: shoulder_to_wrist_vertical_fraction, operator: gt, threshold: 0.15}
+  arms_down: {metric: shoulder_to_wrist_vertical_fraction, operator: lt, threshold: -0.20}
+  arms_crossed: {metric: wrist_opposite_torso_overlap, operator: gte, threshold: 1.0}
+  seated_or_crouched: {metric: mean_hip_knee_ankle_angle_deg, operator: lt, threshold: 135}
+  lying: {metric: lying_likelihood, operator: gt, threshold: 0.5}
+  walking: {metric: walking_likelihood, operator: gt, threshold: 0.5}
+  leg_overlap: {metric: left_right_leg_bbox_iou, operator: gt, threshold: 0.15}
+
+fusion:
+  contested_score_threshold: 0.4
+  agreement_bands: {quick_pass_min: 0.85, normal_min: 0.60}
+  weights: {sam2: 0.40, sapiens: 0.25, geometry: 0.15, schp: 0.10, densepose: 0.10, custom_bodypart: 0.45, auxiliary: 0.05}
+  zorder_rules:
+    - {priority: 10, winner: hand_or_finger, loser: torso_or_thigh, condition: wrist_depth_cue_front}
+    - {priority: 20, winner: hair, loser: [head_face, neck, left_shoulder, right_shoulder], condition: overlap}
+    - {priority: 30, winner: uninterrupted_limb_contour, loser: interrupted_limb_contour, condition: crossed_limbs}
+    - {priority: 40, winner: occluding_object, loser: body_part, condition: gdino_sam2_closed_contour_cover}
+    - {priority: 100, winner: higher_consensus_score, loser: lower_consensus_score, condition: unresolved_tie}

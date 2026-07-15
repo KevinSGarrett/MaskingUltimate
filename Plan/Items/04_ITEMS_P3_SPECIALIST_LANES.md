@@ -1,6 +1,6 @@
 # ITEMS — Phase P3: Specialist Lanes (Weeks 4–6)
 
-Goal: all hard-class lanes live, topology QCs on, 100 gold, median review ≤ 25 min (G1-P3). Parent IDs from doc 14 §4.
+Goal: all hard-class lanes live, topology QCs on, 100 certified packages, and measured residual/audit labor trending down. Parent IDs from doc 14 §4 as amended by docs 20/22.
 
 ## MF-P3-01 — Crop contract + hand/finger lane (spec: 03 §5, 08 §1–2)
 - [ ] MF-P3-01.01 Lane common contract module: square crop 1.6 × part bbox → 1024 (image Lanczos / masks NEAREST) · write `crops\crop_to_full_transform.json` · nearest reprojection · wire QC-018 (round-trip IoU ≥ 0.995, BLOCK)
@@ -54,11 +54,11 @@ Goal: all hard-class lanes live, topology QCs on, 100 gold, median review ≤ 25
 - [ ] MF-P3-06.07 QC-034 regression guard (BLOCK): IoU vs previous gold < 0.5 on re-process · gold v1-vs-v2 diff report renders
 - [ ] MF-P3-06.08 Chain-break fixture is routed with the correct QC evidence attached
 
-## MF-P3-07 — 100-gold sprint + throughput (spec: 11 §3–7)
-- [ ] MF-P3-07.01 Annotation cadence with SOP-2 (hands), SOP-3 (panels first), SOP-4 (chest crop-zoom, projected in separate purple-label jobs) in active use
-- [ ] MF-P3-07.02 Reach 100 `human_approved_gold` packages
-- [ ] MF-P3-07.03 Median review time ≤ 25 min/image verified from review_tasks minutes (G1-P3)
-- [ ] MF-P3-07.04 Begin informal second-look habit (fresh-day re-review of hard classes; formal sampler lands P4-06)
+## MF-P3-07 — 100-certified sprint + selective-review throughput (spec: 11 §3–7; 20 §§5–6; 22 §5)
+- [ ] MF-P3-07.01 Residual/audit cadence uses SOP-2 (hands), SOP-3 (panels first), and SOP-4 (chest crop-zoom, projected separate) without requiring routine review of certificate-covered masks · Verify: review-task sample contains only residual/preselected-audit reasons
+- [ ] MF-P3-07.02 Reach 100 certified packages with `human_anchor_train_count` and `autonomous_certified_gold_count` reported separately; pseudo-labels never count · Verify: tracker/package index hashes reconcile exactly
+- [ ] MF-P3-07.03 Report human touches/100 images, audited fraction, residual-review fraction, changed pixels/100k, and review minutes as a secondary diagnostic · Verify: denominators and truth-tier breakdown are present
+- [ ] MF-P3-07.04 Begin fresh-day second-look sampling of hard-class human anchors and autonomous audits; formal mixed sampler lands P4-11 · Verify: sample selection precedes outcomes and records risk bucket
 
 ## P3 Exit Gate
-- [ ] MF-P3-EXIT All lanes live · hard classes have panels + QCs · doc 14 §4 checkboxes updated
+- [ ] MF-P3-EXIT All lanes live · hard classes have panels/QCs · 100 certified packages reached with tier-separated counts · selective audit/residual labor reported · doc 14 §4 updated

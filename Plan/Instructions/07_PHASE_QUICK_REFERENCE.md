@@ -9,46 +9,51 @@ replacements — full detail always lives in `Plan\0X` (spec) and
 ## P0 — Environment & Foundation (days 1–3, target)
 **Entry gate:** none — first phase.
 **Goal:** A fully working local environment: WSL2 + cu128 PyTorch on
-Blackwell (sm_120), Docker/CVAT/nuclio, Ollama + local VLM, all 12 model
-checkpoints registered, `maskfactory doctor` all-green, repo + CI scaffold.
+Blackwell (sm_120), Docker/CVAT/nuclio, Ollama + local VLM, governed registry
+v2, incumbent checkpoints, and honestly staged modern challengers with isolated
+runtimes, `maskfactory doctor` all-green, repo + CI scaffold.
 **Key gotchas:** sm_120 needs PyTorch ≥2.7 cu128 wheels specifically — older
 builds fail with "no kernel image available." `/mnt/c` I/O is slow for many
 small files; hot work goes on WSL's own ext4 (`~/mfwork`). detectron2/mmcv
 may need source builds on cu128. Full pitfall list: `Plan\06` §8.
-**Exit:** `MF-P0-EXIT` — doctor green end-to-end, lockfiles + populated
-model registry committed.
+**Exit:** `MF-P0-EXIT` plus `MF-P0-16.12`/required provider smokes — doctor
+green, lockfiles and active registry validated; planned challengers are not
+misreported as installed.
 
 ## P1 — Gold Factory MVP (weeks 1–2)
-**Entry gate:** P0 exit.
-**Goal:** One real image can go incoming → CVAT (Kevin annotates) →
-approved gold package, with format QA (QC-001…010) structurally enforced.
-First 5 gold packages produced by hand.
+**Entry gate:** P0 core exit plus active-registry governance.
+**Goal:** One real image can become an immutable human-anchor package, with
+format QA structurally enforced; ontology-v2 and four explicit truth tiers are
+schema-valid while active v1 remains unchanged until activation.
 **Key gotchas:** Binary masks are always regenerated from the two label
 maps (`label_map_part.png`, `label_map_material.png`) — never hand-edit a
-binary PNG directly (QC-030). The age-safety intake gate is non-configurable
-(`Plan\01` §7). `ontology.yaml` is generated from spec tables, never
+binary PNG directly (QC-030). Source provenance and content-lane decisions
+remain explicit; no age-eligibility gate is added. `ontology.yaml` is generated from spec tables, never
 hand-written (`MF-P1-03`, a hard blocker).
 **Exit:** `MF-P1-EXIT`.
 
 ## P2 — Body-Aware Drafting (weeks 2–4)
-**Entry gate:** P1 exit.
+**Entry gate:** P1 core exit; v2 drafting additionally needs inactive v2 authority/migration contracts.
 **Goal:** Full automatic drafting pipeline (S01–S09): person detection,
 silhouette, parsing, pose, the geometry engine (limb capsules, joint bands,
-torso partition), GDINO-assisted SAM2 refinement, and consensus fusion into
-the master maps. First G2 (draft-quality IoU) measurement.
+torso partition), provider-neutral discovery/refinement, and consensus fusion
+into the master maps. SAM 3.1 and modern providers enter only as governed shadow
+challengers until frozen role benchmarks pass. First G2 measurement uses human-anchor truth.
 **Key gotchas:** GroundingDINO output is boxes only — it can never become a
 final mask directly (`Plan\07` S06). Fusion must be deterministic (seed
 1337) — verify byte-identical re-runs, don't just assume it. Z-order
 arbitration rules for contested pixels are exact and specific (`Plan\07`
 S09) — don't substitute a simpler heuristic.
 **Exit:** `MF-P2-EXIT` — **D1** should be demonstrable here (one CLI
-command drafts all 56 parts for a new image).
+command drafts every selected production PART for a new image: 56 for active v1, 65 only after
+the doc-18 v2 activation gate).
 
 ## P3 — Specialist Lanes (weeks 4–6)
-**Entry gate:** P2 exit.
+**Entry gate:** P2 core exit; each modern specialist needs an installed governed challenger.
 **Goal:** Hand/finger, chest/breast/clothing, hair/face, and feet/toes
 lanes live; DensePose 3D-prior referee wired in; topology QCs (025–034)
-active; 100 approved gold packages; median review time ≤25 min (G1).
+active; 100 certified packages with truth tiers separated; residual/audit labor,
+changed pixels, and quality reported independently.
 **Key gotchas:** Never guess a finger split on merged/ambiguous fingers —
 label `hand_base` + `ambiguous_do_not_use` and queue to the failure log
 instead (`Plan\08` §2.6). The chest/breast lane's "visible-truth
@@ -59,10 +64,11 @@ layer, never in the atomic PART map.
 **Exit:** `MF-P3-EXIT`.
 
 ## P4 — VLM QA & Active Learning (weeks 5–7, parallel to late P3)
-**Entry gate:** runs alongside late P3 (needs P2's panels to exist first).
-**Goal:** Local VLM review + routing (quick-pass vs. careful queue),
+**Entry gate:** runs alongside late P3; certification requires image-disjoint human-anchor calibration evidence.
+**Goal:** Local/cloud VLM review, bounded repair, selective certification,
+mixed random+risk audit, revocation, residual routing,
 failure-queue mining producing weekly acquisition plans, coverage-matrix
-tracking, and — critically — the VLM calibration gate passed.
+tracking, and all frozen VLM/incremental-value/statistical gates passed.
 **Key gotchas:** The VLM is QA/router only — it can never approve gold,
 clear a BLOCK, or edit a mask, structurally (`Plan\10` §5). The calibration
 gate (`MF-P4-05`, hard blocker: ≥0.90 defect recall, ≥0.80 precision on the
@@ -70,12 +76,14 @@ gate (`MF-P4-05`, hard blocker: ≥0.90 defect recall, ≥0.80 precision on the
 not just once.
 **Exit:** `MF-P4-EXIT` — drives **D4** directly.
 
-## P5 — Custom Model Training (weeks 6–10; entry gate: ≥200 gold)
-**Entry gate:** `metrics.approved_gold_count >= 200`. Do not start training
+## P5 — Custom Model Training (weeks 6–10; entry gate: ≥200 certified training packages)
+**Entry gate:** `metrics.certified_training_package_count >= 200` plus an
+image-disjoint human-anchor holdout. Do not start training
 work before this is genuinely true — a champion trained on too little data
 has no real chance at the D6 gate, and the attempt burns real GPU-hours.
-**Goal:** Fine-tune all 5 specialist models, run the leaderboard, promote
-champions. Drives **D6** and **D7**, the two hardest gates in the project.
+**Goal:** Train SegFormer/Mask2Former/EoMT and specialists with tier-specific
+weights, run frozen human-anchor leaderboards, and promote only role winners
+that pass every hard/high-risk non-inferiority margin and rollback test.
 **Key gotchas:** The horizontal-flip augmentation MUST remap every
 left/right label via `swap_partner` — this is a hard-blocker CI test
 (`MF-P5-02.02`) because a missed remap silently poisons the entire training
@@ -87,9 +95,9 @@ class regressing >2 pts) before flipping it.
 **Exit:** `MF-P5-EXIT`.
 
 ## P6 — ComfyUI Integration & Serving (starts after D6)
-**Entry gate:** DoD **D6** satisfied.
+**Entry gate:** DoD **D6**, eligible promoted roles, and rollback evidence.
 **Goal:** The node pack (Mode A, reading gold packages directly) and the
-FastAPI inference service (Mode B, live prediction on new images) both
+provider-neutral FastAPI service (Mode B, live prediction on new images) both
 working inside Kevin's existing ComfyUI install.
 **Key gotchas:** The node pack must never write into `data\packages\` —
 read-only, structurally enforced (`Plan\13` §5, mirrors QC-030). Mode A has
@@ -98,14 +106,24 @@ never destabilize Kevin's existing ComfyUI environment.
 **Exit:** `MF-P6-EXIT` — drives **D8**.
 
 ## P7 — Scale & Continuous Operation (ongoing)
-**Entry gate:** P6 exit.
-**Goal:** Scale to 300 (then 500) gold packages, prove the retrain cadence
+**Entry gate:** P6 exit plus current currency, certificate, and rollback reviews.
+**Goal:** Scale to 300 (then 500) certified packages with truth tiers separate, prove the retrain cadence
 works at least once, execute every runbook operation (backup restore, gc,
 failure-mining resolution, incident drill) at least once for **D10**, then
 run the actual finish-line headline test.
 **Key gotchas:** Ontology growth (per-toe splits, finer thigh bands, etc.)
 requires real evidence (≥10 distinct failure-queue items in 30 days per
 missing boundary, doc 12 §8) — don't add labels speculatively.
-**Exit:** `MF-P7-EXIT` — the project's actual finish line: 20 never-seen
-images → full pipeline → approved gold in ≤4 hours of operator time, zero
-format failures, zero left/right failures.
+**Exit:** `MF-P7-07.07` plus `MF-P7-EXIT`: 20 unseen images processed through
+selective autonomous certification/residual routing with a preselected blinded
+mixed audit, no routine per-image correction, zero format/L/R failures, and
+separate labor, quality, and confidence reporting.
+
+## P8 — Autonomous Multi-Person / Multi-Character Masking
+**Entry gate:** P7 substantially complete; multi-person risk buckets and certificates are independent gates.
+**Goal:** Every promoted instance is correctly separated, contact/occlusion is reciprocal,
+certificate-covered instances bypass routine review, and only residual/preselected audits reach CVAT.
+**Key gotchas:** Solo certificates never authorize overlap/contact/crowd contexts. QC-035/036,
+image-group split integrity, exact instance identity, mixed audits, and serious-failure revocation remain hard blockers.
+**Exit:** `MF-P8-11.07` plus `MF-P8-EXIT`: the real 10–20 image demonstration
+has zero measured cross-instance bleed with complete certificate/residual/audit evidence.

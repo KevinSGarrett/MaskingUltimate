@@ -1,0 +1,32 @@
+{
+  "audit_date": "2026-07-12",
+  "command": "maskfactory vlmqa run <image_id>",
+  "contract": {
+    "force_s10": true,
+    "force_s11": true,
+    "multi_instance_aware": true,
+    "report_schema_revalidated": true,
+    "unavailable_gate_exit_code": 1,
+    "creates_cvat_handoff": false
+  },
+  "live_case": {
+    "cvat_tasks_after": 9,
+    "cvat_tasks_before": 9,
+    "enabled": false,
+    "exit_code": 1,
+    "image_id": "img_2ca794d19be9",
+    "instance_count": 1,
+    "overall": "needs_human",
+    "reason": "VLM production gate unavailable",
+    "route_counts": {
+      "careful": 13
+    },
+    "status": "disabled_gate_unavailable",
+    "verdict_count": 0,
+    "whole_image_status": "skipped_gate_unavailable"
+  },
+  "focused_tests_passed": 55,
+  "full_tests_passed": 640,
+  "ruff": "clean",
+  "format": "clean"
+}

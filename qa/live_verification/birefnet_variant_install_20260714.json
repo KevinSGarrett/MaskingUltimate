@@ -1,0 +1,123 @@
+{
+  "captured_at": "2026-07-14T20:58:58.798716+00:00",
+  "result": "pass",
+  "schema_version": "1.0.0",
+  "sha256": "7b3dbac533e2189224083768c82e85b357172433229c9cf24d107a7ff6a2cc3a",
+  "source": "official Hugging Face repositories at immutable revisions",
+  "variants": {
+    "birefnet_dynamic": {
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d",
+      "directory": "dyn",
+      "files": {
+        "BiRefNet_config.py": {
+          "bytes": 298,
+          "sha256": "e7b8c2a74f6cea6a59553d517f71d47f2c1d90e670a13416af17c25fe2f3dc52"
+        },
+        "README.md": {
+          "bytes": 11184,
+          "sha256": "bc9008b95a26984e92ed29c7d65e53b5f3d560dbe36a2e77090e9c5d577fba83"
+        },
+        "birefnet.py": {
+          "bytes": 92134,
+          "sha256": "2a45b4e0ece72d7c4212bca1a988e7d7e52bfe9f98ec59c58b8809c8a8b7a831"
+        },
+        "config.json": {
+          "bytes": 413,
+          "sha256": "557f461de22ede5b0a2ff60967e579180194ded47587f6e30a3a09ad08ae248b"
+        },
+        "handler.py": {
+          "bytes": 5256,
+          "sha256": "a1ea9391d06df142f35217af9c84953cf4a21fff0e1f37469afb3fe14565bc3e"
+        },
+        "model.safetensors": {
+          "bytes": 444473596,
+          "sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d"
+        },
+        "requirements.txt": {
+          "bytes": 149,
+          "sha256": "7fd8bec732f48505785f1b6a89ac4a6fc27ea6258cdbab2f2e55897c16f86a7d"
+        }
+      },
+      "local_path": "models/bv/dyn",
+      "repo": "ZhengPeng7/BiRefNet_dynamic",
+      "revision": "280306042f57b7a33854319da62fd86aaa89ec4c"
+    },
+    "birefnet_hr": {
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "9d678bafec0b0019fbb073b7fd02f05ede25dc4b15254f23b2fb0be333200c0d",
+      "directory": "hr",
+      "files": {
+        "BiRefNet_config.py": {
+          "bytes": 298,
+          "sha256": "e7b8c2a74f6cea6a59553d517f71d47f2c1d90e670a13416af17c25fe2f3dc52"
+        },
+        "README.md": {
+          "bytes": 10995,
+          "sha256": "63502855ce590d269b9458a2b66151580de8216208d686effc735792a8d922f9"
+        },
+        "birefnet.py": {
+          "bytes": 92134,
+          "sha256": "2a45b4e0ece72d7c4212bca1a988e7d7e52bfe9f98ec59c58b8809c8a8b7a831"
+        },
+        "config.json": {
+          "bytes": 408,
+          "sha256": "9afedeafb3250180fb7f74a7c7b179e192b20927feedcb10761f26568a86ce4a"
+        },
+        "handler.py": {
+          "bytes": 4710,
+          "sha256": "c06a4da84ea747d5c38aee5076bcda7c83cb1402daa7bffb537a6fb1435aa4e3"
+        },
+        "model.safetensors": {
+          "bytes": 444473596,
+          "sha256": "9d678bafec0b0019fbb073b7fd02f05ede25dc4b15254f23b2fb0be333200c0d"
+        },
+        "requirements.txt": {
+          "bytes": 149,
+          "sha256": "bdfdd83a090d31a2acf64f7350653fa63cd8b5d9d6e0ff3e135bea7ce3786341"
+        }
+      },
+      "local_path": "models/bv/hr",
+      "repo": "ZhengPeng7/BiRefNet_HR",
+      "revision": "a7a562f6fd16021180f2f4348f4de003a2d3d1e1"
+    },
+    "birefnet_hr_matting": {
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55",
+      "directory": "hrm",
+      "files": {
+        "BiRefNet_config.py": {
+          "bytes": 298,
+          "sha256": "e7b8c2a74f6cea6a59553d517f71d47f2c1d90e670a13416af17c25fe2f3dc52"
+        },
+        "README.md": {
+          "bytes": 11522,
+          "sha256": "834ba4551d22697900286f26909064338c1e04dd44a8feb43e2992c0d644334b"
+        },
+        "birefnet.py": {
+          "bytes": 92134,
+          "sha256": "2a45b4e0ece72d7c4212bca1a988e7d7e52bfe9f98ec59c58b8809c8a8b7a831"
+        },
+        "config.json": {
+          "bytes": 416,
+          "sha256": "d0b779ee9a76bf079673c5852c346f439591f016ca0d778a87bbd1dcbe24398a"
+        },
+        "handler.py": {
+          "bytes": 4765,
+          "sha256": "b0578adfb01ab1db250a30f4450ca8b9ac4f0a544105f4c13188bd82bd121059"
+        },
+        "model.safetensors": {
+          "bytes": 444473596,
+          "sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55"
+        },
+        "requirements.txt": {
+          "bytes": 149,
+          "sha256": "bdfdd83a090d31a2acf64f7350653fa63cd8b5d9d6e0ff3e135bea7ce3786341"
+        }
+      },
+      "local_path": "models/bv/hrm",
+      "repo": "ZhengPeng7/BiRefNet_HR-matting",
+      "revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-15T00:25:00Z",
+  "source": {
+    "repository": "tue-mps/eomt-dinov3-coco-panoptic-small-640",
+    "revision": "602edaa2839daf6cb3de3ad46c176098c3be9090",
+    "license": "MIT",
+    "transformers_model": "EomtDinov3ForUniversalSegmentation"
+  },
+  "snapshot": {
+    "local_path": "models/runtime_cache/eomt_dinov3_small_602edaa",
+    "checkpoint_bytes": 93450628,
+    "checkpoint_sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+    "config_sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+    "preprocessor_sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+    "readme_sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165"
+  },
+  "runtime": {
+    "python": "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.13.0",
+    "cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "compute_capability": [12, 0],
+    "runtime_fingerprint": "8591a6ad543d35b49ebc10191e89eb7a3732016621ba092a0e3bddbb4c2f6913",
+    "peak_reserved_bytes": 700448768,
+    "warm_inference_seconds": 0.039196
+  },
+  "target_contract": {
+    "ontology_version": "body_parts_v2",
+    "num_classes": 65,
+    "class_names_sha256": "7f78e0c3405c8bd05e23522ccb453faa7f4a2bbba0a9b29493c7e7d0d19a6124",
+    "ignore_index": 255,
+    "pretrained_coco_head": "discard",
+    "target_head_initialization": "random",
+    "pretraining_output_may_author_gold": false
+  },
+  "reproduction": {
+    "training_config": "configs/training/eomt_dinov3_small_v2.yaml",
+    "training_config_sha256": "99ac2e1538a9c834549843eeae6506d6431789c90686faf1671956ddb3f45bea",
+    "smoke_script": "tools/smoke_eomt_dinov3.py",
+    "smoke_script_sha256": "5f6413b78d2c684048cb5bf031fde7d9eee8bb7918ad961c4a85ffd3bac7d8b0",
+    "contract": "src/maskfactory/providers/eomt_dinov3.py",
+    "contract_sha256": "e7293579c6745233a4ce1c99f955a3b74d716c521d4dba4cd47d7eb4b148c5d7",
+    "tests": "tests/test_eomt_dinov3_contract.py",
+    "tests_sha256": "35e7903aebcf19f88faa9c999d692baaaa00571237f1da965360dec7811b1dd4"
+  },
+  "evidence": {
+    "runtime": "qa/live_verification/eomt_dinov3_runtime_20260715.json",
+    "runtime_sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"
+  },
+  "authority": {
+    "lifecycle_state": "installed",
+    "shadow_only": true,
+    "active": null,
+    "baselines": ["segformer_b3", "mask2former_swin_b"],
+    "promotion_claimed": false
+  }
+}

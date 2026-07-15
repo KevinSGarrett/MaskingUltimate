@@ -4,7 +4,7 @@ Goal: D4 — VLM review + routing correct on the 20-image validation set; mining
 
 ## MF-P4-01 — S11 VLM QA runner (spec: 10 §1–4)
 - [ ] MF-P4-01.01 `vlm\client.py`: Ollama API client (127.0.0.1:11434) · S11 runs in its exclusive GPU slot — orchestrator stops other GPU stages during the batch
-- [ ] MF-P4-01.02 Author versioned prompt files `vlm\prompts\{p_part,p_image,p_manifest}.txt` exactly per doc 10 §3 (strict-JSON verdict contracts) · author `configs\vlm.yaml` (model slots, prompt_version, routing thresholds, `cloud_enabled: false`)
+- [ ] MF-P4-01.02 Author versioned prompt files `vlm\prompts\{p_part,p_image,p_manifest}.txt` exactly per doc 10 §3 (strict-JSON verdict contracts) · author `configs\vlm.yaml` (model slots, prompt_version, routing thresholds, cloud-teacher enablement reconciled with exact-image default-deny governance)
 - [ ] MF-P4-01.03 Panel input prep: 5-tile panels downscaled to 1024 long side · whole-image overlay + compact manifest digest (label:state:area% table) · relevant qa_report excerpts
 - [ ] MF-P4-01.04 Strict-JSON parse · one "JSON only" retry · still bad → verdict `uncertain` (never guess)
 - [ ] MF-P4-01.05 Verdicts append to `qa_report.vlm_review.verdicts[]` {label, panel_file, model, prompt_version, verdict, confidence, problems[], evidence, correction_instruction, latency_ms}
@@ -40,6 +40,22 @@ Goal: D4 — VLM review + routing correct on the 20-image validation set; mining
 - [ ] MF-P4-06.03 Fail path: package demoted `rejected_needs_fix` · failure_queue(second_review_fail) · both mask versions archived to `qa\iaa\`
 - [ ] MF-P4-06.04 Weekly IAA report (per-class IoU vs targets ≥ 0.92 body / ≥ 0.80 fingers) · first report produced and filed
 - [ ] MF-P4-06.05 IAA numbers exported as the leaderboard human-ceiling row input
+
+## MF-P4-07 — Specialist-aware autonomous committee (spec: 10 §10, 16 §8)
+- [ ] MF-P4-07.01 Validate `S06/auxiliary/auxiliary_predictions.json` and supply exact specialist masks, detector/checkpoint provenance, confidence, boxes, and protected proposals to both local and eligible cloud S11 reviewers
+- [ ] MF-P4-07.02 Include auxiliary protected proposals in collision checks; register exact specialist outputs as separately provenance-preserving, full-map-QA tournament candidates; route material specialist/final disagreement to careful review with a pinned heatmap
+- [ ] MF-P4-07.03 Reconcile local/cloud runtime configuration; live-smoke the primary VLM, fallback VLM, and text LLM; keep cloud image transmission exact-hash/rights/provider opt-in with shadow-only authority
+- [ ] MF-P4-07.04 Rebuild and PASS the production VLM calibration gate from exactly 20 distinct frozen, QA-passing human-anchor calibration packages after every bound prompt/controller/evidence change · Verify: image-disjoint package/mask/fingerprint hashes are frozen and current
+
+## MF-P4-08 — Autonomous mask repair execution (spec: 21)
+- [ ] MF-P4-08.01 Derive side-aware repair ROIs from S05 geometry, bind local/cloud coordinates to the ROI, and pass it as the real SAM2 box prompt · Verify: source/ROI coordinate, clipping, outside-point rejection, and real-box-prompt tests pass · Blocked by: production S05 geometry
+- [ ] MF-P4-08.02 Implement ordinary-refinement and catastrophic-reconstruction guards for change, ROI escape, person-relative area, components, and protected overlap · Verify: each guard has a seeded rejection fixture and catastrophic mode cannot bypass protected/ROI limits · Blocked by: MF-P4-08.01
+- [ ] MF-P4-08.03 Compose atomic complete-map transactions that may displace ordinary draft labels but never protected authority; record displacement and rerun QA · Verify: per-label rollback preserves S09 baseline and protected collisions fail · Blocked by: MF-P4-08.02
+- [ ] MF-P4-08.04 Re-audit the exact winner with fresh Qwen plus every enabled eligible Gemini/OpenAI/Anthropic reviewer; require unanimous advisory pass at the governed floor and reserve any 95% acceptance claim for frozen human-gold calibration · Verify: votes bind candidate ID/path/hash/round, raw self-confidence is not called calibrated, and a missing/failing reviewer is not a pass · Blocked by: MF-P4-10.03 through MF-P4-10.06
+- [ ] MF-P4-08.05 Feed failed reviewer plans into bounded polygon/SAM2 rounds, downgrade rejected winners, deduplicate proposals, and stop honestly on convergence/caps/no progress · Verify: candidate/round caps, failed-winner downgrade, dedup, exhaustion, budget, and no-progress tests pass · Blocked by: MF-P4-08.02 through MF-P4-08.04
+- [ ] MF-P4-08.06 Publish only non-gold review drafts into CVAT with backup, exact verification, rollback, completed-task refusal, and human-edit overwrite refusal · Verify: write/verify/mismatch rollback and task/manual-shape negative fixtures pass · Blocked by: MF-P4-08.03 · HARD BLOCKER
+- [ ] MF-P4-08.07 Prove the controller with focused/full tests, lint/format checks, tracker validation, and a live non-mutating shadow repair on a real image · Verify: evidence report binds source/baseline/candidate/QA/reviewer hashes and all commands pass · Blocked by: governed real source; live cloud committee additionally NEEDS KEVIN spending/credential approval
+- [ ] MF-P4-08.08 Rebuild and PASS the gold-backed calibration gate; measure correction-time improvement on at least 30 approved anchor masks · Verify: current controller/prompt/evidence fingerprint passes and paired review-time report shows measured effect · Blocked by: NEEDS KEVIN: at least 30 reviewed human-anchor masks and any authorized paid calls · HARD BLOCKER
 
 ## P4 Exit Gate
 - [ ] MF-P4-EXIT **D4** demonstrated: VLM reviews + agree/disagree routing correct on the 20-image validation set · mining produced ≥ 1 weekly acquisition plan · doc 14 §5 checkboxes updated

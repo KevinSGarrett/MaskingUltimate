@@ -1,6 +1,6 @@
 # ITEMS — Phase P1: Gold Factory MVP (Weeks 1–2)
 
-Goal: image → CVAT → approved gold package with format QA enforced (D2 core). Parent IDs from doc 14 §2.
+Goal: image → CVAT → human-anchor gold package with format QA enforced (D2 core). Parent IDs from doc 14 §2.
 
 ## MF-P1-01 — JSON schemas + validators (spec: 04)
 - [ ] MF-P1-01.01 Write `schemas\manifest.schema.json` per doc 04 §1 (source/person/parts/inpaint_derivatives/tooling/review/qa/files blocks)
@@ -49,7 +49,7 @@ Goal: image → CVAT → approved gold package with format QA enforced (D2 core)
 - [ ] MF-P1-05.06 QC-001…007 subset green on exporter outputs
 
 ## MF-P1-06 — CVAT bridge v1 (spec: 11 §2)
-- [ ] MF-P1-06.01 `maskfactory cvat init-project` (REST): project `MaskFactory_body_parts_v1` · all ontology labels, fixed viz colors, type=mask · attributes `visibility` (enum doc 02 §8), `ambiguous` (bool), `notes` (text)
+- [ ] MF-P1-06.01 `maskfactory cvat init-project` (REST): active project `MaskFactory_body_parts_v1` · all v1 ontology labels, fixed viz colors, type=mask · attributes `visibility` (enum doc 02 §8), `ambiguous` (bool), `notes` (text) · v2 always uses the separate doc-18 pilot project
 - [ ] MF-P1-06.02 `cvat push <ids>`: image + draft masks as RLE pre-annotations · context images (all-parts overlay; disagreement heatmap when present) · 1 image/job, 10 jobs/task, assignee kevin
 - [ ] MF-P1-06.03 `cvat pull <ids>`: export corrected masks + attributes → package · retain `annotations\cvat_task_backup.zip` · auto-trigger re-fuse + re-QA
 - [ ] MF-P1-06.04 `labelmap.py` ontology↔CVAT id mapping · author `configs\cvat.yaml` (URL, project ids, label mapping, `provider: cvat` field for the §9 LS fallback)
@@ -81,4 +81,4 @@ Goal: image → CVAT → approved gold package with format QA enforced (D2 core)
 - [ ] MF-P1-09.05 Dry-run one restore: pull 1 package from B1 to temp → `verify-package --root` passes
 
 ## P1 Exit Gate
-- [ ] MF-P1-EXIT End-to-end demo recorded in OPS_LOG: incoming → CVAT → approved gold with QA enforced · doc 14 §2 checkboxes updated
+- [ ] MF-P1-EXIT End-to-end demo recorded in OPS_LOG: incoming → CVAT → human-anchor gold with QA enforced · doc 14 §2 checkboxes updated

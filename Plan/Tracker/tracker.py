@@ -3,8 +3,8 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 348 action items across phases P0-P7, plus Definition-of-Done
-(D1-D10) and Goals (G1-G8) rollups, plus free-form project metrics.
+build-out: 609 action items across phases P0-P8, plus Definition-of-Done
+(D1-D11) and Goals (G1-G9) rollups, plus free-form project metrics.
 
 SOURCE OF TRUTH SPLIT (important — mirrors the project's own "derived vs
 hand-authored" philosophy):
@@ -28,7 +28,7 @@ Quick start:
   python tracker.py set MF-P0-01.01 --status complete --evidence "doctor green, see OPS_LOG"
   python tracker.py set MF-P2-05.02 --status blocked --blocked-reason "waiting on ckpt download"
   python tracker.py next -n 10
-  python tracker.py metrics --set approved_gold_count=42
+  python tracker.py metrics --set human_anchor_train_count=42
   python tracker.py goal G2 --measured "0.87 body / 0.71 fingers" --status met
   python tracker.py validate
 """
@@ -39,8 +39,8 @@ import re
 import shutil
 import sys
 import time
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 
 # Force UTF-8 stdout/stderr regardless of the Windows console's active code
 # page. Item text legitimately contains characters like >=, section-sign,
@@ -56,8 +56,8 @@ for _stream in (sys.stdout, sys.stderr):
 # ---------------------------------------------------------------------------
 # Paths (all relative to this script's location — the tool is relocatable)
 # ---------------------------------------------------------------------------
-ROOT = Path(__file__).resolve().parent          # ...\Plan\Tracker
-PLAN_DIR = ROOT.parent                          # ...\Plan
+ROOT = Path(__file__).resolve().parent  # ...\Plan\Tracker
+PLAN_DIR = ROOT.parent  # ...\Plan
 ITEMS_DIR = PLAN_DIR / "Items"
 TRACKER_JSON = ROOT / "tracker.json"
 CHANGELOG = ROOT / "CHANGELOG.jsonl"
@@ -69,168 +69,276 @@ PHASES_DIR = ROOT / "phases"
 # Status taxonomy
 # ---------------------------------------------------------------------------
 STATUSES = [
-    "open",                # not started (default)
-    "in_progress",         # actively being worked
+    "open",  # not started (default)
+    "in_progress",  # actively being worked
     "partially_complete",  # some sub-verification done, not fully passing yet
-    "blocked",             # cannot proceed; requires blocked_reason
-    "complete",            # verify clause satisfied; requires evidence
-    "failed",              # attempted, did not pass verification; needs rework
-    "deferred",            # intentionally postponed (not blocked, deprioritized)
-    "not_applicable",      # conditional item whose trigger never fired
+    "blocked",  # cannot proceed; requires blocked_reason
+    "complete",  # verify clause satisfied; requires evidence
+    "failed",  # attempted, did not pass verification; needs rework
+    "deferred",  # intentionally postponed (not blocked, deprioritized)
+    "not_applicable",  # conditional item whose trigger never fired
 ]
 DONE_STATUSES = {"complete", "not_applicable"}
 
 STATUS_GLYPH = {
-    "open": "\u2610",               # ☐
-    "in_progress": "\U0001F527",    # 🔧
-    "partially_complete": "\U0001F7E8",  # 🟨
-    "blocked": "\U0001F6AB",        # 🚫
-    "complete": "\u2611",           # ☑
-    "failed": "\u274C",             # ❌
-    "deferred": "\u23F8",           # ⏸
-    "not_applicable": "\u2796",     # ➖
+    "open": "\u2610",  # ☐
+    "in_progress": "\U0001f527",  # 🔧
+    "partially_complete": "\U0001f7e8",  # 🟨
+    "blocked": "\U0001f6ab",  # 🚫
+    "complete": "\u2611",  # ☑
+    "failed": "\u274c",  # ❌
+    "deferred": "\u23f8",  # ⏸
+    "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 393
+EXPECTED_ITEM_COUNT = 609
+
+DEFAULT_METRICS = {
+    # Historical compatibility metric. Never use as the sole P5/D5 gate.
+    "approved_gold_count": 0,
+    "human_anchor_train_count": 0,
+    "human_anchor_calibration_count": 0,
+    "human_anchor_holdout_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "weighted_pseudo_label_count": 0,
+    "machine_candidate_count": 0,
+    "certified_training_package_count": 0,
+    "effective_training_weight_units": 0.0,
+    "zero_touch_fraction": None,
+    "routine_human_touch_fraction": None,
+    "audited_fraction": None,
+    "residual_review_fraction": None,
+    "human_touches_per_100_images": None,
+    "manual_changed_pixels_per_100k": None,
+    "audit_false_accept_rate": None,
+    "serious_false_accept_rate": None,
+    "target_certified_p5_entry": 200,
+    "target_certified_d5": 300,
+    "target_certified_g6_stretch": 500,
+    "coverage_cells_at_target_pct": 0,
+}
 
 # ---------------------------------------------------------------------------
 # Phases
 # ---------------------------------------------------------------------------
 PHASE_ORDER = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"]
 PHASE_META = {
-    "P0": {"name": "Environment & Foundation", "file": "01_ITEMS_P0_ENVIRONMENT.md",
-           "entry_gate": None},
-    "P1": {"name": "Gold Factory MVP", "file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
-           "entry_gate": "P0 exit gate complete"},
-    "P2": {"name": "Body-Aware Drafting", "file": "03_ITEMS_P2_BODY_AWARE_DRAFTING.md",
-           "entry_gate": "P1 exit gate complete"},
-    "P3": {"name": "Specialist Lanes", "file": "04_ITEMS_P3_SPECIALIST_LANES.md",
-           "entry_gate": "P2 exit gate complete"},
-    "P4": {"name": "VLM QA & Active Learning", "file": "05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md",
-           "entry_gate": "runs parallel to late P3 (needs P2 panels)"},
-    "P5": {"name": "Custom Model Training", "file": "06_ITEMS_P5_TRAINING.md",
-           "entry_gate": "metrics.approved_gold_count >= 200"},
-    "P6": {"name": "ComfyUI Integration & Serving", "file": "07_ITEMS_P6_COMFYUI_SERVING.md",
-           "entry_gate": "DoD D6 satisfied"},
-    "P7": {"name": "Scale & Continuous Operation", "file": "08_ITEMS_P7_SCALE_OPERATIONS.md",
-           "entry_gate": "P6 exit gate complete"},
-    "P8": {"name": "Multi-Person / Multi-Character Masking", "file": "10_ITEMS_P8_MULTI_PERSON_MASKING.md",
-           "entry_gate": "P7 substantially complete (DoD D1-D10 satisfied); doc 17 \u00a713"},
+    "P0": {
+        "name": "Environment & Foundation",
+        "file": "01_ITEMS_P0_ENVIRONMENT.md",
+        "entry_gate": None,
+    },
+    "P1": {
+        "name": "Gold Factory MVP",
+        "file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
+        "entry_gate": "P0 core exit plus active-registry governance; provider work requires honest installed states",
+    },
+    "P2": {
+        "name": "Body-Aware Drafting",
+        "file": "03_ITEMS_P2_BODY_AWARE_DRAFTING.md",
+        "entry_gate": "P1 core exit; v2 drafting additionally needs inactive v2 authority/migration contracts",
+    },
+    "P3": {
+        "name": "Specialist Lanes",
+        "file": "04_ITEMS_P3_SPECIALIST_LANES.md",
+        "entry_gate": "P2 core exit; modern specialists require governed installed challengers",
+    },
+    "P4": {
+        "name": "VLM QA & Active Learning",
+        "file": "05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md",
+        "entry_gate": "runs parallel to late P3; certification needs image-disjoint human-anchor calibration evidence",
+    },
+    "P5": {
+        "name": "Custom Model Training",
+        "file": "06_ITEMS_P5_TRAINING.md",
+        "entry_gate": "certified_training_package_count >= 200 plus image-disjoint human-anchor holdout",
+    },
+    "P6": {
+        "name": "ComfyUI Integration & Serving",
+        "file": "07_ITEMS_P6_COMFYUI_SERVING.md",
+        "entry_gate": "DoD D6 plus eligible promoted provider roles and rollback evidence",
+    },
+    "P7": {
+        "name": "Scale & Continuous Operation",
+        "file": "08_ITEMS_P7_SCALE_OPERATIONS.md",
+        "entry_gate": "P6 exit plus current currency/certificate/rollback reviews",
+    },
+    "P8": {
+        "name": "Multi-Person / Multi-Character Masking",
+        "file": "10_ITEMS_P8_MULTI_PERSON_MASKING.md",
+        "entry_gate": "P7 substantially complete; multi-person risk buckets/certificates remain independently gated",
+    },
 }
 
 # Hard blockers called out explicitly in Plan/Items/00_ITEMS_MASTER_INDEX.md \u00a73.
 # An item is a hard blocker if its id equals one of these, or starts with
 # "<prefix>." (i.e. is a sub-item of a blocker cluster).
 HARD_BLOCKER_PREFIXES = [
-    "MF-P0-07",      # doctor green
-    "MF-P1-03",      # ontology.yaml CI assert
-    "MF-P1-07",      # format-QC BLOCK enforcement
-    "MF-P4-05",      # VLM calibration gate
-    "MF-P5-02.02",   # flip / swap_partner CI test
-    "MF-P5-05.04",   # D7 gate (finger mIoU)
-    "MF-P5-07.02",   # D6 gate (champion beats draft pipeline)
-    "MF-P8-05.01",   # QC-035 instance silhouette exclusivity (doc 17)
-    "MF-P8-05.02",   # QC-036 cross-instance bleed (doc 17)
-    "MF-P8-07",      # multi-person dataset split-integrity CI test (doc 17 \u00a78)
+    "MF-P0-07",  # doctor green
+    "MF-P1-03",  # ontology.yaml CI assert
+    "MF-P1-07",  # format-QC BLOCK enforcement
+    "MF-P4-05",  # VLM calibration gate
+    "MF-P5-02.02",  # flip / swap_partner CI test
+    "MF-P5-05.04",  # D7 gate (finger mIoU)
+    "MF-P5-07.02",  # D6 gate (champion beats draft pipeline)
+    "MF-P8-05.01",  # QC-035 instance silhouette exclusivity (doc 17)
+    "MF-P8-05.02",  # QC-036 cross-instance bleed (doc 17)
+    "MF-P8-07",  # multi-person dataset split-integrity CI test (doc 17 \u00a78)
 ]
 
 # Conditional items — may legitimately resolve to not_applicable if their
 # trigger never fires (Items/00 master index rule #6).
 CONDITIONAL_IDS = {
-    "MF-P5-08.01", "MF-P5-08.02", "MF-P7-01.04", "MF-P7-03.05",
+    "MF-P5-08.01",
+    "MF-P5-08.02",
+    "MF-P7-01.04",
+    "MF-P7-03.05",
 }
 
 # ---------------------------------------------------------------------------
-# Definition of Done — doc 00 §4 (D1-D10). Status is AUTO-COMPUTED at report
+# Definition of Done — doc 00 §4 (D1-D11). Status is AUTO-COMPUTED at report
 # time from the status of each entry's driving item(s) — never set directly.
 # If a computed status looks wrong, the fix is to adjust `driven_by` here,
 # not to hand-edit a status value anywhere.
 # ---------------------------------------------------------------------------
 DOD = {
-    "D1": {"text": "A new image dropped into data\\incoming\\ can be processed to draft "
-                   "masks for all 56 atomic parts with one CLI command.",
-           "driven_by": ["MF-P2-08.04"]},
-    "D2": {"text": "Draft->human-corrected->gold flow works in CVAT with SAM2-assisted "
-                   "editing, and export produces a valid gold package that passes 100% "
-                   "of format checks.",
-           "driven_by": ["MF-P1-07.05", "MF-P1-08.04"]},
-    "D3": {"text": "Auto-QA battery (34 checks) runs on every package and blocks bad "
-                   "gold automatically.",
-           "driven_by": ["MF-P1-07.01", "MF-P1-07.02", "MF-P1-07.03", "MF-P2-07.03",
-                         "MF-P2-07.04", "MF-P3-06.08"]},
-    "D4": {"text": "VLM QA reviews overlays and routes agree/disagree cases correctly "
-                   "on a 20-image validation set.",
-           "driven_by": ["MF-P4-EXIT"]},
-    "D5": {"text": "\u2265300 human-approved gold packages exist with full manifests, "
-                   "hashes, and coverage matrix \u226580% cell coverage.",
-           "driven_by": ["MF-P7-01.01", "MF-P7-01.02"]},
-    "D6": {"text": "Custom fine-tuned body-part model beats the SAM2+priors draft "
-                   "pipeline on the frozen test holdout for mean per-part IoU and "
-                   "boundary F-score, per the leaderboard.",
-           "driven_by": ["MF-P5-07.02"]},
-    "D7": {"text": "Hand/finger specialist model achieves finger-class mean IoU "
-                   "\u2265 0.70 on hand-crop holdout.",
-           "driven_by": ["MF-P5-05.04"]},
-    "D8": {"text": "ComfyUI node pack loads gold/predicted masks and produces derived "
-                   "inpaint masks inside a workflow.",
-           "driven_by": ["MF-P6-03.03", "MF-P6-EXIT"]},
-    "D9": {"text": "Full environment is reproducible from env\\ lockfiles + "
-                   "models\\model_registry.json on a clean machine.",
-           "driven_by": ["MF-P0-02.08", "MF-P0-02.09", "MF-P0-06.01", "MF-P0-EXIT"]},
-    "D10": {"text": "Runbook operations (backup, retrain, failure mining) each executed "
-                    "successfully at least once.",
-            "driven_by": ["MF-P7-03.06"]},
-    "D11": {"text": "A photo containing 2 to max_instances_per_image people produces "
-                    "correctly-instanced, non-cross-bleeding, QA-passing gold packages for "
-                    "every promoted person, with interperson contact/occlusion correctly "
-                    "and reciprocally handled (doc 17).",
-            "driven_by": ["MF-P8-10.05", "MF-P8-EXIT"]},
+    "D1": {
+        "text": "A new image can be processed with one CLI command to every indexed PART "
+        "draft in the active production ontology; the expanded project requires gated v2 activation.",
+        "driven_by": ["MF-P2-08.04", "MF-P7-06.06"],
+    },
+    "D2": {
+        "text": "Human-anchor and certificate-covered autonomous finalization flows preserve "
+        "explicit truth authority and produce immutable QA-passing packages; residual/audit CVAT "
+        "routing remains reversible.",
+        "driven_by": ["MF-P1-07.05", "MF-P1-08.04", "MF-P1-13.07", "MF-P1-13.08"],
+    },
+    "D3": {
+        "text": "Auto-QA battery (34 checks) runs on every package and blocks bad "
+        "gold automatically.",
+        "driven_by": [
+            "MF-P1-07.01",
+            "MF-P1-07.02",
+            "MF-P1-07.03",
+            "MF-P2-07.03",
+            "MF-P2-07.04",
+            "MF-P3-06.08",
+            "MF-P4-09.01",
+        ],
+    },
+    "D4": {
+        "text": "Local/cloud QA, autonomous repair, selective certification, residual routing, "
+        "mixed auditing, and revocation pass frozen human-anchor gates.",
+        "driven_by": ["MF-P4-EXIT", "MF-P4-10.09", "MF-P4-11.15"],
+    },
+    "D5": {
+        "text": "\u2265300 certified packages exist with tier-separated authority, full manifests, "
+        "active certificates where required, hashes, and coverage matrix \u226580% cell coverage.",
+        "driven_by": ["MF-P5-10.05", "MF-P7-01.01", "MF-P7-01.02"],
+    },
+    "D6": {
+        "text": "Custom fine-tuned body-part model beats the SAM2+priors draft "
+        "pipeline on the frozen test holdout for mean per-part IoU and "
+        "boundary F-score, per the leaderboard.",
+        "driven_by": ["MF-P5-07.02", "MF-P5-10.09", "MF-P5-10.11"],
+    },
+    "D7": {
+        "text": "Hand/finger specialist model achieves finger-class mean IoU "
+        "\u2265 0.70 on hand-crop holdout.",
+        "driven_by": ["MF-P5-05.04"],
+    },
+    "D8": {
+        "text": "ComfyUI node pack loads gold/predicted masks and produces derived "
+        "inpaint masks inside a workflow.",
+        "driven_by": ["MF-P6-03.03", "MF-P6-06.08", "MF-P6-EXIT"],
+    },
+    "D9": {
+        "text": "Full environment is reproducible from env\\ lockfiles + "
+        "models\\model_registry.json on a clean machine.",
+        "driven_by": [
+            "MF-P0-02.08",
+            "MF-P0-02.09",
+            "MF-P0-06.01",
+            "MF-P0-16.12",
+            "MF-P0-17.04",
+            "MF-P0-EXIT",
+        ],
+    },
+    "D10": {
+        "text": "Runbook operations (backup, retrain, failure mining) each executed "
+        "successfully at least once.",
+        "driven_by": ["MF-P7-03.06", "MF-P7-07.09"],
+    },
+    "D11": {
+        "text": "A photo containing 2 to max_instances_per_image people produces "
+        "correctly-instanced, non-cross-bleeding, QA-passing gold packages for "
+        "every promoted person, with interperson contact/occlusion correctly "
+        "and reciprocally handled (doc 17).",
+        "driven_by": ["MF-P8-10.05", "MF-P8-11.07", "MF-P8-11.08", "MF-P8-EXIT"],
+    },
 }
 
 # ---------------------------------------------------------------------------
-# Measurable Goals — doc 01 §3 (G1-G8). These are continuous/measured metrics
+# Measurable Goals — doc 01 §3 (G1-G9). These are continuous/measured metrics
 # that cannot be inferred from checklist completion alone; record them with
 # `tracker.py goal <Gid> --measured "..." --status {pending,met,not_met}`.
 # ---------------------------------------------------------------------------
 GOALS = {
-    "G1": {"text": "Gold factory throughput (human minutes per fully-approved image)",
-           "target": "\u226425 min by end P3, \u226412 min by end P5",
-           "driven_by": ["MF-P3-07.03", "MF-P5-07.03"]},
-    "G2": {"text": "Draft quality (mean per-part IoU of auto-drafts vs gold)",
-           "target": "\u22650.85 body, \u22650.70 fingers/toes",
-           "driven_by": ["MF-P2-08.03", "MF-P5-07.03"]},
-    "G3": {"text": "Boundary quality (boundary F-score @2px tolerance)",
-           "target": "\u22650.80 body, \u22650.65 fingers/hair",
-           "driven_by": ["MF-P5-07.03"]},
-    "G4": {"text": "Format integrity (gold packages passing all format checks)",
-           "target": "100% (hard gate)",
-           "driven_by": ["MF-P1-07.05"]},
-    "G5": {"text": "Left/right correctness (L/R swaps in approved gold)",
-           "target": "0 (hard gate via QC-014 + review)",
-           "driven_by": ["MF-P2-07.03", "MF-P3-05.03"]},
-    "G6": {"text": "Dataset scale (human-approved gold packages)",
-           "target": "300 minimum, 500 target",
-           "driven_by": ["MF-P7-01.01", "MF-P7-01.03"]},
-    "G7": {"text": "Custom model win (fine-tuned model beats draft pipeline on leaderboard)",
-           "target": "Yes, on frozen holdout",
-           "driven_by": ["MF-P5-07.02"]},
-    "G8": {"text": "Reproducibility (rebuild env + rerun pipeline -> byte-identical maps)",
-           "target": "Yes (seeded)",
-           "driven_by": ["MF-P2-06.07", "MF-P5-01.04"]},
-    "G9": {"text": "Multi-person correctness (cross-instance mask bleed rate in approved "
-                   "multi-person gold, doc 17)",
-           "target": "0 (hard gate via QC-035/036 + review)",
-           "driven_by": ["MF-P8-05.01", "MF-P8-05.02", "MF-P8-10.05"]},
+    "G1": {
+        "text": "Human labor: touches/100 images, audited/residual fractions, changed pixels/100k; review minutes secondary",
+        "target": "zero-touch \u22650.95, routine human touch \u22640.05, manual pixel edit fraction \u22640.01",
+        "driven_by": ["MF-P3-07.03", "MF-P5-07.03", "MF-P7-07.05", "MF-P7-07.08"],
+    },
+    "G2": {
+        "text": "Draft quality (mean per-part IoU against image-disjoint human-anchor truth)",
+        "target": "\u22650.85 body, \u22650.70 fingers/toes",
+        "driven_by": ["MF-P2-08.03", "MF-P5-07.03"],
+    },
+    "G3": {
+        "text": "Boundary quality (boundary F-score @2px tolerance)",
+        "target": "\u22650.80 body, \u22650.65 fingers/hair",
+        "driven_by": ["MF-P5-07.03"],
+    },
+    "G4": {
+        "text": "Format integrity (human-anchor and autonomous-certified packages passing all checks)",
+        "target": "100% (hard gate)",
+        "driven_by": ["MF-P1-07.05"],
+    },
+    "G5": {
+        "text": "Left/right correctness (L/R swaps in certified and human-anchor audits)",
+        "target": "0 (hard gate via QC-014 + review)",
+        "driven_by": ["MF-P2-07.03", "MF-P3-05.03"],
+    },
+    "G6": {
+        "text": "Dataset scale (certified packages, truth tiers reported separately)",
+        "target": "300 certified minimum, 500 target; pseudo-labels excluded",
+        "driven_by": ["MF-P7-01.01", "MF-P7-01.03"],
+    },
+    "G7": {
+        "text": "Custom model role win with every hard/high-risk bucket non-inferior",
+        "target": "Primary win/labor reduction on frozen human-anchor holdout with no hard-bucket regression",
+        "driven_by": ["MF-P5-07.02", "MF-P5-10.09", "MF-P5-10.11"],
+    },
+    "G8": {
+        "text": "Reproducibility (rebuild env + rerun pipeline -> byte-identical maps)",
+        "target": "Yes (seeded)",
+        "driven_by": ["MF-P2-06.07", "MF-P5-01.04"],
+    },
+    "G9": {
+        "text": "Multi-person correctness (cross-instance bleed in certified/human-anchor audits, doc 17)",
+        "target": "0 (hard gate via QC-035/036, selective audit, and revocation)",
+        "driven_by": ["MF-P8-05.01", "MF-P8-05.02", "MF-P8-10.05", "MF-P8-11.07"],
+    },
 }
 
 # ---------------------------------------------------------------------------
 # Parsing Plan\Items\*.md into item metadata
 # ---------------------------------------------------------------------------
 CLUSTER_RE = re.compile(
-    r'^## (?:(?P<id>MF-[A-Za-z0-9.\-]+) \u2014 (?P<title>.+?)\s*\(spec:\s*(?P<spec>[^)]+)\)'
-    r'|(?P<exit>P\d+ Exit Gate))\s*$'
+    r"^## (?:(?P<id>MF-[A-Za-z0-9.\-]+) \u2014 (?P<title>.+?)\s*\(spec:\s*(?P<spec>[^)]+)\)"
+    r"|(?P<exit>P\d+ Exit Gate))\s*$"
 )
-ITEM_RE = re.compile(r'^- \[[ xX]\] (?P<id>MF-[A-Za-z0-9.\-]+)\s+(?P<desc>.+?)\s*$')
+ITEM_RE = re.compile(r"^- \[[ xX]\] (?P<id>MF-[A-Za-z0-9.\-]+)\s+(?P<desc>.+?)\s*$")
 
 
 def is_hard_blocker(item_id):
@@ -243,7 +351,7 @@ def parse_items_files():
     skipped automatically (its filename doesn't match the phase pattern)."""
     items = {}
     for fname in sorted(ITEMS_DIR.glob("*_ITEMS_*.md")):
-        phase_match = re.search(r'_ITEMS_(P\d+)_', fname.name)
+        phase_match = re.search(r"_ITEMS_(P\d+)_", fname.name)
         if not phase_match:
             continue
         phase = phase_match.group(1)
@@ -264,9 +372,7 @@ def parse_items_files():
             if im:
                 item_id = im.group("id")
                 if item_id in items:
-                    raise ValueError(
-                        f"Duplicate id {item_id} found again in {fname.name}:{lineno}"
-                    )
+                    raise ValueError(f"Duplicate id {item_id} found again in {fname.name}:{lineno}")
                 items[item_id] = {
                     "id": item_id,
                     "phase": phase,
@@ -277,7 +383,8 @@ def parse_items_files():
                     "source_file": fname.name,
                     "source_line": lineno,
                     "is_exit_gate": cluster_id == "EXIT",
-                    "hard_blocker": is_hard_blocker(item_id),
+                    "hard_blocker": is_hard_blocker(item_id)
+                    or "HARD BLOCKER" in im.group("desc").upper(),
                     "conditional": item_id in CONDITIONAL_IDS,
                 }
     return items
@@ -388,6 +495,7 @@ def tail_changelog(n):
             pass
     return out
 
+
 # ---------------------------------------------------------------------------
 # Commands: rebuild, show, set
 # ---------------------------------------------------------------------------
@@ -399,8 +507,15 @@ def cmd_rebuild(args):
 
     new_items = {}
     added, removed, kept = [], [], []
-    state_keys = ["status", "percent_complete", "notes", "evidence",
-                  "blocked_reason", "created_at", "updated_at"]
+    state_keys = [
+        "status",
+        "percent_complete",
+        "notes",
+        "evidence",
+        "blocked_reason",
+        "created_at",
+        "updated_at",
+    ]
 
     for iid, meta in parsed.items():
         if iid in old_items:
@@ -431,22 +546,30 @@ def cmd_rebuild(args):
         },
         "phase_meta": PHASE_META,
         "hard_blocker_prefixes": HARD_BLOCKER_PREFIXES,
-        "metrics": (existing or {}).get("metrics", {
-            "approved_gold_count": 0,
-            "target_gold_p5_entry": 200,
-            "target_gold_d5": 300,
-            "target_gold_g6_stretch": 500,
-            "coverage_cells_at_target_pct": 0,
-        }),
-        "dod": (existing or {}).get("dod") or {k: {} for k in DOD},
-        "goals": (existing or {}).get("goals") or {
-            k: {"status": "pending", "measured": None, "updated_at": None} for k in GOALS
+        "metrics": {
+            **DEFAULT_METRICS,
+            **{
+                key: value
+                for key, value in (existing or {}).get("metrics", {}).items()
+                if key
+                not in {
+                    "target_gold_p5_entry",
+                    "target_gold_d5",
+                    "target_gold_g6_stretch",
+                    "effective_training_truth_count",
+                }
+            },
         },
+        "dod": (existing or {}).get("dod") or {k: {} for k in DOD},
+        "goals": (existing or {}).get("goals")
+        or {k: {"status": "pending", "measured": None, "updated_at": None} for k in GOALS},
         "items": new_items,
     }
     save_tracker(data)
-    print(f"Rebuilt tracker: {len(parsed)} items parsed "
-          f"({len(added)} new, {len(kept)} kept, {len(removed)} orphaned).")
+    print(
+        f"Rebuilt tracker: {len(parsed)} items parsed "
+        f"({len(added)} new, {len(kept)} kept, {len(removed)} orphaned)."
+    )
     if added:
         print("  New ids:", ", ".join(added))
     if removed:
@@ -467,11 +590,14 @@ def cmd_set(args):
         sys.exit(f"Unknown item id: {args.id}. Use `tracker.py list` to find valid ids.")
     rec = data["items"][args.id]
 
-    if not any([args.status, args.note, args.evidence,
-                args.percent is not None, args.blocked_reason]):
+    if not any(
+        [args.status, args.note, args.evidence, args.percent is not None, args.blocked_reason]
+    ):
         print(json.dumps(rec, indent=2, ensure_ascii=False))
-        print("\n(no changes specified -- showing current record; pass --status / "
-              "--note / --evidence / --percent / --blocked-reason to update it)")
+        print(
+            "\n(no changes specified -- showing current record; pass --status / "
+            "--note / --evidence / --percent / --blocked-reason to update it)"
+        )
         return
 
     old_status = rec["status"]
@@ -481,8 +607,10 @@ def cmd_set(args):
         if args.status not in STATUSES:
             sys.exit(f"Invalid status '{args.status}'. Must be one of: {', '.join(STATUSES)}")
         if args.status == "complete" and not args.evidence and not rec.get("evidence"):
-            sys.exit("Refusing to mark complete without --evidence "
-                      "(what proves the item's verify clause passed?).")
+            sys.exit(
+                "Refusing to mark complete without --evidence "
+                "(what proves the item's verify clause passed?)."
+            )
         if args.status == "blocked" and not args.blocked_reason and not rec.get("blocked_reason"):
             sys.exit("Refusing to mark blocked without --blocked-reason.")
         rec["status"] = args.status
@@ -509,15 +637,22 @@ def cmd_set(args):
 
     rec["updated_at"] = now
     save_tracker(data)
-    append_changelog({
-        "ts": now, "id": args.id, "actor": args.actor,
-        "old_status": old_status, "new_status": rec["status"],
-        "percent_complete": rec["percent_complete"],
-        "note": args.note, "evidence": args.evidence,
-        "blocked_reason": args.blocked_reason,
-    })
+    append_changelog(
+        {
+            "ts": now,
+            "id": args.id,
+            "actor": args.actor,
+            "old_status": old_status,
+            "new_status": rec["status"],
+            "percent_complete": rec["percent_complete"],
+            "note": args.note,
+            "evidence": args.evidence,
+            "blocked_reason": args.blocked_reason,
+        }
+    )
     pct = f" ({rec['percent_complete']}%)" if rec["percent_complete"] else ""
     print(f"{args.id}: {old_status} -> {rec['status']}{pct}")
+
 
 # ---------------------------------------------------------------------------
 # Commands: list, next, metrics, goal, validate
@@ -564,10 +699,17 @@ def cmd_list(args):
 
 def suggest_next(data, n, phase=None):
     items = [it for it in data["items"].values() if not it["orphaned"]]
-    items.sort(key=lambda r: (PHASE_ORDER.index(r["phase"]) if r["phase"] in PHASE_ORDER else 99,
-                               r["source_line"]))
-    cands = [it for it in items
-             if it["status"] in ("open", "in_progress", "partially_complete", "failed")]
+    items.sort(
+        key=lambda r: (
+            PHASE_ORDER.index(r["phase"]) if r["phase"] in PHASE_ORDER else 99,
+            r["source_line"],
+        )
+    )
+    cands = [
+        it
+        for it in items
+        if it["status"] in ("open", "in_progress", "partially_complete", "failed")
+    ]
     if phase:
         cands = [it for it in cands if it["phase"] == phase]
     return cands[:n]
@@ -593,9 +735,25 @@ def cmd_metrics(args):
             if "=" not in kv:
                 sys.exit(f"--set expects key=value, got: {kv}")
             k, v = kv.split("=", 1)
-            data["metrics"][k.strip()] = v.strip()
+            raw = v.strip()
+            try:
+                value = json.loads(raw)
+            except json.JSONDecodeError:
+                value = raw
+            if isinstance(value, (dict, list)):
+                sys.exit("metric values must be scalar JSON values or strings")
+            data["metrics"][k.strip()] = value
             changed = True
     if changed:
+        try:
+            data["metrics"]["certified_training_package_count"] = int(
+                data["metrics"]["human_anchor_train_count"]
+            ) + int(data["metrics"]["autonomous_certified_gold_count"])
+        except (KeyError, TypeError, ValueError):
+            sys.exit(
+                "human_anchor_train_count and autonomous_certified_gold_count "
+                "must be integer-compatible"
+            )
         save_tracker(data)
         append_changelog({"ts": iso_now(), "metrics_update": data["metrics"]})
     if args.show or not args.set:
@@ -616,8 +774,9 @@ def cmd_goal(args):
         g["status"] = args.status
     g["updated_at"] = now
     save_tracker(data)
-    append_changelog({"ts": now, "goal": args.gid, "measured": args.measured,
-                       "status": args.status})
+    append_changelog(
+        {"ts": now, "goal": args.gid, "measured": args.measured, "status": args.status}
+    )
     print(f"{args.gid}: status={g.get('status')} measured={g.get('measured')}")
 
 
@@ -631,6 +790,23 @@ def cmd_validate(args):
             f"Expected {EXPECTED_ITEM_COUNT} non-orphaned items, found {total}. "
             f"Fine if Items/*.md were intentionally edited and `rebuild` was rerun."
         )
+    metrics = data.get("metrics", {})
+    missing_metrics = sorted(set(DEFAULT_METRICS).difference(metrics))
+    if missing_metrics:
+        problems.append("missing required metrics: " + ", ".join(missing_metrics))
+    try:
+        expected_certified_count = int(metrics["human_anchor_train_count"]) + int(
+            metrics["autonomous_certified_gold_count"]
+        )
+        actual_certified_count = int(metrics["certified_training_package_count"])
+        if actual_certified_count != expected_certified_count:
+            problems.append(
+                "certified_training_package_count must equal "
+                "human_anchor_train_count + autonomous_certified_gold_count "
+                f"({actual_certified_count} != {expected_certified_count})"
+            )
+    except (KeyError, TypeError, ValueError):
+        problems.append("certified training count metrics must be integer-compatible")
     ids_seen = set()
     for iid, it in items.items():
         if iid in ids_seen:
@@ -644,8 +820,9 @@ def cmd_validate(args):
             warnings.append(f"{iid}: marked blocked without a reason recorded")
         if it["orphaned"]:
             warnings.append(f"{iid}: orphaned (no longer present in source Items/*.md)")
-    hard_open = [iid for iid, it in items.items()
-                 if it["hard_blocker"] and it["status"] not in DONE_STATUSES]
+    hard_open = [
+        iid for iid, it in items.items() if it["hard_blocker"] and it["status"] not in DONE_STATUSES
+    ]
     print(f"Total tracked items (non-orphaned): {total}")
     print(f"Hard-blocker items not yet resolved: {len(hard_open)}")
     if problems:
@@ -659,6 +836,7 @@ def cmd_validate(args):
         for w in warnings:
             print(f"  - {w}")
     sys.exit(1 if problems else 0)
+
 
 # ---------------------------------------------------------------------------
 # Reporting: DASHBOARD.md + phases/*.md (auto-generated from tracker.json)
@@ -679,8 +857,7 @@ def compute_dod_status(data, did):
 
 
 def phase_stats(data, phase):
-    items = [it for it in data["items"].values()
-             if it["phase"] == phase and not it["orphaned"]]
+    items = [it for it in data["items"].values() if it["phase"] == phase and not it["orphaned"]]
     total = len(items)
     done = sum(1 for it in items if it["status"] in DONE_STATUSES)
     blocked = sum(1 for it in items if it["status"] == "blocked")
@@ -689,8 +866,16 @@ def phase_stats(data, phase):
     deferred = sum(1 for it in items if it["status"] == "deferred")
     open_ = sum(1 for it in items if it["status"] == "open")
     pct = round(100 * done / total, 1) if total else 0.0
-    return dict(total=total, done=done, blocked=blocked, in_progress=in_progress,
-                failed=failed, deferred=deferred, open=open_, pct=pct)
+    return dict(
+        total=total,
+        done=done,
+        blocked=blocked,
+        in_progress=in_progress,
+        failed=failed,
+        deferred=deferred,
+        open=open_,
+        pct=pct,
+    )
 
 
 def bar(pct, width=20):
@@ -708,8 +893,10 @@ def render_dashboard(data):
     L = []
     L.append("# MaskFactory Project Tracker -- Dashboard")
     L.append("")
-    L.append("**AUTO-GENERATED by `tracker.py report` -- do not hand-edit.** "
-              "Regenerate after any `set` / `metrics` / `goal` call.")
+    L.append(
+        "**AUTO-GENERATED by `tracker.py report` -- do not hand-edit.** "
+        "Regenerate after any `set` / `metrics` / `goal` call."
+    )
     L.append("")
     L.append(f"Generated: {now}")
     L.append("")
@@ -722,22 +909,28 @@ def render_dashboard(data):
     for phase in PHASE_ORDER:
         st = phase_stats(data, phase)
         meta = PHASE_META[phase]
-        L.append(f"| {phase} | {meta['name']} | `[{bar(st['pct'])}]` {st['pct']}% | "
-                  f"{st['done']}/{st['total']} | {st['blocked']} | {st['in_progress']} | "
-                  f"{st['failed']} | {st['open']} | {meta['entry_gate'] or '(none)'} |")
+        L.append(
+            f"| {phase} | {meta['name']} | `[{bar(st['pct'])}]` {st['pct']}% | "
+            f"{st['done']}/{st['total']} | {st['blocked']} | {st['in_progress']} | "
+            f"{st['failed']} | {st['open']} | {meta['entry_gate'] or '(none)'} |"
+        )
     L.append("")
-    L.append("Full item-by-item detail with live status, evidence, and notes: "
-              "see `phases/<PHASE>.md`.")
+    L.append(
+        "Full item-by-item detail with live status, evidence, and notes: "
+        "see `phases/<PHASE>.md`."
+    )
     L.append("")
 
     L.append("## Hard Blockers (cannot be skipped or overridden)")
     L.append("")
     hb_items = sorted(
         [it for it in all_items if it["hard_blocker"]],
-        key=lambda r: (PHASE_ORDER.index(r["phase"]), r["source_line"])
+        key=lambda r: (PHASE_ORDER.index(r["phase"]), r["source_line"]),
     )
     for it in hb_items:
-        L.append(f"- {STATUS_GLYPH[it['status']]} `{it['id']}` [{it['status']}] {it['description']}")
+        L.append(
+            f"- {STATUS_GLYPH[it['status']]} `{it['id']}` [{it['status']}] {it['description']}"
+        )
     L.append("")
 
     L.append("## Currently Blocked Items")
@@ -758,8 +951,9 @@ def render_dashboard(data):
     L.append("|---|---|---|---|")
     for did in sorted(DOD, key=lambda d: int(d[1:])):
         status = compute_dod_status(data, did)
-        L.append(f"| {did} | {DOD[did]['text']} | {status} | "
-                  f"{', '.join(DOD[did]['driven_by'])} |")
+        L.append(
+            f"| {did} | {DOD[did]['text']} | {status} | " f"{', '.join(DOD[did]['driven_by'])} |"
+        )
     L.append("")
 
     L.append("## Measurable Goals (doc 01 §3)")
@@ -768,8 +962,10 @@ def render_dashboard(data):
     L.append("|---|---|---|---|---|")
     for gid in sorted(GOALS, key=lambda g: int(g[1:])):
         g = data["goals"].get(gid, {})
-        L.append(f"| {gid} | {GOALS[gid]['text']} | {GOALS[gid]['target']} | "
-                  f"{g.get('status', 'pending')} | {g.get('measured') or '(not measured)'} |")
+        L.append(
+            f"| {gid} | {GOALS[gid]['text']} | {GOALS[gid]['target']} | "
+            f"{g.get('status', 'pending')} | {g.get('measured') or '(not measured)'} |"
+        )
     L.append("")
 
     L.append("## Tracked Metrics")
@@ -786,9 +982,11 @@ def render_dashboard(data):
     else:
         for e in reversed(recent):
             label = e.get("id") or (f"goal:{e['goal']}" if "goal" in e else "metrics")
-            L.append(f"- `{e.get('ts', '?')}` **{label}** "
-                      f"{e.get('old_status', '')} -> {e.get('new_status', '')} -- "
-                      f"{e.get('note') or e.get('evidence') or e.get('blocked_reason') or ''}")
+            L.append(
+                f"- `{e.get('ts', '?')}` **{label}** "
+                f"{e.get('old_status', '')} -> {e.get('new_status', '')} -- "
+                f"{e.get('note') or e.get('evidence') or e.get('blocked_reason') or ''}"
+            )
     L.append("")
 
     L.append("## Suggested Next Actions")
@@ -818,15 +1016,19 @@ def render_phase_file(data, phase):
     L.append(f"# Phase {phase}: {meta['name']} -- Live Status")
     L.append("")
     L.append("**AUTO-GENERATED by `tracker.py report` from tracker.json -- do not hand-edit.**")
-    L.append(f"Source checklist: `Plan/Items/{meta['file']}` | Entry gate: {meta['entry_gate'] or 'none'}")
+    L.append(
+        f"Source checklist: `Plan/Items/{meta['file']}` | Entry gate: {meta['entry_gate'] or 'none'}"
+    )
     L.append("")
-    L.append(f"**Progress: {st['done']}/{st['total']} ({st['pct']}%)** -- "
-              f"blocked {st['blocked']} | in progress {st['in_progress']} | "
-              f"failed {st['failed']} | deferred {st['deferred']} | open {st['open']}")
+    L.append(
+        f"**Progress: {st['done']}/{st['total']} ({st['pct']}%)** -- "
+        f"blocked {st['blocked']} | in progress {st['in_progress']} | "
+        f"failed {st['failed']} | deferred {st['deferred']} | open {st['open']}"
+    )
     L.append("")
     items = sorted(
         [it for it in data["items"].values() if it["phase"] == phase and not it["orphaned"]],
-        key=lambda r: r["source_line"]
+        key=lambda r: r["source_line"],
     )
     last_cluster = None
     for it in items:
@@ -835,13 +1037,14 @@ def render_phase_file(data, phase):
             if it["is_exit_gate"]:
                 L.append("\n### Phase Exit Gate\n")
             else:
-                L.append(f"\n### {it['cluster_id']} \u2014 {it['cluster_title']} "
-                          f"(spec: {it['spec_ref']})\n")
+                L.append(
+                    f"\n### {it['cluster_id']} \u2014 {it['cluster_title']} "
+                    f"(spec: {it['spec_ref']})\n"
+                )
         glyph = STATUS_GLYPH.get(it["status"], "?")
         hb = " **[HARD BLOCKER]**" if it["hard_blocker"] else ""
         cond = " _(conditional)_" if it["conditional"] else ""
-        pct = (f" -- {it['percent_complete']}%"
-               if it["percent_complete"] not in (0, 100) else "")
+        pct = f" -- {it['percent_complete']}%" if it["percent_complete"] not in (0, 100) else ""
         L.append(f"- {glyph} **{it['id']}**{pct}{hb}{cond} -- {it['description']}")
         if it["status"] == "blocked" and it.get("blocked_reason"):
             L.append(f"    - Blocked: {it['blocked_reason']}")
@@ -861,18 +1064,20 @@ def cmd_report(args):
     print(f"Report generated: {DASHBOARD}")
     print(f"Phase files ({len(PHASE_ORDER)}) in: {PHASES_DIR}")
 
+
 # ---------------------------------------------------------------------------
 # CLI wiring
 # ---------------------------------------------------------------------------
 def build_parser():
     p = argparse.ArgumentParser(
         prog="tracker.py",
-        description="MaskFactory project tracker -- 348 build items + DoD/Goals rollups."
+        description="MaskFactory project tracker -- 609 build items + DoD/Goals rollups.",
     )
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    sp = sub.add_parser("rebuild",
-                         help="(Re)parse Plan/Items/*.md into tracker.json, preserving state")
+    sp = sub.add_parser(
+        "rebuild", help="(Re)parse Plan/Items/*.md into tracker.json, preserving state"
+    )
     sp.set_defaults(func=cmd_rebuild)
 
     sp = sub.add_parser("show", help="Show the full JSON record for one item id")
@@ -883,7 +1088,9 @@ def build_parser():
     sp.add_argument("id")
     sp.add_argument("--status", choices=STATUSES)
     sp.add_argument("--note", help="Free-text note, appended to the item's note history")
-    sp.add_argument("--evidence", help="What proves the verify clause passed (required for complete)")
+    sp.add_argument(
+        "--evidence", help="What proves the verify clause passed (required for complete)"
+    )
     sp.add_argument("--percent", type=int, help="0-100 progress override")
     sp.add_argument("--blocked-reason", help="Why the item is blocked (required for blocked)")
     sp.add_argument("--actor", default="ai_agent", help="Who made this change (default: ai_agent)")
@@ -904,12 +1111,16 @@ def build_parser():
     sp.set_defaults(func=cmd_next)
 
     sp = sub.add_parser("metrics", help="View / update free-form tracked metrics")
-    sp.add_argument("--set", action="append", metavar="KEY=VALUE",
-                     help="repeatable, e.g. --set approved_gold_count=42")
+    sp.add_argument(
+        "--set",
+        action="append",
+        metavar="KEY=VALUE",
+        help="repeatable, e.g. --set approved_gold_count=42",
+    )
     sp.add_argument("--show", action="store_true")
     sp.set_defaults(func=cmd_metrics)
 
-    sp = sub.add_parser("goal", help="Record a measured value / status for a G1-G8 goal")
+    sp = sub.add_parser("goal", help="Record a measured value / status for a G1-G9 goal")
     sp.add_argument("gid", help="e.g. G2")
     sp.add_argument("--measured", help="free text, e.g. '0.87 body / 0.71 fingers'")
     sp.add_argument("--status", choices=["pending", "met", "not_met"])
@@ -918,8 +1129,7 @@ def build_parser():
     sp = sub.add_parser("validate", help="Run consistency checks against tracker.json")
     sp.set_defaults(func=cmd_validate)
 
-    sp = sub.add_parser("report",
-                         help="Regenerate DASHBOARD.md and phases/*.md from tracker.json")
+    sp = sub.add_parser("report", help="Regenerate DASHBOARD.md and phases/*.md from tracker.json")
     sp.set_defaults(func=cmd_report)
 
     return p

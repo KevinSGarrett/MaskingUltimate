@@ -1,0 +1,51 @@
+{
+  "authoritative_human_gold": false,
+  "certificate_reason": "certificate_absent_or_failed",
+  "certificate_valid": false,
+  "context": "solo",
+  "holdout_eligible": false,
+  "human_audit_required": true,
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "label": "right_foot_base",
+  "pipeline_fingerprint": "aa1c127d1e94de5fe5e03b78bf15ba164237bb550c67ec61e9c6784953fb4967",
+  "pseudo_train_eligible": false,
+  "ranking": [
+    {
+      "candidate_id": "committee_r1_gemini",
+      "eligible": true,
+      "mask_sha256": "f7ba1b067224b3bfbbacf88be5077f408095c9ee90ca617630eb3785c4fdf074",
+      "score": 0.6871875139034098,
+      "vetoes": []
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "eligible": false,
+      "mask_sha256": "d2a70505e8adc6b73cf75644c3b15aea01c9680defe20910f75bde7021d2be5b",
+      "score": 0.42552477493747,
+      "vetoes": [
+        "insufficient_independent_sources"
+      ]
+    },
+    {
+      "candidate_id": "s09_baseline",
+      "eligible": false,
+      "mask_sha256": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+      "score": 0.336119782649953,
+      "vetoes": [
+        "block_qc",
+        "component_overflow"
+      ]
+    }
+  ],
+  "reason": "best candidate is below the tournament score threshold",
+  "schema_version": "2.0.0",
+  "serve_eligible": false,
+  "status": "residual_human_queue",
+  "training_loss_weight": 0.0,
+  "truth_tier": "machine_candidate",
+  "winner_id": "committee_r1_gemini",
+  "winner_mask_path": "committee_candidates/right_foot_base/round_1_gemini.png",
+  "winner_mask_sha256": "f7ba1b067224b3bfbbacf88be5077f408095c9ee90ca617630eb3785c4fdf074",
+  "winner_score": 0.6871875139034098
+}

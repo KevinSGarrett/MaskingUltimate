@@ -1,0 +1,77 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.94,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No executable correction is needed; the visible toe mask is complete and its boundary is consistent with the literal foot_mtp split.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate is anatomically the character's right toes per semantic-chain evidence. It covers the complete visible forward toe region and respects the foot-MTP boundary, with no apparent neighbor or background contamination.",
+      "latency_ms": 7645,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour follows the visible outer edge and the individual toe undulations. The proximal boundary is a plausible foot-MTP split rather than a whole-foot silhouette.",
+        "full_context": "The highlighted foot is the character's right foot according to the supplied COCO semantic pose-chain evidence; the visible forward toes are the target region.",
+        "mask": "The binary mask is a single connected component covering the visible toe area, including the toe pads and distal portions, without extending into the ankle or background.",
+        "neighbor_overlap": "No evident overlap with the rear/other foot, ankle, ground, or background; the mask remains confined to the forward right toes.",
+        "overlay": "The red overlay aligns with the visible toe silhouette and follows the outer dorsal, lateral, and plantar contours. It does not visibly include the adjacent rear foot.",
+        "source_crop": "The crop clearly shows one bare foot with five visible toes extending to the right. The toe region is separable at a plausible metatarsophalangeal boundary across the forefoot."
+      },
+      "provider": "openai",
+      "response_sha256": "9594429c099aa42f78ad62c461da838879c9ea218d91231bc1afc4d6ce5bd73f",
+      "usage": {
+        "cost_usd": 0.012894,
+        "input_tokens": 9846,
+        "output_tokens": 508
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.72,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Mask coverage and boundary are anatomically correct and complete for the visible right toes; no correction needed.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask correctly isolates the visible toes of the right foot, starting at the MTP line and covering all five toe pads and nails without including the foot base, ankle, or background. Boundary is tight and follows visible pixels accurately.",
+      "latency_ms": 36989,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "Contour line follows the MTP boundary cleanly, separating toes from the foot base without crossing into the dorsum.",
+        "full_context": "Right foot (character's right, nearest right_ankle/right_knee chain per pose evidence) is forward-stepping foot; cyan ROI box marks the toe region at bottom of frame.",
+        "mask": "White mask covers a wedge-shaped region corresponding to the five toes, tapering from the MTP line to the toe tips.",
+        "neighbor_overlap": "Magenta overlap shows toes region distinct from foot base, with clean separation at the MTP line, no bleed into ankle or foot base.",
+        "overlay": "Red overlay aligns well with the visible toe pads and toenails, following the natural contour of the toes.",
+        "source_crop": "Crop shows a foot in profile with toes visible at the front, ankle and dorsum visible behind the masked region."
+      },
+      "provider": "anthropic",
+      "response_sha256": "c66bc2da2d453a4026d74c4af298770d306fba03067d48715709570a63e84d85",
+      "usage": {
+        "cost_usd": 0.076358,
+        "input_tokens": 25529,
+        "output_tokens": 2530
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_toes",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "uncertain",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "d89c222d93c66c8080df032ad2ce746ef32090142e5f3dfa61de1f327154e107",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

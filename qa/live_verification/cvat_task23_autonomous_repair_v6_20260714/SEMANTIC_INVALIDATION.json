@@ -1,0 +1,33 @@
+{
+  "artifact_authority": "audit_only_invalidated_non_gold",
+  "candidate_id": "committee_r1_gemini",
+  "candidate_mask_path": "committee_candidates/right_foot_base/round_1_gemini.png",
+  "candidate_mask_sha256": "f7ba1b067224b3bfbbacf88be5077f408095c9ee90ca617630eb3785c4fdf074",
+  "cvat_mutated": false,
+  "disposition": {
+    "may_be_gold": false,
+    "may_be_published": false,
+    "may_be_training_data": false,
+    "may_be_used_for_calibration": false,
+    "retain_for_regression_testing": true
+  },
+  "evidence": {
+    "deterministic_veto_after_fix": "MF-BOUNDARY-foot_mtp-whole_foot_as_foot_base",
+    "failure": "visible toes were included in the right_foot_base candidate",
+    "original_claim": "all_required_reviewers_passed_exact_candidate",
+    "original_votes": {
+      "anthropic": "pass:0.87",
+      "gemini": "pass:0.98",
+      "openai": "pass:0.90",
+      "self_hosted_qwen": "pass:0.90"
+    },
+    "root_cause": "whole-foot parent-union support was permitted to impersonate the atomic foot_base label, while prompts and guards omitted the MTP boundary"
+  },
+  "image_id": "img_cdab0311dc96",
+  "invalidated_at": "2026-07-14",
+  "label": "right_foot_base",
+  "replacement_evidence": "../cvat_task23_autonomous_repair_v8_20260714/live_result.json",
+  "schema_version": "1.0.0",
+  "supersedes_live_result_convergence": true,
+  "task_id": 23
+}

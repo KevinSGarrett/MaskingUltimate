@@ -1,0 +1,53 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 1.0,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "The mask is heavily corrupted with geometric missing chunks and also includes the toes, violating the foot_mtp boundary rule. It requires a complete manual rebuild by a human operator.",
+        "tool": "human_review"
+      },
+      "defects": [
+        "boundary_too_tight",
+        "boundary_too_loose",
+        "other"
+      ],
+      "evidence": "The mask is severely corrupted, featuring large geometric cutouts and missing regions across the ankle and instep, while violating the foot_mtp rule by including the toes.",
+      "latency_ms": 25011,
+      "model": "gemini-3.5-flash",
+      "observations": {
+        "contour": "The contour is jagged and exhibits severe geometric defects.",
+        "full_context": "The target is the character's right foot, which is the front foot closer to the camera.",
+        "mask": "The mask is highly corrupted with blocky and curved missing segments, and it extends into the toes.",
+        "neighbor_overlap": "No neighbor overlap is visible or relevant here due to the corrupt state of the mask.",
+        "overlay": "The red overlay shows massive missing parts on the upper foot, heel, and ankle, while covering the toes which should be excluded.",
+        "source_crop": "The high-resolution crop shows the right foot clearly, with all toes and the ankle region visible."
+      },
+      "provider": "gemini",
+      "response_sha256": "0d5df11ee91a8baa8a1f774a3c3f555092f71a5c4a07bacaff106a5b0e17ee46",
+      "usage": {
+        "cost_usd": 0.0165615,
+        "input_tokens": 19634,
+        "output_tokens": 408
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "15a3e7d785151e2ebe0700d7c37ba93ca904c1605c9cc885ab2223e23a348dbb",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

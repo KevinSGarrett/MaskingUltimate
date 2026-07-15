@@ -28,6 +28,14 @@
       "pattern": "^body_parts_v[1-9][0-9]*(?:\\.[0-9]+)?$"
     },
     "left_right_convention": { "const": "character_perspective" },
+    "workflow_status": {
+      "enum": ["drafted", "auto_qa", "vlm_qa", "in_review", "corrected", "approved_gold", "autonomous_certified", "weighted_pseudo", "machine_candidate", "exported", "deprecated"]
+    },
+    "workflow_updated_at": { "$ref": "#/$defs/timestamp" },
+    "truth_tier": { "$ref": "#/$defs/truthTier" },
+    "truth_partition": { "$ref": "#/$defs/truthPartition" },
+    "training_loss_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+    "certification": { "$ref": "#/$defs/autonomousCertification" },
     "source": { "$ref": "#/$defs/source" },
     "person": { "$ref": "#/$defs/person" },
     "interperson": {
@@ -77,6 +85,56 @@
       "type": "string",
       "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
     },
+    "truthTier": {
+      "enum": [
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate"
+      ]
+    },
+    "truthPartition": {
+      "enum": ["train", "calibration", "holdout", "residual"]
+    },
+    "autonomousCertification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "certificates",
+        "pipeline_fingerprint",
+        "evidence_sha256",
+        "final_mask_set_sha256",
+        "certified_at"
+      ],
+      "properties": {
+        "schema_version": { "const": "2.0.0" },
+        "certificates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["certificate_id", "risk_bucket", "certificate_sha256", "covered_labels"],
+            "properties": {
+              "certificate_id": { "type": "string", "minLength": 1 },
+              "risk_bucket": { "type": "string", "minLength": 1 },
+              "certificate_sha256": { "$ref": "#/$defs/sha256" },
+              "covered_labels": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "$ref": "#/$defs/labelName" }
+              }
+            }
+          }
+        },
+        "pipeline_fingerprint": { "type": "string", "minLength": 1 },
+        "evidence_sha256": { "$ref": "#/$defs/sha256" },
+        "final_mask_set_sha256": { "$ref": "#/$defs/sha256" },
+        "certified_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
     "bbox": {
       "type": "array",
       "prefixItems": [
@@ -95,6 +153,7 @@
       "required": [
         "source_file",
         "source_sha256",
+        "parent_source_sha256",
         "source_width",
         "source_height",
         "source_origin",
@@ -105,6 +164,7 @@
       "properties": {
         "source_file": { "$ref": "#/$defs/relativePath" },
         "source_sha256": { "$ref": "#/$defs/sha256" },
+        "parent_source_sha256": { "$ref": "#/$defs/sha256" },
         "source_width": { "type": "integer", "minimum": 1 },
         "source_height": { "type": "integer", "minimum": 1 },
         "source_origin": {
@@ -112,7 +172,8 @@
         },
         "origin_note": { "type": "string" },
         "ingested_at": { "$ref": "#/$defs/timestamp" },
-        "exif_stripped": { "const": true }
+        "exif_stripped": { "const": true },
+        "phash64": { "type": "string", "pattern": "^[a-fA-F0-9]{16}$" }
       }
     },
     "person": {
@@ -172,6 +233,10 @@
         "draft_model_generated",
         "human_corrected",
         "human_approved_gold",
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate",
         "rejected_needs_fix",
         "deprecated",
         "n/a"
@@ -213,7 +278,7 @@
       "required": ["mask_type", "visibility", "mask_file", "status"],
       "properties": {
         "mask_type": {
-          "enum": ["atomic_exclusive", "region_band", "derived_union", "projected_amodal"]
+          "enum": ["atomic_exclusive", "protected_qa", "region_band", "derived_union", "projected_amodal"]
         },
         "visibility": { "$ref": "#/$defs/visibility" },
         "basis": { "type": "string", "minLength": 1 },
@@ -325,5 +390,65 @@
       "propertyNames": { "$ref": "#/$defs/relativePath" },
       "additionalProperties": { "$ref": "#/$defs/sha256" }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "truth_tier": { "const": "human_anchor_gold" } },
+        "required": ["truth_tier"]
+      },
+      "then": {
+        "required": ["truth_partition", "training_loss_weight"],
+        "allOf": [
+          {
+            "if": { "properties": { "truth_partition": { "const": "train" } } },
+            "then": { "properties": { "training_loss_weight": { "const": 1.0 } } }
+          },
+          {
+            "if": { "properties": { "truth_partition": { "enum": ["calibration", "holdout"] } } },
+            "then": { "properties": { "training_loss_weight": { "const": 0.0 } } }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": { "truth_tier": { "const": "autonomous_certified_gold" } },
+        "required": ["truth_tier"]
+      },
+      "then": {
+        "required": ["truth_partition", "training_loss_weight", "certification"],
+        "properties": {
+          "truth_partition": { "const": "train" },
+          "training_loss_weight": { "type": "number", "minimum": 0.5, "maximum": 0.75 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "truth_tier": { "const": "weighted_pseudo_label" } },
+        "required": ["truth_tier"]
+      },
+      "then": {
+        "required": ["truth_partition", "training_loss_weight"],
+        "properties": {
+          "truth_partition": { "const": "train" },
+          "training_loss_weight": { "type": "number", "minimum": 0.1, "maximum": 0.25 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "truth_tier": { "const": "machine_candidate" } },
+        "required": ["truth_tier"]
+      },
+      "then": {
+        "required": ["truth_partition", "training_loss_weight"],
+        "properties": {
+          "truth_partition": { "const": "residual" },
+          "training_loss_weight": { "const": 0.0 }
+        }
+      }
+    }
+  ]
 }

@@ -1,0 +1,107 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.98,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "The current mask is accurate and requires no correction.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The segmentation of the right foot base is extremely accurate, following the exact contours of the skin and toes with no visible errors or misalignments.",
+      "latency_ms": 11439,
+      "model": "gemini-3.5-flash",
+      "observations": {
+        "contour": "The contour line is very sharp and follows the boundary of the foot with high fidelity.",
+        "full_context": "The full-body image shows a male model in grey briefs facing slightly to the right. The highlighted box is around his right foot in the foreground.",
+        "mask": "The mask represents the foot and lower ankle cleanly, extending to the upper crop boundary.",
+        "neighbor_overlap": "There is no overlap from the background leg or any other body part in this crop.",
+        "overlay": "The red overlay is perfectly aligned with the skin of the foot, wrapping around the toes and heel precisely.",
+        "source_crop": "The crop shows a close-up of the character's right foot resting on a neutral grey background."
+      },
+      "provider": "gemini",
+      "response_sha256": "fba542df2728cd7c0f639a3664c14b2f1196f1daee7b0d85cb72718586e609a7",
+      "usage": {
+        "cost_usd": 0.008436,
+        "input_tokens": 9478,
+        "output_tokens": 295
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.9,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No executable correction is needed; the visible target coverage and boundary are consistent with the source crop.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask matches the visible foreground foot silhouette and all visible toes, while excluding the crossed rear foot. The top truncation is caused by the supplied crop edge rather than an inferred hidden boundary.",
+      "latency_ms": 9689,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour closely follows the upper, lateral, plantar, and toe boundaries, including the individual toe projections. The top boundary coincides with the source-crop edge where the limb continues out of frame.",
+        "full_context": "The segmented target is the character's semantic right foot, confirmed by the supplied COCO right-chain evidence. The foreground foot is correctly distinguished from the crossed rear foot.",
+        "mask": "The binary mask covers the visible foreground foot continuously, including the toes and ankle-side region, without obvious holes or detached components.",
+        "neighbor_overlap": "The neighboring rear foot at the far left is excluded; no evident overlap with the other foot or background is present.",
+        "overlay": "The red overlay follows the visible foreground foot silhouette and does not visibly spill into the background or the neighboring rear foot.",
+        "source_crop": "The crop shows the complete visible foreground foot region from the cropped ankle/shin continuation through the toes. The outer silhouette is clearly separable from the gray background and the rear foot."
+      },
+      "provider": "openai",
+      "response_sha256": "ca0927b9c4b7b3508902987d871310ac865265f1b914ec48bf61a21d36c48a83",
+      "usage": {
+        "cost_usd": 0.013051,
+        "input_tokens": 9637,
+        "output_tokens": 569
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.87,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Visual inspection across all provided views confirms accurate boundary tracing, correct side assignment via pose-chain evidence, and no missing or extra coverage; no correction is needed for this instance.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The segmentation for this ROI corresponds to the character's right foot per COCO pose-chain semantic assignment (right ankle chain distance 220px vs left chain 743px), and the mask/overlay/contour show accurate, complete coverage of the visible foot with no contamination, clothing, or neighbor-part inclusion. Auto-QA flags in the report reference other body parts (shoulders, hands, torso, chain breaks at knee/thigh) rather than this specific right_foot_base instance, and the local audit model verdict is pass with 0.9 confidence.",
+      "latency_ms": 18788,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "White contour line hugs the foot edge accurately, following the toe curvature and ankle taper without cutting into visible skin or extending into background.",
+        "full_context": "The cyan ROI box marks a foot in profile stance; per the pose-chain evidence (distance 220px vs 743px), this foot is nearest the right ankle/knee/hip semantic chain, confirming it is the character's right foot despite the crossed-leg pose reversing screen position.",
+        "mask": "Binary mask cleanly covers the ankle-to-toe silhouette including individual toe separations at the front edge; no holes or stray fragments visible.",
+        "neighbor_overlap": "No overlap with the other leg/foot or ankle joint is visible; the crop shows only the single target foot with clean separation from the adjacent leg silhouette in the upper-left corner.",
+        "overlay": "Red overlay aligns tightly with the foot's visible skin boundary, including toe tips and the ankle/heel transition, with no bleed onto the floor or the other leg.",
+        "source_crop": "High-resolution crop shows a bare foot in three-quarter profile, ankle at top, toes extending right, resting on gray studio floor with visible tendons/vein texture and toenails."
+      },
+      "provider": "anthropic",
+      "response_sha256": "8e6a6804abec591bfc2ae12855428cd4910b65549c082e0f182bbd2549206572",
+      "usage": {
+        "cost_usd": 0.038352,
+        "input_tokens": 12376,
+        "output_tokens": 1360
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "pass",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "e42d7c3b10e5f771ce74419930e5b94389c08fcbf50fb42739bd4df0c0b91858",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

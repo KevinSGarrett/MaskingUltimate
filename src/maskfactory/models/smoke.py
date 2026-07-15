@@ -440,21 +440,17 @@ def densepose_r50_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
 register_smoke_runner("densepose_r50_cuda_wsl", densepose_r50_cuda_wsl)
 
 
-def faceparse_bisenet_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
-    """Run the pinned 19-class face-parsing BiSeNet on one CUDA face crop."""
+def faceparse_bisenet_cuda_local(checkpoint: Path, image: Path) -> dict[str, Any]:
+    """Run the pinned BiSeNet locally, avoiding the degraded WSL VHD path."""
     command = [
-        "wsl",
-        "-d",
-        "Ubuntu-22.04",
-        "--",
-        "/home/kevin/miniforge3/envs/maskfactory/bin/python",
-        _wsl_path(ROOT / "tools" / "smoke_faceparse_bisenet_wsl.py"),
+        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+        str(ROOT / "tools" / "smoke_faceparse_bisenet_wsl.py"),
         "--checkpoint",
-        _wsl_path(checkpoint),
+        str(checkpoint.resolve()),
         "--image",
-        _wsl_path(image),
+        str(image.resolve()),
         "--source",
-        "/home/kevin/mfwork/source/face-parsing.PyTorch",
+        str(ROOT / "models" / "runtime_cache" / "face-parsing-pytorch_d2e684c"),
     ]
     process = subprocess.run(command, capture_output=True, text=True, timeout=600, check=False)
     if process.returncode != 0:
@@ -473,7 +469,7 @@ def faceparse_bisenet_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
         }
 
 
-register_smoke_runner("faceparse_bisenet_cuda_wsl", faceparse_bisenet_cuda_wsl)
+register_smoke_runner("faceparse_bisenet_cuda_local", faceparse_bisenet_cuda_local)
 
 
 def vitmatte_small_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:

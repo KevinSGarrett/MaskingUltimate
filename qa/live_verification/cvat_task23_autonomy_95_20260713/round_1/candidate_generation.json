@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "authority": "shadow_experiment_only_no_cvat_or_gold_write",
+  "source_map": "data\\packages\\img_cdab0311dc96\\instances\\p0\\label_map_part.png",
+  "label": "right_foot_base",
+  "production_limits": {
+    "max_changed_fraction": 0.75,
+    "max_protected_overlap_fraction": 0.02
+  },
+  "candidates": [
+    {
+      "candidate": "openai_rear_character_right",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\openai_rear_character_right.png",
+      "area_px": 6694476,
+      "components": 30,
+      "bbox": [
+        5,
+        0,
+        1871,
+        5632
+      ],
+      "changed_fraction_vs_current": 7.63553914134656,
+      "protected_overlap_fraction": 0.0,
+      "positive_points_px": [
+        [
+          225,
+          5058
+        ],
+        [
+          319,
+          5238
+        ],
+        [
+          469,
+          5350
+        ],
+        [
+          638,
+          5384
+        ],
+        [
+          807,
+          5373
+        ],
+        [
+          732,
+          5266
+        ],
+        [
+          544,
+          5210
+        ]
+      ],
+      "negative_points_px": [
+        [
+          1163,
+          5350
+        ],
+        [
+          1313,
+          5238
+        ],
+        [
+          938,
+          3942
+        ],
+        [
+          938,
+          1690
+        ],
+        [
+          563,
+          563
+        ]
+      ],
+      "passes_production_change_limit": false,
+      "passes_production_collision_limit": true
+    },
+    {
+      "candidate": "gemini_foreground_claimed_right",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\gemini_foreground_claimed_right.png",
+      "area_px": 6796088,
+      "components": 7,
+      "bbox": [
+        6,
+        0,
+        1870,
+        5632
+      ],
+      "changed_fraction_vs_current": 7.735784759763778,
+      "protected_overlap_fraction": 5.091164210940176e-05,
+      "positive_points_px": [
+        [
+          807,
+          5210
+        ],
+        [
+          1032,
+          5238
+        ],
+        [
+          1313,
+          5322
+        ]
+      ],
+      "negative_points_px": [
+        [
+          469,
+          1690
+        ],
+        [
+          938,
+          1690
+        ],
+        [
+          657,
+          3041
+        ]
+      ],
+      "passes_production_change_limit": false,
+      "passes_production_collision_limit": true
+    },
+    {
+      "candidate": "qwen_remove_small_components",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\qwen_remove_small_components.png",
+      "area_px": 789155,
+      "components": 1,
+      "bbox": [
+        273,
+        1059,
+        1296,
+        2518
+      ],
+      "changed_fraction_vs_current": 0.21779256642501305,
+      "protected_overlap_fraction": 0.0,
+      "passes_production_change_limit": true,
+      "passes_production_collision_limit": true
+    }
+  ]
+}

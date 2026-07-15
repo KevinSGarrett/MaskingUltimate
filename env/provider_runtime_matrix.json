@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "policy": {
+    "core_torch": "2.11.0+cu128",
+    "core_cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "qualified_status": "live_smoke_passed",
+    "gated_status": "source_only_human_gate"
+  },
+  "runtimes": [
+    {
+      "provider": "maskfactory_core",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "project_core_wsl_and_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/maskfactory_env.yml", "sha256": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5"},
+        {"kind": "lock", "path": "env/requirements.lock.txt", "sha256": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01"},
+        {"kind": "lock", "path": "env/source_builds.lock", "sha256": "2ac1032a2d40f0adaf028d26ae3a32833cc63e28fb5903f0e5aa301e9c50893c"},
+        {"kind": "evidence", "path": "qa/live_verification/sam2_incumbent_rollback_20260715.json", "sha256": "c5561d9deef4bd43334c1af8d988c3dfb8110f3e7d0af2be4b1443d6fdd7cda1"}
+      ]
+    },
+    {
+      "provider": "sam3_1",
+      "status": "source_only_human_gate",
+      "isolation_boundary": "wsl_venv_sam31_5dd401d1",
+      "checkpoint_status": "manual_huggingface_gate",
+      "smoke_status": "not_run_checkpoint_gated",
+      "may_author_gold": false,
+      "needs_kevin": "NEEDS KEVIN: accept the official Meta SAM 3.1 Hugging Face terms so the frozen checkpoint can be downloaded and qualified.",
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "1a2a6525ca7e727d82503ab115407c0a1d7515e5e0b43517a60740977e7433c6"},
+        {"kind": "evidence", "path": "qa/live_verification/sam31_source_runtime_20260714.json", "sha256": "c6c4e2fffa8d55cf7d48f00541360234ee2dd98e7e5a7596e1302b6b69c12810"}
+      ]
+    },
+    {
+      "provider": "qwen3_vl",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "native_ollama_service",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/qwen3_vl_ollama.lock.json", "sha256": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059"},
+        {"kind": "evidence", "path": "qa/live_verification/qwen3_vl_ollama_runtime_20260714.json", "sha256": "c9f38ddd253b1b8ef070af409be0d12118f11b2d9779799e8cfa38d562c7e20a"}
+      ]
+    },
+    {
+      "provider": "rfdetr",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "wsl_venv_rfdetr_1_7_1",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/rfdetr_runtime.lock.json", "sha256": "5ab1da8e03134bb26fbbaabbabe11c52470c91be785b1628505bf47cfd0c6887"},
+        {"kind": "evidence", "path": "qa/live_verification/rfdetr_medium_runtime_20260714.json", "sha256": "f2f8cfaf9cc12120de35872a61ce03a0814c175427b43de678c206641daccb4b"}
+      ]
+    },
+    {
+      "provider": "eomt_dinov3",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "external_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "883fe2f934820df01b94d31c45f67d2123c00453488bbd17950860ada477cf12"},
+        {"kind": "evidence", "path": "qa/live_verification/eomt_dinov3_runtime_20260715.json", "sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"}
+      ]
+    },
+    {
+      "provider": "rtm_pose",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "isolated_target_layer_over_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/rtm_pose.lock.json", "sha256": "f9f1edae8ab4159ac0226a137151da4da775d9f6a72ce188405ad07fb81b5e12"},
+        {"kind": "evidence", "path": "qa/live_verification/rtm_pose_runtime_20260714.json", "sha256": "e94c81a4cc28772fdf5a6449a637e61feab5d898b3cac92d1de76e307690483e"}
+      ]
+    },
+    {
+      "provider": "sam3d_body",
+      "status": "source_only_human_gate",
+      "isolation_boundary": "planned_isolated_wsl_runtime",
+      "checkpoint_status": "manual_huggingface_gate",
+      "smoke_status": "not_run_checkpoint_gated",
+      "may_author_gold": false,
+      "needs_kevin": "NEEDS KEVIN: accept the official Meta SAM 3D Body Hugging Face terms so the frozen checkpoint and MHR assets can be downloaded and qualified.",
+      "artifacts": [
+        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_source_gate_20260715.json", "sha256": "2e84034a199cabded783935a1fe54cfa38ba0ea879175e383320e16c28033c13"}
+      ]
+    }
+  ],
+  "manifest_sha256": "3fb4e9d2fac03b8ebccabf4a34b062eec1d4060b3e982fad7d5db1283dbef877"
+}

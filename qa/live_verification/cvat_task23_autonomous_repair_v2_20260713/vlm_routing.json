@@ -1,0 +1,108 @@
+{
+  "autonomy": {
+    "authoritative_gold": false,
+    "context": "solo",
+    "convergence": {
+      "right_foot_base": {
+        "authoritative_gold": false,
+        "converged": false,
+        "enabled": true,
+        "final_votes": [],
+        "publication_target": "reversible_non_gold_review_draft",
+        "remaining_uncertainties": [
+          "no_eligible_candidate_for_committee"
+        ],
+        "round_count": 0,
+        "rounds_report": "autonomy/convergence_right_foot_base.json",
+        "stop_reason": "no_eligible_candidate_for_committee",
+        "target_confidence": 0.95
+      }
+    },
+    "decision_count": 1,
+    "enabled": true,
+    "lifecycle_dir": "autonomy",
+    "mode": "calibrated_progressive_autonomy",
+    "pipeline_fingerprint": "67d454e30eca4833ce20f6bae86bddbf4cd59bccf6e32e2efcd1ea6e21e86e8e",
+    "review_draft": {
+      "applied": [],
+      "authoritative_human_gold": false,
+      "authority": "machine_generated_review_draft_non_gold",
+      "base_part_map": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_cdab0311dc96\\instances\\p0\\label_map_part.png",
+      "base_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "changed_labels": [],
+      "changed_pixel_count": 0,
+      "changed_pixel_fraction": 0.0,
+      "human_gold_approval_required": true,
+      "promoted_for_human_review": false,
+      "proposed_part_map": "autonomy_review_draft/proposed_label_map_part.png",
+      "proposed_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "qa": {
+        "block_qc_ids": [],
+        "overall": "no_selection",
+        "report_path": null
+      },
+      "review_part_map": "autonomy_review_draft/label_map_part.png",
+      "review_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "rolled_back": [],
+      "schema_version": "1.0.0",
+      "skipped": []
+    },
+    "status_counts": {
+      "residual_human_queue": 1
+    }
+  },
+  "cloud_teacher": {
+    "candidate_created_count": 0,
+    "enabled": true,
+    "errors": [],
+    "judgment_count": 1,
+    "may_approve_gold": false,
+    "may_write_authoritative_masks": false,
+    "mode": "shadow_only",
+    "provider_count": 3
+  },
+  "enabled": true,
+  "gate_fingerprint": "live-shadow-uncalibrated-task23-v2",
+  "manifest_review": {
+    "status": "skipped_until_draft_manifest"
+  },
+  "model": "qwen2.5vl:7b",
+  "routes": {
+    "right_foot_base": {
+      "correction_hint": null,
+      "may_approve_gold": false,
+      "may_clear_block": false,
+      "may_edit_mask": false,
+      "pin_disagreement_heatmap": true,
+      "priority": "high",
+      "queue": "careful",
+      "specialist_disagreement_fraction": 0.9039526755516073,
+      "specialist_disagreement_reason": "raw_specialist_vs_final_mask"
+    }
+  },
+  "whole_image_review": {
+    "impossible_claims": [],
+    "latency_ms": 4767,
+    "lr_suspect": [],
+    "mislabeled": [],
+    "missing": [
+      "left_toes",
+      "right_toes"
+    ],
+    "model": "qwen2.5vl:7b",
+    "notes": "",
+    "prompt_version": "p-image-v2-source-overlay",
+    "status": "complete"
+  },
+  "workhorse": {
+    "audit_count": 1,
+    "authoritative_map_write": false,
+    "candidate_better_count": 0,
+    "candidate_created_count": 0,
+    "enabled": true,
+    "human_approval_required": true,
+    "mode": "gated_candidate_generation",
+    "non_gold_review_draft_write": false,
+    "report": "workhorse_report.json"
+  }
+}

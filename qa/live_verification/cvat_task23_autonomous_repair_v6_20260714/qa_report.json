@@ -1,0 +1,817 @@
+{
+  "checks": [
+    {
+      "action": "none",
+      "id": "QC-001",
+      "message": "context_shape=(5632, 1876)",
+      "name": "dimensions_match_source",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-002",
+      "message": "atomics derived exactly from indexed map",
+      "name": "binary_values_only",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-003",
+      "message": "authoritative indexed PNG maps readable",
+      "name": "png_mode",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-004",
+      "message": "IDs resolved through live ontology",
+      "name": "filename_ontology_match",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-005",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "manifest_schema_valid",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-006",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "hash_integrity",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-007",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "map_binary_consistency",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-008",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "required_states_complete",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-009",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "derived_not_hand_authored",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-010",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "crop_transform_valid",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-011",
+      "message": "overlap_px=0",
+      "name": "atomic_exclusivity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-012",
+      "message": "outside_fraction=0.00000000",
+      "name": "inside_silhouette",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-013",
+      "message": "parts={}, skin_clothing_px=0",
+      "name": "protected_overlap",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "block_package",
+      "id": "QC-014",
+      "message": "wrong=['right_shoulder', 'right_foot_base'], insufficient_votes=[]",
+      "name": "left_right_consistency",
+      "result": "fail",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-015",
+      "message": "neck=0.1061% not [0.2,8.0]; chest_upper_torso=0.0417% not [1.0,25.0]; pelvic_region=0.0093% not [0.5,15.0]; left_shoulder=0.1684% not [0.2,6.0]; right_shoulder=0.0522% not [0.2,6.0]; right_upper_arm=0.1953% not [0.8,5.0]; right_forearm=0.0650% not [0.8,4.0]; right_hand_base=6.1524% not [0.1,3.0]; left_thigh=2.6969% not [3.0,12.0]; right_thigh=2.0413% not [3.0,12.0]; right_foot_base=12.8136% not [0.2,4.0]",
+      "name": "area_sanity",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-016",
+      "message": "absent_with_mask=[]",
+      "name": "visibility_vs_frame",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-017",
+      "message": "hair=10>4; head_face=66>2; neck=3>1; chest_upper_torso=133>2; pelvic_region=2>1; left_shoulder=6>1; right_shoulder=24>1; left_upper_arm=34>1; right_upper_arm=79>1; left_elbow=34>1; right_elbow=22>1; left_forearm=31>1; right_forearm=180>1; left_wrist=22>1; right_wrist=3>1; left_hand_base=87>1; right_hand_base=111>1; left_thigh=92>1; right_thigh=71>1; left_knee=8>1; left_calf=37>1; right_calf=76>1; left_ankle=43>1; right_ankle=8>1; left_foot_base=104>1; right_foot_base=220>1",
+      "name": "components_limit",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-018",
+      "message": "below_0.995={}",
+      "name": "crop_roundtrip",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-019",
+      "message": "mismatch_px=0",
+      "name": "breast_skin_identity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-020",
+      "message": "outside={}, in_masks=[]",
+      "name": "projected_containment",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "warn",
+      "id": "QC-021",
+      "message": "above_1pct={'left_wrist': 0.05610494450050454, 'right_foot_base': 0.060805921802549755}",
+      "name": "hole_ratio",
+      "result": "warn",
+      "scope": "instance",
+      "severity": "WARN"
+    },
+    {
+      "action": "none",
+      "id": "QC-022",
+      "message": "aligned",
+      "name": "edge_alignment",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "WARN"
+    },
+    {
+      "action": "none",
+      "id": "QC-023",
+      "message": "consistent",
+      "name": "visibility_state_consistency",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-024",
+      "message": "hair=0.0000; chest_upper_torso=0.2465; right_elbow=0.0483; right_calf=0.0000",
+      "name": "front_back_surface",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-025",
+      "message": "breaks=['right_knee<->right_thigh']",
+      "name": "chain_integrity",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-026",
+      "message": "violations=[]",
+      "name": "finger_containment",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-027",
+      "message": "violations=[]",
+      "name": "band_geometry",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-028",
+      "message": "flipped=['right_shoulder', 'left_knee', 'left_calf', 'left_ankle', 'left_foot_base']",
+      "name": "side_coherence",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-029",
+      "message": "chest band unavailable",
+      "name": "breast_position",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-030",
+      "message": "all S09 maps use png_strict",
+      "name": "strict_writer_parity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "route_human",
+      "id": "QC-031",
+      "message": "high_parts={'hair': 0.06093903127134499, 'head_face': 0.07066217841827378, 'neck': 0.9327509871963623, 'chest_upper_torso': 0.9774665042630938, 'pelvic_region': 0.9291553133514986, 'left_shoulder': 1.0, 'right_shoulder': 0.9958657587548638, 'left_upper_arm': 0.9941447797973841, 'right_upper_arm': 0.9980491611392899, 'left_elbow': 0.9878215654077723, 'right_elbow': 0.9769656699889258, 'left_forearm': 0.8556661708052027, 'right_forearm': 1.0, 'left_wrist': 0.9790110998990919, 'right_wrist': 0.8809523809523809, 'left_hand_base': 0.4178605288107026, 'right_hand_base': 0.9888379217519117, 'left_thigh': 0.8681253473236067, 'right_thigh': 0.96392506268627, 'left_knee': 0.9070018979204506, 'right_knee': 0.9924114571654491, 'left_calf': 0.6082598145847443, 'right_calf': 0.9996121317305827, 'left_ankle': 0.9937756107681933, 'right_ankle': 0.9956250846539347, 'left_foot_base': 0.5096545462406503, 'right_foot_base': 0.9742725115523917}",
+      "name": "model_disagreement",
+      "result": "route",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "warn",
+      "id": "QC-032",
+      "message": "below_0.5={'left_elbow': 5.561113357543945e-05, 'neck': 0.0059356689453125, 'pelvic_region': 0.0185394287109375, 'right_ankle': 0.337646484375, 'right_elbow': 0.0802001953125, 'right_knee': 0.1573486328125, 'right_shoulder': 0.4833984375, 'right_wrist': 0.228515625}",
+      "name": "sam2_low_conf",
+      "result": "warn",
+      "scope": "instance",
+      "severity": "WARN"
+    },
+    {
+      "action": "none",
+      "id": "QC-033",
+      "message": "flags=[]",
+      "name": "degraded_models",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "skipped",
+      "id": "QC-034",
+      "message": "not applicable until S13 package/previous-gold artifacts exist",
+      "name": "previous_gold_regression",
+      "result": "skipped",
+      "scope": "package",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-035",
+      "message": "above_threshold={}",
+      "name": "instance_silhouette_exclusivity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-036",
+      "message": "bleed_px={}",
+      "name": "cross_instance_bleed",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "BLOCK"
+    },
+    {
+      "action": "none",
+      "id": "QC-037",
+      "message": "nonreciprocal=[]",
+      "name": "interperson_contact_reciprocity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "ROUTE"
+    },
+    {
+      "action": "none",
+      "id": "QC-038",
+      "message": "actual=1, expected=1, cap=4",
+      "name": "instance_count_sanity",
+      "result": "pass",
+      "scope": "instance",
+      "severity": "WARN"
+    }
+  ],
+  "consensus": {
+    "method": "weighted_vote_v1",
+    "sources": [
+      "sam2",
+      "sapiens_seg",
+      "schp",
+      "geometry",
+      "densepose"
+    ]
+  },
+  "created_at": "2026-07-13T07:30:45.312357+00:00",
+  "image_id": "img_cdab0311dc96",
+  "metrics_per_part": {
+    "chest_upper_torso": {
+      "boundary_f_2px": 1.0,
+      "components": 133,
+      "disagreement_score": 0.7130352750113443,
+      "hausdorff_95": 0.0,
+      "hole_ratio": 0.004263093788063338,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 3284,
+      "mask_bbox": [
+        277,
+        1030,
+        1357,
+        3034
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "hair": {
+      "boundary_f_2px": 1.0,
+      "components": 10,
+      "disagreement_score": 0.15977806737579364,
+      "hausdorff_95": 0.0,
+      "hole_ratio": 0.0001633356101327473,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 134692,
+      "mask_bbox": [
+        261,
+        256,
+        1342,
+        2166
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "head_face": {
+      "boundary_f_2px": 1.0,
+      "components": 66,
+      "disagreement_score": 0.4136818978762391,
+      "hole_ratio": 1.7333606048735168e-05,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 288457,
+      "mask_bbox": [
+        717,
+        483,
+        1508,
+        5415
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_ankle": {
+      "boundary_f_2px": 1.0,
+      "components": 43,
+      "disagreement_score": 0.8364474603576585,
+      "hole_ratio": 0.00010373982053011048,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 19279,
+      "mask_bbox": [
+        250,
+        4695,
+        531,
+        4949
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_calf": {
+      "boundary_f_2px": 1.0,
+      "components": 37,
+      "disagreement_score": 0.6083866821904916,
+      "hole_ratio": 7.624720240044134e-05,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 222959,
+      "mask_bbox": [
+        261,
+        3770,
+        708,
+        4935
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_elbow": {
+      "boundary_f_2px": 1.0,
+      "components": 34,
+      "disagreement_score": 0.5692495644490234,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 21924,
+      "mask_bbox": [
+        1149,
+        2045,
+        1459,
+        2492
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_foot_base": {
+      "boundary_f_2px": 1.0,
+      "components": 104,
+      "disagreement_score": 0.5673988431465803,
+      "hole_ratio": 0.00012970729387349215,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 115645,
+      "mask_bbox": [
+        193,
+        3616,
+        1368,
+        5379
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_forearm": {
+      "boundary_f_2px": 1.0,
+      "components": 31,
+      "disagreement_score": 0.7103536322413164,
+      "hole_ratio": 0.0018435874941195916,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 78651,
+      "mask_bbox": [
+        1280,
+        2162,
+        1591,
+        2809
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_hand_base": {
+      "boundary_f_2px": 1.0,
+      "components": 87,
+      "disagreement_score": 0.4745170331906069,
+      "hole_ratio": 0.00047403349836721794,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 75944,
+      "mask_bbox": [
+        1270,
+        2488,
+        1686,
+        3204
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_knee": {
+      "boundary_f_2px": 1.0,
+      "components": 8,
+      "disagreement_score": 0.7299022709020344,
+      "hole_ratio": 0.0005510091630783045,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 49001,
+      "mask_bbox": [
+        571,
+        3554,
+        905,
+        5210
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_shoulder": {
+      "boundary_f_2px": 1.0,
+      "components": 6,
+      "disagreement_score": 0.9995779729689764,
+      "hole_ratio": 0.002790346907993967,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 13260,
+      "mask_bbox": [
+        1157,
+        1251,
+        1309,
+        1436
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_thigh": {
+      "boundary_f_2px": 1.0,
+      "components": 92,
+      "disagreement_score": 0.7508425061855689,
+      "hole_ratio": 0.0006404882781226158,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 212338,
+      "mask_bbox": [
+        546,
+        2339,
+        1296,
+        3867
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_upper_arm": {
+      "boundary_f_2px": 1.0,
+      "components": 34,
+      "disagreement_score": 0.7572712435508121,
+      "hole_ratio": 2.1061943174877314e-05,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 189916,
+      "mask_bbox": [
+        1056,
+        1214,
+        1366,
+        2513
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "left_wrist": {
+      "boundary_f_2px": 1.0,
+      "components": 22,
+      "disagreement_score": 0.8223335509784137,
+      "hole_ratio": 0.05610494450050454,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 9910,
+      "mask_bbox": [
+        1356,
+        2625,
+        1574,
+        2784
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "neck": {
+      "boundary_f_2px": 1.0,
+      "components": 3,
+      "disagreement_score": 0.5651854615245642,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 8357,
+      "mask_bbox": [
+        712,
+        1016,
+        1010,
+        1280
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "pelvic_region": {
+      "boundary_f_2px": 1.0,
+      "components": 2,
+      "disagreement_score": 0.6697547683923706,
+      "hole_ratio": 0.0027247956403269754,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 734,
+      "mask_bbox": [
+        1231,
+        2944,
+        1263,
+        3012
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_ankle": {
+      "boundary_f_2px": 1.0,
+      "components": 8,
+      "disagreement_score": 0.8718266924811373,
+      "hole_ratio": 0.007205742922931058,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 73830,
+      "mask_bbox": [
+        741,
+        4947,
+        1123,
+        5194
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_calf": {
+      "boundary_f_2px": 1.0,
+      "components": 76,
+      "disagreement_score": 0.8308300877240986,
+      "hole_ratio": 0.0004733307694583321,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 304227,
+      "mask_bbox": [
+        260,
+        1648,
+        1111,
+        5380
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_elbow": {
+      "boundary_f_2px": 1.0,
+      "components": 22,
+      "disagreement_score": 0.916933967385404,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 4515,
+      "mask_bbox": [
+        280,
+        2071,
+        605,
+        2721
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_foot_base": {
+      "boundary_f_2px": 1.0,
+      "components": 220,
+      "disagreement_score": 0.6751946116553558,
+      "hole_ratio": 0.060805921802549755,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 1008882,
+      "mask_bbox": [
+        262,
+        1019,
+        1504,
+        5412
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_forearm": {
+      "boundary_f_2px": 1.0,
+      "components": 180,
+      "disagreement_score": 0.9171170343137256,
+      "hole_ratio": 0.004296875,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 5120,
+      "mask_bbox": [
+        425,
+        2120,
+        1052,
+        4952
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_hand_base": {
+      "boundary_f_2px": 1.0,
+      "components": 111,
+      "disagreement_score": 0.7621318327995101,
+      "hole_ratio": 0.0003550725834420571,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 484408,
+      "mask_bbox": [
+        260,
+        1023,
+        1182,
+        3718
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_knee": {
+      "boundary_f_2px": 1.0,
+      "components": 1,
+      "disagreement_score": 0.7007384441508655,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 84733,
+      "mask_bbox": [
+        739,
+        3686,
+        1115,
+        3950
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_shoulder": {
+      "boundary_f_2px": 1.0,
+      "components": 24,
+      "disagreement_score": 0.9958657587548638,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 4112,
+      "mask_bbox": [
+        667,
+        2347,
+        1157,
+        3686
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_thigh": {
+      "boundary_f_2px": 1.0,
+      "components": 71,
+      "disagreement_score": 0.6915262363679548,
+      "hole_ratio": 0.0007279695870483633,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 160721,
+      "mask_bbox": [
+        412,
+        1029,
+        1290,
+        4013
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_upper_arm": {
+      "boundary_f_2px": 1.0,
+      "components": 79,
+      "disagreement_score": 0.9662260065946005,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 15378,
+      "mask_bbox": [
+        267,
+        1080,
+        740,
+        2207
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    },
+    "right_wrist": {
+      "boundary_f_2px": 1.0,
+      "components": 3,
+      "disagreement_score": 0.8647299780127106,
+      "hole_ratio": 0.0,
+      "iou_vs_consensus": 1.0,
+      "mask_area_px": 2604,
+      "mask_bbox": [
+        515,
+        2810,
+        729,
+        2967
+      ],
+      "overlap_with_mutually_exclusive_parts": 0.0,
+      "overlap_with_protected_regions": 0.0
+    }
+  },
+  "overall": "fail",
+  "pipeline_version": "maskfactory 0.0.1",
+  "run_id": "qa_20260713_0730_b67a60",
+  "score": 0.8587051878870733,
+  "vlm_review": {
+    "model": "qwen2.5vl:7b",
+    "verdicts": [
+      {
+        "confidence": 1.0,
+        "correction_instruction": "Remove disconnected fragments outside the main anatomy.",
+        "evidence": "Deterministic topology found 220 components; ontology allows 1.",
+        "label": "right_foot_base",
+        "latency_ms": 56127,
+        "model": "qwen2.5vl:7b",
+        "panel_file": "workhorse_evidence/right_foot_base",
+        "problems": [
+          "other"
+        ],
+        "prompt_version": "p-workhorse-v1-multimage-tools",
+        "verdict": "fail"
+      }
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "sam3_litetext_s0",
+  "status": "inputs_frozen_not_installed_not_qualified",
+  "source": {
+    "repository": "https://github.com/SimonZeng7108/efficientsam3",
+    "commit": "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a"
+  },
+  "checkpoint": {
+    "repository": "vil-uob/sam3-litetext-s0",
+    "repository_revision": "b09766e54f5d2eba021119ec7feff13e74c0f8fc",
+    "filename": "model.safetensors",
+    "sha256": "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906",
+    "size_bytes": 2117074488,
+    "gating": "none",
+    "downloaded": false
+  },
+  "license_review": {
+    "effective_scope": "checkpoint",
+    "checkpoint_decision": "allowed",
+    "checkpoint_source_url": "https://huggingface.co/vil-uob/sam3-litetext-s0/blob/b09766e54f5d2eba021119ec7feff13e74c0f8fc/README.md",
+    "checkpoint_snapshot_sha256": "c9a60d622cd059a45230889d5ca526f39e52eb433dd99e41609b6780c5180d43",
+    "repository_decision": "allowed",
+    "repository_source_url": "https://raw.githubusercontent.com/huggingface/transformers/4626421dc6b741a329300682a6408246ee465490/LICENSE",
+    "repository_snapshot_sha256": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049",
+    "evidence_bundle_sha256": "5c690e11a9dce2d355bc7dbfb3dd48e6a8d38776aaf290275afb1e8b1a37fb58",
+    "reviewed_at": "2026-07-15T04:30:00Z",
+    "content_compatibility": {
+      "adult_nonexplicit": "allowed",
+      "consensual_explicit_adult": "allowed"
+    }
+  },
+  "runtime_candidate": {
+    "package": "transformers",
+    "version": "5.13.1",
+    "source_repository": "https://github.com/huggingface/transformers",
+    "source_commit": "4626421dc6b741a329300682a6408246ee465490",
+    "wheel_sha256": "53f0ea8aa397e29244c2377ba981bcaf0c87adcf44fbdd447ef6306522afcacd",
+    "platform_target": "WSL Ubuntu-22.04 linux-64",
+    "environment_status": "not_created",
+    "environment_path": null,
+    "python": null,
+    "torch": null,
+    "torchvision": null,
+    "cuda": null,
+    "requirements_lock": null
+  },
+  "qualification": {
+    "installation_verified": false,
+    "import_verified": false,
+    "checkpoint_inference_verified": false,
+    "peak_vram_mb": null,
+    "latency_ms": null,
+    "determinism_verified": false,
+    "quality_benchmark": null,
+    "claims_not_made": [
+      "SAM3-LiteText is installed",
+      "SAM3-LiteText runs on this machine",
+      "SAM3-LiteText uses less VRAM than official SAM 3.1",
+      "SAM3-LiteText is non-inferior to official SAM 3.1"
+    ]
+  },
+  "authority": {
+    "role_eligibility": "shadow_only_experiment",
+    "official_reference": "sam3_1",
+    "substitution_forbidden": true,
+    "permitted_use": "frozen_blinded_tournament_after_governed_installation",
+    "forbidden_usages": [
+      "active",
+      "offline_fallback",
+      "oom_fallback",
+      "rollback",
+      "production_authority",
+      "gold_authority",
+      "semantic_authority"
+    ]
+  },
+  "manifest_sha256": "ca0a362329aec9bda933bf88d0ac352eca2022002366de74455c3219c496eede"
+}

@@ -159,12 +159,21 @@ def test_shadow_only_experiment_is_distinct_and_evaluation_only(tmp_path: Path) 
     assert result["provider_states"]["sam3_litetext_s0"] == "installed"
 
 
-@pytest.mark.parametrize("selection_field", ["active", "rollback", "oom_fallback"])
+@pytest.mark.parametrize(
+    ("role", "selection_field"),
+    [
+        ("concept_detector", "active"),
+        ("concept_detector", "rollback"),
+        ("interactive_segmenter", "active"),
+        ("interactive_segmenter", "rollback"),
+        ("interactive_segmenter", "oom_fallback"),
+    ],
+)
 def test_shadow_only_experiment_cannot_substitute_for_official_provider(
-    tmp_path: Path, selection_field: str
+    tmp_path: Path, role: str, selection_field: str
 ) -> None:
     config, registry_path = _shadow_only_experiment_fixture(tmp_path)
-    config["provider_roles"]["interactive_segmenter"][selection_field] = "sam3_litetext_s0"
+    config["provider_roles"][role][selection_field] = "sam3_litetext_s0"
 
     with pytest.raises(ProviderSelectionError, match="shadow-only"):
         validate_provider_selection(
@@ -174,9 +183,10 @@ def test_shadow_only_experiment_cannot_substitute_for_official_provider(
         )
 
 
-def test_shadow_only_experiment_requires_official_provider_first(tmp_path: Path) -> None:
+@pytest.mark.parametrize("role", ["concept_detector", "interactive_segmenter"])
+def test_shadow_only_experiment_requires_official_provider_first(tmp_path: Path, role: str) -> None:
     config, registry_path = _shadow_only_experiment_fixture(tmp_path)
-    config["provider_roles"]["interactive_segmenter"]["challengers"] = [
+    config["provider_roles"][role]["challengers"] = [
         "sam3_litetext_s0",
         "sam3_1",
     ]

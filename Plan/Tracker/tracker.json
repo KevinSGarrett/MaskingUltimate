@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T09:39:26+00:00",
+    "generated_at": "2026-07-15T10:01:51+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -12128,18 +12128,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 60,
+      "percent_complete": 70,
       "notes": [
         {
           "ts": "2026-07-15T04:42:58+00:00",
           "actor": "ai_agent",
           "text": "Runtime/checkpoint installation and lower-memory smoke/benchmark remain unclaimed because the F:-hosted Ubuntu VHD suffered a USB storage incident; qa/live_verification/wsl_external_vhd_storage_incident_20260715.json."
+        },
+        {
+          "ts": "2026-07-15T10:01:51+00:00",
+          "actor": "ai_agent",
+          "text": "Pre-install lock gap closed on Windows without accessing WSL/Docker/CVAT/F:/external VHD. Installation, exact installed dependency lock, checkpoint smoke, VRAM/latency/determinism, and human-anchor quality comparison remain unclaimed pending explicit storage reconnection."
         }
       ],
-      "evidence": "2026-07-15: primary authors' source commit bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a, HF checkpoint revision b09766e54f5d2eba021119ec7feff13e74c0f8fc/model LFS SHA-256 69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906, Transformers 5.13.1 wheel/source and two-layer license evidence are frozen. Registry and role selection now reject active/fallback/rollback use, catalog aliasing, missing/late official sam3_1, and declaration mismatch; focused tests and full suite pass.",
+      "evidence": "2026-07-15: exact source/checkpoint/Transformers candidate inputs are sealed by env/sam3_litetext_s0_runtime.lock.json (canonical SHA-256 ca0a362329aec9bda933bf88d0ac352eca2022002366de74455c3219c496eede) and fail-closed verifier tests. Both concept_detector and interactive_segmenter reject shadow-only active/rollback substitution; interactive also rejects OOM fallback. Dedicated 7/7, provider-plus-lock 29/29, named governance gate 140/140, full suite 1415/1415 exit 0, Ruff/Black/CI YAML pass. qa/live_verification/sam3_litetext_preinstall_lock_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T04:42:58+00:00",
+      "updated_at": "2026-07-15T10:01:51+00:00",
       "orphaned": false
     },
     "MF-P3-08.03": {

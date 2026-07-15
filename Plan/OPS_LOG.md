@@ -5259,3 +5259,24 @@ Verification:                       dedicated 29/29; focused completion/tracker/
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
 Remaining real evidence:            all upstream modernization gates, both real headline demonstrations, D1-D11, G1-G9, and a passing primary-domain bundle
 Evidence:                           `qa/live_verification/modernization_completion_bundle_contract_20260715.json`
+
+## 2026-07-15 10:00 UTC - SAM3-LiteText optional-experiment inputs sealed
+
+**Result:** MF-P3-08.02 advances to 70% complete; exact pre-install inputs and cross-role
+no-substitution behavior are now executable and fail-closed, while installation and the real
+lower-memory/non-inferiority evaluation remain open.
+
+Input lock:                         `env/sam3_litetext_s0_runtime.lock.json`, canonical SHA-256 `ca0a362329aec9bda933bf88d0ac352eca2022002366de74455c3219c496eede`
+Frozen source:                      efficientSAM3 commit `bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a`
+Frozen checkpoint:                  `vil-uob/sam3-litetext-s0@b09766e54f5d2eba021119ec7feff13e74c0f8fc/model.safetensors`, SHA-256 `69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906`
+Frozen runtime candidate:           Transformers 5.13.1 source commit `4626421dc6b741a329300682a6408246ee465490`, wheel SHA-256 `53f0ea8aa397e29244c2377ba981bcaf0c87adcf44fbdd447ef6306522afcacd`
+Honesty boundary:                   environment path, Python/Torch/Torchvision/CUDA versions, transitive requirements, import/inference, VRAM, latency, determinism, and quality remain explicitly null/unverified
+Authority boundary:                 shadow-only experiment beside official `sam3_1`; active, fallback, rollback, production, semantic, mask, and gold authority are forbidden
+Role coverage:                      concept-detector and interactive-segmenter tests reject silent substitution, catalog aliasing, missing/late official SAM 3.1, and declaration mismatch
+Adult content lanes:                `adult_nonexplicit` and `consensual_explicit_adult` remain allowed for this governed experiment
+CI coverage:                        the named registry-governance gate now includes the seven-case exact-lock/overclaim suite
+Verification:                       dedicated 7/7; provider-plus-lock 29/29; governance/promotion 140/140; complete repository 1,415/1,415 with exit 0; repository Ruff, targeted Black, CI YAML, and diff checks pass
+Evidence hygiene:                   an earlier detached full-suite console was excluded because its exit code could not be recovered; only retained session 60369 is counted
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, Seagate source path, or external-drive file was accessed
+Remaining work:                     governed install, exact installed environment lock, checkpoint smoke, and frozen human-anchor VRAM/latency/determinism/quality comparison after Kevin confirms storage recovery
+Evidence:                           `qa/live_verification/sam3_litetext_preinstall_lock_20260715.json`

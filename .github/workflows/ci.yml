@@ -58,6 +58,7 @@ jobs:
           tests/test_model_registry.py
           tests/test_external_probe.py
           tests/test_provider_contracts.py
+          tests/test_sam3_litetext_runtime_lock.py
           tests/test_custom_segmenter_promotion_policy.py
           tests/test_custom_segmenter_promotion_transaction.py
           tests/test_specialist_benchmark_policy.py

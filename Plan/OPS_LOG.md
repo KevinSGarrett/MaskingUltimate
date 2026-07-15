@@ -5521,3 +5521,18 @@ SAM3.1 boundary:                   assistance remains pending MF-P0-17.04 gated 
 Verification:                       49 focused CVAT/doctor/provider/runtime tests and all 1,591 repository tests pass; Ruff, Black, and diff check pass; live verifier passed before and after rollback
 Mutation boundary:                 no production annotations, task status, gold, provider role, database content, or volume contents were intentionally changed; only isolated target server/annotation containers were recreated
 Evidence:                           `qa/live_verification/cvat_parallel_assistance_recovery_bundle_20260715.json`
+
+## 2026-07-15 15:46 UTC - WSL, Docker, CUDA, and doctor recovery reconfirmed
+
+**Result:** The prior external-VHD sharing/I/O incident is no longer present. Direct Ubuntu,
+Docker Desktop's WSL backend, the registered F: VHD, CUDA, both CVAT versions, and all model
+smokes are healthy. No restart, elevation, UAC action, or VHD mutation was performed.
+
+WSL:                               Ubuntu-22.04 Running on WSL2 as kevin (uid 1000), kernel 6.18.33.2; `/home/kevin` resolves normally
+Backing store:                     registered `F:\MaskFactory_Offload_20260714\WSL\Ubuntu-22.04\ext4.vhdx` is readable; Windows-to-WSL round trip passes
+Docker/CVAT:                       Docker client/server 29.4.3; production CVAT 2.24.0 and all 18 isolated CVAT 2.69 services answer normally
+CUDA:                              RTX 5060 Laptop GPU; driver 592.01; Torch 2.11.0+cu128; CUDA 12.8; available=true; capability 12.0
+Cold-start observation:            the first doctor CUDA subprocess timed out at 30 seconds, but a standalone identical probe then passed in 1.917 seconds
+Repeat doctor:                     PASS=11 WARN=1 SKIP=0 FAIL=0; all 14 registered model smoke hashes match; CVAT, SAM2, Ollama image, PNG, SQLite, and gpu-lock checks pass
+Only warning:                      130.9 GiB free is below the 150 GiB junction-planning threshold but above the 75 GiB ingest-block threshold
+Evidence:                          `qa/live_verification/wsl_docker_recovery_confirmation_20260715.json`

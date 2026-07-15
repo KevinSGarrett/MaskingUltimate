@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T15:36:19+00:00",
+    "generated_at": "2026-07-15T15:46:40+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -1450,12 +1450,17 @@
           "ts": "2026-07-13T01:23:03+00:00",
           "actor": "ai_agent",
           "text": "Restored-machine doctor now reports PASS=10 WARN=1 FAIL=0 after repairing Nuclio storage-reader state, warming the local Qwen image model, and reclaiming disk from 20.2 to 85.9 GiB without deleting governed data. The sole WARN is the specified <150 GiB junction-move threshold; the <75 GiB ingest block is cleared."
+        },
+        {
+          "ts": "2026-07-15T15:46:38+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 recovery confirmation after the external-VHD/Docker incident: direct Ubuntu-22.04 and F: VHD readability pass; identical standalone CUDA probe passes in 1.917s after one cold-start timeout; repeat live doctor PASS=11 WARN=1 SKIP=0 FAIL=0 with 14/14 registered model smokes. Sole warning is 130.9 GiB free, above the 75 GiB ingest block. Evidence: qa/live_verification/wsl_docker_recovery_confirmation_20260715.json"
         }
       ],
       "evidence": "qa/live_verification/restored_machine_doctor_20260713.json and qa/reports/cvat_sam2_smoke.json; full WSL suite passes and Ruff check/format are clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:23:03+00:00",
+      "updated_at": "2026-07-15T15:46:38+00:00",
       "orphaned": false
     },
     "MF-P0-08.01": {
@@ -1688,12 +1693,17 @@
           "ts": "2026-07-15T10:56:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 evidence refresh: current runtime matrix manifest is 5562d24c... after the EoMT training-contract lock update; repository-only verification passed and no doctor/runtime observation was rerun. Expanded exit remains open for the two Meta checkpoint gates and downstream qualification."
+        },
+        {
+          "ts": "2026-07-15T15:46:39+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15 live recovery refresh: Ubuntu/Docker/F: VHD/CUDA are healthy and repeat doctor is PASS=11 WARN=1 FAIL=0; the warning is disk planning only at 130.9 GiB and ingest is not blocked. P0 exit remains 90% solely for the existing SAM 3.1/SAM 3D Body checkpoint qualification gates, not machine health. Evidence: qa/live_verification/wsl_docker_recovery_confirmation_20260715.json"
         }
       ],
       "evidence": "Commits through 3a9b361 on codex/autonomous-gold-modernization; pre-commit hooks clean; full repository suite 1,486/1,486; Ruff clean; provider runtime matrix 5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0 with refreshed qa/live_verification/provider_runtime_matrix_20260715.json. Historical live doctor observation at 2026-07-15T02:08:54Z was PASS=11 WARN=0 SKIP=0 FAIL=0 with 14/14 exact model smokes. Remaining expanded P0 boundary is SAM 3.1 and SAM 3D Body checkpoint access/live qualification plus dependent currency gates.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-15T10:56:07+00:00",
+      "updated_at": "2026-07-15T15:46:39+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {

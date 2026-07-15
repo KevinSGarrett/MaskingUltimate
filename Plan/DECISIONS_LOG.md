@@ -337,6 +337,31 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Freeze the provider-neutral Mode A/Mode B workflow performance contract
+
+**Item(s) affected:** MF-P6-02.05, MF-P6-05.07, MF-P6-06.08, MF-P6-EXIT
+
+**Decision:** Freeze `serving_workflow_performance_v1` before any eligible champion result. A
+complete report must cover Mode B predict and refine plus dependency-light, read-only Mode A package
+execution on separate governed unseen single-person and 2-4-person sources. It must bind actual source,
+governance, provider, checkpoint, runtime, benchmark-certificate, provenance, output, and package
+artifacts; enforce the existing 60/4/2/1.2-second Mode B limits; record Mode A latency without inventing
+an unapproved threshold; measure VRAM, OOMs, crashes, and exact repeat determinism; and prove distinct
+transactional rollback and restoration for body-part, hand, clothing, and interactive roles.
+
+**Why:** The existing MF-P6-02.05 benchmark measures Mode B latency but cannot prove the broader
+MF-P6-06.08 requirement. Allowing results before source scope, Mode A immutability, multi-person
+coverage, provenance, artifact identity, failure accounting, and role rollback are frozen would permit
+selective or irreproducible evidence. The new verifier refuses partial cases, stale artifacts, duplicate
+sources, latency overruns, nondeterminism, package mutation, Mode A model loads/writes, OOM/crash
+events, same-provider rollback, incomplete lifecycle round trips, or altered frozen artifacts.
+
+No live performance claim is made by freezing this policy. A passing real report still requires trained
+promoted champions, distinct benchmarked rollback providers, eligible single/multi-person packages,
+and governed unseen source images.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Install SAM3-LiteText S0 as a shadow-only optional experiment
 
 **Item(s) affected:** MF-P3-08.02, MF-P0-17.13, concept-detector and

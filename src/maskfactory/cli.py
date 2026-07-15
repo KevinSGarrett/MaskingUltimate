@@ -2983,6 +2983,39 @@ def benchmark_serving(
         raise click.ClickException("one or more MF-P6-02.05 latency targets failed")
 
 
+@main.command("verify-serving-workflows")
+@click.argument("report", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("qa/governance/serving_workflow_performance_v1.json"),
+    show_default=True,
+)
+@click.option(
+    "--artifact-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("."),
+    show_default=True,
+)
+def verify_serving_workflows(report: Path, policy: Path, artifact_root: Path) -> None:
+    """Verify complete MF-P6-06.08 Mode A/Mode B and rollback evidence."""
+    from .serve.workflow_performance import (
+        WorkflowPerformanceError,
+        verify_workflow_performance_report,
+    )
+
+    try:
+        document = json.loads(report.read_text(encoding="utf-8"))
+        result = verify_workflow_performance_report(
+            document,
+            policy_path=policy,
+            artifact_root=artifact_root,
+        )
+    except (OSError, json.JSONDecodeError, WorkflowPerformanceError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
+
+
 # --- environment / model management (P0) ---
 @main.command()
 def doctor() -> None:

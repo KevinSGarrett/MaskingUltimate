@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T16:45:59+00:00",
+    "generated_at": "2026-07-15T17:14:43+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -7975,12 +7975,17 @@
           "ts": "2026-07-13T01:23:05+00:00",
           "actor": "ai_agent",
           "text": "Literal Ubuntu loopback serving and /health+/models are now verified by qa/live_verification/wsl_localhost_serving_20260713.json. Only champion-backed /predict latency remains unavailable."
+        },
+        {
+          "ts": "2026-07-15T17:14:14+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: the frozen MF-P6-06.08 contract now reuses and enforces the exact 60/4/2/1.2-second limits for both governed single- and multi-person inputs, with minimum sample floors and raw artifact bindings. Existing live SAM2 refine evidence remains valid; champion-backed /predict measurements remain open."
         }
       ],
-      "evidence": "Live audit qa/live_verification/serve_refine_cuda_20260712.json: SAM2 cold load+embedding 7.979531s <=60s cold target and warm multipart click 0.058920s <=1.2s refine target, HTTP 200 strict mask. All-label <=4s and single-label <=2s /predict remain unmeasured without trained champion roles.",
+      "evidence": "qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json plus historical qa/live_verification/serve_refine_cuda_20260712.json. Policy/test enforcement passes; real all-label and single-label champion /predict measurements remain unclaimed.",
       "blocked_reason": "NEEDS KEVIN: /refine warm latency and the WSL serving boundary pass, but /predict latency targets require real trained champion_bodypart/champion_hand/champion_clothing roles from P5.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-13T01:23:05+00:00",
+      "updated_at": "2026-07-15T17:14:14+00:00",
       "orphaned": false
     },
     "MF-P6-02.06": {
@@ -13835,11 +13840,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "notes": [
+        {
+          "ts": "2026-07-15T17:14:16+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: the future v2 rerun must now satisfy serving_workflow_performance_v1, including champion/ontology/runtime/input/output/provenance/latency/VRAM/determinism and rollback identity. No v2 run is claimed; the activated v2 champion and eligible reviewed v2 package remain prerequisites."
+        }
+      ],
+      "evidence": "qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json proves the pre-result evidence contract only; live v2 measurements remain absent.",
       "blocked_reason": "Live ontology-v2 Mode A/Mode B latency/residency evidence requires an activated v2 champion and reviewed v2 package.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:53:46+00:00",
+      "updated_at": "2026-07-15T17:14:16+00:00",
       "orphaned": false
     },
     "MF-P6-06.01": {
@@ -14013,13 +14024,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-15T17:14:13+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: froze and implemented the complete pre-result provider-neutral workflow contract before eligible champion results. It requires six live Mode A/Mode B single/multi-person cases, actual source/governance/provider/checkpoint/runtime/certificate/provenance/output/package bindings, existing latency gates, finite Mode A timing, VRAM/OOM/crash/determinism evidence, package-tree immutability, and four distinct transactional role rollbacks. Real champion/source/package execution remains unclaimed."
+        }
+      ],
+      "evidence": "qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json; policy canonical SHA-256 0bd10772a72672f0f55df7a9148892f4ae8437dbb80740d8dd4436b3a46468c9; 13 dedicated, 62 focused serving/ComfyUI, and 1606 full repository tests pass. No live result, D8, or completion claim.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:40:28+00:00",
+      "updated_at": "2026-07-15T17:14:13+00:00",
       "orphaned": false
     },
     "MF-P7-06.01": {
@@ -14187,12 +14204,17 @@
           "ts": "2026-07-15T16:45:53+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: rotated the currency-review signer without weakening verification, preserved the retired public key and immutable predecessor chain, and issued current review 25e86920da0e4f72914e73b0. Signature/current-input verification passes; status honestly remains FAIL on missing role certificates and distinct tested rollback providers."
+        },
+        {
+          "ts": "2026-07-15T17:14:16+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: refreshed the signed review after freezing the provider-neutral workflow policy. Review b83bb5c7a27da05ea5d71aa0 is Ed25519-valid, current-input bound, chains review 25e86920da0e4f72914e73b0, and honestly remains FAIL on the same missing role certificates and distinct tested rollback providers."
         }
       ],
-      "evidence": "qa/governance/currency/current_review.json review_id 25e86920da0e4f72914e73b0, review SHA-256 0ed66af07673b071ba7c447835ef551fd287a7100de1cf5a5d7ef464fe23cf24; configs/governance/currency_review_key_history.json; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
+      "evidence": "qa/governance/currency/current_review.json review_id b83bb5c7a27da05ea5d71aa0, review SHA-256 801551be8ce7c5cc6e25c9fa1a4b7758d2803f0cac670659e2901c52bc5f29f9; immutable active-signer chain under qa/governance/currency/reviews/; signature/current inputs pass; full repository 1606/1606.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T16:45:53+00:00",
+      "updated_at": "2026-07-15T17:14:16+00:00",
       "orphaned": false
     },
     "MF-P7-07.02": {
@@ -14270,12 +14292,17 @@
           "ts": "2026-07-15T16:45:53+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: historical and active currency signatures now verify across explicit signer rotation; registry/runtime source drift failed closed and both frozen policies were administratively rebound before any eligible result. Strict require-pass remains correctly withheld pending MF-P7-07.01 evidence."
+        },
+        {
+          "ts": "2026-07-15T17:14:16+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: CI/current-input evidence refreshed to signed review b83bb5c7a27da05ea5d71aa0 after the new governance decision. The active signer chain now verifies generically from first through latest review. Strict review-pass remains withheld pending real role certificates and distinct tested rollbacks."
         }
       ],
-      "evidence": "configs/governance/currency_review_key_history.json; archived reviews e89fa70126325b6ac1f86652 and cebf6935cb7d8467eb7da630; current review 25e86920da0e4f72914e73b0; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
+      "evidence": "configs/governance/currency_review_key_history.json; qa/governance/currency/current_review.json; archived review 25e86920da0e4f72914e73b0; 47 focused currency/workflow and 1606 full repository tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T16:45:53+00:00",
+      "updated_at": "2026-07-15T17:14:16+00:00",
       "orphaned": false
     },
     "MF-P7-07.04": {

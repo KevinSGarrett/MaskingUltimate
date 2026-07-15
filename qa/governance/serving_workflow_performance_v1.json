@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "serving_workflow_performance_v1",
+  "frozen_at": "2026-07-15T16:55:27.565706Z",
+  "item_ids": ["MF-P6-02.05", "MF-P6-05.07", "MF-P6-06.08", "MF-P6-EXIT"],
+  "source_scopes": {
+    "single_person": {"minimum_people": 1, "maximum_people": 1},
+    "multi_person": {"minimum_people": 2, "maximum_people": 4}
+  },
+  "source_requirements": {
+    "governance_decision_required": true,
+    "image_disjoint_from_training_calibration_and_tuning": true,
+    "unseen_before_measurement": true,
+    "private_source_path_may_be_outside_git": true
+  },
+  "cases": [
+    {
+      "case_id": "mode_b_predict_single",
+      "mode": "mode_b",
+      "operation": "predict",
+      "source_scope": "single_person",
+      "required_provider_roles": ["champion_bodypart", "champion_hand", "champion_clothing"],
+      "required_latency_checks": {
+        "cold_start": {"minimum_samples": 1, "maximum_seconds": 60.0},
+        "predict_all_warm": {"minimum_samples": 3, "maximum_seconds": 4.0},
+        "predict_single_warm": {"minimum_samples": 3, "maximum_seconds": 2.0}
+      }
+    },
+    {
+      "case_id": "mode_b_predict_multi",
+      "mode": "mode_b",
+      "operation": "predict",
+      "source_scope": "multi_person",
+      "required_provider_roles": ["champion_bodypart", "champion_hand", "champion_clothing"],
+      "required_latency_checks": {
+        "cold_start": {"minimum_samples": 1, "maximum_seconds": 60.0},
+        "predict_all_warm": {"minimum_samples": 3, "maximum_seconds": 4.0},
+        "predict_single_warm": {"minimum_samples": 3, "maximum_seconds": 2.0}
+      }
+    },
+    {
+      "case_id": "mode_b_refine_single",
+      "mode": "mode_b",
+      "operation": "refine",
+      "source_scope": "single_person",
+      "required_provider_roles": ["interactive_segmenter"],
+      "required_latency_checks": {
+        "cold_start": {"minimum_samples": 1, "maximum_seconds": 60.0},
+        "refine_per_click": {"minimum_samples": 3, "maximum_seconds": 1.2}
+      }
+    },
+    {
+      "case_id": "mode_b_refine_multi",
+      "mode": "mode_b",
+      "operation": "refine",
+      "source_scope": "multi_person",
+      "required_provider_roles": ["interactive_segmenter"],
+      "required_latency_checks": {
+        "cold_start": {"minimum_samples": 1, "maximum_seconds": 60.0},
+        "refine_per_click": {"minimum_samples": 3, "maximum_seconds": 1.2}
+      }
+    },
+    {
+      "case_id": "mode_a_package_single",
+      "mode": "mode_a",
+      "operation": "package_read",
+      "source_scope": "single_person",
+      "required_provider_roles": [],
+      "required_latency_checks": {
+        "package_cold": {"minimum_samples": 1, "maximum_seconds": null},
+        "package_warm": {"minimum_samples": 3, "maximum_seconds": null}
+      }
+    },
+    {
+      "case_id": "mode_a_package_multi",
+      "mode": "mode_a",
+      "operation": "package_read",
+      "source_scope": "multi_person",
+      "required_provider_roles": [],
+      "required_latency_checks": {
+        "package_cold": {"minimum_samples": 1, "maximum_seconds": null},
+        "package_warm": {"minimum_samples": 3, "maximum_seconds": null}
+      }
+    }
+  ],
+  "mode_a_requirements": {
+    "eligible_truth_tiers": ["human_anchor_gold", "autonomous_certified_gold"],
+    "package_tree_unchanged": true,
+    "maximum_model_load_count": 0,
+    "maximum_write_attempt_count": 0
+  },
+  "common_requirements": {
+    "minimum_deterministic_repetitions": 2,
+    "maximum_oom_count": 0,
+    "maximum_crash_count": 0,
+    "strict_output_required": true,
+    "complete_provenance_required": true,
+    "vram_measurement_required": true
+  },
+  "rollback_roles": [
+    "champion_bodypart",
+    "champion_hand",
+    "champion_clothing",
+    "interactive_segmenter"
+  ],
+  "rollback_requirements": {
+    "active_and_rollback_provider_must_differ": true,
+    "allowed_lifecycle_states": ["benchmarked", "promoted"],
+    "rollback_smoke_required": true,
+    "restored_smoke_required": true,
+    "selection_and_lifecycle_round_trip_required": true,
+    "frozen_artifacts_must_remain_unchanged": true
+  },
+  "source_hashes": {
+    "configs/pipeline.yaml": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
+    "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+    "configs/external_sources.yaml": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
+    "src/maskfactory/serve/api.py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
+    "src/maskfactory/serve/providers.py": "7d8fabe68d3b1eaea3b27df1777ef221bef99299da9cffa2cf644fb59d8764cd",
+    "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
+    "src/maskfactory/packager.py": "5ba72189f3d0b08777033da965caa77c1a38dca85809d16b04a2f03a245f11b4",
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_inpaint_gold_hand.json": "81c2a3b809835bfa821f5775bd266644022b1f249ef3c3dac3a4563d52498cc1",
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_live_predict_inpaint.json": "8202244036cdc2d90ba744ebe1a8130a194224f995f6b0173724fa7ee87646cc",
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_multi_instance_p1.json": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418"
+  },
+  "authority": "pre_result_measurement_policy_only_no_serving_training_mask_truth_gold_promotion_or_completion_authority",
+  "sha256": "0bd10772a72672f0f55df7a9148892f4ae8437dbb80740d8dd4436b3a46468c9"
+}

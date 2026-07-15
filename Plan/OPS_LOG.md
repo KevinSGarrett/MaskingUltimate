@@ -5556,3 +5556,22 @@ Verification:                      94 focused runtime/governance, 63 affected fr
 Claims withheld:                   no lower-memory, quality-noninferiority, human-anchor win, official substitution, or completion claim is made
 Remaining work:                    Kevin must accept the official SAM3.1 terms; then live-qualify it and run the frozen image-disjoint human-anchor memory/quality comparison
 Evidence:                          `qa/live_verification/sam3_litetext_installation_bundle_20260715.json`
+
+## 2026-07-15 17:13 UTC - Provider-neutral Mode A/Mode B evidence contract frozen
+
+**Result:** MF-P6-06.08 advances from open to 70%; the complete pre-result execution
+contract is implemented and enforced, while real champion-backed workflow results remain open.
+
+Source cohorts:                    exactly one governed, image-disjoint, previously unseen single-person source and one governed 2-4-person source; source and governance-decision files are hash-verified
+Required cases:                    Mode B predict/refine on both source scopes plus read-only Mode A package execution on eligible single/multi-person packages
+Mode B thresholds:                 cold <=60 s, all-label warm <=4 s, single-label warm <=2 s, refine/click <=1.2 s; sample floors are enforced
+Mode A boundary:                   latency is measured without inventing an unapproved threshold; model loads, package writes, and package-tree drift are forbidden
+Common evidence:                   actual provider/checkpoint/runtime/certificate, provenance, output, package, pipeline, VRAM, OOM/crash, and exact deterministic-repeat identities are mandatory
+Rollback:                          distinct benchmarked/promoted providers, changed selection, rollback smoke, restored selection/lifecycle, restored smoke, and unchanged frozen artifacts are required for body-part, hand, clothing, and interactive roles
+Fail-closed coverage:              missing/duplicate cases or sources, stale artifacts, latency failure, nondeterminism, OOM/crash, Mode A mutation/model load/write, incomplete providers, same-provider rollback, and failed restoration are rejected
+CLI:                               `maskfactory verify-serving-workflows <report> --artifact-root <root>` recomputes every binding and the canonical report seal
+Verification:                      13 dedicated; 62 focused serving/ComfyUI; complete repository 1,606/1,606; targeted Ruff and Black pass
+Currency review:                   current review `b83bb5c7a27da05ea5d71aa0` is signature/current-input valid and chains the prior active-key review; it honestly remains FAIL on missing real role certificates and distinct tested rollbacks
+Authority boundary:                pre-result contract only; no real performance, champion, serving, package, mask, truth, gold, promotion, D8, blocker-clearance, phase-exit, or completion claim
+Remaining work:                    trained promoted champions, distinct benchmarked rollback providers, governed unseen single/multi sources, eligible packages, six live executions, and four live rollback rehearsals
+Evidence:                          `qa/live_verification/provider_neutral_workflow_performance_contract_20260715.json`

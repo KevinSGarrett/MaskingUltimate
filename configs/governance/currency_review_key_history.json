@@ -16,7 +16,9 @@
       "rotated_at": "2026-07-15T16:20:00Z",
       "private_key_location": "outside_repository_under_kevin_profile",
       "first_review_id": "cebf6935cb7d8467eb7da630",
-      "first_review_sha256": "68fa57f2717d261a595a5334757c5ba0132c82f1b729a707108af1eeeb93edb2"
+      "first_review_sha256": "68fa57f2717d261a595a5334757c5ba0132c82f1b729a707108af1eeeb93edb2",
+      "latest_review_id": "b83bb5c7a27da05ea5d71aa0",
+      "latest_review_sha256": "801551be8ce7c5cc6e25c9fa1a4b7758d2803f0cac670659e2901c52bc5f29f9"
     }
   ]
 }

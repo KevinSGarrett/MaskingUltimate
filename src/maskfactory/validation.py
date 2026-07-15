@@ -66,6 +66,8 @@ SCHEMA_NAMES = frozenset(
         "custom_segmenter_benchmark_margins",
         "serving_provenance",
         "serving_route",
+        "serving_workflow_performance_policy",
+        "serving_workflow_performance_report",
         "specialist_benchmark_margins",
         "specialist_evidence_package",
     }

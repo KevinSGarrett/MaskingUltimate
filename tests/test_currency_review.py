@@ -475,9 +475,6 @@ def test_live_signer_rotation_preserves_current_and_predecessor_signatures() -> 
             encoding="utf-8"
         )
     )
-    current = json.loads(
-        Path("qa/governance/currency/current_review.json").read_text(encoding="utf-8")
-    )
     first_active = json.loads(
         Path(f"qa/governance/currency/reviews/{active['first_review_id']}.json").read_text(
             encoding="utf-8"
@@ -489,11 +486,33 @@ def test_live_signer_rotation_preserves_current_and_predecessor_signatures() -> 
     first_active_result = verify_currency_review_signature(
         first_active, public_key_path=Path(active["public_key_path"])
     )
-    current_result = verify_currency_review_signature(
-        current, public_key_path=Path(active["public_key_path"])
-    )
     assert predecessor_result["review_sha256"] == retired["last_review_sha256"]
     assert first_active_result["review_sha256"] == active["first_review_sha256"]
     assert first_active["previous_review_sha256"] == predecessor_result["review_sha256"]
-    assert current["previous_review_sha256"] == first_active_result["review_sha256"]
-    assert current_result["signer_public_key_sha256"] == history["active_signer_public_key_sha256"]
+
+    active_documents = [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in Path("qa/governance/currency/reviews").glob("*.json")
+    ]
+    active_documents.append(
+        json.loads(Path("qa/governance/currency/current_review.json").read_text(encoding="utf-8"))
+    )
+    active_documents = [
+        review
+        for review in active_documents
+        if review["signer_public_key_sha256"] == history["active_signer_public_key_sha256"]
+    ]
+    by_predecessor = {}
+    for review in active_documents:
+        verify_currency_review_signature(review, public_key_path=Path(active["public_key_path"]))
+        predecessor_sha = review.get("previous_review_sha256")
+        if predecessor_sha in by_predecessor:
+            raise AssertionError("active currency review chain forked")
+        by_predecessor[predecessor_sha] = review
+
+    chain = [first_active]
+    while chain[-1]["review_sha256"] != active["latest_review_sha256"]:
+        chain.append(by_predecessor[chain[-1]["review_sha256"]])
+    assert len(chain) == len(active_documents)
+    assert chain[-1]["review_id"] == active["latest_review_id"]
+    assert chain[-1]["review_sha256"] == active["latest_review_sha256"]

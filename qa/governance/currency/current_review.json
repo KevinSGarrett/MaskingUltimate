@@ -128,12 +128,12 @@
     }
   ],
   "event": "scheduled_90_day",
-  "expires_at": "2026-10-13T16:34:21.044342Z",
+  "expires_at": "2026-10-13T17:06:04.173525Z",
   "global_findings": [],
   "input_hashes": {
     "dependencies": {
       "conda_environment": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5",
-      "governance_decisions": "b95cbe1c2054810b3cf548d70d539da53c8a12350dfb50afcd536a0a69a9ad84",
+      "governance_decisions": "a35838ad1218b59308091e2aacdcdf2ac8f212055cf8b4bb89ff6fa545d173ee",
       "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
       "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
     },
@@ -142,14 +142,14 @@
     "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
     "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
   },
-  "payload_sha256": "27d8e8ee8e4b47f94fa5edfed66e4f506f33c648bbf97526273ba82ce0e8b350",
-  "previous_review_sha256": "68fa57f2717d261a595a5334757c5ba0132c82f1b729a707108af1eeeb93edb2",
-  "review_id": "25e86920da0e4f72914e73b0",
-  "review_sha256": "0ed66af07673b071ba7c447835ef551fd287a7100de1cf5a5d7ef464fe23cf24",
-  "reviewed_at": "2026-07-15T16:34:21.044342Z",
+  "payload_sha256": "30fbb8d7818023810082e4c617ba7e7745fd6b14169d192f575a2f6f47369dcb",
+  "previous_review_sha256": "0ed66af07673b071ba7c447835ef551fd287a7100de1cf5a5d7ef464fe23cf24",
+  "review_id": "b83bb5c7a27da05ea5d71aa0",
+  "review_sha256": "801551be8ce7c5cc6e25c9fa1a4b7758d2803f0cac670659e2901c52bc5f29f9",
+  "reviewed_at": "2026-07-15T17:06:04.173525Z",
   "reviewer": "ai_agent",
   "schema_version": "1.0.0",
-  "signature": "YKnhB+m5Y/TuzgxWbwEWCuiiwL4AZxmbm6E2LXMq1vWFsn7NpQgMHgVhZk1xXZUZ9uakmxc7LCmBWNxmjszEBw==",
+  "signature": "Yi4Gce3DL19CFYq6oCG7Br6PrV6TnKhrcK3dTKuZEFG5UIurvN3IypHVj5UBjjrLdn5sOFWHvKBnDGSDXCf6Dw==",
   "signature_algorithm": "ed25519",
   "signer_public_key_sha256": "5892e5151e01dc1264ad1dab8009f4d746568828a417e4b2f34835f03eb84512",
   "status": "fail"

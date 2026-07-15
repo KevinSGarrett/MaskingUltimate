@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/custom_segmenter_champion_transaction.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "action",
+    "transaction_kind",
+    "transaction_id",
+    "recorded_at",
+    "candidate_key",
+    "candidate_previous_role",
+    "candidate_previous_lifecycle_state",
+    "incumbent_key",
+    "incumbent_previous_role",
+    "incumbent_previous_lifecycle_state",
+    "champion_role",
+    "matrix_role",
+    "matrix_certificate_id",
+    "matrix_certificate_sha256",
+    "custom_segmenter_certificate_sha256",
+    "benchmark_results_sha256",
+    "candidate_checkpoint_sha256",
+    "incumbent_checkpoint_sha256",
+    "registry_before_sha256",
+    "registry_after_sha256",
+    "serving_smoke",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "3.0.0"},
+    "action": {"const": "promote"},
+    "transaction_kind": {"const": "custom_segmenter_champion"},
+    "transaction_id": {"$ref": "#/$defs/transaction_id"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "candidate_key": {"type": "string", "minLength": 1},
+    "candidate_previous_role": {"type": "string", "minLength": 1, "not": {"const": "champion_bodypart"}},
+    "candidate_previous_lifecycle_state": {"const": "benchmarked"},
+    "incumbent_key": {"type": "string", "minLength": 1},
+    "incumbent_previous_role": {"const": "champion_bodypart"},
+    "incumbent_previous_lifecycle_state": {"const": "promoted"},
+    "champion_role": {"const": "champion_bodypart"},
+    "matrix_role": {"const": "custom_segmenter"},
+    "matrix_certificate_id": {"type": "string", "pattern": "^[a-f0-9]{24}$"},
+    "matrix_certificate_sha256": {"$ref": "#/$defs/sha256"},
+    "custom_segmenter_certificate_sha256": {"$ref": "#/$defs/sha256"},
+    "benchmark_results_sha256": {"$ref": "#/$defs/sha256"},
+    "candidate_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "incumbent_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "registry_before_sha256": {"$ref": "#/$defs/sha256"},
+    "registry_after_sha256": {"$ref": "#/$defs/sha256"},
+    "serving_smoke": {"$ref": "#/$defs/smoke"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "transaction_id": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+    "smoke": {
+      "type": "object",
+      "required": ["result", "role", "model_key"],
+      "properties": {
+        "result": {"const": "pass"},
+        "role": {"const": "champion_bodypart"},
+        "model_key": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

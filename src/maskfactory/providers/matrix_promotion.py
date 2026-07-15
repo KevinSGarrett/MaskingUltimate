@@ -439,6 +439,9 @@ def load_and_verify_matrix_promotion_bundle(bundle_root: Path) -> dict[str, Any]
         "certificate": certificate,
         "summary": summary,
         "specialist_packets": specialist_packets,
+        "custom_segmenter_certificate": custom_certificate,
+        "custom_segmenter_expected_identity_hashes": custom_identities,
+        "role_matrix_bindings": role_bindings,
         "bundle_root": str(root),
     }
 

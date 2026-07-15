@@ -5648,3 +5648,25 @@ Adult-content boundary:            governed adult/NSFW inputs remain eligible; n
 Authority withheld:                no real human-anchor result, winner, signed production promotion bundle, registry mutation, serving change, mask, truth, or gold authority is claimed
 Remaining work:                    real role-specific results and winner; production-event signed aggregate certificate; observed live promotion/rollback; aggregate matrix binding for the custom body-part mutation and interactive-SAM rollback path
 Evidence:                          `qa/live_verification/specialist_champion_transaction_contract_20260715.json`
+
+## 2026-07-15 19:21 UTC - Custom body-part mutation bound to aggregate matrix certificate
+
+**Result:** MF-P2-11.15 advances to 90%; every implemented model champion mutation
+(`champion_bodypart`, `champion_hand`, and `champion_clothing`) now consumes the current
+signed aggregate ten-role matrix prerequisite. MF-P5-10.11 remains honestly 90% because no
+real winner promotion/rollback event exists.
+
+Removed bypass:                    `promote-custom-segmenter` no longer accepts a standalone role certificate plus identity JSON; `--matrix-bundle` is mandatory
+Locked verification:               complete bundle, Ed25519 signature, recomputed report/observations/manifest, nine specialist packets, custom certificate/identities, and ten unique role/cell bindings are reverified inside the registry lock
+Custom binding:                    exact custom candidate, displaced incumbent, custom certificate hash, pipeline-context mode, and null provider-artifact binding must match the signed certificate
+Promotion history:                 v3 schema binds matrix certificate ID/hash, custom certificate, benchmark result, both checkpoints, before/after registries, and passing production smoke
+Rollback history:                  v3 schema binds the exact promotion transaction hash and matrix certificate; tampering, replay, ambiguity, role/lifecycle drift, registry drift, and failed restoration smoke fail closed
+Real bundle integration:           a generated dedicated-key Ed25519 ten-role bundle is loaded, fully recomputed, and used to drive the custom transaction in regression coverage
+Concurrency:                       two simultaneous custom promotions serialize to exactly one registry change and one history row
+Retraining policy:                 administrative pre-result source rebind only, canonical `9cfbae43...`; rules, thresholds, authority, and results unchanged
+Currency review:                   archived `1cb8f3fc9c0d2725870beb2a`; current signed review `422bb732e8738a6038124ce1` verifies against current inputs and honestly remains FAIL on missing real role certificates and distinct tested rollback providers
+Verification:                      11 custom transaction tests; 58 focused matrix/registry/schema/retraining tests; complete repository 1,634/1,634; pre-commit Ruff/Black/schema hooks pass
+Production safety:                 `models/model_registry.json` was not modified; no role, lifecycle, serving route, mask, truth tier, or gold authority changed
+Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Remaining work:                    real image-disjoint human-anchor matrix results, measured winners, production-event certificate, observed live promotions/rollbacks, and the distinct interactive-SAM rollback path
+Evidence:                          `qa/live_verification/custom_segmenter_matrix_bound_transaction_20260715.json`

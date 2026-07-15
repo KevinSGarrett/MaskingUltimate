@@ -16,7 +16,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY = PROJECT_ROOT / "qa/governance/retraining/retraining_compatibility_v1.json"
-POLICY_SHA256 = "5650b8f2e5b523032b37da98ac10cf0741ce5fe7dd99d7ce356042726ddc290c"
+POLICY_SHA256 = "9cfbae43775719fcd8c4ef112890d92b5afe8d186660caedf1a8d673d1e653c1"
 
 EVIDENCE_CATEGORIES = (
     "human_anchor_holdout",

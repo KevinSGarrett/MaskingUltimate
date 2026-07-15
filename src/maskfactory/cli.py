@@ -3268,17 +3268,10 @@ def models_champions(registry_path: Path, history_path: Path) -> None:
 @models.command("promote-custom-segmenter")
 @click.argument("candidate_key")
 @click.option(
-    "--certificate",
-    "certificate_path",
-    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    "--matrix-bundle",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
     required=True,
-)
-@click.option(
-    "--identity-hashes",
-    "identity_path",
-    type=click.Path(path_type=Path, dir_okay=False, exists=True),
-    required=True,
-    help="Current 12-hash identity document, independently recomputed by the caller.",
+    help="Complete signed ten-role matrix promotion bundle.",
 )
 @click.option(
     "--registry",
@@ -3302,8 +3295,7 @@ def models_champions(registry_path: Path, history_path: Path) -> None:
 )
 def models_promote_custom_segmenter(
     candidate_key: str,
-    certificate_path: Path,
-    identity_path: Path,
+    matrix_bundle: Path,
     registry_path: Path,
     models_root: Path,
     history_path: Path,
@@ -3312,14 +3304,9 @@ def models_promote_custom_segmenter(
     from .models.registry import promote_custom_segmenter_role
 
     try:
-        certificate = json.loads(certificate_path.read_text(encoding="utf-8"))
-        identities = json.loads(identity_path.read_text(encoding="utf-8"))
-        if not isinstance(certificate, dict) or not isinstance(identities, dict):
-            raise ValueError("certificate and identity hashes must be JSON objects")
         record = promote_custom_segmenter_role(
             candidate_key,
-            certificate,
-            identities,
+            matrix_bundle_root=matrix_bundle,
             registry_path=registry_path,
             models_root=models_root,
             history_path=history_path,

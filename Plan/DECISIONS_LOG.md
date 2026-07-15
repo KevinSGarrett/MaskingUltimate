@@ -925,3 +925,34 @@ boundaries are unchanged. Rebinding before results restores reproducibility with
 performance.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-15 - Bind custom body-part champion mutation to the aggregate matrix certificate
+
+**Item(s) affected:** MF-P2-11.15, MF-P5-10.11, `champion_bodypart` promotion and
+rollback
+
+**Decision:** `maskfactory models promote-custom-segmenter` accepts only the complete
+signed ten-role matrix bundle. It no longer accepts a standalone custom-segmenter certificate
+and caller-supplied identity document as sufficient mutation input. Inside the exclusive registry
+lock, reverify the bundle's Ed25519 signature, complete matrix report and raw observations, exact
+nine specialist packets, custom certificate and identities, ten unique role/cell bindings, and the
+custom pipeline-context binding. Seal the matrix certificate, custom certificate, benchmark result,
+candidate/incumbent checkpoints, registry states, and production smoke into a schema-valid v3
+transaction. Bind rollback to that exact transaction and matrix certificate before restoring the
+incumbent.
+
+**Why:** Document 22 requires the aggregate certificate before *any* role mutation. The prior
+custom transaction correctly enforced its role certificate, lifecycle swap, lock, smoke, atomic
+history, and rollback, but it did not consume the aggregate certificate. That left a narrower input
+path than the hand/clothing transactions and allowed `champion_bodypart` to mutate without proof
+that all ten matrix roles were jointly certified. The replacement closes that bypass without
+granting any benchmark, serving, mask, truth, or gold authority.
+
+**Administrative compatibility rebind:** `retraining_compatibility_v1` is rebound before any
+eligible retraining result from canonical SHA-256 `5650b8f2...` to
+`9cfbae43775719fcd8c4ef112890d92b5afe8d186660caedf1a8d673d1e653c1` solely because its
+frozen source identity includes `src/maskfactory/models/registry.py`, now SHA-256
+`8ee3c3272ead50e9dd1d30e8d3c50fa3e41f72e827bf8675061a016bee033f34`. No rule,
+threshold, authority, eligibility decision, or result changed.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate

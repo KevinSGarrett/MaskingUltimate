@@ -1571,9 +1571,8 @@ def load_specialist_promotion_transaction(
 
 def _promote_custom_segmenter_role_unlocked(
     candidate_key: str,
-    certificate: dict[str, Any],
-    expected_identity_hashes: dict[str, Any],
     *,
+    matrix_bundle_root: Path,
     registry_path: Path = DEFAULT_REGISTRY,
     models_root: Path = DEFAULT_MODELS_ROOT,
     history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
@@ -1585,11 +1584,30 @@ def _promote_custom_segmenter_role_unlocked(
     Certificate validation grants prerequisites only.  This function is the
     separate authority boundary that mutates the body-part champion role.
     """
+    from ..providers.matrix_promotion import (
+        MatrixPromotionCertificateError,
+        load_and_verify_matrix_promotion_bundle,
+    )
     from ..training.promotion_policy import (
         CustomSegmenterPromotionError,
         validate_custom_segmenter_promotion_certificate,
     )
 
+    try:
+        bundle = load_and_verify_matrix_promotion_bundle(matrix_bundle_root)
+    except MatrixPromotionCertificateError as exc:
+        raise ModelRegistryError(str(exc)) from exc
+    matrix_certificate = bundle["certificate"]
+    certificate = bundle["custom_segmenter_certificate"]
+    expected_identity_hashes = bundle["custom_segmenter_expected_identity_hashes"]
+    matrix_bindings = [
+        row for row in matrix_certificate["role_bindings"] if row["role"] == "custom_segmenter"
+    ]
+    if len(matrix_bindings) != 1:
+        raise ModelRegistryError(
+            "matrix certificate custom segmenter binding is missing or ambiguous"
+        )
+    matrix_binding = matrix_bindings[0]
     try:
         summary = validate_custom_segmenter_promotion_certificate(
             certificate,
@@ -1599,6 +1617,15 @@ def _promote_custom_segmenter_role_unlocked(
         raise ModelRegistryError(str(exc)) from exc
     if summary["candidate_key"] != candidate_key:
         raise ModelRegistryError("promotion candidate differs from the validated certificate")
+    if (
+        matrix_binding.get("candidate_key") != candidate_key
+        or matrix_binding.get("incumbent_provider") != summary["rollback_provider"]
+        or matrix_binding.get("prerequisite_kind") != "custom_segmenter_certificate"
+        or matrix_binding.get("prerequisite_sha256") != certificate.get("sha256")
+        or matrix_binding.get("matrix_binding_mode") != "pipeline_context"
+        or matrix_binding.get("matrix_provider_artifact_key") is not None
+    ):
+        raise ModelRegistryError("matrix promotion custom segmenter binding is stale")
     if smoke_runner is None:
         smoke_runner = production_bodypart_serving_smoke
 
@@ -1653,8 +1680,9 @@ def _promote_custom_segmenter_role_unlocked(
     )
     timestamp = promoted_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
     record: dict[str, Any] = {
-        "schema_version": "2.0.0",
+        "schema_version": "3.0.0",
         "action": "promote",
+        "transaction_kind": "custom_segmenter_champion",
         "transaction_id": uuid.uuid4().hex,
         "recorded_at": timestamp,
         "candidate_key": candidate_key,
@@ -1664,12 +1692,19 @@ def _promote_custom_segmenter_role_unlocked(
         "incumbent_previous_role": "champion_bodypart",
         "incumbent_previous_lifecycle_state": "promoted",
         "champion_role": "champion_bodypart",
-        "certificate_sha256": str(certificate["sha256"]),
+        "matrix_role": "custom_segmenter",
+        "matrix_certificate_id": str(matrix_certificate["certificate_id"]),
+        "matrix_certificate_sha256": str(matrix_certificate["certificate_sha256"]),
+        "custom_segmenter_certificate_sha256": str(certificate["sha256"]),
+        "benchmark_results_sha256": str(certificate["benchmark_results"]["sha256"]),
+        "candidate_checkpoint_sha256": str(candidate["sha256"]),
+        "incumbent_checkpoint_sha256": str(incumbent["sha256"]),
         "registry_before_sha256": _registry_sha256(before),
         "registry_after_sha256": _registry_sha256(proposed),
         "serving_smoke": smoke,
     }
     record["sha256"] = _canonical_sha256(record)
+    _validate_custom_segmenter_transaction_record(record)
 
     _atomic_json(registry_path, proposed)
     try:
@@ -1688,9 +1723,8 @@ def _promote_custom_segmenter_role_unlocked(
 
 def promote_custom_segmenter_role(
     candidate_key: str,
-    certificate: dict[str, Any],
-    expected_identity_hashes: dict[str, Any],
     *,
+    matrix_bundle_root: Path,
     registry_path: Path = DEFAULT_REGISTRY,
     models_root: Path = DEFAULT_MODELS_ROOT,
     history_path: Path = PROJECT_ROOT / "runs" / "champion_history.jsonl",
@@ -1701,8 +1735,7 @@ def promote_custom_segmenter_role(
     with _registry_write_lock(Path(registry_path)):
         return _promote_custom_segmenter_role_unlocked(
             candidate_key,
-            certificate,
-            expected_identity_hashes,
+            matrix_bundle_root=matrix_bundle_root,
             registry_path=registry_path,
             models_root=models_root,
             history_path=history_path,
@@ -1712,9 +1745,16 @@ def promote_custom_segmenter_role(
 
 
 def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> None:
+    schema_issues = validate_document(record, "custom_segmenter_champion_transaction")
+    if schema_issues:
+        detail = "; ".join(
+            f"{issue.pointer or '/'} [{issue.validator}] {issue.message}" for issue in schema_issues
+        )
+        raise ModelRegistryError(f"custom segmenter transaction schema is invalid: {detail}")
     required = {
         "schema_version",
         "action",
+        "transaction_kind",
         "transaction_id",
         "recorded_at",
         "candidate_key",
@@ -1724,17 +1764,25 @@ def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> Non
         "incumbent_previous_role",
         "incumbent_previous_lifecycle_state",
         "champion_role",
-        "certificate_sha256",
+        "matrix_role",
+        "matrix_certificate_id",
+        "matrix_certificate_sha256",
+        "custom_segmenter_certificate_sha256",
+        "benchmark_results_sha256",
+        "candidate_checkpoint_sha256",
+        "incumbent_checkpoint_sha256",
         "registry_before_sha256",
         "registry_after_sha256",
         "serving_smoke",
         "sha256",
     }
-    if set(record) != required or record.get("schema_version") != "2.0.0":
+    if set(record) != required or record.get("schema_version") != "3.0.0":
         raise ModelRegistryError("custom segmenter transaction record is incomplete")
     if (
         record.get("action") != "promote"
+        or record.get("transaction_kind") != "custom_segmenter_champion"
         or record.get("champion_role") != "champion_bodypart"
+        or record.get("matrix_role") != "custom_segmenter"
         or record.get("candidate_previous_lifecycle_state") != "benchmarked"
         or record.get("incumbent_previous_role") != "champion_bodypart"
         or record.get("incumbent_previous_lifecycle_state") != "promoted"
@@ -1755,8 +1803,16 @@ def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> Non
         or record["candidate_previous_role"] == "champion_bodypart"
     ):
         raise ModelRegistryError("custom segmenter transaction providers are invalid")
+    if not isinstance(record.get("matrix_certificate_id"), str) or not re.fullmatch(
+        r"[a-f0-9]{24}", record["matrix_certificate_id"]
+    ):
+        raise ModelRegistryError("custom segmenter matrix certificate id is invalid")
     for field in (
-        "certificate_sha256",
+        "matrix_certificate_sha256",
+        "custom_segmenter_certificate_sha256",
+        "benchmark_results_sha256",
+        "candidate_checkpoint_sha256",
+        "incumbent_checkpoint_sha256",
         "registry_before_sha256",
         "registry_after_sha256",
     ):
@@ -1781,6 +1837,40 @@ def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> Non
     payload = {key: value for key, value in record.items() if key != "sha256"}
     if claimed != _canonical_sha256(payload):
         raise ModelRegistryError("custom segmenter transaction record hash mismatch")
+
+
+def _validate_custom_segmenter_rollback_record(record: dict[str, Any]) -> None:
+    schema_issues = validate_document(record, "custom_segmenter_champion_rollback")
+    if schema_issues:
+        detail = "; ".join(
+            f"{issue.pointer or '/'} [{issue.validator}] {issue.message}" for issue in schema_issues
+        )
+        raise ModelRegistryError(f"custom segmenter rollback schema is invalid: {detail}")
+    if (
+        record.get("action") != "rollback"
+        or record.get("transaction_kind") != "custom_segmenter_champion"
+        or record.get("champion_role") != "champion_bodypart"
+        or record.get("transaction_id") == record.get("promotion_transaction_id")
+        or record.get("candidate_key") == record.get("incumbent_key")
+    ):
+        raise ModelRegistryError("custom segmenter rollback record scope is invalid")
+    smoke = record.get("serving_smoke")
+    if (
+        not isinstance(smoke, dict)
+        or smoke.get("result") != "pass"
+        or smoke.get("role") != "champion_bodypart"
+        or smoke.get("model_key") != record.get("incumbent_key")
+    ):
+        raise ModelRegistryError("custom segmenter rollback serving smoke is invalid")
+    try:
+        recorded_at = datetime.fromisoformat(str(record["recorded_at"]).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ModelRegistryError("custom segmenter rollback timestamp is invalid") from exc
+    if recorded_at.tzinfo is None:
+        raise ModelRegistryError("custom segmenter rollback timestamp lacks timezone")
+    payload = {key: value for key, value in record.items() if key != "sha256"}
+    if record["sha256"] != _canonical_sha256(payload):
+        raise ModelRegistryError("custom segmenter rollback record hash mismatch")
 
 
 def _rollback_custom_segmenter_role_unlocked(
@@ -1833,19 +1923,24 @@ def _rollback_custom_segmenter_role_unlocked(
     )
     timestamp = rolled_back_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
     rollback_record: dict[str, Any] = {
-        "schema_version": "2.0.0",
+        "schema_version": "3.0.0",
         "action": "rollback",
+        "transaction_kind": "custom_segmenter_champion",
         "transaction_id": uuid.uuid4().hex,
         "promotion_transaction_id": record["transaction_id"],
+        "promotion_transaction_sha256": record["sha256"],
         "recorded_at": timestamp,
         "candidate_key": record["candidate_key"],
         "incumbent_key": record["incumbent_key"],
         "champion_role": "champion_bodypart",
+        "matrix_certificate_id": record["matrix_certificate_id"],
+        "matrix_certificate_sha256": record["matrix_certificate_sha256"],
         "registry_before_sha256": record["registry_after_sha256"],
         "registry_after_sha256": record["registry_before_sha256"],
         "serving_smoke": smoke,
     }
     rollback_record["sha256"] = _canonical_sha256(rollback_record)
+    _validate_custom_segmenter_rollback_record(rollback_record)
     _atomic_json(registry_path, proposed)
     try:
         _append_jsonl(history_path, rollback_record)
@@ -1901,18 +1996,31 @@ def load_promotion_transaction(transaction_id: str, *, history_path: Path) -> di
     matches = [
         value
         for value in records
-        if value.get("action") == "promote" and value.get("transaction_id") == transaction_id
+        if value.get("action") == "promote"
+        and value.get("transaction_kind") == "custom_segmenter_champion"
+        and value.get("transaction_id") == transaction_id
     ]
     if len(matches) != 1:
         raise ModelRegistryError("promotion transaction id is missing or ambiguous")
-    if any(
-        value.get("action") == "rollback"
-        and value.get("promotion_transaction_id") == transaction_id
-        for value in records
-    ):
-        raise ModelRegistryError("promotion transaction was already rolled back")
     record = matches[0]
     _validate_custom_segmenter_transaction_record(record)
+    rollback_matches = [
+        value
+        for value in records
+        if value.get("action") == "rollback"
+        and value.get("transaction_kind") == "custom_segmenter_champion"
+        and value.get("promotion_transaction_id") == transaction_id
+    ]
+    for rollback_record in rollback_matches:
+        _validate_custom_segmenter_rollback_record(rollback_record)
+        if (
+            rollback_record["promotion_transaction_sha256"] != record["sha256"]
+            or rollback_record["matrix_certificate_id"] != record["matrix_certificate_id"]
+            or rollback_record["matrix_certificate_sha256"] != record["matrix_certificate_sha256"]
+        ):
+            raise ModelRegistryError("custom segmenter rollback promotion binding is invalid")
+    if rollback_matches:
+        raise ModelRegistryError("promotion transaction was already rolled back")
     return record
 
 

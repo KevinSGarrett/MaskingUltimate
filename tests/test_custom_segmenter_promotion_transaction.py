@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -8,6 +9,7 @@ import pytest
 from click.testing import CliRunner
 
 import maskfactory.models.registry as registry_module
+import maskfactory.providers.matrix_promotion as matrix_promotion
 from maskfactory.cli import main
 from maskfactory.models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
@@ -27,7 +29,10 @@ from maskfactory.training.promotion_policy import (
     REQUIRED_RESULT_INPUT_HASHES,
     load_custom_segmenter_margin_manifest,
 )
+from maskfactory.validation import validate_document
 from registry_helpers import ALLOWED_CONTENT, governed_file_model, governed_registry
+
+REAL_MATRIX_BUNDLE_LOADER = matrix_promotion.load_and_verify_matrix_promotion_bundle
 
 
 def _sha256(document: dict) -> str:
@@ -125,9 +130,22 @@ def _certificate(candidate_hash: str) -> tuple[dict, dict]:
     return certificate, copy.deepcopy(identities)
 
 
-def _workspace(tmp_path: Path) -> tuple[Path, Path, dict, dict]:
+@pytest.fixture(autouse=True)
+def _verified_matrix_bundle_loader(monkeypatch: pytest.MonkeyPatch) -> None:
+    def load(root: Path) -> dict:
+        path = Path(root) / "verified_bundle.json"
+        if not path.is_file():
+            raise matrix_promotion.MatrixPromotionCertificateError(
+                "matrix promotion bundle artifact is unreadable"
+            )
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    monkeypatch.setattr(matrix_promotion, "load_and_verify_matrix_promotion_bundle", load)
+
+
+def _workspace(tmp_path: Path) -> tuple[Path, Path, Path, dict, dict]:
     models_root = tmp_path / "models"
-    models_root.mkdir()
+    models_root.mkdir(parents=True)
     candidate_checkpoint = models_root / "candidate.pth"
     incumbent_checkpoint = models_root / "incumbent.pth"
     candidate_config = models_root / "candidate.py"
@@ -177,7 +195,41 @@ def _workspace(tmp_path: Path) -> tuple[Path, Path, dict, dict]:
     registry = tmp_path / "registry.json"
     registry.write_text(json.dumps(governed_registry([candidate, incumbent])), encoding="utf-8")
     certificate, identities = _certificate(candidate_hash)
-    return registry, models_root, certificate, identities
+    matrix_certificate = {
+        "certificate_id": "1" * 24,
+        "certificate_sha256": "2" * 64,
+        "role_bindings": [
+            {
+                "role": "custom_segmenter",
+                "candidate_key": "eomt_dinov3_fixture",
+                "incumbent_provider": "segformer_b2_fixture",
+                "prerequisite_kind": "custom_segmenter_certificate",
+                "prerequisite_sha256": certificate["sha256"],
+                "matrix_binding_mode": "pipeline_context",
+                "matrix_provider_artifact_key": None,
+            }
+        ],
+    }
+    bundle = tmp_path / "matrix_bundle"
+    bundle.mkdir()
+    (bundle / "verified_bundle.json").write_text(
+        json.dumps(
+            {
+                "certificate": matrix_certificate,
+                "summary": {
+                    "certificate_id": matrix_certificate["certificate_id"],
+                    "certificate_sha256": matrix_certificate["certificate_sha256"],
+                    "role_count": 10,
+                },
+                "specialist_packets": {},
+                "custom_segmenter_certificate": certificate,
+                "custom_segmenter_expected_identity_hashes": identities,
+                "bundle_root": str(bundle),
+            }
+        ),
+        encoding="utf-8",
+    )
+    return registry, models_root, bundle, certificate, identities
 
 
 def _passing_smoke(calls: list[tuple[str, str]]):
@@ -186,7 +238,12 @@ def _passing_smoke(calls: list[tuple[str, str]]):
         owner = next(entry for entry in document["models"] if entry["role"] == role)
         assert owner["key"] == expected
         calls.append((role, expected))
-        return {"result": "pass", "runtime": "pytest", "model_key": expected}
+        return {
+            "result": "pass",
+            "runtime": "pytest",
+            "role": role,
+            "model_key": expected,
+        }
 
     return run
 
@@ -194,7 +251,7 @@ def _passing_smoke(calls: list[tuple[str, str]]):
 def test_production_smoke_runs_fixed_image_through_serving_loader(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    registry, models_root, _, _ = _workspace(tmp_path)
+    registry, models_root, _, _, _ = _workspace(tmp_path)
     closed: list[bool] = []
 
     class Slot:
@@ -221,19 +278,21 @@ def test_production_smoke_runs_fixed_image_through_serving_loader(
 
 
 def test_custom_segmenter_promotion_and_rollback_are_transactional(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     history = tmp_path / "history.jsonl"
     calls: list[tuple[str, str]] = []
     record = promote_custom_segmenter_role(
         "eomt_dinov3_fixture",
-        certificate,
-        identities,
+        matrix_bundle_root=bundle,
         registry_path=registry,
         models_root=models_root,
         history_path=history,
         smoke_runner=_passing_smoke(calls),
         promoted_at="2026-07-15T06:00:00Z",
     )
+    assert not validate_document(record, "custom_segmenter_champion_transaction")
+    assert record["matrix_certificate_id"] == "1" * 24
+    assert record["matrix_certificate_sha256"] == "2" * 64
     promoted = {entry["key"]: entry for entry in json.loads(registry.read_text())["models"]}
     assert (
         promoted["eomt_dinov3_fixture"]["role"],
@@ -253,6 +312,8 @@ def test_custom_segmenter_promotion_and_rollback_are_transactional(tmp_path: Pat
         smoke_runner=_passing_smoke(calls),
         rolled_back_at="2026-07-15T06:05:00Z",
     )
+    assert not validate_document(rollback, "custom_segmenter_champion_rollback")
+    assert rollback["promotion_transaction_sha256"] == record["sha256"]
     restored = {entry["key"]: entry for entry in json.loads(registry.read_text())["models"]}
     assert (
         restored["eomt_dinov3_fixture"]["role"],
@@ -270,10 +331,93 @@ def test_custom_segmenter_promotion_and_rollback_are_transactional(tmp_path: Pat
     assert len(history.read_text().splitlines()) == 2
     with pytest.raises(ModelRegistryError, match="already rolled back"):
         load_promotion_transaction(record["transaction_id"], history_path=history)
+    rows = [json.loads(line) for line in history.read_text(encoding="utf-8").splitlines()]
+    rows[-1]["sha256"] = "0" * 64
+    history.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="rollback record hash mismatch"):
+        load_promotion_transaction(record["transaction_id"], history_path=history)
+
+
+def test_missing_or_stale_matrix_bundle_cannot_mutate_registry(tmp_path: Path) -> None:
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
+    before = registry.read_bytes()
+    history = tmp_path / "history.jsonl"
+    (bundle / "verified_bundle.json").unlink()
+    with pytest.raises(ModelRegistryError, match="matrix promotion bundle"):
+        promote_custom_segmenter_role(
+            "eomt_dinov3_fixture",
+            matrix_bundle_root=bundle,
+            registry_path=registry,
+            models_root=models_root,
+            history_path=history,
+            smoke_runner=_passing_smoke([]),
+        )
+    assert registry.read_bytes() == before
+    assert not history.exists()
+
+    registry, models_root, bundle, _, _ = _workspace(tmp_path / "stale")
+    document = json.loads((bundle / "verified_bundle.json").read_text(encoding="utf-8"))
+    document["certificate"]["role_bindings"][0]["candidate_key"] = "attacker"
+    (bundle / "verified_bundle.json").write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(ModelRegistryError, match="binding is stale"):
+        promote_custom_segmenter_role(
+            "eomt_dinov3_fixture",
+            matrix_bundle_root=bundle,
+            registry_path=registry,
+            models_root=models_root,
+            history_path=tmp_path / "stale-history.jsonl",
+            smoke_runner=_passing_smoke([]),
+        )
+
+
+def test_real_signed_ten_role_bundle_drives_custom_transaction(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from test_matrix_promotion import _build, _bundle, _fixture, _seal
+
+    registry, models_root, _, certificate, identities = _workspace(tmp_path / "registry")
+    inputs = _fixture(tmp_path / "matrix")
+    shared = inputs["matrix_manifest"]["shared_identity"]
+    certificate = copy.deepcopy(certificate)
+    identities = copy.deepcopy(identities)
+    for identity_key, shared_key in (
+        ("evaluation_set_sha256", "evaluation_set_sha256"),
+        ("hardware_profile_sha256", "hardware_profile_sha256"),
+        ("qa_config_sha256", "qa_sha256"),
+    ):
+        identities[identity_key] = shared[shared_key]
+        certificate["identity_hashes"][identity_key] = shared[shared_key]
+        certificate["benchmark_results"]["input_hashes"][identity_key] = shared[shared_key]
+    _seal(certificate["benchmark_results"])
+    identities["benchmark_results_sha256"] = certificate["benchmark_results"]["sha256"]
+    certificate["identity_hashes"]["benchmark_results_sha256"] = certificate["benchmark_results"][
+        "sha256"
+    ]
+    _seal(certificate)
+    inputs["custom_segmenter_certificate"] = certificate
+    inputs["custom_segmenter_expected_identity_hashes"] = identities
+    bundle = _bundle(tmp_path / "real", inputs, _build(inputs))
+    monkeypatch.setattr(
+        matrix_promotion,
+        "load_and_verify_matrix_promotion_bundle",
+        REAL_MATRIX_BUNDLE_LOADER,
+    )
+
+    record = promote_custom_segmenter_role(
+        "eomt_dinov3_fixture",
+        matrix_bundle_root=bundle,
+        registry_path=registry,
+        models_root=models_root,
+        history_path=tmp_path / "real-history.jsonl",
+        smoke_runner=_passing_smoke([]),
+    )
+    loaded = REAL_MATRIX_BUNDLE_LOADER(bundle)
+    assert record["matrix_certificate_sha256"] == loaded["certificate"]["certificate_sha256"]
+    assert record["custom_segmenter_certificate_sha256"] == certificate["sha256"]
 
 
 def test_promotion_smoke_failure_leaves_registry_and_history_untouched(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     original = registry.read_bytes()
     history = tmp_path / "history.jsonl"
 
@@ -283,8 +427,7 @@ def test_promotion_smoke_failure_leaves_registry_and_history_untouched(tmp_path:
     with pytest.raises(ModelRegistryError, match="serving smoke failed"):
         promote_custom_segmenter_role(
             "eomt_dinov3_fixture",
-            certificate,
-            identities,
+            matrix_bundle_root=bundle,
             registry_path=registry,
             models_root=models_root,
             history_path=history,
@@ -295,15 +438,14 @@ def test_promotion_smoke_failure_leaves_registry_and_history_untouched(tmp_path:
 
 
 def test_history_failure_restores_registry(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     original = json.loads(registry.read_text())
     history = tmp_path / "history-directory"
     history.mkdir()
     with pytest.raises(ModelRegistryError, match="history failed; registry restored"):
         promote_custom_segmenter_role(
             "eomt_dinov3_fixture",
-            certificate,
-            identities,
+            matrix_bundle_root=bundle,
             registry_path=registry,
             models_root=models_root,
             history_path=history,
@@ -313,11 +455,10 @@ def test_history_failure_restores_registry(tmp_path: Path) -> None:
 
 
 def test_rollback_rejects_tamper_or_post_promotion_registry_change(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     record = promote_custom_segmenter_role(
         "eomt_dinov3_fixture",
-        certificate,
-        identities,
+        matrix_bundle_root=bundle,
         registry_path=registry,
         models_root=models_root,
         history_path=tmp_path / "history.jsonl",
@@ -335,12 +476,11 @@ def test_rollback_rejects_tamper_or_post_promotion_registry_change(tmp_path: Pat
 
 
 def test_rollback_smoke_failure_preserves_promoted_state(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     history = tmp_path / "history.jsonl"
     record = promote_custom_segmenter_role(
         "eomt_dinov3_fixture",
-        certificate,
-        identities,
+        matrix_bundle_root=bundle,
         registry_path=registry,
         models_root=models_root,
         history_path=history,
@@ -360,12 +500,11 @@ def test_rollback_smoke_failure_preserves_promoted_state(tmp_path: Path) -> None
 
 
 def test_rollback_history_failure_restores_promoted_registry(tmp_path: Path) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     history = tmp_path / "history.jsonl"
     record = promote_custom_segmenter_role(
         "eomt_dinov3_fixture",
-        certificate,
-        identities,
+        matrix_bundle_root=bundle,
         registry_path=registry,
         models_root=models_root,
         history_path=history,
@@ -388,14 +527,10 @@ def test_rollback_history_failure_restores_promoted_registry(tmp_path: Path) -> 
 def test_cli_provides_one_command_rollback_with_runtime_smoke_boundary(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    registry, models_root, certificate, identities = _workspace(tmp_path)
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
     calls: list[tuple[str, str]] = []
     monkeypatch.setattr(registry_module, "production_bodypart_serving_smoke", _passing_smoke(calls))
     history = tmp_path / "history.jsonl"
-    certificate_path = tmp_path / "certificate.json"
-    identities_path = tmp_path / "identities.json"
-    certificate_path.write_text(json.dumps(certificate), encoding="utf-8")
-    identities_path.write_text(json.dumps(identities), encoding="utf-8")
     runner = CliRunner()
     promoted = runner.invoke(
         main,
@@ -403,10 +538,8 @@ def test_cli_provides_one_command_rollback_with_runtime_smoke_boundary(
             "models",
             "promote-custom-segmenter",
             "eomt_dinov3_fixture",
-            "--certificate",
-            str(certificate_path),
-            "--identity-hashes",
-            str(identities_path),
+            "--matrix-bundle",
+            str(bundle),
             "--registry",
             str(registry),
             "--models-root",
@@ -437,3 +570,28 @@ def test_cli_provides_one_command_rollback_with_runtime_smoke_boundary(
         ("champion_bodypart", "eomt_dinov3_fixture"),
         ("champion_bodypart", "segformer_b2_fixture"),
     ]
+
+
+def test_concurrent_custom_promotions_serialize_to_one_transaction(tmp_path: Path) -> None:
+    registry, models_root, bundle, _, _ = _workspace(tmp_path)
+    history = tmp_path / "history.jsonl"
+
+    def attempt() -> tuple[str, str]:
+        try:
+            record = promote_custom_segmenter_role(
+                "eomt_dinov3_fixture",
+                matrix_bundle_root=bundle,
+                registry_path=registry,
+                models_root=models_root,
+                history_path=history,
+                smoke_runner=_passing_smoke([]),
+            )
+            return "pass", record["transaction_id"]
+        except ModelRegistryError as exc:
+            return "fail", str(exc)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(lambda _index: attempt(), range(2)))
+    assert [status for status, _detail in results].count("pass") == 1
+    assert [status for status, _detail in results].count("fail") == 1
+    assert len(history.read_text(encoding="utf-8").splitlines()) == 1

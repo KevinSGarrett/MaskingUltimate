@@ -64,6 +64,8 @@ SCHEMA_NAMES = frozenset(
         "custom_segmenter_tournament_report",
         "custom_segmenter_tournament_runs",
         "custom_segmenter_benchmark_margins",
+        "custom_segmenter_champion_rollback",
+        "custom_segmenter_champion_transaction",
         "serving_provenance",
         "serving_route",
         "serving_workflow_performance_policy",

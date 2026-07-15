@@ -1662,18 +1662,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-14T07:48:12+00:00",
           "actor": "tracker_reconciliation",
           "text": "Expanded P0 modernization gates added on 2026-07-14; prior legacy P0 evidence remains valid, but SAM 3.1 installation and remaining registry/currency foundation gates prevent the expanded exit from being complete."
+        },
+        {
+          "ts": "2026-07-15T02:14:35+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: modernization implementation, lockfiles, populated registries, tracker, code, tests, and JSON evidence are durably committed on codex/autonomous-gold-modernization at 27264a1; governed source/QA imagery and model binaries were explicitly excluded. Expanded exit remains open for the two Meta checkpoint gates and their downstream qualifications."
         }
       ],
-      "evidence": "P0 exit verified: live doctor exited 0 with PASS=9 WARN=1 SKIP=1 FAIL=0; interactive CVAT SAM2 UI mask saved with API evidence; doc 14 §1 marks MF-P0-01 through MF-P0-08 and exit PASS; authoritative env lockfiles and populated hash-verified models/model_registry.json are tracked, with current registry/doctor/UI evidence committed in 57f0e2e. Full pytest 72 passed and pre-commit all-files passed.",
+      "evidence": "Commit 27264a1 (feat: modernize MaskFactory autonomous gold pipeline), 845 files; pre-commit EOF/whitespace/YAML/large-file/Ruff/Black all pass; full repository suite 1,110/1,110; Ruff clean; live doctor PASS=11 WARN=0 SKIP=0 FAIL=0 with 14/14 exact model smokes; provider runtime matrix 3fb4e9d2fac03b8ebccabf4a34b062eec1d4060b3e982fad7d5db1283dbef877. Remaining expanded P0 boundary is SAM 3.1 and SAM 3D Body checkpoint access/live qualification plus dependent currency gates.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:48:12+00:00",
+      "updated_at": "2026-07-15T02:14:35+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {

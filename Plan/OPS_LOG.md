@@ -5401,3 +5401,18 @@ Verification:                       dedicated 5/5; focused promotion/matrix/sche
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining real evidence:            real matrix and role benchmarks, measured winners, observed rollback rehearsals, production-event signed certificate, transactional promotions, and live one-command rollback
 Evidence:                           `qa/live_verification/matrix_promotion_certificate_contract_20260715.json`
+
+## 2026-07-15 12:17 UTC - Official SAM 3.1 shadow adapter boundary implemented
+
+**Result:** MF-P2-11.03 and MF-P2-11.04 advance to 60%; the runtime-injection boundary is
+strict and provenance-preserving, while the gated checkpoint, live GPU inference, persisted PNG
+packages, and downstream specialist-lane routing remain open.
+
+Official identity:                  exact `sam3_1` provider, `sam3` family, source commit, checkpoint hash, runtime lock, and requirements-lock hash are revalidated at adapter construction
+Discovery behavior:                unique nonempty concepts, real exemplar artifacts/hashes, source-image hash, unique instance keys, finite boxes/confidence, exact-shape boolean masks, and prompt fingerprint are mandatory
+Refinement behavior:               uint8 RGB embedding input; exact embedding/runtime identity; bounded point/box/mask prompts; at least one positive prompt; positive/negative polarity; and box containment
+Authority boundary:                both adapters are shadow-candidate-only and cannot mutate active/rollback maps, serve, decide semantics, author production masks, clear checkpoint gates, or create gold authority
+Verification:                       dedicated 12/12; focused SAM/provider contract/runtime 37/37; complete repository 1,544/1,544 in 254.22s; Ruff and Black pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     Kevin checkpoint authorization, storage recovery, exact checkpoint download, live runtime executor binding/smokes, strict persisted PNG packages, and specialist-lane routing
+Evidence:                           `qa/live_verification/sam31_shadow_adapter_contract_20260715.json`

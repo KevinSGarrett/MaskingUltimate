@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "item_ids": ["MF-P8-11.03"],
+  "verified_at": "2026-07-15T12:52:03Z",
+  "result": "PASS_MULTI_PERSON_IDENTITY_AND_INDEPENDENT_FAMILY_FIXTURE_CONTRACT_LIVE_TOURNAMENT_PENDING",
+  "functional_family_inventory": [
+    "deterministic_repair",
+    "fusion",
+    "geometry",
+    "pose",
+    "rf_detr_detection",
+    "sam21_refinement",
+    "sam31_exhaustive_discovery",
+    "sam31_refinement",
+    "silhouette",
+    "specialist"
+  ],
+  "identity_contract": {
+    "image_person_instance_label_target_key_required": true,
+    "target_keys_unique": true,
+    "candidate_ids_and_artifact_paths_unique_across_targets": true,
+    "duo_requires_exactly_two_distinct_people": true,
+    "small_group_requires_at_least_three_distinct_people": true,
+    "source_image_hash_and_dimensions_bound": true,
+    "pipeline_fingerprint_bound": true,
+    "autonomy_config_hash_and_tournament_bounds_bound": true
+  },
+  "provenance_contract": {
+    "every_functional_contribution_has_full_provider_identity": true,
+    "available_family_coverage_required_per_target": true,
+    "unavailable_family_requires_explicit_reason": true,
+    "independent_source_credit_recomputed_from_unique_model_families": true,
+    "provider_key_and_model_family_sets_recomputed": true,
+    "correlated_functional_routes_do_not_inflate_independent_family_credit": true,
+    "correction_round_and_parent_lineage_bound": true
+  },
+  "artifact_contract": {
+    "artifact_root_containment_required": true,
+    "strict_nonempty_binary_png_required": true,
+    "source_dimensions_required": true,
+    "artifact_sha256_required": true,
+    "canonical_manifest_sha256_required": true,
+    "verified_loader_returns_existing_tournament_candidate_evidence": true
+  },
+  "authority": "multi_person_tournament_evidence_only_no_selection_serving_training_semantic_mask_or_gold_authority",
+  "implementation_hashes": {
+    "configs/autonomous_masks.yaml": "e71241b6c640c30550ce29b58872fb42da4b220678f40b66cb7434292751b482",
+    "src/maskfactory/autonomy/multi_person_evidence.py": "8eaa1a4084f8a8fe6b064db9928f645ba3583242d3085a506a770d081af242cf",
+    "src/maskfactory/schemas/multi_person_tournament_evidence.schema.json": "5aa0d579ac82135c22f1aadb0e89ddd2ea3863acb89165004edb8053958bc7b9",
+    "tests/test_multi_person_tournament_evidence.py": "1c3bfc218f0680d90a4c15692ed92d956d9d3c5bacc9e5a09b4e91fb2fdb2480"
+  },
+  "verification": {
+    "dedicated_tests": {"collected": 11, "passed": 11, "failed": 0},
+    "focused_autonomy_multi_person_schema_tests": {
+      "collected": 59,
+      "passed": 59,
+      "failed": 0
+    },
+    "full_repository_suite": {
+      "collected": 1564,
+      "passed": 1564,
+      "failed": 0,
+      "exit_code": 0
+    },
+    "pre_commit_all_files": "pass",
+    "ruff": "pass",
+    "black": "pass",
+    "yaml": "pass",
+    "json_schemas": "pass"
+  },
+  "runtime_safety": {
+    "wsl_accessed": false,
+    "docker_accessed": false,
+    "cvat_accessed": false,
+    "external_vhd_accessed": false,
+    "external_drive_accessed": false
+  },
+  "claims_not_made": [
+    "all governed provider families are installed or available",
+    "a real multi-person image was processed",
+    "official SAM 3.1 or any challenger inference ran",
+    "a real tournament was executed or a winner selected",
+    "a certificate, serving route, training eligibility, semantic decision, mask authority, or gold authority was granted",
+    "MF-P8-11.03 is complete"
+  ],
+  "remaining_work": [
+    "complete MF-P2-11.03 through MF-P2-11.08 live provider installation and qualification",
+    "bind actual availability to current governed provider evidence",
+    "run the full provider family inventory on governed multi-person sources",
+    "execute per-person/per-instance tournaments with exact gate and scope evidence",
+    "bind real outputs into certificate, residual-routing, audit, and headline packages"
+  ]
+}

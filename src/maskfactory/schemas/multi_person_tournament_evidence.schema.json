@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/multi_person_tournament_evidence.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "image_id", "source_image_sha256", "source_width", "source_height", "instance_context", "pipeline_fingerprint", "autonomy_config_sha256", "maximum_rounds", "maximum_candidates_per_target", "target_count", "candidate_count", "targets", "authority", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "image_id": {"type": "string", "minLength": 1},
+    "source_image_sha256": {"$ref": "#/$defs/sha256"},
+    "source_width": {"type": "integer", "minimum": 1},
+    "source_height": {"type": "integer", "minimum": 1},
+    "instance_context": {"enum": ["duo", "small_group"]},
+    "pipeline_fingerprint": {"type": "string", "minLength": 1},
+    "autonomy_config_sha256": {"$ref": "#/$defs/sha256"},
+    "maximum_rounds": {"type": "integer", "minimum": 1},
+    "maximum_candidates_per_target": {"type": "integer", "minimum": 1},
+    "target_count": {"type": "integer", "minimum": 2},
+    "candidate_count": {"type": "integer", "minimum": 2},
+    "targets": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/target"}},
+    "authority": {"const": "multi_person_tournament_evidence_only_no_selection_serving_training_semantic_mask_or_gold_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "family_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "unavailable_reason"],
+      "properties": {
+        "available": {"type": "boolean"},
+        "unavailable_reason": {"type": ["string", "null"]}
+      }
+    },
+    "family_availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deterministic_repair", "fusion", "geometry", "pose", "rf_detr_detection", "sam21_refinement", "sam31_exhaustive_discovery", "sam31_refinement", "silhouette", "specialist"],
+      "properties": {
+        "deterministic_repair": {"$ref": "#/$defs/family_state"},
+        "fusion": {"$ref": "#/$defs/family_state"},
+        "geometry": {"$ref": "#/$defs/family_state"},
+        "pose": {"$ref": "#/$defs/family_state"},
+        "rf_detr_detection": {"$ref": "#/$defs/family_state"},
+        "sam21_refinement": {"$ref": "#/$defs/family_state"},
+        "sam31_exhaustive_discovery": {"$ref": "#/$defs/family_state"},
+        "sam31_refinement": {"$ref": "#/$defs/family_state"},
+        "silhouette": {"$ref": "#/$defs/family_state"},
+        "specialist": {"$ref": "#/$defs/family_state"}
+      }
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_key", "role", "model_family", "source_commit", "runtime_fingerprint", "contract_version", "provenance_aliases"],
+      "properties": {
+        "provider_key": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "model_family": {"type": "string", "minLength": 1},
+        "source_commit": {"type": "string", "minLength": 1},
+        "runtime_fingerprint": {"type": "string", "minLength": 1},
+        "contract_version": {"const": "1.0.0"},
+        "provenance_aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["functional_family", "provider"],
+      "properties": {
+        "functional_family": {"enum": ["deterministic_repair", "fusion", "geometry", "pose", "rf_detr_detection", "sam21_refinement", "sam31_exhaustive_discovery", "sam31_refinement", "silhouette", "specialist"]},
+        "provider": {"$ref": "#/$defs/provider"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "mask_path", "mask_sha256", "independent_sources", "consensus_iou", "boundary_agreement", "pose_consistency", "critic_pass_weight", "critic_disagreement", "protected_overlap", "exclusive_overlap", "component_count", "ontology_max_components", "format_valid", "block_qc_ids", "source_provider_keys", "source_model_families"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "mask_path": {"type": "string", "minLength": 1},
+        "mask_sha256": {"$ref": "#/$defs/sha256"},
+        "independent_sources": {"type": "integer", "minimum": 1},
+        "consensus_iou": {"type": "number", "minimum": 0, "maximum": 1},
+        "boundary_agreement": {"type": "number", "minimum": 0, "maximum": 1},
+        "pose_consistency": {"type": "number", "minimum": 0, "maximum": 1},
+        "critic_pass_weight": {"type": "number", "minimum": 0, "maximum": 1},
+        "critic_disagreement": {"type": "boolean"},
+        "protected_overlap": {"type": "number", "minimum": 0, "maximum": 1},
+        "exclusive_overlap": {"type": "number", "minimum": 0, "maximum": 1},
+        "component_count": {"type": "integer", "minimum": 0},
+        "ontology_max_components": {"type": "integer", "minimum": 0},
+        "format_valid": {"const": true},
+        "block_qc_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "source_provider_keys": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "source_model_families": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generator_family", "round_number", "parent_candidate_id", "contributions", "evidence"],
+      "properties": {
+        "generator_family": {"enum": ["deterministic_repair", "fusion", "geometry", "pose", "rf_detr_detection", "sam21_refinement", "sam31_exhaustive_discovery", "sam31_refinement", "silhouette", "specialist"]},
+        "round_number": {"type": "integer", "minimum": 0},
+        "parent_candidate_id": {"type": ["string", "null"]},
+        "contributions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/contribution"}},
+        "evidence": {"$ref": "#/$defs/evidence"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["person_id", "instance_id", "label", "family_availability", "candidates"],
+      "properties": {
+        "person_id": {"type": "string", "minLength": 1},
+        "instance_id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "family_availability": {"$ref": "#/$defs/family_availability"},
+        "candidates": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/candidate"}}
+      }
+    }
+  }
+}

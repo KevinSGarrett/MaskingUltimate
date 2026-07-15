@@ -5432,3 +5432,20 @@ Verification:                       dedicated package 9/9; focused SAM/provider/
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
 Remaining work:                     official checkpoint authorization/download, installed runtime executor, real seven-lane GPU inference and smokes, and production repair-orchestration connection
 Evidence:                           `qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json`
+
+## 2026-07-15 12:52 UTC - Multi-person tournament identity/provenance envelope implemented
+
+**Result:** MF-P8-11.03 advances to 65%; multi-person tournament inputs now have an
+executable, hash-sealed evidence envelope that preserves every target and true independent
+model family, while live provider availability and real multi-person tournament evidence remain open.
+
+Target identity:                    every row binds image, person, instance, and label; duplicate target keys, globally reused candidate IDs, and reused artifact paths fail
+Functional coverage:               SAM3.1 exhaustive discovery, SAM2.1/SAM3.1 refinement, RF-DETR detection, pose, geometry, silhouette, fusion, specialist, and deterministic repair are explicit per target; unavailable families require a reason and cannot contribute
+Independent-family accounting:     every functional contribution carries full provider identity; provider/model sets and independent-source count are recomputed from unique true model families, so correlated SAM routes cannot inflate diversity
+Correction provenance:             round bounds come from the hash-bound autonomy policy; repairs require an earlier same-target parent and deterministic repair cannot masquerade as a round-zero source
+Artifact integrity:                 source image hash/dimensions, pipeline fingerprint, autonomy-config hash, strict contained PNG masks, mask hashes, tournament bounds, and canonical manifest seal are verified before candidates load
+Authority boundary:                evidence transport only; fixtures grant no provider availability, inference, selection, certificate, serving, training, semantic, mask, blocker-clearance, or gold authority
+Verification:                       dedicated 11/11; focused autonomy/multi-person/schema 59/59; complete repository 1,564/1,564 with exit 0; all-file pre-commit, Ruff, Black, YAML, and schemas pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive access
+Remaining work:                     live provider qualification/availability, governed multi-person sources, real tournament execution, and certificate/residual/audit/headline binding
+Evidence:                           `qa/live_verification/multi_person_tournament_evidence_contract_20260715.json`

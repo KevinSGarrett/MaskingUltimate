@@ -5226,3 +5226,17 @@ Runtime safety:                     no WSL, Docker, CVAT, external VHD, or exter
 Authority boundary:                fixtures and the pre-result report grant no training, provider promotion, serving, certificate, gold, production-mask, blocker-clearance, or tracker-completion authority
 Remaining real evidence:            certified training corpus, genuine audit trigger/outcomes, real run/new fingerprint, human-anchor holdout and benchmark results, complete recertification/abstention, transactional role decision, and observed rollback
 Evidence:                           `qa/live_verification/retraining_operations_contract_20260715.json`
+
+## 2026-07-15 09:26 UTC - Anatomy-v2 context gate reconciled after adult-lane override
+
+**Result:** MF-P2-10.08 passed and the stale blocked status was removed.
+
+Dependency audit:                   MF-P2-10.01 through MF-P2-10.07 are all complete; the old reason incorrectly claimed MF-P2-10.02 still needed to remove the retired gate
+Named context coverage:             exposed, clothed, partial, distant, hair-occluded, side-view, and cropped drafting fixtures all pass
+Hard-QA coverage:                   exactly QC-V2-001 through QC-V2-010 plus QC-V2-012 remain active; retired QC-V2-011 is absent and the clothed false-positive sweep passes
+Adult content lanes:                general, adult-nonexplicit, and consensual-explicit-adult remain allowed; adult/NSFW assets may enter governed training and seed the human-reviewed gold workflow
+Removed boundary:                   no owner-rejected anatomy-v2 age-eligibility or `clear_adult` admission predicate exists in drafting, v2 QA, or exact-image cloud-teacher eligibility
+Preserved boundary:                 the independent apparent-minor intake quarantine remains unchanged; fixture completion grants no gold or production authority
+Verification:                       focused drafting/QA/cloud/governance/Civitai suite 76/76; focused anatomy/tracker 33/33; complete repository 1,376/1,376 with exit 0; targeted Ruff pass
+Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
+Evidence:                           `qa/live_verification/anatomy_v2_context_and_adult_lane_regression_20260715.json`

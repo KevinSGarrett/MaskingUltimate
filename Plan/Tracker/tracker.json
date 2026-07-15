@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T09:18:33+00:00",
+    "generated_at": "2026-07-15T09:27:05+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -11741,13 +11741,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 85,
-      "notes": [],
-      "evidence": null,
-      "blocked_reason": "The named drafting contexts pass, but the cluster cannot close until MF-P2-10.02 removes the obsolete age gate and the full focused suite is rerun.",
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-15T09:27:05+00:00",
+          "actor": "ai_agent",
+          "text": "Reconciled stale blocker after verifying MF-P2-10.01..07 are complete. Exposed, clothed, partial, distant, hair-occluded, side-view, and cropped fixtures plus all active hard-QA checks pass; retired QC-V2-011 and the rejected v2 age-eligibility predicate remain absent while all approved adult content lanes remain eligible."
+        }
+      ],
+      "evidence": "qa/live_verification/anatomy_v2_context_and_adult_lane_regression_20260715.json; focused drafting/QA/cloud/governance/Civitai suite 76/76 exit 0; targeted Ruff pass",
+      "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:55:45+00:00",
+      "updated_at": "2026-07-15T09:27:05+00:00",
       "orphaned": false
     },
     "MF-P2-11.01": {

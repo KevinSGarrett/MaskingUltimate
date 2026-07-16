@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T12:53:00Z",
+  "captured_at": "2026-07-16T13:34:00Z",
   "items": ["MF-P9-04.07", "MF-P9-04.08"],
   "status": "partially_complete",
   "dependency_plugin_graph": {
@@ -44,29 +44,32 @@
     "ineligible_override_include_rejected": true,
     "versioned_include_exclude_overrides": true,
     "deterministic_report_fingerprint": true,
-    "immutable_report_publication": true
+    "immutable_report_publication": true,
+    "active_certificate_projection_hash_bound": true,
+    "nonempty_qualified_members_require_certificate_projection_lineage": true,
+    "pool_identity_counts_and_membership_reverified": true
   },
   "live_boundary": {
     "pool_report_published": false,
     "reason": "A live pool report requires the final immutable compatibility graph, which remains downstream of the incomplete live asset identity snapshot. Publishing fixture-derived membership as live authority is prohibited.",
-    "identity_hashes_complete": 2424,
-    "identity_hashes_pending": 38670,
+    "identity_hashes_complete": 2859,
+    "identity_hashes_pending": 38235,
     "identity_hash_failures": 0
   },
   "lineage": {
     "vocabulary_sha256": "c0d9af16c84008393588e7471c88aa3cd3e470e77468040e18d1510d3511a13c",
-    "catalog_implementation_sha256": "9f83efe6b45f5f733bf9285cc7281dcfc9b5b7b07ccdfd4fbae36240b47b3a00",
-    "pool_implementation_sha256": "89c20a91c82b6e5ca069f7cea25d5b467a1b549aee4fdc91a94fe4e3a5da34b9",
+    "catalog_implementation_sha256": "bf1c8e5d93c3524dbf57662c9fa12dcc11d3539053ed41f6b401513ac3567730",
+    "pool_implementation_sha256": "761bcaeea8d8b2bf7b1e06965768e645e23f585e53044991256c3e7930be5ace",
     "catalog_schema_sha256": "4f0b0798bf2050e87f1f82c5a114910131d573b05f2f43c4631dba3579687048",
-    "pool_schema_sha256": "6504b824de75c6ad3e998a4e9e222db7f143a4371c90a5392a5937718c293219",
-    "catalog_test_sha256": "573d8110148bf7746e92ea356232670a314455cd5301cfa9841fcaf7c61076d1",
-    "pool_test_sha256": "25462a18fc1a615929b4a1f10d620da57e6ad20ce9fb6ef72d6896d89a1ac613"
+    "pool_schema_sha256": "7c6658a88a315ef49664677b2597b2b95e7d9485fe84fb497d5e01ae9f35ed8f",
+    "catalog_test_sha256": "a6680ea5379ad610659ff8dc0f7b69183f405c9f9a674400c9273e7283826f3d",
+    "pool_test_sha256": "bb8dbd424dedcfd4362264c1a4b2daa1a40682c3389e268218eeffbf0585fd19"
   },
   "verification": {
-    "focused_catalog_and_pool_tests_passed": 10,
+    "focused_catalog_and_pool_tests_passed": 12,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1797,
-    "full_repository_tests_passed": 1797,
+    "full_repository_tests_collected": 1811,
+    "full_repository_tests_passed": 1811,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

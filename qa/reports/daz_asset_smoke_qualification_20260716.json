@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T12:53:00Z",
+  "captured_at": "2026-07-16T13:34:00Z",
   "items": ["MF-P9-04.09", "MF-P9-04.10"],
   "status": "partially_complete",
   "smoke_contract": {
@@ -28,7 +28,9 @@
     "failed_smoke_reason_coded_quarantine": true,
     "code_specific_bounded_retest_policy": true,
     "popup_automatic_click_prohibited": true,
-    "static_eligibility_never_grants_runtime_qualification": true
+    "static_eligibility_never_grants_runtime_qualification": true,
+    "active_certificate_projection_into_pools": true,
+    "stale_or_revoked_certificates_excluded_from_pools": true
   },
   "cli": [
     "daz assets smoke-plan",
@@ -40,28 +42,28 @@
   "live_boundary": {
     "representative_live_smoke_results_recorded": false,
     "live_certificates_issued": false,
-    "reason": "The final live compatibility graph is downstream of the still-incomplete asset identity snapshot, and two unmanaged DAZ Studio processes remain active. Fixture evidence proves implementation and propagation semantics but is not relabeled as live qualification authority.",
-    "observed_daz_process_ids": [33816, 50884],
-    "identity_hashes_complete": 2424,
-    "identity_hashes_pending": 38670,
+    "reason": "The final live compatibility graph is downstream of the still-incomplete asset identity snapshot and F is in a capacity soft hold. Fixture evidence proves implementation and projection semantics but is not relabeled as live qualification authority.",
+    "observed_daz_process_ids": [],
+    "identity_hashes_complete": 2859,
+    "identity_hashes_pending": 38235,
     "identity_hash_failures": 0
   },
   "lineage": {
-    "smoke_implementation_sha256": "8da205a85462672c8002b61f303d0d6e3f0d28ffc37c8c0c28f45b0247140142",
-    "qualification_implementation_sha256": "07ab34ee528574c47c8a8a763710e89d9eab25a87e69bb75cf4033efedccf749",
+    "smoke_implementation_sha256": "962ea4fe7c8f2d1cce1113b7257e27afefdc40a6993f67db8241e6c3f4eba5f9",
+    "qualification_implementation_sha256": "ace89fe223c5313700819fec5f204636eb3b5374c43e1bf1639f752363016864",
     "plan_schema_sha256": "06d8a3990418a60797ac4070d59cc0c7b74b32ff74ef3b955268203e22386f4c",
     "result_schema_sha256": "5a606000dfe1bc5126b83bae44d80783e074223e4b77d5cba95c1f8e02e9ecd0",
     "certificate_schema_sha256": "024e84eab68e4d27ddcfb8422712bd839a31f98978492241329690ac8fdef61b",
     "quarantine_schema_sha256": "4aacce9d737a9110db9d777b694851875d26e5bcfd84d53386065464d8c66c99",
-    "test_sha256": "d58f82dd9853dbc7efe47f64930f6e065468d64cbd51c5bb5ef0cf67520b89e7",
+    "test_sha256": "094d76a6a3a44bbdabc7c62645c5982dbd5d12ae5ad6d89526f81170683ad37f",
     "live_capacity_test_sha256": "899e63e682c2312854965f2b89b2415e4853f24d2bf5ef9398ffa7f49583a0b4"
   },
   "verification": {
     "focused_smoke_tests_passed": 22,
     "focused_catalog_pool_control_tests_passed": 38,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1797,
-    "full_repository_tests_passed": 1797,
+    "full_repository_tests_collected": 1811,
+    "full_repository_tests_passed": 1811,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass",

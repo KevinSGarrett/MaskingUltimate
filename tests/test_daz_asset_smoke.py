@@ -19,6 +19,7 @@ from maskfactory.daz.assets import (
     issue_asset_smoke_certificate,
     load_asset_smoke_policy,
     load_asset_vocabularies,
+    project_active_qualified_asset_ids,
     publish_asset_smoke_document,
     validate_asset_smoke_certificate,
 )
@@ -371,6 +372,41 @@ def test_passing_evaluation_issues_hash_bound_certificate_and_change_invalidates
     )
     assert active["state"] == "active"
     assert active["reasons"] == []
+    projection = project_active_qualified_asset_ids(
+        [certificate],
+        graph,
+        runtime_snapshot_sha256="b" * 64,
+        script_bundle_sha256="c" * 64,
+    )
+    assert projection["qualified_asset_ids"] == [plan["asset_id"]]
+    assert projection["excluded"] == []
+    graph_path = tmp_path / "qualified_graph.json"
+    certificates_path = tmp_path / "certificates.json"
+    graph_path.write_text(json.dumps(graph), encoding="utf-8")
+    certificates_path.write_text(json.dumps([certificate]), encoding="utf-8")
+    pool_invocation = CliRunner().invoke(
+        main,
+        [
+            "daz",
+            "assets",
+            "pool-report",
+            "--graph",
+            str(graph_path),
+            "--certificates",
+            str(certificates_path),
+            "--runtime-snapshot-sha256",
+            "b" * 64,
+            "--script-bundle-sha256",
+            "c" * 64,
+            "--output",
+            str(tmp_path / "qualified_pools"),
+        ],
+    )
+    assert pool_invocation.exit_code == 0, pool_invocation.output
+    pool_envelope = json.loads(pool_invocation.output)
+    assert pool_envelope["data"]["qualification_projection"]["qualified_asset_ids"] == [
+        plan["asset_id"]
+    ]
 
     stale = validate_asset_smoke_certificate(
         certificate,
@@ -380,6 +416,14 @@ def test_passing_evaluation_issues_hash_bound_certificate_and_change_invalidates
     )
     assert stale["state"] == "revoked_or_stale"
     assert stale["reasons"] == ["runtime_snapshot_changed"]
+    stale_projection = project_active_qualified_asset_ids(
+        [certificate],
+        graph,
+        runtime_snapshot_sha256="f" * 64,
+        script_bundle_sha256="c" * 64,
+    )
+    assert stale_projection["qualified_asset_ids"] == []
+    assert stale_projection["excluded"][0]["reasons"] == ["runtime_snapshot_changed"]
 
 
 def test_asset_change_revokes_downstream_certificate_and_blocks_queued_recipe(

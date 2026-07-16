@@ -2956,14 +2956,39 @@ def daz_assets_catalog_graph(
     default=Path(r"F:\DAZ\05_registry\snapshots\asset_pools"),
     show_default=True,
 )
-def daz_assets_pool_report(graph: Path, policy: Path, vocabularies: Path, output: Path) -> None:
+@click.option(
+    "--certificates",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional JSON array of smoke certificates to project into qualified members.",
+)
+@click.option("--runtime-snapshot-sha256")
+@click.option("--script-bundle-sha256")
+@click.option(
+    "--mapping-bundle-hashes",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional JSON object of current mapping-bundle SHA-256 values.",
+)
+@click.option("--revoked-certificate-id", "revoked_certificate_ids", multiple=True)
+def daz_assets_pool_report(
+    graph: Path,
+    policy: Path,
+    vocabularies: Path,
+    output: Path,
+    certificates: Path | None,
+    runtime_snapshot_sha256: str | None,
+    script_bundle_sha256: str | None,
+    mapping_bundle_hashes: Path | None,
+    revoked_certificate_ids: tuple[str, ...],
+) -> None:
     """Build immutable queryable pools without copying source assets."""
     from .daz import DazErrorCode, result_envelope
     from .daz.assets import (
         AssetPoolError,
+        AssetQualificationError,
         build_asset_pool_report,
         load_asset_pool_policy,
         load_asset_vocabularies,
+        project_active_qualified_asset_ids,
         publish_asset_pool_report,
     )
 
@@ -2971,10 +2996,52 @@ def daz_assets_pool_report(graph: Path, policy: Path, vocabularies: Path, output
         graph_document = json.loads(graph.read_text(encoding="utf-8"))
         vocabulary_document = load_asset_vocabularies(vocabularies)
         policy_document = load_asset_pool_policy(policy, vocabulary_document)
-        report = build_asset_pool_report(graph_document, policy_document, vocabulary_document)
+        projection = None
+        qualified_asset_ids: list[str] = []
+        if certificates is not None:
+            if runtime_snapshot_sha256 is None or script_bundle_sha256 is None:
+                raise AssetQualificationError(
+                    "qualification_current_bindings_missing",
+                    "runtime and script SHA-256 are required with certificates",
+                )
+            certificate_documents = json.loads(certificates.read_text(encoding="utf-8"))
+            mapping_hashes = (
+                json.loads(mapping_bundle_hashes.read_text(encoding="utf-8"))
+                if mapping_bundle_hashes is not None
+                else {}
+            )
+            if not isinstance(certificate_documents, list) or not isinstance(mapping_hashes, dict):
+                raise AssetQualificationError(
+                    "qualification_projection_input_invalid",
+                    "certificates must be an array and mapping hashes an object",
+                )
+            projection = project_active_qualified_asset_ids(
+                certificate_documents,
+                graph_document,
+                runtime_snapshot_sha256=runtime_snapshot_sha256,
+                script_bundle_sha256=script_bundle_sha256,
+                mapping_bundle_hashes=mapping_hashes,
+                revoked_certificate_ids=revoked_certificate_ids,
+            )
+            qualified_asset_ids = projection["qualified_asset_ids"]
+        report = build_asset_pool_report(
+            graph_document,
+            policy_document,
+            vocabulary_document,
+            qualified_asset_ids=qualified_asset_ids,
+            qualification_projection_sha256=(
+                projection["projection_sha256"] if projection is not None else None
+            ),
+        )
         target, published = publish_asset_pool_report(report, output)
-    except (AssetPoolError, json.JSONDecodeError, OSError, ValueError) as exc:
-        reason = exc.reason if isinstance(exc, AssetPoolError) else str(exc)
+    except (
+        AssetPoolError,
+        AssetQualificationError,
+        json.JSONDecodeError,
+        OSError,
+        ValueError,
+    ) as exc:
+        reason = getattr(exc, "reason", str(exc))
         click.echo(
             json.dumps(
                 result_envelope(code=int(DazErrorCode.ASSET_POOL_INVALID), reason=reason),
@@ -2991,6 +3058,7 @@ def daz_assets_pool_report(graph: Path, policy: Path, vocabularies: Path, output
                 data={
                     "summary": report["summary"],
                     "report_sha256": report["report_sha256"],
+                    "qualification_projection": projection,
                     "publication": {"path": str(target), "published": published},
                 },
             ),
@@ -3518,6 +3586,85 @@ def daz_recipes_validate(recipe: Path) -> None:
                 entity_ids=(report["scene_id"], report["scene_family_id"]),
                 evidence_paths=(str(recipe),),
                 data=report,
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-foundation")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--figure-generation", default="genesis_9", show_default=True)
+@click.option(
+    "--scene-category",
+    type=click.Choice(
+        ["clothed", "partial_clothing", "underwear", "swimwear", "unclothed", "neutral"]
+    ),
+    default="clothed",
+    show_default=True,
+)
+@click.option("--tone-band")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\foundation"),
+    show_default=True,
+)
+def daz_recipes_select_foundation(
+    graph: Path,
+    pool_report: Path,
+    selection_seed: int,
+    figure_generation: str,
+    scene_category: str,
+    tone_band: str | None,
+    output: Path,
+) -> None:
+    """Select one qualified compatible G9 figure, preset, and skin tuple."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneSelectionError,
+        publish_character_foundation_selection,
+        select_character_foundation,
+    )
+
+    try:
+        selection = select_character_foundation(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            selection_seed=selection_seed,
+            figure_generation=figure_generation,
+            scene_category=scene_category,
+            tone_band=tone_band,
+        )
+        target, published = publish_character_foundation_selection(selection, output)
+    except (SceneSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_foundation_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
             ),
             sort_keys=True,
         )

@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-16T13:10:56+00:00",
+    "generated_at": "2026-07-16T14:14:38+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 755,
     "total_tracked_including_orphaned": 755
@@ -15666,12 +15666,17 @@
           "ts": "2026-07-16T13:10:55+00:00",
           "actor": "ai_agent",
           "text": "A further five-minute read-only tranche reused 2,424 hashes and added 435 / 804,550,814 bytes with zero failures. Live state is 2,859/41,094 complete. F crossed the 150-GiB soft floor during concurrent acquisition; the installed guard correctly refuses new work while permitting active jobs to checkpoint, so no additional tranche was started."
+        },
+        {
+          "ts": "2026-07-16T14:14:37+00:00",
+          "actor": "ai_agent",
+          "text": "F capacity continued declining under already-active autonomous acquisition to 140.399 GiB free. The installed guard still refuses new work and no additional hashing or DAZ job was started; the last safe checkpoint remains 2,859 complete / 38,235 pending / zero failed."
         }
       ],
-      "evidence": "Live identity state is 2,859 complete, 38,235 pending, zero failed, and 4,030,093,103 verified bytes; DB SHA-256 b0b997b8... . Capacity guard reports soft at 142.252 GiB, new_work_allowed=false. Full suite 1,803/1,803. Evidence: qa/reports/daz_asset_identity_progress_20260716.json.",
+      "evidence": "Identity state remains durably checkpointed at 2,859 complete and zero failures. Capacity guard is soft with new_work_allowed=false; full suite 1,811/1,811. Evidence: qa/reports/daz_asset_identity_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T13:10:55+00:00",
+      "updated_at": "2026-07-16T14:14:37+00:00",
       "orphaned": false
     },
     "MF-P9-04.06": {
@@ -15687,7 +15692,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 50,
+      "percent_complete": 60,
       "notes": [
         {
           "ts": "2026-07-16T11:56:32+00:00",
@@ -15698,12 +15703,17 @@
           "ts": "2026-07-16T12:10:06+00:00",
           "actor": "ai_agent",
           "text": "The graph vocabulary now also closes adult/generation-neutral character scope, capabilities, and grouping facets required by logical pools. Live publication remains downstream of the incomplete identity snapshot."
+        },
+        {
+          "ts": "2026-07-16T14:14:37+00:00",
+          "actor": "ai_agent",
+          "text": "Every compatibility-graph consumer now revalidates content identity, summary counts, plugin normalization, and edge resolution rather than trusting schema shape or stored SHA fields. Live graph publication still waits for final identity state."
         }
       ],
-      "evidence": "Closed graph now covers class, generation, character scope, capability, scene category, mapping requirement, identity state, facets, dependencies, and plugin identities while keeping qualified=false. Ten focused catalog/pool and 1,775 full tests pass. Evidence: qa/reports/daz_asset_catalog_graph_progress_20260716.json and qa/reports/daz_asset_pool_progress_20260716.json.",
+      "evidence": "Graph node/hash, summary, and edge-resolution tampering fixtures fail closed; normalized plugin inputs reproduce verifiable portable graph identity. Six focused catalog tests and 1,811/1,811 full tests pass. Evidence: qa/reports/daz_qualified_pool_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T12:10:06+00:00",
+      "updated_at": "2026-07-16T14:14:37+00:00",
       "orphaned": false
     },
     "MF-P9-04.07": {
@@ -15719,18 +15729,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-16T12:10:07+00:00",
           "actor": "ai_agent",
           "text": "Dependency and required-plugin graph logic is implemented and fixture-complete. Operational completion waits for the live immutable compatibility graph after identity hashing and acquisition stabilization."
+        },
+        {
+          "ts": "2026-07-16T14:14:37+00:00",
+          "actor": "ai_agent",
+          "text": "Dependency/plugin graph integrity is now rechecked at smoke, certificate, pool, and selection boundaries, including exact content identity and resolved-edge consistency. Operational completion still waits for the live graph."
         }
       ],
-      "evidence": "Required dependencies resolve or make the asset ineligible; required cycles reject; plugins use closed available/unavailable/incompatible state; available plugins require version plus SHA-256; missing/incompatible requirements are ineligible. Static graph never grants runtime qualification. Missing/cycle/plugin fixtures and CLI publication pass; 1,775/1,775 full tests pass. Evidence: qa/reports/daz_asset_pool_progress_20260716.json.",
+      "evidence": "Graph integrity tamper tests and downstream consumer tests pass; required dependencies must also carry active qualification before selection. Full suite 1,811/1,811. Evidence: qa/reports/daz_qualified_pool_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T12:10:07+00:00",
+      "updated_at": "2026-07-16T14:14:37+00:00",
       "orphaned": false
     },
     "MF-P9-04.08": {
@@ -15746,18 +15761,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 55,
+      "percent_complete": 70,
       "notes": [
         {
           "ts": "2026-07-16T12:10:09+00:00",
           "actor": "ai_agent",
           "text": "All twelve approved logical pools and deterministic facet reports are implemented as ID queries, not copied directories. Live membership remains withheld until the final compatibility graph and runtime qualifications exist."
+        },
+        {
+          "ts": "2026-07-16T14:14:37+00:00",
+          "actor": "ai_agent",
+          "text": "Logical pools now project only active, current smoke-certificate authority. Nonempty qualified members require an exact certificate-projection hash; static candidates never self-promote. Pool identity, counts, summaries, membership subsets, and lineage are reverified."
         }
       ],
-      "evidence": "Exact 12-pool policy covers G9 adult bases/characters/morphs/age/skin/hair/wardrobe/poses, multi-person poses, lights, environments, and occlusion/support props. Static candidates remain separate from qualified generation members; overrides cannot include ineligible assets; deterministic grouping and immutable publication fixtures pass. Ten focused and 1,775 full tests pass. Evidence: qa/reports/daz_asset_pool_progress_20260716.json.",
+      "evidence": "Active/stale certificate projection, missing-lineage refusal, static-vs-qualified separation, tamper detection, and certificate-aware CLI publication pass. Six focused pool tests and 1,811/1,811 full tests pass. Evidence: qa/reports/daz_qualified_pool_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T12:10:09+00:00",
+      "updated_at": "2026-07-16T14:14:37+00:00",
       "orphaned": false
     },
     "MF-P9-04.09": {
@@ -15800,18 +15820,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 65,
+      "percent_complete": 72,
       "notes": [
         {
           "ts": "2026-07-16T12:53:17+00:00",
           "actor": "ai_agent",
           "text": "Hash-bound certificates, reason-coded quarantine, bounded code-specific retest policy, asset/dependency/plugin/runtime/script/mapping revocation, dependency-closure propagation, and queued-recipe blocking are implemented. Live certificate/retest evidence waits for MF-P9-04.09 live results."
+        },
+        {
+          "ts": "2026-07-16T14:14:37+00:00",
+          "actor": "ai_agent",
+          "text": "Certificate authority now has a deterministic active projection into logical pools; stale, revoked, duplicate, or multiple-active-per-asset certificates are excluded/refused. Live certificate evidence remains pending."
         }
       ],
-      "evidence": "Fixture change propagation revokes a changed base and its dependent wardrobe certificate and blocks both queued recipes; runtime drift invalidates exact certificates; failed texture smoke creates Q-ASSET-007 quarantine and remains blocked until content repair. Full suite 1,797/1,797. Evidence: qa/reports/daz_asset_smoke_qualification_20260716.json.",
+      "evidence": "Certificate projection includes active/excluded identities and hash lineage, feeds qualified pools through the CLI, and refuses missing current runtime/script bindings. Full suite 1,811/1,811. Evidence: qa/reports/daz_qualified_pool_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T12:53:17+00:00",
+      "updated_at": "2026-07-16T14:14:37+00:00",
       "orphaned": false
     },
     "MF-P9-04.11": {
@@ -16159,13 +16184,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 60,
+      "notes": [
+        {
+          "ts": "2026-07-16T14:14:38+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented deterministic joint selection of runtime-qualified Genesis 9 base figure, character preset, and skin material with base compatibility, required-dependency qualification, scene category, optional tone band, replay, and immutable evidence. Live selection waits for final graph/certificates."
+        }
+      ],
+      "evidence": "Six selection tests cover deterministic ranking, compatible pairs, tone filtering, unqualified dependencies, empty qualified pools, tamper replay, static/qualified separation, and idempotent CLI publication. Full suite 1,811/1,811. Evidence: qa/reports/daz_qualified_pool_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T14:14:38+00:00",
       "orphaned": false
     },
     "MF-P9-06.04": {

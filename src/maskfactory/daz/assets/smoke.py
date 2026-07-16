@@ -12,6 +12,7 @@ from typing import Any, Iterable, Mapping
 import yaml
 
 from ...validation import require_valid_document
+from .catalog import validate_asset_compatibility_graph
 
 SHA256_PATTERN = "0123456789abcdef"
 SEMANTIC_REPEATABILITY_ROLES = ("silhouette", "instance_id", "mapping_pass")
@@ -99,7 +100,7 @@ def build_asset_smoke_plan(
 ) -> dict[str, Any]:
     """Build two clean-process worker recipes for one statically eligible asset."""
 
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     classes = {
         str(asset_class)
         for profile in policy["profiles"].values()

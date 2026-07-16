@@ -17,6 +17,7 @@ from maskfactory.daz.assets import (
     load_asset_vocabularies,
     publish_asset_pool_report,
     validate_asset_pool_policy,
+    validate_asset_pool_report,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -197,3 +198,33 @@ def test_pool_cli_publishes_idempotently_without_copying_assets(tmp_path: Path) 
     assert first_report["reason"] == "asset_pool_report_complete"
     assert first_report["data"]["publication"]["published"] is True
     assert second_report["data"]["publication"]["published"] is False
+
+
+def test_pool_report_identity_counts_and_qualification_membership_tampering_fail_closed() -> None:
+    graph, policy, vocabularies = _fixture_graph()
+    report = build_asset_pool_report(
+        graph,
+        policy,
+        vocabularies,
+        qualified_asset_ids=[_id("a")],
+        qualification_projection_sha256="9" * 64,
+    )
+    validate_asset_pool_report(report)
+
+    changed_membership = deepcopy(report)
+    base_pool = next(
+        pool for pool in changed_membership["pools"] if pool["pool_id"] == "g9_adult_base_figures"
+    )
+    base_pool["qualified_member_asset_ids"] = []
+    with pytest.raises(AssetPoolError, match="pool_qualified_count_mismatch"):
+        validate_asset_pool_report(changed_membership)
+
+    changed_projection = deepcopy(report)
+    changed_projection["qualification_projection"]["qualified_asset_ids"] = []
+    with pytest.raises(AssetPoolError, match="pool_qualification_set_hash_mismatch"):
+        validate_asset_pool_report(changed_projection)
+
+    changed_identity = deepcopy(report)
+    changed_identity["pools"][0]["filter"]["scene_categories"] = ["neutral"]
+    with pytest.raises(AssetPoolError, match="pool_report_identity_mismatch"):
+        validate_asset_pool_report(changed_identity)

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T13:10:00Z",
+  "captured_at": "2026-07-16T13:34:00Z",
   "item": "MF-P9-04.05",
   "status": "partially_complete",
   "implementation": {
@@ -72,8 +72,8 @@
     "reason": "Autonomous acquisition is still mutating the content estate. Hashing is resumable, but the immutable duplicate/shadow snapshot cannot be claimed until the upstream filesystem inventory is stable and every current file is hashed."
   },
   "storage": {
-    "free_bytes": 152742350848,
-    "free_gib": 142.252,
+    "free_bytes": 150752583680,
+    "free_gib": 140.399,
     "soft_floor_gib": 150,
     "hard_floor_gib": 100,
     "state": "soft",
@@ -89,8 +89,8 @@
   "verification": {
     "focused_tests_passed": 20,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1803,
-    "full_repository_tests_passed": 1803,
+    "full_repository_tests_collected": 1811,
+    "full_repository_tests_passed": 1811,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

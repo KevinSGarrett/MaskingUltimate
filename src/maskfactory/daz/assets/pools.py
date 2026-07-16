@@ -8,12 +8,12 @@ import os
 import tempfile
 from collections import Counter
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Iterable, Mapping
 
 import yaml
 
 from ...validation import require_valid_document
-from .catalog import ASSET_ID_PATTERN
+from .catalog import ASSET_ID_PATTERN, validate_asset_compatibility_graph
 
 REQUIRED_POOL_IDS = (
     "g9_adult_base_figures",
@@ -108,12 +108,47 @@ def build_asset_pool_report(
     graph: Mapping[str, Any],
     policy: Mapping[str, Any],
     vocabularies: Mapping[str, Any],
+    *,
+    qualified_asset_ids: Iterable[str] = (),
+    qualification_projection_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Project static candidates and separately expose qualified generation members."""
 
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     validate_asset_pool_policy(policy, vocabularies)
     nodes = {str(node["asset_id"]): node for node in graph["nodes"]}
+    qualified = set(qualified_asset_ids)
+    if any(
+        not isinstance(asset_id, str) or not ASSET_ID_PATTERN.fullmatch(asset_id)
+        for asset_id in qualified
+    ):
+        raise AssetPoolError("pool_qualified_asset_id_invalid", str(sorted(qualified)))
+    missing_qualified = sorted(qualified - set(nodes))
+    if missing_qualified:
+        raise AssetPoolError("pool_qualified_asset_missing", ",".join(missing_qualified))
+    ineligible_qualified = sorted(
+        asset_id for asset_id in qualified if not nodes[asset_id]["generation_pool_eligible"]
+    )
+    if ineligible_qualified:
+        raise AssetPoolError(
+            "pool_qualified_asset_statically_ineligible", ",".join(ineligible_qualified)
+        )
+    if qualification_projection_sha256 is None:
+        if qualified:
+            raise AssetPoolError(
+                "pool_qualification_projection_hash_missing",
+                "nonempty qualified assets require exact certificate projection lineage",
+            )
+        qualification_projection_sha256 = _canonical_sha({"active": [], "excluded": []})
+    if (
+        not isinstance(qualification_projection_sha256, str)
+        or len(qualification_projection_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in qualification_projection_sha256)
+    ):
+        raise AssetPoolError(
+            "pool_qualification_projection_hash_invalid",
+            str(qualification_projection_sha256),
+        )
     overrides: dict[tuple[str, str], Mapping[str, Any]] = {
         (str(row["pool_id"]), str(row["asset_id"])): row for row in policy["overrides"]
     }
@@ -147,9 +182,7 @@ def build_asset_pool_report(
                 }
             )
         candidate_ids = sorted(candidates)
-        member_ids = sorted(
-            asset_id for asset_id in candidates if nodes[asset_id]["qualified"] is True
-        )
+        member_ids = sorted(asset_id for asset_id in candidates if asset_id in qualified)
         distributions = {}
         for facet in definition["group_by"]:
             counts = Counter(
@@ -183,6 +216,8 @@ def build_asset_pool_report(
         {
             "graph_id": graph["graph_id"],
             "pool_version": policy["pool_version"],
+            "qualified_asset_ids": sorted(qualified),
+            "qualification_projection_sha256": qualification_projection_sha256,
             "pools": entries,
         }
     )
@@ -197,6 +232,12 @@ def build_asset_pool_report(
             "static_candidates_are_qualified": False,
             "runtime_qualification_required": True,
             "source_assets_copied": False,
+        },
+        "qualification_projection": {
+            "source": "validated_active_smoke_certificates",
+            "qualified_asset_ids": sorted(qualified),
+            "certificate_projection_sha256": qualification_projection_sha256,
+            "qualification_set_sha256": _canonical_sha({"qualified_asset_ids": sorted(qualified)}),
         },
         "summary": {
             "pool_count": len(entries),
@@ -214,7 +255,7 @@ def build_asset_pool_report(
 
 
 def publish_asset_pool_report(report: Mapping[str, Any], output_root: Path) -> tuple[Path, bool]:
-    require_valid_document(report, "daz_asset_pool_report")
+    validate_asset_pool_report(report)
     report_id = str(report["report_id"])
     payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
     output_root = Path(output_root)
@@ -243,6 +284,58 @@ def publish_asset_pool_report(report: Mapping[str, Any], output_root: Path) -> t
     return target, True
 
 
+def validate_asset_pool_report(report: Mapping[str, Any]) -> None:
+    """Verify content identity, counts, and static/qualified authority separation."""
+
+    require_valid_document(report, "daz_asset_pool_report")
+    projection = report["qualification_projection"]
+    qualified = projection["qualified_asset_ids"]
+    expected_set_sha = _canonical_sha({"qualified_asset_ids": qualified})
+    if projection["qualification_set_sha256"] != expected_set_sha:
+        raise AssetPoolError("pool_qualification_set_hash_mismatch", str(report["report_id"]))
+    for pool in report["pools"]:
+        static = pool["static_candidate_asset_ids"]
+        members = pool["qualified_member_asset_ids"]
+        if static != sorted(static) or members != sorted(members):
+            raise AssetPoolError("pool_membership_order_invalid", str(pool["pool_id"]))
+        if not set(members).issubset(static) or not set(members).issubset(qualified):
+            raise AssetPoolError("pool_qualified_membership_invalid", str(pool["pool_id"]))
+        if pool["static_candidate_count"] != len(static):
+            raise AssetPoolError("pool_static_count_mismatch", str(pool["pool_id"]))
+        if pool["qualified_member_count"] != len(members):
+            raise AssetPoolError("pool_qualified_count_mismatch", str(pool["pool_id"]))
+        if pool["generation_enabled"] != bool(members):
+            raise AssetPoolError("pool_generation_state_mismatch", str(pool["pool_id"]))
+    summary = {
+        "pool_count": len(report["pools"]),
+        "static_candidate_memberships": sum(
+            pool["static_candidate_count"] for pool in report["pools"]
+        ),
+        "qualified_member_memberships": sum(
+            pool["qualified_member_count"] for pool in report["pools"]
+        ),
+        "generation_enabled_pool_count": sum(
+            pool["generation_enabled"] for pool in report["pools"]
+        ),
+        "empty_static_candidate_pool_count": sum(
+            pool["static_candidate_count"] == 0 for pool in report["pools"]
+        ),
+    }
+    if report["summary"] != summary:
+        raise AssetPoolError("pool_summary_mismatch", str(report["report_id"]))
+    fingerprint = _canonical_sha(
+        {
+            "graph_id": report["graph_id"],
+            "pool_version": report["pool_version"],
+            "qualified_asset_ids": qualified,
+            "qualification_projection_sha256": projection["certificate_projection_sha256"],
+            "pools": report["pools"],
+        }
+    )
+    if report["report_sha256"] != fingerprint or report["report_id"] != f"apr_{fingerprint[:24]}":
+        raise AssetPoolError("pool_report_identity_mismatch", str(report["report_id"]))
+
+
 def _matches_pool(node: Mapping[str, Any], definition: Mapping[str, Any]) -> bool:
     return (
         node["primary_asset_class"] in definition["primary_asset_classes"]
@@ -267,5 +360,6 @@ __all__ = [
     "build_asset_pool_report",
     "load_asset_pool_policy",
     "publish_asset_pool_report",
+    "validate_asset_pool_report",
     "validate_asset_pool_policy",
 ]

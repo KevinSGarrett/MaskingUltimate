@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -13,6 +14,7 @@ from maskfactory.daz.assets import (
     build_asset_compatibility_graph,
     load_asset_vocabularies,
     publish_asset_compatibility_graph,
+    validate_asset_compatibility_graph,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -191,3 +193,47 @@ def test_catalog_cli_publishes_graph_and_rejects_unhashed_available_plugin(tmp_p
     )
     assert invocation.exit_code == 88
     assert "lacks version/hash" in json.loads(invocation.output)["reason"]
+
+
+def test_graph_identity_summary_and_edge_resolution_tampering_fail_closed() -> None:
+    vocabularies = load_asset_vocabularies(VOCABULARIES)
+    base = _record("a", "figure_base")
+    preset = _record("b", "character_preset", compatibility_bases=[base["asset_id"]])
+    graph = build_asset_compatibility_graph([base, preset], vocabularies)
+    validate_asset_compatibility_graph(graph)
+
+    changed_node = deepcopy(graph)
+    changed_node["nodes"][0]["asset_sha256"] = "f" * 64
+    with pytest.raises(AssetCatalogError, match="catalog_graph_identity_mismatch"):
+        validate_asset_compatibility_graph(changed_node)
+
+    changed_summary = deepcopy(graph)
+    changed_summary["summary"]["asset_count"] = 1
+    with pytest.raises(AssetCatalogError, match="catalog_graph_summary_mismatch"):
+        validate_asset_compatibility_graph(changed_summary)
+
+    changed_edge = deepcopy(graph)
+    changed_edge["edges"][0]["resolved"] = False
+    plugin_map = {
+        row["plugin_id"]: {
+            "state": row["state"],
+            "version": row["version"],
+            "sha256": row["sha256"],
+        }
+        for row in changed_edge["plugins"]
+    }
+    digest = hashlib.sha256(
+        json.dumps(
+            {
+                "nodes": changed_edge["nodes"],
+                "edges": changed_edge["edges"],
+                "plugins": plugin_map,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    changed_edge["graph_sha256"] = digest
+    changed_edge["graph_id"] = "acg_" + digest[:24]
+    with pytest.raises(AssetCatalogError, match="catalog_graph_edge_resolution_mismatch"):
+        validate_asset_compatibility_graph(changed_edge)

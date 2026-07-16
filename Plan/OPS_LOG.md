@@ -6077,6 +6077,24 @@ Capacity:                            F remained healthy at 168.948 GiB; no sourc
 Verification:                        20 focused DAZ tests and the complete 1,765/1,765 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`
 
+## 2026-07-16 13:34 UTC - Certificate-qualified pools and compatible G9 foundation selection implemented
+
+**Result:** Runtime qualification now reaches deterministic planning without weakening the static/
+runtime authority boundary; MF-P9-06.03 is fixture-complete and remains partial pending live assets.
+
+Graph verification:                   every smoke/certificate/pool/selection consumer recomputes graph content identity, normalized plugin state, summary counts, and edge resolution
+Certificate projection:               exact current graph/runtime/script/mapping/revocation bindings produce an active/excluded certificate projection; duplicate certificate IDs and multiple active certificates per asset fail closed
+Qualified pools:                      only active projected asset IDs can become qualified members; nonempty membership requires certificate-projection SHA-256 lineage
+Pool verification:                    qualified members must be static candidates and projection members; sorted memberships, counts, enabled states, summary, qualification-set hash, report hash, and report ID are recomputed
+Foundation selector:                  jointly chooses one qualified Genesis 9 base, character preset, and skin material; it enforces scene category, optional tone band, base compatibility, and active qualification of every required dependency
+Determinism:                          all feasible tuples are ranked by pinned SHA-256 over seed + graph + pool identities + tuple, independent of registry insertion order; rejection reasons are counted
+Replay/CLI:                           selection validation recomputes the exact result; `daz recipes select-foundation` publishes immutable idempotent evidence; `daz assets pool-report --certificates` produces certificate-qualified pools
+Tamper evidence:                      graph hash/summary/edge, pool projection/count/member/hash, selection result, stale certificate, and missing projection-lineage mutations all fail closed
+Live boundary:                        no live qualified pool or G9 selection is claimed; final identity/graph/certificates remain incomplete and fixture certificates have no production authority
+Capacity:                             F declined to 150,752,583,680 bytes / 140.399 GiB free under existing acquisition; guard remains `state=soft`, `new_work_allowed=false`; no new F/DAZ work started
+Verification:                         40 focused catalog/pool/smoke/selection tests and the complete 1,811/1,811 repository suite pass; Ruff, Black, and tracker validation pass
+Evidence:                             `qa/reports/daz_qualified_pool_selection_20260716.json`
+
 ## 2026-07-16 11:57 UTC - Closed DAZ taxonomy and static compatibility graph implemented
 
 **Result:** MF-P9-04.06 now has a blueprint-hash-bound closed vocabulary and fail-closed static graph;

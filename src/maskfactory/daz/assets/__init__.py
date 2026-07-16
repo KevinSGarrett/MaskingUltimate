@@ -13,6 +13,7 @@ from .catalog import (
     build_asset_compatibility_graph,
     load_asset_vocabularies,
     publish_asset_compatibility_graph,
+    validate_asset_compatibility_graph,
 )
 from .cms import (
     CmsObservationError,
@@ -57,6 +58,7 @@ from .pools import (
     load_asset_pool_policy,
     publish_asset_pool_report,
     validate_asset_pool_policy,
+    validate_asset_pool_report,
 )
 from .qualification import (
     AssetQualificationError,
@@ -64,6 +66,7 @@ from .qualification import (
     build_asset_quarantine_record,
     decide_asset_retest,
     issue_asset_smoke_certificate,
+    project_active_qualified_asset_ids,
     validate_asset_smoke_certificate,
 )
 from .smoke import (
@@ -112,6 +115,7 @@ __all__ = [
     "inspect_dim_paths",
     "inventory_state_summary",
     "issue_asset_smoke_certificate",
+    "project_active_qualified_asset_ids",
     "load_cms_connection",
     "load_asset_vocabularies",
     "load_asset_pool_policy",
@@ -132,6 +136,8 @@ __all__ = [
     "scan_inventory_chunk",
     "evaluate_asset_smoke_result",
     "validate_asset_pool_policy",
+    "validate_asset_pool_report",
+    "validate_asset_compatibility_graph",
     "validate_asset_smoke_certificate",
     "validate_asset_smoke_policy",
 ]

@@ -106,8 +106,16 @@ def build_asset_compatibility_graph(
     """Build a deterministic static graph; runtime smoke remains a later authority layer."""
 
     _validate_vocabulary_mapping(vocabularies)
-    plugin_registry = dict(plugins or {})
-    _validate_plugin_registry(plugin_registry, vocabularies)
+    supplied_plugins = dict(plugins or {})
+    _validate_plugin_registry(supplied_plugins, vocabularies)
+    plugin_registry = {
+        plugin_id: {
+            "state": record.get("state"),
+            "version": record.get("version"),
+            "sha256": record.get("sha256"),
+        }
+        for plugin_id, record in supplied_plugins.items()
+    }
     normalized = [_normalize_record(record, vocabularies) for record in records]
     normalized.sort(key=lambda row: row["asset_id"])
     asset_ids = [str(row["asset_id"]) for row in normalized]
@@ -241,7 +249,7 @@ def publish_asset_compatibility_graph(
 ) -> tuple[Path, bool]:
     """Publish one immutable graph revision without replacing an existing identity."""
 
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     graph_id = str(graph["graph_id"])
     payload = (json.dumps(graph, indent=2, sort_keys=True) + "\n").encode("utf-8")
     output_root = Path(output_root)
@@ -272,6 +280,57 @@ def publish_asset_compatibility_graph(
         if os.path.exists(temporary_name):
             os.unlink(temporary_name)
     return target, True
+
+
+def validate_asset_compatibility_graph(graph: Mapping[str, Any]) -> None:
+    """Verify graph structure, content identity, summaries, and resolved-edge consistency."""
+
+    require_valid_document(graph, "daz_asset_compatibility_graph")
+    nodes = graph["nodes"]
+    edges = graph["edges"]
+    plugins = {
+        str(row["plugin_id"]): {
+            "state": row["state"],
+            "version": row["version"],
+            "sha256": row["sha256"],
+        }
+        for row in graph["plugins"]
+    }
+    if len(plugins) != len(graph["plugins"]):
+        raise AssetCatalogError("catalog_graph_plugin_duplicate", str(graph["graph_id"]))
+    fingerprint = _canonical_sha({"nodes": nodes, "edges": edges, "plugins": plugins})
+    if graph["graph_sha256"] != fingerprint or graph["graph_id"] != f"acg_{fingerprint[:24]}":
+        raise AssetCatalogError("catalog_graph_identity_mismatch", str(graph["graph_id"]))
+    node_ids = {str(node["asset_id"]) for node in nodes}
+    if len(node_ids) != len(nodes):
+        raise AssetCatalogError("catalog_graph_asset_duplicate", str(graph["graph_id"]))
+    for edge in edges:
+        expected_resolved = edge["target_asset_id"] in node_ids
+        if edge["relation"] == "compatibility_base" and expected_resolved:
+            target = next(node for node in nodes if node["asset_id"] == edge["target_asset_id"])
+            expected_resolved = target["primary_asset_class"] == "figure_base"
+        if edge["resolved"] != expected_resolved:
+            raise AssetCatalogError(
+                "catalog_graph_edge_resolution_mismatch",
+                f"{edge['source_asset_id']}:{edge['target_asset_id']}",
+            )
+    summary = {
+        "asset_count": len(nodes),
+        "edge_count": len(edges),
+        "static_eligible_pending_smoke": sum(
+            node["static_state"] == "static_eligible_pending_smoke" for node in nodes
+        ),
+        "ineligible_count": sum(
+            node["static_state"] != "static_eligible_pending_smoke" for node in nodes
+        ),
+        "unknown_asset_count": sum(node["primary_asset_class"] == "unknown" for node in nodes),
+        "unresolved_required_edge_count": sum(
+            edge["required"] and not edge["resolved"] for edge in edges
+        ),
+        "qualified_asset_count": 0,
+    }
+    if graph["summary"] != summary:
+        raise AssetCatalogError("catalog_graph_summary_mismatch", str(graph["graph_id"]))
 
 
 def _validate_vocabulary_mapping(vocabularies: Mapping[str, Any]) -> None:
@@ -451,4 +510,5 @@ __all__ = [
     "build_asset_compatibility_graph",
     "load_asset_vocabularies",
     "publish_asset_compatibility_graph",
+    "validate_asset_compatibility_graph",
 ]

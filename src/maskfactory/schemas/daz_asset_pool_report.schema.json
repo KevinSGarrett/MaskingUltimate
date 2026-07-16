@@ -4,7 +4,7 @@
   "title": "DAZ logical asset pool report",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "report_id", "report_sha256", "graph_id", "graph_sha256", "pool_version", "authority", "summary", "pools"],
+  "required": ["schema_version", "report_id", "report_sha256", "graph_id", "graph_sha256", "pool_version", "authority", "qualification_projection", "summary", "pools"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "report_id": {"type": "string", "pattern": "^apr_[0-9a-f]{24}$"},
@@ -20,6 +20,17 @@
         "static_candidates_are_qualified": {"const": false},
         "runtime_qualification_required": {"const": true},
         "source_assets_copied": {"const": false}
+      }
+    },
+    "qualification_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "qualified_asset_ids", "certificate_projection_sha256", "qualification_set_sha256"],
+      "properties": {
+        "source": {"const": "validated_active_smoke_certificates"},
+        "qualified_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+        "certificate_projection_sha256": {"$ref": "#/$defs/sha256"},
+        "qualification_set_sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "summary": {

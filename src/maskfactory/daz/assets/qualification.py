@@ -8,6 +8,7 @@ from collections import deque
 from typing import Any, Iterable, Mapping, Sequence
 
 from ...validation import require_valid_document
+from .catalog import validate_asset_compatibility_graph
 
 
 class AssetQualificationError(ValueError):
@@ -32,7 +33,7 @@ def issue_asset_smoke_certificate(
 
     require_valid_document(plan, "daz_asset_smoke_plan")
     require_valid_document(result, "daz_asset_smoke_result")
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     _validate_evaluation(evaluation, plan=plan, result=result)
     if evaluation["passed"] is not True:
         raise AssetQualificationError("certificate_smoke_not_passed", plan["asset_id"])
@@ -91,7 +92,7 @@ def validate_asset_smoke_certificate(
     """Return deterministic active/stale/revoked state against exact current bindings."""
 
     require_valid_document(certificate, "daz_asset_smoke_certificate")
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     reasons: list[str] = []
     content = {
         key: value
@@ -131,6 +132,64 @@ def validate_asset_smoke_certificate(
         "asset_id": certificate["asset_id"],
         "state": "active" if not reasons else "revoked_or_stale",
         "reasons": reasons,
+    }
+
+
+def project_active_qualified_asset_ids(
+    certificates: Sequence[Mapping[str, Any]],
+    graph: Mapping[str, Any],
+    *,
+    runtime_snapshot_sha256: str,
+    script_bundle_sha256: str,
+    mapping_bundle_hashes: Mapping[str, str] | None = None,
+    revoked_certificate_ids: Iterable[str] = (),
+) -> dict[str, Any]:
+    """Project exact active certificate authority into a deterministic asset-ID set."""
+
+    validate_asset_compatibility_graph(graph)
+    certificate_ids: set[str] = set()
+    asset_ids: set[str] = set()
+    active = []
+    excluded = []
+    revoked = tuple(revoked_certificate_ids)
+    for certificate in certificates:
+        require_valid_document(certificate, "daz_asset_smoke_certificate")
+        certificate_id = str(certificate["certificate_id"])
+        if certificate_id in certificate_ids:
+            raise AssetQualificationError("qualification_certificate_duplicate", certificate_id)
+        certificate_ids.add(certificate_id)
+        status = validate_asset_smoke_certificate(
+            certificate,
+            graph,
+            runtime_snapshot_sha256=runtime_snapshot_sha256,
+            script_bundle_sha256=script_bundle_sha256,
+            mapping_bundle_hashes=mapping_bundle_hashes,
+            revoked_certificate_ids=revoked,
+        )
+        if status["state"] == "active":
+            asset_id = str(certificate["asset_id"])
+            if asset_id in asset_ids:
+                raise AssetQualificationError(
+                    "qualification_multiple_active_certificates", asset_id
+                )
+            asset_ids.add(asset_id)
+            active.append(
+                {
+                    "asset_id": asset_id,
+                    "certificate_id": certificate_id,
+                    "certificate_sha256": certificate["certificate_sha256"],
+                }
+            )
+        else:
+            excluded.append(status)
+    content = {
+        "active": sorted(active, key=lambda row: row["asset_id"]),
+        "excluded": sorted(excluded, key=lambda row: row["certificate_id"]),
+    }
+    return {
+        **content,
+        "qualified_asset_ids": sorted(asset_ids),
+        "projection_sha256": _canonical_sha(content),
     }
 
 
@@ -252,7 +311,7 @@ def build_asset_change_impact(
 ) -> dict[str, Any]:
     """Revoke changed/dependent certificates and block their already queued recipes."""
 
-    require_valid_document(graph, "daz_asset_compatibility_graph")
+    validate_asset_compatibility_graph(graph)
     nodes = {node["asset_id"]: node for node in graph["nodes"]}
     changed_assets = set(changed_asset_ids)
     affected = set(changed_assets)
@@ -420,5 +479,6 @@ __all__ = [
     "build_asset_quarantine_record",
     "decide_asset_retest",
     "issue_asset_smoke_certificate",
+    "project_active_qualified_asset_ids",
     "validate_asset_smoke_certificate",
 ]

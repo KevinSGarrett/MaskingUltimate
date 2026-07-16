@@ -17,6 +17,7 @@ import yaml
 from PIL import Image
 
 from ..autonomy.calibration import load_autonomy_config
+from ..autonomy.repair import immutable_protected_union, load_repair_regions
 from ..autonomy.review_draft import CandidateQaOutcome
 from ..cvat_bridge.client import CvatClient
 from ..cvat_bridge.push import push_images
@@ -53,6 +54,13 @@ from ..providers.sam31_orchestration import (
     Sam31OrchestrationError,
     run_sam31_shadow_orchestration,
     write_sam31_shadow_noncompletion,
+)
+from ..providers.sam31_repair import (
+    REPAIR_AUTHORITY,
+    Sam31RepairError,
+    Sam31RepairRequest,
+    run_sam31_repair_orchestration,
+    write_sam31_repair_noncompletion,
 )
 from ..providers.selection import validate_provider_selection
 from ..qa.multi_instance import MultiInstanceQcInputs
@@ -493,6 +501,143 @@ def build_production_runners(
             "status": document["status"],
             "candidate_count": document["candidate_count"],
             "requested_lanes": document["requested_lanes"],
+            "manifest_sha256": document["sha256"],
+            "authority": document["authority"],
+        }
+
+    def sam31_repair_proposals(
+        *,
+        source_image_path: Path,
+        part_map_path: Path,
+        person_bbox_xyxy: tuple[int, int, int, int],
+        context: StageContext,
+    ) -> dict[str, Any]:
+        """Run or explicitly skip isolated official-SAM3.1 S11 repair proposals."""
+        settings = context.config["stage"].get("sam31_repair_proposals")
+        required = {
+            "enabled": True,
+            "provider": "sam3_1",
+            "authority": REPAIR_AUTHORITY,
+        }
+        if not isinstance(settings, Mapping) or dict(settings) != required:
+            raise SemanticStageError("S11 SAM 3.1 repair-proposal configuration drift")
+        output_dir = context.output_dir / "sam31_repair"
+        try:
+            selection = validate_provider_selection(
+                config,
+                external_registry_path=Path(external_registry_path),
+                model_registry_path=Path(model_registry_path),
+            )
+            if "sam3_1" not in selection["shadow"]["interactive_segmenter"]:
+                raise Sam31RepairError(
+                    "official SAM 3.1 is not governed in the shadow interactive role"
+                )
+            lifecycle = str(selection["provider_states"]["sam3_1"])
+            if lifecycle not in RUNNABLE_LIFECYCLES:
+                path = write_sam31_repair_noncompletion(
+                    source_image_path=source_image_path,
+                    parent_instance_key=instance_name,
+                    lifecycle_state=lifecycle,
+                    output_dir=output_dir,
+                    status="skipped_unavailable",
+                    reason=f"official SAM 3.1 lifecycle_state={lifecycle}",
+                )
+            else:
+                loader = interactive_provider_loaders.get("sam3_1")
+                if loader is None:
+                    path = write_sam31_repair_noncompletion(
+                        source_image_path=source_image_path,
+                        parent_instance_key=instance_name,
+                        lifecycle_state=lifecycle,
+                        output_dir=output_dir,
+                        status="failed",
+                        reason="runnable official SAM 3.1 lacks an injected interactive loader",
+                    )
+                else:
+                    workhorse_path = context.output_dir / "workhorse_report.json"
+                    requests: list[Sam31RepairRequest] = []
+                    if workhorse_path.is_file():
+                        workhorse = json.loads(workhorse_path.read_text(encoding="utf-8"))
+                        part_map = np.asarray(Image.open(part_map_path))
+                        protected = immutable_protected_union(part_map)
+                        autonomy = load_autonomy_config()
+                        regions = load_repair_regions(
+                            context.prior_stage_dir("S05") / "prompts.json",
+                            image_shape=part_map.shape,
+                            padding_fraction=float(autonomy["repair"]["roi_padding_fraction"]),
+                        )
+                        full_roi = (0, 0, part_map.shape[1], part_map.shape[0])
+                        for audit in workhorse.get("audits", ()):
+                            plan = audit.get("correction_plan", {})
+                            label = str(audit.get("label", ""))
+                            if (
+                                audit.get("verdict") != "fail"
+                                or float(audit.get("confidence", 0)) < 0.7
+                                or plan.get("tool") != "sam2_refine"
+                                or not plan.get("positive_points")
+                            ):
+                                continue
+                            definition = get_ontology().label(label, require_enabled=True)
+                            if definition.id is None:
+                                continue
+                            current = part_map == int(definition.id)
+                            if not current.any():
+                                continue
+                            region = regions.get(label)
+                            requests.append(
+                                Sam31RepairRequest(
+                                    label=label,
+                                    roi_xyxy=(region.bbox_xyxy if region else full_roi),
+                                    positive_points=tuple(
+                                        tuple(int(value) for value in point)
+                                        for point in plan["positive_points"]
+                                    ),
+                                    negative_points=tuple(
+                                        tuple(int(value) for value in point)
+                                        for point in plan.get("negative_points", ())
+                                    ),
+                                    current_mask=current,
+                                    protected_mask=protected,
+                                    person_bbox_xyxy=person_bbox_xyxy,
+                                )
+                            )
+                    if not requests:
+                        path = write_sam31_repair_noncompletion(
+                            source_image_path=source_image_path,
+                            parent_instance_key=instance_name,
+                            lifecycle_state=lifecycle,
+                            output_dir=output_dir,
+                            status="complete_no_candidates",
+                            reason="no bounded workhorse repair plan requested official SAM 3.1",
+                        )
+                    else:
+                        try:
+                            path = run_sam31_repair_orchestration(
+                                source_image_path=source_image_path,
+                                parent_instance_key=instance_name,
+                                lifecycle_state=lifecycle,
+                                interactive_segmenter=loader(),
+                                requests=requests,
+                                output_dir=output_dir,
+                                repair_policy=load_autonomy_config()["repair"],
+                            )
+                        except Exception as exc:
+                            path = write_sam31_repair_noncompletion(
+                                source_image_path=source_image_path,
+                                parent_instance_key=instance_name,
+                                lifecycle_state=lifecycle,
+                                output_dir=output_dir,
+                                status="failed",
+                                reason=f"official SAM 3.1 repair execution failed: {exc}",
+                            )
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+            raise SemanticStageError(f"S11 SAM 3.1 repair contract failed: {exc}") from exc
+        return {
+            "status": document["status"],
+            "request_count": document["request_count"],
+            "proposal_count": document["proposal_count"],
+            "accepted_candidate_count": document["accepted_candidate_count"],
             "manifest_sha256": document["sha256"],
             "authority": document["authority"],
         }
@@ -1289,6 +1434,12 @@ def build_production_runners(
             pose_path=context.prior_stage_dir("S04") / "pose133.json",
             context_origin_xy=(int(context_box[0]), int(context_box[1])),
         )
+        sam31_repair = sam31_repair_proposals(
+            source_image_path=s01_dir / instance_name / "person_ctx.png",
+            part_map_path=context.prior_stage_dir("S09") / "label_map_part.png",
+            person_bbox_xyxy=local_person_box,
+            context=context,
+        )
         return {
             "vlm_enabled": status["enabled"],
             "reviewed_part_count": len(status["routes"]),
@@ -1297,6 +1448,7 @@ def build_production_runners(
             ),
             "whole_image_review": status["whole_image_review"],
             "workhorse": status.get("workhorse", {"enabled": False}),
+            "sam31_repair": sam31_repair,
         }
 
     def s12(context: StageContext) -> Mapping[str, Any]:

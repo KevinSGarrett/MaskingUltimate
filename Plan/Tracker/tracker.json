@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T19:06:09+00:00",
+    "generated_at": "2026-07-15T23:59:25+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -11878,7 +11878,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
@@ -11894,12 +11894,17 @@
           "ts": "2026-07-15T19:52:44+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: S07 and S08 batch consumers now resolve the validated interactive_segmenter role through the canonical contract, preserve SAM2.1-large behavior, use only governed base-plus on OOM, accept an injected promoted official SAM3.1 provider, and fail closed on selection/loader drift. No lifecycle or active-map mutation."
+        },
+        {
+          "ts": "2026-07-15T23:57:24+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-15: official SAM3.1 repair proposals are now connected to production S11 as a lifecycle-aware isolated sidecar behind InteractiveSegmenter. Exact identity/authority, source/pipeline/mask/prompt hashes, 12-candidate bound, strict binary persistence, existing repair guards, zero-authority skips/failures, and unchanged S09/active map are enforced. Remaining work is the gated official checkpoint/live GPU executor and real frozen benchmark."
         }
       ],
-      "evidence": "Official SAM3.1 contract/package validation plus provider-neutral S07/S08 batch routing verified. qa/live_verification/sam31_specialist_candidate_package_contract_20260715.json and qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json SHA-256 c6830990a00dcd015ff8e713bd4641099b309c7ccdbbcc2a2ea4c56df758f487. Focused 122/122 and full 1640/1640 pass. Remaining: gated checkpoint/live GPU executor and repair orchestration.",
+      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json SHA-256 c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0. Dedicated 3/3, affected focused suites, currency chain 44/44, and complete repository 1662/1662 pass; Ruff and Black pass. No checkpoint inference, winner, promotion, production mask, truth, or gold authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T19:52:44+00:00",
+      "updated_at": "2026-07-15T23:59:25+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {

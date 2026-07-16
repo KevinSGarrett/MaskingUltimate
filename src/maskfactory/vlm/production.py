@@ -1283,7 +1283,8 @@ def run_s11_production(
                 ),
                 "authoritative_map_write": False,
                 "non_gold_review_draft_write": bool(review_draft["applied"]),
-                "human_approval_required": True,
+                "direct_gold_authority": False,
+                "downstream_gold_gate": "human_anchor_or_exact_scope_autonomous_certificate",
             }
         else:
             workhorse_status = {"enabled": False, "reason": "legacy_review_mode"}

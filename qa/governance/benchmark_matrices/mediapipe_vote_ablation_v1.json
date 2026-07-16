@@ -28,11 +28,11 @@
   },
   "hand_landmarker_artifact_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
   "source_hashes": {
-    "configs/pipeline.yaml": "0484443725cc9d2784acb370e83e5a373cc6d3a158791ebbde00956cbd8f0769",
+    "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
     "src/maskfactory/lanes/hand.py": "10b2a2e62784f617ebb2cba42aa5da698f06ca3579b669b19dd83e6154aff475"
   },
   "authority_boundary": "Pre-result policy only. Fixture reports prove enforcement but grant no performance, promotion, serving, certificate, or gold authority; completion requires an image-disjoint human-anchor holdout hand set.",
-  "sha256": "a4091b179dc236eda145ce83fc8c12d42ee319c57d1e11d9219c832c4af3028c"
+  "sha256": "ebc61d39aeadd14a3cb8f7add01c814dc986d699be712d2c86eaa84c72442f67"
 }

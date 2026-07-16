@@ -112,7 +112,7 @@
     "frozen_artifacts_must_remain_unchanged": true
   },
   "source_hashes": {
-    "configs/pipeline.yaml": "0484443725cc9d2784acb370e83e5a373cc6d3a158791ebbde00956cbd8f0769",
+    "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
     "configs/external_sources.yaml": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
     "src/maskfactory/serve/api.py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
@@ -124,5 +124,5 @@
     "src/maskfactory/serve/maskfactory_nodes/workflows/wf_multi_instance_p1.json": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418"
   },
   "authority": "pre_result_measurement_policy_only_no_serving_training_mask_truth_gold_promotion_or_completion_authority",
-  "sha256": "144a6cced6a0076c42d4ef33ca221f50f84e0f26586ca1e9ce9c82f5206c0237"
+  "sha256": "7498c02a5b9450449ae33722a45dd3c2ba409da1046bc8ceb22d167af4f44f16"
 }

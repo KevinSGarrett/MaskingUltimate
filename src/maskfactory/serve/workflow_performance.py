@@ -16,7 +16,7 @@ from ..validation import ArtifactValidationError, require_valid_document
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY = ROOT / "qa" / "governance" / "serving_workflow_performance_v1.json"
-LOCKED_POLICY_SHA256 = "144a6cced6a0076c42d4ef33ca221f50f84e0f26586ca1e9ce9c82f5206c0237"
+LOCKED_POLICY_SHA256 = "7498c02a5b9450449ae33722a45dd3c2ba409da1046bc8ceb22d167af4f44f16"
 CASE_IDS = (
     "mode_b_predict_single",
     "mode_b_predict_multi",

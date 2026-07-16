@@ -311,9 +311,9 @@ def generate_correction_candidate(
             negative_ok,
             overlap,
             (
-                "ROI-bound reconstruction proposal created; human review still required"
+                "ROI-bound reconstruction proposal created; downstream gold gate required"
                 if guard.reconstruction_mode
-                else "ROI-bound refinement proposal created; human review still required"
+                else "ROI-bound refinement proposal created; downstream gold gate required"
             ),
         )
     return CandidateResult(
@@ -406,7 +406,7 @@ def write_workhorse_report(
         candidate_documents.append(candidate_document)
     document = {
         "schema_version": "1.0.0",
-        "authority": "candidate_proposals_only_human_approval_required",
+        "authority": "candidate_proposals_only_no_direct_gold_authority",
         "audit_count": len(audits),
         "candidate_created_count": sum(item.status == "candidate_created" for item in candidates),
         "audits": [_audit_document(item) for item in audits],

@@ -117,7 +117,12 @@ stages:
   S09: {enabled: true}
   S09.5: {enabled: true}
   S10: {enabled: true}
-  S11: {enabled: true}
+  S11:
+    enabled: true
+    sam31_repair_proposals:
+      enabled: true
+      provider: sam3_1
+      authority: official_sam31_repair_proposals_only_no_active_map_semantic_mask_serving_or_gold_authority
   S12: {enabled: true}
   S13: {enabled: true}
   S14: {enabled: true}

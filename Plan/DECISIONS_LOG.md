@@ -337,6 +337,36 @@ and replacing the only working review deployment would violate the approved para
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
 
+## 2026-07-15 - Keep official SAM3.1 repair proposals isolated until the downstream gold gate
+
+**Item(s) affected:** MF-P2-11.04, S11 autonomous repair, documents 20–22
+
+**Decision:** Execute official SAM3.1 point/mask/box repair as a lifecycle-aware S11 sidecar behind
+the canonical `InteractiveSegmenter` contract. Admit only exact official runtime identities with
+shadow authority; bind every request to source, label, ROI, positive/negative points, baseline and
+protected-mask hashes; cap each label at twelve proposals; run the existing reconstruction,
+changed-area, protected-region, outside-ROI, component, and expected-area guards; persist only
+guard-passing strict binary masks; and leave S09 plus the active provider selection unchanged.
+Repair grants no gold authority itself. A resulting candidate can become gold only through later
+human-anchor approval or the exact-scope, current autonomous-certification gate in documents 20 and
+22. Planned/unavailable, empty-plan, missing-loader, and runtime-failure states remain explicit
+zero-authority records.
+
+**Administrative compatibility rebind:** Because S11 orchestration is part of the frozen pipeline,
+administratively rebind the unopened MediaPipe ablation, silhouette, serving-workflow, and aggregate
+provider-matrix policies to the new `configs/pipeline.yaml` identity before any eligible result.
+No route, provider comparison, truth tier, metric, threshold, finalist, rollback, or authority rule
+changes.
+
+**Why:** The approved modernization requires official SAM3.1 repair proposals, while the existing
+repair engine already provides the required safety and tournament guards. An isolated provider-
+neutral source closes the execution gap without allowing an unbenchmarked challenger to alter a
+production map. The prior repair-spec sentence that only a human could ever approve gold conflicted
+with the separately approved autonomous-certified-gold architecture; narrowing repair to no direct
+gold authority preserves both contracts.
+
+**Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
 ## 2026-07-15 - Execute official SAM3.1 as an isolated production shadow sidecar
 
 **Item(s) affected:** MF-P2-11.03, MF-P3-08.01, MF-P8-11.03, S06 production

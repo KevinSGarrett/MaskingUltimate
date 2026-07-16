@@ -5744,3 +5744,22 @@ Currency chain:                     reviews `422bb732...`, `e6327cd9...`, and `3
 Verification:                       146 affected production/provider/schema tests, 65 pipeline-bound policy tests, 62 aggregate transaction tests, 96 final currency/aggregate tests, and complete repository 1,659/1,659 pass; Ruff, pre-commit Black, JSON parsing, and diff check pass
 Runtime boundary:                   official SAM3.1 remains lifecycle `planned` because its checkpoint is gated; no checkpoint download, official inference, real candidate quality, benchmark win, promotion, mask, truth, or gold claim is made
 Evidence:                           `qa/live_verification/sam31_production_shadow_orchestration_20260715.json` SHA-256 `c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7`
+
+## 2026-07-15 23:59 UTC - Official SAM3.1 bounded repair proposals connected to S11
+
+**Result:** MF-P2-11.04 advances from 80% to 90%; point/box/mask refinement and
+repair proposals now reach production orchestration behind the provider-neutral contract.
+
+Production path:                    S11 derives official-SAM3.1 requests only from bounded, confident failed workhorse plans and existing S05 repair ROIs
+Request identity:                   source, official runtime/provider, pipeline, label, ROI, point polarities, baseline mask, protected mask, and person geometry are hash bound
+Candidate bound:                    maximum twelve proposals per label; overproduction fails closed
+Safety guards:                      existing ordinary/reconstruction changed-area, protected overlap, outside-ROI, topology/component, expected-area, prompt-polarity, and strict-PNG checks are reused
+Artifact isolation:                 only guard-passing masks persist under `S11/sam31_repair/candidates`; rejected proposals retain evidence without mask files; S09 and the active provider map never change
+Lifecycle evidence:                planned/unavailable, no eligible plan, missing loader, and runtime failure are explicit zero-authority outcomes
+Gold authority:                    repair itself has no direct gold authority; later authority is either human-anchor approval or an exact-scope current autonomous certificate under documents 20 and 22
+Spec reconciliation:               document 21 no longer incorrectly says a human is the only possible gold authority; uncalibrated repair remains non-gold and cannot clear a BLOCK or create holdout truth
+Pre-result rebinds:                 pipeline-bound MediaPipe, silhouette, serving-workflow, and aggregate provider-matrix policies were administratively rebound before any eligible result; final aggregate canonical SHA-256 `8131b185...`; measurements, thresholds, truth, finalist, rollback, and authority rules are unchanged
+Currency chain:                     review `7cdb252d06da682a71ca3ca4` archived; current Ed25519-valid/current-input review `415eafc3d7acb8c642dc04e9` remains honestly FAIL only on missing real role certificates and distinct tested rollbacks
+Verification:                       3 dedicated repair tests, affected production/provider/policy/transaction suites, 44 currency/governance tests, and complete repository 1,662/1,662 pass; Ruff and Black pass
+Runtime boundary:                   official SAM3.1 remains lifecycle `planned`; no checkpoint inference, real-image repair quality, winner, promotion, production mask, truth, or gold authority is claimed
+Evidence:                           `qa/live_verification/sam31_repair_orchestration_20260715.json` SHA-256 `c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0`

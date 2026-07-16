@@ -210,7 +210,7 @@ def test_workhorse_executes_sam2_candidate_but_never_overwrites_current_mask(tmp
         tmp_path / "workhorse_report.json", audits=[audit], candidates=[result]
     )
     document = json.loads(report.read_text())
-    assert document["authority"] == "candidate_proposals_only_human_approval_required"
+    assert document["authority"] == "candidate_proposals_only_no_direct_gold_authority"
     assert document["candidate_created_count"] == 1 and len(document["sha256"]) == 64
     assert document["candidates"][0]["candidate_path"] == "candidates/left_forearm.png"
 

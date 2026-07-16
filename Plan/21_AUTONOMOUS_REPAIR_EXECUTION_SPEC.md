@@ -2,14 +2,17 @@
 
 **Status:** approved implementation contract
 **Applies to:** S05, S09, S10, S11, S12, CVAT review drafts
-**Authority:** machine repair may improve a reversible review draft; only a human may approve gold
+**Authority:** machine repair may improve a reversible non-gold review draft but grants no gold
+authority itself; downstream gold authority is either human-anchor approval or an exact-scope,
+unexpired, unrevoked autonomous-certification gate under documents 20 and 22
 
 ## 1. Purpose and success condition
 
 The subsystem is not complete when a model merely describes a bad mask. It is complete only when it
 repeatedly inspects the exact current candidate, creates pixel-level alternatives, rejects unsafe
 alternatives, selects the best evidence-backed alternative, and gives the human a reversible non-gold
-draft. The operational target is minimum correction time without weakening hard QA or human gold.
+draft or certificate-gated candidate. The operational target is minimum correction time without
+weakening hard QA, human-anchor truth, or autonomous-certification requirements.
 
 Experimental committee convergence and calibrated 95% acceptance are separate evidence rules. Raw
 model confidence is not a calibrated probability and must never be relabeled as one. Committee
@@ -21,9 +24,11 @@ convergence requires all of these to concern the same exact candidate:
 3. Every required reviewer participates; missing, malformed, failed, or uncertain output is not pass.
 4. Format, topology, components, ROI, protected-region, area, and ontology guards pass.
 
-Committee convergence may publish a review draft. A real 95% claim requires a current certificate
-computed from frozen image-disjoint human-anchor truth and one-sided confidence bounds. Neither kind
-of convergence can approve gold, clear a BLOCK, or create holdout truth.
+Committee convergence alone may publish only a review draft. A real 95% claim requires a current
+certificate computed from frozen image-disjoint human-anchor truth and one-sided confidence bounds.
+Uncalibrated convergence cannot approve gold, clear a BLOCK, or create holdout truth. A calibrated
+result may become `autonomous_certified_gold` only through the separate exact-scope certificate gate;
+repair never grants that authority directly and never creates human-anchor or holdout truth.
 
 ## 2. Architecture
 

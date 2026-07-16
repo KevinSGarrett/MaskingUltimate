@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T06:34:25Z",
+  "captured_at": "2026-07-16T08:38:00Z",
   "items": ["MF-P9-04.03", "MF-P9-04.04"],
   "status": "partial_live_reconciliation",
   "authority_boundary": {
@@ -35,11 +35,11 @@
     "filesystem_inventory_complete": false
   },
   "autonomous_acquisition": {
-    "captured_source_manifest_count": 442,
-    "indexed_manifest_count": 130,
-    "pending_manifest_count": 312,
+    "captured_source_manifest_count": 495,
+    "indexed_manifest_count": 489,
+    "pending_manifest_count": 6,
     "failed_manifest_count": 0,
-    "archived_immutable_revision_count": 130,
+    "archived_immutable_revision_count": 489,
     "revision_archive_root": "F:\\DAZ\\01_source_records\\install_manifests\\autonomous",
     "index_path": "F:\\DAZ\\05_registry\\live\\autonomous_acquisition.sqlite",
     "resumable": true,
@@ -47,17 +47,19 @@
     "new_sources_are_appended_to_pending_queue": true,
     "changed_sources_are_archived_by_sha256_and_requeued": true,
     "non_content_and_unregistered_source_roots_preserved": true,
-    "source_fingerprint": null
+    "source_fingerprint": null,
+    "stored_fingerprint_while_incomplete": null,
+    "fingerprint_invalidation_rule": "Any newly discovered, changed, pending, or failed source immediately removes the last complete fingerprint before bounded indexing continues."
   },
   "filesystem_inventory": {
     "state_path": "F:\\DAZ\\05_registry\\rebuild_evidence\\filesystem_inventory.sqlite",
     "state_schema_version": 2,
-    "completed_directory_count": 217,
-    "pending_directory_count": 151,
+    "completed_directory_count": 7794,
+    "pending_directory_count": 68,
     "failed_directory_count": 0,
-    "observed_file_count": 545,
-    "observed_bytes": 376285881,
-    "observed_user_facing_file_count": 293,
+    "observed_file_count": 41094,
+    "observed_bytes": 38792501179,
+    "observed_user_facing_file_count": 26874,
     "skipped_reparse_point_count": 0,
     "reparse_points_followed": false,
     "directory_drift_requeued": true,
@@ -65,15 +67,24 @@
     "complete": false,
     "portable_snapshot_published": false
   },
+  "live_acquisition_boundary": {
+    "supervised_worker_count": 8,
+    "worker_version": "0.3.7",
+    "capacity_guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
+    "free_gib_observed": 206.715,
+    "capacity_state": "healthy",
+    "workers_stopped_by_inventory_task": false,
+    "effect": "Pending manifest/directory counts may rise between bounded chunks; no stable final inventory can be claimed until acquisition quiesces."
+  },
   "cross_source_comparison": {
     "authoritative": false,
     "reason": "The autonomous manifest index and filesystem inventory are both incomplete while acquisition workers continue to add sources and files. Missing/unmanifested counts are withheld until both observations stabilize."
   },
   "verification": {
-    "focused_tests_passed": 36,
+    "focused_tests_passed": 37,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1740,
-    "full_repository_tests_passed": 1740,
+    "full_repository_tests_collected": 1754,
+    "full_repository_tests_passed": 1754,
     "full_repository_tests_failed": 0,
     "ruff": "pass",
     "schema_validation": "pass",
@@ -86,6 +97,7 @@
       "disappeared child reconciliation",
       "changed/removed published acquisition manifest",
       "content-addressed acquisition-manifest revision archival and reindex",
+      "stale complete-fingerprint invalidation on newly pending source",
       "unknown acquisition source root preservation",
       "CMS connection/schema failure",
       "CMS credential environment stripping",

@@ -15592,11 +15592,17 @@
       "conditional": false,
       "status": "partially_complete",
       "percent_complete": 90,
-      "notes": [],
-      "evidence": "Read-only local CMS adapter and explicit offline filesystem fallback are schema-valid and tested; live online snapshot cms_e94a27f9cabb4d19fd8423f0 observed 17 installed products and 4,677 content rows, and forced offline snapshot cms_offline_b58d776345e759643d279621 declares all metadata gaps. Final live online/offline path comparison remains pending completion of the registered-root filesystem inventory.",
+      "notes": [
+        {
+          "ts": "2026-07-16T08:45:25+00:00",
+          "actor": "ai_agent",
+          "text": "Eight guarded acquisition workers resumed externally while F was healthy; current CMS/offline observations remain valid, but final comparison cannot be frozen against a mutating filesystem."
+        }
+      ],
+      "evidence": "Read-only local CMS adapter and explicit offline filesystem fallback are schema-valid and tested; live online snapshot cms_e94a27f9cabb4d19fd8423f0 observed 17 installed products and 4,677 content rows, and forced offline snapshot cms_offline_b58d776345e759643d279621 declares all metadata gaps. Autonomous source lineage now invalidates any stored complete fingerprint immediately when a source becomes pending. Final live online/offline path comparison remains pending a stable registered-root filesystem inventory after active acquisitions quiesce.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T06:54:41+00:00",
+      "updated_at": "2026-07-16T08:45:25+00:00",
       "orphaned": false
     },
     "MF-P9-04.04": {
@@ -15612,12 +15618,18 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
-      "notes": [],
-      "evidence": "Resumable state-schema-2 scanner canonicalizes root-relative paths and DAZ logical URIs, never follows reparse points, requeues directory drift, reconciles deleted children, and refuses final publication while incomplete. Live: 217 directories complete, 151 pending, zero failed; 545 files / 376,285,881 bytes / 293 user-facing files. Autonomous source: 442 manifests discovered, 130 current revisions indexed and immutably SHA-archived, 312 pending, zero failed; changed source revisions requeue transactionally. Cross-source joins remain disabled until both inputs complete.",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-16T08:45:26+00:00",
+          "actor": "ai_agent",
+          "text": "Pending counts may rise between bounded chunks because eight capacity-guarded acquisition workers are actively publishing. No final inventory, missing/unmanifested counts, or duplicate/shadow result is claimed."
+        }
+      ],
+      "evidence": "Resumable state-schema-2 scanner canonicalizes root-relative paths and DAZ logical URIs, never follows reparse points, requeues directory drift, reconciles deleted children, and refuses final publication while incomplete. 2026-07-16T08:38Z live checkpoint: 7,794 directories complete, 68 pending, zero failed; 41,094 files / 38,792,501,179 bytes / 26,874 user-facing files. Autonomous source: 495 manifests discovered, 489 revisions indexed and immutably archived, six pending, zero failed; the prior complete fingerprint is deleted while pending. Cross-source joins remain disabled until both inputs stabilize. 37 focused and 1,754 full repository tests pass. Evidence: qa/reports/daz_asset_observation_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T06:54:43+00:00",
+      "updated_at": "2026-07-16T08:45:26+00:00",
       "orphaned": false
     },
     "MF-P9-04.05": {

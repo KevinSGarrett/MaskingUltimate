@@ -5956,3 +5956,17 @@ Fail-closed integrity:                schema, version, character-perspective lef
 Authority boundary:                   snapshot supplies exact IDs to later DAZ mapping jobs; it does not claim facet/topology mapping, geometry qualification, production authority, or v2 activation
 Verification:                         25/25 focused DAZ capacity/control/ontology tests and the complete 1,753/1,753 repository suite pass; Ruff check and Ruff format pass
 Evidence:                             `qa/reports/daz_acquisition_capacity_intervention_20260716.json`; `qa/reports/daz_v1_ontology_snapshot_20260716.json`
+
+## 2026-07-16 08:38 UTC - Live DAZ asset observations advanced; stale fingerprint edge closed
+
+**Result:** MF-P9-04.03/.04 remain honestly partial while acquisition is active, but their
+resumable evidence is substantially closer to the live estate and cannot expose a stale complete identity.
+
+Autonomous manifests:                 495 sources discovered; 489 current revisions indexed and immutably archived, six pending, zero failed; public and stored fingerprints are both null while incomplete
+Fingerprint safety:                  discovery of any new/changed/pending/failed source deletes the prior complete fingerprint before bounded indexing; interruption cannot leave an apparently current metadata identity
+Filesystem progress:                 7,794 directories complete, 68 pending, zero failed; 41,094 files / 38,792,501,179 bytes / 26,874 user-facing files; no reparse point followed
+Live drift:                          eight externally supervised worker `0.3.7` processes remain active under the exact deployed capacity guard; F had 206.715 GiB free and was healthy
+Publication boundary:                source/directory pending counts can increase as products land; final inventory, missing/unmanifested comparison, and duplicate/shadow claims remain withheld
+Mutation boundary:                   no asset move/delete/redownload, worker stop, DAZ launch, DIM/CMS write, credential change, WSL/Docker action, elevation, or UAC action occurred
+Verification:                         37 focused observation tests and the complete 1,754/1,754 repository suite pass; Ruff and Black hooks pass
+Evidence:                             `qa/reports/daz_asset_observation_progress_20260716.json`

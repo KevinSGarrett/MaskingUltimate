@@ -241,6 +241,41 @@ def test_autonomous_manifest_revision_is_archived_and_reindexed(tmp_path: Path) 
         connection.close()
 
 
+def test_new_source_immediately_invalidates_stored_complete_fingerprint(tmp_path: Path) -> None:
+    manifests = tmp_path / "manifests"
+    manifests.mkdir()
+    output = tmp_path / "resume.sqlite"
+    first_record = _manifest("mfst_" + "a" * 24, "fil_" + "b" * 24, "c" * 64, "first.duf")
+    (manifests / "first.yaml").write_text(yaml.safe_dump(first_record), encoding="utf-8")
+    complete = resume_acquisition_manifest_index(manifests, output, max_manifests=1)
+    assert complete.complete is True
+    assert complete.source_fingerprint is not None
+
+    for index, token in enumerate(("d", "g"), start=2):
+        record = _manifest(
+            "mfst_" + token * 24,
+            "fil_" + chr(ord(token) + 1) * 24,
+            chr(ord(token) + 2) * 64,
+            f"asset_{index}.duf",
+        )
+        (manifests / f"new_{index}.yaml").write_text(yaml.safe_dump(record), encoding="utf-8")
+
+    partial = resume_acquisition_manifest_index(manifests, output, max_manifests=1)
+    assert partial.complete is False
+    assert partial.pending_manifest_count == 1
+    assert partial.source_fingerprint is None
+    connection = sqlite3.connect(output)
+    try:
+        assert (
+            connection.execute(
+                "SELECT value FROM metadata WHERE key='source_fingerprint'"
+            ).fetchone()
+            is None
+        )
+    finally:
+        connection.close()
+
+
 def test_autonomous_manifest_refuses_traversal_and_preserves_unknown_roots(tmp_path: Path) -> None:
     manifests = tmp_path / "manifests"
     manifests.mkdir()

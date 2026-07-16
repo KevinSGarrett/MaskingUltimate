@@ -606,6 +606,11 @@ def _refresh_source_queue(connection: sqlite3.Connection, directory: Path) -> No
         raise AcquisitionManifestError(
             "published_manifest_removed", f"published source disappeared: {missing[0]}"
         )
+    incomplete = connection.execute(
+        "SELECT 1 FROM source_queue WHERE state!='complete' LIMIT 1"
+    ).fetchone()
+    if incomplete is not None:
+        connection.execute("DELETE FROM metadata WHERE key='source_fingerprint'")
     connection.commit()
 
 

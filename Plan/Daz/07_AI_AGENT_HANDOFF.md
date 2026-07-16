@@ -152,6 +152,9 @@ Operational rules:
   item's required live readback, render, geometry, mapping, or package evidence exists.
 - Do not infer live progress from an item's blended percentage. Use the generated dashboard's
   **Live DAZ Vertical Slice** table for implementation readiness, live execution, and acceptance.
+- Whenever live evidence changes, update the `daz_*` vertical-slice metrics only through
+  `Plan\Tracker\tracker.py metrics`, cite the exact evidence in the governed report/item, and regenerate
+  the dashboard. Never advance a live counter from fixture, schema, mock, or planning evidence.
 - After the immediate MF-P9-06.07/.08 chain and its directly required render/pass work, prioritize the
   first accepted 24-100 engineering-fixture path over additional optional planning abstractions.
 - The current storage guard is authoritative. When F: is below the 150-GiB new-work floor, do not start

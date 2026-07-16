@@ -167,6 +167,10 @@ status glyph, evidence, notes — a full-detail mirror of the original
 markdown views stay in sync with `tracker.json`. The markdown files are
 never hand-edited — they carry an auto-generated banner as a reminder.
 
+The `daz_*` vertical-slice metrics are live-evidence counters, not planning targets. Update them only
+when the corresponding governed identity snapshot, graph, certificate, scene, package, training run,
+or real-image benchmark changes; fixture-only work must leave the live counter unchanged.
+
 ---
 
 ## 4. Status Taxonomy

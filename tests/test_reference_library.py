@@ -12,9 +12,11 @@ from maskfactory.reference_library import (
     inspect_reference_selection,
     load_reference_library_policy,
     materialize_reference_tier,
+    publish_reference_database_snapshot,
     retrieve_reference_candidates,
     validate_benchmark_training_isolation,
     validate_reference_library_policy,
+    validate_reference_materialized_tier,
     validate_reference_selection,
     write_reference_acquisition_context,
 )
@@ -185,6 +187,30 @@ def test_status_and_selection_validation_are_read_only_and_hash_checked(tmp_path
         ],
     )
     assert path_overlap["issues"] == ["path_overlap:0:A.JPG"]
+
+
+def test_reference_database_snapshot_is_atomic_consistent_and_replaceable(tmp_path: Path):
+    database = _database(tmp_path)
+    output = tmp_path / "published.sqlite"
+    first = publish_reference_database_snapshot(database, output)
+    assert first["quick_check"] == "ok"
+    assert len(first["sha256"]) == 64
+    published = sqlite3.connect(output)
+    assert published.execute("SELECT COUNT(*) FROM images").fetchone()[0] == 0
+    published.close()
+
+    source = sqlite3.connect(database)
+    source.execute(
+        "INSERT INTO images(relative_path,sha256,dhash64) VALUES (?,?,?)",
+        ("new.jpg", "a" * 64, "1"),
+    )
+    source.commit()
+    source.close()
+    second = publish_reference_database_snapshot(database, output)
+    assert second["sha256"] != first["sha256"]
+    published = sqlite3.connect(output)
+    assert published.execute("SELECT COUNT(*) FROM images").fetchone()[0] == 1
+    published.close()
 
 
 def test_selection_validator_detects_tier_sha_overlap(tmp_path: Path):
@@ -378,6 +404,10 @@ def test_tier_materialization_is_bounded_hashed_resumable_and_capacity_safe(tmp_
     assert replay["processed_this_chunk"] == 0
     assert replay["reused_this_chunk"] == 1
     assert replay["complete"] is True
+    audit = validate_reference_materialized_tier(database, policy, "benchmark_reference")
+    assert audit["passed"] is True
+    assert audit["verified_count"] == 1
+    assert len(audit["materialized_fingerprint"]) == 64
 
     hold = materialize_reference_tier(
         database,

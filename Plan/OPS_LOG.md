@@ -6016,3 +6016,18 @@ Active-learning connection:           the weekly planner atomically writes `refe
 Authority:                           every candidate and document root declares `unlabeled_reference_corpus`, `truth_authority=none`, `training_eligible=false`, and independent certification required
 Verification:                        21 focused reference/active-learning tests and the complete 1,759/1,759 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_retrieval_acquisition_context_20260716.json`
+
+## 2026-07-16 10:16 UTC - Benchmark reference tier fully materialized and independently rehashed
+
+**Result:** The complete 2,500-image benchmark tier is durably copied and hash-verified;
+MF-P9-14.06 remains partial because the retrieval copy is capacity-held and contact sheets are still running.
+
+Benchmark copy:                       2,500/2,500 files and 7,897,306,748/7,897,306,748 bytes materialized; zero remaining, failed, or orphan `.partial` files
+Independent verification:             every destination was rehashed against its selected SHA-256; aggregate audit fingerprint `5e1bd31c...`; zero issues and zero source modifications
+Durable implementation:               checked-in tier validator independently rehashes one selected tier; database publication uses SQLite backup plus quick-check, fsync, and atomic replace
+Published snapshot:                   446,554,112-byte governed database, SHA-256 `7b1102d2...`, SQLite quick-check `ok`
+Contact sheets:                       hidden generator started at 10:07:59 UTC and is healthy/advancing; seven sheets existed at this evidence capture, so completion is not claimed
+Retrieval capacity hold:              the 18,000 selections total 64,329,397,650 bytes; duplicating them now would cross the shared F-drive 150-GiB soft floor, so zero retrieval copies were started
+Authority:                           copied references remain unlabeled/no-truth/no-training sources; governed adult/NSFW material is eligible, while known/suspected minors remain prohibited
+Verification:                        nine focused reference tests and the complete 1,760/1,760 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/reference_benchmark_materialization_20260716.json`

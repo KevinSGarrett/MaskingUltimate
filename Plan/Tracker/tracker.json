@@ -17768,18 +17768,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 25,
+      "percent_complete": 40,
       "notes": [
         {
           "ts": "2026-07-16T09:11:36+00:00",
           "actor": "ai_agent",
           "text": "Only the 7.35-GiB benchmark tranche is running. Retrieval materialization cannot start unless the post-copy storage plan preserves the shared F-drive soft floor; no unsafe all-tier copy is authorized by this partial state."
+        },
+        {
+          "ts": "2026-07-16T10:17:48+00:00",
+          "actor": "ai_agent",
+          "text": "The complete benchmark tier is now durable and independently rehashed. Contact sheets are running hidden and advancing. Retrieval duplication remains capacity-held because it would cross the shared F-drive 150-GiB soft floor; the governed database and retrieval planner remain usable without those duplicate copies."
         }
       ],
-      "evidence": "Tier-aware checked-in materializer now performs bounded resume, governed-root containment, atomic copy/fsync, exact SHA-256/source-inventory equality, source-mutation detection, and per-file 150/100-GiB capacity gates. Benchmark materialization is active and had verified 264/2,500 files at 2026-07-16T09:11Z with F healthy at 194.144 GiB; retrieval and contact sheets remain pending. Full 72.23-GB copy is correctly withheld because it would cross the soft floor.",
+      "evidence": "Benchmark materialization completed 2,500/2,500 files and 7,897,306,748 bytes with zero remaining, issues, orphan partials, or source modifications. Independent destination rehash fingerprint is 5e1bd31cbf1697f3e2dbe41dfe7c0e96f9064bda001739d5e05393f0d7dac401. The published 446,554,112-byte SQLite snapshot passed quick-check and has SHA-256 7b1102d2ad855e78d74bbce7927d2dc0d16b74c2abc780f34ac810b549075c55. Nine focused and 1,760 full tests pass. Evidence: qa/reports/reference_benchmark_materialization_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T09:11:36+00:00",
+      "updated_at": "2026-07-16T10:17:48+00:00",
       "orphaned": false
     },
     "MF-P9-14.07": {

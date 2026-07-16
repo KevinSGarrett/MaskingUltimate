@@ -2173,6 +2173,71 @@ def reference_library_materialize(database: Path, policy: Path, tier: str, max_i
         raise click.exceptions.Exit(75)
 
 
+@reference_library.command("validate-tier")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--tier", type=click.Choice(("benchmark_reference", "retrieval_reference")), required=True
+)
+def reference_library_validate_tier(database: Path, policy: Path, tier: str) -> None:
+    """Rehash every materialized file in exactly one selected tier."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        load_reference_library_policy,
+        validate_reference_materialized_tier,
+    )
+
+    try:
+        report = validate_reference_materialized_tier(
+            database, load_reference_library_policy(policy), tier
+        )
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+    if not report["passed"]:
+        raise click.ClickException("reference materialized tier validation failed")
+
+
+@reference_library.command("publish-database")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(
+        r"F:\Reference_Images\Ultimate_Masking_Reference_Images"
+        r"\manifests\reference_library.sqlite"
+    ),
+    show_default=True,
+)
+def reference_library_publish_database(database: Path, output: Path) -> None:
+    """Atomically publish a quick-checked, transactionally consistent DB snapshot."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        publish_reference_database_snapshot,
+    )
+
+    try:
+        report = publish_reference_database_snapshot(database, output)
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+
+
 @main.group("daz")
 def daz() -> None:
     """Operate the optional default-disabled DAZ synthetic lane."""

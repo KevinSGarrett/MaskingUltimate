@@ -301,6 +301,47 @@ def inspect_reference_selection(database: Path, policy: Mapping[str, Any]) -> di
     }
 
 
+def publish_reference_database_snapshot(database: Path, output_path: Path) -> dict[str, Any]:
+    """Atomically publish one transactionally consistent copy of the live reference DB."""
+    database = Path(database).resolve(strict=True)
+    output_path = Path(output_path).resolve()
+    if database == output_path:
+        raise ReferenceLibraryError("reference database snapshot source and output must differ")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output_path.with_name(f".{output_path.name}.partial-{os.getpid()}")
+    temporary.unlink(missing_ok=True)
+    source = sqlite3.connect(f"file:{database}?mode=ro", uri=True, timeout=120)
+    destination: sqlite3.Connection | None = None
+    try:
+        if source.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise ReferenceLibraryError("source reference database failed quick_check")
+        destination = sqlite3.connect(temporary)
+        source.backup(destination)
+        destination.commit()
+        if destination.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+            raise ReferenceLibraryError("copied reference database failed quick_check")
+        destination.close()
+        destination = None
+        with temporary.open("rb+") as handle:
+            os.fsync(handle.fileno())
+        os.replace(temporary, output_path)
+    except sqlite3.Error as exc:
+        raise ReferenceLibraryError(f"reference database snapshot failed: {exc}") from exc
+    finally:
+        if destination is not None:
+            destination.close()
+        source.close()
+        temporary.unlink(missing_ok=True)
+    return {
+        "schema_version": "1.0.0",
+        "source": str(database),
+        "output": str(output_path),
+        "bytes": output_path.stat().st_size,
+        "sha256": _sha256_file(output_path),
+        "quick_check": "ok",
+    }
+
+
 def materialize_reference_tier(
     database: Path,
     policy: Mapping[str, Any],
@@ -452,6 +493,77 @@ def materialize_reference_tier(
         "capacity_hold": capacity_hold,
         "issues": issues,
         "source_files_modified": 0,
+    }
+
+
+def validate_reference_materialized_tier(
+    database: Path, policy: Mapping[str, Any], tier: str
+) -> dict[str, Any]:
+    """Independently hash every output in one reference tier."""
+    validate_reference_library_policy(policy)
+    if tier not in REFERENCE_TIERS:
+        raise ReferenceLibraryError(f"unknown reference tier: {tier}")
+    output_root = Path(str(policy["output_root"])).resolve(strict=True)
+    connection = sqlite3.connect(f"file:{Path(database)}?mode=ro", uri=True, timeout=120)
+    try:
+        rows = connection.execute(
+            "SELECT s.relative_path,s.materialized_path,s.materialized_sha256,i.sha256,i.size_bytes "
+            "FROM selections s JOIN images i ON i.relative_path=s.relative_path "
+            "WHERE s.tier=? ORDER BY s.rank,s.relative_path",
+            (tier,),
+        ).fetchall()
+    finally:
+        connection.close()
+    target = int(policy["tiers"][tier]["target_count"])
+    issues: list[str] = []
+    total_bytes = 0
+    identities = []
+    if len(rows) != target:
+        issues.append(f"selection_count:{len(rows)}!={target}")
+    for relative_path, materialized_path, claimed_sha, source_sha, source_size in rows:
+        if not materialized_path:
+            issues.append(f"missing_materialized:{relative_path}")
+            continue
+        try:
+            path = _path_under_root(output_root, str(materialized_path))
+        except ReferenceLibraryError:
+            issues.append(f"materialized_path_escape:{relative_path}")
+            continue
+        if not path.is_file():
+            issues.append(f"missing_materialized:{relative_path}")
+            continue
+        observed_size = path.stat().st_size
+        if observed_size != int(source_size):
+            issues.append(f"materialized_size_mismatch:{relative_path}")
+            continue
+        if claimed_sha != source_sha:
+            issues.append(f"materialized_source_hash_mismatch:{relative_path}")
+            continue
+        observed_sha = _sha256_file(path)
+        if observed_sha != claimed_sha:
+            issues.append(f"materialized_hash_mismatch:{relative_path}")
+            continue
+        total_bytes += observed_size
+        identities.append((str(materialized_path), str(observed_sha), int(observed_size)))
+    tier_root = output_root / tier
+    partials = sorted(
+        path.relative_to(output_root).as_posix()
+        for path in tier_root.rglob("*.partial*")
+        if path.is_file()
+    )
+    if partials:
+        issues.append(f"orphan_partial_files:{len(partials)}")
+    return {
+        "schema_version": "1.0.0",
+        "database": str(database),
+        "tier": tier,
+        "target_count": target,
+        "verified_count": len(identities),
+        "verified_bytes": total_bytes,
+        "materialized_fingerprint": _rows_fingerprint(identities),
+        "orphan_partial_files": partials,
+        "issues": issues,
+        "passed": not issues,
     }
 
 
@@ -893,9 +1005,11 @@ __all__ = [
     "inspect_reference_selection",
     "load_reference_library_policy",
     "materialize_reference_tier",
+    "publish_reference_database_snapshot",
     "reference_dhash64",
     "retrieve_reference_candidates",
     "validate_benchmark_training_isolation",
+    "validate_reference_materialized_tier",
     "validate_reference_library_policy",
     "validate_reference_selection",
     "write_reference_acquisition_context",

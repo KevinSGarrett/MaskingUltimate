@@ -45,6 +45,7 @@ def test_task_registration_defines_nightly_and_weekly_limited_tasks() -> None:
     assert "MaskFactory_NightlyManifestLint" in text
     assert "/SC DAILY /ST 03:00 /RL LIMITED" in text
     assert "MaskFactory_WeeklyQaMining" in text
+    assert text.count("-WindowStyle Hidden") == 4
     assert "/SC WEEKLY /D MON /ST 10:00 /RL LIMITED" in text
 
 

@@ -5763,3 +5763,14 @@ Currency chain:                     review `7cdb252d06da682a71ca3ca4` archived; 
 Verification:                       3 dedicated repair tests, affected production/provider/policy/transaction suites, 44 currency/governance tests, and complete repository 1,662/1,662 pass; Ruff and Black pass
 Runtime boundary:                   official SAM3.1 remains lifecycle `planned`; no checkpoint inference, real-image repair quality, winner, promotion, production mask, truth, or gold authority is claimed
 Evidence:                           `qa/live_verification/sam31_repair_orchestration_20260715.json` SHA-256 `c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0`
+
+## 2026-07-16 00:11 UTC - Background PowerShell task windows suppressed
+
+**Result:** MF-P1-09.01 and MF-P4-03.05 remain complete with refreshed live evidence;
+all four installed MaskFactory scheduled jobs are noninteractive, hidden, and LIMITED.
+
+Installed actions:                  nightly backup, weekly cold-copy reminder, nightly manifest lint, and weekly QA mining all include `-WindowStyle Hidden`
+Live state:                         all four Task Scheduler entries report Ready with their expected next-run schedules
+Safety boundary:                    no elevation, UAC approval, WSL/Docker restart, VHD operation, or task execution was performed during verification
+Regression:                         `tests/test_backup_ops.py` enforces exactly four hidden actions; focused suite 4/4 passes
+Evidence:                           `qa/live_verification/windows_scheduled_tasks_hidden_20260716.json` SHA-256 `6ac648a8ee58a591273e48c98834c3aa55e3ad98baaa9e29fb65b96cfe95d22f`

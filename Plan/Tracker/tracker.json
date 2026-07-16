@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-15T23:59:25+00:00",
+    "generated_at": "2026-07-16T00:12:04+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 609,
     "total_tracked_including_orphaned": 609
@@ -2942,12 +2942,17 @@
           "ts": "2026-07-12T23:59:18+00:00",
           "actor": "ai_agent",
           "text": "Registered and queried the live daily 02:00 MaskFactory_NightlyBackupIntegrity task under KEVIN\\kevin. Its action preserves B5-before-B1 ordering and WSL integrity sampling. No D: media/run is claimed; MF-P1-09.05 remains the restore/media gate."
+        },
+        {
+          "ts": "2026-07-16T00:12:04+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-16 maintenance: all four installed project tasks now invoke PowerShell with -NoProfile -NonInteractive -WindowStyle Hidden at LIMITED run level, preventing visible background windows without elevation."
         }
       ],
-      "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
+      "evidence": "qa/live_verification/windows_scheduled_tasks_hidden_20260716.json SHA-256 6ac648a8ee58a591273e48c98834c3aa55e3ad98baaa9e29fb65b96cfe95d22f. Four live XML actions contain -WindowStyle Hidden; all tasks Ready; focused backup/task tests 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T23:59:18+00:00",
+      "updated_at": "2026-07-16T00:12:04+00:00",
       "orphaned": false
     },
     "MF-P1-09.02": {
@@ -5855,12 +5860,17 @@
           "ts": "2026-07-12T23:59:20+00:00",
           "actor": "ai_agent",
           "text": "Registered and queried the enabled nightly manifest-lint and weekly QA-mining tasks alongside the two P1 operations tasks under the live Kevin account."
+        },
+        {
+          "ts": "2026-07-16T00:12:04+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-16 maintenance: nightly manifest lint and weekly QA mining, plus both P1 operations tasks, are installed as hidden noninteractive LIMITED PowerShell actions."
         }
       ],
-      "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
+      "evidence": "qa/live_verification/windows_scheduled_tasks_hidden_20260716.json SHA-256 6ac648a8ee58a591273e48c98834c3aa55e3ad98baaa9e29fb65b96cfe95d22f. Four live XML actions contain -WindowStyle Hidden; all tasks Ready; focused backup/task tests 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T23:59:20+00:00",
+      "updated_at": "2026-07-16T00:12:04+00:00",
       "orphaned": false
     },
     "MF-P4-04.01": {

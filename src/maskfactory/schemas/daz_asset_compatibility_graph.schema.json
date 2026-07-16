@@ -44,9 +44,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["asset_id", "primary_asset_class", "identity_status", "mapping_requirement", "character_scope", "figure_generations", "scene_categories", "compatibility_bases", "required_plugins", "capabilities", "facets", "dependencies", "static_state", "blocking_reasons", "missing_dependency_asset_ids", "missing_plugin_ids", "incompatible_base_ids", "generation_pool_eligible", "qualified", "qualification_boundary"],
+        "required": ["asset_id", "asset_sha256", "primary_asset_class", "identity_status", "mapping_requirement", "character_scope", "figure_generations", "scene_categories", "compatibility_bases", "required_plugins", "capabilities", "facets", "dependencies", "static_state", "blocking_reasons", "missing_dependency_asset_ids", "missing_plugin_ids", "incompatible_base_ids", "generation_pool_eligible", "qualified", "qualification_boundary"],
         "properties": {
           "asset_id": {"$ref": "#/$defs/asset_id"},
+          "asset_sha256": {"$ref": "#/$defs/sha256"},
           "primary_asset_class": {"type": "string", "minLength": 1},
           "identity_status": {"enum": ["unique", "duplicate_winner", "duplicate_copy", "shadow_conflict"]},
           "mapping_requirement": {"enum": ["inherited_base", "asset_specific", "none"]},

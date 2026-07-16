@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T11:57:00Z",
+  "captured_at": "2026-07-16T12:53:00Z",
   "item": "MF-P9-04.05",
   "status": "partially_complete",
   "implementation": {
@@ -30,13 +30,13 @@
   "live_progress": {
     "inventory_file_count": 41094,
     "inventory_bytes": 38792501179,
-    "complete_hashes": 1376,
-    "complete_bytes": 802123063,
-    "pending_hashes": 39718,
+    "complete_hashes": 2424,
+    "complete_bytes": 3225542289,
+    "pending_hashes": 38670,
     "failed_hashes": 0,
     "identity_database": "F:\\DAZ\\05_registry\\rebuild_evidence\\asset_identity.sqlite",
-    "identity_database_bytes": 22568960,
-    "identity_database_sha256": "57353c15aee8b096263c122afb45d08fde7343b9c2e17f75e1c1b834a356febb",
+    "identity_database_bytes": 22687744,
+    "identity_database_sha256": "4e9c20beaae1325d775d4d524cd6023cafa714e34ccdc84f742179d0bcbec941",
     "sqlite_quick_check": "ok",
     "second_resume": {
       "elapsed_seconds": 36.768,
@@ -50,12 +50,21 @@
       "new_hashes": 1283,
       "new_hashed_bytes": 592660247
     },
+    "ten_minute_bounded_tranche": {
+      "maximum_hash_seconds": 600,
+      "maximum_files": 5000,
+      "maximum_bytes": 8589934592,
+      "reused_hashes": 1376,
+      "new_hashes": 1048,
+      "new_hashed_bytes": 2423419226,
+      "failed_hashes": 0
+    },
     "final_snapshot_published": false,
     "reason": "Autonomous acquisition is still mutating the content estate. Hashing is resumable, but the immutable duplicate/shadow snapshot cannot be claimed until the upstream filesystem inventory is stable and every current file is hashed."
   },
   "storage": {
-    "free_bytes": 175046266880,
-    "free_gib": 163.025,
+    "free_bytes": 168142004224,
+    "free_gib": 156.594,
     "soft_floor_gib": 150,
     "hard_floor_gib": 100,
     "state": "healthy"
@@ -68,11 +77,11 @@
   "verification": {
     "focused_tests_passed": 20,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1770,
-    "full_repository_tests_passed": 1770,
+    "full_repository_tests_collected": 1797,
+    "full_repository_tests_passed": 1797,
     "full_repository_tests_failed": 0,
-    "ruff": "pass",
-    "black": "pass"
+    "ruff_lint": "pass",
+    "black_precommit": "pass"
   },
   "not_claimed": [
     "complete hashing of the live DAZ estate",

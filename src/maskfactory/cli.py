@@ -2994,6 +2994,454 @@ def daz_assets_pool_report(graph: Path, policy: Path, vocabularies: Path, output
     )
 
 
+@daz_assets.command("smoke-plan")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--asset-id", required=True)
+@click.option("--created-at", required=True, help="UTC RFC 3339 timestamp.")
+@click.option("--bundle-version", required=True)
+@click.option("--runtime-snapshot-sha256", required=True)
+@click.option("--script-bundle-sha256", required=True)
+@click.option(
+    "--content-directory",
+    "content_directories",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    multiple=True,
+    required=True,
+    help="Repeat exactly twice for governed primary and user libraries.",
+)
+@click.option("--mapping-bundle-id")
+@click.option("--mapping-bundle-sha256")
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_smoke.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--vocabularies",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_vocabularies.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\smoke\plans"),
+    show_default=True,
+)
+def daz_assets_smoke_plan(
+    graph: Path,
+    asset_id: str,
+    created_at: str,
+    bundle_version: str,
+    runtime_snapshot_sha256: str,
+    script_bundle_sha256: str,
+    content_directories: tuple[Path, ...],
+    mapping_bundle_id: str | None,
+    mapping_bundle_sha256: str | None,
+    policy: Path,
+    vocabularies: Path,
+    output: Path,
+) -> None:
+    """Build two hash-bound, clean-process smoke recipes for one asset."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetSmokeError,
+        build_asset_smoke_plan,
+        load_asset_smoke_policy,
+        load_asset_vocabularies,
+        publish_asset_smoke_document,
+    )
+
+    try:
+        if len(content_directories) != 2:
+            raise AssetSmokeError(
+                "smoke_content_directories_invalid", "exactly two directories required"
+            )
+        graph_document = json.loads(graph.read_text(encoding="utf-8"))
+        vocabulary_document = load_asset_vocabularies(vocabularies)
+        policy_document = load_asset_smoke_policy(
+            policy, asset_classes=vocabulary_document["primary_asset_classes"]
+        )
+        plan = build_asset_smoke_plan(
+            graph_document,
+            policy_document,
+            asset_id=asset_id,
+            created_at=created_at,
+            bundle_version=bundle_version,
+            runtime_snapshot_sha256=runtime_snapshot_sha256,
+            script_bundle_sha256=script_bundle_sha256,
+            content_directories=(content_directories[0], content_directories[1]),
+            mapping_bundle_id=mapping_bundle_id,
+            mapping_bundle_sha256=mapping_bundle_sha256,
+        )
+        target, published = publish_asset_smoke_document(plan, output, document_id=plan["plan_id"])
+    except (AssetSmokeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AssetSmokeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_SMOKE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_smoke_plan_complete",
+                entity_ids=(plan["plan_id"], asset_id),
+                evidence_paths=(str(target),),
+                data={
+                    "plan_sha256": plan["plan_sha256"],
+                    "recipe_ids": [recipe["recipe_id"] for recipe in plan["recipes"]],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("smoke-evaluate")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--result", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_smoke.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--vocabularies",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_vocabularies.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\smoke\evaluations"),
+    show_default=True,
+)
+def daz_assets_smoke_evaluate(
+    plan: Path, result: Path, policy: Path, vocabularies: Path, output: Path
+) -> None:
+    """Evaluate bindings, artifacts, checks, and two-process repeatability."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetSmokeError,
+        evaluate_asset_smoke_result,
+        load_asset_smoke_policy,
+        load_asset_vocabularies,
+        publish_asset_smoke_document,
+    )
+
+    try:
+        plan_document = json.loads(plan.read_text(encoding="utf-8"))
+        result_document = json.loads(result.read_text(encoding="utf-8"))
+        vocabulary_document = load_asset_vocabularies(vocabularies)
+        policy_document = load_asset_smoke_policy(
+            policy, asset_classes=vocabulary_document["primary_asset_classes"]
+        )
+        evaluation = evaluate_asset_smoke_result(plan_document, result_document, policy_document)
+        evaluation_id = f"dsme_{evaluation['evaluation_sha256'][:24]}"
+        target, published = publish_asset_smoke_document(
+            evaluation, output, document_id=evaluation_id
+        )
+    except (AssetSmokeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AssetSmokeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_SMOKE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=0 if evaluation["passed"] else int(DazErrorCode.ASSET_SMOKE_INVALID),
+                reason=("asset_smoke_passed" if evaluation["passed"] else "asset_smoke_failed"),
+                entity_ids=(evaluation_id, evaluation["plan_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "evaluation": evaluation,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not evaluation["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+
+
+@daz_assets.command("smoke-certify")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--result", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--evaluation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--created-at", required=True, help="UTC RFC 3339 timestamp.")
+@click.option("--limitation", "limitations", multiple=True)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\08_asset_tests\certificates"),
+    show_default=True,
+)
+def daz_assets_smoke_certify(
+    plan: Path,
+    result: Path,
+    evaluation: Path,
+    graph: Path,
+    created_at: str,
+    limitations: tuple[str, ...],
+    output: Path,
+) -> None:
+    """Issue an immutable certificate only for exact passing smoke evidence."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetQualificationError,
+        AssetSmokeError,
+        issue_asset_smoke_certificate,
+        publish_asset_smoke_document,
+    )
+
+    try:
+        certificate = issue_asset_smoke_certificate(
+            json.loads(plan.read_text(encoding="utf-8")),
+            json.loads(result.read_text(encoding="utf-8")),
+            json.loads(evaluation.read_text(encoding="utf-8")),
+            json.loads(graph.read_text(encoding="utf-8")),
+            created_at=created_at,
+            limitations=limitations,
+        )
+        target, published = publish_asset_smoke_document(
+            certificate, output, document_id=certificate["certificate_id"]
+        )
+    except (
+        AssetQualificationError,
+        AssetSmokeError,
+        json.JSONDecodeError,
+        OSError,
+        ValueError,
+    ) as exc:
+        reason = getattr(exc, "reason", str(exc))
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_SMOKE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_smoke_certificate_issued",
+                entity_ids=(certificate["certificate_id"], certificate["asset_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "certificate_sha256": certificate["certificate_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("smoke-quarantine")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--result", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--evaluation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--observed-at", required=True, help="UTC RFC 3339 timestamp.")
+@click.option("--log-excerpt-sha256", required=True)
+@click.option("--retry-count", type=click.IntRange(min=0), default=0, show_default=True)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\08_asset_tests\quarantine"),
+    show_default=True,
+)
+def daz_assets_smoke_quarantine(
+    plan: Path,
+    result: Path,
+    evaluation: Path,
+    observed_at: str,
+    log_excerpt_sha256: str,
+    retry_count: int,
+    output: Path,
+) -> None:
+    """Seal failed smoke evidence into a reason-coded quarantine record."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetQualificationError,
+        AssetSmokeError,
+        build_asset_quarantine_record,
+        publish_asset_smoke_document,
+    )
+
+    try:
+        quarantine = build_asset_quarantine_record(
+            json.loads(plan.read_text(encoding="utf-8")),
+            json.loads(result.read_text(encoding="utf-8")),
+            json.loads(evaluation.read_text(encoding="utf-8")),
+            observed_at=observed_at,
+            log_excerpt_sha256=log_excerpt_sha256,
+            retry_count=retry_count,
+        )
+        target, published = publish_asset_smoke_document(
+            quarantine, output, document_id=quarantine["quarantine_id"]
+        )
+    except (
+        AssetQualificationError,
+        AssetSmokeError,
+        json.JSONDecodeError,
+        OSError,
+        ValueError,
+    ) as exc:
+        reason = getattr(exc, "reason", str(exc))
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_SMOKE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_smoke_quarantine_created",
+                entity_ids=(quarantine["quarantine_id"], quarantine["asset_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "quarantine_codes": quarantine["quarantine_codes"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("qualification-impact")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--certificates", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--queued-recipes", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--changed-asset-id", "changed_asset_ids", multiple=True)
+@click.option("--changed-plugin-id", "changed_plugin_ids", multiple=True)
+@click.option("--runtime-snapshot-sha256", required=True)
+@click.option("--script-bundle-sha256", required=True)
+@click.option(
+    "--mapping-bundle-hashes",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional JSON object mapping bundle IDs to current SHA-256 values.",
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\08_asset_tests\retest"),
+    show_default=True,
+)
+def daz_assets_qualification_impact(
+    graph: Path,
+    certificates: Path,
+    queued_recipes: Path,
+    changed_asset_ids: tuple[str, ...],
+    changed_plugin_ids: tuple[str, ...],
+    runtime_snapshot_sha256: str,
+    script_bundle_sha256: str,
+    mapping_bundle_hashes: Path | None,
+    output: Path,
+) -> None:
+    """Propagate asset/plugin/input changes into certificate and queue revocations."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetQualificationError,
+        AssetSmokeError,
+        build_asset_change_impact,
+        publish_asset_smoke_document,
+    )
+
+    try:
+        certificate_documents = json.loads(certificates.read_text(encoding="utf-8"))
+        queued_documents = json.loads(queued_recipes.read_text(encoding="utf-8"))
+        mapping_hashes = (
+            json.loads(mapping_bundle_hashes.read_text(encoding="utf-8"))
+            if mapping_bundle_hashes is not None
+            else {}
+        )
+        if not isinstance(certificate_documents, list) or not isinstance(queued_documents, list):
+            raise AssetQualificationError(
+                "qualification_impact_input_invalid", "certificates and recipes must be arrays"
+            )
+        if not isinstance(mapping_hashes, dict):
+            raise AssetQualificationError(
+                "qualification_impact_input_invalid", "mapping hashes must be an object"
+            )
+        impact = build_asset_change_impact(
+            json.loads(graph.read_text(encoding="utf-8")),
+            certificate_documents,
+            queued_documents,
+            changed_asset_ids=changed_asset_ids,
+            changed_plugin_ids=changed_plugin_ids,
+            runtime_snapshot_sha256=runtime_snapshot_sha256,
+            script_bundle_sha256=script_bundle_sha256,
+            mapping_bundle_hashes=mapping_hashes,
+        )
+        impact_id = f"dazi_{impact['impact_sha256'][:24]}"
+        target, published = publish_asset_smoke_document(impact, output, document_id=impact_id)
+    except (
+        AssetQualificationError,
+        AssetSmokeError,
+        json.JSONDecodeError,
+        OSError,
+        ValueError,
+    ) as exc:
+        reason = getattr(exc, "reason", str(exc))
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_SMOKE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_SMOKE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_qualification_change_propagated",
+                entity_ids=(impact_id,),
+                evidence_paths=(str(target),),
+                data={
+                    "impact": impact,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

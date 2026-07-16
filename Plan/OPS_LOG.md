@@ -6108,3 +6108,22 @@ Facet reports:                        skin tone, hair construction, wardrobe reg
 Fixture proof:                       exact 12-pool contract, deterministic membership/fingerprints, grouping, no static-to-qualified promotion, unknown exclusion, safe overrides, immutable publication, and idempotent CLI all pass
 Verification:                        ten focused catalog/pool tests and the complete 1,775/1,775 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/daz_asset_pool_progress_20260716.json`
+
+## 2026-07-16 12:53 UTC - Type-specific asset smoke, qualification, and change propagation implemented
+
+**Result:** MF-P9-04.09/.10 now have fail-closed production implementations and remain partial only
+because fixture evidence cannot be relabeled as live DAZ qualification or certification.
+
+Smoke profiles:                       eleven exact profiles cover every non-unknown closed asset class once; unknown/ineligible assets refuse planning
+Worker recipes:                       every plan emits two separately identified clean-process `asset_smoke` recipes bound to asset, dependency graph, runtime, script, mapping, fixtures, checks, and both governed content roots
+Required outputs:                     beauty preview, silhouette, instance ID, and mapping pass; silhouette/instance/mapping hashes must replay identically across processes
+Failure controls:                     incomplete/duplicate checks or artifacts, repeated repetition/process identity, dialogs, fatal logs, hash drift, and semantic drift all fail closed into Q-ASSET-001..022
+Qualification:                        only exact passing evidence issues an immutable `daz_smoke_*` certificate; asset/runtime/script/mapping/graph drift makes it stale
+Change propagation:                   asset and plugin changes traverse the reverse dependency graph, revoke affected/dependent certificates, and block already queued recipes
+Quarantine/retest:                    failed evidence seals exact input/evidence hashes and recommended actions; retest requires the code-specific registry/content/rule/mapping/suppression change and never retries indefinitely
+CLI:                                  `smoke-plan`, `smoke-evaluate`, `smoke-certify`, `smoke-quarantine`, and `qualification-impact`
+Live boundary:                        no live certificate was issued; the final identity/compatibility graph is incomplete and DAZ PIDs 33816/50884 remain unmanaged and untouched
+Identity progress:                    another bounded tranche added 1,048 hashes / 2,423,419,226 bytes; total 2,424/41,094, zero failures; F has 156.594 GiB free
+Concurrent-worker reconciliation:     the live acquisition worker advanced from 0.3.7 to 0.3.8 with all guards intact; the test now enforces minimum guard-capable version plus exact calls/thresholds instead of brittle equality
+Verification:                         22 focused smoke tests, 38 combined DAZ focused tests, and the complete 1,797/1,797 repository suite pass; Ruff lint and Black pre-commit checks pass
+Evidence:                             `qa/reports/daz_asset_smoke_qualification_20260716.json`; `qa/reports/daz_asset_identity_progress_20260716.json`

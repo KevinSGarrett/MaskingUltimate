@@ -29,6 +29,7 @@ def _id(token: str) -> str:
 def _record(token: str, primary_class: str, **overrides) -> dict:
     record = {
         "asset_id": _id(token),
+        "asset_sha256": token * 64,
         "primary_asset_class": primary_class,
         "identity_status": "unique",
         "mapping_requirement": "none",

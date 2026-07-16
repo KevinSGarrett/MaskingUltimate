@@ -38,6 +38,7 @@ class DazErrorCode(IntEnum):
     ASSET_IDENTITY_INVALID = 87
     ASSET_CATALOG_INVALID = 88
     ASSET_POOL_INVALID = 89
+    ASSET_SMOKE_INVALID = 90
 
 
 class DazControlError(ValueError):

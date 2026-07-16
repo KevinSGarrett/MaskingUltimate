@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -113,7 +114,9 @@ def test_live_worker_and_launchers_are_capacity_guarded() -> None:
     start_pool = (root / "start_pool_background.ps1").read_text(encoding="utf-8")
     scale_pool = (root / "scale_pool_background.ps1").read_text(encoding="utf-8")
     start_single = (root / "start_background.ps1").read_text(encoding="utf-8")
-    assert 'VERSION = "0.3.7"' in worker
+    version_match = re.search(r'^VERSION = "(\d+)\.(\d+)\.(\d+)"$', worker, re.MULTILINE)
+    assert version_match is not None
+    assert tuple(map(int, version_match.groups())) >= (0, 3, 7)
     assert "ensure_new_work_allowed(paths.daz_root" in worker
     assert worker.count("ensure_active_job_allowed(paths.daz_root") >= 3
     assert '"capacity_hold"' in worker

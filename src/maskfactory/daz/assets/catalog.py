@@ -294,6 +294,10 @@ def _normalize_record(record: Mapping[str, Any], vocabularies: Mapping[str, Any]
         "character_scope": "character_scopes",
     }
     normalized: dict[str, Any] = {"asset_id": asset_id}
+    asset_sha256 = record.get("asset_sha256")
+    if not isinstance(asset_sha256, str) or not SHA256_PATTERN.fullmatch(asset_sha256):
+        raise AssetCatalogError("catalog_asset_hash_invalid", asset_id)
+    normalized["asset_sha256"] = asset_sha256
     for field, vocabulary in scalar_vocabularies.items():
         value = record.get(field)
         if value not in vocabularies[vocabulary]:

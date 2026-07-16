@@ -58,6 +58,22 @@ from .pools import (
     publish_asset_pool_report,
     validate_asset_pool_policy,
 )
+from .qualification import (
+    AssetQualificationError,
+    build_asset_change_impact,
+    build_asset_quarantine_record,
+    decide_asset_retest,
+    issue_asset_smoke_certificate,
+    validate_asset_smoke_certificate,
+)
+from .smoke import (
+    AssetSmokeError,
+    build_asset_smoke_plan,
+    evaluate_asset_smoke_result,
+    load_asset_smoke_policy,
+    publish_asset_smoke_document,
+    validate_asset_smoke_policy,
+)
 
 __all__ = [
     "AcquisitionManifestError",
@@ -65,6 +81,8 @@ __all__ = [
     "AcquisitionManifestSummary",
     "AssetIdentityError",
     "AssetPoolError",
+    "AssetQualificationError",
+    "AssetSmokeError",
     "AssetCatalogError",
     "CmsObservationError",
     "ContentRoot",
@@ -79,6 +97,9 @@ __all__ = [
     "build_inventory_snapshot",
     "build_asset_identity_snapshot",
     "build_asset_pool_report",
+    "build_asset_change_impact",
+    "build_asset_quarantine_record",
+    "build_asset_smoke_plan",
     "build_asset_compatibility_graph",
     "build_offline_cms_fallback",
     "canonicalize_relative_path",
@@ -86,12 +107,16 @@ __all__ = [
     "configure_dim_paths",
     "dim_processes_running",
     "diff_asset_identity_snapshots",
+    "decide_asset_retest",
     "initialize_inventory_state",
     "inspect_dim_paths",
     "inventory_state_summary",
+    "issue_asset_smoke_certificate",
     "load_cms_connection",
     "load_asset_vocabularies",
     "load_asset_pool_policy",
+    "load_asset_smoke_policy",
+    "publish_asset_smoke_document",
     "parse_dim_install_manifest",
     "publish_cms_snapshot",
     "publish_dim_snapshot",
@@ -105,5 +130,8 @@ __all__ = [
     "resume_asset_identity_index",
     "scan_dim_manifest_archive",
     "scan_inventory_chunk",
+    "evaluate_asset_smoke_result",
     "validate_asset_pool_policy",
+    "validate_asset_smoke_certificate",
+    "validate_asset_smoke_policy",
 ]

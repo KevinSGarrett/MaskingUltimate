@@ -6479,3 +6479,22 @@ Live boundary:                        no fixture output is claimed as a qualifie
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live export, asset move, or asset relabel occurred
 Verification:                         the complete 2,581/2,581 repository suite passes; Ruff, targeted Black, all 115 JSON schemas, and Git diff checks pass
 Evidence:                             `qa/reports/daz_package_derivation_20260716.json`
+
+## 2026-07-16 22:27 UTC - Independent same-state semantic replay proof implemented
+
+**Result:** MF-P9-07.10 now has a closed cross-pass replay certificate and independent actual-file
+hashing; it remains partial until two qualified live DAZ executions replay byte-identically.
+
+Independent runs:                     original and replay require distinct run IDs and process IDs, both recorded in the certificate; execution metadata alone is not accepted as proof
+Pinned authority:                     resolved recipe, asset snapshot, runtime snapshot, script, mapping set, render profile, renderer, and driver fingerprint hashes must be identical
+Actual-byte proof:                    every planned output path is independently hashed; files use raw SHA-256 and diagnostic trees use a canonical relative-path/hash/byte tree digest; execution hash/byte claims must match actual data
+Semantic exactness:                   roles come only from the frozen pass plan's `semantic: true` set; original and replay SHA-256 plus byte count must match for every semantic role
+Complete profile coverage:            engineering-minimal, training-standard, training-relationship, and diagnostic-full pass; all 15 diagnostic-full semantic roles have deliberate drift fixtures
+State freeze:                         both executions rerun the D6-01 pass validator; before, sidecar, after, annotation-restore, terminal, plan, resolution, crop, and effect rules remain binding
+RGB boundary:                         RGB differences are recorded but do not enter the D6-10 semantic byte-identity claim; RGB exact/tolerance validation remains its separately versioned requirement
+Publication/CLI:                      `prove-same-state-replay` emits an immutable idempotent certificate and returns nonzero on findings
+Fixture proof:                       48 focused and 414 combined D6 exact-chain cases cover every semantic role, all eight authorities, run/process reuse, every state point, metadata lies, path drift, RGB scope, publication conflict, and CLI replay
+Live boundary:                        no closed fixture is claimed as an independent live DAZ replay or live semantic-hash certificate
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live replay, asset move, or asset relabel occurred
+Verification:                         the complete 2,629/2,629 repository suite passes; Ruff, targeted Black, all 116 JSON schemas, and Git diff checks pass
+Evidence:                             `qa/reports/daz_same_state_replay_20260716.json`

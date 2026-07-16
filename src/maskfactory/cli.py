@@ -5999,6 +5999,132 @@ def daz_recipes_derive_scene_packages(
     )
 
 
+@daz_recipes.command("prove-same-state-replay")
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--original-execution",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--replay-execution",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--original-run", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--replay-run", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--original-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every planned output role to its original file or tree.",
+)
+@click.option(
+    "--replay-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every planned output role to its independent replay file or tree.",
+)
+@click.option(
+    "--pass-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/same_state_replay.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\same_state_replay"),
+    show_default=True,
+)
+def daz_recipes_prove_same_state_replay(
+    pass_plan: Path,
+    original_execution: Path,
+    replay_execution: Path,
+    original_run: Path,
+    replay_run: Path,
+    original_paths: Path,
+    replay_paths: Path,
+    pass_policy: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Prove independent same-state semantic outputs are byte-identical."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import load_render_pass_policy
+    from .daz.render import (
+        SameStateReplayError,
+        evaluate_same_state_replay,
+        load_same_state_replay_policy,
+        publish_same_state_replay_report,
+    )
+
+    try:
+        original_path_document = _load_string_mapping(original_paths, "original paths")
+        replay_path_document = _load_string_mapping(replay_paths, "replay paths")
+        document = evaluate_same_state_replay(
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(original_execution.read_text(encoding="utf-8")),
+            json.loads(replay_execution.read_text(encoding="utf-8")),
+            json.loads(original_run.read_text(encoding="utf-8")),
+            json.loads(replay_run.read_text(encoding="utf-8")),
+            original_paths={role: Path(path) for role, path in original_path_document.items()},
+            replay_paths={role: Path(path) for role, path in replay_path_document.items()},
+            pass_policy=load_render_pass_policy(pass_policy),
+            policy=load_same_state_replay_policy(policy),
+        )
+        target, published = publish_same_state_replay_report(document, output)
+    except (
+        SameStateReplayError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, SameStateReplayError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_same_state_replay_valid" if not code else "daz_same_state_replay_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "semantic_roles": document["semantic_roles"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 def _load_string_mapping(path: Path, label: str) -> dict[str, str]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or not all(

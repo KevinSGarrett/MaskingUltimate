@@ -16659,13 +16659,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T22:28:25+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented independent same-state replay certification: distinct run/process identities; exact recipe/asset/runtime/script/mapping/profile/renderer/driver authority hashes; actual file SHA-256 and canonical diagnostic-tree hashing; execution-claim verification; exact semantic hash/byte comparisons for every plan semantic role; full state revalidation; immutable CLI publication. Remains partial pending two qualified live DAZ executions with byte-identical semantic outputs. RGB exact/tolerance remains separately scoped. No DAZ/F-drive mutation occurred."
+        }
+      ],
+      "evidence": "qa/reports/daz_same_state_replay_20260716.json; 48/48 focused replay tests; 414/414 combined D6 exact-chain tests; 2629/2629 full repository tests; Ruff and targeted Black pass; 116 schemas parse; CLI replay pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T22:28:25+00:00",
       "orphaned": false
     },
     "MF-P9-08.01": {

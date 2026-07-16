@@ -73,12 +73,20 @@ from .relationship import (
     publish_relationship_document,
     validate_relationship_pass_policy,
 )
+from .replay import (
+    SameStateReplayError,
+    evaluate_same_state_replay,
+    load_same_state_replay_policy,
+    publish_same_state_replay_report,
+    validate_same_state_replay_policy,
+)
 
 __all__ = [
     "CoverageAlphaContractError",
     "GeometryPassContractError",
     "PackageDerivationError",
     "RelationshipPassContractError",
+    "SameStateReplayError",
     "PristineRgbContractError",
     "PartPassContractError",
     "MaterialProtectedContractError",
@@ -100,6 +108,7 @@ __all__ = [
     "evaluate_geometry_passes",
     "derive_scene_packages",
     "evaluate_relationship_passes",
+    "evaluate_same_state_replay",
     "evaluate_instance_pass",
     "evaluate_pristine_rgb_fixture",
     "evaluate_part_pass",
@@ -108,6 +117,7 @@ __all__ = [
     "load_geometry_pass_policy",
     "load_package_derivation_policy",
     "load_relationship_pass_policy",
+    "load_same_state_replay_policy",
     "load_instance_pass_policy",
     "load_pristine_rgb_policy",
     "load_part_pass_policy",
@@ -116,6 +126,7 @@ __all__ = [
     "project_camera_points",
     "publish_geometry_document",
     "publish_relationship_document",
+    "publish_same_state_replay_report",
     "publish_pristine_rgb_document",
     "publish_part_pass_document",
     "publish_material_protected_document",
@@ -126,6 +137,7 @@ __all__ = [
     "validate_geometry_pass_policy",
     "validate_package_derivation_policy",
     "validate_relationship_pass_policy",
+    "validate_same_state_replay_policy",
     "validate_instance_pass_policy",
     "validate_pristine_rgb_fixture_report",
     "validate_pristine_rgb_policy",

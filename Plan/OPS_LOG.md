@@ -5803,3 +5803,19 @@ Verification:                       focused scheduler tests 4/4, complete reposi
 Formatting boundary:               repository-wide Black reports pre-existing unrelated drift in `Plan/Daz/Asset_Manifest/tools/validate_manifest.py`; this increment did not modify it
 Machine safety:                     no scheduled job execution, elevation/UAC request, WSL/Docker restart, or VHD operation was performed
 Evidence:                           `qa/live_verification/windows_scheduled_tasks_no_flash_20260716.json` SHA-256 `5474e0c01894307d383ab8eb2470072e1f678009de24d9aa91d2d110e2ae57eb`
+
+## 2026-07-16 01:28 UTC - Meta checkpoint requests submitted and local HF auth completed
+
+**Result:** Kevin's interactive/legal actions for MF-P0-17.04 and MF-P2-11.07 are
+complete. Both gating-group requests are submitted, the laptop is authenticated with a
+least-privilege read-only Hugging Face token, and the only remaining checkpoint gate is
+upstream Meta approval.
+
+SAM3 request:                       owner-authorized contact/license form submitted; Hugging Face `SAM3` gating group reports `pending`
+SAM 3D Body request:               owner-authorized contact/license form submitted with `US`, `Independent / Personal`, and `AI developer/engineer`; gating group reports `pending`
+Local authentication:              `hf auth whoami` returns `kevinkg`; fine-grained `Read-Only` token `maskfactory-local-20260715` is active
+Secret handling:                   token secret is absent from evidence and Git credentials; protected browser clipboard was cleared after direct CLI authentication
+Exact access probe:                credential present/redacted; zero downloaded bytes; SAM3.1 checkpoint and all three SAM 3D Body assets return authenticated HTTP 403 `human_gate_pending`
+Authority boundary:                no checkpoint download, inference, lifecycle/promotion/serving mutation, mask, truth, or gold authority is claimed
+Remaining gate:                    Meta repository authors must approve the two pending gating-group requests; no further Kevin or local action can bypass that review
+Evidence:                           `qa/live_verification/meta_checkpoint_access_requests_pending_20260716.json` SHA-256 `4505dd01e49e1b2af2c74806e27566cd21a4f02321bfd22ba6e8ae718b1c0ee7`

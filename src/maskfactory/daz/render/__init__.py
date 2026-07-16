@@ -39,6 +39,13 @@ from .material import (
     publish_material_protected_document,
     validate_material_protected_policy,
 )
+from .package import (
+    PackageDerivationError,
+    build_package_derivation_contract,
+    derive_scene_packages,
+    load_package_derivation_policy,
+    validate_package_derivation_policy,
+)
 from .part import (
     PartPassContractError,
     build_part_pass_contract,
@@ -70,6 +77,7 @@ from .relationship import (
 __all__ = [
     "CoverageAlphaContractError",
     "GeometryPassContractError",
+    "PackageDerivationError",
     "RelationshipPassContractError",
     "PristineRgbContractError",
     "PartPassContractError",
@@ -78,6 +86,7 @@ __all__ = [
     "build_coverage_alpha_contract",
     "build_camera_coordinate_sidecar",
     "build_geometry_pass_contract",
+    "build_package_derivation_contract",
     "build_relationship_pass_contract",
     "build_hair_alpha_certificate",
     "build_instance_pass_contract",
@@ -89,6 +98,7 @@ __all__ = [
     "decode_pair_u16_png",
     "evaluate_coverage_alpha",
     "evaluate_geometry_passes",
+    "derive_scene_packages",
     "evaluate_relationship_passes",
     "evaluate_instance_pass",
     "evaluate_pristine_rgb_fixture",
@@ -96,6 +106,7 @@ __all__ = [
     "evaluate_material_protected_passes",
     "load_coverage_alpha_policy",
     "load_geometry_pass_policy",
+    "load_package_derivation_policy",
     "load_relationship_pass_policy",
     "load_instance_pass_policy",
     "load_pristine_rgb_policy",
@@ -113,6 +124,7 @@ __all__ = [
     "transform_world_to_camera",
     "validate_coverage_alpha_policy",
     "validate_geometry_pass_policy",
+    "validate_package_derivation_policy",
     "validate_relationship_pass_policy",
     "validate_instance_pass_policy",
     "validate_pristine_rgb_fixture_report",

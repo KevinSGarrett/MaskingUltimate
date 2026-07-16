@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_package_derivation_contract.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "contract_sha256", "scene_id", "scene_state_sha256", "plan_id", "plan_sha256", "image_id", "scene_family_id", "profile", "ontology_version", "ontology_snapshot_sha256", "policy_sha256", "policy_version", "resolution", "owners", "active_part_ids", "active_material_ids", "source_file_sha256s", "source_file_bytes", "authority_report_sha256s", "truth_contract", "required_package_files"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"}, "contract_id": {"type": "string", "pattern": "^dpdc_[0-9a-f]{24}$"}, "contract_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string", "minLength": 1}, "scene_state_sha256": {"$ref": "#/$defs/sha"}, "plan_id": {"type": "string", "minLength": 1}, "plan_sha256": {"$ref": "#/$defs/sha"},
+    "image_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}, "scene_family_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "profile": {"enum": ["training_standard", "training_relationship", "diagnostic_full"]}, "ontology_version": {"const": "body_parts_v1"}, "ontology_snapshot_sha256": {"$ref": "#/$defs/sha"},
+    "policy_sha256": {"$ref": "#/$defs/sha"}, "policy_version": {"const": "1.0.0"}, "resolution": {"$ref": "#/$defs/resolution"},
+    "owners": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["p_index", "instance_id"], "properties": {"p_index": {"enum": ["p0", "p1", "p2", "p3"]}, "instance_id": {"type": "integer", "minimum": 1, "maximum": 4}}}},
+    "active_part_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 65535}}, "active_material_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 65535}},
+    "source_file_sha256s": {"type": "object", "additionalProperties": false, "required": ["rgb", "instance", "part", "material", "protected_by_p_index"], "properties": {"rgb": {"$ref": "#/$defs/sha"}, "instance": {"$ref": "#/$defs/sha"}, "part": {"$ref": "#/$defs/sha"}, "material": {"$ref": "#/$defs/sha"}, "protected_by_p_index": {"type": "object", "minProperties": 1, "maxProperties": 4, "additionalProperties": {"$ref": "#/$defs/sha"}}}},
+    "source_file_bytes": {"type": "object", "additionalProperties": false, "required": ["rgb", "instance", "part", "material", "protected_by_p_index"], "properties": {"rgb": {"type": "integer", "minimum": 1}, "instance": {"type": "integer", "minimum": 1}, "part": {"type": "integer", "minimum": 1}, "material": {"type": "integer", "minimum": 1}, "protected_by_p_index": {"type": "object", "minProperties": 1, "maxProperties": 4, "additionalProperties": {"type": "integer", "minimum": 1}}}},
+    "authority_report_sha256s": {"type": "object", "additionalProperties": false, "required": ["instance", "part", "material", "coverage_alpha", "geometry"], "properties": {"instance": {"$ref": "#/$defs/sha"}, "part": {"$ref": "#/$defs/sha"}, "material": {"$ref": "#/$defs/sha"}, "coverage_alpha": {"$ref": "#/$defs/sha"}, "geometry": {"$ref": "#/$defs/sha"}, "relationship": {"$ref": "#/$defs/sha"}}},
+    "truth_contract": {"type": "object"}, "required_package_files": {"type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": {"type": "string"}}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}}}
+}

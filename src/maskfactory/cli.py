@@ -5768,6 +5768,260 @@ def daz_recipes_validate_relationship_passes(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-package-derivation")
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--part-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--material-contract",
+    "material_contracts",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    multiple=True,
+    required=True,
+)
+@click.option("--image-id", required=True)
+@click.option("--scene-family-id", required=True)
+@click.option(
+    "--source-rgb", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--protected-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping each p-index to its exact protected uint16 PNG.",
+)
+@click.option(
+    "--authority-hashes",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object containing required validated D6 authority-report SHA-256 values.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/package_derivation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\package_derivation_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_package_derivation(
+    instance_contract: Path,
+    part_contract: Path,
+    material_contracts: tuple[Path, ...],
+    image_id: str,
+    scene_family_id: str,
+    source_rgb: Path,
+    instance_image: Path,
+    part_image: Path,
+    material_image: Path,
+    protected_paths: Path,
+    authority_hashes: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Bind shared exact passes for deterministic per-person package derivation."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PackageDerivationError,
+        build_package_derivation_contract,
+        load_package_derivation_policy,
+    )
+
+    try:
+        protected_document = _load_string_mapping(protected_paths, "protected paths")
+        authority_document = _load_string_mapping(authority_hashes, "authority hashes")
+        document = build_package_derivation_contract(
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(part_contract.read_text(encoding="utf-8")),
+            [json.loads(path.read_text(encoding="utf-8")) for path in material_contracts],
+            image_id=image_id,
+            scene_family_id=scene_family_id,
+            source_paths={
+                "rgb": source_rgb,
+                "instance": instance_image,
+                "part": part_image,
+                "material": material_image,
+            },
+            protected_paths={key: Path(value) for key, value in protected_document.items()},
+            authority_report_sha256s=authority_document,
+            policy=load_package_derivation_policy(policy),
+        )
+        target, published = _publish_immutable_json(document, output, document["contract_id"])
+    except (
+        PackageDerivationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, PackageDerivationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_package_derivation_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "package_count": len(document["owners"]),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("derive-scene-packages")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--source-rgb", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--protected-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/package_derivation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\16_maskfactory_exports\decoded_scenes"),
+    show_default=True,
+)
+def daz_recipes_derive_scene_packages(
+    contract: Path,
+    source_rgb: Path,
+    instance_image: Path,
+    part_image: Path,
+    material_image: Path,
+    protected_paths: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Vectorize one shared pass set into immutable per-person source packages."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PackageDerivationError,
+        derive_scene_packages,
+        load_package_derivation_policy,
+    )
+
+    try:
+        protected_document = _load_string_mapping(protected_paths, "protected paths")
+        document, target, published = derive_scene_packages(
+            json.loads(contract.read_text(encoding="utf-8")),
+            source_paths={
+                "rgb": source_rgb,
+                "instance": instance_image,
+                "part": part_image,
+                "material": material_image,
+            },
+            protected_paths={key: Path(value) for key, value in protected_document.items()},
+            output_root=output,
+            policy=load_package_derivation_policy(policy),
+        )
+    except (
+        PackageDerivationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, PackageDerivationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_packages_derived",
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target / "decoder_report.json"),),
+                data={
+                    "summary": document["summary"],
+                    "invariants": document["invariants"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+def _load_string_mapping(path: Path, label: str) -> dict[str, str]:
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, dict) or not all(
+        isinstance(key, str) and isinstance(value, str) for key, value in document.items()
+    ):
+        raise ValueError(f"{label} must be a JSON string-to-string object")
+    return document
+
+
+def _publish_immutable_json(
+    document: dict[str, object], output: Path, name: str
+) -> tuple[Path, bool]:
+    output.mkdir(parents=True, exist_ok=True)
+    target = output / f"{name}.json"
+    payload = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    if target.exists():
+        if target.read_text(encoding="utf-8") != payload:
+            raise ValueError(f"immutable publication conflict: {target}")
+        return target, False
+    target.write_text(payload, encoding="utf-8", newline="\n")
+    return target, True
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

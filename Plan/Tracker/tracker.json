@@ -16632,13 +16632,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T22:08:04+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented hash-bound vectorized shared-pass decoding and deterministic one-to-four-person package derivation: exact full-body/other-person complements, lossless indexed PART/MATERIAL masking, target-specific protected ID 50 equation, byte-identical shared RGB, synthetic weighted-pseudo-label governance, scene/image/family grouping, exhaustive file hashes, immutable atomic scene publication, schemas, and CLI. Remains partial pending qualified live D6-03..08 pass bytes and recorded live lossless conversion. Autonomous downloader and original/legacy DIM roots remain independent governed sources; neither is assumed complete and no assets were moved or relabelled."
+        }
+      ],
+      "evidence": "qa/reports/daz_package_derivation_20260716.json; 25/25 focused derivation tests; 366/366 combined D6 tests; 2581/2581 full repository tests; Ruff and targeted Black pass; 115 schemas parse; CLI replay pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T22:08:04+00:00",
       "orphaned": false
     },
     "MF-P9-07.10": {

@@ -6460,3 +6460,22 @@ Live boundary:                        no generated fixture is claimed as a live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
 Verification:                         the complete 2,556/2,556 repository suite passes; Ruff and all 113 JSON schemas pass; all item files are Black-clean; repository-wide Black identifies two unrelated pre-existing files only; Git diff checks pass
 Evidence:                             `qa/reports/daz_relationship_pass_20260716.json`
+
+## 2026-07-16 22:07 UTC - Vectorized lossless per-person package derivation implemented
+
+**Result:** MF-P9-07.09 now has a closed shared-pass decoder and deterministic per-person source-package
+derivation layer; it remains partial until qualified live D6-03 through D6-08 bytes are converted.
+
+Shared authority:                     one RGB/INSTANCE/PART/MATERIAL pass set is hash- and byte-bound once; training-standard binds five upstream validator reports, while relationship/diagnostic profiles additionally bind the relationship report
+Vectorized partition:                 one through four target masks are full-image INSTANCE comparisons; they are pairwise disjoint and their union exactly equals every visible promoted-person pixel
+Lossless maps:                        indexed PART and MATERIAL use exact `where(target, shared_map, 0)` uint16 derivation; all active v1 PART IDs round-trip exactly; active ontology namespaces reject unknown codes
+Complements:                          `other_person` is exactly all visible non-target instances; protected ID 50 must match that complement exactly for every p-index; source RGB bytes remain identical across packages
+Package surface:                      each p-index receives the eleven-file minimum source package plus common scene/image/family IDs, deterministic package ID, geometry-render lineage, QA, and exhaustive non-self hashes
+Truth boundary:                       DAZ remains synthetic geometry-exact `weighted_pseudo_label`, train-only at weight 0.20; it counts as neither human-anchor nor autonomous-certified real gold and cannot fabricate CVAT/reviewer/calibration fields
+Publication/CLI:                      `plan-package-derivation` and `derive-scene-packages` produce immutable idempotent contracts and atomically published scene trees; conflicting trees reject
+Fixture proof:                       25 focused and 366 combined D6 cases cover 1–4 people, all active PART IDs, exact complements, RGB byte identity, source tampering, semantic defects, atomic replay, immutable conflicts, and CLI replay
+Asset-root reconciliation:            autonomous-downloader content and original/legacy DIM roots remain independent governed inventory sources; neither source is assumed to contain the full asset set
+Live boundary:                        no fixture output is claimed as a qualified live DAZ conversion, accepted synthetic training sample, or final S00 package
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live export, asset move, or asset relabel occurred
+Verification:                         the complete 2,581/2,581 repository suite passes; Ruff, targeted Black, all 115 JSON schemas, and Git diff checks pass
+Evidence:                             `qa/reports/daz_package_derivation_20260716.json`

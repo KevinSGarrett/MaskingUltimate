@@ -4176,6 +4176,84 @@ def daz_recipes_select_formation(
     )
 
 
+@daz_recipes.command("preflight")
+@click.option(
+    "--pose-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--formation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/scene_preflight.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\08_asset_tests\jobs\scene_preflight"),
+    show_default=True,
+)
+def daz_recipes_preflight(
+    pose_selection: Path,
+    formation_selection: Path,
+    observation: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Evaluate collision, support-contact, promotion, and framing evidence."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        ScenePreflightError,
+        evaluate_scene_preflight,
+        load_scene_preflight_policy,
+        publish_scene_preflight_report,
+    )
+
+    try:
+        report = evaluate_scene_preflight(
+            json.loads(pose_selection.read_text(encoding="utf-8")),
+            json.loads(formation_selection.read_text(encoding="utf-8")),
+            json.loads(observation.read_text(encoding="utf-8")),
+            load_scene_preflight_policy(policy),
+        )
+        target, published = publish_scene_preflight_report(report, output)
+    except (ScenePreflightError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ScenePreflightError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_preflight_evaluated",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

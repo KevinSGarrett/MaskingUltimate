@@ -16329,13 +16329,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T15:51:53+00:00",
+          "actor": "codex",
+          "text": "Implemented the D5-08 evaluator and explicit versioned thresholds. The spec-provided 0-4 mm contact and 2 mm penetration bounds are preserved; other collision-category thresholds are declared policy requiring live calibration before production activation, not hidden constants or fixture-derived authority."
+        }
+      ],
+      "evidence": "Fail-closed solo-scene geometry preflight now recomputes upstream selection identities, enforces final camera/crop lineage, exact person count, the existing 4% promotion floor, all 10 solo framing profiles, six collision categories, broad-to-narrow collision evaluation, declared support contacts, intended-contact distance/normal/penetration, stable prop identity/anchors/occlusion, and a two-revision deterministic repair budget. All 40 focused negative/positive fixtures, 300 combined scene-planning tests, and 2,099/2,099 full repository tests pass. Evidence: qa/reports/daz_scene_preflight_20260716.json. Completion is withheld until actual DAZ final-scene geometry, collision, projected bbox/prominence, support/prop contact, and bounded repair evidence exist.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T15:51:53+00:00",
       "orphaned": false
     },
     "MF-P9-06.09": {

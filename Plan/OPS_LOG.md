@@ -6268,3 +6268,26 @@ Live boundary:                        no live camera/light/environment/prop sele
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
 Verification:                         the complete 2,059/2,059 repository suite passes; Ruff, Black, tracker validation, and JSON schema validation pass
 Evidence:                             `qa/reports/daz_scene_formation_selection_20260716.json`
+
+## 2026-07-16 15:51 UTC - Collision, support-contact, promotion, and framing preflight implemented
+
+**Result:** MF-P9-06.08 now has a fail-closed deterministic solo-scene evaluator and remains partial
+until actual DAZ final-scene geometry and bounded repair evidence satisfy the verify clause.
+
+Lineage:                              pose and formation schemas, content hashes, IDs, exact observation bindings, resolution, and crop are recomputed before any measured result is considered
+Promotion:                            visible-person area is recomputed from pixels against the existing MaskFactory 4% image-area floor; declared/observed solo count must be exactly one
+Framing:                              all 10 solo profiles declare visible-body, off-frame, bbox-height, and required-region intervals; projected bbox containment and prominence readback are independently checked
+Scene integrity:                      camera clipping, unexpected renderable nodes, undeclared people, catastrophic geometry, nonfinite values, and camera-contract drift fail closed
+Collision phases:                     broad-phase state is mandatory and every overlap requires narrow-phase evidence; contradictory phase records are structurally invalid
+Collision classes:                    self body/body, hair/body, garment/body, garment/garment, person/person, and person/prop-support are reported separately; visible penetration and hidden excessive intersection use different codes
+Threshold authority:                 doc-17's exact intended-contact 0-4 mm distance and 2 mm maximum penetration are preserved; every other category tolerance is explicit versioned policy requiring live calibration before production activation
+Exemptions:                           only garment/body and garment/garment may declare bounded fit exemptions; other exemption attempts reject
+Support/contact:                      every pose-declared support site must be observed and pass distance, compatible-normal, penetration, and drift bounds
+Props:                               selected stable object identity, anchoring, nonfloating state, and requested occlusion fraction within 0.05 are required; selected-missing and undeclared props reject
+Repair policy:                        only recentering, camera clipping, and support drift are repairable; at most two deterministic corrections are permitted and each requires a new recipe revision; exhaustion rejects
+Publication/CLI:                      `daz recipes preflight` emits an immutable content-addressed accept/repair/reject report whose exact replay is revalidated
+Fixture proof:                       valid observations pass every framing profile; 30 negative paths cover geometry, support, prop, lineage, phase, nonfinite, tamper, and repair exhaustion failures
+Live boundary:                        no fixture observation is relabeled as live geometry authority; no live DAZ collision, bbox/prominence, contact, prop occlusion, or repair result is claimed
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
+Verification:                         40 focused, 300 combined scene-planning, and the complete 2,099/2,099 repository tests pass; Ruff, Black, tracker, and JSON schema validation pass
+Evidence:                             `qa/reports/daz_scene_preflight_20260716.json`

@@ -3953,6 +3953,98 @@ def daz_recipes_select_appearance(
     )
 
 
+@daz_recipes.command("select-solo-pose")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--descriptor-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--pose-family", required=True)
+@click.option("--pose-subfamily", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/solo_pose_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\solo_pose"),
+    show_default=True,
+)
+def daz_recipes_select_solo_pose(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    descriptor_registry: Path,
+    selection_seed: int,
+    pose_family: str,
+    pose_subfamily: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a qualified normalized solo pose under runtime joint limits."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SoloPoseSelectionError,
+        load_solo_pose_policy,
+        publish_solo_pose_selection,
+        select_solo_pose,
+    )
+
+    try:
+        selection = select_solo_pose(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            json.loads(descriptor_registry.read_text(encoding="utf-8")),
+            load_solo_pose_policy(policy),
+            selection_seed=selection_seed,
+            pose_family=pose_family,
+            pose_subfamily=pose_subfamily,
+        )
+        target, published = publish_solo_pose_selection(selection, output)
+    except (SoloPoseSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SoloPoseSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_solo_pose_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

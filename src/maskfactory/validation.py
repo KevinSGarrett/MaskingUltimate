@@ -85,6 +85,7 @@ SCHEMA_NAMES = frozenset(
         "daz_character_variation_profile",
         "daz_character_profile_batch_report",
         "daz_character_appearance_selection",
+        "daz_solo_pose_selection",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

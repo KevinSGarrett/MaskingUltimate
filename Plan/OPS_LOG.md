@@ -6227,3 +6227,23 @@ Guard proof:                          `capacity_guard.py --operation new-work` e
 Identity checkpoint:                  the already-running read-only tranche completed first, adding 435 files / 804,550,814 bytes; total 2,859/41,094 and zero failures
 Operational response:                no worker was stopped, no DAZ process was touched, and active acquisition jobs may checkpoint under the blueprint while launchers refuse new jobs
 Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`
+
+## 2026-07-16 15:19 UTC - Deterministic solo-pose taxonomy and joint constraints implemented
+
+**Result:** MF-P9-06.06 now has a closed qualified solo-pose planning implementation and remains partial
+until live DAZ descriptor readback and pose-stress renders satisfy the verify clause.
+
+Taxonomy:                             all six blueprint solo families and all 49 enumerated subfamilies are closed in policy: neutral/calibration, locomotion, seated, crouching/kneeling, lying/reclining, and athletic/dance/flexibility
+Qualified selection:                 only active members of `g9_poses_by_taxonomy` can be selected; exact foundation replay, Genesis 9/base/category compatibility, required-dependency qualification, and solo-only capability are enforced
+Descriptor contract:                 asset/class/family/subfamily, root policy/transform, canonical owned bones and rotations, per-axis limits, support/contact, hand/foot visibility, self-occlusion, asymmetry, camera suitability, conversion lineage, and source-readback requirement are closed
+Joint authority:                      bend/twist/side-side values are finite and checked against each descriptor's DAZ-runtime property limits; no universal angles are invented
+Limit safety:                         zero overrun, 0.25-degree minimum boundary margin, maximum normalized utilization 0.98, and mandatory final DAZ readback
+Root/support safety:                  preserve-root, bounded-root, support-aligned, and airborne profiles have closed translation/rotation bounds; non-airborne support modes require named contact points
+Geometry declarations:               invalid hand/foot articulation, intersection score above 0.05, or unvalidated converted poses fail under Q-POSE codes
+Partial composition:                  full-body inputs are refused; disjoint ownership composes deterministically; conflicting equal-priority bone rotations fail; higher declared priority resolves explicitly
+Publication/CLI:                      `daz recipes select-solo-pose` recomputes graph/pool/foundation/policy/descriptor hashes and publishes immutable content-addressed evidence
+Fixture proof:                       49/49 subfamily selections and 62/62 focused tests pass; invalid limit/value/root/intersection/articulation/conversion/support/occlusion/qualification/tamper cases refuse
+Live boundary:                        fixture descriptors are not live DAZ authority; no live normalized registry, pose stress render, support/contact result, silhouette result, or final applied-joint readback is claimed
+Capacity:                             F is soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
+Verification:                         143 combined scene-planning tests and the complete 1,942/1,942 repository suite pass; Ruff, Black, tracker validation, and JSON schema validation pass
+Evidence:                             `qa/reports/daz_solo_pose_selection_20260716.json`

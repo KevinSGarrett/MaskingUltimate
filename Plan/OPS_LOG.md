@@ -6385,3 +6385,21 @@ Live boundary:                        no generated uint16 fixture is claimed as 
 Capacity:                             F declined externally to 138,308,620,288 bytes / 128.810 GiB free during verification; soft hold remains; this task started no F/DAZ acquisition or render work
 Verification:                         the complete 2,307/2,307 repository suite passes; Ruff, Black across 476 files, and Git diff checks pass
 Evidence:                             `qa/reports/daz_part_pass_20260716.json`
+
+## 2026-07-16 18:53 UTC - Orthogonal MATERIAL and protected-map validation implemented
+
+**Result:** MF-P9-07.05 now has a canonical MATERIAL/protected contract and exact four-map
+orthogonality validation; it remains partial until qualified live DAZ maps are rendered and replayed.
+
+Ontology authority:                   MATERIAL IDs 0-15 come from the frozen canonical `body_parts_v1` snapshot; protected PART IDs remain other-person 50, occluding-object 51, support-surface 52, and accessory/prop 53
+Orthogonal meaning:                    clothing retains anatomical PART authority while MATERIAL records the surface class; protected classes map only to their allowed MATERIAL IDs (50->13, 51->14, 52->14, 53->9/14)
+Profile boundary:                      engineering-minimal requires MATERIAL only; training-standard, training-relationship, and diagnostic-full require both MATERIAL and protected outputs
+Pixel invariants:                      visible authority requires MATERIAL; MATERIAL requires instance or protected authority; protected equals protected PART; target/non-target ownership and both relation directions are exact; background is all zero
+Freeze/replay:                         before/sidecar/after/restore/terminal scene hashes, plan/contract/mapping/ontology sidecars, PART/INSTANCE authority hashes, and repeated MATERIAL/protected hashes must agree exactly
+Publication/CLI:                      `plan-material-protected` and `validate-material-protected` publish immutable idempotent records and return nonzero on findings
+Fixture proof:                       60 focused cases cover all 16 MATERIAL IDs, all four protected classes, clothing orthogonality, every equation, all state points and effects, sidecars, file/output drift, semantic replay, material-only operation, CLI replay, and publication conflict
+Asset-root reconciliation:            autonomous downloader manifests target `F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library`; original public C-drive DIM content/download roots remain independently registered legacy sources; no assets were moved or relabelled
+Live boundary:                        no generated uint16 fixture is claimed as live DAZ output or live four-map alignment evidence
+Capacity/mutation boundary:           F remains below the 150-GiB soft floor from prior observation; this task started no download, install, acquisition, DAZ launch, render, asset move, or asset relabel
+Verification:                         the complete 2,367/2,367 repository suite passes; Ruff, Black across 478 files, JSON, and Git diff checks pass
+Evidence:                             `qa/reports/daz_material_protected_20260716.json`

@@ -4983,6 +4983,189 @@ def daz_recipes_validate_part_pass(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-material-protected")
+@click.option(
+    "--part-contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--ontology-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--target-p-index", type=click.Choice(["p0", "p1", "p2", "p3"]), required=True)
+@click.option(
+    "--expected-material-ids",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/material_protected_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\material_protected_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_material_protected(
+    part_contract: Path,
+    pass_plan: Path,
+    ontology_snapshot: Path,
+    target_p_index: str,
+    expected_material_ids: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal canonical MATERIAL/protected outputs to PART and target ownership."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        MaterialProtectedContractError,
+        build_material_protected_contract,
+        load_material_protected_policy,
+        publish_material_protected_document,
+    )
+
+    try:
+        document = build_material_protected_contract(
+            json.loads(part_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(ontology_snapshot.read_text(encoding="utf-8")),
+            target_p_index=target_p_index,
+            expected_material_ids=json.loads(expected_material_ids.read_text(encoding="utf-8")),
+            policy=load_material_protected_policy(policy),
+        )
+        target, published = publish_material_protected_document(document, output)
+    except (MaterialProtectedContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, MaterialProtectedContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_material_protected_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "active_material_id_count": len(document["active_material_ids"]),
+                    "expected_material_id_count": len(document["expected_material_ids"]),
+                    "protected_required": "protected" in document["outputs"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-material-protected")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--protected-image", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/material_protected_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\material_protected_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_material_protected(
+    contract: Path,
+    execution: Path,
+    material_image: Path,
+    protected_image: Path | None,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate exact MATERIAL/protected rasters and all cross-map equations."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        MaterialProtectedContractError,
+        evaluate_material_protected_passes,
+        load_material_protected_policy,
+        publish_material_protected_document,
+    )
+
+    try:
+        document = evaluate_material_protected_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            material_path=material_image,
+            protected_path=protected_image,
+            part_path=part_image,
+            instance_path=instance_image,
+            policy=load_material_protected_policy(policy),
+        )
+        target, published = publish_material_protected_document(document, output)
+    except (MaterialProtectedContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, MaterialProtectedContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = (
+        "daz_material_protected_valid"
+        if document["summary"]["passed"]
+        else "daz_material_protected_invalid"
+    )
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "observed_material_ids": document["observed_material_ids"],
+                    "observed_protected_ids": document["observed_protected_ids"],
+                    "orthogonality": document["orthogonality"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

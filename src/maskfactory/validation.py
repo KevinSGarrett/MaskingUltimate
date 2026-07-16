@@ -97,6 +97,8 @@ SCHEMA_NAMES = frozenset(
         "daz_instance_pass_report",
         "daz_part_pass_contract",
         "daz_part_pass_report",
+        "daz_material_protected_contract",
+        "daz_material_protected_report",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

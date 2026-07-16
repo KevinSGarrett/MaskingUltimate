@@ -16524,13 +16524,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T18:54:33+00:00",
+          "actor": "codex",
+          "text": "Canonical MATERIAL/protected policy, exact uint16 decoding, four-map orthogonality, freeze/replay, immutable publication, and CLI are implemented against closed fixtures; qualified live DAZ MATERIAL/protected renders remain pending."
+        }
+      ],
+      "evidence": "60/60 focused and 2367/2367 full repository tests pass; all 16 MATERIAL IDs and protected IDs 50-53 are exercised; every orthogonality equation, five state points, nine forbidden effects, authority/sidecar/output/replay drift, material-only profile, and idempotent CLI/publication are verified. Ruff passes; Black checks 478 files; git diff and evidence JSON validate. Evidence: qa/reports/daz_material_protected_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T18:54:33+00:00",
       "orphaned": false
     },
     "MF-P9-07.06": {

@@ -2838,6 +2838,95 @@ def daz_assets_identity_index(
     )
 
 
+@daz_assets.command("catalog-graph")
+@click.option(
+    "--records",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON array, or object with an assets array, of normalized static records.",
+)
+@click.option(
+    "--vocabularies",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_vocabularies.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--authoritative-vocabularies",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("Plan/Daz/Asset_Manifest/vocabularies/controlled_vocabularies.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--plugins",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional JSON object keyed by plugin ID.",
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\asset_catalog"),
+    show_default=True,
+)
+def daz_assets_catalog_graph(
+    records: Path,
+    vocabularies: Path,
+    authoritative_vocabularies: Path,
+    plugins: Path | None,
+    output: Path,
+) -> None:
+    """Validate closed taxonomy and publish a static compatibility graph."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetCatalogError,
+        build_asset_compatibility_graph,
+        load_asset_vocabularies,
+        publish_asset_compatibility_graph,
+    )
+
+    try:
+        document = json.loads(records.read_text(encoding="utf-8"))
+        assets = document.get("assets") if isinstance(document, dict) else document
+        if not isinstance(assets, list):
+            raise AssetCatalogError("catalog_records_invalid", "records must contain an asset list")
+        plugin_document = (
+            json.loads(plugins.read_text(encoding="utf-8")) if plugins is not None else {}
+        )
+        if not isinstance(plugin_document, dict):
+            raise AssetCatalogError("catalog_plugins_invalid", "plugins must be a JSON object")
+        vocabulary_document = load_asset_vocabularies(
+            vocabularies, authoritative_source=authoritative_vocabularies
+        )
+        graph = build_asset_compatibility_graph(
+            assets, vocabulary_document, plugins=plugin_document
+        )
+        target, published = publish_asset_compatibility_graph(graph, output)
+    except (AssetCatalogError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AssetCatalogError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_CATALOG_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_CATALOG_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_catalog_graph_complete",
+                entity_ids=(graph["graph_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": graph["summary"],
+                    "graph_sha256": graph["graph_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

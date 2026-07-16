@@ -8,6 +8,12 @@ from .acquisition_manifest import (
     reconcile_acquisition_with_inventory,
     resume_acquisition_manifest_index,
 )
+from .catalog import (
+    AssetCatalogError,
+    build_asset_compatibility_graph,
+    load_asset_vocabularies,
+    publish_asset_compatibility_graph,
+)
 from .cms import (
     CmsObservationError,
     build_offline_cms_fallback,
@@ -50,6 +56,7 @@ __all__ = [
     "AcquisitionManifestProgress",
     "AcquisitionManifestSummary",
     "AssetIdentityError",
+    "AssetCatalogError",
     "CmsObservationError",
     "ContentRoot",
     "DimInstallManifest",
@@ -61,6 +68,7 @@ __all__ = [
     "build_acquisition_manifest_index",
     "build_inventory_snapshot",
     "build_asset_identity_snapshot",
+    "build_asset_compatibility_graph",
     "build_offline_cms_fallback",
     "canonicalize_relative_path",
     "compare_cms_with_inventory",
@@ -71,11 +79,13 @@ __all__ = [
     "inspect_dim_paths",
     "inventory_state_summary",
     "load_cms_connection",
+    "load_asset_vocabularies",
     "parse_dim_install_manifest",
     "publish_cms_snapshot",
     "publish_dim_snapshot",
     "publish_inventory_snapshot",
     "publish_asset_identity_snapshot",
+    "publish_asset_compatibility_graph",
     "query_cms_snapshot",
     "reconcile_acquisition_with_inventory",
     "resume_acquisition_manifest_index",

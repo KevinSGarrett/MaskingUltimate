@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_asset_compatibility_graph.schema.json",
+  "title": "DAZ static asset compatibility graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "graph_id", "graph_sha256", "vocabulary_version", "vocabulary_source_sha256", "summary", "plugins", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "graph_id": {"type": "string", "pattern": "^acg_[0-9a-f]{24}$"},
+    "graph_sha256": {"$ref": "#/$defs/sha256"},
+    "vocabulary_version": {"const": "1.0.0"},
+    "vocabulary_source_sha256": {"$ref": "#/$defs/sha256"},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_count", "edge_count", "static_eligible_pending_smoke", "ineligible_count", "unknown_asset_count", "unresolved_required_edge_count", "qualified_asset_count"],
+      "properties": {
+        "asset_count": {"type": "integer", "minimum": 0},
+        "edge_count": {"type": "integer", "minimum": 0},
+        "static_eligible_pending_smoke": {"type": "integer", "minimum": 0},
+        "ineligible_count": {"type": "integer", "minimum": 0},
+        "unknown_asset_count": {"type": "integer", "minimum": 0},
+        "unresolved_required_edge_count": {"type": "integer", "minimum": 0},
+        "qualified_asset_count": {"const": 0}
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["plugin_id", "state", "version", "sha256"],
+        "properties": {
+          "plugin_id": {"type": "string", "minLength": 1},
+          "state": {"enum": ["available", "unavailable", "incompatible"]},
+          "version": {"type": ["string", "null"]},
+          "sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_id", "primary_asset_class", "identity_status", "mapping_requirement", "figure_generations", "scene_categories", "compatibility_bases", "required_plugins", "dependencies", "static_state", "blocking_reasons", "missing_dependency_asset_ids", "missing_plugin_ids", "incompatible_base_ids", "generation_pool_eligible", "qualified", "qualification_boundary"],
+        "properties": {
+          "asset_id": {"$ref": "#/$defs/asset_id"},
+          "primary_asset_class": {"type": "string", "minLength": 1},
+          "identity_status": {"enum": ["unique", "duplicate_winner", "duplicate_copy", "shadow_conflict"]},
+          "mapping_requirement": {"enum": ["inherited_base", "asset_specific", "none"]},
+          "figure_generations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "scene_categories": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "compatibility_bases": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+          "required_plugins": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "dependencies": {"type": "array", "items": {"$ref": "#/$defs/dependency"}},
+          "static_state": {"type": "string", "minLength": 1},
+          "blocking_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "missing_dependency_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+          "missing_plugin_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "incompatible_base_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+          "generation_pool_eligible": {"type": "boolean"},
+          "qualified": {"const": false},
+          "qualification_boundary": {"const": "runtime_smoke_and_mapping_certificate_required"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_asset_id", "target_asset_id", "relation", "required", "resolved"],
+        "properties": {
+          "source_asset_id": {"$ref": "#/$defs/asset_id"},
+          "target_asset_id": {"$ref": "#/$defs/asset_id"},
+          "relation": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"},
+          "resolved": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_id": {"type": "string", "pattern": "^ast_[0-9a-f]{24}$"},
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_asset_id", "relation", "required"],
+      "properties": {
+        "target_asset_id": {"$ref": "#/$defs/asset_id"},
+        "relation": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T11:35:06Z",
+  "captured_at": "2026-07-16T11:57:00Z",
   "item": "MF-P9-04.05",
   "status": "partially_complete",
   "implementation": {
@@ -30,13 +30,13 @@
   "live_progress": {
     "inventory_file_count": 41094,
     "inventory_bytes": 38792501179,
-    "complete_hashes": 93,
-    "complete_bytes": 209462816,
-    "pending_hashes": 41001,
+    "complete_hashes": 1376,
+    "complete_bytes": 802123063,
+    "pending_hashes": 39718,
     "failed_hashes": 0,
     "identity_database": "F:\\DAZ\\05_registry\\rebuild_evidence\\asset_identity.sqlite",
-    "identity_database_bytes": 22409216,
-    "identity_database_sha256": "58db61219c106178eee7a94739bcac7a4ac1faa1c13aaf61d8f84c13ff4fa8b0",
+    "identity_database_bytes": 22568960,
+    "identity_database_sha256": "57353c15aee8b096263c122afb45d08fde7343b9c2e17f75e1c1b834a356febb",
     "sqlite_quick_check": "ok",
     "second_resume": {
       "elapsed_seconds": 36.768,
@@ -44,12 +44,18 @@
       "new_hashes": 23,
       "new_hashed_bytes": 199112472
     },
+    "subsequent_bounded_tranche": {
+      "maximum_hash_seconds": 300,
+      "reused_hashes": 93,
+      "new_hashes": 1283,
+      "new_hashed_bytes": 592660247
+    },
     "final_snapshot_published": false,
     "reason": "Autonomous acquisition is still mutating the content estate. Hashing is resumable, but the immutable duplicate/shadow snapshot cannot be claimed until the upstream filesystem inventory is stable and every current file is hashed."
   },
   "storage": {
-    "free_bytes": 181406691328,
-    "free_gib": 168.948,
+    "free_bytes": 175046266880,
+    "free_gib": 163.025,
     "soft_floor_gib": 150,
     "hard_floor_gib": 100,
     "state": "healthy"
@@ -62,8 +68,8 @@
   "verification": {
     "focused_tests_passed": 20,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1765,
-    "full_repository_tests_passed": 1765,
+    "full_repository_tests_collected": 1770,
+    "full_repository_tests_passed": 1770,
     "full_repository_tests_failed": 0,
     "ruff": "pass",
     "black": "pass"

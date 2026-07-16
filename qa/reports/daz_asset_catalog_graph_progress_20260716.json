@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T11:57:00Z",
+  "item": "MF-P9-04.06",
+  "status": "partially_complete",
+  "vocabulary": {
+    "version": "1.0.0",
+    "authoritative_source": "Plan/Daz/Asset_Manifest/vocabularies/controlled_vocabularies.yaml",
+    "authoritative_source_sha256": "f8181470dcc2095278ef3407379925b89c56be8814d4300c73992da1a5c9c1f9",
+    "runtime_copy": "configs/daz/asset_vocabularies.yaml",
+    "runtime_copy_sha256": "f480a31938728f8d484ef5814e6159d6491a7d27bd4bf6d2e872c35b9dc978fb",
+    "blueprint_core_lists_match": [
+      "primary_asset_classes",
+      "figure_generations",
+      "dependency_relations"
+    ],
+    "unknown_is_explicit_and_ineligible": true
+  },
+  "graph_controls": {
+    "unique_stable_asset_ids": true,
+    "closed_primary_class_generation_scene_mapping_and_identity_vocabularies": true,
+    "compatibility_base_must_resolve_to_figure_base": true,
+    "required_dependency_resolution": true,
+    "required_dependency_cycle_rejection": true,
+    "required_plugin_version_and_sha256": true,
+    "duplicate_copy_and_shadow_conflict_ineligible": true,
+    "missing_dependency_plugin_or_base_ineligible": true,
+    "static_eligibility_never_equals_qualification": true,
+    "runtime_smoke_and_mapping_certificate_still_required": true,
+    "deterministic_graph_fingerprint": true,
+    "immutable_graph_publication": true
+  },
+  "live_boundary": {
+    "graph_published": false,
+    "reason": "The live graph is downstream of the current immutable asset-identity snapshot. Identity hashing is still resumable and acquisition is still mutating the filesystem estate, so publishing a live graph would overstate authority.",
+    "identity_hashes_complete": 1376,
+    "identity_hashes_pending": 39718,
+    "identity_hash_failures": 0,
+    "identity_bytes_complete": 802123063,
+    "identity_total_bytes": 38792501179
+  },
+  "lineage": {
+    "implementation_sha256": "36c3b58c76872c5bad88e2d12165fefe1b3d19c178659f0bab38e5c085b40f21",
+    "schema_sha256": "8450aac0574830115c006d7c88a22a849450d462bee0be74f8d3bf67a1bc9143",
+    "test_sha256": "134fd84e05c1d7707c3b5b2b237c8b6f956832ebf74230ed57b09850dfbd3bdb"
+  },
+  "verification": {
+    "focused_catalog_tests_passed": 5,
+    "focused_catalog_tests_failed": 0,
+    "full_repository_tests_collected": 1770,
+    "full_repository_tests_passed": 1770,
+    "full_repository_tests_failed": 0,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "not_claimed": [
+    "a final live asset compatibility graph",
+    "runtime qualification of any asset",
+    "mapping qualification of any asset",
+    "completion of MF-P9-04.06"
+  ]
+}

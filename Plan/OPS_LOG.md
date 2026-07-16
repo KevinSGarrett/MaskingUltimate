@@ -6076,3 +6076,19 @@ Resume proof:                        second bounded run reused 70 hashes and add
 Capacity:                            F remained healthy at 168.948 GiB; no source asset, worker, queue, DAZ process, DIM/CMS setting, or generation control was changed
 Verification:                        20 focused DAZ tests and the complete 1,765/1,765 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`
+
+## 2026-07-16 11:57 UTC - Closed DAZ taxonomy and static compatibility graph implemented
+
+**Result:** MF-P9-04.06 now has a blueprint-hash-bound closed vocabulary and fail-closed static graph;
+the live graph remains unpublished until the upstream identity snapshot is stable and complete.
+
+Vocabulary lineage:                   runtime vocabulary is pinned to authoritative SHA-256 `f8181470...`; core class, generation, and dependency lists must match the approved Asset Manifest source exactly
+Closed decisions:                     primary class, generation, scene category, mapping requirement, identity status, plugin state, and static state reject undeclared values
+Graph integrity:                      stable unique IDs, figure-base compatibility targets, required dependencies, required plugin version/hash, and required-dependency acyclicity are enforced
+Fail-closed states:                   unknown classifications, duplicate copies, shadow conflicts, missing dependencies/plugins, and incompatible bases cannot enter generation pools
+Authority boundary:                   a static pass is only `static_eligible_pending_smoke`; every node remains `qualified=false` until runtime smoke and mapping certificates exist
+Immutable projection:                normalized nodes/edges/plugins produce a deterministic content-addressed graph; conflicting publication bytes cannot replace an existing graph ID
+Fixture proof:                       input order reproduces identical graph bytes; missing/unknown/conflict/plugin/base cases abstain; duplicate IDs and dependency cycles reject; CLI publication is idempotent
+Live identity progress:               bounded hashing advanced to 1,376/41,094 files and 802,123,063/38,792,501,179 bytes with zero failures; live graph correctly withheld
+Verification:                        five focused catalog tests and the complete 1,770/1,770 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/daz_asset_catalog_graph_progress_20260716.json`

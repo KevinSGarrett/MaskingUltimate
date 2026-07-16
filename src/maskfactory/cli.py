@@ -4507,6 +4507,166 @@ def daz_recipes_validate_pass_run(plan: Path, execution: Path, policy: Path, out
         raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
 
 
+@daz_recipes.command("plan-pristine-rgb")
+@click.option(
+    "--resolved-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--renderer-settings",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/pristine_rgb.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\pristine_requests"),
+    show_default=True,
+)
+def daz_recipes_plan_pristine_rgb(
+    resolved_state: Path,
+    pass_plan: Path,
+    renderer_settings: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal a direct-render pristine RGB request against one frozen pass plan."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PristineRgbContractError,
+        build_pristine_rgb_request,
+        load_pristine_rgb_policy,
+        publish_pristine_rgb_document,
+    )
+
+    try:
+        document = build_pristine_rgb_request(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(renderer_settings.read_text(encoding="utf-8")),
+            load_pristine_rgb_policy(policy),
+        )
+        target, published = publish_pristine_rgb_document(document, output)
+    except (PristineRgbContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PristineRgbContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_pristine_rgb_request_built",
+                entity_ids=(document["request_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "request_sha256": document["request_sha256"],
+                    "renderer_settings_sha256": hashlib.sha256(
+                        json.dumps(
+                            document["renderer_settings"],
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode("utf-8")
+                    ).hexdigest(),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-pristine-rgb-fixture")
+@click.option(
+    "--request", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/pristine_rgb.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\pristine_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pristine_rgb_fixture(
+    request: Path, execution: Path, image: Path, policy: Path, output: Path
+) -> None:
+    """Inspect and replay one direct-render pristine RGB renderer fixture."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PristineRgbContractError,
+        evaluate_pristine_rgb_fixture,
+        load_pristine_rgb_policy,
+        publish_pristine_rgb_document,
+    )
+
+    try:
+        document = evaluate_pristine_rgb_fixture(
+            json.loads(request.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            image,
+            load_pristine_rgb_policy(policy),
+        )
+        target, published = publish_pristine_rgb_document(document, output)
+    except (PristineRgbContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PristineRgbContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=(
+                    0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+                ),
+                reason=(
+                    "daz_pristine_rgb_fixture_valid"
+                    if document["summary"]["passed"]
+                    else "daz_pristine_rgb_fixture_invalid"
+                ),
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "measurements": document["measurements"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not document["summary"]["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

@@ -6331,3 +6331,21 @@ Live boundary:                        no fixture is relabeled as a DAZ renderer 
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
 Verification:                         the complete 2,161/2,161 repository suite passes; Ruff, Black across 468 files, and Git diff checks pass
 Evidence:                             `qa/reports/daz_render_pass_profiles_20260716.json`
+
+## 2026-07-16 17:02 UTC - Pristine photographic RGB request and renderer-fixture contract implemented
+
+**Result:** MF-P9-07.02 now has a direct-render pristine RGB request, readback, and image-validation
+contract and remains partial until the hidden DAZ worker supplies an accepted live Iray fixture.
+
+Pass eligibility:                     only training-standard, training-relationship, and diagnostic-full plans containing exactly one `rgb_pristine` output may enter; engineering preview and derived RGB variants cannot masquerade as pristine
+State lineage:                        resolved state, pass plan, scene state, camera, lighting/environment, resolution, and crop are recomputed and content-addressed before a request seals
+Renderer contract:                    Iray ID/version must match final readback; photoreal mode, render seed, sample/convergence stop, pixel filter, tone mapping, denoiser, camera DOF/motion state, color space, depth, and output encoding are explicit
+Pristine boundary:                    output is direct renderer RGB, lossless PNG, RGB, sRGB 8-bit, opaque environment background, with zero derived degradation effects
+Fixture validation:                   actual bytes are decoded; file hash/size, PNG/RGB/dimensions, nonuniform content, completion/interruption state, exact renderer readback, and before/sidecar/after/terminal scene hashes are independently checked
+Replay/publication:                  request and report hashes replay exactly; `plan-pristine-rgb` and `validate-pristine-rgb-fixture` publish immutable idempotent JSON records
+Negative proof:                      52 focused cases cover closed-policy drift, ineligible profiles, renderer/camera/lighting drift, metadata/hash/state mutations, interrupted output, wrong format/mode/resolution, empty extremes, uniform images, tampering, and publication conflict
+Concurrent reconciliation:           preserved `e4f80c2`/`9f7aaa8` live-vertical-slice tracker work; updated its governing source hash and resealed the frozen completion policy instead of reverting that work; completion/tracker/pristine combined suite is 83/83
+Live boundary:                        generated image fixtures prove the validator contract only; no fixture is relabeled as a live Iray render or photographic-quality evidence
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
+Verification:                         the reconciled complete 2,215/2,215 repository suite passes; Ruff, Black across 472 files, JSON, and Git diff checks pass
+Evidence:                             `qa/reports/daz_pristine_rgb_20260716.json`

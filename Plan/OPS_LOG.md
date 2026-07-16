@@ -6291,3 +6291,25 @@ Live boundary:                        no fixture observation is relabeled as liv
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
 Verification:                         40 focused, 300 combined scene-planning, and the complete 2,099/2,099 repository tests pass; Ruff, Black, tracker, and JSON schema validation pass
 Evidence:                             `qa/reports/daz_scene_preflight_20260716.json`
+
+## 2026-07-16 16:06 UTC - Fully resolved character/scene state sealing implemented
+
+**Result:** MF-P9-06.09 now has an exact final-readback and semantic-replay contract and remains partial
+until a real qualified DAZ scene supplies matching live state hashes.
+
+Upstream integrity:                   foundation, variation profile, appearance, pose, formation, and preflight schemas/IDs/hashes are recomputed; cross-selection foundation and pose/formation-preflight links must agree
+Acceptance boundary:                 only a geometry preflight with disposition `accept` can enter state sealing
+Asset readback:                       exact figure, character preset, skin, anatomy, pose, light, environment, and selected hair/wardrobe/prop roles must appear once with the selected asset IDs
+Property readback:                    every requested stable property URI records source, requested/final values, runtime range, and tolerance; locked, silently ignored, out-of-range, or drifted values reject
+Controller effects:                  every auto-follow/controller side effect is enumerated with cause and final value; undeclared effects reject
+Joint readback:                       the final bone/axis set must exactly equal the selected normalized pose and remain within runtime range and 0.001-degree tolerance
+Formation readback:                   the complete camera record is recursively compared within 1e-6; selected light/environment/prop IDs must match exactly
+Assembly safety:                      startup scene must be empty, unexpected renderable nodes are zero, textures all resolve, and every numeric state is finite
+Scene-state authority:                fingerprint covers node hierarchy, geometry fingerprints, world transforms, properties/controllers, joints, materials/opacity, camera, light/environment, visibility, renderer, and pass profile
+Replay requirements:                 a second semantic evaluation must reproduce the exact scene-state hash and restoration after annotation overrides must reproduce it again
+Publication/CLI:                      `daz recipes seal-resolved-state` validates and publishes immutable content-addressed state; exact document replay is recomputed
+Fixture proof:                       21 focused cases cover success/idempotence and missing/substituted assets, controller/property/joint/camera/formation/texture/startup/replay/restore/lineage/tamper failures
+Live boundary:                        fixture state is not live DAZ authority; no applied controller, joint, camera, semantic-replay, or annotation-restore result is claimed
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
+Verification:                         the complete 2,120/2,120 repository suite passes; Ruff, Black, tracker, and JSON schema validation pass
+Evidence:                             `qa/reports/daz_resolved_scene_state_20260716.json`

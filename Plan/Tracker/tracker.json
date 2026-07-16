@@ -16356,13 +16356,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T16:07:22+00:00",
+          "actor": "codex",
+          "text": "Implemented immutable daz recipes seal-resolved-state and exact replay validation. Fixture state is contract evidence only; no live controller/joint/camera readback or semantic replay is claimed."
+        }
+      ],
+      "evidence": "Final-state sealer now recomputes every upstream selection/report hash and cross-link, requires accepted geometry preflight, exact selected asset roles, applied property/controller/joint readback, exact camera/light/environment/prop state, empty startup scene, zero unexpected nodes or unresolved textures, and a scene-state fingerprint over hierarchy, geometry, transforms, materials, visibility, renderer, and pass profile. A second semantic evaluation and post-annotation-override restore must reproduce the same hash. 21/21 focused and 2,120/2,120 full repository tests pass. Evidence: qa/reports/daz_resolved_scene_state_20260716.json. Completion is withheld until real qualified DAZ readback and replay/restore hashes exist.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T16:07:22+00:00",
       "orphaned": false
     },
     "MF-P9-06.10": {

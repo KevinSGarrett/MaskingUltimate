@@ -61,6 +61,14 @@ from .recipe import (
     seal_resolved_scene_recipe,
     validate_resolved_scene_recipe,
 )
+from .resolved_state import (
+    ResolvedSceneStateError,
+    load_resolved_scene_state_policy,
+    publish_resolved_scene_state,
+    seal_resolved_scene_state,
+    validate_resolved_scene_state,
+    validate_resolved_scene_state_policy,
+)
 from .selection import (
     FOUNDATION_POOLS,
     SceneSelectionError,
@@ -86,6 +94,7 @@ __all__ = [
     "POSE_POOL_ID",
     "SoloPoseSelectionError",
     "ScenePreflightError",
+    "ResolvedSceneStateError",
     "canonical_json_bytes",
     "compose_partial_pose_descriptors",
     "build_character_profile_batch_report",
@@ -99,12 +108,15 @@ __all__ = [
     "load_scene_formation_policy",
     "load_solo_pose_policy",
     "load_scene_preflight_policy",
+    "load_resolved_scene_state_policy",
     "publish_character_appearance_selection",
     "publish_character_profile_document",
     "publish_solo_pose_selection",
     "publish_scene_formation_selection",
     "publish_scene_preflight_report",
+    "publish_resolved_scene_state",
     "seal_resolved_scene_recipe",
+    "seal_resolved_scene_state",
     "select_character_foundation",
     "select_character_appearance",
     "select_solo_pose",
@@ -122,6 +134,8 @@ __all__ = [
     "validate_scene_formation_selection",
     "validate_scene_preflight_policy",
     "validate_scene_preflight_report",
+    "validate_resolved_scene_state",
+    "validate_resolved_scene_state_policy",
     "validate_character_profile_batch_report",
     "validate_character_variation_profile",
 ]

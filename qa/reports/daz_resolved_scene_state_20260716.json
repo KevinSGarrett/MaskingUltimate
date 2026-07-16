@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T16:06:48Z",
+  "item": "MF-P9-06.09",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/resolved_scene_state.yaml",
+    "file_sha256": "64f3cff986e1ca9007c8f0587d39f9972d8e9b8954d2612f75dc2a865250532b",
+    "version": "1.0.0",
+    "property_tolerance": 0.000001,
+    "joint_tolerance_degrees": 0.001,
+    "transform_tolerance": 0.000001,
+    "camera_scalar_tolerance": 0.000001,
+    "preflight_disposition_required": "accept"
+  },
+  "state_controls": {
+    "foundation_profile_appearance_pose_formation_and_preflight_schemas_validated": true,
+    "every_upstream_id_and_hash_recomputed": true,
+    "cross_selection_foundation_lineage_required": true,
+    "profile_anatomy_must_match_appearance": true,
+    "preflight_pose_and_formation_lineage_required": true,
+    "preflight_accept_required": true,
+    "exact_selected_asset_role_set_required": true,
+    "figure_character_skin_anatomy_pose_light_environment_required": true,
+    "hair_wardrobe_and_prop_bound_when_selected": true,
+    "requested_and_final_property_values_recorded": true,
+    "locked_or_silently_ignored_requested_properties_rejected": true,
+    "property_bounds_and_tolerance_enforced": true,
+    "controller_side_effects_must_be_declared": true,
+    "exact_pose_bone_axis_set_required": true,
+    "joint_bounds_and_tolerance_enforced": true,
+    "camera_readback_recursively_compared": true,
+    "light_environment_and_prop_readback_compared": true,
+    "default_scene_empty_before_load_required": true,
+    "unexpected_renderable_nodes_rejected": true,
+    "unresolved_textures_rejected": true,
+    "finite_values_required": true,
+    "scene_state_fingerprint_components": [
+      "node_hierarchy",
+      "geometry_fingerprints",
+      "world_transforms",
+      "joint_values",
+      "property_values",
+      "controller_side_effects",
+      "material_assignments",
+      "opacity_parameters",
+      "camera",
+      "lighting_environment",
+      "visibility_flags",
+      "renderer",
+      "pass_profile"
+    ],
+    "second_semantic_evaluation_hash_must_match": true,
+    "annotation_override_restore_hash_must_match": true,
+    "document_replay_recomputed": true,
+    "immutable_publication": true,
+    "cli": "daz recipes seal-resolved-state"
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 21,
+    "focused_tests_passed": 21,
+    "focused_tests_failed": 0,
+    "covered_refusals": [
+      "missing or substituted asset",
+      "property readback mismatch",
+      "locked property",
+      "silently ignored property",
+      "property outside runtime range",
+      "undeclared controller side effect",
+      "joint readback mismatch",
+      "missing joint axis",
+      "camera readback mismatch",
+      "light/environment/prop mismatch",
+      "nonempty default scene",
+      "unexpected renderable node",
+      "unresolved texture",
+      "semantic replay mismatch",
+      "annotation restore mismatch",
+      "nonaccepted or tampered preflight",
+      "cross-selection foundation mismatch",
+      "resolved document tamper",
+      "immutable publication conflict"
+    ]
+  },
+  "lineage": {
+    "implementation_sha256": "31ee4c62af6cd57fe7a4ac7e3348c315a7f55bf9ed5de8984bc2fd977a0aa357",
+    "schema_sha256": "19653b40058f317fc5116f3890d07fd077066770c86128524afd470f40966c4b",
+    "test_sha256": "e4699f9c8bf29e6d05d55d9e286e73d7479ea0ad8f069aff07adbfdb6f3d0486"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2120,
+    "full_repository_tests_passed": 2120,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "black_precommit": "pass"
+  },
+  "storage_boundary": {
+    "free_bytes": 150760443904,
+    "free_gib": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "new_asset_or_render_work_started": false
+  },
+  "live_boundary": {
+    "live_daz_readback_sealed": false,
+    "live_semantic_replay_hash_recorded": false,
+    "live_annotation_restore_hash_recorded": false,
+    "reason": "The final-state contract, exact comparisons, semantic replay, annotation restore, CLI, and immutable publication pass against closed fixtures. Completion requires a real qualified DAZ scene, actual final controller/joint/camera/asset readback, two matching evaluated semantic states, and a matching post-annotation-override restored state."
+  },
+  "not_claimed": [
+    "a live fully resolved DAZ scene",
+    "live applied controller or joint readback",
+    "live semantic replay",
+    "live annotation override restoration",
+    "completion of MF-P9-06.09"
+  ]
+}

@@ -4254,6 +4254,98 @@ def daz_recipes_preflight(
     )
 
 
+@daz_recipes.command("seal-resolved-state")
+@click.option(
+    "--foundation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--profile", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--appearance", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--pose", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--formation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--preflight-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--readback", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/resolved_scene_state.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\11_scene_state\resolved"),
+    show_default=True,
+)
+def daz_recipes_seal_resolved_state(
+    foundation: Path,
+    profile: Path,
+    appearance: Path,
+    pose: Path,
+    formation: Path,
+    preflight_report: Path,
+    readback: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Verify and seal final DAZ character/scene readback and semantic replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        ResolvedSceneStateError,
+        load_resolved_scene_state_policy,
+        publish_resolved_scene_state,
+        seal_resolved_scene_state,
+    )
+
+    try:
+        document = seal_resolved_scene_state(
+            json.loads(foundation.read_text(encoding="utf-8")),
+            json.loads(profile.read_text(encoding="utf-8")),
+            json.loads(appearance.read_text(encoding="utf-8")),
+            json.loads(pose.read_text(encoding="utf-8")),
+            json.loads(formation.read_text(encoding="utf-8")),
+            json.loads(preflight_report.read_text(encoding="utf-8")),
+            json.loads(readback.read_text(encoding="utf-8")),
+            load_resolved_scene_state_policy(policy),
+        )
+        target, published = publish_resolved_scene_state(document, output)
+    except (ResolvedSceneStateError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ResolvedSceneStateError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_resolved_scene_state_sealed",
+                entity_ids=(document["resolved_state_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "scene_state_sha256": document["scene_state_sha256"],
+                    "resolved_state_sha256": document["resolved_state_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

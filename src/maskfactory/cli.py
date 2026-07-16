@@ -6125,6 +6125,95 @@ def daz_recipes_prove_same_state_replay(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("aggregate-validation-set")
+@click.option(
+    "--results", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--entity-id", required=True)
+@click.option("--scope", type=click.Choice(["scene", "corpus"]), required=True)
+@click.option("--required-validator-id", "required_validator_ids", multiple=True)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\validation_sets"),
+    show_default=True,
+)
+def daz_recipes_aggregate_validation_set(
+    results: Path,
+    entity_id: str,
+    scope: str,
+    required_validator_ids: tuple[str, ...],
+    registry: Path,
+    output: Path,
+) -> None:
+    """Validate and aggregate one closed V0-V9 result set."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        result_document = json.loads(results.read_text(encoding="utf-8"))
+        if not isinstance(result_document, list):
+            raise ValidationRegistryError("validation_result_set_invalid", str(result_document))
+        document = build_validation_set_report(
+            result_document,
+            entity_id=entity_id,
+            scope=scope,
+            registry=load_validation_registry(registry),
+            required_validator_ids=(
+                sorted(required_validator_ids) if required_validator_ids else None
+            ),
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, ValidationRegistryError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_validation_set_valid" if not code else "daz_validation_set_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": document["layer_summary"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 def _load_string_mapping(path: Path, label: str) -> dict[str, str]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or not all(

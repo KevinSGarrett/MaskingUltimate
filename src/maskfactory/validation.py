@@ -109,6 +109,8 @@ SCHEMA_NAMES = frozenset(
         "daz_package_derivation_contract",
         "daz_package_derivation_report",
         "daz_same_state_replay_report",
+        "daz_validation_result",
+        "daz_validation_set_report",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

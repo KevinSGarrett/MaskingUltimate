@@ -6498,3 +6498,20 @@ Live boundary:                        no closed fixture is claimed as an indepen
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live replay, asset move, or asset relabel occurred
 Verification:                         the complete 2,629/2,629 repository suite passes; Ruff, targeted Black, all 116 JSON schemas, and Git diff checks pass
 Evidence:                             `qa/reports/daz_same_state_replay_20260716.json`
+
+## 2026-07-16 22:45 UTC - Closed V0-V9 validation result registry implemented
+
+**Result:** MF-P9-08.01 now has the complete V0-V9 result schema, closed reason registry, and required-set
+aggregation contract; it remains at 85% until its declared D1/D6 live authorities are accepted.
+
+Layer model:                          V0 contract, V1 asset, V2 recipe, V3 assembly, V4 geometry, V5 render, V6 semantic, V7 multi-person, and V8 package apply per scene; V9 corpus applies before dataset freeze
+Result model:                         exact validator ID/version, entity, status, closed reason, metric/observed/expected, safe relative evidence, retryability, and affected asset/mapping IDs are schema-bound
+Reason governance:                    every reason inherits one documented owner, status severity, permitted retry class, and evidence requirement from its registered validator/status binding
+Required semantics:                   missing, failed, or warning required results reject; warnings never substitute for passes; registered not-applicable results prove execution and may satisfy applicability; optional warnings remain informative
+Set integrity:                        duplicate validator results, mixed entities, cross-scope validators, unsorted/unknown required sets, unsafe evidence paths, version drift, and reason/status drift reject
+Publication/CLI:                      `aggregate-validation-set` emits an immutable idempotent normalized report with per-layer counts and stable failure codes
+Fixture proof:                       72 focused cases cover every V0-V9 layer, every status per layer, every closed reason code, owner/severity/retry/evidence bindings, registry drift, scene/corpus sets, warning/NA boundaries, publication, and CLI replay
+Activation boundary:                  contract implementation and verification are complete, but tracker completion remains gated by the item's declared D1 and D6 live-acceptance dependencies
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Verification:                         the complete 2,701/2,701 repository suite passes; Ruff, targeted Black, all 118 JSON schemas, and Git diff checks pass
+Evidence:                             `qa/reports/daz_validation_registry_20260716.json`

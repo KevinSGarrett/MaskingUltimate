@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T10:42:44Z",
+  "captured_at": "2026-07-16T11:07:16Z",
   "item": "MF-P9-14.09",
-  "status": "in_progress",
+  "status": "partially_complete",
   "implementation": {
     "content_addressed_immutable_versions": true,
     "benchmark_identity_and_selection_bound": true,
@@ -16,20 +16,33 @@
     "published_database_path_aligned": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_library.sqlite"
   },
   "live_state": {
-    "benchmark_version_frozen": false,
-    "reason": "The healthy contact-sheet job is still reading the same F-drive corpus. The final live freeze performs an independent 2,500-file rehash and is intentionally waiting to avoid unnecessary disk contention.",
-    "contact_sheets_at_capture": 70,
-    "contact_sheets_expected": 93
+    "benchmark_version_frozen": true,
+    "version_id": "benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c",
+    "content_digest": "7b36cdbe3b8795a8dfe38d1cbde013d6febce8ad6f06651060c504ca3300c1e1",
+    "manifest_sha256": "dc672223b823ce8265db61f8bc842a4e463486c5e3cbd52101d89a19f3d12600",
+    "manifest_path": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\benchmark_versions\\benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c\\benchmark_manifest.json",
+    "benchmark_count": 2500,
+    "materialized_fingerprint": "5e1bd31cbf1697f3e2dbe41dfe7c0e96f9064bda001739d5e05393f0d7dac401",
+    "first_drift_report": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\benchmark_drift_reports\\benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c__20260716T110716Z.json",
+    "first_drift_report_sha256": "1ceed034a4879016e90b0368ccf2c6f070a152227c4b9c3f8d045ed17cebea75",
+    "first_drift_report_passed": true,
+    "drift_detected": false,
+    "coverage_delta_nonzero_categories": 0,
+    "active_manifest_configured": true,
+    "contact_sheets_complete": 93,
+    "published_database_sha256": "a6b3250251b1b0371eb85cb050fb24c20316ce07970d1786efec6889982e216b"
   },
   "verification": {
     "focused_reference_and_dataset_builder_tests_passed": 24,
     "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1762,
+    "full_repository_tests_passed": 1762,
+    "full_repository_tests_failed": 0,
     "ruff": "pass",
     "black": "pass"
   },
   "not_claimed": [
-    "a live immutable benchmark version",
-    "a live zero-drift recurring report",
-    "completion of MF-P9-14.09"
+    "completion of MF-P9-14.09 while prerequisite MF-P9-14.06 remains partial",
+    "complete materialization of the capacity-held 18,000-image retrieval tier"
   ]
 }

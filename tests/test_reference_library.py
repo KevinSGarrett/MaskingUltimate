@@ -86,6 +86,7 @@ def _small_policy_at(output_root: Path) -> dict:
     policy["output_database"] = str(
         (output_root / "manifests" / "reference_library.sqlite").resolve()
     )
+    policy["versioning"]["active_benchmark_manifest"] = None
     return policy
 
 

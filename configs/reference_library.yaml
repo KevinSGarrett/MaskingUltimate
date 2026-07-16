@@ -32,5 +32,5 @@ versioning:
   immutable_versions_directory: manifests/benchmark_versions
   drift_reports_directory: manifests/benchmark_drift_reports
   drift_report_interval_days: 7
-  active_benchmark_manifest: null
+  active_benchmark_manifest: 'F:\Reference_Images\Ultimate_Masking_Reference_Images\manifests\benchmark_versions\benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c\benchmark_manifest.json'
 promotion_rule: An unlabeled reference image acquires truth only through an independent MaskFactory human-anchor or autonomous-certification workflow; selection alone never changes authority.

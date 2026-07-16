@@ -6045,3 +6045,18 @@ Path reconciliation:                 policy and read-only status now agree with 
 Live boundary:                        contact sheets were 70/93 and advancing at capture; the live freeze is deliberately pending rather than competing for the same disk
 Verification:                        24 focused reference/dataset-builder tests pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_benchmark_versioning_20260716.json`
+
+## 2026-07-16 11:07 UTC - Contact sheets complete; live benchmark frozen with zero drift
+
+**Result:** The live immutable benchmark and first recurring health proof pass. MF-P9-14.09 remains
+95% only because its declared MF-P9-14.06 prerequisite cannot close while retrieval duplication is capacity-held.
+
+Contact sheets:                       93 created, zero failed, 49,258,640 bytes; ordered name/SHA-256/size fingerprint `92afaeef...`
+Post-stage database:                  transactional publication quick-check `ok`; 446,554,112 bytes; SHA-256 `a6b32502...`
+Frozen version:                       `benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c`; 2,500 members; content digest `7b36cdbe...`; manifest SHA-256 `dc672223...`
+Materialized binding:                 independent 2,500-file rehash reproduced fingerprint `5e1bd31c...` before the immutable manifest was created
+First drift report:                   append-only report SHA-256 `1ceed034...` passes; current/frozen digest identical, zero issues, zero nonzero body-part coverage deltas
+Recurring activation:                the exact manifest path is active in policy; weekly active learning emits deterministic reports on its seven-day cadence
+Capacity:                            F remained healthy at 174.462 GiB; 64,329,397,650-byte retrieval duplication remains correctly withheld below the 150-GiB projected reserve
+Verification:                        24 focused tests and the complete 1,762/1,762 repository suite pass; Ruff, Black, tracker validation, SQLite quick-check, and DAZ doctor 12/12 pass
+Evidence:                             `qa/reports/reference_benchmark_materialization_20260716.json`; `qa/reports/reference_benchmark_versioning_20260716.json`

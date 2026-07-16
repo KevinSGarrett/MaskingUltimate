@@ -35,6 +35,7 @@ class DazErrorCode(IntEnum):
     ACQUISITION_MANIFEST_INVALID = 84
     CMS_OBSERVATION_INVALID = 85
     ONTOLOGY_SNAPSHOT_INVALID = 86
+    ASSET_IDENTITY_INVALID = 87
 
 
 class DazControlError(ValueError):

@@ -2726,6 +2726,118 @@ def daz_assets_filesystem_scan(
     )
 
 
+@daz_assets.command("identity-index")
+@click.option("--root", "root_specs", multiple=True, help="Repeat ROOT_ID=PATH.")
+@click.option(
+    "--inventory-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--state",
+    "identity_state",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\asset_identity.sqlite"),
+    show_default=True,
+)
+@click.option("--max-files", type=click.IntRange(min=1), default=100, show_default=True)
+@click.option("--max-bytes", type=click.IntRange(min=1), default=2 * 1024**3, show_default=True)
+@click.option("--max-seconds", type=click.FloatRange(min=0.1), default=30.0, show_default=True)
+@click.option("--reset", is_flag=True, help="Start a new hash state for the exact root set.")
+@click.option(
+    "--finalize", is_flag=True, help="Publish only after inventory and hashes are complete."
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\asset_identity"),
+    show_default=True,
+)
+@click.option(
+    "--previous",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional prior immutable identity snapshot to diff at finalization.",
+)
+def daz_assets_identity_index(
+    root_specs: tuple[str, ...],
+    inventory_state: Path,
+    identity_state: Path,
+    max_files: int,
+    max_bytes: int,
+    max_seconds: float,
+    reset: bool,
+    finalize: bool,
+    output: Path,
+    previous: Path | None,
+) -> None:
+    """Incrementally hash files and make duplicate/shadow conflicts explicit."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetIdentityError,
+        asset_identity_state_summary,
+        build_asset_identity_snapshot,
+        diff_asset_identity_snapshots,
+        publish_asset_identity_snapshot,
+        resume_asset_identity_index,
+    )
+
+    try:
+        roots = _daz_content_roots(root_specs)
+        chunk = resume_asset_identity_index(
+            inventory_state,
+            identity_state,
+            roots,
+            max_files=max_files,
+            max_bytes=max_bytes,
+            max_seconds=max_seconds,
+            reset=reset,
+        )
+        summary = asset_identity_state_summary(identity_state)
+        publication = None
+        difference = None
+        if finalize:
+            snapshot = build_asset_identity_snapshot(inventory_state, identity_state, roots)
+            target, published = publish_asset_identity_snapshot(snapshot, output)
+            publication = {
+                "path": str(target),
+                "published": published,
+                "snapshot_id": snapshot["snapshot_id"],
+                "summary": snapshot["summary"],
+            }
+            if previous is not None:
+                prior = json.loads(previous.read_text(encoding="utf-8"))
+                difference = diff_asset_identity_snapshots(prior, snapshot)
+    except (AssetIdentityError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AssetIdentityError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_IDENTITY_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_IDENTITY_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason=(
+                    "asset_identity_index_complete"
+                    if chunk.complete
+                    else "asset_identity_index_partial"
+                ),
+                data={
+                    "chunk": chunk.as_dict(),
+                    "summary": summary,
+                    "state_path": str(identity_state),
+                    "publication": publication,
+                    "difference": difference,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

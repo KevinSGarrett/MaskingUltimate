@@ -6060,3 +6060,19 @@ Recurring activation:                the exact manifest path is active in policy
 Capacity:                            F remained healthy at 174.462 GiB; 64,329,397,650-byte retrieval duplication remains correctly withheld below the 150-GiB projected reserve
 Verification:                        24 focused tests and the complete 1,762/1,762 repository suite pass; Ruff, Black, tracker validation, SQLite quick-check, and DAZ doctor 12/12 pass
 Evidence:                             `qa/reports/reference_benchmark_materialization_20260716.json`; `qa/reports/reference_benchmark_versioning_20260716.json`
+
+## 2026-07-16 11:35 UTC - Resumable DAZ asset identity and shadow resolution started
+
+**Result:** MF-P9-04.05 now has a complete fail-closed implementation and a live resumable hash state;
+the item remains partial because acquisition is still changing the estate and 41,001 current files remain unhashed.
+
+Incremental identity:                 fast inventory size/mtime/file-ID changes invalidate hashes; unchanged hashes are reused; every hash compares metadata before and after reading
+Safety:                              paths must remain inside registered roots; symlinks/reparses and non-files fail closed; source content is read-only; state uses SQLite WAL, FULL synchronous, and quick-check
+Duplicate semantics:                 same logical path/same hash has deterministic root precedence; duplicate copies are ineligible; same logical path/different hash makes every candidate ineligible pending explicit technical resolution
+Diff semantics:                      deterministic added, removed, content/metadata changed, unambiguous moves, and new/resolved/changed shadow-conflict sets
+Fixture proof:                       exact duplicates, cross-path content duplicates, conflicting shadows, immutable publication, changed content, moves, pending refusal, and CLI resume all pass
+Live state:                          93/41,094 hashes complete, 209,462,816/38,792,501,179 bytes, zero failed; state database quick-check `ok`, SHA-256 `58db6121...`
+Resume proof:                        second bounded run reused 70 hashes and added 23 / 199,112,472 bytes in 36.768 seconds rather than recomputing prior content
+Capacity:                            F remained healthy at 168.948 GiB; no source asset, worker, queue, DAZ process, DIM/CMS setting, or generation control was changed
+Verification:                        20 focused DAZ tests and the complete 1,765/1,765 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`

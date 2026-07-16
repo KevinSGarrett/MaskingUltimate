@@ -73,6 +73,7 @@ SCHEMA_NAMES = frozenset(
         "custom_segmenter_champion_transaction",
         "daz_operating_profile",
         "daz_acquisition_capacity",
+        "daz_asset_identity_snapshot",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

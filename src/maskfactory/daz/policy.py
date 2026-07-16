@@ -97,11 +97,26 @@ class DazTrainingPolicy:
 
 
 @dataclass(frozen=True)
+class DazAcquisitionCapacity:
+    schema_version: str
+    root: Path
+    soft_floor_gib: int
+    hard_floor_gib: int
+    emergency_floor_gib: int
+    new_work_allowed_states: tuple[str, ...]
+    active_job_allowed_states: tuple[str, ...]
+    refused_exit_code: int
+    live_guard_path: Path
+    source_guard_path: Path
+
+
+@dataclass(frozen=True)
 class DazConfiguration:
     paths: DazPathsConfig
     operating_profile: DazOperatingProfile
     worker: DazWorkerConfig
     training_policy: DazTrainingPolicy
+    acquisition_capacity: DazAcquisitionCapacity
     documents: Mapping[str, Mapping[str, Any]] = dataclass_field(repr=False, compare=False)
 
 
@@ -114,7 +129,13 @@ def load_yaml(path: Path) -> dict[str, Any]:
 
 def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
     root = Path(config_root)
-    names = ("paths", "operating_profile", "worker", "training_policy")
+    names = (
+        "paths",
+        "operating_profile",
+        "worker",
+        "training_policy",
+        "acquisition_capacity",
+    )
     documents = {name: load_yaml(root / f"{name}.yaml") for name in names}
     try:
         for name, document in documents.items():
@@ -161,6 +182,19 @@ def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
     if not isinstance(roots, list) or len(roots) != 25 or len(set(roots)) != 25:
         raise DazPolicyError("DAZ top-level root contract must contain 25 unique roots")
     storage = StorageThresholds(**thresholds)
+    capacity = documents["acquisition_capacity"]
+    required_capacity = {
+        "root": paths["root"],
+        "soft_floor_gib": thresholds["soft"],
+        "hard_floor_gib": thresholds["hard"],
+        "emergency_floor_gib": thresholds["emergency"],
+        "new_work_allowed_states": ["healthy"],
+        "active_job_allowed_states": ["healthy", "soft"],
+        "refused_exit_code": 76,
+    }
+    for field, expected in required_capacity.items():
+        if capacity.get(field) != expected:
+            raise DazPolicyError(f"DAZ acquisition capacity violates {field}")
     content = profile["content_policy"]
     typed_paths = DazPathsConfig(
         schema_version=paths["schema_version"],
@@ -196,11 +230,24 @@ def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
             "group_by": tuple(documents["training_policy"]["group_by"]),
         }
     )
+    typed_capacity = DazAcquisitionCapacity(
+        schema_version=capacity["schema_version"],
+        root=Path(capacity["root"]),
+        soft_floor_gib=capacity["soft_floor_gib"],
+        hard_floor_gib=capacity["hard_floor_gib"],
+        emergency_floor_gib=capacity["emergency_floor_gib"],
+        new_work_allowed_states=tuple(capacity["new_work_allowed_states"]),
+        active_job_allowed_states=tuple(capacity["active_job_allowed_states"]),
+        refused_exit_code=capacity["refused_exit_code"],
+        live_guard_path=Path(capacity["live_guard_path"]),
+        source_guard_path=Path(capacity["source_guard_path"]),
+    )
     return DazConfiguration(
         paths=typed_paths,
         operating_profile=typed_profile,
         worker=typed_worker,
         training_policy=typed_training,
+        acquisition_capacity=typed_capacity,
         documents=documents,
     )
 
@@ -330,6 +377,8 @@ def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
         executable_sha == str(paths["daz_studio_executable_sha256"]).casefold(),
         {"path": str(executable), "sha256": executable_sha},
     )
+    free_gib: float | None = None
+    storage_level = "unknown"
     if root.is_dir():
         free_gib = shutil.disk_usage(root).free / (1024**3)
         thresholds = paths["storage_thresholds_gib"]
@@ -351,6 +400,39 @@ def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
         "acquisition_queue_readable",
         acquisition.get("error") is None and acquisition["exists"],
         acquisition,
+    )
+    capacity = configuration.acquisition_capacity
+    source_guard = capacity.source_guard_path
+    if not source_guard.is_absolute():
+        source_guard = Path(config_root).resolve().parents[1] / source_guard
+    live_guard = capacity.live_guard_path
+    source_sha = _sha256_file(source_guard) if source_guard.is_file() else None
+    live_sha = _sha256_file(live_guard) if live_guard.is_file() else None
+    guard_ok = source_sha is not None and source_sha == live_sha
+    check(
+        "acquisition_capacity_guard_deployed",
+        guard_ok,
+        {
+            "source": str(source_guard),
+            "live": str(live_guard),
+            "source_sha256": source_sha,
+            "live_sha256": live_sha,
+            "refused_exit_code": capacity.refused_exit_code,
+        },
+    )
+    pool_file = live_guard.parent / "pool_pids.json"
+    pool_capacity_safe = free_gib is not None and (
+        free_gib >= capacity.soft_floor_gib or not pool_file.exists()
+    )
+    check(
+        "acquisition_pool_capacity_safe",
+        pool_capacity_safe,
+        {
+            "free_gib": round(free_gib, 3) if free_gib is not None else None,
+            "storage_level": storage_level,
+            "pool_pid_file_exists": pool_file.exists(),
+            "new_work_allowed": bool(free_gib is not None and free_gib >= capacity.soft_floor_gib),
+        },
     )
     from .control import RegisteredRootResolver, inspect_state_database, read_control_state
 
@@ -391,7 +473,7 @@ def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
         "generation_default_disabled", documents["worker"]["enabled"] is False, documents["worker"]
     )
     warnings = [
-        "storage_soft_floor: do not start new large generation plans"
+        "storage_soft_floor: do not start acquisition workers or new large generation plans"
         for item in checks
         if item["name"] == "storage_not_hard_blocked" and item["details"].get("level") == "soft"
     ]
@@ -413,6 +495,7 @@ def _sha256_file(path: Path) -> str:
 
 __all__ = [
     "DazPolicyError",
+    "DazAcquisitionCapacity",
     "DazConfiguration",
     "DazOperatingProfile",
     "DazPathsConfig",

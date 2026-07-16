@@ -15019,11 +15019,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-16T07:48:36+00:00",
+          "actor": "codex",
+          "text": "2026-07-16 live capacity intervention: F reached 99.426 GiB below the 100-GiB hard floor; documented acquisition stop recovered all leases and temporary work, queue quick-check passed, and F later returned to 162.343 GiB. Evidence qa/reports/daz_acquisition_capacity_intervention_20260716.json."
+        }
+      ],
       "evidence": "qa/reports/daz_foundation_20260716.json binds F:\\DAZ root UUID, NTFS volume identity, all 25 roots, and 148.003 GiB soft-floor state.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:10:48+00:00",
+      "updated_at": "2026-07-16T07:48:36+00:00",
       "orphaned": false
     },
     "MF-P9-01.08": {
@@ -15226,11 +15232,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-16T07:48:37+00:00",
+          "actor": "codex",
+          "text": "Acquisition capacity guard is now independently deployed: single/pool/scale/lease/job/download/install paths refuse with exit 76 below governed floors; live source hash d4c0ad6d...; doctor 12/12. Runtime render control remains disabled/draining."
+        }
+      ],
       "evidence": "Atomic hash-linked runtime control implements dry-run-by-default enable/disable/stop; live state is disabled/paused/draining and enable below 150 GiB fails closed.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:45:37+00:00",
+      "updated_at": "2026-07-16T07:48:37+00:00",
       "orphaned": false
     },
     "MF-P9-02.09": {
@@ -15788,13 +15800,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-16T08:21:10+00:00",
+          "actor": "ai_agent",
+          "text": "The snapshot preserves active v1 exactly: left_ear and right_ear remain disabled. This item does not claim DAZ facet/topology mapping, geometry qualification, production authority, or v2 activation."
+        }
+      ],
+      "evidence": "Canonical configs/ontology.yaml was loaded through src/maskfactory/ontology.py and frozen atomically/idempotently as ontology_v1_e7228e4d1d83f4fa537a54d8 under F:\\DAZ\\07_mappings\\genesis9\\body_parts_v1\\ontology_snapshots. Canonical SHA-256 e7228e4d1d83f4fa537a54d80944449179fa1ca454876d0d9618fc1aeee1d6d7 binds exact PART IDs 0..55, MATERIAL IDs 0..15, derived definitions, source/loader hashes, character-perspective left/right, and visible-only rules. Schema/digest/immutability/v1-v2 negative fixtures pass; 25 focused and 1,753 full repository tests pass. Evidence: qa/reports/daz_v1_ontology_snapshot_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T08:21:10+00:00",
       "orphaned": false
     },
     "MF-P9-05.03": {

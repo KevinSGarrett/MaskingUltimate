@@ -48,6 +48,10 @@ def _config_for(tmp_path: Path) -> tuple[Path, Path]:
         }
     )
     paths_file.write_text(yaml.safe_dump(paths, sort_keys=False), encoding="utf-8")
+    capacity_file = config / "acquisition_capacity.yaml"
+    capacity = yaml.safe_load(capacity_file.read_text(encoding="utf-8"))
+    capacity["root"] = str(daz_root)
+    capacity_file.write_text(yaml.safe_dump(capacity, sort_keys=False), encoding="utf-8")
     return config, daz_root
 
 
@@ -55,7 +59,13 @@ def test_closed_schemas_compile_and_typed_loader_rejects_unknown_key(tmp_path: P
     configuration = load_typed_daz_configuration(CONFIG)
     assert configuration.paths.state_database == Path(r"F:\DAZ\10_queue\queue.sqlite")
     assert configuration.worker.default_disabled is True
-    for name in ("paths", "operating_profile", "worker", "training_policy"):
+    for name in (
+        "paths",
+        "operating_profile",
+        "worker",
+        "training_policy",
+        "acquisition_capacity",
+    ):
         schema = json.loads((SCHEMAS / f"daz_{name}.schema.json").read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(schema)
         assert validate_document(configuration.documents[name], f"daz_{name}") == ()

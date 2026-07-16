@@ -2677,6 +2677,60 @@ def daz_assets_cms_scan(
     )
 
 
+@daz.group("mappings")
+def daz_mappings() -> None:
+    """Build immutable ontology and figure-mapping inputs."""
+
+
+@daz_mappings.command("ontology-snapshot")
+@click.option(
+    "--source",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/ontology.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\07_mappings\genesis9\body_parts_v1\ontology_snapshots"),
+    show_default=True,
+)
+def daz_mappings_ontology_snapshot(source: Path, output: Path) -> None:
+    """Freeze canonical MaskFactory v1 IDs for downstream DAZ mapping jobs."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.mapping import (
+        OntologySnapshotError,
+        build_v1_ontology_snapshot,
+        publish_ontology_snapshot,
+    )
+
+    try:
+        snapshot = build_v1_ontology_snapshot(source)
+        target, published = publish_ontology_snapshot(snapshot, output)
+    except (OntologySnapshotError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, OntologySnapshotError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ONTOLOGY_SNAPSHOT_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ONTOLOGY_SNAPSHOT_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_ontology_snapshot_complete",
+                entity_ids=(snapshot["snapshot_id"],),
+                data={
+                    "snapshot": snapshot,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_control.command("status")
 @click.option(
     "--config-root",

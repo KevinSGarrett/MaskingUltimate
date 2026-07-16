@@ -15,6 +15,7 @@ from .control import (
     set_control_state,
 )
 from .policy import (
+    DazAcquisitionCapacity,
     DazConfiguration,
     DazPolicyError,
     daz_foundation_doctor,
@@ -45,6 +46,7 @@ from .worker import (
 
 __all__ = [
     "DazConfiguration",
+    "DazAcquisitionCapacity",
     "DazControlError",
     "DazErrorCode",
     "DazPolicyError",

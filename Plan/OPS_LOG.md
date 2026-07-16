@@ -5924,3 +5924,35 @@ Live filesystem progress:            217 directories complete, 151 pending, zero
 Comparison boundary:                 cross-source joins are skipped entirely and return only `source_or_inventory_incomplete` until both sides are complete, preventing expensive partial counts from being mistaken for missing-asset evidence
 Verification:                        36 focused tests pass; full repository collection is 1,740 and the complete rerun passes; Ruff and Black pass
 Mutation boundary:                   no acquisition worker, DAZ process, DIM, CMS, asset content, WSL, Docker, credential, elevation, or UAC state was modified
+
+## 2026-07-16 07:44 UTC - DAZ acquisition hard-floor incident drained and guarded
+
+**Result:** PASS for capacity safety and recovery; the autonomous downloader is intentionally stopped
+until stable registry evidence is frozen, and every ordinary restart path is now fail-closed by capacity.
+
+Trigger:                              F reached 106,758,086,656 free bytes (99.426 GiB), below the governed 100-GiB hard floor; policy requires drain/preserve-metadata rather than continued download/install
+Documented stop:                      `stop_pool_background.ps1` stopped PIDs 49732,32368,45500,29992,9240,2564,46672,15804 and ran its built-in interrupted-job recovery
+Queue integrity:                      SQLite quick-check `ok`; 1,360 jobs = 458 complete, 693 queued, 209 paused, zero running/leased; pool PID file and install lock absent
+Capacity recovery:                    immediate 111.138 GiB, later 162.343 GiB healthy after job-private temporary work released; no installed asset, manifest, or source record was deleted
+Durable guard:                        versioned/live `capacity_guard.py` bytes match SHA-256 `d4c0ad6d...`; new work requires >=150 GiB, active jobs require >=100 GiB, emergency remains 60 GiB, refusal exit is 76
+Covered entry points:                 single start, pool start, pool scale, every lease loop, job start, pre-download, and pre-install; a capacity hold requeues without charging an attempt
+Live refusal proof:                   at 111.096 GiB, guard, direct worker, and pool launcher all refused; zero workers, leases, pool files, launcher locks, or install locks were created
+Doctor:                               expanded read-only DAZ doctor passes 12/12 including byte-identical deployed guard and stopped-pool safety at the soft floor
+Verification:                         eight capacity tests, typed configuration/schema, live Python compile, Ruff check, and Ruff format pass
+Evidence:                             `qa/reports/daz_acquisition_capacity_intervention_20260716.json`; live worker SHA-256 `64f8f0ea...`; live config SHA-256 `6e4c3e69...`
+
+## 2026-07-16 08:10 UTC - Guarded DAZ acquisition resumed externally; v1 ontology frozen
+
+**Result:** The capacity intervention remains valid and the externally supervised pool resumed only
+after F returned to the healthy state. MF-P9-05.02 is complete with an immutable canonical v1 snapshot.
+
+External pool resumption:             the external supervisor started eight workers at 07:49:02 UTC; this task did not initiate the restart and did not stop it after observing 208.563 GiB free
+Guard continuity:                     all eight observed PIDs run worker version `0.3.7`; deployed guard SHA-256 remains `d4c0ad6d...`; >=150 GiB new-work and >=100 GiB active-work gates remain live
+Inventory boundary:                   acquisition manifests and installed files are mutating again, so MF-P9-04.03/.04 remain resumable partial observations and no final cross-source freeze is claimed
+Ontology source:                      canonical `configs/ontology.yaml` SHA-256 `d28f66ab...` loaded through `src/maskfactory/ontology.py` SHA-256 `96d158d0...`
+Frozen identity:                      `ontology_v1_e7228e4d1d83f4fa537a54d8`; canonical SHA-256 `e7228e4d...`; published file SHA-256 `f1a54df3...`; second publication byte-idempotent
+Exact vocabulary:                     PART IDs 0..55 (56 labels, 54 enabled; `left_ear`/`right_ear` remain honestly disabled), MATERIAL IDs 0..15, and 63 derived labels with resolved boundary text
+Fail-closed integrity:                schema, version, character-perspective left/right, visible-only contract, exact contiguous IDs, source/loader hashes, snapshot content digest, immutable conflict, and v1/v2 separation are enforced
+Authority boundary:                   snapshot supplies exact IDs to later DAZ mapping jobs; it does not claim facet/topology mapping, geometry qualification, production authority, or v2 activation
+Verification:                         25/25 focused DAZ capacity/control/ontology tests and the complete 1,753/1,753 repository suite pass; Ruff check and Ruff format pass
+Evidence:                             `qa/reports/daz_acquisition_capacity_intervention_20260716.json`; `qa/reports/daz_v1_ontology_snapshot_20260716.json`

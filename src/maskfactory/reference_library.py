@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
+import shutil
 import sqlite3
+from collections import Counter
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 import yaml
 
@@ -29,6 +33,10 @@ def validate_reference_library_policy(policy: Mapping[str, Any]) -> None:
         raise ReferenceLibraryError("reference library must remain an unlabeled corpus")
     if policy.get("truth_authority") != "none" or policy.get("originals_are_immutable") is not True:
         raise ReferenceLibraryError("reference source has truth authority or mutable originals")
+    for root_name in ("source_root", "output_root"):
+        root_value = policy.get(root_name)
+        if not isinstance(root_value, str) or not Path(root_value).is_absolute():
+            raise ReferenceLibraryError(f"reference {root_name} must be an absolute path")
     content = policy.get("content_policy")
     if not isinstance(content, Mapping):
         raise ReferenceLibraryError("reference content policy is missing")
@@ -110,10 +118,308 @@ def inspect_reference_database(path: Path) -> dict[str, Any]:
     return report
 
 
+def inspect_reference_selection(database: Path, policy: Mapping[str, Any]) -> dict[str, Any]:
+    """Prove deterministic near-dedup and tier selection before materialization."""
+    validate_reference_library_policy(policy)
+    database = Path(database)
+    connection = sqlite3.connect(f"file:{database}?mode=ro", uri=True, timeout=120)
+    connection.row_factory = sqlite3.Row
+    issues: list[str] = []
+    required_tables = {
+        "exact_members",
+        "images",
+        "near_duplicate_members",
+        "pipeline_meta",
+        "selections",
+        "visual_index",
+    }
+    try:
+        tables = _table_names(connection)
+        missing_tables = sorted(required_tables - tables)
+        if missing_tables:
+            raise ReferenceLibraryError(
+                "reference selection database is missing: " + ", ".join(missing_tables)
+            )
+        metadata = {
+            str(row["key"]): json.loads(str(row["value_json"]))
+            for row in connection.execute("SELECT key,value_json FROM pipeline_meta")
+        }
+        exact_representatives = _scalar(
+            connection,
+            "SELECT COUNT(*) FROM exact_members WHERE is_representative=1",
+        )
+        visual_valid = _scalar(connection, "SELECT COUNT(*) FROM visual_index WHERE status='valid'")
+        visual_invalid = _scalar(
+            connection, "SELECT COUNT(*) FROM visual_index WHERE status='invalid'"
+        )
+        near_members = _scalar(connection, "SELECT COUNT(*) FROM near_duplicate_members")
+        near_clusters = _scalar(
+            connection, "SELECT COUNT(DISTINCT cluster_id) FROM near_duplicate_members"
+        )
+        near_meta = metadata.get("near_dedup", {})
+        if visual_valid + visual_invalid != exact_representatives:
+            issues.append("visual_index_incomplete")
+        if visual_invalid:
+            issues.append(f"visual_index_invalid:{visual_invalid}")
+        if near_members != exact_representatives:
+            issues.append(f"near_member_count:{near_members}!={exact_representatives}")
+        if near_meta.get("near_unique") != near_clusters:
+            issues.append(f"near_cluster_count:{near_clusters}!={near_meta.get('near_unique')}")
+
+        selection_counts = {
+            str(row[0]): int(row[1])
+            for row in connection.execute(
+                "SELECT tier,COUNT(*) FROM selections GROUP BY tier ORDER BY tier"
+            )
+        }
+        for tier in REFERENCE_TIERS:
+            target = int(policy["tiers"][tier]["target_count"])
+            if selection_counts.get(tier, 0) != target:
+                issues.append(f"selection_count:{tier}:{selection_counts.get(tier, 0)}!={target}")
+        issues.extend(
+            f"unknown_tier:{tier}" for tier in sorted(set(selection_counts) - set(REFERENCE_TIERS))
+        )
+        missing_near_members = _scalar(
+            connection,
+            "SELECT COUNT(*) FROM selections s LEFT JOIN near_duplicate_members n "
+            "ON n.relative_path=s.relative_path WHERE n.relative_path IS NULL",
+        )
+        if missing_near_members:
+            issues.append(f"selection_missing_near_group:{missing_near_members}")
+        exact_sha_overlap = _scalar(
+            connection,
+            "SELECT COUNT(*) FROM (SELECT i.sha256 FROM selections s JOIN images i "
+            "ON i.relative_path=s.relative_path GROUP BY i.sha256 "
+            "HAVING COUNT(DISTINCT s.tier)>1)",
+        )
+        if exact_sha_overlap:
+            issues.append(f"exact_sha256_overlap_between_tiers:{exact_sha_overlap}")
+        near_cluster_overlap = _scalar(
+            connection,
+            "SELECT COUNT(*) FROM (SELECT n.cluster_id FROM selections s "
+            "JOIN near_duplicate_members n ON n.relative_path=s.relative_path "
+            "GROUP BY n.cluster_id HAVING COUNT(DISTINCT s.tier)>1)",
+        )
+        if near_cluster_overlap:
+            issues.append(f"near_duplicate_cluster_overlap_between_tiers:{near_cluster_overlap}")
+
+        body_part_tags = tuple(
+            sorted(metadata.get("library_purpose", {}).get("body_part_focus_tags", []))
+        )
+        selected_tags: Counter[str] = Counter()
+        for row in connection.execute(
+            "SELECT v.tags_json FROM selections s JOIN visual_index v "
+            "ON v.relative_path=s.relative_path"
+        ):
+            selected_tags.update(json.loads(str(row[0])))
+        body_part_coverage = {tag: int(selected_tags.get(tag, 0)) for tag in body_part_tags}
+        issues.extend(
+            f"missing_body_part_tag:{tag}"
+            for tag, count in body_part_coverage.items()
+            if count == 0
+        )
+
+        near_fingerprint = _rows_fingerprint(
+            connection.execute(
+                "SELECT relative_path,cluster_id,representative_path,group_size,similarity "
+                "FROM near_duplicate_members ORDER BY relative_path"
+            )
+        )
+        selection_fingerprint = _rows_fingerprint(
+            connection.execute(
+                "SELECT tier,rank,relative_path,selection_score,selection_reasons_json "
+                "FROM selections ORDER BY tier,rank,relative_path"
+            )
+        )
+        selected_bytes = {
+            str(row[0]): int(row[1] or 0)
+            for row in connection.execute(
+                "SELECT s.tier,SUM(i.size_bytes) FROM selections s JOIN images i "
+                "ON i.relative_path=s.relative_path GROUP BY s.tier ORDER BY s.tier"
+            )
+        }
+    finally:
+        connection.close()
+    return {
+        "schema_version": "1.0.0",
+        "database": str(database),
+        "exact_representatives": exact_representatives,
+        "visual_valid": visual_valid,
+        "visual_invalid": visual_invalid,
+        "near_duplicate_members": near_members,
+        "near_duplicate_clusters": near_clusters,
+        "near_duplicates_removed": exact_representatives - near_clusters,
+        "near_group_fingerprint": near_fingerprint,
+        "selection_counts": selection_counts,
+        "selection_bytes": selected_bytes,
+        "selection_fingerprint": selection_fingerprint,
+        "cross_tier_exact_sha_overlap": exact_sha_overlap,
+        "cross_tier_near_cluster_overlap": near_cluster_overlap,
+        "body_part_coverage": body_part_coverage,
+        "issues": sorted(set(issues)),
+        "passed": not issues,
+    }
+
+
+def materialize_reference_tier(
+    database: Path,
+    policy: Mapping[str, Any],
+    tier: str,
+    *,
+    max_items: int = 100,
+    soft_floor_gib: float = 150.0,
+    hard_floor_gib: float = 100.0,
+    free_bytes_provider: Callable[[Path], int] | None = None,
+) -> dict[str, Any]:
+    """Materialize one bounded, resumable reference tier under shared-F capacity gates."""
+    validate_reference_library_policy(policy)
+    if tier not in REFERENCE_TIERS:
+        raise ReferenceLibraryError(f"unknown reference tier: {tier}")
+    if max_items <= 0:
+        raise ReferenceLibraryError("reference materialization max_items must be positive")
+    if not 0 < hard_floor_gib < soft_floor_gib:
+        raise ReferenceLibraryError("reference materialization capacity floors are invalid")
+    database = Path(database)
+    source_root = Path(str(policy["source_root"])).resolve(strict=True)
+    output_root = Path(str(policy["output_root"])).resolve(strict=True)
+    get_free_bytes = free_bytes_provider or (lambda root: int(shutil.disk_usage(root).free))
+    gib = 1024**3
+    connection = sqlite3.connect(database, timeout=120)
+    connection.row_factory = sqlite3.Row
+    processed = reused = 0
+    issues: list[str] = []
+    capacity_hold: dict[str, Any] | None = None
+    try:
+        target = int(policy["tiers"][tier]["target_count"])
+        selected_count = _scalar(
+            connection, "SELECT COUNT(*) FROM selections WHERE tier=?", (tier,)
+        )
+        if selected_count != target:
+            raise ReferenceLibraryError(
+                f"reference tier selection is incomplete: {tier}:{selected_count}!={target}"
+            )
+        rows = connection.execute(
+            "SELECT s.relative_path,s.rank,s.materialized_path,s.materialized_sha256,"
+            "i.sha256,i.size_bytes,v.content_state,v.person_count "
+            "FROM selections s JOIN images i ON i.relative_path=s.relative_path "
+            "JOIN visual_index v ON v.relative_path=s.relative_path "
+            "WHERE s.tier=? AND (s.materialized_path IS NULL OR s.materialized_sha256 IS NULL) "
+            "ORDER BY s.rank,s.relative_path LIMIT ?",
+            (tier, max_items),
+        ).fetchall()
+        for row in rows:
+            source = _path_under_root(source_root, str(row["relative_path"]))
+            relative_destination = _reference_materialized_relative_path(row, tier)
+            destination = _path_under_root(output_root, relative_destination.as_posix())
+            expected_sha = str(row["sha256"])
+            expected_size = int(row["size_bytes"])
+            if not source.is_file():
+                issues.append(f"source_missing:{row['relative_path']}")
+                break
+            source_before = (source.stat().st_size, source.stat().st_mtime_ns)
+            if destination.exists():
+                if _sha256_file(source) != expected_sha:
+                    issues.append(f"source_hash_conflict:{row['relative_path']}")
+                    break
+                if destination.stat().st_size != expected_size:
+                    issues.append(f"destination_size_conflict:{relative_destination.as_posix()}")
+                    break
+                observed_sha = _sha256_file(destination)
+                if observed_sha != expected_sha:
+                    issues.append(f"destination_hash_conflict:{relative_destination.as_posix()}")
+                    break
+                reused += 1
+            else:
+                free_bytes = int(get_free_bytes(output_root))
+                if free_bytes < int(soft_floor_gib * gib):
+                    capacity_hold = {
+                        "reason": "storage_below_soft_floor",
+                        "free_bytes": free_bytes,
+                        "free_gib": round(free_bytes / gib, 3),
+                        "soft_floor_gib": soft_floor_gib,
+                        "hard_floor_gib": hard_floor_gib,
+                    }
+                    break
+                if free_bytes - expected_size < int(hard_floor_gib * gib):
+                    capacity_hold = {
+                        "reason": "copy_would_cross_hard_floor",
+                        "free_bytes": free_bytes,
+                        "free_gib": round(free_bytes / gib, 3),
+                        "copy_bytes": expected_size,
+                        "soft_floor_gib": soft_floor_gib,
+                        "hard_floor_gib": hard_floor_gib,
+                    }
+                    break
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                partial = destination.with_suffix(destination.suffix + ".partial")
+                if partial.exists():
+                    partial.unlink()
+                try:
+                    shutil.copy2(source, partial)
+                    with partial.open("rb+") as handle:
+                        os.fsync(handle.fileno())
+                    if partial.stat().st_size != expected_size:
+                        raise ReferenceLibraryError(
+                            "copied reference size does not match inventory"
+                        )
+                    observed_sha = _sha256_file(partial)
+                    if observed_sha != expected_sha:
+                        raise ReferenceLibraryError(
+                            "copied reference hash does not match inventory"
+                        )
+                    os.replace(partial, destination)
+                finally:
+                    if partial.exists():
+                        partial.unlink()
+                processed += 1
+            source_after = (source.stat().st_size, source.stat().st_mtime_ns)
+            if source_after != source_before:
+                issues.append(f"source_mutated_during_copy:{row['relative_path']}")
+                break
+            connection.execute(
+                "UPDATE selections SET materialized_path=?,materialized_sha256=?,"
+                "materialized_at=datetime('now') WHERE relative_path=? AND tier=?",
+                (
+                    relative_destination.as_posix(),
+                    expected_sha,
+                    row["relative_path"],
+                    tier,
+                ),
+            )
+            connection.commit()
+        remaining = _scalar(
+            connection,
+            "SELECT COUNT(*) FROM selections WHERE tier=? AND "
+            "(materialized_path IS NULL OR materialized_sha256 IS NULL)",
+            (tier,),
+        )
+        materialized = selected_count - remaining
+    except sqlite3.Error as exc:
+        connection.rollback()
+        raise ReferenceLibraryError(f"reference materialization database failure: {exc}") from exc
+    finally:
+        connection.close()
+    return {
+        "schema_version": "1.0.0",
+        "database": str(database),
+        "tier": tier,
+        "target_count": selected_count,
+        "processed_this_chunk": processed,
+        "reused_this_chunk": reused,
+        "materialized_count": materialized,
+        "remaining_count": remaining,
+        "complete": remaining == 0 and not issues,
+        "capacity_hold": capacity_hold,
+        "issues": issues,
+        "source_files_modified": 0,
+    }
+
+
 def validate_reference_selection(database: Path, policy: Mapping[str, Any]) -> dict[str, Any]:
     """Validate selection counts, tier disjointness, and materialized hashes."""
     validate_reference_library_policy(policy)
     database = Path(database)
+    output_root = Path(str(policy["output_root"])).resolve()
     connection = sqlite3.connect(f"file:{database}?mode=ro", uri=True, timeout=120)
     issues: list[str] = []
     try:
@@ -139,12 +445,32 @@ def validate_reference_selection(database: Path, policy: Mapping[str, Any]) -> d
             issues.append("relative_path_overlap_between_tiers")
         if sha_sets[REFERENCE_TIERS[0]] & sha_sets[REFERENCE_TIERS[1]]:
             issues.append("exact_sha256_overlap_between_tiers")
+        if "near_duplicate_members" in _table_names(connection):
+            cross_tier_clusters = connection.execute(
+                "SELECT n.cluster_id FROM selections s "
+                "JOIN near_duplicate_members n ON n.relative_path=s.relative_path "
+                "GROUP BY n.cluster_id HAVING COUNT(DISTINCT s.tier)>1"
+            ).fetchall()
+            if cross_tier_clusters:
+                issues.append("near_duplicate_cluster_overlap_between_tiers")
         for tier_rows in by_tier.values():
-            for relative_path, tier, materialized_path, claimed_sha, _source_sha in tier_rows:
-                path = Path(materialized_path) if materialized_path else None
-                if path is None or not path.is_file():
+            for relative_path, tier, materialized_path, claimed_sha, source_sha in tier_rows:
+                if not materialized_path:
                     issues.append(f"missing_materialized:{tier}:{relative_path}")
-                elif claimed_sha != _sha256_file(path):
+                    continue
+                path = Path(str(materialized_path))
+                path = path if path.is_absolute() else output_root / path
+                resolved = path.resolve()
+                try:
+                    resolved.relative_to(output_root)
+                except ValueError:
+                    issues.append(f"materialized_outside_output_root:{tier}:{relative_path}")
+                    continue
+                if not resolved.is_file():
+                    issues.append(f"missing_materialized:{tier}:{relative_path}")
+                elif claimed_sha != source_sha:
+                    issues.append(f"materialized_source_hash_mismatch:{tier}:{relative_path}")
+                elif claimed_sha != _sha256_file(resolved):
                     issues.append(f"materialized_hash_mismatch:{tier}:{relative_path}")
     finally:
         connection.close()
@@ -194,6 +520,67 @@ def _count(connection: sqlite3.Connection, table: str) -> int:
     return int(connection.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0])
 
 
+def _scalar(connection: sqlite3.Connection, query: str, parameters: tuple[Any, ...] = ()) -> int:
+    return int(connection.execute(query, parameters).fetchone()[0])
+
+
+def _rows_fingerprint(rows: Iterable[sqlite3.Row]) -> str:
+    digest = hashlib.sha256()
+    for row in rows:
+        normalized = []
+        for value in row:
+            if isinstance(value, float):
+                normalized.append(format(value, ".17g"))
+            elif isinstance(value, str) and value.startswith(("{", "[")):
+                try:
+                    normalized.append(
+                        json.dumps(json.loads(value), sort_keys=True, separators=(",", ":"))
+                    )
+                except json.JSONDecodeError:
+                    normalized.append(value)
+            else:
+                normalized.append(value)
+        digest.update(
+            json.dumps(normalized, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        )
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
+def _path_under_root(root: Path, relative_path: str) -> Path:
+    relative = Path(relative_path)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ReferenceLibraryError("reference materialization path escapes its governed root")
+    resolved = (root / relative).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ReferenceLibraryError(
+            "reference materialization path escapes its governed root"
+        ) from exc
+    return resolved
+
+
+def _safe_reference_stem(path: str) -> str:
+    cleaned = "".join(character if character.isalnum() else "_" for character in Path(path).stem)
+    cleaned = "_".join(part for part in cleaned.split("_") if part)
+    return (cleaned[:60] or "image").strip("_")
+
+
+def _reference_materialized_relative_path(row: Mapping[str, Any], tier: str) -> Path:
+    extension = Path(str(row["relative_path"])).suffix.lower() or ".jpg"
+    category = f"{row['content_state']}__{row['person_count']}"
+    safe_category = "".join(
+        character if character.isalnum() or character in {"_", "-"} else "_"
+        for character in category
+    )
+    name = (
+        f"{str(row['sha256'])[:16]}__"
+        f"{_safe_reference_stem(str(row['relative_path']))}{extension}"
+    )
+    return Path(tier) / safe_category / name
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -206,7 +593,9 @@ __all__ = [
     "REFERENCE_TIERS",
     "ReferenceLibraryError",
     "inspect_reference_database",
+    "inspect_reference_selection",
     "load_reference_library_policy",
+    "materialize_reference_tier",
     "validate_benchmark_training_isolation",
     "validate_reference_library_policy",
     "validate_reference_selection",

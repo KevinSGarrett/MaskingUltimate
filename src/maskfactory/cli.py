@@ -2094,6 +2094,77 @@ def reference_library_validate_selection(database: Path, policy: Path) -> None:
         raise click.ClickException("reference selection validation failed")
 
 
+@reference_library.command("selection-status")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+def reference_library_selection_status(database: Path, policy: Path) -> None:
+    """Verify near-dedup and exact tier selection without materializing files."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        inspect_reference_selection,
+        load_reference_library_policy,
+    )
+
+    try:
+        report = inspect_reference_selection(database, load_reference_library_policy(policy))
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+    if not report["passed"]:
+        raise click.ClickException("reference selection status failed")
+
+
+@reference_library.command("materialize")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--tier", type=click.Choice(("benchmark_reference", "retrieval_reference")), required=True
+)
+@click.option("--max-items", type=click.IntRange(min=1), default=100, show_default=True)
+def reference_library_materialize(database: Path, policy: Path, tier: str, max_items: int) -> None:
+    """Copy one bounded tier chunk with source hashes and shared-F capacity gates."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        load_reference_library_policy,
+        materialize_reference_tier,
+    )
+
+    try:
+        report = materialize_reference_tier(
+            database,
+            load_reference_library_policy(policy),
+            tier,
+            max_items=max_items,
+        )
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+    if report["issues"]:
+        raise click.ClickException("reference materialization failed")
+    if report["capacity_hold"]:
+        raise click.exceptions.Exit(75)
+
+
 @main.group("daz")
 def daz() -> None:
     """Operate the optional default-disabled DAZ synthetic lane."""

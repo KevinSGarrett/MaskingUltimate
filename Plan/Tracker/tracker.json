@@ -17693,19 +17693,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 71,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-16T03:11:10+00:00",
           "actor": "codex",
           "text": "Active CUDA index run reached 49762/69398 exact representatives (71.705%), 19636 remaining, zero failures at 2026-07-16T03:02:04Z; qa/reports/reference_library_progress_20260716.json."
+        },
+        {
+          "ts": "2026-07-16T09:11:33+00:00",
+          "actor": "ai_agent",
+          "text": "The prior 71.705% report was a mid-run capture; the CUDA index subsequently closed successfully. The legacy downstream PowerShell probe failed only after completion and caused no index data loss."
         }
       ],
-      "evidence": null,
+      "evidence": "Read-only status proves all 69,398 exact representatives are classified valid, zero invalid and zero remaining. Index run 14 completed at 2026-07-16T05:23:25Z with 24,996 processed in the final resume and zero failures; working/published database hashes and pipeline hash are recorded in qa/reports/reference_library_selection_20260716.json. Seven focused and 1,757 full repository tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:10+00:00",
+      "updated_at": "2026-07-16T09:11:33+00:00",
       "orphaned": false
     },
     "MF-P9-14.04": {
@@ -17720,13 +17725,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "All 69,398 exact representatives were grouped deterministically into 64,104 perceptual/embedding clusters, removing 5,294 near duplicates from the selectable pool. Independent selection runs 15 and 16 reproduced near-group fingerprint 6e1831840a8103a214eb8c805f3000297aba3a71fa0800927a02dee57241994b exactly; zero selected cluster crosses tiers. Duplicate/negative fixtures and read-only live validation pass. Evidence: qa/reports/reference_library_selection_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T09:11:35+00:00",
       "orphaned": false
     },
     "MF-P9-14.05": {
@@ -17741,13 +17746,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Deterministic runs 15/16 each selected exactly 2,500 benchmark and 18,000 retrieval references with identical fingerprint 70fe46a65ee46691dfa9a4ede7bfd728d5c38251a8acee46fc2abb2783c74900, zero path/SHA/near-cluster overlap, and all 22 required body-part focus tags (minimum part_elbow=26). Selection remains unlabeled/no-truth/no-training authority. Evidence: qa/reports/reference_library_selection_20260716.json; seven focused and 1,757 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T09:11:36+00:00",
       "orphaned": false
     },
     "MF-P9-14.06": {
@@ -17762,13 +17767,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 25,
+      "notes": [
+        {
+          "ts": "2026-07-16T09:11:36+00:00",
+          "actor": "ai_agent",
+          "text": "Only the 7.35-GiB benchmark tranche is running. Retrieval materialization cannot start unless the post-copy storage plan preserves the shared F-drive soft floor; no unsafe all-tier copy is authorized by this partial state."
+        }
+      ],
+      "evidence": "Tier-aware checked-in materializer now performs bounded resume, governed-root containment, atomic copy/fsync, exact SHA-256/source-inventory equality, source-mutation detection, and per-file 150/100-GiB capacity gates. Benchmark materialization is active and had verified 264/2,500 files at 2026-07-16T09:11Z with F healthy at 194.144 GiB; retrieval and contact sheets remain pending. Full 72.23-GB copy is correctly withheld because it would cross the soft floor.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T09:11:36+00:00",
       "orphaned": false
     },
     "MF-P9-14.07": {

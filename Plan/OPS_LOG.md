@@ -5970,3 +5970,20 @@ Publication boundary:                source/directory pending counts can increas
 Mutation boundary:                   no asset move/delete/redownload, worker stop, DAZ launch, DIM/CMS write, credential change, WSL/Docker action, elevation, or UAC action occurred
 Verification:                         37 focused observation tests and the complete 1,754/1,754 repository suite pass; Ruff and Black hooks pass
 Evidence:                             `qa/reports/daz_asset_observation_progress_20260716.json`
+
+## 2026-07-16 09:10 UTC - Governed reference index, near-dedup, and exact selection completed
+
+**Result:** MF-P9-14.03 through MF-P9-14.05 are complete; bounded benchmark
+materialization has started, while the larger retrieval copy remains capacity-gated.
+
+Visual index:                         69,398/69,398 exact representatives classified, zero invalid/unresolved; completed run 14 closed with zero failures
+Near dedup:                          69,398 members form 64,104 deterministic clusters; 5,294 near duplicates removed from the selectable pool; grouping fingerprint `6e183184...`
+Exact selection:                     2,500 benchmark plus 18,000 retrieval references; zero cross-tier path, SHA-256, or near-cluster overlap; selection fingerprint `70fe46a6...`
+Coverage:                            all 22 required body-part focus categories are present; the rarest selected category is `part_elbow` with 26 references
+Replay:                              independent selection runs 15 and 16 each processed 20,500 with zero failures and produced identical grouping/selection fingerprints and tier counts
+Authority:                           the corpus remains unlabeled reference-only with no truth/training/gold authority; governed adult/NSFW material is eligible and its tag is organizational; known/suspected minors remain prohibited
+Capacity decision:                   selected copies total 72,226,704,398 bytes (67.26 GiB); copying both tiers from 199.277 GiB free would project 132.011 GiB and violate the 150-GiB soft floor
+Safe materialization:                checked-in tier-aware copier uses bounded resume chunks, atomic copy, fsync, SHA-256/source-inventory equality, source-mutation detection, and per-file 150/100-GiB gates; only the 7.35-GiB benchmark tranche was started
+Recovered orchestrator issue:        the completed CUDA index was intact; only the legacy PowerShell inline probe failed from argument quoting, so no downstream stage had run and no data was lost
+Verification:                        seven focused reference tests and the complete 1,757/1,757 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/reference_library_selection_20260716.json`

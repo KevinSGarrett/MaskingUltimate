@@ -15,7 +15,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_POLICY = PROJECT_ROOT / "qa/governance/completion/modernization_completion_v1.json"
-POLICY_SHA256 = "83b3a668089a60369b476f74bc2f5055ef5dd48b497d26032dccadceb624ee17"
+POLICY_SHA256 = "5ec2908d110ab50224098bd1da59edbba085576f2ff87bfe61916a9acfd7af75"
 
 
 class CompletionBundleError(ValueError):

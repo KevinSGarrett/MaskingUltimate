@@ -5840,3 +5840,23 @@ Verification:                       complete repository 1,731/1,731 pass after f
 Runtime preservation:              reference CUDA indexer and eight DAZ acquisition workers remain running; no WSL/Docker restart, VHD operation, DAZ launch/render, elevation, UAC request, purchase, or account mutation occurred
 Open proof:                         measured real holdout gains, near-perfect metrics, >=95% zero-touch rate, <=1% manual pixel editing, real ablations, and end-to-end autonomous headline evidence are not claimed yet
 Evidence:                           `qa/reports/reference_library_progress_20260716.json`; `qa/reports/daz_foundation_20260716.json`; `Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md`
+
+## 2026-07-16 03:45 UTC - DAZ D1 fail-closed control plane completed and verified live
+
+**Result:** MF-P9-01.06 and MF-P9-02.01 through MF-P9-02.10 are now fully
+implemented and evidence-backed without launching DAZ or enabling generation.
+
+Typed configuration:                four closed Draft 2020-12 schemas plus frozen dataclass models reject unknown keys, unknown versions, unsafe profile drift, and synthetic-authority drift
+Registered paths:                   `F:\DAZ\00_control\path_registry.json` binds 16 logical roots to root UUID `6bd1b3ba-162a-400b-96dc-e4951b892a04`; absolute paths, `..`, unknown roots, and resolved root/junction escapes fail with stable code 71
+Root initializer:                   dry-run found the complete exact directory tree present; apply created only the missing 701-byte path registry; repeated dry-run reports zero changes and preserves the existing root identity
+State database:                     `F:\DAZ\10_queue\queue.sqlite`, schema 2, WAL, foreign keys, 14 blueprint state tables plus migrations/events; quick-check `ok`, zero missing tables/foreign-key errors; migrations replay with no changes
+Append-only events:                 closed DAZ event contract plus database triggers prevent event UPDATE/DELETE; duplicate IDs and malformed events fail with stable evidence
+Control state:                      atomic revision/hash-linked `runtime_state.json` is `enabled=false`, `paused=true`, `drain=true`; enable below the 150-GiB soft floor is refused; enable/disable/stop mutations default to dry-run and never prompt
+CLI contract:                       doctor, config validate, roots init, paths resolve, state init/integrity, and control status/enable/disable/stop return JSON fields `code`, `reason`, `entity_ids`, `retryable`, and `evidence_paths`; configuration/path failures use reserved 70-79 codes
+Git source guard:                   `.gitignore` and pre-commit reject DAZ source/installer/geometry/texture extensions outside bounded tiny test fixtures; seeded vendor files fail with code 80
+DIM snapshot:                       DAZ Install Manager 64-bit `1.4.1.96`; executable SHA-256 `b67210e71e67a1d7a4db01927e074be41267a5c60351a6e2b1424b8920ae2ede`
+Live doctor:                        10/10 checks pass, including registered roots, state integrity, and disabled/draining runtime state; storage remains soft at the captured 141.328 GiB, so no generation is allowed
+Verification:                       15/15 focused source/control tests and complete repository 1,737/1,737 pass; Ruff and four DAZ JSON Schemas pass; completion policy was administratively rebound to the exact whitespace-normalized Plan-23 hash with no rule changes
+Runtime preservation:              no DAZ launch/render, WSL/Docker restart, VHD operation, elevation, UAC action, purchase, account mutation, reference-indexer stop, or acquisition-worker stop occurred
+Rollback:                           leave `runtime_state.json` disabled; repository rollback removes code/config/schema additions; live queue DB and registries are passive metadata and are not MaskFactory serving authority
+Evidence:                           `qa/reports/daz_control_plane_20260716.json`

@@ -6,12 +6,15 @@ import hashlib
 import json
 import shutil
 import sqlite3
+from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 import yaml
 
 from ..truth_tiers import WEIGHTED_PSEUDO_LABEL
+from ..validation import ArtifactValidationError, require_valid_document
 
 SYNTHETIC_ROLE = "synthetic_geometry_exact"
 MAXIMUM_SYNTHETIC_SHARE = 0.30
@@ -21,6 +24,87 @@ class DazPolicyError(ValueError):
     """DAZ configuration or synthetic training authority is invalid."""
 
 
+@dataclass(frozen=True)
+class StorageThresholds:
+    healthy: int
+    soft: int
+    hard: int
+    emergency: int
+
+
+@dataclass(frozen=True)
+class DazPathsConfig:
+    schema_version: str
+    root: Path
+    root_identity: Path
+    daz_studio_executable: Path
+    daz_studio_executable_sha256: str
+    acquisition_database: Path
+    state_database: Path
+    expected_top_level_roots: tuple[str, ...]
+    storage_thresholds_gib: StorageThresholds
+
+
+@dataclass(frozen=True)
+class DazOperatingProfile:
+    schema_version: str
+    profile_id: str
+    execution_location: str
+    commercial_deployment: bool
+    public_hosting: bool
+    distribution: bool
+    automatic_asset_purchase: bool
+    automatic_account_login: bool
+    character_scope: Mapping[str, Any]
+    adult_and_nsfw_assets_eligible: bool
+    content_tags_are_organizational_not_training_exclusions: bool
+    known_or_suspected_minor_prohibited: bool
+
+
+@dataclass(frozen=True)
+class DazWorkerConfig:
+    schema_version: str
+    enabled: bool
+    default_disabled: bool
+    launch_mode: str
+    window_visibility: str
+    maximum_workers: int
+    atomic_file_protocol: bool
+    job_private_partial_directory: bool
+    worker_result_written_last: bool
+    gpu_lease_required_for_render: bool
+    automatic_purchase: bool
+    automatic_account_login: bool
+
+
+@dataclass(frozen=True)
+class DazTrainingPolicy:
+    schema_version: str
+    source_origin: str
+    source_role: str
+    truth_tier: str
+    truth_partition: str
+    training_loss_weight: float
+    minimum_training_loss_weight: float
+    maximum_training_loss_weight: float
+    maximum_synthetic_image_fraction: float
+    holdout_eligible: bool
+    calibration_eligible: bool
+    dataset_volume_eligible: bool
+    counts_as_human_anchor_gold: bool
+    counts_as_autonomous_certified_gold: bool
+    group_by: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class DazConfiguration:
+    paths: DazPathsConfig
+    operating_profile: DazOperatingProfile
+    worker: DazWorkerConfig
+    training_policy: DazTrainingPolicy
+    documents: Mapping[str, Mapping[str, Any]] = dataclass_field(repr=False, compare=False)
+
+
 def load_yaml(path: Path) -> dict[str, Any]:
     document = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     if not isinstance(document, dict):
@@ -28,12 +112,15 @@ def load_yaml(path: Path) -> dict[str, Any]:
     return document
 
 
-def validate_daz_configuration(config_root: Path) -> dict[str, dict[str, Any]]:
+def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
     root = Path(config_root)
-    documents = {
-        name: load_yaml(root / f"{name}.yaml")
-        for name in ("paths", "operating_profile", "worker", "training_policy")
-    }
+    names = ("paths", "operating_profile", "worker", "training_policy")
+    documents = {name: load_yaml(root / f"{name}.yaml") for name in names}
+    try:
+        for name, document in documents.items():
+            require_valid_document(document, f"daz_{name}")
+    except ArtifactValidationError as exc:
+        raise DazPolicyError(f"DAZ configuration schema validation failed: {exc}") from exc
     profile = documents["operating_profile"]
     required_profile = {
         "profile_id": "private_personal_local_v1",
@@ -73,7 +160,54 @@ def validate_daz_configuration(config_root: Path) -> dict[str, dict[str, Any]]:
     roots = paths.get("expected_top_level_roots")
     if not isinstance(roots, list) or len(roots) != 25 or len(set(roots)) != 25:
         raise DazPolicyError("DAZ top-level root contract must contain 25 unique roots")
-    return documents
+    storage = StorageThresholds(**thresholds)
+    content = profile["content_policy"]
+    typed_paths = DazPathsConfig(
+        schema_version=paths["schema_version"],
+        root=Path(paths["root"]),
+        root_identity=Path(paths["root_identity"]),
+        daz_studio_executable=Path(paths["daz_studio_executable"]),
+        daz_studio_executable_sha256=paths["daz_studio_executable_sha256"],
+        acquisition_database=Path(paths["acquisition_database"]),
+        state_database=Path(paths["state_database"]),
+        expected_top_level_roots=tuple(roots),
+        storage_thresholds_gib=storage,
+    )
+    typed_profile = DazOperatingProfile(
+        schema_version=profile["schema_version"],
+        profile_id=profile["profile_id"],
+        execution_location=profile["execution_location"],
+        commercial_deployment=profile["commercial_deployment"],
+        public_hosting=profile["public_hosting"],
+        distribution=profile["distribution"],
+        automatic_asset_purchase=profile["automatic_asset_purchase"],
+        automatic_account_login=profile["automatic_account_login"],
+        character_scope=profile["character_scope"],
+        adult_and_nsfw_assets_eligible=content["adult_and_nsfw_assets_eligible"],
+        content_tags_are_organizational_not_training_exclusions=content[
+            "content_tags_are_organizational_not_training_exclusions"
+        ],
+        known_or_suspected_minor_prohibited=content["known_or_suspected_minor_prohibited"],
+    )
+    typed_worker = DazWorkerConfig(**worker)
+    typed_training = DazTrainingPolicy(
+        **{
+            **documents["training_policy"],
+            "group_by": tuple(documents["training_policy"]["group_by"]),
+        }
+    )
+    return DazConfiguration(
+        paths=typed_paths,
+        operating_profile=typed_profile,
+        worker=typed_worker,
+        training_policy=typed_training,
+        documents=documents,
+    )
+
+
+def validate_daz_configuration(config_root: Path) -> dict[str, dict[str, Any]]:
+    configuration = load_typed_daz_configuration(config_root)
+    return {name: dict(document) for name, document in configuration.documents.items()}
 
 
 def validate_synthetic_authority(record: Mapping[str, Any]) -> None:
@@ -161,7 +295,8 @@ def inspect_acquisition_queue(path: Path, *, query_counts: bool = False) -> dict
 
 def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
     """Read-only D0/D1 foundation doctor; it never launches DAZ or alters the queue."""
-    documents = validate_daz_configuration(config_root)
+    configuration = load_typed_daz_configuration(config_root)
+    documents = configuration.documents
     paths = documents["paths"]
     root = Path(paths["root"])
     checks: list[dict[str, Any]] = []
@@ -171,6 +306,7 @@ def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
 
     check("root_exists", root.is_dir(), str(root))
     identity_path = Path(paths["root_identity"])
+    identity: dict[str, Any] = {}
     try:
         identity = json.loads(identity_path.read_text(encoding="utf-8"))
         identity_ok = (
@@ -216,6 +352,41 @@ def daz_foundation_doctor(config_root: Path) -> dict[str, Any]:
         acquisition.get("error") is None and acquisition["exists"],
         acquisition,
     )
+    from .control import RegisteredRootResolver, inspect_state_database, read_control_state
+
+    registry_path = root / "00_control" / "path_registry.json"
+    try:
+        resolver = RegisteredRootResolver.load(registry_path)
+        resolved_queue = resolver.resolve("queue")
+        registered_roots_ok = (
+            resolver.root_uuid == identity.get("root_uuid")
+            and resolved_queue == (root / "10_queue").resolve()
+        )
+        check(
+            "registered_roots",
+            registered_roots_ok,
+            {
+                "path": str(registry_path),
+                "root_count": len(resolver.roots),
+                "queue": str(resolved_queue),
+            },
+        )
+    except ValueError as exc:
+        check("registered_roots", False, str(exc))
+    try:
+        state_database = inspect_state_database(configuration.paths.state_database)
+        check("state_database_integrity", state_database["passed"], state_database)
+    except ValueError as exc:
+        check("state_database_integrity", False, str(exc))
+    try:
+        control_state = read_control_state(configuration)
+        check(
+            "runtime_control_disabled",
+            control_state["enabled"] is False and control_state["drain"] is True,
+            control_state,
+        )
+    except ValueError as exc:
+        check("runtime_control_disabled", False, str(exc))
     check(
         "generation_default_disabled", documents["worker"]["enabled"] is False, documents["worker"]
     )
@@ -242,11 +413,17 @@ def _sha256_file(path: Path) -> str:
 
 __all__ = [
     "DazPolicyError",
+    "DazConfiguration",
+    "DazOperatingProfile",
+    "DazPathsConfig",
+    "DazTrainingPolicy",
+    "DazWorkerConfig",
     "MAXIMUM_SYNTHETIC_SHARE",
     "SYNTHETIC_ROLE",
     "daz_foundation_doctor",
     "inspect_acquisition_queue",
     "load_yaml",
+    "load_typed_daz_configuration",
     "validate_daz_configuration",
     "validate_synthetic_authority",
     "validate_synthetic_share",

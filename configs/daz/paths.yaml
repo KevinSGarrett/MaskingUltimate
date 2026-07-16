@@ -4,6 +4,7 @@ root_identity: 'F:\DAZ\00_control\root_identity.json'
 daz_studio_executable: 'C:\Program Files\DAZ 3D\DAZStudio6\DAZStudio.exe'
 daz_studio_executable_sha256: 2079c7629e38bda411aa2b9218ae2702009d33f03f8226a1b68ae68026c3d18f
 acquisition_database: 'F:\DAZ\00_control\render_state_ingest\queue.sqlite3'
+state_database: 'F:\DAZ\10_queue\queue.sqlite'
 expected_top_level_roots:
   - 00_control
   - 01_source_records

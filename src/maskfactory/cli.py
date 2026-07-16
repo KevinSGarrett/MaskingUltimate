@@ -2099,6 +2099,19 @@ def daz() -> None:
     """Operate the optional default-disabled DAZ synthetic lane."""
 
 
+def _emit_daz_error(exc: Exception) -> None:
+    from .daz import DazControlError, DazErrorCode, result_envelope
+
+    if isinstance(exc, DazControlError):
+        document = exc.as_result()
+        exit_code = int(exc.code)
+    else:
+        document = result_envelope(code=int(DazErrorCode.CONFIG_INVALID), reason=str(exc))
+        exit_code = int(DazErrorCode.CONFIG_INVALID)
+    click.echo(json.dumps(document, sort_keys=True))
+    raise click.exceptions.Exit(exit_code)
+
+
 @daz.command("doctor")
 @click.option(
     "--config-root",
@@ -2108,15 +2121,255 @@ def daz() -> None:
 )
 def daz_doctor(config_root: Path) -> None:
     """Run the read-only foundation doctor without launching DAZ."""
-    from .daz import DazPolicyError, daz_foundation_doctor
+    from .daz import DazPolicyError, daz_foundation_doctor, result_envelope
 
     try:
         report = daz_foundation_doctor(config_root)
     except (DazPolicyError, OSError, ValueError) as exc:
-        raise click.ClickException(str(exc)) from exc
-    click.echo(json.dumps(report, sort_keys=True))
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=0 if report["passed"] else 70,
+                reason="doctor_passed" if report["passed"] else "doctor_failed",
+                data=report,
+            ),
+            sort_keys=True,
+        )
+    )
     if not report["passed"]:
-        raise click.ClickException("DAZ foundation doctor failed")
+        raise click.exceptions.Exit(70)
+
+
+@daz.group("config")
+def daz_config() -> None:
+    """Validate the closed DAZ configuration bundle."""
+
+
+@daz_config.command("validate")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_config_validate(config_root: Path) -> None:
+    from .daz import load_control_configuration, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="configuration_valid",
+                data={
+                    "root": str(configuration.paths.root),
+                    "profile_id": configuration.operating_profile.profile_id,
+                    "default_disabled": configuration.worker.default_disabled,
+                    "state_database": str(configuration.paths.state_database),
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz.group("roots")
+def daz_roots() -> None:
+    """Plan or apply the registered F:\\DAZ directory contract."""
+
+
+@daz_roots.command("init")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--apply", "apply_changes", is_flag=True, help="Create missing directories and control records."
+)
+def daz_roots_init(config_root: Path, apply_changes: bool) -> None:
+    from .daz import initialize_daz_root, load_control_configuration
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = initialize_daz_root(configuration.paths.root, apply=apply_changes)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz.group("paths")
+def daz_paths() -> None:
+    """Resolve portable paths through the registered-root authority."""
+
+
+@daz_paths.command("resolve")
+@click.argument("root_id")
+@click.argument("relative_path", required=False, default=".")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_paths_resolve(root_id: str, relative_path: str, config_root: Path) -> None:
+    from .daz import RegisteredRootResolver, load_control_configuration, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+        registry = configuration.paths.root / "00_control" / "path_registry.json"
+        resolved = RegisteredRootResolver.load(registry).resolve(root_id, relative_path)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="path_resolved",
+                entity_ids=(root_id,),
+                data={"relative_path": relative_path, "resolved_path": str(resolved)},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz.group("state")
+def daz_state() -> None:
+    """Initialize and verify the dedicated WAL state database."""
+
+
+@daz_state.command("init")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option("--apply", "apply_changes", is_flag=True, help="Create or migrate the database.")
+def daz_state_init(config_root: Path, apply_changes: bool) -> None:
+    from .daz import initialize_state_database, load_control_configuration, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+        path = configuration.paths.state_database
+        report = (
+            initialize_state_database(path)
+            if apply_changes
+            else result_envelope(
+                reason="state_database_initialization_plan",
+                evidence_paths=(str(path),),
+                data={"apply": False, "exists": path.is_file(), "target_schema_version": 2},
+            )
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_state.command("integrity")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_state_integrity(config_root: Path) -> None:
+    from .daz import inspect_state_database, load_control_configuration, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = inspect_state_database(configuration.paths.state_database)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=0 if report["passed"] else 73,
+                reason="state_integrity_passed" if report["passed"] else "state_integrity_failed",
+                evidence_paths=(str(configuration.paths.state_database),),
+                data=report,
+            ),
+            sort_keys=True,
+        )
+    )
+    if not report["passed"]:
+        raise click.exceptions.Exit(73)
+
+
+@daz.group("control")
+def daz_control() -> None:
+    """Read or atomically change the local DAZ enable/drain state."""
+
+
+@daz_control.command("status")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_control_status(config_root: Path) -> None:
+    from .daz import load_control_configuration, read_control_state, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+        state = read_control_state(configuration)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(result_envelope(reason="control_status", data=state), sort_keys=True))
+
+
+def _change_daz_control(config_root: Path, action: str, reason: str, apply_changes: bool) -> None:
+    from .daz import load_control_configuration, set_control_state
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = set_control_state(
+            configuration,
+            action,
+            reason=reason,
+            apply=apply_changes,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+def _daz_control_options(function):
+    function = click.option("--apply", "apply_changes", is_flag=True)(function)
+    function = click.option("--reason", required=True)(function)
+    function = click.option(
+        "--config-root",
+        type=click.Path(path_type=Path, file_okay=False, exists=True),
+        default=Path("configs/daz"),
+        show_default=True,
+    )(function)
+    return function
+
+
+@daz_control.command("enable")
+@_daz_control_options
+def daz_control_enable(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or enable leasing; storage gates can still refuse it."""
+    _change_daz_control(config_root, "enable", reason, apply_changes)
+
+
+@daz_control.command("disable")
+@_daz_control_options
+def daz_control_disable(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or disable new leasing and drain outstanding work."""
+    _change_daz_control(config_root, "disable", reason, apply_changes)
+
+
+@daz_control.command("stop")
+@_daz_control_options
+def daz_control_stop(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or request a controlled stop without killing a process tree."""
+    _change_daz_control(config_root, "stop", reason, apply_changes)
 
 
 @golden_reference.command("import")

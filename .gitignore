@@ -80,3 +80,22 @@ venv/
 *.log
 *.sqlite-shm
 *.sqlite-wal
+
+# DAZ vendor source assets, geometry, render intermediates, and installers stay
+# under F:\DAZ. Only code, schemas, manifests, and tiny approved fixtures belong
+# in this repository (Plan/Daz/11 sections 1 and 10).
+*.daz
+*.dazip
+*.dbz
+*.dsf
+*.duf
+*.exr
+*.fbx
+*.glb
+*.gltf
+*.hdr
+*.hdri
+*.ies
+*.obj
+*.tif
+*.tiff

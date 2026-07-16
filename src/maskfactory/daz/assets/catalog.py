@@ -26,6 +26,9 @@ REQUIRED_VOCABULARIES = (
     "identity_statuses",
     "plugin_states",
     "static_states",
+    "character_scopes",
+    "capabilities",
+    "facet_keys",
 )
 
 
@@ -288,6 +291,7 @@ def _normalize_record(record: Mapping[str, Any], vocabularies: Mapping[str, Any]
         "primary_asset_class": "primary_asset_classes",
         "identity_status": "identity_statuses",
         "mapping_requirement": "mapping_requirements",
+        "character_scope": "character_scopes",
     }
     normalized: dict[str, Any] = {"asset_id": asset_id}
     for field, vocabulary in scalar_vocabularies.items():
@@ -318,6 +322,30 @@ def _normalize_record(record: Mapping[str, Any], vocabularies: Mapping[str, Any]
         ):
             raise AssetCatalogError("catalog_list_invalid", f"{asset_id}:{field}")
         normalized[field] = sorted(values)
+    capabilities = record.get("capabilities", [])
+    if not isinstance(capabilities, list) or len(capabilities) != len(set(capabilities)):
+        raise AssetCatalogError("catalog_list_invalid", f"{asset_id}:capabilities")
+    unknown_capabilities = sorted(set(capabilities) - set(vocabularies["capabilities"]))
+    if unknown_capabilities:
+        raise AssetCatalogError(
+            "catalog_vocabulary_invalid",
+            f"{asset_id}:capabilities:{','.join(unknown_capabilities)}",
+        )
+    normalized["capabilities"] = sorted(capabilities)
+    facets = record.get("facets", {})
+    if not isinstance(facets, Mapping):
+        raise AssetCatalogError("catalog_facets_invalid", asset_id)
+    unknown_facets = sorted(set(facets) - set(vocabularies["facet_keys"]))
+    if unknown_facets:
+        raise AssetCatalogError(
+            "catalog_vocabulary_invalid", f"{asset_id}:facets:{','.join(unknown_facets)}"
+        )
+    if any(
+        not isinstance(value, str) or not re.fullmatch(r"^[a-z][a-z0-9_]*$", value)
+        for value in facets.values()
+    ):
+        raise AssetCatalogError("catalog_facets_invalid", asset_id)
+    normalized["facets"] = dict(sorted(facets.items()))
     dependencies = record.get("dependencies", [])
     if not isinstance(dependencies, list):
         raise AssetCatalogError("catalog_dependencies_invalid", asset_id)

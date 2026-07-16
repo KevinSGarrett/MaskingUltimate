@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_asset_pool_report.schema.json",
+  "title": "DAZ logical asset pool report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "report_id", "report_sha256", "graph_id", "graph_sha256", "pool_version", "authority", "summary", "pools"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "report_id": {"type": "string", "pattern": "^apr_[0-9a-f]{24}$"},
+    "report_sha256": {"$ref": "#/$defs/sha256"},
+    "graph_id": {"type": "string", "pattern": "^acg_[0-9a-f]{24}$"},
+    "graph_sha256": {"$ref": "#/$defs/sha256"},
+    "pool_version": {"const": "1.0.0"},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["static_candidates_are_qualified", "runtime_qualification_required", "source_assets_copied"],
+      "properties": {
+        "static_candidates_are_qualified": {"const": false},
+        "runtime_qualification_required": {"const": true},
+        "source_assets_copied": {"const": false}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pool_count", "static_candidate_memberships", "qualified_member_memberships", "generation_enabled_pool_count", "empty_static_candidate_pool_count"],
+      "properties": {
+        "pool_count": {"const": 12},
+        "static_candidate_memberships": {"type": "integer", "minimum": 0},
+        "qualified_member_memberships": {"type": "integer", "minimum": 0},
+        "generation_enabled_pool_count": {"type": "integer", "minimum": 0, "maximum": 12},
+        "empty_static_candidate_pool_count": {"type": "integer", "minimum": 0, "maximum": 12}
+      }
+    },
+    "pools": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pool_id", "filter", "static_candidate_asset_ids", "qualified_member_asset_ids", "static_candidate_count", "qualified_member_count", "generation_enabled", "facet_distributions", "applied_overrides"],
+        "properties": {
+          "pool_id": {"type": "string", "minLength": 1},
+          "filter": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["primary_asset_classes", "figure_generations", "character_scopes", "scene_categories", "capabilities", "group_by"],
+            "properties": {
+              "primary_asset_classes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "figure_generations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "character_scopes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "scene_categories": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "group_by": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+            }
+          },
+          "static_candidate_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+          "qualified_member_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+          "static_candidate_count": {"type": "integer", "minimum": 0},
+          "qualified_member_count": {"type": "integer", "minimum": 0},
+          "generation_enabled": {"type": "boolean"},
+          "facet_distributions": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}},
+          "applied_overrides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["asset_id", "action", "reason"],
+              "properties": {
+                "asset_id": {"$ref": "#/$defs/asset_id"},
+                "action": {"enum": ["include", "exclude"]},
+                "reason": {"type": "string", "minLength": 1}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_id": {"type": "string", "pattern": "^ast_[0-9a-f]{24}$"}
+  }
+}

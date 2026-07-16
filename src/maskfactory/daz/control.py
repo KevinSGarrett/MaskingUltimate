@@ -37,6 +37,7 @@ class DazErrorCode(IntEnum):
     ONTOLOGY_SNAPSHOT_INVALID = 86
     ASSET_IDENTITY_INVALID = 87
     ASSET_CATALOG_INVALID = 88
+    ASSET_POOL_INVALID = 89
 
 
 class DazControlError(ValueError):

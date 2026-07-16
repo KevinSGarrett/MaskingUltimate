@@ -8,7 +8,7 @@
     "authoritative_source": "Plan/Daz/Asset_Manifest/vocabularies/controlled_vocabularies.yaml",
     "authoritative_source_sha256": "f8181470dcc2095278ef3407379925b89c56be8814d4300c73992da1a5c9c1f9",
     "runtime_copy": "configs/daz/asset_vocabularies.yaml",
-    "runtime_copy_sha256": "f480a31938728f8d484ef5814e6159d6491a7d27bd4bf6d2e872c35b9dc978fb",
+    "runtime_copy_sha256": "c0d9af16c84008393588e7471c88aa3cd3e470e77468040e18d1510d3511a13c",
     "blueprint_core_lists_match": [
       "primary_asset_classes",
       "figure_generations",
@@ -40,15 +40,15 @@
     "identity_total_bytes": 38792501179
   },
   "lineage": {
-    "implementation_sha256": "36c3b58c76872c5bad88e2d12165fefe1b3d19c178659f0bab38e5c085b40f21",
-    "schema_sha256": "8450aac0574830115c006d7c88a22a849450d462bee0be74f8d3bf67a1bc9143",
-    "test_sha256": "134fd84e05c1d7707c3b5b2b237c8b6f956832ebf74230ed57b09850dfbd3bdb"
+    "implementation_sha256": "b3faea97ec2eb0d41d70a3fbe58a3868b07685f2dfeb793d3a758f5fdd26d84c",
+    "schema_sha256": "917c7fdff8722a7e27c70f04a410ae35ef3f5e341284d561dc478861b413ac3a",
+    "test_sha256": "ca160cb417fa765deca64e9059b742c9e0a97b97380a69dfd9259ae64da795fe"
   },
   "verification": {
     "focused_catalog_tests_passed": 5,
     "focused_catalog_tests_failed": 0,
-    "full_repository_tests_collected": 1770,
-    "full_repository_tests_passed": 1770,
+    "full_repository_tests_collected": 1775,
+    "full_repository_tests_passed": 1775,
     "full_repository_tests_failed": 0,
     "ruff": "pass",
     "black": "pass"

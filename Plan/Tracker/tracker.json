@@ -15677,18 +15677,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 40,
+      "percent_complete": 50,
       "notes": [
         {
           "ts": "2026-07-16T11:56:32+00:00",
           "actor": "ai_agent",
           "text": "Closed blueprint-hash-bound vocabularies, static compatibility graph validation, deterministic content identity, and immutable publication are implemented. A live graph is deliberately withheld until MF-P9-04.05 can freeze the current estate."
+        },
+        {
+          "ts": "2026-07-16T12:10:06+00:00",
+          "actor": "ai_agent",
+          "text": "The graph vocabulary now also closes adult/generation-neutral character scope, capabilities, and grouping facets required by logical pools. Live publication remains downstream of the incomplete identity snapshot."
         }
       ],
-      "evidence": "Runtime vocabulary core lists match authoritative source SHA-256 f8181470dcc2095278ef3407379925b89c56be8814d4300c73992da1a5c9c1f9. Graph validates unique IDs, closed class/generation/scene/mapping/identity values, figure-base targets, required dependencies, plugin version/hash, and cycles. Unknowns, duplicate/shadow identities, missing requirements, and incompatible bases are ineligible; static passes remain qualified=false pending runtime smoke/mapping. Five focused and 1,770 full tests pass. Evidence: qa/reports/daz_asset_catalog_graph_progress_20260716.json.",
+      "evidence": "Closed graph now covers class, generation, character scope, capability, scene category, mapping requirement, identity state, facets, dependencies, and plugin identities while keeping qualified=false. Ten focused catalog/pool and 1,775 full tests pass. Evidence: qa/reports/daz_asset_catalog_graph_progress_20260716.json and qa/reports/daz_asset_pool_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T11:56:32+00:00",
+      "updated_at": "2026-07-16T12:10:06+00:00",
       "orphaned": false
     },
     "MF-P9-04.07": {
@@ -15703,13 +15708,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T12:10:07+00:00",
+          "actor": "ai_agent",
+          "text": "Dependency and required-plugin graph logic is implemented and fixture-complete. Operational completion waits for the live immutable compatibility graph after identity hashing and acquisition stabilization."
+        }
+      ],
+      "evidence": "Required dependencies resolve or make the asset ineligible; required cycles reject; plugins use closed available/unavailable/incompatible state; available plugins require version plus SHA-256; missing/incompatible requirements are ineligible. Static graph never grants runtime qualification. Missing/cycle/plugin fixtures and CLI publication pass; 1,775/1,775 full tests pass. Evidence: qa/reports/daz_asset_pool_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T12:10:07+00:00",
       "orphaned": false
     },
     "MF-P9-04.08": {
@@ -15724,13 +15735,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 55,
+      "notes": [
+        {
+          "ts": "2026-07-16T12:10:09+00:00",
+          "actor": "ai_agent",
+          "text": "All twelve approved logical pools and deterministic facet reports are implemented as ID queries, not copied directories. Live membership remains withheld until the final compatibility graph and runtime qualifications exist."
+        }
+      ],
+      "evidence": "Exact 12-pool policy covers G9 adult bases/characters/morphs/age/skin/hair/wardrobe/poses, multi-person poses, lights, environments, and occlusion/support props. Static candidates remain separate from qualified generation members; overrides cannot include ineligible assets; deterministic grouping and immutable publication fixtures pass. Ten focused and 1,775 full tests pass. Evidence: qa/reports/daz_asset_pool_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T12:10:09+00:00",
       "orphaned": false
     },
     "MF-P9-04.09": {

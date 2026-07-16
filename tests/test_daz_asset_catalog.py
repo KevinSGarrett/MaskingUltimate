@@ -32,10 +32,13 @@ def _record(token: str, primary_class: str, **overrides) -> dict:
         "primary_asset_class": primary_class,
         "identity_status": "unique",
         "mapping_requirement": "none",
+        "character_scope": "adult_human",
         "figure_generations": ["genesis_9"],
         "scene_categories": ["clothed"],
         "compatibility_bases": [],
         "required_plugins": [],
+        "capabilities": [],
+        "facets": {},
         "dependencies": [],
     }
     record.update(overrides)

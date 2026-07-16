@@ -6092,3 +6092,19 @@ Fixture proof:                       input order reproduces identical graph byte
 Live identity progress:               bounded hashing advanced to 1,376/41,094 files and 802,123,063/38,792,501,179 bytes with zero failures; live graph correctly withheld
 Verification:                        five focused catalog tests and the complete 1,770/1,770 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/daz_asset_catalog_graph_progress_20260716.json`
+
+## 2026-07-16 12:15 UTC - Dependency/plugin gates and twelve logical asset pools implemented
+
+**Result:** MF-P9-04.07/.08 now have complete fail-closed implementations; both remain partial because
+live graph/pool authority cannot precede the stable final identity snapshot and runtime qualification.
+
+Dependency graph:                     required targets must resolve; required dependency cycles reject deterministically; missing dependencies make assets ineligible
+Plugin graph:                         closed states; an available plugin requires an exact version and SHA-256; missing/incompatible required plugins make the asset ineligible
+Approved pools:                       all twelve spec-named pools are present in exact order and are queried by class, generation, adult/generation-neutral scope, capability, scene category, and grouping facets
+No copied folders:                    pool projection contains stable asset IDs only and never copies DAZ files
+Authority split:                      `static_candidate_asset_ids` are coverage/planning evidence only; `qualified_member_asset_ids` remain empty until runtime smoke/mapping certificates pass
+Override safety:                      versioned include/exclude overrides are explicit and reasoned; an include cannot bypass static eligibility
+Facet reports:                        skin tone, hair construction, wardrobe region/layer/fit, pose taxonomy, lighting profile, environment complexity, and occlusion/support role are deterministic distributions
+Fixture proof:                       exact 12-pool contract, deterministic membership/fingerprints, grouping, no static-to-qualified promotion, unknown exclusion, safe overrides, immutable publication, and idempotent CLI all pass
+Verification:                        ten focused catalog/pool tests and the complete 1,775/1,775 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/daz_asset_pool_progress_20260716.json`

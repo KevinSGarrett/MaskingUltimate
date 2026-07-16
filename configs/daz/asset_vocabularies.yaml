@@ -102,3 +102,29 @@ static_states:
   - ineligible_missing_dependency
   - ineligible_missing_plugin
   - ineligible_incompatible_base
+character_scopes:
+  - adult_human
+  - non_human
+  - generation_neutral
+  - unknown
+capabilities:
+  - bounded_sampling
+  - age_appearance
+  - multi_person_pose
+  - occlusion_role
+  - support_contact_role
+  - anatomy_related
+  - body_shape_control
+  - face_shape_control
+facet_keys:
+  - tone_band
+  - hair_length
+  - hair_texture
+  - hair_construction
+  - wardrobe_region
+  - wardrobe_layer
+  - fit_profile
+  - pose_taxonomy
+  - lighting_profile
+  - context_complexity
+  - occlusion_support_role

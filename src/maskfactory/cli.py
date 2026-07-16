@@ -2927,6 +2927,73 @@ def daz_assets_catalog_graph(
     )
 
 
+@daz_assets.command("pool-report")
+@click.option(
+    "--graph",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_pools.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--vocabularies",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/asset_vocabularies.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\asset_pools"),
+    show_default=True,
+)
+def daz_assets_pool_report(graph: Path, policy: Path, vocabularies: Path, output: Path) -> None:
+    """Build immutable queryable pools without copying source assets."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AssetPoolError,
+        build_asset_pool_report,
+        load_asset_pool_policy,
+        load_asset_vocabularies,
+        publish_asset_pool_report,
+    )
+
+    try:
+        graph_document = json.loads(graph.read_text(encoding="utf-8"))
+        vocabulary_document = load_asset_vocabularies(vocabularies)
+        policy_document = load_asset_pool_policy(policy, vocabulary_document)
+        report = build_asset_pool_report(graph_document, policy_document, vocabulary_document)
+        target, published = publish_asset_pool_report(report, output)
+    except (AssetPoolError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AssetPoolError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ASSET_POOL_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ASSET_POOL_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="asset_pool_report_complete",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

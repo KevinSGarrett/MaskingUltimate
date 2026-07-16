@@ -75,6 +75,7 @@ SCHEMA_NAMES = frozenset(
         "daz_acquisition_capacity",
         "daz_asset_identity_snapshot",
         "daz_asset_compatibility_graph",
+        "daz_asset_pool_report",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

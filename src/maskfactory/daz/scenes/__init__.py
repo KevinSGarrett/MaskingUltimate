@@ -1,5 +1,14 @@
 """Deterministic DAZ scene planning and replay contracts."""
 
+from .appearance import (
+    WARDROBE_CLASSES,
+    AppearanceSelectionError,
+    load_appearance_selection_policy,
+    publish_character_appearance_selection,
+    select_character_appearance,
+    validate_appearance_selection_policy,
+    validate_character_appearance_selection,
+)
 from .profiles import (
     AGE_CATEGORIES,
     ANATOMY_CONFIGURATIONS,
@@ -41,6 +50,8 @@ __all__ = [
     "BODY_AXES",
     "FACE_AXES",
     "CharacterProfileError",
+    "AppearanceSelectionError",
+    "WARDROBE_CLASSES",
     "canonical_json_bytes",
     "build_character_profile_batch_report",
     "derive_named_random_streams",
@@ -48,12 +59,17 @@ __all__ = [
     "publish_character_foundation_selection",
     "generate_character_variation_profile",
     "load_character_profile_policy",
+    "load_appearance_selection_policy",
+    "publish_character_appearance_selection",
     "publish_character_profile_document",
     "seal_resolved_scene_recipe",
     "select_character_foundation",
+    "select_character_appearance",
     "validate_resolved_scene_recipe",
     "validate_character_foundation_selection",
     "validate_character_profile_policy",
+    "validate_appearance_selection_policy",
+    "validate_character_appearance_selection",
     "validate_character_profile_batch_report",
     "validate_character_variation_profile",
 ]

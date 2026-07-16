@@ -15597,12 +15597,17 @@
           "ts": "2026-07-16T08:45:25+00:00",
           "actor": "ai_agent",
           "text": "Eight guarded acquisition workers resumed externally while F was healthy; current CMS/offline observations remain valid, but final comparison cannot be frozen against a mutating filesystem."
+        },
+        {
+          "ts": "2026-07-16T14:58:53+00:00",
+          "actor": "codex",
+          "text": "2026-07-16 root reconciliation confirms the autonomous downloader targets the governed F-drive primary library, while 23 DIM packages and 6.9 GB of retained DIM archives remain in the original public C-drive locations. The three filesystem roots remain independent; the pool is currently stopped by the 150-GiB soft-floor guard, not by inventory work. Evidence refreshed in qa/reports/daz_asset_observation_progress_20260716.json."
         }
       ],
       "evidence": "Read-only local CMS adapter and explicit offline filesystem fallback are schema-valid and tested; live online snapshot cms_e94a27f9cabb4d19fd8423f0 observed 17 installed products and 4,677 content rows, and forced offline snapshot cms_offline_b58d776345e759643d279621 declares all metadata gaps. Autonomous source lineage now invalidates any stored complete fingerprint immediately when a source becomes pending. Final live online/offline path comparison remains pending a stable registered-root filesystem inventory after active acquisitions quiesce.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T08:45:25+00:00",
+      "updated_at": "2026-07-16T14:58:53+00:00",
       "orphaned": false
     },
     "MF-P9-04.04": {
@@ -15624,12 +15629,17 @@
           "ts": "2026-07-16T08:45:26+00:00",
           "actor": "ai_agent",
           "text": "Pending counts may rise between bounded chunks because eight capacity-guarded acquisition workers are actively publishing. No final inventory, missing/unmanifested counts, or duplicate/shadow result is claimed."
+        },
+        {
+          "ts": "2026-07-16T14:58:53+00:00",
+          "actor": "codex",
+          "text": "Root reconciliation now explicitly covers the governed F primary/user libraries, original public C legacy DIM library, retained legacy DIM download cache, and future F DIM paths without moving or relabeling any source."
         }
       ],
-      "evidence": "Resumable state-schema-2 scanner canonicalizes root-relative paths and DAZ logical URIs, never follows reparse points, requeues directory drift, reconciles deleted children, and refuses final publication while incomplete. 2026-07-16T08:38Z live checkpoint: 7,794 directories complete, 68 pending, zero failed; 41,094 files / 38,792,501,179 bytes / 26,874 user-facing files. Autonomous source: 495 manifests discovered, 489 revisions indexed and immutably archived, six pending, zero failed; the prior complete fingerprint is deleted while pending. Cross-source joins remain disabled until both inputs stabilize. 37 focused and 1,754 full repository tests pass. Evidence: qa/reports/daz_asset_observation_progress_20260716.json.",
+      "evidence": "Resumable state-schema-2 scanner registers content_primary, content_user, and legacy_dim independently; it canonicalizes root-relative paths and DAZ logical URIs, never follows reparse points, requeues directory drift, reconciles deleted children, and refuses final publication while incomplete. Current checkpoint: 7,794 content-primary directories complete, 66 pending, one user-root and one legacy-DIM root pending, zero failed; 41,094 observed primary files / 38,792,501,179 bytes. Autonomous source directory has 638 manifests; the bounded index has 489 indexed, six queued, zero failed, and 143 not yet discovered at its last refresh. Queue has 635 complete, 514 queued, 211 paused; F is soft-held at 140.407 GiB. Cross-source joins remain disabled until all roots and manifests stabilize. Evidence: qa/reports/daz_asset_observation_progress_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T08:45:26+00:00",
+      "updated_at": "2026-07-16T14:58:53+00:00",
       "orphaned": false
     },
     "MF-P9-04.05": {
@@ -16238,13 +16248,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 65,
+      "notes": [
+        {
+          "ts": "2026-07-16T14:58:52+00:00",
+          "actor": "codex",
+          "text": "Implemented the deterministic qualified composition contract for anatomy, hair, and wardrobe. Completion is withheld until live qualified assets, DAZ fit/simulation, and final anatomy/wardrobe mapping readback exist."
+        }
+      ],
+      "evidence": "Closed deterministic appearance selector covers two anatomy configurations, all 14 adult wardrobe states, and hair none/required for 56 matrix cells. It requires runtime-qualified assets, exact foundation replay, asset-specific anatomy/wardrobe mappings, dependency/base compatibility, deterministic cloth behavior, and inner-to-outer layering; tamper and immutable-publication refusals pass. 62/62 focused and 1,880/1,880 full repository tests pass. Evidence: qa/reports/daz_character_appearance_selection_20260716.json. Live DAZ fit/simulation/mapping readback remains pending.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T14:58:52+00:00",
       "orphaned": false
     },
     "MF-P9-06.06": {

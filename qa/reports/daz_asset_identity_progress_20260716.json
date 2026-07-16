@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T14:33:14Z",
+  "captured_at": "2026-07-16T14:55:45Z",
   "item": "MF-P9-04.05",
   "status": "partially_complete",
   "implementation": {
@@ -79,7 +79,7 @@
     "state": "soft",
     "new_work_allowed": false,
     "active_job_allowed": true,
-    "capacity_guard_exit_code_for_new_work": 1
+    "capacity_guard_exit_code_for_new_work": 76
   },
   "lineage": {
     "implementation_sha256": "a4e4ca8aca45d302c41229a9df2e991508543b7199f4ae6a5b2b656454e4f687",
@@ -89,8 +89,8 @@
   "verification": {
     "focused_tests_passed": 20,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1818,
-    "full_repository_tests_passed": 1818,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

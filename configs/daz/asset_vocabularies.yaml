@@ -128,3 +128,8 @@ facet_keys:
   - lighting_profile
   - context_complexity
   - occlusion_support_role
+  - anatomy_configuration
+  - wardrobe_state
+  - opacity_class
+  - dynamic_behavior
+  - hair_occlusion

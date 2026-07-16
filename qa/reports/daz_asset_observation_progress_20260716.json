@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T08:38:00Z",
+  "captured_at": "2026-07-16T14:55:45Z",
   "items": ["MF-P9-04.03", "MF-P9-04.04"],
   "status": "partial_live_reconciliation",
   "authority_boundary": {
@@ -35,9 +35,11 @@
     "filesystem_inventory_complete": false
   },
   "autonomous_acquisition": {
-    "captured_source_manifest_count": 495,
+    "source_directory_manifest_count": 638,
+    "captured_source_manifest_count_in_index_queue": 495,
     "indexed_manifest_count": 489,
     "pending_manifest_count": 6,
+    "not_yet_discovered_by_bounded_index_count": 143,
     "failed_manifest_count": 0,
     "archived_immutable_revision_count": 489,
     "revision_archive_root": "F:\\DAZ\\01_source_records\\install_manifests\\autonomous",
@@ -49,7 +51,13 @@
     "non_content_and_unregistered_source_roots_preserved": true,
     "source_fingerprint": null,
     "stored_fingerprint_while_incomplete": null,
-    "fingerprint_invalidation_rule": "Any newly discovered, changed, pending, or failed source immediately removes the last complete fingerprint before bounded indexing continues."
+    "fingerprint_invalidation_rule": "Any newly discovered, changed, pending, or failed source immediately removes the last complete fingerprint before bounded indexing continues.",
+    "declared_registered_root_distribution": {
+      "content_primary_file_occurrences": 107124,
+      "content_primary_declared_bytes": 87742248763,
+      "scene_package_file_occurrences": 5,
+      "scene_package_declared_bytes": 2904216
+    }
   },
   "filesystem_inventory": {
     "state_path": "F:\\DAZ\\05_registry\\rebuild_evidence\\filesystem_inventory.sqlite",
@@ -68,13 +76,38 @@
     "portable_snapshot_published": false
   },
   "live_acquisition_boundary": {
-    "supervised_worker_count": 8,
+    "supervised_worker_count": 0,
     "worker_version": "0.3.7",
     "capacity_guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
-    "free_gib_observed": 206.715,
-    "capacity_state": "healthy",
+    "free_gib_observed": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "pool_pid_file_exists": false,
+    "queue_state_counts": {"complete": 635, "queued": 514, "paused": 211},
     "workers_stopped_by_inventory_task": false,
-    "effect": "Pending manifest/directory counts may rise between bounded chunks; no stable final inventory can be claimed until acquisition quiesces."
+    "effect": "The autonomous acquisition system and its completed assets remain intact, but capacity policy currently refuses new downloads. Pending manifest/directory counts may rise only after a future guarded resume; no stable final inventory can be claimed yet."
+  },
+  "root_reconciliation": {
+    "governed_autonomous_content_root": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_content_root": "C:\\Users\\Public\\Documents\\My DAZ 3D Library",
+    "legacy_dim_download_root": "C:\\Users\\Public\\Documents\\DAZ 3D\\InstallManager\\Downloads",
+    "future_dim_download_root": "F:\\DAZ\\02_installers\\dim_downloads",
+    "future_dim_content_root": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_package_manifests": 23,
+    "legacy_dim_download_files": 46,
+    "legacy_dim_download_bytes": 6918818900,
+    "future_dim_download_files": 0,
+    "filesystem_registered_roots": ["content_primary", "content_user", "legacy_dim"],
+    "filesystem_scan_root_states": {
+      "content_primary_complete_directories": 7794,
+      "content_primary_pending_directories": 66,
+      "content_user_pending_directories": 1,
+      "legacy_dim_pending_directories": 1
+    },
+    "runtime_generation_content_roots": ["content_primary", "content_user"],
+    "legacy_runtime_promotion": "not_performed",
+    "reason": "The autonomous downloader already writes to the governed F-drive primary library. The original DIM library and retained DIM archives remain separate legacy observations; they are registered for inventory but are not silently moved, duplicated, or promoted into the closed generation runtime."
   },
   "cross_source_comparison": {
     "authoritative": false,
@@ -83,8 +116,8 @@
   "verification": {
     "focused_tests_passed": 37,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1754,
-    "full_repository_tests_passed": 1754,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
     "full_repository_tests_failed": 0,
     "ruff": "pass",
     "schema_validation": "pass",

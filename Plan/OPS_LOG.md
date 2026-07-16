@@ -6077,6 +6077,42 @@ Capacity:                            F remained healthy at 168.948 GiB; no sourc
 Verification:                        20 focused DAZ tests and the complete 1,765/1,765 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`
 
+## 2026-07-16 14:55 UTC - Qualified anatomy, hair, and wardrobe appearance selection implemented
+
+**Result:** MF-P9-06.05 now has a closed deterministic composition implementation and remains partial
+until qualified live assets provide DAZ fit/simulation and final mapping-readback evidence.
+
+Closed matrix:                        two explicit adult anatomy configurations x 14 wardrobe states x hair none/required = 56 deterministic fixture cells
+Qualified authority:                 anatomy, hair, and wardrobe selections require active runtime-qualified members, exact foundation replay, compatible Genesis 9 bases, and qualified required dependencies
+Anatomy controls:                    anatomy assets must be classified as anatomy geografts, match the requested configuration, carry asset-specific mapping requirements, and remain independent of presentation
+Wardrobe controls:                   explicit construction, region, layer, fit, opacity, and dynamic-behavior facets drive state-specific selection; missing mappings or nondeterministic cloth behavior fail closed
+State invariants:                    unclothed selects zero wardrobe items; underwear/swimwear require their exact class; minimal clothing is one partial item; full states require a one-piece or top+bottom; layered clothing adds outerwear
+Layering:                            selected garments are replayed in deterministic inner-to-outer order with no registry-order dependence
+Hair controls:                       required hair is qualified, base-compatible, dependency-valid, and carries its declared occlusion/construction facets; `none` remains explicit
+Publication/CLI:                     `daz recipes select-appearance` recomputes foundation/selection hashes and publishes immutable content-addressed evidence
+Fixture proof:                       all 56 matrix cells and 62/62 focused tests pass, including unqualified/missing-mapping/nondeterministic-cloth/layer/tamper refusals
+Live boundary:                       no fixture asset is promoted to live authority; no live fit, cloth simulation, character render, or final anatomy/wardrobe mapping readback is claimed
+Capacity:                            F remains soft at 150,760,476,672 bytes / 140.407 GiB; no new F/DAZ work started
+Verification:                        the complete 1,880/1,880 repository suite passes; Ruff and Black pass
+Evidence:                            `qa/reports/daz_character_appearance_selection_20260716.json`
+
+## 2026-07-16 14:55 UTC - DIM, autonomous-downloader, and legacy DAZ roots reconciled
+
+**Result:** Kevin's clarification is confirmed: autonomous acquisition and legacy DIM data coexist in
+different governed observations, and no asset population was moved, relabeled, or discarded.
+
+Autonomous target:                    489 indexed autonomous manifests declare 107,124 file occurrences / 87,742,248,763 bytes under `mf_daz_library`, which resolves to `F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library`; six indexed-queue manifests remain pending
+Newer sources:                        the live manifest directory contains 638 YAMLs, 143 more than the bounded index has discovered; the index is intentionally not resumed while new work is capacity-refused
+Legacy DIM content:                  23 DIM package manifests remain under `C:\Users\Public\Documents\DAZ 3D\InstallManager\ManifestFiles` and point to the original public C-drive library
+Legacy DIM archives:                 46 retained DSX/ZIP files totaling 6,918,818,900 bytes remain under the original public DIM download folder
+Future DIM paths:                    DIM now sends future downloads to `F:\DAZ\02_installers\dim_downloads` and future content to the governed F primary library; the new download folder currently contains zero files
+Inventory roots:                     `content_primary`, `content_user`, and `legacy_dim` are all registered independently; the scanner has 7,794 primary directories complete, 66 primary pending, and one pending root directory each for user and legacy DIM
+Runtime boundary:                    closed generation continues to use only governed F primary/user libraries; legacy C content is inventory evidence, not silently promoted into runtime authority
+Queue state:                         635 acquisition jobs complete, 514 queued, 211 paused; zero active pool PID; completed assets and manifests remain intact
+Capacity state:                      exact new-work guard result is exit 76 with 140.407 GiB free, `state=soft`, `new_work_allowed=false`, `active_job_allowed=true`; this corrects earlier narrative shorthand that recorded exit 1
+Mutation boundary:                  no download, install, copy, move, delete, worker start, DIM launch, DAZ launch, credential access, elevation, or UAC action occurred during reconciliation
+Evidence:                            `qa/reports/daz_asset_observation_progress_20260716.json`
+
 ## 2026-07-16 13:34 UTC - Certificate-qualified pools and compatible G9 foundation selection implemented
 
 **Result:** Runtime qualification now reaches deterministic planning without weakening the static/

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T14:33:14Z",
+  "captured_at": "2026-07-16T14:55:45Z",
   "item": "MF-P9-06.04",
   "status": "partially_complete",
   "policy": {
@@ -73,8 +73,8 @@
   "verification": {
     "focused_profile_tests_passed": 7,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1818,
-    "full_repository_tests_passed": 1818,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

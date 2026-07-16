@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T13:34:00Z",
+  "captured_at": "2026-07-16T14:55:45Z",
   "items": ["MF-P9-04.07", "MF-P9-04.08"],
   "status": "partially_complete",
   "dependency_plugin_graph": {
@@ -57,7 +57,7 @@
     "identity_hash_failures": 0
   },
   "lineage": {
-    "vocabulary_sha256": "c0d9af16c84008393588e7471c88aa3cd3e470e77468040e18d1510d3511a13c",
+    "vocabulary_sha256": "a297ab89e6517c34b0c9e33853b200aeb8f7c92f3c97dbc864c2b436b43b0e01",
     "catalog_implementation_sha256": "bf1c8e5d93c3524dbf57662c9fa12dcc11d3539053ed41f6b401513ac3567730",
     "pool_implementation_sha256": "761bcaeea8d8b2bf7b1e06965768e645e23f585e53044991256c3e7930be5ace",
     "catalog_schema_sha256": "4f0b0798bf2050e87f1f82c5a114910131d573b05f2f43c4631dba3579687048",
@@ -68,8 +68,8 @@
   "verification": {
     "focused_catalog_and_pool_tests_passed": 12,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1811,
-    "full_repository_tests_passed": 1811,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

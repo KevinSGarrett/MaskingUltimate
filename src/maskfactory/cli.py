@@ -3861,6 +3861,98 @@ def daz_recipes_validate_profile(profile: Path, policy: Path) -> None:
     )
 
 
+@daz_recipes.command("select-appearance")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option(
+    "--anatomy-configuration",
+    type=click.Choice(["adult_male_anatomy", "adult_female_anatomy"]),
+    required=True,
+)
+@click.option("--hair-mode", type=click.Choice(["none", "required"]), required=True)
+@click.option("--wardrobe-state", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/appearance_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\appearance"),
+    show_default=True,
+)
+def daz_recipes_select_appearance(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    selection_seed: int,
+    anatomy_configuration: str,
+    hair_mode: str,
+    wardrobe_state: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a qualified anatomy, hair, and ordered wardrobe composition."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        AppearanceSelectionError,
+        load_appearance_selection_policy,
+        publish_character_appearance_selection,
+        select_character_appearance,
+    )
+
+    try:
+        selection = select_character_appearance(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            load_appearance_selection_policy(policy),
+            selection_seed=selection_seed,
+            anatomy_configuration=anatomy_configuration,
+            hair_mode=hair_mode,
+            wardrobe_state=wardrobe_state,
+        )
+        target, published = publish_character_appearance_selection(selection, output)
+    except (AppearanceSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AppearanceSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_appearance_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

@@ -1,0 +1,39 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+eligible_profiles: [training_relationship, diagnostic_full]
+namespace:
+  minimum_instance_id: 1
+  maximum_instance_id: 4
+  pair_order: ascending_instance_id
+  background_pair: [0, 0]
+contact:
+  intended_distance_mm: [0.0, 4.0]
+  maximum_penetration_mm: 2.0
+  minimum_normal_dot: 0.0
+  positive_area_required: true
+  geometry_only_no_rgb_inference: true
+occlusion:
+  depth_unit: meter
+  depth_tie_epsilon_m: 0.00001
+  minimum_confidence: 0.5
+  directions: [none, a_front, b_front, mixed]
+  visible_instance_and_linear_depth_authority: true
+  reciprocal_directed_records_required: true
+rasters:
+  contact_pairs: {encoding: two_channel_uint16_png, channels: [a_instance_id, b_instance_id], train_eligible: false}
+  front_owner: {encoding: uint16_png, background_value: 0, train_eligible: false}
+  boundary_pairs: {encoding: two_channel_uint16_png, channels: [a_instance_id, b_instance_id], train_eligible: false}
+  boundary_adjacency: eight_connected
+  contact_raster_must_be_boundary_subset: true
+diagnostic:
+  roles: [surface, facet, node, mapping_confidence, amodal_geometry]
+  diagnostic_full_only: true
+  all_train_eligible_false: true
+  amodal_physical_root: 13_annotations/amodal_diagnostic
+  amodal_absent_from_normal_training_exports: true
+freeze:
+  exact_scene_state_before_sidecar_after_restore_terminal: true
+  exact_plan_instance_geometry_contract_sidecars: true
+  exact_instance_depth_authority_hashes: true
+  repeated_relationship_raster_hashes_required: true
+forbidden_effects: [jpeg, palette_quantization, color_management, tone_mapping, denoising, bloom, motion_blur, depth_of_field, lossy_resize]

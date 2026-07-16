@@ -16605,13 +16605,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T20:28:12+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented closed relationship/diagnostic contracts, exact two-channel uint16 pair-PNG decoder (filters 0-4), 3D-only contact, instance+linear-depth occlusion including mixed front ownership, reciprocal contact/occludes/occluded_by records, boundary/contact/front-owner invariants, diagnostic-full and physically separate amodal boundaries, freeze/replay, schemas, immutable publication, and CLI. Remains partial pending D6-03/D6-07 and qualified live DAZ relationship/diagnostic outputs with repeated hashes. Autonomous downloader and legacy DIM/original roots remain independent governed inventory sources; no assets moved or relabelled."
+        }
+      ],
+      "evidence": "qa/reports/daz_relationship_pass_20260716.json; 62/62 focused relationship/contact tests; 2556/2556 full repository tests; Ruff pass; item files Black-clean; 113 schemas parse; immutable CLI replay pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T21:41:16+00:00",
       "orphaned": false
     },
     "MF-P9-07.09": {

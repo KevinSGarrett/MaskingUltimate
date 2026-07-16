@@ -5536,6 +5536,238 @@ def daz_recipes_validate_geometry_passes(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-relationship-passes")
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/relationship_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\relationship_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_relationship_passes(
+    instance_contract: Path,
+    geometry_contract: Path,
+    pass_plan: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal geometry-derived relationship and diagnostic-output contracts."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        RelationshipPassContractError,
+        build_relationship_pass_contract,
+        load_relationship_pass_policy,
+        publish_relationship_document,
+    )
+
+    try:
+        document = build_relationship_pass_contract(
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(geometry_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            policy=load_relationship_pass_policy(policy),
+        )
+        target, published = publish_relationship_document(document, output)
+    except (
+        RelationshipPassContractError,
+        json.JSONDecodeError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, RelationshipPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_relationship_pass_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "pair_count": len(document["pairs"]),
+                    "profile": document["profile"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-relationship-passes")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--observations", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--depth-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--contact-pairs", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--front-owner", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--boundary-pairs", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--diagnostics",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every diagnostic role to its immutable output path.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/relationship_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--geometry-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\relationship_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_relationship_passes(
+    contract: Path,
+    instance_contract: Path,
+    geometry_contract: Path,
+    execution: Path,
+    observations: Path,
+    instance_image: Path,
+    depth_exr: Path,
+    contact_pairs: Path,
+    front_owner: Path,
+    boundary_pairs: Path,
+    diagnostics: Path,
+    policy: Path,
+    geometry_policy: Path,
+    output: Path,
+) -> None:
+    """Validate contact, depth-derived occlusion, pair rasters, and diagnostics."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        RelationshipPassContractError,
+        evaluate_relationship_passes,
+        load_geometry_pass_policy,
+        load_relationship_pass_policy,
+        publish_relationship_document,
+    )
+
+    try:
+        diagnostic_document = json.loads(diagnostics.read_text(encoding="utf-8"))
+        if not isinstance(diagnostic_document, dict) or not all(
+            isinstance(role, str) and isinstance(path, str)
+            for role, path in diagnostic_document.items()
+        ):
+            raise RelationshipPassContractError(
+                "relationship_diagnostic_paths_invalid", str(diagnostic_document)
+            )
+        document = evaluate_relationship_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(geometry_contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            json.loads(observations.read_text(encoding="utf-8")),
+            instance_path=instance_image,
+            depth_path=depth_exr,
+            contact_pairs_path=contact_pairs,
+            front_owner_path=front_owner,
+            boundary_pairs_path=boundary_pairs,
+            diagnostic_paths={role: Path(path) for role, path in diagnostic_document.items()},
+            policy=load_relationship_pass_policy(policy),
+            geometry_policy=load_geometry_pass_policy(geometry_policy),
+        )
+        target, published = publish_relationship_document(document, output)
+    except (
+        RelationshipPassContractError,
+        json.JSONDecodeError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, RelationshipPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_relationship_passes_valid" if not code else "daz_relationship_passes_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "pair_records": document["pair_records"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

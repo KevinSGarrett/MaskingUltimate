@@ -104,6 +104,8 @@ SCHEMA_NAMES = frozenset(
         "daz_geometry_coordinates",
         "daz_geometry_pass_contract",
         "daz_geometry_pass_report",
+        "daz_relationship_pass_contract",
+        "daz_relationship_pass_report",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

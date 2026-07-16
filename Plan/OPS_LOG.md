@@ -6441,3 +6441,22 @@ Live boundary:                        no analytic fixture is claimed as a live D
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
 Verification:                         the complete 2,494/2,494 repository suite passes; Ruff, Black across 482 files, JSON schemas, and Git diff checks pass
 Evidence:                             `qa/reports/daz_geometry_pass_20260716.json`
+
+## 2026-07-16 20:28 UTC - Geometry-authoritative relationships and diagnostic boundaries implemented
+
+**Result:** MF-P9-07.08 now has closed contact, occlusion, pair-raster, and diagnostic-output
+contracts; it remains partial until D6-03/D6-07 and qualified live DAZ outputs are available.
+
+Contact authority:                     contact is derived only from 3D surface distance, penetration, normal, and positive-area evidence; RGB cannot assert contact; overlap without 3D proximity remains occlusion only
+Occlusion authority:                   visible INSTANCE plus linear camera-depth samples determine `a_front`, `b_front`, `mixed`, or `none`; depth authority, order, ties, and confidence are independently validated
+Relationship records:                 every unordered person pair is canonical; `contact`, `occludes`, and `occluded_by` records are reciprocal and deterministic; contact regions and boundary/front-owner counts are recorded
+Exact rasters:                         `contact_pairs` and `boundary_pairs` are strict two-channel uint16 PNGs; `front_owner` is exact uint16 PNG; all five PNG filters, CRC, shape, pair order, adjacency, and contact-subset rules are checked
+Diagnostic boundary:                  surface, facet, node, mapping-confidence, and amodal outputs exist only in diagnostic-full, are never training-eligible, and amodal data remains physically separate under `13_annotations/amodal_diagnostic`
+Freeze/replay:                         all five scene-state points, plan/relationship/INSTANCE/geometry sidecars, INSTANCE/depth authority hashes, output hashes, and repeated hashes must agree exactly
+Publication/CLI:                      `plan-relationship-passes` and `validate-relationship-passes` publish immutable idempotent records and return nonzero on findings
+Fixture proof:                       62 focused cases cover known contact, reciprocal records, mixed front ownership, overlap without contact, PNG filters/corruption, raster/depth defects, malformed observations, exact diagnostic path sets, every state/effect, sidecars, replay, diagnostic separation, CLI replay, and publication conflict
+Asset-root reconciliation:            autonomous downloader content and original/legacy DIM roots remain independent governed inventory sources; neither source is assumed to contain the entire asset set
+Live boundary:                        no generated fixture is claimed as a live DAZ relationship, diagnostic, or amodal render
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
+Verification:                         the complete 2,556/2,556 repository suite passes; Ruff and all 113 JSON schemas pass; all item files are Black-clean; repository-wide Black identifies two unrelated pre-existing files only; Git diff checks pass
+Evidence:                             `qa/reports/daz_relationship_pass_20260716.json`

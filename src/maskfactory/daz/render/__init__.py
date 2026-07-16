@@ -1,5 +1,14 @@
 """DAZ pristine and semantic render contracts."""
 
+from .instance import (
+    InstancePassContractError,
+    build_instance_pass_contract,
+    decode_u16_png_exact,
+    evaluate_instance_pass,
+    load_instance_pass_policy,
+    publish_instance_pass_document,
+    validate_instance_pass_policy,
+)
 from .pristine import (
     PristineRgbContractError,
     build_pristine_rgb_request,
@@ -13,10 +22,17 @@ from .pristine import (
 
 __all__ = [
     "PristineRgbContractError",
+    "InstancePassContractError",
+    "build_instance_pass_contract",
     "build_pristine_rgb_request",
+    "decode_u16_png_exact",
+    "evaluate_instance_pass",
     "evaluate_pristine_rgb_fixture",
+    "load_instance_pass_policy",
     "load_pristine_rgb_policy",
     "publish_pristine_rgb_document",
+    "publish_instance_pass_document",
+    "validate_instance_pass_policy",
     "validate_pristine_rgb_fixture_report",
     "validate_pristine_rgb_policy",
     "validate_pristine_rgb_request",

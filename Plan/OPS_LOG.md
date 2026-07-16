@@ -6349,3 +6349,21 @@ Live boundary:                        generated image fixtures prove the validat
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
 Verification:                         the reconciled complete 2,215/2,215 repository suite passes; Ruff, Black across 472 files, JSON, and Git diff checks pass
 Evidence:                             `qa/reports/daz_pristine_rgb_20260716.json`
+
+## 2026-07-16 17:18 UTC - Exact 16-bit person-instance codec and ownership validation implemented
+
+**Result:** MF-P9-07.03 now has an exact p-index/instance-ID contract and exhaustive lossless decoder;
+it remains partial until the hidden DAZ worker produces and replays a qualified live instance pass.
+
+Namespace:                            background is 0; p0/p1/p2/p3 map exactly to integer IDs 1/2/3/4; one through four people are supported and construction order remains separate
+Codec:                                single-channel 16-bit PNG only, exact nearest-neighbor decode, no palette/scaling; ICC/gamma/sRGB/chromaticity/transparency metadata and all nine ID-map effects fail closed
+Exhaustive proof:                     one 256x256 fixture round-trips all 65,536 unsigned values 0–65,535 byte-semantically into `uint16` with exact equality
+Ownership:                            every owner has known unique scene-node IDs; visible IDs must be declared; every person is nonempty and at least 4% of final pixels
+Prominence:                           final decoded pixel counts recompute p-index ordering, with construction ID as deterministic tie break; reversed prominence rejects
+Freeze/replay:                        before, sidecar, after, annotation-restore, and terminal scene hashes, plan/contract sidecars, resolution/crop, and repeated semantic file hash must agree exactly
+Publication/CLI:                      `plan-instance-pass` and `validate-instance-pass` publish immutable idempotent contract/report records and return nonzero on findings
+Fixture proof:                       44 focused cases cover policy, ownership, exhaustive codec, non-u16 inputs, undeclared/empty/small/misranked owners, every forbidden effect, state/sidecar/output/replay drift, and publication conflict
+Live boundary:                        no generated uint16 fixture is relabeled as live DAZ output or live promoted-person ownership evidence
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
+Verification:                         the complete 2,259/2,259 repository suite passes; Ruff, Black across 474 files, and Git diff checks pass
+Evidence:                             `qa/reports/daz_instance_pass_20260716.json`

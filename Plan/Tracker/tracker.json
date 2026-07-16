@@ -16470,13 +16470,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T17:18:38+00:00",
+          "actor": "codex",
+          "text": "Closed uint16 PNG codec, p0-p3 to IDs 1-4 namespace, node ownership, final-pixel prominence, mutation/sidecar checks, byte-identical semantic replay, and idempotent CLI publication are fixture-verified. Completion requires a qualified live DAZ instance render and repeated live semantic hash."
+        }
+      ],
+      "evidence": "qa/reports/daz_instance_pass_20260716.json; exhaustive 0-65535 codec; 44/44 focused and 2259/2259 full tests; Ruff/Black/diff clean",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T17:18:38+00:00",
       "orphaned": false
     },
     "MF-P9-07.04": {

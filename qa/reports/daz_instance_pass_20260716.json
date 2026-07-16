@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T17:18:02Z",
+  "item": "MF-P9-07.03",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/instance_pass.yaml",
+    "file_sha256": "400d42160a8891c098c587fc33390f14bcb200deb61d0d290b02915aef06db21",
+    "version": "1.0.0",
+    "encoding": "uint16_png",
+    "background_value": 0,
+    "decode_filter": "nearest_neighbor_exact",
+    "maximum_people": 4,
+    "p_index_mapping": {"p0": 1, "p1": 2, "p2": 3, "p3": 4},
+    "ranking_authority": "final_camera_prominence",
+    "minimum_visible_area_fraction": 0.04
+  },
+  "codec_controls": {
+    "lossless_single_channel_png_required": true,
+    "full_uint16_range_preserved": true,
+    "palette_and_noninteger_modes_rejected": true,
+    "icc_gamma_srgb_chromaticity_and_transparency_metadata_rejected": true,
+    "forbidden_effect_count": 9,
+    "declared_ids_only": true,
+    "every_declared_person_nonempty": true,
+    "prominence_floor_enforced": true,
+    "prominence_rank_recomputed_from_final_pixels": true,
+    "construction_order_recorded_separately": true,
+    "owner_node_ids_exist_and_are_exclusive": true,
+    "before_sidecar_after_restore_terminal_state_hashes_exact": true,
+    "plan_and_contract_sidecars_exact": true,
+    "repeated_semantic_file_hash_exact": true,
+    "immutable_publication": true,
+    "cli": ["daz recipes plan-instance-pass", "daz recipes validate-instance-pass"]
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 44,
+    "focused_tests_passed": 44,
+    "focused_tests_failed": 0,
+    "exhaustive_codec_values_tested": 65536,
+    "exhaustive_codec_minimum": 0,
+    "exhaustive_codec_maximum": 65535,
+    "forbidden_effects_tested": [
+      "jpeg", "palette_quantization", "color_management", "tone_mapping", "denoising",
+      "bloom", "motion_blur", "depth_of_field", "lossy_resize"
+    ],
+    "refusals_tested": [
+      "closed policy drift", "zero or excessive people", "wrong p-index or instance ID",
+      "missing unknown duplicate or cross-person node ownership", "RGB palette and 8-bit inputs",
+      "undeclared visible ID", "empty owner", "prominence below floor", "prominence misranking",
+      "all state mutation points", "sidecar plan or contract drift", "bilinear decode declaration",
+      "file hash or byte drift", "interrupted output", "semantic replay mismatch",
+      "immutable publication conflict"
+    ]
+  },
+  "lineage": {
+    "implementation_sha256": "54bf30282e87b539e35377b086e60d7de0cd94f978fca11cdb8c085798a85a00",
+    "contract_schema_sha256": "7d443ec94f7d35f974efcefb24b69b0070b7edd6e0b139e4770b6d72cbbd9a9f",
+    "report_schema_sha256": "725e31bc9b597c0aeb5cb86ab011f6f9b9634aa4f198ed698e9bd8706291a6be",
+    "test_sha256": "7d96a5486e634b0262b053554dddb7dfcd601a1efa08382d9e234f5b706f0f71"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2259,
+    "full_repository_tests_passed": 2259,
+    "full_repository_tests_failed": 0,
+    "test_files_collected": 223,
+    "ruff_lint": "pass",
+    "black_files_checked": 474,
+    "black_format": "pass",
+    "git_diff_check": "pass"
+  },
+  "storage_boundary": {
+    "free_bytes": 150760443904,
+    "free_gib": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "new_asset_or_render_work_started": false
+  },
+  "live_boundary": {
+    "live_instance_pass_rendered": false,
+    "live_promoted_person_ownership_readback": false,
+    "live_semantic_replay_hash_recorded": false,
+    "reason": "The complete integer codec, ownership, namespace, prominence, freeze, replay, and publication contracts pass against exhaustive and scene fixtures. Completion requires the hidden DAZ worker to render a qualified scene's actual instance map and reproduce its semantic file hash."
+  },
+  "not_claimed": [
+    "a live DAZ instance render",
+    "live node-to-person ownership",
+    "live byte-identical semantic replay",
+    "completion of MF-P9-07.03"
+  ]
+}

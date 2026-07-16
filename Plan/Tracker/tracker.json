@@ -17858,13 +17858,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "in_progress",
+      "percent_complete": 65,
+      "notes": [
+        {
+          "ts": "2026-07-16T10:43:11+00:00",
+          "actor": "ai_agent",
+          "text": "The content-addressed immutable freeze, tamper/conflict refusal, append-only drift reporting, seven-day recurrence policy, and weekly active-learning connection are implemented and focused-tested. Live freeze waits for the healthy contact-sheet reader to finish before performing another 2,500-file F-drive rehash."
+        }
+      ],
+      "evidence": "Immutable benchmark manifests bind exact member identities, selection/near-group fingerprints, body-part coverage, and independently rehashed materialized outputs; a changed selection creates a different content address and cannot replace a frozen version. Drift reports compare all bound identities/coverage and are immutable. Weekly active learning emits the report for the configured active version. 24 focused tests pass; Ruff and Black pass. Evidence: qa/reports/reference_benchmark_versioning_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T10:43:11+00:00",
       "orphaned": false
     },
     "MF-P9-15.01": {

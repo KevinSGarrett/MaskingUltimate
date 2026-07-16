@@ -10,7 +10,7 @@ DEFAULT_DATABASES = (
     Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
     Path(
         r"F:\Reference_Images\Ultimate_Masking_Reference_Images"
-        r"\manifests\reference_inventory.sqlite"
+        r"\manifests\reference_library.sqlite"
     ),
 )
 

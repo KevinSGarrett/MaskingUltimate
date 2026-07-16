@@ -18,7 +18,12 @@ from ..qa.failure_mining import (
     write_acquisition_plan,
     write_weekly_qa_summary,
 )
-from ..reference_library import write_reference_acquisition_context
+from ..reference_library import (
+    evaluate_reference_benchmark_drift,
+    load_reference_library_policy,
+    write_reference_acquisition_context,
+    write_reference_benchmark_drift_report,
+)
 from ..vlm.client import OllamaClient
 from ..vlm.text import cluster_failure_reasons
 from .civitai_stress import DEFAULT_REGISTRY, build_civitai_stress_plan
@@ -44,6 +49,8 @@ def run_active_learning(
     verify_stress_archives: bool = True,
     reference_database: Path | None = None,
     reference_limit_per_target: int = 5,
+    reference_policy_path: Path | None = None,
+    reference_benchmark_manifest: Path | None = None,
 ) -> dict:
     output_dir = Path(output_dir)
     coverage = _coverage(coverage_matrix_path)
@@ -112,6 +119,7 @@ def run_active_learning(
                 f"`{row['instance_context']}` examples (current {row['approved_gold_count']}/8).\n"
             )
     reference_context = None
+    reference_benchmark_drift = None
     if reference_database is not None and Path(reference_database).is_file():
         reference_context = write_reference_acquisition_context(
             Path(reference_database),
@@ -120,6 +128,23 @@ def run_active_learning(
             output_path=output_dir / f"reference_acquisition_context_{date}.json",
             limit_per_target=reference_limit_per_target,
         )
+        if reference_policy_path is not None:
+            reference_policy = load_reference_library_policy(Path(reference_policy_path))
+            configured_manifest = reference_policy["versioning"].get("active_benchmark_manifest")
+            manifest = reference_benchmark_manifest or (
+                Path(configured_manifest) if configured_manifest else None
+            )
+            if manifest is not None and Path(manifest).is_file():
+                drift_report = evaluate_reference_benchmark_drift(
+                    Path(reference_database),
+                    reference_policy,
+                    Path(manifest),
+                    captured_at=f"{date}T00:00:00Z",
+                )
+                reference_benchmark_drift = write_reference_benchmark_drift_report(
+                    drift_report,
+                    output_dir / f"reference_benchmark_drift_{date}.json",
+                )
     error_trigger, error_classes = _class_error_trigger(class_error_history_path)
     triggers = {
         "new_certified_plus_50": (
@@ -163,6 +188,9 @@ def run_active_learning(
         },
         "civitai_pose_stress_plan": str(stress_plan),
         "reference_acquisition_context": (str(reference_context) if reference_context else None),
+        "reference_benchmark_drift": (
+            str(reference_benchmark_drift) if reference_benchmark_drift else None
+        ),
     }
     (output_dir / f"active_learning_{date}.json").write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"

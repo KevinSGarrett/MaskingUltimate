@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T10:42:44Z",
+  "item": "MF-P9-14.09",
+  "status": "in_progress",
+  "implementation": {
+    "content_addressed_immutable_versions": true,
+    "benchmark_identity_and_selection_bound": true,
+    "materialized_hash_audit_required_before_freeze": true,
+    "same_version_replay_is_idempotent": true,
+    "conflicting_or_tampered_version_fails_closed": true,
+    "selection_and_body_part_coverage_drift_reported": true,
+    "drift_reports_are_hash_bound_and_append_only": true,
+    "weekly_active_learning_connection": true,
+    "drift_report_interval_days": 7,
+    "published_database_path_aligned": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_library.sqlite"
+  },
+  "live_state": {
+    "benchmark_version_frozen": false,
+    "reason": "The healthy contact-sheet job is still reading the same F-drive corpus. The final live freeze performs an independent 2,500-file rehash and is intentionally waiting to avoid unnecessary disk contention.",
+    "contact_sheets_at_capture": 70,
+    "contact_sheets_expected": 93
+  },
+  "verification": {
+    "focused_reference_and_dataset_builder_tests_passed": 24,
+    "focused_tests_failed": 0,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "not_claimed": [
+    "a live immutable benchmark version",
+    "a live zero-drift recurring report",
+    "completion of MF-P9-14.09"
+  ]
+}

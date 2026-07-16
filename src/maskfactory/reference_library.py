@@ -8,6 +8,7 @@ import os
 import shutil
 import sqlite3
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
@@ -77,6 +78,17 @@ def validate_reference_library_policy(policy: Mapping[str, Any]) -> None:
         root_value = policy.get(root_name)
         if not isinstance(root_value, str) or not Path(root_value).is_absolute():
             raise ReferenceLibraryError(f"reference {root_name} must be an absolute path")
+    for database_name in ("working_database", "output_database"):
+        database_value = policy.get(database_name)
+        if not isinstance(database_value, str) or not Path(database_value).is_absolute():
+            raise ReferenceLibraryError(f"reference {database_name} must be an absolute path")
+    output_root = Path(str(policy["output_root"])).resolve()
+    try:
+        Path(str(policy["output_database"])).resolve().relative_to(output_root)
+    except ValueError as exc:
+        raise ReferenceLibraryError(
+            "reference output_database escapes governed output root"
+        ) from exc
     content = policy.get("content_policy")
     if not isinstance(content, Mapping):
         raise ReferenceLibraryError("reference content policy is missing")
@@ -106,6 +118,33 @@ def validate_reference_library_policy(policy: Mapping[str, Any]) -> None:
         or any(value != 0 for value in isolation.values())
     ):
         raise ReferenceLibraryError("every reference isolation overlap target must be zero")
+    versioning = policy.get("versioning")
+    if not isinstance(versioning, Mapping):
+        raise ReferenceLibraryError("reference benchmark versioning policy is missing")
+    for field in ("immutable_versions_directory", "drift_reports_directory"):
+        value = versioning.get(field)
+        if (
+            not isinstance(value, str)
+            or not value
+            or Path(value).is_absolute()
+            or ".." in Path(value).parts
+        ):
+            raise ReferenceLibraryError(f"reference versioning path is unsafe: {field}")
+    interval = versioning.get("drift_report_interval_days")
+    if not isinstance(interval, int) or not 1 <= interval <= 90:
+        raise ReferenceLibraryError("reference drift report interval must be within 1..90 days")
+    active_manifest = versioning.get("active_benchmark_manifest")
+    if active_manifest is not None:
+        if not isinstance(active_manifest, str) or not Path(active_manifest).is_absolute():
+            raise ReferenceLibraryError(
+                "active benchmark manifest must be an absolute path or null"
+            )
+        try:
+            Path(active_manifest).resolve().relative_to(output_root)
+        except ValueError as exc:
+            raise ReferenceLibraryError(
+                "active benchmark manifest escapes governed output root"
+            ) from exc
 
 
 def inspect_reference_database(path: Path) -> dict[str, Any]:
@@ -567,6 +606,156 @@ def validate_reference_materialized_tier(
     }
 
 
+def freeze_reference_benchmark_version(
+    database: Path,
+    policy: Mapping[str, Any],
+    *,
+    versions_root: Path | None = None,
+) -> dict[str, Any]:
+    """Create or verify one content-addressed, immutable benchmark manifest."""
+    content = _reference_benchmark_version_content(database, policy, verify_materialized=True)
+    content_digest = _canonical_json_sha256(content)
+    version_id = f"benchmark_reference_v1_{content_digest[:24]}"
+    output_root = Path(str(policy["output_root"])).resolve(strict=True)
+    root = (
+        Path(versions_root).resolve()
+        if versions_root is not None
+        else output_root / str(policy["versioning"]["immutable_versions_directory"])
+    )
+    try:
+        root.relative_to(output_root)
+    except ValueError as exc:
+        raise ReferenceLibraryError("benchmark version root escapes governed output root") from exc
+    version_directory = root / version_id
+    manifest_path = version_directory / "benchmark_manifest.json"
+    if manifest_path.exists():
+        document = _load_frozen_benchmark_manifest(manifest_path)
+        if document["version_id"] != version_id or document["content"] != content:
+            raise ReferenceLibraryError("immutable benchmark version conflicts with live selection")
+        return {
+            "schema_version": "1.0.0",
+            "version_id": version_id,
+            "manifest_path": str(manifest_path),
+            "manifest_sha256": _sha256_file(manifest_path),
+            "content_digest": content_digest,
+            "benchmark_count": content["benchmark_count"],
+            "materialized_fingerprint": content["materialized_fingerprint"],
+            "created": False,
+            "verified_immutable": True,
+        }
+    version_directory.mkdir(parents=True, exist_ok=True)
+    document = {
+        "schema_version": "1.0.0",
+        "version_id": version_id,
+        "frozen_at": _utc_now(),
+        "content_digest": content_digest,
+        "content": content,
+    }
+    temporary = version_directory / f".{manifest_path.name}.partial-{os.getpid()}"
+    payload = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    created = True
+    try:
+        with temporary.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.link(temporary, manifest_path)
+    except FileExistsError:
+        created = False
+        existing = _load_frozen_benchmark_manifest(manifest_path)
+        if existing["version_id"] != version_id or existing["content"] != content:
+            raise ReferenceLibraryError("immutable benchmark version creation conflicted")
+        document = existing
+    finally:
+        temporary.unlink(missing_ok=True)
+    return {
+        "schema_version": "1.0.0",
+        "version_id": version_id,
+        "manifest_path": str(manifest_path),
+        "manifest_sha256": _sha256_file(manifest_path),
+        "content_digest": content_digest,
+        "benchmark_count": content["benchmark_count"],
+        "materialized_fingerprint": content["materialized_fingerprint"],
+        "created": created,
+        "verified_immutable": True,
+    }
+
+
+def evaluate_reference_benchmark_drift(
+    database: Path,
+    policy: Mapping[str, Any],
+    manifest_path: Path,
+    *,
+    captured_at: str | None = None,
+) -> dict[str, Any]:
+    """Compare current selection/coverage to one frozen benchmark without scanning originals."""
+    document = _load_frozen_benchmark_manifest(Path(manifest_path))
+    current = _reference_benchmark_version_content(database, policy, verify_materialized=False)
+    frozen = document["content"]
+    current_digest = _canonical_json_sha256(current)
+    issues: list[str] = []
+    if current_digest != document["content_digest"]:
+        issues.append("benchmark_content_drift")
+    for field in (
+        "benchmark_count",
+        "benchmark_identity_fingerprint",
+        "selection_fingerprint",
+        "near_group_fingerprint",
+    ):
+        if current.get(field) != frozen.get(field):
+            issues.append(f"benchmark_{field}_drift")
+    frozen_coverage = frozen.get("body_part_coverage", {})
+    current_coverage = current.get("body_part_coverage", {})
+    coverage_delta = {
+        key: int(current_coverage.get(key, 0)) - int(frozen_coverage.get(key, 0))
+        for key in sorted(set(frozen_coverage) | set(current_coverage))
+    }
+    if any(coverage_delta.values()):
+        issues.append("benchmark_coverage_drift")
+    return {
+        "schema_version": "1.0.0",
+        "captured_at": captured_at or _utc_now(),
+        "version_id": document["version_id"],
+        "manifest_path": str(Path(manifest_path)),
+        "frozen_content_digest": document["content_digest"],
+        "current_content_digest": current_digest,
+        "benchmark_count": current["benchmark_count"],
+        "body_part_coverage": current_coverage,
+        "coverage_delta": coverage_delta,
+        "issues": sorted(set(issues)),
+        "drift_detected": bool(issues),
+        "passed": not issues,
+    }
+
+
+def write_reference_benchmark_drift_report(report: Mapping[str, Any], output: Path) -> Path:
+    """Write one immutable, hash-bound recurring benchmark health report."""
+    if not isinstance(report.get("version_id"), str) or not report.get("version_id"):
+        raise ReferenceLibraryError("benchmark drift report lacks version identity")
+    output = Path(output).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    document = dict(report)
+    document["report_digest"] = _canonical_json_sha256(document)
+    payload = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    if output.exists():
+        if output.read_text(encoding="utf-8") != payload:
+            raise ReferenceLibraryError("immutable benchmark drift report already exists")
+        return output
+    temporary = output.with_name(f".{output.name}.partial-{os.getpid()}")
+    try:
+        with temporary.open("x", encoding="utf-8", newline="\n") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.link(temporary, output)
+    except FileExistsError:
+        if output.read_text(encoding="utf-8") != payload:
+            raise ReferenceLibraryError("immutable benchmark drift report creation conflicted")
+    finally:
+        temporary.unlink(missing_ok=True)
+    return output
+
+
 def retrieve_reference_candidates(
     database: Path,
     query: Mapping[str, Any],
@@ -901,6 +1090,125 @@ def reference_dhash64(path: Path) -> str:
     return f"{value:016x}"
 
 
+def _reference_benchmark_version_content(
+    database: Path,
+    policy: Mapping[str, Any],
+    *,
+    verify_materialized: bool,
+) -> dict[str, Any]:
+    validate_reference_library_policy(policy)
+    selection = inspect_reference_selection(database, policy)
+    if not selection["passed"]:
+        raise ReferenceLibraryError(
+            "reference selection cannot be frozen: " + ", ".join(selection["issues"])
+        )
+    connection = sqlite3.connect(f"file:{Path(database)}?mode=ro", uri=True, timeout=120)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows = connection.execute(
+            "SELECT s.rank,s.relative_path,i.sha256,i.dhash64,i.size_bytes,n.cluster_id,"
+            "s.materialized_path,s.materialized_sha256 "
+            "FROM selections s JOIN images i ON i.relative_path=s.relative_path "
+            "JOIN near_duplicate_members n ON n.relative_path=s.relative_path "
+            "WHERE s.tier='benchmark_reference' ORDER BY s.rank,s.relative_path"
+        ).fetchall()
+    finally:
+        connection.close()
+    target = int(policy["tiers"]["benchmark_reference"]["target_count"])
+    if len(rows) != target:
+        raise ReferenceLibraryError(f"benchmark selection count is {len(rows)}, expected {target}")
+    members = [
+        {
+            "rank": int(row["rank"]),
+            "relative_path": str(row["relative_path"]),
+            "sha256": str(row["sha256"]),
+            "dhash64": str(row["dhash64"]),
+            "size_bytes": int(row["size_bytes"]),
+            "near_cluster_id": str(row["cluster_id"]),
+            "materialized_path": str(row["materialized_path"]),
+            "materialized_sha256": str(row["materialized_sha256"]),
+        }
+        for row in rows
+    ]
+    materialized_identities = [
+        (member["materialized_path"], member["materialized_sha256"], member["size_bytes"])
+        for member in members
+        if member["materialized_path"] and member["materialized_sha256"] == member["sha256"]
+    ]
+    if verify_materialized:
+        audit = validate_reference_materialized_tier(database, policy, "benchmark_reference")
+        if not audit["passed"]:
+            raise ReferenceLibraryError(
+                "benchmark materialization cannot be frozen: " + ", ".join(audit["issues"])
+            )
+        materialized_fingerprint = audit["materialized_fingerprint"]
+        materialized_count = audit["verified_count"]
+        materialized_bytes = audit["verified_bytes"]
+    else:
+        materialized_fingerprint = _rows_fingerprint(materialized_identities)
+        materialized_count = len(materialized_identities)
+        materialized_bytes = sum(identity[2] for identity in materialized_identities)
+    return {
+        "schema_version": "1.0.0",
+        "library_id": str(policy.get("library_id")),
+        "tier": "benchmark_reference",
+        "source_role": "unlabeled_reference_corpus",
+        "truth_authority": "none",
+        "training_eligible": False,
+        "retrieval_eligible": False,
+        "benchmark_count": len(rows),
+        "selection_fingerprint": selection["selection_fingerprint"],
+        "near_group_fingerprint": selection["near_group_fingerprint"],
+        "benchmark_identity_fingerprint": _rows_fingerprint(
+            (
+                row["rank"],
+                row["relative_path"],
+                row["sha256"],
+                row["dhash64"],
+                row["size_bytes"],
+                row["cluster_id"],
+            )
+            for row in rows
+        ),
+        "materialized_count": materialized_count,
+        "materialized_bytes": materialized_bytes,
+        "materialized_fingerprint": materialized_fingerprint,
+        "body_part_coverage": selection["body_part_coverage"],
+        "members": members,
+    }
+
+
+def _load_frozen_benchmark_manifest(path: Path) -> dict[str, Any]:
+    try:
+        document = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ReferenceLibraryError(f"cannot read frozen benchmark manifest: {exc}") from exc
+    if not isinstance(document, dict) or document.get("schema_version") != "1.0.0":
+        raise ReferenceLibraryError("frozen benchmark manifest has invalid schema")
+    content = document.get("content")
+    if not isinstance(content, dict):
+        raise ReferenceLibraryError("frozen benchmark manifest lacks content")
+    observed_digest = _canonical_json_sha256(content)
+    if document.get("content_digest") != observed_digest:
+        raise ReferenceLibraryError("frozen benchmark manifest content digest mismatch")
+    expected_version = f"benchmark_reference_v1_{observed_digest[:24]}"
+    if document.get("version_id") != expected_version:
+        raise ReferenceLibraryError("frozen benchmark manifest version identity mismatch")
+    return document
+
+
+def _canonical_json_sha256(document: Mapping[str, Any]) -> str:
+    return hashlib.sha256(
+        json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
 def _table_names(connection: sqlite3.Connection) -> set[str]:
     return {
         str(row[0])
@@ -1001,6 +1309,8 @@ __all__ = [
     "REFERENCE_TIERS",
     "ReferenceLibraryError",
     "evaluate_benchmark_training_isolation",
+    "evaluate_reference_benchmark_drift",
+    "freeze_reference_benchmark_version",
     "inspect_reference_database",
     "inspect_reference_selection",
     "load_reference_library_policy",
@@ -1012,5 +1322,6 @@ __all__ = [
     "validate_reference_materialized_tier",
     "validate_reference_library_policy",
     "validate_reference_selection",
+    "write_reference_benchmark_drift_report",
     "write_reference_acquisition_context",
 ]

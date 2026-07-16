@@ -645,6 +645,10 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
     )
     reference = tmp_path / "reference.sqlite"
     reference.touch()
+    reference_policy = tmp_path / "reference.yaml"
+    reference_policy.touch()
+    benchmark_manifest = tmp_path / "benchmark_manifest.json"
+    benchmark_manifest.touch()
 
     def write_reference(_database, *, output_path, **_kwargs):
         output_path.write_text(
@@ -656,6 +660,21 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         "maskfactory.datasets.active_learning.write_reference_acquisition_context",
         write_reference,
     )
+    monkeypatch.setattr(
+        "maskfactory.datasets.active_learning.load_reference_library_policy",
+        lambda _path: {"versioning": {"active_benchmark_manifest": str(benchmark_manifest)}},
+    )
+    monkeypatch.setattr(
+        "maskfactory.datasets.active_learning.evaluate_reference_benchmark_drift",
+        lambda *_args, **kwargs: {
+            "schema_version": "1.0.0",
+            "captured_at": kwargs["captured_at"],
+            "version_id": "benchmark_reference_v1_fixture",
+            "passed": True,
+            "drift_detected": False,
+            "issues": [],
+        },
+    )
     result = run_active_learning(
         failure_queue_path=queue,
         coverage_matrix_path=tmp_path / "missing_coverage.json",
@@ -664,6 +683,7 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         champion_certified_package_count=5,
         report_date="2026-07-12",
         reference_database=reference,
+        reference_policy_path=reference_policy,
         clusterer=lambda reasons: {
             reason: "hands_fingers" if reason == "finger_merge" else "fixture_cluster"
             for reason in reasons
@@ -683,6 +703,9 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         ]
         == "none"
     )
+    drift = json.loads(Path(result["reference_benchmark_drift"]).read_text())
+    assert drift["version_id"] == "benchmark_reference_v1_fixture"
+    assert drift["captured_at"] == "2026-07-12T00:00:00Z"
 
 
 def test_two_week_class_error_trigger_opens_idempotent_p5_task(tmp_path: Path) -> None:

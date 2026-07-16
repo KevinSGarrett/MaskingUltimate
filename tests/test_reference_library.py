@@ -8,6 +8,8 @@ import pytest
 from maskfactory.reference_library import (
     ReferenceLibraryError,
     evaluate_benchmark_training_isolation,
+    evaluate_reference_benchmark_drift,
+    freeze_reference_benchmark_version,
     inspect_reference_database,
     inspect_reference_selection,
     load_reference_library_policy,
@@ -19,6 +21,7 @@ from maskfactory.reference_library import (
     validate_reference_materialized_tier,
     validate_reference_selection,
     write_reference_acquisition_context,
+    write_reference_benchmark_drift_report,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +83,9 @@ def _small_policy_at(output_root: Path) -> dict:
     policy = _small_policy()
     policy["source_root"] = str(output_root.resolve())
     policy["output_root"] = str(output_root.resolve())
+    policy["output_database"] = str(
+        (output_root / "manifests" / "reference_library.sqlite").resolve()
+    )
     return policy
 
 
@@ -95,6 +101,17 @@ def test_reference_policy_rejects_any_training_authority():
     policy = load_reference_library_policy(POLICY)
     policy["tiers"]["retrieval_reference"]["training_eligible"] = True
     with pytest.raises(ReferenceLibraryError, match="training/truth authority"):
+        validate_reference_library_policy(policy)
+
+
+def test_reference_policy_rejects_unsafe_database_and_versioning_paths(tmp_path: Path):
+    policy = _small_policy_at(tmp_path / "output")
+    policy["output_database"] = str((tmp_path / "outside.sqlite").resolve())
+    with pytest.raises(ReferenceLibraryError, match="output_database escapes"):
+        validate_reference_library_policy(policy)
+    policy = _small_policy_at(tmp_path / "output")
+    policy["versioning"]["immutable_versions_directory"] = "../outside"
+    with pytest.raises(ReferenceLibraryError, match="versioning path is unsafe"):
         validate_reference_library_policy(policy)
 
 
@@ -420,6 +437,101 @@ def test_tier_materialization_is_bounded_hashed_resumable_and_capacity_safe(tmp_
     assert hold["processed_this_chunk"] == 0
     assert hold["capacity_hold"]["reason"] == "storage_below_soft_floor"
     assert not list((output_root / "retrieval_reference").rglob("*"))
+
+
+def test_benchmark_freeze_is_content_addressed_immutable_and_drift_checked(tmp_path: Path):
+    source_root = tmp_path / "source"
+    output_root = tmp_path / "output"
+    source_root.mkdir()
+    output_root.mkdir()
+    benchmark = source_root / "benchmark.jpg"
+    retrieval = source_root / "retrieval.jpg"
+    benchmark.write_bytes(b"benchmark")
+    retrieval.write_bytes(b"retrieval")
+    benchmark_sha = hashlib.sha256(benchmark.read_bytes()).hexdigest()
+    retrieval_sha = hashlib.sha256(retrieval.read_bytes()).hexdigest()
+    database = _database(tmp_path)
+    connection = sqlite3.connect(database)
+    connection.executemany(
+        "INSERT INTO images(relative_path,sha256,dhash64,size_bytes) VALUES (?,?,?,?)",
+        [
+            ("benchmark.jpg", benchmark_sha, "0000000000000001", benchmark.stat().st_size),
+            ("retrieval.jpg", retrieval_sha, "0000000000000002", retrieval.stat().st_size),
+        ],
+    )
+    connection.executemany(
+        "INSERT INTO exact_members(relative_path,is_representative) VALUES (?,1)",
+        [("benchmark.jpg",), ("retrieval.jpg",)],
+    )
+    connection.executemany(
+        "INSERT INTO visual_index(relative_path,status,tags_json) VALUES (?,'valid',?)",
+        [("benchmark.jpg", '["part_hand_fingers"]'), ("retrieval.jpg", "[]")],
+    )
+    connection.executemany(
+        "INSERT INTO near_duplicate_members(relative_path,cluster_id,representative_path,"
+        "group_size,similarity) VALUES (?,?,?,1,1.0)",
+        [
+            ("benchmark.jpg", "cluster-a", "benchmark.jpg"),
+            ("retrieval.jpg", "cluster-b", "retrieval.jpg"),
+        ],
+    )
+    connection.executemany(
+        "INSERT INTO selections(relative_path,tier,rank) VALUES (?,?,1)",
+        [
+            ("benchmark.jpg", "benchmark_reference"),
+            ("retrieval.jpg", "retrieval_reference"),
+        ],
+    )
+    connection.executemany(
+        "INSERT INTO pipeline_meta(key,value_json) VALUES (?,?)",
+        [
+            ("near_dedup", '{"near_unique":2}'),
+            ("library_purpose", '{"body_part_focus_tags":["part_hand_fingers"]}'),
+        ],
+    )
+    connection.commit()
+    connection.close()
+    policy = _small_policy_at(output_root)
+    policy["source_root"] = str(source_root.resolve())
+    copied = materialize_reference_tier(
+        database,
+        policy,
+        "benchmark_reference",
+        max_items=1,
+        free_bytes_provider=lambda _root: 200 * 1024**3,
+    )
+    assert copied["complete"] is True
+
+    first = freeze_reference_benchmark_version(database, policy)
+    second = freeze_reference_benchmark_version(database, policy)
+    assert first["created"] is True
+    assert second["created"] is False
+    assert first["version_id"] == second["version_id"]
+    manifest = Path(first["manifest_path"])
+    original_manifest = manifest.read_bytes()
+    health = evaluate_reference_benchmark_drift(database, policy, manifest)
+    assert health["passed"] is True
+    report_path = output_root / "reports" / "health.json"
+    write_reference_benchmark_drift_report(health, report_path)
+    write_reference_benchmark_drift_report(health, report_path)
+
+    tampered = json.loads(manifest.read_text(encoding="utf-8"))
+    tampered["content"]["benchmark_count"] = 0
+    manifest.write_text(json.dumps(tampered), encoding="utf-8")
+    with pytest.raises(ReferenceLibraryError, match="content digest mismatch"):
+        freeze_reference_benchmark_version(database, policy)
+    manifest.write_bytes(original_manifest)
+
+    connection = sqlite3.connect(database)
+    connection.execute(
+        "UPDATE images SET sha256=? WHERE relative_path='benchmark.jpg'", ("f" * 64,)
+    )
+    connection.commit()
+    connection.close()
+    drift = evaluate_reference_benchmark_drift(database, policy, manifest)
+    assert drift["drift_detected"] is True
+    assert "benchmark_content_drift" in drift["issues"]
+    assert manifest.read_bytes() == original_manifest
 
 
 def test_retrieval_context_ranks_deficits_without_granting_truth(tmp_path: Path):

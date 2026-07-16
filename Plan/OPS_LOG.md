@@ -6031,3 +6031,17 @@ Retrieval capacity hold:              the 18,000 selections total 64,329,397,650
 Authority:                           copied references remain unlabeled/no-truth/no-training sources; governed adult/NSFW material is eligible, while known/suspected minors remain prohibited
 Verification:                        nine focused reference tests and the complete 1,760/1,760 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_benchmark_materialization_20260716.json`
+
+## 2026-07-16 10:42 UTC - Immutable benchmark versioning and recurring drift controls implemented
+
+**Result:** MF-P9-14.09 is implementation-complete but remains operationally in progress until the
+healthy contact-sheet reader finishes and the live 2,500-file freeze/zero-drift report can run without avoidable F-drive contention.
+
+Immutable identity:                   each version is content-addressed over all benchmark members, ranks, SHA-256/dHash/near-cluster identities, selection/group fingerprints, materialized identity, and body-part coverage
+Freeze gate:                          creation independently rehashes every materialized benchmark file; tampered or conflicting manifests fail closed; identical replay verifies without replacement
+Drift evidence:                       current selection and body-part coverage compare to the frozen content digest; reports are hash-bound and append-only
+Recurring connection:                policy requires a seven-day interval, and the weekly active-learning batch emits the configured active benchmark's deterministic drift report
+Path reconciliation:                 policy and read-only status now agree with the actual published `manifests/reference_library.sqlite` snapshot
+Live boundary:                        contact sheets were 70/93 and advancing at capture; the live freeze is deliberately pending rather than competing for the same disk
+Verification:                        24 focused reference/dataset-builder tests pass; Ruff and Black pass
+Evidence:                             `qa/reports/reference_benchmark_versioning_20260716.json`

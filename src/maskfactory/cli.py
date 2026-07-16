@@ -878,6 +878,16 @@ def manifest_lint(
     default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
     show_default=True,
 )
+@click.option(
+    "--reference-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--reference-benchmark-manifest",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
 def active_learning(
     failure_queue: Path,
     coverage_matrix: Path,
@@ -888,6 +898,8 @@ def active_learning(
     report_date: str | None,
     config_path: Path,
     reference_database: Path,
+    reference_policy: Path,
+    reference_benchmark_manifest: Path | None,
 ) -> None:
     """Run the governed weekly failure-mining and QA-summary batch."""
     from .datasets.active_learning import run_active_learning
@@ -912,6 +924,8 @@ def active_learning(
             packages_root=packages_root,
             vlm_config_path=config_path,
             reference_database=reference_database,
+            reference_policy_path=reference_policy,
+            reference_benchmark_manifest=reference_benchmark_manifest,
         )
     except (FailureMiningError, OSError, ValueError, TextLlmError, VlmClientError) as exc:
         raise click.ClickException(str(exc)) from exc
@@ -2236,6 +2250,89 @@ def reference_library_publish_database(database: Path, output: Path) -> None:
     except (ReferenceLibraryError, OSError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(json.dumps(report, sort_keys=True))
+
+
+@reference_library.command("freeze-benchmark")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+@click.option("--versions-root", type=click.Path(path_type=Path, file_okay=False))
+def reference_library_freeze_benchmark(
+    database: Path, policy: Path, versions_root: Path | None
+) -> None:
+    """Freeze or idempotently verify one content-addressed benchmark version."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        freeze_reference_benchmark_version,
+        load_reference_library_policy,
+    )
+
+    try:
+        report = freeze_reference_benchmark_version(
+            database,
+            load_reference_library_policy(policy),
+            versions_root=versions_root,
+        )
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@reference_library.command("benchmark-drift-report")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--manifest",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False))
+def reference_library_benchmark_drift_report(
+    database: Path, policy: Path, manifest: Path, output: Path | None
+) -> None:
+    """Write one immutable selection/coverage drift report for a frozen benchmark."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        evaluate_reference_benchmark_drift,
+        load_reference_library_policy,
+        write_reference_benchmark_drift_report,
+    )
+
+    try:
+        policy_document = load_reference_library_policy(policy)
+        report = evaluate_reference_benchmark_drift(database, policy_document, manifest)
+        if output is None:
+            captured = str(report["captured_at"]).replace(":", "").replace("-", "")
+            output = (
+                Path(str(policy_document["output_root"]))
+                / str(policy_document["versioning"]["drift_reports_directory"])
+                / f"{report['version_id']}__{captured}.json"
+            )
+        written = write_reference_benchmark_drift_report(report, output)
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({**report, "output": str(written)}, sort_keys=True))
+    if not report["passed"]:
+        raise click.exceptions.Exit(75)
 
 
 @main.group("daz")

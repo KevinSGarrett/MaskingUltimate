@@ -16578,13 +16578,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T19:54:45+00:00",
+          "actor": "codex",
+          "text": "Real float32 EXR depth/normals, right-handed camera coordinates, matrix/projection/raster bindings, finite/clip/sentinel/norm statistics, state/authority/replay checks, and CLI are fixture-verified. Completion requires qualified live DAZ camera readback, EXRs, boundary QA, and repeated hashes."
+        }
+      ],
+      "evidence": "70/70 focused and 2494/2494 full repository tests pass. Perspective/orthographic analytic primitives, inverse/proper-rotation/projection conventions, real float32 EXR headers/channels, display/data windows, finite/clip/sentinel/unit-vector rules, five state points, eleven forbidden effects, sidecars, authority/output/replay drift, resealed coordinate drift, and idempotent CLI/publication are verified. Ruff passes; Black checks 482 files; JSON schemas and diff validate. Evidence: qa/reports/daz_geometry_pass_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T19:54:45+00:00",
       "orphaned": false
     },
     "MF-P9-07.08": {

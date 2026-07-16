@@ -5345,6 +5345,197 @@ def daz_recipes_validate_coverage_alpha(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-geometry-passes")
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--camera-readback",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\geometry_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_geometry_passes(
+    pass_plan: Path,
+    camera_readback: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal coordinate readback plus linear-depth and camera-normal contracts."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        GeometryPassContractError,
+        build_camera_coordinate_sidecar,
+        build_geometry_pass_contract,
+        load_geometry_pass_policy,
+        publish_geometry_document,
+    )
+
+    try:
+        plan_document = json.loads(pass_plan.read_text(encoding="utf-8"))
+        readback = json.loads(camera_readback.read_text(encoding="utf-8"))
+        geometry_policy = load_geometry_pass_policy(policy)
+        coordinate = build_camera_coordinate_sidecar(
+            scene_id=plan_document["scene_id"],
+            scene_state_sha256=plan_document["scene_state_sha256"],
+            policy=geometry_policy,
+            **readback,
+        )
+        document = build_geometry_pass_contract(plan_document, coordinate, policy=geometry_policy)
+        coordinate_target, coordinate_published = publish_geometry_document(coordinate, output)
+        target, published = publish_geometry_document(document, output)
+    except (
+        GeometryPassContractError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, GeometryPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_geometry_pass_contract_built",
+                entity_ids=(coordinate["sidecar_id"], document["contract_id"]),
+                evidence_paths=(str(coordinate_target), str(target)),
+                data={
+                    "coordinate_sidecar_sha256": coordinate["sidecar_sha256"],
+                    "contract_sha256": document["contract_sha256"],
+                    "near_clip_m": document["near_clip_m"],
+                    "far_clip_m": document["far_clip_m"],
+                    "subdivision_level": document["subdivision_level"],
+                    "coordinate_publication": {
+                        "path": str(coordinate_target),
+                        "published": coordinate_published,
+                    },
+                    "contract_publication": {
+                        "path": str(target),
+                        "published": published,
+                    },
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-geometry-passes")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--coordinate-sidecar",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--depth-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--normals-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--coverage-alpha",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\geometry_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_geometry_passes(
+    contract: Path,
+    coordinate_sidecar: Path,
+    execution: Path,
+    depth_exr: Path,
+    normals_exr: Path,
+    coverage_alpha: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate real EXR depth/normals, coordinates, sentinels, and replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        GeometryPassContractError,
+        evaluate_geometry_passes,
+        load_geometry_pass_policy,
+        publish_geometry_document,
+    )
+
+    try:
+        document = evaluate_geometry_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(coordinate_sidecar.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            depth_path=depth_exr,
+            normals_path=normals_exr,
+            coverage_alpha_path=coverage_alpha,
+            policy=load_geometry_pass_policy(policy),
+        )
+        target, published = publish_geometry_document(document, output)
+    except (GeometryPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, GeometryPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_geometry_passes_valid" if not code else "daz_geometry_passes_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "statistics": document["statistics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

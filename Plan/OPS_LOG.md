@@ -6421,3 +6421,23 @@ Live boundary:                        no generated edge fixture is claimed as a 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
 Verification:                         the complete 2,424/2,424 repository suite passes; Ruff, Black across 480 files, JSON, and Git diff checks pass
 Evidence:                             `qa/reports/daz_coverage_alpha_20260716.json`
+
+## 2026-07-16 19:53 UTC - Linear depth, camera normals, and coordinate sidecars implemented
+
+**Result:** MF-P9-07.07 now has real float32 EXR decoding and a closed coordinate contract; it remains
+partial until a qualified live DAZ scene supplies final camera readback and replayed geometry passes.
+
+Coordinate convention:                right-handed camera space, +x right, +y down, +z forward; row-major matrices multiply column vectors; top-left image origin and half-integer pixel centers; NDC x/y -1..1 and z 0..1
+Matrix proof:                         world-to-camera and camera-to-world are mutual inverses; rotation is orthonormal with determinant +1; perspective/orthographic structures are closed and near/far map exactly to NDC z 0/1
+Raster binding:                       coordinate resolution/crop must equal the frozen pass plan; resealed contract coordinate drift is rejected against the sidecar
+Depth contract:                       real float32 `Y` EXR stores linear camera-axis z in meters; visible values are finite and inside near/far; background is exact positive infinity; nonlinear/device depth rejects
+Normal contract:                      real float32 RGB EXR maps R/G/B to x/y/z; visible vectors are finite/unit after deformation/subdivision; background is exact zero vector; 0..1 normal remapping rejects
+EXR header:                           OpenCV 4.11/OpenEXR 2.3 decodes only version-2 scanline ZIP float32 with exact channels/sampling, matching data/display windows, increasing-y order, and pixel aspect 1; fake magic, flags, HALF, wrong compression/channels/windows/order/aspect reject
+Statistics:                           finite/NaN/+Inf/-Inf depth counts and finite min/max/mean plus normal-vector finite counts and visible norm min/max/mean are recorded
+Freeze/replay:                        all five scene-state hashes, plan/contract/coordinate sidecars, coverage-alpha authority, and repeated depth/normal file hashes must agree exactly
+Publication/CLI:                      `plan-geometry-passes` and `validate-geometry-passes` publish immutable idempotent coordinate/contract/report records and return nonzero on findings
+Fixture proof:                       70 focused cases cover analytic perspective/orthographic primitives, coordinate/matrix defects, true EXR roundtrip/header corruptions, finite/clip/sentinel/norm defects, all state points/effects, sidecars, authority/output/replay drift, CLI replay, and publication conflict
+Live boundary:                        no analytic fixture is claimed as a live DAZ depth/normal render or final camera readback
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
+Verification:                         the complete 2,494/2,494 repository suite passes; Ruff, Black across 482 files, JSON schemas, and Git diff checks pass
+Evidence:                             `qa/reports/daz_geometry_pass_20260716.json`

@@ -5877,3 +5877,20 @@ Live boundary:                       default/unmanaged DAZStudio PID `50884` (st
 Capacity:                            138.935 GiB free remains below the 150-GiB soft floor; generation stays disabled/paused/draining
 Verification:                        32/32 focused DAZ/runtime/GPU tests and the complete 1,710-test repository pass; repository Ruff plus changed-file Ruff format pass
 Evidence:                            `qa/reports/daz_runtime_worker_20260716.json`; exported profile SHA-256 `397b8f92b0314a3c30f6e219c2201cef4efc998339aad35f8c6f0dd97a76dacb`
+
+## 2026-07-16 05:02 UTC - DIM governed paths and deterministic manifest inventory completed
+
+**Result:** MF-P9-04.01 and MF-P9-04.02 are complete with live, privacy-safe
+evidence; existing legacy DIM installs remain explicit, and the separate autonomous-acquisition
+library remains independent until cross-source reconciliation.
+
+DIM configuration:                   per-user downloads now target `F:\DAZ\02_installers\dim_downloads`; current/future content installs target the single `F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library`; automatic installation is disabled and archive auto-delete remains disabled
+Safe mutation:                       checked-in configurator is dry-run by default, refuses a running `DAZ3DIM.exe`, changes only six nonsecret path/automation keys, uses metadata-preserving atomic `ReplaceFileW`, and verifies the exact post-write bytes
+Credential boundary:                no account/credential value is extracted, logged, returned, or modified; no DIM launch, account login, network request, elevation, UAC action, install, download, move, or delete occurred
+DIM parser:                          bounded XML parser prohibits DOCTYPE/ENTITY, requires closed DSX `0.1`, stable GUID/package identity, redacts account/absolute/unknown values, observes but never executes install actions, and emits stable failure codes 81/82
+Live DIM inventory:                  23/23 DIM manifests valid, 17 product identities, 23 package identities, 13,729 `File` plus 3 application/menu/desktop entries; 9,885,371,446 declared installed bytes; zero unsafe paths, seven execute and five elevated actions observed but not run; these counts are not the total F-drive asset inventory
+Path reconciliation:                21 DIM content manifests declare the legacy non-F library and two application packages have no content root; the autonomous downloader's original F-drive library is a separate observation source, and no source is moved, overwritten, redownloaded, or silently unified before URI/hash reconciliation
+Snapshot:                            `dim_864f8e1b5cf5dbca7b60c7a7`, canonical SHA-256 `18144b5cca50829881799e0b50e8d14cd841272865893db7c96a406d1f76748f`, atomically published under `F:\DAZ\05_registry\snapshots\dim`; second publication is byte-idempotent
+Concurrent boundary:                three DAZ Studio processes owned by other/default work were observed and left untouched; neither DIM configuration nor DSX scanning launches DAZ, and the MaskFactory worker continues to refuse any parallel live probe/render
+Verification:                        21/21 focused DIM/parser/control tests and the complete 1,725/1,725 repository suite pass; malformed XML, missing/duplicate identity, entity input, unknown-field redaction, traversal, execute/elevation, reinstall identity, duplicate package, immutable publication, credential preservation, live-DIM contention, and CLI errors are covered
+Evidence:                            `qa/reports/daz_dim_configuration_20260716.json`; `qa/reports/daz_dim_manifest_snapshot_20260716.json`; published file SHA-256 `d2d8c515807c1643529b90a2d6d28198f1e2e4ca5d0e4ed075e60250e693ee0b`

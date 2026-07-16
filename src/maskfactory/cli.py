@@ -2305,6 +2305,85 @@ def daz_control() -> None:
     """Read or atomically change the local DAZ enable/drain state."""
 
 
+@daz.group("assets")
+def daz_assets() -> None:
+    """Build offline, privacy-safe DAZ asset-lineage observations."""
+
+
+@daz_assets.command("dim-scan")
+@click.option(
+    "--source",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path(r"C:\Users\Public\Documents\DAZ 3D\InstallManager\ManifestFiles"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, file_okay=False))
+def daz_assets_dim_scan(source: Path, output: Path | None) -> None:
+    """Parse DIM DSX manifests without DAZ, CMS, login, or network access."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import DimManifestError, publish_dim_snapshot, scan_dim_manifest_archive
+
+    try:
+        report = scan_dim_manifest_archive(source)
+        publication = publish_dim_snapshot(report, output) if output is not None else None
+    except (DimManifestError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, DimManifestError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.DIM_MANIFEST_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.DIM_MANIFEST_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="dim_manifest_scan_complete",
+                entity_ids=(report["snapshot_id"],),
+                data={"snapshot": report, "publication": publication},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("dim-config")
+@click.option(
+    "--account-settings",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Users\kevin\AppData\Roaming\DAZ 3D\InstallManager\UserAccounts\Account.ini"),
+    show_default=True,
+)
+@click.option("--apply", "apply_changes", is_flag=True)
+def daz_assets_dim_config(account_settings: Path, apply_changes: bool) -> None:
+    """Plan/apply governed DIM paths while preserving credential fields byte-for-byte."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import DimManifestError, configure_dim_paths
+
+    try:
+        report = configure_dim_paths(account_settings, apply=apply_changes)
+    except (DimManifestError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, DimManifestError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.DIM_CONFIGURATION_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.DIM_CONFIGURATION_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason=(
+                    "dim_configuration_applied" if report["applied"] else "dim_configuration_plan"
+                ),
+                data=report,
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_control.command("status")
 @click.option(
     "--config-root",

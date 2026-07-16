@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T04:51:40Z",
+  "item": "MF-P9-04.02",
+  "source_kind": "daz_install_manager_manifest_archive",
+  "scope_boundary": "This snapshot covers only packages tracked by DAZ Install Manager. It is not a total DAZ asset inventory and does not yet reconcile content acquired by the autonomous downloader into the governed or original F-drive libraries.",
+  "source_location_recorded": false,
+  "network_used": false,
+  "daz_process_launched": false,
+  "snapshot": {
+    "snapshot_id": "dim_864f8e1b5cf5dbca7b60c7a7",
+    "source_archive_fingerprint": "864f8e1b5cf5dbca7b60c7a7f719468e32e719ab0d6fe759811da1c397a50c6a",
+    "canonical_sha256": "18144b5cca50829881799e0b50e8d14cd841272865893db7c96a406d1f76748f",
+    "published_path": "F:\\DAZ\\05_registry\\snapshots\\dim\\dim_864f8e1b5cf5dbca7b60c7a7.json",
+    "published_file_sha256": "d2d8c515807c1643529b90a2d6d28198f1e2e4ca5d0e4ed075e60250e693ee0b",
+    "first_publication": true,
+    "idempotent_replay_published": false
+  },
+  "inventory": {
+    "manifest_count": 23,
+    "valid_count": 23,
+    "invalid_count": 0,
+    "unique_product_count": 17,
+    "package_count": 23,
+    "entry_count": 13732,
+    "entries_by_element": {
+      "File": 13729,
+      "Application": 1,
+      "Desktop": 1,
+      "AppMenu": 1
+    },
+    "declared_installed_bytes": 9885371446
+  },
+  "privacy_and_safety": {
+    "account_values_stored": 0,
+    "absolute_install_paths_stored": 0,
+    "unknown_values_stored": 0,
+    "execute_actions_observed_not_run": 7,
+    "elevated_actions_observed_not_run": 5,
+    "unsafe_paths": 0,
+    "doctype_and_entity_declarations_prohibited": true,
+    "maximum_manifest_bytes": 16777216
+  },
+  "path_reconciliation": {
+    "expected_f": 0,
+    "legacy_non_f": 21,
+    "missing_for_application_packages": 2,
+    "conclusion": "Parsed DIM inventory is not evidence that all DAZ assets are installed under the governed F library. Autonomous-downloader manifests and F-drive filesystem observations remain separate sources until URI and hash reconciliation."
+  },
+  "verification": {
+    "focused_tests": {
+      "command": "python -m pytest tests/test_daz_dim_manifest.py tests/test_daz_control_plane.py -q",
+      "passed": 17,
+      "failed": 0
+    },
+    "full_repository_tests": {
+      "collected": 1725,
+      "passed": 1725,
+      "failed": 0
+    },
+    "parser_fixture_coverage": [
+      "valid and stable IDs",
+      "reinstall-stable package identity",
+      "missing or malformed identity",
+      "duplicate scalar",
+      "DOCTYPE and ENTITY refusal",
+      "unknown-field redaction",
+      "path traversal observation",
+      "execute and elevation observation without execution",
+      "deterministic archive rescan",
+      "invalid-manifest isolation",
+      "duplicate-package refusal",
+      "atomic idempotent immutable publication",
+      "CLI stable error code 81"
+    ],
+    "schema": "pass",
+    "ruff": "pass",
+    "format": "pass"
+  },
+  "concurrent_runtime_boundary": {
+    "observed_daz_processes": [22824, 33816, 50884],
+    "owned_by_this_task": [],
+    "action_taken": "none",
+    "effect": "live MaskFactoryDAZ probe and rendering remain refused while any DAZ process exists"
+  }
+}

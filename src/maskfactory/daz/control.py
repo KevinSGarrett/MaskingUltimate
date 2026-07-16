@@ -29,6 +29,8 @@ class DazErrorCode(IntEnum):
     STATE_MIGRATION_FAILED = 74
     CONTROL_REFUSED = 75
     ASSET_SOURCE_IN_GIT = 80
+    DIM_MANIFEST_INVALID = 81
+    DIM_CONFIGURATION_INVALID = 82
 
 
 class DazControlError(ValueError):

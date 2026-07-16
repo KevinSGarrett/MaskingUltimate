@@ -74,6 +74,7 @@ SCHEMA_NAMES = frozenset(
         "daz_operating_profile",
         "daz_paths",
         "daz_runtime",
+        "daz_dim_manifest_snapshot",
         "daz_scene_recipe",
         "daz_training_policy",
         "daz_worker",

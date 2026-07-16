@@ -2506,30 +2506,49 @@ def daz_assets_filesystem_scan(
 )
 @click.option("--max-manifests", type=click.IntRange(min=1), default=25, show_default=True)
 @click.option("--reset", is_flag=True, help="Start a new resumable index for the live source set.")
+@click.option(
+    "--revision-archive",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\01_source_records\install_manifests\autonomous"),
+    show_default=True,
+)
 def daz_assets_acquisition_index(
     source: Path,
     output: Path,
     inventory_state: Path,
     max_manifests: int,
     reset: bool,
+    revision_archive: Path,
 ) -> None:
     """Index autonomous-downloader manifests as a source independent of DIM."""
     from .daz import DazErrorCode, result_envelope
     from .daz.assets import (
         AcquisitionManifestError,
+        inventory_state_summary,
         reconcile_acquisition_with_inventory,
         resume_acquisition_manifest_index,
     )
 
     try:
         progress = resume_acquisition_manifest_index(
-            source, output, max_manifests=max_manifests, reset=reset
+            source,
+            output,
+            max_manifests=max_manifests,
+            reset=reset,
+            revision_archive_root=revision_archive,
         )
-        comparison = (
-            reconcile_acquisition_with_inventory(output, inventory_state)
-            if inventory_state.is_file()
-            else None
+        inventory_summary = (
+            inventory_state_summary(inventory_state) if inventory_state.is_file() else None
         )
+        if progress.complete and inventory_summary and inventory_summary["complete"]:
+            comparison = reconcile_acquisition_with_inventory(output, inventory_state)
+        else:
+            comparison = {
+                "authoritative": False,
+                "reason_code": "source_or_inventory_incomplete",
+                "acquisition_complete": progress.complete,
+                "inventory_complete": bool(inventory_summary and inventory_summary["complete"]),
+            }
     except (AcquisitionManifestError, OSError, ValueError) as exc:
         reason = exc.reason if isinstance(exc, AcquisitionManifestError) else str(exc)
         click.echo(

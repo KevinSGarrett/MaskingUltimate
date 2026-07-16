@@ -72,6 +72,7 @@ class AcquisitionManifestProgress:
     indexed_manifest_count: int
     pending_manifest_count: int
     failed_manifest_count: int
+    archived_revision_count: int
     indexed_this_chunk: int
     complete: bool
     source_fingerprint: str | None
@@ -83,6 +84,7 @@ class AcquisitionManifestProgress:
             "indexed_manifest_count": self.indexed_manifest_count,
             "pending_manifest_count": self.pending_manifest_count,
             "failed_manifest_count": self.failed_manifest_count,
+            "archived_revision_count": self.archived_revision_count,
             "indexed_this_chunk": self.indexed_this_chunk,
             "complete": self.complete,
             "source_fingerprint": self.source_fingerprint,
@@ -96,6 +98,7 @@ def resume_acquisition_manifest_index(
     *,
     max_manifests: int = 25,
     reset: bool = False,
+    revision_archive_root: Path | None = None,
     root_aliases: Mapping[str, str] = ROOT_ALIASES,
 ) -> AcquisitionManifestProgress:
     """Index a bounded manifest chunk while preserving an auditable resume queue."""
@@ -107,6 +110,7 @@ def resume_acquisition_manifest_index(
         raise AcquisitionManifestError("manifest_root_invalid", "manifest root is not a directory")
     index_path = Path(index_path)
     index_path.parent.mkdir(parents=True, exist_ok=True)
+    archive_root = Path(revision_archive_root or index_path.parent / "source_revisions")
     if reset and index_path.exists():
         index_path.unlink()
     connection = sqlite3.connect(index_path, timeout=30)
@@ -115,6 +119,19 @@ def resume_acquisition_manifest_index(
         _configure(connection)
         _create_schema(connection)
         _initialize_metadata(connection)
+        _backfill_completed_revision_archives(
+            connection,
+            manifest_directory,
+            archive_root,
+            limit=max_manifests,
+        )
+        unarchived = connection.execute(
+            "SELECT count(*) FROM source_queue q WHERE q.state='complete' AND NOT EXISTS "
+            "(SELECT 1 FROM source_revisions r WHERE r.manifest_name=q.manifest_name "
+            "AND r.manifest_sha256=q.manifest_sha256)"
+        ).fetchone()[0]
+        if unarchived:
+            return _progress(connection, index_path, 0)
         _refresh_source_queue(connection, manifest_directory)
         pending = connection.execute(
             "SELECT manifest_name FROM source_queue WHERE state='pending' "
@@ -141,10 +158,23 @@ def resume_acquisition_manifest_index(
                     raw=raw,
                     root_aliases=root_aliases,
                 )
+                manifest_sha = hashlib.sha256(raw).hexdigest()
+                archive_path = _archive_manifest_revision(raw, archive_root)
+                connection.execute(
+                    "INSERT OR IGNORE INTO source_revisions(manifest_name,manifest_sha256,size_bytes,"
+                    "observed_at,archive_path) VALUES (?,?,?,?,?)",
+                    (
+                        manifest_name,
+                        manifest_sha,
+                        len(raw),
+                        utcnow(),
+                        str(archive_path),
+                    ),
+                )
                 connection.execute(
                     "UPDATE source_queue SET state='complete',manifest_sha256=?,error_code=NULL "
                     "WHERE manifest_name=?",
-                    (hashlib.sha256(raw).hexdigest(), manifest_name),
+                    (manifest_sha, manifest_name),
                 )
                 connection.commit()
             except Exception:
@@ -338,6 +368,17 @@ def _index_one_manifest(
 ) -> None:
     document = parsed_document or _parse_document(raw, path.name)
     manifest_id = _required_id(document, "manifest_id", path.name)
+    existing = connection.execute(
+        "SELECT manifest_id FROM manifests WHERE manifest_name=?", (path.name,)
+    ).fetchone()
+    if existing is not None:
+        if existing[0] != manifest_id:
+            raise AcquisitionManifestError(
+                "manifest_identity_changed", f"identity changed at stable source path: {path.name}"
+            )
+        connection.execute("DELETE FROM file_occurrences WHERE manifest_id=?", (manifest_id,))
+        connection.execute("DELETE FROM packages WHERE manifest_id=?", (manifest_id,))
+        connection.execute("DELETE FROM manifests WHERE manifest_id=?", (manifest_id,))
     product = _required_mapping(document, "product", path.name)
     product_id = _required_id(product, "product_id", path.name)
     packages = document.get("packages")
@@ -482,6 +523,14 @@ def _create_schema(connection: sqlite3.Connection) -> None:
           manifest_sha256 TEXT,
           error_code TEXT
         );
+        CREATE TABLE IF NOT EXISTS source_revisions(
+          manifest_name TEXT NOT NULL,
+          manifest_sha256 TEXT NOT NULL,
+          size_bytes INTEGER NOT NULL,
+          observed_at TEXT NOT NULL,
+          archive_path TEXT NOT NULL,
+          PRIMARY KEY(manifest_name,manifest_sha256)
+        );
         CREATE TABLE IF NOT EXISTS manifests(
           manifest_id TEXT PRIMARY KEY,
           manifest_name TEXT NOT NULL UNIQUE,
@@ -543,8 +592,10 @@ def _refresh_source_queue(connection: sqlite3.Connection, directory: Path) -> No
                 (path.name, *identity),
             )
         elif existing[:2] != identity:
-            raise AcquisitionManifestError(
-                "published_manifest_changed", f"published source changed: {path.name}"
+            connection.execute(
+                "UPDATE source_queue SET size_bytes=?,mtime_ns=?,state='pending',"
+                "manifest_sha256=NULL,error_code=NULL WHERE manifest_name=?",
+                (*identity, path.name),
             )
     missing = [
         row[0]
@@ -556,6 +607,37 @@ def _refresh_source_queue(connection: sqlite3.Connection, directory: Path) -> No
             "published_manifest_removed", f"published source disappeared: {missing[0]}"
         )
     connection.commit()
+
+
+def _backfill_completed_revision_archives(
+    connection: sqlite3.Connection,
+    directory: Path,
+    archive_root: Path,
+    *,
+    limit: int,
+) -> None:
+    rows = connection.execute(
+        "SELECT q.manifest_name,q.manifest_sha256 FROM source_queue q "
+        "WHERE q.state='complete' AND q.manifest_sha256 IS NOT NULL AND NOT EXISTS "
+        "(SELECT 1 FROM source_revisions r WHERE r.manifest_name=q.manifest_name "
+        "AND r.manifest_sha256=q.manifest_sha256) ORDER BY q.manifest_name LIMIT ?",
+        (limit,),
+    ).fetchall()
+    for manifest_name, expected_sha in rows:
+        raw = _read_manifest(directory / str(manifest_name))
+        observed_sha = hashlib.sha256(raw).hexdigest()
+        if observed_sha != expected_sha:
+            raise AcquisitionManifestError(
+                "unarchived_revision_changed",
+                f"cannot archive prior observed bytes after source changed: {manifest_name}",
+            )
+        archive_path = _archive_manifest_revision(raw, archive_root)
+        connection.execute(
+            "INSERT INTO source_revisions(manifest_name,manifest_sha256,size_bytes,observed_at,archive_path) "
+            "VALUES (?,?,?,?,?)",
+            (manifest_name, observed_sha, len(raw), utcnow(), str(archive_path)),
+        )
+        connection.commit()
 
 
 def _progress(
@@ -584,11 +666,37 @@ def _progress(
         indexed_manifest_count=int(states.get("complete", 0)),
         pending_manifest_count=pending,
         failed_manifest_count=failed,
+        archived_revision_count=int(
+            connection.execute("SELECT count(*) FROM source_revisions").fetchone()[0]
+        ),
         indexed_this_chunk=indexed_this_chunk,
         complete=complete,
         source_fingerprint=fingerprint,
         index_path=index_path,
     )
+
+
+def _archive_manifest_revision(raw: bytes, archive_root: Path) -> Path:
+    sha256 = hashlib.sha256(raw).hexdigest()
+    archive_root.mkdir(parents=True, exist_ok=True)
+    target = archive_root / f"{sha256}.yaml"
+    if target.exists():
+        if target.read_bytes() != raw:
+            raise AcquisitionManifestError(
+                "revision_archive_conflict", "content-addressed revision bytes differ"
+            )
+        return target
+    handle, temporary_name = tempfile.mkstemp(prefix=f".{sha256}.", suffix=".tmp", dir=archive_root)
+    try:
+        with os.fdopen(handle, "wb") as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_name, target)
+    finally:
+        if os.path.exists(temporary_name):
+            os.unlink(temporary_name)
+    return target
 
 
 def _summary(

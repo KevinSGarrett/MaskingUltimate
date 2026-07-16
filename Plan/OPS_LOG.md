@@ -5911,3 +5911,16 @@ Mutation boundary:                 no asset move, delete, redownload, duplicate 
 Comparison honesty:                interim missing/unmanifested counts are non-authoritative and withheld because both the acquisition index and filesystem scan are incomplete while eight workers continue adding assets
 Verification:                      35 focused CMS/filesystem/acquisition/DIM/control tests and the complete 1,739/1,739 repository suite pass; Ruff and schema validation pass
 Evidence:                          `qa/reports/daz_asset_observation_progress_20260716.json`; CMS snapshot file SHA-256 values `b7bb2d36...` online and `2db8ca03...` forced offline
+
+## 2026-07-16 06:34 UTC - Live acquisition-manifest revisions made immutable
+
+**Result:** PASS for revision lifecycle safety; MF-P9-04.03/.04 remain partial only because
+the autonomous workers are still extending the source and installed-file populations.
+
+Revision discovery:                  an indexed filename changed while pending; the index refused it rather than silently replacing prior lineage
+Immutable history:                   every accepted source revision is copied atomically to `F:\DAZ\01_source_records\install_manifests\autonomous\<sha256>.yaml` before the normalized live view can replace it; identity changes at one source path fail closed
+Live acquisition progress:           442 manifests discovered, 130 current revisions indexed and archived, 312 pending, zero failed; six new sources arrived while the bounded chunks ran
+Live filesystem progress:            217 directories complete, 151 pending, zero failed; 545 files / 376,285,881 bytes / 293 user-facing files observed; no reparse point followed
+Comparison boundary:                 cross-source joins are skipped entirely and return only `source_or_inventory_incomplete` until both sides are complete, preventing expensive partial counts from being mistaken for missing-asset evidence
+Verification:                        36 focused tests pass; full repository collection is 1,740 and the complete rerun passes; Ruff and Black pass
+Mutation boundary:                   no acquisition worker, DAZ process, DIM, CMS, asset content, WSL, Docker, credential, elevation, or UAC state was modified

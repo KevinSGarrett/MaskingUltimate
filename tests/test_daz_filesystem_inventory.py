@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 from pathlib import Path
 
 import pytest
@@ -209,6 +210,37 @@ def test_autonomous_manifest_index_resumes_in_bounded_chunks(tmp_path: Path) -> 
     assert second.source_fingerprint is not None
 
 
+def test_autonomous_manifest_revision_is_archived_and_reindexed(tmp_path: Path) -> None:
+    manifests = tmp_path / "manifests"
+    manifests.mkdir()
+    path = manifests / "one.yaml"
+    record = _manifest("mfst_" + "a" * 24, "fil_" + "b" * 24, "c" * 64, "old.duf")
+    path.write_text(yaml.safe_dump(record), encoding="utf-8")
+    output = tmp_path / "resume.sqlite"
+    archive = tmp_path / "archive"
+    first = resume_acquisition_manifest_index(
+        manifests, output, max_manifests=1, revision_archive_root=archive
+    )
+    assert first.archived_revision_count == 1
+    record["manifest_revision"] = 2
+    record["files"][0]["installed_relative_path"] = "new.duf"
+    record["files"][0]["sha256"] = "d" * 64
+    path.write_text(yaml.safe_dump(record), encoding="utf-8")
+    second = resume_acquisition_manifest_index(
+        manifests, output, max_manifests=1, revision_archive_root=archive
+    )
+    assert second.complete is True
+    assert second.archived_revision_count == 2
+    assert len(list(archive.glob("*.yaml"))) == 2
+    connection = sqlite3.connect(output)
+    try:
+        assert connection.execute("SELECT relative_path FROM file_occurrences").fetchall() == [
+            ("new.duf",)
+        ]
+    finally:
+        connection.close()
+
+
 def test_autonomous_manifest_refuses_traversal_and_preserves_unknown_roots(tmp_path: Path) -> None:
     manifests = tmp_path / "manifests"
     manifests.mkdir()
@@ -266,6 +298,8 @@ def test_filesystem_and_acquisition_cli_round_trip(tmp_path: Path) -> None:
             str(index),
             "--inventory-state",
             str(state),
+            "--revision-archive",
+            str(tmp_path / "revisions"),
         ],
     )
     assert indexed.exit_code == 0, indexed.output

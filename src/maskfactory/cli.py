@@ -2551,6 +2551,11 @@ def daz_assets() -> None:
     """Build offline, privacy-safe DAZ asset-lineage observations."""
 
 
+@daz.group("recipes")
+def daz_recipes() -> None:
+    """Seal and verify canonical fully resolved DAZ scene recipes."""
+
+
 @daz_assets.command("dim-scan")
 @click.option(
     "--source",
@@ -3436,6 +3441,83 @@ def daz_assets_qualification_impact(
                     "impact": impact,
                     "publication": {"path": str(target), "published": published},
                 },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("seal")
+@click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\scene_recipes"),
+    show_default=True,
+)
+def daz_recipes_seal(draft: Path, output: Path) -> None:
+    """Derive named streams, validate, hash, and immutably publish a resolved recipe."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneRecipeError,
+        publish_resolved_scene_recipe,
+        seal_resolved_scene_recipe,
+    )
+
+    try:
+        document = json.loads(draft.read_text(encoding="utf-8"))
+        sealed = seal_resolved_scene_recipe(document)
+        target, published = publish_resolved_scene_recipe(sealed, output)
+    except (SceneRecipeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneRecipeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_recipe_sealed",
+                entity_ids=(sealed["scene_id"], sealed["scene_family_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "recipe_sha256": sealed["recipe_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate")
+@click.argument("recipe", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+def daz_recipes_validate(recipe: Path) -> None:
+    """Verify schema, invariants, named streams, and canonical recipe SHA-256."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import SceneRecipeError, validate_resolved_scene_recipe
+
+    try:
+        report = validate_resolved_scene_recipe(json.loads(recipe.read_text(encoding="utf-8")))
+    except (SceneRecipeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneRecipeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_recipe_valid",
+                entity_ids=(report["scene_id"], report["scene_family_id"]),
+                evidence_paths=(str(recipe),),
+                data=report,
             ),
             sort_keys=True,
         )

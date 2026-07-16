@@ -39,6 +39,7 @@ class DazErrorCode(IntEnum):
     ASSET_CATALOG_INVALID = 88
     ASSET_POOL_INVALID = 89
     ASSET_SMOKE_INVALID = 90
+    SCENE_RECIPE_INVALID = 91
 
 
 class DazControlError(ValueError):

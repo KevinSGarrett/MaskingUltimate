@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "captured_at": "2026-07-16T12:53:00Z",
+  "captured_at": "2026-07-16T13:10:00Z",
   "item": "MF-P9-04.05",
   "status": "partially_complete",
   "implementation": {
@@ -30,13 +30,13 @@
   "live_progress": {
     "inventory_file_count": 41094,
     "inventory_bytes": 38792501179,
-    "complete_hashes": 2424,
-    "complete_bytes": 3225542289,
-    "pending_hashes": 38670,
+    "complete_hashes": 2859,
+    "complete_bytes": 4030093103,
+    "pending_hashes": 38235,
     "failed_hashes": 0,
     "identity_database": "F:\\DAZ\\05_registry\\rebuild_evidence\\asset_identity.sqlite",
-    "identity_database_bytes": 22687744,
-    "identity_database_sha256": "4e9c20beaae1325d775d4d524cd6023cafa714e34ccdc84f742179d0bcbec941",
+    "identity_database_bytes": 22740992,
+    "identity_database_sha256": "b0b997b8ea907c9956274c7b79712d606f059c7707e0c1888c121330e28a0b90",
     "sqlite_quick_check": "ok",
     "second_resume": {
       "elapsed_seconds": 36.768,
@@ -59,15 +59,27 @@
       "new_hashed_bytes": 2423419226,
       "failed_hashes": 0
     },
+    "five_minute_bounded_tranche": {
+      "maximum_hash_seconds": 300,
+      "maximum_files": 3000,
+      "maximum_bytes": 4294967296,
+      "reused_hashes": 2424,
+      "new_hashes": 435,
+      "new_hashed_bytes": 804550814,
+      "failed_hashes": 0
+    },
     "final_snapshot_published": false,
     "reason": "Autonomous acquisition is still mutating the content estate. Hashing is resumable, but the immutable duplicate/shadow snapshot cannot be claimed until the upstream filesystem inventory is stable and every current file is hashed."
   },
   "storage": {
-    "free_bytes": 168142004224,
-    "free_gib": 156.594,
+    "free_bytes": 152742350848,
+    "free_gib": 142.252,
     "soft_floor_gib": 150,
     "hard_floor_gib": 100,
-    "state": "healthy"
+    "state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "capacity_guard_exit_code_for_new_work": 1
   },
   "lineage": {
     "implementation_sha256": "a4e4ca8aca45d302c41229a9df2e991508543b7199f4ae6a5b2b656454e4f687",
@@ -77,8 +89,8 @@
   "verification": {
     "focused_tests_passed": 20,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1797,
-    "full_repository_tests_passed": 1797,
+    "full_repository_tests_collected": 1803,
+    "full_repository_tests_passed": 1803,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

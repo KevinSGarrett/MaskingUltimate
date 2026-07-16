@@ -6127,3 +6127,30 @@ Identity progress:                    another bounded tranche added 1,048 hashes
 Concurrent-worker reconciliation:     the live acquisition worker advanced from 0.3.7 to 0.3.8 with all guards intact; the test now enforces minimum guard-capable version plus exact calls/thresholds instead of brittle equality
 Verification:                         22 focused smoke tests, 38 combined DAZ focused tests, and the complete 1,797/1,797 repository suite pass; Ruff lint and Black pre-commit checks pass
 Evidence:                             `qa/reports/daz_asset_smoke_qualification_20260716.json`; `qa/reports/daz_asset_identity_progress_20260716.json`
+
+## 2026-07-16 13:10 UTC - Canonical resolved scene recipes and named replay streams implemented
+
+**Result:** MF-P9-06.01/.02 now have fixture-complete deterministic contracts and remain partial until
+qualified live assets, the frozen mapping bundle, and DAZ render/replay evidence exist.
+
+Resolved contract:                    doc-30 scene ID/family, master seed, registry/runtime/script/ontology/render bindings, coverage demands, 1–4 characters, relationships, camera, lighting, environment, props, and recipe SHA-256
+Identity invariants:                  construction IDs are canonical c0..cN; requested promoted IDs are unique; relationship participants must exist; camera crops cannot exceed resolution
+Numeric safety:                       NaN/Inf, non-JSON values, and non-string object keys fail before serialization or hashing
+Named streams:                        characters, poses, placement, camera, lighting, environment, render, and degrade derive independently from master seed + scene ID + namespace using pinned `sha256_first_u64_be_v1`
+Canonical bytes:                      UTF-8, sorted object keys, compact separators, no NaN; mapping insertion order cannot alter bytes while resolved array order remains authoritative
+Replay authority:                     chosen asset/mapping IDs and final numeric values are stored; validation re-derives every stream and recipe SHA rather than trusting the file
+Publication/CLI:                      immutable content-addressed JSON through `daz recipes seal`; `daz recipes validate` verifies schema, invariants, streams, and hash; identical replay is idempotent
+Live boundary:                        no live scene or render replay is claimed; schema fixtures are not DAZ runtime evidence
+Verification:                         six focused scene-recipe tests, 44 combined scene/runtime/smoke tests, and the complete 1,803/1,803 repository suite pass; Ruff, Black, and tracker validation pass
+Evidence:                             `qa/reports/daz_scene_recipe_determinism_20260716.json`
+
+## 2026-07-16 13:10 UTC - F drive entered capacity soft state during autonomous acquisition
+
+**Result:** The installed guard correctly refuses new work; no new render, acquisition, or identity
+tranche was started after the soft transition.
+
+Capacity:                             152,742,350,848 bytes / 142.252 GiB free; soft <150 GiB, hard <100 GiB, emergency <60 GiB
+Guard proof:                          `capacity_guard.py --operation new-work` exited 1 with `state=soft`, `new_work_allowed=false`, `active_job_allowed=true`
+Identity checkpoint:                  the already-running read-only tranche completed first, adding 435 files / 804,550,814 bytes; total 2,859/41,094 and zero failures
+Operational response:                no worker was stopped, no DAZ process was touched, and active acquisition jobs may checkpoint under the blueprint while launchers refuse new jobs
+Evidence:                             `qa/reports/daz_asset_identity_progress_20260716.json`

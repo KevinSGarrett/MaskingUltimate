@@ -80,6 +80,7 @@ SCHEMA_NAMES = frozenset(
         "daz_asset_smoke_result",
         "daz_asset_smoke_certificate",
         "daz_asset_quarantine",
+        "daz_resolved_scene_recipe",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

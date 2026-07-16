@@ -6403,3 +6403,21 @@ Live boundary:                        no generated uint16 fixture is claimed as 
 Capacity/mutation boundary:           F remains below the 150-GiB soft floor from prior observation; this task started no download, install, acquisition, DAZ launch, render, asset move, or asset relabel
 Verification:                         the complete 2,367/2,367 repository suite passes; Ruff, Black across 478 files, JSON, and Git diff checks pass
 Evidence:                             `qa/reports/daz_material_protected_20260716.json`
+
+## 2026-07-16 19:15 UTC - Exact coverage alpha and hair-threshold validation implemented
+
+**Result:** MF-P9-07.06 now has a frozen linear coverage-alpha and hair-certificate contract; it
+remains partial until representative live hair assets and qualified DAZ edge renders are certified.
+
+Threshold reconciliation:             `1/255` is the minimum retained continuous opacity while `0.5` is the inclusive MaskFactory hard-owner threshold; uint16 codes 1-256 reject, 257 starts support, 32767 remains support-only, and 32768 starts hard ownership
+Boundary convention:                  exact 4x4 visible-opacity samples use box-linear coverage, maximum visible coverage, frontmost-depth then stable-node tie break, and a one-pixel uncertainty radius
+Physical constraint:                  summed visible owner contribution cannot exceed one at any sample; impossible transparent stacks reject before ownership resolution
+Hair routes:                          polygonal, transmapped-card, strand, fibermesh, and mixed constructions bind to exact approved renderer/pass routes; evaluated opacity is required where applicable
+Hair semantics:                       PART 1 and MATERIAL 2 must agree; visible hair requires an approved asset certificate; opacity below half defers to the underlying/background owner; shadows never create hair ownership
+Freeze/replay:                         before/sidecar/after/restore/terminal state hashes, plan/contract/mapping/ontology sidecars, MATERIAL/PART/INSTANCE authority hashes, and repeated alpha hash must agree exactly
+Publication/CLI:                      `plan-coverage-alpha` and `validate-coverage-alpha` publish immutable idempotent records and return nonzero on findings
+Fixture proof:                       57 focused cases cover exact threshold codes, all five hair routes, certificate/mapping lineage, coverage/depth/node resolution, visibility overflow, hair/owner defects, all state points/effects, sidecars, authority/output/replay drift, CLI replay, and publication conflict
+Live boundary:                        no generated edge fixture is claimed as a live DAZ alpha render or an approved real hair certificate
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, asset move, or asset relabel occurred
+Verification:                         the complete 2,424/2,424 repository suite passes; Ruff, Black across 480 files, JSON, and Git diff checks pass
+Evidence:                             `qa/reports/daz_coverage_alpha_20260716.json`

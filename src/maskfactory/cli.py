@@ -5166,6 +5166,185 @@ def daz_recipes_validate_material_protected(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-coverage-alpha")
+@click.option(
+    "--material-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--hair-certificates",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--expect-hair/--no-expect-hair", default=False, show_default=True)
+@click.option(
+    "--expect-mixed-coverage/--no-expect-mixed-coverage", default=False, show_default=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/coverage_alpha.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\coverage_alpha_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_coverage_alpha(
+    material_contract: Path,
+    pass_plan: Path,
+    hair_certificates: Path,
+    expect_hair: bool,
+    expect_mixed_coverage: bool,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal linear alpha and hair-threshold rules to frozen semantic authority."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        CoverageAlphaContractError,
+        build_coverage_alpha_contract,
+        load_coverage_alpha_policy,
+        publish_coverage_alpha_document,
+    )
+
+    try:
+        document = build_coverage_alpha_contract(
+            json.loads(material_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(hair_certificates.read_text(encoding="utf-8")),
+            expected_hair_material_present=expect_hair,
+            expected_mixed_coverage=expect_mixed_coverage,
+            policy=load_coverage_alpha_policy(policy),
+        )
+        target, published = publish_coverage_alpha_document(document, output)
+    except (CoverageAlphaContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CoverageAlphaContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_coverage_alpha_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "hair_certificate_count": len(document["hair_certificates"]),
+                    "expected_hair_material_present": document["expected_hair_material_present"],
+                    "expected_mixed_coverage": document["expected_mixed_coverage"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-coverage-alpha")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--alpha-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/coverage_alpha.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\coverage_alpha_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_coverage_alpha(
+    contract: Path,
+    execution: Path,
+    alpha_image: Path,
+    material_image: Path,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate exact alpha thresholds, hard owners, hair semantics, and replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        CoverageAlphaContractError,
+        evaluate_coverage_alpha,
+        load_coverage_alpha_policy,
+        publish_coverage_alpha_document,
+    )
+
+    try:
+        document = evaluate_coverage_alpha(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            alpha_path=alpha_image,
+            material_path=material_image,
+            part_path=part_image,
+            instance_path=instance_image,
+            policy=load_coverage_alpha_policy(policy),
+        )
+        target, published = publish_coverage_alpha_document(document, output)
+    except (CoverageAlphaContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CoverageAlphaContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_coverage_alpha_valid" if not code else "daz_coverage_alpha_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

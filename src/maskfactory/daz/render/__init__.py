@@ -1,5 +1,15 @@
 """DAZ pristine and semantic render contracts."""
 
+from .alpha import (
+    CoverageAlphaContractError,
+    build_coverage_alpha_contract,
+    build_hair_alpha_certificate,
+    evaluate_coverage_alpha,
+    load_coverage_alpha_policy,
+    publish_coverage_alpha_document,
+    resolve_visible_coverage_owner,
+    validate_coverage_alpha_policy,
+)
 from .instance import (
     InstancePassContractError,
     build_instance_pass_contract,
@@ -37,27 +47,35 @@ from .pristine import (
 )
 
 __all__ = [
+    "CoverageAlphaContractError",
     "PristineRgbContractError",
     "PartPassContractError",
     "MaterialProtectedContractError",
     "InstancePassContractError",
+    "build_coverage_alpha_contract",
+    "build_hair_alpha_certificate",
     "build_instance_pass_contract",
     "build_pristine_rgb_request",
     "build_part_pass_contract",
     "build_material_protected_contract",
     "decode_u16_png_exact",
+    "evaluate_coverage_alpha",
     "evaluate_instance_pass",
     "evaluate_pristine_rgb_fixture",
     "evaluate_part_pass",
     "evaluate_material_protected_passes",
+    "load_coverage_alpha_policy",
     "load_instance_pass_policy",
     "load_pristine_rgb_policy",
     "load_part_pass_policy",
     "load_material_protected_policy",
+    "publish_coverage_alpha_document",
     "publish_pristine_rgb_document",
     "publish_part_pass_document",
     "publish_material_protected_document",
     "publish_instance_pass_document",
+    "resolve_visible_coverage_owner",
+    "validate_coverage_alpha_policy",
     "validate_instance_pass_policy",
     "validate_pristine_rgb_fixture_report",
     "validate_pristine_rgb_policy",

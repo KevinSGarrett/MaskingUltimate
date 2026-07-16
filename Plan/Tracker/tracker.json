@@ -16551,13 +16551,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-16T19:16:17+00:00",
+          "actor": "codex",
+          "text": "Exact linear coverage alpha, separate 1/255 support and inclusive 0.5 hard-owner thresholds, five hair routes/certificates, state/authority/replay checks, and CLI are fixture-verified. Completion requires representative approved live hair assets and qualified DAZ edge renders."
+        }
+      ],
+      "evidence": "57/57 focused and 2424/2424 full repository tests pass. Exact uint16 threshold codes, all five hair construction routes, certificate-to-scene mapping lineage, coverage/depth/node ownership, visibility overflow, hair semantic and alpha defects, five state points, nine forbidden effects, sidecars, authority/output/replay drift, and idempotent CLI/publication are verified. Ruff passes; Black checks 480 files; diff and evidence JSON validate. Evidence: qa/reports/daz_coverage_alpha_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T19:26:26+00:00",
       "orphaned": false
     },
     "MF-P9-07.07": {

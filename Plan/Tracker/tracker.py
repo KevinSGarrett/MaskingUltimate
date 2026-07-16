@@ -116,6 +116,20 @@ DEFAULT_METRICS = {
     "target_certified_d5": 300,
     "target_certified_g6_stretch": 500,
     "coverage_cells_at_target_pct": 0,
+    # DAZ vertical-slice execution counters. These intentionally separate
+    # implemented/fixture-tested contracts from live DAZ acceptance evidence.
+    "daz_asset_identity_hashes_complete": 0,
+    "daz_asset_identity_hashes_total": 0,
+    "daz_live_compatibility_graph_status": "unpublished",
+    "daz_live_qualified_asset_count": 0,
+    "daz_live_smoke_certificate_count": 0,
+    "daz_live_assembled_scene_count": 0,
+    "daz_live_exact_synthetic_package_count": 0,
+    "daz_synthetic_trained_challenger_count": 0,
+    "daz_measured_real_image_improvement_status": "not_measured",
+    "daz_storage_free_gib": None,
+    "daz_storage_new_work_floor_gib": 150.0,
+    "daz_storage_new_work_allowed": False,
 }
 
 # ---------------------------------------------------------------------------
@@ -893,6 +907,73 @@ def bar(pct, width=20):
     return "#" * filled + "-" * (width - filled)
 
 
+def daz_vertical_slice_rows(data):
+    """Return dashboard rows that keep implementation, execution, and acceptance distinct."""
+
+    metrics = data.get("metrics", {})
+    complete = int(metrics.get("daz_asset_identity_hashes_complete") or 0)
+    total = int(metrics.get("daz_asset_identity_hashes_total") or 0)
+    execution_pct = round(100 * complete / total, 1) if total else 0.0
+    graph_status = str(metrics.get("daz_live_compatibility_graph_status") or "unpublished")
+    qualified = int(metrics.get("daz_live_qualified_asset_count") or 0)
+    certificates = int(metrics.get("daz_live_smoke_certificate_count") or 0)
+    scenes = int(metrics.get("daz_live_assembled_scene_count") or 0)
+    packages = int(metrics.get("daz_live_exact_synthetic_package_count") or 0)
+    challengers = int(metrics.get("daz_synthetic_trained_challenger_count") or 0)
+    improvement = str(
+        metrics.get("daz_measured_real_image_improvement_status") or "not_measured"
+    )
+    free_gib = metrics.get("daz_storage_free_gib")
+    floor_gib = metrics.get("daz_storage_new_work_floor_gib")
+    new_work = bool(metrics.get("daz_storage_new_work_allowed"))
+    free_text = "unknown" if free_gib is None else f"{float(free_gib):.3f} GiB"
+    floor_text = "unknown" if floor_gib is None else f"{float(floor_gib):.1f} GiB"
+    return [
+        (
+            "Asset identity",
+            "resumable hashing and duplicate/shadow logic implemented",
+            f"{complete:,}/{total:,} hashes ({execution_pct:.1f}%)",
+            "incomplete" if complete < total else "complete snapshot required",
+        ),
+        (
+            "Compatibility graph",
+            "graph validation and deterministic publication implemented",
+            graph_status,
+            "no live graph authority" if graph_status != "published" else "published",
+        ),
+        (
+            "Asset qualification",
+            "smoke/certificate/revocation contracts fixture-tested",
+            f"{qualified:,} qualified assets / {certificates:,} live certificates",
+            "no live qualified authority" if not qualified or not certificates else "live authority present",
+        ),
+        (
+            "Scene assembly",
+            "recipe, formation, geometry preflight, resolved state, and pass freeze implemented",
+            f"{scenes:,} live assembled scenes",
+            "DAZ readback/replay evidence required" if not scenes else "live scenes present",
+        ),
+        (
+            "Exact synthetic packages",
+            "render/package contracts may be implemented independently",
+            f"{packages:,} verified live packages",
+            "no accepted synthetic mask package" if not packages else "verified packages present",
+        ),
+        (
+            "Training impact",
+            "training leakage/authority gates implemented",
+            f"{challengers:,} synthetic-trained challengers",
+            f"real-image improvement: {improvement}",
+        ),
+        (
+            "Storage gate",
+            "capacity guard implemented",
+            f"{free_text} free; new-work floor {floor_text}",
+            "new work allowed" if new_work else "new acquisition/major hashing/render work paused",
+        ),
+    ]
+
+
 def render_dashboard(data):
     now = iso_now()
     all_items = [it for it in data["items"].values() if not it["orphaned"]]
@@ -928,6 +1009,27 @@ def render_dashboard(data):
     L.append(
         "Full item-by-item detail with live status, evidence, and notes: "
         "see `phases/<PHASE>.md`."
+    )
+    L.append("")
+
+    L.append("## Live DAZ Vertical Slice")
+    L.append("")
+    L.append(
+        "Tracker item percentages combine implementation work and live execution. "
+        "This table separates **implementation readiness**, **live execution**, and "
+        "**acceptance evidence** so fixture success cannot be mistaken for an operational result."
+    )
+    L.append("")
+    L.append("| Layer | Implementation Readiness | Live Execution | Acceptance Evidence |")
+    L.append("|---|---|---|---|")
+    for layer, implementation, execution, acceptance in daz_vertical_slice_rows(data):
+        L.append(f"| {layer} | {implementation} | {execution} | {acceptance} |")
+    L.append("")
+    L.append(
+        "**Active priority:** complete the first live verified DAZ engineering package "
+        "(`qualified real assets -> assembled Genesis 9 scene -> pristine RGB and annotation "
+        "passes -> exact masks -> package verification`) before adding further downstream "
+        "horizontal abstractions. Fixture-only evidence must remain partial."
     )
     L.append("")
 
@@ -993,9 +1095,11 @@ def render_dashboard(data):
         for e in reversed(recent):
             label = e.get("id") or (f"goal:{e['goal']}" if "goal" in e else "metrics")
             L.append(
-                f"- `{e.get('ts', '?')}` **{label}** "
-                f"{e.get('old_status', '')} -> {e.get('new_status', '')} -- "
-                f"{e.get('note') or e.get('evidence') or e.get('blocked_reason') or ''}"
+                (
+                    f"- `{e.get('ts', '?')}` **{label}** "
+                    f"{e.get('old_status', '')} -> {e.get('new_status', '')} -- "
+                    f"{e.get('note') or e.get('evidence') or e.get('blocked_reason') or ''}"
+                ).rstrip()
             )
     L.append("")
 

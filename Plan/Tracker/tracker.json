@@ -96,7 +96,19 @@
     "target_certified_p5_entry": 200,
     "target_certified_d5": 300,
     "target_certified_g6_stretch": 500,
-    "coverage_cells_at_target_pct": 0
+    "coverage_cells_at_target_pct": 0,
+    "daz_asset_identity_hashes_complete": 2859,
+    "daz_asset_identity_hashes_total": 41094,
+    "daz_live_compatibility_graph_status": "unpublished",
+    "daz_live_qualified_asset_count": 0,
+    "daz_live_smoke_certificate_count": 0,
+    "daz_live_assembled_scene_count": 0,
+    "daz_live_exact_synthetic_package_count": 0,
+    "daz_synthetic_trained_challenger_count": 0,
+    "daz_measured_real_image_improvement_status": "not_measured",
+    "daz_storage_free_gib": 140.4066047668457,
+    "daz_storage_new_work_floor_gib": 150.0,
+    "daz_storage_new_work_allowed": false
   },
   "dod": {
     "D1": {},

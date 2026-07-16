@@ -156,8 +156,9 @@ warnings) — safe to run in CI or as a pre-commit check.
 python tracker.py report
 ```
 Regenerates `DASHBOARD.md` (project-wide rollup: overall %, per-phase
-progress, hard-blocker status, currently-blocked list, DoD table, Goals
-table, tracked metrics, recent activity, suggested next actions) and
+progress, the live DAZ vertical-slice table, hard-blocker status,
+currently-blocked list, DoD table, Goals table, tracked metrics, recent
+activity, suggested next actions) and
 `phases\P0.md` … `phases\P8.md` (every single item in that phase, live
 status glyph, evidence, notes — a full-detail mirror of the original
 `Plan\Items\*.md` file but reflecting current real state).

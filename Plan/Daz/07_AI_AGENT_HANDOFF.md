@@ -129,3 +129,34 @@ Before ending a session:
 - update the live tracker only through its CLI and only for genuinely complete work;
 - record remaining dependencies and exact next action;
 - ensure a new agent can reproduce the result without conversation memory.
+
+## 11. Active vertical-slice priority
+
+The camera/light/environment/prop selector, geometry preflight, resolved scene-state sealer, and render
+pass freeze are implemented at the fixture-contract level. Continue the current pristine-RGB and exact
+annotation/pass work needed by the existing items, then close the first live DAZ vertical slice before
+adding more downstream horizontal abstractions:
+
+```text
+qualified real assets
+  -> assembled Genesis 9 scene
+  -> final DAZ property/joint/camera/asset readback
+  -> pristine RGB plus exact annotation passes
+  -> exact masks
+  -> verified synthetic package
+```
+
+Operational rules:
+
+- Fixture-tested horizontal implementation is useful, but it remains `partially_complete` until the
+  item's required live readback, render, geometry, mapping, or package evidence exists.
+- Do not infer live progress from an item's blended percentage. Use the generated dashboard's
+  **Live DAZ Vertical Slice** table for implementation readiness, live execution, and acceptance.
+- After the immediate MF-P9-06.07/.08 chain and its directly required render/pass work, prioritize the
+  first accepted 24-100 engineering-fixture path over additional optional planning abstractions.
+- The current storage guard is authoritative. When F: is below the 150-GiB new-work floor, do not start
+  acquisition, major identity hashing, or DAZ render/generation work; continue only capacity-safe code,
+  validation, or an already-authorized active job as the existing policy permits.
+- A live vertical slice is not complete until one package binds qualified assets, final scene readback,
+  RGB and annotation-pass hashes, decoded masks, QA results, and package verification. A PNG, fixture,
+  schema pass, or mocked certificate alone is insufficient.

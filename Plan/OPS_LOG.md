@@ -5774,3 +5774,16 @@ Live state:                         all four Task Scheduler entries report Ready
 Safety boundary:                    no elevation, UAC approval, WSL/Docker restart, VHD operation, or task execution was performed during verification
 Regression:                         `tests/test_backup_ops.py` enforces exactly four hidden actions; focused suite 4/4 passes
 Evidence:                           `qa/live_verification/windows_scheduled_tasks_hidden_20260716.json` SHA-256 `6ac648a8ee58a591273e48c98834c3aa55e3ad98baaa9e29fb65b96cfe95d22f`
+
+## 2026-07-16 00:18 UTC - Meta checkpoint gates made machine-detectable
+
+**Result:** MF-P0-17.04 and MF-P2-11.07 remain honestly blocked at their human
+terms gates, but future access changes are now detected by one read-only command.
+
+Tool:                               `python tools/probe_meta_checkpoint_access.py`
+Governed identities:                official SAM3.1 `sam3.1_multiplex.pt` and SAM 3D Body `model.ckpt`, `model_config.yaml`, and `assets/mhr_model.pt`, each at its frozen 40-character revision
+Safety boundary:                    HEAD-only, credential presence reported as a boolean, token never serialized, zero response bodies/downloaded bytes, no terms acceptance, provider mutation, inference, or authority
+Live result:                        Hugging Face credential absent; all four exact resolve requests returned HTTP 401 `human_gate_pending`
+Terms surfaces:                     `https://huggingface.co/facebook/sam3.1` and `https://huggingface.co/facebook/sam-3d-body-dinov3`
+Verification:                       4 dedicated access-contract tests and complete repository 1,666/1,666 pass; Ruff and Black pass
+Evidence:                           `qa/live_verification/meta_checkpoint_access_probe_20260716.json` file SHA-256 `19e56eeae572f2a81543a2bcfc33c1614fdeda4546aa9b365df84fb1b23a4450`, canonical SHA-256 `6eca5d735a50697c9d22aed4e0e69b0e102be0291b0b1b99ba8de3d50fcc2af3`

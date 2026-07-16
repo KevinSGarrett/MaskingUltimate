@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T09:49:00Z",
+  "item": "MF-P9-14.08",
+  "status": "complete",
+  "database": "C:\\Temp\\MaskFactory_Reference_Library\\reference_working.sqlite",
+  "selection_fingerprint": "70fe46a65ee46691dfa9a4ede7bfd728d5c38251a8acee46fc2abb2783c74900",
+  "retrieval_pool_count": 18000,
+  "live_probe": {
+    "query": {
+      "view": "left_profile",
+      "pose": "seated_or_crouched",
+      "instance_context": "duo",
+      "failed_body_part": "left_hand",
+      "failure_reason": "finger_merge"
+    },
+    "requested": 3,
+    "returned": 3,
+    "all_matched_required_part_tag": "part_hand_fingers",
+    "all_matched_view": "profile",
+    "candidate_relative_paths": [
+      "1200__Elegant_Female_Poses/1200+ Elegant Female Poses/Nightgown/m_1427.jpg",
+      "3DSK_Women/3DSK Women/Barbora/Barbora_0144.JPG",
+      "1200__Elegant_Female_Poses/1200+ Elegant Female Poses/Nightgown/m_0892.jpg"
+    ]
+  },
+  "ranking_contract": {
+    "pool": "retrieval_reference_only",
+    "coverage_inputs": ["view", "pose", "instance_context", "required_tags"],
+    "hard_case_inputs": ["failed_body_part", "failure_reason", "pose_angle"],
+    "body_part_focus_is_required_when_available": true,
+    "coverage_attribute_weight": 8.0,
+    "required_body_part_tag_weight": 20.0,
+    "difficulty_and_quality_are_tiebreak_inputs": true,
+    "deterministic_tie_break": "relative_path ascending"
+  },
+  "active_learning_connection": {
+    "entrypoint": "maskfactory.datasets.active_learning.run_active_learning",
+    "output_pattern": "reference_acquisition_context_<date>.json",
+    "top_coverage_deficits_connected": true,
+    "unresolved_failure_records_connected": true,
+    "atomic_publication": true,
+    "result_field": "reference_acquisition_context"
+  },
+  "authority": {
+    "source_role": "unlabeled_reference_corpus",
+    "truth_authority": "none",
+    "training_eligible": false,
+    "selection_or_retrieval_creates_truth": false,
+    "independent_human_anchor_or_autonomous_certification_required": true
+  },
+  "verification": {
+    "focused_reference_and_active_learning_tests_passed": 21,
+    "focused_reference_and_active_learning_tests_failed": 0,
+    "full_repository_tests_collected": 1759,
+    "full_repository_tests_passed": 1759,
+    "full_repository_tests_failed": 0,
+    "ruff": "pass",
+    "black": "pass",
+    "negative_authority_fixture": "Every candidate and context root explicitly remains truth_authority=none and training_eligible=false."
+  },
+  "not_claimed": [
+    "Retrieved references are masks or labels.",
+    "Retrieved references can enter training automatically.",
+    "A retrieval result is correct truth without independent certification."
+  ]
+}

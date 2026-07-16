@@ -622,7 +622,7 @@ def test_explicit_anchor_partitions_cannot_split_a_phash_duplicate_group(tmp_pat
 
 
 def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
-    tmp_path: Path,
+    tmp_path: Path, monkeypatch
 ) -> None:
     queue = tmp_path / "failure_queue.jsonl"
     queue.write_text(
@@ -643,6 +643,19 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         + "\n",
         encoding="utf-8",
     )
+    reference = tmp_path / "reference.sqlite"
+    reference.touch()
+
+    def write_reference(_database, *, output_path, **_kwargs):
+        output_path.write_text(
+            json.dumps({"authority": {"truth_authority": "none"}}), encoding="utf-8"
+        )
+        return output_path
+
+    monkeypatch.setattr(
+        "maskfactory.datasets.active_learning.write_reference_acquisition_context",
+        write_reference,
+    )
     result = run_active_learning(
         failure_queue_path=queue,
         coverage_matrix_path=tmp_path / "missing_coverage.json",
@@ -650,6 +663,7 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
         certified_training_package_count=60,
         champion_certified_package_count=5,
         report_date="2026-07-12",
+        reference_database=reference,
         clusterer=lambda reasons: {
             reason: "hands_fingers" if reason == "finger_merge" else "fixture_cluster"
             for reason in reasons
@@ -663,6 +677,12 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
     assert task["steps"][-1] == "record_champion_history"
     plan = Path(result["acquisition_plan"]).read_text(encoding="utf-8")
     assert "hands_fingers" in plan and "Top coverage deficits" in plan
+    assert (
+        json.loads(Path(result["reference_acquisition_context"]).read_text())["authority"][
+            "truth_authority"
+        ]
+        == "none"
+    )
 
 
 def test_two_week_class_error_trigger_opens_idempotent_p5_task(tmp_path: Path) -> None:

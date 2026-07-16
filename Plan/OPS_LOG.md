@@ -6002,3 +6002,17 @@ Independent launcher:                training refuses a missing/failed receipt, 
 Authority:                           benchmark/retrieval references remain no-training/no-truth/no-gold sources; isolation does not promote them
 Verification:                        34 focused reference/builder/launcher tests and the complete 1,758/1,758 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_benchmark_isolation_gate_20260716.json`
+
+## 2026-07-16 09:49 UTC - Retrieval-only references connected to acquisition planning
+
+**Result:** MF-P9-14.08 is complete; coverage deficits and hard-case failures now receive
+deterministic relevant examples from the 18,000-image retrieval tier without any truth promotion.
+
+Retrieval scope:                      SQL reads only `retrieval_reference`; benchmark references are never returned by the planner
+Coverage matching:                    canonical view/pose/instance-context mappings, selected difficulty/quality, and deterministic relative-path tie-breaking
+Hard-case matching:                   failed body-part names map to the corresponding required focus tag; when tagged candidates exist they are required rather than merely weakly preferred
+Live proof:                           a left-profile seated/crouched duo `left_hand`/`finger_merge` probe returned three references, all with `part_hand_fingers` and profile matches
+Active-learning connection:           the weekly planner atomically writes `reference_acquisition_context_<date>.json` for top deficits and every unresolved failure and exposes its path in the result
+Authority:                           every candidate and document root declares `unlabeled_reference_corpus`, `truth_authority=none`, `training_eligible=false`, and independent certification required
+Verification:                        21 focused reference/active-learning tests and the complete 1,759/1,759 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/reference_retrieval_acquisition_context_20260716.json`

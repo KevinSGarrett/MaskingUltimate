@@ -6,7 +6,7 @@ import json
 import os
 import uuid
 from collections.abc import Callable
-from dataclasses import fields
+from dataclasses import asdict, fields
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -18,6 +18,7 @@ from ..qa.failure_mining import (
     write_acquisition_plan,
     write_weekly_qa_summary,
 )
+from ..reference_library import write_reference_acquisition_context
 from ..vlm.client import OllamaClient
 from ..vlm.text import cluster_failure_reasons
 from .civitai_stress import DEFAULT_REGISTRY, build_civitai_stress_plan
@@ -41,7 +42,10 @@ def run_active_learning(
     vlm_config_path: Path = Path("configs/vlm.yaml"),
     stress_fixture_registry: Path = DEFAULT_REGISTRY,
     verify_stress_archives: bool = True,
+    reference_database: Path | None = None,
+    reference_limit_per_target: int = 5,
 ) -> dict:
+    output_dir = Path(output_dir)
     coverage = _coverage(coverage_matrix_path)
     harvest = (
         harvest_human_edit_deltas(
@@ -107,6 +111,15 @@ def run_active_learning(
                 f"- Collect {row['deficit']} approved `{row['view']}` / `{row['pose']}` / "
                 f"`{row['instance_context']}` examples (current {row['approved_gold_count']}/8).\n"
             )
+    reference_context = None
+    if reference_database is not None and Path(reference_database).is_file():
+        reference_context = write_reference_acquisition_context(
+            Path(reference_database),
+            coverage_deficits=top,
+            failures=(asdict(record) for record in records if not record.resolved),
+            output_path=output_dir / f"reference_acquisition_context_{date}.json",
+            limit_per_target=reference_limit_per_target,
+        )
     error_trigger, error_classes = _class_error_trigger(class_error_history_path)
     triggers = {
         "new_certified_plus_50": (
@@ -115,7 +128,6 @@ def run_active_learning(
         "ontology_changed": ontology_changed,
         "class_error_increase_two_weeks": error_trigger,
     }
-    output_dir = Path(output_dir)
     retrain_requested = any(triggers.values())
     stress_plan = build_civitai_stress_plan(
         output_path=Path(output_dir) / f"civitai_pose_stress_plan_{date}.json",
@@ -150,6 +162,7 @@ def run_active_learning(
             key: value for key, value in harvest.items() if key != "new_records"
         },
         "civitai_pose_stress_plan": str(stress_plan),
+        "reference_acquisition_context": (str(reference_context) if reference_context else None),
     }
     (output_dir / f"active_learning_{date}.json").write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"

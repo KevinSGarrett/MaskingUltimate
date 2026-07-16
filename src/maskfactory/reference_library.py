@@ -15,6 +15,45 @@ import yaml
 from PIL import Image, ImageOps
 
 REFERENCE_TIERS = ("benchmark_reference", "retrieval_reference")
+_COVERAGE_VIEW_MAP = {
+    "front": ("front",),
+    "back": ("back",),
+    "left_profile": ("profile",),
+    "right_profile": ("profile",),
+    "left_3_4": ("three_quarter",),
+    "right_3_4": ("three_quarter",),
+}
+_COVERAGE_POSE_MAP = {
+    "seated_or_crouched": ("sitting", "kneeling"),
+    "lying": ("lying",),
+    "walking": ("walking_running",),
+    "leg_overlap": ("interacting", "bent_twisted"),
+}
+_COVERAGE_CONTEXT_MAP = {
+    "solo": ("one",),
+    "duo": ("two",),
+    "small_group": ("small_group",),
+}
+_PART_REFERENCE_TAGS = {
+    "hand": "part_hand_fingers",
+    "finger": "part_hand_fingers",
+    "foot": "part_foot_toes",
+    "toe": "part_foot_toes",
+    "ankle": "part_ankle",
+    "knee": "part_knee",
+    "thigh": "part_thigh",
+    "calf": "part_lower_leg_calf",
+    "forearm": "part_forearm_wrist",
+    "wrist": "part_forearm_wrist",
+    "elbow": "part_elbow",
+    "shoulder": "part_shoulder",
+    "hair": "part_hair",
+    "ear": "part_ear",
+    "face": "part_head_face",
+    "breast": "part_chest_breasts",
+    "torso": "part_torso_abdomen",
+    "glute": "part_hips_pelvis_buttocks",
+}
 
 
 class ReferenceLibraryError(ValueError):
@@ -416,6 +455,167 @@ def materialize_reference_tier(
     }
 
 
+def retrieve_reference_candidates(
+    database: Path,
+    query: Mapping[str, Any],
+    *,
+    limit: int = 10,
+) -> dict[str, Any]:
+    """Rank retrieval-only references for one deficit without granting authority."""
+    if limit <= 0 or limit > 100:
+        raise ReferenceLibraryError("reference retrieval limit must be within 1..100")
+    expected_views = set(_COVERAGE_VIEW_MAP.get(str(query.get("view")), ()))
+    expected_poses = set(_COVERAGE_POSE_MAP.get(str(query.get("pose")), ()))
+    expected_counts = set(_COVERAGE_CONTEXT_MAP.get(str(query.get("instance_context")), ()))
+    required_tags = {
+        str(value) for value in query.get("required_tags", ()) if isinstance(value, str) and value
+    }
+    failed_part = str(query.get("failed_body_part", "")).casefold()
+    required_tags.update(tag for token, tag in _PART_REFERENCE_TAGS.items() if token in failed_part)
+    connection = sqlite3.connect(f"file:{Path(database)}?mode=ro", uri=True, timeout=120)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows = connection.execute(
+            "SELECT s.relative_path,s.rank,s.selection_score,s.materialized_path,"
+            "i.sha256,i.quality_score,v.person_count,v.framing,v.view,v.pose,"
+            "v.content_state,v.presentation,v.body_type,v.background,v.lighting,"
+            "v.difficulty_score,v.tags_json FROM selections s "
+            "JOIN images i ON i.relative_path=s.relative_path "
+            "JOIN visual_index v ON v.relative_path=s.relative_path "
+            "WHERE s.tier='retrieval_reference'"
+        ).fetchall()
+    finally:
+        connection.close()
+    ranked = []
+    for row in rows:
+        tags = set(json.loads(str(row["tags_json"])))
+        matched_tags = sorted(required_tags & tags)
+        matched = {
+            "view": bool(expected_views and row["view"] in expected_views),
+            "pose": bool(expected_poses and row["pose"] in expected_poses),
+            "instance_context": bool(expected_counts and row["person_count"] in expected_counts),
+        }
+        score = (
+            8.0 * sum(matched.values())
+            + 20.0 * len(matched_tags)
+            + 2.0 * float(row["difficulty_score"] or 0.0)
+            + float(row["quality_score"] or 0.0)
+            + 0.1 * float(row["selection_score"] or 0.0)
+        )
+        ranked.append((score, str(row["relative_path"]), row, matched, matched_tags, tags))
+    eligible = [item for item in ranked if item[4]] if required_tags else ranked
+    if not eligible:
+        eligible = ranked
+    selected = sorted(eligible, key=lambda item: (-item[0], item[1]))[:limit]
+    candidates = []
+    for score, relative_path, row, matched, matched_tags, tags in selected:
+        candidates.append(
+            {
+                "reference_id": f"ref_{str(row['sha256'])[:24]}",
+                "relative_path": relative_path,
+                "materialized_path": row["materialized_path"],
+                "sha256": row["sha256"],
+                "rank": int(row["rank"]),
+                "retrieval_score": round(score, 9),
+                "matched_attributes": [name for name, value in matched.items() if value],
+                "matched_tags": matched_tags,
+                "attributes": {
+                    name: row[name]
+                    for name in (
+                        "person_count",
+                        "framing",
+                        "view",
+                        "pose",
+                        "content_state",
+                        "presentation",
+                        "body_type",
+                        "background",
+                        "lighting",
+                    )
+                },
+                "tags": sorted(tags),
+                "source_role": "unlabeled_reference_corpus",
+                "truth_authority": "none",
+                "training_eligible": False,
+                "use": "acquisition_context_only_requires_independent_certification",
+            }
+        )
+    return {
+        "schema_version": "1.0.0",
+        "query": dict(query),
+        "candidate_count": len(candidates),
+        "candidates": candidates,
+        "authority": {
+            "source_role": "unlabeled_reference_corpus",
+            "truth_authority": "none",
+            "training_eligible": False,
+            "selection_or_retrieval_creates_truth": False,
+        },
+    }
+
+
+def write_reference_acquisition_context(
+    database: Path,
+    *,
+    coverage_deficits: Iterable[Mapping[str, Any]],
+    failures: Iterable[Mapping[str, Any]],
+    output_path: Path,
+    limit_per_target: int = 5,
+) -> Path:
+    """Atomically attach retrieval-only examples to coverage and failure targets."""
+    targets = []
+    for index, deficit in enumerate(coverage_deficits):
+        query = {
+            "view": deficit.get("view"),
+            "pose": deficit.get("pose"),
+            "instance_context": deficit.get("instance_context"),
+            "deficit": deficit.get("deficit"),
+        }
+        targets.append(
+            {
+                "target_id": f"coverage_{index:03d}",
+                "target_type": "coverage_deficit",
+                "retrieval": retrieve_reference_candidates(database, query, limit=limit_per_target),
+            }
+        )
+    for index, failure in enumerate(failures):
+        query = {
+            "failed_body_part": failure.get("failed_body_part"),
+            "failure_reason": failure.get("failure_reason"),
+            "pose": failure.get("pose_angle"),
+        }
+        targets.append(
+            {
+                "target_id": f"failure_{index:03d}",
+                "target_type": "hard_case_failure",
+                "retrieval": retrieve_reference_candidates(database, query, limit=limit_per_target),
+            }
+        )
+    document = {
+        "schema_version": "1.0.0",
+        "database": str(database),
+        "target_count": len(targets),
+        "targets": targets,
+        "authority": {
+            "source_role": "unlabeled_reference_corpus",
+            "truth_authority": "none",
+            "training_eligible": False,
+            "independent_certification_required_for_any_truth": True,
+        },
+    }
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output_path.with_name(f".{output_path.name}.tmp-{os.getpid()}")
+    try:
+        temporary.write_text(
+            json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(temporary, output_path)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return output_path
+
+
 def validate_reference_selection(database: Path, policy: Mapping[str, Any]) -> dict[str, Any]:
     """Validate selection counts, tier disjointness, and materialized hashes."""
     validate_reference_library_policy(policy)
@@ -694,7 +894,9 @@ __all__ = [
     "load_reference_library_policy",
     "materialize_reference_tier",
     "reference_dhash64",
+    "retrieve_reference_candidates",
     "validate_benchmark_training_isolation",
     "validate_reference_library_policy",
     "validate_reference_selection",
+    "write_reference_acquisition_context",
 ]

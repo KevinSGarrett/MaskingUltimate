@@ -872,6 +872,12 @@ def manifest_lint(
     default=Path("configs/vlm.yaml"),
     show_default=True,
 )
+@click.option(
+    "--reference-database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
 def active_learning(
     failure_queue: Path,
     coverage_matrix: Path,
@@ -881,6 +887,7 @@ def active_learning(
     champion_certified_package_count: int,
     report_date: str | None,
     config_path: Path,
+    reference_database: Path,
 ) -> None:
     """Run the governed weekly failure-mining and QA-summary batch."""
     from .datasets.active_learning import run_active_learning
@@ -904,6 +911,7 @@ def active_learning(
             report_date=report_date,
             packages_root=packages_root,
             vlm_config_path=config_path,
+            reference_database=reference_database,
         )
     except (FailureMiningError, OSError, ValueError, TextLlmError, VlmClientError) as exc:
         raise click.ClickException(str(exc)) from exc

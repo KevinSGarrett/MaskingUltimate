@@ -1,4 +1,5 @@
 import hashlib
+import json
 import sqlite3
 from pathlib import Path
 
@@ -11,9 +12,11 @@ from maskfactory.reference_library import (
     inspect_reference_selection,
     load_reference_library_policy,
     materialize_reference_tier,
+    retrieve_reference_candidates,
     validate_benchmark_training_isolation,
     validate_reference_library_policy,
     validate_reference_selection,
+    write_reference_acquisition_context,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,14 +30,18 @@ def _database(tmp_path: Path) -> Path:
         """
         CREATE TABLE images (
           relative_path TEXT PRIMARY KEY, sha256 TEXT, dhash64 TEXT,
-          size_bytes INTEGER DEFAULT 0
+          size_bytes INTEGER DEFAULT 0, quality_score REAL DEFAULT 0
         );
         CREATE TABLE exact_members (
           relative_path TEXT, is_representative INTEGER
         );
         CREATE TABLE visual_index (
           relative_path TEXT, status TEXT, tags_json TEXT DEFAULT '[]',
-          content_state TEXT DEFAULT 'clothed', person_count TEXT DEFAULT 'one'
+          content_state TEXT DEFAULT 'clothed', person_count TEXT DEFAULT 'one',
+          framing TEXT DEFAULT 'full_body', view TEXT DEFAULT 'front',
+          pose TEXT DEFAULT 'standing', presentation TEXT DEFAULT 'unclear',
+          body_type TEXT DEFAULT 'unclear', background TEXT DEFAULT 'plain_studio',
+          lighting TEXT DEFAULT 'even', difficulty_score REAL DEFAULT 0
         );
         CREATE TABLE selections (
           relative_path TEXT, tier TEXT, materialized_path TEXT,
@@ -383,3 +390,83 @@ def test_tier_materialization_is_bounded_hashed_resumable_and_capacity_safe(tmp_
     assert hold["processed_this_chunk"] == 0
     assert hold["capacity_hold"]["reason"] == "storage_below_soft_floor"
     assert not list((output_root / "retrieval_reference").rglob("*"))
+
+
+def test_retrieval_context_ranks_deficits_without_granting_truth(tmp_path: Path):
+    database = _database(tmp_path)
+    connection = sqlite3.connect(database)
+    connection.executemany(
+        "INSERT INTO images(relative_path,sha256,dhash64,quality_score) VALUES (?,?,?,?)",
+        [
+            ("matching.jpg", "a" * 64, "1", 0.9),
+            ("other.jpg", "b" * 64, "2", 0.8),
+        ],
+    )
+    connection.executemany(
+        "INSERT INTO visual_index(relative_path,status,tags_json,person_count,view,pose,"
+        "difficulty_score) VALUES (?,?,?,?,?,?,?)",
+        [
+            (
+                "matching.jpg",
+                "valid",
+                '["part_hand_fingers"]',
+                "two",
+                "profile",
+                "sitting",
+                0.9,
+            ),
+            ("other.jpg", "valid", "[]", "one", "front", "standing", 0.1),
+        ],
+    )
+    connection.executemany(
+        "INSERT INTO selections(relative_path,tier,rank,selection_score) VALUES (?,?,?,?)",
+        [
+            ("matching.jpg", "retrieval_reference", 1, 0.8),
+            ("other.jpg", "retrieval_reference", 2, 0.7),
+        ],
+    )
+    connection.commit()
+    connection.close()
+    query = {
+        "view": "left_profile",
+        "pose": "seated_or_crouched",
+        "instance_context": "duo",
+        "failed_body_part": "left_hand",
+    }
+    report = retrieve_reference_candidates(database, query, limit=2)
+    assert report["candidates"][0]["relative_path"] == "matching.jpg"
+    assert report["candidates"][0]["matched_attributes"] == [
+        "view",
+        "pose",
+        "instance_context",
+    ]
+    assert report["candidates"][0]["truth_authority"] == "none"
+    assert report["candidates"][0]["training_eligible"] is False
+    output = tmp_path / "reference_context.json"
+    first = write_reference_acquisition_context(
+        database,
+        coverage_deficits=(query,),
+        failures=(
+            {
+                "failed_body_part": "left_hand",
+                "failure_reason": "finger_merge",
+                "pose_angle": "seated_or_crouched",
+            },
+        ),
+        output_path=output,
+        limit_per_target=1,
+    ).read_bytes()
+    second = write_reference_acquisition_context(
+        database,
+        coverage_deficits=(query,),
+        failures=(),
+        output_path=tmp_path / "second.json",
+        limit_per_target=1,
+    )
+    assert json.loads(first)["authority"]["truth_authority"] == "none"
+    assert (
+        json.loads(second.read_text(encoding="utf-8"))["targets"][0]["retrieval"]["candidates"][0][
+            "relative_path"
+        ]
+        == "matching.jpg"
+    )

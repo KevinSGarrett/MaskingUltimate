@@ -16302,13 +16302,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 65,
+      "notes": [
+        {
+          "ts": "2026-07-16T15:36:27+00:00",
+          "actor": "codex",
+          "text": "Implemented procedural camera resolution with namespaced SHA-256 plus qualified light/environment/prop selection and closed safety descriptors. Geometry-dependent framing, collision, support, and occlusion checks remain with MF-P9-06.08 and live render evidence."
+        }
+      ],
+      "evidence": "Closed deterministic image-formation selector covers eight azimuth bins, six elevation bins, four roll bins, seven focal families, 12 framing profiles, seven aspect ratios, five resolution profiles, three beauty DOF modes, all 22 lighting profiles, seven exposure profiles, 21 environment subfamilies, four context complexities, and all four prop modes. Only runtime-qualified, compatible assets are selectable; environment restrictions, mutation prohibitions, stable prop object IDs/anchors, annotation-effect-off rules, camera/asset readback, projected bbox/prominence, and prop preflight are mandatory. 117/117 focused and 2,059/2,059 full repository tests pass. Evidence: qa/reports/daz_scene_formation_selection_20260716.json. Completion is withheld until live DAZ readback, accepted RGB/annotation passes, framing/prominence validation, and prop/contact geometry exist.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T15:36:27+00:00",
       "orphaned": false
     },
     "MF-P9-06.08": {

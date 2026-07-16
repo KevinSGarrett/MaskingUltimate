@@ -6247,3 +6247,24 @@ Live boundary:                        fixture descriptors are not live DAZ autho
 Capacity:                             F is soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
 Verification:                         143 combined scene-planning tests and the complete 1,942/1,942 repository suite pass; Ruff, Black, tracker validation, and JSON schema validation pass
 Evidence:                             `qa/reports/daz_solo_pose_selection_20260716.json`
+
+## 2026-07-16 15:35 UTC - Camera, lighting, environment, and prop formation selection implemented
+
+**Result:** MF-P9-06.07 now has a closed qualified image-formation planning implementation and remains
+partial until live DAZ readback, renders, framing/prominence checks, and prop geometry pass.
+
+Camera taxonomy:                      eight azimuth bins, six elevation bins, four roll bins, seven focal families, 12 framing profiles, seven aspect ratios, five resolution profiles, and three beauty DOF modes
+Continuous sampling:                 azimuth/elevation/roll/focal/orthographic-scale values derive from namespaced SHA-256 and remain inside the requested closed bin; registry order cannot affect them
+Framing contract:                    multi-person framing requires 2-4 people, solo framing requires one, orthographic is limited to full-body mapping diagnostics, and projected bbox/prominence/final readback remain mandatory
+Pass alignment:                      annotation DOF and motion blur stay off; crop/resolution are exact and shared; pristine lens distortion is none until derived-transform policy runs
+Lighting/exposure:                    22 studio/environment lighting profiles and seven exposure/contrast profiles are explicit; only qualified matching-facet assets can be selected
+Environment coverage:                all 21 controlled/indoor/outdoor subfamilies and four complexity levels are selectable through qualified descriptors
+Environment safety:                  every descriptor must certify no person reflections, duplicate transparent silhouettes, undeclared people media, ambiguous volumetrics, nonreplayable motion, loaded human figures, or unbounded scale
+Preset isolation:                    renderer, dimensions, camera, and output-path mutation declarations are prohibited
+Props:                               none/support/handheld/occluder modes are explicit; selected props require stable object IDs, exact object roles, and named placement anchors; geometry preflight is mandatory downstream
+Publication/CLI:                      `daz recipes select-formation` recomputes graph/pool/foundation/policy/descriptor hashes and publishes immutable content-addressed evidence
+Fixture proof:                       all discrete formation axes pass 117/117 focused tests; missing restriction, forbidden mutation, bad prop identity, framing/person-count, orthographic-scope, unqualified, and tamper cases refuse
+Live boundary:                        no live camera/light/environment/prop selection, RGB/annotation pass, prominence result, reflection scan, or contact/occlusion geometry is claimed
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
+Verification:                         the complete 2,059/2,059 repository suite passes; Ruff, Black, tracker validation, and JSON schema validation pass
+Evidence:                             `qa/reports/daz_scene_formation_selection_20260716.json`

@@ -4045,6 +4045,137 @@ def daz_recipes_select_solo_pose(
     )
 
 
+@daz_recipes.command("select-formation")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--descriptor-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--person-count", type=click.IntRange(min=1, max=4), required=True)
+@click.option("--azimuth-bin", required=True)
+@click.option("--elevation-bin", required=True)
+@click.option("--roll-bin", required=True)
+@click.option("--focal-family", required=True)
+@click.option("--framing-profile", required=True)
+@click.option("--aspect-ratio", required=True)
+@click.option("--resolution-profile", required=True)
+@click.option("--depth-of-field-mode", required=True)
+@click.option("--lighting-profile", required=True)
+@click.option("--exposure-profile", required=True)
+@click.option("--environment-family", required=True)
+@click.option("--environment-subfamily", required=True)
+@click.option("--context-complexity", required=True)
+@click.option("--prop-mode", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/scene_formation_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\formation"),
+    show_default=True,
+)
+def daz_recipes_select_formation(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    descriptor_registry: Path,
+    selection_seed: int,
+    person_count: int,
+    azimuth_bin: str,
+    elevation_bin: str,
+    roll_bin: str,
+    focal_family: str,
+    framing_profile: str,
+    aspect_ratio: str,
+    resolution_profile: str,
+    depth_of_field_mode: str,
+    lighting_profile: str,
+    exposure_profile: str,
+    environment_family: str,
+    environment_subfamily: str,
+    context_complexity: str,
+    prop_mode: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Resolve a procedural camera and qualified light/environment/prop assets."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneFormationSelectionError,
+        load_scene_formation_policy,
+        publish_scene_formation_selection,
+        select_scene_formation,
+    )
+
+    try:
+        selection = select_scene_formation(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            json.loads(descriptor_registry.read_text(encoding="utf-8")),
+            load_scene_formation_policy(policy),
+            selection_seed=selection_seed,
+            person_count=person_count,
+            azimuth_bin=azimuth_bin,
+            elevation_bin=elevation_bin,
+            roll_bin=roll_bin,
+            focal_family=focal_family,
+            framing_profile=framing_profile,
+            aspect_ratio=aspect_ratio,
+            resolution_profile=resolution_profile,
+            depth_of_field_mode=depth_of_field_mode,
+            lighting_profile=lighting_profile,
+            exposure_profile=exposure_profile,
+            environment_family=environment_family,
+            environment_subfamily=environment_subfamily,
+            context_complexity=context_complexity,
+            prop_mode=prop_mode,
+        )
+        target, published = publish_scene_formation_selection(selection, output)
+    except (SceneFormationSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneFormationSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_formation_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

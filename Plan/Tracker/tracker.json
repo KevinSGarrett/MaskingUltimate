@@ -15308,13 +15308,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-16T04:08:00+00:00",
+          "actor": "ai_agent",
+          "text": "Named-instance command/profile is implemented; final live application enumeration requires a clean no-render probe after the pre-existing default DAZ process exits."
+        }
+      ],
+      "evidence": "Closed MaskFactoryDAZ hidden-GUI profile exported to F:\\DAZ\\04_runtime\\app_profiles\\MaskFactoryDAZ\\profile.json (SHA-256 397b8f92b0314a3c30f6e219c2201cef4efc998339aad35f8c6f0dd97a76dacb); live probe withheld because unmanaged/default DAZ PID 50884 was already running.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:00+00:00",
       "orphaned": false
     },
     "MF-P9-03.03": {
@@ -15329,13 +15335,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-16T04:08:01+00:00",
+          "actor": "ai_agent",
+          "text": "Render/job/log paths are closed in configs/daz/runtime.yaml and daz_runtime.schema.json; live content manager enumeration is not yet claimed."
+        }
+      ],
+      "evidence": "Closed runtime profile and worker script register only F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library and MaskFactory_User_Library; exported profile enumerates both. Live DAZ enumeration remains pending with D2-02 probe.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.04": {
@@ -15350,13 +15362,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 75,
+      "notes": [
+        {
+          "ts": "2026-07-16T04:08:01+00:00",
+          "actor": "ai_agent",
+          "text": "No DAZ process was launched because unmanaged/default PID 50884 was detected; existing process was not touched."
+        }
+      ],
+      "evidence": "Launcher tests prove -noDefaultScene/-noPrompt and hidden process flags; bundle refuses prompts or any non-empty startup scene. Live clean-start capture remains pending with D2-02 probe.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.05": {
@@ -15371,13 +15389,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "Versioned bundle deployed immutably at F:\\DAZ\\04_runtime\\scripts\\versions\\1.0.0; manifest SHA-256 0ddd669a14ce5c624cc6b2d511cfb8389a29092a35831b1b2b571e172b35de3e; replay reported deployed=false with matching hashes.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.06": {
@@ -15392,13 +15410,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "src/maskfactory/daz/protocol.py plus closed daz_scene_recipe/daz_worker_result schemas; tests prove atomic recipe publish, immutable replay, partial-result refusal, identity binding, artifact authority/hash checks, and tamper refusal.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.07": {
@@ -15413,13 +15431,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "src/maskfactory/daz/worker.py launches without shell, hides process, captures logs, detects dialogs without input, terminates process trees on dialog/timeout, quarantines metadata, and refuses unmanaged DAZ; failure-injection tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.08": {
@@ -15434,13 +15452,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "DAZ render launcher reuses MaskFactory runs/gpu.lock via GpuLock; contention test proves the DAZ process is never launched while another owner holds the lease; disabled control state and 150 GiB floor also fail closed.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T04:08:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.09": {

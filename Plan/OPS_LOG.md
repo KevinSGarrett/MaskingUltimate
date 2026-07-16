@@ -5860,3 +5860,20 @@ Verification:                       15/15 focused source/control tests and compl
 Runtime preservation:              no DAZ launch/render, WSL/Docker restart, VHD operation, elevation, UAC action, purchase, account mutation, reference-indexer stop, or acquisition-worker stop occurred
 Rollback:                           leave `runtime_state.json` disabled; repository rollback removes code/config/schema additions; live queue DB and registries are passive metadata and are not MaskFactory serving authority
 Evidence:                           `qa/reports/daz_control_plane_20260716.json`
+
+## 2026-07-16 04:04 UTC - DAZ named runtime and fail-closed worker safeguards deployed
+
+**Result:** MF-P9-03.05 through MF-P9-03.08 are complete; MF-P9-03.02 through
+MF-P9-03.04 are 75% complete pending a clean no-render runtime probe.
+
+Named profile:                       closed `MaskFactoryDAZ` hidden-GUI/process-per-job profile exports the exact `-instanceName MaskFactoryDAZ -noDefaultScene -noPrompt -logSize 100m` contract and prohibits startup actions, persistent workers, UI clicks, automatic install/purchase, and automatic login
+Dedicated paths:                     only `F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library` and `MaskFactory_User_Library` are mapped; all runtime/job/log/control paths are closed under registered `F:\DAZ` authority
+Script deployment:                   immutable version `1.0.0` deployed at `F:\DAZ\04_runtime\scripts\versions\1.0.0`; manifest SHA-256 `0ddd669a14ce5c624cc6b2d511cfb8389a29092a35831b1b2b571e172b35de3e`; replay matched without overwrite
+File protocol:                       job-private recipes publish atomically; terminal result is written last; partial results are never accepted; job/recipe/bundle identities and every output path, byte count, and SHA-256 are verified before acceptance
+Launcher/watchdog:                   no shell; hidden process; captured log; bounded operation timeouts; any dialog records metadata, receives no input, terminates the process tree, and quarantines the job; unmanaged or parallel DAZ processes fail before launch
+GPU/control gates:                   DAZ renders reuse MaskFactory's token-checked `runs/gpu.lock`; render launch additionally requires enabled/not-paused/not-draining control state and at least 150 GiB free
+Failure injection:                   immutable-bundle drift, partial result, artifact tamper, path escape, live GPU contention, unmanaged DAZ, disabled control state, dialog, and timeout cases all fail closed
+Live boundary:                       default/unmanaged DAZStudio PID `50884` (started 22:16 local with no instance flags) was already running; the new launcher detected it and refused a second process; it was not stopped or modified, and no probe/render was launched
+Capacity:                            138.935 GiB free remains below the 150-GiB soft floor; generation stays disabled/paused/draining
+Verification:                        32/32 focused DAZ/runtime/GPU tests and the complete 1,710-test repository pass; repository Ruff plus changed-file Ruff format pass
+Evidence:                            `qa/reports/daz_runtime_worker_20260716.json`; exported profile SHA-256 `397b8f92b0314a3c30f6e219c2201cef4efc998339aad35f8c6f0dd97a76dacb`

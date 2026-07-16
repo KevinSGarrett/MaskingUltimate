@@ -4815,6 +4815,174 @@ def daz_recipes_validate_instance_pass(
         raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
 
 
+@daz_recipes.command("plan-part-pass")
+@click.option(
+    "--resolved-state", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--ontology-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--mapping-binding", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--expected-ids", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/part_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\part_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_part_pass(
+    resolved_state: Path,
+    pass_plan: Path,
+    ontology_snapshot: Path,
+    mapping_binding: Path,
+    expected_ids: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal an exact canonical-ontology PART pass contract."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PartPassContractError,
+        build_part_pass_contract,
+        load_part_pass_policy,
+        publish_part_pass_document,
+    )
+
+    try:
+        document = build_part_pass_contract(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(ontology_snapshot.read_text(encoding="utf-8")),
+            json.loads(mapping_binding.read_text(encoding="utf-8")),
+            json.loads(expected_ids.read_text(encoding="utf-8")),
+            load_part_pass_policy(policy),
+        )
+        target, published = publish_part_pass_document(document, output)
+    except (PartPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PartPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_part_pass_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "active_id_count": len(document["active_part_ids"]),
+                    "expected_id_count": len(document["expected_visible_part_ids"]),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-part-pass")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/part_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\part_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_part_pass(
+    contract: Path,
+    execution: Path,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Decode and validate exact canonical PART and instance coverage."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PartPassContractError,
+        evaluate_part_pass,
+        load_part_pass_policy,
+        publish_part_pass_document,
+    )
+
+    try:
+        document = evaluate_part_pass(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            part_image,
+            instance_image,
+            load_part_pass_policy(policy),
+        )
+        target, published = publish_part_pass_document(document, output)
+    except (PartPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PartPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_part_pass_valid" if document["summary"]["passed"] else "daz_part_pass_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "observed_ids": document["observed_ids"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

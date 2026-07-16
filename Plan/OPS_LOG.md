@@ -6367,3 +6367,21 @@ Live boundary:                        no generated uint16 fixture is relabeled a
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
 Verification:                         the complete 2,259/2,259 repository suite passes; Ruff, Black across 474 files, and Git diff checks pass
 Evidence:                             `qa/reports/daz_instance_pass_20260716.json`
+
+## 2026-07-16 18:27 UTC - Canonical-ontology exact PART pass validation implemented
+
+**Result:** MF-P9-07.04 now has an exact canonical v1 PART contract and all-active-ID validation; it
+remains partial until the Genesis 9 facet mapping and a qualified live DAZ PART render exist.
+
+Ontology authority:                   consumes the already frozen `body_parts_v1` snapshot from the canonical MaskFactory loader; no DAZ-local handwritten label list exists
+Version isolation:                    v1 is the only active synthetic PART ontology; v2 remains explicitly inactive and cannot enter this contract before its separate activation/mapping work
+Active IDs:                           enabled state is read from the snapshot: IDs 0–53 active, IDs 54–55 disabled; the all-active fixture emits and verifies every active ID
+Mapping gate:                         requires an approved content-addressed mapping bound to exact ontology snapshot, mapping-set, topology-mapping, and active-ID hashes; fixture bindings are not relabeled as a live G9 mapping
+Pixel invariants:                     every visible instance pixel has one nonbackground PART and every nonbackground PART has an instance; inactive, disabled, arbitrary, empty-expected, and unaligned pixels reject
+Freeze/replay:                        before/sidecar/after/restore/terminal scene hashes, plan/contract/mapping/ontology sidecars, instance file hash, and repeated PART file hash must agree exactly
+Publication/CLI:                      `plan-part-pass` and `validate-part-pass` publish immutable idempotent records and return nonzero on findings
+Fixture proof:                       48 focused cases cover all active IDs, disabled/unknown IDs, mapping and policy drift, instance/PART complement failures, all forbidden effects, every mutation point, sidecars, interruption, replay, and publication conflict
+Live boundary:                        no generated uint16 fixture is claimed as live DAZ output, live topology mapping, or v2 authority
+Capacity:                             F declined externally to 138,308,620,288 bytes / 128.810 GiB free during verification; soft hold remains; this task started no F/DAZ acquisition or render work
+Verification:                         the complete 2,307/2,307 repository suite passes; Ruff, Black across 476 files, and Git diff checks pass
+Evidence:                             `qa/reports/daz_part_pass_20260716.json`

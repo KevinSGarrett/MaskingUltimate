@@ -17794,19 +17794,24 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 50,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-16T03:11:11+00:00",
           "actor": "codex",
           "text": "Selection validator enforces zero path/SHA overlap and policy declares near-duplicate isolation; builder/preflight integration and selected-tier near-duplicate proof await completed indexing/selection."
+        },
+        {
+          "ts": "2026-07-16T09:35:31+00:00",
+          "actor": "ai_agent",
+          "text": "The conservative dHash-only veto is intentionally a superset of the reference near-duplicate rule: embedding confirmation is not required to reject possible benchmark leakage."
         }
       ],
-      "evidence": null,
+      "evidence": "Canonical dataset build now requires the frozen reference database, computes the exact reference 9x8 bilinear dHash for every train/val/calibration/holdout source, and blocks normalized-path, SHA-256, or conservative dHash-Hamming<=3 overlap before creating the dataset destination. Missing identity/partition fails closed. Accepted builds bind the exact 2,500-row benchmark fingerprint c577bbd85760705fd48d86d7668f2a4190832436cfae150afe7049258eb1635e; the training launcher independently refuses absent/failed/drifted receipts. 34 focused and 1,758 full tests pass. Evidence: qa/reports/reference_benchmark_isolation_gate_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:11+00:00",
+      "updated_at": "2026-07-16T09:35:31+00:00",
       "orphaned": false
     },
     "MF-P9-14.08": {

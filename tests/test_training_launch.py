@@ -39,6 +39,14 @@ def _dataset(tmp_path: Path, *, count: int = 200) -> Path:
         "protected_anchor_ids": "protected_anchor_ids.txt",
         "reader_capabilities": serialized_reader_capabilities(),
         "truth_metrics": {"certified_training_package_count": count},
+        "reference_benchmark_isolation": {
+            "schema_version": "1.0.0",
+            "passed": True,
+            "benchmark_count": 2500,
+            "benchmark_fingerprint": "f" * 64,
+            "record_count": count,
+            "issues": [],
+        },
     }
     (root / "build_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     (root / "sample_weights.json").write_text(
@@ -129,6 +137,27 @@ def test_training_authority_rejects_calibration_leak_and_pseudo_volume(tmp_path:
     (root / "sample_weights.json").write_text(json.dumps(weights), encoding="utf-8")
     (root / "build_manifest.json").write_text(json.dumps(build), encoding="utf-8")
     assert validate_training_dataset_authority(root) == 199
+
+
+def test_training_authority_rejects_missing_or_failed_reference_isolation(tmp_path: Path) -> None:
+    root = _dataset(tmp_path)
+    build_path = root / "build_manifest.json"
+    build = json.loads(build_path.read_text(encoding="utf-8"))
+    build.pop("reference_benchmark_isolation")
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    with pytest.raises(TrainingLaunchError, match="reference-benchmark isolation"):
+        validate_training_dataset_authority(root)
+
+    build["reference_benchmark_isolation"] = {
+        "passed": False,
+        "benchmark_count": 2500,
+        "benchmark_fingerprint": "f" * 64,
+        "record_count": 200,
+        "issues": ["perceptual_overlap:0:0000000000000000"],
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    with pytest.raises(TrainingLaunchError, match="reference-benchmark isolation"):
+        validate_training_dataset_authority(root)
 
 
 def test_launcher_independently_enforces_daz_train_only_weight_and_thirty_percent_cap(

@@ -17,6 +17,7 @@ import yaml
 from PIL import Image
 
 from ..daz.policy import validate_synthetic_authority, validate_synthetic_share
+from ..io.hashing import sha256_file
 from ..io.png_strict import write_label_map
 from ..ontology import Ontology, get_ontology, load_ontology
 from ..ontology_v2 import DEFAULT_ONTOLOGY_V2
@@ -25,6 +26,10 @@ from ..ontology_v2_manifest import (
     require_v2_supervision_eligible,
 )
 from ..packager import verify_packages
+from ..reference_library import (
+    evaluate_benchmark_training_isolation,
+    reference_dhash64,
+)
 from ..review_package import update_package_workflow_status
 from ..state import transition_image_status, writer_connection
 from ..truth_tiers import (
@@ -64,12 +69,16 @@ def build_dataset(
     packages_root: Path,
     output_root: Path,
     version: int,
+    reference_database: Path,
     hard_case_file: Path | None = None,
     ontology_version: str | None = None,
 ) -> Path:
     """Export truth-tiered supervision with strict train/calibration/holdout isolation."""
     if version < 1:
         raise ValueError("dataset version must be positive")
+    reference_database = Path(reference_database)
+    if not reference_database.is_file():
+        raise ValueError("dataset build requires the frozen reference benchmark database")
     policy = _truth_tier_policy()
     packages = _approved_packages(Path(packages_root), ontology_version=ontology_version)
     if not packages:
@@ -110,6 +119,29 @@ def build_dataset(
         truth_by_package,
         hard_case_ids=hard_ids,
     )
+    reference_isolation_records = []
+    for image_id, entries in sorted(by_image.items()):
+        package, manifest = sorted(entries, key=lambda item: item[0].name)[0]
+        source = manifest["source"]
+        reference_isolation_records.append(
+            {
+                "image_id": image_id,
+                "relative_path": source.get("source_file", f"{image_id}/source.png"),
+                "source_sha256": source.get("source_sha256", sha256_file(package / "source.png")),
+                "dhash64": reference_dhash64(package / "source.png"),
+                "partition": splits[image_id],
+            }
+        )
+    reference_isolation = evaluate_benchmark_training_isolation(
+        reference_database,
+        reference_isolation_records,
+        expected_benchmark_count=2500,
+    )
+    if not reference_isolation["passed"]:
+        raise ValueError(
+            "dataset source overlaps or cannot be compared with the frozen reference benchmark: "
+            + "; ".join(reference_isolation["issues"][:10])
+        )
     destination = Path(output_root) / f"bodyparts@v{version}"
     if destination.exists():
         raise FileExistsError(f"dataset version already exists: {destination}")
@@ -340,6 +372,7 @@ def build_dataset(
                 "truth_metrics": truth_metrics,
                 "synthetic_metrics": synthetic_metrics,
                 "certified_volume_gates": volume_gates,
+                "reference_benchmark_isolation": reference_isolation,
                 "sample_weights": "sample_weights.json",
                 "source_packages": [
                     package.relative_to(Path(packages_root)).as_posix() for package in packages

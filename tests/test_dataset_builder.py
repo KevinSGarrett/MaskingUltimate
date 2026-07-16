@@ -27,6 +27,31 @@ from maskfactory.io.png_strict import write_label_map
 from maskfactory.state import initialize_database, reader_connection, writer_connection
 
 
+def _reference_gate(tmp_path: Path, monkeypatch) -> Path:
+    database = tmp_path / "reference.sqlite"
+    database.touch()
+
+    def evaluate(_database, records, *, expected_benchmark_count=None):
+        materialized = tuple(records)
+        return {
+            "schema_version": "1.0.0",
+            "database": str(database),
+            "benchmark_count": expected_benchmark_count,
+            "benchmark_fingerprint": "f" * 64,
+            "record_count": len(materialized),
+            "partition_counts": {},
+            "dhash_hamming_threshold": 3,
+            "conservative_near_duplicate_rule": "fixture",
+            "issues": [],
+            "passed": True,
+        }
+
+    monkeypatch.setattr(
+        "maskfactory.datasets.builder.evaluate_benchmark_training_isolation", evaluate
+    )
+    return database
+
+
 def test_hash_split_duplicate_groups_synthetic_and_hard_override() -> None:
     records = (
         SplitRecord("img_000000000001", "0000000000000000", "owned_photo"),
@@ -90,16 +115,19 @@ def test_builder_keeps_instances_together_isolates_holdout_and_rebuilds_identica
         "maskfactory.datasets.builder.verify_packages",
         lambda package: (SimpleNamespace(passed=True),),
     )
+    reference = _reference_gate(tmp_path, monkeypatch)
     first = build_dataset(
         packages_root=packages,
         output_root=tmp_path / "first",
         version=1,
+        reference_database=reference,
         hard_case_file=hard,
     )
     second = build_dataset(
         packages_root=packages,
         output_root=tmp_path / "second",
         version=1,
+        reference_database=reference,
         hard_case_file=hard,
     )
     manifest = json.loads((first / "build_manifest.json").read_text())
@@ -136,6 +164,23 @@ def test_builder_keeps_instances_together_isolates_holdout_and_rebuilds_identica
     card = (first / "dataset_card.md").read_text(encoding="utf-8")
     assert "## Coverage cells" in card
     assert "small_group" in card and "Synthetic ratio" in card
+
+    monkeypatch.setattr(
+        "maskfactory.datasets.builder.evaluate_benchmark_training_isolation",
+        lambda *_args, **_kwargs: {
+            "passed": False,
+            "issues": ["perceptual_overlap:0:0000000000000000"],
+        },
+    )
+    with pytest.raises(ValueError, match="overlaps.*frozen reference benchmark"):
+        build_dataset(
+            packages_root=packages,
+            output_root=tmp_path / "blocked",
+            version=1,
+            reference_database=reference,
+            hard_case_file=hard,
+        )
+    assert not (tmp_path / "blocked/bodyparts@v1").exists()
 
 
 def test_mark_dataset_exported_synchronizes_packages_and_sqlite(
@@ -284,6 +329,8 @@ def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
         return next(dvc_results)
 
     monkeypatch.setattr("maskfactory.dvc_runtime.run_dvc", failed_dvc)
+    reference = tmp_path / "reference.sqlite"
+    reference.touch()
     args = [
         "dataset",
         "build",
@@ -293,6 +340,8 @@ def test_dataset_cli_marks_exported_only_after_successful_dvc_push(
         str(tmp_path / "datasets"),
         "--database",
         str(tmp_path / "state.sqlite"),
+        "--reference-database",
+        str(reference),
     ]
     failed = CliRunner().invoke(main, args)
     assert failed.exit_code != 0 and "seeded push failure" in failed.output
@@ -345,8 +394,14 @@ def test_builder_preflight_rejects_one_invalid_gold_package(
         "maskfactory.datasets.builder.verify_packages",
         lambda _package: (SimpleNamespace(passed=False),),
     )
+    reference = _reference_gate(tmp_path, monkeypatch)
     with pytest.raises(ValueError, match="verification failed"):
-        build_dataset(packages_root=packages, output_root=tmp_path / "output", version=1)
+        build_dataset(
+            packages_root=packages,
+            output_root=tmp_path / "output",
+            version=1,
+            reference_database=reference,
+        )
     assert not (tmp_path / "output/bodyparts@v1").exists()
 
 
@@ -382,7 +437,12 @@ def test_builder_burns_ambiguous_part_regions_to_ignore_in_both_training_maps(
         "maskfactory.datasets.builder.verify_packages",
         lambda _package: (SimpleNamespace(passed=True),),
     )
-    output = build_dataset(packages_root=packages, output_root=tmp_path / "out", version=1)
+    output = build_dataset(
+        packages_root=packages,
+        output_root=tmp_path / "out",
+        version=1,
+        reference_database=_reference_gate(tmp_path, monkeypatch),
+    )
     sample_id = "img_000000000005_p0"
     exported_part = np.asarray(Image.open(output / f"part_seg/annotations/{sample_id}.png"))
     exported_material = np.asarray(Image.open(output / f"material_seg/annotations/{sample_id}.png"))
@@ -493,11 +553,13 @@ def test_builder_enforces_truth_tier_weights_volume_and_holdout_isolation(
         "maskfactory.datasets.builder.verify_packages",
         lambda _package: (SimpleNamespace(passed=True),),
     )
+    reference = _reference_gate(tmp_path, monkeypatch)
 
     output = build_dataset(
         packages_root=packages,
         output_root=tmp_path / "out",
         version=1,
+        reference_database=reference,
         hard_case_file=hard,
     )
     build = json.loads((output / "build_manifest.json").read_text(encoding="utf-8"))

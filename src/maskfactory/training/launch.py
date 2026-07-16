@@ -69,6 +69,17 @@ def validate_training_dataset_authority(dataset_root: Path) -> int:
         raise TrainingLaunchError("training dataset authority files are unreadable") from exc
     if build.get("schema_version") != "2.0.0" or weights.get("schema_version") != "2.0.0":
         raise TrainingLaunchError("training requires dataset truth authority schema 2.0.0")
+    reference_isolation = build.get("reference_benchmark_isolation")
+    if (
+        not isinstance(reference_isolation, dict)
+        or reference_isolation.get("passed") is not True
+        or reference_isolation.get("benchmark_count") != 2500
+        or reference_isolation.get("issues") != []
+        or not isinstance(reference_isolation.get("benchmark_fingerprint"), str)
+        or len(reference_isolation["benchmark_fingerprint"]) != 64
+        or int(reference_isolation.get("record_count", 0)) < 1
+    ):
+        raise TrainingLaunchError("training dataset lacks frozen reference-benchmark isolation")
     expected_capabilities = serialized_reader_capabilities()
     if build.get("reader_capabilities") != expected_capabilities:
         raise TrainingLaunchError("dataset reader capability partition contract drifted")

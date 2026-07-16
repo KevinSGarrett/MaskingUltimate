@@ -6,6 +6,7 @@ import pytest
 
 from maskfactory.reference_library import (
     ReferenceLibraryError,
+    evaluate_benchmark_training_isolation,
     inspect_reference_database,
     inspect_reference_selection,
     load_reference_library_policy,
@@ -133,8 +134,50 @@ def test_status_and_selection_validation_are_read_only_and_hash_checked(tmp_path
     }
     assert validate_benchmark_training_isolation(database, []) == ()
     assert validate_benchmark_training_isolation(
-        database, [{"source_sha256": sha_b, "dhash64": "f" * 16}]
+        database,
+        [
+            {
+                "relative_path": "training/a.jpg",
+                "source_sha256": sha_b,
+                "dhash64": "f" * 16,
+                "partition": "train",
+            }
+        ],
     ) == (f"exact_overlap:0:{sha_b}",)
+    near = evaluate_benchmark_training_isolation(
+        database,
+        [
+            {
+                "relative_path": "training/near.jpg",
+                "source_sha256": "f" * 64,
+                "dhash64": "0000000000000000",
+                "partition": "holdout",
+            }
+        ],
+        expected_benchmark_count=1,
+    )
+    assert near["passed"] is False
+    assert near["issues"] == ["perceptual_overlap:0:0000000000000000"]
+    incomplete = evaluate_benchmark_training_isolation(database, [{}], expected_benchmark_count=2)
+    assert {
+        "benchmark_count:1!=2",
+        "invalid_partition:0:None",
+        "missing_dhash64:0",
+        "missing_relative_path:0",
+        "missing_source_sha256:0",
+    } <= set(incomplete["issues"])
+    path_overlap = evaluate_benchmark_training_isolation(
+        database,
+        [
+            {
+                "relative_path": "A.JPG",
+                "source_sha256": "f" * 64,
+                "dhash64": "f" * 16,
+                "partition": "val",
+            }
+        ],
+    )
+    assert path_overlap["issues"] == ["path_overlap:0:A.JPG"]
 
 
 def test_selection_validator_detects_tier_sha_overlap(tmp_path: Path):

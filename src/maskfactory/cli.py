@@ -3473,6 +3473,12 @@ def dataset() -> None:
     default=Path("data/maskfactory.sqlite"),
     show_default=True,
 )
+@click.option(
+    "--reference-database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
 def dataset_build(
     name: str,
     ontology: str,
@@ -3480,6 +3486,7 @@ def dataset_build(
     output_root: Path,
     publish: bool,
     database: Path,
+    reference_database: Path,
 ) -> None:
     """S14: build the training dataset from gold packages."""
     from .datasets.builder import (
@@ -3525,6 +3532,7 @@ def dataset_build(
             packages_root=packages_root,
             output_root=output_root,
             version=plan.version,
+            reference_database=reference_database,
             hard_case_file=output_root / "hard_case_holdout.txt",
             ontology_version=ontology,
         )

@@ -221,6 +221,8 @@ def test_dataset_cli_accepts_explicit_v2_without_activation_or_publish(
         return kwargs["output_root"] / f"bodyparts@v{kwargs['version']}"
 
     monkeypatch.setattr("maskfactory.datasets.builder.build_dataset", fake_build_dataset)
+    reference = tmp_path / "reference.sqlite"
+    reference.touch()
     result = CliRunner().invoke(
         main,
         [
@@ -232,6 +234,8 @@ def test_dataset_cli_accepts_explicit_v2_without_activation_or_publish(
             str(tmp_path / "packages"),
             "--output-root",
             str(tmp_path / "datasets"),
+            "--reference-database",
+            str(reference),
             "--no-publish",
         ],
     )

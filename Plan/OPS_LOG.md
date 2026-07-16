@@ -5987,3 +5987,18 @@ Safe materialization:                checked-in tier-aware copier uses bounded r
 Recovered orchestrator issue:        the completed CUDA index was intact; only the legacy PowerShell inline probe failed from argument quoting, so no downstream stage had run and no data was lost
 Verification:                        seven focused reference tests and the complete 1,757/1,757 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_library_selection_20260716.json`
+
+## 2026-07-16 09:34 UTC - Frozen benchmark leakage gate enforced at build and launch
+
+**Result:** MF-P9-14.07 is complete; no dataset can be built or launched without proving
+zero path, exact-SHA, and conservative perceptual overlap against the exact 2,500-image benchmark.
+
+Frozen benchmark:                     exactly 2,500 rows, identity fingerprint `c577bbd8...`, selection fingerprint `70fe46a6...`
+Builder preflight:                    requires the reference database; computes the reference inventory's exact EXIF-aware 9x8 bilinear dHash for every source in train/val/calibration/all holdouts; blocks before destination creation
+Near-duplicate safety:                any dHash within Hamming distance 3 is rejected without requiring CLIP confirmation, making isolation conservative relative to the reference clustering rule
+Missing identity:                     absent/invalid partition, relative path, SHA-256, or dHash is itself a blocking issue; uncomparable sources cannot slip through as nonmatches
+Durable receipt:                      every accepted build records benchmark count/fingerprint, record/partition counts, rule, and empty issues under `reference_benchmark_isolation`
+Independent launcher:                training refuses a missing/failed receipt, non-2,500 benchmark count, nonempty issues, invalid fingerprint, or empty compared record set
+Authority:                           benchmark/retrieval references remain no-training/no-truth/no-gold sources; isolation does not promote them
+Verification:                        34 focused reference/builder/launcher tests and the complete 1,758/1,758 repository suite pass; Ruff and Black pass
+Evidence:                             `qa/reports/reference_benchmark_isolation_gate_20260716.json`

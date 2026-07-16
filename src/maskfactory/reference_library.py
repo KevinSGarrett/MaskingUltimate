@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
 import yaml
+from PIL import Image, ImageOps
 
 REFERENCE_TIERS = ("benchmark_reference", "retrieval_reference")
 
@@ -484,29 +485,108 @@ def validate_reference_selection(database: Path, policy: Mapping[str, Any]) -> d
 
 
 def validate_benchmark_training_isolation(
-    database: Path, training_records: Iterable[Mapping[str, Any]]
+    database: Path,
+    training_records: Iterable[Mapping[str, Any]],
+    *,
+    expected_benchmark_count: int | None = None,
 ) -> tuple[str, ...]:
-    """Reject exact or perceptual overlap between benchmark references and model data."""
+    """Return fail-closed benchmark leakage findings for every model-data partition."""
+    return tuple(
+        evaluate_benchmark_training_isolation(
+            database,
+            training_records,
+            expected_benchmark_count=expected_benchmark_count,
+        )["issues"]
+    )
+
+
+def evaluate_benchmark_training_isolation(
+    database: Path,
+    training_records: Iterable[Mapping[str, Any]],
+    *,
+    expected_benchmark_count: int | None = None,
+) -> dict[str, Any]:
+    """Reject path, SHA, or conservative dHash-near overlap with the benchmark."""
     connection = sqlite3.connect(f"file:{Path(database)}?mode=ro", uri=True, timeout=120)
     try:
         benchmark = connection.execute(
-            "SELECT i.sha256, i.dhash64 FROM selections s "
+            "SELECT i.relative_path,i.sha256,i.dhash64 FROM selections s "
             "JOIN images i ON i.relative_path=s.relative_path "
-            "WHERE s.tier='benchmark_reference'"
+            "WHERE s.tier='benchmark_reference' ORDER BY i.relative_path"
         ).fetchall()
     finally:
         connection.close()
-    benchmark_sha = {str(row[0]) for row in benchmark if row[0]}
-    benchmark_dhash = {str(row[1]) for row in benchmark if row[1]}
+    benchmark_paths = {_normalized_reference_path(str(row[0])) for row in benchmark if row[0]}
+    benchmark_sha = {str(row[1]).casefold() for row in benchmark if row[1]}
+    benchmark_dhash = tuple(_parse_dhash(str(row[2])) for row in benchmark if row[2])
+    benchmark_fingerprint = _rows_fingerprint(benchmark)
     issues: list[str] = []
-    for index, record in enumerate(training_records):
+    if expected_benchmark_count is not None and len(benchmark) != expected_benchmark_count:
+        issues.append(f"benchmark_count:{len(benchmark)}!={expected_benchmark_count}")
+    partition_counts: Counter[str] = Counter()
+    records = tuple(training_records)
+    allowed_partitions = {
+        "train",
+        "val",
+        "calibration",
+        "holdout",
+        "test_holdout",
+        "hard_case_holdout",
+    }
+    for index, record in enumerate(records):
+        partition = record.get("partition") or record.get("split")
+        if partition not in allowed_partitions:
+            issues.append(f"invalid_partition:{index}:{partition}")
+        else:
+            partition_counts[str(partition)] += 1
+        relative_path = record.get("relative_path") or record.get("source_file")
         source_sha = record.get("source_sha256")
-        dhash = record.get("dhash64") or record.get("phash64")
-        if source_sha and str(source_sha) in benchmark_sha:
+        dhash = record.get("dhash64")
+        if not isinstance(relative_path, str) or not relative_path:
+            issues.append(f"missing_relative_path:{index}")
+        elif _normalized_reference_path(relative_path) in benchmark_paths:
+            issues.append(f"path_overlap:{index}:{relative_path}")
+        if not isinstance(source_sha, str) or len(source_sha) != 64:
+            issues.append(f"missing_source_sha256:{index}")
+        elif str(source_sha).casefold() in benchmark_sha:
             issues.append(f"exact_overlap:{index}:{source_sha}")
-        if dhash and str(dhash) in benchmark_dhash:
+        if not isinstance(dhash, str):
+            issues.append(f"missing_dhash64:{index}")
+            continue
+        try:
+            parsed_dhash = _parse_dhash(dhash)
+        except ReferenceLibraryError:
+            issues.append(f"invalid_dhash64:{index}:{dhash}")
+            continue
+        if any((parsed_dhash ^ candidate).bit_count() <= 3 for candidate in benchmark_dhash):
             issues.append(f"perceptual_overlap:{index}:{dhash}")
-    return tuple(sorted(set(issues)))
+    unique_issues = sorted(set(issues))
+    return {
+        "schema_version": "1.0.0",
+        "database": str(database),
+        "benchmark_count": len(benchmark),
+        "benchmark_fingerprint": benchmark_fingerprint,
+        "record_count": len(records),
+        "partition_counts": dict(sorted(partition_counts.items())),
+        "dhash_hamming_threshold": 3,
+        "conservative_near_duplicate_rule": "dhash_hamming_lte_3_blocks_without_requiring_embedding_confirmation",
+        "issues": unique_issues,
+        "passed": not unique_issues,
+    }
+
+
+def reference_dhash64(path: Path) -> str:
+    """Compute the exact 9x8 bilinear dHash used by the reference inventory."""
+    with Image.open(Path(path)) as opened:
+        image = ImageOps.exif_transpose(opened.convert("RGB"))
+    grayscale = image.convert("L").resize((9, 8), Image.Resampling.BILINEAR)
+    pixels = grayscale.tobytes()
+    value = 0
+    for row in range(8):
+        offset = row * 9
+        for column in range(8):
+            value = (value << 1) | int(pixels[offset + column + 1] > pixels[offset + column])
+    return f"{value:016x}"
 
 
 def _table_names(connection: sqlite3.Connection) -> set[str]:
@@ -581,6 +661,22 @@ def _reference_materialized_relative_path(row: Mapping[str, Any], tier: str) -> 
     return Path(tier) / safe_category / name
 
 
+def _normalized_reference_path(value: str) -> str:
+    return value.replace("\\", "/").strip("/").casefold()
+
+
+def _parse_dhash(value: str) -> int:
+    if len(value) != 16:
+        raise ReferenceLibraryError("reference dHash must contain exactly 16 hexadecimal digits")
+    try:
+        parsed = int(value, 16)
+    except ValueError as exc:
+        raise ReferenceLibraryError("reference dHash is not hexadecimal") from exc
+    if not 0 <= parsed < 2**64:
+        raise ReferenceLibraryError("reference dHash is outside unsigned 64-bit range")
+    return parsed
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -592,10 +688,12 @@ def _sha256_file(path: Path) -> str:
 __all__ = [
     "REFERENCE_TIERS",
     "ReferenceLibraryError",
+    "evaluate_benchmark_training_isolation",
     "inspect_reference_database",
     "inspect_reference_selection",
     "load_reference_library_policy",
     "materialize_reference_tier",
+    "reference_dhash64",
     "validate_benchmark_training_isolation",
     "validate_reference_library_policy",
     "validate_reference_selection",

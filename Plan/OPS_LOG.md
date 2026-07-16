@@ -5894,3 +5894,20 @@ Snapshot:                            `dim_864f8e1b5cf5dbca7b60c7a7`, canonical S
 Concurrent boundary:                three DAZ Studio processes owned by other/default work were observed and left untouched; neither DIM configuration nor DSX scanning launches DAZ, and the MaskFactory worker continues to refuse any parallel live probe/render
 Verification:                        21/21 focused DIM/parser/control tests and the complete 1,725/1,725 repository suite pass; malformed XML, missing/duplicate identity, entity input, unknown-field redaction, traversal, execute/elevation, reinstall identity, duplicate package, immutable publication, credential preservation, live-DIM contention, and CLI errors are covered
 Evidence:                            `qa/reports/daz_dim_configuration_20260716.json`; `qa/reports/daz_dim_manifest_snapshot_20260716.json`; published file SHA-256 `d2d8c515807c1643529b90a2d6d28198f1e2e4ca5d0e4ed075e60250e693ee0b`
+
+## 2026-07-16 06:05 UTC - CMS/offline observation and autonomous-library reconciliation started
+
+**Result:** MF-P9-04.03 is 90% and MF-P9-04.04 is 70% complete; their fail-closed
+implementations and live partial observations pass, while final cross-source comparison and the
+portable deterministic filesystem snapshot remain honestly open during active acquisition.
+
+Authority separation:                 DIM's 23 packages are not treated as the total asset estate; DIM, autonomous acquisition manifests, local CMS, and registered-root filesystem observations remain separate until URI/hash reconciliation
+Live CMS:                            forced read-only local query observed 17 installed products and 4,677 installed content rows; snapshot `cms_e94a27f9cabb4d19fd8423f0` published without storing credentials
+Offline fallback:                   forced no-CMS execution published `cms_offline_b58d776345e759643d279621` and explicitly records missing product/category/compatibility/file-membership metadata
+Autonomous source:                  436 manifests captured in the resumable queue; 110 indexed, 326 pending, zero failed; new worker publications append to pending state and non-content/unregistered source roots remain explicit
+Filesystem progress:               state schema 2 has 115 completed directories, 162 pending, zero failed, 498 observed files / 327,635,435 bytes / 246 user-facing files, and zero followed or skipped reparse points
+Live-mutation safety:               every finished directory is mtime-rechecked before finalization; changed directories requeue, deleted children/subtrees reconcile, case collisions fail, and no portable snapshot can publish while pending/failed/drifted state remains
+Mutation boundary:                 no asset move, delete, redownload, duplicate resolution, CMS write, DAZ launch, worker pause/restart, install-lock acquisition, elevation, UAC, WSL, or Docker action occurred
+Comparison honesty:                interim missing/unmanifested counts are non-authoritative and withheld because both the acquisition index and filesystem scan are incomplete while eight workers continue adding assets
+Verification:                      35 focused CMS/filesystem/acquisition/DIM/control tests and the complete 1,739/1,739 repository suite pass; Ruff and schema validation pass
+Evidence:                          `qa/reports/daz_asset_observation_progress_20260716.json`; CMS snapshot file SHA-256 values `b7bb2d36...` online and `2db8ca03...` forced offline

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_cms_snapshot.schema.json",
+  "title": "DAZ CMS or declared offline fallback snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_kind",
+    "cms_available",
+    "metadata_gaps",
+    "snapshot_id",
+    "canonical_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "source_kind": {
+      "enum": ["online_local_cms_read_only", "offline_filesystem_fallback"]
+    },
+    "cms_available": { "type": "boolean" },
+    "snapshot_id": { "type": "string", "pattern": "^cms_(?:offline_)?[0-9a-f]{24}$" },
+    "canonical_sha256": { "$ref": "#/$defs/sha256" },
+    "metadata_gaps": { "type": "array", "items": { "type": "string" } },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "port", "database", "cluster_path_fingerprint", "credentials_stored"],
+      "properties": {
+        "host": { "const": "127.0.0.1" },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "database": { "const": "Content" },
+        "cluster_path_fingerprint": { "$ref": "#/$defs/sha256" },
+        "credentials_stored": { "const": false }
+      }
+    },
+    "content_roots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cms_root_id", "registered_root_id", "path_state", "path_fingerprint"],
+        "properties": {
+          "cms_root_id": { "type": "integer" },
+          "registered_root_id": { "type": ["string", "null"] },
+          "path_state": { "enum": ["registered", "unregistered"] },
+          "path_fingerprint": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "products": { "type": "array", "items": { "type": "object" } },
+    "contents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cms_content_id",
+          "cms_product_id",
+          "registered_root_id",
+          "relative_path",
+          "canonical_path",
+          "logical_uri",
+          "content_type_id",
+          "compatibility_base_id",
+          "user_facing"
+        ],
+        "properties": {
+          "cms_content_id": { "type": "integer" },
+          "cms_product_id": { "type": ["integer", "null"] },
+          "registered_root_id": { "type": ["string", "null"] },
+          "relative_path": { "type": "string", "minLength": 1 },
+          "canonical_path": { "type": "string", "minLength": 1 },
+          "logical_uri": { "type": "string", "pattern": "^/" },
+          "content_type_id": { "type": ["integer", "null"] },
+          "compatibility_base_id": { "type": ["integer", "null"] },
+          "user_facing": { "type": "boolean" }
+        }
+      }
+    },
+    "failure_reason_code": { "type": "string", "minLength": 1 },
+    "registered_roots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["root_id", "priority", "source_kind", "path_fingerprint"],
+        "properties": {
+          "root_id": { "type": "string" },
+          "priority": { "type": "integer" },
+          "source_kind": { "type": "string" },
+          "path_fingerprint": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "filesystem_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directory_states",
+        "file_count",
+        "byte_count",
+        "user_facing_file_count",
+        "skipped_reparse_point_count",
+        "complete"
+      ],
+      "properties": {
+        "directory_states": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "file_count": { "type": "integer", "minimum": 0 },
+        "byte_count": { "type": "integer", "minimum": 0 },
+        "user_facing_file_count": { "type": "integer", "minimum": 0 },
+        "skipped_reparse_point_count": { "type": "integer", "minimum": 0 },
+        "complete": { "type": "boolean" }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "source_kind": { "const": "online_local_cms_read_only" },
+        "cms_available": { "const": true }
+      },
+      "required": ["connection", "content_roots", "products", "contents"]
+    },
+    {
+      "properties": {
+        "source_kind": { "const": "offline_filesystem_fallback" },
+        "cms_available": { "const": false }
+      },
+      "required": ["failure_reason_code", "registered_roots", "filesystem_inventory"]
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

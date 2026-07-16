@@ -2384,6 +2384,280 @@ def daz_assets_dim_config(account_settings: Path, apply_changes: bool) -> None:
     )
 
 
+def _daz_content_roots(root_specs: tuple[str, ...]):
+    from .daz.assets import ContentRoot
+
+    specs = root_specs or (
+        r"content_primary=F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library",
+        r"content_user=F:\DAZ\03_content\libraries\MaskFactory_User_Library",
+        r"legacy_dim=C:\Users\Public\Documents\My DAZ 3D Library",
+    )
+    roots = []
+    for priority, spec in enumerate(specs, start=1):
+        root_id, separator, raw_path = spec.partition("=")
+        if separator != "=" or not root_id or not raw_path:
+            raise ValueError("content root must use ROOT_ID=PATH")
+        source_kind = "legacy_dim" if root_id == "legacy_dim" else "governed"
+        roots.append(ContentRoot(root_id, Path(raw_path), priority * 10, source_kind))
+    return tuple(roots)
+
+
+@daz_assets.command("filesystem-scan")
+@click.option("--root", "root_specs", multiple=True, help="Repeat ROOT_ID=PATH.")
+@click.option(
+    "--state",
+    "state_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option("--max-entries", type=click.IntRange(min=1), default=50_000, show_default=True)
+@click.option("--max-seconds", type=click.FloatRange(min=0.1), default=30.0, show_default=True)
+@click.option("--reset", is_flag=True, help="Start a new scan state for the exact root set.")
+@click.option(
+    "--finalize", is_flag=True, help="Publish portable JSON only if the scan is complete."
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\filesystem"),
+    show_default=True,
+)
+def daz_assets_filesystem_scan(
+    root_specs: tuple[str, ...],
+    state_path: Path,
+    max_entries: int,
+    max_seconds: float,
+    reset: bool,
+    finalize: bool,
+    output: Path,
+) -> None:
+    """Resume a bounded content scan without following symlinks or junctions."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        FilesystemInventoryError,
+        build_inventory_snapshot,
+        initialize_inventory_state,
+        inventory_state_summary,
+        publish_inventory_snapshot,
+        scan_inventory_chunk,
+    )
+
+    try:
+        roots = _daz_content_roots(root_specs)
+        initialize_inventory_state(state_path, roots, reset=reset)
+        chunk = scan_inventory_chunk(
+            state_path, roots, max_entries=max_entries, max_seconds=max_seconds
+        )
+        summary = inventory_state_summary(state_path)
+        publication = None
+        if finalize:
+            snapshot = build_inventory_snapshot(state_path, roots=roots)
+            target, published = publish_inventory_snapshot(snapshot, output)
+            publication = {"path": str(target), "published": published}
+    except (FilesystemInventoryError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, FilesystemInventoryError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.FILESYSTEM_INVENTORY_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.FILESYSTEM_INVENTORY_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="filesystem_inventory_chunk_complete",
+                data={
+                    "chunk": {
+                        "scanned_directories": chunk.scanned_directories,
+                        "observed_entries": chunk.observed_entries,
+                        "file_count": chunk.file_count,
+                        "skipped_reparse_points": chunk.skipped_reparse_points,
+                    },
+                    "summary": summary,
+                    "state_path": str(state_path),
+                    "publication": publication,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("acquisition-index")
+@click.option(
+    "--source",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path(r"F:\DAZ\05_registry\manifests\assets"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\live\autonomous_acquisition.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--inventory-state",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option("--max-manifests", type=click.IntRange(min=1), default=25, show_default=True)
+@click.option("--reset", is_flag=True, help="Start a new resumable index for the live source set.")
+def daz_assets_acquisition_index(
+    source: Path,
+    output: Path,
+    inventory_state: Path,
+    max_manifests: int,
+    reset: bool,
+) -> None:
+    """Index autonomous-downloader manifests as a source independent of DIM."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AcquisitionManifestError,
+        reconcile_acquisition_with_inventory,
+        resume_acquisition_manifest_index,
+    )
+
+    try:
+        progress = resume_acquisition_manifest_index(
+            source, output, max_manifests=max_manifests, reset=reset
+        )
+        comparison = (
+            reconcile_acquisition_with_inventory(output, inventory_state)
+            if inventory_state.is_file()
+            else None
+        )
+    except (AcquisitionManifestError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AcquisitionManifestError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ACQUISITION_MANIFEST_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ACQUISITION_MANIFEST_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason=(
+                    "autonomous_acquisition_index_complete"
+                    if progress.complete
+                    else "autonomous_acquisition_index_partial"
+                ),
+                data={"progress": progress.as_dict(), "filesystem_comparison": comparison},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("cms-scan")
+@click.option("--root", "root_specs", multiple=True, help="Repeat ROOT_ID=PATH.")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Users\kevin\AppData\Roaming\DAZ 3D\cms\cmscfg.json"),
+    show_default=True,
+)
+@click.option(
+    "--psql",
+    "psql_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"C:\Program Files\DAZ 3D\PostgreSQL CMS\bin\psql.exe"),
+    show_default=True,
+)
+@click.option(
+    "--inventory-state",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option("--offline", is_flag=True, help="Force the declared filesystem-only fallback.")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\cms"),
+    show_default=True,
+)
+def daz_assets_cms_scan(
+    root_specs: tuple[str, ...],
+    config_path: Path,
+    psql_path: Path,
+    inventory_state: Path,
+    offline: bool,
+    output: Path,
+) -> None:
+    """Query local CMS read-only and fall back explicitly to filesystem authority."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        CmsObservationError,
+        build_offline_cms_fallback,
+        compare_cms_with_inventory,
+        publish_cms_snapshot,
+        query_cms_snapshot,
+    )
+
+    try:
+        roots = _daz_content_roots(root_specs)
+        online_failure = None
+        if offline:
+            snapshot = build_offline_cms_fallback(
+                registered_roots=roots,
+                inventory_state=inventory_state,
+                failure_reason_code="offline_forced",
+            )
+        else:
+            try:
+                snapshot = query_cms_snapshot(
+                    registered_roots=roots,
+                    config_path=config_path,
+                    psql_path=psql_path,
+                )
+            except CmsObservationError as exc:
+                online_failure = exc.reason_code
+                snapshot = build_offline_cms_fallback(
+                    registered_roots=roots,
+                    inventory_state=inventory_state,
+                    failure_reason_code=exc.reason_code,
+                )
+        comparison = (
+            compare_cms_with_inventory(snapshot, inventory_state)
+            if snapshot["cms_available"] and inventory_state.is_file()
+            else None
+        )
+        target, published = publish_cms_snapshot(snapshot, output)
+    except (CmsObservationError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CmsObservationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.CMS_OBSERVATION_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.CMS_OBSERVATION_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="cms_observation_complete",
+                entity_ids=(snapshot["snapshot_id"],),
+                data={
+                    "cms_available": snapshot["cms_available"],
+                    "online_failure": online_failure,
+                    "product_count": len(snapshot.get("products", [])),
+                    "content_count": len(snapshot.get("contents", [])),
+                    "filesystem_comparison": comparison,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_control.command("status")
 @click.option(
     "--config-root",

@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T06:04:58Z",
+  "items": ["MF-P9-04.03", "MF-P9-04.04"],
+  "status": "partial_live_reconciliation",
+  "authority_boundary": {
+    "dim_package_count_is_total_asset_count": false,
+    "sources_kept_independent": [
+      "DIM install manifests",
+      "autonomous acquisition manifests",
+      "local CMS metadata",
+      "registered-root filesystem observations"
+    ],
+    "assets_moved": false,
+    "assets_deleted": false,
+    "assets_redownloaded": false,
+    "duplicates_resolved_before_hash_reconciliation": false
+  },
+  "cms_online": {
+    "snapshot_id": "cms_e94a27f9cabb4d19fd8423f0",
+    "snapshot_file_sha256": "b7bb2d36bd6f574101c25bb944d7bdaa79449038d78ef10549124af688db5a5c",
+    "snapshot_bytes": 2454715,
+    "installed_product_count": 17,
+    "installed_content_count": 4677,
+    "query_mode": "local_127_0_0_1_forced_read_only",
+    "credentials_stored": false,
+    "network_scope": "local CMS only"
+  },
+  "cms_offline_fallback": {
+    "snapshot_id": "cms_offline_b58d776345e759643d279621",
+    "snapshot_file_sha256": "2db8ca03a9ee8352cea3fd2e51ce6b80913f1c1256d0258a5cea4c2851aa32db",
+    "snapshot_bytes": 1396,
+    "cms_used": false,
+    "metadata_gaps_declared": true,
+    "filesystem_inventory_complete": false
+  },
+  "autonomous_acquisition": {
+    "captured_source_manifest_count": 436,
+    "indexed_manifest_count": 110,
+    "pending_manifest_count": 326,
+    "failed_manifest_count": 0,
+    "index_path": "F:\\DAZ\\05_registry\\live\\autonomous_acquisition.sqlite",
+    "resumable": true,
+    "bounded_manifests_per_invocation": true,
+    "new_sources_are_appended_to_pending_queue": true,
+    "non_content_and_unregistered_source_roots_preserved": true,
+    "source_fingerprint": null
+  },
+  "filesystem_inventory": {
+    "state_path": "F:\\DAZ\\05_registry\\rebuild_evidence\\filesystem_inventory.sqlite",
+    "state_schema_version": 2,
+    "completed_directory_count": 115,
+    "pending_directory_count": 162,
+    "failed_directory_count": 0,
+    "observed_file_count": 498,
+    "observed_bytes": 327635435,
+    "observed_user_facing_file_count": 246,
+    "skipped_reparse_point_count": 0,
+    "reparse_points_followed": false,
+    "directory_drift_requeued": true,
+    "disappeared_children_reconciled": true,
+    "complete": false,
+    "portable_snapshot_published": false
+  },
+  "cross_source_comparison": {
+    "authoritative": false,
+    "reason": "The autonomous manifest index and filesystem inventory are both incomplete while acquisition workers continue to add sources and files. Missing/unmanifested counts are withheld until both observations stabilize."
+  },
+  "verification": {
+    "focused_tests_passed": 35,
+    "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1739,
+    "full_repository_tests_passed": 1739,
+    "full_repository_tests_failed": 0,
+    "ruff": "pass",
+    "schema_validation": "pass",
+    "covered_failures": [
+      "unsafe/traversal logical path",
+      "case-folded path collision",
+      "junction/symlink traversal",
+      "root-set drift",
+      "directory mutation during scan",
+      "disappeared child reconciliation",
+      "changed/removed published acquisition manifest",
+      "unknown acquisition source root preservation",
+      "CMS connection/schema failure",
+      "CMS credential environment stripping",
+      "offline metadata-gap declaration",
+      "immutable snapshot conflict"
+    ]
+  },
+  "not_claimed": [
+    "complete autonomous-acquisition manifest index",
+    "complete deterministic filesystem snapshot",
+    "authoritative missing-file or unmanifested-file counts",
+    "hash-based duplicate or shadow resolution",
+    "asset qualification, promotion, production authority, or gold authority"
+  ]
+}

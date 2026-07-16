@@ -6313,3 +6313,21 @@ Live boundary:                        fixture state is not live DAZ authority; n
 Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; guard exit 76; no new F/DAZ work started
 Verification:                         the complete 2,120/2,120 repository suite passes; Ruff, Black, tracker, and JSON schema validation pass
 Evidence:                             `qa/reports/daz_resolved_scene_state_20260716.json`
+
+## 2026-07-16 16:25 UTC - Closed render-pass profiles and scene-state mutation detection implemented
+
+**Result:** MF-P9-07.01 now has an immutable render-plan and execution-validation contract and remains
+partial until the DAZ worker proves the same boundary against a qualified live scene.
+
+Profile contract:                     five exact profiles cover engineering smoke, standard training, relationship training, full diagnostics, and RGB-only variants; each role has one frozen encoding and train-eligibility declaration
+Boundary convention:                 4x4 supersampling, evaluated opacity, maximum visible coverage, front-depth/stable-node tie break, hard deterministic ownership, linear coverage alpha, and one-pixel uncertainty are versioned
+Scene freeze:                        resolved-state and scene-state hashes bind the plan; every output repeats exact state, resolution, crop, role, encoding, and sequence
+Mutation detection:                  before-pass, sidecar, after-pass, annotation-restore, and terminal state hashes must all match; any drift invalidates the render set
+Integer-map safety:                  exact nearest-neighbor decoding is mandatory; JPEG, palette quantization, color management, tone mapping, denoising, bloom, motion blur, depth of field, and lossy resize are prohibited
+RGB variant safety:                  an exact parent semantic set is mandatory; scene state, resolution, and crop must match, and semantic-pass rerender count must remain zero
+Replay/publication:                  plan and execution report hashes are recomputed; immutable content-addressed publication is idempotent; `plan-passes` and `validate-pass-run` expose the contract without prompting
+Fixture proof:                       41 focused cases cover all five profiles, full closed-policy drift, all five mutation points, exact semantic-pass counts, all nine forbidden effects, output/lineage drift, variant drift, tampering, and publication conflict
+Live boundary:                        no fixture is relabeled as a DAZ renderer result; no live pass, override, restore, or byte-identical semantic replay is claimed
+Capacity:                             F remains soft at 150,760,443,904 bytes / 140.407 GiB; no new F/DAZ asset, acquisition, or render work started
+Verification:                         the complete 2,161/2,161 repository suite passes; Ruff, Black across 468 files, and Git diff checks pass
+Evidence:                             `qa/reports/daz_render_pass_profiles_20260716.json`

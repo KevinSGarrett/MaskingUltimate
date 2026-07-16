@@ -89,6 +89,8 @@ SCHEMA_NAMES = frozenset(
         "daz_scene_formation_selection",
         "daz_scene_preflight_report",
         "daz_resolved_scene_state",
+        "daz_render_pass_plan",
+        "daz_render_pass_execution_report",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

@@ -4346,6 +4346,167 @@ def daz_recipes_seal_resolved_state(
     )
 
 
+@daz_recipes.command("plan-passes")
+@click.option(
+    "--resolved-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--profile",
+    type=click.Choice(
+        [
+            "engineering_minimal",
+            "training_standard",
+            "training_relationship",
+            "diagnostic_full",
+            "rgb_variant",
+        ],
+        case_sensitive=True,
+    ),
+    required=True,
+)
+@click.option(
+    "--parent-semantic-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\plans"),
+    show_default=True,
+)
+def daz_recipes_plan_passes(
+    resolved_state: Path,
+    profile: str,
+    parent_semantic_set: Path | None,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Build one closed pass plan bound to a resolved DAZ scene state."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import (
+        RenderPassContractError,
+        build_render_pass_plan,
+        load_render_pass_policy,
+        publish_render_pass_document,
+    )
+
+    try:
+        parent = (
+            json.loads(parent_semantic_set.read_text(encoding="utf-8"))
+            if parent_semantic_set is not None
+            else None
+        )
+        document = build_render_pass_plan(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            load_render_pass_policy(policy),
+            profile=profile,
+            parent_semantic_set=parent,
+        )
+        target, published = publish_render_pass_document(document, output)
+    except (RenderPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, RenderPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_render_pass_plan_built",
+                entity_ids=(document["plan_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile": document["profile"],
+                    "pass_count": len(document["outputs"]),
+                    "plan_sha256": document["plan_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-pass-run")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pass_run(plan: Path, execution: Path, policy: Path, output: Path) -> None:
+    """Replay and publish mutation findings for one DAZ pass execution."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import (
+        RenderPassContractError,
+        evaluate_render_pass_execution,
+        load_render_pass_policy,
+        publish_render_pass_document,
+    )
+
+    try:
+        document = evaluate_render_pass_execution(
+            json.loads(plan.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            load_render_pass_policy(policy),
+        )
+        target, published = publish_render_pass_document(document, output)
+    except (RenderPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, RenderPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=(
+                    0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+                ),
+                reason=(
+                    "daz_render_pass_execution_valid"
+                    if document["summary"]["passed"]
+                    else "daz_render_pass_execution_invalid"
+                ),
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not document["summary"]["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

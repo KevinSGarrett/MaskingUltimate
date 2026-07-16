@@ -5787,3 +5787,19 @@ Live result:                        Hugging Face credential absent; all four exa
 Terms surfaces:                     `https://huggingface.co/facebook/sam3.1` and `https://huggingface.co/facebook/sam-3d-body-dinov3`
 Verification:                       4 dedicated access-contract tests and complete repository 1,666/1,666 pass; Ruff and Black pass
 Evidence:                           `qa/live_verification/meta_checkpoint_access_probe_20260716.json` file SHA-256 `19e56eeae572f2a81543a2bcfc33c1614fdeda4546aa9b365df84fb1b23a4450`, canonical SHA-256 `6eca5d735a50697c9d22aed4e0e69b0e102be0291b0b1b99ba8de3d50fcc2af3`
+
+## 2026-07-16 00:42 UTC - Scheduled-task console creation path removed
+
+**Result:** MF-P1-09.01 and MF-P4-03.05 remain complete with stronger live
+evidence; all four MaskFactory jobs now launch through an invisible Windows Script Host
+wrapper rather than creating a PowerShell console directly.
+
+Root cause:                         a direct `powershell.exe` scheduled action can briefly create a console before `-WindowStyle Hidden` takes effect
+Launcher:                           `wscript.exe //B //NoLogo` invokes `tools/Invoke-HiddenPowerShell.vbs`, which uses `WScript.Shell.Run(..., 0, True)` and returns the exact child exit code
+Live state:                         four expected tasks Ready under user `kevin`, `RunLevel=Limited`, `LogonType=Interactive`; every action points to the wrapper and its exact governed PowerShell script
+Power policy:                       `StartWhenAvailable=True`, `DisallowStartIfOnBatteries=False`, and `StopIfGoingOnBatteries=False` on all four tasks
+Wrapper proof:                      child `exit 7` returns 7; missing child arguments return 64
+Verification:                       focused scheduler tests 4/4, complete repository 1,666/1,666, Ruff, targeted Black, and selected pre-commit hooks pass
+Formatting boundary:               repository-wide Black reports pre-existing unrelated drift in `Plan/Daz/Asset_Manifest/tools/validate_manifest.py`; this increment did not modify it
+Machine safety:                     no scheduled job execution, elevation/UAC request, WSL/Docker restart, or VHD operation was performed
+Evidence:                           `qa/live_verification/windows_scheduled_tasks_no_flash_20260716.json` SHA-256 `5474e0c01894307d383ab8eb2470072e1f678009de24d9aa91d2d110e2ae57eb`

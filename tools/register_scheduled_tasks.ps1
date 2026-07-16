@@ -1,21 +1,30 @@
 $ErrorActionPreference = "Stop"
 $Root = "C:\Comfy_UI_Main_Masking"
 $PowerShell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-$Nightly = "`"$PowerShell`" -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Root\tools\nightly_backup.ps1`""
-$Weekly = "`"$PowerShell`" -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Root\tools\weekly_cold_copy_reminder.ps1`""
-$NightlyQa = "`"$PowerShell`" -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Root\tools\nightly_qa.ps1`""
-$WeeklyQa = "`"$PowerShell`" -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Root\tools\weekly_qa.ps1`""
+$WScript = "$env:SystemRoot\System32\wscript.exe"
+$HiddenHost = "$Root\tools\Invoke-HiddenPowerShell.vbs"
 
-& schtasks.exe /Create /TN "MaskFactory_NightlyBackupIntegrity" /TR $Nightly /SC DAILY /ST 02:00 /RL LIMITED /F | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "failed to register nightly task" }
-& schtasks.exe /Create /TN "MaskFactory_WeeklyColdCopyReminder" /TR $Weekly /SC WEEKLY /D MON /ST 09:00 /RL LIMITED /F | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "failed to register weekly task" }
-& schtasks.exe /Create /TN "MaskFactory_NightlyManifestLint" /TR $NightlyQa /SC DAILY /ST 03:00 /RL LIMITED /F | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "failed to register nightly manifest-lint task" }
-& schtasks.exe /Create /TN "MaskFactory_WeeklyQaMining" /TR $WeeklyQa /SC WEEKLY /D MON /ST 10:00 /RL LIMITED /F | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "failed to register weekly QA-mining task" }
+if (-not (Test-Path -LiteralPath $HiddenHost -PathType Leaf)) { throw "hidden PowerShell host missing: $HiddenHost" }
 
-& schtasks.exe /Query /TN "MaskFactory_NightlyBackupIntegrity" /FO LIST /V
-& schtasks.exe /Query /TN "MaskFactory_WeeklyColdCopyReminder" /FO LIST /V
-& schtasks.exe /Query /TN "MaskFactory_NightlyManifestLint" /FO LIST /V
-& schtasks.exe /Query /TN "MaskFactory_WeeklyQaMining" /FO LIST /V
+function New-HiddenPowerShellAction {
+    param([Parameter(Mandatory = $true)][string]$ScriptPath)
+    $tokens = @($HiddenHost, $PowerShell, "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-ExecutionPolicy", "Bypass", "-File", $ScriptPath)
+    $arguments = "//B //NoLogo " + (($tokens | ForEach-Object { '"' + $_ + '"' }) -join " ")
+    New-ScheduledTaskAction -Execute $WScript -Argument $arguments
+}
+
+$Settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+$Principal = New-ScheduledTaskPrincipal -UserId ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited
+$Definitions = @(
+    [ordered]@{ Name = "MaskFactory_NightlyBackupIntegrity"; Script = "$Root\tools\nightly_backup.ps1"; Trigger = New-ScheduledTaskTrigger -Daily -At "02:00" },
+    [ordered]@{ Name = "MaskFactory_WeeklyColdCopyReminder"; Script = "$Root\tools\weekly_cold_copy_reminder.ps1"; Trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At "09:00" },
+    [ordered]@{ Name = "MaskFactory_NightlyManifestLint"; Script = "$Root\tools\nightly_qa.ps1"; Trigger = New-ScheduledTaskTrigger -Daily -At "03:00" },
+    [ordered]@{ Name = "MaskFactory_WeeklyQaMining"; Script = "$Root\tools\weekly_qa.ps1"; Trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At "10:00" }
+)
+
+foreach ($Definition in $Definitions) {
+    $Action = New-HiddenPowerShellAction -ScriptPath $Definition.Script
+    Register-ScheduledTask -TaskName $Definition.Name -Action $Action -Trigger $Definition.Trigger -Settings $Settings -Principal $Principal -Force | Out-Null
+}
+
+$Definitions | ForEach-Object { Get-ScheduledTask -TaskName $_.Name }

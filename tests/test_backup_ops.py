@@ -39,14 +39,24 @@ def test_nightly_script_orders_b5_before_mirrors_and_wsl_integrity_sample() -> N
 def test_task_registration_defines_nightly_and_weekly_limited_tasks() -> None:
     text = (ROOT / "tools" / "register_scheduled_tasks.ps1").read_text(encoding="utf-8")
     assert "MaskFactory_NightlyBackupIntegrity" in text
-    assert "/SC DAILY /ST 02:00 /RL LIMITED" in text
+    assert 'New-ScheduledTaskTrigger -Daily -At "02:00"' in text
     assert "MaskFactory_WeeklyColdCopyReminder" in text
-    assert "/SC WEEKLY /D MON /ST 09:00 /RL LIMITED" in text
+    assert 'New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At "09:00"' in text
     assert "MaskFactory_NightlyManifestLint" in text
-    assert "/SC DAILY /ST 03:00 /RL LIMITED" in text
+    assert 'New-ScheduledTaskTrigger -Daily -At "03:00"' in text
     assert "MaskFactory_WeeklyQaMining" in text
-    assert text.count("-WindowStyle Hidden") == 4
-    assert "/SC WEEKLY /D MON /ST 10:00 /RL LIMITED" in text
+    assert "wscript.exe" in text
+    assert "Invoke-HiddenPowerShell.vbs" in text
+    assert "//B //NoLogo" in text
+    assert "New-ScheduledTaskAction" in text
+    assert '-WindowStyle", "Hidden' in text
+    assert 'New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At "10:00"' in text
+    assert "Register-ScheduledTask" in text
+    assert "New-ScheduledTaskPrincipal" in text
+    assert "-RunLevel Limited" in text
+    assert "-Principal $Principal" in text
+    assert "-AllowStartIfOnBatteries" in text
+    assert "-DontStopIfGoingOnBatteries" in text
 
 
 def test_p4_nightly_and_weekly_jobs_cross_the_governed_wsl_boundary() -> None:

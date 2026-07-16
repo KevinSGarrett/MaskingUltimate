@@ -14,6 +14,7 @@ from typing import Any, Callable
 import yaml
 
 from ..datasets.authority import P5_CERTIFIED_ENTRY_COUNT, serialized_reader_capabilities
+from ..daz.policy import DazPolicyError, validate_synthetic_share
 from ..gpu import GpuLock
 from ..models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
@@ -114,6 +115,26 @@ def validate_training_dataset_authority(dataset_root: Path) -> int:
                 )
             if split == "train" and not 0 < float(row.get("training_loss_weight", 0)) <= 1:
                 raise TrainingLaunchError(f"trainer sample has invalid loss weight: {sample_id}")
+    try:
+        synthetic_by_image: dict[str, dict[str, Any]] = {}
+        for sample_id, row in records.items():
+            if not isinstance(row, dict):
+                continue
+            image_id = row.get("image_id")
+            if not isinstance(image_id, str) or not image_id:
+                image_id = sample_id.rsplit("_p", 1)[0]
+            previous = synthetic_by_image.get(image_id)
+            if previous is not None and previous.get("source_origin") != row.get("source_origin"):
+                raise TrainingLaunchError(f"one image has mixed source origins: {image_id}")
+            synthetic_by_image[image_id] = row
+        synthetic_metrics = validate_synthetic_share(synthetic_by_image.values())
+    except DazPolicyError as exc:
+        raise TrainingLaunchError(f"synthetic training authority failed: {exc}") from exc
+    reported_synthetic = build.get("synthetic_metrics")
+    if reported_synthetic is None and synthetic_metrics["synthetic_images"] == 0:
+        reported_synthetic = synthetic_metrics
+    if reported_synthetic != synthetic_metrics:
+        raise TrainingLaunchError("builder/launcher synthetic composition metrics disagree")
     for split, partition in (
         ("calibration", "calibration"),
         ("test_holdout", "holdout"),

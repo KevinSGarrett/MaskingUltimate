@@ -3,10 +3,12 @@
   "governing_source_hashes": {
     "Plan/20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md": "ee3eec71afe103b8de8680e16ecbf69448121981c22b57f104966b1a3c942fd9",
     "Plan/22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md": "0350b3ef19fb5205fe304d1d89157a0fa053aa448686cd7a4b55bb93cd2e94f0",
-    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "4baa1e597983e41e130902c7ad067ee5d247122696e504e4d0619b8825ea3dfa",
+    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "b885a55292f5c55f2aa61d77977bd9773e5fbab4e6ab8532b5ab7819ced675a7",
+    "Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md": "c2326479ea12a04a3bd883f580337677994415e7f0899b05db8bcff2b112f2c8",
+    "Plan/Items/20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md": "d153a43d85614008ffe26fde3306654378518489dc7cf3b534a35d74259a2a4f",
     "Plan/Items/18_ITEMS_P7_CURRENCY_OPERATIONS.md": "65979edaf37977edaf54e44a0c3125da6db69d52585912acd87a692dfb0c2f63",
     "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "6818856f7bdd2f034967043b2b7fef363e5b13676def797c05189b4e871253ec",
-    "Plan/Tracker/tracker.py": "d74478bcabbfa8da005e015d4b4b62859843f2ea00c17e2fae84c80f94384ef4"
+    "Plan/Tracker/tracker.py": "3c29ec9c62b1c5e16c8095a785367e2d36a9c3431e2deb8abfd2f0e038d9996f"
   },
   "policy_id": "modernization_completion_v1",
   "required_domains": {
@@ -169,7 +171,7 @@
       "measurement_rules": {
         "definitions_of_done_met": {"operator": "eq", "value": 11},
         "goals_met": {"operator": "eq", "value": 9},
-        "tracker_item_count": {"operator": "ge", "value": 609},
+        "tracker_item_count": {"operator": "ge", "value": 755},
         "unresolved_item_count_excluding_bundle": {"operator": "eq", "value": 0}
       },
       "minimum_source_artifacts": 2,
@@ -177,11 +179,11 @@
     }
   },
   "schema_version": "1.0.0",
-  "sha256": "23495c6296f248d12a2ff82f3ed47f24a832d9b97aeb5baf11b558d315fb71db",
+  "sha256": "83b3a668089a60369b476f74bc2f5055ef5dd48b497d26032dccadceb624ee17",
   "tracker_requirements": {
     "allowed_terminal_statuses": ["complete", "not_applicable"],
     "excluded_item_ids": ["MF-P7-07.09"],
-    "minimum_item_count": 609,
+    "minimum_item_count": 755,
     "required_definition_of_done_ids": ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11"],
     "required_goal_ids": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"]
   }

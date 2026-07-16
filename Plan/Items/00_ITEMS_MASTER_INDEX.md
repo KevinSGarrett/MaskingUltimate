@@ -1,6 +1,6 @@
 # ITEMS — Master Index (Full End-to-End Completion Checklist)
 
-**What this is:** the complete governed blueprint (`Plan\00–22` plus the approved SAM 3.1 handoff) decomposed into every atomic
+**What this is:** the complete governed blueprint (`Plan\00–23`, the approved SAM 3.1 handoff, and `Plan\Daz\00–32`) decomposed into every atomic
 work item required to take the Ultimate Masking System from an empty machine to full completion
 (all D1–D11 + the 20-image headline test). If every box below is checked with its verify clause
 satisfied, the project is DONE — there is nothing else.
@@ -9,7 +9,7 @@ Later governed specs 18–22 and the SAM 3.1 handoff are imported into the same 
 source-to-item map is `TRACEABILITY_18_22_SAM31.md`; doc 18's original 70-entry checklist remains
 an evidence source, not a separate status system.
 
-**Total items: 609** across 19 checklist files (including 9 phase exit gates + the project exit gate).
+**Total items: 755** across 20 checklist files (including 10 phase exit gates + the project exit gate).
 
 ## File Map
 
@@ -34,6 +34,7 @@ an evidence source, not a separate status system.
 | 17_ITEMS_P6_MODERN_SERVING.md | P6 modern serving | 15 | v2 ComfyUI/API, provider-neutral serving, safe CVAT publication |
 | 18_ITEMS_P7_CURRENCY_OPERATIONS.md | P7 currency/autonomous operations | 16 | v2 activation, recurring reviews, revised headline evidence |
 | 19_ITEMS_P8_AUTONOMOUS_MULTI_PERSON.md | P8 autonomous multi-person | 8 | certificate-covered instances, residual/audit routing |
+| 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 146 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
 
 ## ID Scheme & Traceability
 
@@ -75,7 +76,7 @@ phase-native task numbers. Every later-spec requirement maps through
 
 ## Definition of Project-Done
 
-All 609 tracker items resolved with evidence ⇒ D1–D11 hold ⇒ run the revised autonomous single-person
+All 755 tracker items resolved with evidence ⇒ D1–D11 hold ⇒ run the revised autonomous single-person
 headline test (`MF-P7-07.07` plus `MF-P7-EXIT`): 20 unseen images, certificate-covered selective
 autonomy, a preselected blinded mixed audit, no routine per-image correction, separate labor/quality/
 confidence reporting, zero format and left/right failures. Then run the autonomous multi-person

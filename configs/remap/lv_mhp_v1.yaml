@@ -2,10 +2,11 @@ schema_version: "1.0.0"
 source: lv_mhp_v1
 source_root: C:/Comfy_UI_Main/MaskedWarehouse/Body/LV-MHP-v1
 source_encoding: 8-bit indexed per-person PNG; local README defines IDs 0-18
-status: initial_plan_complete_license_blocked
+status: training_eligible_after_qualification
 source_authority: external_source_maps_never_gold
-license: research/non-commercial; verify before training use
-training_allowed: false
+license: private non-commercial research and personal experimentation
+training_allowed: true
+training_authority: {truth_tier: weighted_pseudo_label, truth_partition: train, loss_weight: 0.20, holdout_eligible: false}
 side_convention: source left/right must pass overlay and pose-chain validation before use
 mappings:
   0: {source_label: background, action: direct, part: [background], material: [none/background]}

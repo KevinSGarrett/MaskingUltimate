@@ -131,6 +131,56 @@ def test_training_authority_rejects_calibration_leak_and_pseudo_volume(tmp_path:
     assert validate_training_dataset_authority(root) == 199
 
 
+def test_launcher_independently_enforces_daz_train_only_weight_and_thirty_percent_cap(
+    tmp_path: Path,
+) -> None:
+    root = _dataset(tmp_path)
+    build_path = root / "build_manifest.json"
+    weights_path = root / "sample_weights.json"
+    build = json.loads(build_path.read_text(encoding="utf-8"))
+    weights = json.loads(weights_path.read_text(encoding="utf-8"))
+    sample_ids = list(weights["samples"])
+
+    def mark_synthetic(sample_id: str) -> None:
+        weights["samples"][sample_id] = {
+            "image_id": sample_id.rsplit("_p", 1)[0],
+            "truth_tier": "weighted_pseudo_label",
+            "truth_partition": "train",
+            "training_loss_weight": 0.20,
+            "dataset_volume_eligible": False,
+            "source_origin": "synthetic",
+            "source_role": "synthetic_geometry_exact",
+            "holdout_eligible": False,
+            "calibration_eligible": False,
+            "counts_as_human_anchor_gold": False,
+            "counts_as_autonomous_certified_gold": False,
+            "maximum_synthetic_image_fraction": 0.30,
+        }
+
+    for sample_id in sample_ids[:60]:
+        mark_synthetic(sample_id)
+    build["truth_metrics"]["certified_training_package_count"] = 140
+    build["synthetic_metrics"] = {
+        "total_images": 200,
+        "synthetic_images": 60,
+        "synthetic_image_share": 0.30,
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    weights_path.write_text(json.dumps(weights), encoding="utf-8")
+    assert validate_training_dataset_authority(root) == 140
+
+    mark_synthetic(sample_ids[60])
+    build["synthetic_metrics"] = {
+        "total_images": 200,
+        "synthetic_images": 61,
+        "synthetic_image_share": 0.305,
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    weights_path.write_text(json.dumps(weights), encoding="utf-8")
+    with pytest.raises(TrainingLaunchError, match="synthetic image share .* exceeds"):
+        validate_training_dataset_authority(root)
+
+
 def test_launcher_holds_gpu_runs_compiled_config_and_requires_checkpoint(tmp_path: Path) -> None:
     runs_root = tmp_path / "runs"
 

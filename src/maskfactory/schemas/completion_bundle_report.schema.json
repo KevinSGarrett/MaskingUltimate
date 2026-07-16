@@ -14,7 +14,7 @@
     "tracker_sha256": {"$ref": "#/$defs/sha256"},
     "required_domain_count": {"type": "integer", "minimum": 15},
     "verified_domains": {"type": "array", "minItems": 15, "uniqueItems": true, "items": {"type": "string"}},
-    "tracker_item_count": {"type": "integer", "minimum": 609},
+    "tracker_item_count": {"type": "integer", "minimum": 755},
     "unresolved_item_count_excluding_bundle": {"const": 0},
     "definitions_of_done_met": {"const": 11},
     "goals_met": {"const": 9},

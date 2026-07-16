@@ -33,6 +33,11 @@ def test_active_autonomy_config_has_distinct_truth_tiers_and_targets() -> None:
         "target_zero_touch_fraction": 0.95,
         "maximum_routine_human_touch_fraction": 0.05,
         "target_manual_pixel_edit_fraction": 0.01,
+        "target_ordinary_part_mean_iou": 0.95,
+        "target_ordinary_boundary_f1": 0.90,
+        "target_hard_anatomy_mean_iou": 0.85,
+        "maximum_cross_instance_bleed_fraction": 0.0,
+        "maximum_left_right_swap_count": 0,
     }
     policy = validate_truth_tier_policy(config["truth_tiers"])
     assert policy["human_anchor_gold"].training_weight == 1.0

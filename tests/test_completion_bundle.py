@@ -51,7 +51,7 @@ def _passing_measurements(requirement: dict) -> dict:
 
 def _tracker() -> dict:
     items = {
-        f"MF-FIXTURE-{index:04d}": {"status": "complete", "orphaned": False} for index in range(608)
+        f"MF-FIXTURE-{index:04d}": {"status": "complete", "orphaned": False} for index in range(754)
     }
     items["MF-P7-07.09"] = {"status": "open", "orphaned": False}
     return {
@@ -167,7 +167,7 @@ def test_complete_real_evidence_index_recomputes_and_denies_primary_authority(
     assert validate_document(report, "completion_bundle_report") == ()
     assert report["result"] == "pass"
     assert report["required_domain_count"] == 15
-    assert report["tracker_item_count"] == 609
+    assert report["tracker_item_count"] == 755
     assert report["unresolved_item_count_excluding_bundle"] == 0
     assert report["definitions_of_done_met"] == 11 and report["goals_met"] == 9
     assert report["authority"] == "completion_index_verified_primary_evidence_remains_authoritative"
@@ -345,7 +345,7 @@ def test_tracker_requires_d1_d11_and_g1_g9_measured(tmp_path: Path) -> None:
 def test_tracker_receipt_must_equal_recomputed_tracker(tmp_path: Path) -> None:
     document, policy = _input(tmp_path)
     receipt = _receipt(document, "tracker_validation")
-    receipt["measurements"]["tracker_item_count"] = 610
+    receipt["measurements"]["tracker_item_count"] = 756
     _seal(receipt)
     _seal(document)
     with pytest.raises(CompletionBundleError, match="does not match live tracker"):

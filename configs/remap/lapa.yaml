@@ -2,10 +2,11 @@ schema_version: "1.0.0"
 source: lapa
 source_root: C:/Comfy_UI_Main/MaskedWarehouse/LaPa
 source_encoding: 8-bit indexed PNG; official 11-class labelmap
-status: initial_plan_complete_license_blocked
+status: training_eligible_after_qualification
 source_authority: external_source_maps_never_gold
-license: research-only; verify before training use
-training_allowed: false
+license: private non-commercial research and personal experimentation
+training_allowed: true
+training_authority: {truth_tier: weighted_pseudo_label, truth_partition: train, loss_weight: 0.15, holdout_eligible: false}
 side_convention: official left/right must be fixture-validated as character perspective before use
 mappings:
   0: {source_label: background, action: direct, part: [background], material: [none/background]}

@@ -60,7 +60,7 @@ def _plans() -> dict[str, dict]:
     }
 
 
-def test_all_five_sources_have_non_gold_training_disabled_plans() -> None:
+def test_remap_plans_keep_gold_blocked_and_scope_training_by_qualified_source() -> None:
     plans = _plans()
     assert set(plans) == {
         "celebamask_hq",
@@ -69,12 +69,19 @@ def test_all_five_sources_have_non_gold_training_disabled_plans() -> None:
         "swimsuit_preview",
         "body_archive",
     }
-    for plan in plans.values():
-        assert plan["training_allowed"] is False
+    for source, plan in plans.items():
         assert (
             plan["source_authority"] == "external_source_maps_never_gold"
             or plan["source_authority"] == "external_source_masks_never_gold"
         )
+        if source in {"celebamask_hq", "lapa", "lv_mhp_v1"}:
+            assert plan["training_allowed"] is True
+            assert plan["training_authority"]["truth_tier"] == "weighted_pseudo_label"
+            assert plan["training_authority"]["truth_partition"] == "train"
+            assert plan["training_authority"]["holdout_eligible"] is False
+            assert 0.10 <= plan["training_authority"]["loss_weight"] <= 0.25
+        else:
+            assert plan["training_allowed"] is False
 
 
 def test_known_source_label_sets_are_complete() -> None:

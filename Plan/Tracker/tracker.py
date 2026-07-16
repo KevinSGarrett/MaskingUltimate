@@ -3,7 +3,7 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 609 action items across phases P0-P8, plus Definition-of-Done
+build-out: 755 action items across phases P0-P9, plus Definition-of-Done
 (D1-D11) and Goals (G1-G9) rollups, plus free-form project metrics.
 
 SOURCE OF TRUTH SPLIT (important — mirrors the project's own "derived vs
@@ -91,7 +91,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 609
+EXPECTED_ITEM_COUNT = 755
 
 DEFAULT_METRICS = {
     # Historical compatibility metric. Never use as the sole P5/D5 gate.
@@ -121,7 +121,7 @@ DEFAULT_METRICS = {
 # ---------------------------------------------------------------------------
 # Phases
 # ---------------------------------------------------------------------------
-PHASE_ORDER = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"]
+PHASE_ORDER = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]
 PHASE_META = {
     "P0": {
         "name": "Environment & Foundation",
@@ -168,6 +168,11 @@ PHASE_META = {
         "file": "10_ITEMS_P8_MULTI_PERSON_MASKING.md",
         "entry_gate": "P7 substantially complete; multi-person risk buckets/certificates remain independently gated",
     },
+    "P9": {
+        "name": "External Supervision, Reference Intelligence & DAZ Autonomy",
+        "file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
+        "entry_gate": "foundation may proceed; training/promotion still requires qualified sources, leakage isolation, DAZ acceptance, and untouched real human-anchor evidence",
+    },
 }
 
 # Hard blockers called out explicitly in Plan/Items/00_ITEMS_MASTER_INDEX.md \u00a73.
@@ -184,6 +189,11 @@ HARD_BLOCKER_PREFIXES = [
     "MF-P8-05.01",  # QC-035 instance silhouette exclusivity (doc 17)
     "MF-P8-05.02",  # QC-036 cross-instance bleed (doc 17)
     "MF-P8-07",  # multi-person dataset split-integrity CI test (doc 17 \u00a78)
+    "MF-P9-11.01",  # DAZ dataset builder authority/share enforcement
+    "MF-P9-11.02",  # independent DAZ launcher authority/share enforcement
+    "MF-P9-13.02",  # external labels remain train-only weighted pseudo labels
+    "MF-P9-14.07",  # benchmark/reference leakage isolation
+    "MF-P9-15.02",  # zero bleed/swap/format target
 ]
 
 # Conditional items — may legitimately resolve to not_applicable if their
@@ -287,17 +297,17 @@ GOALS = {
     "G1": {
         "text": "Human labor: touches/100 images, audited/residual fractions, changed pixels/100k; review minutes secondary",
         "target": "zero-touch \u22650.95, routine human touch \u22640.05, manual pixel edit fraction \u22640.01",
-        "driven_by": ["MF-P3-07.03", "MF-P5-07.03", "MF-P7-07.05", "MF-P7-07.08"],
+        "driven_by": ["MF-P3-07.03", "MF-P5-07.03", "MF-P7-07.05", "MF-P7-07.08", "MF-P9-15.03"],
     },
     "G2": {
         "text": "Draft quality (mean per-part IoU against image-disjoint human-anchor truth)",
         "target": "\u22650.85 body, \u22650.70 fingers/toes",
-        "driven_by": ["MF-P2-08.03", "MF-P5-07.03"],
+        "driven_by": ["MF-P2-08.03", "MF-P5-07.03", "MF-P9-15.01"],
     },
     "G3": {
         "text": "Boundary quality (boundary F-score @2px tolerance)",
         "target": "\u22650.80 body, \u22650.65 fingers/hair",
-        "driven_by": ["MF-P5-07.03"],
+        "driven_by": ["MF-P5-07.03", "MF-P9-15.01"],
     },
     "G4": {
         "text": "Format integrity (human-anchor and autonomous-certified packages passing all checks)",

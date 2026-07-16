@@ -5819,3 +5819,24 @@ Exact access probe:                credential present/redacted; zero downloaded 
 Authority boundary:                no checkpoint download, inference, lifecycle/promotion/serving mutation, mask, truth, or gold authority is claimed
 Remaining gate:                    Meta repository authors must approve the two pending gating-group requests; no further Kevin or local action can bypass that review
 Evidence:                           `qa/live_verification/meta_checkpoint_access_requests_pending_20260716.json` SHA-256 `4505dd01e49e1b2af2c74806e27566cd21a4f02321bfd22ba6e8ae718b1c0ee7`
+
+## 2026-07-16 03:08 UTC - External supervision, reference intelligence, DAZ truth, and minimal-review control plane incorporated
+
+**Result:** Kevin's approved source amendment is now a first-class P9 workstream with
+146 traceable items; its implemented control-plane gates pass, while real holdout quality
+and labor targets remain honestly open until measured.
+
+Approved source:                    pasted-text attachment SHA-256 `0679f23da58844605adbe86e79562b650072c0d4b52ac2ecc8f9fc43a4e2af31`; Plan document 23 is the reconciled local authority
+Product target:                     zero-touch >=0.95, routine human touch <=0.05, manual pixel-edit fraction <=0.01, ordinary PART mIoU >=0.95, boundary-F1 >=0.90, hard-anatomy mIoU >=0.85, and zero left/right swaps or cross-instance bleed
+Authority architecture:             licensed real labels are train-only weighted external supervision; `F:\Reference_Images` is no-truth benchmark/retrieval input; DAZ contributes exact geometry only as train-only weighted synthetic supervision; frozen real human anchors retain calibration/holdout authority
+MaskedWarehouse:                    private/personal/noncommercial/non-distributed profile locked; CelebAMask-HQ, LaPa, and LV-MHP admitted only after license/remap/identity/split gates; CC-BY-NC-ND preview and unknown-provenance body archive remain blocked; adult/NSFW governed assets are eligible and known/suspected-minor content remains prohibited
+Reference library:                  83,422 discovered, 83,411 valid, 69,398 exact representatives; active CUDA indexing reached 49,762 classified (71.705%), 19,636 remaining, and zero failures at the captured log boundary; near-duplicate grouping and 2,500/18,000 tier selection remain downstream
+DAZ foundation:                     `F:\DAZ` root UUID `6bd1b3ba-162a-400b-96dc-e4951b892a04`; all 25 roots present; DAZ Studio 6 hash `2079c762...`; doctor 7/7 pass; generation default-disabled/hidden/process-per-job with no automatic purchase or login
+DAZ capacity:                       148.003 GiB free is below the 150-GiB soft floor but above the 100-GiB hard floor; no large generation may start; eight existing Render-State acquisition workers remain alive and were not restarted
+Training enforcement:              dataset builder and independent launch preflight both require synthetic train-only placement, loss weight 0.10-0.25, and <=30% unique-image share; external labeled-reference rows preserve source-scoped weights and cannot enter gold, calibration, holdout, or certified volume
+Minimal review:                     QA-complete bundles now support only binary approve/reject decisions through an idempotent SHA-256 hash-chained ledger; approval cannot invent gold authority; rejection routes bounded repair and revokes the exact audited autonomous-certificate scope
+Tracker:                            scope expanded from 609 to 755 items across P0-P9; tracker rebuild, validation, and dashboard generation pass
+Verification:                       complete repository 1,731/1,731 pass after formatting; Ruff passes; targeted Black 25/25 files unchanged; every selected pre-commit hook passes; both frozen governance policy self-hashes verify
+Runtime preservation:              reference CUDA indexer and eight DAZ acquisition workers remain running; no WSL/Docker restart, VHD operation, DAZ launch/render, elevation, UAC request, purchase, or account mutation occurred
+Open proof:                         measured real holdout gains, near-perfect metrics, >=95% zero-touch rate, <=1% manual pixel editing, real ablations, and end-to-end autonomous headline evidence are not claimed yet
+Evidence:                           `qa/reports/reference_library_progress_20260716.json`; `qa/reports/daz_foundation_20260716.json`; `Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md`

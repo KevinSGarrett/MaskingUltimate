@@ -11,7 +11,7 @@ from maskfactory.datasets.authority import (
 ROOT = Path(__file__).resolve().parents[1]
 ITEMS = ROOT / "Plan" / "Items"
 TRACKER_SOURCE = ROOT / "Plan" / "Tracker" / "tracker.py"
-ADDENDUM_FILES = tuple(ITEMS / f"{index:02d}_ITEMS_" for index in range(11, 20))
+ADDENDUM_FILES = tuple(ITEMS / f"{index:02d}_ITEMS_" for index in range(11, 21))
 
 
 def _tracker_module() -> dict:
@@ -21,9 +21,9 @@ def _tracker_module() -> dict:
 def test_expanded_tracker_has_exact_authoritative_item_count_and_no_duplicate_ids() -> None:
     module = _tracker_module()
     items = module["parse_items_files"]()
-    assert module["EXPECTED_ITEM_COUNT"] == 609
-    assert len(items) == 609
-    assert len(set(items)) == 609
+    assert module["EXPECTED_ITEM_COUNT"] == 755
+    assert len(items) == 755
+    assert len(set(items)) == 755
 
 
 def test_ontology_v2_checklist_is_imported_one_to_one_as_seventy_items() -> None:
@@ -48,9 +48,9 @@ def test_every_new_atomic_item_has_explicit_verification_and_blocker_clauses() -
     new_items = [
         item
         for item in items.values()
-        if item["source_file"][:2].isdigit() and 11 <= int(item["source_file"][:2]) <= 19
+        if item["source_file"][:2].isdigit() and 11 <= int(item["source_file"][:2]) <= 20
     ]
-    assert len(new_items) == 195
+    assert len(new_items) == 341
     for item in new_items:
         assert "Verify:" in item["description"], item["id"]
         assert "Blocked by:" in item["description"], item["id"]
@@ -81,10 +81,10 @@ def test_counts_and_owner_override_do_not_drift() -> None:
     imported = "\n".join(
         path.read_text(encoding="utf-8")
         for path in sorted(ITEMS.glob("*_ITEMS_P*.md"))
-        if path.name[:2].isdigit() and 11 <= int(path.name[:2]) <= 19
+        if path.name[:2].isdigit() and 11 <= int(path.name[:2]) <= 20
     )
-    assert "Total items: 609" in master
-    assert "all 609 action items" in readme
+    assert "Total items: 755" in master
+    assert "all 755 action items" in readme
     assert "Age eligibility must remain a separate fail-closed ingestion gate" not in imported
     assert "unknown-age material" not in imported
 

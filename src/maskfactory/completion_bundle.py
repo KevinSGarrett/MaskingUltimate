@@ -15,7 +15,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_POLICY = PROJECT_ROOT / "qa/governance/completion/modernization_completion_v1.json"
-POLICY_SHA256 = "23495c6296f248d12a2ff82f3ed47f24a832d9b97aeb5baf11b558d315fb71db"
+POLICY_SHA256 = "83b3a668089a60369b476f74bc2f5055ef5dd48b497d26032dccadceb624ee17"
 
 
 class CompletionBundleError(ValueError):
@@ -191,7 +191,7 @@ def validate_policy(
     if (
         isinstance(tracker["minimum_item_count"], bool)
         or not isinstance(tracker["minimum_item_count"], int)
-        or tracker["minimum_item_count"] < 609
+        or tracker["minimum_item_count"] < 755
     ):
         raise CompletionBundleError("completion tracker item floor is invalid")
     sources = policy["governing_source_hashes"]

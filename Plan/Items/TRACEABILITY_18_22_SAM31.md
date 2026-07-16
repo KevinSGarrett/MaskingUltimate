@@ -1,10 +1,18 @@
 # Requirements Traceability — Docs 18–22 and SAM 3.1 Handoff
 
 **Status:** authoritative tracker-import map
-**Generated scope:** 609 total Items records = 414 prior records + 195 reconciled records
-**Sources:** docs 18–22, `OntologyV2/IMPLEMENTATION_CHECKLIST.md`, and `SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md`
+**Generated scope:** 755 total Items records = 609 prior records + 146 document-23/DAZ records
+**Sources:** docs 18–23, `OntologyV2/IMPLEMENTATION_CHECKLIST.md`, `SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md`, and `Plan/Daz/00–32`
 
 This matrix prevents later specifications from living outside the live tracker. A range means every numbered step, bullet, table rule, and acceptance condition in the named source section is decomposed by the referenced atomic Items. Existing IDs are reused where they already carry the same verification contract; the delta files add only missing scope.
+
+## Document 23 and DAZ incorporation
+
+Document 23, Kevin's approved pasted amendment, and the complete `Plan\Daz\00–32` pack map to
+`20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md`. DAZ WBS D0–D11 is imported one-for-one as
+`MF-P9-01.*` through `MF-P9-12.*`; MaskedWarehouse qualification is `MF-P9-13.*`, the reference
+corpus is `MF-P9-14.*`, and minimal-review near-perfect selective autonomy is `MF-P9-15.*`.
+This remains one tracker; DAZ readiness checklists are evidence sources, not shadow status systems.
 
 ## Owner override applied during import
 

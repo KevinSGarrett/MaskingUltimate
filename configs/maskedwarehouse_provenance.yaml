@@ -4,11 +4,23 @@
 # configs/maskedwarehouse_inventory.json. These entries intentionally separate
 # "source located and license recorded" from "approved for MaskFactory gold or
 # production model training".
-schema_version: 1.0.0
+schema_version: 2.0.0
 inventory_file: configs/maskedwarehouse_inventory.json
-recorded_at_utc: "2026-07-10T20:10:00Z"
+recorded_at_utc: "2026-07-16T02:16:00Z"
+project_use_profile:
+  id: private_personal_noncommercial_non_distributed
+  purpose: private research, personal experimentation, and local model development
+  commercial_use: false
+  external_distribution: false
+  source_or_derived_data_redistribution: false
+  local_private_execution: true
 policy:
   source_masks_are_gold: false
+  external_labels_truth_tier: weighted_pseudo_label
+  external_labels_truth_partition: train
+  external_labels_may_enter_holdout: false
+  external_labels_may_satisfy_certified_volume: false
+  maximum_combined_external_batch_fraction: 0.35
   require_entry_for_every_inventory_source: true
   require_remap_and_visual_qa_before_fixture_use: true
   require_explicit_rights_before_training_or_gold: true
@@ -22,6 +34,7 @@ sources:
       metadata: 15
       total_files: 402782
     role: face_components
+    source_role: external_labeled_reference
     official_source_url: https://github.com/switchablenorms/CelebAMask-HQ
     local_provenance_evidence:
       - README.txt names the GitHub project and says image use is restricted to non-commercial research and educational purposes.
@@ -33,14 +46,25 @@ sources:
     allowed_uses:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+      - private_noncommercial_local_training_after_qualification
     prohibited_uses:
       - gold_package_inputs
-      - production_model_training
       - commercial_or_distributed_outputs
       - redistribution_of_source_or_derived_data
     conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
-    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    training_gate: permitted_private_noncommercial_weighted_pseudo_after_qualification
     gold_gate: blocked_external_source_masks_are_not_gold
+    training_admission:
+      status: permitted_after_qualification
+      use_profile_id: private_personal_noncommercial_non_distributed
+      truth_tier: weighted_pseudo_label
+      truth_partition: train
+      training_loss_weight: 0.15
+      holdout_eligible: false
+      dataset_volume_eligible: false
+      allowed_label_scope: [head_face, hair, neck, accessory_or_prop]
+      required_gates: [official_license_recorded, deterministic_remap_tested, source_hash_manifested, visual_alignment_qa_passed, split_dedup_passed]
+      reason: legal use is eligible; source conversion and alignment qualification must pass before admission
     notes: Face-only source; never mix into full-body part training without role tags.
   lapa:
     local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\LaPa'
@@ -50,6 +74,7 @@ sources:
       metadata: 22168
       total_files: 66504
     role: face_parsing
+    source_role: external_labeled_reference
     official_source_url: https://github.com/jd-opensource/lapa-dataset
     alternate_source_url: https://github.com/JDAI-CV/lapa-dataset
     local_provenance_evidence:
@@ -62,14 +87,25 @@ sources:
     allowed_uses:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+      - private_noncommercial_local_training_after_qualification
     prohibited_uses:
       - gold_package_inputs
-      - production_model_training
       - commercial_or_distributed_outputs
       - redistribution_of_source_or_derived_data
     conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
-    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    training_gate: permitted_private_noncommercial_weighted_pseudo_after_qualification
     gold_gate: blocked_external_source_masks_are_not_gold
+    training_admission:
+      status: permitted_after_qualification
+      use_profile_id: private_personal_noncommercial_non_distributed
+      truth_tier: weighted_pseudo_label
+      truth_partition: train
+      training_loss_weight: 0.15
+      holdout_eligible: false
+      dataset_volume_eligible: false
+      allowed_label_scope: [head_face, hair]
+      required_gates: [official_license_recorded, deterministic_remap_tested, source_hash_manifested, visual_alignment_qa_passed, split_dedup_passed]
+      reason: legal use is eligible; source conversion and split-level dedup qualification must pass before admission
     notes: Landmark-associated face source; use only for face geometry/face parsing checks.
   lv_mhp_v1:
     local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\LV-MHP-v1'
@@ -79,6 +115,7 @@ sources:
       metadata: 4
       total_files: 19953
     role: multi_person_full_body_parsing
+    source_role: external_labeled_reference
     official_source_url: https://lv-mhp.github.io/
     repository_url: https://github.com/ZhaoJ9014/Multi-Human-Parsing
     local_provenance_evidence:
@@ -92,15 +129,26 @@ sources:
     allowed_uses:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
+      - private_noncommercial_local_training_after_qualification
     prohibited_uses:
       - gold_package_inputs
-      - production_model_training
       - commercial_or_distributed_outputs
       - redistribution_of_source_or_derived_data
     conversion_gate: allowed_for_local_fixtures_only_after_remap_tests_and_visual_qa
-    training_gate: blocked_requires_explicit_commercial_or_production_training_rights
+    training_gate: permitted_private_noncommercial_weighted_pseudo_after_qualification
     gold_gate: blocked_external_source_masks_are_not_gold
-    notes: Highest-value local multi-person body source, but still restricted; do not use for production model training without explicit compatible rights.
+    training_admission:
+      status: permitted_after_qualification
+      use_profile_id: private_personal_noncommercial_non_distributed
+      truth_tier: weighted_pseudo_label
+      truth_partition: train
+      training_loss_weight: 0.20
+      holdout_eligible: false
+      dataset_volume_eligible: false
+      allowed_label_scope: [head_face, hair, neck, accessory_or_prop, material_clothing, coarse_limb_region]
+      required_gates: [official_license_recorded, deterministic_remap_tested, source_hash_manifested, visual_alignment_qa_passed, instance_identity_validated, split_dedup_passed]
+      reason: legal use is eligible; split-required anatomy remains coarse supervision until geometry-assisted conversion is qualified
+    notes: Highest-value local multi-person source. Direct labels and coarse regions are train-only weighted supervision; split-required anatomy cannot be presented as exact atomic PART truth.
   swimsuit_preview:
     local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\UniDataPro_swimsuit-human-segmentation-dataset'
     inventory_counts:
@@ -109,6 +157,7 @@ sources:
       metadata: 4
       total_files: 48
     role: clothing_body_color_segmentation_preview
+    source_role: external_labeled_reference
     official_source_url: https://huggingface.co/datasets/UniDataPro/swimsuit-human-segmentation-dataset
     vendor_source_url: https://unidata.pro/datasets/swimsuit-human-segmentation-dataset/
     kaggle_source_url: https://www.kaggle.com/datasets/unidpro/swimsuit-human-segmentation-dataset
@@ -130,6 +179,14 @@ sources:
     conversion_gate: blocked_no_derivatives_preview_license
     training_gate: blocked_no_derivatives_preview_license_and_no_full_dataset_rights
     gold_gate: blocked_external_source_masks_are_not_gold
+    training_admission:
+      status: blocked
+      truth_tier: null
+      truth_partition: null
+      training_loss_weight: 0.0
+      allowed_label_scope: []
+      required_gates: [compatible_derivative_and_training_rights]
+      reason: no-derivatives preview terms and full-dataset rights are not established
     notes: Color-mask preview may inform ontology review visually, but do not convert/remap into fixtures or training.
   body_archive:
     local_root: 'C:\Comfy_UI_Main\MaskedWarehouse\Body\archive'
@@ -139,6 +196,7 @@ sources:
       metadata: 1
       total_files: 351
     role: seven_group_body_color_segmentation
+    source_role: external_labeled_reference
     official_source_url: null
     local_provenance_evidence:
       - Local root contains Men/Women grouped image-mask folders and Human Segmentation 7 Types.xlsx.
@@ -157,4 +215,12 @@ sources:
     conversion_gate: blocked_missing_license_and_official_provenance
     training_gate: blocked_missing_license_and_official_provenance
     gold_gate: blocked_external_source_masks_are_not_gold
+    training_admission:
+      status: blocked
+      truth_tier: null
+      truth_partition: null
+      training_loss_weight: 0.0
+      allowed_label_scope: []
+      required_gates: [official_source_identified, compatible_license_recorded]
+      reason: official source and compatible rights are unknown
     notes: May be reconsidered only after Kevin or a future intake step supplies an official source URL and compatible license evidence.

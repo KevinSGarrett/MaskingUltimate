@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at_utc": "2026-07-16T03:03:11.6676698Z",
+  "command": "python -m maskfactory.cli daz doctor",
+  "passed": true,
+  "generation_enabled": false,
+  "generation_window_visibility": "hidden",
+  "generation_launch_mode": "process_per_job",
+  "root": {
+    "path": "F:\\DAZ",
+    "root_uuid": "6bd1b3ba-162a-400b-96dc-e4951b892a04",
+    "root_identity_sha256": "d8988cd90d5444dbebfe3b214cb5d04a14aa2d4eb920170279143a8d19e35417",
+    "operating_profile_sha256": "92dbc59ac29cee8ed3ef030b431b98176b3129df419aee513755759bc08d19bb",
+    "expected_top_level_roots": 25,
+    "missing_top_level_roots": []
+  },
+  "daz_studio": {
+    "path": "C:\\Program Files\\DAZ 3D\\DAZStudio6\\DAZStudio.exe",
+    "sha256": "2079c7629e38bda411aa2b9218ae2702009d33f03f8226a1b68ae68026c3d18f"
+  },
+  "storage": {
+    "free_bytes": 158917435392,
+    "free_gib": 148.003,
+    "level": "soft",
+    "hard_blocked": false,
+    "action": "do not start new large DAZ generation plans; allow current asset leases to finish and monitor capacity"
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "driver": "592.01",
+    "memory_total_mib": 8151,
+    "memory_used_mib": 4495,
+    "utilization_percent": 0,
+    "temperature_c": 55
+  },
+  "asset_acquisition": {
+    "database": "F:\\DAZ\\00_control\\render_state_ingest\\queue.sqlite3",
+    "database_exists": true,
+    "wal_exists": true,
+    "live_count_query_skipped": true,
+    "declared_workers": 8,
+    "alive_workers": 8,
+    "workers_left_running": true
+  },
+  "invariants": {
+    "automatic_purchase": false,
+    "automatic_account_login": false,
+    "adult_and_nsfw_assets_eligible": true,
+    "known_or_suspected_minor_prohibited": true,
+    "truth_tier": "weighted_pseudo_label",
+    "truth_partition": "train",
+    "training_loss_weight_range": [0.1, 0.25],
+    "maximum_synthetic_image_fraction": 0.3
+  }
+}

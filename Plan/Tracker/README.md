@@ -1,7 +1,7 @@
 # MaskFactory Project Tracker — README
 
 This folder is the **live, machine-readable status tracker** for the entire
-Ultimate Masking System build-out: all 609 action items from
+Ultimate Masking System build-out: all 755 action items from
 `Plan\Items\*.md`, plus the Definition-of-Done (D1–D11) and Goals (G1–G9)
 rollups from docs 00 and 01, plus tier-separated truth, labor, audit, coverage,
 and certified-package metrics.
@@ -47,7 +47,7 @@ python tracker.py <command> ...
 python tracker.py rebuild
 ```
 Run this once to initialize (already done — `tracker.json` exists with all
-609 items after the docs 18–22/SAM 3.1 reconciliation). Rerun it any time `Plan\Items\*.md` is
+755 items after the docs 18–23/SAM 3.1/DAZ reconciliation). Rerun it any time `Plan\Items\*.md` is
 edited (labels added, items split, etc.). It **preserves all existing
 status/evidence/notes** for ids that still exist, marks ids no longer found
 in the source as `orphaned: true` (never deletes their history), and adds
@@ -101,7 +101,7 @@ python tracker.py set MF-P5-08.01 --status not_applicable --evidence "trigger ne
 python tracker.py list [--phase P0..P8] [--status open,blocked] [--hard-blockers]
                         [--conditional] [--blocked] [--search "sam2"]
 ```
-Statuses can be comma-separated. No filters = list everything (609 lines).
+Statuses can be comma-separated. No filters = list everything (755 lines).
 
 ### `next` — what should I work on
 ```
@@ -146,7 +146,7 @@ they are not auto-computed the way DoD items are (see §5).
 ```
 python tracker.py validate
 ```
-Confirms 609 non-orphaned items, no duplicate/invalid statuses, flags
+Confirms 755 non-orphaned items, no duplicate/invalid statuses, flags
 `complete` items missing evidence, `blocked` items missing a reason, and any
 orphaned items. Exits non-zero only on a structural problem (never on
 warnings) — safe to run in CI or as a pre-commit check.

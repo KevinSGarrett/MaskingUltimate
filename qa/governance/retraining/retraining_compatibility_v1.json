@@ -46,8 +46,8 @@
   },
   "fingerprint_components": ["code_tree", "dataset_manifest", "model_checkpoint", "training_config"],
   "governing_source_hashes": {
-    "configs/autonomous_masks.yaml": "e71241b6c640c30550ce29b58872fb42da4b220678f40b66cb7434292751b482",
-    "src/maskfactory/autonomy/calibration.py": "946ffca6e323c1ef95eec5aa323f08ba6dea7bd8b8e8b577ada85f73d8beec5e",
+    "configs/autonomous_masks.yaml": "7c069568f2c851e1dd0a06de6dd6f6dc68a403cd10519a92f7135f5fb40f00d3",
+    "src/maskfactory/autonomy/calibration.py": "960b5e9f1045a59d7df0bd8be4f9aad8c0ca38a719e68d1251a93cc5b1c171ae",
     "src/maskfactory/autonomy/operations.py": "a30f1cda7c0ded91b72e6b7acb266c308e5840527e9a8a9e1e664db71c3e9214",
     "src/maskfactory/models/registry.py": "8ee3c3272ead50e9dd1d30e8d3c50fa3e41f72e827bf8675061a016bee033f34"
   },
@@ -63,7 +63,7 @@
     "required_for_promotion": true
   },
   "schema_version": "1.0.0",
-  "sha256": "9cfbae43775719fcd8c4ef112890d92b5afe8d186660caedf1a8d673d1e653c1",
+  "sha256": "2c93be523adb5518910b8eb7e6faa76b1115facd9f61212c3f85526b4e2f03b5",
   "trigger_thresholds": {
     "minimum_audit_failures": 1,
     "minimum_new_human_corrections": 1

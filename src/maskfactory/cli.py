@@ -1946,9 +1946,177 @@ def autonomy_build_pseudo_dataset(
     click.echo(json.dumps(manifest, sort_keys=True))
 
 
+@autonomy.group("review-decision")
+def autonomy_review_decision() -> None:
+    """Record a minimal approve/reject decision over prepared evidence."""
+
+
+def _record_binary_review_cli(bundle: Path, reviewer: str, ledger: Path, decision: str) -> None:
+    from .autonomy.decisions import BinaryReviewError, record_binary_review_decision
+
+    try:
+        record = record_binary_review_decision(
+            bundle,
+            decision=decision,
+            reviewer=reviewer,
+            ledger_path=ledger,
+        )
+    except (BinaryReviewError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(record, sort_keys=True))
+
+
+@autonomy_review_decision.command("approve")
+@click.argument("bundle", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option("--reviewer", required=True)
+@click.option(
+    "--ledger",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/autonomy/review_decisions.jsonl"),
+    show_default=True,
+)
+def autonomy_review_decision_approve(bundle: Path, reviewer: str, ledger: Path) -> None:
+    """Approve a QA-complete human-anchor seal or autonomous audit."""
+    _record_binary_review_cli(bundle, reviewer, ledger, "approve")
+
+
+@autonomy_review_decision.command("reject")
+@click.argument("bundle", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option("--reviewer", required=True)
+@click.option(
+    "--ledger",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/autonomy/review_decisions.jsonl"),
+    show_default=True,
+)
+def autonomy_review_decision_reject(bundle: Path, reviewer: str, ledger: Path) -> None:
+    """Reject prepared evidence and route bounded repair/revocation."""
+    _record_binary_review_cli(bundle, reviewer, ledger, "reject")
+
+
 @main.group("golden-reference")
 def golden_reference() -> None:
     """Audit and normalize user-authored mask reference collections."""
+
+
+@main.group("external-supervision")
+def external_supervision() -> None:
+    """Inspect fail-closed admission of qualified external labels."""
+
+
+@external_supervision.command("admission")
+@click.argument("source")
+@click.option(
+    "--provenance",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/maskedwarehouse_provenance.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--inventory",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/maskedwarehouse_inventory.json"),
+    show_default=True,
+)
+@click.option("--completed-gate", multiple=True)
+def external_supervision_admission(
+    source: str,
+    provenance: Path,
+    inventory: Path,
+    completed_gate: tuple[str, ...],
+) -> None:
+    """Report legal/technical train-only admission for one warehouse source."""
+    from dataclasses import asdict
+
+    from .external_supervision import (
+        ExternalSupervisionError,
+        evaluate_training_admission,
+        load_external_supervision_registry,
+    )
+
+    try:
+        registry = load_external_supervision_registry(provenance, inventory)
+        decision = evaluate_training_admission(
+            registry,
+            source,
+            completed_gates=frozenset(completed_gate),
+        )
+    except (ExternalSupervisionError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(asdict(decision), sort_keys=True))
+
+
+@main.group("reference-library")
+def reference_library() -> None:
+    """Inspect and validate the governed benchmark/retrieval library."""
+
+
+@reference_library.command("status")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+def reference_library_status(database: Path) -> None:
+    """Read index progress without walking or mutating the image library."""
+    from .reference_library import inspect_reference_database
+
+    click.echo(json.dumps(inspect_reference_database(database), sort_keys=True))
+
+
+@reference_library.command("validate-selection")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/reference_library.yaml"),
+    show_default=True,
+)
+def reference_library_validate_selection(database: Path, policy: Path) -> None:
+    """Verify selection counts, disjointness, materialization, and hashes."""
+    from .reference_library import (
+        ReferenceLibraryError,
+        load_reference_library_policy,
+        validate_reference_selection,
+    )
+
+    try:
+        report = validate_reference_selection(database, load_reference_library_policy(policy))
+    except (ReferenceLibraryError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+    if not report["passed"]:
+        raise click.ClickException("reference selection validation failed")
+
+
+@main.group("daz")
+def daz() -> None:
+    """Operate the optional default-disabled DAZ synthetic lane."""
+
+
+@daz.command("doctor")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_doctor(config_root: Path) -> None:
+    """Run the read-only foundation doctor without launching DAZ."""
+    from .daz import DazPolicyError, daz_foundation_doctor
+
+    try:
+        report = daz_foundation_doctor(config_root)
+    except (DazPolicyError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, sort_keys=True))
+    if not report["passed"]:
+        raise click.ClickException("DAZ foundation doctor failed")
 
 
 @golden_reference.command("import")

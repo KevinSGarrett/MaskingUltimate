@@ -1,0 +1,17 @@
+schema_version: 1.0.0
+profile_id: private_personal_local_v1
+execution_location: local_machine
+commercial_deployment: false
+public_hosting: false
+distribution: false
+automatic_asset_purchase: false
+automatic_account_login: false
+character_scope:
+  age: adult_only
+  person_count: [1, 2, 3, 4]
+  presentation: [male, female]
+  wardrobe_states: [clothed, partially_clothed, underwear, swimwear, unclothed]
+content_policy:
+  adult_and_nsfw_assets_eligible: true
+  content_tags_are_organizational_not_training_exclusions: true
+  known_or_suspected_minor_prohibited: true

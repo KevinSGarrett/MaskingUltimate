@@ -2,7 +2,7 @@
 
 This registry records the already-downloaded masked image datasets under `C:\Comfy_UI_Main\MaskedWarehouse` that should feed MaskFactory.
 
-These datasets are not automatically gold. They are source material for remapping, fixtures, provider validation, training seed data, and QA panels. Every dataset must still pass license/provenance review, label remapping, source-image hashing, and MaskFactory format conversion before it can be used for training or gold-package creation.
+These datasets are never automatically gold. Under the locked private/personal/noncommercial/non-distributed profile, qualified sources may become train-only `external_labeled_reference` supervision at the `weighted_pseudo_label` tier. Every admitted source still passes license/provenance review, label remapping, source-image hashing, visual alignment QA, and split dedup before training.
 
 ## Local Warehouse Roots
 
@@ -22,16 +22,17 @@ the human-facing summary of the current intake gate.
 
 | Source key | Official/upstream evidence | Recorded status | Current conversion/training/gold gate |
 |---|---|---|---|
-| `celebamask_hq` | Local `README.txt`; official `switchablenorms/CelebAMask-HQ` GitHub project. | Non-commercial research/educational only; redistribution/commercial exploitation restricted. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
-| `lapa` | Public LaPa GitHub project; local split structure with images, labels, and landmarks. | Non-commercial only for research/teaching/publications/personal experimentation. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
-| `lv_mhp_v1` | Official MHP site; official `ZhaoJ9014/Multi-Human-Parsing` GitHub project; local README with matching category list. | Non-commercial only for research/teaching/scientific publication/personal experimentation. | Local non-distributable QA/fixtures only after remap tests and visual QA. Production training and gold-package use blocked until compatible rights are explicit. |
+| `celebamask_hq` | Local `README.txt`; official `switchablenorms/CelebAMask-HQ` GitHub project. | Non-commercial research/educational only; redistribution/commercial exploitation restricted. | Private local train-only weighted pseudo supervision is legally eligible after all qualification gates; gold/holdout/distribution remain blocked. |
+| `lapa` | Public LaPa GitHub project; local split structure with images, labels, and landmarks. | Non-commercial research/teaching/publication/personal experimentation. Repository code license is Apache-2.0; dataset terms remain the narrower authority. | Private local train-only weighted pseudo supervision is legally eligible after all qualification gates; gold/holdout/distribution remain blocked. |
+| `lv_mhp_v1` | Official MHP site; official `ZhaoJ9014/Multi-Human-Parsing` GitHub project; local README with matching category list. | Non-commercial research/teaching/scientific publication/personal experimentation. | Private local train-only weighted pseudo supervision is legally eligible after all qualification gates; split-required anatomy stays coarse/ignore until qualified; gold/holdout/distribution remain blocked. |
 | `swimsuit_preview` | Local Hugging Face-style `README.md`; UniDataPro/Hugging Face preview page. | CC BY-NC-ND 4.0 preview metadata; full-dataset rights not established. | Visual inspection only. Converted fixtures, derivative remaps, training, and gold-package use blocked. |
 | `body_archive` | Local folders plus `Human Segmentation 7 Types.xlsx`; no README/license/upstream URL found. | Unknown/unverified. | All conversion, fixture, training, distribution, and gold-package use blocked until official source and compatible license evidence are recorded. |
 
-Recording a source here does **not** make it MaskFactory gold and does **not**
-approve production training. External source masks remain source masks. Any
-promotion into fixtures, training seed data, or gold-package workflows requires
-the stricter gate recorded per source, plus remap tests, hashing, and visual QA.
+Recording a source here does **not** make it MaskFactory gold. External masks remain
+source labels. Training admission is fail-closed until the machine registry's complete
+license, remap, hash, visual-QA, identity, and split-dedup gate list passes. Admission
+is restricted to `weighted_pseudo_label` / `train`; calibration, holdout, certified
+volume, distribution, and gold promotion remain prohibited.
 
 ## Required Intake Steps
 
@@ -57,6 +58,8 @@ the stricter gate recorded per source, plus remap tests, hashing, and visual QA.
 ## Non-Negotiable Rules
 
 - Existing masks in `MaskedWarehouse` are source masks, not MaskFactory gold masks.
+- Qualified CelebAMask-HQ, LaPa, and LV-MHP labels may train the private local system only as bounded-scope, low-weight, train-only pseudo supervision.
+- `split_required` or ambiguous source labels become coarse auxiliary targets or ignore 255, never fabricated atomic PART truth.
 - Do not mix face-only datasets into full-body part training without explicit role tags.
 - Do not train on RGB color masks until a deterministic color-to-label map is written and tested.
 - Do not let any external dataset override the visible-pixel-only rule.

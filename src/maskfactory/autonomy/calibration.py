@@ -116,10 +116,20 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
             "target_zero_touch_fraction",
             "maximum_routine_human_touch_fraction",
             "target_manual_pixel_edit_fraction",
+            "target_ordinary_part_mean_iou",
+            "target_ordinary_boundary_f1",
+            "target_hard_anatomy_mean_iou",
+            "maximum_cross_instance_bleed_fraction",
+            "maximum_left_right_swap_count",
         }
         or not 0 <= float(targets["target_zero_touch_fraction"]) <= 1
         or not 0 <= float(targets["maximum_routine_human_touch_fraction"]) <= 1
         or not 0 <= float(targets["target_manual_pixel_edit_fraction"]) <= 1
+        or not 0 <= float(targets["target_ordinary_part_mean_iou"]) <= 1
+        or not 0 <= float(targets["target_ordinary_boundary_f1"]) <= 1
+        or not 0 <= float(targets["target_hard_anatomy_mean_iou"]) <= 1
+        or float(targets["maximum_cross_instance_bleed_fraction"]) != 0.0
+        or int(targets["maximum_left_right_swap_count"]) != 0
         or float(targets["target_zero_touch_fraction"])
         + float(targets["maximum_routine_human_touch_fraction"])
         < 1

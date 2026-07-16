@@ -62,7 +62,7 @@ def test_items_master_and_tracker_metadata_match_live_item_scope() -> None:
     assert f"**Total items: {expected}**" in master
     for name, count in counts.items():
         assert re.search(rf"\| {re.escape(name)} .* \| {count} \|", master)
-    assert f"{expected} action items across phases P0-P8" in tracker
+    assert f"{expected} action items across phases P0-P9" in tracker
     assert "(D1-D11) and Goals (G1-G9)" in tracker
 
 

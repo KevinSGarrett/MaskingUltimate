@@ -16,6 +16,7 @@ import numpy as np
 import yaml
 from PIL import Image
 
+from ..daz.policy import validate_synthetic_authority, validate_synthetic_share
 from ..io.png_strict import write_label_map
 from ..ontology import Ontology, get_ontology, load_ontology
 from ..ontology_v2 import DEFAULT_ONTOLOGY_V2
@@ -54,6 +55,8 @@ class PackageTruth:
     tier: str
     partition: str | None
     training_loss_weight: float
+    source_origin: str | None = None
+    source_role: str | None = None
 
 
 def build_dataset(
@@ -142,6 +145,7 @@ def build_dataset(
             truth = truth_by_package[package]
             split_instances[split].append(sample_id)
             sample_truth[sample_id] = {
+                "image_id": image_id,
                 "truth_tier": truth.tier,
                 "truth_partition": _effective_truth_partition(truth, split),
                 "split": split,
@@ -150,7 +154,19 @@ def build_dataset(
                     policy[truth.tier].dataset_volume_eligible
                     and _effective_truth_partition(truth, split) == "train"
                 ),
+                "source_origin": truth.source_origin,
+                "source_role": truth.source_role,
             }
+            if truth.source_origin == "synthetic":
+                sample_truth[sample_id].update(
+                    {
+                        "holdout_eligible": False,
+                        "calibration_eligible": False,
+                        "counts_as_human_anchor_gold": False,
+                        "counts_as_autonomous_certified_gold": False,
+                        "maximum_synthetic_image_fraction": 0.30,
+                    }
+                )
             if split == "calibration":
                 _copy_sample(
                     package,
@@ -293,6 +309,9 @@ def build_dataset(
             Path(packages_root), ontology_version=ontology_version
         ),
     )
+    synthetic_metrics = validate_synthetic_share(
+        _one_authority_record_per_image(sample_truth.values())
+    )
     volume_gates = evaluate_certified_volume_gates(
         int(truth_metrics["certified_training_package_count"]), coverage
     )
@@ -319,6 +338,7 @@ def build_dataset(
                 "splits": splits,
                 "instances": split_instances,
                 "truth_metrics": truth_metrics,
+                "synthetic_metrics": synthetic_metrics,
                 "certified_volume_gates": volume_gates,
                 "sample_weights": "sample_weights.json",
                 "source_packages": [
@@ -531,6 +551,10 @@ def _truth_tier_policy() -> dict[str, TruthTierPolicy]:
 
 
 def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolicy]) -> PackageTruth:
+    source = manifest.get("source") if isinstance(manifest.get("source"), dict) else {}
+    source_origin = source.get("source_origin")
+    lineage = manifest.get("source_lineage")
+    source_role = lineage.get("kind") if isinstance(lineage, dict) else manifest.get("source_role")
     explicit = manifest.get("truth_tier")
     if isinstance(explicit, str):
         tier = normalize_truth_tier(explicit)
@@ -583,9 +607,35 @@ def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolic
             raise ValueError("explicit truth tier lacks training_loss_weight")
         configured = expected_weight
     weight = float(configured)
-    if abs(weight - expected_weight) > 1e-9:
+    flexible_pseudo = tier == WEIGHTED_PSEUDO_LABEL and source_role in {
+        "external_labeled_reference",
+        "synthetic_geometry_exact",
+    }
+    if flexible_pseudo and not 0.10 <= weight <= 0.25:
+        raise ValueError("source-scoped weighted pseudo-label weight must be 0.10..0.25")
+    if not flexible_pseudo and abs(weight - expected_weight) > 1e-9:
         raise ValueError(
             f"training_loss_weight {weight} does not match {tier} policy {expected_weight}"
+        )
+    if source_origin == "synthetic":
+        validate_synthetic_authority(
+            {
+                "source_origin": source_origin,
+                "source_role": source_role,
+                "truth_tier": tier,
+                "truth_partition": partition,
+                "training_loss_weight": weight,
+                "holdout_eligible": manifest.get("holdout_eligible"),
+                "calibration_eligible": manifest.get("calibration_eligible"),
+                "dataset_volume_eligible": manifest.get("dataset_volume_eligible"),
+                "counts_as_human_anchor_gold": manifest.get("counts_as_human_anchor_gold"),
+                "counts_as_autonomous_certified_gold": manifest.get(
+                    "counts_as_autonomous_certified_gold"
+                ),
+                "maximum_synthetic_image_fraction": manifest.get(
+                    "maximum_synthetic_image_fraction"
+                ),
+            }
         )
 
     allowed_part_statuses = {
@@ -601,7 +651,26 @@ def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolic
     )
     if mismatched:
         raise ValueError(f"part truth status disagrees with package tier: {mismatched}")
-    return PackageTruth(tier=tier, partition=partition, training_loss_weight=weight)
+    return PackageTruth(
+        tier=tier,
+        partition=partition,
+        training_loss_weight=weight,
+        source_origin=str(source_origin) if source_origin is not None else None,
+        source_role=str(source_role) if source_role is not None else None,
+    )
+
+
+def _one_authority_record_per_image(
+    records: Any,
+) -> tuple[dict[str, Any], ...]:
+    by_image: dict[str, dict[str, Any]] = {}
+    for row in records:
+        image_id = str(row["image_id"])
+        previous = by_image.get(image_id)
+        if previous is not None and previous.get("source_origin") != row.get("source_origin"):
+            raise ValueError(f"one image has mixed source origins: {image_id}")
+        by_image[image_id] = dict(row)
+    return tuple(by_image[key] for key in sorted(by_image))
 
 
 def _truth_aware_splits(

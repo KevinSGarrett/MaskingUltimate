@@ -2,10 +2,11 @@ schema_version: "1.0.0"
 source: celebamask_hq
 source_root: C:/Comfy_UI_Main/MaskedWarehouse/CelebAMask-HQ
 source_encoding: per-component RGB binary PNGs; 18 observed component tokens
-status: initial_plan_complete_license_blocked
+status: training_eligible_after_qualification
 source_authority: external_source_masks_never_gold
 license: non-commercial research/education only
-training_allowed: false
+training_allowed: true
+training_authority: {truth_tier: weighted_pseudo_label, truth_partition: train, loss_weight: 0.15, holdout_eligible: false}
 side_convention: source left/right must be fixture-validated as character perspective before use
 normalization:
   foreground_colors: [[255, 255, 255]]

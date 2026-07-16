@@ -22,7 +22,7 @@ boundaries, hair, feet/toes, occlusion, and clothing — and which ultimately tr
 custom fine-tuned segmentation models and integrates directly into ComfyUI.
 
 Every decision has been made. There are no open questions. A developer (or AI coding agent)
-can build the entire system from these 23 documents without asking a single design question.
+can build the entire system from these 24 documents without asking a single design question.
 
 ---
 
@@ -53,6 +53,7 @@ can build the entire system from these 23 documents without asking a single desi
 | 20 | 20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md | Candidate tournaments, correction rounds, machine-verified masks, label/context-specific 95%-confidence certificates, random audits, drift revocation, and calibrated autonomous acceptance |
 | 21 | 21_AUTONOMOUS_REPAIR_EXECUTION_SPEC.md | ROI-bound reconstruction, exact-candidate four-reviewer convergence, transactional label repair, reversible CVAT publication, and rollback |
 | 22 | 22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md | Active-registry governance, provider/model lifecycle states, license/content activation, non-collapsing truth metrics, certification statistics, challenger non-inferiority, and currency review |
+| 23 | 23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md | Qualified external-label supervision, the disjoint 83k benchmark/retrieval corpus, exact DAZ synthetic truth, near-perfect selective-autonomy targets, and binary owner decisions |
 
 ---
 

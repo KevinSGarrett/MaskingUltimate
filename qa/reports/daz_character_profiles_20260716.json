@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T14:33:14Z",
+  "item": "MF-P9-06.04",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/character_profiles.yaml",
+    "file_sha256": "a0766bc483014cfb69a08ab4059fd01b8db3d767683abd8fa7b1ec9d86c6c001",
+    "canonical_policy_sha256": "7cd917beb41ecb583cd256e761171353b8399439368c8df10fc2ecfdd5c4482e",
+    "version": "1.0.0",
+    "algorithm": "sha256_namespaced_box_muller_factor_model_v1",
+    "normalized_range": [-1.0, 1.0],
+    "body_axis_count": 25,
+    "face_axis_count": 22,
+    "adult_age_categories": ["adult_21_29", "adult_30_44", "adult_45_64", "adult_65_plus"],
+    "minor_or_child_categories": 0,
+    "target_tier_shares": {"central": 0.50, "moderate": 0.35, "validated_extreme": 0.15}
+  },
+  "controls": {
+    "namespaced_sha256_uniforms": true,
+    "box_muller_normals": true,
+    "versioned_factor_loadings": true,
+    "correlated_body_and_face_latents": true,
+    "correlated_tier_copula": true,
+    "axis_specific_idiosyncratic_noise": true,
+    "finite_normalized_values_only": true,
+    "shoulder_torso_constraint": true,
+    "pelvis_hip_constraint": true,
+    "arm_hand_constraint": true,
+    "leg_foot_constraint": true,
+    "stature_scale_constraint": true,
+    "age_is_five_correlated_channels_not_one_slider": true,
+    "skin_hair_and_posture_tags_recorded": true,
+    "asset_specific_property_mapping_required": true,
+    "final_daz_readback_required": true,
+    "anatomy_and_presentation_not_inferred_from_each_other": true
+  },
+  "bounded_batch_report": {
+    "report_id": "dcpr_d77d02c962a7d2989e1ede39",
+    "report_sha256": "d77d02c962a7d2989e1ede3910ab87654fb23ddaae17318ccf052ef696e18a07",
+    "profile_set_sha256": "6db498734f9fb56f2ba9fcc55fec84f3a60dc1ad5586a5e5b414efc07f21627f",
+    "profile_count": 800,
+    "samples_per_anatomy_age_stratum": 100,
+    "body_tier_shares": {"central": 0.50625, "moderate": 0.34545, "validated_extreme": 0.1483},
+    "face_tier_shares": {"central": 0.517102, "moderate": 0.338807, "validated_extreme": 0.144091},
+    "maximum_absolute_tier_deviation": 0.017102,
+    "distribution_passed": true,
+    "declared_correlation_floor": 0.25,
+    "measured_correlations": {
+      "body_mass__abdomen_prominence": 0.657933,
+      "muscularity_total__upper_body_muscularity": 0.679203,
+      "arm_length__leg_length": 0.774863,
+      "head_width__head_depth": 0.484437,
+      "jaw_width__jaw_angle": 0.597079,
+      "lip_shape__lip_volume": 0.430586
+    },
+    "correlations_passed": true,
+    "bounds_passed": true,
+    "constraints_passed": true,
+    "adjusted_profile_count": 518
+  },
+  "cli": [
+    "daz recipes generate-profile",
+    "daz recipes profile-report",
+    "daz recipes validate-profile"
+  ],
+  "lineage": {
+    "implementation_sha256": "7a9ae576911c5688167baa6803a1d51d9a6b138c55601ba1bf498de23e2ec78d",
+    "profile_schema_sha256": "6b27a98f2170af4ecd77b3d002ef6d42b0e51c71ba5d735118c672ab2009d54b",
+    "batch_schema_sha256": "149bcc080ad4e153b030b0ec545a1a1052c868df3b755d5dc9743433e5e26a9a",
+    "test_sha256": "9a0fab97c7410d5ec8228f460702bdbd830c6ac429188a2801991a07d20741d5"
+  },
+  "verification": {
+    "focused_profile_tests_passed": 7,
+    "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1818,
+    "full_repository_tests_passed": 1818,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "black_precommit": "pass"
+  },
+  "live_boundary": {
+    "qualified_morph_assets_applied": false,
+    "final_daz_property_readback_recorded": false,
+    "reason": "This milestone produces deterministic normalized planning profiles. Asset-specific property transforms and final applied-value readback remain downstream of live qualified morph assets and the DAZ worker."
+  },
+  "not_claimed": [
+    "asset-specific smoke-tested morph ranges",
+    "final applied DAZ controller values",
+    "a live character render",
+    "completion of MF-P9-06.04"
+  ]
+}

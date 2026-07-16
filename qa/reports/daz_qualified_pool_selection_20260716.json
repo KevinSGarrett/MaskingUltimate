@@ -46,8 +46,8 @@
     "focused_smoke_qualification_tests_passed": 22,
     "focused_selection_tests_passed": 6,
     "focused_tests_failed": 0,
-    "full_repository_tests_collected": 1811,
-    "full_repository_tests_passed": 1811,
+    "full_repository_tests_collected": 1818,
+    "full_repository_tests_passed": 1818,
     "full_repository_tests_failed": 0,
     "ruff_lint": "pass",
     "black_precommit": "pass"

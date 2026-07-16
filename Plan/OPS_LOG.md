@@ -6095,6 +6095,25 @@ Capacity:                             F declined to 150,752,583,680 bytes / 140.
 Verification:                         40 focused catalog/pool/smoke/selection tests and the complete 1,811/1,811 repository suite pass; Ruff, Black, and tracker validation pass
 Evidence:                             `qa/reports/daz_qualified_pool_selection_20260716.json`
 
+## 2026-07-16 14:33 UTC - Correlated bounded adult character profiles implemented
+
+**Result:** MF-P9-06.04 now has a deterministic normalized planning implementation and remains partial
+until qualified morph assets provide smoke-tested transforms and the DAZ worker records final readback.
+
+Closed policy:                        25 exact body axes, 22 exact face axes, four adult-only age categories, normalized [-1,1], profile/policy version 1.0.0
+Random contract:                      SHA-256 namespaced uniforms, Box-Muller normals, versioned factor loadings, correlated tier copulas, and axis-specific noise; no Python/registry-order RNG dependence
+Target distribution:                  central 50%, moderate 35%, validated-extreme 15% per continuous axis; extremes are distributed by axis rather than forcing every axis extreme together
+Body constraints:                     shoulder/torso, pelvis/hip, arm/hand, leg/foot, and stature/scale continuity clamps are explicit, versioned, reported, and remain within normalized bounds
+Age contract:                         adult_21_29, adult_30_44, adult_45_64, adult_65_plus only; face/body/skin/posture/hair are five correlated channels rather than one slider
+Readback boundary:                    each age profile records skin/hair/posture tags and explicitly requires an asset-property mapping plus final DAZ applied-controller readback
+Statistical proof:                    800 profiles, 100 per two-anatomy x four-age stratum; body tiers 0.50625/0.34545/0.14830; face 0.517102/0.338807/0.144091; maximum target deviation 0.017102
+Correlation proof:                   six declared pairs measured 0.430586–0.774863 against a 0.25 floor; bounds, distribution, correlations, and all constraints pass
+Replay/CLI:                           exact profile and report hashes replay; immutable `generate-profile`, `profile-report`, and `validate-profile` commands pass idempotently
+Live boundary:                        no asset-specific morph value, final DAZ property value, or live render is claimed from normalized fixture evidence
+Capacity:                             F remains soft at 150,760,476,672 bytes / 140.407 GiB free; no new F/DAZ work started
+Verification:                         seven focused profile tests and the complete 1,818/1,818 repository suite pass; Ruff, Black, and tracker validation pass
+Evidence:                             `qa/reports/daz_character_profiles_20260716.json`
+
 ## 2026-07-16 11:57 UTC - Closed DAZ taxonomy and static compatibility graph implemented
 
 **Result:** MF-P9-04.06 now has a blueprint-hash-bound closed vocabulary and fail-closed static graph;

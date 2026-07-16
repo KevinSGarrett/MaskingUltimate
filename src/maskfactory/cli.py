@@ -3671,6 +3671,196 @@ def daz_recipes_select_foundation(
     )
 
 
+@daz_recipes.command("generate-profile")
+@click.option("--seed", type=click.IntRange(min=0), required=True)
+@click.option(
+    "--anatomy-configuration",
+    type=click.Choice(["adult_male_anatomy", "adult_female_anatomy"]),
+    required=True,
+)
+@click.option(
+    "--age-appearance-category",
+    type=click.Choice(["adult_21_29", "adult_30_44", "adult_45_64", "adult_65_plus"]),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\character_profiles"),
+    show_default=True,
+)
+def daz_recipes_generate_profile(
+    seed: int,
+    anatomy_configuration: str,
+    age_appearance_category: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Generate and immutably publish one bounded correlated adult character profile."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        generate_character_variation_profile,
+        load_character_profile_policy,
+        publish_character_profile_document,
+    )
+
+    try:
+        policy_document = load_character_profile_policy(policy)
+        profile = generate_character_variation_profile(
+            policy_document,
+            seed=seed,
+            anatomy_configuration=anatomy_configuration,
+            age_appearance_category=age_appearance_category,
+        )
+        target, published = publish_character_profile_document(
+            profile, output, document_id=profile["profile_id"]
+        )
+    except (CharacterProfileError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_generated",
+                entity_ids=(profile["profile_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile_sha256": profile["profile_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("profile-report")
+@click.option("--seed-start", type=click.IntRange(min=0), default=0, show_default=True)
+@click.option("--samples-per-stratum", type=click.IntRange(min=50), default=100, show_default=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\profile_reports"),
+    show_default=True,
+)
+def daz_recipes_profile_report(
+    seed_start: int, samples_per_stratum: int, policy: Path, output: Path
+) -> None:
+    """Measure tier shares, correlations, bounds, and constraints over every adult stratum."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        build_character_profile_batch_report,
+        load_character_profile_policy,
+        publish_character_profile_document,
+    )
+
+    try:
+        policy_document = load_character_profile_policy(policy)
+        report = build_character_profile_batch_report(
+            policy_document,
+            seed_start=seed_start,
+            samples_per_stratum=samples_per_stratum,
+        )
+        target, published = publish_character_profile_document(
+            report, output, document_id=report["report_id"]
+        )
+    except (CharacterProfileError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_report_complete",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile_count": report["profile_count"],
+                    "tier_max_abs_deviation": report["tier_max_abs_deviation"],
+                    "correlations": report["correlations"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-profile")
+@click.argument("profile", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+def daz_recipes_validate_profile(profile: Path, policy: Path) -> None:
+    """Replay and validate one profile or bounded batch report."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        load_character_profile_policy,
+        validate_character_profile_batch_report,
+        validate_character_variation_profile,
+    )
+
+    try:
+        document = json.loads(profile.read_text(encoding="utf-8"))
+        policy_document = load_character_profile_policy(policy)
+        if str(document.get("profile_id", "")).startswith("dcvp_"):
+            validate_character_variation_profile(document, policy_document)
+            entity_id = document["profile_id"]
+        elif str(document.get("report_id", "")).startswith("dcpr_"):
+            validate_character_profile_batch_report(document, policy_document)
+            entity_id = document["report_id"]
+        else:
+            raise CharacterProfileError("profile_document_type_unknown", str(profile))
+    except (CharacterProfileError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_valid",
+                entity_ids=(entity_id,),
+                evidence_paths=(str(profile),),
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_assets.command("acquisition-index")
 @click.option(
     "--source",

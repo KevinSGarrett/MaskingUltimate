@@ -6214,6 +6214,173 @@ def daz_recipes_aggregate_validation_set(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("validate-construction")
+@click.option(
+    "--recipe", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--recipe-authority",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assembly-observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/strict_scene_validators.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\construction_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_construction(
+    recipe: Path,
+    recipe_authority: Path,
+    assembly_observation: Path,
+    geometry_observation: Path,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Run strict V2-V4 validation and publish one normalized result set."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scene_validators import (
+        StrictSceneValidationError,
+        load_strict_scene_validation_policy,
+        validate_assembly_layer,
+        validate_geometry_layer,
+        validate_recipe_layer,
+    )
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        recipe_document = json.loads(recipe.read_text(encoding="utf-8"))
+        authority_document = json.loads(recipe_authority.read_text(encoding="utf-8"))
+        assembly_document = json.loads(assembly_observation.read_text(encoding="utf-8"))
+        geometry_document = json.loads(geometry_observation.read_text(encoding="utf-8"))
+        policy_document = load_strict_scene_validation_policy(policy)
+        registry_document = load_validation_registry(registry)
+        inputs = {
+            "recipe": recipe_document,
+            "recipe_authority": authority_document,
+            "assembly": assembly_document,
+            "geometry": geometry_document,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                inputs,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_bundle_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, input_document in inputs.items():
+            _publish_immutable_json(input_document, input_bundle_root, name)
+        evidence = {name: [f"inputs/{input_bundle_sha256[:24]}/{name}.json"] for name in inputs}
+        results = [
+            validate_recipe_layer(
+                inputs["recipe"],
+                inputs["recipe_authority"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["recipe_authority"],
+            ),
+            validate_assembly_layer(
+                inputs["recipe"],
+                inputs["assembly"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["assembly"],
+            ),
+            validate_geometry_layer(
+                inputs["recipe"],
+                inputs["geometry"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["geometry"],
+            ),
+        ]
+        document = build_validation_set_report(
+            results,
+            entity_id=recipe_document["scene_id"],
+            scope="scene",
+            registry=registry_document,
+            required_validator_ids=["DAZ-V2-001", "DAZ-V3-001", "DAZ-V4-001"],
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        StrictSceneValidationError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason
+            if isinstance(exc, (StrictSceneValidationError, ValidationRegistryError))
+            else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_construction_valid" if not code else "daz_construction_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"], recipe_document["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": {
+                        key: document["layer_summary"][key] for key in ("V2", "V3", "V4")
+                    },
+                    "results": results,
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 def _load_string_mapping(path: Path, label: str) -> dict[str, str]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict) or not all(

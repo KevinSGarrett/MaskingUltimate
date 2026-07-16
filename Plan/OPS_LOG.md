@@ -6515,3 +6515,21 @@ Activation boundary:                  contract implementation and verification a
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Verification:                         the complete 2,701/2,701 repository suite passes; Ruff, targeted Black, all 118 JSON schemas, and Git diff checks pass
 Evidence:                             `qa/reports/daz_validation_registry_20260716.json`
+
+## 2026-07-16 23:24 UTC - Strict V2 recipe, V3 assembly, and V4 geometry validators implemented
+
+**Result:** MF-P9-08.02 now has closed, normalized construction validators and exhaustive seeded-defect
+proof; it remains at 85% until its declared D5/D7-01 live authorities and a qualified DAZ run exist.
+
+Recipe authority:                     canonical schema/hash/named streams, exact registry snapshot, ontology/profile authority, 1-4-person configuration matrix, scene family/variant IDs, every asset and compatibility edge, every mapping bundle, exact morph/pose numeric-range coverage, and storage/GPU limits are fail-closed
+Assembly authority:                   empty default scene, exact renderable node and asset-readback sets, requested property/joint values, declared controller side effects, textures, complete finite transforms, plausible scale/bounds/support, visible intended people, deterministic p-index prominence, and closed runtime warnings are checked
+Geometry authority:                   topology/geograft fingerprints, subdivision/smoothing/facet/material groups, recognized topology modifiers, complete vertex-scan and nonfinite counts, broad/narrow collision phases, category-specific penetration, intentional-contact tolerances, framing/regions/crop/clipping, and support alignment are checked
+Normalized results:                   each layer emits its registered `daz_validation_result`; deterministic reason priority and retryability are enforced; accepted warnings remain warnings and cannot satisfy the required V2-V4 set
+Evidence publication:                 `validate-construction` snapshots the exact four input documents under a hash-derived relative evidence tree and publishes an immutable idempotent V2-V4 set report
+Seeded proof:                         every registered V2/V3/V4 failure family plus resource, runtime, and tolerated-contact warnings has a positive and deliberate negative fixture; incomplete vertex scans and missing narrow-phase analysis are detected
+Recipe contract amendment:            `scene_variant_id` is now required beside `scene_family_id` in every resolved scene recipe and is included in validation output
+Asset-root reconciliation:            autonomous-downloader content and original/legacy DIM roots remain independent governed inventory sources; neither source is assumed complete
+Live boundary:                        no closed fixture is claimed as a qualified live DAZ construction result; D5 and D7-01 live acceptance remain outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Verification:                         131/131 focused, 1,066/1,066 DAZ-selected, and 2,754/2,754 full repository tests pass; Ruff, targeted format, all 118 JSON schemas, DAZ config validation, tracker validation, and Git diff checks pass
+Evidence:                             `qa/reports/daz_strict_scene_validators_20260716.json`

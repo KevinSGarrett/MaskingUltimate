@@ -16713,13 +16713,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-16T23:24:23+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented closed V2 recipe, V3 assembly, and V4 geometry validators with normalized registry results, exact input evidence snapshots, canonical recipe variant authority, asset/mapping/numeric/resource resolution, exact node/readback/fit/framing gates, topology/full-vertex-scan/collision/contact/visibility gates, and seeded failures for every registered reason family. Warnings remain non-passing. Software/seeded-defect verify clause passes; remains partial pending declared D5 and D7-01 live-authority dependencies plus a qualified live DAZ validation run. No DAZ/F-drive mutation occurred."
+        }
+      ],
+      "evidence": "qa/reports/daz_strict_scene_validators_20260716.json; 131/131 focused V2-V4 tests; 1066/1066 DAZ-selected tests; 2754/2754 full repository tests; Ruff and targeted format pass; 118 schemas parse; DAZ config valid; immutable CLI replay pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-16T23:40:17+00:00",
       "orphaned": false
     },
     "MF-P9-08.03": {

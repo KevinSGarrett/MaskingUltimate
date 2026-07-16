@@ -25,6 +25,7 @@ def _draft() -> dict:
         "schema_version": "1.0.0",
         "scene_id": scene_id,
         "scene_family_id": "daz_family_fixture001",
+        "scene_variant_id": "daz_variant_fixture001",
         "master_seed": 72599183,
         "named_random_streams": streams,
         "registry_snapshot_id": "daz_registry_fixture001",

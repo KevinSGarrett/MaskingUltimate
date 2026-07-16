@@ -116,6 +116,7 @@ def validate_resolved_scene_recipe(recipe: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "scene_id": recipe["scene_id"],
         "scene_family_id": recipe["scene_family_id"],
+        "scene_variant_id": recipe["scene_variant_id"],
         "recipe_sha256": expected_sha,
         "character_count": len(recipe["characters"]),
         "valid": True,

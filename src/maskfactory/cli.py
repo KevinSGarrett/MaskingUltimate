@@ -2825,6 +2825,96 @@ def daz_coverage_generate_candidates(
     )
 
 
+@daz_coverage.command("select-candidate")
+@click.option(
+    "--candidate-batch", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--vocabulary-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--qualification-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/candidate_utility.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\candidate_selections"),
+    show_default=True,
+)
+def daz_coverage_select_candidate(
+    candidate_batch: Path,
+    vocabulary_report: Path,
+    qualification_snapshot: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Hard-gate, score, rank, and select one candidate deterministically."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        CandidateSelectionError,
+        build_candidate_selection,
+        load_candidate_utility_policy,
+        publish_candidate_selection,
+    )
+
+    try:
+        batch = json.loads(candidate_batch.read_text(encoding="utf-8"))
+        vocabulary = json.loads(vocabulary_report.read_text(encoding="utf-8"))
+        qualifications = json.loads(qualification_snapshot.read_text(encoding="utf-8"))
+        report = build_candidate_selection(
+            candidate_batch=batch,
+            vocabulary_report=vocabulary,
+            qualification_snapshot=qualifications,
+            policy=load_candidate_utility_policy(policy),
+        )
+        target, published = publish_candidate_selection(
+            report, output, candidate_batch=batch, vocabulary_report=vocabulary
+        )
+    except (
+        CandidateSelectionError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, CandidateSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_candidate_selection_built",
+                entity_ids=(report["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "satisfied": report["satisfied"],
+                    "selected_candidate_id": report["selected_candidate_id"],
+                    "summary": report["summary"],
+                    "selection_sha256": report["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T08:21:44Z",
+  "item": "MF-P9-10.04",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_ranker_complete": true,
+    "deterministic_ranking_verify_clause_passed": true,
+    "qualified_live_d3_d5_selection_available": false
+  },
+  "utility_formula": {
+    "positive_weights": {
+      "canonical_coverage_deficit_gain": 0.30,
+      "high_risk_intersection_gain": 0.20,
+      "label_visibility_gain": 0.15,
+      "asset_diversity_gain": 0.10,
+      "failure_mining_priority": 0.10,
+      "domain_randomization_gain": 0.05,
+      "multi_person_identity_gain": 0.05,
+      "recency_need": 0.05
+    },
+    "positive_weight_sum": 1.0,
+    "penalties": [
+      "incompatibility_penalty",
+      "dominance_penalty",
+      "recent_repetition_penalty",
+      "predicted_rejection_cost"
+    ],
+    "penalties_subtracted_unweighted": true,
+    "terms_require_finite_unit_interval_values": true,
+    "score_rounding_decimal_places": 12
+  },
+  "hard_constraints": {
+    "ordered_gates": [
+      "registry_complete",
+      "mapping_eligible",
+      "compatibility_eligible",
+      "capacity_eligible",
+      "ontology_eligible"
+    ],
+    "applied_before_scoring": true,
+    "failed_candidate_receives_score": false,
+    "failed_candidate_receives_rank": false,
+    "high_utility_can_override_failure": false,
+    "all_infeasible_is_honest_unsatisfied": true
+  },
+  "ranking": {
+    "order": [
+      "utility_desc",
+      "asset_diversity_gain_desc",
+      "candidate_id_asc"
+    ],
+    "select_count": 1,
+    "candidate_batch_id_and_sha256_bound": true,
+    "demand_id_bound": true,
+    "qualification_snapshot_semantic_hash_replayed": true,
+    "rank_and_selection_semantically_recomputed": true
+  },
+  "fixture_proof": {
+    "deterministic_complete_candidates": 10,
+    "deterministic_feasible_candidates": 10,
+    "deterministic_selected_candidates": 1,
+    "equal_feature_maximum_utility": 0.5,
+    "t042_injected_deficit_moves_selection_to_first_candidate": true,
+    "t042_swapped_deficit_moves_selection_to_second_candidate": true,
+    "high_utility_compatibility_failure_is_unscored": true,
+    "lower_utility_feasible_candidate_wins_over_failed_candidate": true,
+    "t043_all_infeasible_satisfied": false,
+    "t043_all_infeasible_selected_candidate": null,
+    "t043_all_infeasible_scored_count": 0,
+    "raw_report_tamper": "rejected",
+    "coherently_rehashed_qualification_tamper": "rejected",
+    "policy_weakening": "rejected",
+    "publication_conflict": "rejected"
+  },
+  "publication_and_cli": {
+    "closed_json_schema": true,
+    "schema_registered": true,
+    "policy_semantic_sha256": "ecd14f52d077d8c4d45c4e45d4a107f43567fb2cd3354d517290933fb9e2ea1b",
+    "candidate_batch_and_qualification_hashes_bound": true,
+    "selection_id_and_sha256_recomputed": true,
+    "utility_ranks_summary_and_selected_id_recomputed": true,
+    "atomic_immutable_idempotent_publication": true,
+    "cli": "maskfactory daz coverage select-candidate",
+    "cli_fixture_replay": "pass"
+  },
+  "authority_boundary": {
+    "stage": "technical_candidate_selection",
+    "selection_is_recipe": false,
+    "selection_is_render_authority": false,
+    "selection_creates_gold": false,
+    "synthetic_counts_close_real_deficits": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "separate_autonomy_bridge_worktree_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "downstream_recipe_builder_may_consume_explicit_selection": true,
+    "downstream_recipe_builder_may_not_infer_render_or_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_file_sha256": "2a2273215d2a23ba7dfa8064f2b7d060d999205d1484e6109c183e21823d755d",
+    "schema_sha256": "705fd760d35d8627d142b987f7be734a781aa45d59703ea952844e79b486cb72",
+    "implementation_sha256": "d0987300ec75589812d889528557ad4858f06eac2de3be0728c15a0769a79fc9",
+    "package_init_sha256": "7e8105718a855899e2c21d3dc04ff74b2369878dc15f314a0f96b5977ee190ab",
+    "cli_sha256": "60162b2be42da6058bf8790d5397e170133f8ef1c570656135b452da4492a67c",
+    "validation_registry_sha256": "a4c82bab5834e91a05e1554c067c89a7c8ac2f5b2afacc7da96798dd2cb868c8",
+    "tests_sha256": "dc22e4a24460b4b8d4cb4b82f845563f59f1a49eb85263bc2b66f15b1f99a50a"
+  },
+  "verification": {
+    "focused_selection_tests_collected": 10,
+    "focused_selection_tests_passed": 10,
+    "candidate_generation_tests_collected": 10,
+    "candidate_generation_tests_passed": 10,
+    "deficit_adapter_tests_collected": 9,
+    "deficit_adapter_tests_passed": 9,
+    "coverage_vocabulary_tests_collected": 14,
+    "coverage_vocabulary_tests_passed": 14,
+    "canonical_coverage_tests_collected": 5,
+    "canonical_coverage_tests_passed": 5,
+    "ontology_v2_operations_tests_collected": 7,
+    "ontology_v2_operations_tests_passed": 7,
+    "source_policy_tests_collected": 6,
+    "source_policy_tests_passed": 6,
+    "directly_relevant_tests_collected": 61,
+    "directly_relevant_tests_passed": 61,
+    "current_daz_wide_pass_claimed": false,
+    "current_full_repository_pass_claimed": false,
+    "ruff_changed_surface_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "json_schema_meta_validation": "pass",
+    "maskfactory_json_schemas_parsed": 133,
+    "daz_yaml_documents_parsed": 40,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "autonomy_bridge_worktree_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_deterministic_ranking_verify_clause_complete": true,
+    "qualified_live_d3_d5_feasibility_snapshot_available": false,
+    "qualified_live_candidate_batch_available": false,
+    "live_candidate_selection_available": false,
+    "reason": "The exact utility formula, hard-gate ordering, deterministic ranker, honest unsatisfied path, qualification replay, schema, CLI, publication, and T-042/T-043 fixtures pass. Qualified live D3/D5 feasibility observations and a live candidate batch are not available for a live selection."
+  },
+  "not_claimed": [
+    "live D3/D5 candidate selection",
+    "resolved scene recipe",
+    "render authorization",
+    "generated or accepted synthetic scene",
+    "real deficit closure",
+    "human or autonomous-certified gold",
+    "current DAZ-wide or full-repository pass"
+  ]
+}

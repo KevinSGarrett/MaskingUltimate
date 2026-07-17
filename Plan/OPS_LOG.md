@@ -6807,3 +6807,21 @@ Verification:                         10/10 focused candidate, 9/9 deficit adapt
 Live boundary:                        no qualified D5 registry snapshot or governed live deficit report exists; no live batch, feasible/scored selection, recipe, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_candidate_generation_20260717.json`
+
+## 2026-07-17 08:22 UTC - Hard-gated utility scoring and deterministic candidate selection implemented
+
+**Result:** MF-P9-10.04 now has a complete offline utility ranker, hard-feasibility gate, and
+T-042/T-043 proof; it remains at 85% until qualified live D3/D5 observations can score a live batch.
+
+Utility formula:                      exact versioned weights are 0.30 canonical deficit, 0.20 high-risk intersection, 0.15 visibility, 0.10 asset diversity, 0.10 failure priority, and 0.05 each domain randomization, multi-person identity, and recency; four blueprint penalties subtract directly
+Hard gates:                           registry completeness, mapping, compatibility, capacity, and ontology eligibility are evaluated before scoring; any failure produces no utility, rank, or selection, regardless of positive features
+Deterministic ranking:                feasible rows order by utility descending, asset-diversity gain descending, then candidate ID ascending; exactly one is selected when feasible rows exist
+T-042 proof:                          injecting the canonical deficit into candidate zero selects zero; moving the same deficit to candidate one moves selection to one
+T-043 proof:                          an all-infeasible batch publishes an honest unsatisfied report with null selected ID, zero scored/selected rows, and complete hard-failure counts
+Lineage/replay:                       candidate batch/demand ID/hash and versioned qualification snapshot hash are bound; feature, penalty, gate, utility, rank, selected ID, summary, report ID/hash, schema, atomic publication, and CLI replay are independently verified
+Authority boundary:                  selection remains technical planning evidence, not a recipe or render authority; it creates no gold, closes no real deficit, and cannot raise Mode B/inferred authority
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; a downstream recipe builder may consume explicit selection without inferring provider/tier/ontology/owner/certificate or mask authority
+Verification:                         10/10 focused selection, 10/10 candidate generation, 9/9 deficit adapter, 14/14 vocabulary, 5/5 canonical coverage, 7/7 v2 operations, and 6/6 source-policy tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 133 JSON schemas, all 40 DAZ YAML documents, and Git diff checks pass
+Live boundary:                        no qualified live D3/D5 feasibility snapshot or live candidate batch exists; no live selection, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_candidate_selection_20260717.json`

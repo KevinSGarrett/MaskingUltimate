@@ -16,6 +16,14 @@ from .deficits import (
     validate_deficit_adapter_policy,
     validate_real_deficit_signal_report,
 )
+from .selection import (
+    CandidateSelectionError,
+    build_candidate_selection,
+    load_candidate_utility_policy,
+    publish_candidate_selection,
+    validate_candidate_selection,
+    validate_candidate_utility_policy,
+)
 from .vocabulary import (
     CoverageVocabularyError,
     build_coverage_vocabulary_report,
@@ -27,19 +35,25 @@ from .vocabulary import (
 
 __all__ = [
     "CandidateGenerationError",
+    "CandidateSelectionError",
     "CoverageVocabularyError",
     "RealDeficitSignalError",
     "build_candidate_batch",
+    "build_candidate_selection",
     "build_coverage_vocabulary_report",
     "build_real_deficit_signal_report",
     "load_candidate_generation_policy",
+    "load_candidate_utility_policy",
     "load_coverage_vocabulary",
     "load_deficit_adapter_policy",
     "publish_candidate_batch",
+    "publish_candidate_selection",
     "publish_coverage_vocabulary_report",
     "publish_real_deficit_signal_report",
     "validate_candidate_batch",
     "validate_candidate_generation_policy",
+    "validate_candidate_selection",
+    "validate_candidate_utility_policy",
     "validate_coverage_vocabulary",
     "validate_coverage_vocabulary_report",
     "validate_deficit_adapter_policy",

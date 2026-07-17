@@ -6608,3 +6608,22 @@ Historical compatibility:            the original v1 and inactive-v2 schema file
 Verification:                         69/69 new, 130/130 focused compatibility, and 2,885/2,885 full repository tests pass; Ruff, pre-commit Black, all 123 JSON schemas, all 30 DAZ YAML documents, and Git diff checks pass
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Evidence:                             `qa/reports/daz_synthetic_manifest_versions_20260717.json`
+
+## 2026-07-17 02:34 UTC - Certificate-bound S00/package adapter implemented
+
+**Result:** MF-P9-08.07 now has the complete offline S00/package adapter and package-fixture proof;
+it remains at 85% until qualified live D6 pass authority and a live D7-05 certificate exist.
+
+Acceptance replay:                    the adapter independently reconstructs the acceptance certificate before reading a source package and rejects stale certificates, foreign/inferred authority, Mode B, inactive ontology, and package-revision or transform drift
+Source verification:                  the complete D6 scene/package tree is rehashed, all 11 required files per promoted person are exact, strict PNGs are decoded again, sidecars are cross-checked, and source links/extra files/mutation are forbidden
+Mask equations:                       p0-p3 targets are nonempty and pairwise disjoint; their union is the visible-person map; other-person and protected-ID-50 complements are exact; PART and MATERIAL maps are target-scoped; shared RGB is byte-identical
+S00 output:                            a synthetic source record, promoted-person candidate list, per-person package manifests, and hash-bound adapter report are atomically published without rerendering; replay is idempotent and conflicting output rejects
+Training truth:                       output remains `weighted_pseudo_label`, train-only, evaluation-ineligible, weight 0.20, and outside both human-anchor and autonomous-certified real-image gold counts
+Technical authority:                 provider/tier/ontology/owner/package revision/certificate/transform and Mode A access are explicit; provider voting alone is bypassed while package, ontology, identity, grouping, and downstream constraints remain mandatory
+Construction safety:                 explicit adult construction metadata is required for every p-index; invalid age/anatomy categories and person mismatches reject; no human/CVAT/review authority is fabricated
+Grouping namespace:                   the adapter preserves the exact upstream D6 family ID and the fixtures use the governed `daz_family_` namespace; the strict new synthetic schemas and historical real-image schemas remain unchanged
+Seeded proof:                         17 new tests cover one through four promoted people, all-file byte equality, manifest validation, idempotency/conflict, policy weakening, invalid construction, certificate drift, source tamper/extra files, and report tamper
+Live boundary:                        no fixture is claimed as a qualified live DAZ package; live D6 and D7-05 authority plus actual accepted-scene adaptation remain outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
+Verification:                         17/17 new, 176/176 focused adjacent, and 2,902/2,902 full repository tests pass; Ruff, pre-commit Black, all 124 JSON schemas, all 31 DAZ YAML documents, tracker validation, and Git diff checks pass
+Evidence:                             `qa/reports/daz_s00_package_adapter_20260717.json`

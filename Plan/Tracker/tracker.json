@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T00:50:46+00:00",
+    "generated_at": "2026-07-17T02:34:29+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 755,
     "total_tracked_including_orphaned": 755
@@ -16848,13 +16848,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T02:34:29+00:00",
+          "actor": "codex",
+          "text": "Implemented the complete offline S00/package adapter and package-fixture verify clause: replayed acceptance certificate, rehashed/decoded D6 packages, canonical ontology load, exact one-to-four-person complements, byte-preserving no-rerender publication, synthetic source/candidate records, Mode-A authority binding, and immutable manifests. Honest completion remains gated only by qualified live D6 pass authority and a live D7-05 certificate; no live ingestion is claimed. F soft hold and Main repository preservation were respected."
+        }
+      ],
+      "evidence": "qa/reports/daz_s00_package_adapter_20260717.json — 17/17 new, 176/176 focused adjacent, 2902/2902 full tests; one-to-four-person fixtures; 11-file byte equality; certificate/ontology/package/transform binding; source immutability; adversarial policy/authority/tamper tests; Ruff/Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T02:34:29+00:00",
       "orphaned": false
     },
     "MF-P9-08.08": {

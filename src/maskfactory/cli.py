@@ -2504,7 +2504,7 @@ def daz_state_init(config_root: Path, apply_changes: bool) -> None:
             else result_envelope(
                 reason="state_database_initialization_plan",
                 evidence_paths=(str(path),),
-                data={"apply": False, "exists": path.is_file(), "target_schema_version": 2},
+                data={"apply": False, "exists": path.is_file(), "target_schema_version": 3},
             )
         )
     except (OSError, ValueError) as exc:
@@ -2547,6 +2547,11 @@ def daz_control() -> None:
     """Read or atomically change the local DAZ enable/drain state."""
 
 
+@daz.group("lineage")
+def daz_lineage() -> None:
+    """Query and revoke immutable DAZ supervision lineage."""
+
+
 @daz.group("assets")
 def daz_assets() -> None:
     """Build offline, privacy-safe DAZ asset-lineage observations."""
@@ -2555,6 +2560,166 @@ def daz_assets() -> None:
 @daz.group("recipes")
 def daz_recipes() -> None:
     """Seal and verify canonical fully resolved DAZ scene recipes."""
+
+
+def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
+    if database is not None:
+        return database
+    from .daz import load_control_configuration
+
+    return load_control_configuration(config_root).paths.state_database
+
+
+@daz.command("ingest")
+@click.argument("scene_id")
+@click.option(
+    "--adapted-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--adapter-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--qa-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--database", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--dry-run", is_flag=True, help="Validate and plan without writing state.")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_ingest(
+    scene_id: str,
+    adapted_root: Path,
+    adapter_report: Path,
+    qa_report: Path,
+    database: Path | None,
+    dry_run: bool,
+    config_root: Path,
+) -> None:
+    """Ingest one exactly QA-approved adapted scene into immutable lineage."""
+    from .daz import ingest_adapted_scene, result_envelope
+
+    try:
+        adapter_document = json.loads(adapter_report.read_text(encoding="utf-8"))
+        qa_document = json.loads(qa_report.read_text(encoding="utf-8"))
+        if adapter_document.get("scene_id") != scene_id:
+            raise ValueError("scene argument does not match the adapter report")
+        state_database = _resolve_daz_database(config_root, database)
+        record = ingest_adapted_scene(
+            state_database,
+            adapted_root,
+            adapter_document,
+            qa_document,
+            dry_run=dry_run,
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_ingest_planned" if dry_run else "daz_scene_ingested",
+                entity_ids=(scene_id, *record["package_ids"]),
+                evidence_paths=(str(adapter_report), str(qa_report), str(state_database)),
+                data={**record, "dry_run": dry_run},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_lineage.command("verify")
+@click.argument("entity_type")
+@click.argument("entity_id")
+@click.option("--database", type=click.Path(path_type=Path, dir_okay=False))
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_lineage_verify(
+    entity_type: str, entity_id: str, database: Path | None, config_root: Path
+) -> None:
+    """Return all transitive descendants of one exact lineage entity."""
+    from .daz import query_descendants, result_envelope
+
+    try:
+        state_database = _resolve_daz_database(config_root, database)
+        descendants = query_descendants(state_database, entity_type, entity_id)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_lineage_verified",
+                entity_ids=(entity_id,),
+                evidence_paths=(str(state_database),),
+                data={"descendant_count": len(descendants), "descendants": descendants},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_lineage.command("revoke")
+@click.argument("entity_type")
+@click.argument("entity_id")
+@click.option("--root-sha256", required=True)
+@click.option("--reason-code", required=True)
+@click.option("--evidence-sha256", required=True)
+@click.option("--database", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--dry-run", is_flag=True, help="Validate and plan without writing state.")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_lineage_revoke(
+    entity_type: str,
+    entity_id: str,
+    root_sha256: str,
+    reason_code: str,
+    evidence_sha256: str,
+    database: Path | None,
+    dry_run: bool,
+    config_root: Path,
+) -> None:
+    """Revoke one exact lineage root and make every descendant unusable."""
+    from .daz import result_envelope, revoke_lineage
+
+    try:
+        state_database = _resolve_daz_database(config_root, database)
+        revocation = revoke_lineage(
+            state_database,
+            entity_type,
+            entity_id,
+            root_sha256,
+            reason_code,
+            evidence_sha256,
+            dry_run=dry_run,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_lineage_revocation_planned" if dry_run else "daz_lineage_revoked",
+                entity_ids=(entity_id,),
+                evidence_paths=(str(state_database),),
+                data={**revocation, "dry_run": dry_run},
+            ),
+            sort_keys=True,
+        )
+    )
 
 
 @daz_assets.command("dim-scan")

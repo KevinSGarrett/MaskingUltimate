@@ -6644,3 +6644,22 @@ Live boundary:                        no fixture is claimed as a live accepted p
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
 Verification:                         16/16 new, 98/98 focused adapter/schema/QC, and 2,918/2,918 full repository tests pass; Ruff, pre-commit Black, all 125 JSON schemas, all 32 DAZ YAML documents, and Git diff checks pass
 Evidence:                             `qa/reports/daz_adapted_package_qc_20260717.json`
+
+## 2026-07-17 03:55 UTC - Transactional DAZ ingestion and descendant revocation implemented
+
+**Result:** MF-P9-08.09 now has complete offline ingestion, lineage, descendant-query, and revocation
+software with migration and CLI proof; it remains at 85% until D1 and a qualified live D7-07 package
+allow the same transaction and descendant query to run against live accepted evidence.
+
+State migration:                      the dedicated WAL/foreign-key database advances from schema v2 to v3 without losing existing rows and adds immutable lineage entities/edges, ingest records, revocations, and revocation impacts
+Ingestion authority:                  the exact passing adapter/QA binding, accepted scene/certificate authority, synthetic manifest contract, every package byte/tree hash, identity, ontology, provider/tier/owner/transform/certificate scope, and one-through-four-person package set are reverified in one transaction
+Lineage graph:                        immutable authority and ontology nodes bind the technical certificate, then scene, packages, dataset snapshots, training runs, and models; parent-type restrictions prevent invalid graph construction
+Descendant query:                     deterministic transitive lookup reaches mapping→certificate→scene→package→dataset→run→model and fails closed for a nonexistent root
+Revocation propagation:              exact root/evidence hashes revoke the technical certificate, scene, and packages; exclude affected data from future snapshots; mark runs/models affected; prevent new use; retain historical membership/manifests; and emit immutable impacts plus one event
+CLI/dry run:                          `daz ingest`, `daz lineage verify`, and `daz lineage revoke` emit machine-readable envelopes; both mutations have proven non-writing dry runs
+Seeded proof:                         T-074 mapping change reaches every downstream artifact; T-087 accepted packages ingest; T-088 byte tamper and T-089 missing mandatory file reject; invalid parents, stale authorities, hash rebinding, replay conflicts, and partial transactions fail closed
+Wave64 boundary:                     Main-side files remain untouched; explicit provider/tier/ontology/MaskFactory owner/package revision/certificate/transform evidence is preserved; Mode B and inferred authority remain draft-only and cannot mutate gold
+Live boundary:                        no fixture is claimed as a qualified live package, live ingestion, live revocation, dataset admission, model impact, or gold authority; D1 and qualified D7-07 live evidence remain outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
+Verification:                         15/15 final lineage/migration, 163/163 adjacent adapter/QC/acceptance/manifest, and 2,927/2,927 full repository tests pass; repository Ruff, changed-surface Black, 125 MaskFactory JSON schemas, 32 DAZ YAML documents, and Git diff checks pass
+Evidence:                             `qa/reports/daz_ingestion_revocation_lineage_20260717.json`

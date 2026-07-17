@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T03:15:22+00:00",
+    "generated_at": "2026-07-17T03:57:01+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 755,
     "total_tracked_including_orphaned": 755
@@ -16902,13 +16902,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T03:57:01+00:00",
+          "actor": "codex",
+          "text": "Offline implementation complete: transactional ingest, schema v3 migration, deterministic descendant query, exact-hash revocation propagation, append-only evidence, CLI and dry-run paths pass. Honest live boundary: D1 and a qualified live D7-07 package remain unavailable, so no live package ingestion or production descendant revocation is claimed."
+        }
+      ],
+      "evidence": "qa/reports/daz_ingestion_revocation_lineage_20260717.json; 15/15 final lineage/migration tests, 163/163 adjacent tests, 2927/2927 full tests; Ruff and changed-surface Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T03:57:01+00:00",
       "orphaned": false
     },
     "MF-P9-08.10": {

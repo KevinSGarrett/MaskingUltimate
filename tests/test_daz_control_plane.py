@@ -114,7 +114,7 @@ def test_root_initializer_is_deterministic_and_registered_paths_fail_closed(tmp_
 def test_state_migration_wal_integrity_and_append_only_events(tmp_path: Path):
     database = tmp_path / "queue" / "queue.sqlite"
     first = initialize_state_database(database)
-    assert first["data"]["applied_migrations"] == [1, 2]
+    assert first["data"]["applied_migrations"] == [1, 2, 3]
     assert first["data"]["passed"] is True
     second = initialize_state_database(database)
     assert second["data"]["applied_migrations"] == []

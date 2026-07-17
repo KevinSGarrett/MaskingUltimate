@@ -16,7 +16,7 @@ from typing import Any, Mapping
 
 from .policy import DazConfiguration, load_typed_daz_configuration
 
-STATE_SCHEMA_VERSION = 2
+STATE_SCHEMA_VERSION = 3
 ROOT_SCHEMA_VERSION = "1.0.0"
 EVENT_SCHEMA = "daz_event_1.0.0"
 
@@ -411,6 +411,11 @@ TABLE_NAMES = (
     "package_exports",
     "dataset_membership",
     "events",
+    "lineage_entities",
+    "lineage_edges",
+    "ingest_records",
+    "revocations",
+    "revocation_impacts",
 )
 
 MIGRATION_1 = """
@@ -444,6 +449,78 @@ BEFORE DELETE ON events
 BEGIN
   SELECT RAISE(ABORT, 'DAZ_EVENTS_APPEND_ONLY');
 END;
+"""
+
+MIGRATION_3 = """
+BEGIN IMMEDIATE;
+CREATE TABLE lineage_entities (
+  entity_type TEXT NOT NULL,
+  entity_id TEXT NOT NULL,
+  content_sha256 TEXT NOT NULL CHECK(length(content_sha256)=64),
+  state TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY(entity_type, entity_id)
+);
+CREATE TABLE lineage_edges (
+  parent_type TEXT NOT NULL,
+  parent_id TEXT NOT NULL,
+  child_type TEXT NOT NULL,
+  child_id TEXT NOT NULL,
+  relation TEXT NOT NULL,
+  evidence_sha256 TEXT NOT NULL CHECK(length(evidence_sha256)=64),
+  created_at TEXT NOT NULL,
+  PRIMARY KEY(parent_type, parent_id, child_type, child_id, relation),
+  FOREIGN KEY(parent_type, parent_id) REFERENCES lineage_entities(entity_type, entity_id),
+  FOREIGN KEY(child_type, child_id) REFERENCES lineage_entities(entity_type, entity_id)
+);
+CREATE TABLE ingest_records (
+  ingest_id TEXT PRIMARY KEY,
+  scene_id TEXT NOT NULL REFERENCES scene_recipes(scene_id),
+  adapter_report_id TEXT NOT NULL,
+  qa_report_id TEXT NOT NULL,
+  manifest_set_sha256 TEXT NOT NULL CHECK(length(manifest_set_sha256)=64),
+  created_at TEXT NOT NULL,
+  payload_json TEXT NOT NULL
+);
+CREATE TABLE revocations (
+  revocation_id TEXT PRIMARY KEY,
+  root_type TEXT NOT NULL,
+  root_id TEXT NOT NULL,
+  root_sha256 TEXT NOT NULL CHECK(length(root_sha256)=64),
+  reason_code TEXT NOT NULL,
+  evidence_sha256 TEXT NOT NULL CHECK(length(evidence_sha256)=64),
+  created_at TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  FOREIGN KEY(root_type, root_id) REFERENCES lineage_entities(entity_type, entity_id)
+);
+CREATE TABLE revocation_impacts (
+  revocation_id TEXT NOT NULL REFERENCES revocations(revocation_id),
+  entity_type TEXT NOT NULL,
+  entity_id TEXT NOT NULL,
+  prior_state TEXT NOT NULL,
+  new_state TEXT NOT NULL,
+  action TEXT NOT NULL,
+  PRIMARY KEY(revocation_id, entity_type, entity_id),
+  FOREIGN KEY(entity_type, entity_id) REFERENCES lineage_entities(entity_type, entity_id)
+);
+CREATE TRIGGER lineage_edges_no_update BEFORE UPDATE ON lineage_edges BEGIN SELECT RAISE(ABORT, 'DAZ_LINEAGE_APPEND_ONLY'); END;
+CREATE TRIGGER lineage_edges_no_delete BEFORE DELETE ON lineage_edges BEGIN SELECT RAISE(ABORT, 'DAZ_LINEAGE_APPEND_ONLY'); END;
+CREATE TRIGGER lineage_entity_identity_immutable BEFORE UPDATE ON lineage_entities
+WHEN OLD.entity_type != NEW.entity_type OR OLD.entity_id != NEW.entity_id OR OLD.content_sha256 != NEW.content_sha256 OR OLD.payload_json != NEW.payload_json OR OLD.created_at != NEW.created_at
+BEGIN SELECT RAISE(ABORT, 'DAZ_LINEAGE_IDENTITY_IMMUTABLE'); END;
+CREATE TRIGGER ingest_records_no_update BEFORE UPDATE ON ingest_records BEGIN SELECT RAISE(ABORT, 'DAZ_INGEST_APPEND_ONLY'); END;
+CREATE TRIGGER ingest_records_no_delete BEFORE DELETE ON ingest_records BEGIN SELECT RAISE(ABORT, 'DAZ_INGEST_APPEND_ONLY'); END;
+CREATE TRIGGER revocations_no_update BEFORE UPDATE ON revocations BEGIN SELECT RAISE(ABORT, 'DAZ_REVOCATIONS_APPEND_ONLY'); END;
+CREATE TRIGGER revocations_no_delete BEFORE DELETE ON revocations BEGIN SELECT RAISE(ABORT, 'DAZ_REVOCATIONS_APPEND_ONLY'); END;
+CREATE TRIGGER revocation_impacts_no_update BEFORE UPDATE ON revocation_impacts BEGIN SELECT RAISE(ABORT, 'DAZ_REVOCATION_IMPACTS_APPEND_ONLY'); END;
+CREATE TRIGGER revocation_impacts_no_delete BEFORE DELETE ON revocation_impacts BEGIN SELECT RAISE(ABORT, 'DAZ_REVOCATION_IMPACTS_APPEND_ONLY'); END;
+CREATE TRIGGER package_export_identity_immutable BEFORE UPDATE ON package_exports
+WHEN OLD.package_id != NEW.package_id OR OLD.scene_id != NEW.scene_id OR OLD.payload_json != NEW.payload_json
+BEGIN SELECT RAISE(ABORT, 'DAZ_PACKAGE_EXPORT_IDENTITY_IMMUTABLE'); END;
+CREATE TRIGGER dataset_membership_no_update BEFORE UPDATE ON dataset_membership BEGIN SELECT RAISE(ABORT, 'DAZ_DATASET_MEMBERSHIP_APPEND_ONLY'); END;
+CREATE TRIGGER dataset_membership_no_delete BEFORE DELETE ON dataset_membership BEGIN SELECT RAISE(ABORT, 'DAZ_DATASET_MEMBERSHIP_APPEND_ONLY'); END;
 """
 
 
@@ -481,6 +558,15 @@ def initialize_state_database(path: Path) -> dict[str, Any]:
                 connection.execute("PRAGMA user_version=2")
                 connection.commit()
                 applied.append(2)
+            if source_version < 3:
+                connection.executescript(MIGRATION_3)
+                connection.execute(
+                    "INSERT INTO schema_migrations VALUES (?,?,?)",
+                    (3, "add immutable ingest and revocation lineage graph", _utc_now()),
+                )
+                connection.execute("PRAGMA user_version=3")
+                connection.commit()
+                applied.append(3)
         finally:
             connection.close()
     except DazControlError:

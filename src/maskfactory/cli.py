@@ -2562,6 +2562,77 @@ def daz_recipes() -> None:
     """Seal and verify canonical fully resolved DAZ scene recipes."""
 
 
+@daz.group("coverage")
+def daz_coverage() -> None:
+    """Build versioned DAZ coverage vocabularies, deficits, and generation plans."""
+
+
+@daz_coverage.command("vocabulary-report")
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/coverage_vocabulary.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--repository-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("."),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\coverage_vocabulary"),
+    show_default=True,
+)
+def daz_coverage_vocabulary_report(policy: Path, repository_root: Path, output: Path) -> None:
+    """Verify source-bound closed axes and publish their normalized report."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        CoverageVocabularyError,
+        build_coverage_vocabulary_report,
+        load_coverage_vocabulary,
+        publish_coverage_vocabulary_report,
+    )
+
+    try:
+        document = build_coverage_vocabulary_report(
+            load_coverage_vocabulary(policy), repository_root
+        )
+        target, published = publish_coverage_vocabulary_report(document, output)
+    except (
+        CoverageVocabularyError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, CoverageVocabularyError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_coverage_vocabulary_report_built",
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

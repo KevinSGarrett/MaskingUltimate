@@ -6751,3 +6751,21 @@ Verification:                         8/8 focused D8 relationship (including sep
 Resource boundary:                   the explicit DAZ-wide process ended after partial dot output without a pytest summary or exit code and is not counted; no current DAZ-wide or full-repository pass is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_reciprocal_relationship_records_20260717.json`
+
+## 2026-07-17 07:31 UTC - Closed source-bound DAZ coverage vocabulary implemented
+
+**Result:** MF-P9-10.01 now has a complete offline closed vocabulary, schema, compiler, replay,
+and immutable report; it remains at 85% until qualified D0 inventory and D5 mapping inputs can
+populate accepted live coverage observations.
+
+Closed vocabulary:                   55 fixed axes with 381 values, 8 versioned-registry axes, 6 continuous axes, and 18 mandatory high-risk intersections are disjoint, ordered, versioned, and fail closed on unknown or missing values
+Source binding:                       exact hashes and value crosswalks bind canonical MaskFactory coverage plus DAZ character, appearance, solo-pose, scene-formation, duo-relationship, render-pass, and asset-registry policies; any source or crosswalk drift rejects
+Coverage layers:                      canonical, DAZ generation, and high-risk intersection layers remain explicit; fixed vocabularies, inventory registries, and continuous measurements cannot be silently conflated
+Reporting contract:                  marginal, pairwise, selected three-way, and accepted-only reporting separates planned, attempted, rendered, accepted, packaged, dataset-selected, and training-consumed states across scene, person-instance, and effective-training-weight units
+Publication/replay:                  closed JSON schema, deterministic report ID/hash, policy reconstruction, source-hash replay, atomic immutable idempotent publication, conflict rejection, and `daz coverage vocabulary-report` CLI pass
+Authority boundary:                  synthetic coverage counts are not gold counts, real-image accuracy, promotion authority, or a stronger truth tier; adult synthetic anatomy/wardrobe coverage remains permitted while minor content remains forbidden
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; downstream qualifiers may consume explicit versioned coverage context but cannot infer stronger mask provider/tier/ontology/owner/certificate authority
+Verification:                         14/14 focused vocabulary, 5/5 canonical coverage, and 6/6 source-policy tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 130 JSON schemas, all 37 DAZ YAML documents, and Git diff checks pass
+Resource boundary:                   bounded focused processes were used because live ComfyUI plus WSL/Docker leave limited memory; every claimed process completed normally, and no current DAZ-wide or full-repository pass is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_coverage_vocabulary_20260717.json`; immutable report `qa/reports/daz_coverage_vocabulary/dcvr_56b29e6cc11ac8d33821368d.json`

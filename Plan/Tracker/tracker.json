@@ -17195,13 +17195,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T07:31:48+00:00",
+          "actor": "codex",
+          "text": "Offline closed vocabulary, source-hash/crosswalk replay, schema, compiler, reporting separation, CLI, and immutable publication complete. Qualified D0 inventory plus D5 ontology/asset mapping inputs and accepted live coverage observations remain outstanding; no live corpus, dataset consumption, or gold authority claimed."
+        }
+      ],
+      "evidence": "qa/reports/daz_coverage_vocabulary_20260717.json; qa/reports/daz_coverage_vocabulary/dcvr_56b29e6cc11ac8d33821368d.json; 25/25 focused and adjacent tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T07:31:48+00:00",
       "orphaned": false
     },
     "MF-P9-10.02": {

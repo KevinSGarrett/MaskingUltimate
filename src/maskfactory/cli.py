@@ -4285,6 +4285,86 @@ def daz_recipes_select_duo(
     )
 
 
+@daz_recipes.command("assign-p-indices")
+@click.option(
+    "--selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/p_index_assignment.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\p_indices"),
+    show_default=True,
+)
+def daz_recipes_assign_p_indices(
+    selection: Path,
+    observation: Path,
+    construction_map: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Assign p-indices from a final-camera construction-ownership raster."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        PIndexAssignmentError,
+        build_p_index_assignment,
+        load_p_index_assignment_policy,
+        publish_p_index_assignment,
+    )
+
+    try:
+        assignment = build_p_index_assignment(
+            json.loads(selection.read_text(encoding="utf-8")),
+            json.loads(observation.read_text(encoding="utf-8")),
+            construction_map,
+            load_p_index_assignment_policy(policy),
+        )
+        target, published = publish_p_index_assignment(assignment, output)
+    except (PIndexAssignmentError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PIndexAssignmentError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_p_indices_assigned",
+                entity_ids=(assignment["assignment_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "assignment_sha256": assignment["assignment_sha256"],
+                    "mapping": assignment["mapping"],
+                    "promotion": assignment["promotion"],
+                    "summary": assignment["summary"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("select-formation")
 @click.option(
     "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True

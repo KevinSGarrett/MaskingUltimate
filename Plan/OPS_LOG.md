@@ -6681,3 +6681,21 @@ Live boundary:                        no fixture is claimed as a live DAZ duo, s
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
 Verification:                         78/78 focused duo/recipe/strict-validator, 393/393 adjacent scene construction, and 2,946/2,946 full repository tests pass; repository Ruff, changed-surface Black, 126 JSON schemas, 33 DAZ YAML documents, and Git diff checks pass
 Evidence:                             `qa/reports/daz_duo_recipe_matrix_20260717.json`
+
+## 2026-07-17 05:26 UTC - Final-camera prominence and deterministic p-index assignment implemented
+
+**Result:** MF-P9-09.02 now has complete offline raster-derived p-index assignment, bounded
+retry/resample behavior, and construction-order permutation proof; it remains at 85% until a
+qualified live final-camera construction-ownership raster runs through the same contract.
+
+Final-camera authority:              assignment consumes an exact uint16 construction-ownership raster at the frozen final camera; it binds normalized camera readback, resolution/crop, raster bytes/hash, resolved-state identity, scene-state hash, and duo-selection lineage
+Prominence policy:                    visible pixels divided by final output pixels matches the live instance-pass 4% floor; bboxes and visible areas are raster-derived; ranking is prominence descending, visible area descending, then construction ID ascending
+Permutation proof:                    construction-owner list order, provisional raster IDs, and raster namespace can all permute while prominence and slot/construction-to-p-index mapping remain identical; equal-score ties resolve by construction ID
+Promotion failure:                    a required below-floor person receives at most two framing retries, then reject/resample; nonrequired below-floor scenes reject/resample immediately; no failure artifact contains any partial p-index mapping and no person is silently dropped
+Replay/publication:                    the validator independently reconstructs measurements, floor state, ordering, mapping, summary, and camera/hash invariants; closed schema, immutable ID/hash, atomic idempotent publication, conflict rejection, and `daz recipes assign-p-indices` CLI pass
+Authority boundary:                   the artifact is technical post-camera evidence only; it creates no training truth or gold, cannot raise authority, and cannot mutate MaskFactory human or autonomous-certified gold
+Wave64 boundary:                      Main remains untouched; versioned mapping and transform evidence can be consumed downstream, but provider/tier/ontology/owner/certificate authority remains explicit and cannot be inferred upward
+Live boundary:                        no live DAZ render, live p-index result, solved contact, ownership/exclusivity acceptance, dataset admission, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
+Verification:                         9/9 focused, 1,194/1,194 DAZ-wide, and 2,955/2,955 full repository tests pass; repository Ruff, changed-surface Black, 127 JSON schemas, 34 DAZ YAML documents, and Git diff checks pass
+Evidence:                             `qa/reports/daz_p_index_prominence_20260717.json`

@@ -16977,13 +16977,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T05:27:08+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented exact uint16 final-camera construction-raster prominence ranking, complete slot/construction-to-p-index mapping, bounded retry/reject behavior, semantic replay validation, immutable CLI publication, and construction/source-ID permutation fixtures. 9 focused, 1,194 DAZ-wide, and 2,955 full repository tests pass; Ruff/Black/schema/YAML/diff checks pass. Remains 85% because no qualified live final-camera construction raster has run; no live render, gold, or authority uplift claimed."
+        }
+      ],
+      "evidence": "qa/reports/daz_p_index_prominence_20260717.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T05:27:08+00:00",
       "orphaned": false
     },
     "MF-P9-09.03": {

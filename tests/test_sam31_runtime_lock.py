@@ -76,3 +76,18 @@ def test_sam31_remains_ineligible_until_smoke_and_benchmark_are_resolved() -> No
         assert provider_activation_issues(entry, content_lane=lane) == (
             "lifecycle_state='planned' is not activatable",
         )
+
+
+def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
+    lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
+    contract = lock["live_smoke"]["subprocess_contract"]
+    assert lock["source"]["local_path"] == "models/runtime_cache/sam3_source_5dd401d1"
+    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["correct_builder"].startswith("build_sam3_predictor")
+    assert contract["forbidden_checkpoint_builder"].startswith("build_sam3_image_model")
+    assert contract["adaptation"] == "single_frame_directory_via_object_multiplex"
+    assert contract["determinism_repeats"] == 2
+    assert _sha256(ROOT / contract["host_verifier"]) == contract["host_verifier_sha256"]
+    assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
+    assert _sha256(ROOT / contract["fixture"]) == contract["fixture_sha256"]
+    assert lock["live_smoke"]["checkpoint_inference"] == ("not_run_wsl_filesystem_io_error")

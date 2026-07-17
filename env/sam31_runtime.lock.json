@@ -6,6 +6,7 @@
     "repository": "https://github.com/facebookresearch/sam3.git",
     "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
     "tree": "3ddfc8fc42fe1cac4e7d81d7476401fc497fe66e",
+    "local_path": "models/runtime_cache/sam3_source_5dd401d1",
     "commit_timestamp": "2026-06-15T12:12:38-07:00",
     "archive_sha256": "6a1e59bc12639e34d4cf613851954af33a1c5409c8aa09b0f47254225414cb16",
     "license_sha256": "67f67e15efa517e0f67f59ff2d2f603a624da5d2f5458b0c5b366ccd66bb3eea",
@@ -65,6 +66,22 @@
     "multiplex_builder_import": true,
     "pip_check": "pass",
     "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "subprocess_contract": {
+      "status": "offline_verified_live_pending",
+      "host_verifier": "src/maskfactory/providers/sam31_multiplex.py",
+      "host_verifier_sha256": "dfd377d2bf840681e76f0321befaa044222049cc39f9ac17e7c7eae0c3144da8",
+      "isolated_runner": "tools/smoke_sam31_multiplex_wsl.py",
+      "isolated_runner_sha256": "e4b3a43f1daf2f920b75fe139e2e7add689c78bed05751b97b3a6d7d96a85224",
+      "correct_builder": "build_sam3_predictor(checkpoint_path=..., version='sam3.1')",
+      "forbidden_checkpoint_builder": "build_sam3_image_model; it targets the older sam3.pt image checkpoint",
+      "adaptation": "single_frame_directory_via_object_multiplex",
+      "fixture": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+      "fixture_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+      "prompt": "one positive point at relative [0.5,0.5] for object 1",
+      "determinism_repeats": 2,
+      "artifact": "closed NPZ loaded with allow_pickle=false",
+      "evidence": "clean source/runtime/requirements/checkpoint/image/payload/artifact hashes, shapes, model-load/cold/warm latency, model/peak VRAM, runtime-only non-gold authority"
+    },
     "evidence": "qa/live_verification/sam31_checkpoint_install_20260717.json"
   }
 }

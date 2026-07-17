@@ -6950,3 +6950,23 @@ Live boundary:                        the WSL subprocess was not launched; depen
 Authority boundary:                   DensePose remains active and rollback; SAM 3D Body remains planned/shadow-only, unbenchmarked, unpromoted, non-production, and unable to author gold
 Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
 Evidence:                             `qa/live_verification/sam3d_body_subprocess_contract_20260717.json` SHA-256 `5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3`
+
+## 2026-07-17 10:33 UTC - Official SAM 3.1 multiplex smoke contract implemented
+
+**Result:** The installed SAM 3.1 Object Multiplex checkpoint now has an exact offline-verified
+host-to-WSL smoke path using the correct frozen official API. Live checkpoint execution remains
+pending on Ubuntu filesystem recovery, so no runtime measurements or serving authority are claimed.
+
+Official API:                         frozen source commit `5dd401d1...` routes `build_sam3_predictor(checkpoint_path=..., version="sam3.1")` to the multiplex video predictor; the older `build_sam3_image_model` path is explicitly rejected for this checkpoint
+Single-image adaptation:              one governed JPEG becomes a one-frame directory and is processed through the official start-session/add-point/close-session API with a normalized positive point for object 1
+Execution boundary:                   host adapter invokes `wsl.exe` with an exact argv and never a shell; the source tree, runtime lock, requirements lock, checkpoint, image, and isolated runner are identity-bound
+Determinism:                          exactly two fresh multiplex sessions are required; typed and shape-bound payload SHA-256 values must match before evidence is accepted
+Artifact contract:                    closed-field compressed NPZ is loaded with `allow_pickle=false`; mask/object/probability/box fields, finite geometry, exact hashes, and exact shapes are independently checked
+Runtime evidence:                     closed JSON binds exact source/runtime/requirements/checkpoint/image/payload/artifact identities plus model-load/cold/warm latency and model/peak inference VRAM
+Failure behavior:                     missing inputs, timeout, nonzero process including preserved CUDA OOM text, identity/authority drift, malformed geometry, report/artifact drift, and nondeterminism fail closed
+Runtime matrix:                       canonical manifest `38aad9d173113387820586e7b6ae51651d4c3b50a379d759c578e3316ca7b73f`; 8 providers, 6 live-qualified, 2 explicit runtime-pending, 18 exact artifacts, and zero human gates
+Verification:                         85/85 SAM 3.1/provider/runtime-matrix/doctor tests pass; Ruff, Ruff format, runtime-matrix verification, and Git diff checks pass
+Live boundary:                        the WSL subprocess was not launched; the checkpoint was not loaded; CUDA inference, latency, VRAM, deterministic live output, and failure behavior remain unmeasured while Ubuntu root ext4 is `emergency_ro`
+Authority boundary:                   SAM 2.1-large remains active; official SAM 3.1 remains planned, unbenchmarked, unpromoted, candidate-serving-disabled, non-production, and unable to author gold
+Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
+Evidence:                             `qa/live_verification/sam31_multiplex_contract_20260717.json`

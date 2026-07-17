@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T10:33:45.6481224Z",
+  "result": "OFFLINE_MULTIPLEX_CONTRACT_PASS_LIVE_RUNTIME_PENDING",
+  "provider": "sam3_1",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam3.git",
+    "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "tracked_tree_clean": true,
+    "model_builder_sha256": "393fe0c6bd58e6281c6064e411f67b20e036bdd6061979986994e5332c185644",
+    "base_predictor_sha256": "23375b4c653eac91654e1ad797e20b165e27ae68abbf7507cb3f5b4837677636"
+  },
+  "installed_checkpoint": {
+    "repository": "facebook/sam3.1",
+    "filename": "sam3.1_multiplex.pt",
+    "size_bytes": 3502755717,
+    "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
+  },
+  "official_api_finding": {
+    "correct_builder": "build_sam3_predictor(checkpoint_path=..., version='sam3.1')",
+    "resolved_implementation": "build_sam3_multiplex_video_predictor",
+    "forbidden_checkpoint_builder": "build_sam3_image_model",
+    "reason": "The installed checkpoint is the SAM 3.1 Object Multiplex video checkpoint; the frozen image-model builder targets the older sam3.pt checkpoint.",
+    "single_image_adaptation": "one governed JPEG copied to a one-frame directory and processed through the official multiplex session API"
+  },
+  "contract": {
+    "execution": "wsl.exe exact argv; shell disabled",
+    "runtime_python": "/home/kevin/mfenvs/sam31-5dd401d1/bin/python",
+    "prompt": "one positive point at normalized [0.5, 0.5] for object 1",
+    "repeats": 2,
+    "determinism": "typed and shape-bound payload SHA-256 must match across two fresh sessions",
+    "artifact": "closed-field compressed NPZ loaded with allow_pickle=false",
+    "report": "closed-field JSON binds clean source commit, runtime/requirements/checkpoint/image identities, output hashes and shapes, model-load/cold/warm latency, and model/peak inference VRAM",
+    "failure_behavior": "missing input, timeout, nonzero subprocess including CUDA OOM text, identity/authority drift, malformed geometry, report drift, artifact drift, and nondeterminism fail closed",
+    "authority": "runtime smoke only; no candidate serving, active-map mutation, production-mask authority, or gold authority"
+  },
+  "files": {
+    "src/maskfactory/providers/sam31_multiplex.py": {
+      "size_bytes": 10604,
+      "sha256": "dfd377d2bf840681e76f0321befaa044222049cc39f9ac17e7c7eae0c3144da8"
+    },
+    "tools/smoke_sam31_multiplex_wsl.py": {
+      "size_bytes": 8335,
+      "sha256": "e4b3a43f1daf2f920b75fe139e2e7add689c78bed05751b97b3a6d7d96a85224"
+    },
+    "env/sam31_runtime.lock.json": {
+      "size_bytes": 4441,
+      "sha256": "262d8f2b7184929e9e3692034067ef7157199039dd540d480d9405e3d8bae5c6"
+    },
+    "env/provider_runtime_matrix.json": {
+      "size_bytes": 5494,
+      "sha256": "d4e3475d0fae37ebd4f2e0d8b52616cb84ae02d76d3965c0b9c31f142865928c",
+      "canonical_manifest_sha256": "38aad9d173113387820586e7b6ae51651d4c3b50a379d759c578e3316ca7b73f"
+    },
+    "src/maskfactory/providers/runtime_matrix.py": {
+      "size_bytes": 7294,
+      "sha256": "d609ced2362ed1b09ef564892c853fbf5f3cc8ebd71440254a089482ecc0bf45"
+    },
+    "qa/fixtures/smoke/ultralytics_bus_adults.jpg": {
+      "size_bytes": 137419,
+      "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+    },
+    "tests/test_sam31_multiplex.py": {
+      "size_bytes": 5619,
+      "sha256": "db667274b148a435cce54ce7b211bdaab8f13c9fee81b075ecd2f78a808aa6a2"
+    },
+    "tests/test_sam31_runtime_lock.py": {
+      "size_bytes": 4273,
+      "sha256": "14db6730562af7d1ec3063cdf7b27c6e4625f6648017244f50f27fe466a6fa50"
+    }
+  },
+  "verification": {
+    "sam31_and_related_provider_tests": "85 passed",
+    "runtime_matrix": "PASS: 8 providers, 6 qualified, 2 explicit pending, 18 artifacts",
+    "ruff": "PASS",
+    "ruff_format": "PASS",
+    "git_diff_check": "PASS",
+    "black": "PASS via repository pre-commit environment"
+  },
+  "runtime_boundary": {
+    "subprocess_executed": false,
+    "checkpoint_loaded": false,
+    "cuda_inference_run": false,
+    "latency_or_vram_measured": false,
+    "deterministic_checkpoint_output_measured": false,
+    "reason": "Ubuntu-22.04 root ext4 remains emergency_ro; live execution is deferred until the guarded offline VHD repair succeeds."
+  },
+  "authority": {
+    "lifecycle_state": "planned",
+    "active_provider": "sam2.1-large",
+    "benchmark_passed": false,
+    "promoted": false,
+    "candidate_serving_enabled": false,
+    "may_author_gold": false,
+    "production_route_changed": false
+  }
+}

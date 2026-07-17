@@ -10631,7 +10631,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-15T02:19:18+00:00",
@@ -10657,12 +10657,17 @@
           "ts": "2026-07-17T09:55:14+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the runtime failure is now specifically diagnosed as Ubuntu root ext4 emergency_ro with root-binary input/output errors. A backup-first, exact-VHD offline repair script was implemented and statically verified, but this non-admin session did not self-elevate, request UAC, stop Docker/WSL, attach the VHD, or execute e2fsck. Official SAM 3.1 inference remains pending until an already-elevated repair run restores a writable root filesystem."
+        },
+        {
+          "ts": "2026-07-17T10:35:36+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: implemented and offline-verified the exact official SAM 3.1 Object Multiplex smoke path. It uses build_sam3_predictor(version='sam3.1'), two fresh one-frame sessions, closed hash-bound NPZ/JSON evidence, exact latency/VRAM fields, and fail-closed drift/OOM handling. Live checkpoint load, CUDA measurements, deterministic live output, and failure-behavior execution remain pending on Ubuntu ext4 emergency_ro; no serving or gold authority changed."
         }
       ],
-      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json and tools/Repair-MaskFactoryWslVhd.ps1 SHA-256 f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b. Runtime smoke remains explicitly pending.",
+      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb. Live runtime smoke remains explicitly pending.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T09:59:51+00:00",
+      "updated_at": "2026-07-17T10:41:22+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -10902,12 +10907,17 @@
           "ts": "2026-07-17T10:18:12+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the frozen provider matrix was rehashed after binding the offline-verified SAM 3D Body host adapter and isolated runner into its runtime lock. It remains honestly at six live-qualified and two runtime-pending providers; no live smoke, promotion, production route, or gold authority is inferred from offline contract tests."
+        },
+        {
+          "ts": "2026-07-17T10:35:37+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: refroze the eight-provider matrix after binding the offline-verified official SAM 3.1 multiplex host adapter and isolated runner into its runtime lock. The matrix remains honestly at six live-qualified and two runtime-pending providers; no live smoke, promotion, production route, or gold authority is inferred."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 a1705b464cb18798c91002f28914de910880010045b66007e2fa9f09c9749189; qa/live_verification/sam3d_body_subprocess_contract_20260717.json SHA-256 5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Both official Meta live smokes remain pending on Ubuntu repair.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 38aad9d173113387820586e7b6ae51651d4c3b50a379d759c578e3316ca7b73f; qa/live_verification/sam3d_body_subprocess_contract_20260717.json SHA-256 5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Both official Meta live smokes remain pending on Ubuntu repair.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:18:12+00:00",
+      "updated_at": "2026-07-17T10:41:24+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -11944,12 +11954,17 @@
           "ts": "2026-07-15T23:24:23+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: official SAM3.1 concept discovery is now connected to production S06 as an isolated lifecycle-aware sidecar across 59 governed requests and all seven specialist lanes. Current planned lifecycle records an explicit zero-authority skip; no checkpoint inference or active-map change is claimed."
+        },
+        {
+          "ts": "2026-07-17T10:35:38+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the installed official SAM 3.1 multiplex checkpoint now has a correct offline-verified exact subprocess smoke path. This does not yet produce real concept/text/exemplar candidates; lifecycle remains planned and live executor/candidate evidence remains pending."
         }
       ],
       "evidence": "Production S06 orchestration requires exact official ConceptDetector and InteractiveSegmenter identities, routes 59 frozen visible-surface concepts, persists strict hash-sealed candidates on complete runs, and records unavailable/no-result/failure outcomes without feeding S07. qa/live_verification/sam31_production_shadow_orchestration_20260715.json SHA-256 c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7; complete repository 1659/1659. Remaining: gated checkpoint, installed live executor/GPU inference, and real candidate evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T23:24:23+00:00",
+      "updated_at": "2026-07-17T10:35:38+00:00",
       "orphaned": false
     },
     "MF-P2-11.04": {
@@ -11986,12 +12001,17 @@
           "ts": "2026-07-15T23:57:24+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: official SAM3.1 repair proposals are now connected to production S11 as a lifecycle-aware isolated sidecar behind InteractiveSegmenter. Exact identity/authority, source/pipeline/mask/prompt hashes, 12-candidate bound, strict binary persistence, existing repair guards, zero-authority skips/failures, and unchanged S09/active map are enforced. Remaining work is the gated official checkpoint/live GPU executor and real frozen benchmark."
+        },
+        {
+          "ts": "2026-07-17T10:35:38+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the installed official SAM 3.1 multiplex checkpoint now has an offline-verified positive-point runtime path with closed artifact/provenance checks. This does not advance the percentage because live point/box/mask refinement evidence and the real frozen benchmark remain pending."
         }
       ],
       "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json SHA-256 c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0. Dedicated 3/3, affected focused suites, currency chain 44/44, and complete repository 1662/1662 pass; Ruff and Black pass. No checkpoint inference, winner, promotion, production mask, truth, or gold authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T23:59:25+00:00",
+      "updated_at": "2026-07-17T10:35:38+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {

@@ -17058,13 +17058,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T07:09:47+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented fail-closed D6-to-D8 reciprocal relationship projection: passed geometry/depth report, accepted final-camera p-index assignment, replayed duo selection, scene-state/resolution, and exact instance/construction/p-index mapping are bound. Overlap-without-contact emits no contact plus reciprocal occlusion; true contact emits reciprocal contact plus occlusion. Coherently rehashed missing reciprocal edges, family mismatch, and lineage rebinding reject. 7/7 focused, 62/62 D6 relationship, and 9/9 p-index tests pass; Ruff/Black/schema/YAML/diff checks pass. Remains 85% pending qualified live D6-08/D8-01 evidence; no live relationship acceptance or gold/authority uplift claimed. An abnormal DAZ-wide run without summary/exit is not counted."
+        },
+        {
+          "ts": "2026-07-17T07:12:04+00:00",
+          "actor": "ai_agent",
+          "text": "Verification clarification: added the missing positive separated/no-boundary/no-contact fixture. Focused D8 relationship suite is now 8/8 and total directly relevant bounded evidence is 79/79 (8 D8 + 62 D6 relationship + 9 p-index). The separated fixture emits zero contact, zero occlusion, and zero directed edges; overlap and contact fixtures remain unchanged."
+        }
+      ],
+      "evidence": "qa/reports/daz_reciprocal_relationship_records_20260717.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T07:12:04+00:00",
       "orphaned": false
     },
     "MF-P9-09.06": {

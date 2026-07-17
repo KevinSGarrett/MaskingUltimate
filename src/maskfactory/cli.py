@@ -6453,6 +6453,99 @@ def daz_recipes_validate_multi_person_identity(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("build-multi-person-relationships")
+@click.option(
+    "--relationship-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assignment", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--duo-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/multi_person_relationship.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--duo-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/duo_recipe_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\13_validation\multi_person_relationships"),
+    show_default=True,
+)
+def daz_recipes_build_multi_person_relationships(
+    relationship_report: Path,
+    assignment: Path,
+    duo_selection: Path,
+    policy: Path,
+    duo_policy: Path,
+    output: Path,
+) -> None:
+    """Bind reciprocal D6 contact/occlusion truth to accepted final p-indices."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.multi_person_relationship import (
+        MultiPersonRelationshipError,
+        build_multi_person_relationship_record,
+        load_multi_person_relationship_policy,
+        publish_multi_person_relationship_record,
+    )
+    from .daz.scenes import load_duo_recipe_policy
+
+    try:
+        document = build_multi_person_relationship_record(
+            json.loads(relationship_report.read_text(encoding="utf-8")),
+            json.loads(assignment.read_text(encoding="utf-8")),
+            json.loads(duo_selection.read_text(encoding="utf-8")),
+            policy=load_multi_person_relationship_policy(policy),
+            duo_policy=load_duo_recipe_policy(duo_policy),
+        )
+        target, published = publish_multi_person_relationship_record(document, output)
+    except (
+        MultiPersonRelationshipError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, MultiPersonRelationshipError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_multi_person_relationship_record_built",
+                entity_ids=(document["record_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "relationship_family": document["relationship_family"],
+                    "record_sha256": document["record_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("prove-same-state-replay")
 @click.option(
     "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True

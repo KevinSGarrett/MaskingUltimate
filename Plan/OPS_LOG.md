@@ -6734,3 +6734,20 @@ Verification:                        7/7 focused tests and 4/4 isolated adjacent
 Resource boundary:                   larger adjacent invocations emitted passing case dots but ended without a pytest summary or exit code while free physical memory was about 0.55 GB; they are honestly not counted, and no current DAZ-wide or full-repository pass is claimed
 Capacity/mutation boundary:          F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_multi_person_identity_validation_20260717.json`
+
+## 2026-07-17 07:08 UTC - Reciprocal D8 contact and occlusion records bound to final p-indices
+
+**Result:** MF-P9-09.05 now has complete offline reciprocal relationship-record projection and
+relationship fixtures; it remains at 85% until qualified live D6-08 and D8-01 evidence runs through it.
+
+D6/D8 authority binding:              a passing hash-replayed D6 relationship report must match the accepted final-camera assignment's scene, scene-state, raster resolution, duo-selection ID/hash, and complete instance/p-index mapping
+Reciprocal records:                   every unordered numeric instance pair projects to its final p-index pair; contact emits both directed contact edges; front ownership emits `occludes` and its inverse `occluded_by`; mixed ownership emits both directions
+Geometry/depth separation:            contact replays 0–4 mm distance, at most 2 mm penetration, compatible normals, and positive 3D contact regions; occlusion remains visible-instance plus linear-depth authority; RGB inference is forbidden
+Recipe consistency:                   separated, overlap-without-contact, and contact-support semantics are independently enforced against the replayed selected duo family; a mismatch blocks
+Seeded proof:                         overlap without 3D proximity produces no contact and four reciprocal mixed-occlusion edges; true contact plus mixed occlusion produces six directed edges; coherently rehashed missing reciprocal edges, family mismatch, scene-state rebinding, record tamper, and publication conflict reject
+Lineage/publication:                  report, assignment, selection, policies, construction/instance/p-index mapping, projected record ID/hash, closed schema, atomic immutable publication, and CLI replay are bound
+Authority boundary:                   the artifact is technical D8 relationship evidence only and cannot create or raise training truth, human gold, autonomous-certified gold, Mode B authority, or inferred downstream authority
+Verification:                         8/8 focused D8 relationship (including separated, overlap-without-contact, and contact), 62/62 complete D6 relationship, and 9/9 complete p-index tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 129 JSON schemas, all 36 DAZ YAML documents, and Git diff checks pass
+Resource boundary:                   the explicit DAZ-wide process ended after partial dot output without a pytest summary or exit code and is not counted; no current DAZ-wide or full-repository pass is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_reciprocal_relationship_records_20260717.json`

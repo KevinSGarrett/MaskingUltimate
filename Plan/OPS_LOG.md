@@ -6552,3 +6552,23 @@ Live boundary:                        no fixture is claimed as a qualified live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Verification:                         571/571 focused, 1,078/1,078 DAZ-selected, and 2,770/2,770 full repository tests pass; Ruff, targeted format, all 118 JSON schemas, all 28 DAZ YAML documents, tracker validation, and Git diff checks pass
 Evidence:                             `qa/reports/daz_pass_semantic_validators_20260717.json`
+
+## 2026-07-17 00:51 UTC - Deterministic bounded repairs and retry budgets implemented
+
+**Result:** MF-P9-08.04 now has a closed repair policy, sealed requests, hash-chained deterministic
+history, and exact per-demand/reason-family budgets; it remains at 85% until D7-02/D7-03 live
+authorities and a qualified live repair followed by full downstream revalidation exist.
+
+Allowed repair authority:             nine exact defect/action contracts cover bounded camera recenter/distance, clip planes, support translation, pinned cloth/hair settle, smoothing/fit adjustment, placement separation, clean-worker rerender, compatible asset/pose resampling, and clean-snapshot recipe regeneration
+Delta closure:                        each action has exact ordered fields, finite numeric bounds, closed construction IDs, canonical asset exclusions, pinned seeds/cache hashes, and an exact validation reason/retryability binding
+Frozen invariants:                    ontology hash, mapping-set hash, label-table hash, truth tier, training-weight hash, and required-validator-set hash cannot change across the history; no repair can upgrade/downgrade authority, relabel gold, or remove a validator
+Budget authority:                     clean rerender=1, camera/support=2, cloth/hair=1, asset-combination replacement=3, and full regeneration=5; counts are per demand plus reason family and are replayed from the ledger rather than trusted
+Exhaustion behavior:                  the first over-budget request produces one `budget_exhausted` entry with no action/delta and an honest coverage deficit; duplicate exhaustion or any later scheduled repair in that family rejects, preventing an infinite queue
+Non-repairable behavior:              ID/alias/ownership, mapping, topology/nonfinite/visibility, cross-person identity/exclusivity, pass corruption/dimension/misalignment/replay, unresolved input, contract, and package-integrity failures reject immediately and cannot smuggle a repair delta
+Quarantine behavior:                  qualifying asset/mapping-class hard failures recommend quarantine only on repeated evidence, not on the first observation
+History integrity:                    sealed requests bind a replayed validation-set report; entries bind parent/new recipe revisions, exact deltas, previous-entry hashes, attempts, action, and disposition; semantic replay catches recomputed-hash attempt/revision/exhaustion/quarantine tampering
+Evidence publication:                 `plan-repair` snapshots the draft, validation set, prior history, and sealed request under a hash-derived input root and atomically publishes an immutable idempotent history
+Live boundary:                        no fixture is claimed as a qualified live repair or downstream revalidation; D7-02 and D7-03 live acceptance remain outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Verification:                         25/25 new, 255/255 focused, 1,103/1,103 DAZ-selected, and 2,795/2,795 full repository tests pass; Ruff, pre-commit Black, all 120 JSON schemas, all 29 DAZ YAML documents, tracker validation, and Git diff checks pass
+Evidence:                             `qa/reports/daz_repair_retry_20260717.json`

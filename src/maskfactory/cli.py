@@ -6574,6 +6574,142 @@ def daz_recipes_validate_pass_semantics(
         raise click.exceptions.Exit(code)
 
 
+@daz_recipes.command("plan-repair")
+@click.option(
+    "--draft", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--validation-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--history",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/repair_retry_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\repair_history"),
+    show_default=True,
+)
+def daz_recipes_plan_repair(
+    draft: Path,
+    validation_set: Path,
+    history: Path | None,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Append one deterministic bounded-repair, rejection, or exhaustion decision."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.repair_retry import (
+        RepairRetryError,
+        append_repair_decision,
+        build_repair_request,
+        load_repair_retry_policy,
+        publish_repair_history,
+    )
+    from .daz.validation_registry import ValidationRegistryError, load_validation_registry
+
+    try:
+        draft_document = json.loads(draft.read_text(encoding="utf-8"))
+        validation_document = json.loads(validation_set.read_text(encoding="utf-8"))
+        history_document = (
+            json.loads(history.read_text(encoding="utf-8")) if history is not None else None
+        )
+        policy_document = load_repair_retry_policy(policy)
+        registry_document = load_validation_registry(registry)
+        request = build_repair_request(
+            draft_document,
+            validation_document,
+            policy=policy_document,
+            registry=registry_document,
+        )
+        result = append_repair_decision(
+            request,
+            validation_document,
+            history_document,
+            policy=policy_document,
+            registry=registry_document,
+        )
+        input_bundle = {
+            "draft": draft_document,
+            "validation_set": validation_document,
+            "prior_history": history_document,
+            "request": request,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                input_bundle,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in input_bundle.items():
+            _publish_immutable_json(document, input_root, name)
+        target, published = publish_repair_history(result, output)
+    except (
+        RepairRetryError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason if isinstance(exc, (RepairRetryError, ValidationRegistryError)) else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    latest = result["entries"][-1]
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=0,
+                reason=f"daz_repair_{latest['disposition']}",
+                entity_ids=(result["history_id"], request["request_id"], request["entity_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "disposition": latest["disposition"],
+                    "action": latest["action"],
+                    "attempt": latest["attempt"],
+                    "maximum_attempts": latest["maximum_attempts"],
+                    "coverage_deficit": latest["coverage_deficit"],
+                    "quarantine_recommended": latest["quarantine_recommended"],
+                    "request_sha256": request["request_sha256"],
+                    "history_sha256": result["history_sha256"],
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _strict_file_manifest(paths: Mapping[str, Path]) -> list[dict[str, Any]]:
     records = []
     for role, path in paths.items():

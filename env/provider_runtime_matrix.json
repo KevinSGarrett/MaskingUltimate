@@ -30,7 +30,7 @@
       "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "262d8f2b7184929e9e3692034067ef7157199039dd540d480d9405e3d8bae5c6"},
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "5662a4a11a793ebf99f9d597d42fd5b46f6dc09108013f1bf061d83c67a078a6"},
         {"kind": "evidence", "path": "qa/live_verification/sam31_checkpoint_install_20260717.json", "sha256": "e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8"}
       ]
     },
@@ -107,5 +107,5 @@
       ]
     }
   ],
-  "manifest_sha256": "38aad9d173113387820586e7b6ae51651d4c3b50a379d759c578e3316ca7b73f"
+  "manifest_sha256": "aed4eea7f88f7a779e01da91f7618af8bf974b93c8ac902864e10b4879512c12"
 }

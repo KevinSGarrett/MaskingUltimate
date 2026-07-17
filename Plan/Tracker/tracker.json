@@ -10662,12 +10662,17 @@
           "ts": "2026-07-17T10:35:36+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: implemented and offline-verified the exact official SAM 3.1 Object Multiplex smoke path. It uses build_sam3_predictor(version='sam3.1'), two fresh one-frame sessions, closed hash-bound NPZ/JSON evidence, exact latency/VRAM fields, and fail-closed drift/OOM handling. Live checkpoint load, CUDA measurements, deterministic live output, and failure-behavior execution remain pending on Ubuntu ext4 emergency_ro; no serving or gold authority changed."
+        },
+        {
+          "ts": "2026-07-17T11:08:23+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the exact official checkpoint now also has offline-verified production discovery/refinement host and WSL runner contracts with closed evidence and preserved CUDA OOM text. Live checkpoint load, CUDA metrics, determinism, and failure-behavior execution remain pending on Ubuntu ext4 emergency_ro."
         }
       ],
       "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb. Live runtime smoke remains explicitly pending.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:41:22+00:00",
+      "updated_at": "2026-07-17T11:08:23+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -10912,12 +10917,17 @@
           "ts": "2026-07-17T10:35:37+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: refroze the eight-provider matrix after binding the offline-verified official SAM 3.1 multiplex host adapter and isolated runner into its runtime lock. The matrix remains honestly at six live-qualified and two runtime-pending providers; no live smoke, promotion, production route, or gold authority is inferred."
+        },
+        {
+          "ts": "2026-07-17T11:08:25+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: refroze the eight-provider matrix after binding the official SAM 3.1 production discovery/refinement runtime contract. The matrix remains at six live-qualified and two runtime-pending providers; offline implementation does not confer promotion or authority."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 38aad9d173113387820586e7b6ae51651d4c3b50a379d759c578e3316ca7b73f; qa/live_verification/sam3d_body_subprocess_contract_20260717.json SHA-256 5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Both official Meta live smokes remain pending on Ubuntu repair.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 aed4eea7f88f7a779e01da91f7618af8bf974b93c8ac902864e10b4879512c12; qa/live_verification/sam3d_body_subprocess_contract_20260717.json SHA-256 5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json SHA-256 b250adbcd0c86a09edc49b185452a10ed9765825020b18342ab12def145dde1c; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Both official Meta live smokes remain pending on Ubuntu repair.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:41:24+00:00",
+      "updated_at": "2026-07-17T11:08:25+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -11938,7 +11948,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
@@ -11959,12 +11969,17 @@
           "ts": "2026-07-17T10:35:38+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the installed official SAM 3.1 multiplex checkpoint now has a correct offline-verified exact subprocess smoke path. This does not yet produce real concept/text/exemplar candidates; lifecycle remains planned and live executor/candidate evidence remains pending."
+        },
+        {
+          "ts": "2026-07-17T11:08:26+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: implemented the real official multiplex text-discovery subprocess, closed output/report verification, stable instance identities, and default lazy S06 loader. The frozen public API has no external-exemplar input, so external exemplars reject explicitly rather than being ignored. Live official candidate evidence remains pending."
         }
       ],
-      "evidence": "Production S06 orchestration requires exact official ConceptDetector and InteractiveSegmenter identities, routes 59 frozen visible-surface concepts, persists strict hash-sealed candidates on complete runs, and records unavailable/no-result/failure outcomes without feeding S07. qa/live_verification/sam31_production_shadow_orchestration_20260715.json SHA-256 c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7; complete repository 1659/1659. Remaining: gated checkpoint, installed live executor/GPU inference, and real candidate evidence.",
+      "evidence": "qa/live_verification/sam31_production_shadow_orchestration_20260715.json SHA-256 c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json SHA-256 b250adbcd0c86a09edc49b185452a10ed9765825020b18342ab12def145dde1c. Production S06 routes 59 governed concepts across seven lanes through exact lazy official loaders with strict hash-sealed draft candidates and active-map invariance. Remaining: live GPU candidate evidence and a governed compatible external-exemplar API.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:35:38+00:00",
+      "updated_at": "2026-07-17T11:08:26+00:00",
       "orphaned": false
     },
     "MF-P2-11.04": {
@@ -11980,7 +11995,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 96,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
@@ -12006,12 +12021,17 @@
           "ts": "2026-07-17T10:35:38+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the installed official SAM 3.1 multiplex checkpoint now has an offline-verified positive-point runtime path with closed artifact/provenance checks. This does not advance the percentage because live point/box/mask refinement evidence and the real frozen benchmark remain pending."
+        },
+        {
+          "ts": "2026-07-17T11:08:26+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: implemented the real official multiplex positive/negative point runtime, deterministic box/mask-prior translation, exact ROI clipping, closed artifacts/reports, default S07/S08/S11 loaders, and prompt/polarity/containment/hash tests. Live checkpoint outputs and frozen benchmark evidence remain pending."
         }
       ],
-      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json SHA-256 c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0. Dedicated 3/3, affected focused suites, currency chain 44/44, and complete repository 1662/1662 pass; Ruff and Black pass. No checkpoint inference, winner, promotion, production mask, truth, or gold authority claimed.",
+      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json SHA-256 c6f1476a73b33f6c4340e06d47f55e8a8952949b8879b255e0e89011e76e4dd0; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json SHA-256 b250adbcd0c86a09edc49b185452a10ed9765825020b18342ab12def145dde1c. Exact point API, deterministic box/mask-prior translation, strict artifacts, provider-neutral production loaders, repair guards, and zero authority are implemented; live checkpoint and benchmark evidence remain open.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:35:38+00:00",
+      "updated_at": "2026-07-17T11:08:26+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {
@@ -12369,7 +12389,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T12:36:59+00:00",
@@ -12380,12 +12400,17 @@
           "ts": "2026-07-15T23:24:24+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: all seven required SAM3.1 specialist lanes now execute through the production S06 orchestration boundary rather than only the package fixture. Live official outputs remain gated by the checkpoint."
+        },
+        {
+          "ts": "2026-07-17T11:08:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: all seven specialist lanes now resolve to the real lazy official SAM 3.1 text-discovery/refinement runtime rather than fixture-only injected callables. Lifecycle remains planned and no live lane output or authority is claimed."
         }
       ],
-      "evidence": "Production route contract covers hand/finger, chest/pelvic, hair, foot/toe, clothing, accessory, and repeated-instance lanes with unique concepts, exact official identities, strict PNG packages, active-map invariance, and zero-authority noncompletion records. qa/live_verification/sam31_production_shadow_orchestration_20260715.json SHA-256 c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7; full 1659/1659. Remaining: official checkpoint/live GPU outputs, real lane smokes, and measured specialist results.",
+      "evidence": "qa/live_verification/sam31_production_shadow_orchestration_20260715.json SHA-256 c9ef811e69776bc41bad8a5c8964f615ef4d3de53852d409780bdc2490694df7; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json SHA-256 b250adbcd0c86a09edc49b185452a10ed9765825020b18342ab12def145dde1c. Seven lanes have unique governed concepts, exact lazy official loaders, strict draft packages, provenance and active-map invariance. Remaining: live per-lane candidate smokes and measured specialist results.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T23:24:24+00:00",
+      "updated_at": "2026-07-17T11:08:27+00:00",
       "orphaned": false
     },
     "MF-P3-08.02": {

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -189,3 +190,27 @@ def test_foreign_embedding_empty_prompt_and_runtime_lock_drift_fail(tmp_path: Pa
     lock_path.write_text(json.dumps(lock), encoding="utf-8")
     with pytest.raises(Sam31ShadowError, match="requirements identity is stale"):
         Sam31ConceptDetector(lambda *args, **kwargs: (), lock_path=lock_path)
+
+
+def test_mask_prompt_reaches_runtime_while_provenance_uses_only_its_hash() -> None:
+    image = np.zeros((12, 16, 3), dtype=np.uint8)
+    mask = np.zeros((12, 16), dtype=bool)
+    mask[3:6, 3:6] = True
+    captured = {}
+
+    def refine(_embedding, *, prompt):
+        captured.update(prompt)
+        return ((mask, 0.9),)
+
+    segmenter = Sam31InteractiveSegmenter(lambda value: value.shape, refine)
+    prompt = _prompt()
+    prompt["positive_points"] = ()
+    prompt["negative_points"] = ()
+    prompt["box_xyxy"] = None
+    prompt["mask_prompt"] = mask
+    proposal = segmenter.refine(segmenter.embed(image), prompt=prompt)[0]
+
+    assert np.array_equal(captured.pop("mask_prompt"), mask)
+    assert captured["mask_prompt_sha256"] == hashlib.sha256(mask.tobytes()).hexdigest()
+    assert "mask_prompt" not in captured
+    assert len(proposal.prompt_fingerprint) == 64

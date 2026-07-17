@@ -297,7 +297,10 @@ class Sam31InteractiveSegmenter:
                 "prompt": normalized,
             }
         )
-        raw = tuple(self._refiner(embedding.payload, prompt=normalized))
+        runtime_prompt = dict(normalized)
+        if mask_prompt is not None:
+            runtime_prompt["mask_prompt"] = mask_prompt
+        raw = tuple(self._refiner(embedding.payload, prompt=runtime_prompt))
         if not raw:
             raise Sam31ShadowError("SAM 3.1 refinement returned no proposals")
         proposals = []

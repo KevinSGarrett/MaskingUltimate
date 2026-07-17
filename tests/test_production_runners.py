@@ -942,9 +942,7 @@ def test_s07_and_s08_use_promoted_provider_neutral_interactive_selection(
     assert s08_delta["_telemetry"]["model_keys"] == ["sam3_1"]
 
 
-def test_s07_refuses_promoted_interactive_provider_without_loader(
-    tmp_path: Path,
-) -> None:
+def test_s07_uses_governed_default_official_sam31_loader(tmp_path: Path, monkeypatch) -> None:
     external = yaml.safe_load(Path("configs/external_sources.yaml").read_text(encoding="utf-8"))
     external["providers"]["sam3_1"]["lifecycle_state"] = "promoted"
     external_path = tmp_path / "external_sources.yaml"
@@ -962,11 +960,59 @@ def test_s07_refuses_promoted_interactive_provider_without_loader(
         config={"global": {}, "stage": config["stages"]["S07"]},
         config_hash="fixture",
     )
+    s01 = context.work_root / "s01" / context.image_id
+    (s01 / "p0").mkdir(parents=True)
+    Image.new("RGB", (16, 12), "white").save(s01 / "p0/person_ctx.png")
+    (s01 / "person_bbox.json").write_text(
+        json.dumps(
+            {
+                "persons": [
+                    {
+                        "person_index": 0,
+                        "context_bbox_xyxy": [0, 0, 16, 12],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    loader_calls = []
+    captured = {}
 
-    with pytest.raises(production.SemanticStageError, match="no injected production loader"):
-        production.build_production_runners(config, external_registry_path=external_path)["S07"](
-            context
+    def load_default():
+        loader_calls.append("sam3_1")
+        mask = np.ones((12, 16), dtype=bool)
+        return Sam31InteractiveSegmenter(
+            lambda image: image.shape,
+            lambda *_args, **_kwargs: ((mask, 0.9),),
         )
+
+    def fake_s07(*_args, **kwargs):
+        captured.update(kwargs)
+        return {}, "sam3_1"
+
+    monkeypatch.setattr(production, "load_official_sam31_interactive_segmenter", load_default)
+    monkeypatch.setattr(production, "run_s07_production", fake_s07)
+    monkeypatch.setattr(
+        production,
+        "apply_champion_hand_drafts",
+        lambda *_args, **_kwargs: {"model_key": None, "sides": ()},
+    )
+    monkeypatch.setattr(
+        production,
+        "apply_and_record_s07_hand_merges",
+        lambda *_args, **_kwargs: {"failure_record_count": 0},
+    )
+
+    delta = production.build_production_runners(config, external_registry_path=external_path)[
+        "S07"
+    ](context)
+
+    assert loader_calls == ["sam3_1"]
+    assert isinstance(captured["provider"], production.ProviderNeutralInteractiveProvider)
+    assert captured["primary_model"] == "sam3_1"
+    assert captured["fallback_model"] == "sam2.1_hiera_base_plus"
+    assert delta["model"] == "sam3_1"
 
 
 def test_s05_production_projects_full_canvas_inputs_into_context_contract(tmp_path: Path) -> None:

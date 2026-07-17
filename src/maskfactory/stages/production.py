@@ -62,6 +62,10 @@ from ..providers.sam31_repair import (
     run_sam31_repair_orchestration,
     write_sam31_repair_noncompletion,
 )
+from ..providers.sam31_runtime import (
+    load_official_sam31_concept_detector,
+    load_official_sam31_interactive_segmenter,
+)
 from ..providers.selection import validate_provider_selection
 from ..qa.multi_instance import MultiInstanceQcInputs
 from ..qa.production import run_s10_production
@@ -355,6 +359,8 @@ def build_production_runners(
     prompting = yaml.safe_load((ROOT / "configs" / "prompting.yaml").read_text(encoding="utf-8"))
     concept_provider_loaders = dict(concept_provider_loaders or {})
     interactive_provider_loaders = dict(interactive_provider_loaders or {})
+    concept_provider_loaders.setdefault("sam3_1", load_official_sam31_concept_detector)
+    interactive_provider_loaders.setdefault("sam3_1", load_official_sam31_interactive_segmenter)
 
     def interactive_provider(settings: Mapping[str, Any], work_dir: Path) -> tuple[Any, str, str]:
         """Resolve the governed active segmenter and its local SAM2 OOM fallback."""

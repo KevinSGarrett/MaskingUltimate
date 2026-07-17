@@ -91,3 +91,16 @@ def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
     assert _sha256(ROOT / contract["fixture"]) == contract["fixture_sha256"]
     assert lock["live_smoke"]["checkpoint_inference"] == ("not_run_wsl_filesystem_io_error")
+
+
+def test_sam31_lock_binds_official_production_discovery_and_refinement_contract() -> None:
+    lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
+    contract = lock["live_smoke"]["production_contract"]
+    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
+    assert contract["builder"].startswith("build_sam3_predictor")
+    assert "rejected fail-closed" in contract["external_exemplars"]
+    assert "deterministic positive point" in contract["box_and_mask_prior_translation"]
+    assert "no active-map" in contract["authority"]
+    assert _sha256(ROOT / contract["host_runtime"]) == contract["host_runtime_sha256"]
+    assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]

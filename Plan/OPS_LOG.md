@@ -6970,3 +6970,23 @@ Live boundary:                        the WSL subprocess was not launched; the c
 Authority boundary:                   SAM 2.1-large remains active; official SAM 3.1 remains planned, unbenchmarked, unpromoted, candidate-serving-disabled, non-production, and unable to author gold
 Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
 Evidence:                             `qa/live_verification/sam31_multiplex_contract_20260717.json`
+
+## 2026-07-17 11:06 UTC - Official SAM 3.1 provider runtime connected to production sidecars
+
+**Result:** The installed official SAM 3.1 Object Multiplex checkpoint now has a concrete,
+offline-verified ConceptDetector and InteractiveSegmenter execution path behind the existing
+provider-neutral S06/S07/S08/S11 boundaries. Live checkpoint inference remains pending.
+
+Text discovery:                       each unique governed concept uses the exact public multiplex text API and returns all nonempty instance masks with score, object ID, concept index, normalized box, and stable instance identity
+Point refinement:                     positive/negative pixel prompts use the exact public multiplex point API for object 1; adapter-level polarity validation remains mandatory
+Box translation:                      box-only refinement uses a deterministic center positive point and exact ROI clipping; invalid geometry or an empty clipped result fails closed
+Mask-prior translation:               the prior is hash-bound and converted to the in-mask pixel nearest its centroid; it is never mislabeled as a native mask-prompt API and remains subject to downstream repair guards
+Exemplar boundary:                    frozen SAM 3.1 multiplex exposes no external-exemplar public input; any nonempty external exemplar request is rejected explicitly rather than silently ignored
+Artifact/report:                      closed allow-pickle-false NPZ plus closed JSON bind source/runtime/requirements/checkpoint/request/RGB/frame/prompt/output/payload identities, types, shapes, geometry, translation, latency, VRAM, and zero authority
+Production loaders:                   default lazy official loaders now back S06 shadow discovery, promoted S07/S08 interactive selection, and S11 repair; the current planned lifecycle continues to skip execution without launching WSL
+Runtime matrix:                       canonical manifest `aed4eea7f88f7a779e01da91f7618af8bf974b93c8ac902864e10b4879512c12`; 8 providers, 6 live-qualified, 2 explicit runtime-pending, 18 artifacts, zero human gates
+Verification:                         100/100 focused and 229/229 broader SAM3.1/provider/multi-person/serving/stage/doctor tests pass; Ruff, Black, pre-commit, matrix verification, and Git diff checks pass
+Live boundary:                        no WSL subprocess was launched, checkpoint loaded, CUDA inference performed, latency/VRAM measured, or real candidate package created while Ubuntu root ext4 is `emergency_ro`
+Authority boundary:                   SAM2.1-large remains active with base-plus OOM fallback; official SAM3.1 remains planned, unbenchmarked, unpromoted, draft-only, non-gold, and unable to mutate active maps
+Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
+Evidence:                             `qa/live_verification/sam31_official_provider_runtime_contract_20260717.json`

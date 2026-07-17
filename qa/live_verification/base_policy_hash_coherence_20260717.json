@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T15:15:31.6450576Z",
+  "result": "BASE_POLICY_HASH_COHERENCE_PASS",
+  "branch": "codex/autonomous-gold-modernization",
+  "repair": {
+    "external_source_registry_sha256": "efe024579ec499444ced7edbb0631c455d2b7c8491a7ff92cbb9044aee20fd28",
+    "provider_runtime_matrix_file_sha256": "94aeaffe0775178edbe72091e7341100ca5ffa4a64c72cf15effc9885de8db82",
+    "provider_runtime_matrix_manifest_sha256": "4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d",
+    "provider_benchmark_policy_sha256": "11bdd1e8494a99dde1d0cdd91cb9582a1a800dd69cd0f286764859bbde6a1a01",
+    "qwen_challenger_policy_sha256": "319ceb0f6e95a1f48c82694edc72b187c2208b49fedc9ffce60f5bdc180bf051",
+    "serving_workflow_policy_sha256": "bc6b1d315ceeddef4b4432354567dab63abf86a899ce33670f1a786663b3f28e"
+  },
+  "files": {
+    "configs/external_sources.yaml": {
+      "size_bytes": 40792,
+      "sha256": "efe024579ec499444ced7edbb0631c455d2b7c8491a7ff92cbb9044aee20fd28"
+    },
+    "env/provider_runtime_matrix.json": {
+      "size_bytes": 5494,
+      "sha256": "94aeaffe0775178edbe72091e7341100ca5ffa4a64c72cf15effc9885de8db82"
+    },
+    "qa/governance/benchmark_matrices/provider_benchmark_matrix_v1.json": {
+      "size_bytes": 5250,
+      "sha256": "939814a29c53fdacab803f91c1d4df8dff2d641789e803166856349eba95e91c"
+    },
+    "src/maskfactory/providers/provider_matrix.py": {
+      "size_bytes": 13132,
+      "sha256": "5e3e07f0c94c8efb0530f427b8c01d1314a1d5b95cd1d8f13dcd828f0bb90389"
+    },
+    "qa/governance/benchmark_matrices/qwen_challenger_benchmark_v1.json": {
+      "size_bytes": 4467,
+      "sha256": "923b3612b6a8ac12b5b74160da59f90e8cbd0f62ad5b265481345e9268f281df"
+    },
+    "src/maskfactory/vlm/qwen_benchmark.py": {
+      "size_bytes": 27305,
+      "sha256": "85962d01f71ed6ba1bd93aedd1bee858b2c3acca349838ee324bcba185cda00d"
+    },
+    "qa/governance/serving_workflow_performance_v1.json": {
+      "size_bytes": 5508,
+      "sha256": "d6b0f1eb7039db1e8d5f435257d5b094134cc8db5624afefbe64a4f064bc36ec"
+    },
+    "src/maskfactory/serve/workflow_performance.py": {
+      "size_bytes": 19543,
+      "sha256": "40dfbc1eca8ce5cd369d7bb4fd199649b7adf2d80ff8f3d5679dbe04cae9801f"
+    },
+    "env/sam31_runtime.lock.json": {
+      "size_bytes": 6484,
+      "sha256": "aa5bae8c9f522e4bcf83e36ecf41e9cf56929e161873a928e4e8dc56101f2c14"
+    },
+    "tests/test_sam31_runtime_lock.py": {
+      "size_bytes": 5457,
+      "sha256": "e6750c189099edb4e8e79a8ae7b566adc7ed6cf7f48f6d54c9007a2c7e92ca14"
+    }
+  },
+  "verification": {
+    "all_governance_source_hashes_current": true,
+    "affected_policy_tests": "156 passed",
+    "full_repository_tests": "3105 passed",
+    "ruff_repository": "PASS",
+    "black_src_tests_tools": "PASS: 634 files unchanged",
+    "git_diff_check": "PASS",
+    "tracker_validation": "PASS"
+  },
+  "authority": {
+    "base_ci_repair_only": true,
+    "bridge_runtime_completion_claimed": false,
+    "bridge_pr_merged": false,
+    "provider_promotion_changed": false,
+    "production_route_changed": false,
+    "may_author_gold": false
+  },
+  "preservation": {
+    "bridge_worktree": "C:\\w\\mask-autonomy-bridge-plan",
+    "bridge_worktree_touched": false,
+    "bridge_pr_2_touched_or_merged": false,
+    "main_wave64_files_touched": false
+  }
+}

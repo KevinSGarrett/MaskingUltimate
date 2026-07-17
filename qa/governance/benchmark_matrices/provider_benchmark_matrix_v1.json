@@ -79,12 +79,12 @@
   ],
   "source_hashes": {
     "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "6818856f7bdd2f034967043b2b7fef363e5b13676def797c05189b4e871253ec",
-    "configs/external_sources.yaml": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
+    "configs/external_sources.yaml": "efe024579ec499444ced7edbb0631c455d2b7c8491a7ff92cbb9044aee20fd28",
     "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
     "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
-    "env/provider_runtime_matrix.json": "c4aa01f10e48f41223a1d1ab7a854b87f7eabefb1e9a953f556ca8cb4459b0b2",
+    "env/provider_runtime_matrix.json": "94aeaffe0775178edbe72091e7341100ca5ffa4a64c72cf15effc9885de8db82",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
     "qa/governance/benchmark_matrices/geometry_variant_benchmark_v1.json": "f70c47f2bb052d9910bbbec916765fca81b6f404ae4d3060297446f2080c870d",
     "qa/governance/benchmark_matrices/mediapipe_vote_ablation_v1.json": "f198fe53acd98fdbac6b5658794bb9d3061311b00e6740eb8924aa245e5f187e",
@@ -99,5 +99,5 @@
     "src/maskfactory/providers/silhouette_benchmark.py": "355b4cb50b4c9ddbdae88d7148feb7868859307f3b14cd2f8e438d5f89df2061",
     "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
   },
-  "sha256": "b2e3a7db1c72fa2be63f82c6262c5bf7672e24399f0dd6d9b063910048d19d9a"
+  "sha256": "11bdd1e8494a99dde1d0cdd91cb9582a1a800dd69cd0f286764859bbde6a1a01"
 }

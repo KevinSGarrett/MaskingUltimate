@@ -47,6 +47,7 @@ SCHEMA_NAMES = frozenset(
         "sam31_shadow_candidate_package",
         "sam31_shadow_orchestration",
         "sam31_repair_orchestration",
+        "sam31_visual_exemplar",
         "qwen_challenger_benchmark_cases",
         "qwen_challenger_benchmark_policy",
         "qwen_challenger_benchmark_report",

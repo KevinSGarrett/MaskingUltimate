@@ -11,12 +11,14 @@ from PIL import Image
 from tools.run_sam31_runtime import (
     _box_from_masks,
     _derived_positive,
+    _normalize_visual_exemplars,
 )
 from tools.run_sam31_runtime import (
     _payload_sha256 as runner_payload_sha256,
 )
 
 from maskfactory.providers.contracts import ConceptDetector, InteractiveSegmenter
+from maskfactory.providers.sam31_exemplars import write_sam31_visual_exemplar
 from maskfactory.providers.sam31_runtime import (
     AUTHORITY,
     OfficialSam31Runtime,
@@ -55,7 +57,7 @@ def _arrays(request: dict) -> dict[str, np.ndarray]:
     }
 
 
-def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0):
+def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0, requests=None):
     def execute(argv, timeout):
         assert argv[:5] == (
             "wsl.exe",
@@ -72,9 +74,13 @@ def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0
         frame_path = Path(argv[argv.index("--frame-dir") + 1]) / "00000.jpg"
         output_path = Path(argv[argv.index("--output") + 1])
         request = json.loads(request_path.read_text(encoding="utf-8"))
+        if requests is not None:
+            requests.append(request)
         arrays = _arrays(request)
         np.savez_compressed(output_path, **arrays)
-        if request["operation"] == "discover":
+        if request["operation"] == "discover" and request["visual_exemplars"]:
+            prompt_translation = "text_plus_same_image_visual_box_exemplars_exact"
+        elif request["operation"] == "discover":
             prompt_translation = "text_prompt_exact"
         elif request["prompt"]["positive_points"]:
             prompt_translation = "point_prompt_exact_with_optional_roi_clip"
@@ -145,14 +151,33 @@ def test_official_runtime_emits_text_discovery_and_point_refinement(tmp_path: Pa
     assert refined[0][1] == pytest.approx(0.95)
 
 
-def test_mask_prior_is_hash_bound_and_external_exemplars_fail_closed(tmp_path: Path) -> None:
+def test_visual_exemplars_are_hash_bound_and_raw_external_images_fail_closed(
+    tmp_path: Path,
+) -> None:
     runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
-    runtime._executor = _executor(runtime)
+    requests = []
+    runtime._executor = _executor(runtime, requests=requests)
     source = _image(tmp_path)
-    exemplar = tmp_path / "exemplar.png"
-    exemplar.write_bytes(source.read_bytes())
-    with pytest.raises(Sam31RuntimeError, match="cannot be silently ignored"):
-        runtime.discover(source, concepts=("hand",), exemplars=(exemplar,))
+    raw_exemplar = tmp_path / "exemplar.png"
+    raw_exemplar.write_bytes(source.read_bytes())
+    with pytest.raises(Sam31RuntimeError, match="governed same-image"):
+        runtime.discover(source, concepts=("hand",), exemplars=(raw_exemplar,))
+
+    manifest = write_sam31_visual_exemplar(
+        tmp_path / "positive-hand.json",
+        source_image=source,
+        bbox_xyxy=(3, 2, 11, 9),
+    )
+    discovered = runtime.discover(source, concepts=("hand",), exemplars=(manifest,))
+    assert len(discovered) == 1
+    assert requests[-1]["visual_exemplars"] == [
+        {
+            "bbox_xyxy": [3.0, 2.0, 11.0, 9.0],
+            "polarity": "positive",
+            "manifest_sha256": json.loads(manifest.read_text(encoding="utf-8"))["sha256"],
+            "manifest_file_sha256": _sha256(manifest),
+        }
+    ]
 
     embedding = runtime.embed(np.asarray(Image.open(source).convert("RGB")))
     mask = np.zeros((12, 16), dtype=bool)
@@ -195,11 +220,53 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
     assert boxes.shape == (1, 4)
     assert np.allclose(boxes[0], [4 / 16, 2 / 12, 6 / 16, 6 / 12])
 
+    normalized, labels = _normalize_visual_exemplars(
+        [
+            {
+                "bbox_xyxy": [4, 2, 10, 8],
+                "polarity": "positive",
+                "manifest_sha256": "1" * 64,
+                "manifest_file_sha256": "2" * 64,
+            },
+            {
+                "bbox_xyxy": [1, 1, 3, 4],
+                "polarity": "negative",
+                "manifest_sha256": "3" * 64,
+                "manifest_file_sha256": "4" * 64,
+            },
+        ],
+        width=16,
+        height=12,
+    )
+    assert np.allclose(normalized[0], [4 / 16, 2 / 12, 6 / 16, 6 / 12])
+    assert labels == [1, 0]
+    with pytest.raises(RuntimeError, match="duplicated"):
+        _normalize_visual_exemplars(
+            [
+                {
+                    "bbox_xyxy": [4, 2, 10, 8],
+                    "polarity": "positive",
+                    "manifest_sha256": "1" * 64,
+                    "manifest_file_sha256": "2" * 64,
+                },
+                {
+                    "bbox_xyxy": [1, 1, 3, 4],
+                    "polarity": "negative",
+                    "manifest_sha256": "1" * 64,
+                    "manifest_file_sha256": "4" * 64,
+                },
+            ],
+            width=16,
+            height=12,
+        )
+
     runner = (ROOT / "tools/run_sam31_runtime.py").read_text(encoding="utf-8")
     assert "build_sam3_predictor" in runner
     assert "build_sam3_image_model" not in runner
     assert 'version="sam3.1"' in runner
     assert '"text": concept' in runner
+    assert 'payload["bounding_boxes"] = normalized_boxes' in runner
+    assert 'payload["bounding_box_labels"] = box_labels' in runner
     assert '"point_labels": labels' in runner
 
 

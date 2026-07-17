@@ -6990,3 +6990,35 @@ Live boundary:                        no WSL subprocess was launched, checkpoint
 Authority boundary:                   SAM2.1-large remains active with base-plus OOM fallback; official SAM3.1 remains planned, unbenchmarked, unpromoted, draft-only, non-gold, and unable to mutate active maps
 Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
 Evidence:                             `qa/live_verification/sam31_official_provider_runtime_contract_20260717.json`
+
+## 2026-07-17 11:25 UTC - Governed SAM 3.1 same-image visual exemplars implemented
+
+**Result:** MF-P2-11.03 advances to 96% after correcting the earlier exemplar interpretation
+against frozen Meta source. Official SAM 3.1 discovery now supports governed positive/negative
+visual-box prompts on the exact target image alongside text; live checkpoint evidence remains pending.
+
+Official API:                         frozen commit `5dd401d1...` accepts text plus `bounding_boxes` and `bounding_box_labels`; multiplex consumes normalized xmin/ymin/width/height and converts boxes internally for geometric prompting
+Manifest contract:                    closed JSON binds exact source-file SHA-256, decoded-RGB SHA-256, width, height, absolute xyxy box, positive/negative polarity, prompt-only authority, and canonical document SHA-256
+Runtime binding:                      every manifest is revalidated against the target image; the closed subprocess request preserves document and manifest-file hashes before deterministic xyxy-to-normalized-xywh translation
+Failure behavior:                     raw images, arbitrary second-image exemplars, wrong-image manifests, tamper, invalid/out-of-bounds geometry, invalid polarity/identity, and duplicate document identities fail closed
+Production path:                      the existing lazy official ConceptDetector supplies the same governed visual prompts to every routed text concept; results remain isolated strict draft candidates
+Runtime matrix:                       refrozen canonical manifest `4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d`; 8 providers, 6 live-qualified, 2 explicit runtime-pending, 18 exact artifacts, and zero human gates
+Verification:                         107/107 visual-exemplar, runtime, shadow, candidate, orchestration, repair, production-runner, and runtime-matrix tests pass; Ruff, Black, evidence hash replay, tracker validation, and Git diff checks pass
+Live boundary:                        no WSL subprocess was launched, checkpoint loaded, CUDA inference performed, or real exemplar candidate created while Ubuntu root ext4 remains `emergency_ro`
+Authority boundary:                   SAM2.1-large remains active; official SAM3.1 remains planned, unbenchmarked, unpromoted, draft-only, non-gold, and unable to mutate active maps
+Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
+Evidence:                             `qa/live_verification/sam31_visual_exemplar_contract_20260717.json` SHA-256 `11bc8fb9020ff66edb41d639904909dcd014648ad309d1b30411bb4a322eec64`
+
+## 2026-07-17 15:15 UTC - Base provider/Qwen/serving policy seals reconciled
+
+**Result:** The base branch policy identities are coherent with the approved external-source
+registry and refrozen SAM3.1 runtime matrix. This clears the pre-existing provider-matrix seal
+drift affecting bridge PR #2 without changing, merging, or touching the bridge worktree or PR.
+
+Provider matrix:                      `configs/external_sources.yaml` and `env/provider_runtime_matrix.json` source hashes are current; provider policy and code lock are canonically resealed to `11bdd1e8494a99dde1d0cdd91cb9582a1a800dd69cd0f286764859bbde6a1a01`
+Dependent policies:                   Qwen challenger policy/code lock is resealed to `319ceb0f6e95a1f48c82694edc72b187c2208b49fedc9ffce60f5bdc180bf051`; serving-workflow policy/code lock is resealed to `bc6b1d315ceeddef4b4432354567dab63abf86a899ce33670f1a786663b3f28e`
+SAM3.1 lock test:                     production contract assertions now bind the governed visual-exemplar implementation/schema and retain explicit fail-closed rejection of unsupported second-image exemplars
+Verification:                         all live governance source hashes are current; 156/156 affected policy/promotion/serving/SAM3.1 tests and 3,105/3,105 full repository tests pass from a clean process; repository Ruff, Black over 634 files, tracker validation, and Git diff checks pass
+Authority boundary:                   this is a base CI/hash-coherence repair only; no provider promotion, production-route change, bridge runtime completion, mask authority, or gold authority is claimed
+Preservation boundary:                `C:\w\mask-autonomy-bridge-plan`, bridge PR #2, `C:\Comfy_UI_Main` Wave64 files, WSL, Docker, DAZ, ComfyUI, masks, and gold were untouched
+Evidence:                             `qa/live_verification/base_policy_hash_coherence_20260717.json`

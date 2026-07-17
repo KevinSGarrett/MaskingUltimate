@@ -15,6 +15,7 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
+from .sam31_exemplars import Sam31VisualExemplarError, load_sam31_visual_exemplar
 from .sam31_multiplex import windows_to_wsl_path
 from .sam31_shadow import (
     DEFAULT_RUNTIME_LOCK,
@@ -177,19 +178,24 @@ class OfficialSam31Runtime:
         normalized = tuple(str(value).strip() for value in concepts)
         if not normalized or any(not value for value in normalized):
             raise Sam31RuntimeError("official SAM 3.1 text concepts must be nonempty")
-        if exemplars:
-            raise Sam31RuntimeError(
-                "the frozen SAM 3.1 multiplex public API has no external-exemplar input; "
-                "exemplars cannot be silently ignored"
-            )
         path = Path(image_path)
         with Image.open(path) as image:
             rgb = np.asarray(image.convert("RGB"))
+        try:
+            visual_exemplars = [
+                load_sam31_visual_exemplar(exemplar, source_image=path) for exemplar in exemplars
+            ]
+        except Sam31VisualExemplarError as exc:
+            raise Sam31RuntimeError(str(exc)) from exc
+        exemplar_identities = [value["manifest_sha256"] for value in visual_exemplars]
+        if len(exemplar_identities) != len(set(exemplar_identities)):
+            raise Sam31RuntimeError("official SAM 3.1 visual exemplars must be unique")
         request = {
             "schema_version": "1.0.0",
             "operation": "discover",
             "concepts": list(normalized),
             "prompt": None,
+            "visual_exemplars": visual_exemplars,
             "image_rgb_sha256": _array_sha256(rgb),
             "authority": AUTHORITY,
             "may_author_gold": False,
@@ -257,6 +263,7 @@ class OfficialSam31Runtime:
                 "box_xyxy": list(prompt["box_xyxy"]) if prompt["box_xyxy"] is not None else None,
                 "mask_prompt_sha256": prompt["mask_prompt_sha256"],
             },
+            "visual_exemplars": [],
             "image_rgb_sha256": embedding.rgb_sha256,
             "authority": AUTHORITY,
             "may_author_gold": False,
@@ -397,7 +404,9 @@ class OfficialSam31Runtime:
             if not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
                 raise Sam31RuntimeError(f"official SAM 3.1 runtime metric is invalid: {metric}")
         expected_translation = "text_prompt_exact"
-        if request["operation"] == "refine":
+        if request["operation"] == "discover" and request["visual_exemplars"]:
+            expected_translation = "text_plus_same_image_visual_box_exemplars_exact"
+        elif request["operation"] == "refine":
             expected_translation = (
                 "point_prompt_exact_with_optional_roi_clip"
                 if request["prompt"]["positive_points"]

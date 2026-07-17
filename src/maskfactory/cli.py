@@ -2915,6 +2915,113 @@ def daz_coverage_select_candidate(
     )
 
 
+@daz_coverage.command("apply-concentration")
+@click.option(
+    "--selection-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--candidate-batch",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--vocabulary-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--history-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/concentration_limits.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\concentration_reports"),
+    show_default=True,
+)
+def daz_coverage_apply_concentration(
+    selection_report: Path,
+    candidate_batch: Path,
+    vocabulary_report: Path,
+    history_snapshot: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Apply history-bound dominance, cooldown, and near-duplicate limits."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        ConcentrationError,
+        build_concentration_report,
+        load_concentration_policy,
+        publish_concentration_report,
+    )
+
+    try:
+        selection = json.loads(selection_report.read_text(encoding="utf-8"))
+        batch = json.loads(candidate_batch.read_text(encoding="utf-8"))
+        vocabulary = json.loads(vocabulary_report.read_text(encoding="utf-8"))
+        history = json.loads(history_snapshot.read_text(encoding="utf-8"))
+        policy_document = load_concentration_policy(policy)
+        report = build_concentration_report(
+            selection_report=selection,
+            candidate_batch=batch,
+            vocabulary_report=vocabulary,
+            history_snapshot=history,
+            policy=policy_document,
+        )
+        target, published = publish_concentration_report(
+            report,
+            output,
+            selection_report=selection,
+            candidate_batch=batch,
+            vocabulary_report=vocabulary,
+            history_snapshot=history,
+            policy=policy_document,
+        )
+    except (
+        ConcentrationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, ConcentrationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_concentration_report_built",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "satisfied": report["satisfied"],
+                    "admitted_candidate_id": report["admitted_candidate_id"],
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

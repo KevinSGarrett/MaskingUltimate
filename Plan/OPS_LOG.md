@@ -6825,3 +6825,21 @@ Verification:                         10/10 focused selection, 10/10 candidate g
 Live boundary:                        no qualified live D3/D5 feasibility snapshot or live candidate batch exists; no live selection, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_candidate_selection_20260717.json`
+
+## 2026-07-17 08:38 UTC - Dominance, cooldown, and near-duplicate concentration gate implemented
+
+**Result:** MF-P9-10.05 now has a complete offline concentration gate and report; it remains at
+85% until qualified live D3/D5 selection and accepted-history inputs can produce a live report.
+
+Dominance caps:                       exact character 3%, skin 3%, hair 2%, complete outfit 2%, garment 5%, pose 0.5%, environment 3%, and product-family 10% ceilings are projected before admission; early growth has an explicit count-one floor; only explicitly governed base-product IDs receive the blueprint exemption
+Cooldowns:                            versioned initial windows are 32 accepted scenes for a scene family, 4 for character, 4 for hair, 8 for pose, and 4 for environment; exact candidate repetition is permanently forbidden
+Family/near-duplicate rule:           scene families include semantic discrete axes, every registry assignment, and body morph while excluding only lighting, exposure, resolution, DOF, motion blur, render profile, and degradation variants; at most one family member occurs in the rolling 128 accepted scenes
+Deterministic reselection:             feasible candidates retain D9-04 rank; the first candidate passing dominance, cooldown, exact-repeat, and family limits is admitted; no passing candidate and no feasible candidate both publish honest unsatisfied reports
+Concentration proof:                  fixtures isolate pose dominance outside cooldown, recent family cooldown/near-duplicate failure, exact repetition outside every rolling window, explicit base-product exemption, all-limited and all-infeasible paths, semantic tamper, policy weakening, immutable conflict, and CLI replay
+Reporting/lineage:                    selection, candidate batch, vocabulary, policy, and accepted-history ID/hash are replayed; product/asset/family contributions, projected shares, cap results, cooldowns, exact repeats, near-duplicate rate, reason counts, report ID/hash, closed schema, atomic publication, and CLI are bound
+Authority boundary:                  admission remains technical planning evidence, not a recipe or render authority; it creates no gold, closes no real deficit, mutates no accepted history, and cannot raise Mode B/inferred authority
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; downstream recipe construction may consume explicit admission without inferring provider/tier/ontology/owner/certificate or mask authority
+Verification:                         13/13 focused concentration, 10/10 selection, 10/10 generation, 9/9 deficit adapter, 14/14 vocabulary, and 13/13 core validation tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 134 JSON schemas, all 41 DAZ YAML documents, and Git diff checks pass
+Live boundary:                        no qualified live D3/D5 selection or accepted-history snapshot exists; no live concentration report, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_concentration_limits_20260717.json`

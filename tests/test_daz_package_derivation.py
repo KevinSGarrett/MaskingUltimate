@@ -27,6 +27,12 @@ from maskfactory.daz.render import (  # noqa: E402
     load_part_pass_policy,
     validate_package_derivation_policy,
 )
+from maskfactory.daz.scenes import (  # noqa: E402
+    build_p_index_assignment,
+    load_duo_recipe_policy,
+    load_p_index_assignment_policy,
+    select_duo_recipe,
+)
 from test_daz_instance_pass import _owners  # noqa: E402
 from test_daz_part_pass import _mapping  # noqa: E402
 from test_daz_render_pass_profiles import _plan  # noqa: E402
@@ -37,6 +43,8 @@ INSTANCE_POLICY = ROOT / "configs" / "daz" / "instance_pass.yaml"
 PART_POLICY = ROOT / "configs" / "daz" / "part_pass.yaml"
 MATERIAL_POLICY = ROOT / "configs" / "daz" / "material_protected_pass.yaml"
 ONTOLOGY = ROOT / "configs" / "ontology.yaml"
+DUO_POLICY = ROOT / "configs" / "daz" / "duo_recipe_selection.yaml"
+P_INDEX_POLICY = ROOT / "configs" / "daz" / "p_index_assignment.yaml"
 
 
 def _sha(document: dict) -> str:
@@ -171,6 +179,84 @@ def _fixture(tmp_path: Path, owner_count: int = 2):
     return policy, contract, arrays, source_paths, protected_paths
 
 
+def _p_index_evidence(
+    root: Path,
+    instance_contract: dict,
+    final_instance: np.ndarray,
+    *,
+    source_ids: tuple[int, int] = (91, 17),
+) -> tuple[dict, Path]:
+    selection = select_duo_recipe(
+        load_duo_recipe_policy(DUO_POLICY),
+        selection_seed=29,
+        anatomy_family="MF",
+        relationship_family="overlap_no_contact",
+    )
+    construction = np.zeros_like(final_instance)
+    construction[final_instance == 1] = source_ids[0]
+    construction[final_instance == 2] = source_ids[1]
+    construction_path = root / "construction_map.png"
+    construction_path.parent.mkdir(parents=True, exist_ok=True)
+    Image.fromarray(construction).save(construction_path, format="PNG")
+    camera = {"projection": "perspective", "focal_length_mm": 65.0}
+    observation = {
+        "schema_version": "1.0.0",
+        "scene_id": instance_contract["scene_id"],
+        "resolved_state_id": instance_contract["resolved_state_id"],
+        "resolved_state_sha256": instance_contract["resolved_state_sha256"],
+        "scene_state_sha256": instance_contract["scene_state_sha256"],
+        "resolution": deepcopy(instance_contract["output"]["resolution"]),
+        "crop": deepcopy(instance_contract["output"]["crop"]),
+        "final_camera": camera,
+        "camera_readback": deepcopy(camera),
+        "promotion_required": True,
+        "framing_retry_attempt": 0,
+        "construction_owners": [
+            {"slot_id": "b", "construction_id": "c1", "source_instance_id": source_ids[1]},
+            {"slot_id": "a", "construction_id": "c0", "source_instance_id": source_ids[0]},
+        ],
+    }
+    assignment = build_p_index_assignment(
+        selection,
+        observation,
+        construction_path,
+        load_p_index_assignment_policy(P_INDEX_POLICY),
+    )
+    return assignment, construction_path
+
+
+def _d8_fixture(tmp_path: Path):
+    _state, _plan_document, instance, part, materials = _contracts(2)
+    arrays = _arrays(2)
+    source_paths, protected_paths = _write_sources(tmp_path / "source", arrays)
+    assignment, construction_map = _p_index_evidence(
+        tmp_path / "p_index", instance, arrays["instance"]
+    )
+    policy = load_package_derivation_policy(POLICY_PATH)
+    contract = build_package_derivation_contract(
+        instance,
+        part,
+        materials,
+        image_id="image_d8_fixture_001",
+        scene_family_id="scene_family_d8_fixture_001",
+        source_paths=source_paths,
+        protected_paths=protected_paths,
+        authority_report_sha256s=_authorities(),
+        policy=policy,
+        p_index_assignment=assignment,
+        p_index_construction_map_path=construction_map,
+    )
+    return (
+        policy,
+        contract,
+        arrays,
+        source_paths,
+        protected_paths,
+        assignment,
+        construction_map,
+    )
+
+
 def test_policy_closes_truth_derivation_and_publication() -> None:
     policy = load_package_derivation_policy(POLICY_PATH)
     validate_package_derivation_policy(policy)
@@ -272,6 +358,97 @@ def test_vectorized_derivation_is_lossless_and_complement_exact(tmp_path: Path) 
         for name, digest in hashes["files"].items():
             assert hashlib.sha256((package / name).read_bytes()).hexdigest() == digest
     assert report["invariants"] == {key: True for key in report["invariants"]}
+
+
+def test_d8_assignment_binds_exact_shared_instance_remap_and_complements(tmp_path: Path) -> None:
+    (
+        policy,
+        contract,
+        arrays,
+        source_paths,
+        protected_paths,
+        assignment,
+        construction_map,
+    ) = _d8_fixture(tmp_path)
+    binding = contract["p_index_assignment"]
+    assert binding["assignment_id"] == assignment["assignment_id"]
+    assert binding["instance_remap_exact"] is True
+    assert [row["source_instance_id"] for row in binding["mapping"]] == [91, 17]
+    report, root, published = derive_scene_packages(
+        contract,
+        source_paths=source_paths,
+        protected_paths=protected_paths,
+        output_root=tmp_path / "exports",
+        policy=policy,
+        p_index_construction_map_path=construction_map,
+    )
+    assert published is True
+    assert report["p_index_assignment"] == binding
+    assert report["invariants"]["p_index_assignment_exact"] is True
+    visible = arrays["instance"] > 0
+    targets = []
+    for index in range(2):
+        package = root / "packages" / f"p{index}"
+        target = np.asarray(Image.open(package / "full_body.png")) > 0
+        other = np.asarray(Image.open(package / "other_person.png")) > 0
+        targets.append(target)
+        assert np.array_equal(other, visible & ~target)
+        assert not np.any(target & other)
+    assert not np.any(targets[0] & targets[1])
+    assert np.array_equal(targets[0] | targets[1], visible)
+
+
+def test_d8_contract_rejects_final_instance_owner_swap(tmp_path: Path) -> None:
+    _state, _plan_document, instance, part, materials = _contracts(2)
+    arrays = _arrays(2)
+    assignment, construction_map = _p_index_evidence(
+        tmp_path / "p_index", instance, arrays["instance"]
+    )
+    swapped = deepcopy(arrays)
+    original = arrays["instance"]
+    swapped_instance = np.zeros_like(original)
+    swapped_instance[original == 1] = 2
+    swapped_instance[original == 2] = 1
+    swapped["instance"] = swapped_instance
+    source_paths, protected_paths = _write_sources(tmp_path / "swapped", swapped)
+    with pytest.raises(PackageDerivationError, match="p_index_instance_remap_invalid"):
+        build_package_derivation_contract(
+            instance,
+            part,
+            materials,
+            image_id="image_swapped",
+            scene_family_id="family_swapped",
+            source_paths=source_paths,
+            protected_paths=protected_paths,
+            authority_report_sha256s=_authorities(),
+            policy=load_package_derivation_policy(POLICY_PATH),
+            p_index_assignment=assignment,
+            p_index_construction_map_path=construction_map,
+        )
+
+
+def test_d8_runtime_requires_original_construction_map_bytes(tmp_path: Path) -> None:
+    policy, contract, _arrays_document, source_paths, protected_paths, _assignment, construction = (
+        _d8_fixture(tmp_path)
+    )
+    with pytest.raises(PackageDerivationError, match="p_index_construction_map_missing"):
+        derive_scene_packages(
+            contract,
+            source_paths=source_paths,
+            protected_paths=protected_paths,
+            output_root=tmp_path / "missing",
+            policy=policy,
+        )
+    construction.write_bytes(construction.read_bytes() + b"tamper")
+    with pytest.raises(PackageDerivationError, match="p_index_construction_map_mismatch"):
+        derive_scene_packages(
+            contract,
+            source_paths=source_paths,
+            protected_paths=protected_paths,
+            output_root=tmp_path / "tampered",
+            policy=policy,
+            p_index_construction_map_path=construction,
+        )
 
 
 def test_all_active_part_ids_roundtrip_exactly(tmp_path: Path) -> None:
@@ -394,6 +571,9 @@ def test_cli_contract_and_derivation_are_idempotent(tmp_path: Path) -> None:
     _state, _plan_document, instance, part, materials = _contracts(2)
     arrays = _arrays(2)
     source_paths, protected_paths = _write_sources(tmp_path / "source", arrays)
+    assignment, construction_map = _p_index_evidence(
+        tmp_path / "p_index", instance, arrays["instance"]
+    )
     document_paths = {}
     for name, document in {"instance": instance, "part": part}.items():
         path = tmp_path / f"{name}_contract.json"
@@ -411,6 +591,8 @@ def test_cli_contract_and_derivation_are_idempotent(tmp_path: Path) -> None:
     )
     authority_document = tmp_path / "authority_hashes.json"
     authority_document.write_text(json.dumps(_authorities()), encoding="utf-8")
+    assignment_document = tmp_path / "p_index_assignment.json"
+    assignment_document.write_text(json.dumps(assignment), encoding="utf-8")
     contract_output = tmp_path / "contracts"
     plan_arguments = [
         "daz",
@@ -441,6 +623,10 @@ def test_cli_contract_and_derivation_are_idempotent(tmp_path: Path) -> None:
             str(protected_document),
             "--authority-hashes",
             str(authority_document),
+            "--p-index-assignment",
+            str(assignment_document),
+            "--p-index-construction-map",
+            str(construction_map),
             "--policy",
             str(POLICY_PATH),
             "--output",
@@ -473,6 +659,8 @@ def test_cli_contract_and_derivation_are_idempotent(tmp_path: Path) -> None:
         str(source_paths["material"]),
         "--protected-paths",
         str(protected_document),
+        "--p-index-construction-map",
+        str(construction_map),
         "--policy",
         str(POLICY_PATH),
         "--output",

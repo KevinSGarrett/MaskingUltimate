@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "provider_benchmark_matrix_v1.json"
 )
-POLICY_SHA256 = "8131b18526f16c563850517fb146a34bea30c6504d6e7b52f8d42e497f9b181a"
+POLICY_SHA256 = "b2e3a7db1c72fa2be63f82c6262c5bf7672e24399f0dd6d9b063910048d19d9a"
 SCREENING_ROUTES = (
     ("sam2_1_only", "frozen_baseline_prompts", "sam2_1"),
     ("sam3_1_only", "sam3_1_direct", "none"),

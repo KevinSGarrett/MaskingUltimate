@@ -79,7 +79,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "4ad5ea6b8f53bf541c06f14379b01ca4cf4685381f57716662ea9b6e34098ed0"},
+        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "660d0eb3f6bd00a1722f2fb5dfa2a2f1700e61480c484c96e351ebd62e985a17"},
         {"kind": "evidence", "path": "qa/live_verification/eomt_dinov3_runtime_20260715.json", "sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"}
       ]
     },
@@ -108,5 +108,5 @@
       ]
     }
   ],
-  "manifest_sha256": "547c7c91733853f38c16d6dab6bdf5a0aede66c9300a3fea82bf814143466864"
+  "manifest_sha256": "7cdbba77715229565c1f96e721f8ff61f8639c7592cb2b072d302c3551643171"
 }

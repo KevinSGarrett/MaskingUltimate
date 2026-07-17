@@ -17004,13 +17004,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T06:29:05+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented D8 assignment-bound shared-pass derivation: exact construction-raster to final-instance remap at contract build and runtime replay, exact target/other complements, disjoint complete target partition, assignment lineage in closed contract/report schemas, CLI integration, and seeded owner-swap/tamper fixtures. 37 focused, 1,197 DAZ-wide, 210 bounded downstream, and 32 SAM31 tests pass; Ruff/Black/schema/YAML/diff checks pass. Remains 85% pending qualified live D6 bytes plus live D8-02 assignment; no live derivation or gold claim. Monolithic 2,958-test pass not claimed under current live-machine memory pressure."
+        }
+      ],
+      "evidence": "qa/reports/daz_shared_pass_d8_derivation_20260717.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T06:29:05+00:00",
       "orphaned": false
     },
     "MF-P9-09.04": {

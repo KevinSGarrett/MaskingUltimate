@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_MATRIX = Path("env/provider_runtime_matrix.json")
-LOCKED_MATRIX_SHA256 = "547c7c91733853f38c16d6dab6bdf5a0aede66c9300a3fea82bf814143466864"
+LOCKED_MATRIX_SHA256 = "7cdbba77715229565c1f96e721f8ff61f8639c7592cb2b072d302c3551643171"
 EXPECTED_PROVIDERS = {
     "maskfactory_core",
     "sam3_1",

@@ -124,6 +124,8 @@ def build_package_derivation_contract(
     protected_paths: Mapping[str, Path],
     authority_report_sha256s: Mapping[str, str],
     policy: Mapping[str, Any],
+    p_index_assignment: Mapping[str, Any] | None = None,
+    p_index_construction_map_path: Path | None = None,
 ) -> dict[str, Any]:
     """Bind exact shared pass bytes and one target-specific protected map per p-index."""
 
@@ -210,6 +212,12 @@ def build_package_derivation_contract(
         raise PackageDerivationError(
             "package_authority_report_set_invalid", str(authority_report_sha256s)
         )
+    p_index_binding = _build_p_index_assignment_binding(
+        instance_contract,
+        source_paths["instance"],
+        p_index_assignment,
+        p_index_construction_map_path,
+    )
     source_hashes = {role: _file_sha256(path) for role, path in source_paths.items()}
     source_bytes = {role: Path(path).stat().st_size for role, path in source_paths.items()}
     protected_hashes = {p_index: _file_sha256(path) for p_index, path in protected_paths.items()}
@@ -240,6 +248,8 @@ def build_package_derivation_contract(
         "truth_contract": policy["truth_contract"],
         "required_package_files": policy["required_package_files"],
     }
+    if p_index_binding is not None:
+        content["p_index_assignment"] = p_index_binding
     digest = _canonical_sha(content)
     contract = {
         "schema_version": "1.0.0",
@@ -258,6 +268,7 @@ def derive_scene_packages(
     protected_paths: Mapping[str, Path],
     output_root: Path,
     policy: Mapping[str, Any],
+    p_index_construction_map_path: Path | None = None,
 ) -> tuple[dict[str, Any], Path, bool]:
     """Derive and atomically publish every promoted-person package without rerendering."""
 
@@ -283,6 +294,11 @@ def derive_scene_packages(
             "package_source_resolution_mismatch",
             str((instance.shape, part.shape, material.shape, expected_shape)),
         )
+    _verify_runtime_p_index_binding(
+        contract,
+        instance,
+        p_index_construction_map_path,
+    )
     owner_ids = [owner["instance_id"] for owner in contract["owners"]]
     observed_instances = set(int(value) for value in np.unique(instance))
     if not observed_instances <= {0, *owner_ids} or any(
@@ -527,6 +543,8 @@ def _materialize_scene(
         "no_rerender": True,
         "forbidden_human_fields_absent": True,
     }
+    if "p_index_assignment" in contract:
+        invariants["p_index_assignment_exact"] = True
     content = {
         "contract_id": contract["contract_id"],
         "contract_sha256": contract["contract_sha256"],
@@ -543,6 +561,8 @@ def _materialize_scene(
             "visible_person_pixels": int(np.count_nonzero(visible)),
         },
     }
+    if "p_index_assignment" in contract:
+        content["p_index_assignment"] = contract["p_index_assignment"]
     digest = _canonical_sha(content)
     report = {
         "schema_version": "1.0.0",
@@ -579,6 +599,177 @@ def _verify_source_files(
             != contract["source_file_bytes"]["protected_by_p_index"][p_index]
         ):
             raise PackageDerivationError("package_source_file_mismatch", p_index)
+
+
+def _build_p_index_assignment_binding(
+    instance_contract: Mapping[str, Any],
+    final_instance_map_path: Path,
+    assignment: Mapping[str, Any] | None,
+    construction_map_path: Path | None,
+) -> dict[str, Any] | None:
+    if assignment is None:
+        if construction_map_path is not None:
+            raise PackageDerivationError(
+                "package_p_index_assignment_missing", str(construction_map_path)
+            )
+        return None
+    if construction_map_path is None:
+        raise PackageDerivationError(
+            "package_p_index_construction_map_missing", instance_contract["scene_id"]
+        )
+    from ..scenes.prominence import PIndexAssignmentError, validate_p_index_assignment
+
+    try:
+        validate_p_index_assignment(assignment)
+    except PIndexAssignmentError as exc:
+        raise PackageDerivationError("package_p_index_assignment_invalid", exc.reason) from exc
+    if not assignment["summary"]["accepted"]:
+        raise PackageDerivationError(
+            "package_p_index_assignment_not_accepted", assignment["assignment_id"]
+        )
+    lineage = assignment["lineage"]
+    frame = assignment["final_frame"]
+    if (
+        assignment["scene_id"] != instance_contract["scene_id"]
+        or lineage["resolved_state_id"] != instance_contract["resolved_state_id"]
+        or lineage["resolved_state_sha256"] != instance_contract["resolved_state_sha256"]
+        or lineage["scene_state_sha256"] != instance_contract["scene_state_sha256"]
+        or frame["resolution"] != instance_contract["output"]["resolution"]
+        or frame["crop"] != instance_contract["output"]["crop"]
+    ):
+        raise PackageDerivationError(
+            "package_p_index_assignment_lineage_mismatch", assignment["assignment_id"]
+        )
+    contract_owners = [
+        {
+            "construction_id": row["construction_id"],
+            "p_index": row["p_index"],
+            "instance_id": row["instance_id"],
+        }
+        for row in instance_contract["owners"]
+    ]
+    assignment_owners = [
+        {
+            "construction_id": row["construction_id"],
+            "p_index": row["p_index"],
+            "instance_id": row["instance_id"],
+        }
+        for row in assignment["mapping"]
+    ]
+    if contract_owners != assignment_owners:
+        raise PackageDerivationError(
+            "package_p_index_owner_mismatch", json.dumps(assignment_owners, sort_keys=True)
+        )
+    construction_path = Path(construction_map_path)
+    construction_payload = construction_path.read_bytes()
+    if (
+        hashlib.sha256(construction_payload).hexdigest() != frame["construction_map_sha256"]
+        or len(construction_payload) != frame["construction_map_bytes"]
+    ):
+        raise PackageDerivationError(
+            "package_p_index_construction_map_mismatch", str(construction_path)
+        )
+    construction, construction_codec = decode_u16_png_exact(construction_path)
+    final_instance, final_codec = decode_u16_png_exact(Path(final_instance_map_path))
+    if (
+        construction_codec["resolution"] != frame["resolution"]
+        or final_codec["resolution"] != frame["resolution"]
+    ):
+        raise PackageDerivationError(
+            "package_p_index_resolution_mismatch",
+            str((construction_codec["resolution"], final_codec["resolution"])),
+        )
+    person_by_construction = {row["construction_id"]: row for row in assignment["persons"]}
+    mapping = [
+        {
+            "slot_id": row["slot_id"],
+            "construction_id": row["construction_id"],
+            "source_instance_id": person_by_construction[row["construction_id"]][
+                "source_instance_id"
+            ],
+            "p_index": row["p_index"],
+            "instance_id": row["instance_id"],
+        }
+        for row in assignment["mapping"]
+    ]
+    _verify_exact_instance_remap(construction, final_instance, mapping)
+    return {
+        "assignment_id": assignment["assignment_id"],
+        "assignment_sha256": assignment["assignment_sha256"],
+        "assignment_policy_sha256": assignment["policy_sha256"],
+        "duo_selection_id": lineage["duo_selection_id"],
+        "duo_selection_sha256": lineage["duo_selection_sha256"],
+        "construction_map_sha256": frame["construction_map_sha256"],
+        "construction_map_bytes": frame["construction_map_bytes"],
+        "expected_camera_sha256": frame["expected_camera_sha256"],
+        "observed_camera_sha256": frame["observed_camera_sha256"],
+        "resolution": frame["resolution"],
+        "crop": frame["crop"],
+        "mapping": mapping,
+        "instance_remap_exact": True,
+    }
+
+
+def _verify_runtime_p_index_binding(
+    contract: Mapping[str, Any],
+    final_instance: np.ndarray,
+    construction_map_path: Path | None,
+) -> None:
+    binding = contract.get("p_index_assignment")
+    if binding is None:
+        if construction_map_path is not None:
+            raise PackageDerivationError(
+                "package_p_index_assignment_missing", str(construction_map_path)
+            )
+        return
+    if construction_map_path is None:
+        raise PackageDerivationError(
+            "package_p_index_construction_map_missing", contract["contract_id"]
+        )
+    path = Path(construction_map_path)
+    payload = path.read_bytes()
+    if (
+        hashlib.sha256(payload).hexdigest() != binding["construction_map_sha256"]
+        or len(payload) != binding["construction_map_bytes"]
+    ):
+        raise PackageDerivationError("package_p_index_construction_map_mismatch", str(path))
+    construction, codec = decode_u16_png_exact(path)
+    if codec["resolution"] != binding["resolution"] or construction.shape != final_instance.shape:
+        raise PackageDerivationError(
+            "package_p_index_resolution_mismatch", str(codec["resolution"])
+        )
+    _verify_exact_instance_remap(construction, final_instance, binding["mapping"])
+
+
+def _verify_exact_instance_remap(
+    construction: np.ndarray,
+    final_instance: np.ndarray,
+    mapping: Sequence[Mapping[str, Any]],
+) -> None:
+    source_ids = {row["source_instance_id"] for row in mapping}
+    observed_source_ids = {int(value) for value in np.unique(construction)} - {0}
+    if observed_source_ids != source_ids:
+        raise PackageDerivationError(
+            "package_p_index_construction_namespace_invalid", str(sorted(observed_source_ids))
+        )
+    expected = np.zeros_like(construction, dtype=np.uint16)
+    for row in mapping:
+        expected[construction == row["source_instance_id"]] = row["instance_id"]
+    if not np.array_equal(expected, final_instance):
+        raise PackageDerivationError(
+            "package_p_index_instance_remap_invalid",
+            json.dumps(
+                [
+                    {
+                        "construction_id": row["construction_id"],
+                        "source_instance_id": row["source_instance_id"],
+                        "instance_id": row["instance_id"],
+                    }
+                    for row in mapping
+                ],
+                sort_keys=True,
+            ),
+        )
 
 
 def _decode_rgb_png(path: Path, resolution: Sequence[int]) -> dict[str, Any]:

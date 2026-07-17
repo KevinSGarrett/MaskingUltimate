@@ -6699,3 +6699,21 @@ Live boundary:                        no live DAZ render, live p-index result, s
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
 Verification:                         9/9 focused, 1,194/1,194 DAZ-wide, and 2,955/2,955 full repository tests pass; repository Ruff, changed-surface Black, 127 JSON schemas, 34 DAZ YAML documents, and Git diff checks pass
 Evidence:                             `qa/reports/daz_p_index_prominence_20260717.json`
+
+## 2026-07-17 06:27 UTC - D8 shared-pass per-person derivation bound to final p-index authority
+
+**Result:** MF-P9-09.03 now has complete offline D8 assignment binding and exact-complement proof;
+it remains at 85% until qualified live D6 pass bytes and a live D8-02 assignment run through the
+same replay contract.
+
+D8 binding:                          accepted assignment/policy/duo IDs and hashes, final-camera hashes, resolution/crop, construction-raster bytes/hash, and every slot/construction/source-ID/p-index/instance-ID mapping are sealed into the package-derivation contract and report
+Exact remap:                          contract construction proves the final uint16 shared instance pass is the pixel-exact namespace remap of the final-camera construction raster; derivation replays the proof before publication; missing/tampered rasters and a seeded final-instance owner swap reject
+Exact complements:                   each target is `instance == target_id`; each other-person mask is the exact visible non-target union; targets are pairwise disjoint; target union equals visible instance union; PART/MATERIAL/protected-ID-50 equations and shared RGB byte identity remain exact
+Compatibility:                       historical and solo package contracts remain valid without a D8 binding; a bound D8 contract is unambiguous and cannot derive without the original construction raster
+Lineage/publication:                 assignment-bound contract hashes determine package IDs and survive synthetic lineage; closed schemas, CLI planning/derivation, atomic immutable publication, replay, and conflict rejection pass
+Authority boundary:                  output remains visible-only synthetic weighted pseudo-label, train-only, evaluation-ineligible, weight 0.20; p-index binding cannot create or raise human/autonomous gold authority
+Verification hardening:              a cumulative full-suite run exposed whole-file EoMT checkpoint hashing memory pressure; hashing is now streamed, its reproduction lock and dependent runtime/tournament/provider policy seals were recomputed, and all affected governance/runtime tests pass in bounded fresh processes
+Verification:                         37/37 focused p-index/derivation, 1,197/1,197 DAZ-wide, 210/210 bounded downstream, and 32/32 SAM 3.1 tests pass; Ruff, changed-surface Black, 127 schemas, 34 DAZ YAML documents, and diff checks pass
+Monolithic boundary:                 the repository contains 2,958 tests and the immediately preceding commit passed all 2,955 then-existing tests; a final one-process run is not claimed because live ComfyUI plus WSL/Docker left about 1.3 GB free RAM and repeating the cumulative run would reintroduce laptop-crash risk
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_shared_pass_d8_derivation_20260717.json`

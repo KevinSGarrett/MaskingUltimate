@@ -84,7 +84,7 @@
     "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
-    "env/provider_runtime_matrix.json": "f413e9158021a99d3dde1be55e3a389b7d9f32a507e7f5c9dffacf49acfcd750",
+    "env/provider_runtime_matrix.json": "c4aa01f10e48f41223a1d1ab7a854b87f7eabefb1e9a953f556ca8cb4459b0b2",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
     "qa/governance/benchmark_matrices/geometry_variant_benchmark_v1.json": "f70c47f2bb052d9910bbbec916765fca81b6f404ae4d3060297446f2080c870d",
     "qa/governance/benchmark_matrices/mediapipe_vote_ablation_v1.json": "f198fe53acd98fdbac6b5658794bb9d3061311b00e6740eb8924aa245e5f187e",
@@ -99,5 +99,5 @@
     "src/maskfactory/providers/silhouette_benchmark.py": "355b4cb50b4c9ddbdae88d7148feb7868859307f3b14cd2f8e438d5f89df2061",
     "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
   },
-  "sha256": "8131b18526f16c563850517fb146a34bea30c6504d6e7b52f8d42e497f9b181a"
+  "sha256": "b2e3a7db1c72fa2be63f82c6262c5bf7672e24399f0dd6d9b063910048d19d9a"
 }

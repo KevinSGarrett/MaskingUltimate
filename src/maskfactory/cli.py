@@ -6133,6 +6133,16 @@ def daz_recipes_validate_relationship_passes(
     help="JSON object containing required validated D6 authority-report SHA-256 values.",
 )
 @click.option(
+    "--p-index-assignment",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Accepted final-camera p-index assignment for a D8 multi-person derivation.",
+)
+@click.option(
+    "--p-index-construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Exact construction-ownership raster bound by the p-index assignment.",
+)
+@click.option(
     "--policy",
     type=click.Path(path_type=Path, dir_okay=False, exists=True),
     default=Path("configs/daz/package_derivation.yaml"),
@@ -6156,6 +6166,8 @@ def daz_recipes_plan_package_derivation(
     material_image: Path,
     protected_paths: Path,
     authority_hashes: Path,
+    p_index_assignment: Path | None,
+    p_index_construction_map: Path | None,
     policy: Path,
     output: Path,
 ) -> None:
@@ -6185,6 +6197,12 @@ def daz_recipes_plan_package_derivation(
             protected_paths={key: Path(value) for key, value in protected_document.items()},
             authority_report_sha256s=authority_document,
             policy=load_package_derivation_policy(policy),
+            p_index_assignment=(
+                json.loads(p_index_assignment.read_text(encoding="utf-8"))
+                if p_index_assignment is not None
+                else None
+            ),
+            p_index_construction_map_path=p_index_construction_map,
         )
         target, published = _publish_immutable_json(document, output, document["contract_id"])
     except (
@@ -6212,6 +6230,7 @@ def daz_recipes_plan_package_derivation(
                 data={
                     "contract_sha256": document["contract_sha256"],
                     "package_count": len(document["owners"]),
+                    "p_index_assignment": document.get("p_index_assignment"),
                     "publication": {"path": str(target), "published": published},
                 },
             ),
@@ -6242,6 +6261,11 @@ def daz_recipes_plan_package_derivation(
     required=True,
 )
 @click.option(
+    "--p-index-construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Exact construction-ownership raster required by a bound D8 contract.",
+)
+@click.option(
     "--policy",
     type=click.Path(path_type=Path, dir_okay=False, exists=True),
     default=Path("configs/daz/package_derivation.yaml"),
@@ -6260,6 +6284,7 @@ def daz_recipes_derive_scene_packages(
     part_image: Path,
     material_image: Path,
     protected_paths: Path,
+    p_index_construction_map: Path | None,
     policy: Path,
     output: Path,
 ) -> None:
@@ -6284,6 +6309,7 @@ def daz_recipes_derive_scene_packages(
             protected_paths={key: Path(value) for key, value in protected_document.items()},
             output_root=output,
             policy=load_package_derivation_policy(policy),
+            p_index_construction_map_path=p_index_construction_map,
         )
     except (
         PackageDerivationError,

@@ -13,6 +13,7 @@ from typing import Any, Mapping
 import yaml
 
 from ...datasets.coverage import ATTRIBUTES, CONTEXTS, POSES, VIEWS
+from ...models.ontology_contract import V2_PART_CLASS_NAMES
 from ...validation import require_valid_document
 
 
@@ -27,6 +28,7 @@ class CoverageVocabularyError(ValueError):
 
 SOURCE_PATHS = {
     "canonical_coverage": "src/maskfactory/datasets/coverage.py",
+    "ontology_contract": "src/maskfactory/models/ontology_contract.py",
     "character_profiles": "configs/daz/character_profiles.yaml",
     "appearance_selection": "configs/daz/appearance_selection.yaml",
     "solo_pose_selection": "configs/daz/solo_pose_selection.yaml",
@@ -42,6 +44,7 @@ REQUIRED_AXIS_IDS = (
     "instance_context",
     "canonical_attribute",
     "ontology_version",
+    "ontology_label",
     "figure_generation",
     "anatomy_configuration",
     "anatomy_composition",
@@ -183,6 +186,7 @@ def validate_coverage_vocabulary(policy: Mapping[str, Any]) -> None:
         or by_axis["canonical_pose"] != list(POSES)
         or by_axis["instance_context"] != list(CONTEXTS)
         or by_axis["canonical_attribute"] != list(ATTRIBUTES)
+        or by_axis["ontology_label"] != list(V2_PART_CLASS_NAMES[1:])
     ):
         raise CoverageVocabularyError(
             "coverage_vocabulary_canonical_crosswalk_invalid", "canonical_coverage"

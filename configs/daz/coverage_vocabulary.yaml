@@ -3,6 +3,7 @@ vocabulary_version: 1.0.0
 scope: daz_coverage_planning_and_reporting
 source_snapshots:
   - {source_id: canonical_coverage, path: src/maskfactory/datasets/coverage.py, sha256: 9926b772cff8e75b766e298c59745e75e17e09ebf5fb3e3ab1009edcd88ed05d}
+  - {source_id: ontology_contract, path: src/maskfactory/models/ontology_contract.py, sha256: bc1361f161720908d3cb321d3132318c11edbe78c5c5f6c8da3a7683286f60e5}
   - {source_id: character_profiles, path: configs/daz/character_profiles.yaml, sha256: a0766bc483014cfb69a08ab4059fd01b8db3d767683abd8fa7b1ec9d86c6c001}
   - {source_id: appearance_selection, path: configs/daz/appearance_selection.yaml, sha256: 43dabbc2cfe8c2ace765698dfdaffc2fdebe4fc41cbf724d55a525381c012f1d}
   - {source_id: solo_pose_selection, path: configs/daz/solo_pose_selection.yaml, sha256: 10013b1cdab746e0da884aaef3406a66179e11f162b24b02f677373a9443b639}
@@ -16,6 +17,7 @@ axes:
   - {axis_id: instance_context, layer: canonical, unit: scene, authority: canonical_coverage, values: [solo, duo, small_group]}
   - {axis_id: canonical_attribute, layer: canonical, unit: person_instance, authority: canonical_coverage, values: [hands_visible, feet_visible, hand_body_contact, hair_occlusion, clothing_boundary, bare_skin_dominant, tight_clothing, loose_clothing, back_visible, fingers_spread, fingers_merged, props_present]}
   - {axis_id: ontology_version, layer: canonical, unit: person_instance, authority: maskfactory_ontology, values: [body_parts_v1, body_parts_v2]}
+  - {axis_id: ontology_label, layer: canonical, unit: person_instance, authority: maskfactory_ontology, values: [hair, head_face, neck, chest_upper_torso, left_breast, right_breast, abdomen_stomach, belly_button, pelvic_region, left_hip, right_hip, left_shoulder, right_shoulder, left_upper_arm, right_upper_arm, left_elbow, right_elbow, left_forearm, right_forearm, left_wrist, right_wrist, left_hand_base, right_hand_base, left_thumb, right_thumb, left_index_finger, right_index_finger, left_middle_finger, right_middle_finger, left_ring_finger, right_ring_finger, left_pinky, right_pinky, left_glute, right_glute, left_thigh, right_thigh, left_knee, right_knee, left_calf, right_calf, left_ankle, right_ankle, left_foot_base, right_foot_base, left_toes, right_toes, back_upper_torso, back_lower_torso, other_person, occluding_object, support_surface, accessory_or_prop, left_ear, right_ear, left_areola, right_areola, left_nipple, right_nipple, vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]}
   - {axis_id: figure_generation, layer: generation, unit: person_instance, authority: asset_vocabularies, values: [genesis_9, genesis_8_1, genesis_8, generation_neutral, other_or_unknown]}
   - {axis_id: anatomy_configuration, layer: generation, unit: person_instance, authority: appearance_selection, values: [adult_male_anatomy, adult_female_anatomy]}
   - {axis_id: anatomy_composition, layer: generation, unit: scene, authority: daz_17, values: [solo_male, solo_female, MM, MF, FF, MMM, MMF, MFF, FFF, MMMM, MMMF, MMFF, MFFF, FFFF]}

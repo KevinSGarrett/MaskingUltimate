@@ -17202,12 +17202,17 @@
           "ts": "2026-07-17T07:31:48+00:00",
           "actor": "codex",
           "text": "Offline closed vocabulary, source-hash/crosswalk replay, schema, compiler, reporting separation, CLI, and immutable publication complete. Qualified D0 inventory plus D5 ontology/asset mapping inputs and accepted live coverage observations remain outstanding; no live corpus, dataset consumption, or gold authority claimed."
+        },
+        {
+          "ts": "2026-07-17T07:38:41+00:00",
+          "actor": "codex",
+          "text": "Corrective completeness pass added the exact 64-label foreground ontology axis and ninth ontology-contract source snapshot required by Daz 19 section 2; vocabulary now has 56 fixed axes and 445 values. The earlier immutable pre-label report is retained only as superseded audit evidence."
         }
       ],
-      "evidence": "qa/reports/daz_coverage_vocabulary_20260717.json; qa/reports/daz_coverage_vocabulary/dcvr_56b29e6cc11ac8d33821368d.json; 25/25 focused and adjacent tests pass",
+      "evidence": "qa/reports/daz_coverage_vocabulary_20260717.json; qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json; 25/25 focused and adjacent tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T07:31:48+00:00",
+      "updated_at": "2026-07-17T07:38:41+00:00",
       "orphaned": false
     },
     "MF-P9-10.02": {

@@ -18,6 +18,7 @@ from maskfactory.daz.coverage import (
     validate_coverage_vocabulary,
     validate_coverage_vocabulary_report,
 )
+from maskfactory.models.ontology_contract import V2_PART_CLASS_NAMES
 from maskfactory.validation import ArtifactValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,12 +57,13 @@ def test_live_sources_build_closed_vocabulary_and_exact_canonical_crosswalk() ->
     assert axes["canonical_pose"]["values"] == list(POSES)
     assert axes["instance_context"]["values"] == list(CONTEXTS)
     assert axes["canonical_attribute"]["values"] == list(ATTRIBUTES)
+    assert axes["ontology_label"]["values"] == list(V2_PART_CLASS_NAMES[1:])
     assert report["summary"] == {
         "closed": True,
         "source_hashes_match": True,
         "canonical_crosswalk_exact": True,
-        "fixed_axis_count": 55,
-        "fixed_value_count": 381,
+        "fixed_axis_count": 56,
+        "fixed_value_count": 445,
         "registry_axis_count": 8,
         "continuous_axis_count": 6,
         "high_risk_intersection_count": 18,

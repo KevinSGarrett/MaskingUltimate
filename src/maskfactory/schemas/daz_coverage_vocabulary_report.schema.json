@@ -11,8 +11,8 @@
     "vocabulary_version": {"const": "1.0.0"},
     "policy_sha256": {"$ref": "#/$defs/sha"},
     "scope": {"const": "daz_coverage_planning_and_reporting"},
-    "source_snapshots": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/source"}},
-    "axes": {"type": "array", "minItems": 55, "maxItems": 55, "items": {"$ref": "#/$defs/axis"}},
+    "source_snapshots": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/source"}},
+    "axes": {"type": "array", "minItems": 56, "maxItems": 56, "items": {"$ref": "#/$defs/axis"}},
     "registry_axes": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/registryAxis"}},
     "continuous_axes": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/continuousAxis"}},
     "high_risk_intersections": {"type": "array", "minItems": 18, "maxItems": 18, "items": {"$ref": "#/$defs/intersection"}},
@@ -49,7 +49,7 @@
       "required": ["closed", "source_hashes_match", "canonical_crosswalk_exact", "fixed_axis_count", "fixed_value_count", "registry_axis_count", "continuous_axis_count", "high_risk_intersection_count"],
       "properties": {
         "closed": {"const": true}, "source_hashes_match": {"const": true}, "canonical_crosswalk_exact": {"const": true},
-        "fixed_axis_count": {"const": 55}, "fixed_value_count": {"const": 381},
+        "fixed_axis_count": {"const": 56}, "fixed_value_count": {"const": 445},
         "registry_axis_count": {"const": 8}, "continuous_axis_count": {"const": 6}, "high_risk_intersection_count": {"const": 18}
       }
     }

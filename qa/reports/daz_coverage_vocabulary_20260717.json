@@ -12,8 +12,8 @@
   "closed_vocabulary": {
     "vocabulary_version": "1.0.0",
     "closed": true,
-    "fixed_axis_count": 55,
-    "fixed_value_count": 381,
+    "fixed_axis_count": 56,
+    "fixed_value_count": 445,
     "registry_axis_count": 8,
     "continuous_axis_count": 6,
     "mandatory_high_risk_intersection_count": 18,
@@ -21,9 +21,10 @@
     "fixed_registry_and_continuous_axes_are_disjoint": true
   },
   "source_binding": {
-    "source_snapshot_count": 8,
+    "source_snapshot_count": 9,
     "source_hashes_match_live_repository": true,
     "canonical_views_poses_contexts_and_attributes_crosswalk_exact": true,
+    "canonical_ontology_label_crosswalk_exact": true,
     "daz_character_profile_crosswalk_exact": true,
     "daz_appearance_crosswalk_exact": true,
     "daz_solo_pose_crosswalk_exact": true,
@@ -68,9 +69,9 @@
     "render_pass_and_identity_risk_is_represented": true
   },
   "publication": {
-    "report_id": "dcvr_56b29e6cc11ac8d33821368d",
-    "report_sha256": "56b29e6cc11ac8d33821368d3f45d91904f2d7f85a35e055ec0be26cb3e73101",
-    "path": "qa/reports/daz_coverage_vocabulary/dcvr_56b29e6cc11ac8d33821368d.json",
+    "report_id": "dcvr_f3b4c3927cc77cb389904bfc",
+    "report_sha256": "f3b4c3927cc77cb389904bfcee91811106f1adb4e07cc4fe9a88e3d1c555a50a",
+    "path": "qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json",
     "closed_json_schema": true,
     "schema_registered": true,
     "semantic_replay": true,
@@ -102,14 +103,14 @@
     "downstream_qualifiers_may_not_infer_stronger_mask_authority": true
   },
   "lineage_hashes": {
-    "policy_sha256": "37d7fa350d23d049f48a544b8fa27420d9608e93e243ab912d1e6b4023375b15",
-    "schema_sha256": "e7459e15fa0b8a6181e0aa3ff5cae05f1c749f4f723035c5bd0317f3a7a57b62",
-    "implementation_sha256": "bd9abf9d5325a01f47e3a04ed5421cc48aa2232d056513b60fca8c7671b713eb",
+    "policy_sha256": "d9504f88f2b5767fa200296f7ac9697017e6bf64d6e817e222a014379d06f970",
+    "schema_sha256": "ca6e06c19c967d83ed781ba30f826ad6b50c5445ba59ba4d249ad0535518c6dc",
+    "implementation_sha256": "b80499b6ce6d73ae5a1c8d581ab2963980c1a80281c8892451be6e6f3ee17bcd",
     "package_init_sha256": "757a749bd5a814834bb2053b1804edb2cd0b2e61981067e45ab0c7f884e4cd6f",
     "cli_sha256": "2c55f164d136c812fce6dad0c748dac01186e2b3d2cd33ff4f3d44ceb2a7fdd5",
     "validation_registry_sha256": "dc371a87d6e9319c7fcc9cfd429b2a81ca698497d55c936789ceb8d8429bfc44",
-    "tests_sha256": "9254ebcb67cd67c7e50f2405e156c651a6a2314c57f04af386db72c0ba507995",
-    "published_report_file_sha256": "3764a99f4cb2c97dd3abe0642f14715d5649cf3c3c614d451885dd513abc9218"
+    "tests_sha256": "748a23774a93e9940b41c1d462967ea601407d8389b63c1b5389cecf18b426cd",
+    "published_report_file_sha256": "3eba0471e227e958910c6e2542faeed3b65b4ac2242751b1a955320bcd507779"
   },
   "verification": {
     "focused_vocabulary_tests_collected": 14,

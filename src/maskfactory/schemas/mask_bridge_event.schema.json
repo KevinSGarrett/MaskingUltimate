@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mask_bridge_event.schema.json",
+  "title": "Append-only MaskFactory-ComfyUI bridge event envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "event_id", "sequence", "stream_id", "occurred_at", "evidence_context", "fixture_only", "canonicalization", "trust_binding",
+    "journal_epoch", "event_type", "producer", "correlation_id", "causation_id", "subject", "state_transition",
+    "payload_schema", "payload_sha256", "previous_event_sha256", "event_payload_sha256", "signature"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "mask_bridge_event"},
+    "event_id": {"type": "string", "pattern": "^mfbevt_[0-9a-f]{24}$"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "stream_id": {"type": "string", "minLength": 1},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "evidence_context": {"enum": ["conformance_fixture", "runtime_evidence"]},
+    "fixture_only": {"type": "boolean"},
+    "canonicalization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "excluded_top_level_fields"],
+      "properties": {
+        "algorithm": {"const": "maskfactory-canonical-json-v1"},
+        "excluded_top_level_fields": {"type": "array", "prefixItems": [{"const": "event_payload_sha256"}, {"const": "signature"}], "minItems": 2, "maxItems": 2}
+      }
+    },
+    "trust_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key_set_id", "key_set_version", "key_set_sha256", "key_role", "signing_key_id", "signing_public_key_sha256", "rotation_policy_sha256", "revocation_policy_sha256"],
+      "properties": {
+        "key_set_id": {"type": "string", "minLength": 1},
+        "key_set_version": {"type": "string", "minLength": 1},
+        "key_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "key_role": {"enum": ["producer_journal", "consumer_journal"]},
+        "signing_key_id": {"type": "string", "minLength": 1},
+        "signing_public_key_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "rotation_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "revocation_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "journal_epoch": {"type": "integer", "minimum": 1},
+    "event_type": {"enum": ["release_published", "release_adopted", "release_partially_adopted", "release_rejected", "release_superseded", "release_revoked", "adoption_revalidation_required", "adoption_invalidated", "capability_snapshot_published", "capabilities_changed", "consumer_requirements_published", "consumer_requirements_superseded", "request_submitted", "request_admitted", "request_queued", "request_started", "submission_unknown", "submission_reconciled_found_running", "submission_reconciled_found_completed_pending_receipt", "submission_reconciled_found_failed", "submission_reconciled_not_found_safe_to_submit", "request_completed_pending_receipt", "receipt_committed", "request_blocked", "request_failed", "request_retry_scheduled", "circuit_opened", "circuit_closed", "cache_tombstoned", "cache_rebuilt", "authority_certified", "authority_invalidated", "repair_requested", "repair_feedback_accepted", "repair_feedback_rejected", "repair_completed", "recovery_started", "recovery_completed", "rollback_started", "rollback_completed"]},
+    "producer": {"enum": ["MaskFactory", "Comfy_UI_Main"]},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "causation_id": {"type": ["string", "null"]},
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["release_id", "adoption_id", "capability_snapshot_id", "consumer_requirements_id", "request_id", "receipt_id", "certificate_id", "artifact_sha256"],
+      "properties": {
+        "release_id": {"type": ["string", "null"]},
+        "adoption_id": {"type": ["string", "null"]},
+        "capability_snapshot_id": {"type": ["string", "null"]},
+        "consumer_requirements_id": {"type": ["string", "null"]},
+        "request_id": {"type": ["string", "null"]},
+        "receipt_id": {"type": ["string", "null"]},
+        "certificate_id": {"type": ["string", "null"]},
+        "artifact_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      },
+      "anyOf": [
+        {"properties": {"release_id": {"type": "string"}}},
+        {"properties": {"adoption_id": {"type": "string"}}},
+        {"properties": {"capability_snapshot_id": {"type": "string"}}},
+        {"properties": {"consumer_requirements_id": {"type": "string"}}},
+        {"properties": {"request_id": {"type": "string"}}},
+        {"properties": {"receipt_id": {"type": "string"}}},
+        {"properties": {"certificate_id": {"type": "string"}}},
+        {"properties": {"artifact_sha256": {"type": "string"}}}
+      ]
+    },
+    "state_transition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resource_kind", "from_state", "to_state", "submission_identity_sha256", "receipt_last_atomic_commit", "invalidation_event_id", "invalidation_event_sha256", "reconciliation"],
+      "properties": {
+        "resource_kind": {"enum": ["release", "capability_snapshot", "consumer_requirements", "request", "receipt", "certificate", "cache", "repair", "circuit", "recovery", "rollback"]},
+        "from_state": {"enum": ["none", "published", "adopted", "partially_adopted", "rejected", "superseded", "revoked", "revalidation_required", "submitted", "admitted", "queued", "running", "submission_unknown", "reconciled_not_found", "completed_pending_receipt", "receipt_committed", "blocked", "failed", "retry_scheduled", "open", "closed", "active", "tombstoned", "certified", "invalidated", "requested", "accepted", "recovering", "recovered", "rolling_back", "rolled_back"]},
+        "to_state": {"enum": ["published", "adopted", "partially_adopted", "rejected", "superseded", "revoked", "revalidation_required", "submitted", "admitted", "queued", "running", "submission_unknown", "reconciled_not_found", "completed_pending_receipt", "receipt_committed", "blocked", "failed", "retry_scheduled", "open", "closed", "active", "tombstoned", "certified", "invalidated", "requested", "accepted", "recovering", "recovered", "rolling_back", "rolled_back"]},
+        "submission_identity_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "receipt_last_atomic_commit": {"type": "boolean"},
+        "invalidation_event_id": {"type": ["string", "null"]},
+        "invalidation_event_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "reconciliation": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["outcome", "remote_execution_id", "remote_execution_sha256", "remote_status", "remote_result_sha256", "checked_at", "not_found_evidence_sha256", "resubmission_authorized"],
+              "properties": {
+                "outcome": {"enum": ["found_running", "found_completed_pending_receipt", "found_failed", "not_found_safe_to_submit"]},
+                "remote_execution_id": {"type": ["string", "null"]},
+                "remote_execution_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+                "remote_status": {"enum": ["running", "completed", "failed", "not_found"]},
+                "remote_result_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+                "checked_at": {"type": "string", "format": "date-time"},
+                "not_found_evidence_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+                "resubmission_authorized": {"type": "boolean"}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "payload_schema": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": {"enum": ["maskfactory_release_snapshot", "maskfactory_capability_snapshot", "maskfactory_consumer_requirements", "maskfactory_adoption_receipt", "mask_acquisition_request", "mask_acquisition_receipt", "mask_bridge_error", "mask_authority_invalidation_event", "mask_repair_feedback", "operational_autonomy_certificate", "mask_bridge_semantic_invariant_profile"]},
+        "version": {"const": "1.0.0"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "previous_event_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "event_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "key_id", "public_key_base64", "signed_payload_sha256", "signed_payload_format", "value_base64"],
+      "properties": {
+        "algorithm": {"const": "ed25519"},
+        "key_id": {"type": "string", "minLength": 1},
+        "public_key_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{43}=$"},
+        "signed_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "signed_payload_format": {"const": "sha256_digest_bytes"},
+        "value_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{40,}={0,2}$"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"sequence": {"const": 1}}, "required": ["sequence"]},
+      "then": {"properties": {"previous_event_sha256": {"type": "null"}}},
+      "else": {"properties": {"previous_event_sha256": {"type": "string"}}}
+    },
+    {"if": {"properties": {"fixture_only": {"const": true}}, "required": ["fixture_only"]}, "then": {"properties": {"evidence_context": {"const": "conformance_fixture"}}}},
+    {"if": {"properties": {"fixture_only": {"const": false}}, "required": ["fixture_only"]}, "then": {"properties": {"evidence_context": {"const": "runtime_evidence"}}}},
+    {"if": {"properties": {"event_type": {"const": "receipt_committed"}}, "required": ["event_type"]}, "then": {"properties": {"state_transition": {"properties": {"receipt_last_atomic_commit": {"const": true}, "to_state": {"const": "receipt_committed"}}}}}},
+    {"if": {"properties": {"event_type": {"const": "submission_unknown"}}, "required": ["event_type"]}, "then": {"properties": {"state_transition": {"properties": {"to_state": {"const": "submission_unknown"}}}}}}
+    ,{"if": {"properties": {"event_type": {"enum": ["release_superseded", "release_revoked", "adoption_revalidation_required", "adoption_invalidated", "authority_invalidated"]}}, "required": ["event_type"]}, "then": {"properties": {"state_transition": {"properties": {"invalidation_event_id": {"type": "string"}, "invalidation_event_sha256": {"type": "string"}}}, "payload_schema": {"properties": {"name": {"const": "mask_authority_invalidation_event"}}}}}}
+  ]
+}

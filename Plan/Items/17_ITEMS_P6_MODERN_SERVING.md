@@ -1,5 +1,10 @@
 # ITEMS — Phase P6 Ontology-v2 and Provider-Neutral Serving (docs 18, 21, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** exact completed provider-neutral interfaces may be reused by
+> core only through explicit dependencies and the new release/adoption contracts. Legacy human-gold,
+> CVAT, trained-champion, full-library, or interactive confirmation requirements do not carry into
+> the autonomous bridge and cannot block or revoke `core_autonomous_runtime`.
+
 Goal: expose exact ontology/provider/truth authority through serving, ComfyUI, and CVAT without rewriting legacy evidence.
 
 ## MF-P6-05 — Ontology-v2 registry, serving, and ComfyUI (spec: 18 checklist H)

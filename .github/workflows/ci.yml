@@ -88,5 +88,7 @@ jobs:
           --allow-failed-review
       - name: Block currency governance gate regressions
         run: pytest -q tests/test_currency_review.py
-      - name: Pytest
-        run: pytest
+      - name: Audit governed asset-complete test partition
+        run: pytest --collect-only -m governed_asset
+      - name: Hermetic pytest
+        run: pytest -m "not governed_asset"

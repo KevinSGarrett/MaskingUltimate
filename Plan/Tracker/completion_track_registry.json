@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maskfactory_completion_tracks",
+  "policy_version": "2026-07-17",
+  "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+  "authoritative_spec_sha256": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+  "profiles": [
+    {
+      "profile_id": "core_autonomous_runtime",
+      "classification": "required",
+      "blocking_for_core_completion": true,
+      "purpose": "Prove a human-free autonomous MaskFactory runtime and adopted ComfyUI bridge with bounded QA, repair, abstention, certification, revocation, and recovery.",
+      "completion_claim": "operational autonomous runtime complete",
+      "required_item_ids": [
+        "MF-P6-07.01",
+        "MF-P6-07.02",
+        "MF-P6-07.03",
+        "MF-P6-07.04",
+        "MF-P6-07.05",
+        "MF-P6-07.06",
+        "MF-P6-07.07",
+        "MF-P6-08.01",
+        "MF-P6-08.02",
+        "MF-P6-08.03",
+        "MF-P6-08.04",
+        "MF-P6-08.05",
+        "MF-P6-08.06",
+        "MF-P6-08.07",
+        "MF-P6-08.08",
+        "MF-P6-09.01",
+        "MF-P6-09.02",
+        "MF-P6-09.03",
+        "MF-P6-09.04",
+        "MF-P6-09.05",
+        "MF-P6-09.06",
+        "MF-P6-09.07",
+        "MF-P6-10.01",
+        "MF-P6-10.02",
+        "MF-P6-10.03",
+        "MF-P6-10.04",
+        "MF-P6-10.05",
+        "MF-P6-10.06",
+        "MF-P6-10.07",
+        "MF-P6-11.01",
+        "MF-P6-11.02",
+        "MF-P6-11.03",
+        "MF-P6-11.04",
+        "MF-P6-11.05",
+        "MF-P6-11.06",
+        "MF-P6-11.07",
+        "MF-P6-11.08",
+        "MF-P6-12.01",
+        "MF-P6-12.02",
+        "MF-P6-12.03",
+        "MF-P6-12.04",
+        "MF-P6-12.05",
+        "MF-P6-12.06"
+      ],
+      "prerequisite_profile_ids": [],
+      "allowed_evidence": [
+        "closed-contract and negative fixtures",
+        "deterministic replay and seeded-defect tests",
+        "exact synthetic truth and metamorphic tests",
+        "governed human-uncorrected single-person and multi-person runs",
+        "fault-injection, restart, revocation, and rollback drills",
+        "pinned cross-project release and adoption evidence"
+      ],
+      "forbidden_claims": [
+        "independently measured real-image accuracy",
+        "calibrated population false-accept bound",
+        "complete model-library qualification",
+        "DAZ production maturity"
+      ],
+      "excluded_core_dependencies": [
+        "human_anchor_masks",
+        "manual_cvat_correction",
+        "blinded_human_review",
+        "minimum_package_corpus",
+        "full_model_library_download",
+        "daz_asset_or_render_work",
+        "long_duration_daz_soak",
+        "independent_real_accuracy_measurement"
+      ]
+    },
+    {
+      "profile_id": "independent_real_accuracy",
+      "classification": "optional",
+      "blocking_for_core_completion": false,
+      "purpose": "Measure real-image accuracy, boundary quality, false-accept bounds, and comparative model performance against independent human-authored truth.",
+      "completion_claim": "independent real-accuracy claims qualified",
+      "required_item_ids": [
+        "MF-P6-07.03",
+        "MF-P4-11.10",
+        "MF-P4-11.15",
+        "MF-P7-07.07",
+        "MF-P8-11.07",
+        "MF-P9-15.01"
+      ],
+      "prerequisite_profile_ids": [],
+      "allowed_evidence": [
+        "image-disjoint human-anchor masks",
+        "manual CVAT corrections",
+        "blinded independent audits",
+        "frozen real-image holdout measurements"
+      ],
+      "forbidden_claims": [
+        "core runtime incompleteness inferred from optional evidence absence",
+        "human agreement converted into wider operational certificate scope"
+      ],
+      "excluded_core_dependencies": []
+    },
+    {
+      "profile_id": "scale_daz_maturity",
+      "classification": "post_core",
+      "blocking_for_core_completion": false,
+      "purpose": "Measure large-corpus, full model-library, custom-training, DAZ synthetic-data, and long-duration reliability maturity after core completion.",
+      "completion_claim": "scale and DAZ maturity qualified",
+      "required_item_ids": [
+        "MF-P6-07.04",
+        "MF-P5-10.05",
+        "MF-P7-01.01",
+        "MF-P9-12.07",
+        "MF-P9-EXIT"
+      ],
+      "prerequisite_profile_ids": ["core_autonomous_runtime"],
+      "allowed_evidence": [
+        "certified package-volume and coverage reports",
+        "full model-library qualification reports",
+        "custom model training and leaderboard evidence",
+        "DAZ asset, render, ablation, and soak evidence"
+      ],
+      "forbidden_claims": [
+        "optional scale or DAZ incompleteness presented as core-runtime failure",
+        "synthetic geometry presented as independently measured real-image truth"
+      ],
+      "excluded_core_dependencies": []
+    }
+  ],
+  "sha256": "b6ba57e71e238cc30b71f8d1af20b49e2802cbbb7119bcf0c7d90475b82054b4"
+}

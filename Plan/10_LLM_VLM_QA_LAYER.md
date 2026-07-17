@@ -1,13 +1,25 @@
 # Document 10: LLM / VLM QA Layer
 
+**Doc-24 authority amendment:** this document remains the design for the LLM/VLM observation,
+diagnosis, routing, and optional-review surfaces. The LLM/VLM is never unilateral pixel or certificate
+authority. Required `core_autonomous_runtime` may nevertheless accept an exact output through doc 24's
+machine-enforced operational-autonomy certificate after deterministic hard vetoes, independent critics,
+stability tests, bounded repair, and revocation controls pass. Human review, human-anchor calibration,
+and the population-confidence gate described below belong to optional `independent_real_accuracy`;
+their absence is not a core-runtime blocker. Where this older document says a candidate must go to a
+human or cannot be accepted until human review, read that as the optional review route, not as a ban on
+doc-24 exact-output operational authority.
+
 Role (constitutional): the LLM/VLM layer is the **brain / QA / router / tool controller — never
-unreviewed pixel authority**.
+unilateral pixel authority**.
 It decides which masks are required, reads manifests, catches missing labels, compares overlay
 panels, produces QA reports, routes hard cases, generates correction instructions, checks L/R
 naming, and detects impossible claims. It never directly authors or approves gold pixel masks.
 It may direct a governed segmentation tool (initially SAM2) to create a separate correction
 candidate, compare before/after evidence, reject an unsafe candidate, and send a bounded proposal
-to human review. The authoritative PART map is unchanged until normal human review accepts it.
+to the autonomous certification transaction, autonomous abstention/quarantine, or optional human
+review. The authoritative PART map changes only through a separate validated transaction; an LLM/VLM
+verdict alone can never make that change.
 
 ---
 
@@ -109,7 +121,9 @@ the real approved-gold calibration gate and a separate incremental-value study s
 Without a current calibration gate, workhorse execution is uncalibrated shadow work only: it may
 render evidence and create isolated review candidates, but emits no authoritative `qa_report`
 verdict, creates no disagreement failure record, cannot alter careful routing, and cannot bypass
-human review. It may improve the reversible non-gold review draft under the hard-QA rules below.
+human review in the optional human/training route. It may improve the reversible non-gold review draft
+under the hard-QA rules below, or feed the separate doc-24 operational-certification transaction without
+claiming population calibration.
 
 Doc 20 adds progressive autonomy without weakening this default. S11 candidates may enter a governed
 tournament and become `machine_verified_candidate`. A label/context may become
@@ -117,7 +131,9 @@ tournament and become `machine_verified_candidate`. A label/context may become
 human gold. Provider disagreement, any BLOCK, certificate drift/expiry, or insufficient winner margin
 forces the residual queue for autoaccept. It does not prevent a demonstrably safer, hard-QA-passing
 candidate from becoming the reversible non-gold starting draft for required human review; the S09
-baseline and full provenance remain available for per-label rollback.
+baseline and full provenance remain available for per-label rollback. “Required human review” here is
+required only when that optional truth route is selected; core instead repairs, operationally certifies,
+or abstains under doc 24.
 
 ## 6. Cloud Boundary & Privacy Rules
 

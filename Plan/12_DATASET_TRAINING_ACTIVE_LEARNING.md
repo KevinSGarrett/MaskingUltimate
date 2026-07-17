@@ -1,5 +1,13 @@
 # Document 12: Dataset, Training & Active Learning
 
+> **Completion-profile scope (doc 24):** everything in this document belongs to the optional
+> `independent_real_accuracy` and/or post-core `scale_daz_maturity` profiles unless an individual
+> artifact is already qualified and merely consumed by core. Dataset construction, human correction,
+> holdout creation, custom training, package-volume targets, and active-learning review are not
+> prerequisites for `core_autonomous_runtime`. Operationally certified bridge artifacts are not
+> training truth and may enter a training corpus only through a separate governed truth-promotion
+> transaction.
+
 This doc turns approved gold packages into versioned datasets, fine-tunes the five specialist
 models, and closes the loop: every correction becomes training data, every failure becomes the
 next acquisition target. Trainer of record: **MMSegmentation** (doc 06 §6); detectron2 only for
@@ -41,7 +49,10 @@ DensePose. All training configs live in `configs\training\*.yaml`; all runs log 
   (`deficit = target − count`, normalized). This list is a direct input to the active-learning
   priority formula (§7) and to the weekly acquisition plan: the top-10 deficit cells define what
   images to generate/collect next.
-- D5 gate reads this file: ≥ 80% of cells at target before the system is "done" at 300 gold.
+- D5 reads this file for the optional `scale_daz_maturity` / training-maturity profile: ≥ 80% of
+  cells at target before that profile reaches its 300-gold milestone. This is not the
+  `core_autonomous_runtime` finish line and cannot block or revoke it; doc 24 is authoritative for
+  completion-profile scope.
 
 ## 3. Dataset Build & DVC Versioning
 

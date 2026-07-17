@@ -15,14 +15,14 @@
 ## 1. What This Pack Is
 
 This is the complete end-to-end technical blueprint, project plan, and instruction manual for
-building the **Ultimate Masking System**: a production-grade, human-in-the-loop, gold-standard
+building the **Ultimate Masking System**: a production-grade, autonomous-first, selectively abstaining
 body-part mask factory that produces pixel-perfect binary PNG masks for every visible body part
 of a character in an image, with specialist handling for hands/fingers, chest/clothing
 boundaries, hair, feet/toes, occlusion, and clothing — and which ultimately trains its own
 custom fine-tuned segmentation models and integrates directly into ComfyUI.
 
 Every decision has been made. There are no open questions. A developer (or AI coding agent)
-can build the entire system from these 24 documents without asking a single design question.
+can build the entire system from these 25 documents without asking a single design question.
 
 ---
 
@@ -54,6 +54,7 @@ can build the entire system from these 24 documents without asking a single desi
 | 21 | 21_AUTONOMOUS_REPAIR_EXECUTION_SPEC.md | ROI-bound reconstruction, exact-candidate four-reviewer convergence, transactional label repair, reversible CVAT publication, and rollback |
 | 22 | 22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md | Active-registry governance, provider/model lifecycle states, license/content activation, non-collapsing truth metrics, certification statistics, challenger non-inferiority, and currency review |
 | 23 | 23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md | Qualified external-label supervision, the disjoint 83k benchmark/retrieval corpus, exact DAZ synthetic truth, near-perfect selective-autonomy targets, and binary owner decisions |
+| 24 | 24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md | Required human-free completion profile, exact-output operational authority, MaskFactory↔ComfyUI runtime/release bridge, optional claim profiles, and recovery qualification |
 
 ---
 
@@ -74,13 +75,21 @@ can build the entire system from these 24 documents without asking a single desi
 
 ## 4. Definition of Done (System Level)
 
-The system is DONE when all of the following are true:
+**Completion-profile authority (doc 24):** the checklist below is retained as the legacy portfolio/
+research DoD and evidence map. The required product finish line is the independently computed
+`core_autonomous_runtime` profile. Human-anchor masks, CVAT correction, blinded human review,
+minimum package volume, full-library download, DAZ work, and long DAZ soak belong only to the optional
+`independent_real_accuracy` or post-core `scale_daz_maturity` profiles. An unchecked D/G item does not
+block core unless its exact tracker item is also assigned to core in
+`Plan\Tracker\completion_track_registry.json`.
+
+The legacy portfolio/research profile is complete when all of the following are true:
 
 - [ ] D1. A new image dropped into `data\incoming\` can be processed with one CLI command to draft every indexed PART in the selected production ontology: 56 for active `body_parts_v1`, and 65 after `body_parts_v2` is formally activated.
 - [ ] D2. Both residual draft→human-corrected truth in CVAT and certificate-covered autonomous truth produce authority-explicit packages that pass 100% of format and provenance checks.
 - [ ] D3. Auto-QA battery (34 checks) runs on every package and blocks bad gold automatically.
 - [ ] D4. VLM QA reviews overlays and routes agree/disagree cases correctly on a 20-image validation set.
-- [ ] D5. ≥300 certified packages exist with full manifests, hashes, separately reported truth tiers, and coverage matrix ≥80% cell coverage; pseudo-labels never satisfy this count.
+- [ ] D5. ≥300 optional legacy training/scale packages exist in `human_anchor_train` or exact `autonomous_certified_gold` with the required statistical certificate, full manifests, hashes, separately reported truth tiers, and coverage matrix ≥80% cell coverage; `operationally_certified_artifact`, bridge/operational certificates, pseudo labels, drafts, and candidates never satisfy this count.
 - [ ] D6. Custom fine-tuned body-part model beats the SAM2+priors draft pipeline on the frozen test holdout for mean per-part IoU and boundary F-score, per the leaderboard.
 - [ ] D7. Hand/finger specialist model achieves finger-class mean IoU ≥ 0.70 on hand-crop holdout.
 - [ ] D8. ComfyUI node pack loads gold/predicted masks and produces derived inpaint masks inside a workflow.
@@ -92,7 +101,7 @@ The system is DONE when all of the following are true:
 
 ## 5. How To Use This Pack
 
-- **Starting (or resuming) autonomous building in a fresh AI session:** paste `C:\Comfy_UI_Main_Masking\KICKOFF_PROMPT.md`'s content as the first message. Reusable at any point in the project's life, not just day one.
+- **Starting (or resuming) autonomous building in a fresh AI session:** paste `C:\Comfy_UI_Main_Masking\KICKOFF_PROMPT.md`'s content as the first message. Reusable at any point in the project's life, not just day one. The dashboard's required core profile takes priority over optional portfolio percentage.
 - **Building it yourself / with an AI coding agent:** follow 14 (Roadmap) task-by-task; each task references the spec doc that governs it.
 - **Annotating:** doc 11 is the operator manual.
 - **Debugging bad masks:** doc 09 (which check fired) → doc 07 (which stage produced it) → doc 15 (troubleshooting table).

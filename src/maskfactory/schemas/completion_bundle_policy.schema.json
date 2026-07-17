@@ -1,14 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://maskfactory.local/schemas/completion_bundle_policy.schema.json",
-  "title": "MaskFactory modernization completion policy",
+  "title": "MaskFactory legacy portfolio/research evidence policy",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "policy_id", "authority", "required_domains", "tracker_requirements", "governing_source_hashes", "sha256"],
+  "required": ["schema_version", "policy_id", "authority", "blocking_for_core_completion", "completion_scope", "core_completion_authority", "required_domains", "tracker_requirements", "governing_source_hashes", "sha256"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "policy_id": {"const": "modernization_completion_v1"},
     "authority": {"const": "pre_result_completion_index_only_no_primary_evidence_or_completion_authority"},
+    "blocking_for_core_completion": {"const": false},
+    "completion_scope": {"const": "legacy_portfolio_research_evidence"},
+    "core_completion_authority": {"const": "none"},
     "required_domains": {
       "type": "object", "minProperties": 15,
       "additionalProperties": {"$ref": "#/$defs/domain"}

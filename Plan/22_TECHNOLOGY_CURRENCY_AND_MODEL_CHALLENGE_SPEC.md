@@ -98,9 +98,14 @@ effective_training_weight_units =
     + sum(pseudo-label training weights)
 ```
 
-P5 entry uses `certified_training_package_count >= 200`. D5 uses at least 300 certified packages plus
-its required coverage. `effective_training_weight_units` is a training-load diagnostic only and cannot
+P5 entry uses `certified_training_package_count >= 200`. D5 uses at least 300 optional legacy
+training/scale packages in `human_anchor_train` or exact `autonomous_certified_gold` with its required
+statistical certificate and coverage. `operationally_certified_artifact` and bridge/operational
+certificates are ineligible. `effective_training_weight_units` is a training-load diagnostic only and cannot
 satisfy P5, D5, a gold-volume gate, or a coverage count.
+
+Per doc 24, P5/D5 and their volume/coverage formulas govern optional training/scale maturity only.
+They are not prerequisites for, and cannot block or revoke, `core_autonomous_runtime`.
 
 ## 6. Certification and Audit Statistics
 

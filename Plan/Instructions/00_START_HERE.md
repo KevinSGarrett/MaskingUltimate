@@ -2,7 +2,7 @@
 
 **You are the AI system autonomously building the MaskFactory Ultimate
 Masking System for Kevin, on this machine, locally, from an empty repo to a
-finished, trained, production body-part-mask factory integrated into
+finished autonomous production body-part-mask authority integrated into
 ComfyUI.** This `Instructions\` folder is your complete operating manual.
 Nothing else should be required for you to work session after session
 without asking Kevin how to proceed on routine matters.
@@ -24,8 +24,10 @@ order below before touching anything else.
 | 04 | `04_ITEM_EXECUTION_GUIDE.md` | How to actually execute one checklist item, with worked examples. |
 | 05 | `05_TRACKER_OPERATIONS_FOR_BUILDERS.md` | Situational cheat-sheet for the tracker CLI while you're mid-build. |
 | 06 | `06_BLOCKERS_AMBIGUITY_AND_ESCALATION.md` | What to do when stuck, when the spec seems ambiguous, and what genuinely requires Kevin. |
-| 07 | `07_PHASE_QUICK_REFERENCE.md` | Condensed per-phase (P0–P7) cheat cards. |
+| 07 | `07_PHASE_QUICK_REFERENCE.md` | Condensed per-phase (P0–P9) cheat cards with completion-profile scope. |
 | 08 | `08_QUALITY_AND_SAFETY_GUARDRAILS.md` | The domain rules that apply everywhere, regardless of phase or item. |
+| 09 | `09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md` | The pinned MaskFactory/Main task identities, worktree preservation rules, release/adoption order, and invalidation resumption protocol. |
+| 10 | `10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json` | Machine-readable, hash-bound inventory of the isolated planning packet; preservation evidence only, never runtime authority. |
 
 After your first full read-through, you won't reread all of this every
 session — `03_SESSION_PLAYBOOK.md` is the one you'll return to every time,
@@ -43,27 +45,24 @@ cd C:\Comfy_UI_Main_Masking\Plan\Tracker
 python tracker.py report
 ```
 
-Then open and read `DASHBOARD.md` (in that same folder). It tells you,
-right now: overall % complete, per-phase progress, which items are
-currently blocked and why, which Definition-of-Done criteria are satisfied,
-what the suggested next actions are. Trust this file over any assumption
-about "where the project probably is."
+Then open and read `DASHBOARD.md` (in that same folder). Read **Required Core
+Status** first. The portfolio percentage includes optional independent-
+accuracy and post-core scale/DAZ scope and is not end-to-end authority. The
+dashboard separates core from optional blockers and prioritizes unfinished
+core items. Trust it over any assumption about "where the project probably is."
 
 ---
 
 ## 3. What MaskFactory Is, In Three Sentences
 
-MaskFactory is a production-grade, human-in-the-loop pipeline that produces
-pixel-perfect binary PNG masks for every visible body part of a character
-in an image — combining SAM2, human parsing, pose estimation, open-vocab
-detection, a local VLM for QA, and CVAT for human review — then uses the
-resulting gold-standard dataset to fine-tune its own custom segmentation
-models, which are finally served back into ComfyUI. Every decision about
-labels, formats, thresholds, models, and workflow was made in advance and
-written down across 16 specification documents in `Plan\`; your job is to
-execute that plan, not to redesign it. The full charter, goals, and scope
-are in `Plan\01_PROJECT_CHARTER_AND_SCOPE.md` — read `01_PROJECT_MAP.md` in
-this folder next for the complete map of where everything lives.
+MaskFactory is an autonomous-first pipeline that generates pixel-accurate
+body-part masks, enforces hard QA and instance ownership, runs independent
+critics and bounded repairs, then either issues exact-output operational
+authority or abstains. A versioned adapter connects those artifacts to the
+main ComfyUI controller without letting either project mutate or widen the
+other's authority. Human-anchor accuracy measurement and scale/DAZ work
+remain first-class optional profiles. The complete 25-document specification
+is in `Plan\00` through `Plan\24`; doc 24 is the completion/bridge authority.
 
 ---
 
@@ -77,12 +76,11 @@ this folder next for the complete map of where everything lives.
    mechanically requires an `--evidence` string on every `complete` — that
    string must describe something you actually ran, tested, or verified,
    never something you assume would probably work.
-3. **The seven hard-blocker item clusters cannot be skipped, stubbed, or
-   worked around**, no matter how much schedule pressure exists. They exist
-   specifically to prevent silent, expensive-to-discover-later corruption
-   of the dataset (left/right swaps, format drift, an untrustworthy VLM,
-   model regression). See `02` and `Plan\Tracker\README.md` §5 for the list.
+3. **Core hard blockers cannot be skipped, stubbed, or worked around.** The
+   dashboard and `--profile core_autonomous_runtime` distinguish them from
+   optional portfolio blockers. Human/CVAT/volume/full-library/DAZ/soak gates
+   must never be imported into core.
 
 Everything else you need — the complete technical specification, the
-atomized 326-item build checklist, the live status tracker, and this
+atomized 798-item portfolio checklist, the claim-scoped live tracker, and this
 operating manual — already exists on disk. Proceed to `01_PROJECT_MAP.md`.

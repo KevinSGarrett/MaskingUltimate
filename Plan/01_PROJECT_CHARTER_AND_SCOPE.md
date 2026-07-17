@@ -5,11 +5,11 @@
 
 ## 1. Mission Statement
 
-Build a local, production-grade **gold-mask factory** that converts source character images into
-complete, pixel-accurate, per-body-part binary segmentation masks — with honest handling of
-clothing, occlusion, and hidden anatomy — then uses those approved gold masks to train custom
-specialist segmentation models until the system produces near-gold drafts automatically, feeding
-mask-driven editing workflows in ComfyUI.
+Build a local, production-grade **autonomous mask authority** that converts source character images
+into complete, pixel-accurate, per-body-part binary segmentation masks—with honest handling of
+clothing, occlusion, hidden anatomy, uncertainty, and abstention—then certifies exact eligible outputs
+for MaskFactory-to-ComfyUI production use. Independent human-authored accuracy measurement, large-
+corpus training, and DAZ expansion remain valuable but separately scoped optional maturity profiles.
 
 ## 2. Why It Exists (Problem Statement)
 
@@ -24,6 +24,10 @@ mask-driven editing workflows in ComfyUI.
   training data and fine-tune its own models.
 
 ## 3. Goals (Measurable)
+
+The goals below are legacy portfolio/research measurements. They do not collectively define core
+completion. Doc 24 and `completion_track_registry.json` are authoritative: operational core is required;
+independent real accuracy and scale/DAZ maturity are non-blocking profiles.
 
 | ID | Goal | Metric | Target |
 |----|------|--------|--------|
@@ -45,7 +49,7 @@ mask-driven editing workflows in ComfyUI.
    scoped per-instance (doc 02, doc 17 §6). A single-person image is the trivial N=1 case of this
    same scheme; nothing about the single-person build (docs 02–15, Items 01–08) changes.
 2. Full atomic ontology (doc 02): 56 exclusive atomic parts + band regions + conditional classes + material/clothing layer + projected/amodal regions + protected QA classes + derived unions.
-3. End-to-end pipeline: intake → detection → parsing → pose → geometry priors → SAM2 refinement → clothing parse → fusion/panoptic resolution → auto-QA → VLM QA → CVAT human review → gold export → dataset packaging → active learning → model fine-tuning → ComfyUI serving.
+3. End-to-end pipeline: intake → detection → parsing → pose → geometry priors → refinement → clothing parse → fusion/panoptic resolution → hard QA → independent critics → bounded repair → autonomous certificate or abstention → MaskFactory bridge → ComfyUI serving. CVAT review, dataset packaging, active learning, and fine-tuning are optional profile lanes rather than core-runtime dependencies.
 4. Specialist lanes: hands/fingers, chest/breast/clothing boundary, hair/face, feet/toes, 3D body prior sanity checks.
 5. Local-first execution on the RTX 5060 laptop (8 GB VRAM), with optional AWS burst training (accounts already exist: prod 277361136276 / dev 548846591581).
 6. Full reproducibility, hashing, versioning (git + DVC), and operations runbook.
@@ -64,15 +68,19 @@ mask-driven editing workflows in ComfyUI.
 
 P1. **Honesty over coverage** — the system never claims to see what is not visible. Visible truth,
     projected regions, and amodal estimates are three different, separately-stored things.
-P2. **Models draft, humans decide, checks enforce** — LLMs/VLMs are brain/QA/router, never the
-    pixel scalpel; humans are the authority on semantics; automated checks are the authority on format.
+P2. **Models propose, policy decides, checks enforce** — LLMs/VLMs may diagnose, route, and critique,
+    but cannot waive hard checks, issue authority, or self-promote. The autonomous policy may certify
+    only exact evidence-bound outputs or abstain. Human-authored truth remains independent accuracy
+    authority when that optional profile is exercised.
 P3. **Every correction is fuel** — all human edits enter the active-learning queue and coverage matrix.
 P4. **Specialists beat generalists** — hard regions (fingers, chest boundary, hair) get their own
     crops, models, metrics, and review panels.
 P5. **Exclusive-by-construction** — one master PART map + one MATERIAL map per image make overlap
     bugs structurally impossible; binary PNGs are generated views of the maps.
 P6. **Config over code** — thresholds, band widths, dilation radii, model choices live in YAML.
-P7. **Fail loud, queue smart** — any ambiguity becomes a queued, prioritized human task, never a silent guess.
+P7. **Fail loud, abstain smart** — core ambiguity becomes a typed autonomous abstention/quarantine,
+    never a silent guess. A prioritized human task exists only when the optional human-review profile
+    is explicitly enabled.
 
 ## 7. Data Governance & Source Policy (Mandatory)
 
@@ -107,7 +115,10 @@ P7. **Fail loud, queue smart** — any ambiguity becomes a queued, prioritized h
 
 ## 10. Success Criteria
 
-System-level Definition of Done: doc 00 §4 (D1–D10). Phase-level acceptance criteria: doc 14.
-The single headline test: **take 20 never-seen images, run the full pipeline, and reach
-human-approved gold for all visible parts in ≤ 4 hours total operator time with zero format
-failures and zero L/R errors.**
+Required system completion is `core_autonomous_runtime` in doc 24: human-free autonomous generation,
+hard QA, independent critics, bounded repair, abstention, exact-output certification, revocation,
+recovery, and adopted single-/multi-person ComfyUI integration all pass with hash-bound evidence.
+
+The historical D1–D11/headline tests remain profile-scoped portfolio evidence. The 20-image
+human-approved/blinded test supports `independent_real_accuracy`; 200/300/500-package, training,
+full-library, DAZ, and soak targets support `scale_daz_maturity`. Neither is a prerequisite for core.

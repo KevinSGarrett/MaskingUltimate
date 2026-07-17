@@ -3,8 +3,9 @@
 Two integration modes, both non-invasive to Kevin's existing native-Windows ComfyUI install:
 **Mode A — Package Reader** (offline: nodes read gold/derived masks straight from
 `data\packages\`), and **Mode B — Live Inference** (nodes call the FastAPI service for
-never-before-seen images using the champion models). D8 requires Mode A fully and Mode B's
-predict node functional.
+never-before-seen images using qualified installed models). D8 retains that legacy node/workflow
+evidence. Doc 24 adds the production bridge: a controller-side adapter, immutable release/adoption
+handshake, exact authority/instance/transform receipts, failure recovery, and claim-scoped core exit.
 
 ---
 
@@ -86,3 +87,50 @@ match the source dims or the node errors (Global Convention 2 survives into Comf
 - Version skew (node pack older than package format) → hard error per §1.
 - The node pack is read-only by design: **no ComfyUI path may mutate gold** (mirrors doc 03 §6 /
   QC-030). Anything ComfyUI produces is ordinary workflow output, outside the truth chain.
+
+## 6. Production Controller Bridge (doc 24 authority)
+
+The node pack is not the autonomous control plane. The main ComfyUI project owns an external
+`MaskFactoryAdapter` that submits/reads through versioned contracts and binds each result into its pass
+DAG. ComfyUI nodes remain thin operator/execution helpers and never own durable retry, route,
+certificate, promotion, cache, or recovery decisions.
+
+Mode A validates an immutable package, source and mask hashes, ontology, character/scene instance,
+provider person index, coordinate transforms, exact authority/certificate scope, and revocation state.
+Mode B validates health/capabilities and returns drafts by default. A Mode B artifact reaches production
+authority only through a separate MaskFactory operational-certification transaction; the API response,
+node, LLM, and main controller cannot self-upgrade it.
+
+The adapter blocks only the dependent pass where safe. Service outage, missing capability, ambiguous
+instance, transform mismatch, incompatible version, stale/revoked certificate, insufficient authority,
+or hash drift produces a typed error. It never silently substitutes an empty mask, wrong person, weaker
+truth tier, or unqualified provider.
+
+## 7. Release and Session Handshake
+
+The MaskFactory session publishes immutable release and capability snapshots with Git/build/node-pack/
+wheel/API/OpenAPI/schema/package-format/ontology/workflow/evidence hashes. The main-project session
+publishes consumer requirements and an adopted/partially-adopted/rejected receipt. Both projects pin the
+same snapshot and run compatibility fixtures. Dirty worktrees, editable installs, and copied-but-unpinned
+node packs are not production authority.
+
+Certificate, package, provider, ontology, policy, capability, and release changes emit idempotent
+invalidation events. The main controller invalidates affected routes/cache and revalidates. It returns
+hash-bound repair feedback, but never mutates MaskFactory packages or certificates.
+
+## 8. Core Integration Qualification
+
+`core_autonomous_runtime` requires:
+
+1. clean installation with source/installed node inventory parity;
+2. single-person Mode A package-to-inpaint/edit vertical slice;
+3. overlapping/contact two-person Mode A ownership/transform slice;
+4. Mode B draft prediction/refinement and service-down behavior;
+5. separate subsequent certification of an eligible exact original Mode B prediction plus an abstained
+   branch, while proving refinement/derived descendants cannot exceed parent authority;
+6. incompatibility, hash, authority, transform, idempotency, outage, OOM, restart, stale-cache,
+   invalidation, and rollback fault tests; and
+7. matching MaskFactory release and main-project adoption receipts.
+
+Human-anchor masks, CVAT corrections, package-volume targets, full-library download, DAZ, and soak
+evidence are not prerequisites for this core integration profile.

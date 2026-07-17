@@ -12,6 +12,7 @@ from jsonschema import Draft202012Validator
 
 from maskfactory.completion_bundle import (
     DEFAULT_POLICY,
+    POLICY_DOCUMENT_SHA256,
     POLICY_SHA256,
     CompletionBundleError,
     build_report,
@@ -136,7 +137,11 @@ def _rewrite_tracker(document: dict, tmp_path: Path, mutation) -> None:
 def test_frozen_policy_has_every_completion_domain_and_current_schemas() -> None:
     policy = load_policy()
     assert DEFAULT_POLICY == ROOT / "qa/governance/completion/modernization_completion_v1.json"
+    assert file_sha256(DEFAULT_POLICY) == POLICY_DOCUMENT_SHA256
     assert policy["sha256"] == POLICY_SHA256
+    assert policy["completion_scope"] == "legacy_portfolio_research_evidence"
+    assert policy["blocking_for_core_completion"] is False
+    assert policy["core_completion_authority"] == "none"
     assert len(policy["required_domains"]) == 15
     assert set(policy["tracker_requirements"]["required_definition_of_done_ids"]) == {
         f"D{index}" for index in range(1, 12)
@@ -170,10 +175,15 @@ def test_complete_real_evidence_index_recomputes_and_denies_primary_authority(
     assert report["tracker_item_count"] == 755
     assert report["unresolved_item_count_excluding_bundle"] == 0
     assert report["definitions_of_done_met"] == 11 and report["goals_met"] == 9
-    assert report["authority"] == "completion_index_verified_primary_evidence_remains_authoritative"
+    assert report["completion_scope"] == "legacy_portfolio_research_evidence"
+    assert report["blocking_for_core_completion"] is False
+    assert report["core_completion_authority"] == "none"
+    assert report["authority"] == (
+        "legacy_portfolio_evidence_index_verified_no_core_completion_authority"
+    )
 
 
-def test_current_live_tracker_cannot_yet_support_completion(tmp_path: Path) -> None:
+def test_current_live_tracker_cannot_yet_support_legacy_portfolio_bundle(tmp_path: Path) -> None:
     document, policy = _input(tmp_path)
     live = tmp_path / "live_tracker.json"
     live.write_bytes((ROOT / "Plan/Tracker/tracker.json").read_bytes())
@@ -354,6 +364,13 @@ def test_tracker_receipt_must_equal_recomputed_tracker(tmp_path: Path) -> None:
 
 def test_policy_tamper_and_extra_tracker_exclusion_fail(tmp_path: Path) -> None:
     policy = load_policy()
+    unsafe_core_gate = copy.deepcopy(policy)
+    unsafe_core_gate["blocking_for_core_completion"] = True
+    unsafe_core_gate["core_completion_authority"] = "self_asserted"
+    _seal(unsafe_core_gate)
+    with pytest.raises(CompletionBundleError, match="policy identity is invalid"):
+        validate_policy(unsafe_core_gate, expected_sha256=None)
+
     tampered = copy.deepcopy(policy)
     tampered["required_domains"]["doctor"]["maximum_age_hours"] = 999
     with pytest.raises(CompletionBundleError, match="policy hash mismatch"):

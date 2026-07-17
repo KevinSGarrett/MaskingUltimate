@@ -1,5 +1,11 @@
 # Document 15: Risks, Operations & Runbook
 
+> **Operations-profile amendment (doc 24):** CVAT, annotator-fatigue, IAA, manual audit, DAZ, and
+> training-corpus procedures in this runbook govern optional profiles only. Core health, incidents,
+> and release readiness are evaluated from the autonomous pipeline, hard QA, independent critics,
+> bounded repair/abstention, exact-output certificates, signed revocation state, bridge, and recovery.
+> An unavailable optional service must be reported but cannot make the core runtime unhealthy.
+
 The operating manual for keeping MaskFactory healthy: risk register, daily/weekly routines,
 disk & backup procedures, garbage collection, troubleshooting, incident playbooks, the Label
 Studio contingency, and the glossary. Section numbers §4/§5/§6/§9 are referenced by other docs —

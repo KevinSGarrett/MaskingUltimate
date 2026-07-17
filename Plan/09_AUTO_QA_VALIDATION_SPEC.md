@@ -1,8 +1,10 @@
 # Document 09: Automatic QA & Validation Specification
 
-All thresholds live in `configs\qa.yaml` (defaults shown). Severity: **BLOCK** = package cannot
-reach gold (human approval cannot override); **ROUTE** = forces careful human review;
-**WARN** = recorded, shown in CVAT. Scaled px values use ref long-side 1024 and scale linearly.
+All thresholds live in `configs\qa.yaml` (defaults shown). Under doc 24, **BLOCK** vetoes operational
+certification and gold alike (human, LLM, or provider confidence cannot override it); **ROUTE** invokes
+bounded autonomous repair/rerouting and then abstention for core, while it may create a careful-review
+task only in an optional human lane; **WARN** is retained in autonomous evidence and may also be shown
+in CVAT when that optional UI is installed. Scaled px values use ref long-side 1024 and scale linearly.
 
 ---
 

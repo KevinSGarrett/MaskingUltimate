@@ -43,6 +43,18 @@ def _image(tmp_path: Path) -> Path:
     return path
 
 
+def _runtime(tmp_path: Path) -> OfficialSam31Runtime:
+    """Create a dependency-injected runtime with portable governed path stubs."""
+    runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
+    runtime.source_root = tmp_path / "sam31-source"
+    runtime.source_root.mkdir()
+    runtime.checkpoint = tmp_path / "sam31-checkpoint.pt"
+    runtime.checkpoint.write_bytes(b"unit-test-checkpoint-stub")
+    runtime.requirements_lock = tmp_path / "sam31-requirements.lock"
+    runtime.requirements_lock.write_text("unit-test-runtime-stub\n", encoding="utf-8")
+    return runtime
+
+
 def _arrays(request: dict) -> dict[str, np.ndarray]:
     mask = np.zeros((1, 12, 16), dtype=bool)
     mask[0, 3:6, 3:6] = True
@@ -123,7 +135,7 @@ def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0
 
 
 def test_official_runtime_emits_text_discovery_and_point_refinement(tmp_path: Path) -> None:
-    runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
+    runtime = _runtime(tmp_path)
     runtime._executor = _executor(runtime)
     source = _image(tmp_path)
     discovered = runtime.discover(source, concepts=("visible left hand",))
@@ -154,7 +166,7 @@ def test_official_runtime_emits_text_discovery_and_point_refinement(tmp_path: Pa
 def test_visual_exemplars_are_hash_bound_and_raw_external_images_fail_closed(
     tmp_path: Path,
 ) -> None:
-    runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
+    runtime = _runtime(tmp_path)
     requests = []
     runtime._executor = _executor(runtime, requests=requests)
     source = _image(tmp_path)
@@ -284,14 +296,14 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
 def test_official_runtime_rejects_report_and_artifact_drift(
     tmp_path: Path, mutate, message: str
 ) -> None:
-    runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
+    runtime = _runtime(tmp_path)
     runtime._executor = _executor(runtime, mutate=mutate)
     with pytest.raises(Sam31RuntimeError, match=message):
         runtime.discover(_image(tmp_path), concepts=("person",))
 
 
 def test_process_failure_preserves_cuda_oom_and_loaders_satisfy_contracts(tmp_path: Path) -> None:
-    runtime = OfficialSam31Runtime(path_mapper=lambda path: str(path))
+    runtime = _runtime(tmp_path)
     runtime._executor = _executor(runtime, returncode=1)
     with pytest.raises(Sam31RuntimeError, match="CUDA out of memory"):
         runtime.discover(_image(tmp_path), concepts=("person",))

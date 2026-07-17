@@ -21,9 +21,9 @@ def _tracker_module() -> dict:
 def test_expanded_tracker_has_exact_authoritative_item_count_and_no_duplicate_ids() -> None:
     module = _tracker_module()
     items = module["parse_items_files"]()
-    assert module["EXPECTED_ITEM_COUNT"] == 755
-    assert len(items) == 755
-    assert len(set(items)) == 755
+    assert module["EXPECTED_ITEM_COUNT"] == 798
+    assert len(items) == 798
+    assert len(set(items)) == 798
 
 
 def test_ontology_v2_checklist_is_imported_one_to_one_as_seventy_items() -> None:
@@ -83,8 +83,8 @@ def test_counts_and_owner_override_do_not_drift() -> None:
         for path in sorted(ITEMS.glob("*_ITEMS_P*.md"))
         if path.name[:2].isdigit() and 11 <= int(path.name[:2]) <= 20
     )
-    assert "Total items: 755" in master
-    assert "all 755 action items" in readme
+    assert "Total items: 798" in master
+    assert "all 798 action items" in readme
     assert "Age eligibility must remain a separate fail-closed ingestion gate" not in imported
     assert "unknown-age material" not in imported
 

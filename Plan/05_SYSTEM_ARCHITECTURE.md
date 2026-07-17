@@ -1,5 +1,12 @@
 # Document 05: System Architecture
 
+> **Autonomous-core amendment (doc 24):** the original diagram retains the S12 CVAT/S13 gold branch
+> for the optional `independent_real_accuracy` and training lanes. The required core route is
+> candidate generation → hard QA → independent critics → bounded repair or abstention → exact-output
+> operational certificate → versioned ComfyUI bridge. CVAT availability or human approval cannot
+> block that route. The P6-07…P6-12 items add this runtime; this note is architecture, not a completion
+> claim.
+
 ---
 
 ## 1. Architecture Overview

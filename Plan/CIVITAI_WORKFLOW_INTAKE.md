@@ -1,5 +1,10 @@
 # Civitai Workflow Intake Decisions
 
+> **Authority-profile amendment (doc 24):** these assets remain proposal/reference-only. Their output
+> may enter either the optional human/training review route or the autonomous candidate transaction;
+> it never gains authority directly. Human approval is required only to create human-approved gold.
+> Production use in core instead requires the separate exact-output operational-certificate route.
+
 This tracked note records the P0 Civitai intake decisions. The local source tree under
 `Plan\Civitai\` remains reference material only and is intentionally excluded from Git.
 The complete per-file classification is generated at
@@ -52,7 +57,9 @@ and applies `AddMask`. This is classified as an annotation aid: it can accelerat
 human correction or produce a QA comparison, but its result is never written as
 gold directly. A MaskFactory adapter must import the result through the canonical
 label maps, regenerate binary masks through `png_strict`, rerun all format and
-semantic QA, preserve provenance, and still require human approval.
+semantic QA, and preserve provenance. It then either remains a reversible draft, enters optional human
+approval for human gold, or enters the separate autonomous QA/certification transaction for exact-use
+operational authority.
 
 ## Metadata-only variants
 

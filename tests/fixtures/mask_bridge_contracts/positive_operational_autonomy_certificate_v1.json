@@ -1,0 +1,482 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "operational_autonomy_certificate",
+  "certificate_kind": "exact_serving_route_output",
+  "certificate_id": "mfac_0123456789abcdef01234567",
+  "canonicalization": {
+    "algorithm": "maskfactory-canonical-json-v1",
+    "excluded_top_level_fields": [
+      "certificate_payload_sha256",
+      "signature"
+    ]
+  },
+  "certificate_payload_sha256": "51afa9290cb54f3055a415938b9bcb45d4b5bcf02ec56bf8a4db0ca1d3a4416c",
+  "status": "active",
+  "issued_at": "2026-07-17T00:00:04Z",
+  "expires_at": "2026-07-18T00:00:04Z",
+  "evidence_context": "conformance_fixture",
+  "fixture_only": true,
+  "issuer_kind": "maskfactory_autonomous",
+  "authority_profile": "core_autonomous_runtime",
+  "authority_state": "certified",
+  "truth_tier": "operationally_certified_artifact",
+  "access_mode": "mode_b_live_predict",
+  "media_scope": {
+    "scope_kind": "still_image",
+    "sequence_id": "sequence-fixture",
+    "shot_id": "shot-fixture",
+    "take_id": "take-fixture",
+    "source_video_sha256": null,
+    "decoded_frame_sha256": null,
+    "frame_index": null,
+    "pts": null,
+    "timebase_numerator": null,
+    "timebase_denominator": null,
+    "timestamp_ns": null,
+    "frame_span": null,
+    "neighbor_frames": []
+  },
+  "release_binding": {
+    "release_id": "mfr_20260717_012345abcdef",
+    "release_payload_sha256": "ffbef9cea69a8bbe7c51bf464d127c0d3ffbc9cdc24798d5ccb8eb1b969f215a",
+    "capability_snapshot_id": "mfcap_0123456789abcdef01234567",
+    "capability_snapshot_sha256": "0515eaeff6a2242c1877d7ae7bce072736a8cebddb249bf28b25e119857fd230",
+    "bridge_contract": "maskfactory-comfyui-bridge/1.0",
+    "certificate_schema_sha256": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+    "signing_key_set_id": "mf-fixture-trust-set",
+    "signing_key_set_version": "1.0.0",
+    "signing_key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+    "rotation_policy_sha256": "db4b913c5d9522b8fe03f6b893f3f034780ccdd7934e180d937d5235d29708d7",
+    "revocation_policy_sha256": "d5cfeef6ca4cbe66d9cb76a884980f4038699b888eed2fcfd2966baaa70ddfab"
+  },
+  "ontology_binding": {
+    "ontology_id": "maskfactory_body_parts",
+    "version": "body_parts_v1",
+    "sha256": "86883200c40c642d7c9813b52a0affa70d92dfff56e9a9eab0751f4b6b8f0ee3",
+    "left_right_convention": "character_perspective"
+  },
+  "pipeline_policy_binding": {
+    "pipeline_id": "mask-pipeline-fixture",
+    "pipeline_sha256": "bbebb214a2f33d58a726cdfae41d45ffaa325199d8316dda4e3827877f1e4189",
+    "policy_id": "mask-policy-fixture",
+    "policy_sha256": "ceacbb75e35eb87b883f948575318da40ba75ae90f57fb417369cc73167ebdb0",
+    "prompt_package_id": "prompt-fixture",
+    "prompt_package_sha256": "51de6457a53533705400d2d2ae9a3d8b7e1fe8ef82cc5d952e587ca205584b78",
+    "controller_id": "mask-controller-fixture",
+    "controller_version": "1.0.0",
+    "controller_sha256": "c52c6cd476a9599aa3e6fdae9e304d3dd06ab1c57c18447fe7073050a3471584",
+    "randomness_mode": "deterministic_seeded",
+    "seed": 42,
+    "randomness_manifest_sha256": "c7cf959726278a94a22adeb0d6d141fc3fbdc63bc7cafd5895e8760ba0aaca4c",
+    "sampler_settings_sha256": "04cd870dc7e6f101091ed0362bbcba4e9e3403695597b4536d0f672cb0f47537"
+  },
+  "execution_binding": {
+    "provider_stack_id": "fixture.stack",
+    "provider_stack_sha256": "cfb86c2d19a68aecb6422667d333d7d7d1ad41595c7fe85763bb880aba5af005",
+    "model_artifacts": [
+      {
+        "model_id": "fixture-segmenter",
+        "sha256": "1e9d7244f8175711ff39a9a8b757e08d9b5f9e6ffbef87028fb8337e38be1223"
+      }
+    ],
+    "workflow_id": "fixture-mask-workflow",
+    "workflow_sha256": "c5828a07fbc7ef754ff02070fb4d09d00bbb434ba4537eed72fe30726cc64cc5",
+    "runtime_kind": "native_venv",
+    "runtime_id": "maskfactory-native-fixture",
+    "runtime_version": "1.0.0",
+    "environment_lock_sha256": "93f9aa66df24c4aed9b8bc8a39bc490f028079cc057cbd847f558ba9ac708515",
+    "interpreter_build_sha256": "10905194bec7040ef69788e53bdadd2c658ae4e7f0d9858811c7f5d9f00b19d9",
+    "venv_manifest_sha256": "a80493aebc7d76a4f3349de42023072f84093e79426842b10e7c96bfff47f687",
+    "container_sha256": null,
+    "execution_fingerprint_sha256": "88b98289f5c014bb5811237b0841541a718c18264aa2aca5753a5ae9a1a70470"
+  },
+  "subject_binding": {
+    "scene_id": "scene-fixture",
+    "shot_id": "shot-fixture",
+    "take_id": "take-fixture",
+    "character_id": "character-fixture",
+    "character_revision": "1.0.0",
+    "scene_instance_id": "scene-instance-001",
+    "canonical_person_id": "person-canonical-001",
+    "person_index": 0,
+    "provider_person_index": 1,
+    "assignment_evidence_sha256": "41d25c13fee1458a9de40e0d91ca004fd3e18b4a90fe843db3113a049e8a6450"
+  },
+  "source_binding": {
+    "artifact_id": "source-fixture",
+    "encoded_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "decoder_id": "pillow",
+    "decoder_version": "11.0.0",
+    "decoder_binary_sha256": "7ce1102f71f01d4a593640f8da4d9f97edf8886dcb477c1ef2c491d56b15f347",
+    "exif_orientation": 1,
+    "orientation_applied": true,
+    "width": 512,
+    "height": 512,
+    "channel_layout": "RGB",
+    "alpha_mode": "none",
+    "bit_depth": 8,
+    "dtype": "uint8",
+    "color_space": "sRGB",
+    "icc_profile_sha256": null,
+    "color_transform_sha256": "51858c0854529b1c5df573d43f54a39b73617435933629f3a1cc6cd93403dc09",
+    "frame_extraction_sha256": null
+  },
+  "coordinate_binding": {
+    "transform_chain_id": "fixture-transform-v1",
+    "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+    "source_coordinate_space": "source_pixel",
+    "source_width": 512,
+    "source_height": 512,
+    "output_coordinate_space": "output_pixel",
+    "output_width": 512,
+    "output_height": 512,
+    "executed_step_sha256s": [
+      "7ff6019a4c399360f2c019f02f1d9c80a0f0a1eb324dee2ef3d4134047ec13c3"
+    ],
+    "roundtrip_checked": true,
+    "roundtrip_passed": true,
+    "maximum_roundtrip_error_px": 0.0
+  },
+  "qualified_route_scope": {
+    "scope_sha256": "5fe42d8d26e25ca7c2a53150a6d198b37256c760ab0590f0502ec427d0645993",
+    "labels": [
+      "left_hand",
+      "torso"
+    ],
+    "contexts": [
+      "solo",
+      "duo"
+    ],
+    "risk_buckets": [
+      "standard",
+      "multi_person"
+    ],
+    "max_person_count": 2,
+    "artifact_kinds": [
+      "atomic_visible",
+      "protected_qa"
+    ]
+  },
+  "certified_output_scope": {
+    "scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "labels": [
+      "left_hand"
+    ],
+    "artifact_identity_sha256s": [
+      "e281e0a74e8c3fda742d2f97c0d279667271ee3cfa0d5debbe4e014c3a59e191"
+    ],
+    "artifact_kinds": [
+      "atomic_visible"
+    ],
+    "owners": [
+      "scene-instance-001"
+    ],
+    "coordinate_spaces": [
+      "output_pixel"
+    ],
+    "permitted_uses": [
+      "production_conditioning",
+      "downstream_promotion_support",
+      "repair_seed",
+      "qa"
+    ],
+    "exact_scope_only": true
+  },
+  "lineage": {
+    "operation_kind": "original_prediction",
+    "parents": [],
+    "package_id": null,
+    "package_revision": null,
+    "package_manifest_sha256": null,
+    "package_certificate_kind": "none",
+    "package_certificate_id": null,
+    "package_certificate_sha256": null,
+    "package_certificate_status": "none",
+    "package_certificate_exact_scope_match": false,
+    "input_target_regions": [
+      {
+        "region_id": "target-left-hand",
+        "artifact_identity_sha256": "146e4f92fdd082be321294bdb2648622e5248cffb79872bbda6387e15e593ff1",
+        "encoded_sha256": "585c52455572006d92961928de95c5ecfa7d0943d1934fda55b7aae20257373a",
+        "decoded_mask_sha256": "5e2c8395bd470f72faddbecad66188e350f52ce4811e065258783011e23c5c2a",
+        "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "artifact_type": "roi_control",
+        "owner_identity_sha256": "e6b59f88ecc94b4aeb9ab6d18240088a1ded871cbb443f603ac0b8f037c30e08",
+        "coordinate_space": "output_pixel",
+        "width": 512,
+        "height": 512,
+        "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+        "transform_step_sequence": 0,
+        "required_minimum_authority_state": "draft",
+        "authority_state": "draft",
+        "issuer_kind": "consumer_advisory",
+        "certificate_kind": "none",
+        "certificate_id": null,
+        "certificate_sha256": null,
+        "certificate_scope_sha256": null,
+        "certificate_status": "none",
+        "certificate_exact_scope_match": false,
+        "revocation_checked_at": null,
+        "revocation_checkpoint_sha256": null
+      }
+    ],
+    "input_protected_regions": [
+      {
+        "region_id": "protected-other-torso",
+        "artifact_identity_sha256": "cf3b4259e0c656714a9207edd38f16bcf578f322dae682c7f4b4e41f45b0a403",
+        "encoded_sha256": "78530054498b4103cab3a5adcd5cd2d0df8b7414ba639308dd3e8d089ccac00c",
+        "decoded_mask_sha256": "04b6153ce9dedd821239fb00a93f334f677599329443ba7cce707717bdb3fbbb",
+        "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "artifact_type": "atomic",
+        "owner_identity_sha256": "abe822b3e6b6082189723cf7607fbf578d39287435312f5b0384512b45ab4622",
+        "coordinate_space": "output_pixel",
+        "width": 512,
+        "height": 512,
+        "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+        "transform_step_sequence": 0,
+        "required_minimum_authority_state": "certified",
+        "authority_state": "certified",
+        "issuer_kind": "maskfactory_autonomous",
+        "certificate_kind": "exact_serving_route_output",
+        "certificate_id": "mfac_aaaaaaaaaaaaaaaaaaaaaaaa",
+        "certificate_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "certificate_scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "certificate_status": "active",
+        "certificate_exact_scope_match": true,
+        "revocation_checked_at": "2026-07-17T00:00:05Z",
+        "revocation_checkpoint_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    ],
+    "output_artifact_identity_sha256s": [
+      "e281e0a74e8c3fda742d2f97c0d279667271ee3cfa0d5debbe4e014c3a59e191"
+    ]
+  },
+  "bound_artifacts": [
+    {
+      "artifact_id": "output-left-hand-predict",
+      "intent_id": "intent-left-hand",
+      "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "artifact_identity_sha256": "e281e0a74e8c3fda742d2f97c0d279667271ee3cfa0d5debbe4e014c3a59e191",
+      "encoded_sha256": "2be342ef1f62dbacb8312668e87f7c785807574c49f028333916bf831b5799a0",
+      "decoded_mask_sha256": "d1f4563258e5a03657610bc03f09e24109da5b5c393e624fca066beb5af6d226",
+      "format": "PNG",
+      "channel_layout": "L",
+      "dtype": "uint8",
+      "allowed_values": "binary_0_255",
+      "mask_type": "atomic",
+      "label": "left_hand",
+      "visibility": "visible",
+      "empty_semantics": "forbidden",
+      "content_summary": {
+        "bounds": {
+          "x": 100,
+          "y": 100,
+          "width": 10,
+          "height": 10
+        },
+        "area_pixels": 100,
+        "area_ppm": 381,
+        "is_empty": false
+      },
+      "artifact_kind": "atomic_visible",
+      "width": 512,
+      "height": 512,
+      "coordinate_space": "output_pixel",
+      "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+      "owner_kind": "character_instance",
+      "entity_id": "character-fixture",
+      "scene_instance_id": "scene-instance-001",
+      "canonical_person_id": "person-canonical-001",
+      "person_index": 0
+    }
+  ],
+  "qa_evidence": {
+    "status": "pass",
+    "qa_policy_id": "operational-mask-qa-v1",
+    "qa_policy_sha256": "a8c3ea16bc6fe0c293cd29d07ffc33aac4bb8bdeef1ec459965cc5390c51e830",
+    "gate_results": [
+      {
+        "gate_id": "abstention",
+        "status": "pass",
+        "evidence_sha256": "c2447f6928a2f5a601f832e43f97ec45309f75dd8f4c5065880e5e8cb33f304b",
+        "executor_id": "executor:abstention",
+        "executor_sha256": "7c9dbb76ed14443db7efb449d9bea4c46483efc2e85ffe7777d13b0ff8de9373"
+      },
+      {
+        "gate_id": "contact_occlusion",
+        "status": "pass",
+        "evidence_sha256": "ec790470c7574f8b79c6d97c856e18fb95ef9d2fd6878f085777f2a572ab96bf",
+        "executor_id": "executor:contact_occlusion",
+        "executor_sha256": "dc7751bbb59d6b7fe2f1dd57a77f108b38aea79fc147b4df8339cb8fda3d3265"
+      },
+      {
+        "gate_id": "critic_independence",
+        "status": "pass",
+        "evidence_sha256": "d4584e46d2509a1fde1520180e8827c8054ff900e983a534b60135eeb8c40ba2",
+        "executor_id": "fixture.critic",
+        "executor_sha256": "31929da3b516e927be7a20458c74bcd9911f2079825baf89ac7cf541c2ebfae9"
+      },
+      {
+        "gate_id": "critic_quality",
+        "status": "pass",
+        "evidence_sha256": "7e4fa80e7aea2c41e715a32d4380f62d28a6078c1d34103b236757761cd8ef8b",
+        "executor_id": "fixture.critic",
+        "executor_sha256": "31929da3b516e927be7a20458c74bcd9911f2079825baf89ac7cf541c2ebfae9"
+      },
+      {
+        "gate_id": "deterministic_quality",
+        "status": "pass",
+        "evidence_sha256": "de5c467627c4fb051a71a4135cfa0ab015f22e200024ba0091715fa73a4c1e04",
+        "executor_id": "executor:deterministic_quality",
+        "executor_sha256": "255b5d7622a0f8e7e78b7272d435bd7b684d0a346e458ffe10e35a663b5c5397"
+      },
+      {
+        "gate_id": "left_right_semantics",
+        "status": "pass",
+        "evidence_sha256": "c5141a213ace41d0d28b673405b3b3486d07e56497c6a323f34b563c0cfd5e93",
+        "executor_id": "executor:left_right_semantics",
+        "executor_sha256": "a1196d9930711201e34d98f3a23b80baad2a3fcf4115b7ea198abbf92a96a2c8"
+      },
+      {
+        "gate_id": "metamorphic",
+        "status": "pass",
+        "evidence_sha256": "d40dcc0d7786156f8410acedf3dfacc58f98ae865acab3edf20a595176413aad",
+        "executor_id": "executor:metamorphic",
+        "executor_sha256": "097a118c114d43c9a5326b6a8ddc9b5c09fcc93cba338df3b487c1d3660a0bb4"
+      },
+      {
+        "gate_id": "ontology_label",
+        "status": "pass",
+        "evidence_sha256": "ff98bb079149fea9a403b207dac2404e37553417c3b4c26cfa431a388d7e5abb",
+        "executor_id": "executor:ontology_label",
+        "executor_sha256": "4d011e010d0a14c56a4e01e4c94648d5492fa4d9299d2852053ee94a86367207"
+      },
+      {
+        "gate_id": "output_identity",
+        "status": "pass",
+        "evidence_sha256": "5aa3cdb415b3623a9c3645dd4a94fa7922969c1ccd1bbdd83635b7fd4b612aca",
+        "executor_id": "executor:output_identity",
+        "executor_sha256": "308328d1790815360db668a03ab98e407556e048dafa555acd51a2ad546663b8"
+      },
+      {
+        "gate_id": "ownership_isolation",
+        "status": "pass",
+        "evidence_sha256": "3caa6cd71b7e6264414895f7e1dd7817e6223dc53f2502c70ccde259bccf92ce",
+        "executor_id": "executor:ownership_isolation",
+        "executor_sha256": "b5b2cd3bb54e7e2549beb2beb29f1387679601a523ae1b094a7b0c48b3645c31"
+      },
+      {
+        "gate_id": "perturbation",
+        "status": "pass",
+        "evidence_sha256": "1ec5ed07a46e60611eaf027a878e5a22959ed0efb246b9b3541ca5be7ad9ff41",
+        "executor_id": "executor:perturbation",
+        "executor_sha256": "9b71a13fd5ab8e2c0dfd67adf6b83e27d2e20de8407dd002eb0744bac55af9d8"
+      },
+      {
+        "gate_id": "protected_region",
+        "status": "pass",
+        "evidence_sha256": "fc6a270718e347b7c9be6f1845ef8c25d30a5834cec5ff83d48bcd92ea192ce1",
+        "executor_id": "executor:protected_region",
+        "executor_sha256": "1ac08cc2ee6abe9bfca2154c3deff28da460ac689ff92794349a1298c9bcb9e9"
+      },
+      {
+        "gate_id": "repair_budget",
+        "status": "pass",
+        "evidence_sha256": "75a667d702b4ea7a047a8b6a83dc0185dffd6c03827661b4c51d9ae688231ab2",
+        "executor_id": "executor:repair_budget",
+        "executor_sha256": "083d398f36f44b34de84924fd3f7f4b52b9d07b6903777232a1040cbdcac9c96"
+      },
+      {
+        "gate_id": "schema_conformance",
+        "status": "pass",
+        "evidence_sha256": "8405039718308bea5401fb5a3e8fb55a81483512cbca5c585cb3324721d52f33",
+        "executor_id": "executor:schema_conformance",
+        "executor_sha256": "39a1740f9854dba5c8af11d70f3c1d942a71fd0421dbd49b20482c06eeab7f3a"
+      },
+      {
+        "gate_id": "source_identity",
+        "status": "pass",
+        "evidence_sha256": "41013a7e1fabb2dbeb816d2f3cd3ef0aee2bc1dfd1f8cbc6b58bbbd918dad343",
+        "executor_id": "executor:source_identity",
+        "executor_sha256": "148e1b4994105b7f8a920ecf943eb01d9b80ed58737156cdd08ecad4e5d2c5aa"
+      },
+      {
+        "gate_id": "stability_replay",
+        "status": "pass",
+        "evidence_sha256": "a7a03a8fff2edb6fe718f2414ea3f5fc81d087bce4113a38f058de0a0c19be8b",
+        "executor_id": "executor:stability_replay",
+        "executor_sha256": "9db07f3c7dc88833a70bbb14a4457f3d30889bddacfc437233f711a3f179c2c2"
+      },
+      {
+        "gate_id": "subject_assignment",
+        "status": "pass",
+        "evidence_sha256": "1be3060cac69638b1da1ed40b19acc2988e3058a26708ead91022cd98cf76339",
+        "executor_id": "executor:subject_assignment",
+        "executor_sha256": "94341f784ba390e44f39fbbc829bb12651332c7b48163ac57fe90b26ef5a7289"
+      },
+      {
+        "gate_id": "temporal_consistency",
+        "status": "pass",
+        "evidence_sha256": "70a130351f2d8782121b52df789e0212eccb9053be3840b07ea90961f2125a72",
+        "executor_id": "executor:temporal_consistency",
+        "executor_sha256": "32e11cedec126bbe0f9874072b29c2ca4ee6bc5f023cf5122681a8f74ced2ff3"
+      },
+      {
+        "gate_id": "transform_replay",
+        "status": "pass",
+        "evidence_sha256": "09801e28cab3d80f204e6ef4d63881bf3104310434d1ae39068daa7ea5943cf8",
+        "executor_id": "executor:transform_replay",
+        "executor_sha256": "45748c484bb558e0abc24eec5e56adeb506b69415abf729a0b1b26f823180e02"
+      }
+    ],
+    "deterministic_report_sha256": "dfaf764429231b3dae237fa9e69afa2dd9dedcbac1434a7f337e52be6acdc8f9",
+    "critic_report_sha256": "467545b98fcc0e63e7d63478d06c6043674a2806a6f186ac5fde71bc8220d853",
+    "ownership_report_sha256": "439559febc5473ab57a40bea59701653174ae4dd6588fc87003d886a7731ed37",
+    "protected_region_report_sha256": "0d264ed05bc5240586d807258522cc8b09ae970f4655c31af4f77e0e6522820b",
+    "critic_independent_from_generator": true,
+    "all_blocking_gates_passed": true,
+    "abstention_available": true,
+    "critic_binding": {
+      "critic_id": "critic-fixture",
+      "critic_role": "independent_quality_critic",
+      "critic_stack_id": "fixture.critic",
+      "critic_stack_sha256": "31929da3b516e927be7a20458c74bcd9911f2079825baf89ac7cf541c2ebfae9",
+      "model_artifacts": [
+        {
+          "model_id": "fixture-critic-vlm",
+          "sha256": "878163b0e5b9586820868ef4958870277ac2a1eb4e29eeceeaa72baeddcf9ef7"
+        }
+      ],
+      "workflow_id": "fixture-critic-workflow",
+      "workflow_sha256": "5ccfc4789479a51503175f733c60cf6f92ce2ec5fc3c52c8ac742316d1458916",
+      "execution_fingerprint_sha256": "80305ddb7c9bb0b1254fc6f971150f9b4546102649909f67ddad05dfa44075c3",
+      "qualification_scope_sha256": "4db58d90a5712f2acdc5a62649a775055214e76c9486abddf82e75d756ba0b38",
+      "qualification_certificate_sha256": "3d741d98bbc310d7928c3b54b186aa432cf913a9c982eb114694dfbde74e4614",
+      "qualification_status": "active",
+      "qualified_until": "2026-12-31T00:00:00Z"
+    }
+  },
+  "revocation": {
+    "checked_at": "2026-07-17T00:00:05Z",
+    "revocation_index_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "is_revoked": false
+  },
+  "external_manual_anchor_required": false,
+  "claim_limits": {
+    "maximum_claim": "operational_policy_conformance_for_exact_bound_artifacts",
+    "independent_real_accuracy_claim": false,
+    "holdout_truth_claim": false,
+    "training_gold_claim": false,
+    "counts_toward_training_or_accuracy_gates": false,
+    "promotion_transaction_required_for_training_gold": true
+  },
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "mf-authority-fixture",
+    "public_key_base64": "gTl3Dqh9F19Wo1Rmw0x+zMuNipG07jeiXfYPW4/Js5Q=",
+    "signed_payload_sha256": "51afa9290cb54f3055a415938b9bcb45d4b5bcf02ec56bf8a4db0ca1d3a4416c",
+    "signed_payload_format": "sha256_digest_bytes",
+    "value_base64": "uV6gpk57vl0+il0dRYqgt0lnJkkwxbO+S2UAimhJtFFcr5CvvGRWD1TG/+Ch2ezVkJEdXtQtaeH7UUcaZ8gYDA=="
+  }
+}

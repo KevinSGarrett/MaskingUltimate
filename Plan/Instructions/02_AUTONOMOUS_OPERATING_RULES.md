@@ -63,18 +63,18 @@ because every future session (yours or Kevin's) will trust it.
 
 ## 4. Hard Blockers Are Absolute
 
-Seven item clusters (26 items total) are marked as hard blockers — see
-`Tracker\README.md` §5 for the exact list (doctor green, ontology CI
-assert, format-QC BLOCK enforcement, VLM calibration gate, the
-flip/swap_partner CI test, the D7 finger-IoU gate, the D6 champion-model
-gate). These cannot be skipped, stubbed out, marked complete on weak
-evidence, or "gotten to later" while downstream work proceeds as if they'd
-passed. They exist precisely at the points where a quiet mistake would
-silently corrupt the entire downstream dataset or model — a left/right
-swap that propagates into 300 gold packages, a format bug that lets garbage
-into "gold," a VLM the humans start over-trusting, a champion model that
-doesn't actually beat the baseline it's replacing. Treat a red hard-blocker
-as a hard stop for everything that depends on it.
+Hard blockers are absolute **inside the completion profile that owns or
+depends on them**. Use the dashboard's separate core and optional/portfolio
+sections or `tracker.py list --hard-blockers --profile <id>`. A core hard
+blocker cannot be skipped, stubbed, or closed on weak evidence. An optional
+accuracy/training/DAZ blocker remains real for its claim, but cannot be used
+to stop unrelated `core_autonomous_runtime` work.
+
+The core dependency firewall is itself a hard rule: no human-anchor mask,
+manual CVAT correction, blinded human review, package-volume target, complete
+model-library download, DAZ work, soak, or independent real-accuracy measure
+may become a direct or transitive core prerequisite. `tracker.py validate`
+fails if item dependency text or profile assignment violates this rule.
 
 ## 5. State Management Discipline
 

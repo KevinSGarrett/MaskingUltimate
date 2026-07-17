@@ -1,5 +1,10 @@
 # ITEMS — Phase P4: VLM QA & Active Learning (Weeks 5–7, overlaps P3)
 
+**Completion-profile scope:** human-anchor calibration, blinded audit, and population-confidence work
+in this phase serves optional `independent_real_accuracy`. The required core instead qualifies the
+exact-output operational certificate and autonomous abstention path in doc 24/MF-P6-07..12; optional
+P4 evidence cannot block or redefine its completion.
+
 Goal: D4 — VLM review + routing correct on the 20-image validation set; mining loop producing the weekly plan. Parent IDs from doc 14 §5.
 
 ## MF-P4-01 — S11 VLM QA runner (spec: 10 §1–4)

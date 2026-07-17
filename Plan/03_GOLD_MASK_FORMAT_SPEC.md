@@ -1,5 +1,11 @@
 # Document 03: Gold Mask Format & Package Specification
 
+> **Authority-profile amendment (doc 24):** this document's `gold` and review fields govern the
+> optional human/training-truth lane. The required `core_autonomous_runtime` may reuse the immutable
+> package layout only with an explicit `operationally_certified_artifact` authority record and active
+> operational certificate; that does not create gold or training truth.
+> Human review and a minimum package count are not core prerequisites.
+
 ---
 
 ## 1. The Gold Standard (Authoritative Format)

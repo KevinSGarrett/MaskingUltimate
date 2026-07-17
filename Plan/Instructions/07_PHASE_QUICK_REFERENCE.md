@@ -1,5 +1,11 @@
 # 07 — Phase Quick Reference
 
+**Profile rule:** these phase cards describe the complete portfolio. Required
+completion is the doc-24 `core_autonomous_runtime` profile, not every phase
+exit. Human-anchor/CVAT/blinded/volume/training/DAZ/soak gates apply only to
+their optional profile unless the completion registry explicitly maps an item
+into core.
+
 Condensed cheat-cards for each phase. These are quick-orientation aids, not
 replacements — full detail always lives in `Plan\0X` (spec) and
 `Plan\Items\0X` (checklist).
@@ -30,7 +36,7 @@ maps (`label_map_part.png`, `label_map_material.png`) — never hand-edit a
 binary PNG directly (QC-030). Source provenance and content-lane decisions
 remain explicit; no age-eligibility gate is added. `ontology.yaml` is generated from spec tables, never
 hand-written (`MF-P1-03`, a hard blocker).
-**Exit:** `MF-P1-EXIT`.
+**Exit:** `MF-P1-EXIT` for the optional human-truth portfolio lane; this is not the required core exit.
 
 ## P2 — Body-Aware Drafting (weeks 2–4)
 **Entry gate:** P1 core exit; v2 drafting additionally needs inactive v2 authority/migration contracts.
@@ -64,7 +70,9 @@ layer, never in the atomic PART map.
 **Exit:** `MF-P3-EXIT`.
 
 ## P4 — VLM QA & Active Learning (weeks 5–7, parallel to late P3)
-**Entry gate:** runs alongside late P3; certification requires image-disjoint human-anchor calibration evidence.
+**Entry gate:** runs alongside late P3. Legacy population-risk/independent-accuracy certification
+requires image-disjoint human-anchor calibration evidence; doc-24 exact-output operational core
+certification does not.
 **Goal:** Local/cloud VLM review, bounded repair, selective certification,
 mixed random+risk audit, revocation, residual routing,
 failure-queue mining producing weekly acquisition plans, coverage-matrix
@@ -76,7 +84,7 @@ gate (`MF-P4-05`, hard blocker: ≥0.90 defect recall, ≥0.80 precision on the
 not just once.
 **Exit:** `MF-P4-EXIT` — drives **D4** directly.
 
-## P5 — Custom Model Training (weeks 6–10; entry gate: ≥200 certified training packages)
+## P5 — Optional Custom Model Training (weeks 6–10; entry gate: ≥200 certified training packages)
 **Entry gate:** `metrics.certified_training_package_count >= 200` plus an
 image-disjoint human-anchor holdout. Do not start training
 work before this is genuinely true — a champion trained on too little data
@@ -94,8 +102,10 @@ D6 gate honestly (beats the draft pipeline on the *frozen* holdout, no hard
 class regressing >2 pts) before flipping it.
 **Exit:** `MF-P5-EXIT`.
 
-## P6 — ComfyUI Integration & Serving (starts after D6)
-**Entry gate:** DoD **D6**, eligible promoted roles, and rollback evidence.
+## P6 — ComfyUI Integration, Serving, Autonomous Core, and Cross-Project Bridge
+**Entry gates:** Legacy trained-champion serving retains D6/provider/rollback
+requirements. `MF-P6-07` through `MF-P6-12` has no D6, human, corpus-volume,
+full-library, DAZ, or soak prerequisite and is the required core path.
 **Goal:** The node pack (Mode A, reading gold packages directly) and the
 provider-neutral FastAPI service (Mode B, live prediction on new images) both
 working inside Kevin's existing ComfyUI install.
@@ -103,14 +113,19 @@ working inside Kevin's existing ComfyUI install.
 read-only, structurally enforced (`Plan\13` §5, mirrors QC-030). Mode A has
 zero heavy dependencies (no cv2, no model loads) specifically so it can
 never destabilize Kevin's existing ComfyUI environment.
-**Exit:** `MF-P6-EXIT` — drives **D8**.
+**Required exit:** all `core_autonomous_runtime` gates through `MF-P6-12.06`
+pass with matching release/adoption receipts. `MF-P6-EXIT`/D8 remains legacy
+node/workflow portfolio evidence.
 
-## P7 — Scale & Continuous Operation (ongoing)
+## P7 — Scale & Continuous Operation (optional/post-core maturity)
 **Entry gate:** P6 exit plus current currency, certificate, and rollback reviews.
-**Goal:** Scale to 300 (then 500) certified packages with truth tiers separate, prove the retrain cadence
+**Goal:** Scale to 300 (then 500) optional legacy training/scale packages in
+`human_anchor_train` or exact `autonomous_certified_gold`, with truth tiers separate and
+`operationally_certified_artifact`/bridge certificates explicitly ineligible; prove the retrain cadence
 works at least once, execute every runbook operation (backup restore, gc,
 failure-mining resolution, incident drill) at least once for **D10**, then
-run the actual finish-line headline test.
+run the optional scale/independent-accuracy headline test. This is not the
+core finish line.
 **Key gotchas:** Ontology growth (per-toe splits, finer thigh bands, etc.)
 requires real evidence (≥10 distinct failure-queue items in 30 days per
 missing boundary, doc 12 §8) — don't add labels speculatively.
@@ -120,10 +135,25 @@ mixed audit, no routine per-image correction, zero format/L/R failures, and
 separate labor, quality, and confidence reporting.
 
 ## P8 — Autonomous Multi-Person / Multi-Character Masking
-**Entry gate:** P7 substantially complete; multi-person risk buckets and certificates are independent gates.
+**Entry gate:** P7 substantially complete for the legacy portfolio-scale P8 lane. The bounded
+human-free core ownership/integration case in `MF-P6-12.03` has no P7 prerequisite.
 **Goal:** Every promoted instance is correctly separated, contact/occlusion is reciprocal,
 certificate-covered instances bypass routine review, and only residual/preselected audits reach CVAT.
 **Key gotchas:** Solo certificates never authorize overlap/contact/crowd contexts. QC-035/036,
 image-group split integrity, exact instance identity, mixed audits, and serious-failure revocation remain hard blockers.
 **Exit:** `MF-P8-11.07` plus `MF-P8-EXIT`: the real 10–20 image demonstration
 has zero measured cross-instance bleed with complete certificate/residual/audit evidence.
+This legacy human-audited exit supports independent accuracy. Core multi-person
+integration closes through the human-free `MF-P6-12.03` and qualification matrix.
+
+## P9 — Reference/DAZ Expansion (optional post-core maturity)
+**Entry gate:** `core_autonomous_runtime` is complete and the exact DAZ assets, renderer/runtime,
+storage, and optional work authorization needed by the selected P9 slice are available.
+**Goal:** Qualify hash-bound assets and topology mappings, render exact synthetic PART/MATERIAL/
+instance/depth/normal truth, measure whether it improves declared routes, and run the scoped
+reliability period for `scale_daz_maturity`.
+**Key gotchas:** Fixture-only schemas are not live asset authority; unqualified assets remain
+quarantined; synthetic geometry does not become independent real-image truth; DAZ status cannot
+change `core_autonomous_runtime`.
+**Exit:** `MF-P9-EXIT` closes only `scale_daz_maturity` for its frozen asset/runtime/observation
+scope. It is never a project-wide or core finish line.

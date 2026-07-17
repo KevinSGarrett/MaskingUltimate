@@ -16,6 +16,7 @@ tool against it.
   "phase_meta": { ... },
   "hard_blocker_prefixes": [ ... ],
   "metrics": { ... },
+  "completion_profiles": { ... },
   "dod": { ... },
   "goals": { ... },
   "items": { "<id>": { ... }, ... }
@@ -29,14 +30,14 @@ tool against it.
   "schema_version": "1.0.0",
   "generated_at": "2026-07-10T01:55:22+00:00",   // last `rebuild` timestamp
   "generator": "tracker.py rebuild",
-  "total_items": 609,                             // parsed from Items/*.md at last rebuild
-  "total_tracked_including_orphaned": 609          // includes any orphaned ids
+  "total_items": 798,                             // parsed from Items/*.md at last rebuild
+  "total_tracked_including_orphaned": 798          // includes any orphaned ids
 }
 ```
 
 ## `phase_meta`
 
-One entry per phase P0–P8: `{name, file, entry_gate}`. `file` identifies the
+One entry per phase P0–P9: `{name, file, entry_gate}`. `file` identifies the
 legacy primary phase file; additional phase-native addendum files are discovered by the parser.
 `entry_gate` is free text describing the
 condition that should hold before starting that phase (see README §5) — not
@@ -57,6 +58,64 @@ zero-touch/routine-touch/audited/residual fractions, human touches per 100 image
 pixels per 100,000, audit failure rates, certified-package targets, and coverage. The certified package count
 is derived from the human-anchor training count plus autonomous-certified count. Pseudo-labels and
 calibration/holdout anchors never contribute to that gate.
+
+## `completion_profiles`
+
+```jsonc
+"completion_profiles": {
+  "core_autonomous_runtime": {},
+  "independent_real_accuracy": {},
+  "scale_daz_maturity": {}
+}
+```
+
+These are placeholders, not mutable status. `compute_completion_profile_status()`
+derives each profile from the exact `driven_by` item set frozen in `tracker.py`
+and cross-validates it against `completion_track_registry.json`.
+
+- `core_autonomous_runtime`: required and human-free; the sole product finish line.
+- `independent_real_accuracy`: optional/non-blocking human-anchor/real-holdout claims.
+- `scale_daz_maturity`: post-core/non-blocking scale, model-library, training, and DAZ maturity.
+
+The tracker validator refuses registry/constant drift, unknown or duplicate profile
+fields/items, prerequisite cycles, and any direct or transitive human-anchor, CVAT
+correction, volume, full-library, DAZ, or soak dependency attached to core.
+
+### Completion registry siblings
+
+`completion_track_registry.json` is the closed, versioned planning authority:
+
+- `authoritative_spec_sha256` binds the exact bytes of doc 24;
+- `sha256` binds canonical UTF-8 JSON (`sort_keys`, compact separators, `ensure_ascii=false`) with
+  the `sha256` field omitted;
+- `tracker.py validate` independently recomputes both hashes before accepting profile status.
+
+```jsonc
+{
+  "schema_version": "1.0.0",
+  "registry_id": "maskfactory_completion_tracks",
+  "policy_version": "2026-07-17",
+  "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+  "profiles": [
+    {
+      "profile_id": "core_autonomous_runtime",
+      "classification": "required | optional | post_core",
+      "blocking_for_core_completion": true,
+      "purpose": "...",
+      "completion_claim": "...",
+      "required_item_ids": ["MF-P6-07.01"],
+      "prerequisite_profile_ids": [],
+      "allowed_evidence": ["..."],
+      "forbidden_claims": ["..."],
+      "excluded_core_dependencies": ["human_anchor_masks"]
+    }
+  ]
+}
+```
+
+`completion_track_registry.schema.json` is the formal Draft 2020-12 schema.
+`tracker.py validate` implements equivalent stdlib closed-field checks so the
+tracker does not acquire a runtime dependency on `jsonschema`.
 
 ## `dod` (Definition of Done, D1–D11)
 

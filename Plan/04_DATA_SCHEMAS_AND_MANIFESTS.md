@@ -1,11 +1,16 @@
 # Document 04: Data Schemas & Manifests
 
+> **Authority-profile amendment (doc 24):** legacy workflow/review statuses remain normative for
+> human/training packages, but they are not the only operational authority path. The human-free core
+> adds separate exact-output certificate and bridge records. A package manifest cannot self-upgrade a
+> draft, operational artifact, or downstream receipt into human/training gold.
+
 All JSON is UTF-8, 2-space indent, schema-validated (jsonschema) in CI and at packager time.
 Schemas live in `src\maskfactory\schemas\*.schema.json`; this doc is their normative definition.
 
 ---
 
-## 1. `manifest.json` (per instance — THE authority)
+## 1. `manifest.json` (per instance — package authority within its declared tier)
 
 Schema selection is versioned and fail-closed. `body_parts_v1` uses schema version `1.0.0` and
 `manifest.schema.json`. `body_parts_v2` uses schema version `2.0.0` and

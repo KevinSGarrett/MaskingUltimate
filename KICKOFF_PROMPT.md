@@ -24,7 +24,7 @@ I'm Kevin. This is my project, and I'm handing you full ownership of
 building it — start to finish, autonomously, without me needing to direct
 your work turn by turn.
 
-**Everything about this project already exists on disk, fully designed.**
+**Everything about this project already exists on disk as a governed design and live implementation.**
 Nothing here is a request for you to figure out an approach or make design
 decisions. Every decision has already been made and written down in
 exhaustive detail. Your job is to execute an existing, complete blueprint —
@@ -35,11 +35,13 @@ redesign anything.
 
 **Root:** `C:\Comfy_UI_Main_Masking\`
 
-This is **MaskFactory** — a production-grade pipeline that generates
-pixel-perfect binary masks for every body part of every promoted person in
-an image (including multi-person photos), runs that through human review,
-and uses the resulting gold-standard dataset to train its own custom
-segmentation models, which get served back into ComfyUI.
+This is **MaskFactory** — an autonomous-first pipeline that generates
+pixel-accurate masks for every body part of every promoted person, enforces
+hard QA and instance ownership, runs independent critics and bounded repair,
+then issues exact-output operational authority or abstains. A versioned
+runtime/release bridge connects it to the main ComfyUI controller. Human-
+anchor accuracy measurement, large-corpus training, and DAZ maturity are
+separate optional profiles.
 
 Here is the directory structure, in full transparency, exactly as it
 exists right now:
@@ -47,8 +49,8 @@ exists right now:
 ```
 C:\Comfy_UI_Main_Masking\
 ├── KICKOFF_PROMPT.md        <- this file
-├── Plan\                    <- the complete technical spec: 18 documents (00–17)
-│   ├── Items\                   <- the spec broken into 393 checkable action items, across 10 files
+├── Plan\                    <- the complete technical spec: 25 documents (00–24)
+│   ├── Items\                   <- the spec broken into 798 checkable action items, across 21 parsed files
 │   ├── Tracker\                 <- the LIVE STATE of every item. tracker.py is how you read and update it.
 │   ├── Instructions\            <- YOUR OPERATING MANUAL. Read this first, in full, before anything else.
 │   ├── Civitai\                 <- external model/workflow/dataset bootstrap assets (doc 16 track)
@@ -62,20 +64,24 @@ C:\Comfy_UI_Main_Masking\
 
 ## Read These Four Things, In This Order, Before Touching Anything Else
 
-1. **`Plan\Instructions\00_START_HERE.md` through `08_QUALITY_AND_SAFETY_GUARDRAILS.md`**
-   (9 files). This is your complete operating manual: how to conduct
+1. **`Plan\Instructions\00_START_HERE.md` through `09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md`**
+   (10 files). This is your complete operating manual: how to conduct
    yourself, the exact session workflow, how to execute one item end to
    end, how to use the tracker, what to do when stuck, a phase-by-phase
-   cheat sheet, and the non-negotiable quality/safety rules. Read all nine
+   cheat sheet, the non-negotiable quality/safety rules, and the cross-project
+   release/session handoff protocol. Read all ten
    before doing anything else — everything below this list is just a
-   preview, not a substitute.
-2. **`Plan\00_MASTER_INDEX.md` through `17_...md`** (18 documents) — the
-   full technical specification. You don't have to read all 18 cover to
-   cover right now, but know they exist and are the authoritative answer
+   preview, not a substitute. Then verify the current isolated planning packet
+   against `Plan\Instructions\10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json`;
+   that file is preservation evidence, not runtime-release authority.
+2. **`Plan\00_MASTER_INDEX.md` through `24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md`**
+   (25 documents) — the full technical specification. Doc 24 is the latest
+   completion and cross-project bridge authority. You don't have to read all
+   25 cover to cover immediately, but know they are the authoritative answer
    to every "why" and "exactly how." Every checklist item cites exactly
    which section governs it — go there when you need the real detail.
-3. **`Plan\Items\00_ITEMS_MASTER_INDEX.md`** and the 10 files under it —
-   the entire project broken into 393 concrete, checkable action items.
+3. **`Plan\Items\00_ITEMS_MASTER_INDEX.md`** and the 21 parsed phase files —
+   the portfolio broken into 798 concrete, checkable action items.
 4. **`Plan\Tracker\`** — the live status of every one of those items. Run
    this now, as your literal first action:
    ```
@@ -84,8 +90,10 @@ C:\Comfy_UI_Main_Masking\
    python tracker.py validate
    python tracker.py report
    ```
-   Then open `DASHBOARD.md`. That tells you exactly where things stand
-   **right now** — trust it completely over anything I've said above about
+   Then open `DASHBOARD.md` and read **Required Core Status** first. The
+   portfolio percentage deliberately includes optional accuracy and post-core
+   scale/DAZ work; it is not global completion. Trust the profile status over
+   anything I've said above about
    "current state," since this project moves forward across many sessions
    and this message doesn't get updated each time.
 
@@ -97,11 +105,14 @@ C:\Comfy_UI_Main_Masking\
 
 ## The Mandate
 
-Build the entire system, from wherever it currently stands, through every
-remaining phase, to full completion — every one of the 393+ items checked
-with real evidence, every Definition-of-Done criterion (D1–D11) satisfied,
-and both headline tests passed (the single-person one and the multi-person
-one — `Plan\Tracker\DASHBOARD.md` shows both).
+First close the required `core_autonomous_runtime` profile from wherever the
+live tracker stands. It requires the autonomous masking control plane and the
+pinned MaskFactory↔ComfyUI bridge, including single-/multi-person authority,
+repair/abstention, certification/revocation, outage/restart, and rollback
+evidence. Do not wait for human anchors, CVAT correction, blinded human review,
+minimum package volume, full model-library download, DAZ, or long soak. Those
+remain visible work in the optional `independent_real_accuracy` and post-core
+`scale_daz_maturity` profiles after core closes.
 
 Do this **autonomously**. Don't stop to ask whether you should proceed with
 routine work. Don't end a turn just to check in "in case I want to weigh
@@ -109,8 +120,7 @@ in." Pick the next actionable item, read its full governing spec section,
 build it, actually verify it, record it honestly, and move to the next
 one — continuously, for as long as you're able to work in a given session.
 
-This will not fit in one session, and that's fine and expected — this is a
-months-long build. When a session is ending for any reason (context
+This is a multi-session build. When a session is ending for any reason (context
 running low, a natural stopping point, whatever), follow
 `Plan\Instructions\03_SESSION_PLAYBOOK.md`'s end-of-session steps exactly
 and leave a clean, complete handoff. That's what makes this genuinely
@@ -122,16 +132,11 @@ anything.
 ## The Few Things That Are Genuinely Mine — Everything Else Is Yours
 
 The definitive list is `Plan\Instructions\06_BLOCKERS_AMBIGUITY_AND_ESCALATION.md`.
-In short: I supply the source images (a hard data-governance requirement,
-not a preference of mine); I do the actual manual mask-correction clicks in
-CVAT myself (the entire point of that review layer is human judgment, and
-that doesn't transfer to you even if you're technically capable of
-clicking through a UI); I approve spending real money before anything
-billable gets launched; and I'm the one who resolves a genuinely
-unresolved spec question, if you've truly exhausted the docs first. Use
-`blocked` status with a `NEEDS KEVIN:` prefix on the reason for exactly
-these cases, then go work on something else — never sit idle waiting on
-me. Everything else — environment setup, all the code, every model,
+I approve real spending, provide any particular private sources wanted for
+optional benchmarks, perform optional human-authored CVAT/accuracy work, and
+resolve genuinely unresolved scope decisions. None of those is a core
+dependency: use governed generated/available sources, local qualified
+capabilities, and typed autonomous abstention. Everything else — environment setup, all the code, eligible models,
 all the automated QA and VLM layers, running the pipeline on images I've
 supplied, training, the ComfyUI integration, all tracker bookkeeping — is
 yours to just do, without checking with me first.
@@ -142,9 +147,10 @@ yours to just do, without checking with me first.
   actually verified.** An honest, mostly-`open` tracker is worth infinitely
   more than a dishonest, fully-`complete` one. Nothing is served by making
   this look further along than it is.
-- **The hard blockers are absolute.** No exceptions, no "close enough," no
-  deferring one while downstream work proceeds as if it had already
-  passed.
+- **Hard blockers are absolute within their assigned profile.** Use
+  `--profile core_autonomous_runtime`; optional human/volume/DAZ blockers do
+  not block core, while core format/ownership/authority/recovery gates cannot
+  be bypassed.
 - **Build to the spec exactly as written.** If something seems ambiguous,
   that's a signal to read more carefully — not to improvise a plausible
   answer.

@@ -1,10 +1,14 @@
 # MaskFactory Project Tracker — README
 
 This folder is the **live, machine-readable status tracker** for the entire
-Ultimate Masking System build-out: all 755 action items from
-`Plan\Items\*.md`, plus the Definition-of-Done (D1–D11) and Goals (G1–G9)
-rollups from docs 00 and 01, plus tier-separated truth, labor, audit, coverage,
-and certified-package metrics.
+Ultimate Masking System build-out: all 798 action items from
+`Plan\Items\*.md`, three independently scoped completion profiles, the
+Definition-of-Done (D1–D11) and Goals (G1–G9) rollups, and tier-separated
+truth, labor, audit, coverage, and certified-package metrics.
+
+**The required finish line is `core_autonomous_runtime`.** The legacy all-item
+percentage is a portfolio rollup that includes optional independent-accuracy and
+post-core scale/DAZ work; it is not global end-to-end completion authority.
 
 **If you are an AI agent picking up this project cold, read this file
 first, then run `python tracker.py report` and open `DASHBOARD.md` to see
@@ -12,12 +16,13 @@ exactly where the project currently stands.**
 
 ---
 
-## 1. The Two Sources of Truth (do not confuse them)
+## 1. The Three Sources of Truth (do not confuse them)
 
 | What | Lives in | Who edits it | How |
 |---|---|---|---|
-| **Item metadata** (id, description, phase, spec reference, verify/blocker clauses, hard-blocker / conditional / exit-gate flags) | `Plan\Items\*.md` (19 parsed checklist files plus the master/traceability documents) | A human, deliberately, when the plan itself changes | Edit the markdown, then run `python tracker.py rebuild` |
+| **Item metadata** (id, description, phase, spec reference, verify/blocker clauses, hard-blocker / conditional / exit-gate flags) | `Plan\Items\*.md` (21 parsed checklist files plus the master/traceability documents) | A human, deliberately, when the plan itself changes | Edit the markdown, then run `python tracker.py rebuild` |
 | **Item state** (status, percent, evidence, notes, blocked reason, timestamps) | `Tracker\tracker.json` | Anyone (human or AI) working the project | **Only** via `python tracker.py set ...` / `metrics` / `goal` |
+| **Completion policy** (required core, optional independent accuracy, post-core scale/DAZ) | self-hashed `completion_track_registry.json`, schema, byte-hashed doc 24, and mirrored constants in `tracker.py` | Deliberate governed plan change only | Edit all authorities together, reseal both hashes, and run `validate`; drift fails closed |
 
 `tracker.json` is never hand-edited. `Plan\Items\*.md` is never used to record
 progress (checkboxes there stay as originally written — the live status is
@@ -30,8 +35,10 @@ at any time and will never lose recorded progress, because it merges by id.
 
 ## 2. Requirements
 
-Python 3.7+ (already present on this machine as both 3.11 and 3.12), stdlib
-only — no `pip install` needed. Run everything from this folder:
+Python 3.11+ with the project dependencies installed. Registry validation uses
+the project's declared `jsonschema` dependency and Draft 2020-12; run from the
+repository environment or install the locked project dependencies first. Run
+everything from this folder:
 
 ```
 cd C:\Comfy_UI_Main_Masking\Plan\Tracker
@@ -47,7 +54,7 @@ python tracker.py <command> ...
 python tracker.py rebuild
 ```
 Run this once to initialize (already done — `tracker.json` exists with all
-755 items after the docs 18–23/SAM 3.1/DAZ reconciliation). Rerun it any time `Plan\Items\*.md` is
+798 items after the docs 18–24/SAM 3.1/DAZ/bridge reconciliation). Rerun it any time `Plan\Items\*.md` is
 edited (labels added, items split, etc.). It **preserves all existing
 status/evidence/notes** for ids that still exist, marks ids no longer found
 in the source as `orphaned: true` (never deletes their history), and adds
@@ -98,18 +105,25 @@ python tracker.py set MF-P5-08.01 --status not_applicable --evidence "trigger ne
 
 ### `list` — filter and browse
 ```
-python tracker.py list [--phase P0..P8] [--status open,blocked] [--hard-blockers]
+python tracker.py list [--phase P0..P9] [--status open,blocked] [--hard-blockers]
                         [--conditional] [--blocked] [--search "sam2"]
+                        [--profile core_autonomous_runtime]
 ```
-Statuses can be comma-separated. No filters = list everything (755 lines).
+Statuses can be comma-separated. No filters = list everything (798 lines).
+`--profile` restricts the result—including `--blocked` or `--hard-blockers`—to
+the profile's complete transitive item-dependency closure.
 
 ### `next` — what should I work on
 ```
-python tracker.py next -n 10 [--phase P0]
+python tracker.py next -n 10 [--phase P0] [--profile core_autonomous_runtime]
 ```
 Returns the next N items that are not yet resolved (`open`, `in_progress`,
-`partially_complete`, or `failed`), in phase order (P0→P8) then document
-order within a phase. This does **not** do full dependency-graph solving —
+`partially_complete`, or `failed`). While `core_autonomous_runtime` is
+incomplete, unqualified `next` calls prioritize its items before optional
+portfolio work. `--profile` strictly limits suggestions to that profile's
+complete transitive dependency closure.
+Within a priority group, results follow phase order (P0→P9) then document
+order. This does **not** do full dependency-graph solving —
 it respects the project's overall phase sequence and the order items were
 written in (which itself follows the dependency order laid out in doc 14),
 but it does not know about phase entry gates (see §5) or hard-blocker
@@ -146,7 +160,9 @@ they are not auto-computed the way DoD items are (see §5).
 ```
 python tracker.py validate
 ```
-Confirms 755 non-orphaned items, no duplicate/invalid statuses, flags
+Confirms 798 non-orphaned items, no duplicate/invalid statuses, validates the
+closed completion registry and its mirror in `tracker.py`, fails any direct or
+transitive human/CVAT/volume/full-library/DAZ/soak dependency assigned to core, and flags
 `complete` items missing evidence, `blocked` items missing a reason, and any
 orphaned items. Exits non-zero only on a structural problem (never on
 warnings) — safe to run in CI or as a pre-commit check.
@@ -155,9 +171,9 @@ warnings) — safe to run in CI or as a pre-commit check.
 ```
 python tracker.py report
 ```
-Regenerates `DASHBOARD.md` (project-wide rollup: overall %, per-phase
-progress, the live DAZ vertical-slice table, hard-blocker status,
-currently-blocked list, DoD table, Goals table, tracked metrics, recent
+Regenerates `DASHBOARD.md` (required core status first, a clearly labeled
+portfolio %, independent completion profiles, per-phase progress, optional
+DAZ status, separately scoped core/portfolio blockers, DoD table, Goals table, tracked metrics, recent
 activity, suggested next actions) and
 `phases\P0.md` … `phases\P8.md` (every single item in that phase, live
 status glyph, evidence, notes — a full-detail mirror of the original
@@ -167,7 +183,8 @@ status glyph, evidence, notes — a full-detail mirror of the original
 markdown views stay in sync with `tracker.json`. The markdown files are
 never hand-edited — they carry an auto-generated banner as a reminder.
 
-The `daz_*` vertical-slice metrics are live-evidence counters, not planning targets. Update them only
+The `daz_*` vertical-slice metrics are live-evidence counters in the optional
+post-core `scale_daz_maturity` profile, not core planning targets. Update them only
 when the corresponding governed identity snapshot, graph, certificate, scene, package, training run,
 or real-image benchmark changes; fixture-only work must leave the live counter unchanged.
 
@@ -186,10 +203,13 @@ or real-image benchmark changes; fixture-only work must leave the live counter u
 | `deferred` | Intentionally postponed / deprioritized (not the same as blocked — nothing is stopping it, it's just not now). | No |
 | `not_applicable` | A conditional item whose trigger never fired (see Items master index rule: this legitimately counts as resolved). | **Yes** |
 
-Only `complete` and `not_applicable` count toward the "done" percentage
-shown everywhere. There is no partial credit for `partially_complete` in the
-rollup math — it's informational only (use `--percent` if you want to record
-a finer-grained number for your own reference).
+Only `complete` and valid `not_applicable` states count toward item rollups.
+`not_applicable` requires evidence and is permitted only for an explicitly
+conditional item outside the mandatory `core_autonomous_runtime` dependency
+closure. Profile status is computed across each profile's complete transitive
+item-dependency closure; every core dependency must be `complete`. The portfolio
+percentage must never be called end-to-end completion because it deliberately
+mixes required, optional, and post-core scope.
 
 ---
 
@@ -213,7 +233,10 @@ additional atomic blockers with the literal `HARD BLOCKER` marker:
   autonomous certification, truth-tier training eligibility, hard-bucket
   non-inferiority, serving rollback, and recurring currency review
 
-`python tracker.py list --hard-blockers` shows all of them at any time.
+`python tracker.py list --hard-blockers` shows the full portfolio. Use
+`python tracker.py list --hard-blockers --profile core_autonomous_runtime` for
+the required finish line. The dashboard renders core and optional/portfolio
+blockers separately.
 
 **Conditional items** (`MF-P5-08.01`, `MF-P5-08.02`, `MF-P7-01.04`,
 `MF-P7-03.05`) may legitimately resolve to `not_applicable` if their trigger
@@ -227,11 +250,23 @@ gates exist so an agent reads them and *chooses* not to start P5 work early,
 per the project's own critical-path rules in doc 14 §9. Check
 `metrics --show` and the DoD table before starting a gated phase.
 
+P6 has two lanes: legacy trained-champion serving retains its D6/provider gates,
+while doc-24 `MF-P6-07` through `MF-P6-12` core-autonomy/bridge work has no
+D6, human, package-volume, full-library, DAZ, or soak prerequisite.
+
 ---
 
-## 6. Definition of Done (D1–D11) and Goals (G1–G9)
+## 6. Completion Profiles, Definition of Done, and Goals
 
-`DASHBOARD.md` renders both tables automatically.
+`DASHBOARD.md` renders all three systems automatically.
+
+- **`core_autonomous_runtime`** is required and human-free. It proves autonomous
+  mask generation, hard QA, independent critics, bounded repair, abstention,
+  exact-output certification, revocation, recovery, and the adopted ComfyUI bridge.
+- **`independent_real_accuracy`** is optional/non-blocking. Human anchors, CVAT,
+  blinded audits, and real holdouts support only its accuracy/calibration claims.
+- **`scale_daz_maturity`** is post-core/non-blocking. Corpus scale, full-library
+  qualification, custom training, DAZ, and long soaks belong only here.
 
 - **DoD (D1–D11)** status is **computed automatically** from the status of
   each entry's `driven_by` item(s) — you never set a DoD status directly.
@@ -244,10 +279,10 @@ per the project's own critical-path rules in doc 14 §9. Check
   (e.g. run the leaderboard, time an annotation session) and record it with
   `tracker.py goal <Gid> --measured "..." --status {pending,met,not_met}`.
 
-The project's true finish line is two-part: `MF-P7-07.07` plus `MF-P7-EXIT`
-(all D1–D10 hold and the 20-unseen-image selective-autonomy/blinded-audit headline
-test passes) **and** `MF-P8-11.07` plus `MF-P8-EXIT` (D11 holds on real
-multi-person images with certificate-covered/residual/audit routing).
+The requested product finish line is the computed `core_autonomous_runtime`
+profile. Legacy D/G rollups and headline tests remain visible evidence mapped to
+their proper profile; human-anchor/blinded/volume/DAZ requirements cannot silently
+redefine core completion.
 
 ---
 
@@ -273,11 +308,10 @@ multi-person images with certificate-covered/residual/audit routing).
 5. **Run `python tracker.py validate` before ending a work session.** It's
    cheap, fast, and catches silent drift (missing evidence, missing
    blocked-reasons, unexpected item-count changes).
-6. **Respect phase gates even though the CLI won't stop you.** Check
-   `DASHBOARD.md`'s Entry Gate column and the DoD table before starting work
-   in a later phase — starting P5 training before 200 certified training packages exist,
-   for instance, produces a champion model with no chance of meaningfully
-   beating the draft pipeline, wasting the D6/D7 gate attempts.
+6. **Respect profile-scoped gates.** Package-volume and holdout gates still
+   govern their training/accuracy profiles, but they do not delay doc-24 core
+   autonomy/bridge work. Use `next`'s core-first default and the dashboard's
+   separately scoped blocker sections.
 7. **When in doubt about an item's meaning, go to the spec.** Every item
    carries a `spec_ref` (e.g. `06 §1`) pointing at the exact section of the
    numbered documents in `Plan\` that define it in full. The item text
@@ -291,11 +325,13 @@ multi-person images with certificate-covered/residual/audit routing).
 
 | File | What |
 |---|---|
-| `tracker.py` | The CLI (stdlib-only Python). Source of all logic. |
+| `tracker.py` | The Python CLI. Source of tracker logic; Draft 2020-12 registry validation uses `jsonschema`. |
 | `tracker.json` | Canonical state store. Machine-owned; don't hand-edit. |
+| `completion_track_registry.json` | Frozen required/optional/post-core completion policy and exact item assignments; binds doc 24 bytes and its own canonical content SHA-256. |
+| `completion_track_registry.schema.json` | Closed Draft 2020-12 schema for the completion policy; `validate` runs schema and semantic cross-authority checks. |
 | `CHANGELOG.jsonl` | Append-only audit log — one JSON line per `set`/`metrics`/`goal` call ever made, with timestamp, actor, old/new status. Never edited or truncated by the tool. |
 | `backups\` | Timestamped snapshots of `tracker.json`, written automatically before every save. Safe to prune manually if it grows large; never required for normal operation. |
 | `DASHBOARD.md` | Auto-generated project-wide rollup. Regenerate with `report`. |
-| `phases\P0.md` … `P8.md` | Auto-generated, full-detail live mirror of each phase's items with current status/evidence/notes. Regenerate with `report`. |
+| `phases\P0.md` … `P9.md` | Auto-generated, full-detail live mirror of each phase's items with current status/evidence/notes. Regenerate with `report`. |
 | `README.md` | This file. |
 | `SCHEMA.md` | Formal field-by-field reference for `tracker.json`'s structure. |

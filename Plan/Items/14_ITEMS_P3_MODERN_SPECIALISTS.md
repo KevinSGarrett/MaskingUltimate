@@ -1,5 +1,11 @@
 # ITEMS — Phase P3 Modern Specialist Challenger Lanes (SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** these specialist and comparative-benchmark rows are not a
+> full-library prerequisite for core. Exact completed runtime-contract evidence may be reused by an
+> eligible route; human-anchor benchmarks qualify only optional independent-accuracy claims. An
+> absent/unqualified specialist is filtered out or produces typed abstention and cannot block or revoke
+> `core_autonomous_runtime`.
+
 Goal: make each specialist family a measurable, reversible challenger rather than an assumed upgrade.
 
 ## MF-P3-08 — Modern specialist integration and role-specific evidence (spec: SAM handoff Retained Providers/Benchmark Matrix)

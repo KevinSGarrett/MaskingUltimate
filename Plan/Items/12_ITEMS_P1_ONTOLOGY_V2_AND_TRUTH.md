@@ -1,5 +1,10 @@
 # ITEMS — Phase P1 Ontology-v2 Authority and Truth-Tier Packaging (docs 18, 20, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** these rows remain truthfully tracked for their named
+> ontology/truth lane. An exact completed deterministic row may be reused when it is explicitly in
+> the `core_autonomous_runtime` dependency closure, but the phase's human-anchor, CVAT, corpus,
+> training, or independent-accuracy gates are not inherited and cannot block or revoke core.
+
 Goal: make ontology v2 and explicit truth authority machine-verifiable without changing active v1 until every activation gate passes.
 
 ## MF-P1-10 — Ontology-v2 generator and machine authority (spec: 18 checklist B)

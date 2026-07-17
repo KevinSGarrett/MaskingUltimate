@@ -10836,7 +10836,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 94,
       "notes": [
         {
           "ts": "2026-07-15T00:18:20+00:00",
@@ -10877,12 +10877,17 @@
           "ts": "2026-07-17T09:15:09+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: refroze the eight-provider runtime matrix after both Meta human gates resolved. Six runtimes remain live-qualified; SAM 3.1 is checkpoint-installed/smoke-pending and SAM 3D Body is access-ready/install-pending. The matrix has zero human-gated rows, two explicit pending rows, and no authority overclaim."
+        },
+        {
+          "ts": "2026-07-17T09:26:31+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the eight-provider matrix now binds the exact SAM 3D Body lock and checkpoint-install evidence. Both official Meta challengers have installed checkpoints; their isolated WSL inference smokes remain explicit pending rows because Ubuntu filesystem reads return input/output error. Six runtimes remain live-qualified; no production or gold authority changed."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176; qa/live_verification/provider_runtime_matrix_20260717.json SHA-256 6480e9a76bf18ec2583a9a4daba785030d56e3a6208d11738e82dfc0f7e387ad; focused verification 27 passed and broader related verification 84 passed; Ruff and Black pass.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650; qa/live_verification/provider_runtime_matrix_sam3d_install_20260717.json SHA-256 9b087290da4060024cd9ac0ac883c31293444eb188de28cd6421a1a2dc3e35dc; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts; 26 focused and 116 broader related tests; Ruff and Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T09:16:57+00:00",
+      "updated_at": "2026-07-17T09:27:57+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -12030,7 +12035,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 30,
+      "percent_complete": 45,
       "notes": [
         {
           "ts": "2026-07-15T00:18:03+00:00",
@@ -12056,12 +12061,17 @@
           "ts": "2026-07-17T09:15:08+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the Meta/Hugging Face human access gate is resolved. Read-only exact-revision probes reached model.ckpt, model_config.yaml, and assets/mhr_model.pt with zero bytes downloaded. Governed artifact metadata freeze, installation, provider integration, live smoke, mapping, OOM fallback, provenance, and benchmark remain pending; DensePose stays active."
+        },
+        {
+          "ts": "2026-07-17T09:26:30+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: froze all three exact SAM 3D Body asset identities, installed the 2,805,241,082-byte bundle atomically on C:, and verified an idempotent zero-download replay. Ubuntu still returns input/output error from /usr/bin/df, so the isolated Python 3.11 runtime, model load/inference, coordinate/frame/identity adapter, OOM fallback, and provenance integration remain pending. DensePose remains active."
         }
       ],
-      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; canonical access probe SHA-256 975d6a345b36f042fb92611c629bbd08a4c856cdf4d33724c5bb2e8a2d4bdc1d; zero bytes downloaded; no inference or authority claim.",
+      "evidence": "env/sam3d_body_runtime.lock.json SHA-256 64cd172f75c832522c3606d3813349bf6e48c5d210f8f925f16c500920b62f38; qa/live_verification/sam3d_body_asset_metadata_20260717.json SHA-256 6dbcf20da2400fdcf202c899d8d903334ea503c885c6884f8baefdf8c9ba69b7; qa/live_verification/sam3d_body_checkpoint_install_20260717.json SHA-256 c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f. All exact assets installed; runtime/integration verification remains pending.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T09:15:08+00:00",
+      "updated_at": "2026-07-17T09:26:30+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {
@@ -12448,12 +12458,17 @@
           "ts": "2026-07-15T10:21:32+00:00",
           "actor": "ai_agent",
           "text": "Frozen and implemented the complete pre-result SAM 3D Body versus DensePose geometry benchmark. Exact checkpoint/runtime installation and real human-anchor observations remain unclaimed; upstream Meta license/contact-sharing acceptance is still NEEDS KEVIN and no WSL/F:/external VHD access occurred."
+        },
+        {
+          "ts": "2026-07-17T09:26:32+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: Meta access and exact SAM 3D Body checkpoint/config/MHR installation are now resolved. The pre-result benchmark contract remains at 80% because isolated runtime inference and the governed human-anchor comparison have not run; DensePose remains the active/rollback provider."
         }
       ],
       "evidence": "2026-07-15: geometry_variant_benchmark_v1 canonical SHA-256 98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef binds nine contexts, exact artifact/runtime identities, projection/visibility/bleed/side/front-back/identity/QA denominators, latency/VRAM/OOM/determinism, 8 GiB gate, and DensePose fallback. Dedicated 30/30, focused 139/139, full 1445/1445 exit 0; Ruff/Black/CI YAML pass. Signed currency review d581b0d6fda7d26e99ecda00 verifies and remains honestly FAIL. qa/live_verification/geometry_variant_benchmark_contract_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T10:21:32+00:00",
+      "updated_at": "2026-07-17T09:26:32+00:00",
       "orphaned": false
     },
     "MF-P3-08.06": {

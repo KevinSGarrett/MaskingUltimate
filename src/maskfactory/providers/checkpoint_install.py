@@ -88,18 +88,21 @@ def install_checkpoint(
         else:
             raise CheckpointInstallError(f"checkpoint transfer returned HTTP {status}")
         written = partial_size
-        with partial.open(mode) as handle:
-            for chunk in response.iter_content(chunk_size=8 * 1024**2):
-                if not chunk:
-                    continue
-                handle.write(chunk)
-                written += len(chunk)
-                if written > expected_size:
-                    raise CheckpointInstallError("checkpoint transfer exceeded the locked size")
-                if progress is not None:
-                    progress(written, expected_size)
-            handle.flush()
-            os.fsync(handle.fileno())
+        try:
+            with partial.open(mode) as handle:
+                for chunk in response.iter_content(chunk_size=8 * 1024**2):
+                    if not chunk:
+                        continue
+                    handle.write(chunk)
+                    written += len(chunk)
+                    if written > expected_size:
+                        raise CheckpointInstallError("checkpoint transfer exceeded the locked size")
+                    if progress is not None:
+                        progress(written, expected_size)
+                handle.flush()
+                os.fsync(handle.fileno())
+        except requests.RequestException as exc:
+            raise CheckpointInstallError(f"checkpoint stream failed: {type(exc).__name__}") from exc
     finally:
         response.close()
     size, digest = _file_identity(partial)

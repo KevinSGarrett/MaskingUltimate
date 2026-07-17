@@ -6877,3 +6877,20 @@ Tracker:                             MF-P0-17.04 moved from blocked/40% to parti
 Verification:                        27/27 focused and 84/84 broader related checkpoint installer, access probe, runtime matrix, SAM 3.1/provider, doctor, external-source, and governance tests pass; Ruff and changed-surface Black pass
 Safety boundary:                     no WSL, Docker, or ComfyUI process was terminated or restarted; no production route, gold authority, or Main/bridge-worktree file changed; the 3.5 GB checkpoint was written only to the governed C-drive runtime cache
 Evidence:                             `qa/live_verification/meta_checkpoint_access_ready_20260717.json`; `qa/live_verification/sam31_checkpoint_install_20260717.json`; `qa/live_verification/provider_runtime_matrix_20260717.json`
+
+## 2026-07-17 09:25 UTC - Official SAM 3D Body bundle installed with exact identities
+
+**Result:** The exact frozen SAM 3D Body DINOv3 checkpoint, configuration, and MHR asset are
+installed and idempotently verified. The provider remains planned and DensePose remains active
+because Ubuntu filesystem I/O errors still prevent the isolated runtime and inference smoke.
+
+Metadata freeze:                     authenticated exact-revision Hugging Face metadata binds `model.ckpt` (2,109,129,346 bytes), `model_config.yaml` (1,488 bytes), and `assets/mhr_model.pt` (696,110,248 bytes), totaling 2,805,241,082 bytes
+Installation:                        all three assets used resumable transfers and atomic per-file promotion into `models/runtime_cache/sam3d_body_checkpoint_11aaa346`; exact SHA-256 checks passed and the second run reused all three assets with zero downloaded bytes
+Capacity:                            C: had 62.65 GiB free before and 59.95 GiB after the governed install; F: was not written
+Runtime boundary:                    a read-only Ubuntu probe reached the shell and Python 3.10.12, but `/usr/bin/df` still returned `Input/output error`; the required isolated Python 3.11 dependency lock, model load, CUDA inference, VRAM/latency/determinism, coordinate/frame/identity mapping, and OOM fallback remain pending
+Runtime matrix:                      8 providers, 6 live-qualified runtimes, 0 human gates, 2 checkpoint-installed runtime-pending rows, and 18 exact artifacts; manifest SHA-256 `bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650`
+Tracker:                             MF-P2-11.07 advanced to 45%; MF-P0-17.13 advanced to 94%; MF-P3-08.05 retains its honest 80% pre-result benchmark state; validation and report regeneration pass
+Verification:                        26/26 focused and 116/116 broader related installer, SAM 3D Body/SAM 3.1, Meta access, runtime-matrix, doctor, geometry-benchmark, external-source, and governance tests pass; Ruff and changed-surface Black pass
+Authority boundary:                 DensePose remains active and rollback; no inference, benchmark win, provider promotion, production route change, training truth, autonomous certificate, or gold authority is claimed
+Safety boundary:                    no WSL, Docker, or ComfyUI process was terminated or restarted; Main and the preserved autonomy-bridge worktree remain untouched
+Evidence:                             `qa/live_verification/sam3d_body_asset_metadata_20260717.json`; `qa/live_verification/sam3d_body_checkpoint_install_20260717.json`; `qa/live_verification/provider_runtime_matrix_sam3d_install_20260717.json`

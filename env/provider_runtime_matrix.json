@@ -96,15 +96,16 @@
     },
     {
       "provider": "sam3d_body",
-      "status": "checkpoint_access_ready_install_pending",
+      "status": "checkpoint_installed_runtime_pending",
       "isolation_boundary": "planned_isolated_wsl_runtime",
-      "checkpoint_status": "access_ready",
-      "smoke_status": "not_run_install_pending",
+      "checkpoint_status": "installed",
+      "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "evidence", "path": "qa/live_verification/meta_checkpoint_access_ready_20260717.json", "sha256": "ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0"}
+        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "64cd172f75c832522c3606d3813349bf6e48c5d210f8f925f16c500920b62f38"},
+        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json", "sha256": "c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f"}
       ]
     }
   ],
-  "manifest_sha256": "8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176"
+  "manifest_sha256": "bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650"
 }

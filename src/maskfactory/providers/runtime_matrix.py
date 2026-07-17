@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_MATRIX = Path("env/provider_runtime_matrix.json")
-LOCKED_MATRIX_SHA256 = "8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176"
+LOCKED_MATRIX_SHA256 = "bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650"
 EXPECTED_PROVIDERS = {
     "maskfactory_core",
     "sam3_1",
@@ -27,9 +27,9 @@ CURRENT_PENDING = {
         "not_run_wsl_filesystem_io_error",
     ),
     "sam3d_body": (
-        "checkpoint_access_ready_install_pending",
-        "access_ready",
-        "not_run_install_pending",
+        "checkpoint_installed_runtime_pending",
+        "installed",
+        "not_run_wsl_filesystem_io_error",
     ),
 }
 QUALIFIED = "live_smoke_passed"

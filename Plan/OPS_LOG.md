@@ -6894,3 +6894,19 @@ Verification:                        26/26 focused and 116/116 broader related i
 Authority boundary:                 DensePose remains active and rollback; no inference, benchmark win, provider promotion, production route change, training truth, autonomous certificate, or gold authority is claimed
 Safety boundary:                    no WSL, Docker, or ComfyUI process was terminated or restarted; Main and the preserved autonomy-bridge worktree remain untouched
 Evidence:                             `qa/live_verification/sam3d_body_asset_metadata_20260717.json`; `qa/live_verification/sam3d_body_checkpoint_install_20260717.json`; `qa/live_verification/provider_runtime_matrix_sam3d_install_20260717.json`
+
+## 2026-07-17 09:32 UTC - Provider-neutral SAM 3D Body geometry adapter implemented
+
+**Result:** MF-P2-11.07 advances to 65% with its offline provider contract, person ownership,
+coordinate-frame, provenance, and OOM-fallback behavior implemented and tested. The isolated live
+backend and CUDA inference remain pending on Ubuntu filesystem recovery.
+
+Provider contract:                    `Sam3dBodyGeometryProvider` conforms to `GeometryProvider` and derives exact source/runtime identity from the governed SAM 3D Body lock
+Person ownership:                     every request requires an immutable person `instance_key` and exactly one explicit full-image xyxy box; upstream must return exactly one matching box within one pixel, while missing IDs, mismatched boxes, or multiple outputs reject without guessing
+Geometry validation:                 vertices, 2D/3D keypoints, camera translation, focal length, and observed box must be finite and dimensionally valid before any result is exposed
+Coordinate frames:                   input/2D image coordinates and upstream-native 3D camera-frame values are labeled explicitly; no implicit axis conversion is performed or claimed
+Provenance:                           exact provider contract metadata, source commit, runtime-lock fingerprint, input-image SHA-256, person identity, selection method, and deterministic geometry-output SHA-256 are bound; the result cannot author gold
+OOM fallback:                         DensePose is invoked only for `MemoryError`, `OutOfMemoryError`, or a runtime error explicitly naming CUDA/GPU out-of-memory; non-OOM failures propagate and cannot silently switch providers
+Verification:                         35/35 focused and 109/109 broader related provider-contract, SAM 3D Body adapter/runtime/benchmark, provider-matrix, doctor, external-source, Meta-access, checkpoint-installer, and governance tests pass; Ruff and changed-surface Black pass
+Live boundary:                        the injected backend contract is complete, but no isolated subprocess runner, model load, CUDA inference, live geometry, benchmark, promotion, or production-route change is claimed while Ubuntu filesystem commands return input/output error
+Evidence:                             `qa/live_verification/sam3d_body_geometry_adapter_20260717.json`

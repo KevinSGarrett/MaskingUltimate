@@ -6861,3 +6861,19 @@ Verification:                         11/11 feedback, 10/10 selection, 13/13 con
 Live boundary:                        no qualified live D7 outcome snapshot or live D3/D5 candidate qualification exists; no live adaptive selection, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_planner_feedback_20260717.json`
+
+## 2026-07-17 09:12 UTC - Official Meta access gates resolved and SAM 3.1 checkpoint installed
+
+**Result:** The two owner-authorized Meta/Hugging Face access gates are resolved. The frozen
+official SAM 3.1 checkpoint is locally installed with exact size/hash evidence; live checkpoint
+inference remains pending because the locked Ubuntu-22.04 filesystem is returning I/O errors.
+
+Access proof:                         authenticated read-only exact-revision HEAD probes reached the SAM 3.1 multiplex checkpoint and all three governed SAM 3D Body assets; credentials were redacted and zero bytes were downloaded by the probe
+SAM 3.1 installation:                `sam3.1_multiplex.pt` is 3,502,755,717 bytes with SHA-256 `0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6`; the resumable transfer used atomic promotion and an idempotent replay reused the complete file with zero downloaded bytes
+Lifecycle boundary:                  the SAM 3.1 provider remains `planned`, unbenchmarked, unpromoted, and non-authoritative even though its checkpoint is installed; SAM 3D Body remains access-ready/install-pending with no local asset or inference claim
+Runtime blocker:                     Ubuntu-22.04 returned input/output errors reading `/usr/bin/df` and `/home/kevin/mfenvs/sam31-5dd401d1`; peak VRAM, latency, deterministic output hash, failure behavior, and checkpoint inference are not claimed
+Runtime matrix:                      8 providers, 6 live-qualified runtimes, 0 human-gated runtimes, 2 explicit pending runtimes, and 17 exact artifacts; manifest SHA-256 `8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176`
+Tracker:                             MF-P0-17.04 moved from blocked/40% to partially-complete/75%; MF-P2-11.07 moved from blocked/25% to partially-complete/30%; MF-P0-17.13 advanced to 92%; validation and report regeneration pass
+Verification:                        27/27 focused and 84/84 broader related checkpoint installer, access probe, runtime matrix, SAM 3.1/provider, doctor, external-source, and governance tests pass; Ruff and changed-surface Black pass
+Safety boundary:                     no WSL, Docker, or ComfyUI process was terminated or restarted; no production route, gold authority, or Main/bridge-worktree file changed; the 3.5 GB checkpoint was written only to the governed C-drive runtime cache
+Evidence:                             `qa/live_verification/meta_checkpoint_access_ready_20260717.json`; `qa/live_verification/sam31_checkpoint_install_20260717.json`; `qa/live_verification/provider_runtime_matrix_20260717.json`

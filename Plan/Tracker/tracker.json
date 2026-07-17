@@ -10625,8 +10625,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 40,
+      "status": "partially_complete",
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-15T02:19:18+00:00",
@@ -10642,12 +10642,17 @@
           "ts": "2026-07-16T01:30:38+00:00",
           "actor": "ai_agent",
           "text": "2026-07-16: Kevin authorized and submitted the SAM3 gating-group contact/license form; Hugging Face CLI is authenticated as kevinkg with a fine-grained read-only token. The account settings page records SAM3 pending, and the exact frozen checkpoint now returns authenticated HTTP 403 rather than anonymous 401."
+        },
+        {
+          "ts": "2026-07-17T09:15:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: authenticated exact-revision access is now ready and the official SAM 3.1 multiplex checkpoint was atomically downloaded, size/hash verified, and idempotently reused. The locked Ubuntu-22.04 filesystem currently returns input/output errors, so checkpoint load/inference, peak VRAM, latency, deterministic output hash, and failure-behavior smoke remain pending; no WSL/Docker/ComfyUI process was restarted or terminated."
         }
       ],
-      "evidence": "qa/live_verification/meta_checkpoint_access_requests_pending_20260716.json SHA-256 4505dd01e49e1b2af2c74806e27566cd21a4f02321bfd22ba6e8ae718b1c0ee7. Owner-authorized form submitted; read-only CLI token validated without Git credential or secret evidence; gated status pending; zero-byte exact-revision HEAD probe canonical SHA-256 df2781e1f7dd056103563fc2e2ccd6855dcc732abc7410c73d28aa7d58dc2b28 returned HTTP 403.",
-      "blocked_reason": "UPSTREAM META REVIEW: Kevin's required contact/license request is submitted and local Hugging Face authentication is complete. The SAM3 gating group remains pending in Hugging Face settings; facebook/sam3.1 at the frozen revision returns authenticated HTTP 403 until Meta approves it. No further local or Kevin action can unlock the checkpoint before that approval.",
+      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes. Runtime smoke remains explicitly pending.",
+      "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-16T01:30:38+00:00",
+      "updated_at": "2026-07-17T09:15:06+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -10831,7 +10836,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 92,
       "notes": [
         {
           "ts": "2026-07-15T00:18:20+00:00",
@@ -10867,12 +10872,17 @@
           "ts": "2026-07-15T16:45:52+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: aggregate isolated-runtime matrix now covers 8 provider families, 6 live-qualified runtimes, 2 explicit human gates, and 17 exact artifacts after SAM3-LiteText shadow qualification. Doctor PASS=11 WARN=1 FAIL=0 and 14/14 registered model smokes pass. The only remaining gap is the official SAM3.1 and SAM 3D Body gated checkpoints."
+        },
+        {
+          "ts": "2026-07-17T09:15:09+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: refroze the eight-provider runtime matrix after both Meta human gates resolved. Six runtimes remain live-qualified; SAM 3.1 is checkpoint-installed/smoke-pending and SAM 3D Body is access-ready/install-pending. The matrix has zero human-gated rows, two explicit pending rows, and no authority overclaim."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 547c7c91733853f38c16d6dab6bdf5a0aede66c9300a3fea82bf814143466864; qa/live_verification/sam3_litetext_installation_bundle_20260715.json; full repository 1593/1593.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176; qa/live_verification/provider_runtime_matrix_20260717.json SHA-256 6480e9a76bf18ec2583a9a4daba785030d56e3a6208d11738e82dfc0f7e387ad; focused verification 27 passed and broader related verification 84 passed; Ruff and Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T16:45:52+00:00",
+      "updated_at": "2026-07-17T09:16:57+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -12019,8 +12029,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 25,
+      "status": "partially_complete",
+      "percent_complete": 30,
       "notes": [
         {
           "ts": "2026-07-15T00:18:03+00:00",
@@ -12041,12 +12051,17 @@
           "ts": "2026-07-16T01:30:38+00:00",
           "actor": "ai_agent",
           "text": "2026-07-16: Kevin authorized and submitted the SAM 3D Body contact/license form using the private-personal affiliation and AI developer/engineer role; Hugging Face settings records the gating group pending. Authenticated exact-revision asset probes now return HTTP 403."
+        },
+        {
+          "ts": "2026-07-17T09:15:08+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the Meta/Hugging Face human access gate is resolved. Read-only exact-revision probes reached model.ckpt, model_config.yaml, and assets/mhr_model.pt with zero bytes downloaded. Governed artifact metadata freeze, installation, provider integration, live smoke, mapping, OOM fallback, provenance, and benchmark remain pending; DensePose stays active."
         }
       ],
-      "evidence": "qa/live_verification/meta_checkpoint_access_requests_pending_20260716.json SHA-256 4505dd01e49e1b2af2c74806e27566cd21a4f02321bfd22ba6e8ae718b1c0ee7. Owner-authorized form submitted; local read-only CLI authentication verified; all three frozen assets remain zero-byte HTTP 403 while the SAM 3D Body gating group is pending.",
-      "blocked_reason": "UPSTREAM META REVIEW: Kevin's required SAM 3D Body contact/license request is submitted and local Hugging Face authentication is complete. The gating group remains pending in Hugging Face settings; model.ckpt, model_config.yaml, and assets/mhr_model.pt at the frozen revision return authenticated HTTP 403 until Meta approves access.",
+      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; canonical access probe SHA-256 975d6a345b36f042fb92611c629bbd08a4c856cdf4d33724c5bb2e8a2d4bdc1d; zero bytes downloaded; no inference or authority claim.",
+      "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-16T01:30:38+00:00",
+      "updated_at": "2026-07-17T09:15:08+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {

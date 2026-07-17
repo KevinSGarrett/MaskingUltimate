@@ -185,16 +185,18 @@ providers:
     license_source: "https://github.com/facebookresearch/sam3/blob/5dd401d1c5c1d5c3eedff06d41b77af824517619/LICENSE"
     license_snapshot_sha256: "67f67e15efa517e0f67f59ff2d2f603a624da5d2f5458b0c5b366ccd66bb3eea"
     license_reviewed_at: "2026-07-14T18:58:17Z"
-    verify_license: true
+    verify_license: false
     version: "SAM 3.1 multiplex checkpoint at facebook/sam3.1@daa63191845a41281374e725f4c9e51c7a824460"
     checkpoint:
       filename: "sam3.1_multiplex.pt"
       sha256: "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
       size_bytes: 3502755717
       gating: manual
-      access_status: "NEEDS KEVIN: accept interactive Meta/Hugging Face terms"
+      access_status: accepted_access_verified
+      downloaded: true
+      local_path: "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt"
     runtime_lock: "env/sam31_runtime.lock.json"
-    local_path: "source runtime installed in WSL; official checkpoint not downloaded"
+    local_path: "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt"
     output_type: "concept instances, boxes, masks, point/box/mask refinements, video tracks"
     role: "first-class shadow challenger; never silently replaces SAM2.1"
     capabilities:
@@ -614,20 +616,20 @@ providers:
     source_revision: "b5c765a0d89d789985e186d396315e7590887b94"
     source_tree: "7b5a2a23619659a679d64f096201c6504cbebe30"
     source_path: "models/runtime_cache/sam-3d-body_b5c765a"
-    license: "SAM License (last updated 2025-11-19); human acceptance/contact sharing required before checkpoint access"
+    license: "SAM License (last updated 2025-11-19); accepted access verified for the governed checkpoint revision"
     license_source: "https://huggingface.co/facebook/sam-3d-body-dinov3/blob/11aaa346c7204874a1cbafe3d39a979080b2c55a/LICENSE"
     license_snapshot_sha256: "b3a5a0e2d973ab80e6610ccf1cffc40756050d0ace3cd4fec879b3ec290b2e9b"
-    verify_license: true
+    verify_license: false
     version: "source b5c765a; gated DINOv3 checkpoint revision 11aaa346c7204874a1cbafe3d39a979080b2c55a"
     checkpoint_source: "https://huggingface.co/facebook/sam-3d-body-dinov3/tree/11aaa346c7204874a1cbafe3d39a979080b2c55a"
-    checkpoint_gate: "NEEDS KEVIN: accept Meta SAM License/contact-sharing terms for facebook/sam-3d-body-dinov3"
-    local_path: "(source frozen; checkpoint/config/MHR assets return HTTP 401 GatedRepo)"
+    checkpoint_gate: accepted_access_verified
+    local_path: "(source frozen; exact checkpoint/config/MHR asset access verified; assets not downloaded)"
     output_type: "single-person 3D human mesh/body geometry"
     role: "primary modern challenger to DensePose; DensePose remains rollback fallback"
     content_compatibility:
       adult_nonexplicit: allowed
       consensual_explicit_adult: allowed
-    authority_level: "planned source-only geometry candidate; no inference, benchmark, gold, or production authority until gate acceptance and qualification"
+    authority_level: "planned geometry candidate; no inference, benchmark, gold, or production authority until governed installation and qualification"
 
   eomt_dinov3:
     component: "modern custom segmentation challenger"

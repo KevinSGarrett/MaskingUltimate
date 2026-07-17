@@ -64,16 +64,18 @@ def load_meta_checkpoint_targets(root: Path = ROOT) -> tuple[CheckpointAccessTar
     if (
         lock.get("provider") != "sam3_1"
         or checkpoint.get("gating") != "manual"
-        or checkpoint.get("access_status") != "needs_kevin_terms_acceptance"
+        or checkpoint.get("access_status")
+        not in {"needs_kevin_terms_acceptance", "accepted_access_verified"}
         or len(str(checkpoint.get("repository_revision", ""))) != 40
     ):
         raise MetaCheckpointAccessError("official SAM 3.1 gate identity drifted")
     registry = yaml.safe_load((root / "configs/external_sources.yaml").read_text(encoding="utf-8"))
     sam3d = registry["providers"]["sam3d_body"]
     repository, revision = _checkpoint_source(str(sam3d["checkpoint_source"]))
-    if sam3d.get("lifecycle_state") != "planned" or "NEEDS KEVIN" not in str(
-        sam3d.get("checkpoint_gate", "")
-    ):
+    if sam3d.get("lifecycle_state") != "planned" or sam3d.get("checkpoint_gate") not in {
+        "NEEDS KEVIN: accept Meta SAM License/contact-sharing terms for facebook/sam-3d-body-dinov3",
+        "accepted_access_verified",
+    }:
         raise MetaCheckpointAccessError("SAM 3D Body gate identity drifted")
     targets = (
         CheckpointAccessTarget(

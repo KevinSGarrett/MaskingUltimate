@@ -39,32 +39,33 @@ def test_sam31_registry_and_runtime_lock_freeze_exact_official_artifacts() -> No
         "sha256": CHECKPOINT_SHA256,
         "size_bytes": 3502755717,
         "gating": "manual",
-        "access_status": "needs_kevin_terms_acceptance",
+        "access_status": "accepted_access_verified",
         "unauthenticated_http_status": 401,
-        "downloaded": False,
+        "downloaded": True,
+        "local_path": "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt",
+        "installed_at": "2026-07-17T09:04:00Z",
+        "access_probe_sha256": "975d6a345b36f042fb92611c629bbd08a4c856cdf4d33724c5bb2e8a2d4bdc1d",
     }
     requirements = ROOT / lock["runtime"]["requirements_lock"]
     assert _sha256(requirements) == lock["runtime"]["requirements_lock_sha256"]
 
 
-def test_sam31_source_runtime_evidence_does_not_overclaim_checkpoint_installation() -> None:
+def test_sam31_checkpoint_install_evidence_does_not_overclaim_runtime_smoke() -> None:
     evidence = json.loads(
-        (ROOT / "qa" / "live_verification" / "sam31_source_runtime_20260714.json").read_text()
+        (ROOT / "qa" / "live_verification" / "sam31_checkpoint_install_20260717.json").read_text()
     )
     lock = json.loads((ROOT / "env" / "sam31_runtime.lock.json").read_text())
 
-    assert evidence["result"] == "SOURCE_RUNTIME_PASS_CHECKPOINT_BLOCKED"
+    assert evidence["result"] == "CHECKPOINT_INSTALL_PASS_RUNTIME_SMOKE_PENDING"
     assert evidence["source"]["commit"] == lock["source"]["commit"]
-    assert evidence["checkpoint"]["sha256"] == lock["checkpoint"]["sha256"]
-    assert evidence["checkpoint"]["downloaded"] is False
-    assert evidence["runtime"]["cuda_available"] is True
-    assert evidence["runtime"]["compute_capability"] == [12, 0]
-    assert evidence["runtime"]["image_builder_import"] is True
-    assert evidence["runtime"]["multiplex_builder_import"] is True
+    assert evidence["installation"]["sha256"] == lock["checkpoint"]["sha256"]
+    assert evidence["installation"]["expected_size_match"] is True
+    assert evidence["installation"]["atomic_promotion"] is True
+    assert evidence["runtime"]["checkpoint_inference"] == "not_run_wsl_filesystem_io_error"
     assert "SAM 3.1 inference passed" in evidence["claims_not_made"]
 
 
-def test_sam31_remains_ineligible_until_checkpoint_terms_and_smoke_are_resolved() -> None:
+def test_sam31_remains_ineligible_until_smoke_and_benchmark_are_resolved() -> None:
     registry = yaml.safe_load(
         (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
     )
@@ -74,5 +75,4 @@ def test_sam31_remains_ineligible_until_checkpoint_terms_and_smoke_are_resolved(
         assert entry["content_compatibility"][lane] == "allowed"
         assert provider_activation_issues(entry, content_lane=lane) == (
             "lifecycle_state='planned' is not activatable",
-            "license verification is unresolved",
         )

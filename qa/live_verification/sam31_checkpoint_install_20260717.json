@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T09:04:00Z",
+  "result": "CHECKPOINT_INSTALL_PASS_RUNTIME_SMOKE_PENDING",
+  "provider": "sam3_1",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam3.git",
+    "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "tree": "3ddfc8fc42fe1cac4e7d81d7476401fc497fe66e"
+  },
+  "access": {
+    "repository": "facebook/sam3.1",
+    "revision": "daa63191845a41281374e725f4c9e51c7a824460",
+    "filename": "sam3.1_multiplex.pt",
+    "authenticated_probe_result": "access_ready",
+    "probe_sha256": "975d6a345b36f042fb92611c629bbd08a4c856cdf4d33724c5bb2e8a2d4bdc1d",
+    "terms_gate_resolved": true
+  },
+  "installation": {
+    "path": "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt",
+    "size_bytes": 3502755717,
+    "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "expected_size_match": true,
+    "expected_sha256_match": true,
+    "atomic_promotion": true,
+    "resumable_transfer": true,
+    "credential_redacted": true,
+    "first_downloaded_bytes": 3502755717,
+    "idempotent_replay_downloaded_bytes": 0,
+    "idempotent_replay_reused_existing": true
+  },
+  "runtime": {
+    "locked_environment": "/home/kevin/mfenvs/sam31-5dd401d1",
+    "locked_platform": "WSL Ubuntu-22.04 linux-64",
+    "source_import_previously_passed": true,
+    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "observed_failure": "Ubuntu-22.04 returned input/output error reading /usr/bin/df and the locked environment path",
+    "wsl_terminated_or_restarted": false,
+    "docker_or_comfyui_terminated": false
+  },
+  "authority": {
+    "provider_lifecycle_state": "planned",
+    "checkpoint_installed": true,
+    "live_smoke_passed": false,
+    "benchmark_passed": false,
+    "promoted": false,
+    "production_route_changed": false,
+    "may_author_gold": false
+  },
+  "claims_not_made": [
+    "checkpoint loaded into a model",
+    "SAM 3.1 inference passed",
+    "peak VRAM or latency measured",
+    "deterministic output hash exists",
+    "SAM 3.1 is benchmarked or promoted",
+    "SAM 3.1 may replace SAM 2.1"
+  ]
+}

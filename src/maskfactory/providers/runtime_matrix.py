@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_MATRIX = Path("env/provider_runtime_matrix.json")
-LOCKED_MATRIX_SHA256 = "7cdbba77715229565c1f96e721f8ff61f8639c7592cb2b072d302c3551643171"
+LOCKED_MATRIX_SHA256 = "8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176"
 EXPECTED_PROVIDERS = {
     "maskfactory_core",
     "sam3_1",
@@ -19,7 +19,19 @@ EXPECTED_PROVIDERS = {
     "rtm_pose",
     "sam3d_body",
 }
-CURRENT_HUMAN_GATES = {"sam3_1", "sam3d_body"}
+CURRENT_HUMAN_GATES: set[str] = set()
+CURRENT_PENDING = {
+    "sam3_1": (
+        "checkpoint_installed_smoke_pending",
+        "installed",
+        "not_run_wsl_filesystem_io_error",
+    ),
+    "sam3d_body": (
+        "checkpoint_access_ready_install_pending",
+        "access_ready",
+        "not_run_install_pending",
+    ),
+}
 QUALIFIED = "live_smoke_passed"
 GATED = "source_only_human_gate"
 
@@ -72,6 +84,7 @@ def verify_runtime_matrix(
         raise RuntimeMatrixError("runtime_matrix_provider_coverage_invalid")
     qualified = 0
     gated = 0
+    pending = 0
     artifact_count = 0
     for row in rows:
         provider = str(row["provider"])
@@ -85,6 +98,8 @@ def verify_runtime_matrix(
             raise RuntimeMatrixError(f"runtime_expected_human_gate:{provider}")
         if provider not in CURRENT_HUMAN_GATES and status == GATED:
             raise RuntimeMatrixError(f"runtime_unexpected_human_gate:{provider}")
+        if provider in CURRENT_PENDING and status != CURRENT_PENDING[provider][0]:
+            raise RuntimeMatrixError(f"runtime_expected_pending:{provider}")
         artifacts = row.get("artifacts")
         if not isinstance(artifacts, list) or not artifacts:
             raise RuntimeMatrixError(f"runtime_artifacts_missing:{provider}")
@@ -118,6 +133,16 @@ def verify_runtime_matrix(
             if "needs_kevin" in row:
                 raise RuntimeMatrixError(f"runtime_qualified_has_human_gate:{provider}")
             qualified += 1
+        elif provider in CURRENT_PENDING:
+            expected_status, expected_checkpoint, expected_smoke = CURRENT_PENDING[provider]
+            if (
+                status != expected_status
+                or row.get("checkpoint_status") != expected_checkpoint
+                or row.get("smoke_status") != expected_smoke
+                or "needs_kevin" in row
+            ):
+                raise RuntimeMatrixError(f"runtime_pending_invalid:{provider}")
+            pending += 1
         elif status == GATED:
             reason = row.get("needs_kevin")
             if (
@@ -135,9 +160,14 @@ def verify_runtime_matrix(
         "provider_count": len(rows),
         "qualified_runtime_count": qualified,
         "human_gated_runtime_count": gated,
+        "pending_runtime_count": pending,
         "artifact_count": artifact_count,
         "core_torch": policy["core_torch"],
-        "status": "pass_with_explicit_human_gates" if gated else "pass",
+        "status": (
+            "pass_with_explicit_human_gates"
+            if gated
+            else "pass_with_explicit_pending_runtimes" if pending else "pass"
+        ),
     }
 
 

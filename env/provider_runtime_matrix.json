@@ -24,15 +24,14 @@
     },
     {
       "provider": "sam3_1",
-      "status": "source_only_human_gate",
+      "status": "checkpoint_installed_smoke_pending",
       "isolation_boundary": "wsl_venv_sam31_5dd401d1",
-      "checkpoint_status": "manual_huggingface_gate",
-      "smoke_status": "not_run_checkpoint_gated",
+      "checkpoint_status": "installed",
+      "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
-      "needs_kevin": "NEEDS KEVIN: accept the official Meta SAM 3.1 Hugging Face terms so the frozen checkpoint can be downloaded and qualified.",
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "1a2a6525ca7e727d82503ab115407c0a1d7515e5e0b43517a60740977e7433c6"},
-        {"kind": "evidence", "path": "qa/live_verification/sam31_source_runtime_20260714.json", "sha256": "c6c4e2fffa8d55cf7d48f00541360234ee2dd98e7e5a7596e1302b6b69c12810"}
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "ccd54f2bf55ca8d698b9cb43a05fe288a815dc6b77fc52172cc39ba6940d4ca9"},
+        {"kind": "evidence", "path": "qa/live_verification/sam31_checkpoint_install_20260717.json", "sha256": "e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8"}
       ]
     },
     {
@@ -97,16 +96,15 @@
     },
     {
       "provider": "sam3d_body",
-      "status": "source_only_human_gate",
+      "status": "checkpoint_access_ready_install_pending",
       "isolation_boundary": "planned_isolated_wsl_runtime",
-      "checkpoint_status": "manual_huggingface_gate",
-      "smoke_status": "not_run_checkpoint_gated",
+      "checkpoint_status": "access_ready",
+      "smoke_status": "not_run_install_pending",
       "may_author_gold": false,
-      "needs_kevin": "NEEDS KEVIN: accept the official Meta SAM 3D Body Hugging Face terms so the frozen checkpoint and MHR assets can be downloaded and qualified.",
       "artifacts": [
-        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_source_gate_20260715.json", "sha256": "2e84034a199cabded783935a1fe54cfa38ba0ea879175e383320e16c28033c13"}
+        {"kind": "evidence", "path": "qa/live_verification/meta_checkpoint_access_ready_20260717.json", "sha256": "ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0"}
       ]
     }
   ],
-  "manifest_sha256": "7cdbba77715229565c1f96e721f8ff61f8639c7592cb2b072d302c3551643171"
+  "manifest_sha256": "8787c07e63357d613f9149449f5eae5ca41a64796e4180104ccd569883138176"
 }

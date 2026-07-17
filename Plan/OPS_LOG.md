@@ -6591,3 +6591,20 @@ Live boundary:                        no fixture is claimed as a qualified live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Verification:                         260/260 focused adjacent and 2,816/2,816 full repository tests pass; 21/21 new tests pass after final Black; Ruff, pre-commit Black, all 121 JSON schemas, all 30 DAZ YAML documents, and Git diff checks pass
 Evidence:                             `qa/reports/daz_acceptance_certificate_20260717.json`
+
+## 2026-07-17 02:04 UTC - Versioned MaskFactory synthetic manifests completed
+
+**Result:** MF-P9-08.06 is complete. Separate v1/v2 synthetic manifest declarations now represent
+DAZ geometry truth without changing either historical manifest schema or its meaning.
+
+Version dispatch:                     `maskfactory_instance_synthetic_1.0.0` selects an explicit `manifest_synthetic_v1` or `manifest_synthetic_v2` declaration from the recorded ontology; missing/unknown versions and ontologies fail closed and never fall back to a historical schema
+Training truth:                       every synthetic row is `weighted_pseudo_label`, train-only, evaluation-ineligible, weighted 0.10-0.25, and carries exactly `synthetic_geometry_exact` plus `visible_pixel_truth`; it cannot count as human or autonomous-certified gold
+Technical authority:                 a distinct Mode-A-only block records DAZ exact-geometry provider, `synthetic_exact` authority tier, MaskFactory owner, ontology version/hash, package revision, certificate ID/hash/scope, and transform-chain hash without upgrading the training truth tier
+Lineage:                              scene/family/variant/state, recipe, asset registry, operating profile, registry, runtime, script, renderer, asset snapshot, mapping, pass profile, certificate, promoted-person, and instance bindings are mandatory
+Construction metadata:               explicit adult anatomy configuration, adult age-appearance category, figure/character/body/face/skin/hair/wardrobe, presentation, morph, pose, and mapping-bundle data are required for p0-p3
+Human-authority boundary:             no review block or CVAT/reviewer/manual-edit/calibration/real-autonomous-certification field is accepted at any nesting depth; visible-only truth is mandatory and amodal training is forbidden
+Integrity:                            canonical package hashes are key-order-independent, stable across fresh Python processes, and tamper-evident; unsafe paths and ontology/person/instance/certificate cross-binding drift reject
+Historical compatibility:            the original v1 and inactive-v2 schema files remain byte-identical at their locked SHA-256 values; both historical fixtures validate unchanged, reject `source_origin=synthetic`, and remain excluded from synthetic dispatch
+Verification:                         69/69 new, 130/130 focused compatibility, and 2,885/2,885 full repository tests pass; Ruff, pre-commit Black, all 123 JSON schemas, all 30 DAZ YAML documents, and Git diff checks pass
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Evidence:                             `qa/reports/daz_synthetic_manifest_versions_20260717.json`

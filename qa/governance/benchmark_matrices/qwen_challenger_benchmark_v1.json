@@ -86,7 +86,7 @@
   },
   "source_hashes": {
     "configs/cloud_teacher.yaml": "8ddf1544e00c63c78873bcf7ffb66b806277a8833998f135d743c51369cf38ec",
-    "configs/external_sources.yaml": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
+    "configs/external_sources.yaml": "efe024579ec499444ced7edbb0631c455d2b7c8491a7ff92cbb9044aee20fd28",
     "configs/vlm.yaml": "234d979a3debacb77fc6e4a6d3dfe3193e65e286036fc8ad215de8ee6aeafb49",
     "env/qwen3_vl_ollama.lock.json": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059",
     "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
@@ -97,5 +97,5 @@
     "src/maskfactory/vlm/prompts/p_workhorse.txt": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e"
   },
   "authority": "pre_result_policy_only_no_provider_mask_gold_or_block_clearance_authority",
-  "sha256": "3425c7464035eb012e6c4220748103d61df6b7bb8a69cef24e14b6fdfa163ffd"
+  "sha256": "319ceb0f6e95a1f48c82694edc72b187c2208b49fedc9ffce60f5bdc180bf051"
 }

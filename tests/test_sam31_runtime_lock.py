@@ -99,8 +99,17 @@ def test_sam31_lock_binds_official_production_discovery_and_refinement_contract(
     assert contract["status"] == "offline_verified_live_pending"
     assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
     assert contract["builder"].startswith("build_sam3_predictor")
-    assert "rejected fail-closed" in contract["external_exemplars"]
+    assert "positive/negative box prompts" in contract["visual_exemplars"]
+    assert "rejected fail-closed" in contract["external_image_exemplars"]
     assert "deterministic positive point" in contract["box_and_mask_prior_translation"]
     assert "no active-map" in contract["authority"]
     assert _sha256(ROOT / contract["host_runtime"]) == contract["host_runtime_sha256"]
+    assert (
+        _sha256(ROOT / contract["visual_exemplar_contract"])
+        == contract["visual_exemplar_contract_sha256"]
+    )
+    assert (
+        _sha256(ROOT / contract["visual_exemplar_schema"])
+        == contract["visual_exemplar_schema_sha256"]
+    )
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]

@@ -103,6 +103,51 @@ def _derived_positive(mask: np.ndarray) -> tuple[int, int]:
     return int(xs[index]), int(ys[index])
 
 
+def _normalize_visual_exemplars(
+    visual_exemplars: Any, *, width: int, height: int
+) -> tuple[list[list[float]], list[int]]:
+    if not isinstance(visual_exemplars, list):
+        raise RuntimeError("official SAM 3.1 visual exemplars must be a list")
+    normalized_boxes: list[list[float]] = []
+    box_labels: list[int] = []
+    identities: list[str] = []
+    for exemplar in visual_exemplars:
+        if not isinstance(exemplar, Mapping) or set(exemplar) != {
+            "bbox_xyxy",
+            "polarity",
+            "manifest_sha256",
+            "manifest_file_sha256",
+        }:
+            raise RuntimeError("official SAM 3.1 visual exemplar fields are invalid")
+        bbox = exemplar["bbox_xyxy"]
+        if (
+            not isinstance(bbox, list)
+            or len(bbox) != 4
+            or any(isinstance(value, bool) or not isinstance(value, (int, float)) for value in bbox)
+        ):
+            raise RuntimeError("official SAM 3.1 visual exemplar bbox is invalid")
+        x1, y1, x2, y2 = (float(value) for value in bbox)
+        if not all(np.isfinite(value) for value in (x1, y1, x2, y2)) or not (
+            0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
+        ):
+            raise RuntimeError("official SAM 3.1 visual exemplar bbox is invalid")
+        if exemplar["polarity"] not in {"positive", "negative"}:
+            raise RuntimeError("official SAM 3.1 visual exemplar polarity is invalid")
+        if any(
+            not isinstance(exemplar[key], str)
+            or len(exemplar[key]) != 64
+            or any(character not in "0123456789abcdef" for character in exemplar[key])
+            for key in ("manifest_sha256", "manifest_file_sha256")
+        ):
+            raise RuntimeError("official SAM 3.1 visual exemplar identity is invalid")
+        identities.append(exemplar["manifest_sha256"])
+        normalized_boxes.append([x1 / width, y1 / height, (x2 - x1) / width, (y2 - y1) / height])
+        box_labels.append(1 if exemplar["polarity"] == "positive" else 0)
+    if len(identities) != len(set(identities)):
+        raise RuntimeError("official SAM 3.1 visual exemplar identities are duplicated")
+    return normalized_boxes, box_labels
+
+
 def _args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, required=True)
@@ -153,6 +198,7 @@ def main() -> int:
         "operation",
         "concepts",
         "prompt",
+        "visual_exemplars",
         "image_rgb_sha256",
         "authority",
         "may_author_gold",
@@ -217,26 +263,35 @@ def main() -> int:
         )["session_id"]
         if request["operation"] == "discover":
             concepts = request["concepts"]
+            visual_exemplars = request["visual_exemplars"]
             if (
                 not isinstance(concepts, list)
                 or not concepts
                 or any(not isinstance(value, str) or not value.strip() for value in concepts)
                 or len(concepts) != len(set(concepts))
                 or request["prompt"] is not None
+                or not isinstance(visual_exemplars, list)
                 or mask_prompt.shape != (0, 0)
             ):
                 raise RuntimeError("official SAM 3.1 discovery request is invalid")
+            normalized_boxes, box_labels = _normalize_visual_exemplars(
+                visual_exemplars, width=width, height=height
+            )
+            if visual_exemplars:
+                prompt_translation = "text_plus_same_image_visual_box_exemplars_exact"
             for concept_index, concept in enumerate(concepts):
                 if concept_index:
                     predictor.handle_request({"type": "reset_session", "session_id": session_id})
-                response = predictor.handle_request(
-                    {
-                        "type": "add_prompt",
-                        "session_id": session_id,
-                        "frame_index": 0,
-                        "text": concept,
-                    }
-                )
+                payload = {
+                    "type": "add_prompt",
+                    "session_id": session_id,
+                    "frame_index": 0,
+                    "text": concept,
+                }
+                if visual_exemplars:
+                    payload["bounding_boxes"] = normalized_boxes
+                    payload["bounding_box_labels"] = box_labels
+                response = predictor.handle_request(payload)
                 current = _extract(response["outputs"], height=height, width=width)
                 count = current["masks"].shape[0]
                 masks.append(current["masks"])
@@ -245,6 +300,8 @@ def main() -> int:
                 boxes.append(current["boxes_xywh"])
                 concept_indices.append(np.full((count,), concept_index, dtype=np.int64))
         else:
+            if request["visual_exemplars"] != []:
+                raise RuntimeError("official SAM 3.1 refinement cannot carry visual exemplars")
             prompt = request["prompt"]
             if not isinstance(prompt, Mapping) or set(prompt) != {
                 "positive_points",

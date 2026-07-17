@@ -68,9 +68,18 @@ floating branch, or file-presence check as the preservation record.
 
 1. Freeze and validate MaskFactory producer schemas, semantic invariants,
    fixtures, compatibility rules, trust anchors, and claim firewall.
-2. Rebase the isolated producer branch onto the current active producer
-   integration line, rerun validation, commit, push, and open a non-merged PR.
-3. Send the producer commit and exact schema/catalog hashes to the Main task.
+2. Preserve the frozen producer packet commit. If the active producer line
+   advances after that freeze, integrate it with a non-rewriting merge commit,
+   generate
+   `11_AUTONOMOUS_CORE_BRIDGE_INTEGRATION_RECONCILIATION_MANIFEST.json`, and
+   account for every base-owned byte supersession while proving that all 12
+   wire schemas remain exact. Rerun validation, push, and keep the PR
+   non-merged.
+3. Send both the immutable producer-packet commit and the current integration
+   head, plus the exact schema/catalog hashes and reconciliation-manifest seal,
+   to the Main task. Main pins wire authority to the immutable producer commit;
+   the PR integration head is review/merge ancestry rather than a replacement
+   producer identity.
 4. Main updates only its executable producer-v1→Main-port mapping and release
    pin, reruns all consumer and historical package tests, then rebases onto
    current protected `origin/main`.

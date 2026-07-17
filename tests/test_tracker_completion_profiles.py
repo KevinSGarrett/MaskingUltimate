@@ -608,13 +608,65 @@ def test_planning_preservation_manifest_is_frozen_complete_and_hash_bound() -> N
         "tests/test_mask_bridge_contracts_v1.py",
         "tools/build_maskfactory_bridge_planning_preservation_manifest.py",
     }.issubset(paths)
+    reconciliation_path = (
+        ROOT
+        / "Plan"
+        / "Instructions"
+        / "11_AUTONOMOUS_CORE_BRIDGE_INTEGRATION_RECONCILIATION_MANIFEST.json"
+    )
+    reconciliation = json.loads(reconciliation_path.read_text(encoding="utf-8"))
+    reconciliation_claimed = reconciliation["manifest_sha256"]
+    reconciliation_payload = {
+        key: value for key, value in reconciliation.items() if key != "manifest_sha256"
+    }
+    assert (
+        hashlib.sha256(
+            json.dumps(
+                reconciliation_payload,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        == reconciliation_claimed
+    )
+    assert reconciliation["source_preservation_manifest"]["manifest_sha256"] == claimed
+    assert reconciliation["git_lineage"]["immutable_producer_packet_commit"] == (
+        "938b46949e277d92f26d9411fd5710005c506677"
+    )
+    assert reconciliation["git_lineage"]["integrated_base_commit"] == (
+        "85d4c19b7974c1b64f48176d91211defbaba35a0"
+    )
+    drift_rows = {
+        row["path"]: row for row in reconciliation["reconciliation"]["reconciled_changes"]
+    }
+    observed_drift = set()
     for entry in entries:
         assert entry["exists"] is True
         path = ROOT / entry["path"]
         assert path.is_file()
         content = path.read_bytes()
-        assert len(content) == entry["size_bytes"]
-        assert hashlib.sha256(content).hexdigest() == entry["sha256"]
+        live_sha256 = hashlib.sha256(content).hexdigest()
+        if len(content) == entry["size_bytes"] and live_sha256 == entry["sha256"]:
+            assert entry["path"] not in drift_rows
+            continue
+        observed_drift.add(entry["path"])
+        row = drift_rows[entry["path"]]
+        assert row["classification"] in {
+            "base_owned_supersession_after_packet_freeze",
+            "integration_reconciliation_protocol_update",
+        }
+        assert row["producer_size_bytes"] == entry["size_bytes"]
+        assert row["producer_sha256"] == entry["sha256"]
+        assert row["integration_size_bytes"] == len(content)
+        assert row["integration_sha256"] == live_sha256
+    assert observed_drift == set(drift_rows)
+    assert reconciliation["reconciliation"]["reconciled_change_count"] == len(observed_drift)
+    assert reconciliation["reconciliation"]["base_owned_supersession_count"] == 6
+    assert reconciliation["reconciliation"]["integration_protocol_update_count"] == 2
+    assert reconciliation["reconciliation"]["unaccounted_drift_count"] == 0
+    assert reconciliation["wire_contract_freeze"]["contract_count"] == 12
+    assert reconciliation["wire_contract_freeze"]["all_exactly_unchanged"] is True
 
 
 def test_latest_decision_supersedes_historical_human_and_scale_core_gates() -> None:

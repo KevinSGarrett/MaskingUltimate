@@ -56,7 +56,10 @@ INTEGRATION_PROTOCOL_UPDATE_PATHS = {
 }
 POST_INTEGRATION_VALIDATION_PATHS = (
     ".github/workflows/ci.yml",
+    "configs/governance/currency_review_key_history.json",
     "pyproject.toml",
+    "qa/governance/currency/current_review.json",
+    "qa/governance/currency/reviews/ce335737788e738f0f2a61d3.json",
     "tests/conftest.py",
     "tests/test_ci_test_partition.py",
     "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",

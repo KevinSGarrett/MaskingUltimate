@@ -6910,3 +6910,22 @@ OOM fallback:                         DensePose is invoked only for `MemoryError
 Verification:                         35/35 focused and 109/109 broader related provider-contract, SAM 3D Body adapter/runtime/benchmark, provider-matrix, doctor, external-source, Meta-access, checkpoint-installer, and governance tests pass; Ruff and changed-surface Black pass
 Live boundary:                        the injected backend contract is complete, but no isolated subprocess runner, model load, CUDA inference, live geometry, benchmark, promotion, or production-route change is claimed while Ubuntu filesystem commands return input/output error
 Evidence:                             `qa/live_verification/sam3d_body_geometry_adapter_20260717.json`
+
+## 2026-07-17 09:49 UTC - Ubuntu emergency-read-only root diagnosed and guarded recovery prepared
+
+**Result:** The remaining official Meta runtime smokes are now tied to a specific storage failure,
+not a generic WSL or model error. Ubuntu's root ext4 volume is mounted with `emergency_ro`, and
+ordinary root-filesystem binaries return input/output errors. A backup-first offline repair tool is
+implemented and statically verified, but it was deliberately not run from this non-admin session.
+
+Root cause evidence:                  `/dev/sdf / ext4` includes `errors=remount-ro` and `emergency_ro`; `/usr/bin/df` fails with `Input/output error`; Ubuntu-22.04 and docker-desktop remain running as WSL2 distributions
+Exact disk:                           registered Ubuntu VHD `F:\MaskFactory_Offload_20260714\WSL\Ubuntu-22.04\ext4.vhdx`, 57,477,693,440 bytes; F: had 225,193,680,896 bytes free at observation time
+Recovery guardrails:                 explicit `-ConfirmRepair`, already-elevated-shell requirement, no self-elevation/UAC, registered-VHD identity check, controlled optional Docker stop, exact-path WSL shutdown/attach/detach, and no distribution unregister/move/replace
+Backup boundary:                      stopped VHD is copied before repair, source/backup byte counts and SHA-256 must match, and insufficient capacity fails closed
+Filesystem boundary:                 exactly one newly attached unmounted ext4 device must be identified through `blkid`; `e2fsck -f -p` runs first, while `-f -y` requires separate `-AllowAggressiveRepair` authorization
+Failure recovery:                     exact-path unmount is checked; Docker restarts after a successful detach even when repair fails, while a failed detach prevents Docker restart to avoid another sharing conflict
+Postcondition:                        Ubuntu must remount without `emergency_ro`, and root `df` plus governed environment `stat` must succeed before pass evidence is written
+Verification:                         PowerShell AST parser passes; 4/4 recovery invariant tests and the broader 70-test doctor/Meta/recovery regression pass; Ruff lint/format and Git diff checks pass
+Execution boundary:                   current process is non-admin; no repair, WSL shutdown, Docker stop/restart, VHD attach, elevation, or UAC request occurred; SAM 3.1 and SAM 3D Body live smokes remain pending
+Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, live mask/gold authority, DAZ, ComfyUI, and production routes remain untouched
+Evidence:                             `qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json`; recovery tool `tools/Repair-MaskFactoryWslVhd.ps1` SHA-256 `f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b`

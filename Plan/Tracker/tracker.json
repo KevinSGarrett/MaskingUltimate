@@ -1720,12 +1720,17 @@
           "ts": "2026-07-15T15:46:39+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 live recovery refresh: Ubuntu/Docker/F: VHD/CUDA are healthy and repeat doctor is PASS=11 WARN=1 FAIL=0; the warning is disk planning only at 130.9 GiB and ingest is not blocked. P0 exit remains 90% solely for the existing SAM 3.1/SAM 3D Body checkpoint qualification gates, not machine health. Evidence: qa/live_verification/wsl_docker_recovery_confirmation_20260715.json"
+        },
+        {
+          "ts": "2026-07-17T09:55:42+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17 correction to the 2026-07-15 health snapshot: current Ubuntu root ext4 is mounted emergency_ro and root binaries return input/output errors. This does not invalidate committed locks or prior model evidence, but doctor cannot be all-green and the two official Meta runtime qualifications cannot run until offline VHD repair succeeds. A guarded backup-first repair script and diagnosis evidence are committed without executing elevation, UAC, WSL shutdown, Docker stop, VHD attach, or e2fsck."
         }
       ],
-      "evidence": "Commits through 3a9b361 on codex/autonomous-gold-modernization; pre-commit hooks clean; full repository suite 1,486/1,486; Ruff clean; provider runtime matrix 5562d24ca89ef21ba20d210c00c322aad1a84bd58371b72cc97ce9c504f615c0 with refreshed qa/live_verification/provider_runtime_matrix_20260715.json. Historical live doctor observation at 2026-07-15T02:08:54Z was PASS=11 WARN=0 SKIP=0 FAIL=0 with 14/14 exact model smokes. Remaining expanded P0 boundary is SAM 3.1 and SAM 3D Body checkpoint access/live qualification plus dependent currency gates.",
+      "evidence": "Commits through 3352088 on codex/autonomous-gold-modernization plus qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json and tools/Repair-MaskFactoryWslVhd.ps1 SHA-256 f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b. Historical doctor/model evidence remains valid at its capture time; current root mount contains emergency_ro and /usr/bin/df returns Input/output error. P0 exit stays open for successful offline repair, renewed all-green doctor, and official SAM 3.1/SAM 3D Body live qualification.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-15T15:46:39+00:00",
+      "updated_at": "2026-07-17T09:59:52+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {
@@ -10647,12 +10652,17 @@
           "ts": "2026-07-17T09:15:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: authenticated exact-revision access is now ready and the official SAM 3.1 multiplex checkpoint was atomically downloaded, size/hash verified, and idempotently reused. The locked Ubuntu-22.04 filesystem currently returns input/output errors, so checkpoint load/inference, peak VRAM, latency, deterministic output hash, and failure-behavior smoke remain pending; no WSL/Docker/ComfyUI process was restarted or terminated."
+        },
+        {
+          "ts": "2026-07-17T09:55:14+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the runtime failure is now specifically diagnosed as Ubuntu root ext4 emergency_ro with root-binary input/output errors. A backup-first, exact-VHD offline repair script was implemented and statically verified, but this non-admin session did not self-elevate, request UAC, stop Docker/WSL, attach the VHD, or execute e2fsck. Official SAM 3.1 inference remains pending until an already-elevated repair run restores a writable root filesystem."
         }
       ],
-      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes. Runtime smoke remains explicitly pending.",
+      "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json and tools/Repair-MaskFactoryWslVhd.ps1 SHA-256 f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b. Runtime smoke remains explicitly pending.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T09:15:06+00:00",
+      "updated_at": "2026-07-17T09:59:51+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -10882,12 +10892,17 @@
           "ts": "2026-07-17T09:26:31+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the eight-provider matrix now binds the exact SAM 3D Body lock and checkpoint-install evidence. Both official Meta challengers have installed checkpoints; their isolated WSL inference smokes remain explicit pending rows because Ubuntu filesystem reads return input/output error. Six runtimes remain live-qualified; no production or gold authority changed."
+        },
+        {
+          "ts": "2026-07-17T09:55:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-17: the two pending official Meta runtime rows are now bound to diagnosed Ubuntu ext4 emergency_ro rather than an unspecified WSL failure. Guarded backup-first recovery tooling parses and passes focused invariants, but no repair or service interruption was performed from the current non-admin boundary; the matrix remains honestly at six qualified and two runtime-pending providers."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650; qa/live_verification/provider_runtime_matrix_sam3d_install_20260717.json SHA-256 9b087290da4060024cd9ac0ac883c31293444eb188de28cd6421a1a2dc3e35dc; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts; 26 focused and 116 broader related tests; Ruff and Black pass.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650; qa/live_verification/provider_runtime_matrix_sam3d_install_20260717.json SHA-256 9b087290da4060024cd9ac0ac883c31293444eb188de28cd6421a1a2dc3e35dc; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; recovery tool SHA-256 f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Runtime recovery has not been executed and no qualification is claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T09:27:57+00:00",
+      "updated_at": "2026-07-17T09:59:52+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {

@@ -10,7 +10,7 @@
     "qualified_live_d0_d5_coverage_inputs_available": false
   },
   "closed_vocabulary": {
-    "vocabulary_version": "daz-coverage-v1",
+    "vocabulary_version": "1.0.0",
     "closed": true,
     "fixed_axis_count": 55,
     "fixed_value_count": 381,

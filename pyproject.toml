@@ -62,3 +62,6 @@ target-version = ["py311"]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 addopts = "-q"
+markers = [
+  "governed_asset: requires ignored local model/evidence bytes or a governed Windows runtime; excluded only from hermetic GitHub CI and mandatory in the asset-complete lane",
+]

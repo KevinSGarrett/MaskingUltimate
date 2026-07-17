@@ -149,3 +149,30 @@ are durable, invalidation/recovery drills pass, and a fresh session can resume
 without conversational memory. Human masks, CVAT corrections, blinded human
 review, corpus volume, full-library download, DAZ work, and soak tests are not
 required for `core_autonomous_runtime` coordination or closure.
+
+## 8. Hermetic CI and governed asset-complete test lanes
+
+GitHub Actions is a source-only runner. It does not receive ignored model
+payloads, governed evidence bytes, local CVAT/DAZ data, or Windows-only runtime
+paths. Therefore the repository has two non-interchangeable test lanes:
+
+1. **Hermetic GitHub CI:** runs every source-only test with
+   `pytest -m "not governed_asset"`. Signature verification, currency
+   governance, bridge contracts, tracker invariants, fail-closed behavior, and
+   the CI-partition contract must remain in this lane.
+2. **Governed asset-complete lane:** runs the full `pytest` suite in a registered
+   local or EC2 environment with the required ignored bytes and runtime paths.
+   `pytest -m governed_asset` may be used for a bounded retest, but it does not
+   replace the final full-suite run.
+
+The exact asset-bound module registry lives in `tests/conftest.py`. CI must
+collect that lane on every run before executing the hermetic lane, so a missing
+marker registration or deleted module fails visibly. Adding a marker is not an
+acceptance waiver: a completion or release report must state which lane ran,
+and `CI green` alone never means asset-complete runtime certification.
+
+The 2026-07-17 source-only failure was classified as one environment retest
+event: 2,964 tests passed, 16 skipped, and 165 failed across 19 modules because
+their governed local bytes or Windows runtime paths were absent. The same head
+passed the full suite in the registered asset-complete worktree. This partition
+corrects the runner contract while retaining both evidence obligations.

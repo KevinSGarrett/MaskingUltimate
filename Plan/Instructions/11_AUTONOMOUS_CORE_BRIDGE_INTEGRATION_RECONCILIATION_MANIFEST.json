@@ -29,8 +29,8 @@
         "producer_size_bytes": 7840,
         "producer_sha256": "f91b293e2958967585d276cd2a012ddb7a523038bff4cd1d46f38d90613f427c",
         "integration_exists": true,
-        "integration_size_bytes": 8353,
-        "integration_sha256": "ce6374850741cc40f2294f4c7c358c780bfd96189efc71b1228d58717750ec0b"
+        "integration_size_bytes": 9953,
+        "integration_sha256": "6ff575650c117b02ad01d1e6a3b843bac3a136e1b9e4bd9fec73958e814af194"
       },
       {
         "path": "Plan/Tracker/DASHBOARD.md",
@@ -99,8 +99,8 @@
         "producer_size_bytes": 28815,
         "producer_sha256": "fc4029c8ab4c9f193604c47a95e01c77790abd722ac58e1140045fdedca6994a",
         "integration_exists": true,
-        "integration_size_bytes": 31173,
-        "integration_sha256": "3efeb26dab88ef8b830c12674fadf4118c9ef47c6a272773673a15d387b4206b"
+        "integration_size_bytes": 31971,
+        "integration_sha256": "fcffbae2292152113419ffc5a2957612f18b068e0e1e27ddeea2b9f8f609fd02"
       }
     ],
     "unaccounted_drift_count": 0
@@ -171,5 +171,36 @@
       }
     ]
   },
-  "manifest_sha256": "d382e55b6c78deed983a9b56672349f1915fa60a4acd0328f831c2bc84acba77"
+  "post_integration_validation": {
+    "classification": "hermetic_ci_governed_asset_partition_no_release_authority",
+    "path_count": 5,
+    "paths": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "sha256": "d96f11a8cf4391197e290ac183da7ace89c4d0ac5601997b69f4eee3ee5a2c42",
+        "size_bytes": 4422
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "0062f9474868e1a9acfc997410b91a12b36962651ba05c4e489680c3f916902e",
+        "size_bytes": 1651
+      },
+      {
+        "path": "tests/conftest.py",
+        "sha256": "696cbff9bc0a5edd3ffff9f1002b1fe45cdbfcc194e358ef431ee8a428632a40",
+        "size_bytes": 2321
+      },
+      {
+        "path": "tests/test_ci_test_partition.py",
+        "sha256": "4abee69f50a390110bbc6dcae4299ee50b8055e7bad0c9c8de0810e534974cab",
+        "size_bytes": 1040
+      },
+      {
+        "path": "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",
+        "sha256": "530487819f3a6570fa63f7a07a16adb1ff8b54ab6db584d646c523df8cc36aa0",
+        "size_bytes": 9317
+      }
+    ]
+  },
+  "manifest_sha256": "c8926add5d96aa99f10e3c6c19a0538effeef96acaae5f1f9b66a9c0e5292650"
 }

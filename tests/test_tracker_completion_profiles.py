@@ -667,6 +667,23 @@ def test_planning_preservation_manifest_is_frozen_complete_and_hash_bound() -> N
     assert reconciliation["reconciliation"]["unaccounted_drift_count"] == 0
     assert reconciliation["wire_contract_freeze"]["contract_count"] == 12
     assert reconciliation["wire_contract_freeze"]["all_exactly_unchanged"] is True
+    validation = reconciliation["post_integration_validation"]
+    assert validation["classification"] == (
+        "hermetic_ci_governed_asset_partition_no_release_authority"
+    )
+    validation_rows = {row["path"]: row for row in validation["paths"]}
+    assert set(validation_rows) == {
+        ".github/workflows/ci.yml",
+        "pyproject.toml",
+        "tests/conftest.py",
+        "tests/test_ci_test_partition.py",
+        "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",
+    }
+    assert validation["path_count"] == len(validation_rows)
+    for relative_path, row in validation_rows.items():
+        content = (ROOT / relative_path).read_bytes()
+        assert row["size_bytes"] == len(content)
+        assert row["sha256"] == hashlib.sha256(content).hexdigest()
 
 
 def test_latest_decision_supersedes_historical_human_and_scale_core_gates() -> None:

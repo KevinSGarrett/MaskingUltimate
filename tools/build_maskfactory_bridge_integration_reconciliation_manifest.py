@@ -54,6 +54,13 @@ INTEGRATION_PROTOCOL_UPDATE_PATHS = {
     "Plan/Instructions/09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md",
     "tests/test_tracker_completion_profiles.py",
 }
+POST_INTEGRATION_VALIDATION_PATHS = (
+    ".github/workflows/ci.yml",
+    "pyproject.toml",
+    "tests/conftest.py",
+    "tests/test_ci_test_partition.py",
+    "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",
+)
 
 
 def _sha256_bytes(value: bytes) -> str:
@@ -137,6 +144,19 @@ def build_manifest(*, generated_at: str | None = None) -> dict[str, Any]:
             }
         )
 
+    validation_paths: list[dict[str, Any]] = []
+    for relative in POST_INTEGRATION_VALIDATION_PATHS:
+        live = _live_record(relative)
+        if not live["exists"]:
+            raise RuntimeError(f"post_integration_validation_path_missing:{relative}")
+        validation_paths.append(
+            {
+                "path": relative,
+                "sha256": live["sha256"],
+                "size_bytes": live["size_bytes"],
+            }
+        )
+
     document: dict[str, Any] = {
         "schema_version": "1.0.0",
         "manifest_id": "maskfactory_autonomous_core_bridge_integration_reconciliation_v1",
@@ -173,6 +193,11 @@ def build_manifest(*, generated_at: str | None = None) -> dict[str, Any]:
             "contract_count": len(wire_contracts),
             "all_exactly_unchanged": True,
             "contracts": wire_contracts,
+        },
+        "post_integration_validation": {
+            "classification": "hermetic_ci_governed_asset_partition_no_release_authority",
+            "path_count": len(validation_paths),
+            "paths": validation_paths,
         },
     }
     document["manifest_sha256"] = _canonical_sha256(document)

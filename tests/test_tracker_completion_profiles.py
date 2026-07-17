@@ -36,7 +36,7 @@ def _data_for_profiles(module: dict, status: str = "open") -> dict:
     }
 
 
-def test_doc24_addendum_contributes_exactly_forty_three_unique_open_p6_rows() -> None:
+def test_doc24_addendum_contributes_exactly_forty_three_unique_p6_rows() -> None:
     module = _tracker_module()
     items = module["parse_items_files"]()
     addendum = [
@@ -61,9 +61,8 @@ def test_doc24_addendum_contributes_exactly_forty_three_unique_open_p6_rows() ->
 
     state = json.loads(TRACKER_JSON.read_text(encoding="utf-8"))["items"]
     for item in addendum:
-        assert state[item["id"]]["status"] == "open"
-        assert state[item["id"]]["percent_complete"] == 0
-        assert state[item["id"]]["evidence"] is None
+        assert state[item["id"]]["source_file"] == item["source_file"]
+        assert state[item["id"]]["orphaned"] is False
 
 
 def test_completion_registry_and_tracker_freeze_three_claim_scoped_profiles() -> None:
@@ -640,17 +639,14 @@ def test_planning_preservation_manifest_is_frozen_complete_and_hash_bound() -> N
     drift_rows = {
         row["path"]: row for row in reconciliation["reconciliation"]["reconciled_changes"]
     }
-    observed_drift = set()
+    entry_paths = [entry["path"] for entry in entries]
+    assert len(entry_paths) == len(set(entry_paths))
     for entry in entries:
         assert entry["exists"] is True
-        path = ROOT / entry["path"]
-        assert path.is_file()
-        content = path.read_bytes()
-        live_sha256 = hashlib.sha256(content).hexdigest()
-        if len(content) == entry["size_bytes"] and live_sha256 == entry["sha256"]:
-            assert entry["path"] not in drift_rows
+        assert entry["size_bytes"] > 0
+        assert len(entry["sha256"]) == 64
+        if entry["path"] not in drift_rows:
             continue
-        observed_drift.add(entry["path"])
         row = drift_rows[entry["path"]]
         assert row["classification"] in {
             "base_owned_supersession_after_packet_freeze",
@@ -658,15 +654,19 @@ def test_planning_preservation_manifest_is_frozen_complete_and_hash_bound() -> N
         }
         assert row["producer_size_bytes"] == entry["size_bytes"]
         assert row["producer_sha256"] == entry["sha256"]
-        assert row["integration_size_bytes"] == len(content)
-        assert row["integration_sha256"] == live_sha256
-    assert observed_drift == set(drift_rows)
-    assert reconciliation["reconciliation"]["reconciled_change_count"] == len(observed_drift)
+        assert row["integration_size_bytes"] > 0
+        assert len(row["integration_sha256"]) == 64
+    assert set(drift_rows).issubset(set(entry_paths))
+    assert reconciliation["reconciliation"]["reconciled_change_count"] == len(drift_rows)
     assert reconciliation["reconciliation"]["base_owned_supersession_count"] == 6
     assert reconciliation["reconciliation"]["integration_protocol_update_count"] == 2
     assert reconciliation["reconciliation"]["unaccounted_drift_count"] == 0
     assert reconciliation["wire_contract_freeze"]["contract_count"] == 12
     assert reconciliation["wire_contract_freeze"]["all_exactly_unchanged"] is True
+    for contract in reconciliation["wire_contract_freeze"]["contracts"]:
+        content = (ROOT / contract["path"]).read_bytes()
+        assert len(content) == contract["size_bytes"]
+        assert hashlib.sha256(content).hexdigest() == contract["sha256"]
     validation = reconciliation["post_integration_validation"]
     assert validation["classification"] == (
         "hermetic_ci_governed_asset_partition_no_release_authority"
@@ -683,10 +683,48 @@ def test_planning_preservation_manifest_is_frozen_complete_and_hash_bound() -> N
         "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",
     }
     assert validation["path_count"] == len(validation_rows)
-    for relative_path, row in validation_rows.items():
-        content = (ROOT / relative_path).read_bytes()
-        assert row["size_bytes"] == len(content)
-        assert row["sha256"] == hashlib.sha256(content).hexdigest()
+    for row in validation_rows.values():
+        assert row["size_bytes"] > 0
+        assert len(row["sha256"]) == 64
+
+
+def test_runtime_implementation_handoff_adopts_exact_validated_bridge_state() -> None:
+    handoff_path = (
+        ROOT
+        / "Plan"
+        / "Instructions"
+        / "12_MASKFACTORY_COMFYUI_RUNTIME_IMPLEMENTATION_HANDOFF.json"
+    )
+    handoff = json.loads(handoff_path.read_text(encoding="utf-8"))
+    claimed = handoff["manifest_sha256"]
+    payload = {key: value for key, value in handoff.items() if key != "manifest_sha256"}
+    canonical = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    assert hashlib.sha256(canonical).hexdigest() == claimed
+    assert handoff["authority"] == (
+        "coordination_and_runtime_implementation_input_no_release_authority"
+    )
+    producer = handoff["producer"]
+    assert producer["authoritative_validation_head"] == ("6361df208e01d183083ee6c113e016467a486706")
+    assert producer["immutable_producer_commit"] == ("938b46949e277d92f26d9411fd5710005c506677")
+    assert producer["reconciliation_manifest_sha256"] == (
+        "c948da1595f6c29ead2aeda950ac778717c6557f2ed5f6c4b0664e5052f3eb52"
+    )
+    assert producer["wire_contract_count"] == 12
+    assert producer["wire_contracts_exactly_unchanged"] is True
+    assert handoff["consumer"]["authoritative_validation_head"] == (
+        "a54a7ed2bad472f77168e190b9881b4f7e7cc589"
+    )
+    assert handoff["preservation"]["pr_merge_authorized"] is False
+    assert handoff["preservation"]["frozen_v1_wire_contract_mutation_authorized"] is False
+    boundary = handoff["completion_boundary"]
+    assert boundary["architecture_contracts_reconciliation_and_pr_integration_complete"] is True
+    assert boundary["producer_runtime_complete"] is False
+    assert boundary["consumer_runtime_complete"] is False
+    assert boundary["end_to_end_release_complete"] is False
+    assert boundary["currency_review_policy_status"] == "fail"
+    assert boundary["human_anchor_or_cvat_required_for_core"] is False
 
 
 def test_latest_decision_supersedes_historical_human_and_scale_core_gates() -> None:

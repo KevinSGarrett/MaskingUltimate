@@ -7022,3 +7022,36 @@ Verification:                         all live governance source hashes are curr
 Authority boundary:                   this is a base CI/hash-coherence repair only; no provider promotion, production-route change, bridge runtime completion, mask authority, or gold authority is claimed
 Preservation boundary:                `C:\w\mask-autonomy-bridge-plan`, bridge PR #2, `C:\Comfy_UI_Main` Wave64 files, WSL, Docker, DAZ, ComfyUI, masks, and gold were untouched
 Evidence:                             `qa/live_verification/base_policy_hash_coherence_20260717.json`
+
+## 2026-07-17 18:05 UTC - Bridge handoff adopted and completion-profile runtime verified
+
+**Result:** The authoritative PR #2 validation head is preserved as the source of the frozen
+bridge contracts, and MF-P6-07.01 through MF-P6-07.07 are complete with executable evidence.
+No PR was merged and no runtime release or operational certificate is claimed.
+
+Authoritative producer:               PR #2 head `6361df208e01d183083ee6c113e016467a486706`; immutable producer `938b46949e277d92f26d9411fd5710005c506677`; reconciliation seal `c948da1595f6c29ead2aeda950ac778717c6557f2ed5f6c4b0664e5052f3eb52`
+Durable adoption:                     self-sealed `Plan/Instructions/12_MASKFACTORY_COMFYUI_RUNTIME_IMPLEMENTATION_HANDOFF.json`; Main PR #133 head `a54a7ed2bad472f77168e190b9881b4f7e7cc589`
+Preservation correction:              historical planning/reconciliation manifests remain byte-immutable; their test now validates sealed historical metadata while continuing to byte-check all 12 live frozen v1 wire schemas, so routine tracker/runtime evolution cannot falsify historical evidence
+Completion profiles:                 registry schema, canonical self-hash, doc-24 byte binding, exact three-profile taxonomy, direct/transitive core dependency firewall, independent status computation, dashboard separation, legacy-surface audit, and certificate/receipt claim firewall all pass
+Verification:                         70/70 focused tracker/completion/bridge tests pass; tracker rebuilt and validated at 798 non-orphaned items before state updates
+Authority boundary:                   producer runtime, consumer runtime, end-to-end release, operational certificate issuance, independent real accuracy, training truth, and scale/DAZ maturity remain unclaimed
+Deferred boundary:                    the 7,282-record model-library runtime ingest remains deferred until Kevin explicitly confirms downloads complete
+Preservation boundary:                PR #2, PR #133, both bridge worktrees, immutable producer history, frozen manifests, and all 12 wire schemas remain preserved and unmerged
+Evidence:                             `qa/live_verification/core_completion_profile_runtime_20260717.json`
+
+## 2026-07-17 18:22 UTC - Deterministic operational certificate issuer implemented
+
+**Result:** MF-P6-08.01 and MF-P6-08.02 are complete. MaskFactory can now issue a frozen-v1
+exact-output certificate deterministically from real source/mask bytes, but no real production
+certificate or end-to-end release is claimed yet.
+
+Byte identity:                        source encoded bytes and typed decoded raster plus each mask's encoded bytes, typed decoded raster, binary values, content summary, ownership, transform, and semantic artifact identity are independently recomputed and must match the proposed certificate exactly
+Authority binding:                    release, ontology, pipeline/policy, provider/runtime, subject, transform, qualified route, QA/critic, and revocation subdocuments must byte-canonically equal independently supplied adopted records
+Fail-closed gates:                    draft/unqualified candidate, fixture evidence, source/mask drift, scope/lineage mismatch, ambiguous owner binding, weak/stale protected input, expiry/not-before, revocation, journal fork, substituted/untrusted/wrong-role/inactive key, or any frozen validator issue rejects before authority is returned
+Signing:                              only an active in-validity production Ed25519 key with `producer_authority` role may sign; signing is over canonical SHA-256 digest bytes and is revalidated after construction
+Truth firewall:                       the certificate remains `operationally_certified_artifact`; training-gold and independent-real-accuracy claims are structurally false and require a separate governed promotion transaction
+Frozen contract:                      `operational_autonomy_certificate.schema.json` remains byte-identical at SHA-256 `9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8`; no v1 wire schema changed
+Verification:                         31/31 issuer plus bridge tests, 76/76 combined profile/completion/bridge tests, and 3,157/3,157 full asset-aware repository tests pass; repository Ruff is clean; Black reports 644 files unchanged; tracker validates 798 items; Git diff check passes
+Worker exception:                     signed worker intents `...53ebf263` and `...0c3a52df` were rejected before worker execution because the dispatcher requires tracked scope anchors and a Main-specific `tools/New-AIWorkerScopePacket.ps1`; no worker output was produced or absorbed
+Authority boundary:                   a real governed candidate, production trust registry, runtime release/capability, journal and revocation state are still required before issuing a production certificate; full producer/consumer runtime remains open
+Evidence:                             `qa/live_verification/operational_certificate_issuance_20260717.json`; `qa/live_verification/ai_worker_dispatch_exception_20260717.json`

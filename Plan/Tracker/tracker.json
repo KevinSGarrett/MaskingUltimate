@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T19:27:04+00:00",
+    "generated_at": "2026-07-17T20:10:56+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 798,
     "total_tracked_including_orphaned": 798
@@ -18795,13 +18795,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "src/maskfactory/intelligence/control_plane.py implements six exact qualified role stacks, closed/hash-cited registry context, compaction manifests, nonauthority memory isolation, closed allowlisted tool contracts, explicit uncertainty/typed abstention, model-family critic deduplication, and fsynced append-only hash-chain events. operational_certificate.py binds qa_evidence.critic_report_sha256 to an exact passing quorum from at least two independent qualified families and rejects critic authority escalation. tests/test_intelligence_control_plane.py and tests/test_operational_certificate_issuance.py cover free-form/malformed output, invalid/missing/hash-drift citations, truncated authority, conversation-memory promotion, tool schema/policy drift, correlated/missing/unexpected/malformed/timeout/disagreeing critics, event tamper, and certificate binding. Evidence: qa/live_verification/autonomous_intelligence_control_plane_20260717.json. Focused 36/36, integrated 147/147, and full 3185/3185 tests pass; frozen v1 certificate schema remains SHA-256 9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8.",
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-17T20:10:55+00:00",
       "orphaned": false
     },
     "MF-P6-08.05": {

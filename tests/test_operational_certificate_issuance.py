@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -18,6 +19,7 @@ from maskfactory.authority import (
     canonical_decoded_raster_sha256,
     issue_operational_autonomy_certificate,
 )
+from maskfactory.intelligence import CriticQuorumDecision, critic_quorum_sha256
 from maskfactory.qa.checks import QcResult
 from maskfactory.validation import (
     artifact_identity_sha256,
@@ -186,6 +188,17 @@ def _prepare(tmp_path: Path, *, instance_context: str = "solo") -> dict:
     )
     for region in certificate["lineage"]["input_protected_regions"]:
         region["revocation_checked_at"] = "2026-07-17T00:00:05Z"
+    critic_decision = CriticQuorumDecision(
+        status="pass",
+        independent_families=("intern-vl", "qwen-vl"),
+        counted_critic_ids=("critic-a", "critic-b"),
+        excluded_critic_ids=(),
+        family_verdicts={"intern-vl": "pass", "qwen-vl": "pass"},
+        blockers=(),
+        explicit_uncertainty=False,
+        critic_evidence_sha256=hashlib.sha256(b"critic-evidence-fixture").hexdigest(),
+    )
+    certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(critic_decision)
     report = _complete_map_report(certificate, instance_context=instance_context)
     certificate = bind_complete_map_report(certificate, report)
     authoritative = {field: copy.deepcopy(certificate[field]) for field in AUTHORITATIVE_BINDINGS}
@@ -203,6 +216,7 @@ def _prepare(tmp_path: Path, *, instance_context: str = "solo") -> dict:
         "authoritative": authoritative,
         "journal": journal,
         "complete_map_report": report,
+        "critic_quorum_decision": critic_decision,
     }
 
 
@@ -224,6 +238,7 @@ def _issue(prepared: dict, **overrides):
                 b"complete-map-hard-veto-test-executor"
             ).hexdigest()
         },
+        "critic_quorum_decision": prepared["critic_quorum_decision"],
     }
     arguments.update(overrides)
     return issue_operational_autonomy_certificate(prepared["certificate"], **arguments)
@@ -502,3 +517,35 @@ def test_complete_map_report_requires_trusted_evaluator_and_exact_multi_qc_cover
     with pytest.raises(OperationalCertificateIssuanceError) as caught:
         _issue(prepared)
     assert "complete_map_required_qc:contact" in caught.value.codes
+
+
+def test_issuer_requires_exact_independent_critic_quorum_without_critic_authority(
+    tmp_path: Path,
+) -> None:
+    prepared = _prepare(tmp_path)
+    failed = replace(
+        prepared["critic_quorum_decision"],
+        status="autonomous_abstention",
+        independent_families=("qwen-vl",),
+        family_verdicts={"qwen-vl": "uncertain"},
+        blockers=("independent_critic_quorum_missing",),
+        explicit_uncertainty=True,
+    )
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared, critic_quorum_decision=failed)
+    assert "independent_critic_quorum_failed" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "critic-hash")
+    prepared["certificate"]["qa_evidence"]["critic_report_sha256"] = "0" * 64
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "critic_report_hash_mismatch" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "critic-authority")
+    escalated = replace(prepared["critic_quorum_decision"], may_issue_certificate=True)
+    prepared["certificate"]["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(escalated)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared, critic_quorum_decision=escalated)
+    assert "critic_authority_escalation" in caught.value.codes

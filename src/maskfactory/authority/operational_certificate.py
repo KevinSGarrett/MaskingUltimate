@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from PIL import Image, ImageOps
 
+from maskfactory.intelligence import CriticQuorumDecision, critic_quorum_sha256
 from maskfactory.validation import (
     artifact_identity_sha256,
     canonical_document_sha256,
@@ -233,6 +234,7 @@ def issue_operational_autonomy_certificate(
     decision_time: str,
     complete_map_hard_veto_report: Mapping[str, Any],
     trusted_hard_veto_evaluators: Mapping[str, str],
+    critic_quorum_decision: CriticQuorumDecision,
 ) -> dict[str, Any]:
     """Issue exact-output authority, or reject without returning a partial certificate."""
     document = copy.deepcopy(dict(unsigned_certificate))
@@ -262,6 +264,23 @@ def issue_operational_autonomy_certificate(
     )
     if complete_map_issues:
         raise OperationalCertificateIssuanceError(*complete_map_issues)
+    critic_codes: list[str] = []
+    if (
+        critic_quorum_decision.status != "pass"
+        or len(critic_quorum_decision.independent_families) < 2
+        or set(critic_quorum_decision.family_verdicts.values()) != {"pass"}
+        or critic_quorum_decision.blockers
+        or critic_quorum_decision.explicit_uncertainty
+    ):
+        critic_codes.append("independent_critic_quorum_failed")
+    if critic_quorum_decision.may_clear_hard_veto or critic_quorum_decision.may_issue_certificate:
+        critic_codes.append("critic_authority_escalation")
+    if document.get("qa_evidence", {}).get("critic_report_sha256") != critic_quorum_sha256(
+        critic_quorum_decision
+    ):
+        critic_codes.append("critic_report_hash_mismatch")
+    if critic_codes:
+        raise OperationalCertificateIssuanceError(*critic_codes)
     if journal_state.get("fork_detected") is not False:
         raise OperationalCertificateIssuanceError("signed_journal_fork")
     revocation = document.get("revocation")

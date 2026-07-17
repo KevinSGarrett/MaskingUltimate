@@ -7071,3 +7071,20 @@ Frozen contract:                      `operational_autonomy_certificate.schema.j
 Verification:                         23/23 focused issuance tests, 84/84 production-QA/multi-instance/bridge/completion-profile tests, and 3,172/3,172 full repository tests pass; Ruff, Black, and Git diff checks pass
 Authority boundary:                   no production certificate, role certificate, release, or end-to-end ComfyUI runtime is claimed; MF-P6-08.04 and later autonomous policy/release gates remain open
 Evidence:                             `qa/live_verification/complete_map_hard_veto_20260717.json`
+
+## 2026-07-17 20:10 UTC - Autonomous intelligence and independent-critic control plane implemented
+
+**Result:** MF-P6-08.04 is complete. Model output is now schema-bound, registry-grounded,
+tool-policy constrained, observation-only, and unable to satisfy operational certification
+without an exact current independent-family critic quorum.
+
+Role stacks:                          request normalizer, planner/diagnostician, router adviser, repair proposer, visual critic, and evidence summarizer each bind model family/revision, runtime, prompt, parser, tool policy, qualification scope/certificate, lifecycle, and expiry into one exact stack identity
+Retrieval/context:                    citations carry record ID plus exact payload SHA-256; conversation/model/free-form records cannot support authority; compaction manifests bind retained/dropped/required records and force autonomous abstention if required authority is missing or truncated
+Tool gateway:                         only closed JSON role output may propose a tool; exact role-specific tool contracts close argument keys/types and bind the complete tool policy to the stack; proposals never execute directly and cannot promote authority
+Critic quorum:                        exact expected critic IDs, current qualification, hash-cited context, report hash, confidence, and model-family provenance are bound; correlated variants count once, and missing/unexpected/malformed/timeout critics, disagreement, uncertainty, or fewer than two independent families abstain
+Certificate binding:                 `qa_evidence.critic_report_sha256` must equal the exact quorum-decision hash; critic output cannot clear hard vetoes or issue certificates, and any attempted authority escalation rejects issuance
+Durable memory:                       append-only JSONL events are sequence- and stream-bound, payload- and event-hashed, fsynced, replay-validated, and permanently `none_observation_only`; conversation or event memory cannot self-promote
+Frozen contract:                      `operational_autonomy_certificate.schema.json` remains byte-identical at SHA-256 `9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8`
+Verification:                         36/36 focused control-plane/issuer tests, 147/147 provider/VLM/autonomy/certificate/bridge/profile tests, and 3,185/3,185 full repository tests pass; Ruff, Black, and Git diff checks pass
+Authority boundary:                   no live production role certificate, operational certificate, runtime release, or end-to-end ComfyUI consumption is claimed; MF-P6-08.05 and later gates remain open
+Evidence:                             `qa/live_verification/autonomous_intelligence_control_plane_20260717.json`

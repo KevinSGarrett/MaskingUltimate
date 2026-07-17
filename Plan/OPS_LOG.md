@@ -6663,3 +6663,21 @@ Live boundary:                        no fixture is claimed as a qualified live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
 Verification:                         15/15 final lineage/migration, 163/163 adjacent adapter/QC/acceptance/manifest, and 2,927/2,927 full repository tests pass; repository Ruff, changed-surface Black, 125 MaskFactory JSON schemas, 32 DAZ YAML documents, and Git diff checks pass
 Evidence:                             `qa/reports/daz_ingestion_revocation_lineage_20260717.json`
+
+## 2026-07-17 04:38 UTC - Deterministic duo placement, overlap, and contact recipe matrix implemented
+
+**Result:** MF-P9-09.01 now has a complete offline MM/MF/FF × separated/overlap/contact recipe
+matrix with resolved-scene integration; it remains at 85% until qualified D5/D7 live authority and
+actual DAZ duo renders independently verify placement, visibility, and contact constraints.
+
+Duo matrix:                          all nine MM/MF/FF by no-contact/overlap/contact cells resolve deterministically from a closed policy; mixed anatomy occupies both construction-slot orders across seeds
+Placement authority:                 canonical slots a/b bind construction IDs c0/c1, bounded root translation/rotation/scale, camera clearance, minimum per-slot visibility, and exact resolved-scene world transforms
+Relationship authority:              recipe types align with the strict validator's separated/overlap/contact matrix; c0/c1 participants are exact; separated distance, overlap depth separation, and contact distance/penetration thresholds are frozen
+Stage boundary:                       construction slots are explicitly not p-indices; requested p-indices reject before final rendering; the contact solver remains disabled until D8 validation and no solved contact or observed occlusion is claimed
+Lineage/replay:                       exact policy, template, selection, and transform hashes survive resolved-recipe sealing; selection replay, closed schema, atomic publication, conflict rejection, and `daz recipes select-duo` CLI pass
+Seeded proof:                         missing matrix cells, numeric/policy weakening, separation/depth/contact-site defects, schema extras, selection tamper, anatomy mismatch, premature p-index, and publication conflict reject
+Wave64 boundary:                     Main remains untouched; downstream selection can consume explicit recipe/transform lineage but cannot infer observed contact, stronger mask authority, or gold
+Live boundary:                        no fixture is claimed as a live DAZ duo, solved contact, rendered overlap, p-index result, ownership/exclusivity result, dataset row, or gold authority
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
+Verification:                         78/78 focused duo/recipe/strict-validator, 393/393 adjacent scene construction, and 2,946/2,946 full repository tests pass; repository Ruff, changed-surface Black, 126 JSON schemas, 33 DAZ YAML documents, and Git diff checks pass
+Evidence:                             `qa/reports/daz_duo_recipe_matrix_20260717.json`

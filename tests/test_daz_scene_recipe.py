@@ -9,11 +9,15 @@ from click.testing import CliRunner
 
 from maskfactory.cli import main
 from maskfactory.daz.scenes import (
+    DuoRecipeSelectionError,
     SceneRecipeError,
+    apply_duo_selection_to_recipe_draft,
     canonical_json_bytes,
     derive_named_random_streams,
+    load_duo_recipe_policy,
     publish_resolved_scene_recipe,
     seal_resolved_scene_recipe,
+    select_duo_recipe,
     validate_resolved_scene_recipe,
 )
 
@@ -158,6 +162,38 @@ def test_resolved_recipe_publication_is_immutable_and_idempotent(tmp_path: Path)
     assert published is True
     assert publish_resolved_scene_recipe(sealed, tmp_path) == (target, False)
     assert target.name == f"{sealed['scene_id']}_{sealed['recipe_sha256'][:16]}.json"
+
+
+def test_duo_selection_binds_directly_to_resolved_recipe_without_p_indices() -> None:
+    policy = load_duo_recipe_policy(
+        Path(__file__).resolve().parents[1] / "configs" / "daz" / "duo_recipe_selection.yaml"
+    )
+    selection = select_duo_recipe(
+        policy, selection_seed=4, anatomy_family="MM", relationship_family="overlap_no_contact"
+    )
+    draft = _draft()
+    second = deepcopy(draft["characters"][0])
+    second["construction_id"] = "c1"
+    draft["characters"].append(second)
+    bound = apply_duo_selection_to_recipe_draft(draft, selection, policy)
+    sealed = seal_resolved_scene_recipe(bound)
+    assert sealed["relationship_template"]["type"] == "overlap"
+    assert sealed["relationship_template"]["participants"] == ["c0", "c1"]
+    assert sealed["relationship_template"]["duo_selection_id"] == selection["selection_id"]
+    assert sealed["relationship_template"]["duo_selection_sha256"] == selection["selection_sha256"]
+    assert sealed["relationship_template"]["policy_sha256"] == selection["policy_sha256"]
+    assert [row["requested_promoted_id"] for row in sealed["characters"]] == [None, None]
+    assert [row["world_transform"] for row in sealed["characters"]] == [
+        row["root_transform"] for row in selection["slots"]
+    ]
+    premature = deepcopy(draft)
+    premature["characters"][0]["requested_promoted_id"] = "p0"
+    with pytest.raises(DuoRecipeSelectionError, match="p_index_premature"):
+        apply_duo_selection_to_recipe_draft(premature, selection, policy)
+    mismatch = deepcopy(draft)
+    mismatch["characters"][1]["anatomy_configuration"] = "adult_female"
+    with pytest.raises(DuoRecipeSelectionError, match="anatomy_mismatch"):
+        apply_duo_selection_to_recipe_draft(mismatch, selection, policy)
 
 
 def test_recipe_cli_seals_and_validates_byte_identical_replay(tmp_path: Path) -> None:

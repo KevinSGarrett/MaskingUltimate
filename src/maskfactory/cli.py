@@ -4211,6 +4211,80 @@ def daz_recipes_select_solo_pose(
     )
 
 
+@daz_recipes.command("select-duo")
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--anatomy-family", type=click.Choice(["MM", "MF", "FF"]), required=True)
+@click.option(
+    "--relationship-family",
+    type=click.Choice(["no_contact", "overlap_no_contact", "contact_support"]),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/duo_recipe_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\duo"),
+    show_default=True,
+)
+def daz_recipes_select_duo(
+    selection_seed: int,
+    anatomy_family: str,
+    relationship_family: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a pre-render duo placement recipe without assigning p-indices."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        DuoRecipeSelectionError,
+        load_duo_recipe_policy,
+        publish_duo_recipe_selection,
+        select_duo_recipe,
+    )
+
+    try:
+        policy_document = load_duo_recipe_policy(policy)
+        selection = select_duo_recipe(
+            policy_document,
+            selection_seed=selection_seed,
+            anatomy_family=anatomy_family,
+            relationship_family=relationship_family,
+        )
+        target, published = publish_duo_recipe_selection(selection, policy_document, output)
+    except (DuoRecipeSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, DuoRecipeSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_duo_recipe_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected_template": selection["selected_template"],
+                    "slots": selection["slots"],
+                    "relationship": selection["relationship"],
+                    "evidence_requirements": selection["evidence_requirements"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("select-formation")
 @click.option(
     "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True

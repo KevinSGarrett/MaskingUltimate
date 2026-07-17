@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T03:57:01+00:00",
+    "generated_at": "2026-07-17T04:39:14+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 755,
     "total_tracked_including_orphaned": 755
@@ -16950,13 +16950,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T04:39:14+00:00",
+          "actor": "codex",
+          "text": "Offline D8-01 implementation complete: closed deterministic MM/MF/FF by separated/overlap/contact recipe matrix, MF slot permutation, strict resolved-scene binding, exact policy/template/selection lineage, immutable publication and CLI pass. Honest live boundary: D5/D7 authority and actual DAZ duo renders remain unavailable; no solved contact, rendered overlap, p-index, ownership, or gold claim is made."
+        }
+      ],
+      "evidence": "qa/reports/daz_duo_recipe_matrix_20260717.json; 9/9 duo cells; 78/78 focused, 393/393 adjacent, 2946/2946 full tests; Ruff and changed-surface Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T04:39:14+00:00",
       "orphaned": false
     },
     "MF-P9-09.02": {

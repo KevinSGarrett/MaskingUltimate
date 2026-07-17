@@ -7055,3 +7055,19 @@ Verification:                         31/31 issuer plus bridge tests, 76/76 comb
 Worker exception:                     signed worker intents `...53ebf263` and `...0c3a52df` were rejected before worker execution because the dispatcher requires tracked scope anchors and a Main-specific `tools/New-AIWorkerScopePacket.ps1`; no worker output was produced or absorbed
 Authority boundary:                   a real governed candidate, production trust registry, runtime release/capability, journal and revocation state are still required before issuing a production certificate; full producer/consumer runtime remains open
 Evidence:                             `qa/live_verification/operational_certificate_issuance_20260717.json`; `qa/live_verification/ai_worker_dispatch_exception_20260717.json`
+
+## 2026-07-17 19:10 UTC - Complete-map hard vetoes bound into certificate issuance
+
+**Result:** MF-P6-08.03 is complete. Certificate issuance now requires a canonical report
+built from the existing deterministic QA engines and exact certificate subject/owner/transform
+bindings; a declared pass vector or unanimous critic confidence cannot override a defect.
+
+Single-person vetoes:                 QC-001 dimensions, QC-002/003 format, QC-004 ontology, QC-011 exclusivity, QC-013 protected regions, QC-014 left/right, QC-016 visibility, and QC-018 transform round trip are mandatory and hash-bound
+Multi-person vetoes:                  QC-035 instance exclusivity/ownership, QC-036 cross-instance bleed, and QC-037 contact reciprocity are mandatory for duo/small-group issuance; QC-037 is intentionally promoted from review routing to a non-overridable autonomy veto
+Binding checks:                       the report is bound to the complete source, subject, coordinate, and artifact-set documents; every artifact must match the certified character ID, scene instance, canonical person, and person index; source/output dimensions, coordinate space, transform hash, and round-trip state are independently rechecked
+Report integrity:                     category outcomes, exact mandatory QC coverage/applicability, per-category hashes, derived blocker set, overall status, certificate gate evidence, and deterministic report hash are recomputed before signing; only a registry-pinned evaluator identity is accepted
+Critic boundary:                      critic confidence is audit evidence only and `critic_can_override=false`; all seeded failures reject even with critic confidence 1.0
+Frozen contract:                      `operational_autonomy_certificate.schema.json` remains byte-identical at SHA-256 `9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8`
+Verification:                         23/23 focused issuance tests, 84/84 production-QA/multi-instance/bridge/completion-profile tests, and 3,172/3,172 full repository tests pass; Ruff, Black, and Git diff checks pass
+Authority boundary:                   no production certificate, role certificate, release, or end-to-end ComfyUI runtime is claimed; MF-P6-08.04 and later autonomous policy/release gates remain open
+Evidence:                             `qa/live_verification/complete_map_hard_veto_20260717.json`

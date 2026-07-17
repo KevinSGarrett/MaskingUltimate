@@ -13,11 +13,15 @@ from PIL import Image
 
 from maskfactory.authority import (
     OperationalCertificateIssuanceError,
+    bind_complete_map_report,
+    build_complete_map_hard_veto_report,
     canonical_decoded_raster_sha256,
     issue_operational_autonomy_certificate,
 )
+from maskfactory.qa.checks import QcResult
 from maskfactory.validation import (
     artifact_identity_sha256,
+    canonical_json_bytes,
     validate_operational_autonomy_certificate,
 )
 
@@ -41,12 +45,55 @@ AUTHORITATIVE_BINDINGS = (
     "revocation",
 )
 
+PASSING_COMPLETE_MAP_QC = (
+    "QC-001",
+    "QC-002",
+    "QC-003",
+    "QC-004",
+    "QC-011",
+    "QC-013",
+    "QC-014",
+    "QC-016",
+    "QC-018",
+)
+
 
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _prepare(tmp_path: Path) -> dict:
+def _complete_map_report(
+    certificate: dict,
+    *,
+    instance_context: str = "solo",
+    failed_qc_id: str | None = None,
+) -> dict:
+    qc_ids = list(PASSING_COMPLETE_MAP_QC)
+    if instance_context != "solo":
+        qc_ids.extend(("QC-035", "QC-036", "QC-037"))
+    return build_complete_map_hard_veto_report(
+        tuple(
+            QcResult(
+                qc_id,
+                f"fixture_{qc_id.lower()}",
+                qc_id != failed_qc_id,
+                "seeded defect" if qc_id == failed_qc_id else "verified pass",
+                "BLOCK",
+            )
+            for qc_id in qc_ids
+        ),
+        instance_context=instance_context,
+        source_binding=certificate["source_binding"],
+        subject_binding=certificate["subject_binding"],
+        coordinate_binding=certificate["coordinate_binding"],
+        artifacts=certificate["bound_artifacts"],
+        critic_confidence=1.0,
+        evaluator_id="maskfactory.complete_map_hard_veto.v1",
+        evaluator_sha256=hashlib.sha256(b"complete-map-hard-veto-test-executor").hexdigest(),
+    )
+
+
+def _prepare(tmp_path: Path, *, instance_context: str = "solo") -> dict:
     tmp_path.mkdir(parents=True, exist_ok=True)
     certificate = json.loads(FIXTURE.read_text(encoding="utf-8"))
     source = tmp_path / "source.png"
@@ -139,6 +186,8 @@ def _prepare(tmp_path: Path) -> dict:
     )
     for region in certificate["lineage"]["input_protected_regions"]:
         region["revocation_checked_at"] = "2026-07-17T00:00:05Z"
+    report = _complete_map_report(certificate, instance_context=instance_context)
+    certificate = bind_complete_map_report(certificate, report)
     authoritative = {field: copy.deepcopy(certificate[field]) for field in AUTHORITATIVE_BINDINGS}
     journal = {
         **copy.deepcopy(certificate["revocation"]),
@@ -153,6 +202,7 @@ def _prepare(tmp_path: Path) -> dict:
         "trusted": trusted,
         "authoritative": authoritative,
         "journal": journal,
+        "complete_map_report": report,
     }
 
 
@@ -168,6 +218,12 @@ def _issue(prepared: dict, **overrides):
         "signing_key_id": prepared["key_id"],
         "trusted_signing_keys": prepared["trusted"],
         "decision_time": "2026-07-17T00:00:05Z",
+        "complete_map_hard_veto_report": prepared["complete_map_report"],
+        "trusted_hard_veto_evaluators": {
+            "maskfactory.complete_map_hard_veto.v1": hashlib.sha256(
+                b"complete-map-hard-veto-test-executor"
+            ).hexdigest()
+        },
     }
     arguments.update(overrides)
     return issue_operational_autonomy_certificate(prepared["certificate"], **arguments)
@@ -318,3 +374,131 @@ def test_issuer_refuses_weak_or_stale_protected_authority(tmp_path: Path) -> Non
     with pytest.raises(OperationalCertificateIssuanceError) as caught:
         _issue(prepared, decision_time="2026-07-17T00:10:05Z")
     assert "certificate_revocation_fresh_at_use" in caught.value.codes
+
+
+@pytest.mark.parametrize(
+    "failed_qc_id",
+    [
+        "QC-001",  # dimensions
+        "QC-002",  # binary format
+        "QC-003",  # PNG/channel format
+        "QC-004",  # ontology
+        "QC-011",  # atomic exclusivity
+        "QC-013",  # protected regions
+        "QC-014",  # left/right semantics
+        "QC-016",  # visibility
+        "QC-018",  # transform round trip
+    ],
+)
+def test_complete_map_seeded_single_person_defects_override_unanimous_critic(
+    tmp_path: Path, failed_qc_id: str
+) -> None:
+    prepared = _prepare(tmp_path)
+    report = _complete_map_report(prepared["certificate"], failed_qc_id=failed_qc_id)
+    assert report["critic_confidence_observed"] == 1.0
+    prepared["complete_map_report"] = report
+    prepared["certificate"] = bind_complete_map_report(prepared["certificate"], report)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_hard_veto_failed" in caught.value.codes
+
+
+@pytest.mark.parametrize("failed_qc_id", ["QC-035", "QC-036", "QC-037"])
+def test_complete_map_seeded_multi_person_defects_override_unanimous_critic(
+    tmp_path: Path, failed_qc_id: str
+) -> None:
+    prepared = _prepare(tmp_path, instance_context="duo")
+    report = _complete_map_report(
+        prepared["certificate"], instance_context="duo", failed_qc_id=failed_qc_id
+    )
+    assert report["critic_confidence_observed"] == 1.0
+    prepared["complete_map_report"] = report
+    prepared["certificate"] = bind_complete_map_report(prepared["certificate"], report)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_hard_veto_failed" in caught.value.codes
+
+
+def test_complete_map_owner_character_and_transform_binding_defects_block_issuance(
+    tmp_path: Path,
+) -> None:
+    prepared = _prepare(tmp_path)
+    prepared["certificate"]["bound_artifacts"][0]["entity_id"] = "wrong-character"
+    report = _complete_map_report(prepared["certificate"])
+    prepared["complete_map_report"] = report
+    prepared["certificate"] = bind_complete_map_report(prepared["certificate"], report)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_hard_veto_failed" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "transform")
+    prepared["certificate"]["coordinate_binding"]["roundtrip_passed"] = False
+    report = _complete_map_report(prepared["certificate"])
+    prepared["complete_map_report"] = report
+    prepared["certificate"] = bind_complete_map_report(prepared["certificate"], report)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    prepared["authoritative"]["coordinate_binding"] = copy.deepcopy(
+        prepared["certificate"]["coordinate_binding"]
+    )
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_hard_veto_failed" in caught.value.codes
+
+
+def test_complete_map_report_cannot_relabel_a_failed_check_or_drift_its_hash(
+    tmp_path: Path,
+) -> None:
+    prepared = _prepare(tmp_path)
+    report = copy.deepcopy(prepared["complete_map_report"])
+    format_row = next(row for row in report["categories"] if row["category"] == "format")
+    format_row["checks"][0]["passed"] = False
+    prepared["complete_map_report"] = report
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_category_hash:format" in caught.value.codes
+    assert "complete_map_category_outcome:format" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "report-hash")
+    prepared["certificate"]["qa_evidence"]["deterministic_report_sha256"] = "0" * 64
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_report_hash_mismatch" in caught.value.codes
+
+
+def test_complete_map_report_requires_trusted_evaluator_and_exact_multi_qc_coverage(
+    tmp_path: Path,
+) -> None:
+    prepared = _prepare(tmp_path)
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared, trusted_hard_veto_evaluators={})
+    assert "complete_map_evaluator_untrusted" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "artifact-drift")
+    prepared["certificate"]["bound_artifacts"][0]["label"] = "right_hand"
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_artifact_set_binding_sha256" in caught.value.codes
+
+    prepared = _prepare(tmp_path / "multi", instance_context="duo")
+    report = copy.deepcopy(prepared["complete_map_report"])
+    contact = next(row for row in report["categories"] if row["category"] == "contact")
+    contact.update(
+        status="not_applicable",
+        required_qc_ids=[],
+        missing_qc_ids=[],
+        failed_qc_ids=[],
+        checks=[],
+        reason="forged applicability",
+    )
+    unsigned_contact = {key: value for key, value in contact.items() if key != "evidence_sha256"}
+    contact["evidence_sha256"] = hashlib.sha256(canonical_json_bytes(unsigned_contact)).hexdigest()
+    prepared["complete_map_report"] = report
+    prepared["certificate"] = bind_complete_map_report(prepared["certificate"], report)
+    prepared["authoritative"]["qa_evidence"] = copy.deepcopy(prepared["certificate"]["qa_evidence"])
+    with pytest.raises(OperationalCertificateIssuanceError) as caught:
+        _issue(prepared)
+    assert "complete_map_required_qc:contact" in caught.value.codes

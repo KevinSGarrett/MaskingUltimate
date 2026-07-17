@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T18:00:00+00:00",
+    "generated_at": "2026-07-17T19:27:04+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 798,
     "total_tracked_including_orphaned": 798
@@ -18774,13 +18774,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "src/maskfactory/authority/complete_map_hard_veto.py aggregates exact mandatory QC-001/002/003/004/011/013/014/016/018 and multi-person QC-035/036/037 results into a canonical report and requires a registry-pinned evaluator identity; operational_certificate.py independently validates category outcomes, mandatory QC applicability, gate/deterministic hashes, subject/owner, visibility, and transform bindings before signing. tests/test_operational_certificate_issuance.py seeds every requested defect with critic confidence 1.0 and proves issuance rejects it, including untrusted evaluator and forged multi-person not-applicable cases. Evidence: qa/live_verification/complete_map_hard_veto_20260717.json. Focused 23/23, broader 84/84, and full 3172/3172 tests pass; frozen v1 certificate schema remains SHA-256 9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8.",
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-17T19:27:02+00:00",
       "orphaned": false
     },
     "MF-P6-08.04": {

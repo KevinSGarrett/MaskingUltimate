@@ -16794,13 +16794,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T01:28:04+00:00",
+          "actor": "codex",
+          "text": "Software and seeded certificate-replay clause complete. Honest completion remains gated by declared D7-01..04 qualified live authorities and an independently replayed live acceptance certificate. No DAZ/F-drive work was launched; F soft hold respected."
+        }
+      ],
+      "evidence": "qa/reports/daz_acceptance_certificate_20260717.json — closed policy/schema; independent certificate rebuild; V0-V8 measurement capture; replay/package/registry/ontology/revision cross-binding; repair-revision reports; immutable CLI publication; 21/21 new, 260/260 adjacent, 2816/2816 full tests; Ruff and Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T01:28:04+00:00",
       "orphaned": false
     },
     "MF-P9-08.06": {

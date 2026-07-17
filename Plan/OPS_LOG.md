@@ -6572,3 +6572,22 @@ Live boundary:                        no fixture is claimed as a qualified live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Verification:                         25/25 new, 255/255 focused, 1,103/1,103 DAZ-selected, and 2,795/2,795 full repository tests pass; Ruff, pre-commit Black, all 120 JSON schemas, all 29 DAZ YAML documents, tracker validation, and Git diff checks pass
 Evidence:                             `qa/reports/daz_repair_retry_20260717.json`
+
+## 2026-07-17 01:26 UTC - Hash-bound DAZ acceptance certificate implemented
+
+**Result:** MF-P9-08.05 now has a closed acceptance policy, strict certificate schema, independent
+certificate reconstruction, and immutable CLI publication; it remains at 85% until D7-01 through
+D7-04 have qualified live authority and a live certificate is independently replayed.
+
+Authority promotion:                  the D6 package must enter as `weighted_pseudo_label`, explicitly not previously autonomous-certified or human gold, and carry `synthetic_geometry_exact`; only the exact scoped acceptance certificate promotes it to MaskFactory-owned `synthetic_exact`
+Required validation:                  the complete V0-V8 scene set is rebuilt against the registry; warnings and failures are both zero; every validator status, reason, metric, observed value, and expected threshold is recorded
+Cross-binding:                        scene state, package file map, registry, source lineage, package contract/report, replay plan/state, ontology version/hash, package revision, provider, tier, owner, transform hash, and all declared production hashes are certificate-bound
+Replay authority:                     semantic files must be byte-identical across independent runs with unchanged scene state and identical authorities; the replay report and certificate content hash/ID are independently reconstructed before publication
+Repair authority:                     absent repair history forbids post-repair reports; otherwise every entry must be scheduled, preserve the full authority freeze, bind its exact recipe revision to a full V0-V8 report, and end at the certificate's final validation report
+Wave64 boundary:                      provider/tier/ontology/owner/package revision/certificate scope/transform remain explicit; live Mode B, foreign owners, inferred authority ceilings, human-annotation claims, and gold mutation or relabeling reject
+Publication/CLI:                      `daz recipes certify-acceptance` snapshots all source documents, repair reports, policies, and registry under a hash-derived input root, independently verifies the certificate, and atomically publishes it idempotently
+Seeded proof:                         21 new tests cover positive promotion, policy weakening, stale bindings, warning/failure rejection, prior-certification claims, Mode B/foreign ownership, repair revision bindings, certificate tampering, immutable publication, and CLI replay/rejection
+Live boundary:                        no fixture is claimed as a qualified live DAZ certificate, validation set, replay, or repair history; D7-01 through D7-04 live acceptance remains outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Verification:                         260/260 focused adjacent and 2,816/2,816 full repository tests pass; 21/21 new tests pass after final Black; Ruff, pre-commit Black, all 121 JSON schemas, all 30 DAZ YAML documents, and Git diff checks pass
+Evidence:                             `qa/reports/daz_acceptance_certificate_20260717.json`

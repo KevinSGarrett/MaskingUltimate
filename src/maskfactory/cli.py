@@ -6710,6 +6710,201 @@ def daz_recipes_plan_repair(
     )
 
 
+@daz_recipes.command("certify-acceptance")
+@click.option(
+    "--draft", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--validation-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--semantic-replay",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--package-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--package-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--repair-history",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+)
+@click.option(
+    "--post-repair-reports",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+    help="Optional JSON object mapping each repair recipe revision ID to its full V0-V8 report.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/acceptance_certificate_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--repair-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/repair_retry_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\acceptance_certificates"),
+    show_default=True,
+)
+def daz_recipes_certify_acceptance(
+    draft: Path,
+    validation_set: Path,
+    semantic_replay: Path,
+    package_contract: Path,
+    package_report: Path,
+    repair_history: Path | None,
+    post_repair_reports: Path | None,
+    policy: Path,
+    repair_policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Build, independently replay, and immutably publish one D7 acceptance certificate."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.acceptance_certificate import (
+        AcceptanceCertificateError,
+        build_acceptance_certificate,
+        load_acceptance_certificate_policy,
+        publish_acceptance_certificate,
+        verify_acceptance_certificate,
+    )
+    from .daz.repair_retry import RepairRetryError, load_repair_retry_policy
+    from .daz.validation_registry import ValidationRegistryError, load_validation_registry
+
+    try:
+        input_documents = {
+            "draft": json.loads(draft.read_text(encoding="utf-8")),
+            "validation_set": json.loads(validation_set.read_text(encoding="utf-8")),
+            "semantic_replay": json.loads(semantic_replay.read_text(encoding="utf-8")),
+            "package_contract": json.loads(package_contract.read_text(encoding="utf-8")),
+            "package_report": json.loads(package_report.read_text(encoding="utf-8")),
+            "repair_history": (
+                json.loads(repair_history.read_text(encoding="utf-8"))
+                if repair_history is not None
+                else None
+            ),
+        }
+        report_paths = (
+            _load_string_mapping(post_repair_reports, "post-repair reports")
+            if post_repair_reports is not None
+            else {}
+        )
+        report_documents = {
+            revision_id: json.loads(Path(path).read_text(encoding="utf-8"))
+            for revision_id, path in report_paths.items()
+        }
+        policy_document = load_acceptance_certificate_policy(policy)
+        repair_policy_document = load_repair_retry_policy(repair_policy)
+        registry_document = load_validation_registry(registry)
+        certificate = build_acceptance_certificate(
+            input_documents["draft"],
+            input_documents["validation_set"],
+            input_documents["semantic_replay"],
+            input_documents["package_contract"],
+            input_documents["package_report"],
+            repair_history=input_documents["repair_history"],
+            post_repair_reports=report_documents,
+            policy=policy_document,
+            repair_policy=repair_policy_document,
+            registry=registry_document,
+        )
+        replay = verify_acceptance_certificate(
+            certificate,
+            input_documents["validation_set"],
+            input_documents["semantic_replay"],
+            input_documents["package_contract"],
+            input_documents["package_report"],
+            repair_history=input_documents["repair_history"],
+            post_repair_reports=report_documents,
+            policy=policy_document,
+            repair_policy=repair_policy_document,
+            registry=registry_document,
+        )
+        bound_inputs = {
+            **input_documents,
+            "post_repair_reports": report_documents,
+            "acceptance_policy": policy_document,
+            "repair_policy": repair_policy_document,
+            "validation_registry": registry_document,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                bound_inputs,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in bound_inputs.items():
+            _publish_immutable_json(document, input_root, name)
+        target, published = publish_acceptance_certificate(certificate, output)
+    except (
+        AcceptanceCertificateError,
+        RepairRetryError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason_code
+            if isinstance(exc, AcceptanceCertificateError)
+            else exc.reason if hasattr(exc, "reason") else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_acceptance_certified",
+                entity_ids=(certificate["certificate_id"], certificate["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "certificate_sha256": certificate["certificate_sha256"],
+                    "authority": certificate["authority"],
+                    "train_eligible": certificate["train_eligible"],
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "replay": replay,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _strict_file_manifest(paths: Mapping[str, Path]) -> list[dict[str, Any]]:
     records = []
     for role, path in paths.items():

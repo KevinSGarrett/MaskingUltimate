@@ -113,6 +113,7 @@ SCHEMA_NAMES = frozenset(
         "daz_validation_set_report",
         "daz_repair_request",
         "daz_repair_history",
+        "daz_acceptance_certificate",
         "daz_paths",
         "daz_runtime",
         "daz_cms_snapshot",

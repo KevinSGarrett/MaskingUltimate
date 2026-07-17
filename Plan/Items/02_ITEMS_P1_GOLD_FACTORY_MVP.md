@@ -1,6 +1,8 @@
 # ITEMS — Phase P1: Gold Factory MVP (Weeks 1–2)
 
-Goal: image → CVAT → human-anchor gold package with format QA enforced (D2 core). Parent IDs from doc 14 §2.
+Optional accuracy/portfolio goal: image → CVAT → human-anchor gold package with format QA enforced
+(legacy D2). Per doc 24 this lane is useful independent truth evidence but is not a prerequisite for
+the required human-free `core_autonomous_runtime` profile. Parent IDs from doc 14 §2.
 
 ## MF-P1-01 — JSON schemas + validators (spec: 04)
 - [ ] MF-P1-01.01 Write `schemas\manifest.schema.json` per doc 04 §1 (source/person/parts/inpaint_derivatives/tooling/review/qa/files blocks)

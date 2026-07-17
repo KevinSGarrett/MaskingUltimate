@@ -1,5 +1,9 @@
 # ITEMS — Phase P2: Body-Aware Drafting (Weeks 2–4)
 
+**Completion-profile scope:** this legacy phase remains tracked for provider drafting and optional
+`independent_real_accuracy` evidence. Its CVAT/human-anchor measurements are not dependencies of
+`core_autonomous_runtime`; doc 24 and MF-P6-07..12 govern the human-free core route.
+
 Goal: automatic drafts for every selected production PART from one command (D1: 56 active v1;
 65 only after gated v2 activation) + first G2 measurement. Parent IDs from doc 14 §3.
 

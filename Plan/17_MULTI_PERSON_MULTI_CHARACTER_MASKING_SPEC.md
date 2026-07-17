@@ -1,5 +1,10 @@
 # Document 17: Multi-Person / Multi-Character Masking Specification
 
+> **Completion-profile scope (doc 24):** multi-person instance ownership, cross-instance protection,
+> transforms, hard QA, bounded repair/abstention, operational certification, and bridge qualification
+> are required core behavior. Human review, CVAT, human-approved gold, training-data expansion, and
+> population-accuracy claims are optional-profile branches and cannot block core completion.
+
 **Amends and extends documents 00–16** (including doc 16's External Foundation Bootstrap work,
 which this document does not otherwise touch). This document is the single authoritative spec for
 processing images containing **more than one person**, promoting every sufficiently-prominent
@@ -15,8 +20,9 @@ The original v1 scope (doc 01 §4 item 1, §5) explicitly limited the system to 
 person per image**, with every other visible person collapsed into the `other_person` protected
 class (doc 02 PART id 50) — masked only enough to prevent bleed, never given their own atomic
 parts. That decision is now **superseded**: multi-character masking is in scope, and is treated
-with the same rigor as every other capability in this project — full ontology, full QA, full
-human review, full training-data implications.
+with the same rigor as every other capability in this project — full ontology, full autonomous QA,
+instance ownership, repair/abstention, certification, and bridge implications. Optional human review
+and training-data implications remain fully specified without becoming core gates.
 
 This document does **not** throw out the single-person work. It generalizes it. The core
 insight that makes this tractable: **a multi-person image is processed as N independent
@@ -265,16 +271,26 @@ this document requires reworking already-completed work, because no work has bee
   split-integrity enforcement, and the ComfyUI `person_index` selector. **Entry gate:** P7
   substantially complete (the single-instance system is proven — D1–D10 satisfied) — because P8
   is explicitly a generalization of an already-working system, not a from-scratch parallel build.
-  Full task breakdown: `Plan\Items\10_ITEMS_P8_MULTI_PERSON_MASKING.md`.
+  Full task breakdown: `Plan\Items\10_ITEMS_P8_MULTI_PERSON_MASKING.md`. This P7/D1–D10 entry gate
+  governs the legacy portfolio-scale P8 lane only. The bounded autonomous single-/multi-person core
+  qualification in doc 24 and `MF-P6-12.03` has no P7, package-volume, CVAT, or human-review
+  prerequisite.
 
-## 14. New Definition of Done and Goal
+## 14. Optional Multi-Person Accuracy/Scale Definition of Done and Goal
+
+**Completion-profile scope (doc 24 supersession):** D11, G9, human-approved counting, and the
+≥200/≥300/500 milestones below are retained for optional `independent_real_accuracy` and
+`scale_daz_maturity` claims. They do not define, block, or revoke `core_autonomous_runtime`. Core
+multi-person completion instead requires the autonomous ownership, transform, hard-QA,
+repair/abstention, exact-output certification, and adopted bridge demonstrations in doc 24.
 
 - **D11:** A photo containing 2 to `max_instances_per_image` people produces correctly-instanced,
   non-cross-bleeding, QA-passing gold packages for every promoted person, with interperson
   contact/occlusion correctly and reciprocally handled.
 - **G9:** Multi-person correctness — cross-instance bleed rate in approved multi-person gold.
   Target: 0 (hard gate, same zero-tolerance spirit as G5's left/right rule).
-- **Counting convention:** each promoted instance that reaches `human_approved_gold` counts as
+- **Optional-profile counting convention:** each promoted instance that reaches
+  `human_approved_gold` counts as
   **one unit** toward `metrics.approved_gold_count`, Goal G6, and DoD D5 — a 3-person image, once
   all 3 instances are approved, contributes 3, not 1. This is consistent with each instance being
   a genuinely complete, independent set of atomic masks (doc 17 §6), and keeps the existing

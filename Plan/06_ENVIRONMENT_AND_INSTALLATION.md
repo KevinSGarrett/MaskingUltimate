@@ -1,5 +1,11 @@
 # Document 06: Environment & Installation Manual
 
+> **Installation-profile amendment (doc 24):** CVAT, its serverless interactor, and human-review
+> services are optional installations for `independent_real_accuracy`/training work. A core release
+> doctor must report them separately and may be green when they are absent, provided all required
+> autonomous-runtime, certificate, bridge, and recovery capabilities pass. The full proposed model
+> library is likewise deferred; only the release's installed qualified capability snapshot is routed.
+
 Target machine: Windows 11, NVIDIA RTX 5060 Laptop GPU 8 GB (Blackwell sm_120), driver 592.01.
 **Blackwell constraint (critical):** sm_120 kernels require CUDA 12.8+ builds → PyTorch ≥ 2.7
 `cu128` wheels. Older torch builds will fail with "no kernel image available". Everything below

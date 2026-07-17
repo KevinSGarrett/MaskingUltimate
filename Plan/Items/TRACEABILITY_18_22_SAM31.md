@@ -1,7 +1,8 @@
 # Requirements Traceability — Docs 18–22 and SAM 3.1 Handoff
 
 **Status:** authoritative tracker-import map
-**Generated scope:** 755 total Items records = 609 prior records + 146 document-23/DAZ records
+**Generated scope:** 798 total Items records = 609 prior records + 146 document-23/DAZ records +
+43 document-24 autonomous-core/cross-project-bridge records
 **Sources:** docs 18–23, `OntologyV2/IMPLEMENTATION_CHECKLIST.md`, `SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md`, and `Plan/Daz/00–32`
 
 This matrix prevents later specifications from living outside the live tracker. A range means every numbered step, bullet, table rule, and acceptance condition in the named source section is decomposed by the referenced atomic Items. Existing IDs are reused where they already carry the same verification contract; the delta files add only missing scope.

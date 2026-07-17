@@ -1,9 +1,15 @@
 # ITEMS — Phase P7: Scale & Continuous Operation
 
-Goal: D5 (≥300 certified packages, coverage ≥80%) + D10 (every runbook operation executed at least once) with truth tiers and labor/quality/confidence reported separately. Parent IDs from doc 14 §8 as amended by docs 20/22.
+Optional `scale_daz_maturity` / `independent_real_accuracy` goal: D5 (≥300 certified packages,
+coverage ≥80%) + D10 (every runbook operation executed at least once), with truth tiers and
+labor/quality/confidence reported separately. These gates cannot block `core_autonomous_runtime`.
+For this legacy statistic, “certified package” means an exact package in the declared training/scale
+truth tier with its required statistical certificate; `operationally_certified_artifact` is explicitly
+ineligible and cannot be relabeled as `human_approved_gold` or `autonomous_certified_gold`.
+Parent IDs from doc 14 §8 as amended by docs 20/22 and superseded for completion scope by doc 24.
 
 ## MF-P7-01 — Scale certified packages 300 → 500 (spec: 12 §2, 01 G6, 22 §5)
-- [ ] MF-P7-01.01 Weekly acquisition driven by mining plans until **300 certified packages** exist, counting only human-anchor train plus active autonomous-certified packages and reporting both tiers separately
+- [ ] MF-P7-01.01 Weekly acquisition driven by mining plans until **300 optional legacy training/scale certified packages** exist, counting only `human_anchor_train` plus exact `autonomous_certified_gold` packages carrying the required legacy statistical certificate; report both tiers separately and reject `operationally_certified_artifact`, bridge/operational certificates, drafts, candidates, pseudo labels, and any truth-tier alias
 - [ ] MF-P7-01.02 Verify coverage matrix ≥ 80% of view×pose cells at target (≥8/cell) and every attribute ≥ 40 — together with 01.01 this closes **D5**
 - [ ] MF-P7-01.03 Continue cadence toward the 500-package stretch target (G6)
 - [ ] MF-P7-01.04 (If used) Synthetic bootstrapping for stubborn deficit cells: scripted/3D-rendered images per doc 12 §9 · `source_origin: synthetic` · ≤ 30% mix cap · train-only · same QA battery
@@ -31,5 +37,5 @@ Goal: D5 (≥300 certified packages, coverage ≥80%) + D10 (every runbook opera
 ## Standing Weekly Rhythm (recurring — not one-time; from doc 14 §10 / 15 §2–3)
 Mon mining review (30 min) → Tue–Thu build → Fri annotation block + backup verify → every session: `doctor` at start, `git push` + `dvc push` at end · nightly automation (B1/B5/integrity/lint) and weekly (B2, IAA, coverage, gc dry-run) keep running from P1-09/P4-03 setup.
 
-## P7 / PROJECT Exit Gate
-- [ ] MF-P7-EXIT All D1–D10 boxes in doc 00 §4 checked with evidence · **revised headline test passed:** 20 unseen images → selective autonomous certification/residual routing → preselected blinded mixed audit, no routine per-image correction, zero format/L/R failures, and separate labor/quality/confidence metrics (docs 20/22; MF-P7-07.07)
+## P7 Optional Scale/Operations Portfolio Exit Gate
+- [ ] MF-P7-EXIT Optional `scale_daz_maturity` / `independent_real_accuracy` portfolio milestone: all applicable D1–D10 boxes in doc 00 §4 checked with evidence · **revised headline test passed:** 20 unseen images → selective autonomous certification/residual routing → preselected blinded mixed audit, no routine per-image correction, zero format/L/R failures, and separate labor/quality/confidence metrics (docs 20/22; MF-P7-07.07) · Per doc 24 this item is not a project-wide or `core_autonomous_runtime` exit gate

@@ -1,5 +1,11 @@
 # Document 07: Pipeline Stage Specifications (S00–S15)
 
+> **Routing amendment (doc 24):** S12 human review, S13 human-gold export, S14 dataset build, and the
+> human-diff portion of S15 are optional-profile branches. The human-free core instead adds the
+> P6-07…P6-12 hard-QA/critic/repair-or-abstain/certificate/bridge route. A semantic failure in core
+> triggers bounded repair or typed abstention/quarantine, not a required CVAT task. This document does
+> not claim that the new route is implemented until its tracker evidence closes.
+
 Contract format per stage: **In** (files/state) → **Out** (files/state) → **Algorithm** →
 **Failure handling**. All thresholds referenced here have concrete defaults in
 `configs\pipeline.yaml`; values shown are those defaults. All coordinates full-res unless noted.

@@ -1,5 +1,14 @@
 # Document 20: Progressive Autonomous Mask Factory Spec
 
+**Doc-24 completion amendment:** this document's human-truthed 95%-confidence certificate and audit
+sample govern the optional `independent_real_accuracy` profile. Doc 24 defines a separate
+exact-output **operational autonomy certificate** for required `core_autonomous_runtime`. The
+operational certificate proves policy conformance for explicitly bound artifacts and makes no
+population-accuracy, calibrated false-accept, or holdout-truth claim. Its issuance requires hard QA,
+critic diversity, stability, bounded repair/abstention, immutable evidence, and revocation, but not
+human-anchor masks, CVAT correction, a 300/600-case sample, or routine human audit. Neither certificate
+may impersonate or widen the other's claim.
+
 ## 1. Objective and Truth Contract
 
 The system creates, reviews, corrects, compares, and selects almost all masks without manual drawing.
@@ -7,7 +16,9 @@ Human work becomes calibration and statistical auditing rather than per-mask pro
 earned separately for each ontology label and operating context (`solo | duo | small_group`, plus pose
 and visibility strata when evidence shows material differences).
 
-No confidence statement is accepted without measured human truth. `machine_verified_candidate` and
+No **independent real-accuracy or calibrated population-confidence** statement is accepted without
+measured human truth. Exact-artifact operational policy conformance is governed separately by doc 24.
+`machine_verified_candidate` and
 `calibrated_auto_accepted` are explicit non-human truth tiers. Neither is renamed
 `human_approved_gold`, satisfies gold-count gates, or enters frozen holdouts.
 
@@ -33,6 +44,12 @@ Each round reruns hard vetoes and blinded before/after comparison. The loop stop
 twelve candidates so uncertainty cannot consume unbounded compute, money, or repeatedly erode a mask.
 
 ## 4. 95%-Confidence Autonomy Certificate
+
+**Claim scope after doc 24:** this human-truthed Wilson certificate qualifies the optional
+`independent_real_accuracy` population-risk claim. Its audited-case volume is not the exact-output
+operational autonomy certificate and is not a `core_autonomous_runtime` dependency. The required core
+certificate instead binds one exact output to deterministic evidence, scope, policy, lineage, and
+revocation as defined in doc 24; it makes no independent population-accuracy claim.
 
 Autonomous acceptance requires a current certificate for the exact label, context, and complete
 pipeline fingerprint. It uses only a frozen, image-disjoint, human-truthed sample of cases the machine
@@ -72,7 +89,8 @@ autoaccept, gold, training-truth, blocker-clearance, or package-state authority.
 
 | Outcome | Meaning | Per-mask human action |
 |---|---|---|
-| `residual_human_queue` | Veto, disagreement, low score/margin, or exhausted corrections | Required |
+| `residual_human_queue` | Optional-profile route for veto, disagreement, low score/margin, or exhausted corrections | Required only when the independent human-review profile is enabled |
+| `autonomous_abstention_quarantine` | Core-runtime typed stop for OOD, uncertainty, disagreement, outage, or exhausted bounded repair | None; no acceptance authority |
 | `machine_verified_candidate` | Tournament winner without a valid certificate | Audit during calibration |
 | `calibrated_auto_accepted` | Winner under exact valid certificate | No routine review; random audit only |
 | `human_approved_gold` | Human-approved and hard-QA-passing package truth | Human authority |

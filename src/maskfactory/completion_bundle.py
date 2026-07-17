@@ -1,7 +1,9 @@
-"""Fail-closed final evidence bundle for MaskFactory modernization completion.
+"""Fail-closed legacy portfolio/research evidence bundle.
 
 The bundle is an index and verifier, never a substitute for the primary live
-evidence it links.  Synthetic/pre-result receipts are deliberately ineligible.
+evidence it links. Synthetic/pre-result receipts are deliberately ineligible.
+This legacy all-domain bundle has no ``core_autonomous_runtime`` completion
+authority; required core status is computed by the claim-scoped tracker policy.
 """
 
 from __future__ import annotations
@@ -15,11 +17,15 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_POLICY = PROJECT_ROOT / "qa/governance/completion/modernization_completion_v1.json"
-POLICY_SHA256 = "0f6386cd8aedc8ef2f795e9fd359a9605f7fe9a2f0544e23031f318543ad9032"
+# Canonical payload seal stored inside the JSON document.
+POLICY_SHA256 = "53794241b838451c794ea5b36f5f88dd2ec7612011c975521335e121fdbce80f"
+# Exact on-disk bytes of the frozen legacy policy. This is intentionally distinct
+# from ``POLICY_SHA256`` so whitespace/encoding substitution also fails closed.
+POLICY_DOCUMENT_SHA256 = "d4831425550d08ab576ff681734a43c36ca37715eb03f149da6a09cf7e8c1062"
 
 
 class CompletionBundleError(ValueError):
-    """A final completion claim is missing, stale, synthetic, or inconsistent."""
+    """A legacy portfolio evidence claim is missing, stale, synthetic, or inconsistent."""
 
 
 def canonical_sha256(value: Mapping[str, Any]) -> str:
@@ -106,6 +112,9 @@ def validate_policy(
         "schema_version",
         "policy_id",
         "authority",
+        "blocking_for_core_completion",
+        "completion_scope",
+        "core_completion_authority",
         "required_domains",
         "tracker_requirements",
         "governing_source_hashes",
@@ -117,6 +126,9 @@ def validate_policy(
         or policy["policy_id"] != "modernization_completion_v1"
         or policy["authority"]
         != "pre_result_completion_index_only_no_primary_evidence_or_completion_authority"
+        or policy["blocking_for_core_completion"] is not False
+        or policy["completion_scope"] != "legacy_portfolio_research_evidence"
+        or policy["core_completion_authority"] != "none"
     ):
         raise CompletionBundleError("completion policy identity is invalid")
     _seal(policy, "completion policy")
@@ -206,7 +218,12 @@ def validate_policy(
 
 
 def load_policy(path: Path = DEFAULT_POLICY, *, root: Path = PROJECT_ROOT) -> dict[str, Any]:
-    value = json.loads(Path(path).read_text(encoding="utf-8"))
+    policy_path = Path(path)
+    if policy_path.resolve() == DEFAULT_POLICY.resolve():
+        actual_document_sha256 = file_sha256(policy_path)
+        if actual_document_sha256 != POLICY_DOCUMENT_SHA256:
+            raise CompletionBundleError("completion policy document-byte hash mismatch")
+    value = json.loads(policy_path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise CompletionBundleError("completion policy must be a JSON object")
     validate_policy(value, root=root)
@@ -451,7 +468,10 @@ def build_report(
         "verified_domains": domains,
         **tracker,
         "result": "pass",
-        "authority": "completion_index_verified_primary_evidence_remains_authoritative",
+        "completion_scope": current_policy["completion_scope"],
+        "blocking_for_core_completion": current_policy["blocking_for_core_completion"],
+        "core_completion_authority": current_policy["core_completion_authority"],
+        "authority": "legacy_portfolio_evidence_index_verified_no_core_completion_authority",
     }
     report["sha256"] = canonical_sha256(report)
     return report
@@ -479,6 +499,7 @@ def verify_report(
 
 __all__ = [
     "DEFAULT_POLICY",
+    "POLICY_DOCUMENT_SHA256",
     "POLICY_SHA256",
     "CompletionBundleError",
     "build_report",

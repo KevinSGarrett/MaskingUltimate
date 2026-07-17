@@ -1,5 +1,10 @@
 # ITEMS — Phase P2 Ontology-v2 Drafting and Provider Modernization (docs 18, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** an exact completed provider-contract row may be reused when
+> explicitly named by the core dependency closure. Human-anchor comparisons, full challenger-library
+> availability, and independent performance claims remain optional evidence and cannot block or
+> revoke `core_autonomous_runtime`; unavailable providers cause route removal or typed abstention.
+
 Goal: integrate modern challengers through provider-neutral contracts and shadow evidence before any role promotion.
 
 ## MF-P2-10 — Ontology-v2 drafting and fusion (spec: 18 checklist E)

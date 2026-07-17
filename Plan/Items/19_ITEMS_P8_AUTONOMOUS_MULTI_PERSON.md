@@ -1,5 +1,10 @@
 # ITEMS — Phase P8 Autonomous Multi-Person Certification (docs 17, 20, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** deterministic multi-person ownership, exclusivity, contact,
+> bleed, and abstention components may be reused when explicitly named by core. Real-source volume,
+> residual human review, and blinded audit demonstrations below qualify optional claims only and
+> cannot block or revoke `core_autonomous_runtime`.
+
 Goal: extend selective autonomous certification to promoted instances without weakening identity, contact, occlusion, or cross-person protections.
 
 ## MF-P8-11 — Certificate-covered multi-person instances and residual routing (spec: SAM handoff Certification/Gate Changes; 20 §§4–6; 22 §§6–7)

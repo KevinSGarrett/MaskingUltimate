@@ -1,7 +1,16 @@
 # Document 11: Human Review Workflow (CVAT Operator Manual)
 
-The human is the semantic authority. This doc is the complete operator manual: project setup,
-SOPs, statuses, hotkeys, second review, and throughput targets.
+**Completion-profile scope (doc 24):** this is the optional human-review and annotation operator
+manual for `independent_real_accuracy`, calibration, and research/scale work. It is not the execution
+path or completion gate for required `core_autonomous_runtime`. Core uses deterministic QA,
+independent critics, bounded repair, exact-output operational certificates, and autonomous
+abstention/quarantine. No operator, CVAT correction, human-anchor package count, review-hour target,
+or second-review step in this document may be imported into the core dependency closure.
+
+The human is the semantic authority for artifacts explicitly entering the human-anchor truth tier.
+This doc is the complete optional operator manual: project setup, SOPs, statuses, hotkeys, second
+review, and throughput targets. It neither grants nor revokes doc-24 exact-output operational
+authority.
 
 ---
 

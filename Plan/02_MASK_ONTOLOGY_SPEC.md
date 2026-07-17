@@ -1,6 +1,11 @@
 # Document 02: Mask Ontology Specification
 **Active mask_ontology_version: `body_parts_v1`** | **Approved inactive extension: `body_parts_v2` (doc 18)** | left/right = character perspective | atomic = visible-pixel-only
 
+> **Authority-profile amendment (doc 24):** “human correction” in the legacy authorship column is
+> the optional human/training-truth route. Core artifacts are authored by the governed autonomous
+> candidate/fusion/repair transaction and receive production authority only through an exact-output
+> operational certificate. Neither route may bypass the same structural ontology invariants.
+
 ---
 
 ## 1. Mask-Type Taxonomy (Resolves All Overlap Contradictions)
@@ -11,12 +16,12 @@ can be enforced by construction.
 
 | mask_type | Stored where | Overlap rule | Authored by |
 |-----------|-------------|--------------|-------------|
-| `atomic_exclusive` | PART map (indexed PNG) → generated binary PNGs | Zero overlap with other atomics (hard) | Pipeline draft + human correction |
-| `region_band` | `masks_regions\` binary PNGs | May overlap atomics; must stay inside person silhouette | Pipeline draft + human correction |
+| `atomic_exclusive` | PART map (indexed PNG) → generated binary PNGs | Zero overlap with other atomics (hard) | Governed pipeline transaction; optional human correction |
+| `region_band` | `masks_regions\` binary PNGs | May overlap atomics; must stay inside person silhouette | Governed pipeline transaction; optional human correction |
 | `derived_union` | `masks_derived\` binary PNGs | Overlap by definition | **Script only — never hand-authored** |
-| `material` | MATERIAL map (indexed PNG) → generated binaries | Zero overlap within map | Pipeline draft + human correction |
-| `projected_amodal` | `projected\` binary PNGs | May overlap anything | Geometry engine + human correction |
-| `protected_qa` | PART map IDs 50–53 + `protected\` binaries | Exclusive within PART map | Pipeline draft + human correction |
+| `material` | MATERIAL map (indexed PNG) → generated binaries | Zero overlap within map | Governed pipeline transaction; optional human correction |
+| `projected_amodal` | `projected\` binary PNGs | May overlap anything | Geometry engine; optional human correction; never visible-mask authority |
+| `protected_qa` | PART map IDs 50–53 + `protected\` binaries | Exclusive within PART map | Governed pipeline transaction; optional human correction |
 
 **Key consequences:**
 - `left_hand` = union(hand_base + 5 fingers) → `derived_union`, generated.

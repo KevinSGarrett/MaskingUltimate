@@ -1,5 +1,10 @@
 # ITEMS — Phase P5: Custom Model Training (entry gate: ≥200 certified training packages)
 
+**Completion-profile scope:** the package-volume entry gate, custom training, and human-anchor holdout
+comparisons in this file belong to optional `independent_real_accuracy` and post-core
+`scale_daz_maturity`. They are not entry gates for the partial-library, capability-snapshot-driven
+`core_autonomous_runtime` route defined by doc 24.
+
 Goal: D6 (champion beats draft pipeline on frozen holdout) + D7 (finger mIoU ≥ 0.70). Parent IDs from doc 14 §6.
 
 ## MF-P5-01 — Dataset build v1 + DVC (spec: 12 §1/§3)

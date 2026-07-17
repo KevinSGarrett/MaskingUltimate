@@ -1,5 +1,10 @@
 # ITEMS — Phase P7 Ontology Activation, Currency Review, and Autonomous Operations (docs 18, 20, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** human audits, governed-source demonstrations, package-volume
+> cadence, interactive acceptance, and long-running portfolio operations below qualify optional
+> independent-accuracy or post-core scale maturity only. Their incomplete/blocked state cannot block or
+> revoke `core_autonomous_runtime`; portfolio percentages still report them separately.
+
 Goal: operate the expanded system continuously with immutable evidence, recurring review, selective audits, and honest activation gates.
 
 ## MF-P7-06 — Ontology-v2 operations and activation (spec: 18 checklist I)
@@ -19,5 +24,5 @@ Goal: operate the expanded system continuously with immutable evidence, recurrin
 - [ ] MF-P7-07.06 Demonstrate trigger-driven retraining with new fingerprint, compatibility-scoped evidence reuse, recertification/abstention, role promotion/rejection, and rollback · Verify: immutable end-to-end operations report passes · Blocked by: certified training corpus and audit trigger
 - [ ] MF-P7-07.07 Run 20 unseen images autonomously with a preselected blinded mixed audit sample and no routine per-image correction · Verify: exact input/output/certificate/audit hashes plus labor/quality/confidence metrics pass the revised headline contract · Blocked by: NEEDS KEVIN: supply governed unseen images and perform the preselected blinded human-anchor audit
 - [ ] MF-P7-07.08 Demonstrate target zero-touch 0.95, routine human touch ≤0.05, and manual pixel edit ≤0.01 as measured operational outcomes—not completion assumptions · Verify: statistically reported run includes denominators, confidence bounds, and residual contexts · Blocked by: MF-P7-07.07
-- [ ] MF-P7-07.09 Run doctor, live provider smokes, frozen benchmarks, CVAT migration/rollback, autonomy certificate/revocation, single-person headline, and tracker/report before declaring modernization complete · Verify: dated completion bundle links all exact evidence · Blocked by: all upstream modernization gates
+- [ ] MF-P7-07.09 Run doctor, live provider smokes, frozen benchmarks, optional CVAT migration/rollback, statistical certificate/revocation, single-person headline, and tracker/report before declaring the legacy modernization/portfolio profile complete; this bundle has no core-completion authority · Verify: dated completion bundle links all exact evidence and names its optional profile scope · Blocked by: all upstream modernization gates
 - [ ] MF-P7-07.10 Record every blocker needing sources, anchor audits, credentials, billable compute, or interactive acceptance with `NEEDS KEVIN:` while continuing all other actionable work · Verify: tracker audit finds no vague human blocker and no technically actionable item mislabeled as Kevin-only · Blocked by: none

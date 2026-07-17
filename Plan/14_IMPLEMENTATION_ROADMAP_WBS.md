@@ -5,8 +5,9 @@ criterion; a task is DONE only when code + test + the acceptance check all exist
 my machine" closes). Spec column names the governing document — build to the spec, not to memory.
 Builder = AI coding agent under Kevin's direction (doc 01 roles); solo-dev rhythm in §10.
 
-**Timeline (target):** P0 days 1–3 · P1 weeks 1–2 · P2 weeks 2–4 · P3 weeks 4–6 · P4 weeks 5–7
-(overlaps P3) · P5 weeks 6–10 (needs ≥200 gold) · P6 after D6 · P7 continuous.
+**Legacy maturity timeline (not core authority):** P0 days 1–3 · P1 weeks 1–2 · P2 weeks 2–4 ·
+P3 weeks 4–6 · P4 weeks 5–7 (overlaps P3) · P5 weeks 6–10 (needs ≥200 gold) · trained-champion
+P6 after D6 · P7 continuous. Doc-24 P6-07..12 is the independent required core path.
 
 ---
 
@@ -45,7 +46,10 @@ from the start, at zero extra cost, even though only p0 is exercised until Phase
 any future breaking migration. See `Plan\Items\10_ITEMS_P8_MULTI_PERSON_MASKING.md` for the
 itemized version of this note.
 
-**Exit:** an image can go incoming→CVAT→approved gold package with format QA enforced (D2 core).
+**Legacy accuracy/portfolio exit:** an image can go incoming→CVAT→approved gold package with format
+QA enforced. D2 is retained as optional human-calibrated evidence; it is not
+`core_autonomous_runtime`. The required human-free core path and its exact gates are defined by doc
+24 and `MF-P6-07` through `MF-P6-12`.
 
 ## 3. Phase P2 — Body-Aware Drafting (Weeks 2–4) → G2 first measurement
 
@@ -109,7 +113,11 @@ P2 doesn't yet loop over them.
 
 **Exit:** custom models are the drafters; leaderboard is the arbiter; D6+D7 checked.
 
-## 7. Phase P6 — ComfyUI & Serving (after D6) → D8
+## 7. Phase P6 — ComfyUI, Serving, Autonomous Core, and Cross-Project Bridge
+
+Legacy trained-champion serving rows P6-01..06 retain their own D6/provider prerequisites. The doc-24
+autonomous-core lane P6-07..12 starts independently and has no D6, human-anchor/CVAT, corpus-volume,
+full-library, DAZ, or soak prerequisite.
 
 | ID | Task | Deliverable | Acceptance | Spec |
 |----|------|-------------|-----------|------|
@@ -117,8 +125,17 @@ P2 doesn't yet loop over them.
 | MF-P6-02 | `serve\api.py` | /health /models /predict /refine + gpu.lock | latency targets met warm; lock mutual-exclusion demonstrated | 13 §3 |
 | MF-P6-03 | Mode B node + workflows | MF Predict Masks + 3 shipped workflows | wf_live_predict_inpaint.json works on a never-seen image (**D8**) | 13 §2, §4 |
 | MF-P6-04 | Read-only enforcement audit | test that no Comfy path writes packages | mutation attempt fixture errors (QC-030 parity) | 13 §5 |
+| MF-P6-07 | Completion taxonomy and core DoD | closed registry + independent tracker profiles | required core cannot inherit optional human/accuracy/scale/DAZ blockers | 24 §§1–3 |
+| MF-P6-08 | Autonomous QA and exact-output authority | hard veto, critics, repair, abstention, certificate, revocation | accepted/repaired/abstained/revoked single-/multi-person cases pass without manual masks | 24 §§3–5 |
+| MF-P6-09 | Bridge common authority/crosswalk | identity, coordinate, authority, lineage, receipt, error contracts | incompatibility/ownership/transform/authority negative matrix fails closed | 24 §§6–8 |
+| MF-P6-10 | Release/adoption/revocation lifecycle | release, capability, requirements, adoption, invalidation artifacts | clean pinned install, partial-adoption isolation, cache invalidation, rollback pass | 24 §§7, 9 |
+| MF-P6-11 | Mode A/Mode B external adapter | package reader, live draft client, arbitration, feedback, journal, recovery | no silent fallback; restart/idempotency/outage/resource tests pass | 24 §§6–10 |
+| MF-P6-12 | Cross-project qualification/release | single-/multi-person vertical slices + signed evidence/handoff | both projects pin identical hashes and core profile closes independently | 24 §§11–12 |
 
-## 8. Phase P7 — Scale & Continuous Operation → D5, D10
+## 8. Optional Phase P7 — Scale & Continuous Operation → D5, D10
+
+This phase belongs to `scale_daz_maturity` and, where independent human truth is used,
+`independent_real_accuracy`. It cannot block or revoke the doc-24 `core_autonomous_runtime` profile.
 
 | ID | Task | Deliverable | Acceptance | Spec |
 |----|------|-------------|-----------|------|
@@ -130,11 +147,16 @@ P2 doesn't yet loop over them.
 
 ## 9. Dependencies & Critical Path
 
-`P0 → P1 → P2 → P3 → P5 → P6` is the critical path; P4 runs parallel to late P3 (needs P2
+The required core-autonomy/bridge path is `P6-07 → P6-08 → P6-09 → P6-10 → P6-11 → P6-12`,
+reusing already-complete runtime/QA foundations as declared by each row. It runs without waiting for
+human anchors, package-volume training gates, full-library download, or DAZ. The legacy scale/model
+maturity path remains `P0 → P1 → P2 → P3 → P5 → P6`; P4 runs parallel to late P3 (needs P2
 panels). Inside P5: P5-01→02→03→06→07 serial; 04/05 parallel to 03. Gold-count gates: P5 entry
-≥200 approved (else keep annotating in P3/P4 mode); D5 needs P7-01. Hard blockers by design:
-CI flip test (P5-02) blocks all training merges; calibration gate (P4-05) blocks VLM in prod;
-format QCs block approval everywhere from P1-07 onward.
+≥200 approved (else keep annotating in P3/P4 mode); D5 needs P7-01. These are scale/training-profile
+gates, not core gates. Hard blockers are absolute within the profile that owns them; only the
+`core_autonomous_runtime` dependency closure blocks required completion. For example, the CI flip test
+(P5-02) blocks training merges, the statistical calibration gate (P4-05) blocks its independent-
+accuracy use, and format/ownership/authority QCs in the core closure block operational acceptance.
 
 ## 10. Solo-Dev Weekly Rhythm (P3 onward)
 

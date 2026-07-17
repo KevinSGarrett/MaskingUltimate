@@ -1054,3 +1054,33 @@ still needs its gated checkpoint, real image-disjoint human-anchor win, live smo
 observed production promotion/rollback.
 
 **Approved by:** Kevin's SAM 3.1 modernization amendment and autonomous execution mandate
+
+## 2026-07-17 — Separate autonomous core completion from human research and scale claims
+
+**Item(s) affected:** MF-P6-07.01..MF-P6-12.06; legacy D1–D11/G1–G9 and P1–P9
+human-anchor, CVAT, corpus-volume, training, multi-person, video, DAZ, and soak gates
+
+**Spec said:** Earlier decisions and horizon records made human-anchor calibration, Kevin CVAT/SOP
+review, reviewed multi-person sources, D1–D11, fixed package/clip volumes, approved video gold,
+operator-cost review, DAZ maturity, or long soak evidence prerequisites for broad portfolio or
+production claims.
+
+**What we did instead:** Document 24 now defines `core_autonomous_runtime` as the sole required
+finish line and freezes two additional non-blocking profiles: `independent_real_accuracy` and
+`scale_daz_maturity`. Core uses deterministic hard vetoes, qualified autonomous critics,
+synthetic/metamorphic/perturbation evidence, bounded hypothesis-distinct repair, typed abstention,
+exact `operationally_certified_artifact` certificates, revocation, recovery, and a pinned
+MaskFactory↔Main release/adoption bridge. Human/CVAT/real-holdout evidence remains valid only for
+independent accuracy or human/training gold; volume/DAZ/soak work remains valid only for post-core
+scale maturity. `operationally_certified_artifact` cannot be counted as or relabeled to
+`human_approved_gold` or `autonomous_certified_gold`. Earlier conflicting log/horizon text is
+historical evidence and has no current core-completion authority.
+
+**Why:** The required product is an autonomous masking authority. Allowing optional human research
+or scale evidence to redefine that finish line made autonomous completion impossible by construction
+and conflated operational intended-use authority with population-accuracy and training-truth claims.
+Claim-scoped profiles preserve all historical evidence without letting it silently block or revoke
+the autonomous core.
+
+**Approved by:** Kevin's explicit autonomous-core and no-mandatory-human-mask direction; implemented
+as the authoritative doc-24/tracker claim firewall

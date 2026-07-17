@@ -1,5 +1,10 @@
 # ITEMS — Phase P9 External Supervision, Reference Intelligence, and DAZ Autonomous Truth (docs 23; Daz 00–32)
 
+> **Completion-profile scope (doc 24):** this is the optional/post-core
+> `scale_daz_maturity` and independent-accuracy lane. Reference-corpus, DAZ, training, real-holdout,
+> human-anchor, volume, and soak gates remain valid only for their named claims and cannot block or
+> revoke `core_autonomous_runtime` or impersonate operational artifact authority.
+
 Goal: use qualified existing labels, the governed 83k reference corpus, and exact DAZ synthetic geometry to maximize autonomous real-image mask quality while keeping human work sparse and preserving real human-anchor calibration/holdout authority.
 
 ## MF-P9-01 — Controlled baseline and safety freeze (spec: Daz 24 D0; Daz 00–32)

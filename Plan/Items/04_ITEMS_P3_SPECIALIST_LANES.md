@@ -1,5 +1,10 @@
 # ITEMS — Phase P3: Specialist Lanes (Weeks 4–6)
 
+**Completion-profile scope:** specialist implementation can improve the autonomous runtime, while
+human-anchor benchmarks and manual-review measurements in this legacy checklist belong only to
+optional `independent_real_accuracy` or post-core maturity. They do not block doc-24
+`core_autonomous_runtime` unless an item is explicitly present in its registry dependency closure.
+
 Goal: all hard-class lanes live, topology QCs on, 100 certified packages, and measured residual/audit labor trending down. Parent IDs from doc 14 §4 as amended by docs 20/22.
 
 ## MF-P3-01 — Crop contract + hand/finger lane (spec: 03 §5, 08 §1–2)

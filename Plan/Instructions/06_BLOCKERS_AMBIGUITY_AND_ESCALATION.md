@@ -61,10 +61,16 @@ example in `04_ITEM_EXECUTION_GUIDE.md` §5.
 
 ## 4. What Only Kevin Can Do
 
+The actions below may block the optional profile or exact activity that needs
+them. They do **not** block `core_autonomous_runtime`: core can use governed
+generated/available sources, performs no manual CVAT correction or blinded
+human review, does not require billable services, and abstains/quarantines
+rather than manufacturing an approval.
+
 | Action | Why it's Kevin's, not yours |
 |---|---|
-| **Supplying source images** for the dataset | Data governance (doc 01 §7) requires generated/owned/licensed/consented provenance — you cannot source this yourself. |
-| **Doing the actual CVAT annotation/correction work** (the manual clicks in doc 11's SOPs) | Doc 11 is explicitly Kevin's operator manual — human judgment on mask correction is the point of that review layer. Build and automate everything around it (drafts, QA, panels, the CVAT bridge, the whole tooling stack) so his manual time is minimized, but don't attempt to replace his review judgment yourself, even if you technically have UI-automation tools that could click through CVAT. |
+| **Supplying particular private source images** when an optional benchmark/dataset calls for them | Generated/owned/licensed/consented provenance remains required; core may instead use already governed or autonomously generated sources. |
+| **Doing optional CVAT annotation/correction work** (the manual clicks in doc 11's SOPs) | Human-authored truth supports `independent_real_accuracy`; it is never substituted by automation and never blocks core. |
 | **Approving second-review / IAA sign-off** | Same reasoning — this is the human-consistency check the pipeline is built around. |
 | **Spending real money** (launching the optional AWS burst training instance, any other billable action) | The *decision* to use g6e.xlarge spot in the dev account is already made in the spec — but actually incurring a real-world cost is a distinct action that needs an explicit go-ahead from Kevin first, every time, even though the technical choice was pre-approved. |
 | **Approving a scope change** (adding a v2-deferred label, enabling video/multi-person, anything doc 01 §5 lists as out-of-scope) | These were deliberately deferred; expanding scope is a project decision, not a build decision. |

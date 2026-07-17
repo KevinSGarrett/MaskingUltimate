@@ -7,6 +7,12 @@
 **DAZ design authority:** `Plan\Daz\00_PACKAGE_INDEX.md` through `32_F_DAZ_ASSET_PLACEMENT_AND_DIRECTORY_MANIFEST.md`
 **Implementation tracker:** `Plan\Items\20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md`
 
+**Doc-24 profile scope:** this document governs optional `independent_real_accuracy` and post-core
+`scale_daz_maturity` evidence. Its human anchors, real holdouts, reference-corpus scale, DAZ asset/
+render work, ablations, package milestones, binary owner decisions, and seven-day soak do not block
+`core_autonomous_runtime`. Core may consume any already-qualified capability, but it never waits for
+the entire program described here.
+
 ---
 
 ## 1. Objective and acceptance posture
@@ -220,6 +226,8 @@ plausible quality estimate is not completion evidence. Each P9 verify clause req
 artifacts and real holdout results where quality/promotion is affected.
 
 ## 9. P9 exit
+
+P9 exit closes `scale_daz_maturity`; it is not the MaskFactory autonomous-runtime exit.
 
 P9 exits only when qualified warehouse sources are converted inside their label scope; reference index,
 selection, materialization, coverage, and zero-leakage pass; DAZ D0–D11, 100/1,000/10,000-scene

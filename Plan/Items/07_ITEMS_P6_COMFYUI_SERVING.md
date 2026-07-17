@@ -1,6 +1,10 @@
-# ITEMS — Phase P6: ComfyUI Integration & Serving (after D6)
+# ITEMS — Phase P6: ComfyUI Integration & Serving
 
-Goal: D8 — node pack loads gold/predicted masks and produces derived inpaint masks inside a workflow. Parent IDs from doc 14 §7.
+Legacy trained-champion lane goal: D8 — the node pack loads package/predicted masks and produces
+derived inpaint masks inside a workflow. Its former D6 prerequisite applies only to that optional
+trained-champion lane. The required human-free autonomy/bridge lane is `MF-P6-07` through
+`MF-P6-12` (doc 24) and has no D6, human, CVAT, or package-volume prerequisite. Parent IDs from doc
+14 §7.
 
 ## MF-P6-01 — Node pack Mode A (spec: 13 §1–2)
 - [ ] MF-P6-01.01 Implement all Mode-A nodes in `serve\comfy_export.py` tree: MF Package Browser · MF Load Source · MF Load Gold Mask (ontology dropdown) · MF Load Union Mask · MF Load Projected Region · MF Load Inpaint Mask (existing + on-the-fly derive with dilate/feather params, never written back) · MF Mask From Label Map (any PART/MATERIAL id) · MF Combine Masks (union/intersect/subtract/xor) · MF Mask Stats
@@ -29,5 +33,5 @@ Goal: D8 — node pack loads gold/predicted masks and produces derived inpaint m
 - [ ] MF-P6-04.01 Mutation-attempt fixture test: any write attempt from node code under `data\packages\` errors (QC-030 parity)
 - [ ] MF-P6-04.02 Static audit: grep/CI check that no ComfyUI-side code path opens package files in write mode
 
-## P6 Exit Gate
-- [ ] MF-P6-EXIT **D8** demonstrated live (Mode A + Mode B workflows) · doc 14 §7 checkboxes updated
+## P6 Legacy Trained-Champion Lane Exit Gate
+- [ ] MF-P6-EXIT **D8** demonstrated live for the optional legacy lane (Mode A + Mode B workflows) · doc 14 §7 checkboxes updated · This item does not define project-wide or `core_autonomous_runtime` completion; the required adopted bridge exit is `MF-P6-12.06`

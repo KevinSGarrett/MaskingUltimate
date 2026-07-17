@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://maskfactory.local/schemas/completion_bundle_input.schema.json",
-  "title": "MaskFactory modernization completion input",
+  "title": "MaskFactory legacy portfolio/research evidence input",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "bundle_id", "created_at", "policy_sha256", "tracker", "evidence_receipts", "sha256"],

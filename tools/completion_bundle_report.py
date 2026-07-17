@@ -1,12 +1,21 @@
-"""Build or verify the final MaskFactory completion evidence index."""
+"""Build or verify the non-core legacy portfolio/research evidence index."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from maskfactory.completion_bundle import build_report, load_policy, verify_report
+# The tool is executable directly from any working directory. Resolve the
+# repository's own source tree before importing ``maskfactory`` so an older
+# editable/global installation cannot silently supply a different frozen policy.
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOT = REPOSITORY_ROOT / "src"
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
+
+from maskfactory.completion_bundle import build_report, load_policy, verify_report  # noqa: E402
 
 
 def _load(path: Path) -> dict:

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "maskfactory_canonical_json_specification",
+  "algorithm": "maskfactory-canonical-json-v1",
+  "encoding": "UTF-8",
+  "unicode_normalization": "NFC",
+  "object_key_order": "unicode_codepoint",
+  "duplicate_keys": "reject_before_and_after_nfc_normalization",
+  "string_escaping": "json_minimal_control_quote_backslash",
+  "number_encoding": "finite_ieee754_shortest_roundtrip_decimal_lowercase_e_no_plus_no_leading_exponent_zero",
+  "negative_zero": "0",
+  "nonfinite_numbers": "reject",
+  "timestamp_normalization": "RFC3339_UTC_Z",
+  "whitespace": "none_outside_strings",
+  "top_level_exclusions": "record_schema_declared_ordered_exact_set_only",
+  "hash": "sha256_of_canonical_utf8_bytes",
+  "signature_payload": "raw_32_byte_sha256_digest",
+  "parser_requirements": {
+    "reject_invalid_utf8": true,
+    "reject_duplicate_object_keys": true,
+    "reject_nfc_key_collisions": true,
+    "reject_non_string_object_keys": true,
+    "reject_nonfinite_numbers": true
+  },
+  "implementation": {
+    "python_callable": "maskfactory.validation:canonical_json_bytes",
+    "loader_callable": "maskfactory.validation:load_canonical_json"
+  },
+  "golden_vectors_relative_path": "qa/governance/bridge/maskfactory_canonical_json_golden_vectors_v1.json"
+}

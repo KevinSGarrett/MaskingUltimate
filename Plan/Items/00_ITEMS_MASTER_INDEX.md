@@ -1,28 +1,29 @@
 # ITEMS — Master Index (Full End-to-End Completion Checklist)
 
-**What this is:** the complete governed blueprint (`Plan\00–23`, the approved SAM 3.1 handoff, and `Plan\Daz\00–32`) decomposed into every atomic
+**What this is:** the complete governed blueprint (`Plan\00–24`, the approved SAM 3.1 handoff, and `Plan\Daz\00–32`) decomposed into every atomic
 work item required to take the Ultimate Masking System from an empty machine to full completion
-(all D1–D11 + the 20-image headline test). If every box below is checked with its verify clause
-satisfied, the project is DONE — there is nothing else.
+under three claim-scoped profiles. `core_autonomous_runtime` is the required human-free product
+finish line; `independent_real_accuracy` and `scale_daz_maturity` are optional/non-blocking profiles.
 
 Later governed specs 18–22 and the SAM 3.1 handoff are imported into the same live tracker. The
 source-to-item map is `TRACEABILITY_18_22_SAM31.md`; doc 18's original 70-entry checklist remains
 an evidence source, not a separate status system.
 
-**Total items: 755** across 20 checklist files (including 10 phase exit gates + the project exit gate).
+**Total items: 798** across 21 checklist files (including profile-scoped phase exits and the required
+doc-24 core exit). No legacy phase exit is global completion authority.
 
 ## File Map
 
 | File | Phase | Items | Closes |
 |------|-------|-------|--------|
 | 01_ITEMS_P0_ENVIRONMENT.md | P0 Environment & Foundation (days 1–3) | 68 | D9 groundwork |
-| 02_ITEMS_P1_GOLD_FACTORY_MVP.md | P1 Gold Factory MVP (wk 1–2) | 61 | D2 core, first gold |
+| 02_ITEMS_P1_GOLD_FACTORY_MVP.md | P1 Gold Factory MVP (wk 1–2) | 61 | optional D2 accuracy/portfolio evidence, first gold |
 | 03_ITEMS_P2_BODY_AWARE_DRAFTING.md | P2 Body-Aware Drafting (wk 2–4) | 58 | D1, G2 baseline |
 | 04_ITEMS_P3_SPECIALIST_LANES.md | P3 Specialist Lanes (wk 4–6) | 45 | 100 certified packages, labor metrics |
 | 05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md | P4 VLM QA + Active Learning (wk 5–7) | 40 | D4 |
 | 06_ITEMS_P5_TRAINING.md | P5 Custom Model Training (wk 6–10, ≥200 certified) | 38 | D6, D7 |
-| 07_ITEMS_P6_COMFYUI_SERVING.md | P6 ComfyUI & Serving (after D6) | 20 | D8 |
-| 08_ITEMS_P7_SCALE_OPERATIONS.md | P7 Scale & Continuous | 17 | D5, D10, headline test |
+| 07_ITEMS_P6_COMFYUI_SERVING.md | P6 legacy trained-champion serving plus independent doc-24 core bridge lane | 20 | optional D8 plus required core bridge |
+| 08_ITEMS_P7_SCALE_OPERATIONS.md | P7 Optional Scale & Continuous | 17 | optional D5, D10, headline test |
 | 09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md | P0 External Foundation Bootstrap | 22 | Existing-model/dataset foundation for D1/D5/D6/D8 |
 | 10_ITEMS_P8_MULTI_PERSON_MASKING.md | P8 Multi-Person / Multi-Character Masking (after P7) | 45 | D11, G9 |
 | 11_ITEMS_P0_MODERNIZATION_FOUNDATION.md | P0 v2/registry/provider foundation | 31 | reproducibility, registry governance, challenger installation |
@@ -35,6 +36,7 @@ an evidence source, not a separate status system.
 | 18_ITEMS_P7_CURRENCY_OPERATIONS.md | P7 currency/autonomous operations | 16 | v2 activation, recurring reviews, revised headline evidence |
 | 19_ITEMS_P8_AUTONOMOUS_MULTI_PERSON.md | P8 autonomous multi-person | 8 | certificate-covered instances, residual/audit routing |
 | 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 146 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
+| 21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md | P6 autonomous core and cross-project ComfyUI bridge | 43 | required human-free runtime completion, exact-output authority, release/adoption bridge, recovery |
 
 ## ID Scheme & Traceability
 
@@ -52,19 +54,23 @@ phase-native task numbers. Every later-spec requirement maps through
 2. **Order:** work files top-to-bottom; phases follow the doc 14 §9 critical path
    P0→P1→P2→P3→P5→P6→P8 with P4 parallel to late P3. Within a phase, task clusters are ordered by
    dependency.
-3. **Hard blockers (cannot be deferred, cannot be overridden):** MF-P0-07 doctor green ·
+3. **Hard blockers are absolute within their assigned completion profile.** Only blockers in the
+   `core_autonomous_runtime` dependency closure block required completion; optional accuracy/training/
+   DAZ blockers cannot be imported into core. The portfolio blocker inventory includes: MF-P0-07 doctor green ·
    MF-P1-03 ontology CI assert · MF-P1-07 format-QC BLOCK enforcement · MF-P4-05 VLM calibration
    gate · MF-P5-02.02 flip/swap_partner CI test · MF-P5-05.04 D7 gate · MF-P5-07.02 D6 gate ·
    MF-P8-05.01/.02 (QC-035/036 instance exclusivity/bleed) · MF-P8-07 split-integrity CI test ·
    registry/governance blockers in MF-P0-16 · v2 CI/activation blockers in MF-P1-10, MF-P1-11,
    MF-P4-09, MF-P5-09, MF-P7-06 · certification/revocation blockers in MF-P4-11 · truth/promotion
    blockers in MF-P1-13 and MF-P5-10 · recurring currency blockers in MF-P7-07 · autonomous
-   multi-person blockers in MF-P8-11.
+   multi-person blockers in MF-P8-11 · autonomous core/bridge blockers in MF-P6-07 through MF-P6-12.
 4. **Phase exits:** each file ends with `MF-P<n>-EXIT`; do not start the next phase's model-facing
    work before the exit is checked (annotation cadence may continue across boundaries).
 5. **Entry gates:** P5 requires ≥200 certified training packages
-   (`human_anchor_train_count + autonomous_certified_gold_count`); P6 requires D6 plus eligible
-   promoted providers; P8 requires P7 substantially
+   (`human_anchor_train_count + autonomous_certified_gold_count`) for the training/scale profile.
+   Legacy P6 trained-champion serving retains D6/provider gates, but `MF-P6-07` through `MF-P6-12`
+   core autonomy/bridge work has no D6, human, corpus-volume, full-library, DAZ, or soak prerequisite.
+   P8's legacy maturity path requires P7 substantially
    complete (D1–D10 satisfied) — see doc 17 §13.
 6. **Conditional items** (MF-P5-08.01/.02, MF-P7-01.04, MF-P7-03.05) check as `[x] n/a — trigger
    not met` if their trigger never fires; that still counts as complete.
@@ -76,10 +82,13 @@ phase-native task numbers. Every later-spec requirement maps through
 
 ## Definition of Project-Done
 
-All 755 tracker items resolved with evidence ⇒ D1–D11 hold ⇒ run the revised autonomous single-person
-headline test (`MF-P7-07.07` plus `MF-P7-EXIT`): 20 unseen images, certificate-covered selective
-autonomy, a preselected blinded mixed audit, no routine per-image correction, separate labor/quality/
-confidence reporting, zero format and left/right failures. Then run the autonomous multi-person
-demonstration (`MF-P8-11.07` plus `MF-P8-EXIT`): 10–20 real 2–4-person images, certificate-covered
-instances plus residual/audit routing, reciprocal contact/occlusion, and zero cross-instance bleed.
-Both evidence bundles, current currency/rollback reviews, and every hard blocker are the finish line.
+The requested product is DONE when the tracker computes `core_autonomous_runtime = complete` from the
+doc-24 gates and the pinned MaskFactory/main-project adoption bundle. That profile requires autonomous
+generation, hard QA, critic diversity, bounded repair, abstention, operational certification,
+revocation, Mode A/Mode B authority, single-/multi-person integration, restart, and rollback evidence.
+
+The legacy D1–D11 rollups, 20-image blinded headline test, human-anchor/CVAT work, 200/300/500 package
+targets, full model-library qualification, DAZ work, and seven-day soak remain tracked in
+`independent_real_accuracy` or `scale_daz_maturity`. They support additional claims and must not be
+presented as blockers to the required core profile. The authoritative mapping is
+`Plan\Tracker\completion_track_registry.json`.

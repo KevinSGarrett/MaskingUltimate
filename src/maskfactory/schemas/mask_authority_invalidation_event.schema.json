@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mask_authority_invalidation_event.schema.json",
+  "title": "Lossless MaskFactory authority and compatibility invalidation event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "event_id", "stream_id", "sequence", "causation_id", "idempotency_key",
+    "occurred_at", "effective_at", "evidence_context", "fixture_only", "producer", "canonicalization", "trust_binding",
+    "reason", "severity", "target_transitions", "required_actions", "superseding_binding", "rollback_binding",
+    "evidence_sha256", "event_payload_sha256", "signature"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "mask_authority_invalidation_event"},
+    "event_id": {"type": "string", "pattern": "^mfinv_[0-9a-f]{24}$"},
+    "stream_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "causation_id": {"type": ["string", "null"], "minLength": 1},
+    "idempotency_key": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{16,128}$"},
+    "occurred_at": {"$ref": "#/$defs/timestamp"},
+    "effective_at": {"$ref": "#/$defs/timestamp"},
+    "evidence_context": {"enum": ["conformance_fixture", "runtime_evidence"]},
+    "fixture_only": {"type": "boolean"},
+    "producer": {"const": "MaskFactory"},
+    "canonicalization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "excluded_top_level_fields"],
+      "properties": {"algorithm": {"const": "maskfactory-canonical-json-v1"}, "excluded_top_level_fields": {"type": "array", "prefixItems": [{"const": "event_payload_sha256"}, {"const": "signature"}], "minItems": 2, "maxItems": 2}}
+    },
+    "trust_binding": {"$ref": "#/$defs/trustBinding"},
+    "reason": {"enum": [
+      "release_superseded", "release_revoked", "producer_signing_key_revoked", "producer_signing_key_rotated",
+      "consumer_adoption_key_revoked", "consumer_adoption_key_rotated", "trust_policy_changed",
+      "wire_schema_changed", "semantic_invariant_profile_changed", "api_contract_changed", "package_format_changed",
+      "ontology_changed", "node_pack_changed", "capability_snapshot_changed", "capability_policy_changed",
+      "package_invalidated", "artifact_invalidated", "artifact_hash_drift", "certificate_expired", "certificate_revoked",
+      "provider_stack_changed", "consumer_requirements_changed", "signed_journal_stale",
+      "signed_journal_fork_detected", "revocation_checkpoint_stale", "validity_expired", "qa_regression"
+    ]},
+    "severity": {"enum": ["warning", "blocking"]},
+    "target_transitions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["transition_id", "target_kind", "target_id", "target_sha256", "previous_authority_state", "new_authority_state", "previous_certificate_status", "new_certificate_status", "reason_code", "scope_sha256"],
+        "properties": {
+          "transition_id": {"type": "string", "minLength": 1},
+          "target_kind": {"enum": ["release", "adoption_receipt", "capability_snapshot", "certificate", "package", "artifact", "provider_stack", "policy", "trust_policy", "semantic_profile", "api_contract", "package_format", "node_pack", "wire_schema", "ontology", "consumer_requirements", "execution_fingerprint", "signing_key", "journal_checkpoint"]},
+          "target_id": {"type": "string", "minLength": 1},
+          "target_sha256": {"$ref": "#/$defs/sha256"},
+          "previous_authority_state": {"$ref": "#/$defs/authorityState"},
+          "new_authority_state": {"enum": ["invalid", "hypothesis", "draft", "qa_passed_noncertified"]},
+          "previous_certificate_status": {"enum": ["active", "expired", "revoked", "superseded", "none"]},
+          "new_certificate_status": {"enum": ["expired", "revoked", "superseded", "none"]},
+          "reason_code": {"type": "string", "minLength": 1},
+          "scope_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "required_actions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["action_id", "transition_ids", "action", "deadline_at", "verification_evidence_required", "verification_policy_sha256"],
+        "properties": {
+          "action_id": {"type": "string", "minLength": 1},
+          "transition_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "action": {"enum": ["invalidate_cache", "tombstone_cached_artifact", "block_dependent_pass", "revalidate_binding", "revalidate_adoption", "reroute_to_eligible_authority", "quarantine_artifact", "refresh_release", "refresh_capability_snapshot", "refresh_consumer_requirements", "refresh_contract", "refresh_revocation_checkpoint", "rotate_trust_anchor", "replay_signed_journal", "reject_forked_journal", "reinstall_node_pack", "expire_adoption", "rollback_release"]},
+          "deadline_at": {"$ref": "#/$defs/timestamp"},
+          "verification_evidence_required": {"const": true},
+          "verification_policy_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "superseding_binding": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "object", "additionalProperties": false, "required": ["release_id", "release_payload_sha256", "adoption_required"], "properties": {"release_id": {"type": "string", "minLength": 1}, "release_payload_sha256": {"$ref": "#/$defs/sha256"}, "adoption_required": {"const": true}}}
+      ]
+    },
+    "rollback_binding": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "object", "additionalProperties": false, "required": ["rollback_id", "rollback_sha256", "target_release_id", "target_release_payload_sha256"], "properties": {"rollback_id": {"type": "string", "minLength": 1}, "rollback_sha256": {"$ref": "#/$defs/sha256"}, "target_release_id": {"type": "string", "minLength": 1}, "target_release_payload_sha256": {"$ref": "#/$defs/sha256"}}}
+      ]
+    },
+    "evidence_sha256": {"$ref": "#/$defs/sha256"},
+    "event_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "signature": {"$ref": "#/$defs/signature"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "authorityState": {"enum": ["invalid", "hypothesis", "draft", "qa_passed_noncertified", "certified"]},
+    "trustBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key_set_id", "key_set_version", "key_set_sha256", "key_role", "signing_key_id", "signing_public_key_sha256", "rotation_policy_sha256", "revocation_policy_sha256"],
+      "properties": {"key_set_id": {"type": "string", "minLength": 1}, "key_set_version": {"type": "string", "minLength": 1}, "key_set_sha256": {"$ref": "#/$defs/sha256"}, "key_role": {"const": "producer_journal"}, "signing_key_id": {"type": "string", "minLength": 1}, "signing_public_key_sha256": {"$ref": "#/$defs/sha256"}, "rotation_policy_sha256": {"$ref": "#/$defs/sha256"}, "revocation_policy_sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "key_id", "public_key_base64", "signed_payload_sha256", "signed_payload_format", "value_base64"],
+      "properties": {"algorithm": {"const": "ed25519"}, "key_id": {"type": "string", "minLength": 1}, "public_key_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{43}=$"}, "signed_payload_sha256": {"$ref": "#/$defs/sha256"}, "signed_payload_format": {"const": "sha256_digest_bytes"}, "value_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{40,}={0,2}$"}}
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"fixture_only": {"const": true}}, "required": ["fixture_only"]}, "then": {"properties": {"evidence_context": {"const": "conformance_fixture"}}}},
+    {"if": {"properties": {"fixture_only": {"const": false}}, "required": ["fixture_only"]}, "then": {"properties": {"evidence_context": {"const": "runtime_evidence"}}}}
+  ]
+}

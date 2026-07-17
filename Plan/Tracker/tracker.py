@@ -3,8 +3,9 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 755 action items across phases P0-P9, plus Definition-of-Done
-(D1-D11) and Goals (G1-G9) rollups, plus free-form project metrics.
+build-out: 798 action items across phases P0-P9, three independently scoped
+completion profiles, Definition-of-Done (D1-D11) and Goals (G1-G9) rollups,
+plus free-form project metrics.
 
 SOURCE OF TRUTH SPLIT (important — mirrors the project's own "derived vs
 hand-authored" philosophy):
@@ -34,6 +35,7 @@ Quick start:
 """
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -64,6 +66,8 @@ CHANGELOG = ROOT / "CHANGELOG.jsonl"
 BACKUPS_DIR = ROOT / "backups"
 DASHBOARD = ROOT / "DASHBOARD.md"
 PHASES_DIR = ROOT / "phases"
+COMPLETION_TRACK_REGISTRY_JSON = ROOT / "completion_track_registry.json"
+COMPLETION_TRACK_REGISTRY_SCHEMA = ROOT / "completion_track_registry.schema.json"
 
 # ---------------------------------------------------------------------------
 # Status taxonomy
@@ -91,7 +95,105 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 755
+EXPECTED_ITEM_COUNT = 798
+
+CORE_EXCLUDED_DEPENDENCIES = (
+    "human_anchor_masks",
+    "manual_cvat_correction",
+    "blinded_human_review",
+    "minimum_package_corpus",
+    "full_model_library_download",
+    "daz_asset_or_render_work",
+    "long_duration_daz_soak",
+    "independent_real_accuracy_measurement",
+)
+
+# Completion is deliberately claim-scoped. Only core_autonomous_runtime is
+# required for the requested product finish line. The other two profiles
+# remain first-class and visible, but they cannot make core incomplete.
+COMPLETION_PROFILES = {
+    "core_autonomous_runtime": {
+        "classification": "required",
+        "blocking_for_core_completion": True,
+        "completion_claim": "operational autonomous runtime complete",
+        "prerequisite_profile_ids": [],
+        "excluded_core_dependencies": list(CORE_EXCLUDED_DEPENDENCIES),
+        "driven_by": [
+            "MF-P6-07.01",
+            "MF-P6-07.02",
+            "MF-P6-07.03",
+            "MF-P6-07.04",
+            "MF-P6-07.05",
+            "MF-P6-07.06",
+            "MF-P6-07.07",
+            "MF-P6-08.01",
+            "MF-P6-08.02",
+            "MF-P6-08.03",
+            "MF-P6-08.04",
+            "MF-P6-08.05",
+            "MF-P6-08.06",
+            "MF-P6-08.07",
+            "MF-P6-08.08",
+            "MF-P6-09.01",
+            "MF-P6-09.02",
+            "MF-P6-09.03",
+            "MF-P6-09.04",
+            "MF-P6-09.05",
+            "MF-P6-09.06",
+            "MF-P6-09.07",
+            "MF-P6-10.01",
+            "MF-P6-10.02",
+            "MF-P6-10.03",
+            "MF-P6-10.04",
+            "MF-P6-10.05",
+            "MF-P6-10.06",
+            "MF-P6-10.07",
+            "MF-P6-11.01",
+            "MF-P6-11.02",
+            "MF-P6-11.03",
+            "MF-P6-11.04",
+            "MF-P6-11.05",
+            "MF-P6-11.06",
+            "MF-P6-11.07",
+            "MF-P6-11.08",
+            "MF-P6-12.01",
+            "MF-P6-12.02",
+            "MF-P6-12.03",
+            "MF-P6-12.04",
+            "MF-P6-12.05",
+            "MF-P6-12.06",
+        ],
+    },
+    "independent_real_accuracy": {
+        "classification": "optional",
+        "blocking_for_core_completion": False,
+        "completion_claim": "independent real-accuracy claims qualified",
+        "prerequisite_profile_ids": [],
+        "excluded_core_dependencies": [],
+        "driven_by": [
+            "MF-P6-07.03",
+            "MF-P4-11.10",
+            "MF-P4-11.15",
+            "MF-P7-07.07",
+            "MF-P8-11.07",
+            "MF-P9-15.01",
+        ],
+    },
+    "scale_daz_maturity": {
+        "classification": "post_core",
+        "blocking_for_core_completion": False,
+        "completion_claim": "scale and DAZ maturity qualified",
+        "prerequisite_profile_ids": ["core_autonomous_runtime"],
+        "excluded_core_dependencies": [],
+        "driven_by": [
+            "MF-P6-07.04",
+            "MF-P5-10.05",
+            "MF-P7-01.01",
+            "MF-P9-12.07",
+            "MF-P9-EXIT",
+        ],
+    },
+}
 
 DEFAULT_METRICS = {
     # Historical compatibility metric. Never use as the sole P5/D5 gate.
@@ -160,32 +262,54 @@ PHASE_META = {
     "P4": {
         "name": "VLM QA & Active Learning",
         "file": "05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md",
-        "entry_gate": "runs parallel to late P3; certification needs image-disjoint human-anchor calibration evidence",
+        "entry_gate": (
+            "core operational QA/certification uses deterministic invariants, qualified autonomous "
+            "critics, perturbation, replay, and abstention without human evidence; only the optional "
+            "independent_real_accuracy profile needs an image-disjoint human-anchor calibration set"
+        ),
     },
     "P5": {
         "name": "Custom Model Training",
         "file": "06_ITEMS_P5_TRAINING.md",
-        "entry_gate": "certified_training_package_count >= 200 plus image-disjoint human-anchor holdout",
+        "entry_gate": (
+            "optional/post-core custom-training lane only: its own training authority may require "
+            "the declared package count and image-disjoint holdout; P5 is not a "
+            "core_autonomous_runtime prerequisite"
+        ),
     },
     "P6": {
-        "name": "ComfyUI Integration & Serving",
+        "name": "ComfyUI Integration, Serving & Autonomous Core Bridge",
         "file": "07_ITEMS_P6_COMFYUI_SERVING.md",
-        "entry_gate": "DoD D6 plus eligible promoted provider roles and rollback evidence",
+        "entry_gate": (
+            "MF-P6-07..12 autonomous-core work has no D6, human, corpus-volume, full-library, "
+            "DAZ, or soak prerequisite; legacy trained-champion serving lanes retain their own "
+            "profile-scoped D6/provider gates"
+        ),
     },
     "P7": {
         "name": "Scale & Continuous Operation",
         "file": "08_ITEMS_P7_SCALE_OPERATIONS.md",
-        "entry_gate": "P6 exit plus current currency/certificate/rollback reviews",
+        "entry_gate": (
+            "post-core scale_daz_maturity lane: core closure may precede this phase; scale work "
+            "requires its own current currency/certificate/rollback evidence"
+        ),
     },
     "P8": {
         "name": "Multi-Person / Multi-Character Masking",
         "file": "10_ITEMS_P8_MULTI_PERSON_MASKING.md",
-        "entry_gate": "P7 substantially complete; multi-person risk buckets/certificates remain independently gated",
+        "entry_gate": (
+            "core multi-person ownership, exclusivity, bleed, contact, and bridge checks may run "
+            "without P7 scale maturity; optional corpus/headline demonstrations retain their own "
+            "profile-scoped evidence gates"
+        ),
     },
     "P9": {
         "name": "External Supervision, Reference Intelligence & DAZ Autonomy",
         "file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-        "entry_gate": "foundation may proceed; training/promotion still requires qualified sources, leakage isolation, DAZ acceptance, and untouched real human-anchor evidence",
+        "entry_gate": (
+            "optional/post-core reference, training, and DAZ maturity work only; its qualified-source, "
+            "leakage, DAZ, and independent human-anchor claim gates cannot block or revoke core"
+        ),
     },
 }
 
@@ -256,8 +380,10 @@ DOD = {
         "driven_by": ["MF-P4-EXIT", "MF-P4-10.09", "MF-P4-11.15"],
     },
     "D5": {
-        "text": "\u2265300 certified packages exist with tier-separated authority, full manifests, "
-        "active certificates where required, hashes, and coverage matrix \u226580% cell coverage.",
+        "text": "\u2265300 optional legacy training/scale packages exist in human_anchor_train or "
+        "exact autonomous_certified_gold with the required statistical certificate, tier-separated "
+        "authority, full manifests, hashes, and coverage matrix \u226580% cell coverage; "
+        "operationally_certified_artifact and bridge/operational certificates are ineligible.",
         "driven_by": ["MF-P5-10.05", "MF-P7-01.01", "MF-P7-01.02"],
     },
     "D6": {
@@ -363,6 +489,30 @@ CLUSTER_RE = re.compile(
     r"|(?P<exit>P\d+ Exit Gate))\s*$"
 )
 ITEM_RE = re.compile(r"^- \[[ xX]\] (?P<id>MF-[A-Za-z0-9.\-]+)\s+(?P<desc>.+?)\s*$")
+DEPENDENCY_ID_RE = re.compile(r"MF-P\d+-[A-Z0-9]+(?:\.\d+)?")
+DEPENDENCY_RANGE_RE = re.compile(
+    r"(?P<start_prefix>MF-P\d+-[A-Z0-9]+\.)(?P<start>\d+)\s+through\s+"
+    r"(?P<end_prefix>MF-P\d+-[A-Z0-9]+\.)(?P<end>\d+)"
+)
+
+
+def parse_dependency_ids(description):
+    """Parse explicit item dependencies, expanding same-cluster `X through Y` ranges."""
+
+    if "Blocked by:" not in description:
+        return []
+    clause = description.split("Blocked by:", 1)[1]
+    dependencies = list(DEPENDENCY_ID_RE.findall(clause))
+    for match in DEPENDENCY_RANGE_RE.finditer(clause):
+        start_prefix = match.group("start_prefix")
+        end_prefix = match.group("end_prefix")
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        if start_prefix != end_prefix or end < start:
+            continue
+        width = max(len(match.group("start")), len(match.group("end")))
+        dependencies.extend(f"{start_prefix}{number:0{width}d}" for number in range(start, end + 1))
+    return list(dict.fromkeys(dependencies))
 
 
 def is_hard_blocker(item_id):
@@ -585,6 +735,8 @@ def cmd_rebuild(args):
             },
         },
         "dod": (existing or {}).get("dod") or {k: {} for k in DOD},
+        "completion_profiles": (existing or {}).get("completion_profiles")
+        or {k: {} for k in COMPLETION_PROFILES},
         "goals": (existing or {}).get("goals")
         or {k: {"status": "pending", "measured": None, "updated_at": None} for k in GOALS},
         "items": new_items,
@@ -635,6 +787,23 @@ def cmd_set(args):
                 "Refusing to mark complete without --evidence "
                 "(what proves the item's verify clause passed?)."
             )
+        if args.status == "not_applicable":
+            if not rec.get("conditional"):
+                sys.exit(
+                    "Refusing to mark a non-conditional item not_applicable; "
+                    "only an explicitly conditional item whose trigger did not fire may use this status."
+                )
+            core_closure = completion_profile_dependency_closure(data, "core_autonomous_runtime")
+            if args.id in core_closure:
+                sys.exit(
+                    "Refusing to mark a mandatory core dependency not_applicable; "
+                    "core_autonomous_runtime requires complete evidence for its full dependency closure."
+                )
+            if not args.evidence and not rec.get("evidence"):
+                sys.exit(
+                    "Refusing to mark not_applicable without --evidence showing that the "
+                    "declared conditional trigger did not fire."
+                )
         if args.status == "blocked" and not args.blocked_reason and not rec.get("blocked_reason"):
             sys.exit("Refusing to mark blocked without --blocked-reason.")
         rec["status"] = args.status
@@ -684,10 +853,15 @@ def cmd_set(args):
 def cmd_list(args):
     data = load_tracker_or_exit()
     rows = []
+    profile_ids = None
+    if args.profile:
+        profile_ids = completion_profile_dependency_closure(data, args.profile)
     wanted_statuses = None
     if args.status:
         wanted_statuses = {s.strip() for s in args.status.split(",")}
     for it in data["items"].values():
+        if profile_ids is not None and it["id"] not in profile_ids:
+            continue
         if args.phase and it["phase"] != args.phase:
             continue
         if wanted_statuses and it["status"] not in wanted_statuses:
@@ -721,10 +895,20 @@ def cmd_list(args):
     print(f"\n{len(rows)} item(s).")
 
 
-def suggest_next(data, n, phase=None):
+def suggest_next(data, n, phase=None, profile=None):
     items = [it for it in data["items"].values() if not it["orphaned"]]
+    requested_profile_ids = None
+    if profile:
+        requested_profile_ids = completion_profile_dependency_closure(data, profile)
+        items = [it for it in items if it["id"] in requested_profile_ids]
+    core_ids = completion_profile_dependency_closure(data, "core_autonomous_runtime")
+    prioritize_core = (
+        profile is None
+        and compute_completion_profile_status(data, "core_autonomous_runtime") != "complete"
+    )
     items.sort(
         key=lambda r: (
+            0 if prioritize_core and r["id"] in core_ids else 1,
             PHASE_ORDER.index(r["phase"]) if r["phase"] in PHASE_ORDER else 99,
             r["source_line"],
         )
@@ -741,7 +925,7 @@ def suggest_next(data, n, phase=None):
 
 def cmd_next(args):
     data = load_tracker_or_exit()
-    cands = suggest_next(data, args.count, args.phase)
+    cands = suggest_next(data, args.count, args.phase, args.profile)
     if not cands:
         print("Nothing actionable found (everything complete/blocked/n-a in scope?).")
         return
@@ -804,6 +988,340 @@ def cmd_goal(args):
     print(f"{args.gid}: status={g.get('status')} measured={g.get('measured')}")
 
 
+def load_completion_track_registry():
+    """Load the claim-scoped completion policy used to cross-check tracker constants."""
+
+    if not COMPLETION_TRACK_REGISTRY_JSON.exists():
+        raise FileNotFoundError(COMPLETION_TRACK_REGISTRY_JSON)
+    return json.loads(COMPLETION_TRACK_REGISTRY_JSON.read_text(encoding="utf-8"))
+
+
+def compute_completion_profile_status(data, profile_id):
+    """Compute one profile over its complete dependency closure.
+
+    The required core is deliberately stricter than portfolio rollups: every direct
+    row and every transitive item dependency must be ``complete``.  A mandatory core
+    dependency can never disappear behind ``not_applicable``.
+    """
+
+    profile = COMPLETION_PROFILES[profile_id]
+    for prerequisite in profile["prerequisite_profile_ids"]:
+        if compute_completion_profile_status(data, prerequisite) != "complete":
+            return "waiting_for_prerequisite"
+    statuses = []
+    for iid in sorted(completion_profile_dependency_closure(data, profile_id)):
+        item = data["items"].get(iid)
+        if item is None or item.get("orphaned"):
+            statuses.append((iid, "missing", False))
+        else:
+            statuses.append((iid, item["status"], bool(item.get("conditional"))))
+    if any(status == "missing" for _, status, _ in statuses):
+        return "error(missing item id)"
+    if profile_id == "core_autonomous_runtime":
+        resolved = all(status == "complete" for _, status, _ in statuses)
+    else:
+        resolved = all(
+            status == "complete" or (status == "not_applicable" and conditional)
+            for _, status, conditional in statuses
+        )
+    if resolved:
+        return "complete"
+    if any(status == "blocked" for _, status, _ in statuses):
+        return "blocked"
+    if any(
+        status in {"in_progress", "partially_complete", "failed", "complete", "not_applicable"}
+        for _, status, _ in statuses
+    ):
+        return "in_progress"
+    return "open"
+
+
+def validate_completion_track_registry(data):
+    """Return structural problems for the frozen completion registry."""
+
+    problems = []
+    if not COMPLETION_TRACK_REGISTRY_SCHEMA.exists():
+        problems.append(f"missing completion registry schema: {COMPLETION_TRACK_REGISTRY_SCHEMA}")
+    else:
+        try:
+            registry_schema = json.loads(
+                COMPLETION_TRACK_REGISTRY_SCHEMA.read_text(encoding="utf-8")
+            )
+        except (OSError, json.JSONDecodeError) as exc:
+            problems.append(f"invalid completion registry schema JSON: {exc}")
+            registry_schema = None
+    try:
+        registry = load_completion_track_registry()
+    except (OSError, json.JSONDecodeError) as exc:
+        return problems + [f"cannot load completion track registry: {exc}"]
+    if not isinstance(registry, dict):
+        return problems + ["completion track registry root must be an object"]
+    if registry_schema is not None:
+        try:
+            from jsonschema import Draft202012Validator
+
+            Draft202012Validator.check_schema(registry_schema)
+            schema_errors = sorted(
+                Draft202012Validator(registry_schema).iter_errors(registry),
+                key=lambda error: tuple(str(token) for token in error.absolute_path),
+            )
+            for error in schema_errors:
+                pointer = "/" + "/".join(str(token) for token in error.absolute_path)
+                problems.append(
+                    f"completion track registry schema violation at {pointer or '/'}: "
+                    f"{error.message}"
+                )
+        except ImportError:
+            problems.append(
+                "jsonschema is required to validate completion_track_registry.schema.json"
+            )
+        except Exception as exc:
+            problems.append(f"invalid completion registry Draft 2020-12 schema: {exc}")
+    top_required = {
+        "schema_version",
+        "registry_id",
+        "policy_version",
+        "authoritative_spec",
+        "authoritative_spec_sha256",
+        "profiles",
+        "sha256",
+    }
+    top_extra = set(registry).difference(top_required) if isinstance(registry, dict) else set()
+    top_missing = top_required.difference(registry) if isinstance(registry, dict) else top_required
+    if top_extra:
+        problems.append(
+            "completion track registry has unknown top-level fields: "
+            + ", ".join(sorted(top_extra))
+        )
+    if top_missing:
+        problems.append(
+            "completion track registry is missing top-level fields: "
+            + ", ".join(sorted(top_missing))
+        )
+    if registry.get("schema_version") != "1.0.0":
+        problems.append("completion track registry schema_version must be 1.0.0")
+    if registry.get("registry_id") != "maskfactory_completion_tracks":
+        problems.append("completion track registry_id must be maskfactory_completion_tracks")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(registry.get("policy_version") or "")):
+        problems.append("completion track registry policy_version must be YYYY-MM-DD")
+    if registry.get("authoritative_spec") != (
+        "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md"
+    ):
+        problems.append("completion track registry authoritative_spec drifted")
+    authoritative_spec_path = PLAN_DIR / "24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md"
+    if not authoritative_spec_path.exists():
+        problems.append("completion track registry authoritative spec is missing")
+    else:
+        authoritative_spec_sha256 = hashlib.sha256(authoritative_spec_path.read_bytes()).hexdigest()
+        if registry.get("authoritative_spec_sha256") != authoritative_spec_sha256:
+            problems.append("completion track registry authoritative_spec_sha256 drifted")
+    canonical_registry = json.dumps(
+        {key: value for key, value in registry.items() if key != "sha256"},
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    if registry.get("sha256") != hashlib.sha256(canonical_registry).hexdigest():
+        problems.append("completion track registry sha256 drifted")
+    rows = registry.get("profiles")
+    if not isinstance(rows, list):
+        return problems + ["completion track registry profiles must be an array"]
+    indexed = {}
+    profile_required = {
+        "profile_id",
+        "classification",
+        "blocking_for_core_completion",
+        "purpose",
+        "completion_claim",
+        "required_item_ids",
+        "prerequisite_profile_ids",
+        "allowed_evidence",
+        "forbidden_claims",
+        "excluded_core_dependencies",
+    }
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("profile_id"), str):
+            problems.append("completion track registry contains an invalid profile row")
+            continue
+        pid = row["profile_id"]
+        extra = set(row).difference(profile_required)
+        missing = profile_required.difference(row)
+        if extra:
+            problems.append(f"{pid} has unknown fields: {', '.join(sorted(extra))}")
+        if missing:
+            problems.append(f"{pid} is missing fields: {', '.join(sorted(missing))}")
+        if pid in indexed:
+            problems.append(f"completion track registry duplicates profile {pid}")
+        indexed[pid] = row
+        if row.get("classification") not in {"required", "optional", "post_core"}:
+            problems.append(f"{pid}.classification is invalid")
+        if not isinstance(row.get("blocking_for_core_completion"), bool):
+            problems.append(f"{pid}.blocking_for_core_completion must be boolean")
+        for field in ("purpose", "completion_claim"):
+            if not isinstance(row.get(field), str) or not row[field].strip():
+                problems.append(f"{pid}.{field} must be a non-empty string")
+        for field in (
+            "required_item_ids",
+            "prerequisite_profile_ids",
+            "allowed_evidence",
+            "forbidden_claims",
+            "excluded_core_dependencies",
+        ):
+            value = row.get(field)
+            if not isinstance(value, list):
+                problems.append(f"{pid}.{field} must be an array")
+            elif len(value) != len({json.dumps(entry, sort_keys=True) for entry in value}):
+                problems.append(f"{pid}.{field} must contain unique values")
+        for iid in row.get("required_item_ids") or []:
+            if not isinstance(iid, str) or not re.fullmatch(r"MF-P\d+-[A-Z0-9]+(?:\.\d+)?", iid):
+                problems.append(f"{pid} has invalid required item id {iid!r}")
+    if set(indexed) != set(COMPLETION_PROFILES):
+        problems.append(
+            "completion track profile ids differ from tracker.py: "
+            f"registry={sorted(indexed)} tracker={sorted(COMPLETION_PROFILES)}"
+        )
+    for pid, expected in COMPLETION_PROFILES.items():
+        row = indexed.get(pid)
+        if row is None:
+            continue
+        comparisons = {
+            "classification": expected["classification"],
+            "blocking_for_core_completion": expected["blocking_for_core_completion"],
+            "completion_claim": expected["completion_claim"],
+            "prerequisite_profile_ids": expected["prerequisite_profile_ids"],
+            "excluded_core_dependencies": expected["excluded_core_dependencies"],
+            "required_item_ids": expected["driven_by"],
+        }
+        for field, expected_value in comparisons.items():
+            if row.get(field) != expected_value:
+                problems.append(f"{pid}.{field} differs from tracker.py")
+        required = row.get("required_item_ids") or []
+        if len(required) != len(set(required)):
+            problems.append(f"{pid} has duplicate required item ids")
+        for iid in required:
+            if iid not in data.get("items", {}) or data["items"][iid].get("orphaned"):
+                problems.append(f"{pid} requires missing/orphaned item {iid}")
+    core = indexed.get("core_autonomous_runtime", {})
+    if core.get("classification") != "required" or not core.get("blocking_for_core_completion"):
+        problems.append("core_autonomous_runtime must be the required blocking profile")
+    if core.get("excluded_core_dependencies") != list(CORE_EXCLUDED_DEPENDENCIES):
+        problems.append("core_autonomous_runtime excluded dependency firewall drifted")
+    for pid in ("independent_real_accuracy", "scale_daz_maturity"):
+        row = indexed.get(pid, {})
+        if row.get("blocking_for_core_completion") is not False:
+            problems.append(f"{pid} must remain non-blocking for core")
+    graph = {pid: list(row.get("prerequisite_profile_ids") or []) for pid, row in indexed.items()}
+    for pid, prerequisites in graph.items():
+        for prerequisite in prerequisites:
+            if prerequisite not in graph:
+                problems.append(f"{pid} has unknown prerequisite profile {prerequisite}")
+            if prerequisite == pid:
+                problems.append(f"{pid} cannot require itself")
+    for root in graph:
+        stack = [(root, [root])]
+        while stack:
+            current, chain = stack.pop()
+            for prerequisite in graph.get(current, []):
+                if prerequisite in chain:
+                    problems.append(
+                        "completion profile prerequisite cycle: "
+                        + " -> ".join(chain + [prerequisite])
+                    )
+                    stack = []
+                    break
+                stack.append((prerequisite, chain + [prerequisite]))
+    return problems
+
+
+def completion_profile_dependency_closure(data, profile_id):
+    """Return the profile's required items plus every declared item dependency."""
+
+    items = data.get("items", {})
+    closure = set()
+    stack = list(COMPLETION_PROFILES[profile_id]["driven_by"])
+    while stack:
+        current = stack.pop()
+        if current in closure:
+            continue
+        closure.add(current)
+        item = items.get(current)
+        if item is None or item.get("orphaned"):
+            continue
+        description = str(item.get("description") or "")
+        stack.extend(parse_dependency_ids(description))
+    return closure
+
+
+def validate_core_dependency_firewall(data):
+    """Reject direct or transitive human/volume/DAZ dependencies from core."""
+
+    items = data.get("items", {})
+    core_ids = set(COMPLETION_PROFILES["core_autonomous_runtime"]["driven_by"])
+    optional_only_ids = set()
+    for pid in ("independent_real_accuracy", "scale_daz_maturity"):
+        optional_only_ids.update(COMPLETION_PROFILES[pid]["driven_by"])
+    optional_only_ids.difference_update(core_ids)
+    banned_dependency_terms = (
+        "human-anchor",
+        "human anchor",
+        "cvat",
+        "blinded human",
+        "blinded audit",
+        "minimum corpus",
+        "minimum package",
+        "certified_training_package",
+        ">=200",
+        "≥200",
+        "300 certified",
+        "500 certified",
+        "full model library",
+        "full-library",
+        "daz",
+        "seven-day",
+        "soak",
+        "needs kevin",
+    )
+    problems = []
+    reported = set()
+    for root in sorted(core_ids):
+        stack = [(root, [root])]
+        visited = set()
+        while stack:
+            current, chain = stack.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            item = items.get(current)
+            if item is None or item.get("orphaned"):
+                continue
+            description = str(item.get("description") or "")
+            dependency_clause = (
+                description.split("Blocked by:", 1)[1] if "Blocked by:" in description else ""
+            )
+            lowered = dependency_clause.lower()
+            matched = sorted(term for term in banned_dependency_terms if term in lowered)
+            if matched:
+                key = (root, current, tuple(matched))
+                if key not in reported:
+                    reported.add(key)
+                    problems.append(
+                        f"core dependency firewall: {' -> '.join(chain)} has forbidden "
+                        f"dependency term(s): {', '.join(matched)}"
+                    )
+            for dependency in parse_dependency_ids(description):
+                if dependency in optional_only_ids:
+                    key = (root, dependency, "optional_profile")
+                    if key not in reported:
+                        reported.add(key)
+                        problems.append(
+                            f"core dependency firewall: {' -> '.join(chain + [dependency])} "
+                            "enters an optional/non-blocking completion profile"
+                        )
+                if dependency not in visited:
+                    stack.append((dependency, chain + [dependency]))
+    return problems
+
+
 def cmd_validate(args):
     data = load_tracker_or_exit()
     problems, warnings = [], []
@@ -815,6 +1333,8 @@ def cmd_validate(args):
             f"Fine if Items/*.md were intentionally edited and `rebuild` was rerun."
         )
     metrics = data.get("metrics", {})
+    problems.extend(validate_completion_track_registry(data))
+    problems.extend(validate_core_dependency_firewall(data))
     missing_metrics = sorted(set(DEFAULT_METRICS).difference(metrics))
     if missing_metrics:
         problems.append("missing required metrics: " + ", ".join(missing_metrics))
@@ -832,6 +1352,7 @@ def cmd_validate(args):
     except (KeyError, TypeError, ValueError):
         problems.append("certified training count metrics must be integer-compatible")
     ids_seen = set()
+    core_dependency_ids = completion_profile_dependency_closure(data, "core_autonomous_runtime")
     for iid, it in items.items():
         if iid in ids_seen:
             problems.append(f"{iid}: duplicate key in tracker.json")
@@ -840,6 +1361,15 @@ def cmd_validate(args):
             problems.append(f"{iid}: invalid status '{it['status']}'")
         if it["status"] == "complete" and not it.get("evidence"):
             warnings.append(f"{iid}: marked complete without evidence recorded")
+        if it["status"] == "not_applicable":
+            if not it.get("conditional"):
+                problems.append(f"{iid}: non-conditional item cannot be not_applicable")
+            if iid in core_dependency_ids:
+                problems.append(f"{iid}: mandatory core dependency cannot be not_applicable")
+            if not it.get("evidence"):
+                warnings.append(
+                    f"{iid}: not_applicable without evidence that its conditional trigger did not fire"
+                )
         if it["status"] == "blocked" and not it.get("blocked_reason"):
             warnings.append(f"{iid}: marked blocked without a reason recorded")
         if it["orphaned"]:
@@ -920,9 +1450,7 @@ def daz_vertical_slice_rows(data):
     scenes = int(metrics.get("daz_live_assembled_scene_count") or 0)
     packages = int(metrics.get("daz_live_exact_synthetic_package_count") or 0)
     challengers = int(metrics.get("daz_synthetic_trained_challenger_count") or 0)
-    improvement = str(
-        metrics.get("daz_measured_real_image_improvement_status") or "not_measured"
-    )
+    improvement = str(metrics.get("daz_measured_real_image_improvement_status") or "not_measured")
     free_gib = metrics.get("daz_storage_free_gib")
     floor_gib = metrics.get("daz_storage_new_work_floor_gib")
     new_work = bool(metrics.get("daz_storage_new_work_allowed"))
@@ -945,7 +1473,11 @@ def daz_vertical_slice_rows(data):
             "Asset qualification",
             "smoke/certificate/revocation contracts fixture-tested",
             f"{qualified:,} qualified assets / {certificates:,} live certificates",
-            "no live qualified authority" if not qualified or not certificates else "live authority present",
+            (
+                "no live qualified authority"
+                if not qualified or not certificates
+                else "live authority present"
+            ),
         ),
         (
             "Scene assembly",
@@ -991,7 +1523,19 @@ def render_dashboard(data):
     L.append("")
     L.append(f"Generated: {now}")
     L.append("")
-    L.append(f"## Overall Progress: {done_all}/{total_all} items ({pct_all}%)")
+    core_status = compute_completion_profile_status(data, "core_autonomous_runtime")
+    L.append(f"## Required Core Status: `{core_status}`")
+    L.append("")
+    L.append(
+        "`core_autonomous_runtime` is the sole required end-to-end product profile. "
+        "Human-anchor/CVAT accuracy work and scale/DAZ maturity are tracked separately and "
+        "cannot block this status."
+    )
+    L.append("")
+    L.append(
+        f"## Portfolio Progress (Required + Optional + Post-Core): "
+        f"{done_all}/{total_all} items ({pct_all}%)"
+    )
     L.append("")
     L.append(f"`[{bar(pct_all, 40)}]`")
     L.append("")
@@ -1012,6 +1556,33 @@ def render_dashboard(data):
     )
     L.append("")
 
+    L.append("## Claim-Scoped Completion Profiles")
+    L.append("")
+    L.append(
+        "These profiles are independent. **Only `core_autonomous_runtime` is required for the "
+        "requested autonomous product finish line.** The overall item percentage above is an "
+        "inventory rollup, not completion authority; optional accuracy and post-core scale/DAZ "
+        "work cannot make a valid core profile incomplete."
+    )
+    L.append("")
+    L.append("| Profile | Classification | Core-blocking | Status | Required gates | Claim |")
+    L.append("|---|---|---:|---|---:|---|")
+    for profile_id, profile in COMPLETION_PROFILES.items():
+        status = compute_completion_profile_status(data, profile_id)
+        L.append(
+            f"| `{profile_id}` | {profile['classification']} | "
+            f"{'yes' if profile['blocking_for_core_completion'] else 'no'} | {status} | "
+            f"{len(profile['driven_by'])} | {profile['completion_claim']} |"
+        )
+    L.append("")
+    L.append(
+        "Core explicitly excludes human-anchor masks, manual CVAT correction, blinded human "
+        "review, minimum package volume, full-library download, DAZ work, long-duration DAZ "
+        "soak, and independent real-accuracy measurement. See `completion_track_registry.json` "
+        "and Plan doc 24."
+    )
+    L.append("")
+
     L.append("## Live DAZ Vertical Slice")
     L.append("")
     L.append(
@@ -1026,38 +1597,71 @@ def render_dashboard(data):
         L.append(f"| {layer} | {implementation} | {execution} | {acceptance} |")
     L.append("")
     L.append(
-        "**Active priority:** complete the first live verified DAZ engineering package "
-        "(`qualified real assets -> assembled Genesis 9 scene -> pristine RGB and annotation "
-        "passes -> exact masks -> package verification`) before adding further downstream "
-        "horizontal abstractions. Fixture-only evidence must remain partial."
+        "**Profile scope:** DAZ is part of the post-core optional `scale_daz_maturity` profile. "
+        "It is not the active priority and cannot block `core_autonomous_runtime` while core is "
+        "incomplete. Fixture-only evidence must remain partial within the optional DAZ profile."
     )
     L.append("")
 
-    L.append("## Hard Blockers (cannot be skipped or overridden)")
+    core_dependency_ids = completion_profile_dependency_closure(data, "core_autonomous_runtime")
+    L.append("## Core Blockers (required autonomous-runtime profile)")
     L.append("")
     hb_items = sorted(
         [it for it in all_items if it["hard_blocker"]],
         key=lambda r: (PHASE_ORDER.index(r["phase"]), r["source_line"]),
     )
-    for it in hb_items:
+    core_hb_items = [it for it in hb_items if it["id"] in core_dependency_ids]
+    if not core_hb_items:
+        L.append("_No hard-blocker items are assigned to the core profile._")
+    for it in core_hb_items:
         L.append(
             f"- {STATUS_GLYPH[it['status']]} `{it['id']}` [{it['status']}] {it['description']}"
         )
     L.append("")
 
-    L.append("## Currently Blocked Items")
+    L.append("## Optional / Portfolio Blockers (do not redefine core completion)")
+    L.append("")
+    portfolio_hb_items = [it for it in hb_items if it["id"] not in core_dependency_ids]
+    if not portfolio_hb_items:
+        L.append("_No optional/portfolio hard-blocker items._")
+    for it in portfolio_hb_items:
+        L.append(
+            f"- {STATUS_GLYPH[it['status']]} `{it['id']}` [{it['status']}] {it['description']}"
+        )
+    L.append("")
+
+    L.append("## Currently Blocked Core Items")
     L.append("")
     blocked_items = [it for it in all_items if it["status"] == "blocked"]
-    if not blocked_items:
+    blocked_core = [it for it in blocked_items if it["id"] in core_dependency_ids]
+    if not blocked_core:
         L.append("_None currently blocked._")
     else:
-        for it in sorted(blocked_items, key=lambda r: (r["phase"], r["source_line"])):
+        for it in sorted(blocked_core, key=lambda r: (r["phase"], r["source_line"])):
             reason = it.get("blocked_reason") or "_(no reason recorded)_"
             L.append(f"- `{it['id']}` ({it['phase']}): {it['description']}")
             L.append(f"    - **Reason:** {reason}")
     L.append("")
 
-    L.append("## Definition of Done (doc 00 §4)")
+    L.append("## Currently Blocked Optional / Portfolio Items")
+    L.append("")
+    blocked_portfolio = [it for it in blocked_items if it["id"] not in core_dependency_ids]
+    if not blocked_portfolio:
+        L.append("_None currently blocked._")
+    else:
+        for it in sorted(blocked_portfolio, key=lambda r: (r["phase"], r["source_line"])):
+            reason = it.get("blocked_reason") or "_(no reason recorded)_"
+            L.append(f"- `{it['id']}` ({it['phase']}): {it['description']}")
+            L.append(f"    - **Reason:** {reason}")
+    L.append("")
+
+    L.append("## Legacy Portfolio / Research DoD (profile-scoped; not core authority)")
+    L.append("")
+    L.append(
+        "D1–D11 are retained for historical evidence and maturity tracking. They do not "
+        "define `core_autonomous_runtime` except where an exact driving item is also "
+        "assigned to that named profile."
+    )
     L.append("")
     L.append("| ID | Criterion | Status | Driven By |")
     L.append("|---|---|---|---|")
@@ -1068,7 +1672,12 @@ def render_dashboard(data):
         )
     L.append("")
 
-    L.append("## Measurable Goals (doc 01 §3)")
+    L.append("## Legacy Portfolio / Research Goals (profile-scoped; not core authority)")
+    L.append("")
+    L.append(
+        "G1–G9 remain useful measurements inside their named profiles; an unmet or "
+        "unmeasured legacy goal is not by itself a core-runtime blocker."
+    )
     L.append("")
     L.append("| ID | Goal | Target | Status | Measured |")
     L.append("|---|---|---|---|---|")
@@ -1130,9 +1739,12 @@ def render_phase_file(data, phase):
     L.append(f"# Phase {phase}: {meta['name']} -- Live Status")
     L.append("")
     L.append("**AUTO-GENERATED by `tracker.py report` from tracker.json -- do not hand-edit.**")
-    L.append(
-        f"Source checklist: `Plan/Items/{meta['file']}` | Entry gate: {meta['entry_gate'] or 'none'}"
-    )
+    phase_items = [
+        it for it in data["items"].values() if it["phase"] == phase and not it["orphaned"]
+    ]
+    source_files = sorted({it["source_file"] for it in phase_items})
+    source_text = ", ".join(f"`Plan/Items/{name}`" for name in source_files)
+    L.append(f"Source checklists: {source_text} | Entry gate: {meta['entry_gate'] or 'none'}")
     L.append("")
     L.append(
         f"**Progress: {st['done']}/{st['total']} ({st['pct']}%)** -- "
@@ -1141,8 +1753,8 @@ def render_phase_file(data, phase):
     )
     L.append("")
     items = sorted(
-        [it for it in data["items"].values() if it["phase"] == phase and not it["orphaned"]],
-        key=lambda r: r["source_line"],
+        phase_items,
+        key=lambda r: (r["source_file"], r["source_line"], r["id"]),
     )
     last_cluster = None
     for it in items:
@@ -1185,7 +1797,10 @@ def cmd_report(args):
 def build_parser():
     p = argparse.ArgumentParser(
         prog="tracker.py",
-        description="MaskFactory project tracker -- 609 build items + DoD/Goals rollups.",
+        description=(
+            "MaskFactory project tracker -- 798 build items + independently scoped "
+            "completion profiles + DoD/Goals rollups."
+        ),
     )
     sub = p.add_subparsers(dest="cmd", required=True)
 
@@ -1217,11 +1832,24 @@ def build_parser():
     sp.add_argument("--conditional", action="store_true")
     sp.add_argument("--blocked", action="store_true")
     sp.add_argument("--search", help="case-insensitive substring match on id or description")
+    sp.add_argument(
+        "--profile",
+        choices=COMPLETION_PROFILES,
+        help="restrict results to one claim-scoped completion profile",
+    )
     sp.set_defaults(func=cmd_list)
 
     sp = sub.add_parser("next", help="Suggest next actionable items, in phase/document order")
     sp.add_argument("-n", "--count", type=int, default=10)
     sp.add_argument("--phase", choices=PHASE_ORDER)
+    sp.add_argument(
+        "--profile",
+        choices=COMPLETION_PROFILES,
+        help=(
+            "restrict to one completion profile; without this flag, unfinished core items "
+            "are prioritized ahead of optional portfolio work"
+        ),
+    )
     sp.set_defaults(func=cmd_next)
 
     sp = sub.add_parser("metrics", help="View / update free-form tracked metrics")

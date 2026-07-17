@@ -1,5 +1,10 @@
 # ITEMS — Phase P4 Ontology-v2 QA, Multi-Provider Teachers, and Autonomous Certification (docs 18–21, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** legacy human-anchor certificate/calibration rows below govern
+> only `independent_real_accuracy`. Core operational certification is the separate exact-output,
+> deterministic-invariant, qualified-critic, perturbation/replay, repair/abstention, and revocation
+> path in MF-P6-07..12; human evidence cannot block or revoke it.
+
 Goal: earn selective autonomy through measured, hash-bound evidence while keeping deterministic vetoes and residual routing fail-closed.
 
 ## MF-P4-09 — Ontology-v2 QA and calibration (spec: 18 checklist F; Kevin age-gate override)

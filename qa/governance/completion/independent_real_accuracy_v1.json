@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "independent_real_accuracy",
+  "profile_version": "1.0.0",
+  "profile_class": "independent_real_accuracy",
+  "status": "active",
+  "required_for_core_runtime": false,
+  "purpose": "Optionally measure independently attributable real-image accuracy beyond operational runtime conformance.",
+  "claim_scope": {
+    "ceiling": "independently_measured_real_accuracy",
+    "allowed_claims": [
+      "Accuracy statistics for the declared frozen evaluation population, label set, sampling method, and confidence interval."
+    ],
+    "forbidden_claims": [
+      "Universal accuracy outside the frozen evaluation population.",
+      "A claim that this optional profile is required for core autonomous runtime completion."
+    ]
+  },
+  "dependency_policy": {
+    "external_labeling": "profile_specific",
+    "minimum_corpus_volume": "profile_specific",
+    "asset_ecosystem_expansion": "not_required",
+    "long_duration_soak": "not_required"
+  },
+  "required_gates": [
+    {
+      "gate_id": "REAL-ACCURACY-PROTOCOL",
+      "category": "measurement",
+      "blocking": true,
+      "evidence_types": ["frozen_sampling_protocol", "independent_reference_evidence", "confidence_intervals", "blinded_error_analysis"],
+      "acceptance": "The report is reproducible and limits every statistic to its frozen population, labels, references, and uncertainty."
+    }
+  ],
+  "independent_profiles": ["core_autonomous_runtime", "scale_daz_maturity"],
+  "policy_sha256": "2e071d60124a1a1f5c860e9aa71a8f2f9186fada72af34fdf876b06212d0000c"
+}

@@ -1,11 +1,21 @@
 # Document 19: Multi-Provider Teacher and Continuous-Improvement Spec
 
+**Doc-24 authority amendment:** this document governs multi-provider candidate generation and the
+optional human-truth improvement lane. Humans remain the only issuer of `human_approved_gold`, but
+they are not the only possible issuer of operational artifact authority: doc 24's separate autonomous
+certificate transaction can authorize one exact output for its exact intended use. It never converts
+that output into human truth or a population-accuracy claim. Human review, human-anchor volume, and
+full provider-library qualification remain optional-profile work and cannot block
+`core_autonomous_runtime`.
+
 ## 1. Decision and Intended Outcome
 
 MaskFactory uses a governed hybrid, not an autonomous self-training loop. The local Qwen workhorse,
 Gemini, OpenAI, and Anthropic may inspect evidence, identify likely defects, select a correction tool,
 and produce isolated mask candidates. SAM2, polygons, specialist segmenters, deterministic cleanup,
-and later trained MaskFactory models produce pixels. Humans remain the only gold authority.
+and later trained MaskFactory models produce pixels. Humans remain the only
+`human_approved_gold` authority; the exact-output autonomous authority path is separate and governed
+by doc 24.
 
 The optimization target is **less human correction time at equal or better gold quality**. More model
 calls, higher confidence, provider agreement, or visually plausible masks are not success metrics.
@@ -22,7 +32,7 @@ bias and irreversible pseudo-label poisoning.
 | OpenAI teacher | Independent semantic disagreement critic and correction-plan challenger | Points/polygon proposal only | Shadow only |
 | Anthropic teacher | High-resolution tie-breaker for unresolved or serious cases | Points/polygon proposal only | Shadow only |
 | SAM2 / specialist models | Execute approved point, box, polygon, or model correction plans | Isolated candidate | Never writes authoritative map in S11 |
-| Human reviewer | Selects/edits/rejects candidates and records defect/correction usefulness | Gold correction | Sole semantic gold authority, subject to automatic hard QA |
+| Human reviewer | Selects/edits/rejects candidates and records defect/correction usefulness | Gold correction | Sole `human_approved_gold` authority, subject to automatic hard QA; not required for doc-24 exact-output operational authority |
 
 Image generation/edit models such as GPT Image are not boundary authorities. Their edit masks guide a
 generative operation rather than guarantee exact binary geometry. They may be evaluated later for

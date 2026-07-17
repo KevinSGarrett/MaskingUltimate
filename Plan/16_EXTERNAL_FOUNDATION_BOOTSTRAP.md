@@ -2,17 +2,30 @@
 
 **Purpose:** identify already-built datasets, models, and ComfyUI workflows that can accelerate MaskFactory without weakening the gold-mask standard.
 
+**Doc-24 authority amendment:** the foundation stack produces candidates, never unilateral authority.
+Its final transaction has two explicitly separate routes: optional human review may create
+`human_approved_gold`, while required `core_autonomous_runtime` may create an exact-output
+operationally certified artifact after the full autonomous hard-QA/critic/stability/repair policy.
+Human review and model-library completeness are not core-runtime prerequisites.
+
 MaskFactory should not hand-build every low-level capability from scratch. The practical foundation is a fused stack of existing human parsing, pose, dense body geometry, object prompting, and mask-refinement tools, wrapped by MaskFactory ontology, QA, and provenance rules.
 
 ## 1. Core Position
 
 No single external model or workflow is mask authority.
 
-External tools may produce candidates, priors, boxes, landmarks, probability maps, masks, or overlays. Final MaskFactory gold output is still created by:
+External tools may produce candidates, priors, boxes, landmarks, probability maps, masks, or overlays.
+Final authority is created only by one of the two governed transactions:
 
-`source image -> person silhouette -> human parsing -> pose/landmarks -> DensePose sanity -> SAM2 refinement -> material/clothing parse -> consensus fusion -> QA panels -> human review -> gold package`
+`source -> candidate stack -> deterministic QA -> independent critics -> bounded repair -> exact-output operational certificate | autonomous abstention`
 
-This protects the project from the failure mode that caused the earlier face masks to drift into hair or neighboring regions: a model proposal looked plausible but was never checked against source-visible geometry.
+or, for the optional human-truth lane:
+
+`source -> candidate stack -> QA panels -> human review -> human_approved_gold package`
+
+Both routes protect the project from the failure mode that caused earlier face masks to drift into
+hair or neighboring regions: a model proposal looked plausible but was never checked against
+source-visible geometry. Neither a model proposal nor an LLM/VLM verdict can issue authority.
 
 ## 2. Highest-Value Model/Workflow Sources
 

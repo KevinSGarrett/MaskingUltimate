@@ -1,5 +1,10 @@
 # Document 08: Specialist Lanes Specification
 
+> **Routing amendment (doc 24):** references below to a required/careful CVAT review apply only when
+> the optional human/training lane is selected. In `core_autonomous_runtime`, the same defect routes to
+> a hypothesis-distinct bounded specialist repair, another qualified provider, or typed autonomous
+> abstention. No specialist confidence or LLM/VLM opinion can waive hard QA or issue authority.
+
 Hard regions get their own crops, models, prompting recipes, QA panels, and metrics. Each lane
 plugs in between S07 and S09 and overrides the full-frame result for its parts.
 

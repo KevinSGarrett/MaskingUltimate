@@ -13,7 +13,7 @@ All commands run from `C:\Comfy_UI_Main_Masking\Plan\Tracker\`.
 | Situation | Command |
 |---|---|
 | Starting a session | `python tracker.py report` then read `DASHBOARD.md` |
-| Deciding what to work on | `python tracker.py next -n 10 [--phase P#]` or `python tracker.py list --phase P# --status open` |
+| Deciding what to work on | `python tracker.py next -n 10` prioritizes unfinished core; add `--profile <id>` for an exact claim scope or `--phase P#` for an intentional phase filter |
 | About to start a specific item | `python tracker.py show <id>` — check for existing notes/evidence before assuming it's untouched |
 | Finished and verified an item | `python tracker.py set <id> --status complete --evidence "<specific, real>"` |
 | Hit a real technical wall | `python tracker.py set <id> --status blocked --blocked-reason "<specific>"` |
@@ -23,8 +23,8 @@ All commands run from `C:\Comfy_UI_Main_Masking\Plan\Tracker\`.
 | A conditional item's trigger never fired | `python tracker.py set <id> --status not_applicable --evidence "trigger not met: <why>"` |
 | A package reaches a truth tier | Update its exact tier/partition metric (`human_anchor_train_count`, `human_anchor_calibration_count`, `human_anchor_holdout_count`, `autonomous_certified_gold_count`, or `weighted_pseudo_label_count`). The tracker derives the certified training count. |
 | Just ran a leaderboard eval / timing measurement tied to a Goal | `python tracker.py goal G<n> --measured "<value>" --status {pending,met,not_met}` |
-| Wondering if something is a hard blocker | `python tracker.py list --hard-blockers [--phase P#]` |
-| Checking what's currently blocked, project-wide | `python tracker.py list --blocked`, or just read `DASHBOARD.md`'s "Currently Blocked Items" |
+| Wondering if something blocks required completion | `python tracker.py list --hard-blockers --profile core_autonomous_runtime` |
+| Checking blocked items by claim | `python tracker.py list --blocked --profile <id>`; the dashboard separates core from optional portfolio blockers |
 | Checking things needing Kevin specifically | `python tracker.py list --blocked --search "NEEDS KEVIN"` |
 | Finished a cluster or a chunk of work | `python tracker.py report` |
 | Before ending any session | `python tracker.py validate` then `python tracker.py report` |
@@ -45,7 +45,7 @@ a glance, for both you and for Kevin himself when he checks in.
 
 ## Batching, Not Spamming
 
-You don't need to call `report` after every single one of 609 items —
+You don't need to call `report` after every single one of 798 items —
 that's wasted work. Call it after finishing a cluster, or when you're about
 to stop for the session, or when you specifically want to hand off a fresh
 `DASHBOARD.md` for Kevin to glance at. Do call `set` for every item the

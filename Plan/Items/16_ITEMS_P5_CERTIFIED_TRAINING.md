@@ -1,5 +1,10 @@
 # ITEMS — Phase P5 Ontology-v2 and Certified-Truth Training (docs 18, 20, 22, SAM 3.1 handoff)
 
+> **Completion-profile scope (doc 24):** this custom-training and human-truth evaluation lane is
+> optional/post-core. Its corpus, holdout, promotion, and training-volume requirements remain valid
+> for training and independent-accuracy claims but cannot block or revoke `core_autonomous_runtime`
+> or convert operationally certified outputs into training/human gold.
+
 Goal: train and promote only from explicitly partitioned truth tiers and frozen, hard-bucket-safe evaluation.
 
 ## MF-P5-09 — Ontology-v2 dataset and training (spec: 18 checklist G)
@@ -19,7 +24,7 @@ Goal: train and promote only from explicitly partitioned truth tiers and frozen,
 - [ ] MF-P5-10.02 Keep human-anchor calibration/holdout and all final holdouts unreadable by trainers, pseudo-label generation, threshold tuning, and certificate fitting · Verify: path/capability tests fail every leakage route · Blocked by: MF-P1-13.02, MF-P1-13.03 · HARD BLOCKER
 - [ ] MF-P5-10.03 Report all six truth counts separately and derive `certified_training_package_count = human_anchor_train_count + autonomous_certified_gold_count` · Verify: tracker/dataset tests reject collapsed effective-gold counts · Blocked by: MF-P1-13.01
 - [ ] MF-P5-10.04 Report `effective_training_weight_units` only as a diagnostic; it cannot satisfy P5, D5, volume, coverage, or gold gates · Verify: threshold fixtures with high pseudo weight and insufficient certified count remain blocked · Blocked by: MF-P5-10.03
-- [ ] MF-P5-10.05 Gate P5 entry at ≥200 certified training packages and D5 at ≥300 certified packages plus required coverage · Verify: tracker and builder enforce the same formulas · Blocked by: MF-P5-10.03 · HARD BLOCKER
+- [ ] MF-P5-10.05 Gate P5 entry at ≥200 certified training packages and optional D5 at ≥300 `human_anchor_train` plus exact `autonomous_certified_gold` packages carrying the required statistical certificate and coverage; explicitly reject `operationally_certified_artifact`, bridge/operational certificates, drafts, candidates, pseudo labels, and aliases · Verify: tracker and builder enforce the same formulas and truth-tier firewall · Blocked by: MF-P5-10.03 · HARD BLOCKER
 - [ ] MF-P5-10.06 Build train-only pseudo-label manifests with verified lifecycle/ranking/mask hashes and stage-root containment · Verify: holdout overlap, stale cert, invalid ranking, hash drift, and path escape fail · Blocked by: MF-P4-11.11
 - [ ] MF-P5-10.07 Train/evaluate EoMT/DINOv3 alongside SegFormer and Mask2Former under identical frozen data, ontology, hardware, QA, and measurement code · Verify: complete immutable run records and comparable metrics exist · Blocked by: MF-P0-17.10, MF-P5-10.05
 - [ ] MF-P5-10.08 Define role-specific primary metric/labor objective and predeclare non-inferiority margins for every hard label/high-risk bucket before results · Verify: benchmark manifest hash predates metric output · Blocked by: frozen human-anchor holdout

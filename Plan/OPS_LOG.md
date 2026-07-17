@@ -6627,3 +6627,20 @@ Live boundary:                        no fixture is claimed as a qualified live 
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
 Verification:                         17/17 new, 176/176 focused adjacent, and 2,902/2,902 full repository tests pass; Ruff, pre-commit Black, all 124 JSON schemas, all 31 DAZ YAML documents, tracker validation, and Git diff checks pass
 Evidence:                             `qa/reports/daz_s00_package_adapter_20260717.json`
+
+## 2026-07-17 03:15 UTC - Existing and DAZ-specific adapted-package QC implemented
+
+**Result:** MF-P9-08.08 now has a closed QC applicability policy, independent adapted-package runner,
+hash-bound QA report, and seeded failure proof; it remains at 85% until a qualified live D7-07 package
+can run the same checks.
+
+Existing QC bridge:                   QC-001/002/003/004/005/006/007/009/011/012/013/035/036/038 retain their MaskFactory meanings over synthetic package evidence: dimensions, binary values, codecs, namespaces, schema, hashes, indexed consistency, derivation replay, containment/protection, exclusivity/bleed, and count
+Explicit applicability:               QC-008 review states, QC-010 crop transforms, and QC-037 package-level contact claims are recorded as `not_applicable` with exact synthetic-contract reasons; they are never mislabeled as passes
+DAZ checks:                            seven required blocking checks cover adapter certificate replay, Mode-A authority, file/tree integrity, scene/image/family/person/instance lineage, weighted-pseudo train-only non-gold truth, adult/no-human construction, and every adapter invariant
+Freeze contract:                      all 21 required checks must pass and zero checks may fail; otherwise both `passed` and `freeze_eligible` are false
+Read-only publication:                source tree hashes are checked before and after QC; failures emit an immutable report without repair or package mutation; atomic replay is idempotent and conflicting report bytes reject
+Seeded proof:                         16 tests cover clean one-through-four-person packages, source-byte drift, illegal PART ID, cross-person overlap/bleed, truth/human-authority tamper, contract/report rebinding, policy weakening, report tamper, and publication conflict
+Live boundary:                        no fixture is claimed as a live accepted package or live freeze approval; qualified D7-07 live evidence remains outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, asset relabel, or Main-repository change occurred
+Verification:                         16/16 new, 98/98 focused adapter/schema/QC, and 2,918/2,918 full repository tests pass; Ruff, pre-commit Black, all 125 JSON schemas, all 32 DAZ YAML documents, and Git diff checks pass
+Evidence:                             `qa/reports/daz_adapted_package_qc_20260717.json`

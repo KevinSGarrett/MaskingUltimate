@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T03:15:22Z",
+  "item": "MF-P9-08.08",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "applicability_contract": {
+    "required_existing_qc_ids": ["QC-001", "QC-002", "QC-003", "QC-004", "QC-005", "QC-006", "QC-007", "QC-009", "QC-011", "QC-012", "QC-013", "QC-035", "QC-036", "QC-038"],
+    "explicit_not_applicable": {
+      "QC-008": "synthetic exact indexed visibility replaces review-state rows",
+      "QC-010": "accepted DAZ packages are full-frame and contain no crop transforms",
+      "QC-037": "contact reciprocity is certified upstream by V7 and this boundary emits no contact claim"
+    },
+    "required_daz_qc_ids": ["DAZ-QC-001", "DAZ-QC-002", "DAZ-QC-003", "DAZ-QC-004", "DAZ-QC-005", "DAZ-QC-006", "DAZ-QC-007"],
+    "required_pass_count": 21,
+    "not_applicable_is_not_reported_as_pass": true,
+    "any_required_failure_blocks_freeze": true
+  },
+  "existing_maskfactory_checks": {
+    "dimensions_match_source": true,
+    "binary_values_only": true,
+    "strict_png_codecs": true,
+    "ontology_namespaces": true,
+    "synthetic_manifest_schema": true,
+    "exhaustive_file_and_tree_hashes": true,
+    "indexed_map_consistency": true,
+    "target_other_and_protected_derivation_replay": true,
+    "atomic_exclusivity_and_silhouette_containment": true,
+    "protected_overlap": true,
+    "multi_instance_exclusivity_and_bleed": true,
+    "instance_count_sanity": true
+  },
+  "daz_specific_checks": {
+    "adapter_certificate_replay": true,
+    "explicit_mode_a_mask_authority": true,
+    "package_file_and_tree_integrity": true,
+    "scene_image_family_person_and_instance_lineage": true,
+    "weighted_pseudo_train_only_non_gold_truth": true,
+    "adult_construction_and_no_human_authority": true,
+    "complete_adapter_invariant_set": true
+  },
+  "publication": {
+    "adapted_packages_read_only": true,
+    "source_tree_digest_checked_before_and_after": true,
+    "report_schema_closed": true,
+    "report_content_hashed": true,
+    "atomic_publication": true,
+    "immutable_idempotent_replay": true,
+    "failure_report_published_without_repair_or_mutation": true
+  },
+  "fixture_matrix": {
+    "clean_one_person": "pass",
+    "clean_two_person": "pass",
+    "clean_three_person": "pass",
+    "clean_four_person": "pass",
+    "source_byte_tamper": "freeze_blocked",
+    "illegal_part_id": "freeze_blocked",
+    "cross_person_overlap_and_bleed": "freeze_blocked",
+    "truth_partition_and_fabricated_human_authority": "freeze_blocked",
+    "contract_or_adapter_report_rebinding": "rejected",
+    "policy_check_removal_or_freeze_weakening": "rejected",
+    "report_hash_or_result_status_tamper": "rejected",
+    "publication_conflict": "rejected"
+  },
+  "authority_boundary": {
+    "provider_id": "daz_exact_geometry",
+    "authority_tier": "synthetic_exact",
+    "owner": "maskfactory",
+    "access_mode": "mode_a_approved_package",
+    "training_truth_tier": "weighted_pseudo_label",
+    "evaluation_eligible": false,
+    "counts_as_human_anchor_gold": false,
+    "counts_as_autonomous_certified_gold": false,
+    "mode_b_or_inferred_authority_allowed": false,
+    "gold_mutation_or_relabel_allowed": false
+  },
+  "lineage": {
+    "policy_sha256": "05bd21da2e1ab5f2520e6933f23af8a3dd28cade5a3195346db670b97fc892f0",
+    "implementation_sha256": "f8fee970209e8247702a699bf7039ae8866111a2e357abff6c9efc33108e3b8c",
+    "report_schema_sha256": "22d75dcfedfcb36c12d37f9d1d72f7b97afb4502f8528847e57eccf1f353be3f",
+    "validation_dispatch_sha256": "56bb0386d38d65b39c559781adf9cbed470479b2857bc0941e5b1ba77e40cac8",
+    "test_sha256": "549e15e9d8f27cbec11fedf7ad8f75059c556c0222ae4798f7a87389835a5a46"
+  },
+  "verification": {
+    "new_tests_collected": 16,
+    "new_tests_passed": 16,
+    "new_tests_failed": 0,
+    "focused_adapter_schema_qc_tests_collected": 98,
+    "focused_adapter_schema_qc_tests_passed": 98,
+    "focused_adapter_schema_qc_tests_failed": 0,
+    "full_repository_tests_collected": 2918,
+    "full_repository_tests_passed": 2918,
+    "full_repository_tests_failed": 0,
+    "full_repository_exit_code": 0,
+    "ruff_lint": "pass",
+    "precommit_black_format": "pass",
+    "json_schemas_parsed": 125,
+    "daz_yaml_documents_parsed": 32,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "assets_moved_or_relabelled_by_this_task": false,
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "main_repository_modified_by_this_task": false,
+    "f_drive_soft_hold_respected": true
+  },
+  "remaining_live_dependency": {
+    "software_and_seeded_qa_report_clause_complete": true,
+    "qualified_live_d7_07_package_available": false,
+    "live_existing_and_daz_qc_report_available": false,
+    "reason": "The complete offline QC applicability, report, publication, and negative-fixture clauses pass. A qualified live D7-07 package does not yet exist, so no live package freeze eligibility is claimed."
+  },
+  "not_claimed": [
+    "QC approval of a live accepted DAZ scene",
+    "live package freeze eligibility",
+    "live ingestion or descendant registration",
+    "corpus V9 acceptance",
+    "dataset or training admission"
+  ]
+}

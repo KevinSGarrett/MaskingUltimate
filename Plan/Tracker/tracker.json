@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T02:34:29+00:00",
+    "generated_at": "2026-07-17T03:15:22+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 755,
     "total_tracked_including_orphaned": 755
@@ -16875,13 +16875,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T03:15:22+00:00",
+          "actor": "codex",
+          "text": "Implemented the complete offline existing-QC plus DAZ-specific adapted-package QA clause. Fourteen applicable MaskFactory checks retain their original IDs/meanings, QC-008/QC-010/QC-037 are explicit reasoned not-applicable states rather than false passes, and seven DAZ blocking checks independently cover certificate, authority, integrity, lineage, truth, adult/no-human construction, and adapter invariants. All 21 required checks must pass for freeze eligibility. Honest completion remains gated by running the same immutable report against a qualified live D7-07 package; no live freeze or ingestion is claimed."
+        }
+      ],
+      "evidence": "qa/reports/daz_adapted_package_qc_20260717.json — closed applicability/report contracts; read-only atomic QA publication; 1-4 person positives; seeded hash/ID/overlap/truth/authority/policy/report failures; 16/16 new, 98/98 focused, 2918/2918 full tests; Ruff/Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T03:15:22+00:00",
       "orphaned": false
     },
     "MF-P9-08.09": {

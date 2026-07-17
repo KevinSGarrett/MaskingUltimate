@@ -10,7 +10,7 @@
     "ranker_version": {"const": "1.0.0"},
     "policy_sha256": {"const": "ecd14f52d077d8c4d45c4e45d4a107f43567fb2cd3354d517290933fb9e2ea1b"},
     "candidate_batch": {"type": "object", "additionalProperties": false, "required": ["batch_id", "batch_sha256", "demand_id"], "properties": {"batch_id": {"type": "string", "pattern": "^dcb_[0-9a-f]{24}$"}, "batch_sha256": {"$ref": "#/$defs/sha"}, "demand_id": {"type": "string", "pattern": "^drd_[0-9a-f]{24}$"}}},
-    "qualification_snapshot": {"type": "object", "additionalProperties": false, "required": ["snapshot_id", "snapshot_sha256", "source"], "properties": {"snapshot_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"}, "snapshot_sha256": {"$ref": "#/$defs/sha"}, "source": {"const": "versioned_d3_d5_feasibility_observations"}}},
+    "qualification_snapshot": {"type": "object", "additionalProperties": false, "required": ["snapshot_id", "snapshot_sha256", "source"], "properties": {"snapshot_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"}, "snapshot_sha256": {"$ref": "#/$defs/sha"}, "source": {"enum": ["versioned_d3_d5_feasibility_observations", "versioned_d3_d5_d7_adaptive_observations"]}}},
     "rows": {"type": "array", "minItems": 10, "maxItems": 100, "items": {"$ref": "#/$defs/row"}},
     "selected_candidate_id": {"type": ["string", "null"], "pattern": "^dc_[0-9a-f]{24}$"},
     "satisfied": {"type": "boolean"},

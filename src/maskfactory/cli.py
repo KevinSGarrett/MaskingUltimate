@@ -3022,6 +3022,137 @@ def daz_coverage_apply_concentration(
     )
 
 
+@daz_coverage.command("apply-feedback")
+@click.option(
+    "--candidate-batch", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--vocabulary-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--base-qualification",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--outcome-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--validation-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--concentration-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/concentration_limits.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/planner_feedback.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\planner_feedback"),
+    show_default=True,
+)
+def daz_coverage_apply_feedback(
+    candidate_batch: Path,
+    vocabulary_report: Path,
+    base_qualification: Path,
+    outcome_snapshot: Path,
+    validation_registry: Path,
+    concentration_policy: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Derive future candidate qualifications from immutable D7 outcomes."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        PlannerFeedbackError,
+        build_planner_feedback_report,
+        load_concentration_policy,
+        load_planner_feedback_policy,
+        publish_adapted_qualification_snapshot,
+        publish_planner_feedback_report,
+    )
+    from .daz.validation_registry import load_validation_registry
+
+    try:
+        batch = json.loads(candidate_batch.read_text(encoding="utf-8"))
+        vocabulary = json.loads(vocabulary_report.read_text(encoding="utf-8"))
+        base = json.loads(base_qualification.read_text(encoding="utf-8"))
+        outcomes = json.loads(outcome_snapshot.read_text(encoding="utf-8"))
+        registry = load_validation_registry(validation_registry)
+        concentration = load_concentration_policy(concentration_policy)
+        feedback_policy = load_planner_feedback_policy(policy)
+        inputs = {
+            "candidate_batch": batch,
+            "vocabulary_report": vocabulary,
+            "base_qualification_snapshot": base,
+            "outcome_snapshot": outcomes,
+            "validation_registry": registry,
+            "concentration_policy": concentration,
+            "policy": feedback_policy,
+        }
+        report = build_planner_feedback_report(**inputs)
+        target, published = publish_planner_feedback_report(report, output, **inputs)
+        qualification_target, qualification_published = publish_adapted_qualification_snapshot(
+            report, output
+        )
+    except (
+        PlannerFeedbackError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, PlannerFeedbackError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_planner_feedback_built",
+                entity_ids=(
+                    report["report_id"],
+                    report["adapted_qualification_snapshot"]["snapshot_id"],
+                ),
+                evidence_paths=(str(target), str(qualification_target)),
+                data={
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "adapted_qualification_sha256": report["adapted_qualification_snapshot"][
+                        "snapshot_sha256"
+                    ],
+                    "publication": {
+                        "report_path": str(target),
+                        "report_published": published,
+                        "qualification_path": str(qualification_target),
+                        "qualification_published": qualification_published,
+                    },
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

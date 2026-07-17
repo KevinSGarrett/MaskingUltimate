@@ -6843,3 +6843,21 @@ Verification:                         13/13 focused concentration, 10/10 selecti
 Live boundary:                        no qualified live D3/D5 selection or accepted-history snapshot exists; no live concentration report, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_concentration_limits_20260717.json`
+
+## 2026-07-17 08:55 UTC - Validation outcomes feed future planner qualification
+
+**Result:** MF-P9-10.06 now has a complete offline D7 feedback adapter and adaptive simulation; it
+remains at 85% until qualified live D7 outcomes and live D3/D5 qualifications can run a live cycle.
+
+Outcome authority:                    every observation embeds a complete V0â€“V8 validation report that is semantically rebuilt against the versioned registry; snapshots and observations are content-addressed; only an explicit acceptance-certificate ID/hash reference can increase accepted coverage
+Acceptance-aware statistics:          demand, scene-family/combination, and asset reports expose validation failure, acceptance yield, GPU cost per accept, actual useful label visibility, underfilled target cells, reason counts, and assembly/geometry/render camera failure regions
+Future-only adaptation:               at least two matching outcomes are required; smoothed failure and normalized GPU cost update predicted rejection cost, useful/predicted pixels update visibility gain, and demand failure rate may raise but never lower failure-mining priority
+Evidence-backed restrictions:         only three independent failed reports, at least 75% asset failure, an eligible asset/mapping reason, and an explicitly affected asset ID can set future `compatibility_eligible=false`; arbitrary failures and unaffected assets cannot create a restriction
+Adaptive proof:                       two independent geometry failures against the original rank-one family raise its predicted rejection penalty above 0.8 and reduce empirical visibility to zero; unchanged D9-04 then selects a different candidate while the original selection and outcome snapshot remain byte-identical
+Publication/CLI:                      the report and a standalone D9-04-compatible adaptive qualification snapshot are independently hash-replayed and atomically/immutably published; `daz coverage apply-feedback` replays idempotently
+History/authority boundary:           feedback changes only future qualification; it never edits historical recipes/outcomes, creates a recipe/render authority/gold, closes a real deficit, or raises Mode B/inferred authority
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; explicit adaptive selection context may flow downstream without changing provider/tier/ontology/owner/transform/certificate authority
+Verification:                         11/11 feedback, 10/10 selection, 13/13 concentration, 72/72 validation-registry, 13/13 core validation, 10/10 generation, 9/9 deficit adapter, and 14/14 vocabulary tests pass; Ruff, changed-surface Black, all 135 JSON schemas, all 42 DAZ YAML documents, and Git diff checks pass
+Live boundary:                        no qualified live D7 outcome snapshot or live D3/D5 candidate qualification exists; no live adaptive selection, recipe, render authority, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_planner_feedback_20260717.json`

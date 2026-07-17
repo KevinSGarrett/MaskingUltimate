@@ -356,7 +356,11 @@ def _validate_qualifications(
         not isinstance(snapshot, Mapping)
         or set(snapshot) != {"snapshot_id", "snapshot_sha256", "source", "rows"}
         or not TOKEN.fullmatch(str(snapshot.get("snapshot_id")))
-        or snapshot.get("source") != "versioned_d3_d5_feasibility_observations"
+        or snapshot.get("source")
+        not in {
+            "versioned_d3_d5_feasibility_observations",
+            "versioned_d3_d5_d7_adaptive_observations",
+        }
         or not SHA256.fullmatch(str(snapshot.get("snapshot_sha256")))
     ):
         raise CandidateSelectionError("candidate_qualification_snapshot_invalid", str(snapshot))
@@ -398,6 +402,14 @@ def _validate_qualifications(
         "source": snapshot["source"],
     }
     return rows, record
+
+
+def validate_candidate_qualification_snapshot(
+    snapshot: Mapping[str, Any], batch: Mapping[str, Any]
+) -> None:
+    """Validate a base or D7-adapted qualification snapshot against one batch."""
+
+    _validate_qualifications(snapshot, batch)
 
 
 def _rounded(value: float) -> float:

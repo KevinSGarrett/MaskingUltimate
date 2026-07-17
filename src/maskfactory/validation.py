@@ -91,6 +91,7 @@ SCHEMA_NAMES = frozenset(
         "daz_candidate_batch_report",
         "daz_candidate_selection_report",
         "daz_concentration_report",
+        "daz_planner_feedback_report",
         "daz_real_deficit_signal_report",
         "daz_solo_pose_selection",
         "daz_duo_recipe_selection",

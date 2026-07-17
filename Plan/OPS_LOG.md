@@ -6533,3 +6533,22 @@ Live boundary:                        no closed fixture is claimed as a qualifie
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
 Verification:                         131/131 focused, 1,066/1,066 DAZ-selected, and 2,754/2,754 full repository tests pass; Ruff, targeted format, all 118 JSON schemas, DAZ config validation, tracker validation, and Git diff checks pass
 Evidence:                             `qa/reports/daz_strict_scene_validators_20260716.json`
+
+## 2026-07-17 00:19 UTC - Strict V5 render and V6 full-image semantic validators implemented
+
+**Result:** MF-P9-08.03 now has independent actual-output render validation and complete-raster semantic
+validation with explicit authority context; it remains at 85% until its declared D6/D7-01 live authorities
+and a qualified live DAZ pass/semantic run exist.
+
+Render authority:                     the exact D6 execution document is rebound to its hashed report and pass-file map; the D6 same-state replay proof is schema/hash/lineage checked; the ordered profile pass set is exact; every actual file or diagnostic directory tree is independently hashed and byte-counted
+Codec/dimension authority:            RGB PNG content, exact uint16 PNG, exact two-channel uint16 PNG, EXR channel type/sampling/data window, actual dimensions, and nonempty canonical diagnostic trees are decoded or inspected independently rather than trusted from sidecars
+Semantic authority:                   every pixel in RGB, instance, PART, MATERIAL, PROTECTED, coverage alpha, skeleton-owner, surface-orientation, and depth-discontinuity rasters is scanned; unknown IDs, undeclared owners, missing hard-owner labels, background claims, protected mapping drift, and target/other-person confusion reject
+Plausibility authority:               ontology component limits, explicitly scoped area ranges, anatomical chain adjacency, left/right votes, front/back votes, semantic-to-RGB edges, alpha at semantic contours, and silhouette-to-depth discontinuities are checked
+Wave64 integration boundary:          provider, tier, ontology version/hash, MaskFactory owner, package revision, certificate ID/hash/scope, transform-chain hash, and target/other instance IDs are mandatory evidence; downstream bundle/model selection cannot infer stronger authority, relabel gold, or treat a live Mode-B result as certified
+Normalized results:                   V5 and V6 emit their registered `daz_validation_result` records with deterministic failure priority; required warnings still cannot satisfy the immutable validation set
+Evidence publication:                 `validate-pass-semantics` snapshots exact documents plus actual-file hash manifests under a hash-derived safe relative tree and publishes an immutable idempotent V5/V6 set report
+Seeded proof:                          16 new positive/negative tests cover actual hash/dimension/report drift, unknown IDs, owner/protected/material defects, side/front-back errors, area plausibility, anatomical disconnection, boundary/depth disagreement, authority-owner rejection, raster-role closure, and CLI replay
+Live boundary:                        no fixture is claimed as a qualified live DAZ render or semantic result; D6 and D7-01 live acceptance remain outstanding
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move, or asset relabel occurred
+Verification:                         571/571 focused, 1,078/1,078 DAZ-selected, and 2,770/2,770 full repository tests pass; Ruff, targeted format, all 118 JSON schemas, all 28 DAZ YAML documents, tracker validation, and Git diff checks pass
+Evidence:                             `qa/reports/daz_pass_semantic_validators_20260717.json`

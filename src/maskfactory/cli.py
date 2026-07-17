@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, Mapping
 
 import click
 import yaml
@@ -6379,6 +6380,242 @@ def daz_recipes_validate_construction(
     )
     if code:
         raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("validate-pass-semantics")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--replay-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--render-files", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--semantic-authority",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--semantic-files",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/strict_pass_semantic_validators.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\pass_semantic_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pass_semantics(
+    plan: Path,
+    execution: Path,
+    execution_report: Path,
+    replay_report: Path,
+    render_files: Path,
+    semantic_authority: Path,
+    semantic_files: Path,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Run independent V5 actual-render and V6 every-pixel semantic validation."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.pass_semantic_validators import (
+        PassSemanticValidationError,
+        load_pass_semantic_policy,
+        validate_render_layer,
+        validate_semantic_layer,
+    )
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        documents = {
+            "plan": json.loads(plan.read_text(encoding="utf-8")),
+            "execution": json.loads(execution.read_text(encoding="utf-8")),
+            "execution_report": json.loads(execution_report.read_text(encoding="utf-8")),
+            "replay_report": json.loads(replay_report.read_text(encoding="utf-8")),
+            "semantic_authority": json.loads(semantic_authority.read_text(encoding="utf-8")),
+        }
+        render_path_map = {
+            key: Path(value)
+            for key, value in _load_string_mapping(render_files, "render-files").items()
+        }
+        semantic_path_map = {
+            key: Path(value)
+            for key, value in _load_string_mapping(semantic_files, "semantic-files").items()
+        }
+        file_manifest = {
+            "render": _strict_file_manifest(render_path_map),
+            "semantic": _strict_file_manifest(semantic_path_map),
+        }
+        policy_document = load_pass_semantic_policy(policy)
+        registry_document = load_validation_registry(registry)
+        input_bundle = {**documents, "files": file_manifest}
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                input_bundle,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_bundle_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in input_bundle.items():
+            _publish_immutable_json(document, input_bundle_root, name)
+        evidence_root = f"inputs/{input_bundle_sha256[:24]}"
+        results = [
+            validate_render_layer(
+                documents["plan"],
+                documents["execution"],
+                documents["execution_report"],
+                documents["replay_report"],
+                render_path_map,
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=[
+                    f"{evidence_root}/plan.json",
+                    f"{evidence_root}/execution.json",
+                    f"{evidence_root}/execution_report.json",
+                    f"{evidence_root}/replay_report.json",
+                    f"{evidence_root}/files.json",
+                ],
+            ),
+            validate_semantic_layer(
+                documents["plan"]["scene_id"],
+                semantic_path_map,
+                documents["semantic_authority"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=[
+                    f"{evidence_root}/semantic_authority.json",
+                    f"{evidence_root}/files.json",
+                ],
+            ),
+        ]
+        document = build_validation_set_report(
+            results,
+            entity_id=documents["plan"]["scene_id"],
+            scope="scene",
+            registry=registry_document,
+            required_validator_ids=["DAZ-V5-001", "DAZ-V6-001"],
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        PassSemanticValidationError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason
+            if isinstance(exc, (PassSemanticValidationError, ValidationRegistryError))
+            else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_pass_semantics_valid" if not code else "daz_pass_semantics_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"], documents["plan"]["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": {key: document["layer_summary"][key] for key in ("V5", "V6")},
+                    "results": results,
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+def _strict_file_manifest(paths: Mapping[str, Path]) -> list[dict[str, Any]]:
+    records = []
+    for role, path in paths.items():
+        candidate = Path(path)
+        if not candidate.exists():
+            raise ValueError(f"strict validator file missing: {role}")
+        if candidate.is_file():
+            payload = candidate.read_bytes()
+            digest = hashlib.sha256(payload).hexdigest()
+            byte_count = len(payload)
+            kind = "file"
+        elif candidate.is_dir():
+            children = []
+            byte_count = 0
+            for child in sorted(candidate.rglob("*")):
+                if child.is_file():
+                    payload = child.read_bytes()
+                    byte_count += len(payload)
+                    children.append(
+                        {
+                            "path": child.relative_to(candidate).as_posix(),
+                            "sha256": hashlib.sha256(payload).hexdigest(),
+                            "bytes": len(payload),
+                        }
+                    )
+            if not children:
+                raise ValueError(f"strict validator directory empty: {role}")
+            digest = hashlib.sha256(
+                json.dumps(children, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            kind = "directory_tree"
+        else:
+            raise ValueError(f"strict validator path invalid: {role}")
+        records.append(
+            {
+                "role": role,
+                "kind": kind,
+                "sha256": digest,
+                "bytes": byte_count,
+            }
+        )
+    return records
 
 
 def _load_string_mapping(path: Path, label: str) -> dict[str, str]:

@@ -17031,13 +17031,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T06:56:48+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented eight blocking D8 V7 validators for assignment lineage, exact construction-to-instance remap, target-owner identity, exclusivity, completeness, target/other complements, package/shared-RGB hashes, and grouping. Seeded T-082 duplicate-owner and coherent T-083 two-owner swap fixtures fail closed; the latter preserves exclusivity/completeness/complements while identity bleed still rejects. Closed report schema, semantic hash replay, immutable CLI publication, 7/7 focused and 4/4 isolated adjacent tests pass; Ruff/Black/schema/YAML/diff checks pass. Remains 85% pending a qualified live D8-03 derived scene; no live acceptance or gold/authority uplift claimed. Larger test invocations without normal summaries under ~0.55 GB free RAM are not counted."
+        }
+      ],
+      "evidence": "qa/reports/daz_multi_person_identity_validation_20260717.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T06:56:48+00:00",
       "orphaned": false
     },
     "MF-P9-09.05": {

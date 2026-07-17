@@ -89,6 +89,7 @@ SCHEMA_NAMES = frozenset(
         "daz_character_appearance_selection",
         "daz_solo_pose_selection",
         "daz_duo_recipe_selection",
+        "daz_multi_person_identity_report",
         "daz_p_index_assignment",
         "daz_scene_formation_selection",
         "daz_scene_preflight_report",

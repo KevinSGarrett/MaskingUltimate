@@ -6717,3 +6717,20 @@ Verification:                         37/37 focused p-index/derivation, 1,197/1,
 Monolithic boundary:                 the repository contains 2,958 tests and the immediately preceding commit passed all 2,955 then-existing tests; a final one-process run is not claimed because live ComfyUI plus WSL/Docker left about 1.3 GB free RAM and repeating the cumulative run would reintroduce laptop-crash risk
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_shared_pass_d8_derivation_20260717.json`
+
+## 2026-07-17 06:55 UTC - Blocking multi-person identity, exclusivity, and bleed validation implemented
+
+**Result:** MF-P9-09.04 now has complete offline D8 V7 validation and seeded owner-swap proof;
+it remains at 85% until a qualified live D8-03 derived scene runs through the same validator.
+
+Validator set:                       eight versioned BLOCK validators require exact assignment lineage, construction-to-instance remap, target owner identity, exclusivity, completeness, target/other complements, package/shared-RGB hashes, and scene/image/family grouping
+Full-image authority:                exact uint16 construction and instance rasters are hash/byte/relation replayed; every binary target is compared to its declared source-instance owner; target sum and visible union are checked vectorially without sampling
+Seeded T-082 proof:                  adding one p1-owned pixel to p0 produces one duplicate-ownership pixel, fails DAZ-V7-004, and makes the report acceptance-ineligible
+Seeded T-083 proof:                  exchanging one p0 and one p1 pixel while coherently recomputing both other-person masks preserves exclusivity, completeness, and complements but produces four identity-difference pixels, fails DAZ-V7-003, and makes the report acceptance-ineligible
+Lineage/publication:                 contract, derivation report, accepted p-index assignment, policy, source maps, package tree, report ID/hash, closed schema, atomic immutable publication, conflict rejection, and CLI replay are bound
+Authority boundary:                 the report is technical validation evidence only; it cannot create or raise training truth, human gold, autonomous-certified gold, Mode B authority, or any inferred downstream authority
+Wave64 boundary:                    Main and the separate autonomy-bridge worktree remain untouched; downstream systems may consume explicit versioned report/transform evidence but may not infer stronger provider/tier/ontology/owner/certificate authority
+Verification:                        7/7 focused tests and 4/4 isolated adjacent D8/p-index/QC tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 128 JSON schemas, all 35 DAZ YAML documents, and Git diff checks pass
+Resource boundary:                   larger adjacent invocations emitted passing case dots but ended without a pytest summary or exit code while free physical memory was about 0.55 GB; they are honestly not counted, and no current DAZ-wide or full-repository pass is claimed
+Capacity/mutation boundary:          F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_multi_person_identity_validation_20260717.json`

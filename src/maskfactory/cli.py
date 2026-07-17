@@ -6345,6 +6345,114 @@ def daz_recipes_derive_scene_packages(
     )
 
 
+@daz_recipes.command("validate-multi-person-identity")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--derivation-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assignment", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--instance-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--derived-scene-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/multi_person_identity_validation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\13_validation\multi_person_identity"),
+    show_default=True,
+)
+def daz_recipes_validate_multi_person_identity(
+    contract: Path,
+    derivation_report: Path,
+    assignment: Path,
+    construction_map: Path,
+    instance_map: Path,
+    derived_scene_root: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Recompute blocking D8 identity, exclusivity, and bleed validators."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.multi_person_validation import (
+        MultiPersonIdentityValidationError,
+        evaluate_multi_person_identity,
+        load_multi_person_identity_policy,
+        publish_multi_person_identity_report,
+    )
+
+    try:
+        document = evaluate_multi_person_identity(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(derivation_report.read_text(encoding="utf-8")),
+            json.loads(assignment.read_text(encoding="utf-8")),
+            construction_map_path=construction_map,
+            instance_map_path=instance_map,
+            derived_scene_root=derived_scene_root,
+            policy=load_multi_person_identity_policy(policy),
+        )
+        target, published = publish_multi_person_identity_report(document, output)
+    except (
+        MultiPersonIdentityValidationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, MultiPersonIdentityValidationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_multi_person_identity_valid" if not code else "daz_multi_person_identity_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
 @daz_recipes.command("prove-same-state-replay")
 @click.option(
     "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True

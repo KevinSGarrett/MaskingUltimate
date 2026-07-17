@@ -6769,3 +6769,22 @@ Verification:                         14/14 focused vocabulary, 5/5 canonical co
 Resource boundary:                   bounded focused processes were used because live ComfyUI plus WSL/Docker leave limited memory; every claimed process completed normally, and no current DAZ-wide or full-repository pass is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_coverage_vocabulary_20260717.json`; current immutable report `qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json`; superseded immutable pre-label report retained for audit
+
+## 2026-07-17 07:52 UTC - Real MaskFactory deficit-signal adapter implemented
+
+**Result:** MF-P9-10.02 now has a complete offline real-deficit adapter and exact v1/v2 fixtures;
+it remains at 85% because no governed live `qa/coverage_matrix.json` or v2 matrix currently exists
+to import.
+
+V1 source contract:                  the complete 126-cell canonical cross-product and all 12 attributes are validated against real certified coverage, with D5 targets frozen at 8 per cell and 40 per attribute
+V2 source contract:                  all per-label state/view/pose/occlusion and clear-positive deficits retain body_parts_v2 lineage, but remain inactive observations; the adapter cannot activate v2
+Normalization:                       each positive signal receives content-addressed demand and report hashes, exact source coordinates, only exact D9-01 closed-axis projections, normalized severity, deterministic ranking, and semantic summary replay
+Actionability:                       v1 minimum deficits are eligible; inactive-v2 minimum deficits remain non-actionable observations; maximum-constraint violations are source-gate-only and can never become synthetic acquisition requests
+Authority boundary:                  source counts are read-only; imported demand signals create no recipe or truth tier; future synthetic counts cannot close real certified deficits, mutate gold, or grant stronger Mode B/inferred authority
+Publication/CLI:                     closed schema, policy hash, current D9-01 vocabulary ID/hash, source semantic hash, atomic immutable idempotent publication, conflict rejection, and `daz coverage import-deficits` CLI pass
+Seeded proof:                         exact v1 fixture yields 138 ranked demands and 1,486 deficit units without mutating its source; inactive v2 and a seeded maximum violation remain isolated; missing/duplicate cells, source drift, policy weakening, coherent target tamper, and publication conflict reject
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; explicit deficit context may flow downstream without any provider/tier/ontology/owner/certificate authority inference
+Verification:                         9/9 focused adapter, 14/14 vocabulary, 5/5 canonical coverage, and 7/7 v2 operations tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 131 JSON schemas, all 38 DAZ YAML documents, and Git diff checks pass
+Live boundary:                        no governed live real coverage matrix exists in `qa`; no live import, plan, generated scene, accepted package, real deficit closure, dataset admission, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_real_deficit_signal_adapter_20260717.json`

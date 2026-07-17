@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_real_deficit_signal_report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "report_id", "report_sha256", "adapter_version", "policy_sha256", "vocabulary", "source", "demands", "summary", "authority", "publication"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "report_id": {"type": "string", "pattern": "^drds_[0-9a-f]{24}$"},
+    "report_sha256": {"$ref": "#/$defs/sha"},
+    "adapter_version": {"const": "1.0.0"},
+    "policy_sha256": {"const": "c6e03cca2f5427f5d5e8b79d61c7233b9667e909d27775188a3380cb01fac93c"},
+    "vocabulary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["report_id", "report_sha256", "vocabulary_version"],
+      "properties": {
+        "report_id": {"type": "string", "pattern": "^dcvr_[0-9a-f]{24}$"},
+        "report_sha256": {"$ref": "#/$defs/sha"},
+        "vocabulary_version": {"const": "1.0.0"}
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "source_kind", "source_schema_version", "source_sha256", "generated_at", "ontology_version", "authority_namespace", "production_activation_granted"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/token"},
+        "source_kind": {"enum": ["coverage_matrix_v1", "coverage_matrix_v2"]},
+        "source_schema_version": {"enum": ["1.0.0", "2.0.0"]},
+        "source_sha256": {"$ref": "#/$defs/sha"},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "ontology_version": {"enum": ["body_parts_v1", "body_parts_v2"]},
+        "authority_namespace": {"const": "real_certified_coverage"},
+        "production_activation_granted": {"type": "boolean"}
+      }
+    },
+    "demands": {"type": "array", "items": {"$ref": "#/$defs/demand"}},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["positive_deficit_count", "eligible_count", "inactive_ontology_observation_count", "source_gate_only_count", "total_deficit_units", "maximum_normalized_deficit"],
+      "properties": {
+        "positive_deficit_count": {"type": "integer", "minimum": 0},
+        "eligible_count": {"type": "integer", "minimum": 0},
+        "inactive_ontology_observation_count": {"type": "integer", "minimum": 0},
+        "source_gate_only_count": {"type": "integer", "minimum": 0},
+        "total_deficit_units": {"type": "integer", "minimum": 0},
+        "maximum_normalized_deficit": {"type": "number", "minimum": 0}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_counts_are_read_only", "source_authority_is_preserved", "synthetic_counts_close_real_deficits", "imported_signals_create_gold", "imported_signals_create_recipes", "inactive_ontology_grants_production_activation"],
+      "properties": {
+        "source_counts_are_read_only": {"const": true},
+        "source_authority_is_preserved": {"const": true},
+        "synthetic_counts_close_real_deficits": {"const": false},
+        "imported_signals_create_gold": {"const": false},
+        "imported_signals_create_recipes": {"const": false},
+        "inactive_ontology_grants_production_activation": {"const": false}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["immutable", "atomic"],
+      "properties": {"immutable": {"const": true}, "atomic": {"const": true}}
+    }
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "token": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"},
+    "coordinate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["axis_id", "value"],
+      "properties": {
+        "axis_id": {"enum": ["canonical_view", "canonical_pose", "instance_context", "canonical_attribute", "ontology_version", "ontology_label", "view", "pose", "review_state", "occlusion_context", "clear_positive_target"]},
+        "value": {"type": ["string", "integer"]}
+      }
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["axis_id", "value"],
+      "properties": {
+        "axis_id": {"enum": ["canonical_view", "canonical_pose", "instance_context", "canonical_attribute", "ontology_version", "ontology_label", "label_visibility_state"]},
+        "value": {"type": "string"}
+      }
+    },
+    "demand": {
+      "type": "object", "additionalProperties": false,
+      "required": ["demand_id", "source_id", "signal_kind", "ontology_version", "source_coordinates", "closed_axis_projection", "target", "current", "deficit", "normalized_deficit", "target_kind", "actionability", "synthetic_recipe_mapping_required"],
+      "properties": {
+        "demand_id": {"type": "string", "pattern": "^drd_[0-9a-f]{24}$"},
+        "source_id": {"$ref": "#/$defs/token"},
+        "signal_kind": {"enum": ["canonical_cell", "canonical_attribute", "ontology_cell", "ontology_positive_target"]},
+        "ontology_version": {"enum": ["body_parts_v1", "body_parts_v2"]},
+        "source_coordinates": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/coordinate"}},
+        "closed_axis_projection": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/projection"}},
+        "target": {"type": "integer", "minimum": 0},
+        "current": {"type": "integer", "minimum": 0},
+        "deficit": {"type": "integer", "minimum": 1},
+        "normalized_deficit": {"type": "number", "exclusiveMinimum": 0},
+        "target_kind": {"enum": ["minimum", "maximum"]},
+        "actionability": {"enum": ["eligible", "inactive_ontology_observation", "source_gate_only"]},
+        "synthetic_recipe_mapping_required": {"type": "boolean"}
+      }
+    }
+  }
+}

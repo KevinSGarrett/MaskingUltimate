@@ -2633,6 +2633,102 @@ def daz_coverage_vocabulary_report(policy: Path, repository_root: Path, output: 
     )
 
 
+@daz_coverage.command("import-deficits")
+@click.option(
+    "--matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Real MaskFactory coverage_matrix v1 or v2 JSON.",
+)
+@click.option("--source-id", required=True, help="Stable portable identifier for this snapshot.")
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/deficit_signal_adapter.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--vocabulary-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Current immutable D9-01 vocabulary report.",
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\coverage_demands"),
+    show_default=True,
+)
+def daz_coverage_import_deficits(
+    matrix: Path,
+    source_id: str,
+    policy: Path,
+    vocabulary_report: Path,
+    output: Path,
+) -> None:
+    """Import real coverage deficits without mutating their authority namespace."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        RealDeficitSignalError,
+        build_real_deficit_signal_report,
+        load_deficit_adapter_policy,
+        publish_real_deficit_signal_report,
+    )
+
+    try:
+        document = json.loads(matrix.read_text(encoding="utf-8"))
+        source_sha256 = hashlib.sha256(
+            json.dumps(
+                document,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        vocabulary = json.loads(vocabulary_report.read_text(encoding="utf-8"))
+        report = build_real_deficit_signal_report(
+            document,
+            source_id=source_id,
+            source_sha256=source_sha256,
+            policy=load_deficit_adapter_policy(policy),
+            vocabulary_report=vocabulary,
+        )
+        target, published = publish_real_deficit_signal_report(report, output)
+    except (
+        RealDeficitSignalError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, RealDeficitSignalError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_real_deficit_signals_imported",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "source": report["source"],
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

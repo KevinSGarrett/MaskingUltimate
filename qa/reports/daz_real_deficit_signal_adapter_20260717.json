@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T07:51:41Z",
+  "item": "MF-P9-10.02",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_adapter_complete": true,
+    "adapter_test_verify_clause_passed": true,
+    "qualified_live_real_coverage_snapshot_imported": false
+  },
+  "source_contracts": {
+    "coverage_matrix_v1": {
+      "schema_version": "1.0.0",
+      "ontology_version": "body_parts_v1",
+      "authority_namespace": "real_certified_coverage",
+      "target_per_cell": 8,
+      "target_per_attribute": 40,
+      "production_activation_granted": true
+    },
+    "coverage_matrix_v2": {
+      "schema_version": "2.0.0",
+      "ontology_version": "body_parts_v2",
+      "authority_namespace": "real_certified_coverage",
+      "production_activation_granted": false
+    },
+    "source_semantic_sha256_required": true,
+    "source_generated_at_preserved": true,
+    "portable_source_id_required": true,
+    "local_source_path_published": false
+  },
+  "normalization": {
+    "canonical_cell_axes": [
+      "canonical_view",
+      "canonical_pose",
+      "instance_context"
+    ],
+    "canonical_attribute_axis": "canonical_attribute",
+    "v2_label_axis": "ontology_label",
+    "v2_dimension_coordinates_preserved": true,
+    "only_exact_closed_axis_projections_emitted": true,
+    "unknown_missing_or_duplicate_source_cells_fail_closed": true,
+    "demand_ids_are_content_addressed": true,
+    "ranking_is_normalized_deficit_descending_then_deterministic": true,
+    "report_summary_semantically_recomputed": true
+  },
+  "actionability": {
+    "canonical_minimum_deficit": "eligible",
+    "inactive_ontology_minimum_deficit": "inactive_ontology_observation",
+    "maximum_constraint_violation": "source_gate_only",
+    "v2_signal_can_grant_activation": false,
+    "maximum_violation_can_become_synthetic_acquisition": false,
+    "import_creates_recipe": false
+  },
+  "fixture_proof": {
+    "v1_exact_cross_product_cells": 126,
+    "v1_exact_attribute_count": 12,
+    "v1_positive_demands": 138,
+    "v1_total_deficit_units": 1486,
+    "v1_all_demands_actionable": true,
+    "v1_source_document_mutated": false,
+    "v2_inactive_minimum_demands_are_actionable": false,
+    "v2_seeded_maximum_constraint_violation": "source_gate_only",
+    "coherently_rehashed_v1_target_tamper": "rejected",
+    "source_hash_drift": "rejected",
+    "missing_cell": "rejected",
+    "duplicate_cell": "rejected",
+    "policy_weakening": "rejected",
+    "publication_conflict": "rejected"
+  },
+  "publication_and_cli": {
+    "closed_json_schema": true,
+    "schema_registered": true,
+    "policy_sha256_bound": "c6e03cca2f5427f5d5e8b79d61c7233b9667e909d27775188a3380cb01fac93c",
+    "d9_01_vocabulary_report_id_and_sha256_bound": true,
+    "report_and_demand_hashes_recomputed": true,
+    "atomic_immutable_idempotent_publication": true,
+    "cli": "maskfactory daz coverage import-deficits",
+    "cli_fixture_replay": "pass"
+  },
+  "authority_boundary": {
+    "source_counts_are_read_only": true,
+    "source_authority_is_preserved": true,
+    "synthetic_counts_close_real_deficits": false,
+    "imported_signals_create_gold": false,
+    "imported_signals_create_recipes": false,
+    "inactive_ontology_grants_production_activation": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "separate_autonomy_bridge_worktree_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "downstream_planner_may_consume_explicit_deficit_demands": true,
+    "downstream_planner_may_not_infer_stronger_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_file_sha256": "a13710454ce14a1ac8c2af30b039f88253014465a7ded88c9fccffe6f77b190d",
+    "schema_sha256": "2390c16cf68b5214fe41ecc5766388686a4ef6f2b1919bfeaa81e6ebae9ee8b3",
+    "implementation_sha256": "748f62dc7764e480b8e2cee3ddc5ca593f21cf93238b72492c63732fadbecd9a",
+    "package_init_sha256": "776e5e0aeedb63cac56cf8d8183261d466fcf6464226119974d0851192c596fb",
+    "cli_sha256": "d65088d51402eaaecd135994903aaf3f97928dd096c73aa699a1853d36e07676",
+    "validation_registry_sha256": "4104c2bf53d96ef7e0d5a5e66fabcb24816a2f9757a5cb0f2c2a67fe8347d0dd",
+    "tests_sha256": "704f579d4b7a338a5104fb848b3b00286c70a9fd9bc9cef6784c4b5009b91c17"
+  },
+  "verification": {
+    "focused_adapter_tests_collected": 9,
+    "focused_adapter_tests_passed": 9,
+    "coverage_vocabulary_tests_collected": 14,
+    "coverage_vocabulary_tests_passed": 14,
+    "canonical_coverage_tests_collected": 5,
+    "canonical_coverage_tests_passed": 5,
+    "ontology_v2_operations_tests_collected": 7,
+    "ontology_v2_operations_tests_passed": 7,
+    "directly_relevant_tests_collected": 35,
+    "directly_relevant_tests_passed": 35,
+    "current_daz_wide_pass_claimed": false,
+    "current_full_repository_pass_claimed": false,
+    "ruff_changed_surface_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "json_schema_meta_validation": "pass",
+    "maskfactory_json_schemas_parsed": 131,
+    "daz_yaml_documents_parsed": 38,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "autonomy_bridge_worktree_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_adapter_fixture_verify_clause_complete": true,
+    "qa_coverage_matrix_v1_present": false,
+    "qa_coverage_matrix_v2_present": false,
+    "qualified_live_real_deficit_report_published": false,
+    "reason": "The exact v1/v2 source validators, source hash, D5 targets, actionability isolation, vocabulary binding, deterministic ranking, schema, CLI, immutable publication, and adapter fixtures pass. No governed live qa/coverage_matrix.json or qa/coverage_matrix_v2.json is currently present to import."
+  },
+  "not_claimed": [
+    "live real coverage snapshot import",
+    "live DAZ coverage plan",
+    "generated or accepted synthetic scene",
+    "real deficit closure",
+    "human or autonomous-certified gold",
+    "current DAZ-wide or full-repository pass"
+  ]
+}

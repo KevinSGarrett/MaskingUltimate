@@ -6788,3 +6788,22 @@ Verification:                         9/9 focused adapter, 14/14 vocabulary, 5/5
 Live boundary:                        no governed live real coverage matrix exists in `qa`; no live import, plan, generated scene, accepted package, real deficit closure, dataset admission, or gold is claimed
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
 Evidence:                             `qa/reports/daz_real_deficit_signal_adapter_20260717.json`
+
+## 2026-07-17 08:08 UTC - Stratified and low-discrepancy candidate generation implemented
+
+**Result:** MF-P9-10.03 now has a complete offline candidate generator and distribution proof; it
+remains at 85% until qualified D5 registry pools and a governed live deficit report can produce a
+live candidate batch.
+
+Discrete sampling:                    all 56 fixed axes are emitted in closed vocabulary order; eligible demand projections remain locked; every unlocked value count differs by at most one; greedy gain expands pair coverage within the 18 declared high-risk intersections
+Continuous sampling:                  seeded Halton points use fixed bases 2/3/5/7/11/13 across all six continuous axes and exact vocabulary bounds; same inputs replay byte-identically while a seed change changes the batch
+Registry sampling:                    deterministic weighted reservoir keys select versioned concrete values under positive integer per-asset caps; registry semantic hashes, value regexes, finite positive weights, assignment/rejection partitions, and cap exhaustion are enforced
+Rejection honesty:                    missing and exhausted pools produce per-candidate findings without silent substitution, cap violation, or candidate deletion; missing live D5 inventory therefore remains visible rather than fabricated
+Distribution proof:                  the 32-candidate complete fixture is balanced and covers selected pairs; a 100-candidate weighted fixture favors the high-weight asset; a 12-candidate cap fixture accepts 10 registry-complete candidates then records 16 exhaustion findings; a missing-pool fixture records 256 findings across 32 candidates
+Replay/publication:                   closed schema, exact policy/vocabulary/demand/registry hashes, candidate/batch IDs, recomputed distribution and summary, atomic immutable idempotent publication, conflict rejection, and `daz coverage generate-candidates` CLI pass
+Authority boundary:                  candidates remain unscored, unselected, and not recipes or feasible scenes; they create no gold and cannot close real deficits or raise Mode B/inferred authority
+Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; downstream scoring may consume explicit unscored candidates but cannot infer feasibility, provider/tier/ontology/owner/certificate authority, or gold
+Verification:                         10/10 focused candidate, 9/9 deficit adapter, 14/14 vocabulary, 5/5 canonical coverage, 7/7 v2 operations, and 6/6 source-policy tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 132 JSON schemas, all 39 DAZ YAML documents, and Git diff checks pass
+Live boundary:                        no qualified D5 registry snapshot or governed live deficit report exists; no live batch, feasible/scored selection, recipe, generated scene, accepted package, dataset admission, real deficit closure, or gold is claimed
+Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live validation, asset move/relabel, Main/autonomy-bridge change, or WSL/Docker/ComfyUI termination occurred
+Evidence:                             `qa/reports/daz_candidate_generation_20260717.json`

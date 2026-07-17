@@ -2729,6 +2729,102 @@ def daz_coverage_import_deficits(
     )
 
 
+@daz_coverage.command("generate-candidates")
+@click.option(
+    "--demand-report", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--demand-id", required=True)
+@click.option(
+    "--vocabulary-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/candidate_generation.yaml"),
+    show_default=True,
+)
+@click.option("--registry-snapshot", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option("--master-seed", type=click.IntRange(min=0, max=2147483647), required=True)
+@click.option("--candidate-count", type=click.IntRange(min=10, max=100))
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\candidate_batches"),
+    show_default=True,
+)
+def daz_coverage_generate_candidates(
+    demand_report: Path,
+    demand_id: str,
+    vocabulary_report: Path,
+    policy: Path,
+    registry_snapshot: Path | None,
+    master_seed: int,
+    candidate_count: int | None,
+    output: Path,
+) -> None:
+    """Generate unscored candidates with closed distribution evidence."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage import (
+        CandidateGenerationError,
+        build_candidate_batch,
+        load_candidate_generation_policy,
+        publish_candidate_batch,
+    )
+
+    try:
+        vocabulary = json.loads(vocabulary_report.read_text(encoding="utf-8"))
+        demands = json.loads(demand_report.read_text(encoding="utf-8"))
+        registry = (
+            json.loads(registry_snapshot.read_text(encoding="utf-8"))
+            if registry_snapshot is not None
+            else None
+        )
+        report = build_candidate_batch(
+            vocabulary_report=vocabulary,
+            demand_report=demands,
+            demand_id=demand_id,
+            policy=load_candidate_generation_policy(policy),
+            master_seed=master_seed,
+            candidate_count=candidate_count,
+            registry_snapshot=registry,
+        )
+        target, published = publish_candidate_batch(report, output, vocabulary_report=vocabulary)
+    except (
+        CandidateGenerationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, CandidateGenerationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_candidate_batch_generated",
+                entity_ids=(report["batch_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "distribution": report["distribution"],
+                    "summary": report["summary"],
+                    "batch_sha256": report["batch_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 def _resolve_daz_database(config_root: Path, database: Path | None) -> Path:
     if database is not None:
         return database

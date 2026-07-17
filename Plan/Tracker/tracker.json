@@ -17254,13 +17254,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-17T08:09:46+00:00",
+          "actor": "codex",
+          "text": "Offline deterministic stratified/pairwise discrete generation, seeded Halton continuous sampling, weighted capped registry selection, honest rejection accounting, semantic replay, schema, CLI, and immutable publication complete. Qualified live D5 registry pools and a governed live real-deficit report remain unavailable; no live batch, feasibility, score, selection, recipe, or gold is claimed."
+        }
+      ],
+      "evidence": "qa/reports/daz_candidate_generation_20260717.json; 51/51 focused and adjacent tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-17T08:09:46+00:00",
       "orphaned": false
     },
     "MF-P9-10.04": {

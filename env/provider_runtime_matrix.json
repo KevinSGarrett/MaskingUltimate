@@ -102,10 +102,10 @@
       "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "64cd172f75c832522c3606d3813349bf6e48c5d210f8f925f16c500920b62f38"},
+        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "2c29e1f1d74fc2b0547f709134ee930700f3c04a3884548723963dba8375e075"},
         {"kind": "evidence", "path": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json", "sha256": "c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f"}
       ]
     }
   ],
-  "manifest_sha256": "bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650"
+  "manifest_sha256": "a1705b464cb18798c91002f28914de910880010045b66007e2fa9f09c9749189"
 }

@@ -48,3 +48,17 @@ def test_sam3d_body_install_evidence_and_registry_remain_non_authoritative() -> 
     assert registry["lifecycle_state"] == "planned"
     assert registry["checkpoint_gate"] == "accepted_access_verified"
     assert registry["checkpoint"]["downloaded"] is True
+
+
+def test_sam3d_body_lock_binds_offline_verified_subprocess_contract() -> None:
+    lock = json.loads(LOCK.read_text(encoding="utf-8"))
+    contract = lock["runtime"]["subprocess_contract"]
+    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["invocation"] == "wsl.exe argv only; shell disabled"
+    assert contract["person_selection"].startswith("exactly one explicit")
+    assert contract["determinism_repeats"] == 2
+    assert contract["densepose_fallback"] == "only explicit CUDA/GPU out-of-memory"
+    assert _sha256(ROOT / contract["host_adapter"]) == contract["host_adapter_sha256"]
+    assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
+    assert lock["authority"]["live_smoke_passed"] is False
+    assert lock["authority"]["may_author_gold"] is False

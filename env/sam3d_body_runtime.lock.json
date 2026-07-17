@@ -54,7 +54,31 @@
     "platform": "planned isolated WSL Ubuntu-22.04 linux-64",
     "python": "3.11 required by upstream INSTALL.md",
     "requirements_lock": "not_created_wsl_filesystem_io_error",
-    "checkpoint_inference": "not_run_wsl_filesystem_io_error"
+    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "subprocess_contract": {
+      "status": "offline_verified_live_pending",
+      "host_adapter": "src/maskfactory/providers/sam3d_body.py",
+      "host_adapter_sha256": "ab8d65a59fdbd306f4a331959e779d86a1fa67aaa24b69d438a7d5b965d079cd",
+      "isolated_runner": "tools/run_sam3d_body.py",
+      "isolated_runner_sha256": "d438f80c60e2b8c08202f55aae4b1e1dc6c5f9a7c43091afe8cd48ca3941edd3",
+      "runtime_python": "/home/kevin/mfenvs/sam3d-body-b5c765a/bin/python",
+      "invocation": "wsl.exe argv only; shell disabled",
+      "person_selection": "exactly one explicit full-image xyxy person box",
+      "inference_type": "full",
+      "determinism_repeats": 2,
+      "artifact_format": "NPZ with allow_pickle=false",
+      "evidence_fields": [
+        "exact source/runtime/checkpoint/image hashes",
+        "tracked source tree clean",
+        "requested person box",
+        "geometry payload and artifact hashes",
+        "array shapes",
+        "model-load/cold/warm latency",
+        "model and peak inference VRAM",
+        "shadow-only non-gold authority"
+      ],
+      "densepose_fallback": "only explicit CUDA/GPU out-of-memory"
+    }
   },
   "authority": {
     "lifecycle_state": "planned",

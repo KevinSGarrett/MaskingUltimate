@@ -6929,3 +6929,24 @@ Verification:                         PowerShell AST parser passes; 4/4 recovery
 Execution boundary:                   current process is non-admin; no repair, WSL shutdown, Docker stop/restart, VHD attach, elevation, or UAC request occurred; SAM 3.1 and SAM 3D Body live smokes remain pending
 Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, live mask/gold authority, DAZ, ComfyUI, and production routes remain untouched
 Evidence:                             `qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json`; recovery tool `tools/Repair-MaskFactoryWslVhd.ps1` SHA-256 `f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b`
+
+## 2026-07-17 10:16 UTC - SAM 3D Body isolated subprocess contract implemented
+
+**Result:** MF-P2-11.07 now has a complete offline host-to-WSL execution path, exact runtime
+report contract, and fail-closed artifact validation. It advances to 80%; dependency installation,
+checkpoint load, CUDA measurements, and live geometry remain pending on Ubuntu filesystem repair.
+
+Execution boundary:                   host adapter invokes `wsl.exe` with an exact argv and never a shell; the planned Python 3.11 environment and frozen official source/checkpoint/MHR/runtime-lock paths are explicit
+Person ownership:                     exactly one immutable person instance and one finite full-image xyxy box enter upstream `SAM3DBodyEstimator.process_one_image`; any missing, multiple, mismatched, or ambiguous result rejects
+Determinism:                          exactly two full body+hand inferences are required; canonical float64 geometry hashes must match before an artifact is emitted
+Artifact contract:                    closed-field compressed NPZ is loaded with `allow_pickle=false`; archive fields, array shapes, artifact SHA-256, canonical geometry SHA-256, finite values, and requested box are independently checked
+Runtime evidence:                     closed JSON binds exact clean source commit, runtime-lock fingerprint, three checkpoint hashes, input image hash, requested box, inference mode, two-run determinism, model-load/cold/warm latency, and model/peak inference VRAM
+Provenance:                           validated runtime evidence is preserved in the provider result alongside exact person, image, coordinate-frame, provider-contract, and geometry-output identities
+Failure behavior:                     missing input, timeout, nonzero subprocess, source/runtime/checkpoint/image/person/report/artifact drift, malformed/non-finite output, and nondeterminism fail closed
+Fallback boundary:                    subprocess CUDA/GPU out-of-memory text remains visible through `Sam3dBodyProcessError`; only that explicit OOM class reaches DensePose, while every other failure propagates
+Runtime matrix:                       refrozen canonical manifest `a1705b464cb18798c91002f28914de910880010045b66007e2fa9f09c9749189`; 8 providers, 6 live-qualified, 2 explicit runtime-pending, 18 exact artifacts, and zero human gates
+Verification:                         32/32 focused provider/runner/lock/matrix tests and 123/123 broader provider, multi-person, benchmark, contract, and doctor tests pass; Ruff, Ruff format, JSON/hash replay, runtime-matrix verification, and Git diff checks pass
+Live boundary:                        the WSL subprocess was not launched; dependencies were not installed and checkpoint load/CUDA inference/latency/VRAM remain unclaimed while Ubuntu root ext4 is `emergency_ro`
+Authority boundary:                   DensePose remains active and rollback; SAM 3D Body remains planned/shadow-only, unbenchmarked, unpromoted, non-production, and unable to author gold
+Preservation boundary:                `C:\Comfy_UI_Main`, `C:\w\mask-autonomy-bridge-plan`, DAZ, Docker, WSL service state, ComfyUI, masks, and gold were untouched
+Evidence:                             `qa/live_verification/sam3d_body_subprocess_contract_20260717.json` SHA-256 `5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3`

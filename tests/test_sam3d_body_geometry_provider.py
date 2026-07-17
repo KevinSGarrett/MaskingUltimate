@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +14,9 @@ from maskfactory.providers.sam3d_body import (
     GeometryProviderWithOomFallback,
     Sam3dBodyGeometryError,
     Sam3dBodyGeometryProvider,
+    Sam3dBodyProcessError,
+    Sam3dBodySubprocessBackend,
+    _geometry_sha256,
     sam3d_body_identity,
 )
 
@@ -149,3 +155,113 @@ def test_non_oom_failure_never_silently_falls_back(tmp_path: Path) -> None:
     router = GeometryProviderWithOomFallback(challenger, fallback)
     with pytest.raises(RuntimeError, match="invalid output"):
         router.infer_geometry(image, person_box=_box())
+
+
+def _subprocess_executor(backend, image: Path, *, mutate=None, returncode: int = 0):
+    def executor(argv, timeout):
+        assert argv[:5] == ("wsl.exe", "-d", "Ubuntu-22.04", "--", backend.runtime_python)
+        assert "--repeats" in argv and argv[argv.index("--repeats") + 1] == "2"
+        assert timeout == 600
+        if returncode:
+            return subprocess.CompletedProcess(argv, returncode, "", "CUDA out of memory")
+        output_path = Path(argv[argv.index("--output") + 1])
+        output = _output()
+        np.savez_compressed(output_path, **output)
+        arrays = {
+            name: output[name]
+            for name in (
+                "pred_vertices",
+                "pred_keypoints_3d",
+                "pred_keypoints_2d",
+                "pred_cam_t",
+            )
+        }
+        report = {
+            "schema_version": "1.0.0",
+            "provider": "sam3d_body",
+            "source_commit": backend.identity.source_commit,
+            "source_tree_clean": True,
+            "runtime_lock_sha256": backend.identity.runtime_fingerprint,
+            "checkpoint_assets": {
+                asset["filename"]: asset["sha256"] for asset in backend.lock["checkpoint"]["assets"]
+            },
+            "image": {"sha256": hashlib.sha256(image.read_bytes()).hexdigest()},
+            "requested_bbox_xyxy": list(_box().bbox_xyxy),
+            "inference_type": "full",
+            "repeats": 2,
+            "deterministic": True,
+            "geometry_output_sha256": _geometry_sha256(
+                output["bbox"], output["focal_length"], arrays
+            ),
+            "output_npz_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
+            "array_shapes": {name: list(value.shape) for name, value in output.items()},
+            "cold_latency_ms": 123.5,
+            "warm_latency_ms": 98.25,
+            "model_load_latency_ms": 4567.0,
+            "model_vram_bytes": 2_000_000_000,
+            "peak_inference_vram_bytes": 3_000_000_000,
+            "authority": "shadow_geometry_challenger_only",
+            "may_author_gold": False,
+        }
+        if mutate is not None:
+            mutate(report)
+        return subprocess.CompletedProcess(argv, 0, json.dumps(report), "")
+
+    return executor
+
+
+def test_isolated_subprocess_backend_binds_exact_report_and_artifact(tmp_path: Path) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend._executor = _subprocess_executor(backend, image)
+    provider = Sam3dBodyGeometryProvider(backend)
+    result = provider.infer_geometry(image, person_box=_box())
+    assert result["person_instance_key"] == "p1"
+    assert result["provenance"]["runtime_fingerprint"] == backend.identity.runtime_fingerprint
+    assert result["provenance"]["runtime_evidence"]["repeats"] == 2
+    assert result["provenance"]["runtime_evidence"]["model_load_latency_ms"] == 4567.0
+    assert result["provenance"]["may_author_gold"] is False
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (lambda report: report.update(source_commit="wrong"), "provenance mismatch"),
+        (lambda report: report.update(unexpected="field"), "fields are not closed"),
+        (lambda report: report.update(deterministic=False), "determinism or authority"),
+        (lambda report: report.update(requested_bbox_xyxy=[0, 0, 1, 1]), "box provenance"),
+        (lambda report: report.update(output_npz_sha256="0" * 64), "artifact SHA-256"),
+        (lambda report: report.update(array_shapes={}), "shape evidence"),
+        (lambda report: report.update(geometry_output_sha256="0" * 64), "payload SHA-256"),
+    ],
+)
+def test_isolated_subprocess_backend_rejects_evidence_drift(
+    tmp_path: Path, mutate, message: str
+) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend._executor = _subprocess_executor(backend, image, mutate=mutate)
+    with pytest.raises(Sam3dBodyProcessError, match=message):
+        backend(image, bboxes=np.asarray([_box().bbox_xyxy], dtype=np.float32))
+
+
+def test_isolated_cuda_oom_is_visible_to_densepose_router(tmp_path: Path) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend._executor = _subprocess_executor(backend, image, returncode=1)
+    challenger = Sam3dBodyGeometryProvider(backend)
+    fallback = GeometryProviderAdapter(
+        _identity("densepose_r50_fpn_s1x", "densepose"),
+        lambda _path, *, person_box: {
+            "provider": "densepose_r50_fpn_s1x",
+            "person_instance_key": person_box.instance_key,
+        },
+    )
+    result = GeometryProviderWithOomFallback(challenger, fallback).infer_geometry(
+        image, person_box=_box()
+    )
+    assert result["routing"]["fallback_reason"] == "out_of_memory"
+    assert result["routing"]["fallback_exception_type"] == "Sam3dBodyProcessError"

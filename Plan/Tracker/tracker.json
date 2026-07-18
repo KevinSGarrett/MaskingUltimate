@@ -18843,12 +18843,17 @@
           "ts": "2026-07-18T20:29:11+00:00",
           "actor": "codex",
           "text": "2026-07-18 Cursor acceptance: request p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8 was REJECTED with zero adopted paths. Its retained diff moves policy validation earlier and does not fix the required certified_output_scope_mismatch precedence; validators were not run. Preserve C:\\w\\mfw\\b90c7f19654319e1 and signed evidence. See qa/live_verification/cursor_worker_acceptance_20260718.json."
+        },
+        {
+          "ts": "2026-07-18T20:39:16+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 worker-runtime checkpoint: formal 0% rejection confirmed after focused pytest proved authority order must be direct certificate integrity -> operational policy binding -> advisory critic. Retained worktree remains preserved and no completion credit is claimed. See qa/live_verification/worker_runtime_queue_checkpoint_20260718.json."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T20:29:11+00:00",
+      "updated_at": "2026-07-18T20:39:16+00:00",
       "orphaned": false
     },
     "MF-P6-08.06": {
@@ -18870,12 +18875,17 @@
           "ts": "2026-07-18T20:29:14+00:00",
           "actor": "codex",
           "text": "2026-07-18 Cursor acceptance: request p000_20260718T200913928Z_mf_cursor_08_06_repair_r3_e31cc1dc was REJECTED with zero adopted paths. The retained scaffold lacks hypothesis distinctness, immutable-parent rollback, convergence/regression comparison, time/resource/no-progress caps, schema evidence, atomic writes, and tests. Preserve C:\\w\\mfw\\a1fed8eb1622c878 and signed evidence. See qa/live_verification/cursor_worker_acceptance_20260718.json."
+        },
+        {
+          "ts": "2026-07-18T20:39:17+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 worker-runtime checkpoint: rejected 0% retained bytes/CAS remain intact at C:\\w\\mfw\\a1fed8eb1622c878; no paths adopted and no Codex reimplementation authorized. See qa/live_verification/worker_runtime_queue_checkpoint_20260718.json."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T20:29:14+00:00",
+      "updated_at": "2026-07-18T20:39:17+00:00",
       "orphaned": false
     },
     "MF-P6-08.07": {
@@ -18892,11 +18902,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-18T20:39:19+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 worker-runtime checkpoint: request p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970 remains queued attempt 2 and intentionally dormant until worker-runtime canaries pass; no implementation or completion credit claimed. See qa/live_verification/worker_runtime_queue_checkpoint_20260718.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T20:39:19+00:00",
       "orphaned": false
     },
     "MF-P6-08.08": {
@@ -18934,11 +18950,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-18T20:39:20+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 worker-runtime checkpoint: request p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553 remains queued attempt 2 and intentionally dormant until worker-runtime canaries pass; no implementation or completion credit claimed. See qa/live_verification/worker_runtime_queue_checkpoint_20260718.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T20:39:20+00:00",
       "orphaned": false
     },
     "MF-P6-09.02": {

@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_artifact_binding_gap_audit",
+  "recorded_at": "2026-07-18T23:08:52Z",
+  "project_head": "d5c72c6840ad566d7ad474ef35d0475c774102ad",
+  "tracker_item": "MF-P6-09.04",
+  "audit_status": "PREREQUISITES_OPEN_IMPLEMENTATION_READY",
+  "completion_credit": false,
+  "runtime_dependency": false,
+  "governing_requirement": "Bind every consumed bridge artifact to actual encoded bytes and canonical decoded pixels plus media, owner, ontology, provider/model/workflow/runtime, target/protected authority, QA, certificate, lineage, transform, and signed revocation evidence; missing, malformed, ambiguous, or drifted evidence must prevent consumption and cache reuse.",
+  "prerequisites": [
+    {
+      "item": "MF-P6-09.01",
+      "status": "open",
+      "held_request_id": "p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553",
+      "held_base_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+      "disposition": "preserve queued final-attempt identity scope"
+    },
+    {
+      "item": "MF-P6-09.02",
+      "status": "open",
+      "prepared_packet": "MF-CURSOR-09.02-EXECUTABLE-TRANSFORMS",
+      "evidence": "qa/live_verification/executable_transform_gap_audit_20260718.json"
+    },
+    {
+      "item": "MF-P6-09.03",
+      "status": "complete",
+      "evidence": "qa/live_verification/operational_authority_lattice_20260718.json"
+    }
+  ],
+  "existing_enforcement": [
+    {
+      "capability": "closed_request_and_receipt_shapes",
+      "evidence": "Frozen v1 request/receipt schemas require source encoded/decoded identities, decoder/orientation/color semantics, still/video scope, canonical subject/assignment, target/protected artifacts, provider stack, output artifacts, transform report, QA, authority, lineage, eligibility, trust, signature, and canonical payload hashes."
+    },
+    {
+      "capability": "request_receipt_transaction_binding",
+      "evidence": "validate_bridge_exchange binds direct request IDs and payload hash, media scope, source declaration, subject, release/capability IDs, transform, target/protected lineage, one output per intent, output owner, Mode A package lineage, resource limits, certificate, and production release/capability documents."
+    },
+    {
+      "capability": "artifact_semantic_identity",
+      "evidence": "Receipt validation recomputes artifact_identity_sha256 from encoded/decoded/content/owner/dimension/transform semantics and binds each output to exact source decoded pixels, transform, intent, and lineage."
+    },
+    {
+      "capability": "certificate_scope_and_revocation",
+      "evidence": "Certified receipts require the exact supplied operational certificate, output/source/subject/release/coordinate scope equality, active authority, fresh revocation observation, QA pass, and transform round-trip."
+    },
+    {
+      "capability": "issuer_actual_byte_verification",
+      "evidence": "operational_certificate issuance independently reads governed source/output files and recomputes encoded and decoded hashes before signing, but this byte-reading gate is not exposed as a general bridge-consumption/cache decision."
+    }
+  ],
+  "negative_probes": [
+    {
+      "probe": "request ontology SHA changed and request re-signed while the receipt remained bound to the original request payload",
+      "observed_validators": [
+        "request_receipt_binding"
+      ],
+      "interpretation": "post-request tampering is detected by the request payload binding"
+    },
+    {
+      "probe": "receipt provider model-artifact SHA changed and receipt re-signed without updating provider stack SHA",
+      "observed_validators": [],
+      "interpretation": "provider stack identity is asserted but not canonically recomputed from model/workflow/runtime components"
+    },
+    {
+      "probe": "inspect positive receipt for an exact cache identity/freshness binding",
+      "observed": false,
+      "interpretation": "the v1 receipt has no cache binding, so exact cache reuse cannot yet be authorized or invalidated by one deterministic decision"
+    }
+  ],
+  "missing_proof": [
+    "No bridge-consumption gate reads the actual source and output files under a governed root and recomputes encoded bytes, canonical decoded pixels/masks, decoder/orientation/color/value semantics, size, and content summary at use time.",
+    "Provider stack_sha256 and execution_fingerprint_sha256 are not independently recomputed from model artifacts, workflow, runtime, environment locks, selected route, and execution observation; the provider-component drift probe remains validator-clean after a trusted re-sign.",
+    "The request payload hash detects mutation, but no explicit compatibility comparison proves the requested API, package format, ontology version/hash, and release/capability facts equal the supplied adopted production documents.",
+    "QA report and selection-evidence hashes are asserted without byte-resolving their governed evidence artifacts during bridge consumption.",
+    "No exact cache identity binds release, capability, request, source pixels, media scope, ontology, policy, provider bundle, artifacts, transform, QA, certificate, lineage, and revocation position.",
+    "No cache-freshness decision proves certificate/release/provider/ontology/policy/revocation currency immediately before reuse, or produces a typed tombstone/no-reuse result on drift.",
+    "Current document validation does not itself prove safe-root path resolution, actual byte equality, or cache invalidation for every consumed output; those checks must be one fail-closed producer decision rather than caller convention."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-09.04-ARTIFACT-CONSUMPTION-BINDING",
+    "objective": "Implement a producer-owned, actual-byte-verifying artifact consumption and cache-reuse decision over the frozen v1 exchange after MF-P6-09.01 and MF-P6-09.02 are adopted.",
+    "state": "PREPARED_PREREQUISITES_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+      "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+      "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+      "src/maskfactory/schemas/operational_autonomy_certificate.schema.json",
+      "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+      "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json",
+      "src/maskfactory/validation.py",
+      "src/maskfactory/authority/operational_certificate.py",
+      "tests/fixtures/mask_bridge_contracts/positive_contract_set_v1.json",
+      "tests/test_mask_bridge_contracts_v1.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_artifact_consumption_policy.yaml",
+      "src/maskfactory/bridge/artifact_binding.py",
+      "src/maskfactory/schemas/bridge_artifact_binding_decision.schema.json",
+      "tests/test_bridge_artifact_binding.py"
+    ],
+    "path_relationship_to_held_work": "Exact allowed files are disjoint from held 08.05/08.06/08.07/09.01 paths and the prepared 09.02 transform files. Frozen v1 schemas, validation.py, operational_certificate.py, fixtures, and bridge/__init__.py are read-only candidates.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_artifact_binding.py tests/test_mask_bridge_contracts_v1.py",
+      "python -m ruff check src/maskfactory/bridge/artifact_binding.py tests/test_bridge_artifact_binding.py",
+      "python -m black --check src/maskfactory/bridge/artifact_binding.py tests/test_bridge_artifact_binding.py",
+      "git diff --check"
+    ],
+    "acceptance_criteria": [
+      "Validate the complete request/receipt/certificate/release/capability transaction before resolving any artifact path.",
+      "Resolve every source/output/QA/selection evidence path beneath an explicit governed root and reject traversal, absolute, reparse, hardlink, symlink, special-file, case-alias, and missing-file states.",
+      "Read actual encoded bytes and canonical decoded pixels/masks and recompute all declared hashes, dimensions, decoder/orientation/color/alpha/dtype/value/content semantics.",
+      "Recompute provider stack and execution fingerprints from exact model, workflow, runtime, lock, selected-route, and execution components; asserted hashes alone cannot pass.",
+      "Prove requested API, package format, ontology version/hash, release, capability, and bridge contract equal the supplied adopted production documents.",
+      "Bind every output to exact media scope, canonical owner, intent, target/protected authority, executable transform evidence, QA gate vector, certificate scope, parent lineage, and signed revocation position.",
+      "Derive one canonical cache identity from release, capability, request, source/media, ontology, policy, provider, artifact, transform, QA, certificate, lineage, and revocation hashes.",
+      "Cache reuse requires exact cache identity plus current unrevoked certificate/release/provider/ontology/policy state and a declared freshness bound; drift returns a typed no-consume/tombstone decision.",
+      "Decision record binds policy ID/hash, exact normalized evidence, cache key, freshness, allow/reject result, deterministic reasons, and canonical record hash.",
+      "Missing, malformed, ambiguous, substituted, stale, revoked, or drifted evidence fails closed and never silently falls back to a weaker/wrong/empty artifact.",
+      "Frozen v1 contracts, semantic profile, fixtures, catalog, and all held worker paths remain byte-unchanged."
+    ]
+  },
+  "observed_verification": [
+    {
+      "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py -k 'all_positive_documents or request_ownership_transform or receipt_authority_parent'",
+      "result": "PASS",
+      "tests_passed": 3,
+      "scope": "existing structural transaction, ownership/transform, and authority-lineage checks"
+    },
+    {
+      "command": "in-memory trusted re-sign probes for request ontology drift, provider component drift, and receipt cache presence",
+      "result": "GAPS_CONFIRMED",
+      "scope": "no filesystem mutation"
+    }
+  ],
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/mask_acquisition_request.schema.json": "2160fd336a8ab25c25dd86babe418c7f2cf072a341c7e7bd94c00743e9103f72",
+    "src/maskfactory/schemas/mask_acquisition_receipt.schema.json": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d",
+    "src/maskfactory/schemas/operational_autonomy_certificate.schema.json": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+    "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+    "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json": "68244dc62eae41b1ed6f045d43ac4f26e5c9b3beff2a65b3981dcd3afee9dc58",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "src/maskfactory/authority/operational_certificate.py": "d2b541ccb5c8bcc69784b44ac2eab49b98ddb8f2a880b9630100651d9c7dfd84",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/fixtures/mask_bridge_contracts/positive_contract_set_v1.json": "c2aad7316fd01e0a430db4387023c5db34992d32791eb45cd077f322fad5c9d9"
+  },
+  "preservation": {
+    "held_worker_requests_modified": false,
+    "frozen_worker_paths_modified": false,
+    "frozen_v1_contracts_modified": false,
+    "dirty_validation_and_certificate_files_modified_by_this_audit": false,
+    "docker_or_wsl_actions_performed": false,
+    "runtime_or_provider_actions_performed": false
+  }
+}

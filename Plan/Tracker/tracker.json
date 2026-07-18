@@ -19076,11 +19076,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-18T23:10:18+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 static acceptance audit: frozen v1 exchange validation strongly binds declared request/receipt/certificate identities, but bridge consumption still lacks actual-byte verification, provider-stack recomputation, exact request-versus-release ontology/package/API proof, and a canonical cache identity/freshness/tombstone decision. Trusted in-memory probe confirmed provider model hash drift can be re-signed without a provider-stack validator and the receipt has no cache binding. Prepared disjoint MF-CURSOR-09.04-ARTIFACT-CONSUMPTION-BINDING with zero completion credit; prerequisites MF-P6-09.01 and 09.02 remain open. See qa/live_verification/bridge_artifact_binding_gap_audit_20260718.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T23:10:18+00:00",
       "orphaned": false
     },
     "MF-P6-09.05": {

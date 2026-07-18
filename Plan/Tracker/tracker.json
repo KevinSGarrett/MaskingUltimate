@@ -18838,12 +18838,17 @@
           "ts": "2026-07-18T19:36:23+00:00",
           "actor": "codex",
           "text": "2026-07-18: Direct implementation paused at a clean verification boundary for the user-authorized four-Cursor launch. Operational policy, evidence schema, issuer binding, and focused tests are present; focused checkpoint is 29 passed / 1 failed because operational-policy scope validation currently masks the established certified_output_scope_mismatch issuer code. Frozen work unit MF-CURSOR-08.05-POLICY owns the declared policy paths until worker return and Codex acceptance."
+        },
+        {
+          "ts": "2026-07-18T20:29:11+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 Cursor acceptance: request p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8 was REJECTED with zero adopted paths. Its retained diff moves policy validation earlier and does not fix the required certified_output_scope_mismatch precedence; validators were not run. Preserve C:\\w\\mfw\\b90c7f19654319e1 and signed evidence. See qa/live_verification/cursor_worker_acceptance_20260718.json."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T19:36:23+00:00",
+      "updated_at": "2026-07-18T20:29:11+00:00",
       "orphaned": false
     },
     "MF-P6-08.06": {
@@ -18860,11 +18865,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-18T20:29:14+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 Cursor acceptance: request p000_20260718T200913928Z_mf_cursor_08_06_repair_r3_e31cc1dc was REJECTED with zero adopted paths. The retained scaffold lacks hypothesis distinctness, immutable-parent rollback, convergence/regression comparison, time/resource/no-progress caps, schema evidence, atomic writes, and tests. Preserve C:\\w\\mfw\\a1fed8eb1622c878 and signed evidence. See qa/live_verification/cursor_worker_acceptance_20260718.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T20:29:14+00:00",
       "orphaned": false
     },
     "MF-P6-08.07": {

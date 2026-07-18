@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "reviewed_at": "2026-07-18T20:27:47.2321405Z",
+  "origin_task_id": "019f4cfc-60c3-7500-8626-261dcf70db5d",
+  "project_id": "maskfactory",
+  "snapshot_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "decisions": [
+    {
+      "item_id": "MF-P6-08.05",
+      "request_id": "p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8",
+      "worker_classification": "CURSOR_HANDOFF_WRITE_SCOPE_VIOLATION",
+      "retained_worktree": "C:\\w\\mfw\\b90c7f19654319e1",
+      "retained_diff_sha256": "ce74b2e3db5f9fe212392c6c1f468042807da35e947b90eacf34137aa8f50b51",
+      "retained_worktree_fingerprint_sha256": "978e7c8ca96d1624104d99eb6d787bf04935ba263aee50c50285573256718b5f",
+      "adoption_status": "REJECTED",
+      "adoption_percent": 0,
+      "adopted_paths": [],
+      "cleanup_authorized": false,
+      "residual_defects": [
+        "scope-drift still masks certified_output_scope_mismatch",
+        "new precedence test asserts the wrong authority ordering",
+        "focused validators were not executed"
+      ]
+    },
+    {
+      "item_id": "MF-P6-08.06",
+      "request_id": "p000_20260718T200913928Z_mf_cursor_08_06_repair_r3_e31cc1dc",
+      "worker_classification": "AI_WORKER_WRAPPER_HARD_TIMEOUT",
+      "retained_worktree": "C:\\w\\mfw\\a1fed8eb1622c878",
+      "retained_worktree_fingerprint_sha256": "dd27fc5f416ef88d9a85b10426e81add5de4b69650813cc5a373296ddb2831ca",
+      "adoption_status": "REJECTED",
+      "adoption_percent": 0,
+      "adopted_paths": [],
+      "cleanup_authorized": false,
+      "residual_defects": [
+        "no hypothesis-distinctness or duplicate detection",
+        "no immutable accepted-parent and rollback contract",
+        "no convergence or regression comparison",
+        "no time, resource, or no-progress caps",
+        "no schema-bound evidence or focused tests",
+        "evidence write is not atomic"
+      ]
+    }
+  ],
+  "preservation": {
+    "retained_worktrees_must_remain": true,
+    "signed_dispatch_and_failure_evidence_must_remain": true,
+    "rejected_changes_integrated_into_product_branch": false
+  },
+  "authority_boundary": "These are Codex acceptance decisions over retained worker output. Rejection preserves the evidence but grants no implementation, tracker-completion, certificate, or release authority."
+}

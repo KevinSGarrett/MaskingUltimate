@@ -10665,7 +10665,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
+      "status": "blocked",
       "percent_complete": 82,
       "notes": [
         {
@@ -10702,12 +10702,17 @@
           "ts": "2026-07-17T11:08:23+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the exact official checkpoint now also has offline-verified production discovery/refinement host and WSL runner contracts with closed evidence and preserved CUDA OOM text. Live checkpoint load, CUDA metrics, determinism, and failure-behavior execution remain pending on Ubuntu ext4 emergency_ro."
+        },
+        {
+          "ts": "2026-07-18T23:54:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-18 post-restart proof: exact 3.5 GB checkpoint hash/size and all six locked host files pass; both default-user import and root-only /bin/true hang. Only this item is blocked; overall project remains active. Evidence: qa/live_verification/sam31_post_restart_readiness_20260718.json."
         }
       ],
       "evidence": "qa/live_verification/meta_checkpoint_access_ready_20260717.json SHA-256 ab004c83c603fc5f718d639f58c1b0efd910f90ad21686ef322312f614b838f0; qa/live_verification/sam31_checkpoint_install_20260717.json SHA-256 e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8; installed checkpoint SHA-256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6, 3502755717 bytes; qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb. Live runtime smoke remains explicitly pending.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: Ubuntu-22.04 root ext4 remains non-executable after restart; run tools/Repair-MaskFactoryWslVhd.ps1 from an already-elevated PowerShell. Codex will not self-elevate or trigger UAC after the reported laptop crash. Exact checkpoint and host-contract bytes are current; live CUDA smoke resumes after repair.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T11:08:23+00:00",
+      "updated_at": "2026-07-18T23:54:27+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {

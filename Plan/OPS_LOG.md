@@ -7195,3 +7195,17 @@ Replacement unit:                      `MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISI
 Signed dispatch:                       high-assurance intent `...755b4545` passed admission against commit `d6909e0` and queued Claude preflight `...522f16bf`, Cursor implementation `...b83760a2`, and Claude review `...22011cde`; automatic wake failed because both installed lane tasks are disabled, so no provider ran and the MaskFactory task did not alter scheduler state
 Verification:                          3/3 focused existing bridge tests and Ruff pass; frozen schemas, fixtures, validation.py, dispatcher records, Docker, WSL, and runtime state were not changed by this audit
 Evidence:                              `qa/live_verification/bridge_identity_gap_audit_20260718.json`
+
+## 2026-07-18 23:59 UTC - Official SAM 3.1 artifacts remain current; Ubuntu repair required
+
+**Result:** MF-P0-17.04 remains at 82% and is locally blocked on Ubuntu execution only.
+The installed official multiplex checkpoint and every locked host runner/runtime artifact are intact;
+no model, Docker, CVAT, Nuclio, provider lifecycle, production route, or mask authority changed.
+
+Checkpoint:                            exact 3,502,755,717-byte size and SHA-256 `0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6` reverified from current local bytes
+Host contracts:                        multiplex verifier, isolated smoke runner, production runner/runtime, exemplar contract, and exemplar schema all match `env/sam31_runtime.lock.json`
+Ubuntu boundary:                       default-user pinned import hangs after systemd-session failure; root-only `/bin/true` also timed out with no output; only exact owned WSL client PIDs 2060/10668 were stopped
+Local blocker:                         **NEEDS KEVIN:** run the prepared `tools/Repair-MaskFactoryWslVhd.ps1` from an already-elevated PowerShell; Codex will not self-elevate or trigger UAC after the previously reported laptop crash
+Remaining acceptance:                  exact checkpoint load, two fresh CUDA inference sessions, cold/warm latency, model/peak VRAM, deterministic output hash, and typed failure/OOM behavior
+Truth boundary:                        no inference, benchmark, promotion, active production route, certificate, or gold-authority claim is made
+Evidence:                              `qa/live_verification/sam31_post_restart_readiness_20260718.json`

@@ -7134,3 +7134,19 @@ Privilege boundary:                  WslService/vmcompute/HNS are running, but C
 Recovery:                             **NEEDS KEVIN:** save unrelated work and perform a normal Windows Restart; after login, Codex must verify Docker, 38 persistent containers, Nuclio helper recreation, CVAT, SAM2, WSL/CUDA, model smokes, doctor, and inventories before backup/relocation resumes
 Worker boundary:                      four-unit launch manifest remains held and exact at `02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a`; frozen paths and final-attempt records are untouched
 Evidence:                             `qa/live_verification/docker_maintenance_rollback_20260718T2132Z.json`
+
+## 2026-07-18 22:23 UTC - Closed operational-authority lattice verified
+
+**Result:** MF-P6-09.03 is complete. MaskFactory now evaluates access mode, operational
+exact-output authority, training truth, descendant ceilings, protected-input floors, and actor
+permissions through one versioned, self-hashed, deterministic fail-closed policy and decision record.
+
+Authority separation:                  Mode A and Mode B are access paths only; raw Mode B remains machine-candidate/draft authority, and only an exact certificate transaction by the MaskFactory producer can grant exact-output certified authority
+Truth firewall:                        operational certification and human/autonomous/pseudo training truth occupy separate non-comparable namespaces; an operational certificate cannot promote or impersonate training gold
+Descendant and input floors:           refinement, derived, projection, and inpaint outputs cannot exceed their weakest parent; target and protected inputs require and enforce explicit operational floors
+Actor boundary:                        Main, LLM/VLM, and provider actors may reject but cannot grant or revoke producer-owned operational authority; training-tier assignment/revocation has its own closed assigner rules and evidence gate
+Integrity:                             policy `maskfactory-operational-authority-lattice` v1.0.0 self-hashes to `766cbba7088ecf384e4f39c2142094367ffdbfd38c0d3b4d6db6ca09d763399c`; every decision binds policy identity/hash, normalized inputs, result, reasons, and canonical SHA-256
+Verification:                          53/53 authority-lattice, truth-tier, and frozen bridge-contract tests pass; focused Ruff, Black, and Git diff checks pass
+Preservation:                          frozen v1 bridge bytes, frozen worker paths, commit `545a550a3c415dcb2b37ee847ae1cb76a66e856c`, and Docker rollback evidence remain unchanged; no Docker/WSL action was performed
+Authority boundary:                    no live production certificate, role certificate, runtime service, release, or end-to-end ComfyUI execution is claimed
+Evidence:                              `qa/live_verification/operational_authority_lattice_20260718.json`

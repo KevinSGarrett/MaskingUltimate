@@ -7166,3 +7166,17 @@ Focused validation:                   23/23 serving API tests and 15/15 doctor t
 Worker result:                        invalidation request `p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970` terminalized FAIL before worktree materialization; scope unchanged, zero artifacts, adoption `NOT_APPLICABLE`; no implementation was duplicated
 Truth boundary:                       no authoritative service health, champion-backed prediction, runtime certificate, worker patch, or end-to-end ComfyUI execution is claimed
 Evidence:                             `qa/live_verification/maskfactory_service_recovery_20260718.json`
+
+## 2026-07-18 23:42 UTC - Producer use-eligibility enforcement gap isolated
+
+**Result:** MF-P6-09.05 remains open with zero completion credit. The frozen receipt wire
+already names `policy_id`, policy hash, required authority, exact use scope, eligibility, and
+reasons, but no producer evaluator recomputes that observation and no Main disagreement proof exists.
+
+Existing strength:                     receipt schema shape is closed; receipt validation rejects `eligible=true` when output failed or observed authority is below the declared minimum; MF-P6-09.03 supplies the separate closed operational-authority lattice
+Trusted re-sign probes:                arbitrary policy identity/hash, substituted use scope, provider-authored global-certification reason, and arbitrary false disagreement all remained validator-clean
+Missing producer proof:                named policy resolution/self-hash, scope-derived minimum, exact certificate/permitted-use/partial-scope/current-revocation/QA/transform/consumption recomputation, closed reasons, and supplied-observation mismatch detection
+Prepared unit:                         `MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY`; five new absent/clean allowed paths are disjoint from held worker scopes and prepared 09.02/09.04 paths; it remains held until the 09.04 normalized actual-byte consumption decision is adopted
+Consumer boundary:                     Main must independently recompute from normalized facts, preserve but discard the producer observation as authority, derive any compatibility alias only from its own complete decision, and return closed disagreement evidence before this item can complete
+Verification:                          2/2 focused existing bridge tests, 24/24 authority-lattice tests, and Ruff pass; frozen v1 bytes and dirty frozen paths were not changed
+Evidence:                              `qa/live_verification/bridge_use_eligibility_gap_audit_20260718.json`

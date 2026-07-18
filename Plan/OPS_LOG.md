@@ -7209,3 +7209,16 @@ Local blocker:                         **NEEDS KEVIN:** run the prepared `tools/
 Remaining acceptance:                  exact checkpoint load, two fresh CUDA inference sessions, cold/warm latency, model/peak VRAM, deterministic output hash, and typed failure/OOM behavior
 Truth boundary:                        no inference, benchmark, promotion, active production route, certificate, or gold-authority claim is made
 Evidence:                              `qa/live_verification/sam31_post_restart_readiness_20260718.json`
+
+## 2026-07-18 23:59 UTC - Closed bridge-error matrix gap narrowed to additive decision evidence
+
+**Result:** MF-P6-09.06 remains open with zero completion credit. The existing frozen-v1
+validator already has a closed, schema-exact 37-code matrix, but it does not yet satisfy the full
+profile/scope/lifecycle/no-fallback decision contract.
+
+Existing strength:                     schema and code policy sets match 37/37; category, retryability, impact, remediation action, retry-delay presence, runbook presence, and replacement-route requirement are deterministic; unknown codes fail schema validation
+Scope probe:                           policy-consistent availability, certificate-revocation, artifact-integrity, transform, and invariant errors with every affected-scope array empty all remained validator-clean
+Missing decision:                      exact code-specific affected scope, completion-profile impact, permitted lifecycle transition, explicit closed no-fallback reason, required normalized domain, self-hashed policy, and canonical decision record
+Prepared unit:                         `MF-CURSOR-09.06-ADDITIVE-ERROR-DECISION`; five new absent/clean paths wrap the frozen v1 error and current policy after upstream identity/transform/artifact/authority/eligibility decisions are adopted
+Verification:                          2/2 focused existing bridge tests and Ruff pass; frozen v1 bytes, validation matrix, queued worker paths, Docker, WSL, and runtime state were not changed
+Evidence:                              `qa/live_verification/bridge_error_decision_gap_audit_20260718.json`

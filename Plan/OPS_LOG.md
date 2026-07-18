@@ -7117,3 +7117,20 @@ Inference boundary:                   WSL control-path availability is implicate
 Queue boundary:                       all four signed MaskFactory units remain held at base `093b9b1d74fb21ec5653d9dae395af878a8f0909`; wake authorization false, provider calls zero, final-attempt records untouched, no Codex implementation duplication
 Next gate:                            do not run distro/shim/provider preflights until provider-free WSL enumeration returns promptly and consistently
 Evidence:                             `qa/live_verification/wsl_control_path_canary_20260718T2118Z.json`
+
+## 2026-07-18 21:32 UTC - Docker backup maintenance halted and rollback requires Windows restart
+
+**Result:** A reversible backup maintenance window safely stopped every persistent container,
+but Docker Desktop could not complete stop/start because the pre-existing WSL control path
+cannot enumerate distros. No VHD copy, relocation, setting change, prune, Compose down, image,
+volume, network, persistent-container removal, worker wake, or provider call occurred.
+
+Activity gate:                        ten-minute Docker history contained only periodic health-check execs; no create/start/stop/import/export user operation preceded maintenance
+Container quiescence:                 all 37 visible running containers received a 30-second graceful stop; direct inspection proved 38/38 persistent containers exited and zero running
+Disposable helper:                    `nuclio-local-storage-reader` auto-removed under its own lifecycle after stop; no remove command was issued and no persistent data authority belonged to it
+Stop boundary:                        official `docker desktop stop` client hung, but the backend stopped; `Get-DiskImage` reported detached while an exclusive VHD read handle still failed, so the backup was correctly withheld
+Restart failure:                      Docker Desktop recovery remains `starting`; its error log records `DockerDesktop/Wsl/CommandTimedOut` for `wsl.exe -l -v --all`, and the engine named pipe is unavailable
+Privilege boundary:                  WslService/vmcompute/HNS are running, but Codex has a medium-integrity, non-elevated token; no service restart, UAC, `wsl --shutdown`, `wsl --terminate`, or forced process-tree kill was attempted
+Recovery:                             **NEEDS KEVIN:** save unrelated work and perform a normal Windows Restart; after login, Codex must verify Docker, 38 persistent containers, Nuclio helper recreation, CVAT, SAM2, WSL/CUDA, model smokes, doctor, and inventories before backup/relocation resumes
+Worker boundary:                      four-unit launch manifest remains held and exact at `02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a`; frozen paths and final-attempt records are untouched
+Evidence:                             `qa/live_verification/docker_maintenance_rollback_20260718T2132Z.json`

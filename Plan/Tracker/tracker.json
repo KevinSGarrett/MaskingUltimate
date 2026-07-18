@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-17T20:10:56+00:00",
+    "generated_at": "2026-07-18T19:16:55+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 798,
     "total_tracked_including_orphaned": 798
@@ -14511,12 +14511,17 @@
           "ts": "2026-07-15T23:24:27+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: refreshed and preserved the active-signer review chain after the production SAM3.1 orchestration decision and pre-result policy rebinds. Review 7cdb252d06da682a71ca3ca4 is signature/current-input valid and honestly remains FAIL on missing real role certificates and distinct tested rollbacks."
+        },
+        {
+          "ts": "2026-07-18T20:08:50+00:00",
+          "actor": "codex",
+          "text": "2026-07-18: Reverified the current signed scheduled-90-day review d503f42f644baaa008056f78 against the active signer and exact pipeline/external/model/rollback inputs. Integrity verification and 34 focused tests pass; strict verification correctly exits 1. No role promotion, certificate, release, or policy-pass claim is made."
         }
       ],
-      "evidence": "qa/governance/currency/current_review.json review_id 7cdb252d06da682a71ca3ca4, review SHA-256 44d7e793bc23aa87dd1b114f0fa6b59c1c92786978088ae8f02f4971bf80aadb; predecessor 308c7c460fc94d9fb0c4d63b archived; signature/current inputs pass with failed review allowed; qa/live_verification/sam31_production_shadow_orchestration_20260715.json.",
+      "evidence": "qa/governance/currency/current_review.json review_id d503f42f644baaa008056f78, canonical review SHA-256 c2959fc5a2945b282ac5d41dcfb3cad4e5ae3a0bbe5a40e3aff4594a022504b8; qa/live_verification/currency_review_integrity_20260718.json. Signature, chain, event, expiry, and current-input integrity pass with --allow-failed-review; 34 focused tests pass. Strict policy remains FAIL on benchmark_certificate_missing, rollback_evidence_missing, and rollback_provider_not_distinct.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T23:24:27+00:00",
+      "updated_at": "2026-07-18T20:08:50+00:00",
       "orphaned": false
     },
     "MF-P7-07.02": {
@@ -14614,12 +14619,17 @@
           "ts": "2026-07-15T23:24:28+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: CI/current-input authority now points to signed review 7cdb252d06da682a71ca3ca4 after the SAM3.1 S06 decision and transitive pre-result policy rebinds. Strict require-pass remains correctly withheld pending MF-P7-07.01 real evidence."
+        },
+        {
+          "ts": "2026-07-18T20:10:43+00:00",
+          "actor": "codex",
+          "text": "2026-07-18: Revalidated CI currency-governance enforcement against current review d503f42f644baaa008056f78. The signed integrity/current-input lane is active, seeded negative tests remain hermetic, 37 combined tests pass, and Ruff is clean. Strict require-pass remains correctly withheld because the current policy result is honestly FAIL."
         }
       ],
-      "evidence": "configs/governance/currency_review_key_history.json; qa/governance/currency/current_review.json review 7cdb252d06da682a71ca3ca4; archived predecessor 308c7c460fc94d9fb0c4d63b; signature/current-input verifier passes with honest status FAIL; full 1659/1659.",
+      "evidence": "qa/live_verification/currency_review_integrity_20260718.json; .github/workflows/ci.yml SHA-256 d96f11a8cf4391197e290ac183da7ace89c4d0ac5601997b69f4eee3ee5a2c42; signed review integrity/current-input step enabled with --allow-failed-review; 37 combined currency/CI-partition tests and Ruff pass. Strict policy-pass activation remains withheld until MF-P7-07.01 supplies real role certificates and distinct tested rollback evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T23:24:28+00:00",
+      "updated_at": "2026-07-18T20:10:43+00:00",
       "orphaned": false
     },
     "MF-P7-07.04": {
@@ -18816,13 +18826,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "in_progress",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-18T19:36:23+00:00",
+          "actor": "codex",
+          "text": "2026-07-18: Direct implementation paused at a clean verification boundary for the user-authorized four-Cursor launch. Operational policy, evidence schema, issuer binding, and focused tests are present; focused checkpoint is 29 passed / 1 failed because operational-policy scope validation currently masks the established certified_output_scope_mismatch issuer code. Frozen work unit MF-CURSOR-08.05-POLICY owns the declared policy paths until worker return and Codex acceptance."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T19:36:23+00:00",
       "orphaned": false
     },
     "MF-P6-08.06": {

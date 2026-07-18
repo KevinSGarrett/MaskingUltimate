@@ -7150,3 +7150,19 @@ Verification:                          53/53 authority-lattice, truth-tier, and 
 Preservation:                          frozen v1 bridge bytes, frozen worker paths, commit `545a550a3c415dcb2b37ee847ae1cb76a66e856c`, and Docker rollback evidence remain unchanged; no Docker/WSL action was performed
 Authority boundary:                    no live production certificate, role certificate, runtime service, release, or end-to-end ComfyUI execution is claimed
 Evidence:                              `qa/live_verification/operational_authority_lattice_20260718.json`
+
+## 2026-07-18 23:31 UTC - Port 8765 recovery remained bounded to Ubuntu runtime
+
+**Result:** The recovered host passed the independent CVAT, Nuclio, Ollama, PNG, SQLite,
+API-unit, doctor-unit, and tracker checks, but the authoritative Ubuntu-22.04 MaskFactory
+service could not be relaunched because the distro hung before the pinned interpreter reached
+its import statement. This is a local service/runtime failure, not a global project blocker.
+
+Native diagnostic:                    a temporary project-local Windows web stack proved the unchanged CLI can bind exactly `127.0.0.1:8765`, return `/health` and `/models` HTTP 200, enumerate 17 governed model records, and own a readable `serve_mode_b` GPU lock; it was explicitly non-authoritative and was retired after the stricter WSL contract arrived
+Authoritative interpreter:            `/home/kevin/miniforge3/envs/maskfactory/bin/python` with `/mnt/c/Comfy_UI_Main_Masking/src`; Ubuntu emitted `Failed to start the systemd user session for 'kevin'` and hung before FastAPI/Uvicorn/MaskFactory imports ran
+Cleanup:                              only the exact temporary service PID 35616 and exact WSL client PIDs 24524/13484 were stopped; the verified PID-bound stale GPU lock was removed; final port 8765 listener and GPU lock are absent; Docker, CVAT, Nuclio, model files, and worker scope were untouched
+Doctor:                               PASS=7 WARN=1 FAIL=4; CVAT 2.24, project API, pth-sam2, Qwen2.5-VL image JSON, backing VHD readability, strict PNG, and SQLite pass; Ubuntu preflight/roundtrip and dependent model smokes fail, and C: free space is 73.7 GiB below the 75 GiB ingest floor
+Focused validation:                   23/23 serving API tests and 15/15 doctor tests pass; Ruff check passes; tracker validates 798 items with 24 unresolved hard blockers
+Worker result:                        invalidation request `p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970` terminalized FAIL before worktree materialization; scope unchanged, zero artifacts, adoption `NOT_APPLICABLE`; no implementation was duplicated
+Truth boundary:                       no authoritative service health, champion-backed prediction, runtime certificate, worker patch, or end-to-end ComfyUI execution is claimed
+Evidence:                             `qa/live_verification/maskfactory_service_recovery_20260718.json`

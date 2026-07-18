@@ -1730,12 +1730,17 @@
           "ts": "2026-07-17T09:55:42+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17 correction to the 2026-07-15 health snapshot: current Ubuntu root ext4 is mounted emergency_ro and root binaries return input/output errors. This does not invalidate committed locks or prior model evidence, but doctor cannot be all-green and the two official Meta runtime qualifications cannot run until offline VHD repair succeeds. A guarded backup-first repair script and diagnosis evidence are committed without executing elevation, UAC, WSL shutdown, Docker stop, VHD attach, or e2fsck."
+        },
+        {
+          "ts": "2026-07-18T20:22:43+00:00",
+          "actor": "codex",
+          "text": "2026-07-18: Current machine health regressed from the historical green snapshot. Doctor is PASS=8/FAIL=4 due to one WSL control-path timeout family plus C: capacity below the 75 GiB ingest floor. No WSL shutdown, Docker restart, VHD operation, data move, cleanup, or deletion was performed. P0 exit remains open; CUDA/model failures were not inferred from smokes suppressed by the shared preflight."
         }
       ],
-      "evidence": "Commits through 3352088 on codex/autonomous-gold-modernization plus qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json and tools/Repair-MaskFactoryWslVhd.ps1 SHA-256 f3f67f824fb6a3d8caa43e7c037d9a7e7f7a8fe38bfa9d4d288c45610fc2ea1b. Historical doctor/model evidence remains valid at its capture time; current root mount contains emergency_ro and /usr/bin/df returns Input/output error. P0 exit stays open for successful offline repair, renewed all-green doctor, and official SAM 3.1/SAM 3D Body live qualification.",
+      "evidence": "qa/live_verification/doctor_runtime_recheck_20260718.json; live doctor PASS=8 WARN=0 FAIL=4. CVAT 2.24.0/project_count=2, SAM2 Nuclio, Qwen image JSON, VHD readability, PNG, SQLite, and GPU-lock checks pass. Ubuntu preflight/roundtrip time out, suppressing CUDA/model smokes without implicating checkpoint hashes. C: fell to 17,069,527,040 free bytes and ingest remains blocked; F: has 205,190,639,616 free bytes. Governed data-junction rehearsal proves data is only 2,390,915,389 bytes and was not applied.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-17T09:59:52+00:00",
+      "updated_at": "2026-07-18T20:22:43+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {

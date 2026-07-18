@@ -74,6 +74,7 @@ SCHEMA_NAMES = frozenset(
         "autonomy_metrics_inputs",
         "autonomy_risk_buckets",
         "autonomy_stability",
+        "operational_policy_evidence",
         "completion_bundle_input",
         "completion_bundle_policy",
         "completion_bundle_report",

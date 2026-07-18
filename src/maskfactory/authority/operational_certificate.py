@@ -29,6 +29,7 @@ from maskfactory.validation import (
 )
 
 from .complete_map_hard_veto import validate_complete_map_report_binding
+from .operational_policy import validate_operational_policy_report_binding
 
 _AUTHORITATIVE_BINDINGS = (
     "release_binding",
@@ -235,6 +236,8 @@ def issue_operational_autonomy_certificate(
     complete_map_hard_veto_report: Mapping[str, Any],
     trusted_hard_veto_evaluators: Mapping[str, str],
     critic_quorum_decision: CriticQuorumDecision,
+    operational_policy_report: Mapping[str, Any],
+    trusted_operational_policy_evaluators: Mapping[str, str],
 ) -> dict[str, Any]:
     """Issue exact-output authority, or reject without returning a partial certificate."""
     document = copy.deepcopy(dict(unsigned_certificate))
@@ -281,6 +284,13 @@ def issue_operational_autonomy_certificate(
         critic_codes.append("critic_report_hash_mismatch")
     if critic_codes:
         raise OperationalCertificateIssuanceError(*critic_codes)
+    operational_policy_codes = validate_operational_policy_report_binding(
+        operational_policy_report,
+        document,
+        trusted_evaluators=trusted_operational_policy_evaluators,
+    )
+    if operational_policy_codes:
+        raise OperationalCertificateIssuanceError(*operational_policy_codes)
     if journal_state.get("fork_detected") is not False:
         raise OperationalCertificateIssuanceError("signed_journal_fork")
     revocation = document.get("revocation")

@@ -18998,11 +18998,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-18T20:46:10+00:00",
+          "actor": "codex",
+          "text": "2026-07-18 acceptance audit: existing bridge semantics enforce an operational truth firewall, derived-parent ceiling, protected-input floors, and an operational rank, but do not yet provide the required single closed authority lattice across access modes, operational authority, human/training truth, pseudo/machine/derived artifacts, protected inputs, and consumer non-upgrade. Prepared but did not dispatch MF-CURSOR-09.03-AUTHORITY-LATTICE; candidate/allowed paths are clean and frozen v1 contracts remain immutable. No completion credit. See qa/live_verification/authority_lattice_gap_audit_20260718.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-18T20:46:10+00:00",
       "orphaned": false
     },
     "MF-P6-09.04": {

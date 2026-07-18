@@ -7088,3 +7088,19 @@ Frozen contract:                      `operational_autonomy_certificate.schema.j
 Verification:                         36/36 focused control-plane/issuer tests, 147/147 provider/VLM/autonomy/certificate/bridge/profile tests, and 3,185/3,185 full repository tests pass; Ruff, Black, and Git diff checks pass
 Authority boundary:                   no live production role certificate, operational certificate, runtime release, or end-to-end ComfyUI consumption is claimed; MF-P6-08.05 and later gates remain open
 Evidence:                             `qa/live_verification/autonomous_intelligence_control_plane_20260717.json`
+
+## 2026-07-18 21:12 UTC - Docker data relocation gated by quiescence and rollback evidence
+
+**Result:** The C-drive capacity shortfall now has one supported, sufficient remediation path,
+but it is intentionally not executed while Docker's live-state counters disagree. No Docker,
+WSL, CVAT, Nuclio, VHD, process, setting, path, container, or worker record was changed.
+
+Capacity:                             C: free `13,057,691,648` bytes (12.161 GiB), `67,472,945,152` bytes below the 75 GiB floor; F: free `205,190,098,944` bytes (191.098 GiB)
+Sufficient candidate:                 Docker's `docker_data.vhdx` is non-sparse and fully allocated at `73,131,884,544` bytes (68.109 GiB), projecting 80.271 GiB C: free after a supported relocation
+Unsafe live state:                    `docker ps` reports 39 total / 37 running / 2 exited while `docker info` reports 39 total / 39 running / 0 stopped; relocation status is `NOT_READY_QUIESCENCE_REQUIRED`
+Bound inventory:                      hashes cover 39 containers, 27 image rows, 21 volumes, 5 networks, and 88 mounts; both CVAT Compose projects and the two non-Compose Nuclio containers are explicitly identified
+Governed procedure:                   exact pre-shutdown inventory, zero-running counter reconciliation, supported Docker Desktop stop, unlocked-VHD proof, full byte/hash-verified F: backup, Settings -> Resources -> Advanced relocation, post-migration inventory/health checks, and a retained rollback copy are mandatory
+Safety boundary:                      any deletion/replacement/data-loss warning requires action-time user confirmation; any UAC/security prompt stops automation; no raw VHD move and no prune can receive completion credit
+UI inspection:                        computer-control metadata selected `Containers - Docker Desktop`, but its captured pixels showed unrelated Chrome/Notepad/Edge content; the binding was rejected and the session stopped with zero input performed
+Worker boundary:                      signed four-unit launch manifest remains byte-verified at `02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a`, held with wake authorization false and provider calls zero
+Evidence:                             `qa/live_verification/docker_data_relocation_readiness_20260718.json`

@@ -4,7 +4,7 @@
   "recorded_at": "2026-07-18T23:58:00Z",
   "project_head": "0f26e2c3ad1f10df8cf6ea3a7d7c9f62437dd12e",
   "tracker_item": "MF-P6-09.01",
-  "audit_status": "REPLACEMENT_WORK_UNIT_READY",
+  "audit_status": "SIGNED_HIGH_ASSURANCE_CHAIN_QUEUED_WAKE_DISABLED",
   "completion_credit": false,
   "runtime_dependency": false,
   "governing_requirement": "Freeze one deterministic cross-project identity tuple across execution, encoded/decoded media, time, scene/character/person assignment, package revision, intent, and mask artifact identities; collisions, drift, ambiguity, reused indices, duplicate intents, and character-revision mismatches fail closed.",
@@ -58,10 +58,57 @@
     "restaged": false,
     "reason_not_restaged": "Its allowed scope mutates frozen v1 request/receipt/fixture bytes and is superseded by the additive replacement design."
   },
+  "replacement_dispatch": {
+    "origin_task_id": "019f4cfc-60c3-7500-8626-261dcf70db5d",
+    "source_commit": "d6909e025da769c7368f90bd7f19e04c74e699e8",
+    "failed_scope_intent": {
+      "intent_id": "intent_20260718T234954759Z_mf_cursor_09_01_additive_identity_002af20f",
+      "result": "ADMISSION_FAIL",
+      "reason": "Scope must match HEAD: src/maskfactory/validation.py",
+      "provider_invoked": false
+    },
+    "failed_validator_intent": {
+      "intent_id": "intent_20260718T235022002Z_mf_cursor_09_01_additive_identity_r2_cdb9ba89",
+      "result": "ADMISSION_FAIL",
+      "reason": "Validator command crosses a Codex-only authority boundary.",
+      "correction": "Removed git diff --check from worker validators; Codex retains diff/Git authority.",
+      "provider_invoked": false
+    },
+    "admitted_intent": "intent_20260718T235046326Z_mf_cursor_09_01_additive_identity_r3_755b4545",
+    "route": "CURSOR_FIRST_REQUIRED",
+    "quality_profile": "high_assurance",
+    "risk_class": "high",
+    "request_chain": [
+      {
+        "request_id": "p000_20260718T235047975Z_mf_cursor_09_01_additive_identity_r3_sonnet_preflight_522f16bf",
+        "lane": "Claude",
+        "role": "semantic_preflight",
+        "state": "queued"
+      },
+      {
+        "request_id": "p000_20260718T235049312Z_mf_cursor_09_01_additive_identity_r3_b83760a2",
+        "lane": "Cursor",
+        "role": "implementation",
+        "state": "queued"
+      },
+      {
+        "request_id": "p001_20260718T235050554Z_mf_cursor_09_01_additive_identity_r3_sonnet_review_22011cde",
+        "lane": "Claude",
+        "role": "semantic_review",
+        "state": "queued"
+      }
+    ],
+    "automatic_wake": "failed_tasks_disabled",
+    "cursor_task": "ComfyUIMain AI Worker Cursor Lane",
+    "claude_task": "ComfyUIMain AI Worker Claude Lane",
+    "provider_invoked": false,
+    "maskfactory_scheduler_mutated": false,
+    "disposition": "Preserve the signed queued chain. Scheduler/control-plane recovery is external to this product unit; continue independent MaskFactory QA and review only after terminal evidence exists."
+  },
   "replacement_implementation_packet": {
     "work_unit_id": "MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION",
     "objective": "Implement a producer-owned, deterministic canonical identity and collision decision around frozen v1 request/receipt records, with no frozen schema or fixture mutation.",
-    "state": "PREPARED_NOT_DISPATCHED",
+    "state": "SIGNED_HIGH_ASSURANCE_CHAIN_QUEUED_WAKE_DISABLED",
     "candidate_paths": [
       "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
       "src/maskfactory/schemas/mask_acquisition_request.schema.json",

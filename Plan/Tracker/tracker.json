@@ -19005,12 +19005,17 @@
           "ts": "2026-07-18T23:48:35+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 static acceptance audit: frozen v1 exchange validation strongly binds a single request/receipt/certificate, but trusted probes confirm arbitrary assignment mapping hashes, same-instance character-revision drift, and duplicate intents across distinct requests are not resolved by any canonical cross-record identity decision. Preserved canceled request ...41be7553 without restaging its obsolete mutable-v1 scope; prepared additive MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION across six absent/clean paths. Zero completion credit. See qa/live_verification/bridge_identity_gap_audit_20260718.json."
+        },
+        {
+          "ts": "2026-07-18T23:52:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-18 signed worker dispatch: high-assurance intent ...755b4545 passed admission against d6909e0 and queued Claude preflight ...522f16bf, Cursor implementation ...b83760a2, and Claude review ...22011cde. Automatic wake failed because both installed lane tasks are disabled; no provider ran and MaskFactory did not mutate scheduler state. Preserve queued chain and continue independent work."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T23:48:35+00:00",
+      "updated_at": "2026-07-18T23:52:06+00:00",
       "orphaned": false
     },
     "MF-P6-09.02": {

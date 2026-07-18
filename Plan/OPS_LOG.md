@@ -7104,3 +7104,16 @@ Safety boundary:                      any deletion/replacement/data-loss warning
 UI inspection:                        computer-control metadata selected `Containers - Docker Desktop`, but its captured pixels showed unrelated Chrome/Notepad/Edge content; the binding was rejected and the session stopped with zero input performed
 Worker boundary:                      signed four-unit launch manifest remains byte-verified at `02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a`, held with wake authorization false and provider calls zero
 Evidence:                             `qa/live_verification/docker_data_relocation_readiness_20260718.json`
+
+## 2026-07-18 21:18 UTC - Provider-free WSL control-path canary remains fail-closed
+
+**Result:** A single read-only `wsl --list --verbose` canary timed out after 10 seconds with
+no output. This fails below the dispatcher/provider boundary, so no distro command, worker,
+credential loader, model, or provider was invoked and the signed queue remains held.
+
+Canary:                               `wsl --list --verbose`; 10.001 seconds; no stdout/stderr; `TIMEOUT_NO_OUTPUT`
+Cleanup:                              the exact `wsl.exe --list --verbose` diagnostic process was enumerated by command line and stopped; no `wsl --terminate`, `wsl --shutdown`, Docker action, or WSL state change was requested
+Inference boundary:                   WSL control-path availability is implicated; Cursor, Claude, dispatcher, credentials, model runtime, and provider health are not implicated by this canary
+Queue boundary:                       all four signed MaskFactory units remain held at base `093b9b1d74fb21ec5653d9dae395af878a8f0909`; wake authorization false, provider calls zero, final-attempt records untouched, no Codex implementation duplication
+Next gate:                            do not run distro/shim/provider preflights until provider-free WSL enumeration returns promptly and consistently
+Evidence:                             `qa/live_verification/wsl_control_path_canary_20260718T2118Z.json`

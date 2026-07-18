@@ -7180,3 +7180,17 @@ Prepared unit:                         `MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY
 Consumer boundary:                     Main must independently recompute from normalized facts, preserve but discard the producer observation as authority, derive any compatibility alias only from its own complete decision, and return closed disagreement evidence before this item can complete
 Verification:                          2/2 focused existing bridge tests, 24/24 authority-lattice tests, and Ruff pass; frozen v1 bytes and dirty frozen paths were not changed
 Evidence:                              `qa/live_verification/bridge_use_eligibility_gap_audit_20260718.json`
+
+## 2026-07-18 23:58 UTC - Additive bridge identity decision gap isolated
+
+**Result:** MF-P6-09.01 remains open with zero completion credit. Frozen v1 request/receipt
+validation strongly protects one exchange, but there is no canonical cross-record identity decision
+or collision ledger. The canceled legacy worker request was preserved and was not blindly restaged.
+
+Existing strength:                     signed request/receipt binding already covers execution IDs, encoded/decoded media and time, source/subject/owner, transform, inputs, one output per intent, package lineage, resource envelope, certificate, and within-document uniqueness
+Trusted probes:                        an arbitrary assignment mapping hash validates after trusted re-sign; two separately valid requests can bind one scene instance to different character revisions and reuse an intent ID across distinct transactions
+Missing decision:                      no self-hashed identity policy, normalized complete tuple, assignment recomputation, set-level provider-index bijection, duplicate-intent/idempotent-replay arbitration, revision collision decision, or canonical decision hash exists
+Legacy request:                        `p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553` is signed `CANCELED`; its stale queue record is preservation state and its old mutable-v1 scope is not eligible for restage
+Replacement unit:                      `MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION`; six new absent/clean allowed paths wrap frozen v1 documents without modifying them and are disjoint from held/prepared worker scopes
+Verification:                          3/3 focused existing bridge tests and Ruff pass; frozen schemas, fixtures, validation.py, dispatcher records, Docker, WSL, and runtime state were not changed by this audit
+Evidence:                              `qa/live_verification/bridge_identity_gap_audit_20260718.json`

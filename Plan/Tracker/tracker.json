@@ -19000,12 +19000,17 @@
           "ts": "2026-07-18T21:02:44+00:00",
           "actor": "codex",
           "text": "2026-07-18 launch hold: final-attempt request p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553 is one of four pairwise-disjoint signed MaskFactory units at base 093b9b1d74fb21ec5653d9dae395af878a8f0909. Cross-project batch manifest SHA-256 02f993cd... is HELD_RUNTIME_PREFLIGHT_REQUIRED; wake/provider calls remain unauthorized. Do not mutate or duplicate. See qa/live_verification/worker_launch_batch_hold_20260718.json."
+        },
+        {
+          "ts": "2026-07-18T23:48:35+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-18 static acceptance audit: frozen v1 exchange validation strongly binds a single request/receipt/certificate, but trusted probes confirm arbitrary assignment mapping hashes, same-instance character-revision drift, and duplicate intents across distinct requests are not resolved by any canonical cross-record identity decision. Preserved canceled request ...41be7553 without restaging its obsolete mutable-v1 scope; prepared additive MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION across six absent/clean paths. Zero completion credit. See qa/live_verification/bridge_identity_gap_audit_20260718.json."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T21:02:44+00:00",
+      "updated_at": "2026-07-18T23:48:35+00:00",
       "orphaned": false
     },
     "MF-P6-09.02": {

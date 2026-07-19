@@ -7665,3 +7665,16 @@ Release boundary:                       current worktree is intentionally dirty 
 Prepared scope:                         `MF-CURSOR-12.01-INTEGRATION-RELEASE-ACCEPTANCE`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no release publication, clean installed parity, stale-node rejection, atomic activation/rollback, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_integration_release_gap_audit_20260719.json`
+
+## 2026-07-19 03:18 UTC - Mode A transaction fixtures exist; real inpaint slice absent
+
+**Result:** MF-P6-12.02 receives 20% transaction/fixture foundation credit and remains blocked
+behind MF-P6-11.02/12.01 plus missing Main/ComfyUI execution evidence.
+
+Verified foundation:                   Mode A request/receipt package-selector and lineage checks, qualification execution/result hash binding, evidence-root byte verification, distinct p0/p1 package reads and serialized workflows
+Focused validation:                    4 qualification/authority/package/workflow tests pass; Ruff passes
+Evidence-shape gap:                     generic vertical-slice row permits null Mode A certificate and has no source/character/person/mask/transform/workflow/result/history/authority-decision identities
+Execution gap:                          no adopted immutable package/wrapper, integration release, pinned Main adapter invocation, downstream ComfyUI inpaint/edit result or history receipt exists
+Prepared scope:                         `MF-CURSOR-12.02-MODE-A-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no production authority, Main execution, real vertical slice, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_mode_a_vertical_slice_gap_audit_20260719.json`

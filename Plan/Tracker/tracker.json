@@ -19709,13 +19709,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
-      "blocked_reason": null,
+      "status": "blocked",
+      "percent_complete": 20,
+      "notes": [
+        {
+          "ts": "2026-07-19T03:19:34+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 acceptance audit: credited 20% for Mode A selector/lineage/receipt validation, qualification execution hashing, evidence-root byte verification, and p0/p1 workflow fixtures. The generic vertical-slice row permits null Mode A certificate and lacks source/character/person/mask/transform/workflow/result/history/authority identities; all five runnable slice paths are absent. Four focused tests pass; Ruff clean. See qa/live_verification/bridge_mode_a_vertical_slice_gap_audit_20260719.json."
+        }
+      ],
+      "evidence": "qa/live_verification/bridge_mode_a_vertical_slice_gap_audit_20260719.json",
+      "blocked_reason": "MF-P6-11.02 and MF-P6-12.01 remain incomplete. Frozen Mode A request/receipt/qualification and dependency-light node fixtures exist, but no adopted immutable package with exact active wrapper, clean integration release, pinned Main adapter execution, downstream ComfyUI result/history, or complete source/character/person/mask/transform/workflow/authority evidence chain exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T03:19:34+00:00",
       "orphaned": false
     },
     "MF-P6-12.03": {

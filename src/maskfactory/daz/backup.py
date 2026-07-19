@@ -124,6 +124,49 @@ def create_tier_a_backup(
     return {**manifest, "backup_path": str(final)}
 
 
+def plan_tier_a_backup(
+    source_root: Path,
+    destination_root: Path,
+    policy: TierABackupPolicy,
+    *,
+    backup_id: str,
+) -> dict[str, Any]:
+    """Validate the exact source/destination boundary without creating any bytes."""
+    source = Path(source_root).resolve(strict=True)
+    destination = Path(destination_root).resolve()
+    _require_outside(destination, source, "backup destination")
+    final = destination / backup_id
+    partial = destination / f".{backup_id}.partial"
+    if final.exists() or partial.exists():
+        raise DazControlError(
+            DazErrorCode.SCHEDULER_REFUSED,
+            "backup destination already exists",
+            entity_ids=(backup_id,),
+        )
+    files = _inventory(source, policy.include_roots)
+    categories = _category_presence((row[0] for row in files), policy.required_categories)
+    missing = sorted(key for key, present in categories.items() if not present)
+    if missing:
+        raise DazControlError(
+            DazErrorCode.SCHEDULER_REFUSED,
+            f"Tier A source is missing required categories: {','.join(missing)}",
+            entity_ids=(backup_id,),
+        )
+    return {
+        "schema_version": "1.0.0",
+        "backup_id": backup_id,
+        "tier": "A",
+        "apply": False,
+        "source_root": str(source),
+        "destination_root": str(destination),
+        "backup_path": str(final),
+        "policy_sha256": policy.sha256,
+        "file_count": len(files),
+        "source_bytes": sum(path.stat().st_size for _, path in files),
+        "category_presence": categories,
+    }
+
+
 def verify_tier_a_backup(backup_root: Path, policy: TierABackupPolicy) -> dict[str, Any]:
     root = Path(backup_root).resolve(strict=True)
     manifest_path = root / "manifest.json"
@@ -216,6 +259,27 @@ def restore_tier_a_test(
         raise
 
 
+def plan_tier_a_restore_test(
+    backup_root: Path,
+    target_root: Path,
+    policy: TierABackupPolicy,
+) -> dict[str, Any]:
+    """Verify a backup and empty target without restoring any payload bytes."""
+    backup = Path(backup_root).resolve(strict=True)
+    target = Path(target_root).resolve()
+    _require_outside(target, backup, "restore target")
+    if target.exists() and any(target.iterdir()):
+        raise DazControlError(DazErrorCode.SCHEDULER_REFUSED, "restore target is not empty")
+    verification = verify_tier_a_backup(backup, policy)
+    return {
+        **verification,
+        "apply": False,
+        "backup_path": str(backup),
+        "target_root": str(target),
+        "target_exists": target.exists(),
+    }
+
+
 def _inventory(source: Path, include_roots: tuple[str, ...]) -> list[tuple[str, Path]]:
     rows: dict[str, Path] = {}
     for logical in include_roots:
@@ -301,6 +365,8 @@ __all__ = [
     "TierABackupPolicy",
     "create_tier_a_backup",
     "load_tier_a_backup_policy",
+    "plan_tier_a_backup",
+    "plan_tier_a_restore_test",
     "restore_tier_a_test",
     "verify_tier_a_backup",
 ]

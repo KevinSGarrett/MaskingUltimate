@@ -2562,6 +2562,11 @@ def daz_monitor() -> None:
     """Build local-only truth-labeled dashboards and alerts."""
 
 
+@daz.group("backup")
+def daz_backup() -> None:
+    """Plan, create, verify, and restore-test governed Tier-A backups."""
+
+
 @daz.group("lineage")
 def daz_lineage() -> None:
     """Query and revoke immutable DAZ supervision lineage."""
@@ -8614,6 +8619,139 @@ def daz_monitor_snapshot(
                 "dashboard": build_dashboard(snapshot, evaluation),
                 "daily_report": build_daily_report(snapshot, evaluation),
             },
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("create")
+@click.option("--tier", type=click.Choice(["A"]), default="A", show_default=True)
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+@click.option("--source-root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--destination-root", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option("--backup-id", required=True)
+@click.option("--apply", "apply_changes", is_flag=True, help="Create the sealed backup bundle.")
+def daz_backup_create(
+    tier: str,
+    config_root: Path,
+    policy: Path,
+    source_root: Path | None,
+    destination_root: Path,
+    backup_id: str,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply creates one exact Tier-A backup."""
+    from .daz import (
+        create_tier_a_backup,
+        load_control_configuration,
+        load_tier_a_backup_policy,
+        plan_tier_a_backup,
+        result_envelope,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        backup_policy = load_tier_a_backup_policy(policy)
+        source = source_root or configuration.paths.root
+        document = (
+            create_tier_a_backup(
+                source,
+                destination_root,
+                backup_policy,
+                backup_id=backup_id,
+            )
+            if apply_changes
+            else plan_tier_a_backup(
+                source,
+                destination_root,
+                backup_policy,
+                backup_id=backup_id,
+            )
+        )
+        report = result_envelope(
+            reason="tier_a_backup_created" if apply_changes else "tier_a_backup_plan",
+            entity_ids=(backup_id,),
+            evidence_paths=(str(policy), str(destination_root)),
+            data={"tier": tier, "apply": apply_changes, "backup": document},
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("verify")
+@click.argument("backup_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+def daz_backup_verify(backup_root: Path, policy: Path) -> None:
+    """Verify the manifest seal, exact file set, hashes, and queue integrity."""
+    from .daz import load_tier_a_backup_policy, result_envelope, verify_tier_a_backup
+
+    try:
+        verification = verify_tier_a_backup(backup_root, load_tier_a_backup_policy(policy))
+        report = result_envelope(
+            reason="tier_a_backup_verified",
+            entity_ids=(str(verification["backup_id"]),),
+            evidence_paths=(str(backup_root), str(policy)),
+            data=verification,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("restore-test")
+@click.argument("backup_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--target", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+@click.option("--apply", "apply_changes", is_flag=True, help="Restore into the empty target root.")
+def daz_backup_restore_test(
+    backup_root: Path,
+    target: Path,
+    policy: Path,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply copies and verifies the isolated restore."""
+    from .daz import (
+        load_tier_a_backup_policy,
+        plan_tier_a_restore_test,
+        restore_tier_a_test,
+        result_envelope,
+    )
+
+    try:
+        backup_policy = load_tier_a_backup_policy(policy)
+        document = (
+            restore_tier_a_test(backup_root, target, backup_policy)
+            if apply_changes
+            else plan_tier_a_restore_test(backup_root, target, backup_policy)
+        )
+        report = result_envelope(
+            reason="tier_a_restore_test_passed" if apply_changes else "tier_a_restore_test_plan",
+            entity_ids=(str(document["backup_id"]),),
+            evidence_paths=(str(backup_root), str(target), str(policy)),
+            data={"apply": apply_changes, "restore": document},
         )
     except (OSError, ValueError) as exc:
         _emit_daz_error(exc)

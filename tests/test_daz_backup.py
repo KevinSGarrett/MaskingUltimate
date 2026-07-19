@@ -6,8 +6,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from click.testing import CliRunner
 from jsonschema import Draft202012Validator
 
+from maskfactory.cli import main
 from maskfactory.daz.backup import (
     create_tier_a_backup,
     load_tier_a_backup_policy,
@@ -19,6 +21,7 @@ from maskfactory.daz.control import DazControlError
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "configs" / "daz" / "backup.yaml"
 SCHEMA = ROOT / "src" / "maskfactory" / "schemas" / "daz_backup.schema.json"
+CONFIG = ROOT / "configs" / "daz"
 CAPTURED = datetime(2026, 7, 19, 5, 15, tzinfo=UTC)
 
 
@@ -127,3 +130,88 @@ def test_backup_destination_inside_source_and_missing_category_are_refused(tmp_p
     (source / "07_mappings/genesis9/map.json").unlink()
     with pytest.raises(DazControlError, match="missing required categories: mapping"):
         create_tier_a_backup(source, tmp_path / "backups", policy, backup_id="missing")
+
+
+def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: Path) -> None:
+    source = _source(tmp_path)
+    destination = tmp_path / "backups"
+    runner = CliRunner()
+    base = [
+        "daz",
+        "backup",
+        "create",
+        "--config-root",
+        str(CONFIG),
+        "--policy",
+        str(POLICY),
+        "--source-root",
+        str(source),
+        "--destination-root",
+        str(destination),
+        "--backup-id",
+        "backup_cli_a",
+    ]
+    planned = runner.invoke(main, base)
+    assert planned.exit_code == 0, planned.output
+    assert json.loads(planned.output)["reason"] == "tier_a_backup_plan"
+    assert not destination.exists()
+
+    created = runner.invoke(main, [*base, "--apply"])
+    assert created.exit_code == 0, created.output
+    backup = destination / "backup_cli_a"
+    assert backup.is_dir()
+    verified = runner.invoke(
+        main, ["daz", "backup", "verify", str(backup), "--policy", str(POLICY)]
+    )
+    assert verified.exit_code == 0, verified.output
+    assert json.loads(verified.output)["data"]["passed"] is True
+
+    target = tmp_path / "restore"
+    restore_base = [
+        "daz",
+        "backup",
+        "restore-test",
+        str(backup),
+        "--target",
+        str(target),
+        "--policy",
+        str(POLICY),
+    ]
+    restore_plan = runner.invoke(main, restore_base)
+    assert restore_plan.exit_code == 0, restore_plan.output
+    assert json.loads(restore_plan.output)["reason"] == "tier_a_restore_test_plan"
+    assert not target.exists()
+    restored = runner.invoke(main, [*restore_base, "--apply"])
+    assert restored.exit_code == 0, restored.output
+    document = json.loads(restored.output)
+    assert document["reason"] == "tier_a_restore_test_passed"
+    assert document["data"]["restore"]["passed"] is True
+
+
+def test_backup_cli_rejects_nonempty_restore_without_overwriting(tmp_path: Path) -> None:
+    source = _source(tmp_path)
+    policy = load_tier_a_backup_policy(POLICY)
+    manifest = create_tier_a_backup(
+        source, tmp_path / "backups", policy, backup_id="backup_fixture_a"
+    )
+    target = tmp_path / "restore"
+    target.mkdir()
+    marker = target / "keep.txt"
+    marker.write_text("preserve", encoding="utf-8")
+    result = CliRunner().invoke(
+        main,
+        [
+            "daz",
+            "backup",
+            "restore-test",
+            manifest["backup_path"],
+            "--target",
+            str(target),
+            "--policy",
+            str(POLICY),
+            "--apply",
+        ],
+    )
+    assert result.exit_code == 77
+    assert json.loads(result.output)["reason"] == "restore target is not empty"
+    assert marker.read_text(encoding="utf-8") == "preserve"

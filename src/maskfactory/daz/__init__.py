@@ -4,6 +4,8 @@ from .backup import (
     TierABackupPolicy,
     create_tier_a_backup,
     load_tier_a_backup_policy,
+    plan_tier_a_backup,
+    plan_tier_a_restore_test,
     restore_tier_a_test,
     verify_tier_a_backup,
 )
@@ -126,6 +128,8 @@ __all__ = [
     "load_control_configuration",
     "load_alert_policy",
     "load_tier_a_backup_policy",
+    "plan_tier_a_backup",
+    "plan_tier_a_restore_test",
     "load_retention_policy",
     "load_daz_runtime_profile",
     "load_typed_daz_configuration",

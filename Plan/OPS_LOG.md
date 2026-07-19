@@ -7826,3 +7826,15 @@ Preservation:                           no D: use, live F backup, scheduled-task
 Remaining:                              CLI, separate governed destination, drained live clean-root drill, registry rebuild, semantic replay, package verification and dataset/model lineage query
 Truth boundary:                         semantic replay and lineage query are explicitly recorded unexecuted; no live restore or item-completion claim
 Evidence:                              `qa/live_verification/daz_tier_a_backup_restore_foundation_20260719.json`
+
+## 2026-07-19 04:59 UTC - Tier A backup CLI is governed and dry-run by default
+
+**Result:** MF-P9-12.04 advances from 60% to 75%; create/verify/restore-test commands now
+enforce the isolated Tier-A contract, while the separate-volume live drill remains open.
+
+CLI safety:                             create and restore-test plan by default and require `--apply`; verify is read-only; destination/target are explicit with no D: default
+Mutation guards:                        in-source backup destination and non-empty restore target fail closed; dry-runs create no destination bytes; existing target bytes remain unchanged
+Focused validation:                     7 backup tests and 54 backup/monitoring/storage/scheduler/control/runtime regressions pass; Ruff, Black 25.1 and diff checks pass
+Preservation:                           no scheduled-task enable, D: use, live F backup, DAZ, WSL or MF-P6-08.05 mutation
+Remaining:                              real separate destination, drained live create/verify/restore, registry rebuild, semantic replay, package verification and dataset/model lineage query
+Evidence:                              `qa/live_verification/daz_tier_a_backup_cli_foundation_20260719.json`

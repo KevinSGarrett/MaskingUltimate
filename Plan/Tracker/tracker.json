@@ -17902,18 +17902,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 60,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-19T04:54:28+00:00",
           "actor": "codex",
           "text": "Implemented isolated closed Tier A backup policy, exact hash/self-sealed bundle creation, SQLite backup, verification, empty-root restore, and required-category checks. Remaining: governed CLI, real separate destination, drained live restore drill, registry rebuild, semantic replay, package verification, and dataset/model lineage query."
+        },
+        {
+          "ts": "2026-07-19T04:59:41+00:00",
+          "actor": "codex",
+          "text": "Added governed dry-run-default backup create and restore-test CLI plus read-only verify. Explicit --apply is required for writes; no destination default exists; non-empty targets and in-source destinations fail closed. 54 related regressions pass. Live separate-volume drained restore, replay, package, registry, and lineage proofs remain open."
         }
       ],
-      "evidence": "qa/live_verification/daz_tier_a_backup_restore_foundation_20260719.json",
+      "evidence": "qa/live_verification/daz_tier_a_backup_cli_foundation_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T04:54:28+00:00",
+      "updated_at": "2026-07-19T04:59:41+00:00",
       "orphaned": false
     },
     "MF-P9-12.05": {

@@ -7915,3 +7915,16 @@ Failed attempt:                         first quote-heavy import canary failed i
 Preservation:                           no Cursor/Claude wrapper, worker-control repair, scheduled-task enable, Docker/CVAT/Nuclio mutation, model-file mutation, or operational-certificate dirty-path mutation
 Truth boundary:                         no `/predict`, `/refine`, champion, role-certificate, retry/circuit/DAG-block, or MF-P6-11.07 completion claim
 Evidence:                              `qa/live_verification/maskfactory_service_recovery_post_restart_20260719.json`
+
+## 2026-07-19 07:19 UTC - External-supervision admission is now evidence-bound
+
+**Result:** MF-P9-13.04 advances from 65% to 72%; the verifier now rejects unbound gate-name
+claims and requires canonical, sealed, hash-bound, project-contained evidence before admission.
+
+Canonical contract:                     exact required gates are pinned for CelebAMask-HQ, LaPa and LV-MHP v1; registry removal or substitution fails closed
+Evidence binding:                       every gate record binds source, gate, artifact type, project-relative path, SHA-256, PASS contract and deterministic self-seal
+Adversarial coverage:                   raw gate-name claims, artifact hash drift, path escape, canonical-gate removal, unknown sources and authority drift all block admission
+Focused validation:                     26 qualification/provenance/remap/inventory/alignment tests pass; Ruff, Black 25.1, JSON schema and diff integrity pass
+Truth boundary:                         no real source is admitted by this increment; complete source manifests, identity/split-dedup artifacts and source-specific sealed bundles remain open
+Preservation:                           operational-certificate dirty paths untouched; no scheduled task enable, direct worker wrapper call or retained-worktree deletion
+Evidence:                               `qa/live_verification/external_supervision_evidence_binding_20260719.json`

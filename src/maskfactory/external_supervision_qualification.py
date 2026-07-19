@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping
 
 from .external_supervision import PRIVATE_NONCOMMERCIAL_PROFILE, TRAIN_PARTITION
+from .external_supervision_evidence import (
+    CANONICAL_REQUIRED_GATES_BY_SOURCE,
+    verify_qualification_evidence_bundle,
+)
 from .truth_tiers import WEIGHTED_PSEUDO_LABEL
 
 
@@ -19,6 +24,7 @@ class QualificationEvidence:
     admitted: bool
     unmet_gates: tuple[str, ...]
     evidence_tokens: tuple[str, ...]
+    evidence_bundle_sha256: str | None
     reason: str
 
 
@@ -27,7 +33,9 @@ def verify_external_qualification_evidence(
     inventory: Mapping[str, Any],
     *,
     source: str,
-    completed_gates: set[str] | frozenset[str],
+    completed_gates: set[str] | frozenset[str] | None = None,
+    evidence_bundle: Mapping[str, Any] | None = None,
+    project_root: Path | None = None,
     use_profile_id: str = PRIVATE_NONCOMMERCIAL_PROFILE,
 ) -> QualificationEvidence:
     """Verify one source using only registry metadata.
@@ -76,7 +84,26 @@ def verify_external_qualification_evidence(
     required_gates = _required_gates(admission, tokens)
     if required_gates is None:
         return _blocked(source, tokens, "required qualification gates are malformed")
-    unmet = tuple(gate for gate in required_gates if gate not in completed_gates)
+    canonical_gates = CANONICAL_REQUIRED_GATES_BY_SOURCE.get(source)
+    if canonical_gates is None or required_gates != canonical_gates:
+        tokens.append("canonical_gate_contract_drift")
+
+    evidence_bundle_sha256: str | None = None
+    bound_completed_gates: frozenset[str] = frozenset()
+    if evidence_bundle is None or project_root is None:
+        tokens.append("qualification_evidence_bundle_missing")
+        if completed_gates:
+            tokens.append("unbound_completed_gates_ignored")
+    else:
+        verification = verify_qualification_evidence_bundle(
+            evidence_bundle,
+            source=source,
+            project_root=project_root,
+        )
+        tokens.extend(verification.evidence_tokens)
+        evidence_bundle_sha256 = verification.bundle_sha256
+        bound_completed_gates = frozenset(verification.completed_gates)
+    unmet = tuple(gate for gate in required_gates if gate not in bound_completed_gates)
     technically_qualified = not unmet and "required_gates_malformed" not in tokens
 
     legally_eligible = (
@@ -95,6 +122,8 @@ def verify_external_qualification_evidence(
                 "dataset_volume_authority_drift",
                 "training_weight_drift",
                 "allowed_label_scope_malformed",
+                "canonical_gate_contract_drift",
+                "qualification_evidence_bundle_missing",
             )
         )
     )
@@ -113,6 +142,7 @@ def verify_external_qualification_evidence(
         admitted=admitted,
         unmet_gates=unmet,
         evidence_tokens=tuple(tokens),
+        evidence_bundle_sha256=evidence_bundle_sha256,
         reason=reason,
     )
 
@@ -125,6 +155,7 @@ def _blocked(source: str, tokens: list[str], reason: str) -> QualificationEviden
         admitted=False,
         unmet_gates=(),
         evidence_tokens=tuple(tokens),
+        evidence_bundle_sha256=None,
         reason=reason,
     )
 

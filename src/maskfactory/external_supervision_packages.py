@@ -25,6 +25,12 @@ from .external_supervision_evidence import (
     canonical_json_sha256,
     publish_immutable_evidence,
 )
+from .external_supervision_holdout_ablation import (
+    ExternalHoldoutAblationError,
+    active_scope_keys,
+    assert_only_ablation_active_external_rows,
+    require_ablation_report,
+)
 from .external_supervision_qualification import verify_external_qualification_evidence
 from .io.png_strict import write_label_map
 from .truth_tiers import (
@@ -126,10 +132,13 @@ def require_external_package_qualification(manifest: Mapping[str, Any]) -> Mappi
 
 def assert_builder_accepts_only_gated_external_rows(
     rows: Iterable[Mapping[str, Any]],
+    *,
+    ablation_report: Mapping[str, Any] | None = None,
 ) -> None:
     """Builder-side refuse of ungated external labeled rows."""
 
-    for row in rows:
+    materialized = list(rows)
+    for row in materialized:
         if not is_external_labeled_row(row):
             continue
         if row.get("external_qualification_admitted") is not True:
@@ -142,14 +151,21 @@ def assert_builder_accepts_only_gated_external_rows(
             raise ExternalSupervisionPackageError("builder refused non-train external row")
         if row.get("dataset_volume_eligible") is not False:
             raise ExternalSupervisionPackageError("builder refused volume-eligible external row")
+    try:
+        assert_only_ablation_active_external_rows(materialized, ablation_report)
+    except ExternalHoldoutAblationError as exc:
+        raise ExternalSupervisionPackageError(str(exc)) from exc
 
 
 def assert_launcher_accepts_only_gated_external_rows(
     rows: Iterable[Mapping[str, Any]],
+    *,
+    ablation_report: Mapping[str, Any] | None = None,
 ) -> None:
     """Launcher-side refuse of ungated external labeled rows."""
 
-    for row in rows:
+    materialized = list(rows)
+    for row in materialized:
         if not is_external_labeled_row(row):
             continue
         if row.get("external_qualification_admitted") is not True:
@@ -165,6 +181,10 @@ def assert_launcher_accepts_only_gated_external_rows(
             raise ExternalSupervisionPackageError(
                 "launcher refused external weight outside 0.10..0.25"
             )
+    try:
+        assert_only_ablation_active_external_rows(materialized, ablation_report)
+    except ExternalHoldoutAblationError as exc:
+        raise ExternalSupervisionPackageError(str(exc)) from exc
 
 
 def validate_external_batch_cap(
@@ -238,6 +258,7 @@ def materialize_qualified_train_only_packages(
     companion_certified_rows: Sequence[Mapping[str, Any]] | None = None,
     registry_path: Path | None = None,
     inventory_path: Path | None = None,
+    ablation_report: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Materialize gated train-only packages plus a composition dataset card.
 
@@ -251,6 +272,15 @@ def materialize_qualified_train_only_packages(
         registry = load_external_supervision_registry(registry_path, inventory_path)
     else:
         registry = dict(provenance)
+
+    active_ablation_keys: set[tuple[str, tuple[str, ...]]] | None = None
+    sealed_ablation: Mapping[str, Any] | None = None
+    if ablation_report is not None:
+        try:
+            sealed_ablation = require_ablation_report(ablation_report)
+            active_ablation_keys = active_scope_keys(sealed_ablation)
+        except ExternalHoldoutAblationError as exc:
+            raise ExternalSupervisionPackageError(str(exc)) from exc
 
     destination = Path(destination)
     packages_root = destination / "packages"
@@ -329,6 +359,10 @@ def materialize_qualified_train_only_packages(
             completed = [str(gate) for gate in raw_gates]
         else:
             completed = list(CANONICAL_REQUIRED_GATES_BY_SOURCE[selection.source])
+        label_key = (selection.source, tuple(sorted(selection.label_names)))
+        ablation_active = bool(
+            active_ablation_keys is not None and label_key in active_ablation_keys
+        )
         qualification = {
             "admitted": True,
             "source": selection.source,
@@ -343,6 +377,7 @@ def materialize_qualified_train_only_packages(
             "qualification_reason": decision.reason,
             "proof_tier": PROOF_TIER,
             "live_warehouse_admission": False,
+            "ablation_active": ablation_active,
         }
 
         parts = {
@@ -362,6 +397,7 @@ def materialize_qualified_train_only_packages(
             },
             "source_lineage": {"kind": EXTERNAL_LABEL_ROLE, "source": selection.source},
             "external_qualification": qualification,
+            "ablation_active": ablation_active,
             "parts": parts,
             "files": {
                 "source.png": "source.png",
@@ -380,6 +416,7 @@ def materialize_qualified_train_only_packages(
                 "image_id": selection.image_id,
                 "package": package.relative_to(destination).as_posix(),
                 "source": selection.source,
+                "external_source": selection.source,
                 "source_role": EXTERNAL_LABEL_ROLE,
                 "truth_tier": WEIGHTED_PSEUDO_LABEL,
                 "truth_partition": TRAIN_PARTITION,
@@ -388,6 +425,7 @@ def materialize_qualified_train_only_packages(
                 "external_qualification_admitted": True,
                 "dataset_volume_eligible": False,
                 "evidence_bundle_sha256": decision.evidence_bundle_sha256,
+                "ablation_active": ablation_active,
             }
         )
         source_counts[selection.source] = source_counts.get(selection.source, 0) + 1
@@ -405,11 +443,18 @@ def materialize_qualified_train_only_packages(
             "training_loss_weight": row["training_loss_weight"],
             "external_qualification_admitted": True,
             "dataset_volume_eligible": False,
+            "external_source": row["source"],
+            "label_names": list(row["label_names"]),
+            "ablation_active": row["ablation_active"],
         }
         for row in package_records
     ] + list(companion)
-    assert_builder_accepts_only_gated_external_rows(composition_rows)
-    assert_launcher_accepts_only_gated_external_rows(composition_rows)
+    assert_builder_accepts_only_gated_external_rows(
+        composition_rows, ablation_report=sealed_ablation
+    )
+    assert_launcher_accepts_only_gated_external_rows(
+        composition_rows, ablation_report=sealed_ablation
+    )
     batch_metrics = validate_external_batch_cap(composition_rows, registry=registry)
 
     card = _composition_dataset_card(
@@ -438,6 +483,22 @@ def materialize_qualified_train_only_packages(
             "mean_training_loss_weight": weight_sum / len(package_records),
         },
         "external_batch_metrics": batch_metrics,
+        "holdout_ablation": (
+            {
+                "bound": True,
+                "seal_sha256": sealed_ablation["seal_sha256"],
+                "active_count": sealed_ablation["active_count"],
+                "inactive_count": sealed_ablation["inactive_count"],
+                "live_holdout_executed": False,
+            }
+            if sealed_ablation is not None
+            else {
+                "bound": False,
+                "active_count": 0,
+                "inactive_count": 0,
+                "live_holdout_executed": False,
+            }
+        ),
         "dataset_card": "dataset_card.md",
     }
     report["seal_sha256"] = canonical_json_sha256(

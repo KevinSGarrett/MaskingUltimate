@@ -147,6 +147,7 @@ SCHEMA_NAMES = frozenset(
         "daz_filesystem_inventory_snapshot",
         "daz_ontology_snapshot",
         "daz_ontology_v2_snapshot",
+        "daz_engineering_fixture_set",
         "daz_scene_recipe",
         "daz_training_policy",
         "daz_worker",

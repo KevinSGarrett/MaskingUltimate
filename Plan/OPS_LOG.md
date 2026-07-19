@@ -9698,7 +9698,7 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 - MF-P9-15.08 e2e control-flow STATIC binder
 - Sealed evidence:
   - qa/live_verification/horizon_go_no_go_static_20260719.json seal_sha256 13e8baffde3a16f692d6e82f2a0e19fb13418f90b9e9812d71a664c7097ca51d
-  - qa/live_verification/ops_static_contracts_20260719.json seal_sha256 45e57b0c28b668b3e01d33d4d61250594d714930bf4ae0fac50737e9ab410ea8
+  - qa/live_verification/ops_static_contracts_20260719.json file_sha256 b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3 seal_sha256 a3396c9694d71be024a39688e7b260579af348168bb4e198555b5c6fc944bf51
   - qa/live_verification/selective_autonomy_e2e_static_20260719.json seal_sha256 48f693efc310661b2b7953313b1681292b6053832f4e171e7226a75353057bd0
 
 ### Honest non-claims

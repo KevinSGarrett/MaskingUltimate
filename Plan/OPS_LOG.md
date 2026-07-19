@@ -7318,3 +7318,17 @@ Managed logs:                          `logs/maskfactory_8765_20260719T003442531
 Truth boundary:                        zero champion roles are configured, so this is service-health evidence only and does not claim champion-backed `/predict`, a production certificate, release publication, or ComfyUI adoption
 Preservation:                          frozen contracts, worker records/worktrees, dirty MF-P6-08.05 scope, Docker/CVAT/Nuclio, model files, and tracker completion state were not changed
 Evidence:                              `qa/live_verification/maskfactory_service_recovery_20260719.json`
+
+## 2026-07-19 00:44 UTC - MF-P6-08.06 foundations verified; operational executor absent
+
+**Result:** MF-P6-08.06 has reusable geometry, controller, and frozen-feedback foundations but
+remains item-blocked. Its current execution path cannot satisfy the autonomous terminal contract.
+
+Verified foundations:                  ROI/protected/atomic geometry guards; round/candidate caps; candidate/mask dedup; signed exact-parent advisory feedback with attempt/no-progress accounting and distinct child-hypothesis validation
+Focused validation:                    13 geometry/transaction + 2 legacy controller + 1 frozen-feedback test pass; Ruff passes
+Exhaustion probe:                       duplicate output stops as `no_novel_safe_candidate`, but the decision remains `residual_human_queue` with the weak candidate as winner rather than typed autonomous abstention/quarantine
+Missing executor:                       unified policy-bound controller, material-hypothesis enforcement, immutable parent snapshot/atomic rollback, regression comparison, elapsed-time/resource caps, operational evidence schema, and acceptance-or-autonomous-abstention result type
+Worker chain:                           intent `...1de087de`; Claude preflight `...05314e21` failed because its packet is under `C:\Comfy_UI_Main\runtime_artifacts`; dependent Cursor `...5a762da1` and review `...eb461a06` remain queued and were not woken or mutated
+Disposition:                            40% foundation credit; item-only block behind MF-P6-08.05 and a correctly rooted signed high-assurance chain; overall goal and independent work remain active
+Truth boundary:                        no rejected/queued worker bytes adopted; no operational repair, certificate, release, or Main adoption claim
+Evidence:                              `qa/live_verification/bounded_operational_repair_gap_revalidation_20260719.json`

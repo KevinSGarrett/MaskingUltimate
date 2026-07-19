@@ -18913,8 +18913,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 40,
       "notes": [
         {
           "ts": "2026-07-18T20:29:14+00:00",
@@ -18930,12 +18930,17 @@
           "ts": "2026-07-18T20:56:51+00:00",
           "actor": "codex",
           "text": "2026-07-18 recovery handoff: retained scaffold remains formally REJECTED at 0% adoption (35% implementation completeness) because schema, tests, and authority/evidence bindings are incomplete. Signed completion intent intent_20260718T204940191Z_mask_bounded_autonomous_repair_completion_1de087de is READY but deferred/not woken at snapshot 093b9b1d74fb21ec5653d9dae395af878a8f0909. Preserve evidence; no Codex duplication. See qa/live_verification/capacity_and_worker_recovery_checkpoint_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T00:45:12+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: 16 focused tests plus Ruff pass for reusable ROI/protected/atomic guards, round/candidate caps, output dedup, and frozen advisory feedback binding. Direct duplicate-output exhaustion still returns residual_human_queue instead of typed autonomous abstention; no unified hypothesis-distinct immutable-parent rollback executor with time/resource/regression/evidence controls exists. Item-only block; overall goal active. Evidence: qa/live_verification/bounded_operational_repair_gap_revalidation_20260719.json"
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "WORKER CONTROL/DEPENDENCY: MF-P6-08.05 remains blocked. Signed completion intent ...1de087de is not executable as issued because Claude preflight ...05314e21 used C:\\Comfy_UI_Main\\runtime_artifacts outside the registered MaskFactory trusted packet root; dependent Cursor ...5a762da1 and review ...eb461a06 remain queued with no provider result. Reissue the signed high-assurance chain under the canonical MaskFactory trusted root after 08.05 acceptance; do not duplicate in Codex.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T20:56:51+00:00",
+      "updated_at": "2026-07-19T00:45:12+00:00",
       "orphaned": false
     },
     "MF-P6-08.07": {

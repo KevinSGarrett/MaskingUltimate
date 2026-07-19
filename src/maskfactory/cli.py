@@ -8,8 +8,10 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, Mapping
 
 import click
+import yaml
 
 from . import __version__
 from .doctor import LOCAL_INFERENCE_TIMEOUT_SECONDS, run_doctor
@@ -4400,6 +4402,5860 @@ def daz_recipes_validate_engineering_fixture_set(fixture_set: Path) -> None:
             sort_keys=True,
         )
     )
+
+
+@daz_recipes.command("build-procedural-primitive")
+@click.option("--master-seed", type=click.IntRange(min=0), default=20260719, show_default=True)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/fixtures/daz/procedural_primitives"),
+    show_default=True,
+)
+def daz_recipes_build_procedural_primitive(master_seed: int, output: Path) -> None:
+    """Render/decode a host-side procedural primitive without DAZ assets (STATIC)."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        ProceduralPrimitiveError,
+        build_procedural_primitive_bundle,
+        publish_procedural_primitive_bundle,
+    )
+
+    work = output / "_work"
+    try:
+        document = build_procedural_primitive_bundle(work, master_seed=master_seed)
+        target, published = publish_procedural_primitive_bundle(document, work, output)
+    except (ProceduralPrimitiveError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ProceduralPrimitiveError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_procedural_primitive_built",
+                entity_ids=(document["bundle_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "bundle_id": document["bundle_id"],
+                    "canonical_sha256": document["canonical_sha256"],
+                    "primitive_kind": document["primitive_kind"],
+                    "executor": document["executor"],
+                    "live_daz_execution": False,
+                    "daz_assets_used": False,
+                    "training_eligible": False,
+                    "accepted": False,
+                    "gold_claimed": False,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("verify-procedural-primitive")
+@click.argument("bundle", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+def daz_recipes_verify_procedural_primitive(bundle: Path) -> None:
+    """Verify a published host-side procedural primitive bundle against golden hashes."""
+    import tempfile
+
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        ProceduralPrimitiveError,
+        republish_primitive_artifacts,
+        validate_procedural_primitive_bundle,
+    )
+
+    try:
+        document = validate_procedural_primitive_bundle(
+            json.loads(bundle.read_text(encoding="utf-8"))
+        )
+        with tempfile.TemporaryDirectory(prefix="daz_proc_prim_verify_") as tmp:
+            republish_primitive_artifacts(document, Path(tmp))
+    except (ProceduralPrimitiveError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ProceduralPrimitiveError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_procedural_primitive_verified",
+                entity_ids=(document["bundle_id"],),
+                evidence_paths=(str(bundle),),
+                data={
+                    "bundle_id": document["bundle_id"],
+                    "canonical_sha256": document["canonical_sha256"],
+                    "visible_pixel_count": document["analytic_checks"]["visible_pixel_count"],
+                    "live_daz_execution": False,
+                    "gold_claimed": False,
+                    "accepted": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("seal")
+@click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\scene_recipes"),
+    show_default=True,
+)
+def daz_recipes_seal(draft: Path, output: Path) -> None:
+    """Derive named streams, validate, hash, and immutably publish a resolved recipe."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneRecipeError,
+        publish_resolved_scene_recipe,
+        seal_resolved_scene_recipe,
+    )
+
+    try:
+        document = json.loads(draft.read_text(encoding="utf-8"))
+        sealed = seal_resolved_scene_recipe(document)
+        target, published = publish_resolved_scene_recipe(sealed, output)
+    except (SceneRecipeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneRecipeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_recipe_sealed",
+                entity_ids=(sealed["scene_id"], sealed["scene_family_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "recipe_sha256": sealed["recipe_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate")
+@click.argument("recipe", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+def daz_recipes_validate(recipe: Path) -> None:
+    """Verify schema, invariants, named streams, and canonical recipe SHA-256."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import SceneRecipeError, validate_resolved_scene_recipe
+
+    try:
+        report = validate_resolved_scene_recipe(json.loads(recipe.read_text(encoding="utf-8")))
+    except (SceneRecipeError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneRecipeError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_recipe_valid",
+                entity_ids=(report["scene_id"], report["scene_family_id"]),
+                evidence_paths=(str(recipe),),
+                data=report,
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-foundation")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--figure-generation", default="genesis_9", show_default=True)
+@click.option(
+    "--scene-category",
+    type=click.Choice(
+        ["clothed", "partial_clothing", "underwear", "swimwear", "unclothed", "neutral"]
+    ),
+    default="clothed",
+    show_default=True,
+)
+@click.option("--tone-band")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\foundation"),
+    show_default=True,
+)
+def daz_recipes_select_foundation(
+    graph: Path,
+    pool_report: Path,
+    selection_seed: int,
+    figure_generation: str,
+    scene_category: str,
+    tone_band: str | None,
+    output: Path,
+) -> None:
+    """Select one qualified compatible G9 figure, preset, and skin tuple."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneSelectionError,
+        publish_character_foundation_selection,
+        select_character_foundation,
+    )
+
+    try:
+        selection = select_character_foundation(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            selection_seed=selection_seed,
+            figure_generation=figure_generation,
+            scene_category=scene_category,
+            tone_band=tone_band,
+        )
+        target, published = publish_character_foundation_selection(selection, output)
+    except (SceneSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_foundation_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("generate-profile")
+@click.option("--seed", type=click.IntRange(min=0), required=True)
+@click.option(
+    "--anatomy-configuration",
+    type=click.Choice(["adult_male_anatomy", "adult_female_anatomy"]),
+    required=True,
+)
+@click.option(
+    "--age-appearance-category",
+    type=click.Choice(["adult_21_29", "adult_30_44", "adult_45_64", "adult_65_plus"]),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\character_profiles"),
+    show_default=True,
+)
+def daz_recipes_generate_profile(
+    seed: int,
+    anatomy_configuration: str,
+    age_appearance_category: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Generate and immutably publish one bounded correlated adult character profile."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        generate_character_variation_profile,
+        load_character_profile_policy,
+        publish_character_profile_document,
+    )
+
+    try:
+        policy_document = load_character_profile_policy(policy)
+        profile = generate_character_variation_profile(
+            policy_document,
+            seed=seed,
+            anatomy_configuration=anatomy_configuration,
+            age_appearance_category=age_appearance_category,
+        )
+        target, published = publish_character_profile_document(
+            profile, output, document_id=profile["profile_id"]
+        )
+    except (CharacterProfileError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_generated",
+                entity_ids=(profile["profile_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile_sha256": profile["profile_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("profile-report")
+@click.option("--seed-start", type=click.IntRange(min=0), default=0, show_default=True)
+@click.option("--samples-per-stratum", type=click.IntRange(min=50), default=100, show_default=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\profile_reports"),
+    show_default=True,
+)
+def daz_recipes_profile_report(
+    seed_start: int, samples_per_stratum: int, policy: Path, output: Path
+) -> None:
+    """Measure tier shares, correlations, bounds, and constraints over every adult stratum."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        build_character_profile_batch_report,
+        load_character_profile_policy,
+        publish_character_profile_document,
+    )
+
+    try:
+        policy_document = load_character_profile_policy(policy)
+        report = build_character_profile_batch_report(
+            policy_document,
+            seed_start=seed_start,
+            samples_per_stratum=samples_per_stratum,
+        )
+        target, published = publish_character_profile_document(
+            report, output, document_id=report["report_id"]
+        )
+    except (CharacterProfileError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_report_complete",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile_count": report["profile_count"],
+                    "tier_max_abs_deviation": report["tier_max_abs_deviation"],
+                    "correlations": report["correlations"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-profile")
+@click.argument("profile", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/character_profiles.yaml"),
+    show_default=True,
+)
+def daz_recipes_validate_profile(profile: Path, policy: Path) -> None:
+    """Replay and validate one profile or bounded batch report."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        CharacterProfileError,
+        load_character_profile_policy,
+        validate_character_profile_batch_report,
+        validate_character_variation_profile,
+    )
+
+    try:
+        document = json.loads(profile.read_text(encoding="utf-8"))
+        policy_document = load_character_profile_policy(policy)
+        if str(document.get("profile_id", "")).startswith("dcvp_"):
+            validate_character_variation_profile(document, policy_document)
+            entity_id = document["profile_id"]
+        elif str(document.get("report_id", "")).startswith("dcpr_"):
+            validate_character_profile_batch_report(document, policy_document)
+            entity_id = document["report_id"]
+        else:
+            raise CharacterProfileError("profile_document_type_unknown", str(profile))
+    except (CharacterProfileError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CharacterProfileError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_profile_valid",
+                entity_ids=(entity_id,),
+                evidence_paths=(str(profile),),
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-appearance")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option(
+    "--anatomy-configuration",
+    type=click.Choice(["adult_male_anatomy", "adult_female_anatomy"]),
+    required=True,
+)
+@click.option("--hair-mode", type=click.Choice(["none", "required"]), required=True)
+@click.option("--wardrobe-state", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/appearance_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\appearance"),
+    show_default=True,
+)
+def daz_recipes_select_appearance(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    selection_seed: int,
+    anatomy_configuration: str,
+    hair_mode: str,
+    wardrobe_state: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a qualified anatomy, hair, and ordered wardrobe composition."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        AppearanceSelectionError,
+        load_appearance_selection_policy,
+        publish_character_appearance_selection,
+        select_character_appearance,
+    )
+
+    try:
+        selection = select_character_appearance(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            load_appearance_selection_policy(policy),
+            selection_seed=selection_seed,
+            anatomy_configuration=anatomy_configuration,
+            hair_mode=hair_mode,
+            wardrobe_state=wardrobe_state,
+        )
+        target, published = publish_character_appearance_selection(selection, output)
+    except (AppearanceSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AppearanceSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_character_appearance_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-solo-pose")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--descriptor-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--pose-family", required=True)
+@click.option("--pose-subfamily", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/solo_pose_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\solo_pose"),
+    show_default=True,
+)
+def daz_recipes_select_solo_pose(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    descriptor_registry: Path,
+    selection_seed: int,
+    pose_family: str,
+    pose_subfamily: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a qualified normalized solo pose under runtime joint limits."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SoloPoseSelectionError,
+        load_solo_pose_policy,
+        publish_solo_pose_selection,
+        select_solo_pose,
+    )
+
+    try:
+        selection = select_solo_pose(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            json.loads(descriptor_registry.read_text(encoding="utf-8")),
+            load_solo_pose_policy(policy),
+            selection_seed=selection_seed,
+            pose_family=pose_family,
+            pose_subfamily=pose_subfamily,
+        )
+        target, published = publish_solo_pose_selection(selection, output)
+    except (SoloPoseSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SoloPoseSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_solo_pose_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-duo")
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--anatomy-family", type=click.Choice(["MM", "MF", "FF"]), required=True)
+@click.option(
+    "--relationship-family",
+    type=click.Choice(["no_contact", "overlap_no_contact", "contact_support"]),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/duo_recipe_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\duo"),
+    show_default=True,
+)
+def daz_recipes_select_duo(
+    selection_seed: int,
+    anatomy_family: str,
+    relationship_family: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Select a pre-render duo placement recipe without assigning p-indices."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        DuoRecipeSelectionError,
+        load_duo_recipe_policy,
+        publish_duo_recipe_selection,
+        select_duo_recipe,
+    )
+
+    try:
+        policy_document = load_duo_recipe_policy(policy)
+        selection = select_duo_recipe(
+            policy_document,
+            selection_seed=selection_seed,
+            anatomy_family=anatomy_family,
+            relationship_family=relationship_family,
+        )
+        target, published = publish_duo_recipe_selection(selection, policy_document, output)
+    except (DuoRecipeSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, DuoRecipeSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_duo_recipe_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected_template": selection["selected_template"],
+                    "slots": selection["slots"],
+                    "relationship": selection["relationship"],
+                    "evidence_requirements": selection["evidence_requirements"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("assign-p-indices")
+@click.option(
+    "--selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/p_index_assignment.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\p_indices"),
+    show_default=True,
+)
+def daz_recipes_assign_p_indices(
+    selection: Path,
+    observation: Path,
+    construction_map: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Assign p-indices from a final-camera construction-ownership raster."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        PIndexAssignmentError,
+        build_p_index_assignment,
+        load_p_index_assignment_policy,
+        publish_p_index_assignment,
+    )
+
+    try:
+        assignment = build_p_index_assignment(
+            json.loads(selection.read_text(encoding="utf-8")),
+            json.loads(observation.read_text(encoding="utf-8")),
+            construction_map,
+            load_p_index_assignment_policy(policy),
+        )
+        target, published = publish_p_index_assignment(assignment, output)
+    except (PIndexAssignmentError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PIndexAssignmentError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_p_indices_assigned",
+                entity_ids=(assignment["assignment_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "assignment_sha256": assignment["assignment_sha256"],
+                    "mapping": assignment["mapping"],
+                    "promotion": assignment["promotion"],
+                    "summary": assignment["summary"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("select-formation")
+@click.option(
+    "--graph", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pool-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--foundation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--descriptor-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--selection-seed", type=click.IntRange(min=0), required=True)
+@click.option("--person-count", type=click.IntRange(min=1, max=4), required=True)
+@click.option("--azimuth-bin", required=True)
+@click.option("--elevation-bin", required=True)
+@click.option("--roll-bin", required=True)
+@click.option("--focal-family", required=True)
+@click.option("--framing-profile", required=True)
+@click.option("--aspect-ratio", required=True)
+@click.option("--resolution-profile", required=True)
+@click.option("--depth-of-field-mode", required=True)
+@click.option("--lighting-profile", required=True)
+@click.option("--exposure-profile", required=True)
+@click.option("--environment-family", required=True)
+@click.option("--environment-subfamily", required=True)
+@click.option("--context-complexity", required=True)
+@click.option("--prop-mode", required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/scene_formation_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\09_generation\sampling_plans\formation"),
+    show_default=True,
+)
+def daz_recipes_select_formation(
+    graph: Path,
+    pool_report: Path,
+    foundation_selection: Path,
+    descriptor_registry: Path,
+    selection_seed: int,
+    person_count: int,
+    azimuth_bin: str,
+    elevation_bin: str,
+    roll_bin: str,
+    focal_family: str,
+    framing_profile: str,
+    aspect_ratio: str,
+    resolution_profile: str,
+    depth_of_field_mode: str,
+    lighting_profile: str,
+    exposure_profile: str,
+    environment_family: str,
+    environment_subfamily: str,
+    context_complexity: str,
+    prop_mode: str,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Resolve a procedural camera and qualified light/environment/prop assets."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        SceneFormationSelectionError,
+        load_scene_formation_policy,
+        publish_scene_formation_selection,
+        select_scene_formation,
+    )
+
+    try:
+        selection = select_scene_formation(
+            json.loads(graph.read_text(encoding="utf-8")),
+            json.loads(pool_report.read_text(encoding="utf-8")),
+            json.loads(foundation_selection.read_text(encoding="utf-8")),
+            json.loads(descriptor_registry.read_text(encoding="utf-8")),
+            load_scene_formation_policy(policy),
+            selection_seed=selection_seed,
+            person_count=person_count,
+            azimuth_bin=azimuth_bin,
+            elevation_bin=elevation_bin,
+            roll_bin=roll_bin,
+            focal_family=focal_family,
+            framing_profile=framing_profile,
+            aspect_ratio=aspect_ratio,
+            resolution_profile=resolution_profile,
+            depth_of_field_mode=depth_of_field_mode,
+            lighting_profile=lighting_profile,
+            exposure_profile=exposure_profile,
+            environment_family=environment_family,
+            environment_subfamily=environment_subfamily,
+            context_complexity=context_complexity,
+            prop_mode=prop_mode,
+        )
+        target, published = publish_scene_formation_selection(selection, output)
+    except (SceneFormationSelectionError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, SceneFormationSelectionError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_formation_selected",
+                entity_ids=(selection["selection_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "selected": selection["selected"],
+                    "selection_sha256": selection["selection_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("preflight")
+@click.option(
+    "--pose-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--formation-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/scene_preflight.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\08_asset_tests\jobs\scene_preflight"),
+    show_default=True,
+)
+def daz_recipes_preflight(
+    pose_selection: Path,
+    formation_selection: Path,
+    observation: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Evaluate collision, support-contact, promotion, and framing evidence."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        ScenePreflightError,
+        evaluate_scene_preflight,
+        load_scene_preflight_policy,
+        publish_scene_preflight_report,
+    )
+
+    try:
+        report = evaluate_scene_preflight(
+            json.loads(pose_selection.read_text(encoding="utf-8")),
+            json.loads(formation_selection.read_text(encoding="utf-8")),
+            json.loads(observation.read_text(encoding="utf-8")),
+            load_scene_preflight_policy(policy),
+        )
+        target, published = publish_scene_preflight_report(report, output)
+    except (ScenePreflightError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ScenePreflightError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_preflight_evaluated",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": report["summary"],
+                    "report_sha256": report["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("seal-resolved-state")
+@click.option(
+    "--foundation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--profile", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--appearance", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--pose", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--formation", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--preflight-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--readback", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/resolved_scene_state.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\11_scene_state\resolved"),
+    show_default=True,
+)
+def daz_recipes_seal_resolved_state(
+    foundation: Path,
+    profile: Path,
+    appearance: Path,
+    pose: Path,
+    formation: Path,
+    preflight_report: Path,
+    readback: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Verify and seal final DAZ character/scene readback and semantic replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        ResolvedSceneStateError,
+        load_resolved_scene_state_policy,
+        publish_resolved_scene_state,
+        seal_resolved_scene_state,
+    )
+
+    try:
+        document = seal_resolved_scene_state(
+            json.loads(foundation.read_text(encoding="utf-8")),
+            json.loads(profile.read_text(encoding="utf-8")),
+            json.loads(appearance.read_text(encoding="utf-8")),
+            json.loads(pose.read_text(encoding="utf-8")),
+            json.loads(formation.read_text(encoding="utf-8")),
+            json.loads(preflight_report.read_text(encoding="utf-8")),
+            json.loads(readback.read_text(encoding="utf-8")),
+            load_resolved_scene_state_policy(policy),
+        )
+        target, published = publish_resolved_scene_state(document, output)
+    except (ResolvedSceneStateError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, ResolvedSceneStateError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_resolved_scene_state_sealed",
+                entity_ids=(document["resolved_state_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "scene_state_sha256": document["scene_state_sha256"],
+                    "resolved_state_sha256": document["resolved_state_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("plan-passes")
+@click.option(
+    "--resolved-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--profile",
+    type=click.Choice(
+        [
+            "engineering_minimal",
+            "training_standard",
+            "training_relationship",
+            "diagnostic_full",
+            "rgb_variant",
+        ],
+        case_sensitive=True,
+    ),
+    required=True,
+)
+@click.option(
+    "--parent-semantic-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\plans"),
+    show_default=True,
+)
+def daz_recipes_plan_passes(
+    resolved_state: Path,
+    profile: str,
+    parent_semantic_set: Path | None,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Build one closed pass plan bound to a resolved DAZ scene state."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import (
+        RenderPassContractError,
+        build_render_pass_plan,
+        load_render_pass_policy,
+        publish_render_pass_document,
+    )
+
+    try:
+        parent = (
+            json.loads(parent_semantic_set.read_text(encoding="utf-8"))
+            if parent_semantic_set is not None
+            else None
+        )
+        document = build_render_pass_plan(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            load_render_pass_policy(policy),
+            profile=profile,
+            parent_semantic_set=parent,
+        )
+        target, published = publish_render_pass_document(document, output)
+    except (RenderPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, RenderPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_render_pass_plan_built",
+                entity_ids=(document["plan_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "profile": document["profile"],
+                    "pass_count": len(document["outputs"]),
+                    "plan_sha256": document["plan_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-pass-run")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pass_run(plan: Path, execution: Path, policy: Path, output: Path) -> None:
+    """Replay and publish mutation findings for one DAZ pass execution."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import (
+        RenderPassContractError,
+        evaluate_render_pass_execution,
+        load_render_pass_policy,
+        publish_render_pass_document,
+    )
+
+    try:
+        document = evaluate_render_pass_execution(
+            json.loads(plan.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            load_render_pass_policy(policy),
+        )
+        target, published = publish_render_pass_document(document, output)
+    except (RenderPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, RenderPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=(
+                    0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+                ),
+                reason=(
+                    "daz_render_pass_execution_valid"
+                    if document["summary"]["passed"]
+                    else "daz_render_pass_execution_invalid"
+                ),
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not document["summary"]["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+
+
+@daz_recipes.command("plan-pristine-rgb")
+@click.option(
+    "--resolved-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--renderer-settings",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/pristine_rgb.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\pristine_requests"),
+    show_default=True,
+)
+def daz_recipes_plan_pristine_rgb(
+    resolved_state: Path,
+    pass_plan: Path,
+    renderer_settings: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal a direct-render pristine RGB request against one frozen pass plan."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PristineRgbContractError,
+        build_pristine_rgb_request,
+        load_pristine_rgb_policy,
+        publish_pristine_rgb_document,
+    )
+
+    try:
+        document = build_pristine_rgb_request(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(renderer_settings.read_text(encoding="utf-8")),
+            load_pristine_rgb_policy(policy),
+        )
+        target, published = publish_pristine_rgb_document(document, output)
+    except (PristineRgbContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PristineRgbContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_pristine_rgb_request_built",
+                entity_ids=(document["request_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "request_sha256": document["request_sha256"],
+                    "renderer_settings_sha256": hashlib.sha256(
+                        json.dumps(
+                            document["renderer_settings"],
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode("utf-8")
+                    ).hexdigest(),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-pristine-rgb-fixture")
+@click.option(
+    "--request", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/pristine_rgb.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\pristine_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pristine_rgb_fixture(
+    request: Path, execution: Path, image: Path, policy: Path, output: Path
+) -> None:
+    """Inspect and replay one direct-render pristine RGB renderer fixture."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PristineRgbContractError,
+        evaluate_pristine_rgb_fixture,
+        load_pristine_rgb_policy,
+        publish_pristine_rgb_document,
+    )
+
+    try:
+        document = evaluate_pristine_rgb_fixture(
+            json.loads(request.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            image,
+            load_pristine_rgb_policy(policy),
+        )
+        target, published = publish_pristine_rgb_document(document, output)
+    except (PristineRgbContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PristineRgbContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=(
+                    0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+                ),
+                reason=(
+                    "daz_pristine_rgb_fixture_valid"
+                    if document["summary"]["passed"]
+                    else "daz_pristine_rgb_fixture_invalid"
+                ),
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "measurements": document["measurements"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not document["summary"]["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+
+
+@daz_recipes.command("plan-instance-pass")
+@click.option(
+    "--resolved-state",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--owners", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/instance_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\instance_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_instance_pass(
+    resolved_state: Path, pass_plan: Path, owners: Path, policy: Path, output: Path
+) -> None:
+    """Seal exact p-index, integer-ID, and node ownership for one instance pass."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        InstancePassContractError,
+        build_instance_pass_contract,
+        load_instance_pass_policy,
+        publish_instance_pass_document,
+    )
+
+    try:
+        document = build_instance_pass_contract(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(owners.read_text(encoding="utf-8")),
+            load_instance_pass_policy(policy),
+        )
+        target, published = publish_instance_pass_document(document, output)
+    except (InstancePassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, InstancePassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_instance_pass_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "owner_count": len(document["owners"]),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-instance-pass")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/instance_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\instance_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_instance_pass(
+    contract: Path, execution: Path, image: Path, policy: Path, output: Path
+) -> None:
+    """Decode, validate, and publish one exact person-instance pass report."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        InstancePassContractError,
+        evaluate_instance_pass,
+        load_instance_pass_policy,
+        publish_instance_pass_document,
+    )
+
+    try:
+        document = evaluate_instance_pass(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            image,
+            load_instance_pass_policy(policy),
+        )
+        target, published = publish_instance_pass_document(document, output)
+    except (InstancePassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, InstancePassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=(
+                    0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+                ),
+                reason=(
+                    "daz_instance_pass_valid"
+                    if document["summary"]["passed"]
+                    else "daz_instance_pass_invalid"
+                ),
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "observed_ids": document["observed_ids"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if not document["summary"]["passed"]:
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+
+
+@daz_recipes.command("plan-part-pass")
+@click.option(
+    "--resolved-state", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--ontology-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--mapping-binding", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--expected-ids", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/part_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\part_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_part_pass(
+    resolved_state: Path,
+    pass_plan: Path,
+    ontology_snapshot: Path,
+    mapping_binding: Path,
+    expected_ids: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal an exact canonical-ontology PART pass contract."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PartPassContractError,
+        build_part_pass_contract,
+        load_part_pass_policy,
+        publish_part_pass_document,
+    )
+
+    try:
+        document = build_part_pass_contract(
+            json.loads(resolved_state.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(ontology_snapshot.read_text(encoding="utf-8")),
+            json.loads(mapping_binding.read_text(encoding="utf-8")),
+            json.loads(expected_ids.read_text(encoding="utf-8")),
+            load_part_pass_policy(policy),
+        )
+        target, published = publish_part_pass_document(document, output)
+    except (PartPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PartPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_part_pass_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "active_id_count": len(document["active_part_ids"]),
+                    "expected_id_count": len(document["expected_visible_part_ids"]),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-part-pass")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/part_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\part_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_part_pass(
+    contract: Path,
+    execution: Path,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Decode and validate exact canonical PART and instance coverage."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PartPassContractError,
+        evaluate_part_pass,
+        load_part_pass_policy,
+        publish_part_pass_document,
+    )
+
+    try:
+        document = evaluate_part_pass(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            part_image,
+            instance_image,
+            load_part_pass_policy(policy),
+        )
+        target, published = publish_part_pass_document(document, output)
+    except (PartPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, PartPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_part_pass_valid" if document["summary"]["passed"] else "daz_part_pass_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "observed_ids": document["observed_ids"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-material-protected")
+@click.option(
+    "--part-contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--ontology-snapshot",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--target-p-index", type=click.Choice(["p0", "p1", "p2", "p3"]), required=True)
+@click.option(
+    "--expected-material-ids",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/material_protected_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\material_protected_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_material_protected(
+    part_contract: Path,
+    pass_plan: Path,
+    ontology_snapshot: Path,
+    target_p_index: str,
+    expected_material_ids: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal canonical MATERIAL/protected outputs to PART and target ownership."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        MaterialProtectedContractError,
+        build_material_protected_contract,
+        load_material_protected_policy,
+        publish_material_protected_document,
+    )
+
+    try:
+        document = build_material_protected_contract(
+            json.loads(part_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(ontology_snapshot.read_text(encoding="utf-8")),
+            target_p_index=target_p_index,
+            expected_material_ids=json.loads(expected_material_ids.read_text(encoding="utf-8")),
+            policy=load_material_protected_policy(policy),
+        )
+        target, published = publish_material_protected_document(document, output)
+    except (MaterialProtectedContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, MaterialProtectedContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_material_protected_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "active_material_id_count": len(document["active_material_ids"]),
+                    "expected_material_id_count": len(document["expected_material_ids"]),
+                    "protected_required": "protected" in document["outputs"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-material-protected")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--protected-image", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/material_protected_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\material_protected_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_material_protected(
+    contract: Path,
+    execution: Path,
+    material_image: Path,
+    protected_image: Path | None,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate exact MATERIAL/protected rasters and all cross-map equations."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        MaterialProtectedContractError,
+        evaluate_material_protected_passes,
+        load_material_protected_policy,
+        publish_material_protected_document,
+    )
+
+    try:
+        document = evaluate_material_protected_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            material_path=material_image,
+            protected_path=protected_image,
+            part_path=part_image,
+            instance_path=instance_image,
+            policy=load_material_protected_policy(policy),
+        )
+        target, published = publish_material_protected_document(document, output)
+    except (MaterialProtectedContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, MaterialProtectedContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = (
+        "daz_material_protected_valid"
+        if document["summary"]["passed"]
+        else "daz_material_protected_invalid"
+    )
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "observed_material_ids": document["observed_material_ids"],
+                    "observed_protected_ids": document["observed_protected_ids"],
+                    "orthogonality": document["orthogonality"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-coverage-alpha")
+@click.option(
+    "--material-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--hair-certificates",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--expect-hair/--no-expect-hair", default=False, show_default=True)
+@click.option(
+    "--expect-mixed-coverage/--no-expect-mixed-coverage", default=False, show_default=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/coverage_alpha.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\coverage_alpha_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_coverage_alpha(
+    material_contract: Path,
+    pass_plan: Path,
+    hair_certificates: Path,
+    expect_hair: bool,
+    expect_mixed_coverage: bool,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal linear alpha and hair-threshold rules to frozen semantic authority."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        CoverageAlphaContractError,
+        build_coverage_alpha_contract,
+        load_coverage_alpha_policy,
+        publish_coverage_alpha_document,
+    )
+
+    try:
+        document = build_coverage_alpha_contract(
+            json.loads(material_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(hair_certificates.read_text(encoding="utf-8")),
+            expected_hair_material_present=expect_hair,
+            expected_mixed_coverage=expect_mixed_coverage,
+            policy=load_coverage_alpha_policy(policy),
+        )
+        target, published = publish_coverage_alpha_document(document, output)
+    except (CoverageAlphaContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CoverageAlphaContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_coverage_alpha_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "hair_certificate_count": len(document["hair_certificates"]),
+                    "expected_hair_material_present": document["expected_hair_material_present"],
+                    "expected_mixed_coverage": document["expected_mixed_coverage"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-coverage-alpha")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--alpha-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/coverage_alpha.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\coverage_alpha_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_coverage_alpha(
+    contract: Path,
+    execution: Path,
+    alpha_image: Path,
+    material_image: Path,
+    part_image: Path,
+    instance_image: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate exact alpha thresholds, hard owners, hair semantics, and replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        CoverageAlphaContractError,
+        evaluate_coverage_alpha,
+        load_coverage_alpha_policy,
+        publish_coverage_alpha_document,
+    )
+
+    try:
+        document = evaluate_coverage_alpha(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            alpha_path=alpha_image,
+            material_path=material_image,
+            part_path=part_image,
+            instance_path=instance_image,
+            policy=load_coverage_alpha_policy(policy),
+        )
+        target, published = publish_coverage_alpha_document(document, output)
+    except (CoverageAlphaContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CoverageAlphaContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_coverage_alpha_valid" if not code else "daz_coverage_alpha_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-geometry-passes")
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--camera-readback",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\geometry_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_geometry_passes(
+    pass_plan: Path,
+    camera_readback: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal coordinate readback plus linear-depth and camera-normal contracts."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        GeometryPassContractError,
+        build_camera_coordinate_sidecar,
+        build_geometry_pass_contract,
+        load_geometry_pass_policy,
+        publish_geometry_document,
+    )
+
+    try:
+        plan_document = json.loads(pass_plan.read_text(encoding="utf-8"))
+        readback = json.loads(camera_readback.read_text(encoding="utf-8"))
+        geometry_policy = load_geometry_pass_policy(policy)
+        coordinate = build_camera_coordinate_sidecar(
+            scene_id=plan_document["scene_id"],
+            scene_state_sha256=plan_document["scene_state_sha256"],
+            policy=geometry_policy,
+            **readback,
+        )
+        document = build_geometry_pass_contract(plan_document, coordinate, policy=geometry_policy)
+        coordinate_target, coordinate_published = publish_geometry_document(coordinate, output)
+        target, published = publish_geometry_document(document, output)
+    except (
+        GeometryPassContractError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, GeometryPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_geometry_pass_contract_built",
+                entity_ids=(coordinate["sidecar_id"], document["contract_id"]),
+                evidence_paths=(str(coordinate_target), str(target)),
+                data={
+                    "coordinate_sidecar_sha256": coordinate["sidecar_sha256"],
+                    "contract_sha256": document["contract_sha256"],
+                    "near_clip_m": document["near_clip_m"],
+                    "far_clip_m": document["far_clip_m"],
+                    "subdivision_level": document["subdivision_level"],
+                    "coordinate_publication": {
+                        "path": str(coordinate_target),
+                        "published": coordinate_published,
+                    },
+                    "contract_publication": {
+                        "path": str(target),
+                        "published": published,
+                    },
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-geometry-passes")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--coordinate-sidecar",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--depth-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--normals-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--coverage-alpha",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\geometry_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_geometry_passes(
+    contract: Path,
+    coordinate_sidecar: Path,
+    execution: Path,
+    depth_exr: Path,
+    normals_exr: Path,
+    coverage_alpha: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Validate real EXR depth/normals, coordinates, sentinels, and replay."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        GeometryPassContractError,
+        evaluate_geometry_passes,
+        load_geometry_pass_policy,
+        publish_geometry_document,
+    )
+
+    try:
+        document = evaluate_geometry_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(coordinate_sidecar.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            depth_path=depth_exr,
+            normals_path=normals_exr,
+            coverage_alpha_path=coverage_alpha,
+            policy=load_geometry_pass_policy(policy),
+        )
+        target, published = publish_geometry_document(document, output)
+    except (GeometryPassContractError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, GeometryPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_geometry_passes_valid" if not code else "daz_geometry_passes_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "statistics": document["statistics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-relationship-passes")
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/relationship_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\relationship_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_relationship_passes(
+    instance_contract: Path,
+    geometry_contract: Path,
+    pass_plan: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Seal geometry-derived relationship and diagnostic-output contracts."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        RelationshipPassContractError,
+        build_relationship_pass_contract,
+        load_relationship_pass_policy,
+        publish_relationship_document,
+    )
+
+    try:
+        document = build_relationship_pass_contract(
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(geometry_contract.read_text(encoding="utf-8")),
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            policy=load_relationship_pass_policy(policy),
+        )
+        target, published = publish_relationship_document(document, output)
+    except (
+        RelationshipPassContractError,
+        json.JSONDecodeError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, RelationshipPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_relationship_pass_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "pair_count": len(document["pairs"]),
+                    "profile": document["profile"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-relationship-passes")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--observations", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--depth-exr", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--contact-pairs", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--front-owner", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--boundary-pairs", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--diagnostics",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every diagnostic role to its immutable output path.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/relationship_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--geometry-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/geometry_pass.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\relationship_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_relationship_passes(
+    contract: Path,
+    instance_contract: Path,
+    geometry_contract: Path,
+    execution: Path,
+    observations: Path,
+    instance_image: Path,
+    depth_exr: Path,
+    contact_pairs: Path,
+    front_owner: Path,
+    boundary_pairs: Path,
+    diagnostics: Path,
+    policy: Path,
+    geometry_policy: Path,
+    output: Path,
+) -> None:
+    """Validate contact, depth-derived occlusion, pair rasters, and diagnostics."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        RelationshipPassContractError,
+        evaluate_relationship_passes,
+        load_geometry_pass_policy,
+        load_relationship_pass_policy,
+        publish_relationship_document,
+    )
+
+    try:
+        diagnostic_document = json.loads(diagnostics.read_text(encoding="utf-8"))
+        if not isinstance(diagnostic_document, dict) or not all(
+            isinstance(role, str) and isinstance(path, str)
+            for role, path in diagnostic_document.items()
+        ):
+            raise RelationshipPassContractError(
+                "relationship_diagnostic_paths_invalid", str(diagnostic_document)
+            )
+        document = evaluate_relationship_passes(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(geometry_contract.read_text(encoding="utf-8")),
+            json.loads(execution.read_text(encoding="utf-8")),
+            json.loads(observations.read_text(encoding="utf-8")),
+            instance_path=instance_image,
+            depth_path=depth_exr,
+            contact_pairs_path=contact_pairs,
+            front_owner_path=front_owner,
+            boundary_pairs_path=boundary_pairs,
+            diagnostic_paths={role: Path(path) for role, path in diagnostic_document.items()},
+            policy=load_relationship_pass_policy(policy),
+            geometry_policy=load_geometry_pass_policy(geometry_policy),
+        )
+        target, published = publish_relationship_document(document, output)
+    except (
+        RelationshipPassContractError,
+        json.JSONDecodeError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, RelationshipPassContractError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_relationship_passes_valid" if not code else "daz_relationship_passes_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "pair_records": document["pair_records"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-package-derivation")
+@click.option(
+    "--instance-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--part-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--material-contract",
+    "material_contracts",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    multiple=True,
+    required=True,
+)
+@click.option("--image-id", required=True)
+@click.option("--scene-family-id", required=True)
+@click.option(
+    "--source-rgb", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--protected-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping each p-index to its exact protected uint16 PNG.",
+)
+@click.option(
+    "--authority-hashes",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object containing required validated D6 authority-report SHA-256 values.",
+)
+@click.option(
+    "--p-index-assignment",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Accepted final-camera p-index assignment for a D8 multi-person derivation.",
+)
+@click.option(
+    "--p-index-construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Exact construction-ownership raster bound by the p-index assignment.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/package_derivation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\package_derivation_contracts"),
+    show_default=True,
+)
+def daz_recipes_plan_package_derivation(
+    instance_contract: Path,
+    part_contract: Path,
+    material_contracts: tuple[Path, ...],
+    image_id: str,
+    scene_family_id: str,
+    source_rgb: Path,
+    instance_image: Path,
+    part_image: Path,
+    material_image: Path,
+    protected_paths: Path,
+    authority_hashes: Path,
+    p_index_assignment: Path | None,
+    p_index_construction_map: Path | None,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Bind shared exact passes for deterministic per-person package derivation."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PackageDerivationError,
+        build_package_derivation_contract,
+        load_package_derivation_policy,
+    )
+
+    try:
+        protected_document = _load_string_mapping(protected_paths, "protected paths")
+        authority_document = _load_string_mapping(authority_hashes, "authority hashes")
+        document = build_package_derivation_contract(
+            json.loads(instance_contract.read_text(encoding="utf-8")),
+            json.loads(part_contract.read_text(encoding="utf-8")),
+            [json.loads(path.read_text(encoding="utf-8")) for path in material_contracts],
+            image_id=image_id,
+            scene_family_id=scene_family_id,
+            source_paths={
+                "rgb": source_rgb,
+                "instance": instance_image,
+                "part": part_image,
+                "material": material_image,
+            },
+            protected_paths={key: Path(value) for key, value in protected_document.items()},
+            authority_report_sha256s=authority_document,
+            policy=load_package_derivation_policy(policy),
+            p_index_assignment=(
+                json.loads(p_index_assignment.read_text(encoding="utf-8"))
+                if p_index_assignment is not None
+                else None
+            ),
+            p_index_construction_map_path=p_index_construction_map,
+        )
+        target, published = _publish_immutable_json(document, output, document["contract_id"])
+    except (
+        PackageDerivationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, PackageDerivationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_package_derivation_contract_built",
+                entity_ids=(document["contract_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "contract_sha256": document["contract_sha256"],
+                    "package_count": len(document["owners"]),
+                    "p_index_assignment": document.get("p_index_assignment"),
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("derive-scene-packages")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--source-rgb", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--instance-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--part-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--material-image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--protected-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--p-index-construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Exact construction-ownership raster required by a bound D8 contract.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/package_derivation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\16_maskfactory_exports\decoded_scenes"),
+    show_default=True,
+)
+def daz_recipes_derive_scene_packages(
+    contract: Path,
+    source_rgb: Path,
+    instance_image: Path,
+    part_image: Path,
+    material_image: Path,
+    protected_paths: Path,
+    p_index_construction_map: Path | None,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Vectorize one shared pass set into immutable per-person source packages."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.render import (
+        PackageDerivationError,
+        derive_scene_packages,
+        load_package_derivation_policy,
+    )
+
+    try:
+        protected_document = _load_string_mapping(protected_paths, "protected paths")
+        document, target, published = derive_scene_packages(
+            json.loads(contract.read_text(encoding="utf-8")),
+            source_paths={
+                "rgb": source_rgb,
+                "instance": instance_image,
+                "part": part_image,
+                "material": material_image,
+            },
+            protected_paths={key: Path(value) for key, value in protected_document.items()},
+            output_root=output,
+            policy=load_package_derivation_policy(policy),
+            p_index_construction_map_path=p_index_construction_map,
+        )
+    except (
+        PackageDerivationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, PackageDerivationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_scene_packages_derived",
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target / "decoder_report.json"),),
+                data={
+                    "summary": document["summary"],
+                    "invariants": document["invariants"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-multi-person-identity")
+@click.option(
+    "--contract", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--derivation-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assignment", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--construction-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--instance-map",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--derived-scene-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/multi_person_identity_validation.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\13_validation\multi_person_identity"),
+    show_default=True,
+)
+def daz_recipes_validate_multi_person_identity(
+    contract: Path,
+    derivation_report: Path,
+    assignment: Path,
+    construction_map: Path,
+    instance_map: Path,
+    derived_scene_root: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Recompute blocking D8 identity, exclusivity, and bleed validators."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.multi_person_validation import (
+        MultiPersonIdentityValidationError,
+        evaluate_multi_person_identity,
+        load_multi_person_identity_policy,
+        publish_multi_person_identity_report,
+    )
+
+    try:
+        document = evaluate_multi_person_identity(
+            json.loads(contract.read_text(encoding="utf-8")),
+            json.loads(derivation_report.read_text(encoding="utf-8")),
+            json.loads(assignment.read_text(encoding="utf-8")),
+            construction_map_path=construction_map,
+            instance_map_path=instance_map,
+            derived_scene_root=derived_scene_root,
+            policy=load_multi_person_identity_policy(policy),
+        )
+        target, published = publish_multi_person_identity_report(document, output)
+    except (
+        MultiPersonIdentityValidationError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, MultiPersonIdentityValidationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_multi_person_identity_valid" if not code else "daz_multi_person_identity_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "metrics": document["metrics"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("build-multi-person-relationships")
+@click.option(
+    "--relationship-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assignment", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--duo-selection",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/multi_person_relationship.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--duo-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/duo_recipe_selection.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\13_validation\multi_person_relationships"),
+    show_default=True,
+)
+def daz_recipes_build_multi_person_relationships(
+    relationship_report: Path,
+    assignment: Path,
+    duo_selection: Path,
+    policy: Path,
+    duo_policy: Path,
+    output: Path,
+) -> None:
+    """Bind reciprocal D6 contact/occlusion truth to accepted final p-indices."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.multi_person_relationship import (
+        MultiPersonRelationshipError,
+        build_multi_person_relationship_record,
+        load_multi_person_relationship_policy,
+        publish_multi_person_relationship_record,
+    )
+    from .daz.scenes import load_duo_recipe_policy
+
+    try:
+        document = build_multi_person_relationship_record(
+            json.loads(relationship_report.read_text(encoding="utf-8")),
+            json.loads(assignment.read_text(encoding="utf-8")),
+            json.loads(duo_selection.read_text(encoding="utf-8")),
+            policy=load_multi_person_relationship_policy(policy),
+            duo_policy=load_duo_recipe_policy(duo_policy),
+        )
+        target, published = publish_multi_person_relationship_record(document, output)
+    except (
+        MultiPersonRelationshipError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, MultiPersonRelationshipError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_multi_person_relationship_record_built",
+                entity_ids=(document["record_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "relationship_family": document["relationship_family"],
+                    "record_sha256": document["record_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("prove-same-state-replay")
+@click.option(
+    "--pass-plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--original-execution",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--replay-execution",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--original-run", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--replay-run", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--original-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every planned output role to its original file or tree.",
+)
+@click.option(
+    "--replay-paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="JSON object mapping every planned output role to its independent replay file or tree.",
+)
+@click.option(
+    "--pass-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/render_pass_profiles.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/same_state_replay.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\12_render_passes\same_state_replay"),
+    show_default=True,
+)
+def daz_recipes_prove_same_state_replay(
+    pass_plan: Path,
+    original_execution: Path,
+    replay_execution: Path,
+    original_run: Path,
+    replay_run: Path,
+    original_paths: Path,
+    replay_paths: Path,
+    pass_policy: Path,
+    policy: Path,
+    output: Path,
+) -> None:
+    """Prove independent same-state semantic outputs are byte-identical."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.passes import load_render_pass_policy
+    from .daz.render import (
+        SameStateReplayError,
+        evaluate_same_state_replay,
+        load_same_state_replay_policy,
+        publish_same_state_replay_report,
+    )
+
+    try:
+        original_path_document = _load_string_mapping(original_paths, "original paths")
+        replay_path_document = _load_string_mapping(replay_paths, "replay paths")
+        document = evaluate_same_state_replay(
+            json.loads(pass_plan.read_text(encoding="utf-8")),
+            json.loads(original_execution.read_text(encoding="utf-8")),
+            json.loads(replay_execution.read_text(encoding="utf-8")),
+            json.loads(original_run.read_text(encoding="utf-8")),
+            json.loads(replay_run.read_text(encoding="utf-8")),
+            original_paths={role: Path(path) for role, path in original_path_document.items()},
+            replay_paths={role: Path(path) for role, path in replay_path_document.items()},
+            pass_policy=load_render_pass_policy(pass_policy),
+            policy=load_same_state_replay_policy(policy),
+        )
+        target, published = publish_same_state_replay_report(document, output)
+    except (
+        SameStateReplayError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, SameStateReplayError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_same_state_replay_valid" if not code else "daz_same_state_replay_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "semantic_roles": document["semantic_roles"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("aggregate-validation-set")
+@click.option(
+    "--results", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--entity-id", required=True)
+@click.option("--scope", type=click.Choice(["scene", "corpus"]), required=True)
+@click.option("--required-validator-id", "required_validator_ids", multiple=True)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\validation_sets"),
+    show_default=True,
+)
+def daz_recipes_aggregate_validation_set(
+    results: Path,
+    entity_id: str,
+    scope: str,
+    required_validator_ids: tuple[str, ...],
+    registry: Path,
+    output: Path,
+) -> None:
+    """Validate and aggregate one closed V0-V9 result set."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        result_document = json.loads(results.read_text(encoding="utf-8"))
+        if not isinstance(result_document, list):
+            raise ValidationRegistryError("validation_result_set_invalid", str(result_document))
+        document = build_validation_set_report(
+            result_document,
+            entity_id=entity_id,
+            scope=scope,
+            registry=load_validation_registry(registry),
+            required_validator_ids=(
+                sorted(required_validator_ids) if required_validator_ids else None
+            ),
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = exc.reason if isinstance(exc, ValidationRegistryError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_validation_set_valid" if not code else "daz_validation_set_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": document["layer_summary"],
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("validate-construction")
+@click.option(
+    "--recipe", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--recipe-authority",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--assembly-observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--geometry-observation",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/strict_scene_validators.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\construction_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_construction(
+    recipe: Path,
+    recipe_authority: Path,
+    assembly_observation: Path,
+    geometry_observation: Path,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Run strict V2-V4 validation and publish one normalized result set."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scene_validators import (
+        StrictSceneValidationError,
+        load_strict_scene_validation_policy,
+        validate_assembly_layer,
+        validate_geometry_layer,
+        validate_recipe_layer,
+    )
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        recipe_document = json.loads(recipe.read_text(encoding="utf-8"))
+        authority_document = json.loads(recipe_authority.read_text(encoding="utf-8"))
+        assembly_document = json.loads(assembly_observation.read_text(encoding="utf-8"))
+        geometry_document = json.loads(geometry_observation.read_text(encoding="utf-8"))
+        policy_document = load_strict_scene_validation_policy(policy)
+        registry_document = load_validation_registry(registry)
+        inputs = {
+            "recipe": recipe_document,
+            "recipe_authority": authority_document,
+            "assembly": assembly_document,
+            "geometry": geometry_document,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                inputs,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_bundle_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, input_document in inputs.items():
+            _publish_immutable_json(input_document, input_bundle_root, name)
+        evidence = {name: [f"inputs/{input_bundle_sha256[:24]}/{name}.json"] for name in inputs}
+        results = [
+            validate_recipe_layer(
+                inputs["recipe"],
+                inputs["recipe_authority"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["recipe_authority"],
+            ),
+            validate_assembly_layer(
+                inputs["recipe"],
+                inputs["assembly"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["assembly"],
+            ),
+            validate_geometry_layer(
+                inputs["recipe"],
+                inputs["geometry"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=evidence["recipe"] + evidence["geometry"],
+            ),
+        ]
+        document = build_validation_set_report(
+            results,
+            entity_id=recipe_document["scene_id"],
+            scope="scene",
+            registry=registry_document,
+            required_validator_ids=["DAZ-V2-001", "DAZ-V3-001", "DAZ-V4-001"],
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        StrictSceneValidationError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason
+            if isinstance(exc, (StrictSceneValidationError, ValidationRegistryError))
+            else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_construction_valid" if not code else "daz_construction_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"], recipe_document["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": {
+                        key: document["layer_summary"][key] for key in ("V2", "V3", "V4")
+                    },
+                    "results": results,
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("validate-pass-semantics")
+@click.option("--plan", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True)
+@click.option(
+    "--execution", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--execution-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--replay-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--render-files", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--semantic-authority",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--semantic-files",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/strict_pass_semantic_validators.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\pass_semantic_validation"),
+    show_default=True,
+)
+def daz_recipes_validate_pass_semantics(
+    plan: Path,
+    execution: Path,
+    execution_report: Path,
+    replay_report: Path,
+    render_files: Path,
+    semantic_authority: Path,
+    semantic_files: Path,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Run independent V5 actual-render and V6 every-pixel semantic validation."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.pass_semantic_validators import (
+        PassSemanticValidationError,
+        load_pass_semantic_policy,
+        validate_render_layer,
+        validate_semantic_layer,
+    )
+    from .daz.validation_registry import (
+        ValidationRegistryError,
+        build_validation_set_report,
+        load_validation_registry,
+        publish_validation_set_report,
+    )
+
+    try:
+        documents = {
+            "plan": json.loads(plan.read_text(encoding="utf-8")),
+            "execution": json.loads(execution.read_text(encoding="utf-8")),
+            "execution_report": json.loads(execution_report.read_text(encoding="utf-8")),
+            "replay_report": json.loads(replay_report.read_text(encoding="utf-8")),
+            "semantic_authority": json.loads(semantic_authority.read_text(encoding="utf-8")),
+        }
+        render_path_map = {
+            key: Path(value)
+            for key, value in _load_string_mapping(render_files, "render-files").items()
+        }
+        semantic_path_map = {
+            key: Path(value)
+            for key, value in _load_string_mapping(semantic_files, "semantic-files").items()
+        }
+        file_manifest = {
+            "render": _strict_file_manifest(render_path_map),
+            "semantic": _strict_file_manifest(semantic_path_map),
+        }
+        policy_document = load_pass_semantic_policy(policy)
+        registry_document = load_validation_registry(registry)
+        input_bundle = {**documents, "files": file_manifest}
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                input_bundle,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_bundle_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in input_bundle.items():
+            _publish_immutable_json(document, input_bundle_root, name)
+        evidence_root = f"inputs/{input_bundle_sha256[:24]}"
+        results = [
+            validate_render_layer(
+                documents["plan"],
+                documents["execution"],
+                documents["execution_report"],
+                documents["replay_report"],
+                render_path_map,
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=[
+                    f"{evidence_root}/plan.json",
+                    f"{evidence_root}/execution.json",
+                    f"{evidence_root}/execution_report.json",
+                    f"{evidence_root}/replay_report.json",
+                    f"{evidence_root}/files.json",
+                ],
+            ),
+            validate_semantic_layer(
+                documents["plan"]["scene_id"],
+                semantic_path_map,
+                documents["semantic_authority"],
+                policy=policy_document,
+                registry=registry_document,
+                evidence_paths=[
+                    f"{evidence_root}/semantic_authority.json",
+                    f"{evidence_root}/files.json",
+                ],
+            ),
+        ]
+        document = build_validation_set_report(
+            results,
+            entity_id=documents["plan"]["scene_id"],
+            scope="scene",
+            registry=registry_document,
+            required_validator_ids=["DAZ-V5-001", "DAZ-V6-001"],
+        )
+        target, published = publish_validation_set_report(document, output)
+    except (
+        PassSemanticValidationError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason
+            if isinstance(exc, (PassSemanticValidationError, ValidationRegistryError))
+            else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    code = 0 if document["summary"]["passed"] else int(DazErrorCode.SCENE_RECIPE_INVALID)
+    reason = "daz_pass_semantics_valid" if not code else "daz_pass_semantics_invalid"
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=code,
+                reason=reason,
+                entity_ids=(document["report_id"], documents["plan"]["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "summary": document["summary"],
+                    "layer_summary": {key: document["layer_summary"][key] for key in ("V5", "V6")},
+                    "results": results,
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "report_sha256": document["report_sha256"],
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+    if code:
+        raise click.exceptions.Exit(code)
+
+
+@daz_recipes.command("plan-repair")
+@click.option(
+    "--draft", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--validation-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--history",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/repair_retry_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\repair_history"),
+    show_default=True,
+)
+def daz_recipes_plan_repair(
+    draft: Path,
+    validation_set: Path,
+    history: Path | None,
+    policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Append one deterministic bounded-repair, rejection, or exhaustion decision."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.repair_retry import (
+        RepairRetryError,
+        append_repair_decision,
+        build_repair_request,
+        load_repair_retry_policy,
+        publish_repair_history,
+    )
+    from .daz.validation_registry import ValidationRegistryError, load_validation_registry
+
+    try:
+        draft_document = json.loads(draft.read_text(encoding="utf-8"))
+        validation_document = json.loads(validation_set.read_text(encoding="utf-8"))
+        history_document = (
+            json.loads(history.read_text(encoding="utf-8")) if history is not None else None
+        )
+        policy_document = load_repair_retry_policy(policy)
+        registry_document = load_validation_registry(registry)
+        request = build_repair_request(
+            draft_document,
+            validation_document,
+            policy=policy_document,
+            registry=registry_document,
+        )
+        result = append_repair_decision(
+            request,
+            validation_document,
+            history_document,
+            policy=policy_document,
+            registry=registry_document,
+        )
+        input_bundle = {
+            "draft": draft_document,
+            "validation_set": validation_document,
+            "prior_history": history_document,
+            "request": request,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                input_bundle,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in input_bundle.items():
+            _publish_immutable_json(document, input_root, name)
+        target, published = publish_repair_history(result, output)
+    except (
+        RepairRetryError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason if isinstance(exc, (RepairRetryError, ValidationRegistryError)) else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    latest = result["entries"][-1]
+    click.echo(
+        json.dumps(
+            result_envelope(
+                code=0,
+                reason=f"daz_repair_{latest['disposition']}",
+                entity_ids=(result["history_id"], request["request_id"], request["entity_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "disposition": latest["disposition"],
+                    "action": latest["action"],
+                    "attempt": latest["attempt"],
+                    "maximum_attempts": latest["maximum_attempts"],
+                    "coverage_deficit": latest["coverage_deficit"],
+                    "quarantine_recommended": latest["quarantine_recommended"],
+                    "request_sha256": request["request_sha256"],
+                    "history_sha256": result["history_sha256"],
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("certify-acceptance")
+@click.option(
+    "--draft", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--validation-set",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--semantic-replay",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--package-contract",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--package-report",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--repair-history",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+)
+@click.option(
+    "--post-repair-reports",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+    help="Optional JSON object mapping each repair recipe revision ID to its full V0-V8 report.",
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/acceptance_certificate_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--repair-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/repair_retry_policy.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/validation_registry.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\14_qa\acceptance_certificates"),
+    show_default=True,
+)
+def daz_recipes_certify_acceptance(
+    draft: Path,
+    validation_set: Path,
+    semantic_replay: Path,
+    package_contract: Path,
+    package_report: Path,
+    repair_history: Path | None,
+    post_repair_reports: Path | None,
+    policy: Path,
+    repair_policy: Path,
+    registry: Path,
+    output: Path,
+) -> None:
+    """Build, independently replay, and immutably publish one D7 acceptance certificate."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.acceptance_certificate import (
+        AcceptanceCertificateError,
+        build_acceptance_certificate,
+        load_acceptance_certificate_policy,
+        publish_acceptance_certificate,
+        verify_acceptance_certificate,
+    )
+    from .daz.repair_retry import RepairRetryError, load_repair_retry_policy
+    from .daz.validation_registry import ValidationRegistryError, load_validation_registry
+
+    try:
+        input_documents = {
+            "draft": json.loads(draft.read_text(encoding="utf-8")),
+            "validation_set": json.loads(validation_set.read_text(encoding="utf-8")),
+            "semantic_replay": json.loads(semantic_replay.read_text(encoding="utf-8")),
+            "package_contract": json.loads(package_contract.read_text(encoding="utf-8")),
+            "package_report": json.loads(package_report.read_text(encoding="utf-8")),
+            "repair_history": (
+                json.loads(repair_history.read_text(encoding="utf-8"))
+                if repair_history is not None
+                else None
+            ),
+        }
+        report_paths = (
+            _load_string_mapping(post_repair_reports, "post-repair reports")
+            if post_repair_reports is not None
+            else {}
+        )
+        report_documents = {
+            revision_id: json.loads(Path(path).read_text(encoding="utf-8"))
+            for revision_id, path in report_paths.items()
+        }
+        policy_document = load_acceptance_certificate_policy(policy)
+        repair_policy_document = load_repair_retry_policy(repair_policy)
+        registry_document = load_validation_registry(registry)
+        certificate = build_acceptance_certificate(
+            input_documents["draft"],
+            input_documents["validation_set"],
+            input_documents["semantic_replay"],
+            input_documents["package_contract"],
+            input_documents["package_report"],
+            repair_history=input_documents["repair_history"],
+            post_repair_reports=report_documents,
+            policy=policy_document,
+            repair_policy=repair_policy_document,
+            registry=registry_document,
+        )
+        replay = verify_acceptance_certificate(
+            certificate,
+            input_documents["validation_set"],
+            input_documents["semantic_replay"],
+            input_documents["package_contract"],
+            input_documents["package_report"],
+            repair_history=input_documents["repair_history"],
+            post_repair_reports=report_documents,
+            policy=policy_document,
+            repair_policy=repair_policy_document,
+            registry=registry_document,
+        )
+        bound_inputs = {
+            **input_documents,
+            "post_repair_reports": report_documents,
+            "acceptance_policy": policy_document,
+            "repair_policy": repair_policy_document,
+            "validation_registry": registry_document,
+        }
+        input_bundle_sha256 = hashlib.sha256(
+            json.dumps(
+                bound_inputs,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+                allow_nan=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        input_root = output / "inputs" / input_bundle_sha256[:24]
+        for name, document in bound_inputs.items():
+            _publish_immutable_json(document, input_root, name)
+        target, published = publish_acceptance_certificate(certificate, output)
+    except (
+        AcceptanceCertificateError,
+        RepairRetryError,
+        ValidationRegistryError,
+        json.JSONDecodeError,
+        KeyError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        reason = (
+            exc.reason_code
+            if isinstance(exc, AcceptanceCertificateError)
+            else exc.reason if hasattr(exc, "reason") else str(exc)
+        )
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_acceptance_certified",
+                entity_ids=(certificate["certificate_id"], certificate["scene_id"]),
+                evidence_paths=(str(target),),
+                data={
+                    "certificate_sha256": certificate["certificate_sha256"],
+                    "authority": certificate["authority"],
+                    "train_eligible": certificate["train_eligible"],
+                    "input_bundle_sha256": input_bundle_sha256,
+                    "replay": replay,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+def _strict_file_manifest(paths: Mapping[str, Path]) -> list[dict[str, Any]]:
+    records = []
+    for role, path in paths.items():
+        candidate = Path(path)
+        if not candidate.exists():
+            raise ValueError(f"strict validator file missing: {role}")
+        if candidate.is_file():
+            payload = candidate.read_bytes()
+            digest = hashlib.sha256(payload).hexdigest()
+            byte_count = len(payload)
+            kind = "file"
+        elif candidate.is_dir():
+            children = []
+            byte_count = 0
+            for child in sorted(candidate.rglob("*")):
+                if child.is_file():
+                    payload = child.read_bytes()
+                    byte_count += len(payload)
+                    children.append(
+                        {
+                            "path": child.relative_to(candidate).as_posix(),
+                            "sha256": hashlib.sha256(payload).hexdigest(),
+                            "bytes": len(payload),
+                        }
+                    )
+            if not children:
+                raise ValueError(f"strict validator directory empty: {role}")
+            digest = hashlib.sha256(
+                json.dumps(children, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            kind = "directory_tree"
+        else:
+            raise ValueError(f"strict validator path invalid: {role}")
+        records.append(
+            {
+                "role": role,
+                "kind": kind,
+                "sha256": digest,
+                "bytes": byte_count,
+            }
+        )
+    return records
+
+
+def _load_string_mapping(path: Path, label: str) -> dict[str, str]:
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, dict) or not all(
+        isinstance(key, str) and isinstance(value, str) for key, value in document.items()
+    ):
+        raise ValueError(f"{label} must be a JSON string-to-string object")
+    return document
+
+
+def _publish_immutable_json(
+    document: dict[str, object], output: Path, name: str
+) -> tuple[Path, bool]:
+    output.mkdir(parents=True, exist_ok=True)
+    target = output / f"{name}.json"
+    payload = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    if target.exists():
+        if target.read_text(encoding="utf-8") != payload:
+            raise ValueError(f"immutable publication conflict: {target}")
+        return target, False
+    target.write_text(payload, encoding="utf-8", newline="\n")
+    return target, True
+
+
+@daz_assets.command("acquisition-index")
+@click.option(
+    "--source",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path(r"F:\DAZ\05_registry\manifests\assets"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\live\autonomous_acquisition.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--inventory-state",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option("--max-manifests", type=click.IntRange(min=1), default=25, show_default=True)
+@click.option("--reset", is_flag=True, help="Start a new resumable index for the live source set.")
+@click.option(
+    "--revision-archive",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\01_source_records\install_manifests\autonomous"),
+    show_default=True,
+)
+def daz_assets_acquisition_index(
+    source: Path,
+    output: Path,
+    inventory_state: Path,
+    max_manifests: int,
+    reset: bool,
+    revision_archive: Path,
+) -> None:
+    """Index autonomous-downloader manifests as a source independent of DIM."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        AcquisitionManifestError,
+        inventory_state_summary,
+        reconcile_acquisition_with_inventory,
+        resume_acquisition_manifest_index,
+    )
+
+    try:
+        progress = resume_acquisition_manifest_index(
+            source,
+            output,
+            max_manifests=max_manifests,
+            reset=reset,
+            revision_archive_root=revision_archive,
+        )
+        inventory_summary = (
+            inventory_state_summary(inventory_state) if inventory_state.is_file() else None
+        )
+        if progress.complete and inventory_summary and inventory_summary["complete"]:
+            comparison = reconcile_acquisition_with_inventory(output, inventory_state)
+        else:
+            comparison = {
+                "authoritative": False,
+                "reason_code": "source_or_inventory_incomplete",
+                "acquisition_complete": progress.complete,
+                "inventory_complete": bool(inventory_summary and inventory_summary["complete"]),
+            }
+    except (AcquisitionManifestError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, AcquisitionManifestError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ACQUISITION_MANIFEST_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ACQUISITION_MANIFEST_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason=(
+                    "autonomous_acquisition_index_complete"
+                    if progress.complete
+                    else "autonomous_acquisition_index_partial"
+                ),
+                data={"progress": progress.as_dict(), "filesystem_comparison": comparison},
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_assets.command("cms-scan")
+@click.option("--root", "root_specs", multiple=True, help="Repeat ROOT_ID=PATH.")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Users\kevin\AppData\Roaming\DAZ 3D\cms\cmscfg.json"),
+    show_default=True,
+)
+@click.option(
+    "--psql",
+    "psql_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"C:\Program Files\DAZ 3D\PostgreSQL CMS\bin\psql.exe"),
+    show_default=True,
+)
+@click.option(
+    "--inventory-state",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path(r"F:\DAZ\05_registry\rebuild_evidence\filesystem_inventory.sqlite"),
+    show_default=True,
+)
+@click.option("--offline", is_flag=True, help="Force the declared filesystem-only fallback.")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path(r"F:\DAZ\05_registry\snapshots\cms"),
+    show_default=True,
+)
+def daz_assets_cms_scan(
+    root_specs: tuple[str, ...],
+    config_path: Path,
+    psql_path: Path,
+    inventory_state: Path,
+    offline: bool,
+    output: Path,
+) -> None:
+    """Query local CMS read-only and fall back explicitly to filesystem authority."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.assets import (
+        CmsObservationError,
+        build_offline_cms_fallback,
+        compare_cms_with_inventory,
+        publish_cms_snapshot,
+        query_cms_snapshot,
+    )
+
+    try:
+        roots = _daz_content_roots(root_specs)
+        online_failure = None
+        if offline:
+            snapshot = build_offline_cms_fallback(
+                registered_roots=roots,
+                inventory_state=inventory_state,
+                failure_reason_code="offline_forced",
+            )
+        else:
+            try:
+                snapshot = query_cms_snapshot(
+                    registered_roots=roots,
+                    config_path=config_path,
+                    psql_path=psql_path,
+                )
+            except CmsObservationError as exc:
+                online_failure = exc.reason_code
+                snapshot = build_offline_cms_fallback(
+                    registered_roots=roots,
+                    inventory_state=inventory_state,
+                    failure_reason_code=exc.reason_code,
+                )
+        comparison = (
+            compare_cms_with_inventory(snapshot, inventory_state)
+            if snapshot["cms_available"] and inventory_state.is_file()
+            else None
+        )
+        target, published = publish_cms_snapshot(snapshot, output)
+    except (CmsObservationError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, CmsObservationError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.CMS_OBSERVATION_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.CMS_OBSERVATION_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="cms_observation_complete",
+                entity_ids=(snapshot["snapshot_id"],),
+                data={
+                    "cms_available": snapshot["cms_available"],
+                    "online_failure": online_failure,
+                    "product_count": len(snapshot.get("products", [])),
+                    "content_count": len(snapshot.get("contents", [])),
+                    "filesystem_comparison": comparison,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz.group("mappings")
+def daz_mappings() -> None:
+    """Build immutable ontology and figure-mapping inputs."""
+
+
+@daz_mappings.command("ontology-snapshot")
+@click.option(
+    "--version",
+    type=click.Choice(["v1", "v2"]),
+    default="v1",
+    show_default=True,
+    help="v1 = active mapping authority; v2 = inactive approved-design draft only.",
+)
+@click.option(
+    "--source",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=None,
+    help="Defaults to configs/ontology.yaml (v1) or configs/ontology_v2.yaml (v2).",
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=None,
+    help="Defaults to F:\\DAZ\\...\\body_parts_v1|v2\\ontology_snapshots.",
+)
+def daz_mappings_ontology_snapshot(version: str, source: Path | None, output: Path | None) -> None:
+    """Freeze MaskFactory ontology IDs for DAZ mapping (v2 remains inactive)."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.mapping import (
+        OntologySnapshotError,
+        build_v1_ontology_snapshot,
+        build_v2_ontology_snapshot,
+        publish_ontology_snapshot,
+        publish_v2_ontology_snapshot,
+    )
+
+    if source is None:
+        source = (
+            Path("configs/ontology.yaml") if version == "v1" else Path("configs/ontology_v2.yaml")
+        )
+    if output is None:
+        output = Path(rf"F:\DAZ\07_mappings\genesis9\body_parts_{version}\ontology_snapshots")
+    try:
+        if version == "v1":
+            snapshot = build_v1_ontology_snapshot(source)
+            target, published = publish_ontology_snapshot(snapshot, output)
+            reason = "daz_ontology_snapshot_complete"
+        else:
+            snapshot = build_v2_ontology_snapshot(source)
+            target, published = publish_v2_ontology_snapshot(snapshot, output)
+            reason = "daz_ontology_v2_inactive_snapshot_complete"
+    except (OntologySnapshotError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, OntologySnapshotError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.ONTOLOGY_SNAPSHOT_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.ONTOLOGY_SNAPSHOT_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason=reason,
+                entity_ids=(snapshot["snapshot_id"],),
+                data={
+                    "snapshot": snapshot,
+                    "publication": {"path": str(target), "published": published},
+                    "mapping_authority": snapshot.get("mapping_authority", True),
+                    "activation_status": snapshot.get(
+                        "activation_status", "active_v1_mapping_input"
+                    ),
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_control.command("status")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_control_status(config_root: Path) -> None:
+    from .daz import load_control_configuration, read_control_state, result_envelope
+
+    try:
+        configuration = load_control_configuration(config_root)
+        state = read_control_state(configuration)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(result_envelope(reason="control_status", data=state), sort_keys=True))
+
+
+def _change_daz_control(config_root: Path, action: str, reason: str, apply_changes: bool) -> None:
+    from .daz import load_control_configuration, set_control_state
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = set_control_state(
+            configuration,
+            action,
+            reason=reason,
+            apply=apply_changes,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+def _daz_control_options(function):
+    function = click.option("--apply", "apply_changes", is_flag=True)(function)
+    function = click.option("--reason", required=True)(function)
+    function = click.option(
+        "--config-root",
+        type=click.Path(path_type=Path, file_okay=False, exists=True),
+        default=Path("configs/daz"),
+        show_default=True,
+    )(function)
+    return function
+
+
+@daz_control.command("enable")
+@_daz_control_options
+def daz_control_enable(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or enable leasing; storage gates can still refuse it."""
+    _change_daz_control(config_root, "enable", reason, apply_changes)
+
+
+@daz_control.command("disable")
+@_daz_control_options
+def daz_control_disable(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or disable new leasing and drain outstanding work."""
+    _change_daz_control(config_root, "disable", reason, apply_changes)
+
+
+@daz_control.command("stop")
+@_daz_control_options
+def daz_control_stop(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Plan or request a controlled stop without killing a process tree."""
+    _change_daz_control(config_root, "stop", reason, apply_changes)
+
+
+@daz_worker_control.command("status")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_worker_status(config_root: Path) -> None:
+    """Report queue depth, active leases, control state, and drained status."""
+    from .daz import load_control_configuration, scheduler_status
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = scheduler_status(configuration)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+def _daz_worker_control_command(action: str, config_root: Path, reason: str, apply: bool) -> None:
+    _change_daz_control(config_root, action, reason, apply)
+
+
+@daz_worker_control.command("pause")
+@_daz_control_options
+def daz_worker_pause(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Stop new leases while allowing an active job to reach its boundary."""
+    _daz_worker_control_command("pause", config_root, reason, apply_changes)
+
+
+@daz_worker_control.command("resume")
+@_daz_control_options
+def daz_worker_resume(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Resume new leases only from an enabled paused/draining state."""
+    _daz_worker_control_command("resume", config_root, reason, apply_changes)
+
+
+@daz_worker_control.command("drain")
+@_daz_control_options
+def daz_worker_drain(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Stop new leases and report drained after every active lease finishes."""
+    _daz_worker_control_command("drain", config_root, reason, apply_changes)
+
+
+@daz_retention.command("plan")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/retention.yaml"),
+    show_default=True,
+)
+@click.option("--observed-free-bytes", type=click.IntRange(min=0))
+@click.option("--target-free-gib", type=click.FloatRange(min=0), default=150.0, show_default=True)
+@click.option("--as-of", help="Timezone-aware ISO-8601 planning timestamp.")
+@click.option("--persist", is_flag=True, help="Persist the immutable plan; never deletes files.")
+def daz_retention_plan(
+    config_root: Path,
+    policy: Path,
+    observed_free_bytes: int | None,
+    target_free_gib: float,
+    as_of: str | None,
+    persist: bool,
+) -> None:
+    """Build a deterministic exact-file retention plan without deleting anything."""
+    import shutil
+    from datetime import UTC, datetime
+
+    from .daz import build_retention_plan, load_control_configuration, load_retention_policy
+
+    try:
+        configuration = load_control_configuration(config_root)
+        retention_policy = load_retention_policy(policy)
+        free_bytes = (
+            int(observed_free_bytes)
+            if observed_free_bytes is not None
+            else int(shutil.disk_usage(configuration.paths.root).free)
+        )
+        captured = (
+            datetime.fromisoformat(as_of.replace("Z", "+00:00"))
+            if as_of is not None
+            else datetime.now(UTC)
+        )
+        document = build_retention_plan(
+            configuration,
+            retention_policy,
+            observed_free_bytes=free_bytes,
+            target_free_bytes=int(target_free_gib * 1024**3),
+            as_of=captured,
+            persist=persist,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(document, sort_keys=True))
+
+
+@daz_retention.command("apply")
+@click.option("--plan", "plan_id", required=True)
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--dry-run/--apply",
+    "dry_run",
+    default=True,
+    show_default=True,
+    help="Dry-run is the default; --apply performs exact verified file deletion.",
+)
+def daz_retention_apply(plan_id: str, config_root: Path, dry_run: bool) -> None:
+    """Reverify a persisted plan and optionally delete only its exact files."""
+    from .daz import apply_retention_plan, load_control_configuration
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = apply_retention_plan(configuration, plan_id=plan_id, dry_run=dry_run)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_monitor.command("snapshot")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/alerts.yaml"),
+    show_default=True,
+)
+@click.option("--f-free-bytes", type=click.IntRange(min=0), required=True)
+@click.option("--c-free-bytes", type=click.IntRange(min=0), required=True)
+def daz_monitor_snapshot(
+    config_root: Path,
+    policy: Path,
+    f_free_bytes: int,
+    c_free_bytes: int,
+) -> None:
+    """Read current governed state and emit a local alert/dashboard/daily bundle."""
+    from .daz import (
+        build_daily_report,
+        build_dashboard,
+        collect_monitoring_snapshot,
+        evaluate_alerts,
+        load_alert_policy,
+        load_control_configuration,
+        result_envelope,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        snapshot = collect_monitoring_snapshot(
+            configuration,
+            observed_f_free_bytes=f_free_bytes,
+            observed_c_free_bytes=c_free_bytes,
+        )
+        evaluation = evaluate_alerts(load_alert_policy(policy), snapshot)
+        report = result_envelope(
+            reason="daz_monitoring_snapshot",
+            evidence_paths=(str(configuration.paths.state_database), str(policy)),
+            data={
+                "snapshot": snapshot,
+                "alerts": evaluation,
+                "dashboard": build_dashboard(snapshot, evaluation),
+                "daily_report": build_daily_report(snapshot, evaluation),
+            },
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("create")
+@click.option("--tier", type=click.Choice(["A"]), default="A", show_default=True)
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+@click.option("--source-root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--destination-root", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option("--backup-id", required=True)
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional published passing recovery matrix to bind into the backup seal.",
+)
+@click.option("--apply", "apply_changes", is_flag=True, help="Create the sealed backup bundle.")
+def daz_backup_create(
+    tier: str,
+    config_root: Path,
+    policy: Path,
+    source_root: Path | None,
+    destination_root: Path,
+    backup_id: str,
+    recovery_matrix: Path | None,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply creates one exact Tier-A backup."""
+    from .daz import (
+        create_tier_a_backup,
+        load_control_configuration,
+        load_recovery_matrix,
+        load_tier_a_backup_policy,
+        plan_tier_a_backup,
+        result_envelope,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        backup_policy = load_tier_a_backup_policy(policy)
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        matrix_sha256 = str(matrix["matrix_sha256"]) if matrix is not None else None
+        source = source_root or configuration.paths.root
+        document = (
+            create_tier_a_backup(
+                source,
+                destination_root,
+                backup_policy,
+                backup_id=backup_id,
+                recovery_matrix_sha256=matrix_sha256,
+            )
+            if apply_changes
+            else plan_tier_a_backup(
+                source,
+                destination_root,
+                backup_policy,
+                backup_id=backup_id,
+                recovery_matrix_sha256=matrix_sha256,
+            )
+        )
+        report = result_envelope(
+            reason="tier_a_backup_created" if apply_changes else "tier_a_backup_plan",
+            entity_ids=(backup_id,),
+            evidence_paths=(str(policy), str(destination_root)),
+            data={"tier": tier, "apply": apply_changes, "backup": document},
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("verify")
+@click.argument("backup_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Require the backup to bind this exact passing matrix.",
+)
+def daz_backup_verify(backup_root: Path, policy: Path, recovery_matrix: Path | None) -> None:
+    """Verify the manifest seal, exact file set, hashes, and queue integrity."""
+    from .daz import (
+        load_recovery_matrix,
+        load_tier_a_backup_policy,
+        result_envelope,
+        verify_tier_a_backup,
+    )
+
+    try:
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        verification = verify_tier_a_backup(
+            backup_root,
+            load_tier_a_backup_policy(policy),
+            expected_recovery_matrix_sha256=(
+                str(matrix["matrix_sha256"]) if matrix is not None else None
+            ),
+        )
+        report = result_envelope(
+            reason="tier_a_backup_verified",
+            entity_ids=(str(verification["backup_id"]),),
+            evidence_paths=(str(backup_root), str(policy)),
+            data=verification,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_backup.command("restore-test")
+@click.argument("backup_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--target", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/backup.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Require the backup to bind this exact passing matrix.",
+)
+@click.option("--apply", "apply_changes", is_flag=True, help="Restore into the empty target root.")
+def daz_backup_restore_test(
+    backup_root: Path,
+    target: Path,
+    policy: Path,
+    recovery_matrix: Path | None,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply copies and verifies the isolated restore."""
+    from .daz import (
+        load_recovery_matrix,
+        load_tier_a_backup_policy,
+        plan_tier_a_restore_test,
+        restore_tier_a_test,
+        result_envelope,
+    )
+
+    try:
+        backup_policy = load_tier_a_backup_policy(policy)
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        expected_matrix = str(matrix["matrix_sha256"]) if matrix is not None else None
+        document = (
+            restore_tier_a_test(
+                backup_root,
+                target,
+                backup_policy,
+                expected_recovery_matrix_sha256=expected_matrix,
+            )
+            if apply_changes
+            else plan_tier_a_restore_test(
+                backup_root,
+                target,
+                backup_policy,
+                expected_recovery_matrix_sha256=expected_matrix,
+            )
+        )
+        report = result_envelope(
+            reason="tier_a_restore_test_passed" if apply_changes else "tier_a_restore_test_plan",
+            entity_ids=(str(document["backup_id"]),),
+            evidence_paths=(str(backup_root), str(target), str(policy)),
+            data={"apply": apply_changes, "restore": document},
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_recovery.command("matrix")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/recovery.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--records",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional governed JSON record array; default reads current DAZ state read-only.",
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--apply", "apply_changes", is_flag=True, help="Publish the immutable matrix.")
+def daz_recovery_matrix(
+    config_root: Path,
+    policy: Path,
+    records: Path | None,
+    output: Path | None,
+    apply_changes: bool,
+) -> None:
+    """Evaluate the full recovery matrix; publication is explicit and immutable."""
+    from .daz import (
+        build_recovery_records_from_state,
+        evaluate_recovery_matrix,
+        load_control_configuration,
+        load_recovery_policy,
+        publish_recovery_matrix,
+        result_envelope,
+    )
+
+    try:
+        recovery_policy = load_recovery_policy(policy)
+        if records is None:
+            configuration = load_control_configuration(config_root)
+            record_rows = build_recovery_records_from_state(configuration)
+            evidence_paths = [str(configuration.paths.state_database), str(policy)]
+        else:
+            loaded = json.loads(records.read_text(encoding="utf-8"))
+            record_rows = loaded.get("records") if isinstance(loaded, dict) else loaded
+            if not isinstance(record_rows, list):
+                raise ValueError("recovery records must be a JSON array or object with records")
+            evidence_paths = [str(records), str(policy)]
+        matrix = evaluate_recovery_matrix(recovery_policy, record_rows)
+        if apply_changes and output is None:
+            raise ValueError("--output is required with --apply")
+        publication = (
+            publish_recovery_matrix(matrix, output)
+            if apply_changes and output is not None
+            else {"published": False, "path": str(output) if output is not None else None}
+        )
+        if output is not None:
+            evidence_paths.append(str(output))
+        report = result_envelope(
+            code=0 if matrix["recoverable"] else 77,
+            reason="recovery_matrix_passed" if matrix["recoverable"] else "recovery_matrix_blocked",
+            entity_ids=(str(matrix["matrix_sha256"]),),
+            evidence_paths=tuple(evidence_paths),
+            data={"apply": apply_changes, "matrix": matrix, "publication": publication},
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+    if not matrix["recoverable"]:
+        raise click.exceptions.Exit(77)
+
+
+@daz_recovery.command("reconstruct-history")
+@click.option(
+    "--source-database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--path-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--target-database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    required=True,
+)
+@click.option("--manifest-output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--registry-view-output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--manifest-set-id", required=True)
+@click.option("--captured-at", required=True, help="Timezone-aware ISO-8601 evidence time.")
+@click.option(
+    "--apply",
+    "apply_changes",
+    is_flag=True,
+    help="Build a new database and publish the sealed evidence; default is read-only.",
+)
+def daz_recovery_reconstruct_history(
+    source_database: Path,
+    path_registry: Path,
+    target_database: Path,
+    manifest_output: Path | None,
+    registry_view_output: Path | None,
+    manifest_set_id: str,
+    captured_at: str,
+    apply_changes: bool,
+) -> None:
+    """Rebuild queue/package history into a clean database from sealed inputs."""
+    from datetime import datetime
+
+    from .daz import (
+        build_reconstruction_manifest_set,
+        plan_history_reconstruction,
+        publish_reconstruction_manifest_set,
+        reconstruct_history_to_clean_database,
+        result_envelope,
+    )
+
+    try:
+        captured = datetime.fromisoformat(captured_at.replace("Z", "+00:00"))
+        manifest = build_reconstruction_manifest_set(
+            source_database,
+            path_registry,
+            manifest_set_id=manifest_set_id,
+            captured_at=captured,
+        )
+        if apply_changes:
+            if manifest_output is None or registry_view_output is None:
+                raise ValueError(
+                    "--manifest-output and --registry-view-output are required with --apply"
+                )
+            reconstruction = reconstruct_history_to_clean_database(
+                source_database,
+                path_registry,
+                target_database,
+                manifest,
+                registry_view_path=registry_view_output,
+            )
+            publication = publish_reconstruction_manifest_set(manifest, manifest_output)
+            reason = "daz_history_reconstruction_passed"
+        else:
+            reconstruction = plan_history_reconstruction(
+                source_database, path_registry, target_database, manifest
+            )
+            publication = {
+                "published": False,
+                "path": str(manifest_output) if manifest_output is not None else None,
+            }
+            reason = "daz_history_reconstruction_plan"
+        report = result_envelope(
+            reason=reason,
+            entity_ids=(manifest_set_id, str(manifest["manifest_set_sha256"])),
+            evidence_paths=(str(source_database), str(path_registry)),
+            data={
+                "apply": apply_changes,
+                "manifest_set": manifest,
+                "publication": publication,
+                "reconstruction": reconstruction,
+            },
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_failure_campaign.command("run")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/failure_campaign.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--runtime-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/runtime.yaml"),
+    show_default=True,
+)
+@click.option("--workspace", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option("--campaign-id", required=True)
+@click.option(
+    "--apply",
+    "apply_changes",
+    is_flag=True,
+    help="Create and exercise a new disposable fixture workspace.",
+)
+def daz_failure_campaign_run(
+    config_root: Path,
+    policy: Path,
+    runtime_policy: Path,
+    workspace: Path,
+    campaign_id: str,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply runs no DAZ, WSL, GPU, or live-root mutation."""
+    from .daz import (
+        load_control_configuration,
+        load_daz_runtime_profile,
+        load_failure_campaign_policy,
+        plan_failure_campaign,
+        result_envelope,
+        run_failure_campaign,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        campaign_policy = load_failure_campaign_policy(policy)
+        document = (
+            run_failure_campaign(
+                campaign_policy,
+                workspace,
+                live_root=configuration.paths.root,
+                campaign_id=campaign_id,
+                runtime_profile=load_daz_runtime_profile(runtime_policy),
+            )
+            if apply_changes
+            else plan_failure_campaign(
+                campaign_policy,
+                workspace,
+                live_root=configuration.paths.root,
+                campaign_id=campaign_id,
+            )
+        )
+        passed = bool(document.get("passed", True))
+        report = result_envelope(
+            code=0 if passed else 78,
+            reason=(
+                "daz_failure_campaign_passed"
+                if apply_changes and passed
+                else "daz_failure_campaign_failed" if apply_changes else "daz_failure_campaign_plan"
+            ),
+            entity_ids=(campaign_id,),
+            evidence_paths=(str(policy), str(workspace)),
+            data={"apply": apply_changes, "campaign": document},
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+    if apply_changes and not passed:
+        raise click.exceptions.Exit(78)
+
+
+@golden_reference.command("import")
+@click.argument("source_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option(
+    "--mapping",
+    "mapping_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--output", "output_root", type=click.Path(path_type=Path, file_okay=False), required=True
+)
+def golden_reference_import(source_root: Path, mapping_path: Path, output_root: Path) -> None:
+    """Losslessly normalize strict BW masks and produce an authority audit."""
+    from .golden_reference import GoldenReferenceError, import_golden_reference
+
+    try:
+        manifest = import_golden_reference(source_root, output_root, mapping_path=mapping_path)
+    except (GoldenReferenceError, OSError, ValueError, yaml.YAMLError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "authority": manifest["authority"],
+                "blocker_count": len(manifest["blockers"]),
+                "collection_id": manifest["collection_id"],
+                "eligible_for_package_gold": manifest["eligible_for_package_gold"],
+                "layer_count": manifest["layer_count"],
+                "missing_part_count": len(manifest["missing_part_targets"]),
+                "overlap_count": len(manifest["part_candidate_overlaps"]),
+                "output": str(output_root),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@golden_reference.command("verify")
+@click.argument("output_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+def golden_reference_verify(output_root: Path) -> None:
+    """Verify all normalized reference hashes and strict binary-mask invariants."""
+    from .golden_reference import GoldenReferenceError, verify_golden_reference
+
+    try:
+        issues = verify_golden_reference(output_root)
+    except (GoldenReferenceError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({"issues": issues, "passed": not issues}, sort_keys=True))
+    if issues:
+        raise click.ClickException("golden reference verification failed")
+
+
+@golden_reference.command("cloud-benchmark")
+@click.argument("reference_root", type=click.Path(path_type=Path, file_okay=False, exists=True))
+@click.option("--label", "labels", multiple=True, required=True)
+@click.option(
+    "--provider",
+    "provider_names",
+    multiple=True,
+    type=click.Choice(["gemini", "openai", "anthropic"]),
+    help="Restrict a diagnostic run to named providers; default is all three.",
+)
+@click.option(
+    "--cloud-config",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cloud_teacher.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output", "output_root", type=click.Path(path_type=Path, file_okay=False), required=True
+)
+def golden_reference_cloud_benchmark(
+    reference_root: Path,
+    labels: tuple[str, ...],
+    provider_names: tuple[str, ...],
+    cloud_config: Path,
+    output_root: Path,
+) -> None:
+    """Run explicitly authorized shadow teacher calls on selected reference labels."""
+    from .golden_reference import GoldenReferenceError, run_reference_cloud_benchmark
+    from .vlm.cloud_budget import CloudBudgetError
+    from .vlm.cloud_teacher import CloudTeacherError
+
+    try:
+        summary = run_reference_cloud_benchmark(
+            reference_root,
+            labels=labels,
+            cloud_config_path=cloud_config,
+            output_root=output_root,
+            provider_names=provider_names or ("gemini", "openai", "anthropic"),
+        )
+    except (GoldenReferenceError, CloudBudgetError, CloudTeacherError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "budget": summary["budget"],
+                "completed": sum(
+                    result["status"] == "complete" for result in summary["provider_results"]
+                ),
+                "failed": sum(
+                    result["status"] != "complete" for result in summary["provider_results"]
+                ),
+                "output": str(output_root),
+                "result_count": len(summary["provider_results"]),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@main.group()
+def cvat() -> None:
+    """CVAT bridge (push drafts / pull corrections)."""
+
+
+@cvat.command("init-project")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cvat.yaml"),
+    show_default=True,
+)
+def cvat_init_project(config_path: Path) -> None:
+    """Create or validate the canonical ontology-backed CVAT project."""
+    from .cvat_bridge.client import CvatApiError, CvatClient
+    from .cvat_bridge.project import init_project
+
+    try:
+        result = init_project(CvatClient.from_config(config_path), config_path=config_path)
+    except (CvatApiError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "project_id": result["project_id"],
+                "created": result["created"],
+                "mapping": str(result["mapping"]),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+@cvat.command("push")
+@click.argument("image_ids", nargs=-1, required=True)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cvat.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--task-records",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/cvat/tasks"),
+    show_default=True,
+)
+def cvat_push(
+    image_ids: tuple[str, ...], config_path: Path, packages_root: Path, task_records: Path
+) -> None:
+    """Push draft tasks into CVAT."""
+    from .cvat_bridge.client import CvatApiError, CvatClient
+    from .cvat_bridge.push import push_images
+
+    try:
+        task_ids = push_images(
+            CvatClient.from_config(config_path),
+            image_ids,
+            config_path=config_path,
+            packages_root=packages_root,
+            task_records=task_records,
+        )
+    except (CvatApiError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({"task_ids": task_ids}, sort_keys=True))
+
+
+@cvat.command("publish-review-draft")
+@click.option("--task-id", type=click.IntRange(min=1), required=True)
+@click.option(
+    "--review-draft",
+    "review_draft_dir",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--audit-dir",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/cvat/autonomy_publications"),
+    show_default=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cvat.yaml"),
+    show_default=True,
+)
+def cvat_publish_review_draft(
+    task_id: int, review_draft_dir: Path, audit_dir: Path, config_path: Path
+) -> None:
+    """Publish a reversible non-gold machine repair into an untouched CVAT draft."""
+    from .cvat_bridge.autonomy_publish import publish_autonomous_review_draft
+    from .cvat_bridge.client import CvatApiError, CvatClient
+
+    try:
+        result = publish_autonomous_review_draft(
+            CvatClient.from_config(config_path),
+            task_id=task_id,
+            review_draft_dir=review_draft_dir,
+            audit_dir=audit_dir,
+            config_path=config_path,
+        )
+    except (CvatApiError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(result, sort_keys=True))
+
+
+@cvat.command("pull")
+@click.argument("image_ids", nargs=-1, required=True)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/cvat.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--task-records",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/cvat/tasks"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def cvat_pull(
+    image_ids: tuple[str, ...], config_path: Path, task_records: Path, database: Path
+) -> None:
+    """Pull human-corrected annotations from CVAT."""
+    from .cvat_bridge.client import CvatApiError, CvatClient
+    from .cvat_bridge.pull import pull_images
+
+    try:
+        task_ids = pull_images(
+            CvatClient.from_config(config_path),
+            image_ids,
+            config_path=config_path,
+            task_records=task_records,
+            database=database,
+        )
+    except (CvatApiError, OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps({"task_ids": task_ids}, sort_keys=True))
+
+
+@main.command()
+@click.argument("image_id", required=True)
+@click.option("--reviewer", required=True)
+@click.option("--minutes", type=click.FloatRange(min=0), required=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def package(
+    image_id: str,
+    reviewer: str,
+    minutes: float,
+    packages_root: Path,
+    database: Path,
+) -> None:
+    """S13: package + freeze an approved gold image (re-runs QA)."""
+    from .packager import (
+        ApprovalRequiredError,
+        PackageBlockedError,
+        approve_package,
+        approve_packages_atomically,
+    )
+
+    image_root = packages_root / image_id
+    instances = sorted(
+        (path for path in (image_root / "instances").glob("p*") if path.name[1:].isdigit()),
+        key=lambda path: int(path.name[1:]),
+    )
+    if not instances and (image_root / "manifest.json").is_file():
+        instances = [image_root]
+    if not instances:
+        raise click.ClickException(f"no package instances found for {image_id}")
+    try:
+        for instance in instances:
+            try:
+                approve_package(
+                    instance,
+                    reviewer=reviewer,
+                    review_minutes=minutes,
+                    approved=False,
+                    dvc_add=lambda _path: None,
+                )
+            except ApprovalRequiredError:
+                pass
+        if not click.confirm(
+            f"Approve {len(instances)} instance package(s) as gold?", default=False
+        ):
+            raise click.ClickException("approval cancelled")
+        approve_packages_atomically(
+            tuple(instances),
+            reviewer=reviewer,
+            review_minutes=minutes,
+            approved=True,
+        )
+        from .state import persist_image_progress
+
+        persist_image_progress(database, image_id, "approved_gold")
+    except PackageBlockedError as exc:
+        for result in exc.results:
+            if not result.passed:
+                click.echo(f"{result.qc_id}: {result.detail}", err=True)
+        for panel in exc.panels:
+            click.echo(f"panel: {panel}", err=True)
+        raise click.ClickException(str(exc)) from exc
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"approved and frozen: {image_id}")
+
+
+@main.command("autonomous-certify-package")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option(
+    "--certificate",
+    "certificate_paths",
+    multiple=True,
+    required=True,
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
+@click.option("--context", required=True)
+@click.option("--pipeline-fingerprint", required=True)
+@click.option(
+    "--evidence", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option("--training-loss-weight", type=click.FloatRange(min=0.5, max=0.75), default=0.65)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def autonomous_certify_package_command(
+    image_id: str,
+    instance: str,
+    certificate_paths: tuple[Path, ...],
+    context: str,
+    pipeline_fingerprint: str,
+    evidence: Path,
+    training_loss_weight: float,
+    packages_root: Path,
+    database: Path,
+) -> None:
+    """S13 autonomous path: hard-QA and freeze certificate-covered machine truth."""
+    from .packager import PackageBlockedError, certify_autonomous_package
+    from .state import persist_image_progress, upsert_package_truth
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    try:
+        certificates = tuple(
+            json.loads(path.read_text(encoding="utf-8")) for path in certificate_paths
+        )
+        certify_autonomous_package(
+            package_root,
+            certificates=certificates,
+            context=context,
+            pipeline_fingerprint=pipeline_fingerprint,
+            evidence_path=evidence,
+            training_loss_weight=training_loss_weight,
+        )
+        persist_image_progress(database, image_id, "approved_gold")
+        bindings = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))[
+            "certification"
+        ]["certificates"]
+        upsert_package_truth(
+            database,
+            image_id=image_id,
+            package_path=package_root.relative_to(packages_root).as_posix(),
+            truth_tier="autonomous_certified_gold",
+            truth_partition="train",
+            training_loss_weight=training_loss_weight,
+            certificate_bundle_sha256=hashlib.sha256(
+                json.dumps(bindings, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest(),
+        )
+    except PackageBlockedError as exc:
+        raise click.ClickException(str(exc)) from exc
+    except (OSError, RuntimeError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"autonomous certified and frozen: {image_id}/{instance}")
+
+
+@main.group()
+def correction() -> None:
+    """Create, refresh, and atomically promote post-gold mask versions."""
+
+
+def _correction_package_root(packages_root: Path, image_id: str, instance: str) -> Path:
+    image_root = packages_root / image_id
+    package_root = image_root / "instances" / instance
+    if package_root.is_dir():
+        return package_root
+    if instance == "p0" and (image_root / "manifest.json").is_file():
+        return image_root
+    raise click.ClickException(f"package instance does not exist: {image_id}/{instance}")
+
+
+@correction.command("begin")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+def correction_begin(image_id: str, instance: str, packages_root: Path) -> None:
+    """Branch the current frozen maps into the next editable masks@vN workspace."""
+    from .versioning import VersioningError, begin_correction
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    try:
+        candidate = begin_correction(package_root)
+    except (OSError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(candidate)
+
+
+@correction.command("refresh")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option("--version", type=click.IntRange(min=2), required=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+def correction_refresh(image_id: str, instance: str, version: int, packages_root: Path) -> None:
+    """Regenerate candidate binary views after its authoritative maps are edited."""
+    from .versioning import VersioningError, refresh_correction_branch
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    try:
+        candidate = refresh_correction_branch(package_root, version)
+    except (OSError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(candidate)
+
+
+@correction.command("promote")
+@click.argument("image_id")
+@click.option("--instance", default="p0", show_default=True)
+@click.option("--version", type=click.IntRange(min=2), required=True)
+@click.option("--reviewer", required=True)
+@click.option("--minutes", type=click.FloatRange(min=0), required=True)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def correction_promote(
+    image_id: str,
+    instance: str,
+    version: int,
+    reviewer: str,
+    minutes: float,
+    packages_root: Path,
+    database: Path,
+) -> None:
+    """QA, approve, DVC-add, and activate one corrected package version."""
+    from .dvc_runtime import DvcRuntimeError, run_dvc
+    from .versioning import VersioningError, promote_correction
+
+    package_root = _correction_package_root(packages_root, image_id, instance)
+    image_root = packages_root / image_id
+    if not click.confirm(
+        f"Promote {image_id}/{instance} masks@v{version} as corrected gold?", default=False
+    ):
+        raise click.ClickException("correction promotion cancelled")
+
+    def dvc_add(_package: Path) -> None:
+        result = run_dvc(("add", str(image_root.resolve())), timeout=300)
+        if result.returncode:
+            raise RuntimeError(f"dvc add failed: {result.stderr.strip()}")
+
+    try:
+        promote_correction(
+            package_root,
+            version,
+            human_approved=True,
+            reviewer=reviewer,
+            review_minutes=minutes,
+            database=database,
+            dvc_add=dvc_add,
+        )
+    except (DvcRuntimeError, OSError, RuntimeError, ValueError, VersioningError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"promoted corrected gold: {image_id}/{instance} masks@v{version}")
+
+
+@main.command("verify-package")
+@click.argument("image_id", required=False)
+@click.option(
+    "--root",
+    type=click.Path(path_type=Path, exists=True),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option("--sample", type=click.IntRange(min=1))
+def verify_package(image_id: str | None, root: Path, sample: int | None) -> None:
+    """Verify hashes and QCs selected by each package manifest ontology."""
+    from .packager import verify_packages
+
+    target = root / image_id if image_id else root
+    try:
+        verifications = verify_packages(target, sample=sample)
+    except (OSError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    failed = [verification for verification in verifications if not verification.passed]
+    for verification in verifications:
+        click.echo(f"{'PASS' if verification.passed else 'FAIL'} {verification.package_root}")
+        for result in verification.results:
+            if not result.passed:
+                click.echo(f"  {result.qc_id}: {result.detail}")
+    if failed:
+        raise click.ClickException(f"{len(failed)} package(s) failed verification")
+
+
+@main.group()
+def dataset() -> None:
+    """Dataset operations."""
+
+
+@dataset.command("build")
+@click.option("--name", default="bodyparts", show_default=True)
+@click.option(
+    "--ontology",
+    type=click.Choice(("body_parts_v1", "body_parts_v2"), case_sensitive=True),
+    default="body_parts_v1",
+    show_default=True,
+    help="Build exactly one governed ontology; v2 remains gated until activation.",
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--output-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("datasets"),
+    show_default=True,
+)
+@click.option("--publish/--no-publish", default=True, show_default=True)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--reference-database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path(r"C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite"),
+    show_default=True,
+)
+def dataset_build(
+    name: str,
+    ontology: str,
+    packages_root: Path,
+    output_root: Path,
+    publish: bool,
+    database: Path,
+    reference_database: Path,
+) -> None:
+    """S14: build the training dataset from gold packages."""
+    from .datasets.builder import (
+        approved_package_count,
+        build_dataset,
+        mark_dataset_exported,
+        plan_dataset_publication,
+    )
+    from .dvc_runtime import DvcRuntimeError, run_dvc
+
+    if name != "bodyparts" or ontology not in {"body_parts_v1", "body_parts_v2"}:
+        raise click.ClickException(
+            "S14 supports bodyparts with an explicit body_parts_v1 or body_parts_v2 ontology"
+        )
+    count = approved_package_count(packages_root, ontology_version=ontology)
+    if count < 200:
+        raise click.ClickException(
+            f"P5 entry gate requires >=200 approved gold instances; found {count}"
+        )
+    try:
+        existing_tags: tuple[str, ...] = ()
+        if publish:
+            import subprocess
+
+            listed = subprocess.run(
+                ["git", "tag", "--list", "dataset/bodyparts-v*"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            if listed.returncode:
+                raise RuntimeError(f"git tag preflight failed: {listed.stderr.strip()}")
+            existing_tags = tuple(
+                line.strip() for line in listed.stdout.splitlines() if line.strip()
+            )
+        plan = plan_dataset_publication(
+            output_root,
+            ontology_version=ontology,
+            existing_tags=existing_tags,
+        )
+        path = build_dataset(
+            packages_root=packages_root,
+            output_root=output_root,
+            version=plan.version,
+            reference_database=reference_database,
+            hard_case_file=output_root / "hard_case_holdout.txt",
+            ontology_version=ontology,
+        )
+        if publish:
+            add = run_dvc(("add", str(path.resolve())), timeout=1800)
+            if add.returncode:
+                raise RuntimeError(f"dvc add failed: {add.stderr.strip()}")
+            push = run_dvc(("push",), timeout=1800)
+            if push.returncode:
+                raise RuntimeError(f"dvc push failed: {push.stderr.strip()}")
+            tag = subprocess.run(
+                ["git", "tag", plan.git_tag],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            if tag.returncode:
+                raise RuntimeError(f"git tag failed: {tag.stderr.strip()}")
+            mark_dataset_exported(path, packages_root=packages_root, database=database)
+    except (DvcRuntimeError, OSError, RuntimeError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(path)
+
+
+@main.group()
+def coverage() -> None:
+    """Coverage-matrix operations."""
+
+
+@coverage.command("report")
+@click.option(
+    "--matrix",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/coverage_matrix.json"),
+    show_default=True,
+)
+@click.option("--target-per-cell", type=click.IntRange(min=1), default=5, show_default=True)
+def coverage_report(matrix: Path, target_per_cell: int) -> None:
+    """Report label x pose coverage (>=80% cells, D5)."""
+    from .datasets.coverage import coverage_deficit_report
+
+    try:
+        document = json.loads(matrix.read_text(encoding="utf-8"))
+        report = coverage_deficit_report(document, target_per_cell=target_per_cell)
+    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@coverage.command("v2-report")
+@click.option(
+    "--matrix",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/coverage_matrix_v2.json"),
+    show_default=True,
+)
+def coverage_v2_report(matrix: Path) -> None:
+    """Report inactive v2 per-class state/view/pose/occlusion deficits."""
+    from .datasets.coverage_v2 import (
+        OntologyV2OperationsError,
+        coverage_v2_deficit_report,
+    )
+
+    try:
+        document = json.loads(matrix.read_text(encoding="utf-8"))
+        report = coverage_v2_deficit_report(document)
+    except (OSError, OntologyV2OperationsError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@coverage.command("v2-acquisition")
+@click.option("--reason", required=True, help="Canonical ontology-v2 failure reason.")
+@click.option("--label", required=True, help="Canonical body_parts_v2 foreground label.")
+def coverage_v2_acquisition(reason: str, label: str) -> None:
+    """Resolve one v2 failure into its governed hard-case acquisition action."""
+    from .datasets.coverage_v2 import (
+        OntologyV2OperationsError,
+        acquisition_action_for_v2_failure,
+    )
+
+    try:
+        action = acquisition_action_for_v2_failure(reason, label=label)
+    except (OSError, OntologyV2OperationsError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(action, indent=2, sort_keys=True))
+
+
+@main.command()
+@click.argument("model", required=True)
+@click.option(
+    "--dataset", "dataset_root", type=click.Path(path_type=Path, file_okay=False), required=True
+)
+@click.option(
+    "--config", "config_path", type=click.Path(path_type=Path, dir_okay=False), required=True
+)
+@click.option("--dvc-md5", required=True, help="Exact DVC md5 for the immutable dataset version.")
+@click.option(
+    "--runs-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+)
+@click.option(
+    "--initialize-only",
+    is_flag=True,
+    help="Create the governed run tree without launching the gated trainer.",
+)
+def train(
+    model: str,
+    dataset_root: Path,
+    config_path: Path,
+    dvc_md5: str,
+    runs_root: Path,
+    initialize_only: bool,
+) -> None:
+    """Fine-tune a specialist model (doc 12 §6)."""
+    from .training.run import TrainingRunError, initialize_training_run
+
+    try:
+        if initialize_only:
+            path = initialize_training_run(
+                model=model,
+                dataset_root=dataset_root,
+                config_path=config_path,
+                dvc_md5=dvc_md5,
+                runs_root=runs_root,
+            )
+        else:
+            from .training.launch import launch_training
+
+            path = launch_training(
+                model=model,
+                dataset_root=dataset_root,
+                config_path=config_path,
+                dvc_md5=dvc_md5,
+                runs_root=runs_root,
+            )
+    except (FileExistsError, OSError, TrainingRunError, ValueError, RuntimeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(path)
+
+
+@main.command("training-doctor")
+@click.option(
+    "--lock",
+    "lock_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("env/openmmlab_training_stack.lock.json"),
+    show_default=True,
+)
+def training_doctor(lock_path: Path) -> None:
+    """Verify the exact MMSeg/MMCV/CUDA training runtime."""
+    from .training.runtime import TrainingRuntimeError, probe_openmmlab_runtime
+
+    try:
+        report = probe_openmmlab_runtime(lock_path)
+    except (OSError, ValueError, json.JSONDecodeError, TrainingRuntimeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(report.as_dict(), indent=2, sort_keys=True))
+    if not report.ready:
+        raise click.ClickException("OpenMMLab training runtime is not ready")
+
+
+@main.command()
+@click.option("--compare", nargs=2, metavar="RUN_A RUN_B")
+@click.option("--format", "output_format", type=click.Choice(["table", "json"]), default="table")
+@click.option(
+    "--path",
+    "leaderboard_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("runs/leaderboard.jsonl"),
+    show_default=True,
+)
+def leaderboard(
+    compare: tuple[str, str] | None, output_format: str, leaderboard_path: Path
+) -> None:
+    """Show the model leaderboard + champion (D6/G7)."""
+    from .training.leaderboard import compare_runs, format_comparison_table, load_leaderboard
+
+    try:
+        rows = load_leaderboard(leaderboard_path)
+        output: object = compare_runs(rows, *compare) if compare else rows
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    if compare and output_format == "table":
+        click.echo(format_comparison_table(output))
+    else:
+        click.echo(json.dumps(output, indent=2, sort_keys=True))
+
+
+@main.command()
+@click.option("--dry-run", is_flag=True, help="Report manifest/database drift without writing.")
+@click.option("--rebuild", is_flag=True, help="Explicitly rebuild (also the no-flag default).")
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+def reindex(dry_run: bool, rebuild: bool, packages_root: Path, database: Path) -> None:
+    """Diff or rebuild the SQLite image index from package manifests."""
+    from .reindex import ReindexError, reindex_packages
+    from .validation import ArtifactValidationError
+
+    if dry_run and rebuild:
+        raise click.UsageError("choose only one of --dry-run or --rebuild")
+    try:
+        difference = reindex_packages(
+            packages_root=packages_root,
+            database=database,
+            dry_run=dry_run,
+        )
+    except (ReindexError, ArtifactValidationError, OSError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(json.dumps(difference.as_dict(), indent=2, sort_keys=True))
+    if not dry_run:
+        click.echo("rebuild=complete")
+
+
+@main.group()
+def incident() -> None:
+    """Run non-destructive incident-response drills."""
+
+
+@incident.command("reindex-drill")
+@click.option(
+    "--database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("data/maskfactory.sqlite"),
+    show_default=True,
+)
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--output-dir",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/live_verification/ip3"),
+    show_default=True,
+)
+def incident_reindex_drill(database: Path, packages_root: Path, output_dir: Path) -> None:
+    """Exercise IP-3 by rebuilding an isolated copy of state.db."""
+    from .reindex import ReindexError, run_reindex_incident_drill
+
+    try:
+        report = run_reindex_incident_drill(
+            source_database=database, packages_root=packages_root, output_dir=output_dir
+        )
+    except (OSError, ReindexError, ValueError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(report)
+
+
+@main.command()
+@click.option("--apply", "apply_changes", is_flag=True, help="Apply the reviewed plan.")
+@click.option("--yes", is_flag=True, help="Confirm apply non-interactively.")
+@click.option(
+    "--packages-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("data/packages"),
+    show_default=True,
+)
+@click.option(
+    "--logs-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("logs"),
+    show_default=True,
+)
+def gc(apply_changes: bool, yes: bool, packages_root: Path, logs_root: Path) -> None:
+    """Garbage-collect deprecated package versions (runbook §6)."""
+    from datetime import UTC, datetime
+
+    from .gc import apply_gc_plan, build_gc_plan, write_gc_log
+
+    plan = build_gc_plan(packages_root)
+    click.echo(f"plan_hash={plan.plan_hash} candidates={len(plan.candidates)}")
+    for candidate in plan.candidates:
+        action = "REMOVE" if apply_changes else "WOULD REMOVE"
+        click.echo(f"{action} {Path(candidate.package_root) / candidate.relative_path}")
+    removed = ()
+    if apply_changes:
+        if not yes and not click.confirm("Apply this exact GC plan?", default=False):
+            raise click.Abort()
+        removed = apply_gc_plan(plan, packages_root=packages_root)
+    date = datetime.now(UTC).date().isoformat()
+    log = write_gc_log(logs_root / f"gc_{date}.log", plan, applied=apply_changes, removed=removed)
+    click.echo(f"log={log}")
 
 
 @main.group()

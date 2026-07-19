@@ -7574,3 +7574,16 @@ Missing decisions:                      no producer policy/evaluator/closed reas
 Prepared scope:                         `MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no intended-use authorization, cross-project agreement, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_use_eligibility_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:52 UTC - Closed bridge-error core matrix verified; full decision remains incomplete
+
+**Result:** MF-P6-09.06 receives 55% closed-matrix foundation credit and remains blocked behind
+MF-P6-09.01/09.02/09.04/09.05 plus its missing additive decision semantics.
+
+Verified foundation:                   frozen schema and policy match 37/37 codes; known codes fix category, retryability, impact scope, remediation action, replacement-route, delay and runbook rules; unknown codes fail schema enum and silent fallback is forbidden
+Focused validation:                    2 positive/error-policy tests pass; Ruff passes; governing hashes match the accepted 2026-07-18 audit
+Fail-closed probes:                     category, retryable, impact-scope and remediation-action contradictions fail `error_policy_matrix`; unknown code fails `enum`
+Confirmed gaps:                         all-empty affected scope validates; completion-profile impact, permitted lifecycle transition and code-bound no-fallback reason are absent; normalized domains and canonical self-hashed decision are not implemented
+Prepared scope:                         `MF-CURSOR-09.06-ADDITIVE-ERROR-DECISION`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no recovery/lifecycle/profile decision, runtime/worker action, frozen-v1 mutation, or item completion claim
+Evidence:                              `qa/live_verification/bridge_error_decision_gap_revalidation_20260719.json`

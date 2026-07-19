@@ -19193,19 +19193,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 55,
       "notes": [
         {
           "ts": "2026-07-18T23:58:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 static acceptance audit: frozen v1 schema and BRIDGE_ERROR_POLICY already match 37/37 codes and deterministically bind core retry/remediation fields, but code-consistent errors with empty affected scope validate and no completion-profile impact, lifecycle transition, closed no-fallback reason, normalized domain, self-hashed policy, or canonical decision exists. Prepared disjoint MF-CURSOR-09.06-ADDITIVE-ERROR-DECISION, held on MF-P6-09.01 through 09.05. Zero completion credit. See qa/live_verification/bridge_error_decision_gap_audit_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T02:52:04+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 revalidation: credited the exact 37/37 closed code set, deterministic category/retry/impact/remediation matrix, contradiction rejection and fail-closed unknown codes. Empty affected scope still validates and profile impact, lifecycle transition and code-bound no-fallback reason are absent. Focused tests 2 passed; Ruff clean. Prepared additive packet remains held and undispatched. See qa/live_verification/bridge_error_decision_gap_revalidation_20260719.json."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_error_decision_gap_revalidation_20260719.json",
+      "blocked_reason": "MF-P6-09.01, MF-P6-09.02, MF-P6-09.04 and MF-P6-09.05 remain incomplete; exact affected-scope derivation, completion-profile impact, permitted lifecycle transition, closed no-fallback reason and a canonical self-hashed decision remain unimplemented.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T23:58:06+00:00",
+      "updated_at": "2026-07-19T02:52:04+00:00",
       "orphaned": false
     },
     "MF-P6-09.07": {

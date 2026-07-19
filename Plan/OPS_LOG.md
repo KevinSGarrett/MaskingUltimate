@@ -7425,3 +7425,16 @@ Missing authority:                      no adopted release/catalog, source/mask 
 Prepared unit:                         `MF-CURSOR-11.02-MODE-A-IMMUTABLE-PACKAGE-READ`; five absent/clean additive paths held behind 08.05, 09.05, and 11.01
 Disposition:                            no package/runtime/worker/frozen bytes changed; raw manifest/status receives no production authority credit
 Evidence:                              `qa/live_verification/bridge_mode_a_package_read_gap_audit_20260719.json`
+
+## 2026-07-19 01:28 UTC - Mode B service foundations pass; contract-native exchange missing
+
+**Result:** MF-P6-11.03 receives 40% service/contract foundation credit and remains item-blocked. The
+live service is safe and draft-only, but the actual client/API exchange is not the frozen bridge.
+
+Verified foundation:                   6 focused runtime/contract tests and Ruff pass; exact localhost health is ok, 17 governed models are visible, GPU lease is held, and raw predict/refine stay machine-candidate/not-certified
+Live refusal:                           zero configured champions yields HTTP 503 `champion prediction provider is not configured`; no silent provider substitution occurs
+Exchange probe:                        a successful raw response has nine convenience fields but fails the acquisition-receipt schema; unsupported label, malformed image, and timeout become untyped ServingError/ComfyPackageError or generic HTTP detail
+Missing client/service contract:       no signed request admission/hash/idempotency/deadline, health/capability/refine adapter client, signed receipt/error, exact release/capability/revocation binding, or cross-boundary fault drills
+Prepared unit:                         `MF-CURSOR-11.03-MODE-B-CONTRACT-SERVICE`; five additive paths plus clean api.py held behind 09.06/11.01; Main client remains separately owned
+Disposition:                            live service not restarted; no champion prediction, worker dispatch, frozen mutation, or production Mode B claim
+Evidence:                              `qa/live_verification/bridge_mode_b_client_service_gap_audit_20260719.json`

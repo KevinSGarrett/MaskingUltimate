@@ -19470,13 +19470,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 40,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:30:01+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: 6 focused runtime/contract tests and Ruff pass; live zero-champion refusal is safe and raw outputs remain draft. Successful raw responses fail the frozen receipt schema, while unsupported/malformed/timeout cases are untyped exceptions or generic HTTP 503 detail. Evidence: qa/live_verification/bridge_mode_b_client_service_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-09.06 and MF-P6-11.01 are not accepted. The localhost service is healthy and draft-only, but no contract-native signed request/receipt/error exchange, external health/capability/refine client, bounded deadline/idempotency, or typed cross-boundary failure handling exists; zero champion roles also preclude champion-backed predict proof.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:30:01+00:00",
       "orphaned": false
     },
     "MF-P6-11.04": {

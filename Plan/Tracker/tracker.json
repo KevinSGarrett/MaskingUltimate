@@ -20497,12 +20497,17 @@
           "ts": "2026-07-19T20:59:59+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier STATIC_PASS (producer Mode B vertical-slice fixtures). Not RUNTIME_PASS_BOUNDED (live GPU champion/loopback predict absent). Not PRODUCTION_EVIDENCE_PASS. Percent held at pre-fixture_main 86%."
+        },
+        {
+          "ts": "2026-07-19T21:41:03+00:00",
+          "actor": "proof_tier_runtime_climb",
+          "text": "PROOF-TIER RUNTIME climb 2026-07-19: Started pinned Ubuntu maskfactory serve on 127.0.0.1:8765 (WSL client PID 13824 / Linux PID 467; serve_mode_b lock). Windows GET /health 200 status=ok; /models 200 with 17 governed records and 0 champions. Surface tier mode_b_windows_loopback_health_models=RUNTIME_PASS_BOUNDED. Predict typed 503 no champion. Refine bounded 30s timeout (curl exit 28) — not retried under disk pressure. Evidence: qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json (self_sha256 e9c5ea1a...). Service retained running. Item remains blocked/incomplete."
         }
       ],
-      "evidence": "STATIC_PASS only: tests/test_mode_b_vertical_slice.py. live_gpu_champion_complete=false; windows_loopback_complete=false.",
-      "blocked_reason": "CROSS-PROJECT/DEPENDENCY/LIVE/STATIC_PASS: MF-P6-11.03 and MF-P6-11.07 incomplete; true live Windows loopback health plus champion-backed GPU prediction absent. Producer fixture = STATIC_PASS; claim_boundary.mf_p6_12_04_complete=false.",
+      "evidence": "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json self_sha256=e9c5ea1a5a83806b37b7e3171675740cd845e27ed74125c6e073e0a7003a1dae",
+      "blocked_reason": "LIVE/CROSS-PROJECT: Windows loopback /health+/models = RUNTIME_PASS_BOUNDED (pinned Ubuntu serve retained). Predict AWAITING_RUNTIME: champion provider not configured (HTTP 503; champions=0). Refine AWAITING_RUNTIME: on-demand refiner load >30s under ~32 GiB free. MF-P6-11.03/11.07 incomplete. No champion-backed prediction, VISUAL, or PRODUCTION claim. claim_boundary.mf_p6_12_04_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:59+00:00",
+      "updated_at": "2026-07-19T21:41:03+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {

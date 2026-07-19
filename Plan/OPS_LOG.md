@@ -8797,3 +8797,34 @@ qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 - Doctor-green not claimed; no destructive disk free
 
 **Commands:** tools/generate_maskedwarehouse_overlays.py --celeba-only; produce_project_contained_evidence; tracker.py set/validate/report; pytest focused suite
+
+## 2026-07-19 — Mode B loopback RUNTIME_PASS_BOUNDED (health/models only)
+
+**Item:** MF-P6-12.04
+**Lane:** Bounded RUNTIME climb (proof-tier); service retained
+**Result:** Windows `127.0.0.1:8765` `/health` + `/models` = RUNTIME_PASS_BOUNDED; predict/refine remain AWAITING_RUNTIME; no champion / VISUAL / PRODUCTION claim
+
+### Live launch
+- Warmed Ubuntu-22.04; pinned interpreter import preflight (FastAPI 0.139.0 / Uvicorn 0.51.0)
+- Managed serve: Windows WSL client PID 13824; Linux PID 467; `PYTHONPATH=/mnt/c/Comfy_UI_Main_Masking/src`
+- Listener: WSL `ss` shows only `127.0.0.1:8765`; Windows netstat listening on `127.0.0.1:8765`
+- GPU lock: `runs/gpu.lock` purpose `serve_mode_b` PID 467
+- Disk at capture: ~31.8 GiB free on C: (low-impact; no heavy WSL model smokes)
+
+### Surfaces
+| Surface | Tier | Evidence |
+|---|---|---|
+| Windows `/health` 200 status ok | RUNTIME_PASS_BOUNDED | body_sha256 `8983e668…aaff` |
+| Windows `/models` 200; 17 governed; champions=0 | RUNTIME_PASS_BOUNDED | body_sha256 `4a3a89dd…1f90` |
+| `POST /predict` | AWAITING_RUNTIME | HTTP 503 `champion prediction provider is not configured` |
+| `POST /refine` | AWAITING_RUNTIME | valid-clicks probe curl exit 28 / 30s timeout; not retried under disk pressure |
+
+### Evidence
+`qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json` self_sha256 `e9c5ea1a5a83806b37b7e3171675740cd845e27ed74125c6e073e0a7003a1dae`
+Managed logs: `logs/maskfactory_8765_20260719T213725309Z.stdout.log` / `.stderr.log` (sha256 captured in evidence)
+
+### Honest non-claims
+- No champion-backed prediction
+- No VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+- MF-P6-12.04 remains blocked/incomplete at 86%
+

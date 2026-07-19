@@ -28,6 +28,7 @@ class DazErrorCode(IntEnum):
     STATE_DATABASE_INVALID = 73
     STATE_MIGRATION_FAILED = 74
     CONTROL_REFUSED = 75
+    SCHEDULER_REFUSED = 77
     ASSET_SOURCE_IN_GIT = 80
     DIM_MANIFEST_INVALID = 81
     DIM_CONFIGURATION_INVALID = 82
@@ -759,10 +760,20 @@ def set_control_state(
     apply: bool,
     free_gib: float | None = None,
 ) -> dict[str, Any]:
-    if action not in {"enable", "disable", "stop"} or not reason.strip():
+    if (
+        action not in {"enable", "disable", "stop", "pause", "resume", "drain"}
+        or not reason.strip()
+    ):
         raise DazControlError(DazErrorCode.CONTROL_REFUSED, "control action or reason is invalid")
     current = read_control_state(configuration)
-    if action == "enable":
+    if action in {"enable", "resume"}:
+        if action == "resume" and (
+            current["enabled"] is not True or current["stop_requested"] is not False
+        ):
+            raise DazControlError(
+                DazErrorCode.CONTROL_REFUSED,
+                "resume requires an enabled non-stopped worker",
+            )
         available = free_gib
         if available is None:
             available = _disk_free_gib(configuration.paths.root)
@@ -773,6 +784,25 @@ def set_control_state(
                 retryable=True,
             )
         values = {"enabled": True, "paused": False, "drain": False, "stop_requested": False}
+    elif action == "pause":
+        if current["enabled"] is not True or current["stop_requested"] is not False:
+            raise DazControlError(
+                DazErrorCode.CONTROL_REFUSED,
+                "pause requires an enabled non-stopped worker",
+            )
+        values = {"enabled": True, "paused": True, "drain": False, "stop_requested": False}
+    elif action == "drain":
+        if current["stop_requested"] is not False:
+            raise DazControlError(
+                DazErrorCode.CONTROL_REFUSED,
+                "drain cannot replace a stop request",
+            )
+        values = {
+            "enabled": bool(current["enabled"]),
+            "paused": True,
+            "drain": True,
+            "stop_requested": False,
+        }
     elif action == "disable":
         values = {"enabled": False, "paused": True, "drain": True, "stop_requested": False}
     else:

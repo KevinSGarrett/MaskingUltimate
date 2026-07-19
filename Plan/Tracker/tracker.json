@@ -17820,13 +17820,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-19T04:06:20+00:00",
+          "actor": "codex",
+          "text": "2026-07-19: implemented inactive deterministic SQLite scheduling plus hash-linked pause/resume/drain and JSON worker status/control CLI. Twenty-seven scheduler/control/runtime tests pass; Ruff, Black 25.1 hook and diff check pass. Live F control remains disabled/paused/draining and four maintenance tasks remain Disabled. Remaining: production worker run-loop wiring, bounded governed F-queue rehearsal, and dependent heartbeat/recovery/resource/soak work."
+        }
+      ],
+      "evidence": "qa/live_verification/daz_scheduler_control_contract_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T04:06:20+00:00",
       "orphaned": false
     },
     "MF-P9-12.02": {

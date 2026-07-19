@@ -39,6 +39,7 @@ from .runtime import (
     load_daz_runtime_profile,
     script_bundle_manifest,
 )
+from .scheduler import finish_lease, lease_next_job, scheduler_status
 from .source_guard import PROHIBITED_EXTENSIONS, find_prohibited_source_assets
 from .worker import (
     DazWorkerOutcome,
@@ -70,6 +71,7 @@ __all__ = [
     "deploy_script_bundle",
     "detect_daz_dialog",
     "find_prohibited_source_assets",
+    "finish_lease",
     "inspect_acquisition_queue",
     "initialize_daz_root",
     "initialize_state_database",
@@ -78,6 +80,7 @@ __all__ = [
     "load_control_configuration",
     "load_daz_runtime_profile",
     "load_typed_daz_configuration",
+    "lease_next_job",
     "read_control_state",
     "query_descendants",
     "register_downstream_artifact",
@@ -86,6 +89,7 @@ __all__ = [
     "read_terminal_result",
     "running_daz_processes",
     "result_envelope",
+    "scheduler_status",
     "set_control_state",
     "revoke_lineage",
     "script_bundle_manifest",

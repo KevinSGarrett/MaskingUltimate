@@ -2547,6 +2547,11 @@ def daz_control() -> None:
     """Read or atomically change the local DAZ enable/drain state."""
 
 
+@daz.group("worker")
+def daz_worker_control() -> None:
+    """Inspect or change the inactive DAZ scheduler lease boundary."""
+
+
 @daz.group("lineage")
 def daz_lineage() -> None:
     """Query and revoke immutable DAZ supervision lineage."""
@@ -8420,6 +8425,50 @@ def daz_control_disable(config_root: Path, reason: str, apply_changes: bool) -> 
 def daz_control_stop(config_root: Path, reason: str, apply_changes: bool) -> None:
     """Plan or request a controlled stop without killing a process tree."""
     _change_daz_control(config_root, "stop", reason, apply_changes)
+
+
+@daz_worker_control.command("status")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+def daz_worker_status(config_root: Path) -> None:
+    """Report queue depth, active leases, control state, and drained status."""
+    from .daz import load_control_configuration, scheduler_status
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = scheduler_status(configuration)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+def _daz_worker_control_command(action: str, config_root: Path, reason: str, apply: bool) -> None:
+    _change_daz_control(config_root, action, reason, apply)
+
+
+@daz_worker_control.command("pause")
+@_daz_control_options
+def daz_worker_pause(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Stop new leases while allowing an active job to reach its boundary."""
+    _daz_worker_control_command("pause", config_root, reason, apply_changes)
+
+
+@daz_worker_control.command("resume")
+@_daz_control_options
+def daz_worker_resume(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Resume new leases only from an enabled paused/draining state."""
+    _daz_worker_control_command("resume", config_root, reason, apply_changes)
+
+
+@daz_worker_control.command("drain")
+@_daz_control_options
+def daz_worker_drain(config_root: Path, reason: str, apply_changes: bool) -> None:
+    """Stop new leases and report drained after every active lease finishes."""
+    _daz_worker_control_command("drain", config_root, reason, apply_changes)
 
 
 @golden_reference.command("import")

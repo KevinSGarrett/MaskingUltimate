@@ -7769,3 +7769,17 @@ Remaining rows:                        SAM 3.1 and SAM 3D Body checkpoints are i
 Preservation:                          no provider/runtime invoked, matrix mutated, pending row promoted, worker/maintenance state changed, or MF-P6-08.05 dirty path touched
 Truth boundary:                        no live-smoke, provider-promotion, gold-authority, completion, or active-route claim
 Evidence:                              `qa/live_verification/provider_runtime_matrix_revalidation_20260719.json`
+
+## 2026-07-19 04:05 UTC - DAZ scheduler control and deterministic leasing implemented inactive
+
+**Result:** MF-P9-12.01 advances from 0% to 85% with deterministic queue scheduling and
+pause/resume/drain controls; the production worker-run loop and live bounded rehearsal remain open.
+
+Control transitions:                    hash-linked pause/resume/drain; resume rechecks enabled/non-stopped state and the 150-GiB floor; all mutations remain dry-run by default
+Scheduler:                              `BEGIN IMMEDIATE` deterministic pending/retry lease, single-worker cap, attempt increment, exact control revision, atomic event, terminal finish, and `artifact_promoted=false`
+CLI:                                    JSON `maskfactory daz worker status|pause|resume|drain`
+Focused validation:                     27 scheduler/control/runtime tests pass; Ruff, Black 25.1 hook, and diff integrity pass
+Live preservation:                      F control remains `enabled=false`, `paused=true`, `drain=true`; all four maintenance tasks remain Disabled; no live DB, DAZ, WSL, or worker-lane action occurred
+Remaining:                              production `worker run` integration plus bounded governed F-queue rehearsal and dependent heartbeat/recovery/resource/soak work
+Truth boundary:                         no live job, renderer, accepted scene, production activation, or item completion claim
+Evidence:                              `qa/live_verification/daz_scheduler_control_contract_20260719.json`

@@ -19204,11 +19204,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T00:09:56+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 static acceptance audit: zero completion credit. Frozen release validation already provides signed closed-schema/profile/artifact catalogs and actual bundle-byte/path/archive checks, but trusted re-sign probes show arbitrary Git identity and invented installer/rollback identities validate because no production publisher observes Git/runtime state or resolves lifecycle evidence bytes. Prepared disjoint additive MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE; held until MF-P6-09.07 is adopted. Evidence: qa/live_verification/bridge_release_publication_gap_audit_20260718.json"
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T00:09:56+00:00",
       "orphaned": false
     },
     "MF-P6-10.02": {

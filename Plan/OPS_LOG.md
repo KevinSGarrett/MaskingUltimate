@@ -7236,3 +7236,17 @@ Missing artifact:                      source/target JSON pointers, conversions,
 Prepared unit:                         `MF-CURSOR-09.07-EXECUTABLE-CROSSWALK`; five new absent/clean paths are disjoint and held until 09.01-09.06 decisions are adopted
 Verification:                          3/3 focused schema/release/adoption tests and Ruff pass; frozen v1 bytes, queued worker paths, Docker, WSL, and runtime state were not changed
 Evidence:                              `qa/live_verification/bridge_crosswalk_gap_audit_20260718.json`
+
+## 2026-07-19 00:07 UTC - Production release-publication authority gap isolated
+
+**Result:** MF-P6-10.01 remains open with zero completion credit. Frozen release validation
+already closes and byte-verifies a strong signed bundle, but it cannot yet prove the live Git/runtime
+identity or resolve install/rollback declarations into production publication authority.
+
+Existing strength:                     strict canonical signed snapshot; production-role trust; clean declaration; exact 12 schemas/3 profiles/6 artifact kinds; raw file hashes/sizes; current journal checkpoint; closed root and archive/path safety
+Trusted Git probe:                     arbitrary repository ID, commit and tree with `dirty=false` remained validator-clean after trusted re-sign because no publisher compares the declaration to the observed repository
+Trusted lifecycle probe:               invented installer, install-manifest, verification-workflow and rollback/evidence identities remained validator-clean after trusted re-sign because these hashes are not catalog paths or independently resolved bytes
+Missing release proof:                 conditional `native_venv` versus `container` provenance, actual Git/porcelain observation, complete trust/policy/checkpoint byte catalog, deterministic OpenAPI/inventory regeneration, and a closed signed publication decision
+Prepared unit:                         `MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE`; five absent/clean additive paths are held until MF-P6-09.07 is adopted and do not change frozen v1
+Verification:                          both probes reproduced; 5/5 focused release/archive tests and Ruff pass; frozen v1, dirty 08.05 paths, queued workers, Docker, WSL, and runtime state were not changed
+Evidence:                              `qa/live_verification/bridge_release_publication_gap_audit_20260718.json`

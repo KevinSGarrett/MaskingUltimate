@@ -3193,12 +3193,17 @@
           "ts": "2026-07-19T23:46:29+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: ops_static_contracts binder seals fixture mirror→temp restore + nonempty-target refuse + B5 retain-7 + nightly verify-package wiring without claiming live B1 media. Evidence qa/live_verification/ops_static_contracts_20260719.json file sha256 759845d8d9e9e41ab28d005cccb66dce67e5bae19d40f664fbd8b34b7c0753da. Remains NEEDS KEVIN for real B1 restore."
+        },
+        {
+          "ts": "2026-07-19T23:48:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 frozen evidence: ops_static_contracts file sha256 b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3. Live B1 restore remains NEEDS KEVIN."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: no P1-08 human-anchor package or B1 mirror exists yet; the restore drill needs one corrected seed package first.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:46:29+00:00",
+      "updated_at": "2026-07-19T23:48:56+00:00",
       "orphaned": false
     },
     "MF-P1-EXIT": {
@@ -8616,12 +8621,17 @@
           "ts": "2026-07-19T23:47:03+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19 final ops seal: osc_45e57b0c28b668b3e01d33d4 / seal_sha256 45e57b0c28b668b3e01d33d4d61250594d714930bf4ae0fac50737e9ab410ea8. Live B2 restore remains NEEDS KEVIN."
+        },
+        {
+          "ts": "2026-07-19T23:48:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 frozen evidence: qa/live_verification/ops_static_contracts_20260719.json file sha256 b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3 seal a3396c9694d71be024a39688e7b260579af348168bb4e198555b5c6fc944bf51 report_id osc_a3396c9694d71be024a39688. D10/B2 restore remain NEEDS KEVIN."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: the B2 restore drill requires at least three approved packages on Kevin's offline backup media plus a manual CVAT usability check; neither exists. STATIC fixture mirror-restore binder sealed 2026-07-19.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:47:22+00:00",
+      "updated_at": "2026-07-19T23:48:56+00:00",
       "orphaned": false
     },
     "MF-P7-03.02": {

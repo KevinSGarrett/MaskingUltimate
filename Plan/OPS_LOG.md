@@ -7291,3 +7291,17 @@ Correction lineage:                    intent `...aa7101df`; Claude preflight `.
 Unblock contract:                      reissue the signed high-assurance chain under the registered MaskFactory trusted packet root with the same exact origin task/base/scope; require Cursor implementation, independent review, and complete validators
 Preservation:                          current dirty scope, rejected worktree, queued records, Docker, WSL, model files, and frozen contracts were not changed; no direct wrapper or Codex implementation was used
 Evidence:                              `qa/live_verification/operational_policy_precedence_revalidation_20260719.json`
+
+## 2026-07-19 00:27 UTC - MF-P6-08.07 foundations verified; unified invalidation decision missing
+
+**Result:** MF-P6-08.07 has verified partial implementation but remains item-blocked. Existing
+certificate, signed-event, and legacy exact-scope overlay controls pass; no current-state decision
+actually applies a signed invalidation or dependency drift to an immutable operational certificate.
+
+Verified foundations:                  use-time expiry/status/revocation freshness; strict trusted signed lowering event; collision-resistant label/context/fingerprint and multi-person stratum overlays; affected-scope serving/training removal
+Focused validation:                    3/3 bridge invalidation/certificate tests plus 6/6 legacy single-/multi-person operations tests, Ruff, and schema parsing pass
+Direct probe:                          a production-valid certificate and production-valid signed event targeting it both remain independently clean; certificate validator accepts no event, journal head, or current pipeline/ontology/policy/provider-state input
+Worker boundary:                       request `...e143d970` remains nonterminal after PREP materialization timeout with no provider artifact; its obsolete scope permits frozen v1 schema/fixture mutation and uses the wrong project packet root
+Required disposition:                  do not duplicate or adopt; authorized control plane must terminalize it, then reissue an additive unit leaving all frozen v1 bytes unchanged
+Truth boundary:                        50% foundation credit only; no operational invalidation application, concurrency/history proof, runtime authority, certificate, release, or Main adoption claim
+Evidence:                              `qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json`

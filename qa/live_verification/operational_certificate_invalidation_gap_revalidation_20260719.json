@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_operational_certificate_invalidation_gap_revalidation",
+  "recorded_at": "2026-07-19T00:27:47Z",
+  "project_head": "054a6a7c97d8f30a2c599cdb6f4d48d4ccae4e4a",
+  "tracker_item": "MF-P6-08.07",
+  "status": "PARTIAL_FOUND_ITEM_BLOCKED_NONTERMINAL_OBSOLETE_WORKER_SCOPE",
+  "percent_supported": 50,
+  "completion_credit": false,
+  "verified_foundations": [
+    "Operational certificate validation rejects future-issued, expired, inactive, stale-revocation, fixture-only and non-production-trust use.",
+    "The frozen invalidation event is strict, canonical-hashed, trusted producer-journal signed, per-target, strictly authority-lowering, action-complete and closed by reason/target/action policy.",
+    "Legacy autonomy lifecycle overlays use collision-resistant label/context/pipeline-fingerprint paths and an exact multi-person risk-bucket/context/fingerprint stratum.",
+    "Serious single- and multi-person failure tests prove serving/training eligibility removal for the affected legacy scope while an unrelated stratum remains usable."
+  ],
+  "focused_verification": [
+    {
+      "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py -k 'invalidation or certificate_cannot_escape' tests/test_autonomy_operations.py tests/test_autonomy_multi_person_operations.py",
+      "result": "PASS",
+      "tests_passed": 3
+    },
+    {
+      "command": "python -m pytest -q tests/test_autonomy_operations.py tests/test_autonomy_multi_person_operations.py",
+      "result": "PASS",
+      "tests_passed": 6
+    },
+    {
+      "command": "Ruff plus invalidation schema JSON parsing",
+      "result": "PASS"
+    }
+  ],
+  "gap_probe": {
+    "production_certificate_at_use_validators": [],
+    "production_signed_targeting_event_validators": [],
+    "certificate_validator_parameters": [
+      "certificate",
+      "trusted_signing_keys",
+      "at_time",
+      "production_required"
+    ],
+    "target": {
+      "target_kind": "certificate",
+      "target_id": "mfac_0123456789abcdef01234567"
+    },
+    "observed": "Both records validate independently, but there is no input or decision that applies the current signed event/revocation head or live pipeline, ontology, policy and provider lifecycle to the immutable certificate.",
+    "required_behavior": "At use time, recompute exact certificate scope/current dependencies, replay a trusted contiguous invalidation journal to an independently pinned head, and return active or a typed lowering decision without rewriting the certificate or unrelated scope."
+  },
+  "missing_acceptance": [
+    "One deterministic operational-certificate authority decision binding certificate hash, decision time, current revocation head and exact live pipeline fingerprint, ontology, policy, provider/model/workflow/runtime and provider-lifecycle identities.",
+    "Lossless signed-event application with exact target matching, effective-time behavior, idempotent duplicate handling, fork/delete/reorder rejection, historical reconstruction and concurrent read/write consistency.",
+    "Expiry and every drift/revocation cause lower future authority only for the exact affected scope, while immutable historical certificate bytes and unrelated targets remain unchanged.",
+    "Closed typed reasons and tests for certificate, pipeline, ontology, policy, provider lifecycle, signer/key and release/capability invalidation."
+  ],
+  "worker_state": {
+    "request_id": "p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970",
+    "attempt": 2,
+    "latest_failure_phase": "PREP",
+    "latest_failure": "AI_WORKER_WORKTREE_MATERIALIZATION_TIMEOUT",
+    "terminal_completed": false,
+    "terminal_dead_letter": false,
+    "provider_result_available": false,
+    "request_scope_problem": "The request permits mutation of frozen v1 mask_authority_invalidation_event schema and positive operational certificate fixture, and its scope packet is rooted under C:\\Comfy_UI_Main rather than the canonical MaskFactory packet root.",
+    "required_disposition": "Do not duplicate, wake, mutate or adopt it. First terminalize/cancel it through the authorized control plane, then issue a new additive exact-task unit that leaves all 12 frozen v1 contracts and fixtures byte-identical."
+  },
+  "future_additive_scope_candidate": {
+    "state": "NOT_FROZEN_NOT_DISPATCHED_UNTIL_EXISTING_REQUEST_TERMINAL",
+    "paths": [
+      "configs/operational_invalidation_policy.yaml",
+      "src/maskfactory/authority/operational_invalidation.py",
+      "src/maskfactory/schemas/operational_certificate_invalidation_decision.schema.json",
+      "tools/check_operational_certificate_authority.py",
+      "tests/test_operational_invalidation.py"
+    ]
+  },
+  "source_hashes": {
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "src/maskfactory/authority/operational_certificate.py": "d2b541ccb5c8bcc69784b44ac2eab49b98ddb8f2a880b9630100651d9c7dfd84",
+    "src/maskfactory/autonomy/lifecycle.py": "6e85700846753ed9086c0af67a0e46b080cfa6b51fc31c68349f7b6a36f9a3dd",
+    "src/maskfactory/autonomy/operations.py": "a30f1cda7c0ded91b72e6b7acb266c308e5840527e9a8a9e1e664db71c3e9214",
+    "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json": "72b072a1d239057a574ea9ff6dd8536e072d47f13b3b16f2edd6890a0ecb0920",
+    "worker_intent": "d9a6a02284f6010b8f14442337aaa3849a8ac3f2946c21606b386c1570ce8a59",
+    "latest_dispatch_failure": "9eb2e38247dfb4c202c9b8b185ffca1e85016b4991ae80fd62fc6508f88314e8"
+  },
+  "preservation": {
+    "frozen_v1_modified": false,
+    "worker_request_modified_or_duplicated": false,
+    "certificate_or_event_rewritten": false,
+    "runtime_or_model_state_changed": false
+  },
+  "claim_boundary": "This revalidation supports honest partial progress only. It does not apply an invalidation to an operational certificate, complete MF-P6-08.07, adopt a worker result, or claim the autonomous certificate/revocation runtime is production-ready."
+}

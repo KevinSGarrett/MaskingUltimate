@@ -18945,8 +18945,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 50,
       "notes": [
         {
           "ts": "2026-07-18T20:39:19+00:00",
@@ -18957,12 +18957,17 @@
           "ts": "2026-07-18T21:02:42+00:00",
           "actor": "codex",
           "text": "2026-07-18 launch hold: final-attempt request p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970 is one of four pairwise-disjoint signed MaskFactory units at base 093b9b1d74fb21ec5653d9dae395af878a8f0909. Cross-project batch manifest SHA-256 02f993cd... is HELD_RUNTIME_PREFLIGHT_REQUIRED; wake/provider calls remain unauthorized. Do not mutate or duplicate. See qa/live_verification/worker_launch_batch_hold_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T00:28:56+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent revalidation: 3 bridge invalidation/certificate tests + 6 legacy operations tests, Ruff, and schema parsing pass. Production probe proves a valid targeting event does not affect the independently valid certificate because the validator accepts no current invalidation state. Honest foundation credit 50%; item-only block, overall goal active. Evidence: qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json"
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "WORKER CONTROL: verified invalidation foundations exist, but no at-use operational certificate decision applies current signed events/journal head or live pipeline/ontology/policy/provider lifecycle. Existing request ...e143d970 is nonterminal after PREP worktree-materialization timeout, has no provider result, permits frozen v1 schema/fixture mutation, and uses the wrong project packet root. Authorized control must terminalize it and reissue an additive frozen-v1-preserving exact-task unit; do not duplicate in Codex.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T21:02:42+00:00",
+      "updated_at": "2026-07-19T00:28:56+00:00",
       "orphaned": false
     },
     "MF-P6-08.08": {

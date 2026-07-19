@@ -7359,3 +7359,17 @@ Build probe:                           no-isolation wheel build fails with `inva
 Prepared unit:                         `MF-CURSOR-10.04-REPRODUCIBLE-RELEASE-INSTALLATION`; five absent/clean additive paths are disjoint from held 10.01 and dirty 08.05 paths, held until 10.01/10.02 are adopted
 Truth boundary:                        no release built, installed, adopted, or rolled back; frozen v1, worker records, live node trees, Docker/WSL, and project runtime were not changed
 Evidence:                              `qa/live_verification/bridge_release_installation_gap_audit_20260719.json`
+
+## 2026-07-19 00:57 UTC - Adoption validator verified; live conformance inputs missing
+
+**Result:** MF-P6-10.05 receives 70% foundation credit but remains a hard item-blocker. The frozen
+receipt validator is strong; current production certificate/install inputs and upstream decisions are absent.
+
+Verified foundation:                   strict consumer signature/canonicalization, fixture firewall, validity/journal checks, exact 16-check matrix, executed qualification hashes, required/optional capability coverage, route qualification, exact release pins, and closed decision rules
+Focused validation:                    3/3 production/fixture/capability adoption tests and Ruff pass
+Certificate gap:                       adoption validator accepts no live operational certificate documents/index/invalidation state; a certified route is currently inferred from matching certificate-ID strings in the capability snapshot
+Installed-byte gap:                    validator accepts no installed or published release root; exact pins and qualification evidence are checked, but current wheel/node/API/schema tree equality is not recomputed at decision time
+Ownership boundary:                    MaskFactory may validate producer conformance but must not sign, mutate, or impersonate Main's consumer adoption receipt
+Prepared unit:                         `MF-CURSOR-10.05-ADOPTION-CONFORMANCE-DECISION`; five absent/clean additive paths are held behind 10.01-10.04 and disjoint from existing held/dirty paths
+Truth boundary:                        no production receipt, release, certificate, or adoption claim; frozen v1 and all worker/dirty scopes unchanged
+Evidence:                              `qa/live_verification/bridge_adoption_decision_gap_audit_20260719.json`

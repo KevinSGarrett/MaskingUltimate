@@ -19335,13 +19335,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-19T00:58:39+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: strict signed adoption schema/validator, exact 16-check matrix, qualification evidence binding, required/optional capability coverage, live-route checks, exact release pins, expiry and fixture firewall pass 3 focused tests plus Ruff. Remaining production gap: no live certificate/index/invalidation inputs or installed/published root observation, and upstream 10.01-10.04 decisions are absent. Evidence: qa/live_verification/bridge_adoption_decision_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-10.01 through 10.04 are not accepted. Existing validator cannot independently resolve live operational certificates/current invalidation state or exact installed/published release roots. Implement the held additive MaskFactory conformance decision after prerequisites; do not mutate frozen v1 or impersonate Main adoption authority.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T00:58:39+00:00",
       "orphaned": false
     },
     "MF-P6-10.06": {

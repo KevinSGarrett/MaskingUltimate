@@ -7600,3 +7600,16 @@ Consumer dependency:                   no exact Main adapter contract/commit ret
 Prepared scope:                         `MF-CURSOR-09.07-EXECUTABLE-CROSSWALK`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no crosswalk adoption, Main consumer behavior, runtime/worker action, frozen-v1 mutation, or item completion claim
 Evidence:                              `qa/live_verification/bridge_crosswalk_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:58 UTC - Release bytes close strongly; production publication authority absent
+
+**Result:** Hard-blocker MF-P6-10.01 receives 60% release-validation credit and remains blocked
+behind MF-P6-09.07 plus its missing production publisher.
+
+Verified foundation:                   strict canonical-hashed/producer-signed snapshot, exact schema/profile/artifact sets, trust and checkpoint declarations, production fixture firewall, and actual bundle byte/path/archive closure
+Focused validation:                    3 positive/profile-policy/byte-closure tests pass; Ruff passes; all governing hashes match the accepted 2026-07-18 audit
+Trusted gaps:                           exact-hash prior probes still accept invented Git tree/commit/repository and installer/install-manifest/verification/rollback identities after trusted re-sign
+Missing publisher:                      no actual Git/worktree observation, exclusive native-venv/container provenance, completely cataloged trust/journal/install/rollback inputs, deterministic regeneration or signed publication decision
+Prepared scope:                         `MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no production release publication, clean-build/install/rollback proof, runtime/worker action, or hard-blocker completion claim
+Evidence:                              `qa/live_verification/bridge_release_publication_gap_revalidation_20260719.json`

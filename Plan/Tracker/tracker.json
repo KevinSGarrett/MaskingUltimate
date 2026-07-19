@@ -19257,19 +19257,24 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 60,
       "notes": [
         {
           "ts": "2026-07-19T00:09:56+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 static acceptance audit: zero completion credit. Frozen release validation already provides signed closed-schema/profile/artifact catalogs and actual bundle-byte/path/archive checks, but trusted re-sign probes show arbitrary Git identity and invented installer/rollback identities validate because no production publisher observes Git/runtime state or resolves lifecycle evidence bytes. Prepared disjoint additive MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE; held until MF-P6-09.07 is adopted. Evidence: qa/live_verification/bridge_release_publication_gap_audit_20260718.json"
+        },
+        {
+          "ts": "2026-07-19T02:58:53+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 revalidation: credited 60% for signed strict release snapshot, exact schema/profile/artifact catalogs, production trust checks, and byte/path/archive closure. Focused tests 3 passed; Ruff clean. Runtime provenance is absent, all five additive publisher paths are absent, and exact-hash trusted probes still accept invented Git and installer/rollback identities. Packet remains held and undispatched. See qa/live_verification/bridge_release_publication_gap_revalidation_20260719.json."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_release_publication_gap_revalidation_20260719.json",
+      "blocked_reason": "HARD BLOCKER: MF-P6-09.07 remains incomplete. Signed frozen release and byte-closure validation exist, but no production publisher observes actual Git/build/runtime state, no exclusive typed runtime provenance exists, and installer/rollback/trust/journal identities are not completely resolved to cataloged bytes.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T00:09:56+00:00",
+      "updated_at": "2026-07-19T02:58:53+00:00",
       "orphaned": false
     },
     "MF-P6-10.02": {

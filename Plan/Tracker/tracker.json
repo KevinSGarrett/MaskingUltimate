@@ -10972,12 +10972,17 @@
           "ts": "2026-07-17T11:27:50+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: refroze the eight-provider matrix after binding SAM 3.1's governed same-image visual-exemplar contract, schema, and updated runner. Matrix remains six qualified and two explicit runtime-pending providers; no live inference, promotion, or authority is inferred."
+        },
+        {
+          "ts": "2026-07-19T03:51:51+00:00",
+          "actor": "codex",
+          "text": "2026-07-19 current-head revalidation: exact eight-provider matrix passes with 6 qualified, 2 explicit pending, 0 human-gated, 18 hash-bound artifacts and PyTorch 2.11.0+cu128 core. Four drift/false-promotion tests and Ruff pass. SAM3.1 and SAM 3D Body isolated WSL live smokes remain unproven, so 94% and partially-complete status remain unchanged. Evidence: qa/live_verification/provider_runtime_matrix_revalidation_20260719.json"
         }
       ],
       "evidence": "env/provider_runtime_matrix.json canonical SHA-256 4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d; qa/live_verification/sam3d_body_subprocess_contract_20260717.json SHA-256 5981869c21e44373bdd179e1bf072fbd4b90fa9d7b1a6a8b4d8cf5ff63f2e6a3; qa/live_verification/sam31_multiplex_contract_20260717.json SHA-256 4da0ea08d557dab719a7878d05876341de0c2273820e29680914a3d19fa2fbfb; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json SHA-256 b250adbcd0c86a09edc49b185452a10ed9765825020b18342ab12def145dde1c; qa/live_verification/sam31_visual_exemplar_contract_20260717.json SHA-256 11bc8fb9020ff66edb41d639904909dcd014648ad309d1b30411bb4a322eec64; 8 providers, 6 qualified, 2 explicit pending, 18 exact artifacts. Both official Meta live smokes remain pending guarded Ubuntu recovery.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T11:27:50+00:00",
+      "updated_at": "2026-07-19T03:51:51+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {

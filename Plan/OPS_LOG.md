@@ -7756,3 +7756,16 @@ Cleanup:                               exact owned canary PIDs are absent; port 
 Control boundary:                      scheduled maintenance and worker lanes remain disabled; no restart/terminate/service/UI action was attempted
 Truth boundary:                        local MF-P6-11.07 runtime preflight block only; overall MaskFactory goal remains active and no service-health/failure-control/prediction claim is made
 Evidence:                              `qa/live_verification/maskfactory_service_preflight_block_20260719T0347Z.json`
+
+## 2026-07-19 03:51 UTC - Isolated provider matrix remains drift-clean
+
+**Result:** MF-P0-17.13 remains honestly at 94%; its current eight-provider reproducibility
+matrix passes exactly while two official Meta rows remain explicit runtime-pending entries.
+
+Matrix:                                8 providers; 6 qualified; 2 pending; 0 human-gated; 18 exact artifacts; PyTorch core `2.11.0+cu128`
+Canonical manifest:                    `4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d`
+Focused validation:                    matrix verifier passes; 4 drift/false-promotion tests pass; Ruff passes
+Remaining rows:                        SAM 3.1 and SAM 3D Body checkpoints are installed but isolated WSL inference smokes remain unproven
+Preservation:                          no provider/runtime invoked, matrix mutated, pending row promoted, worker/maintenance state changed, or MF-P6-08.05 dirty path touched
+Truth boundary:                        no live-smoke, provider-promotion, gold-authority, completion, or active-route claim
+Evidence:                              `qa/live_verification/provider_runtime_matrix_revalidation_20260719.json`

@@ -101,8 +101,9 @@ def lease_next_job(
                 data={"leased": False, "active_lease_count": active},
             )
         row = connection.execute(
-            "SELECT job_id,state,attempt FROM jobs "
-            "WHERE state IN ('pending','retry') ORDER BY attempt,job_id LIMIT 1"
+            "SELECT j.job_id,j.state,j.attempt FROM jobs j "
+            "JOIN storage_reservations r ON r.job_id=j.job_id AND r.state='active' "
+            "WHERE j.state IN ('pending','retry') ORDER BY j.attempt,j.job_id LIMIT 1"
         ).fetchone()
         if row is None:
             connection.rollback()
@@ -130,6 +131,16 @@ def lease_next_job(
             "INSERT INTO leases(lease_id,job_id,owner_pid,expires_at) VALUES (?,?,?,?)",
             (identity, job_id, owner_pid, _timestamp(expires)),
         )
+        connection.execute(
+            "UPDATE storage_reservations SET state='consumed' " "WHERE job_id=? AND state='active'",
+            (job_id,),
+        )
+        if connection.execute("SELECT changes()").fetchone()[0] != 1:
+            raise DazControlError(
+                DazErrorCode.SCHEDULER_REFUSED,
+                "scheduler job has no active storage reservation",
+                entity_ids=(job_id,),
+            )
         event = build_event(
             "scheduler.job_leased",
             "job",
@@ -210,6 +221,11 @@ def finish_lease(
         job_id, attempt = str(row[0]), int(row[1])
         connection.execute("DELETE FROM leases WHERE lease_id=?", (lease_id,))
         connection.execute("UPDATE jobs SET state=? WHERE job_id=?", (terminal_state, job_id))
+        connection.execute(
+            "UPDATE storage_reservations SET state='released',released_at=? "
+            "WHERE job_id=? AND state='consumed'",
+            (_timestamp(captured), job_id),
+        )
         event = build_event(
             f"scheduler.job_{terminal_state}",
             "job",

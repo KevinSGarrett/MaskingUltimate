@@ -2504,7 +2504,7 @@ def daz_state_init(config_root: Path, apply_changes: bool) -> None:
             else result_envelope(
                 reason="state_database_initialization_plan",
                 evidence_paths=(str(path),),
-                data={"apply": False, "exists": path.is_file(), "target_schema_version": 3},
+                data={"apply": False, "exists": path.is_file(), "target_schema_version": 4},
             )
         )
     except (OSError, ValueError) as exc:
@@ -2550,6 +2550,11 @@ def daz_control() -> None:
 @daz.group("worker")
 def daz_worker_control() -> None:
     """Inspect or change the inactive DAZ scheduler lease boundary."""
+
+
+@daz.group("retention")
+def daz_retention() -> None:
+    """Plan or explicitly apply hash-bound DAZ file retention."""
 
 
 @daz.group("lineage")
@@ -8469,6 +8474,90 @@ def daz_worker_resume(config_root: Path, reason: str, apply_changes: bool) -> No
 def daz_worker_drain(config_root: Path, reason: str, apply_changes: bool) -> None:
     """Stop new leases and report drained after every active lease finishes."""
     _daz_worker_control_command("drain", config_root, reason, apply_changes)
+
+
+@daz_retention.command("plan")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/retention.yaml"),
+    show_default=True,
+)
+@click.option("--observed-free-bytes", type=click.IntRange(min=0))
+@click.option("--target-free-gib", type=click.FloatRange(min=0), default=150.0, show_default=True)
+@click.option("--as-of", help="Timezone-aware ISO-8601 planning timestamp.")
+@click.option("--persist", is_flag=True, help="Persist the immutable plan; never deletes files.")
+def daz_retention_plan(
+    config_root: Path,
+    policy: Path,
+    observed_free_bytes: int | None,
+    target_free_gib: float,
+    as_of: str | None,
+    persist: bool,
+) -> None:
+    """Build a deterministic exact-file retention plan without deleting anything."""
+    import shutil
+    from datetime import UTC, datetime
+
+    from .daz import build_retention_plan, load_control_configuration, load_retention_policy
+
+    try:
+        configuration = load_control_configuration(config_root)
+        retention_policy = load_retention_policy(policy)
+        free_bytes = (
+            int(observed_free_bytes)
+            if observed_free_bytes is not None
+            else int(shutil.disk_usage(configuration.paths.root).free)
+        )
+        captured = (
+            datetime.fromisoformat(as_of.replace("Z", "+00:00"))
+            if as_of is not None
+            else datetime.now(UTC)
+        )
+        document = build_retention_plan(
+            configuration,
+            retention_policy,
+            observed_free_bytes=free_bytes,
+            target_free_bytes=int(target_free_gib * 1024**3),
+            as_of=captured,
+            persist=persist,
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(document, sort_keys=True))
+
+
+@daz_retention.command("apply")
+@click.option("--plan", "plan_id", required=True)
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--dry-run/--apply",
+    "dry_run",
+    default=True,
+    show_default=True,
+    help="Dry-run is the default; --apply performs exact verified file deletion.",
+)
+def daz_retention_apply(plan_id: str, config_root: Path, dry_run: bool) -> None:
+    """Reverify a persisted plan and optionally delete only its exact files."""
+    from .daz import apply_retention_plan, load_control_configuration
+
+    try:
+        configuration = load_control_configuration(config_root)
+        report = apply_retention_plan(configuration, plan_id=plan_id, dry_run=dry_run)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
 
 
 @golden_reference.command("import")

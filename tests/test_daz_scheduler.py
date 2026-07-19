@@ -19,7 +19,9 @@ from maskfactory.daz import (
     initialize_state_database,
     lease_next_job,
     load_control_configuration,
+    load_retention_policy,
     read_control_state,
+    reserve_job_storage,
     scheduler_status,
     set_control_state,
 )
@@ -53,7 +55,8 @@ def _fixture_configuration(tmp_path: Path):
     return config, configuration
 
 
-def _queue_jobs(database: Path, *job_ids: str) -> None:
+def _queue_jobs(configuration, *job_ids: str) -> None:
+    database = configuration.paths.state_database
     connection = sqlite3.connect(database)
     try:
         for job_id in job_ids:
@@ -69,6 +72,19 @@ def _queue_jobs(database: Path, *job_ids: str) -> None:
         connection.commit()
     finally:
         connection.close()
+    policy = load_retention_policy(CONFIG / "retention.yaml")
+    for index, job_id in enumerate(job_ids):
+        reserve_job_storage(
+            configuration,
+            policy,
+            job_id=job_id,
+            profile_id="fixture_profile",
+            profile_estimate_bytes=1024,
+            profile_p95_bytes=2048,
+            observed_free_bytes=200 * 1024**3,
+            reservation_id=f"reservation_{job_id}",
+            event_id=f"evt_reservation_{index}",
+        )
 
 
 def test_pause_resume_and_drain_are_hash_linked_dry_run_safe(tmp_path: Path):
@@ -102,7 +118,7 @@ def test_pause_resume_and_drain_are_hash_linked_dry_run_safe(tmp_path: Path):
 
 def test_scheduler_leases_deterministically_and_never_exceeds_worker_cap(tmp_path: Path):
     _, configuration = _fixture_configuration(tmp_path)
-    _queue_jobs(configuration.paths.state_database, "job_b", "job_a")
+    _queue_jobs(configuration, "job_b", "job_a")
     set_control_state(configuration, "enable", reason="fixture enable", apply=True, free_gib=200)
     leased = lease_next_job(
         configuration,
@@ -140,7 +156,7 @@ def test_scheduler_leases_deterministically_and_never_exceeds_worker_cap(tmp_pat
 
 def test_pause_and_drain_block_new_leases_but_allow_active_job_to_finish(tmp_path: Path):
     _, configuration = _fixture_configuration(tmp_path)
-    _queue_jobs(configuration.paths.state_database, "job_a", "job_b")
+    _queue_jobs(configuration, "job_a", "job_b")
     set_control_state(configuration, "enable", reason="fixture enable", apply=True, free_gib=200)
     lease_next_job(
         configuration,
@@ -171,20 +187,25 @@ def test_pause_and_drain_block_new_leases_but_allow_active_job_to_finish(tmp_pat
         assert connection.execute("SELECT state FROM jobs WHERE job_id='job_b'").fetchone()[0] == (
             "pending"
         )
+        reservation = connection.execute(
+            "SELECT state,released_at FROM storage_reservations WHERE job_id='job_a'"
+        ).fetchone()
+        assert reservation[0] == "released"
+        assert reservation[1] is not None
     finally:
         connection.close()
 
 
 def test_disabled_worker_never_mutates_queue_or_creates_a_lease(tmp_path: Path):
     _, configuration = _fixture_configuration(tmp_path)
-    _queue_jobs(configuration.paths.state_database, "job_a")
+    _queue_jobs(configuration, "job_a")
     result = lease_next_job(configuration, owner_pid=4242, lease_seconds=60)
     assert result["reason"] == "scheduler_controlled_no_lease"
     connection = sqlite3.connect(configuration.paths.state_database)
     try:
         assert connection.execute("SELECT state,attempt FROM jobs").fetchone() == ("pending", 0)
         assert connection.execute("SELECT count(*) FROM leases").fetchone()[0] == 0
-        assert connection.execute("SELECT count(*) FROM events").fetchone()[0] == 0
+        assert connection.execute("SELECT count(*) FROM events").fetchone()[0] == 1
     finally:
         connection.close()
 
@@ -193,7 +214,7 @@ def test_worker_cli_pause_resume_drain_and_status_are_json_and_dry_run_by_defaul
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
     config, configuration = _fixture_configuration(tmp_path)
-    _queue_jobs(configuration.paths.state_database, "job_a")
+    _queue_jobs(configuration, "job_a")
     set_control_state(configuration, "enable", reason="fixture enable", apply=True, free_gib=200)
     monkeypatch.setattr(daz_control, "_disk_free_gib", lambda _root: 200.0)
     runner = CliRunner()

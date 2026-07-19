@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_storage_reservation_retention_contract",
+  "captured_at": "2026-07-19T04:36:36.7759845Z",
+  "project_head_before_commit": "dee40b89edbbfd7dc6a481525a61e4e585359993",
+  "tracker_item": "MF-P9-12.02",
+  "status": "INACTIVE_RESERVATION_RETENTION_FOUNDATION_PASS_LIVE_FILL_DRAIN_REHEARSAL_OPEN",
+  "percent_supported": 85,
+  "implemented": [
+    "The closed R0-R7 policy and JSON Schema define exact deletion eligibility, age floors, purge priority, protected classes, file-only deletion, symlink refusal, lease protection, hash recheck, and dry-run default.",
+    "Required reservation bytes use exact integer ceil(max(profile estimate, measured profile p95) * 5 / 4).",
+    "SQLite schema v4 durably records reservations, retention artifacts, immutable plan items, plans, outcomes, and hash-linked events.",
+    "Jobs cannot lease without an active storage reservation; lease acquisition consumes it and terminal completion releases it with a timestamp.",
+    "Capacity decisions map healthy/soft/hard/emergency floors to none/pause/drain/stop at 150/100/60 GiB boundaries and refuse a reservation whose projected free space crosses the soft floor.",
+    "Retention planning is deterministic and excludes R0/R1/R2/R7, protected references, active leases, young artifacts, unsafe paths, size drift, and hash drift.",
+    "Retention apply defaults to dry-run, marks exact immutable plan items, reloads mutable guards under BEGIN IMMEDIATE immediately before unlink, rechecks exact path/size/hash, and records applied or partial outcomes without promoting artifacts.",
+    "JSON CLI commands implement `maskfactory daz retention plan` and `maskfactory daz retention apply`; plan persistence and deletion are explicit opt-ins."
+  ],
+  "validation": {
+    "focused_command": "python -m pytest -q tests/test_daz_storage.py tests/test_daz_scheduler.py tests/test_daz_control_plane.py tests/test_daz_runtime_worker.py",
+    "focused_tests_passed": 38,
+    "focused_tests_failed": 0,
+    "foundation_command": "python -m pytest -q tests/test_daz_foundation.py",
+    "foundation_tests_passed": 6,
+    "lineage_tests_passed": 9,
+    "migration_test": "PASS: test_v2_database_migrates_to_v4_without_losing_existing_rows",
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "diff_check": "PASS",
+    "aggregate_note": "A combined Windows pytest invocation emitted 43 progress dots and left its exact owned pytest process alive without a terminal summary; that PID alone was stopped. The affected suites were then verified by bounded independent commands, so no aggregate result is claimed from the interrupted invocation."
+  },
+  "behaviors_proven": [
+    "exact fill thresholds issue pause, drain, and controlled-stop transitions without launching a worker",
+    "a job without a reservation remains pending and cannot lease",
+    "reservation allocation is durable and projected-floor refusal is fail-closed",
+    "terminal lease completion releases the consumed reservation",
+    "two identical retention dry-runs produce the same ordered plan and plan hash",
+    "R0 and protected-reference artifacts are never selected",
+    "leases present during planning and leases acquired after initial verification prevent deletion",
+    "dry-run preserves files and explicit apply deletes only exact planned files",
+    "hash drift, paths outside the governed root, and immutable-plan mutation fail closed"
+  ],
+  "live_preservation": {
+    "F:/DAZ/00_control/runtime_state.json": {
+      "enabled": false,
+      "paused": true,
+      "drain": true,
+      "stop_requested": false,
+      "revision": 1
+    },
+    "scheduled_tasks": {
+      "MaskFactory_NightlyBackupIntegrity": "Disabled",
+      "MaskFactory_NightlyManifestLint": "Disabled",
+      "MaskFactory_WeeklyColdCopyReminder": "Disabled",
+      "MaskFactory_WeeklyQaMining": "Disabled"
+    },
+    "live_database_mutated": false,
+    "live_retention_apply_performed": false,
+    "DAZ_or_WSL_launched": false,
+    "worker_lane_reenabled": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Populate governed per-profile measured p95 inputs from D9-08 rather than fixture values.",
+    "Run a bounded production F-drive fill/drain rehearsal when the dependent queue and capacity prerequisites permit it.",
+    "Run a live retention plan and explicit apply against disposable eligible F-drive artifacts, proving inventory reconciliation and rollback/recovery evidence.",
+    "Complete the dependent backup, restore, recovery, and soak items before production activation."
+  ],
+  "source_hashes": {
+    "configs/daz/retention.yaml": "f81f64f9728a1da01499ec5c4f22b5a444285bec2bf1563c00cd9ef39076ff5d",
+    "src/maskfactory/schemas/daz_retention.schema.json": "1e54a113ebebfb82cda8434396d6db3767784272351b4eb28d02230767bc7f2c",
+    "src/maskfactory/daz/storage.py": "1d5e1c9b0ca0e9a8efce8d31756f8b49b09fa52253b6b560284780fdff8a42ba",
+    "src/maskfactory/daz/control.py": "d70eba69a76097b2b2ae68ee7eaa7c204a451ba1d31e1cf782972bd00483abcb",
+    "src/maskfactory/daz/scheduler.py": "d88daaf395b7d9b8c2a5fd2f2c2532d26b9ecdb81f665b4dbd8f93479d72e035",
+    "src/maskfactory/daz/__init__.py": "4ae77e6fff4c4a568c68ac7645e361c9ae547db3f9b3fb2d53eb89fd56a8c100",
+    "src/maskfactory/cli.py": "289c9bdce3c99b6e639759651696dc11994da3610128093df9defa7b6a24cef6",
+    "tests/test_daz_storage.py": "93893a5071d5fdb1fd3a5bdc300c6066821d8d8b3a3d7b85132ce1a026c4e884",
+    "tests/test_daz_scheduler.py": "5ac807ccb2fe25180da2b96c0eba13c062ffbb1d8e46d44ac7b38bb1a018b148",
+    "tests/test_daz_control_plane.py": "e5ad87314fb9129443d15e4a4a419035c773bd4793e6a3622d0177ddacb92ae7",
+    "tests/test_daz_lineage.py": "2c7edca753551d0eee2bb01aae2bfd12b2d23567e221ad02a6a1bf45aa41d32c"
+  },
+  "claim_boundary": "This evidence proves the inactive reservation/retention implementation and bounded fixture behavior. It does not mutate the live F-drive queue, delete live DAZ artifacts, supply measured D9-08 profile p95 values, complete MF-P9-12.02, activate DAZ, or satisfy backup/recovery/soak gates."
+}

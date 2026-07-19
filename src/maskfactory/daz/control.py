@@ -16,7 +16,7 @@ from typing import Any, Mapping
 
 from .policy import DazConfiguration, load_typed_daz_configuration
 
-STATE_SCHEMA_VERSION = 3
+STATE_SCHEMA_VERSION = 4
 ROOT_SCHEMA_VERSION = "1.0.0"
 EVENT_SCHEMA = "daz_event_1.0.0"
 
@@ -417,6 +417,10 @@ TABLE_NAMES = (
     "ingest_records",
     "revocations",
     "revocation_impacts",
+    "storage_reservations",
+    "retention_artifacts",
+    "retention_plans",
+    "retention_plan_items",
 )
 
 MIGRATION_1 = """
@@ -524,6 +528,60 @@ CREATE TRIGGER dataset_membership_no_update BEFORE UPDATE ON dataset_membership 
 CREATE TRIGGER dataset_membership_no_delete BEFORE DELETE ON dataset_membership BEGIN SELECT RAISE(ABORT, 'DAZ_DATASET_MEMBERSHIP_APPEND_ONLY'); END;
 """
 
+MIGRATION_4 = """
+BEGIN IMMEDIATE;
+CREATE TABLE storage_reservations (
+  reservation_id TEXT PRIMARY KEY,
+  job_id TEXT NOT NULL UNIQUE REFERENCES jobs(job_id),
+  profile_id TEXT NOT NULL,
+  estimate_bytes INTEGER NOT NULL CHECK(estimate_bytes >= 0),
+  p95_bytes INTEGER NOT NULL CHECK(p95_bytes >= 0),
+  required_bytes INTEGER NOT NULL CHECK(required_bytes > 0),
+  state TEXT NOT NULL CHECK(state IN ('active','released','consumed')),
+  created_at TEXT NOT NULL,
+  released_at TEXT,
+  payload_json TEXT NOT NULL
+);
+CREATE TABLE retention_artifacts (
+  artifact_id TEXT PRIMARY KEY,
+  path TEXT NOT NULL UNIQUE,
+  retention_class TEXT NOT NULL CHECK(retention_class IN ('R0','R1','R2','R3','R4','R5','R6','R7')),
+  bytes INTEGER NOT NULL CHECK(bytes >= 0),
+  content_sha256 TEXT NOT NULL CHECK(length(content_sha256)=64),
+  created_at TEXT NOT NULL,
+  state TEXT NOT NULL CHECK(state IN ('active','marked','deleted')),
+  protected_reference_count INTEGER NOT NULL DEFAULT 0 CHECK(protected_reference_count >= 0),
+  live_lease_id TEXT,
+  payload_json TEXT NOT NULL
+);
+CREATE TABLE retention_plans (
+  plan_id TEXT PRIMARY KEY,
+  as_of TEXT NOT NULL,
+  root TEXT NOT NULL,
+  policy_sha256 TEXT NOT NULL CHECK(length(policy_sha256)=64),
+  plan_sha256 TEXT NOT NULL CHECK(length(plan_sha256)=64),
+  observed_free_bytes INTEGER NOT NULL CHECK(observed_free_bytes >= 0),
+  target_free_bytes INTEGER NOT NULL CHECK(target_free_bytes >= 0),
+  selected_bytes INTEGER NOT NULL CHECK(selected_bytes >= 0),
+  status TEXT NOT NULL CHECK(status IN ('planned','applied','partial')),
+  payload_json TEXT NOT NULL
+);
+CREATE TABLE retention_plan_items (
+  plan_id TEXT NOT NULL REFERENCES retention_plans(plan_id),
+  artifact_id TEXT NOT NULL REFERENCES retention_artifacts(artifact_id),
+  ordinal INTEGER NOT NULL CHECK(ordinal >= 0),
+  path TEXT NOT NULL,
+  retention_class TEXT NOT NULL,
+  bytes INTEGER NOT NULL CHECK(bytes >= 0),
+  content_sha256 TEXT NOT NULL CHECK(length(content_sha256)=64),
+  action TEXT NOT NULL CHECK(action = 'delete_file'),
+  PRIMARY KEY(plan_id, artifact_id),
+  UNIQUE(plan_id, ordinal)
+);
+CREATE TRIGGER retention_plan_items_no_update BEFORE UPDATE ON retention_plan_items BEGIN SELECT RAISE(ABORT, 'DAZ_RETENTION_PLAN_ITEMS_IMMUTABLE'); END;
+CREATE TRIGGER retention_plan_items_no_delete BEFORE DELETE ON retention_plan_items BEGIN SELECT RAISE(ABORT, 'DAZ_RETENTION_PLAN_ITEMS_IMMUTABLE'); END;
+"""
+
 
 def initialize_state_database(path: Path) -> dict[str, Any]:
     path = Path(path)
@@ -568,6 +626,15 @@ def initialize_state_database(path: Path) -> dict[str, Any]:
                 connection.execute("PRAGMA user_version=3")
                 connection.commit()
                 applied.append(3)
+            if source_version < 4:
+                connection.executescript(MIGRATION_4)
+                connection.execute(
+                    "INSERT INTO schema_migrations VALUES (?,?,?)",
+                    (4, "add storage reservation and immutable retention planning", _utc_now()),
+                )
+                connection.execute("PRAGMA user_version=4")
+                connection.commit()
+                applied.append(4)
         finally:
             connection.close()
     except DazControlError:

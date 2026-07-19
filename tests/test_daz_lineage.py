@@ -72,7 +72,7 @@ def _ingest(fixture):
     return ingest_adapted_scene(database, adapted_root, adapter_report, qa_report, timestamp=TS)
 
 
-def test_v2_database_migrates_to_v3_without_losing_existing_rows(tmp_path: Path) -> None:
+def test_v2_database_migrates_to_v4_without_losing_existing_rows(tmp_path: Path) -> None:
     database = tmp_path / "legacy_v2.sqlite"
     with sqlite3.connect(database) as connection:
         connection.executescript(MIGRATION_1)
@@ -88,9 +88,9 @@ def test_v2_database_migrates_to_v3_without_losing_existing_rows(tmp_path: Path)
         connection.commit()
     report = initialize_state_database(database)
     assert report["data"]["source_version"] == 2
-    assert report["data"]["applied_migrations"] == [3]
+    assert report["data"]["applied_migrations"] == [3, 4]
     with sqlite3.connect(database) as connection:
-        assert connection.execute("PRAGMA user_version").fetchone()[0] == 3
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == 4
         assert connection.execute("SELECT scene_id FROM scene_recipes").fetchone()[0] == (
             "daz_scene_preserved"
         )

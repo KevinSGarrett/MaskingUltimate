@@ -7783,3 +7783,18 @@ Live preservation:                      F control remains `enabled=false`, `paus
 Remaining:                              production `worker run` integration plus bounded governed F-queue rehearsal and dependent heartbeat/recovery/resource/soak work
 Truth boundary:                         no live job, renderer, accepted scene, production activation, or item completion claim
 Evidence:                              `qa/live_verification/daz_scheduler_control_contract_20260719.json`
+
+## 2026-07-19 04:36 UTC - DAZ reservations and retention implemented inactive
+
+**Result:** MF-P9-12.02 advances from 0% to 85% with exact storage reservations and a
+closed, deterministic retention path; measured production inputs and live rehearsals remain open.
+
+Reservation contract:                  `ceil(max(profile estimate, measured p95) * 5 / 4)` with durable active/consumed/released state; a job cannot lease without one
+Capacity controls:                      exact 150/100/60-GiB healthy/soft/hard/emergency floors drive none/pause/drain/stop and projected-soft-floor refusal
+Retention contract:                    closed R0-R7 policy; R0/R1/R2/R7, references, active leases, young files, unsafe paths, symlinks and byte/hash drift fail closed
+Deletion safety:                       deterministic immutable plan; dry-run default; explicit mark; mutable guards reloaded under `BEGIN IMMEDIATE`; exact unlink; applied/partial outcome event; no artifact promotion
+Focused validation:                    38 storage/scheduler/control/runtime tests, 6 foundation tests and all 9 lineage tests pass; Ruff, Black 25.1 hook and diff integrity pass
+Live preservation:                      F control remains `enabled=false`, `paused=true`, `drain=true`; all four maintenance tasks remain Disabled; no live DB, retention apply, DAZ, WSL or worker-lane action occurred
+Remaining:                              governed D9-08 measured p95 inputs; bounded F-drive fill/drain and disposable retention rehearsal; dependent backup/restore/recovery/soak evidence
+Truth boundary:                         no live deletion, production reservation profile, DAZ activation, backup/recovery completion or item-completion claim
+Evidence:                              `qa/live_verification/daz_storage_reservation_retention_contract_20260719.json`

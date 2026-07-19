@@ -17847,13 +17847,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 85,
+      "notes": [
+        {
+          "ts": "2026-07-19T04:37:53+00:00",
+          "actor": "codex",
+          "text": "Implemented inactive exact reservations, v4 durable ledger, closed R0-R7 retention policy, deterministic plans, dry-run-default exact apply, lease/reference/hash/path guards, and scheduler reservation consume/release. Fixture fill/drain and deletion tests pass. Remaining: governed D9-08 measured p95 inputs, bounded live F-drive fill/drain and disposable retention rehearsal, then backup/recovery/soak evidence."
+        }
+      ],
+      "evidence": "qa/live_verification/daz_storage_reservation_retention_contract_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T04:37:53+00:00",
       "orphaned": false
     },
     "MF-P9-12.03": {

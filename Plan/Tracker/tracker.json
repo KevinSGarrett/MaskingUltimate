@@ -1765,12 +1765,17 @@
           "ts": "2026-07-19T21:00:25+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER LIVE 2026-07-19: Doctor re-probe NOT all-green. PASS=7 FAIL=4 WARN=1 after clearing stale gpu.lock and starting Ubuntu. FAIL: torch_cuda/registered_models/wsl_roundtrip (WSL true ~24s > doctor 10s preflight), disk_free ~10.8 GiB (BLOCK ingest). PASS: cvat_api 2.24.0, cvat_project, nuclio pth-sam2, ollama_image, png_strict, sqlite, wsl_backing_store. Smokes: smoke_cvat_sam2=pass; smoke_ollama_vlm=pass. Highest current runtime tier for Docker services: RUNTIME_PASS_BOUNDED (CVAT/Nuclio/Ollama). Doctor all-green = RUNTIME_BLOCKED (disk+WSL latency). SAM 3.1/Meta gates still open."
+        },
+        {
+          "ts": "2026-07-19T21:12:42+00:00",
+          "actor": "hard_visual_qa_climb",
+          "text": "PROOF-TIER 2026-07-19: HARD_QA+VISUAL_QA corpus climb recorded. HARD_QA_PASS_BOUNDED on 14/14 draft instances; VISUAL_QA_PASS_BOUNDED not achieved (defects remain). Doctor all-green still RUNTIME_BLOCKED. Exit remains open for doctor-green + SAM 3.1/Meta gates."
         }
       ],
-      "evidence": "Live doctor 2026-07-19 PASS=7 FAIL=4; qa/reports/cvat_sam2_smoke.json; qa/reports/ollama_vlm_smoke.json; C: ~10.8 GiB free.",
+      "evidence": "Doctor still RUNTIME_BLOCKED (~10.8 GiB disk + WSL latency). Docker CVAT/Nuclio/Ollama RUNTIME_PASS_BOUNDED. Package corpus HARD_QA_PASS_BOUNDED 14/14; VISUAL_QA_REVIEWED_WITH_DEFECTS. Evidence qa/live_verification/hard_visual_qa_corpus_climb_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T21:00:25+00:00",
+      "updated_at": "2026-07-19T21:12:42+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {
@@ -2955,18 +2960,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
+      "percent_complete": 55,
       "notes": [
         {
           "ts": "2026-07-13T10:03:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-13: The complete five-package review queue is ready and hash-evidenced at qa/live_verification/five_single_person_cvat_handoffs_20260713.json. All package workflow states are in_review and all S12 receipts explicitly record human_approved=false."
+        },
+        {
+          "ts": "2026-07-19T21:12:41+00:00",
+          "actor": "hard_visual_qa_climb",
+          "text": "PROOF-TIER 2026-07-19 HARD+VISUAL climb: Corpus drafts HARD_QA_PASS_BOUNDED (14/14 verify-package). Pixel panel review = VISUAL_QA_REVIEWED_WITH_DEFECTS (noise/leak/underfill/garment-bias/multi-person half-fill). Largest-CC noise repair evaluated on img_51945 left_forearm (291 px) then ABSTAIN_BOUNDED (would not clear visual defects; preserve package hashes). Never claim VISUAL_QA_PASS_BOUNDED or human_approved_gold from this wave."
         }
       ],
-      "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: five verified draft packages are in CVAT tasks/jobs 21–25; these specific seed packages become human-anchor gold only after Kevin corrects and approves them. Human-anchor train count remains 0.",
+      "evidence": "HARD_QA_PASS_BOUNDED: uv run maskfactory verify-package --root data/packages --sample 20 -> 14/14 PASS. VISUAL_QA_REVIEWED_WITH_DEFECTS (not VISUAL_QA_PASS_BOUNDED): pixel review of real qa_panels across img_51945db358cb, img_cdab0311dc96, img_e5163e08baac, img_6d6bb33f01a1 p0/p1, img_7b7a3c7d5dd3, img_a3d2663ad90d, img_b2b46c45d8e0, img_2ca794d19be9. Evidence qa/live_verification/hard_visual_qa_corpus_climb_20260719.json sha256 ed0b8aee81950603a487eb1ca174dce338deb28b650a0360fe712629ce4e426e",
+      "blocked_reason": "NEEDS KEVIN: five draft packages remain HARD_QA_PASS_BOUNDED (verify-package 14/14 instance sample PASS) but VISUAL_QA_REVIEWED_WITH_DEFECTS across reviewed panels; human_approved_gold still requires Kevin CVAT correction. Human-anchor train count remains 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:53:53+00:00",
+      "updated_at": "2026-07-19T21:12:41+00:00",
       "orphaned": false
     },
     "MF-P1-08.05": {

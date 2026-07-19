@@ -1,0 +1,524 @@
+{
+  "ts": "2026-07-19T21:12:22.515966+00:00",
+  "lane": "HARD_QA+VISUAL_QA climb on available draft packages",
+  "docker_preflight": {
+    "server": "29.4.3",
+    "cvat_localhost_8080": "2.24.0",
+    "ollama": "0.32.1",
+    "nuclio_pth_sam2": "healthy"
+  },
+  "inventory": [
+    {
+      "image_id": "img_2ca794d19be9",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 14,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_51945db358cb",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 31,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "head_face.png",
+            "left_ankle.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_elbow.png",
+            "left_foot_base.png",
+            "left_forearm.png",
+            "left_hand_base.png",
+            "left_knee.png",
+            "left_shoulder.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "left_wrist.png",
+            "neck.png",
+            "pelvic_region.png",
+            "right_ankle.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_elbow.png",
+            "right_foot_base.png",
+            "right_forearm.png",
+            "right_hand_base.png",
+            "right_knee.png",
+            "right_shoulder.png",
+            "right_thigh.png",
+            "right_upper_arm.png",
+            "right_wrist.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_6d6bb33f01a1",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 14,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        },
+        {
+          "instance": "p1",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 13,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "belly_button.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        },
+        {
+          "instance": "p2",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 15,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_hip.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        },
+        {
+          "instance": "p3",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 14,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_7b7a3c7d5dd3",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 9,
+          "qa_panel_names": [
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png"
+          ]
+        },
+        {
+          "instance": "p1",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 13,
+          "qa_panel_names": [
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        },
+        {
+          "instance": "p2",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 7,
+          "qa_panel_names": [
+            "all_parts.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_upper_arm.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_upper_arm.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_a3d2663ad90d",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 3,
+          "qa_panel_names": [
+            "all_parts.png",
+            "hair.png",
+            "other_person.png"
+          ]
+        },
+        {
+          "instance": "p1",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 3,
+          "qa_panel_names": [
+            "all_parts.png",
+            "hair.png",
+            "other_person.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_b2b46c45d8e0",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 10,
+          "qa_panel_names": [
+            "all_parts.png",
+            "hair.png",
+            "left_calf.png",
+            "left_forearm.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "right_calf.png",
+            "right_forearm.png",
+            "right_thigh.png",
+            "right_upper_arm.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_cdab0311dc96",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 28,
+          "qa_panel_names": [
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "head_face.png",
+            "left_ankle.png",
+            "left_calf.png",
+            "left_elbow.png",
+            "left_foot_base.png",
+            "left_forearm.png",
+            "left_hand_base.png",
+            "left_knee.png",
+            "left_shoulder.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "left_wrist.png",
+            "neck.png",
+            "pelvic_region.png",
+            "right_ankle.png",
+            "right_calf.png",
+            "right_elbow.png",
+            "right_foot_base.png",
+            "right_forearm.png",
+            "right_hand_base.png",
+            "right_knee.png",
+            "right_shoulder.png",
+            "right_thigh.png",
+            "right_upper_arm.png",
+            "right_wrist.png"
+          ]
+        }
+      ]
+    },
+    {
+      "image_id": "img_e5163e08baac",
+      "instances": [
+        {
+          "instance": "p0",
+          "has_source": true,
+          "has_manifest": true,
+          "qa_panel_count": 32,
+          "qa_panel_names": [
+            "abdomen_stomach.png",
+            "all_parts.png",
+            "chest_upper_torso.png",
+            "hair.png",
+            "head_face.png",
+            "left_ankle.png",
+            "left_breast.png",
+            "left_calf.png",
+            "left_elbow.png",
+            "left_foot_base.png",
+            "left_forearm.png",
+            "left_hand_base.png",
+            "left_knee.png",
+            "left_shoulder.png",
+            "left_thigh.png",
+            "left_upper_arm.png",
+            "left_wrist.png",
+            "neck.png",
+            "pelvic_region.png",
+            "right_ankle.png",
+            "right_breast.png",
+            "right_calf.png",
+            "right_elbow.png",
+            "right_foot_base.png",
+            "right_forearm.png",
+            "right_hand_base.png",
+            "right_hip.png",
+            "right_knee.png",
+            "right_shoulder.png",
+            "right_thigh.png",
+            "right_upper_arm.png",
+            "right_wrist.png"
+          ]
+        }
+      ]
+    }
+  ],
+  "hard_qa": {
+    "command": "uv run maskfactory verify-package --root data/packages --sample 20",
+    "discovered_passed": 14,
+    "failed": 0,
+    "packages_pass": [
+      "img_6d6bb33f01a1/instances/p3",
+      "img_7b7a3c7d5dd3/instances/p2",
+      "img_a3d2663ad90d/instances/p1",
+      "img_6d6bb33f01a1/instances/p0",
+      "img_7b7a3c7d5dd3/instances/p0",
+      "img_6d6bb33f01a1/instances/p1",
+      "img_7b7a3c7d5dd3/instances/p1",
+      "img_2ca794d19be9/instances/p0",
+      "img_e5163e08baac/instances/p0",
+      "img_51945db358cb/instances/p0",
+      "img_6d6bb33f01a1/instances/p2",
+      "img_b2b46c45d8e0/instances/p0",
+      "img_a3d2663ad90d/instances/p0",
+      "img_cdab0311dc96/instances/p0"
+    ],
+    "tier": "HARD_QA_PASS_BOUNDED",
+    "note": "Deterministic QC/hash battery PASS on all discovered instance manifests in sample (14/14). Not gold; not VISUAL_QA_PASS."
+  },
+  "visual_qa": {
+    "highest_tier_corpus": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+    "claims_not_established": [
+      "VISUAL_QA_PASS_BOUNDED",
+      "PRODUCTION_EVIDENCE_PASS",
+      "gold",
+      "human_approved_gold",
+      "doctor_all_green"
+    ],
+    "packages": {
+      "img_51945db358cb/p0": {
+        "panels_reviewed": [
+          "all_parts.png",
+          "left_forearm.png",
+          "chest_upper_torso.png"
+        ],
+        "defects": [
+          "all_parts: blocky/polygonal part overlays with gaps between labels; soft hair edges",
+          "left_forearm: binary noise speckles (20 CCs; largest-CC would remove 291 px) + wrist leak; contour line artifact",
+          "chest_upper_torso: garment-biased sports-bra fill; underwear/sock incompleteness; not anatomy-gold"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_cdab0311dc96/p0": {
+        "panels_reviewed": [
+          "all_parts.png",
+          "left_hand_base.png"
+        ],
+        "defects": [
+          "all_parts: fragmented jagged multi-label torso; rectangular noise islands",
+          "left_hand_base: stray vertical binary artifacts; sharp non-anatomical wrist cut"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_e5163e08baac/p0": {
+        "panels_reviewed": [
+          "left_forearm.png",
+          "chest_upper_torso.png"
+        ],
+        "defects": [
+          "left_forearm: severe under-segmentation (tiny elbow/tricep patch only)",
+          "chest_upper_torso: noisy/incomplete swimsuit torso mask with holes"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_6d6bb33f01a1/p0": {
+        "panels_reviewed": [
+          "all_parts.png"
+        ],
+        "defects": [
+          "jagged abdomen split; purple island on chest; knee magenta artifacts; artificial vertical limb split"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_6d6bb33f01a1/p1": {
+        "panels_reviewed": [
+          "all_parts.png"
+        ],
+        "defects": [
+          "midriff salt-pepper fragmentation; face fragments; horizontal scan artifacts on leg"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_7b7a3c7d5dd3/p0": {
+        "panels_reviewed": [
+          "all_parts.png"
+        ],
+        "defects": [
+          "torso high-frequency noise spray; knee hole; shoulder dithering"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_a3d2663ad90d/p0": {
+        "panels_reviewed": [
+          "all_parts.png"
+        ],
+        "defects": [
+          "half-body pink fill with jagged vertical cut; inter-character leakage; incomplete multi-person coverage"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_b2b46c45d8e0/p0": {
+        "panels_reviewed": [
+          "left_forearm.png"
+        ],
+        "defects": [
+          "forearm mask includes unintended hip/trunk triangle; exclusivity/ontology bleed"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+      },
+      "img_2ca794d19be9/p0": {
+        "panels_reviewed": [
+          "left_forearm.png",
+          "chest_upper_torso.png"
+        ],
+        "defects": [
+          "prior wave: forearm speckles/leak; chest garment bias"
+        ],
+        "tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+        "prior_evidence": "qa/live_verification/visual_qa_img_2ca794d19be9_20260719.json"
+      }
+    },
+    "repair_abstention": {
+      "attempt": "largest_connected_component keep on left_forearm binary tile (img_51945db358cb/p0)",
+      "components_before": 20,
+      "noise_pixels_removable": 291,
+      "applied_to_package": false,
+      "reason_abstain": "Noise cleanup alone does not clear boundary/garment defects; mutating draft without full re-package+verify would risk corrupting HARD_QA hashes. Autonomous abstention recorded.",
+      "outcome": "ABSTAIN_BOUNDED"
+    }
+  },
+  "panel_sha256_selected": {
+    "img_51945db358cb/p0/qa_panels/all_parts.png": "f98a6664c016fbf072b6cfebc7df39a528bd16c519bb9db9d6579d16b54a71e8",
+    "img_51945db358cb/p0/qa_panels/chest_upper_torso.png": "36a5afe020212821e91e64f8c737d4411585afeb6f91a0d76eb04d819ceada9f",
+    "img_51945db358cb/p0/qa_panels/left_forearm.png": "e7a55cde68e4daacd87923e328053a44e32423b86b02f4dc0caafe096d6d6404",
+    "img_6d6bb33f01a1/p0/qa_panels/all_parts.png": "4533bbb8ac2a7f9994e5f725f4363a8b4df2ba47929b236156522d01cd7af9b5",
+    "img_6d6bb33f01a1/p1/qa_panels/all_parts.png": "7ca35bf2db298457d14f8cf1715e236981d78deb88273f82da96dfa1edd2d0b7",
+    "img_7b7a3c7d5dd3/p0/qa_panels/all_parts.png": "13ef373d5afd831bb0cb85737a97699ee35a637d05b1518cf257a4efa7896ccb",
+    "img_a3d2663ad90d/p0/qa_panels/all_parts.png": "5bcec838b417e30784b6bdc4f410410d0f371d11007b4e70a2b7251b82a84dd5",
+    "img_b2b46c45d8e0/p0/qa_panels/left_forearm.png": "0e7c51429e68f624271c5aa58bbc1f3b915ca2bbe2cc7c5e9f2b42346fb9a08d",
+    "img_cdab0311dc96/p0/qa_panels/all_parts.png": "5459f3fb1a9a65eb275e6bc9009ab4654952a0a6b2c580082bb60a0ac5bca7d4",
+    "img_cdab0311dc96/p0/qa_panels/left_hand_base.png": "d5e018462b5efda29efd0203bada4557c7d23e64ea456d2d33a6a574a63b2080",
+    "img_e5163e08baac/p0/qa_panels/chest_upper_torso.png": "c24a3525fb014be38b57d278eccd2964add614406421dbbb32cf2a3029d8075e",
+    "img_e5163e08baac/p0/qa_panels/left_forearm.png": "2be80ea3aa572e1f327f2b4911ead926cbe6d53427e3a308049ac420ce6c00f0"
+  },
+  "blockers": [
+    "VISUAL_QA_PASS_BOUNDED blocked: residual mask noise/leak/underfill/garment-bias across all reviewed drafts",
+    "doctor RUNTIME_BLOCKED: C: disk ~10.8 GiB; WSL preflight latency",
+    "P6-11/12 AWAITING_MAIN (STATIC_PASS only)",
+    "human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)"
+  ]
+}

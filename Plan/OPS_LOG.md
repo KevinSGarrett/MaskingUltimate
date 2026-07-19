@@ -7678,3 +7678,16 @@ Execution gap:                          no adopted immutable package/wrapper, in
 Prepared scope:                         `MF-CURSOR-12.02-MODE-A-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no production authority, Main execution, real vertical slice, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_mode_a_vertical_slice_gap_audit_20260719.json`
+
+## 2026-07-19 03:22 UTC - Multi-person vetoes strong; real overlapping Mode A slice absent
+
+**Result:** MF-P6-12.03 receives 30% producer multi-person safety credit and remains blocked
+behind MF-P6-12.02 plus missing Main/ComfyUI two-person execution.
+
+Verified foundation:                   ownership/protected-owner/transform identity rejection, distinct p0/p1 reads/workflows, cross-person bleed, protected/exclusive overlap, assignment, contact/occlusion reciprocity and scope hard vetoes
+Focused validation:                    20 bridge/package/multi-person gate tests pass; Ruff passes
+Missing slice:                          no adopted overlapping/contact package with exact character instances, skeleton/ownership/protected catalogs and transforms; no Main execution receipt or zero-ambiguity result exists
+Fault boundary:                         seeded producer unit faults block, but no wrong-person/cross-instance fault has traversed the real adapter and downstream workflow
+Prepared scope:                         `MF-CURSOR-12.03-MULTI-PERSON-MODE-A-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no cross-project execution, real accepted output, production authority, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_multi_person_mode_a_vertical_slice_gap_audit_20260719.json`

@@ -7743,3 +7743,16 @@ Missing demonstration:                  no governed runner/report/schema/policy/
 Prepared scope:                         `MF-CURSOR-08.08-AUTONOMOUS-GOLD-DEMONSTRATION`; five additive paths remain absent; held until prerequisites resolve and worker lanes are qualified
 Truth boundary:                         no production certificate/revocation, mask approval, runtime/worker mutation, autonomous-gold readiness or item completion claim
 Evidence:                              `qa/live_verification/autonomous_gold_demonstration_gap_audit_20260719.json`
+
+## 2026-07-19 03:47 UTC - Bounded 8765 recovery stopped at WSL preflight
+
+**Result:** The requested pinned-runtime service recovery did not launch because an exact
+`Ubuntu-22.04` `/bin/true` canary timed out below the interpreter/service boundary.
+
+Initial state:                         Windows health timed out; no port 8765 listener; no `runs/gpu.lock`
+Exact canary:                          command-line-verified `wsl.exe -d Ubuntu-22.04 -- /bin/true`; owned client PID 45284 timed out after 10 seconds and was stopped
+Import/service boundary:               pinned interpreter imports were not established and the service was not launched; no unqualified Python was substituted
+Cleanup:                               exact owned canary PIDs are absent; port 8765 and GPU lock remain absent; Docker Desktop WSL processes were not touched
+Control boundary:                      scheduled maintenance and worker lanes remain disabled; no restart/terminate/service/UI action was attempted
+Truth boundary:                        local MF-P6-11.07 runtime preflight block only; overall MaskFactory goal remains active and no service-health/failure-control/prediction claim is made
+Evidence:                              `qa/live_verification/maskfactory_service_preflight_block_20260719T0347Z.json`

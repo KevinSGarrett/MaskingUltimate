@@ -19641,12 +19641,17 @@
           "ts": "2026-07-19T02:09:12+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 audit credits 40% for the closed 37-code error matrix, signed deadline/resource/retry/no-fallback request fields, receipt-side envelope checks, circuit lifecycle vocabulary, GPU serialization/lease, draft-only authority, and output-shape rejection. Direct probes show expired and 1ms/0-VRAM signed requests still validate, the node uses one fixed 120s call, and live API errors are generic. Prepared additive producer conformance unit MF-CURSOR-11.07-FAILURE-CONTROL-CONFORMANCE; not dispatched."
+        },
+        {
+          "ts": "2026-07-19T03:49:24+00:00",
+          "actor": "codex",
+          "text": "2026-07-19 03:47 UTC bounded service recovery: Windows 8765 health timed out with no listener or GPU lock. A command-line-verified wsl.exe -d Ubuntu-22.04 -- /bin/true canary timed out after 10 seconds; only owned client PID 45284 was stopped and confirmed absent. Pinned interpreter imports were not established and service was not launched. This is an item-local runtime preflight block only; 40% implementation credit and overall active goal are unchanged. Evidence: qa/live_verification/maskfactory_service_preflight_block_20260719T0347Z.json"
         }
       ],
       "evidence": "qa/live_verification/bridge_failure_control_gap_audit_20260719.json",
       "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-09.06, MF-P6-11.03, and MF-P6-11.06 are not accepted. Frozen request/error/event policy is strict, but no contract-native typed failure exchange, bounded retry engine, circuit state, admission-time deadline/resource enforcement, signed scoped Main DAG block, or outage/OOM/timeout/incompatible-authority fault matrix exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T02:09:12+00:00",
+      "updated_at": "2026-07-19T03:49:24+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {

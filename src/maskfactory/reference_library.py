@@ -519,6 +519,7 @@ def materialize_reference_tier(
         raise ReferenceLibraryError(f"reference materialization database failure: {exc}") from exc
     finally:
         connection.close()
+    complete = remaining == 0 and not issues and capacity_hold is None
     return {
         "schema_version": "1.0.0",
         "database": str(database),
@@ -528,8 +529,13 @@ def materialize_reference_tier(
         "reused_this_chunk": reused,
         "materialized_count": materialized,
         "remaining_count": remaining,
-        "complete": remaining == 0 and not issues,
+        "complete": complete,
         "capacity_hold": capacity_hold,
+        "capacity_held": capacity_hold is not None,
+        "honest_status": (
+            "capacity_held_incomplete" if capacity_hold is not None else "capacity_not_held"
+        ),
+        "materialization_complete_claim_allowed": complete,
         "issues": issues,
         "source_files_modified": 0,
     }

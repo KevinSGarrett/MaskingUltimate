@@ -18684,12 +18684,17 @@
           "ts": "2026-07-19T21:44:05+00:00",
           "actor": "ai_agent",
           "text": "STATIC 2026-07-19: no retrieval materialization; 18k copies still capacity-held under 150 GiB soft floor. Benchmark 2500 + contact sheets remain prior evidence only. No disk-heavy advance."
+        },
+        {
+          "ts": "2026-07-19T22:53:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: leakage/authority/index static gates + capacity-held portfolio honesty (retrieval 0/18000 under 150 GiB soft floor). No 83k corpus copy; no retrieval materialization. Evidence qa/live_verification/reference_library_static_gates_20260719.json."
         }
       ],
       "evidence": "Benchmark materialization remains 2,500/2,500 and 7,897,306,748 verified bytes with fingerprint 5e1bd31cbf1697f3e2dbe41dfe7c0e96f9064bda001739d5e05393f0d7dac401. Contact-sheet stage created 93/93, failed 0, totaling 49,258,640 bytes with aggregate fingerprint 92afaeef45789095f25074ac03cac18f501d149096ba33c624392d342422200a. Post-stage published SQLite snapshot quick-check passes at SHA-256 a6b3250251b1b0371eb85cb050fb24c20316ce07970d1786efec6889982e216b. Retrieval materialization remains 0/18,000 because it would cross the 150-GiB soft floor. 1,762/1,762 full tests pass. Evidence: qa/reports/reference_benchmark_materialization_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T21:44:05+00:00",
+      "updated_at": "2026-07-19T22:53:00+00:00",
       "orphaned": false
     },
     "MF-P9-14.07": {
@@ -18716,12 +18721,17 @@
           "ts": "2026-07-16T09:35:31+00:00",
           "actor": "ai_agent",
           "text": "The conservative dHash-only veto is intentionally a superset of the reference near-duplicate rule: embedding confirmation is not required to reject possible benchmark leakage."
+        },
+        {
+          "ts": "2026-07-19T22:53:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: isolation receipt contract centralized in reference_library_static_gates and wired into training launcher require_isolation_receipt; fixture fingerprint binding preserved. No corpus copy."
         }
       ],
       "evidence": "Canonical dataset build now requires the frozen reference database, computes the exact reference 9x8 bilinear dHash for every train/val/calibration/holdout source, and blocks normalized-path, SHA-256, or conservative dHash-Hamming<=3 overlap before creating the dataset destination. Missing identity/partition fails closed. Accepted builds bind the exact 2,500-row benchmark fingerprint c577bbd85760705fd48d86d7668f2a4190832436cfae150afe7049258eb1635e; the training launcher independently refuses absent/failed/drifted receipts. 34 focused and 1,758 full tests pass. Evidence: qa/reports/reference_benchmark_isolation_gate_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T09:35:31+00:00",
+      "updated_at": "2026-07-19T22:53:00+00:00",
       "orphaned": false
     },
     "MF-P9-14.08": {
@@ -18775,12 +18785,17 @@
           "ts": "2026-07-16T11:08:49+00:00",
           "actor": "ai_agent",
           "text": "The exact live benchmark is now frozen and its first drift/coverage report passes with zero drift. Completion remains withheld solely because declared prerequisite MF-P9-14.06 is still partial while retrieval duplication is capacity-held."
+        },
+        {
+          "ts": "2026-07-19T22:53:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: versioning/drift remain implementation-complete; completion still withheld solely because MF-P9-14.06 retrieval duplication is capacity-held. Static gates bind frozen inventory/selection/isolation identities without re-walking F:."
         }
       ],
       "evidence": "Frozen version benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c binds 2,500 independently rehashed files, content digest 7b36cdbe3b8795a8dfe38d1cbde013d6febce8ad6f06651060c504ca3300c1e1, manifest SHA-256 dc672223b823ce8265db61f8bc842a4e463486c5e3cbd52101d89a19f3d12600, and materialized fingerprint 5e1bd31cbf1697f3e2dbe41dfe7c0e96f9064bda001739d5e05393f0d7dac401. The active manifest is configured. First append-only drift report SHA-256 1ceed034a4879016e90b0368ccf2c6f070a152227c4b9c3f8d045ed17cebea75 passes with identical frozen/current digest, zero issues, zero coverage deltas, and 2,500 members. Weekly active learning emits future reports. 1,762/1,762 full tests pass. Evidence: qa/reports/reference_benchmark_versioning_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T11:08:49+00:00",
+      "updated_at": "2026-07-19T22:53:00+00:00",
       "orphaned": false
     },
     "MF-P9-15.01": {

@@ -9193,3 +9193,34 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 - No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+
+
+## 2026-07-19 22:53 UTC - STATIC reference-library leakage/authority/index gates
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/fixtures/evidence only)
+**Items:** MF-P9-14.06 (50% partial, capacity-held); MF-P9-14.07 note; MF-P9-14.09 (95% partial, held by 14.06)
+**Result:** STATIC_PASS only - never gold; no doctor-green; no 83k corpus copy; no 18k retrieval materialization; no MF-P9-14.06/14.09 complete claim
+
+### What landed
+- `src/maskfactory/reference_library_static_gates.py`: index progress, inventory claim (frozen 83422/69398 bindings without re-walk), authority surface, isolation receipt, materialization honesty, capacity-held portfolio contracts
+- Training launcher uses `require_isolation_receipt` for frozen reference-benchmark isolation
+- Materialize reports expose `capacity_held` / `honest_status` / `materialization_complete_claim_allowed`
+- Fixtures: `qa/fixtures/reference_library_static/`
+- Evidence: `qa/live_verification/reference_library_static_gates_20260719.json` sha256 `74aa51cbdc16e30916140f1ef5a64a8de1b70d86262343b2e665b3baffddaee8`
+
+### Capacity honesty
+- Benchmark 2500 + contact sheets remain prior evidence only
+- Retrieval remains 0/18000 under 150 GiB soft floor (`mf_p9_14_06_complete_claim_allowed=false`)
+- Partial retrieval copies refused as non-governed posture
+
+### Focused tests
+`pytest` reference_library_static_gates + reference_library + training_launch: 26 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No full 83k corpus walk/copy
+- No retrieval 18k materialization / no disk-floor breach
+- No MF-P9-14.06 or MF-P9-14.09 completion
+- No truth/training authority for unlabeled references
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal

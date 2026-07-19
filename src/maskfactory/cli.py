@@ -8888,6 +8888,100 @@ def daz_recovery_matrix(
         raise click.exceptions.Exit(77)
 
 
+@daz_recovery.command("reconstruct-history")
+@click.option(
+    "--source-database",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--path-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--target-database",
+    type=click.Path(path_type=Path, dir_okay=False),
+    required=True,
+)
+@click.option("--manifest-output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--registry-view-output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--manifest-set-id", required=True)
+@click.option("--captured-at", required=True, help="Timezone-aware ISO-8601 evidence time.")
+@click.option(
+    "--apply",
+    "apply_changes",
+    is_flag=True,
+    help="Build a new database and publish the sealed evidence; default is read-only.",
+)
+def daz_recovery_reconstruct_history(
+    source_database: Path,
+    path_registry: Path,
+    target_database: Path,
+    manifest_output: Path | None,
+    registry_view_output: Path | None,
+    manifest_set_id: str,
+    captured_at: str,
+    apply_changes: bool,
+) -> None:
+    """Rebuild queue/package history into a clean database from sealed inputs."""
+    from datetime import datetime
+
+    from .daz import (
+        build_reconstruction_manifest_set,
+        plan_history_reconstruction,
+        publish_reconstruction_manifest_set,
+        reconstruct_history_to_clean_database,
+        result_envelope,
+    )
+
+    try:
+        captured = datetime.fromisoformat(captured_at.replace("Z", "+00:00"))
+        manifest = build_reconstruction_manifest_set(
+            source_database,
+            path_registry,
+            manifest_set_id=manifest_set_id,
+            captured_at=captured,
+        )
+        if apply_changes:
+            if manifest_output is None or registry_view_output is None:
+                raise ValueError(
+                    "--manifest-output and --registry-view-output are required with --apply"
+                )
+            reconstruction = reconstruct_history_to_clean_database(
+                source_database,
+                path_registry,
+                target_database,
+                manifest,
+                registry_view_path=registry_view_output,
+            )
+            publication = publish_reconstruction_manifest_set(manifest, manifest_output)
+            reason = "daz_history_reconstruction_passed"
+        else:
+            reconstruction = plan_history_reconstruction(
+                source_database, path_registry, target_database, manifest
+            )
+            publication = {
+                "published": False,
+                "path": str(manifest_output) if manifest_output is not None else None,
+            }
+            reason = "daz_history_reconstruction_plan"
+        report = result_envelope(
+            reason=reason,
+            entity_ids=(manifest_set_id, str(manifest["manifest_set_sha256"])),
+            evidence_paths=(str(source_database), str(path_registry)),
+            data={
+                "apply": apply_changes,
+                "manifest_set": manifest,
+                "publication": publication,
+                "reconstruction": reconstruction,
+            },
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
 @daz_failure_campaign.command("run")
 @click.option(
     "--config-root",

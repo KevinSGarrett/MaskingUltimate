@@ -57,6 +57,13 @@ from .policy import (
     validate_synthetic_share,
 )
 from .protocol import DazJobFiles, prepare_job_files, read_terminal_result, stage_recipe
+from .reconstruction import (
+    build_reconstruction_manifest_set,
+    plan_history_reconstruction,
+    publish_reconstruction_manifest_set,
+    reconstruct_history_to_clean_database,
+    validate_reconstruction_manifest_set,
+)
 from .recovery import (
     RETENTION_TO_RECOVERY_TIER,
     RecoveryPolicy,
@@ -133,6 +140,7 @@ __all__ = [
     "build_daz_command",
     "build_retention_plan",
     "build_recovery_records_from_state",
+    "build_reconstruction_manifest_set",
     "daz_foundation_doctor",
     "collect_monitoring_snapshot",
     "create_tier_a_backup",
@@ -163,10 +171,13 @@ __all__ = [
     "query_descendants",
     "register_downstream_artifact",
     "register_retention_artifact",
+    "reconstruct_history_to_clean_database",
     "operation_timeout",
     "prepare_job_files",
     "plan_failure_campaign",
+    "plan_history_reconstruction",
     "publish_recovery_matrix",
+    "publish_reconstruction_manifest_set",
     "read_terminal_result",
     "running_daz_processes",
     "result_envelope",
@@ -183,6 +194,7 @@ __all__ = [
     "run_failure_campaign",
     "validate_daz_configuration",
     "validate_monitoring_snapshot",
+    "validate_reconstruction_manifest_set",
     "verify_tier_a_backup",
     "validate_synthetic_authority",
     "validate_synthetic_share",

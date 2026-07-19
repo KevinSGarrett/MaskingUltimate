@@ -18028,13 +18028,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-19T06:47:40+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented sealed manifest-set generation, strict event replay, new-target v4/WAL reconstruction, table/integrity comparison, sealed registry-view publication, immutable manifest publication, and dry-run-default CLI. Remains open pending D11-07 seven-day soak plus real Tier-A clean-root registry/mapping/recipe/Tier-B/package/lineage replay."
+        }
+      ],
+      "evidence": "qa/live_verification/daz_clean_root_history_reconstruction_20260719.json; 8 focused reconstruction tests and full 1,342-test DAZ suite pass; Ruff/format/diff clean",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T06:47:40+00:00",
       "orphaned": false
     },
     "MF-P9-12.09": {

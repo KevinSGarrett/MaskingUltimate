@@ -1786,12 +1786,17 @@
           "ts": "2026-07-19T22:29:21+00:00",
           "actor": "milestone_proof_tiers",
           "text": "MILESTONE 2026-07-19 cross-ref: milestone_proof_tiers_20260719.json — doctor_all_green still RUNTIME_BLOCKED (Kevin disk + WSL). Bounded CVAT/Nuclio/Ollama smokes remain RUNTIME_PASS_BOUNDED only."
+        },
+        {
+          "ts": "2026-07-19T23:35:13+00:00",
+          "actor": "milestone_proof_tiers",
+          "text": "MILESTONE refresh 2026-07-19 r2: doctor_all_green still RUNTIME_BLOCKED (Kevin disk ~30.8 GiB <75; WSL). Bounded CVAT/Nuclio/Ollama remain RUNTIME_PASS_BOUNDED only. Evidence: milestone_proof_tiers_20260719.json self_sha256=2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349."
         }
       ],
       "evidence": "Doctor still RUNTIME_BLOCKED (~10.8 GiB disk + WSL latency). Docker CVAT/Nuclio/Ollama RUNTIME_PASS_BOUNDED. Package corpus HARD_QA_PASS_BOUNDED 14/14; VISUAL_QA_REVIEWED_WITH_DEFECTS. Evidence qa/live_verification/hard_visual_qa_corpus_climb_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T22:29:21+00:00",
+      "updated_at": "2026-07-19T23:35:13+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {
@@ -20927,12 +20932,17 @@
           "ts": "2026-07-19T22:29:20+00:00",
           "actor": "milestone_proof_tiers",
           "text": "MILESTONE 2026-07-19 cross-ref: milestone_proof_tiers_20260719.json — Mode B health/models RUNTIME_PASS_BOUNDED (champions=0); predict/refine AWAITING_RUNTIME; draft-provider path STATIC_BLOCKED_BY_POLICY. Item remains blocked/incomplete."
+        },
+        {
+          "ts": "2026-07-19T23:35:13+00:00",
+          "actor": "milestone_proof_tiers",
+          "text": "MILESTONE refresh 2026-07-19 r2: qa/live_verification/milestone_proof_tiers_20260719.json self_sha256=2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349. Post-STATIC inventory; health/models RUNTIME_PASS_BOUNDED (champions=0); predict/refine AWAITING_RUNTIME unchanged. No PRODUCTION_EVIDENCE_PASS."
         }
       ],
       "evidence": "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json self_sha256=edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3",
       "blocked_reason": "LIVE/CROSS-PROJECT + POLICY: /health+/models RUNTIME_PASS_BOUNDED (champions=0). Predict AWAITING_RUNTIME: no temporary draft/incumbent serving role — serving predictor may load champion_* only; create_production_runtime leaves predictor unconfigured until complete measured champion set; HTTP 503 champion prediction provider is not configured. Force-register forbidden (would invent champion win). Refine AWAITING_RUNTIME (prior on-demand load timeout). MF-P6-11.03/11.07 incomplete. claim_boundary.mf_p6_12_04_complete=false. Evidence: mode_b_predict_draft_provider_policy_blocker_20260719.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T22:29:20+00:00",
+      "updated_at": "2026-07-19T23:35:13+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {
@@ -21031,12 +21041,17 @@
           "ts": "2026-07-19T22:29:19+00:00",
           "actor": "milestone_proof_tiers",
           "text": "MILESTONE 2026-07-19: Durable proof-tier freeze qa/live_verification/milestone_proof_tiers_20260719.json self_sha256=135ad8e5e40f3692f058ae5c039842fe49f2c30a8c05247f7bd430f7ae20d9b1. core_autonomous_runtime remains blocked. Profile highest=STATIC_PASS; live ceilings RUNTIME_PASS_BOUNDED (CVAT/Nuclio/Ollama; Mode B health/models champions=0). Predict/refine AWAITING_RUNTIME. Bridge AWAITING_MAIN. doctor RUNTIME_BLOCKED (Kevin disk <75 GiB). Visual VISUAL_QA_REVIEWED_WITH_DEFECTS only. No PRODUCTION_EVIDENCE_PASS / core close."
+        },
+        {
+          "ts": "2026-07-19T23:35:13+00:00",
+          "actor": "milestone_proof_tiers",
+          "text": "MILESTONE refresh 2026-07-19 r2: core_autonomous_runtime remains blocked. Profile highest=STATIC_PASS; live ceilings RUNTIME_PASS_BOUNDED only. STATIC portfolio waves inventoried without tier inflation. Evidence: milestone_proof_tiers_20260719.json self_sha256=2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_final_release_handoff.py. production_core_close_authorized=false.",
       "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.05 unresolved. Final-release handoff fixtures only; no final producer runtime release, Main adoption receipt, or met core_autonomous_runtime.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T22:29:19+00:00",
+      "updated_at": "2026-07-19T23:35:13+00:00",
       "orphaned": false
     }
   }

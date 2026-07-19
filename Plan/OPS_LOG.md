@@ -9466,3 +9466,43 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 - No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; vlmqa seal-cloud-teacher-static; verify-training-static-gates; git commit/push
+
+## 2026-07-19 23:34 UTC - Milestone proof-tier refresh (post-STATIC waves)
+
+**Lane:** Durable milestone report only (no tier inflation; no status promotions)
+**Artifact:** qa/live_verification/milestone_proof_tiers_20260719.json revision post_static_portfolio_waves_r2
+**self_sha256:** 2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349
+**Supersedes:** 135ad8e5e40f3692f058ae5c039842fe49f2c30a8c05247f7bd430f7ae20d9b1
+**project_head_at_authoring:** 489cce6cc3243c2d8506220c71f1cd20ded7fa16
+
+### Profile (unchanged ceilings)
+| Profile | Status | Highest tier claimed |
+|---|---|---|
+| core_autonomous_runtime | blocked | STATIC_PASS (profile); live surfaces up to RUNTIME_PASS_BOUNDED only |
+| Production / Main close | not claimed | PRODUCTION_EVIDENCE_PASS absent |
+
+### Key surfaces (honest ceilings after STATIC portfolio)
+| Surface | Highest tier | Exact blockers |
+|---|---|---|
+| doctor_all_green | RUNTIME_BLOCKED | Kevin disk C: ~23-31 GiB current ~30.8 GiB <75 ingest; WSL cold/aborted registered_models |
+| CVAT 2.24 / Nuclio SAM2 / Ollama VLM smokes | RUNTIME_PASS_BOUNDED | bound to local smoke only |
+| Mode B /health+/models | RUNTIME_PASS_BOUNDED | champions=0 |
+| Mode B /predict | AWAITING_RUNTIME | champions=0; HTTP 503; draft provider policy forbid |
+| Mode B /refine | AWAITING_RUNTIME | on-demand load timeout under disk pressure |
+| Bridge P6-11/12 (except 12.01) | STATIC_PASS / AWAITING_MAIN | no Main adoption / PRODUCTION_EVIDENCE_PASS |
+| serving_static_contracts / training_static_gates / cloud_teacher / failure_mining / multi_person / DAZ binders | STATIC_PASS | never live predict, gold, paid cloud, DAZ Studio, or Main-complete |
+| Package hard QA (repaired sample) | HARD_QA_PASS_BOUNDED | not gold |
+| Package visual QA | VISUAL_QA_REVIEWED_WITH_DEFECTS | garment/underfill/bleed/half-fill residual |
+| human_approved_gold | blocked | NEEDS KEVIN CVAT (MF-P1-08.*) |
+
+### Post-freeze STATIC waves inventoried (STATIC_PASS only)
+- serving_static_contracts, failure_mining_static, multi_person_static_contracts
+- daz procedural primitive / worker isolation / 100 engineering fixtures / selective autonomy hard gates
+- training_static_gates (certified_count=0), cloud_teacher_static (no paid calls)
+
+### Honest non-claims
+- No core_autonomous_runtime complete
+- No doctor-green, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, or invented champion win
+- STATIC portfolio binders do not advance AWAITING_MAIN or champions
+
+**Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification seals; OPS_LOG append; commit milestone + OPS_LOG

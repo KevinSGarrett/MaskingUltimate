@@ -7652,3 +7652,16 @@ Build nuance:                            Conda YAML pins wheel/setuptools, but p
 Prepared scope:                         `MF-CURSOR-10.04-REPRODUCIBLE-RELEASE-INSTALLATION`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no reproducible package, trusted release-root install, atomic recovery, rollback, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_release_installation_gap_revalidation_20260719.json`
+
+## 2026-07-19 03:14 UTC - Node/workflow copy exact; integration release still unpublished
+
+**Result:** MF-P6-12.01 receives 15% isolated-copy foundation credit and remains blocked behind
+MF-P6-10.04/11.08 plus missing integration-release publication and clean-install acceptance.
+
+Verified foundation:                   isolated temporary install copies exactly 8 node/workflow paths and SHA-256 values; loopback config is deterministic; supplied release-root validator rejects unmanifested catalog bytes
+Focused validation:                    2 installer/release-byte-closure tests pass; Ruff passes
+Required negative failure:              seeded `stale_unpublished_node.py` survives reinstall; installed pack has no manifest, schemas or OpenAPI artifact
+Release boundary:                       current worktree is intentionally dirty only in preserved MF-P6-08.05 scope, so it cannot be consumed as clean production authority; no integration publisher exists
+Prepared scope:                         `MF-CURSOR-12.01-INTEGRATION-RELEASE-ACCEPTANCE`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no release publication, clean installed parity, stale-node rejection, atomic activation/rollback, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_integration_release_gap_audit_20260719.json`

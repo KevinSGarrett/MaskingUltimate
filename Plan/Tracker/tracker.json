@@ -18972,12 +18972,17 @@
           "ts": "2026-07-19T00:28:56+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 independent revalidation: 3 bridge invalidation/certificate tests + 6 legacy operations tests, Ruff, and schema parsing pass. Production probe proves a valid targeting event does not affect the independently valid certificate because the validator accepts no current invalidation state. Honest foundation credit 50%; item-only block, overall goal active. Evidence: qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json"
+        },
+        {
+          "ts": "2026-07-19T00:47:31+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 worker terminal reconciliation: request ...e143d970 is FAIL/AI_WORKER_RETRY_BUDGET_EXHAUSTED after isolated worktree materialization timeout. Signed evidence proves zero worker artifacts, zero scope mutations, unchanged scope, and adoption NOT_APPLICABLE. No completion credit added. Evidence: qa/live_verification/invalidation_worker_terminal_reconciliation_20260719.json"
         }
       ],
       "evidence": null,
-      "blocked_reason": "WORKER CONTROL: verified invalidation foundations exist, but no at-use operational certificate decision applies current signed events/journal head or live pipeline/ontology/policy/provider lifecycle. Existing request ...e143d970 is nonterminal after PREP worktree-materialization timeout, has no provider result, permits frozen v1 schema/fixture mutation, and uses the wrong project packet root. Authorized control must terminalize it and reissue an additive frozen-v1-preserving exact-task unit; do not duplicate in Codex.",
+      "blocked_reason": "WORKER CONTROL: verified invalidation foundations exist, but no at-use operational decision applies current signed events/journal state or live dependency drift. Request ...e143d970 is terminal FAIL with no provider artifact and obsolete frozen-v1-permitting scope. Reissue a correctly rooted additive frozen-v1-preserving exact-task request; do not wake or duplicate the terminal request or implement it directly in Codex.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T00:28:56+00:00",
+      "updated_at": "2026-07-19T00:47:31+00:00",
       "orphaned": false
     },
     "MF-P6-08.08": {

@@ -7332,3 +7332,16 @@ Worker chain:                           intent `...1de087de`; Claude preflight `
 Disposition:                            40% foundation credit; item-only block behind MF-P6-08.05 and a correctly rooted signed high-assurance chain; overall goal and independent work remain active
 Truth boundary:                        no rejected/queued worker bytes adopted; no operational repair, certificate, release, or Main adoption claim
 Evidence:                              `qa/live_verification/bounded_operational_repair_gap_revalidation_20260719.json`
+
+## 2026-07-19 00:47 UTC - MF-P6-08.07 Cursor request terminalized without artifacts
+
+**Result:** The post-restart invalidation request is terminal `FAIL`; there is no worker result to
+adopt, and its signed dispatch record correctly says `NOT_APPLICABLE` for adoption.
+
+Request:                               `p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970`, exact origin task and base `093b9b1d`
+Terminal classification:               `AI_WORKER_RETRY_BUDGET_EXHAUSTED` after isolated worktree materialization exceeded 120 seconds
+Acceptance review:                      zero worker artifacts, zero scope mutations, scope state unchanged, no retained review worktree, zero completion credit
+Signed correlation:                     request/signature, dispatch/signature, and dispatcher failure evidence hashes captured; recorded and observed failure-evidence hashes match
+Scope defect preserved:                 obsolete request permitted a frozen v1 invalidation schema and positive fixture, but neither changed; any replacement must be additive and exclude all frozen v1 bytes
+Disposition:                            adoption `NOT_APPLICABLE`; do not wake or duplicate the terminal request; MF-P6-08.07 remains item-blocked at 50% pending a correctly rooted additive request
+Evidence:                              `qa/live_verification/invalidation_worker_terminal_reconciliation_20260719.json`

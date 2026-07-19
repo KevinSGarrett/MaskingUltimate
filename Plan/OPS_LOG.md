@@ -7613,3 +7613,16 @@ Missing publisher:                      no actual Git/worktree observation, excl
 Prepared scope:                         `MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no production release publication, clean-build/install/rollback proof, runtime/worker action, or hard-blocker completion claim
 Evidence:                              `qa/live_verification/bridge_release_publication_gap_revalidation_20260719.json`
+
+## 2026-07-19 03:02 UTC - Capability declaration strict; qualification authority unresolved
+
+**Result:** MF-P6-10.02 receives 50% structural/semantic foundation credit and remains blocked
+behind MF-P6-10.01 plus its missing authoritative qualification decision.
+
+Verified foundation:                   strict canonical top-level snapshot, typed route/runtime/hardware/qualification identities, lifecycle/health/mode consistency, expiry shape, fixture firewall and honest partial-library representation
+Focused validation:                    3 positive/adoption/fixture-firewall tests pass; Ruff passes; all governing hashes match the accepted 2026-07-18 audit
+Fresh trusted gaps:                     changed model bytes with stale stack hash, invented certificate ID, performance dated 2000 and invented champion identity all validate after recomputing only snapshot hash
+Missing authority:                      no installed-byte/stack recomputation, trusted benchmark certificate resolution, independent contextual ledger, newcomer-to-challenger rule, atomic promotion or tested rollback binding
+Prepared scope:                         `MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no provider qualification/promotion, model-library activation, release publication, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_capability_snapshot_gap_revalidation_20260719.json`

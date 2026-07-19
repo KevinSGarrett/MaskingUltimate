@@ -7561,3 +7561,16 @@ Cache boundary:                         receipt has no cache fields and no artif
 Prepared scope:                         `MF-CURSOR-09.04-ARTIFACT-CONSUMPTION-BINDING`; four additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no actual-byte consumption, provider/QA recomputation, freshness/tombstone, cache authorization, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_artifact_binding_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:47 UTC - Use observation fields exist; independent eligibility decisions absent
+
+**Result:** Hard-blocker MF-P6-09.05 receives 45% wire/lattice foundation credit and remains blocked
+behind MF-P6-09.04 plus producer/Main recomputation work.
+
+Verified foundation:                   frozen receipt requires named/hash-bound policy, authority floor, exact use scope, eligibility and reasons; rank guard rejects eligible success below the declared floor; completed authority lattice separates access/operational/training truth and prevents non-producer grants
+Focused validation:                    26 receipt/authority-lattice tests pass; Ruff passes; governing hashes match the accepted 2026-07-18 audit
+Trusted gaps:                           arbitrary policy ID/hash, production-to-diagnostic scope change, provider-authored global-certified reason, and arbitrary eligible=false disagreement all validate after trusted re-sign
+Missing decisions:                      no producer policy/evaluator/closed reasons/recomputation/golden vectors and no pinned Main independent recomputation, producer-observation discard, compatibility alias, or disagreement proof
+Prepared scope:                         `MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no intended-use authorization, cross-project agreement, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_use_eligibility_gap_revalidation_20260719.json`

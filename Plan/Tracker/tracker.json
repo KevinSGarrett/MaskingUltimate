@@ -19161,19 +19161,24 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 45,
       "notes": [
         {
           "ts": "2026-07-18T23:38:49+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 static acceptance audit: frozen v1 receipt fields exist, but trusted re-sign probes prove policy identity/hash, exact use scope, reasons, and the eligible boolean are not recomputed. Prepared disjoint MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY, held until MF-P6-09.04 is adopted; Main independent recomputation/disagreement proof remains consumer-owned. Zero completion credit. See qa/live_verification/bridge_use_eligibility_gap_audit_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T02:47:13+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 current-head revalidation credits 45% foundation: 26 focused receipt/authority-lattice tests and Ruff pass. Trusted re-sign probes still accept arbitrary policy ID/hash, changed exact use scope, provider-authored reasons, and arbitrary eligible=false disagreement; no producer evaluator API exists. Preserved five-path packet remains absent and was not dispatched."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_use_eligibility_gap_revalidation_20260719.json",
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-09.03 is complete but MF-P6-09.04 remains blocked. The frozen use_eligibility shape, rank guard, and operational authority lattice exist, but no named-policy producer recomputation, closed reason decision, observation mismatch validator, golden vectors, or pinned Main independent decision/disagreement evidence exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T23:38:49+00:00",
+      "updated_at": "2026-07-19T02:47:13+00:00",
       "orphaned": false
     },
     "MF-P6-09.06": {

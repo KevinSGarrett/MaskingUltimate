@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_use_eligibility_gap_revalidation",
+  "recorded_at": "2026-07-19T02:46:15.8726478Z",
+  "project_head": "a6003d9",
+  "tracker_item": "MF-P6-09.05",
+  "audit_status": "WIRE_OBSERVATION_AND_AUTHORITY_LATTICE_PRESENT_RECOMPUTATION_ABSENT",
+  "completion_credit_percent": 45,
+  "governing_requirement": "Producer emits an exact named/hash-bound use_eligibility observation derived from normalized facts; Main preserves but discards it as authority, independently recomputes intended-use eligibility, and fails closed on disagreement. LLM/provider/global-certified shortcuts and partial certificate scope cannot pass.",
+  "dependency_state": {
+    "MF-P6-09.03": "complete",
+    "MF-P6-09.04": "blocked_50_percent",
+    "main_independent_decision_evidence": "absent",
+    "disposition": "MF-P6-09.05 remains hard-blocked; only wire shape, rank guard and closed authority-lattice foundations receive credit."
+  },
+  "prior_evidence": {
+    "path": "qa/live_verification/bridge_use_eligibility_gap_audit_20260718.json",
+    "sha256": "5987d485d1a17f288806bd9c741353cb41a639d203a20bebd426180096fce71a",
+    "disposition": "Accepted for requirement mapping, trusted probes and additive producer packet. Prerequisite states are superseded by the current tracker."
+  },
+  "verified_foundations": [
+    "The frozen receipt strictly requires policy_id, policy_sha256, required_authority_state, exact_use_scope, eligible and non-empty unique reasons.",
+    "Receipt validation rejects eligible=true when execution failed or observed operational authority ranks below the producer-declared required state.",
+    "The completed operational authority lattice is self-hashed, separates access mode, operational authority and training truth, enforces producer-only grants/revocation, weakest-parent ceilings, protected/target floors and typed failures.",
+    "Receipt/certificate validation prevents certified authority without exact active certificate, fresh revocation, QA pass and transform round-trip.",
+    "Twenty-six focused receipt/authority-lattice tests pass and Ruff passes; all governing source hashes match the accepted prior audit."
+  ],
+  "focused_validation": {
+    "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_all_positive_documents_are_structurally_and_semantically_clean tests/test_mask_bridge_contracts_v1.py::test_receipt_authority_parent_ceiling_qa_and_execution_honesty tests/test_operational_authority_lattice.py",
+    "tests_passed": 26,
+    "tests_failed": 0,
+    "ruff": "pass"
+  },
+  "direct_probes": [
+    {
+      "probe": "arbitrary_policy_identity",
+      "mutation": "Replace policy ID/hash with an LLM-style global-certified assertion and trusted re-sign.",
+      "observed_validators": [],
+      "gap": "No named policy is resolved or self-hash recomputed."
+    },
+    {
+      "probe": "changed_exact_use_scope",
+      "mutation": "Change production_conditioning to diagnostic and trusted re-sign.",
+      "observed_validators": [],
+      "gap": "Required authority and eligibility are not recomputed from exact intended-use scope."
+    },
+    {
+      "probe": "provider_authored_reason",
+      "mutation": "Replace reasons with provider says globally certified and trusted re-sign.",
+      "observed_validators": [],
+      "gap": "Reasons are free-form rather than a closed deterministic reason set."
+    },
+    {
+      "probe": "producer_boolean_disagreement",
+      "mutation": "Set eligible=false with an arbitrary reason on the otherwise eligible certified receipt and trusted re-sign.",
+      "observed_validators": [],
+      "gap": "No producer recomputation exists to detect even an internally inconsistent observation."
+    },
+    {
+      "probe": "producer_evaluator_api",
+      "evaluate_bridge_use_eligibility_present": false,
+      "validate_bridge_use_eligibility_decision_present": false
+    }
+  ],
+  "confirmed_gaps": [
+    "No closed self-hashed use policy maps exact use scopes to authority floors and closed ordered reason codes.",
+    "No producer evaluator normalizes factual request/receipt/certificate/authority/consumption/QA/transform/lineage/revocation evidence while excluding the producer observation itself from decision inputs.",
+    "No evaluator recomputes required authority from exact use scope or checks complete owner/intent/label/region/certificate permitted-use coverage.",
+    "No internal strict decision record binds normalized facts, policy, eligibility, reasons and canonical decision hash.",
+    "No validator recomputes the supplied frozen-v1 observation and rejects policy/minimum/scope/boolean/reason disagreement.",
+    "No producer golden vectors cover eligible, insufficient/partial/stale/revoked/QA/transform/consumption/global-shortcut/LLM-provider cases.",
+    "No pinned Main implementation independently recomputes the same decision, discards producer authority, derives a compatibility alias or proves disagreement fails closed."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-09.05-PRODUCER-USE-ELIGIBILITY",
+    "state": "PREPARED_PREREQUISITE_09_04_HELD_NOT_DISPATCHED",
+    "allowed_paths": [
+      "configs/bridge_use_eligibility_policy.yaml",
+      "src/maskfactory/bridge/use_eligibility.py",
+      "src/maskfactory/schemas/bridge_use_eligibility_decision.schema.json",
+      "qa/governance/bridge/use_eligibility_golden_vectors_v1.json",
+      "tests/test_bridge_use_eligibility.py"
+    ],
+    "path_state": "All five paths remain absent, untracked and clean; they are disjoint from frozen v1, dirty 08.05 and prepared 09.01/09.02/09.04 paths.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "acceptance_source": "qa/live_verification/bridge_use_eligibility_gap_audit_20260718.json implementation_packet",
+    "consumer_dependency": "Main must independently implement and prove the pinned decision/disagreement contract before completion.",
+    "next_action": "Hold until MF-P6-09.04 is implemented/adopted and exact-project worker routing is qualified; do not dispatch or duplicate while worker lanes remain disabled."
+  },
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/mask_acquisition_receipt.schema.json": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "configs/operational_authority_lattice.yaml": "4ac6e74ab430eed746b6a971966cb2e737438487a19731056dc4899ec8a17282",
+    "src/maskfactory/authority/authority_lattice.py": "f593324a090a4173a63b9bc474d9e454b281245708a6aa8421b84c24a0dacecf",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/fixtures/mask_bridge_contracts/positive_certified_mode_b_receipt_v1.json": "63e842db878e9a540e2511c500bec408bbc2ba03e8c6758a4659c03467a691f2"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "worker_paths_modified_or_dispatched": false,
+    "scheduled_maintenance_reenabled": false,
+    "runtime_or_external_system_mutated": false
+  },
+  "claim_boundary": "This audit credits the frozen observation shape, rank guard and completed authority lattice only. It does not implement producer or Main recomputation, prove disagreement behavior, satisfy MF-P6-09.04, or complete MF-P6-09.05."
+}

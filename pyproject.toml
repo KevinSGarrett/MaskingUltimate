@@ -30,6 +30,7 @@ requires-python = ">=3.11"
     "torch",
     "ultralytics",
     "onnxruntime",
+    "tzdata>=2026.3",
 ]
 
 [project.scripts]

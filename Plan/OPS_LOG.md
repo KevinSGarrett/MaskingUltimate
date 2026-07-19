@@ -9598,3 +9598,114 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 
 **Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-horizon-go-no-go-static; evidence seal; git commit
 
+
+
+## 2026-07-19 23:48 UTC - STATIC P7 ops backup/restore + nightly reindex/verify + failure-mining seals
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P1-09.05 (30% blocked); MF-P7-03.01 (30% blocked); MF-P7-03.03 (30% blocked); MF-P7-03.06 (25% blocked); MF-P7-03.04 / MF-P1-09.01..03 notes (already complete)
+**Result:** STATIC_PASS only - never D10 signed; never live B1/B2 media restore; never human-anchor package authority
+
+### What landed
+- `src/maskfactory/ops_static_contracts.py`: backup/restore drill contracts (B5 retain-7 fixture, simulated B1-like mirror → bit-identical temp restore, nonempty-target refuse, v2 ops backup/restore policy bind), nightly reindex/verify-package binder (script ordering + fixture rebuild-clean + IP-3 copy-only), failure-mining ops seal (resolve requires resolution_pkg_version; no B1/human-anchor packages)
+- Schema `ops_static_contracts_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory incident verify-ops-static-contracts`
+- Schema-enforced honesty: `mf_p1_09_05_complete=false`, `mf_p7_03_01_complete=false`, `mf_p7_03_03_complete=false`, `mf_p7_03_06_d10_signed=false`, `b1_mirror_present=false`, `b2_media_present=false`, `kevin_b1_b2_restore_required=true`, `kevin_d10_signoff_required=true`
+
+### Evidence
+`qa/live_verification/ops_static_contracts_20260719.json` file sha256 `b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3`
+- binder seal_sha256 `a3396c9694d71be024a39688e7b260579af348168bb4e198555b5c6fc944bf51`
+- report_id `osc_a3396c9694d71be024a39688`
+
+### Focused tests
+`pytest` tests/test_ops_static_contracts.py + tests/test_backup_ops.py: 8 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P1-09.05 live B1 restore drill
+- No MF-P7-03.01 B2/CVAT restore drill
+- No MF-P7-03.03 real failure-mining resolution to gold
+- No MF-P7-03.06 / D10 checklist sign-off
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; incident verify-ops-static-contracts; evidence seal; git commit
+
+
+## 2026-07-19 23:48 UTC - STATIC P7 ops backup/restore/reindex/failure-mining binders
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P1-09.05 (35% blocked); MF-P7-03.01 (35% blocked); MF-P7-03.03 (40% blocked); MF-P7-03.06 note; MF-P1-09.01/MF-P7-03.04 notes (already complete)
+**Result:** STATIC_PASS only - never D10; never live B1/B2 media restore; never human-anchor package authority
+
+### What landed
+- `src/maskfactory/ops_static_contracts.py`: nightly B5-before-B1 + verify-package sample script contract; fixture B5 retain-7 SQLite backup; simulated mirror→temp restore with nonempty-target refuse; fixture reindex rebuild + IP-3 copy-only; failure-mining ops seal (resolution_pkg_version required; fixture resolve without human-anchor package)
+- Schema `ops_static_contracts_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory incident verify-ops-static-contracts`
+- Schema-enforced honesty: `mf_p1_09_05_complete=false`, `mf_p7_03_01_complete=false`, `mf_p7_03_03_complete=false`, `mf_p7_03_06_d10_signed=false`, `b1_mirror_present=false`, `b2_media_present=false`
+
+### Evidence
+`qa/live_verification/ops_static_contracts_20260719.json` disk sha256 `b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3` (supersedes earlier same-minute seal; schema-valid report-only write)
+- binder seal_sha256 `a3396c9694d71be024a39688e7b260579af348168bb4e198555b5c6fc944bf51`
+- report_id `osc_a3396c9694d71be024a39688`
+
+### Focused tests
+`pytest` tests/test_ops_static_contracts.py (+ horizon + e2e in portfolio): green. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P1-09.05 live B1 restore
+- No MF-P7-03.01 B2 media restore / CVAT usability
+- No MF-P7-03.03 live mined-case resolution
+- No MF-P7-03.06 / D10 signed
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; incident verify-ops-static-contracts; evidence seal
+
+## 2026-07-19 23:48 UTC - STATIC selective-autonomy e2e control-flow binder (P9-15.08)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P9-15.08 (35% partially_complete)
+**Result:** STATIC_PASS only - never live generate→critic→repair→certify→audit headline demo
+
+### What landed
+- `src/maskfactory/selective_autonomy_e2e_static.py`: binds ordered stages generate→critic→repair→certify→audit→sparse_owner_decision to importable control modules; refuses out-of-order graphs; requires separate quality/labor headline channels; refuses conflated scores and live-demo overclaims
+- Schema `selective_autonomy_e2e_static_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory autonomy verify-selective-autonomy-e2e-static`
+- Schema-enforced honesty: `mf_p9_15_08_complete=false`, `live_generate_critic_repair_certify_audit_demo=false`
+
+### Evidence
+`qa/live_verification/selective_autonomy_e2e_static_20260719.json` disk sha256 `7a56c2833cc7d7841f101341fc586631fc57af9e069167ebdcc53a9b7be16be7`
+- binder seal_sha256 `48f693efc310661b2b7953313b1681292b6053832f4e171e7226a75353057bd0`
+- report_id `sae2e_48f693efc310661b2b795331`
+
+### Focused tests
+`pytest` tests/test_selective_autonomy_e2e_static.py: 5 passed (15 with ops+horizon). Ruff clean.
+
+### Honest non-claims
+- No MF-P9-15.08 live end-to-end autonomous headline
+- No measured quality/labor production win
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-selective-autonomy-e2e-static; evidence seal
+
+## 2026-07-19 23:49 UTC - STATIC portfolio climb seal (horizon + ops + e2e)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P7-05.01/05.02 notes; MF-P1-09.05 / MF-P7-03.01/03.03/03.06 notes; MF-P9-15.08 35% partial; prior P3/P9-15.01-03 wave preserved
+**Result:** STATIC_PASS only - never doctor-green; never gold; never VISUAL_QA_PASS_BOUNDED; never Main-complete; never PRODUCTION_EVIDENCE_PASS
+
+### What landed (this climb)
+- Horizon go/no-go STATIC binder (NO_GO retained for multi-person independent/production and video production/independent)
+- P7 ops STATIC binders (backup/restore/reindex/failure-mining honesty)
+- MF-P9-15.08 e2e control-flow STATIC binder
+- Sealed evidence:
+  - qa/live_verification/horizon_go_no_go_static_20260719.json seal_sha256 13e8baffde3a16f692d6e82f2a0e19fb13418f90b9e9812d71a664c7097ca51d
+  - qa/live_verification/ops_static_contracts_20260719.json seal_sha256 45e57b0c28b668b3e01d33d4d61250594d714930bf4ae0fac50737e9ab410ea8
+  - qa/live_verification/selective_autonomy_e2e_static_20260719.json seal_sha256 48f693efc310661b2b7953313b1681292b6053832f4e171e7226a75353057bd0
+
+### Honest non-claims
+- No horizon GO / EXIT
+- No D10 / live B1-B2 restore
+- No live selective-autonomy headline demo
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; seal evidence; git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"/push
+

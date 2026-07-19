@@ -10635,26 +10635,11 @@ def incident_verify_ops_static_contracts(output: Path | None) -> None:
         raise click.ClickException(str(exc)) from exc
     if output is not None:
         output.parent.mkdir(parents=True, exist_ok=True)
-        envelope = {
-            **report,
-            "result": "pass_ops_static_contracts_d10_restore_still_needs_kevin",
-            "implementation": {
-                **report.get("implementation", {}),
-                "schema": "src/maskfactory/schemas/ops_static_contracts_report.schema.json",
-                "cli": "maskfactory incident verify-ops-static-contracts",
-            },
-        }
-        body = json.dumps(
-            {k: v for k, v in envelope.items() if k != "file_sha256"},
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=False,
-        )
-        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
-        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        output.write_bytes(payload)
         click.echo(output)
         click.echo(f"seal_sha256={report['seal_sha256']}")
-        click.echo(f"file_sha256={envelope['file_sha256']}")
+        click.echo(f"file_sha256={hashlib.sha256(payload).hexdigest()}")
     else:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
 

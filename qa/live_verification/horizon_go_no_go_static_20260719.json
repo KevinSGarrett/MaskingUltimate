@@ -1,7 +1,7 @@
 {
   "artifact_type": "horizon_go_no_go_static_report",
   "authority": "horizon_go_no_go_static_only_no_production_or_independent_real_go",
-  "checked_at": "2026-07-19T23:45:09Z",
+  "checked_at": "2026-07-19T23:46:51Z",
   "checks": {
     "multi_person_go_refused_without_evidence": "pass",
     "multi_person_memo_bound": "pass",
@@ -10,7 +10,7 @@
     "video_production_go_refused_without_evidence": "pass"
   },
   "doctor_green_claimed": false,
-  "file_sha256": "ec7f89345c55ac72af3331ede260a7d1bafa4e693bc46a430dd0e95246c8d9eb",
+  "file_sha256": "05d223a7a6dda984d5af7e6e2539b388155b41ce5398c4116622b783eef646fb",
   "gold_claimed": false,
   "honest_non_claims": [
     "multi_person_independent_real_accuracy_go",
@@ -25,18 +25,6 @@
     "Main-complete",
     "PRODUCTION_EVIDENCE_PASS"
   ],
-  "implementation": {
-    "cli": "maskfactory autonomy verify-horizon-go-no-go-static",
-    "memos": [
-      "Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md",
-      "Plan/HORIZON_VIDEO_GO_NO_GO.md"
-    ],
-    "module": "src/maskfactory/horizon_go_no_go_static.py",
-    "schema": "src/maskfactory/schemas/horizon_go_no_go_static_report.schema.json",
-    "tests": [
-      "tests/test_horizon_go_no_go_static.py"
-    ]
-  },
   "items": [
     "MF-P7-05.01",
     "MF-P7-05.02"
@@ -85,11 +73,10 @@
   "multi_person_production_promotion_decision": "NO_GO",
   "production_evidence_pass_claimed": false,
   "proof_tier": "STATIC_PASS",
-  "report_id": "hgn_bf4933787acc46642956ae07",
-  "result": "pass_horizon_go_no_go_static_no_go_retained",
+  "report_id": "hgn_13e8baffde3a16f692d6e82f",
   "schema_version": "1.0.0",
-  "seal_sha256": "bf4933787acc46642956ae07ea340f40a8eb2394f499520b5daf6031411e4472",
-  "sha256": "253f0fa98aff107ea25d8400aa567ea8564e307ba086b1baacbc595f3b783dfe",
+  "seal_sha256": "13e8baffde3a16f692d6e82f2a0e19fb13418f90b9e9812d71a664c7097ca51d",
+  "sha256": "03e51d48cc19bffad90f284f95b6aa851208b1736ce1fa4c516cf4b9953a3d02",
   "video": {
     "core_contract_implementation_authorized": true,
     "independent_evidence_complete": false,

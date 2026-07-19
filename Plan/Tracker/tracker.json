@@ -3060,12 +3060,22 @@
           "ts": "2026-07-16T00:44:32+00:00",
           "actor": "ai_agent",
           "text": "2026-07-16 maintenance: the four LIMITED scheduled tasks now launch through wscript.exe and a window-style-zero synchronous wrapper, eliminating the direct PowerShell console creation path while preserving exit status."
+        },
+        {
+          "ts": "2026-07-19T23:45:59+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 adjacent: ops binder re-proves nightly B5-before-B1 + verify-package sample + task registration names. Evidence ops_static_contracts seal d413f0a2.... Item remains complete from prior registration evidence."
+        },
+        {
+          "ts": "2026-07-19T23:46:41+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops_static_contracts rebinds MaskFactory_NightlyBackupIntegrity registration + B5-before-B1 ordering. No D: media/run claimed. Evidence qa/live_verification/ops_static_contracts_20260719.json."
         }
       ],
       "evidence": "qa/live_verification/windows_scheduled_tasks_no_flash_20260716.json SHA-256 5474e0c01894307d383ab8eb2470072e1f678009de24d9aa91d2d110e2ae57eb. Four live tasks Ready at LIMITED run level; wrapper exit propagation 7/7 and missing-argument 64/64; focused 4/4 and full 1666/1666 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-16T00:44:32+00:00",
+      "updated_at": "2026-07-19T23:46:41+00:00",
       "orphaned": false
     },
     "MF-P1-09.02": {
@@ -3087,12 +3097,17 @@
           "ts": "2026-07-12T23:59:19+00:00",
           "actor": "ai_agent",
           "text": "The registered nightly task invokes the tested seven-rotation online SQLite B5 backup before every robocopy mirror."
+        },
+        {
+          "ts": "2026-07-19T23:46:42+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: fixture B5 retain-7 SQLite backup sealed in ops_static_contracts (no production state.db touch). Evidence qa/live_verification/ops_static_contracts_20260719.json."
         }
       ],
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T23:59:19+00:00",
+      "updated_at": "2026-07-19T23:46:42+00:00",
       "orphaned": false
     },
     "MF-P1-09.03": {
@@ -3114,12 +3129,17 @@
           "ts": "2026-07-12T23:59:19+00:00",
           "actor": "ai_agent",
           "text": "The registered nightly action invokes Ubuntu-22.04 WSL verify-package --root data/packages --sample 10 after B5/B1; the distro is now live and visible to this account."
+        },
+        {
+          "ts": "2026-07-19T23:46:42+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: nightly verify-package --root data/packages --sample 10 after B5/B1 rebound in ops_static_contracts. Evidence qa/live_verification/ops_static_contracts_20260719.json."
         }
       ],
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T23:59:19+00:00",
+      "updated_at": "2026-07-19T23:46:42+00:00",
       "orphaned": false
     },
     "MF-P1-09.04": {
@@ -3162,12 +3182,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
+      "percent_complete": 30,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:45:57+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops binder seals fixture mirror-restore + nonempty-target refuse; live B1 restore still NEEDS KEVIN. Evidence qa/live_verification/ops_static_contracts_20260719.json seal_sha256 d413f0a2a10f42c360e86066708de433eca5ca01bad950c01e723d568a09b2ca."
+        },
+        {
+          "ts": "2026-07-19T23:46:29+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops_static_contracts binder seals fixture mirror→temp restore + nonempty-target refuse + B5 retain-7 + nightly verify-package wiring without claiming live B1 media. Evidence qa/live_verification/ops_static_contracts_20260719.json file sha256 759845d8d9e9e41ab28d005cccb66dce67e5bae19d40f664fbd8b34b7c0753da. Remains NEEDS KEVIN for real B1 restore."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: no P1-08 human-anchor package or B1 mirror exists yet; the restore drill needs one corrected seed package first.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:53:54+00:00",
+      "updated_at": "2026-07-19T23:46:29+00:00",
       "orphaned": false
     },
     "MF-P1-EXIT": {
@@ -8569,12 +8600,28 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:45:58+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops binder seals simulated B1-like mirror restore + nonempty refuse without claiming B2 media. Evidence ops_static_contracts seal d413f0a2a10f42c360e86066708de433eca5ca01bad950c01e723d568a09b2ca. Live B2 restore remains NEEDS KEVIN."
+        },
+        {
+          "ts": "2026-07-19T23:46:29+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: backup/restore drill contracts sealed (simulated B1-like mirror, bit-identical restore, nonempty refuse, B5 retain-7, v2 ops backup/restore policy). Never claims B2 media or CVAT usability. Evidence qa/live_verification/ops_static_contracts_20260719.json seal 3e0e5f408f2b4e18fc931f5fd9b50848494a0a4c7eb6603abc704c96f5ac070e."
+        },
+        {
+          "ts": "2026-07-19T23:47:03+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 final ops seal: osc_45e57b0c28b668b3e01d33d4 / seal_sha256 45e57b0c28b668b3e01d33d4d61250594d714930bf4ae0fac50737e9ab410ea8. Live B2 restore remains NEEDS KEVIN."
+        }
+      ],
       "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: the B2 restore drill requires at least three approved packages on Kevin's offline backup media plus a manual CVAT usability check; neither exists.",
+      "blocked_reason": "NEEDS KEVIN: the B2 restore drill requires at least three approved packages on Kevin's offline backup media plus a manual CVAT usability check; neither exists. STATIC fixture mirror-restore binder sealed 2026-07-19.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:33:26+00:00",
+      "updated_at": "2026-07-19T23:47:22+00:00",
       "orphaned": false
     },
     "MF-P7-03.02": {
@@ -8622,12 +8669,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
+      "percent_complete": 30,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:45:58+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: failure-mining ops seal binds unresolved plan + resolution_pkg_version require + fixture resolve without human-anchor package. Evidence ops_static_contracts seal d413f0a2.... Live mined-case resolution remains NEEDS KEVIN."
+        },
+        {
+          "ts": "2026-07-19T23:46:29+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: failure-mining ops seal proves acquisition-plan → resolve(resolution_pkg_version) without B1 mirrors or human-anchor packages; overclaim of MF-P7-03.03/D10 refused. Evidence qa/live_verification/ops_static_contracts_20260719.json. Real drill remains NEEDS KEVIN."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: the mined case requires governed source or re-annotation or a reserved human-anchor decision; machine-candidate and autonomous outputs remain non-authoritative until their applicable gates pass.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:39+00:00",
+      "updated_at": "2026-07-19T23:46:29+00:00",
       "orphaned": false
     },
     "MF-P7-03.04": {
@@ -8644,11 +8702,22 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:46:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 adjacent: ops binder re-proves fixture IP-3 copy-only reindex drill (source untouched). Evidence ops_static_contracts seal d413f0a2.... Item remains complete."
+        },
+        {
+          "ts": "2026-07-19T23:46:41+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: nightly reindex/verify-package binder re-proves fixture IP-3 copy-only reindex (source untouched) + rebuild-clean + nightly verify-package --sample 10 wiring after B5/B1. Item already complete; no new live drill. Evidence qa/live_verification/ops_static_contracts_20260719.json."
+        }
+      ],
       "evidence": "Implemented maskfactory incident reindex-drill; 7 seeded reindex tests pass. Executed live on exact copy qa/live_verification/ip3/maskfactory_ip3_copy_20260711T083019Z.sqlite: before/after diff clean, rebuilt copy 49152 bytes, source data/maskfactory.sqlite stayed 0 bytes with identical SHA256 e3b0...b855. Empty-state rehearsal is explicitly recorded.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T08:30:38+00:00",
+      "updated_at": "2026-07-19T23:46:41+00:00",
       "orphaned": false
     },
     "MF-P7-03.05": {
@@ -8691,12 +8760,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
+      "percent_complete": 25,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:45:59+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: D10 overclaim refused by ops_static_contracts; d10_signed remains false. Evidence seal d413f0a2a10f42c360e86066708de433eca5ca01bad950c01e723d568a09b2ca. No D10 sign-off claimed."
+        },
+        {
+          "ts": "2026-07-19T23:46:29+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops_static_contracts binder schema-enforces mf_p7_03_06_d10_signed=false and kevin_d10_signoff_required=true. D10 remains unsigned / NEEDS KEVIN. Evidence qa/live_verification/ops_static_contracts_20260719.json."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: D10 cannot be signed until the backup restore, retrain, failure-mining, GC, and incident drills have real evidence; several require Kevin actions/media.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:33:27+00:00",
+      "updated_at": "2026-07-19T23:46:29+00:00",
       "orphaned": false
     },
     "MF-P7-04.01": {
@@ -8760,12 +8840,22 @@
           "ts": "2026-07-19T23:41:19+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: executable horizon video go/no-go binder seals Plan/HORIZON_VIDEO_GO_NO_GO.md; refuses production/independent-real GO without temporal certificate + bridge + optional 10-clip evidence. Schema forces NO_GO. Evidence qa/live_verification/horizon_go_no_go_static_20260719.json seal_sha256 b8563a5db2d9feec2738b71f62b450cf7fc76a1999619033e1d884bb5268eb3e. Never claims GO/EXIT."
+        },
+        {
+          "ts": "2026-07-19T23:45:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: horizon go/no-go binder resealed (NO_GO retained). Evidence qa/live_verification/horizon_go_no_go_static_20260719.json seal_sha256 bf4933787acc46642956ae07ea340f40a8eb2394f499520b5daf6031411e4472. Never production/independent-real GO."
+        },
+        {
+          "ts": "2026-07-19T23:47:03+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 final horizon seal: hgn_13e8baffde3a16f692d6e82f / seal_sha256 13e8baffde3a16f692d6e82f2a0e19fb13418f90b9e9812d71a664c7097ca51d. NO_GO retained."
         }
       ],
       "evidence": "HORIZON_VIDEO_GO_NO_GO.md records evidence-based NO-GO and specifies temporal package/track identity, SAM2 keyframe/drift QA, CVAT authority, operator cost model, pilot requirements, zero identity-switch gate and D1-D11 prerequisite.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:41:19+00:00",
+      "updated_at": "2026-07-19T23:47:03+00:00",
       "orphaned": false
     },
     "MF-P7-05.02": {
@@ -8787,12 +8877,17 @@
           "ts": "2026-07-19T23:41:19+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: executable horizon multi-person go/no-go binder seals Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md; architecture-into-P8 retained; refuses independent-real/production GO without MF-P8-10/D11/G9 evidence. Schema forces NO_GO. Evidence qa/live_verification/horizon_go_no_go_static_20260719.json. Never claims GO/MF-P8-EXIT."
+        },
+        {
+          "ts": "2026-07-19T23:45:57+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: multi-person horizon binder resealed (architecture-into-P8; independent/production NO_GO). Same evidence seal bf4933787acc46642956ae07ea340f40a8eb2394f499520b5daf6031411e4472. Never MF-P8-EXIT."
         }
       ],
       "evidence": "HORIZON_MULTI_PERSON_GO_NO_GO.md records architecture GO already superseded into doc17/P8, explains per-instance ownership without ontology namespaces and throughput impact, while retaining production NO-GO until real MF-P8-10/D11/G9 evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:41:19+00:00",
+      "updated_at": "2026-07-19T23:45:57+00:00",
       "orphaned": false
     },
     "MF-P7-EXIT": {
@@ -19272,19 +19367,29 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "partially_complete",
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-16T03:11:22+00:00",
           "actor": "codex",
           "text": "Control contracts exist, but end-to-end generate-critic-repair-certify-audit headline evidence awaits completed source qualification, models, and frozen holdout evaluation."
+        },
+        {
+          "ts": "2026-07-19T23:46:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: e2e control-flow binder sealed; mf_p9_15_08_complete=false. Remaining: live generate→critic→repair→certify→audit headline with measured quality/labor after source qualification/models/holdout."
+        },
+        {
+          "ts": "2026-07-19T23:47:03+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 final seal: sae2e_48f693efc310661b2b795331; mf_p9_15_08_complete=false."
         }
       ],
-      "evidence": null,
+      "evidence": "STATIC_PASS only: selective_autonomy_e2e_static binds generate→critic→repair→certify→audit→sparse_owner_decision stage modules + order + separate quality/labor headline channels; live demo overclaim refused. Evidence qa/live_verification/selective_autonomy_e2e_static_20260719.json file_sha256 6529bf07eb45c713002af573ed39daa332a90bcc07972f94ba24d6c6ca689e67 seal_sha256 48f693efc310661b2b7953313b1681292b6053832f4e171e7226a75353057bd0. Never live headline demo.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:22+00:00",
+      "updated_at": "2026-07-19T23:47:03+00:00",
       "orphaned": false
     },
     "MF-P9-EXIT": {

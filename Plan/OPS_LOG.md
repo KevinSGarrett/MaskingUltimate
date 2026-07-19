@@ -7587,3 +7587,16 @@ Confirmed gaps:                         all-empty affected scope validates; comp
 Prepared scope:                         `MF-CURSOR-09.06-ADDITIVE-ERROR-DECISION`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no recovery/lifecycle/profile decision, runtime/worker action, frozen-v1 mutation, or item completion claim
 Evidence:                              `qa/live_verification/bridge_error_decision_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:55 UTC - Producer contracts strict; executable Main crosswalk absent
+
+**Result:** MF-P6-09.07 receives 35% frozen-contract foundation credit and remains blocked behind
+MF-P6-09.01 through MF-P6-09.06 plus producer/Main mapping implementation.
+
+Verified foundation:                   12 strict frozen v1 schemas and exact catalog/hash binding; unknown fields, missing required fields, unlisted minor versions and incompatible majors fail closed
+Focused validation:                    3 positive/schema-registry/release-policy tests pass; Ruff passes; all governing hashes match the accepted 2026-07-18 audit
+Missing executable layer:               no source/target JSON-pointer mapping, conversion/enum/default/drop/reject rules, path/enum coverage verifier, explicit minor policy, producer-observation handling or canonical compatibility decision
+Consumer dependency:                   no exact Main adapter contract/commit return proves consumer mapping, incompatibility rejection or independent use-eligibility recomputation
+Prepared scope:                         `MF-CURSOR-09.07-EXECUTABLE-CROSSWALK`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no crosswalk adoption, Main consumer behavior, runtime/worker action, frozen-v1 mutation, or item completion claim
+Evidence:                              `qa/live_verification/bridge_crosswalk_gap_revalidation_20260719.json`

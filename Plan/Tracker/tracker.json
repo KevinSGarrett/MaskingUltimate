@@ -19225,19 +19225,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-19T00:04:16+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 audit: zero completion credit. Frozen v1 schemas/catalogs are strict and byte-bound, but no executable MaskFactory-to-Main field/enum/version crosswalk exists. Prepared disjoint additive work unit MF-CURSOR-09.07-EXECUTABLE-CROSSWALK; held until MF-P6-09.01 through MF-P6-09.06 decisions are adopted. Evidence: qa/live_verification/bridge_crosswalk_gap_audit_20260718.json"
+        },
+        {
+          "ts": "2026-07-19T02:55:46+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 revalidation: credited strict frozen-v1 producer schemas, exact catalog binding, and fail-closed unknown/missing/unlisted-version probes. All five additive crosswalk paths remain absent; no executable mapping or Main-side exact return exists. Focused tests 3 passed; Ruff clean. Packet remains held and undispatched. See qa/live_verification/bridge_crosswalk_gap_revalidation_20260719.json."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_crosswalk_gap_revalidation_20260719.json",
+      "blocked_reason": "MF-P6-09.01 through MF-P6-09.06 are not all complete. Frozen producer contracts are strict, but no executable versioned field/enum/version crosswalk, complete path coverage, producer-observation rule, canonical compatibility decision, or pinned Main consumer test return exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T00:04:16+00:00",
+      "updated_at": "2026-07-19T02:55:46+00:00",
       "orphaned": false
     },
     "MF-P6-10.01": {

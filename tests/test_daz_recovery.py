@@ -216,6 +216,19 @@ def test_state_builder_fails_when_registered_file_bytes_drift(tmp_path: Path) ->
         build_recovery_records_from_state(configuration)
 
 
+def test_state_builder_blocks_unregistered_package_directory_bytes(tmp_path: Path) -> None:
+    _, configuration = _fixture_configuration(tmp_path)
+    package_file = configuration.paths.root / "14_scene_packages/legacy/package.duf"
+    package_file.parent.mkdir(parents=True, exist_ok=True)
+    package_file.write_bytes(b"legacy")
+    records = build_recovery_records_from_state(configuration)
+    assert len(records) == 1
+    assert records[0]["artifact_type"] == "unregistered_package_file"
+    report = evaluate_recovery_matrix(load_recovery_policy(POLICY), records)
+    assert report["recoverable"] is False
+    assert report["blockers"][0]["reason"] == "unknown_tier"
+
+
 def test_state_builder_reports_required_schema_migration_without_writing(tmp_path: Path) -> None:
     _, configuration = _fixture_configuration(tmp_path)
     with sqlite3.connect(configuration.paths.state_database) as connection:

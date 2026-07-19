@@ -13,6 +13,7 @@ from maskfactory.cli import main
 from maskfactory.daz.backup import (
     create_tier_a_backup,
     load_tier_a_backup_policy,
+    plan_tier_a_backup,
     restore_tier_a_test,
     verify_tier_a_backup,
 )
@@ -49,6 +50,7 @@ def _source(tmp_path: Path) -> Path:
     queue = root / "10_queue" / "queue.sqlite"
     queue.parent.mkdir(parents=True)
     with sqlite3.connect(queue) as connection:
+        connection.execute("PRAGMA journal_mode=WAL")
         connection.execute("CREATE TABLE events(id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
         connection.execute("INSERT INTO events VALUES ('event_a','immutable')")
     return root
@@ -62,8 +64,10 @@ def test_backup_schema_and_closed_tier_a_policy() -> None:
         "control",
         "registry",
         "mapping",
-        "recipe",
         "queue",
+    )
+    assert tuple(policy.conditional_categories) == (
+        "recipe",
         "package_metadata",
         "dataset_model_lineage",
     )
@@ -83,6 +87,8 @@ def test_create_verify_and_clean_root_restore_preserve_exact_bytes(tmp_path: Pat
     verification = verify_tier_a_backup(backup, policy)
     assert verification["passed"] is True
     assert verification["queue_integrity"] == "ok"
+    assert not (backup / "payload/10_queue/queue.sqlite-wal").exists()
+    assert not (backup / "payload/10_queue/queue.sqlite-shm").exists()
     assert all(verification["category_presence"].values())
     restored = restore_tier_a_test(backup, tmp_path / "restore", policy)
     assert restored["passed"] is True
@@ -136,6 +142,27 @@ def test_backup_destination_inside_source_and_missing_category_are_refused(tmp_p
     (source / "07_mappings/genesis9/map.json").unlink()
     with pytest.raises(DazControlError, match="missing required categories: mapping"):
         create_tier_a_backup(source, tmp_path / "backups", policy, backup_id="missing")
+
+
+def test_preactivation_backup_records_missing_conditional_categories_without_claiming_activation(
+    tmp_path: Path,
+) -> None:
+    source = _source(tmp_path)
+    policy = load_tier_a_backup_policy(POLICY)
+    for relative in (
+        "09_generation/scene_recipes/recipe.json",
+        "14_scene_packages/accepted/package.json",
+        "15_datasets/manifests/lineage.json",
+    ):
+        (source / relative).unlink()
+    plan = plan_tier_a_backup(source, tmp_path / "backups", policy, backup_id="preactivation")
+    assert plan["activation_complete"] is False
+    assert plan["category_presence"]["control"] is True
+    assert plan["category_presence"]["recipe"] is False
+    manifest = create_tier_a_backup(source, tmp_path / "backups", policy, backup_id="preactivation")
+    verification = verify_tier_a_backup(Path(manifest["backup_path"]), policy)
+    assert verification["passed"] is True
+    assert verification["activation_complete"] is False
 
 
 def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: Path) -> None:

@@ -146,6 +146,7 @@ def build_recovery_records_from_state(configuration: DazConfiguration) -> list[d
             connection.close()
     records: list[dict[str, Any]] = []
     root = configuration.paths.root.resolve(strict=True)
+    registered_paths: set[Path] = set()
     for row in artifacts:
         artifact_id = str(row[0])
         try:
@@ -162,6 +163,7 @@ def build_recovery_records_from_state(configuration: DazConfiguration) -> list[d
                 "recovery artifact path is unsafe",
                 entity_ids=(artifact_id,),
             )
+        registered_paths.add(path)
         expected_bytes = int(row[3])
         expected_hash = str(row[4])
         if path.stat().st_size != expected_bytes or _sha256_file(path) != expected_hash:
@@ -217,6 +219,35 @@ def build_recovery_records_from_state(configuration: DazConfiguration) -> list[d
                 "content_sha256": hashlib.sha256(canonical).hexdigest(),
             }
         )
+    package_root = root / "14_scene_packages"
+    if package_root.is_dir():
+        for path in sorted(package_root.rglob("*")):
+            if path.is_symlink():
+                raise DazControlError(
+                    DazErrorCode.STATE_DATABASE_INVALID,
+                    "package recovery inventory contains a link",
+                    evidence_paths=(str(path),),
+                )
+            if not path.is_file():
+                continue
+            resolved = path.resolve(strict=True)
+            if resolved in registered_paths:
+                continue
+            relative = resolved.relative_to(root).as_posix()
+            records.append(
+                {
+                    "artifact_id": (
+                        "unregistered-package:"
+                        f"{hashlib.sha256(relative.encode('utf-8')).hexdigest()[:24]}"
+                    ),
+                    "artifact_type": "unregistered_package_file",
+                    "tier": "UNREGISTERED",
+                    "strategy": "none",
+                    "referenced": False,
+                    "bytes": resolved.stat().st_size,
+                    "content_sha256": _sha256_file(resolved),
+                }
+            )
     return sorted(records, key=lambda record: str(record["artifact_id"]))
 
 

@@ -22,6 +22,7 @@ class TierABackupPolicy:
     sha256: str
     include_roots: tuple[str, ...]
     required_categories: Mapping[str, tuple[str, ...]]
+    conditional_categories: Mapping[str, tuple[str, ...]]
 
 
 def load_tier_a_backup_policy(path: Path) -> TierABackupPolicy:
@@ -53,6 +54,9 @@ def load_tier_a_backup_policy(path: Path) -> TierABackupPolicy:
         required_categories={
             key: tuple(value) for key, value in document["required_restore_categories"].items()
         },
+        conditional_categories={
+            key: tuple(value) for key, value in document["conditional_restore_categories"].items()
+        },
     )
 
 
@@ -79,8 +83,8 @@ def create_tier_a_backup(
         )
     files = _inventory(source, policy.include_roots)
     matrix_sha256 = _optional_sha256(recovery_matrix_sha256, "recovery matrix")
-    category_presence = _category_presence((row[0] for row in files), policy.required_categories)
-    missing = sorted(key for key, present in category_presence.items() if not present)
+    category_presence = _category_presence((row[0] for row in files), _all_categories(policy))
+    missing = sorted(key for key in policy.required_categories if not category_presence[key])
     if missing:
         raise DazControlError(
             DazErrorCode.SCHEDULER_REFUSED,
@@ -91,7 +95,7 @@ def create_tier_a_backup(
     payload.mkdir(parents=True)
     manifest_files: list[dict[str, Any]] = []
     try:
-        for relative, source_file in files:
+        for relative, source_file, _source_bytes in files:
             target = payload / Path(relative)
             target.parent.mkdir(parents=True, exist_ok=True)
             if relative == "10_queue/queue.sqlite":
@@ -149,8 +153,8 @@ def plan_tier_a_backup(
         )
     files = _inventory(source, policy.include_roots)
     matrix_sha256 = _optional_sha256(recovery_matrix_sha256, "recovery matrix")
-    categories = _category_presence((row[0] for row in files), policy.required_categories)
-    missing = sorted(key for key, present in categories.items() if not present)
+    categories = _category_presence((row[0] for row in files), _all_categories(policy))
+    missing = sorted(key for key in policy.required_categories if not categories[key])
     if missing:
         raise DazControlError(
             DazErrorCode.SCHEDULER_REFUSED,
@@ -168,8 +172,9 @@ def plan_tier_a_backup(
         "policy_sha256": policy.sha256,
         "recovery_matrix_sha256": matrix_sha256,
         "file_count": len(files),
-        "source_bytes": sum(path.stat().st_size for _, path in files),
+        "source_bytes": sum(size for _, _, size in files),
         "category_presence": categories,
+        "activation_complete": all(categories[name] for name in policy.conditional_categories),
     }
 
 
@@ -227,6 +232,9 @@ def verify_tier_a_backup(
         "total_bytes": sum(int(row["bytes"]) for row in expected.values()),
         "queue_integrity": integrity,
         "category_presence": manifest["category_presence"],
+        "activation_complete": all(
+            bool(manifest["category_presence"].get(name)) for name in policy.conditional_categories
+        ),
         "recovery_matrix_sha256": manifest.get("recovery_matrix_sha256"),
     }
 
@@ -264,9 +272,11 @@ def restore_tier_a_test(
                 raise DazControlError(
                     DazErrorCode.STATE_DATABASE_INVALID, "restored payload hash mismatch"
                 )
-        categories = _category_presence(restored, policy.required_categories)
+        categories = _category_presence(restored, _all_categories(policy))
         queue_integrity = _sqlite_integrity(restored.get("10_queue/queue.sqlite"))
-        passed = all(categories.values()) and queue_integrity == "ok"
+        passed = (
+            all(categories[name] for name in policy.required_categories) and queue_integrity == "ok"
+        )
         return {
             "passed": passed,
             "backup_id": verification["backup_id"],
@@ -277,6 +287,7 @@ def restore_tier_a_test(
             "semantic_replay_executed": False,
             "lineage_query_executed": False,
             "recovery_matrix_sha256": verification["recovery_matrix_sha256"],
+            "activation_complete": all(categories[name] for name in policy.conditional_categories),
         }
     except Exception:
         shutil.rmtree(target, ignore_errors=True)
@@ -310,25 +321,50 @@ def plan_tier_a_restore_test(
     }
 
 
-def _inventory(source: Path, include_roots: tuple[str, ...]) -> list[tuple[str, Path]]:
-    rows: dict[str, Path] = {}
+def _inventory(source: Path, include_roots: tuple[str, ...]) -> list[tuple[str, Path, int]]:
+    rows: dict[str, tuple[Path, int]] = {}
     for logical in include_roots:
         candidate = (source / Path(logical)).resolve()
         if not candidate.is_relative_to(source) or candidate.is_symlink():
             raise DazControlError(DazErrorCode.SCHEDULER_REFUSED, "unsafe backup source path")
-        paths = (
-            [candidate]
-            if candidate.is_file()
-            else candidate.rglob("*") if candidate.is_dir() else []
-        )
-        for path in paths:
-            if path.is_symlink():
-                raise DazControlError(
-                    DazErrorCode.SCHEDULER_REFUSED, "backup source contains a link"
-                )
-            if path.is_file():
-                rows[path.relative_to(source).as_posix()] = path
-    return sorted(rows.items())
+        if candidate.is_file():
+            rows[candidate.relative_to(source).as_posix()] = (
+                candidate,
+                candidate.stat().st_size,
+            )
+            continue
+        if not candidate.is_dir():
+            continue
+        for directory, directory_names, file_names in os.walk(candidate, followlinks=False):
+            directory_path = Path(directory)
+            for name in directory_names:
+                if (directory_path / name).is_symlink():
+                    raise DazControlError(
+                        DazErrorCode.SCHEDULER_REFUSED, "backup source contains a link"
+                    )
+            for name in file_names:
+                path = directory_path / name
+                if path.is_symlink():
+                    raise DazControlError(
+                        DazErrorCode.SCHEDULER_REFUSED, "backup source contains a link"
+                    )
+                try:
+                    size = path.stat().st_size
+                except OSError as exc:
+                    raise DazControlError(
+                        DazErrorCode.SCHEDULER_REFUSED,
+                        "backup source file became unreadable",
+                        evidence_paths=(str(path),),
+                    ) from exc
+                rows[path.relative_to(source).as_posix()] = (path, size)
+    return sorted((relative, path, size) for relative, (path, size) in rows.items())
+
+
+def _all_categories(policy: TierABackupPolicy) -> dict[str, tuple[str, ...]]:
+    return {
+        **policy.required_categories,
+        **policy.conditional_categories,
+    }
 
 
 def _category_presence(
@@ -350,9 +386,19 @@ def _backup_sqlite(source: Path, target: Path) -> None:
     target_connection = sqlite3.connect(target)
     try:
         source_connection.backup(target_connection)
+        target_connection.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        target_connection.execute("PRAGMA journal_mode=DELETE").fetchone()
+        target_connection.commit()
     finally:
         target_connection.close()
         source_connection.close()
+    sidecars = [Path(f"{target}{suffix}") for suffix in ("-wal", "-shm")]
+    if any(sidecar.exists() for sidecar in sidecars):
+        raise DazControlError(
+            DazErrorCode.STATE_DATABASE_INVALID,
+            "SQLite backup retained unmanifested WAL sidecars",
+            evidence_paths=tuple(str(sidecar) for sidecar in sidecars if sidecar.exists()),
+        )
     if _sqlite_integrity(target) != "ok":
         raise DazControlError(DazErrorCode.STATE_DATABASE_INVALID, "SQLite backup failed integrity")
 

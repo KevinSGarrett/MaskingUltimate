@@ -13,8 +13,9 @@ required_restore_categories:
   control: [00_control]
   registry: [05_registry]
   mapping: [07_mappings]
-  recipe: [09_generation]
   queue: [10_queue/queue.sqlite]
+conditional_restore_categories:
+  recipe: [09_generation]
   package_metadata: [14_scene_packages]
   dataset_model_lineage: [15_datasets]
 reject_symlinks: true

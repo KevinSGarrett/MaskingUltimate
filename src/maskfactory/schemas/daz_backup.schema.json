@@ -3,7 +3,7 @@
   "$id": "https://maskfactory.local/schemas/daz_backup.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "tier", "include_roots", "required_restore_categories", "reject_symlinks", "verify_hashes", "require_empty_restore_root"],
+  "required": ["schema_version", "tier", "include_roots", "required_restore_categories", "conditional_restore_categories", "reject_symlinks", "verify_hashes", "require_empty_restore_root"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "tier": {"const": "A"},
@@ -16,13 +16,20 @@
     "required_restore_categories": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["control", "registry", "mapping", "recipe", "queue", "package_metadata", "dataset_model_lineage"],
+      "required": ["control", "registry", "mapping", "queue"],
       "properties": {
         "control": {"$ref": "#/$defs/prefixes"},
         "registry": {"$ref": "#/$defs/prefixes"},
         "mapping": {"$ref": "#/$defs/prefixes"},
+        "queue": {"$ref": "#/$defs/prefixes"}
+      }
+    },
+    "conditional_restore_categories": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recipe", "package_metadata", "dataset_model_lineage"],
+      "properties": {
         "recipe": {"$ref": "#/$defs/prefixes"},
-        "queue": {"$ref": "#/$defs/prefixes"},
         "package_metadata": {"$ref": "#/$defs/prefixes"},
         "dataset_model_lineage": {"$ref": "#/$defs/prefixes"}
       }

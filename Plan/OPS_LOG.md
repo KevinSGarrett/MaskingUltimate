@@ -7864,3 +7864,20 @@ Live read-only result:                   F queue DB quick-check `ok`, WAL, schem
 Preservation:                           no DB migration, live matrix publication, backup/restore, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
 Next dependency:                        governed live Tier-A backup must precede v2→v4 migration, integrity recheck and live matrix rerun
 Evidence:                              `qa/live_verification/daz_recovery_matrix_operational_binding_20260719.json`
+
+## 2026-07-19 05:38 UTC - Live Tier A backup, v4 migration, matrix binding and restore pass
+
+**Result:** MF-P9-12.04 and MF-P9-12.05 advance to 92% with verified live backup/migration/
+recovery/restore evidence; activation-only recipe/package/lineage routes remain honestly open.
+
+Rejected evidence:                      first pre-v4 bundle preserved and rejected for unmanifested `queue.sqlite-wal`/`-shm`; never used as authority
+Pre-v4 rollback:                        4,147 files / 756,547,219 bytes; seal `14b1ef40...a058`; queue integrity `ok`; zero sidecars
+Migration:                              live F queue schema 2→4 via migrations 3/4; quick-check `ok`; zero FK errors; no missing tables
+Legacy classification:                 exact hashes for one R0 script, one R1 scene state and three R3 validation diagnostics; all strategy `backup`; no accepted/gold claim
+Recovery matrix:                        5 records, zero blockers, published hash `3bc18cbe...0beb`; 2,904,216 backup bytes; 1,111,074 optional-bulk bytes
+Post-v4 backup:                         4,147 files / 756,645,523 bytes; seal `3fc1e115...eb3c`; exact matrix binding; queue integrity `ok`
+Clean-root restore:                     exact 4,147 payload hashes; DB schema 4; quick-check `ok`; zero FK errors and sidecars
+Code validation:                        72 integrated tests pass; Ruff, Black 25.1, schemas and diff checks pass
+Preservation:                           runtime remains disabled/paused/draining; all four maintenance tasks Disabled; no DAZ/WSL launch or MF-P6-08.05 mutation
+Remaining boundary:                     recipe/dataset-model categories are absent, so semantic replay, accepted-package verification, registry rebuild and lineage query remain unexecuted; rebuild/omit routes await eligible artifacts
+Evidence:                              `qa/live_verification/daz_live_backup_migration_recovery_restore_20260719.json`

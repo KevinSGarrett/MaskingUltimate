@@ -19524,13 +19524,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 60,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:40:01+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: strict signed feedback/parent/certificate/retry/authority foundations pass 2 focused tests, Ruff, and schema parsing. Trusted re-sign probes still accept provider/subject/policy drift, omitted protected scope, invented QA failure IDs, and same-feedback-ID/same-hypothesis different bodies. Evidence: qa/live_verification/bridge_feedback_intake_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-11.01, MF-P6-10.06, and MF-P6-08.06 are not accepted. The signed feedback validator is strong, but no mandatory current-state resolver, feedback-ID/idempotency and hypothesis-history ledger, producer intake decision, immutable child-candidate transaction, or crash/concurrency proof exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:40:01+00:00",
       "orphaned": false
     },
     "MF-P6-11.06": {

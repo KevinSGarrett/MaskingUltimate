@@ -7451,3 +7451,15 @@ Ownership boundary:                    Main executes/signs arbitration; MaskFact
 Prepared unit:                         `MF-CURSOR-11.04-RECEIPT-ARBITRATION-CONFORMANCE`; five absent/clean producer-only additive paths held behind 11.02/11.03 and Main decision evidence
 Disposition:                            no route selected, worker dispatched, or frozen/dirty bytes changed
 Evidence:                              `qa/live_verification/bridge_receipt_arbitration_gap_audit_20260719.json`
+
+## 2026-07-19 01:39 UTC - Signed feedback validator strong; current-state intake ledger missing
+
+**Result:** MF-P6-11.05 receives 60% contract/validator credit and remains item-blocked. Feedback is
+strict, signed, bounded, and advisory; production intake/decision/current-state resolution is absent.
+
+Verified foundation:                   exact parent/release/certificate/source/output/transform/QA/authority bindings, trusted consumer signature, retry/no-progress guards, authority firewall, and repair lifecycle vocabulary; 2 focused tests, Ruff, and schema parsing pass
+Trusted probes still clean:             provider, subject, and policy drift; omitted protected scope; invented QA failure IDs; same feedback ID plus same hypothesis with a different body and fresh nonce
+Missing transaction:                    no intake API/ledger, mandatory evidence resolver, cross-feedback hypothesis/idempotency history, deterministic accept/reject/mine/create decision, immutable child-candidate write, or crash/concurrency drills
+Prepared unit:                         `MF-CURSOR-11.05-FEEDBACK-INTAKE-LEDGER`; five absent/clean additive paths held behind 10.06/11.01/08.06
+Disposition:                            no feedback accepted/rejected, candidate created, parent/gold mutated, worker dispatched, or frozen bytes changed
+Evidence:                              `qa/live_verification/bridge_feedback_intake_gap_audit_20260719.json`

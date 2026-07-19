@@ -5921,11 +5921,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:09:03+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: machine-readable acquisition_plan schema + JSON companion + failure_mining_static binder. Evidence qa/live_verification/failure_mining_static_20260719.json sha256 8be69f37649841cc1be342c5d82ed1650aa92eb92d935ba68b0fdbbd94585117. Not D4 / VLM calibration."
+        }
+      ],
       "evidence": "Weekly S15 now uses the governed local qwen2.5:7b-instruct model rather than keyword rules. It sends text reasons only to fixed 127.0.0.1 Ollama with temperature=0/seed=1337, requires every reason exactly once as a key, restricts themes and targets to project vocabularies, retries invalid JSON once, and seals model/prompt/response hashes plus summary/targets. Live text-only proof maps finger/hair/human-edit/LR/occlusion correctly; qa/live_verification/s15_text_llm_clustering_20260711.json SHA-256 60a27124964709b3c223a60252d5a31bed394c39740f612d40bbf48731284f8a. 563 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T21:46:00+00:00",
+      "updated_at": "2026-07-19T23:09:03+00:00",
       "orphaned": false
     },
     "MF-P4-03.04": {
@@ -6684,11 +6690,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:09:06+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: acquisition-plan schema/mining binder landed as code/fixture only. D4 remains blocked — no human-anchor calibration / 20-image VLM run / second-review evidence."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: D4 requires human-anchor calibration, a valid 20-image VLM run, and human second-review evidence; the required anchor set does not yet exist.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:35+00:00",
+      "updated_at": "2026-07-19T23:09:06+00:00",
       "orphaned": false
     },
     "MF-P5-01.01": {
@@ -13651,11 +13663,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:09:04+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: residual mining abstention routing binder (empty/invalid clusterer → residual_mining_queue without human-anchor corpora). Same evidence sha256 8be69f37.... D4/VLM calibration still not claimed."
+        }
+      ],
       "evidence": "Focused 2026-07-14 governance/truth/autonomy/CVAT suite passed 92 tests; combined modernization evidence suite passed 164 tests. Runtime validation uses JSON Schema plus governance; active legacy versions, per-provider missing decisions, unresolved license activation, duplicate YAML keys, invalid lifecycle transitions, hard-bucket promotion regressions, and unsafe CVAT publication are rejected. Evidence: src/maskfactory/autonomy/ and tests/test_autonomy.py cover bounded/deduplicated tournaments, independent families, hard veto, deterministic selection, correction, statistical certificates, mixed audits, revocation, lifecycle, retraining plans, and stale-fingerprint rejection.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:50:18+00:00",
+      "updated_at": "2026-07-19T23:09:04+00:00",
       "orphaned": false
     },
     "MF-P4-11.15": {
@@ -15096,12 +15114,17 @@
           "ts": "2026-07-14T17:20:35+00:00",
           "actor": "ai_agent",
           "text": "Implemented as a separate autonomy authority gate so existing QC-037 review routing semantics remain backward compatible while autonomous certification treats relationship failures as non-overridable."
+        },
+        {
+          "ts": "2026-07-19T23:09:45+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19: Executable STATIC reseal run_multi_person_static_contract_suite re-proves seeded QC-035/036 + AUT-MP-001/002/003 blocks without Kevin sources. Evidence qa/live_verification/multi_person_static_contracts_20260719.json. No real-demo claim."
         }
       ],
       "evidence": "src/maskfactory/autonomy/multi_person_gate.py adds a mandatory image-level duo/small_group gate bound into run_candidate_tournament: missing gates or failures hard-veto every candidate. QC-035/036, exact promoted-person visible containment, reciprocal contact/occlusion direction, recorded-neighbor agreement, and nonempty paired contact bands are required. tests/test_autonomy_multi_person_gate.py seeds QC-035 overlap, QC-036 identity bleed, missing identity coverage, one-way contact, invalid occlusion reciprocity, and band defects; 37 focused tests pass and Ruff lint/format checks pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T17:20:35+00:00",
+      "updated_at": "2026-07-19T23:09:45+00:00",
       "orphaned": false
     },
     "MF-P8-11.03": {
@@ -15197,12 +15220,17 @@
           "ts": "2026-07-14T17:26:36+00:00",
           "actor": "ai_agent",
           "text": "A certified sibling may still be served while another instance receives residual review, but the entire source image remains in the residual dataset partition until group resolution, preventing training/holdout leakage."
+        },
+        {
+          "ts": "2026-07-19T23:09:45+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19: STATIC residual-routing binder re-proves mixed certified/residual one-truth-partition and certified duo serve-without-routine-review. Evidence qa/live_verification/multi_person_static_contracts_20260719.json. MF-P8-11.07 still NEEDS KEVIN."
         }
       ],
       "evidence": "src/maskfactory/serve/routing.py now builds whole-image pN routes: exact-current certified instances serve without routine review; only residual instances and explicitly preselected image-level audits enter CVAT. One truth_partition is emitted for all instances, any residual makes the image group residual for dataset authority, and validate_instance_split_integrity enforces the map. Serving, pseudo-dataset, and package finalization propagate risk bucket+instance context. Routing/scope/autonomy/package/dataset tests pass; Ruff and format checks pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T17:26:36+00:00",
+      "updated_at": "2026-07-19T23:09:45+00:00",
       "orphaned": false
     },
     "MF-P8-11.06": {
@@ -15246,11 +15274,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:09:44+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19: Fixture-seeded STATIC binder sealed at qa/live_verification/multi_person_static_contracts_20260719.json (exclusivity/bleed/identity/contact gates + residual routing). STATIC_PASS only; does NOT satisfy MF-P8-11.07 real 10-20 image demo. Remains NEEDS KEVIN."
+        }
+      ],
       "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: sufficient governed 2–4-person sources and the preselected blinded human-anchor audit are required; certificate-covered instances otherwise route automatically.",
+      "blocked_reason": "NEEDS KEVIN: sufficient governed 2-4-person sources and the preselected blinded human-anchor audit are required; certificate-covered instances otherwise route automatically.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:53:48+00:00",
+      "updated_at": "2026-07-19T23:09:44+00:00",
       "orphaned": false
     },
     "MF-P8-11.08": {

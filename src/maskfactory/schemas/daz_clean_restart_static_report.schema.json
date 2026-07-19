@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_clean_restart_static_report.schema.json",
+  "title": "MaskFactory DAZ clean restart STATIC report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "required_checks",
+    "checks",
+    "jobs",
+    "worker_script_binding",
+    "all_checks_pass",
+    "live_daz_execution",
+    "live_repeated_job_fixture_complete",
+    "dirty_scene_reuse_allowed",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "report_id",
+    "seal_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "daz_clean_restart_static_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {"const": "daz_worker_isolation_static_only"},
+    "required_checks": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "process_per_job",
+        "persistent_worker_disabled",
+        "no_default_scene",
+        "startup_scene_empty",
+        "refuse_parallel_daz",
+        "job_private_state",
+        "partial_not_accepted",
+        "repeated_job_isolation"
+      ],
+      "properties": {
+        "process_per_job": {"const": true},
+        "persistent_worker_disabled": {"const": true},
+        "no_default_scene": {"const": true},
+        "startup_scene_empty": {"const": true},
+        "refuse_parallel_daz": {"const": true},
+        "job_private_state": {"const": true},
+        "partial_not_accepted": {"const": true},
+        "repeated_job_isolation": {"const": true}
+      }
+    },
+    "jobs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["job_a_id", "job_b_id"],
+      "properties": {
+        "job_a_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "job_b_id": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "worker_script_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startup_scene_empty_error",
+        "process_exit_after_job",
+        "source"
+      ],
+      "properties": {
+        "startup_scene_empty_error": {"const": "startup_scene_not_empty"},
+        "process_exit_after_job": {"const": true},
+        "source": {
+          "const": "integrations/daz/scripts/1.0.0/worker_main.dsa"
+        }
+      }
+    },
+    "all_checks_pass": {"const": true},
+    "live_daz_execution": {"const": false},
+    "live_repeated_job_fixture_complete": {"const": false},
+    "dirty_scene_reuse_allowed": {"const": false},
+    "doctor_green_claimed": {"const": false},
+    "gold_claimed": {"const": false},
+    "visual_qa_pass_claimed": {"const": false},
+    "main_complete_claimed": {"const": false},
+    "production_evidence_pass_claimed": {"const": false},
+    "report_id": {
+      "type": "string",
+      "pattern": "^dcrs_[0-9a-f]{24}$"
+    },
+    "seal_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

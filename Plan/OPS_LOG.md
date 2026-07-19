@@ -9300,3 +9300,58 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 - No live DAZ Studio primitive smoke
 
 **Commands:** git checkout f155d35d -- src/maskfactory/cli.py; merge verify-static-contracts; pytest focused
+
+## 2026-07-19 23:10 UTC - STATIC failure-mining / acquisition-plan binder (P4 residual)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P4-03.03 (note, already complete); MF-P4-11.14 (note, already complete); MF-P4-EXIT remains blocked
+**Result:** STATIC_PASS only — never D4; never VLM calibration; never human-anchor authority
+
+### What landed
+- Schema `acquisition_plan` + `failure_mining_static_report` registered in `validation.SCHEMA_NAMES`
+- `src/maskfactory/qa/failure_mining_static.py`: machine-readable plan builder, closed action kinds, mining abstention routing (no human-anchor corpora required), STATIC binder seal
+- `write_acquisition_plan` now emits companion `acquisition_plan_<date>.json` beside Markdown; S15 result records `acquisition_plan_json` and explicit `d4_complete=false` / `vlm_calibration_complete=false`
+- Abstention routes: empty queue, invalid/missing clusterer themes, text-LLM unavailable → `residual_mining_queue` without weekly-plan / D4 / VLM-calibration authority
+
+### Evidence
+`qa/live_verification/failure_mining_static_20260719.json` sha256 `8be69f37649841cc1be342c5d82ed1650aa92eb92d935ba68b0fdbbd94585117`
+- binder seal_sha256 `8aa5a8ca9b9289cf2c305ba322960c112fd2bdcdfd8129b79ef23ad8079a5805`
+- report_id `fms_8aa5a8ca9b9289cf2c305ba3`
+
+### Focused tests
+`pytest` failure_mining_static + failure_mining_coverage + ontology_v2_operations: 18 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No D4 / MF-P4-EXIT complete
+- No VLM calibration gate pass / no 20-image human-anchor run
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py note; evidence seal
+
+## 2026-07-19 23:12 UTC - STATIC multi-person gate + residual routing binder (P8)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P8-11.02 (note, already complete); MF-P8-11.05 (note, already complete); MF-P8-11.07 remains NEEDS KEVIN blocked
+**Result:** STATIC_PASS only - never MF-P8-11.07 real demo; never Kevin multi-person sources; never D11/G9; never doctor-green/gold
+
+### What landed
+- src/maskfactory/autonomy/multi_person_static_contracts.py: fixture-seeded exclusivity (QC-035), bleed (QC-036), identity (AUT-MP-001), contact reciprocity (AUT-MP-002/003) hard blocks + residual routing / one-truth-partition checks
+- Schema multi_person_static_contracts_report registered in alidation.SCHEMA_NAMES
+- CLI: maskfactory autonomy verify-multi-person-static-contracts
+- Explicit mf_p8_11_07_demo_complete=false and kevin_multi_person_sources_required=true (schema-enforced)
+
+### Evidence
+qa/live_verification/multi_person_static_contracts_20260719.json sha256 c1ba3b0850613c370d13f101d10e4693230ed94c52e91bfcd481c1c034a152cd
+- binder seal_sha256 78fb1acd900b4f515bbe4dd728227cd36dd5d2da22d84ea4153d75aae4d8ce41
+- report_id mpsc_78fb1acd900b4f515bbe4dd7
+
+### Focused tests
+pytest multi_person_static_contracts + autonomy_multi_person_gate + serving_routing: 12 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P8-11.07 / D11 / G9 real multi-person demonstration
+- No Kevin-supplied 10-20 image corpus
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set notes; evidence seal
+

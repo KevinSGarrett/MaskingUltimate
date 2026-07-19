@@ -354,24 +354,49 @@ def write_acquisition_plan(
     clusterer: Callable[[tuple[str, ...]], dict[str, str]],
     report_date: str,
 ) -> Path:
-    """Use a text-LLM cluster callback and write the top-20 concrete priority actions."""
-    unresolved = sorted(
-        (record for record in records if not record.resolved),
-        key=lambda item: (-item.priority, item.image_id),
+    """Use a text-LLM cluster callback and write top-20 Markdown + schema JSON."""
+    from .failure_mining_static import (
+        FailureMiningStaticError,
+        build_acquisition_plan_document,
+        persist_acquisition_plan_json,
     )
-    clusters = clusterer(tuple(record.failure_reason for record in unresolved))
-    lines = [f"# MaskFactory Acquisition Plan — {report_date}", "", "Top priority actions:", ""]
-    for rank, record in enumerate(unresolved[:20], 1):
-        cluster = clusters.get(record.failure_reason, "unclustered")
-        action = _action(record)
-        lines.append(
-            f"{rank}. **{record.failed_body_part}** ({record.priority:.4f}, {cluster}) — {action} "
-            f"[`{record.image_id}`]"
-        )
+
+    record_list = tuple(records)
+    document = build_acquisition_plan_document(
+        record_list,
+        report_date=report_date,
+        clusterer=clusterer,
+        markdown_relative_path=f"acquisition_plan_{report_date}.md",
+    )
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / f"acquisition_plan_{report_date}.md"
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if document.get("weekly_plan_authority") is False:
+        abstention = document.get("abstention") or {}
+        reason = abstention.get("reason", "mining_abstention")
+        lines = [
+            f"# MaskFactory Acquisition Plan — {report_date}",
+            "",
+            "Top priority actions:",
+            "",
+            f"_No weekly plan authority_ (`{reason}`). Machine-side abstention; "
+            "not D4 / VLM calibration.",
+            "",
+        ]
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    else:
+        lines = [f"# MaskFactory Acquisition Plan — {report_date}", "", "Top priority actions:", ""]
+        for action in document["top_actions"]:
+            lines.append(
+                f"{action['rank']}. **{action['failed_body_part']}** "
+                f"({action['priority']:.4f}, {action['cluster']}) — {action['action_text']} "
+                f"[`{action['image_id']}`]"
+            )
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    try:
+        persist_acquisition_plan_json(document, output_dir=output_dir, report_date=report_date)
+    except FailureMiningStaticError as exc:
+        raise FailureMiningError(str(exc)) from exc
     return path
 
 

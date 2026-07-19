@@ -181,6 +181,11 @@ def run_active_learning(
         "retrain_task": str(retrain_task) if retrain_task else None,
         "class_error_trigger_classes": list(error_classes),
         "acquisition_plan": str(plan),
+        "acquisition_plan_json": (
+            str(plan.with_suffix(".json")) if plan.with_suffix(".json").is_file() else None
+        ),
+        "d4_complete": False,
+        "vlm_calibration_complete": False,
         "text_llm_clustering_evidence": str(clustering_path) if clustering_path.is_file() else None,
         "weekly_qa_summary": str(weekly_summary) if weekly_summary else None,
         "human_edit_harvest": {

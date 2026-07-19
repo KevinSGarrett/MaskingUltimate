@@ -7,6 +7,7 @@ import shutil
 from pathlib import Path
 
 from . import comfy_export
+from .static_contracts import write_installed_node_pack_inventory
 
 
 def install_node_pack(
@@ -35,4 +36,5 @@ def install_node_pack(
     (target / "config.json").write_text(
         json.dumps(config, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
+    write_installed_node_pack_inventory(target)
     return target

@@ -9224,3 +9224,67 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 - No doctor-green / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+
+## 2026-07-19 22:56 UTC - STATIC host procedural primitive + hard gates + 72 fixtures
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/evidence only)
+**Items:** MF-P9-03.09 (70% partial); MF-P9-15.02 (88% partial); MF-P9-06.10 (58% partial)
+**Result:** STATIC_PASS only - never gold; no doctor-green; no live DAZ Studio launch; no production audit complete; no Main-complete; no PRODUCTION_EVIDENCE_PASS
+
+### MF-P9-03.09 host procedural primitive
+- `src/maskfactory/daz/render/procedural_primitive.py` + schema `daz_procedural_primitive_bundle`
+- Deterministic analytic_front_plane RGB/instance/PART + depth/normals EXR; golden hash verify; CLI build/verify
+- Refuses live_daz_execution / daz_assets_used / accepted / training_eligible / gold
+- Published: `qa/fixtures/daz/procedural_primitives/daz_proc_prim_7c6483dd52c97066ea085e19/`
+- Evidence: `qa/live_verification/daz_procedural_primitive_static_20260719.json` sha256 `073ae1fac520451f11ff82d6bec544e8f46667269e12a32827f548f5ddf2661f`
+
+### MF-P9-15.02 selective autonomy hard gates
+- `src/maskfactory/selective_autonomy_hard_gates.py` binds zero-tolerance bleed/swap/format to QC-001..003 + QC-035/036
+- `production_audit_complete=false`
+- Evidence: `qa/live_verification/selective_autonomy_hard_gates_static_20260719.json` sha256 `2014b704ba1bbd2e7aef54afbb617bf8fd6dc0d5f6882a73ec9849688be83282`
+
+### MF-P9-06.10 scale headroom
+- Published 72-fixture unrendered set `daz_engineering_fixture_set_5a2427e86c09c753e0a4dd40`
+- Evidence: `qa/live_verification/daz_engineering_fixture_set_72_static_20260719.json`
+
+### Focused tests
+`pytest` procedural primitive + hard gates + engineering fixtures: 13 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No live MaskFactoryDAZ primitive smoke / no DAZ Studio launch
+- No accepted/rendered engineering fixtures
+- No production audit completion for selective autonomy
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+## 2026-07-19 23:00 UTC — STATIC serving/ComfyUI contracts (P6-06 residual)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
+**Items:** MF-P6-06.08 (80% partial); notes on MF-P6-01.02 / MF-P6-04.02 / MF-P6-06.02 / MF-P6-06.04
+**Result:** STATIC_PASS only — never Mode B predict complete; never Main adoption; never champion-backed predict; never production release install
+
+### What landed
+- `src/maskfactory/serve/static_contracts.py`: closed source node-pack inventory hashes; `enforce_serving_provenance` schema+redaction; `enforce_serving_route_static` authority firewall; frozen workflow preflight contract rebind
+- Schema `serving_static_contracts_report`; registered in `validation.SCHEMA_NAMES`
+- Developer `comfy install` writes `node_pack_inventory.json`; verify refuses `stale_unmanifested_files`
+- CLI: `maskfactory comfy verify-static-contracts`
+- Wired into `serve/api.py` provenance builder and `serve/routing.py`
+- Resealed `qa/governance/serving_workflow_performance_v1.json` → `d48666d930c4deb8eed214ba00434a66e8601930e723ae56a887aa88905a6666` (api.py governing hash after enforcement wiring)
+
+### Evidence
+`qa/live_verification/serving_static_contracts_20260719.json` sha256 `e5916d96ed025fb6bf02e18a51f853dc3dde853d5fa2c180acf7c8eca707e6da`
+- node_pack_inventory_sha256 `d567d52e36683bf63b73412e4a9513c16e84996e635874978bc550c47f120e0a`
+- policy_sha256 `d48666d9...`
+- `ready_for_live_workflow_execution=false`
+
+### Focused tests
+`pytest` static contracts + workflow performance + preflight: 27 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No Mode B `/predict` RUNTIME_PASS
+- No Main bridge / adoption complete
+- No production release install/rollback (MF-P6-10.04 still open)
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; comfy verify-static-contracts evidence seal
+

@@ -7752,11 +7752,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:57:08+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: developer install now writes closed node_pack_inventory.json with exact per-file SHA-256; verify_installed_node_pack_inventory refuses stale_unmanifested_files. Not a production release install/Main adoption (MF-P6-10.04 still open)."
+        }
+      ],
       "evidence": "maskfactory comfy install --comfy-root copies the standalone __init__.py and workflow JSONs, writes config.json with absolute packages_root, localhost API URL, and format 1.x; installed module loads config in a fresh import test.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T07:56:50+00:00",
+      "updated_at": "2026-07-19T22:57:08+00:00",
       "orphaned": false
     },
     "MF-P6-01.03": {
@@ -8309,11 +8315,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:57:09+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: closed node-pack inventory hashes + stale-file detection complement AST write-path audit; developer install only, not production release authority."
+        }
+      ],
       "evidence": "CI test parses comfy_export.py AST: rejects heavy dependencies and all write/mutation APIs (write_text/write_bytes/unlink/replace/rename/mkdir/touch/rmdir); runtime package-tree hash also remains identical across node calls.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T07:56:57+00:00",
+      "updated_at": "2026-07-19T22:57:09+00:00",
       "orphaned": false
     },
     "MF-P6-EXIT": {
@@ -14355,11 +14367,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:57:08+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 residual: enforce_serving_provenance now schema-validates and refuses path/credential/.pth leakage plus truth_tier/certification overclaims; wired into /predict provenance builder. Item remains complete; no champion predict claim."
+        }
+      ],
       "evidence": "Serving champion contracts now include redacted lifecycle, content compatibility, license eligibility, benchmark-certificate status, and rollback status. Every /predict label emits serving_provenance schema data with machine_candidate truth tier, not_certified/null scope, review_draft destination, and exact residual reason; MFPredictMasks preserves it in manifest_json. Schema/additionalProperties and tests prove raw checkpoint paths, source URLs, and license text are absent. Focused suite passed 38 tests; full 941-test suite and repository-wide Ruff passed on 2026-07-14.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T15:23:51+00:00",
+      "updated_at": "2026-07-19T22:57:08+00:00",
       "orphaned": false
     },
     "MF-P6-06.03": {
@@ -14418,11 +14436,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:57:09+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 residual: enforce_serving_route_static adds authority firewall (no authoritative_human_gold; certified/residual/audit destination invariants); wired into build_certificate_aware_serving_route. Item remains complete; no Main bridge claim."
+        }
+      ],
       "evidence": "src/maskfactory/serve/routing.py revalidates lifecycle schema, certificate hash/scope/expiry, exact pipeline fingerprint, lifecycle eligibility, and revocation at serving time. Current covered outputs emit autonomous_certified_gold certified metadata; preselected audits route to cvat_preselected_audit; stale/tampered/revoked/residual fixtures downgrade effective truth to machine_candidate and route to cvat_residual_review while retaining historical_truth_tier and authoritative_human_gold=false. serving_route schema and focused autonomy/serving suite passed 50 tests on 2026-07-14.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T15:27:16+00:00",
+      "updated_at": "2026-07-19T22:57:09+00:00",
       "orphaned": false
     },
     "MF-P6-06.05": {
@@ -14507,7 +14531,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-15T17:14:13+00:00",
@@ -14518,12 +14542,17 @@
           "ts": "2026-07-15T18:12:22+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: implemented and verified a fail-closed execution preflight for the frozen six-case workflow contract. It schema/hash-binds governed adult/NSFW-eligible single/multi sources, package truth trees, output isolation, promoted active checkpoint/runtime identities, passing role certificates, distinct rollback providers/checkpoints, and authoritative selection before launch. Live champion execution and rollback rehearsals remain unclaimed."
+        },
+        {
+          "ts": "2026-07-19T22:57:00+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: sealed serving_static_contracts residual — workflow preflight contract rebind, provenance schema+redaction enforcement, closed node-pack inventory hashes, serving_route authority firewall. Evidence qa/live_verification/serving_static_contracts_20260719.json sha256 e5916d96.... Resealed serving_workflow_performance_v1 to d48666d9.... ready_for_live_workflow_execution=false; no Mode B predict, Main adoption, champion, or production release claim."
         }
       ],
-      "evidence": "qa/live_verification/provider_neutral_workflow_preflight_20260715.json (file SHA-256 3aad902090fc6c1f00e58e32a0d9178154edea551ef943671578393a834c57aa); 7 dedicated, 120 affected, and 1623/1623 complete repository tests pass; Ruff, Black, JSON schemas, and diff check pass. Frozen policy remains 0bd10772.... No live workflow, rollback, D8, or completion claim.",
+      "evidence": "STATIC_PASS only: src/maskfactory/serve/static_contracts.py + schema serving_static_contracts_report; install writes node_pack_inventory.json; API/routing enforce provenance/route contracts; 27 focused tests pass (static+performance+preflight). Evidence qa/live_verification/serving_static_contracts_20260719.json. Live six-case champion execution/rollback still open.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T18:12:22+00:00",
+      "updated_at": "2026-07-19T22:57:00+00:00",
       "orphaned": false
     },
     "MF-P7-06.01": {
@@ -15857,13 +15886,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 70,
+      "notes": [
+        {
+          "ts": "2026-07-19T22:56:01+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: host procedural primitive golden path landed (no DAZ assets/launch). Remaining: live MaskFactoryDAZ primitive smoke via worker protocol."
+        }
+      ],
+      "evidence": "STATIC_PASS only: host-side procedural primitive render/decode without DAZ assets. Module src/maskfactory/daz/render/procedural_primitive.py + schema daz_procedural_primitive_bundle; deterministic analytic_front_plane RGB/instance/PART + depth/normals EXR; golden hash verify; CLI build/verify; refuses live_daz/assets/accepted/training/gold. Published qa/fixtures/daz/procedural_primitives/daz_proc_prim_7c6483dd52c97066ea085e19/. Evidence: qa/live_verification/daz_procedural_primitive_static_20260719.json sha256 073ae1fac520451f11ff82d6bec544e8f46667269e12a32827f548f5ddf2661f. Not live DAZ Studio primitive smoke; completion withheld until D2 live worker primitive pass.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T22:56:01+00:00",
       "orphaned": false
     },
     "MF-P9-03.10": {
@@ -16777,7 +16812,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 52,
+      "percent_complete": 58,
       "notes": [
         {
           "ts": "2026-07-19T22:34:57+00:00",
@@ -16793,12 +16828,17 @@
           "ts": "2026-07-19T22:48:39+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: published 48-fixture scale variant under schema 1.1.0. Never accepted/rendered; D5 render/accept path still required."
+        },
+        {
+          "ts": "2026-07-19T22:56:02+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: published 72-fixture scale variant. Never accepted/rendered; D5 render/accept path still required."
         }
       ],
-      "evidence": "STATIC_PASS only: schema 1.1.0 engineering fixture-set plus published 24 and 48 solo unrendered sets (full marginal coverage, sealed synthetic resolved recipes, CLI). 48-set proves 24-100 headroom. Refuses rendered/accepted/training_eligible/mapping_authority/live DAZ. Published qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json and daz_engineering_fixture_set_df43f46bb70227d626218bfe.json. Evidence: qa/live_verification/daz_engineering_fixture_set_v1_1_static_20260719.json (and prior v11 seal). Not accepted rendered fixture set.",
+      "evidence": "STATIC_PASS only: published 72-fixture unrendered engineering set daz_engineering_fixture_set_5a2427e86c09c753e0a4dd40 under schema 1.1.0 (24/48 retained). Evidence: qa/live_verification/daz_engineering_fixture_set_72_static_20260719.json. Never accepted/rendered; D5 path still required.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:48:39+00:00",
+      "updated_at": "2026-07-19T22:56:02+00:00",
       "orphaned": false
     },
     "MF-P9-07.01": {
@@ -18838,18 +18878,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-16T03:11:13+00:00",
           "actor": "codex",
           "text": "Zero bleed/swap and strict-format fail-closed contracts and seeded tests exist; production audit evidence across the final system remains."
+        },
+        {
+          "ts": "2026-07-19T22:56:02+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: zero-tolerance hard-gate binder sealed. Remaining: production audit evidence across final autonomous system."
         }
       ],
-      "evidence": null,
+      "evidence": "STATIC_PASS only: selective_autonomy_hard_gates binds zero-tolerance cross-instance bleed / left-right swaps / format integrity to existing QC-001..003 and QC-035/036 identities; seeded-violation families must fail closed; production_audit_complete=false. Evidence: qa/live_verification/selective_autonomy_hard_gates_static_20260719.json sha256 2014b704ba1bbd2e7aef54afbb617bf8fd6dc0d5f6882a73ec9849688be83282. Not production audit completion.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:13+00:00",
+      "updated_at": "2026-07-19T22:56:02+00:00",
       "orphaned": false
     },
     "MF-P9-15.03": {

@@ -11,6 +11,7 @@ from ..autonomy.calibration import verify_autonomy_certificate
 from ..autonomy.lifecycle import certificate_is_revoked, certificate_stratum_is_revoked
 from ..datasets.splits import validate_instance_split_integrity
 from ..validation import validate_document
+from .static_contracts import ServingStaticContractError, enforce_serving_route_static
 
 
 class ServingRouteError(ValueError):
@@ -133,13 +134,10 @@ def build_certificate_aware_serving_route(
         "certificate": certificate_metadata,
         "routing": routing,
     }
-    route_issues = validate_document(document, "serving_route")
-    if route_issues:
-        raise ServingRouteError(
-            "invalid serving route: "
-            + "; ".join(f"{issue.pointer or '/'} {issue.message}" for issue in route_issues)
-        )
-    return document
+    try:
+        return enforce_serving_route_static(document)
+    except ServingStaticContractError as exc:
+        raise ServingRouteError(f"invalid serving route: {exc}") from exc
 
 
 def build_multi_person_image_routes(

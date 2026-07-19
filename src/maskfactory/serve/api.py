@@ -28,7 +28,7 @@ from ..models.registry import (
     ModelRegistryError,
     resolve_registered_role_contract,
 )
-from ..validation import validate_document
+from .static_contracts import ServingStaticContractError, enforce_serving_provenance
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY = ROOT / "models/model_registry.json"
@@ -574,11 +574,10 @@ def _serving_provenance(role: str, contract: Mapping[str, Any]) -> dict[str, Any
             "audit_reason": None,
         },
     }
-    issues = validate_document(provenance, "serving_provenance")
-    if issues:
-        detail = "; ".join(f"{issue.pointer or '/'} {issue.message}" for issue in issues)
-        raise ServingError(f"serving provenance contract is invalid: {detail}")
-    return provenance
+    try:
+        return enforce_serving_provenance(provenance)
+    except ServingStaticContractError as exc:
+        raise ServingError(f"serving provenance contract is invalid: {exc}") from exc
 
 
 def _registered_serving_contract(registry_path: Path, source: str) -> dict[str, Any]:

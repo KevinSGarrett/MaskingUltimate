@@ -19018,8 +19018,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 50,
       "notes": [
         {
           "ts": "2026-07-18T20:39:20+00:00",
@@ -19040,12 +19040,17 @@
           "ts": "2026-07-18T23:52:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 signed worker dispatch: high-assurance intent ...755b4545 passed admission against d6909e0 and queued Claude preflight ...522f16bf, Cursor implementation ...b83760a2, and Claude review ...22011cde. Automatic wake failed because both installed lane tasks are disabled; no provider ran and MaskFactory did not mutate scheduler state. Preserve queued chain and continue independent work."
+        },
+        {
+          "ts": "2026-07-19T02:27:47+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 current-head revalidation credits 50% foundation: 5 focused identity/trust/exchange tests and Ruff pass; all frozen source hashes match the accepted 2026-07-18 audit. Trusted probes still accept arbitrary assignment mapping hash, same-instance revision conflict, duplicate intent across distinct requests, and provider index 1 reused by two canonical people. The additive six-path worker packet remains absent; all three queued-chain controls are CANCELED and were preserved without wake/duplication."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_identity_gap_revalidation_20260719.json",
+      "blocked_reason": "IMPLEMENTATION: MF-P6-07.07 is complete and frozen v1 single-exchange identity validation is strong, but no additive canonical identity decision recomputes assignment evidence or rejects cross-record character-revision, duplicate-intent, provider-index, artifact, and replay collisions. The preserved exact-project worker chain is signed CANCELED for trusted-root mismatch and produced no implementation output.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T23:52:06+00:00",
+      "updated_at": "2026-07-19T02:27:47+00:00",
       "orphaned": false
     },
     "MF-P6-09.02": {

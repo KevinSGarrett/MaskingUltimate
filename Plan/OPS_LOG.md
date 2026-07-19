@@ -7520,3 +7520,18 @@ Missing runtime:                       no artifact->receipt->event->checkpoint t
 Prepared unit:                         `MF-CURSOR-11.08-BRIDGE-RECOVERY-ATOMICITY`; five absent/clean additive producer paths held behind 10.07/11.06/11.07
 Preservation:                           scheduled maintenance and worker lanes remain disabled; no frozen/dirty/worker/WSL/Docker/CVAT state changed
 Evidence:                              `qa/live_verification/bridge_recovery_atomicity_gap_audit_20260719.json`
+
+## 2026-07-19 02:27 UTC - Identity foundation current; cross-record decision still absent
+
+**Result:** MF-P6-09.01 receives 50% frozen single-exchange foundation credit and remains
+item-blocked. Its upstream dependency is complete; the missing work is the additive canonical identity
+and collision decision.
+
+Verified foundation:                   frozen request/receipt require execution, encoded/decoded media/time, scene/character/revision, canonical/provider person assignment, package, intent, owner and artifact identity; validators bind one trusted request/receipt/certificate exchange strictly
+Focused validation:                    5 identity/trust/media/exchange tests pass; Ruff passes; all six governing source hashes equal the accepted 2026-07-18 audit
+Trusted gap probes:                     arbitrary assignment mapping hash, same-instance revision 1.0.0 versus 2.0.0, duplicate intent across distinct request/idempotency identities, and provider index 1 mapped to two coherent canonical people all validate as isolated records
+Missing decision:                       no normalized tuple/policy/component hashes, set-level bijection/collision engine, persistent replay distinction, strict decision schema, or golden vectors
+Worker reconciliation:                 the additive Sonnet/Cursor/Sonnet chain now has signed `CANCELED` controls for cross-project trusted-root mismatch; queue bytes remain preserved, no completion/dead-letter/provider output exists, and nothing was woken or duplicated
+Prepared scope:                         `MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION`; six additive paths remain absent/clean; frozen v1 mutation remains forbidden
+Truth boundary:                         no identity decision, cache/release/use/authority grant, runtime mutation, or item completion claim
+Evidence:                              `qa/live_verification/bridge_identity_gap_revalidation_20260719.json`

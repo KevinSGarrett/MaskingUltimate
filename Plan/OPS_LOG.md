@@ -7928,3 +7928,17 @@ Focused validation:                     26 qualification/provenance/remap/invent
 Truth boundary:                         no real source is admitted by this increment; complete source manifests, identity/split-dedup artifacts and source-specific sealed bundles remain open
 Preservation:                           operational-certificate dirty paths untouched; no scheduled task enable, direct worker wrapper call or retained-worktree deletion
 Evidence:                               `qa/live_verification/external_supervision_evidence_binding_20260719.json`
+
+## 2026-07-19 07:30 UTC - First complete real external-source hash manifest passes
+
+**Result:** MF-P9-13.04 advances from 72% to 76%; LV-MHP v1 now has a complete,
+repeatable full-file manifest, while LaPa/CelebAMask and the remaining qualification gates stay open.
+
+Real source result:                     19,953 unique files / 908,863,959 bytes; exact inventory count match
+Manifest authority:                    file SHA `5a70bd69...a348`; self-seal `5acd2eb4...3441`; schema and seal verify
+Repeatability:                         two full real scans produced identical hashes; second scan enforced per-file mutation and whole-tree membership guards
+Publication:                           immutable/idempotent `C:\MaskFactory_ExternalSupervision\manifests\lv_mhp_v1_source_hash_manifest_v1.json`; divergent overwrite fails closed
+Focused validation:                    17 manifest/qualification/inventory tests pass; Ruff, schema and diff integrity pass
+Truth boundary:                         hash manifestation closes only one LV-MHP gate; no training admission, gold, holdout or certified-volume authority is granted
+Remaining:                              full LaPa/CelebAMask manifests, LV-MHP identity, cross-source exact/perceptual split dedup, and final sealed gate bundle
+Evidence:                               `qa/live_verification/lv_mhp_full_source_hash_manifest_20260719.json`

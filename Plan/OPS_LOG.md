@@ -7626,3 +7626,16 @@ Missing authority:                      no installed-byte/stack recomputation, t
 Prepared scope:                         `MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no provider qualification/promotion, model-library activation, release publication, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_capability_snapshot_gap_revalidation_20260719.json`
+
+## 2026-07-19 03:06 UTC - Main requirements authenticated; producer admission unresolved
+
+**Result:** MF-P6-10.03 receives 50% signed-declaration foundation credit and remains blocked
+behind MF-P6-09.07 plus its missing use-time/replay admission decision.
+
+Verified foundation:                   strict canonical Main-authored requirements, consumer-role signature, nonce/time envelope, exact schema-name and capability set structure, trust/key uniqueness, authority kind and resource-budget guards
+Focused validation:                    3 positive/schema-registry/adoption tests pass; Ruff passes; all governing hashes match the accepted 2026-07-18 audit
+Fresh trusted gaps:                     substituted trust-set hash, `invented_super_gold`, contradictory per-capability label and valid-pattern substituted schema identity all validate after trusted re-sign
+Missing admission:                      validator has no producer use-time or replay ledger input; no adopted trust/schema/authority resolution, envelope normalization or deterministic required/optional decision exists
+Prepared scope:                         `MF-CURSOR-10.03-CONSUMER-REQUIREMENTS-ADMISSION`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         MaskFactory did not fabricate Main intent; no requirements admission/adoption, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_consumer_requirements_gap_revalidation_20260719.json`

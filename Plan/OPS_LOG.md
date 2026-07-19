@@ -7399,3 +7399,16 @@ Ownership boundary:                    Main owns cache/routes/adoption/rollback 
 Prepared unit:                         `MF-CURSOR-10.07-CONSUMER-INVALIDATION-CONFORMANCE`; five absent/clean producer-only additive paths are held behind 10.01-10.06 and Main runtime evidence
 Disposition:                            no Main cache, route, adoption, install, rollback, or lifecycle state changed; no worker dispatched; frozen v1 and dirty/held scopes unchanged
 Evidence:                              `qa/live_verification/bridge_consumer_invalidation_recovery_gap_audit_20260719.json`
+
+## 2026-07-19 01:15 UTC - External adapter boundary audited; Main runtime and producer conformance open
+
+**Result:** MF-P6-11.01 receives 25% producer-foundation credit but remains item-blocked. The frozen
+contracts, loopback service, and thin nodes exist; the Main-owned adapter and conformance proof do not.
+
+Verified foundation:                   4 focused loopback/draft/node installation/read-only tests and Ruff pass; live OpenAPI reports MaskFactory 0.0.1 with health/models/predict/refine only
+Boundary finding:                      no `MaskFactoryAdapter` implementation exists here; this is correct ownership, but no producer verifier has accepted a pinned Main adapter package against an adopted release
+Thin-node limit:                       Mode A reads configured package paths/status directly and Mode B posts multipart image/labels; neither is durable contract-based orchestration and neither receives adapter completion credit
+Missing proof:                         no rejection of internal-module, dirty-worktree, mutable-path, node-ID, or unversioned endpoint coupling; no exact Main adapter release/package/API/ontology/node/champion/rollback pin has passed producer fixtures
+Prepared unit:                         `MF-CURSOR-11.01-EXTERNAL-ADAPTER-CONFORMANCE`; five absent/clean producer-only additive paths held behind 10.01-10.05 and Main adapter evidence
+Disposition:                            no Main adapter or producer runtime mutated; no worker dispatched; frozen v1 and preserved dirty/held scopes unchanged
+Evidence:                              `qa/live_verification/bridge_external_adapter_boundary_gap_audit_20260719.json`

@@ -19416,13 +19416,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 25,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:16:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: frozen contracts, exact loopback service, draft-only runtime, and dependency-light read-only nodes pass 4 focused tests and Ruff. No external adapter or producer conformance verifier proves adopted-contract-only use or rejects internal-module, mutable-path, node-ID, dirty-install, and unversioned endpoint coupling. Evidence: qa/live_verification/bridge_external_adapter_boundary_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "CROSS-PROJECT/DEPENDENCY: MF-P6-10.05 and its release/install prerequisites are not accepted, and Main has not supplied a pinned production MaskFactoryAdapter package/conformance result. MaskFactory must publish/validate the external boundary but must not implement Main-owned orchestration.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:16:07+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {

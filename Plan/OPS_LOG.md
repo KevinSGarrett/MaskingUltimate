@@ -8727,3 +8727,41 @@ Reviewed `all_parts` / part panels across 9 instance packages. Defects include b
 | Doctor all-green | `RUNTIME_BLOCKED` | disk ~10.8 GiB; WSL latency |
 | P6-11/12 bridge | `STATIC_PASS` | `AWAITING_MAIN` |
 
+
+## 2026-07-19 - PROOF-TIER runtime re-probe (disk/WSL doctor honesty)
+
+**Lane:** Docker runtime re-probe under proof tiers + Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
+**Actor:** proof_tier_runtime_reprobe
+**Result:** Services live; bounded host smokes green; doctor all-green still RUNTIME_BLOCKED.
+
+### Live probe
+- Docker Desktop up: server 29.4.3, context docker-desktop
+- CVAT production localhost:8080 -> version 2.24.0
+- Nuclio pth-sam2 ready; non-destructive docker restart nuclio-nuclio-pth-sam2 after prior 504 contention
+- Ollama 0.32.1 via native ollama.exe (not Docker container)
+- C: free observed this wave: ~42.45 -> ~22.9 GiB (WSL/Docker activity); still below 75 GiB ingest floor
+- Ubuntu-22.04: Stopped -> Running; wsl true cold/flaky ~24-27s vs doctor 10s preflight; warm once measured 0.74s
+
+### Doctor (honest)
+- Full uv run maskfactory doctor: INCOMPLETE - [FAIL] torch_cuda (30s WSL cold timeout), then hung in registered_models / WSL smoke_sam2_wsl under ~23 GiB free -> aborted (no fake green)
+- Host-only programmatic subset run_doctor(..., preflight_wsl=False) excluding WSL model checks: PASS=7 FAIL=2
+  - PASS: cvat_api, cvat_project, nuclio_interactor, wsl_backing_store, png_strict, sqlite_writable, gpu_lock
+  - FAIL: disk_free 22.9 GiB; ollama_image doctor timeout at 45s (host VLM smoke passed at 70.34s)
+- CLI has no --skip-wsl. Safe tune: warm Ubuntu before full doctor. Safe non-model path: programmatic host-only subset. Neither credits doctor all-green.
+
+### Bounded RUNTIME smokes (host, no WSL model load)
+- tools/smoke_cvat_sam2.py: pass; 28.571s; fg=21491 -> RUNTIME_PASS_BOUNDED
+- tools/smoke_ollama_vlm.py: pass; qwen2.5vl:7b; 70.34s -> RUNTIME_PASS_BOUNDED
+- WSL registered model smokes: not completed (disk risk) -> RUNTIME_BLOCKED
+- Doctor all-green: blocked -> RUNTIME_BLOCKED
+
+### Disk reclaim candidates (Kevin decision - no wipe performed)
+- Ephemeral-ish: %LOCALAPPDATA%\Temp ~6.0 GiB; pip\Cache ~6.0 GiB; uv\cache ~11.3 GiB; ~/.cache/huggingface ~3.3 GiB
+- Docker system df reclaimable images ~0.9 GiB only (prune not run)
+- Do not wipe: MaskedWarehouse, models/, packages, .ollama (~26 GiB), Docker docker_data.vhdx (~68 GiB)
+
+### Exact Kevin disk blocker
+Free C: disk above 75 GiB ingest floor (currently ~22.9 GiB) - without destructive prune of governed data (MaskedWarehouse/models/packages/Docker volumes).
+
+### Evidence
+qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json

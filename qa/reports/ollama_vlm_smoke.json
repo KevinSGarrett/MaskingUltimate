@@ -1,15 +1,15 @@
 {
-  "measured_at": "2026-07-19T20:50:17.594445+00:00",
+  "measured_at": "2026-07-19T21:12:16.825439+00:00",
   "base_url": "http://127.0.0.1:11434",
   "model": "qwen2.5vl:7b",
   "prompt_version": "p-part-v1-doc10",
   "fixture": "programmatically generated 1024x256 four-tile synthetic P-PART panel",
-  "latency_seconds": 10.24,
+  "latency_seconds": 70.34,
   "response": {
     "verdict": "pass",
     "confidence": 1,
     "problems": [],
-    "evidence": "The mask accurately captures the left forearm without including any other body parts.",
+    "evidence": "The mask accurately captures the left forearm without including clothing or background.",
     "correction_instruction": "No changes needed. The segmentation is precise and complete."
   },
   "checks": {
@@ -24,7 +24,7 @@
     {
       "attempt": 1,
       "model": "qwen2.5vl:7b",
-      "eval_count": 61,
+      "eval_count": 60,
       "parsed": true,
       "checks": {
         "exact_required_keys": true,

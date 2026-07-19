@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_failure_control_gap_audit",
+  "recorded_at": "2026-07-19T02:05:52.5632788Z",
+  "project_head": "a60d9a85d8a276eb18bc97cb28767bf9a84ebb7a",
+  "tracker_item": "MF-P6-11.07",
+  "audit_status": "CLOSED_FAILURE_POLICY_STRONG_RUNTIME_CONTROL_ABSENT",
+  "completion_credit_percent": 40,
+  "governing_requirement": "Implement bounded retries only for typed transient errors, a Mode B circuit breaker, absolute deadline and declared resource enforcement, exact affected-scope blocking, and explicit no-silent-fallback behavior; outage, OOM, timeout, and incompatible-authority injection must block only dependent work where safe and never substitute an empty, wrong-owner, weaker-authority, or unqualified mask.",
+  "prerequisites": [
+    "MF-P6-09.06 has no accepted producer service/API compatibility implementation.",
+    "MF-P6-11.03 has no accepted signed Mode B request/receipt/error exchange.",
+    "MF-P6-11.06 has no accepted durable bridge journal or atomic idempotency/retry state.",
+    "Main owns consumer retry, circuit-breaker, and DAG-impact execution; no pinned signed Main runtime evidence is available here."
+  ],
+  "verified_foundations": [
+    "The frozen acquisition request binds an absolute created/deadline interval, declared runtime/queue/VRAM/RAM/output envelopes, maximum attempts from 1 through 10, typed-transient-only retry, and allow_silent_fallback fixed false.",
+    "The closed 37-code BRIDGE_ERROR_POLICY deterministically fixes category, retryability, impact scope, remediation action, retry-after requirement, and replacement-route requirement. Mutating its positive fixture to silent_fallback fails both schema and semantic policy validation.",
+    "The frozen lifecycle has request_retry_scheduled plus circuit_opened/circuit_closed transitions owned by Comfy_UI_Main, and the signed consumer-requirements fixture explicitly requires a circuit breaker.",
+    "Receipt validation recomputes deadline_met and rejects observed runtime, queue, VRAM, RAM, or output use beyond the request envelope after execution.",
+    "The producer runtime serializes heavy inference under one GPU lease, returns draft-only machine-candidate authority, rejects nonbinary/wrong-shape provider outputs, and does not substitute a provider when champion roles are absent.",
+    "Focused contract/runtime tests and Ruff pass."
+  ],
+  "focused_validation": {
+    "commands": [
+      "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_all_positive_documents_are_structurally_and_semantically_clean tests/test_mask_bridge_contracts_v1.py::test_unknown_submission_reconciliation_is_outcome_specific",
+      "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_repair_feedback_error_policy_and_idempotency_guards",
+      "python -m pytest -q tests/test_serve_api.py::test_runtime_serializes_concurrent_heavy_requests tests/test_serve_api.py::test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract",
+      "python -m pytest -q tests/test_serve_api.py::test_comfy_predict_node_multipart_transport_batch_and_api_down_hint tests/test_serve_api.py::test_runtime_rejects_nonbinary_or_wrong_shape_provider_outputs",
+      "python -m ruff check src/maskfactory/validation.py src/maskfactory/serve/api.py src/maskfactory/serve/comfy_export.py tests/test_mask_bridge_contracts_v1.py tests/test_serve_api.py",
+      "direct expired-deadline, minimum-resource-envelope, error-policy, implementation-search, and service-refusal probes"
+    ],
+    "tests_passed": 10,
+    "tests_failed": 0,
+    "ruff": "pass"
+  },
+  "direct_probes": [
+    {
+      "probe": "expired_signed_request_at_current_time",
+      "request_created_at": "2026-07-17T00:00:00Z",
+      "request_deadline_at": "2026-07-17T00:01:00Z",
+      "observed_validators": [],
+      "gap": "validate_mask_acquisition_request checks created-before-deadline ordering but accepts no current/decision time and therefore does not reject a currently expired request."
+    },
+    {
+      "probe": "signed_minimum_resource_envelope",
+      "mutated_envelope": {
+        "maximum_runtime_ms": 1,
+        "maximum_queue_ms": 0,
+        "maximum_vram_mb": 0,
+        "maximum_ram_mb": 1,
+        "maximum_output_bytes": 1
+      },
+      "observed_validators": [],
+      "interpretation": "The request is structurally valid, but no admission path compares the envelope with current queue/model/device requirements before work begins. Receipt checks are retrospective only."
+    },
+    {
+      "probe": "closed_error_policy",
+      "policy_code_count": 37,
+      "positive_error_validators": [],
+      "silent_fallback_mutation_validators": ["enum", "error_policy_matrix"],
+      "interpretation": "The wire policy forbids silent fallback, but the raw HTTP and node paths do not emit or consume this typed error record."
+    },
+    {
+      "probe": "thin_comfy_client",
+      "observed": "MFPredictMasks performs one urllib request with a fixed 120-second transport timeout and collapses OSError, ValueError, and URLError into ComfyPackageError.",
+      "missing": ["absolute request deadline", "typed retry decision", "maximum-attempt accounting", "backoff/retry-after", "circuit state", "impact-scope/DAG result"]
+    },
+    {
+      "probe": "producer_http_failure_shape",
+      "observed": "FastAPI catches serving-domain errors and emits generic HTTP 503 detail. Prior live zero-champion probes returned champion prediction provider is not configured without provider substitution.",
+      "gap": "The response is not a signed mask_bridge_error and carries no deterministic retry/scope/remediation record."
+    },
+    {
+      "probe": "bridge_circuit_and_dag_runtime_search",
+      "observed": "Bridge-specific circuit/retry/deadline/resource terms outside validation/contracts are absent; unrelated DAZ, provider, VLM, filesystem, and legacy pipeline retry utilities do not implement the frozen bridge decision matrix.",
+      "gap": "No persistent breaker state, threshold/window/half-open transition, scoped controller block, or signed decision evidence exists."
+    }
+  ],
+  "confirmed_gaps": [
+    "No contract-native adapter or producer endpoint consumes the signed request deadline, retry policy, or resource envelope before admission/execution.",
+    "No bounded retry engine accepts only validated typed transient errors, accounts attempts atomically with the idempotency/journal record, honors retry-after/deadline, or forbids retry of semantic/authority failures at runtime.",
+    "No circuit-breaker store, release/route key, failure threshold, observation window, cooldown, half-open probe, or signed open/close evidence is implemented.",
+    "No absolute deadline covers queue, lease, execution, receipt validation, and all retries; the node's fixed 120-second socket timeout is not the signed request deadline.",
+    "No producer admission controller proves the selected model/route can fit the declared GPU/RAM/output envelope, and no typed resource refusal/OOM record is returned over the live API.",
+    "No Main-owned scoped DAG blocker consumes impact_scope/completion-profile effects and proves unrelated passes continue while exact dependent passes remain blocked.",
+    "The live service and thin node exchange generic 503/ComfyPackageError text rather than a validated signed mask_bridge_error record.",
+    "No outage, OOM, timeout, incompatible-authority, circuit-open, deadline-expiry, or resource-refusal end-to-end fault matrix proves that empty, wrong-owner, weaker-authority, stale, or unqualified masks are never substituted.",
+    "No signed journal/receipt evidence binds retry decisions, circuit state, resource observations, scoped blocking, and final abstain/fail outcomes across restart/concurrency."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-11.07-FAILURE-CONTROL-CONFORMANCE",
+    "objective": "Implement additive producer failure-control admission and conformance: validate current deadlines and resource feasibility, return typed signed bridge errors, enforce producer-owned no-fallback/refusal behavior, and validate signed Main retry/circuit/scoped-block evidence without implementing or impersonating Main's DAG controller.",
+    "state": "PREPARED_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+      "src/maskfactory/schemas/mask_bridge_error.schema.json",
+      "src/maskfactory/schemas/mask_bridge_event.schema.json",
+      "src/maskfactory/validation.py",
+      "src/maskfactory/serve/api.py",
+      "src/maskfactory/serve/comfy_export.py",
+      "tests/test_mask_bridge_contracts_v1.py",
+      "tests/test_serve_api.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_failure_control_policy.yaml",
+      "src/maskfactory/bridge/failure_control.py",
+      "src/maskfactory/schemas/bridge_failure_control_evidence.schema.json",
+      "tools/check_bridge_failure_control.py",
+      "tests/test_bridge_failure_control.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. Candidate paths remain read-only. The scope is disjoint from frozen v1 contracts, preserved MF-P6-08.05 dirty paths, and prepared MF-P6-09.06/11.03/11.06 paths.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_failure_control.py tests/test_mask_bridge_contracts_v1.py tests/test_serve_api.py -k 'retry or circuit or deadline or resource or fallback or error or authority'",
+      "python -m ruff check src/maskfactory/bridge/failure_control.py tools/check_bridge_failure_control.py tests/test_bridge_failure_control.py",
+      "python -m black --check src/maskfactory/bridge/failure_control.py tools/check_bridge_failure_control.py tests/test_bridge_failure_control.py",
+      "python -m json.tool src/maskfactory/schemas/bridge_failure_control_evidence.schema.json"
+    ],
+    "acceptance_criteria": [
+      "At admission and every later boundary, compare trusted current time with the signed absolute deadline; expired work fails before provider invocation and no retry may exceed the remaining deadline.",
+      "Compare the signed queue/runtime/VRAM/RAM/output envelope with current route requirements and observations; refuse infeasible work with the exact typed error and never silently choose CPU, a smaller/unqualified model, another owner, or weaker authority unless an explicit signed compatible route permits it.",
+      "Map producer exceptions to a validated signed mask_bridge_error whose code fixes retryability, impact, remediation, and state transition; generic string/HTTP status cannot control retries.",
+      "Persist attempt budgets and retry decisions atomically with idempotency/journal state. Retry only validated typed transient errors with bounded backoff/retry-after; authority, semantic, hash, transform, ownership, schema, and idempotency failures are terminal until a new valid request/state change.",
+      "Validate signed Main circuit evidence keyed to exact adopted release/capability/route, including threshold/window/cooldown/half-open probe and legal open/close events; MaskFactory does not sign or execute Main's circuit state.",
+      "Validate a signed Main scoped-impact decision that blocks only exact dependent passes/resources where safe, preserves unrelated work, and contains no empty/wrong/weaker/unqualified fallback artifact.",
+      "Fault tests cover service outage, socket timeout, queue/runtime deadline, OOM/resource refusal, circuit open/half-open, incompatible authority, stale/revoked certificate, unknown error, and restart/concurrency. Each proves exact typed disposition and no silent mask substitution.",
+      "Frozen v1 contracts, preserved dirty paths, worker records, and unrelated service/runtime state remain byte-identical. Any missing v1 semantic requires an additive internal evidence schema or negotiated future wire version, never mutation of frozen v1."
+    ]
+  },
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/mask_acquisition_request.schema.json": "2160fd336a8ab25c25dd86babe418c7f2cf072a341c7e7bd94c00743e9103f72",
+    "src/maskfactory/schemas/mask_bridge_error.schema.json": "c65a4fc9e8c4c1df8c63911c653e91e364ae23387758c4c9ed617f86e69e7219",
+    "src/maskfactory/schemas/mask_bridge_event.schema.json": "d1d707b460bfcb273c8e6929d1811d04b3eacf346f2c20dc9e46ecef81aa4407",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "src/maskfactory/serve/api.py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
+    "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/test_serve_api.py": "9507b18b3722f058a9384e3a5b52751b2a1615c86edf52b24769076d45a7cad7",
+    "tests/fixtures/mask_bridge_contracts/positive_mode_b_predict_request_v1.json": "60c873c97b7bcf74e7a355919ba53cb8dc57c97574c470b42a8cde1a6eab040b",
+    "tests/fixtures/mask_bridge_contracts/positive_contract_set_v1.json": "c2aad7316fd01e0a430db4387023c5db34992d32791eb45cd077f322fad5c9d9"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "retry_or_circuit_state_created": false,
+    "main_dag_state_changed": false,
+    "production_failure_control_claimed": false
+  },
+  "claim_boundary": "This audit credits the strict frozen request/error/event contracts, closed error policy, receipt-side deadline/resource validation, GPU serialization/lease, draft authority, output-shape enforcement, and no-provider-substitution behavior only. It does not implement or prove contract-native typed errors, bounded retries, a circuit breaker, admission-time deadline/resource enforcement, scoped Main DAG blocking, restart-safe attempt state, or the required end-to-end fault matrix, and it does not complete MF-P6-11.07."
+}

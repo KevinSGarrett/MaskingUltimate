@@ -7476,3 +7476,32 @@ Reusable mechanics only:              workflow SQLite WAL/single-writer and fail
 Prepared unit:                         `MF-CURSOR-11.06-DURABLE-BRIDGE-JOURNAL`; five absent/clean additive paths held behind 10.06/11.01
 Disposition:                            no journal/service/worker/frozen/dirty state mutated and no durable recovery claim
 Evidence:                              `qa/live_verification/bridge_durable_journal_gap_audit_20260719.json`
+
+## 2026-07-19 02:06 UTC - Failure policy verified; retry/circuit/runtime enforcement absent
+
+**Result:** Hard-blocker MF-P6-11.07 receives 40% contract/runtime-foundation credit and remains
+item-blocked. The wire policy is strict, but no operational retry, circuit, deadline/resource admission,
+or scoped Main DAG failure controller exists.
+
+Verified foundation:                   signed request fixes deadline, resource envelope, 1-10 attempts, typed-transient-only retry, and no silent fallback; closed 37-code error policy fixes category/retryability/impact/remediation; receipt checks deadline/resources retrospectively
+Focused validation:                    10 contract/runtime tests pass; Ruff passes
+Direct request probes:                 a currently expired signed fixture and a signed 1ms/0-queue/0-VRAM/1MiB-RAM/1-byte-output request both validate clean because admission accepts no current time or route/device observation
+Thin client/API boundary:              one fixed 120-second urllib call; failures collapse to ComfyPackageError/generic HTTP 503 rather than signed typed errors; no attempt ledger, retry-after/deadline budget, circuit state, or scoped DAG result
+Safe runtime credit:                   serialized GPU lease, draft-only authority, invalid output rejection, and zero-champion refusal prevent observed provider substitution but do not prove the required cross-boundary fault matrix
+Prepared unit:                         `MF-CURSOR-11.07-FAILURE-CONTROL-CONFORMANCE`; five absent/clean additive producer-conformance paths are held behind 09.06/11.03/11.06 and Main runtime evidence
+Disposition:                            no retry/circuit/DAG state, worker dispatch, frozen contract, or dirty 08.05 scope changed; no production failure-control claim
+Evidence:                              `qa/live_verification/bridge_failure_control_gap_audit_20260719.json`
+
+## 2026-07-19 02:06 UTC - Port 8765 follow-up failed only the Windows forwarding gate
+
+**Result:** The pinned Ubuntu interpreter/service passed imports and Ubuntu-internal health/model/lease
+checks, but Windows `127.0.0.1:8765` did not forward after the prior wedged relay was retired. This is a
+bounded service-recovery failure, not a project-wide blocker.
+
+Pinned runtime:                         `/home/kevin/miniforge3/envs/maskfactory/bin/python`; Python 3.11.15; FastAPI, Uvicorn, and repository `maskfactory.cli` imports pass; no unqualified Python used
+Ubuntu proof:                           exact `127.0.0.1:8765`; `/health` 200/status ok; `/models` 200 with 17 governed records and zero champions; readable owned `serve_mode_b` lock
+Failed required gate:                   Windows had no 127.0.0.1:8765 listener and could not reach health, so the recovery was not relabeled pass
+Cleanup:                                stopped only owned WSL client PID 35240; verified Linux PID 383/listeners absent; removed only its verified stale project GPU lock; preserved both managed stdout/stderr pairs
+Preservation:                           Docker, CVAT, Nuclio, WSL distro state, model files, worker records, frozen contracts, and dirty MF-P6-08.05 paths were not changed
+Truth boundary:                         no service-health, champion prediction, certificate, release, or Main adoption claim; independent MaskFactory work continues
+Evidence:                              `qa/live_verification/maskfactory_service_recovery_followup_20260719.json`

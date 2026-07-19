@@ -13,8 +13,10 @@ from maskfactory.datasets.authority import (
     serialized_reader_capabilities,
 )
 from maskfactory.truth_tiers import (
+    NON_TRAINING_AUTHORITY_LABELS,
     TruthTierError,
     normalize_truth_tier,
+    require_training_truth_tier,
     summarize_truth_tiers,
     validate_truth_tier_policy,
 )
@@ -72,6 +74,23 @@ def test_legacy_authority_names_are_readable_without_renaming_machine_truth_huma
     assert normalize_truth_tier("human_approved_gold") == "human_anchor_gold"
     assert normalize_truth_tier("calibrated_auto_accepted") == "autonomous_certified_gold"
     assert normalize_truth_tier("machine_verified_candidate") == "machine_candidate"
+
+
+def test_operational_and_synthetic_exact_cannot_enter_training_truth_tiers() -> None:
+    assert "operationally_certified_artifact" in NON_TRAINING_AUTHORITY_LABELS
+    assert "synthetic_exact" in NON_TRAINING_AUTHORITY_LABELS
+    for label in (
+        "operationally_certified_artifact",
+        "synthetic_exact",
+        "external_labeled_reference",
+        "qa_passed_machine_candidate",
+    ):
+        with pytest.raises(TruthTierError, match="non-training authority"):
+            normalize_truth_tier(label)
+        with pytest.raises(TruthTierError, match="non-training authority"):
+            require_training_truth_tier(label)
+    # DAZ / external training ingest must still land as weighted_pseudo_label.
+    assert require_training_truth_tier("weighted_pseudo_label") == "weighted_pseudo_label"
 
 
 def test_invalid_weights_and_machine_holdouts_fail_closed() -> None:

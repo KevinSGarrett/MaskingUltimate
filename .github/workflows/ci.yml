@@ -88,6 +88,8 @@ jobs:
           --allow-failed-review
       - name: Block currency governance gate regressions
         run: pytest -q tests/test_currency_review.py
+      - name: Host-side shadow currency registry STATIC (no require-pass)
+        run: pytest -q tests/test_shadow_tournament_registration.py
       - name: Audit governed asset-complete test partition
         run: pytest --collect-only -m governed_asset
       - name: Hermetic pytest

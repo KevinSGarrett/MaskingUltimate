@@ -8828,3 +8828,45 @@ Managed logs: `logs/maskfactory_8765_20260719T213725309Z.stdout.log` / `.stderr.
 - No VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
 - MF-P6-12.04 remains blocked/incomplete at 86%
 
+
+## 2026-07-19 21:44 UTC — STATIC-only portfolio: converters, inactive v2, firewalls, currency CI
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/docs/evidence only)
+**Items:** MF-P9-13.05 (80% partial); MF-P9-05.12 (85% partial); MF-P7-07.03 (97% partial); training authority firewall residual; MF-P9-13.04/14.06 notes only
+**Result:** STATIC_PASS only — never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no 18k retrieval copy
+
+### MF-P9-13.05 role-aware converters
+- `src/maskfactory/external_supervision_converters.py`: LaPa/LV-MHP indexed + CelebAMask component converters
+- `split_required` / multi-PART → PART ignore 255; single-PART direct/merge maps; single material votes retained
+- Gold/holdout/blocked sources fail closed; `admission_ready=false`
+- Tests: `tests/test_external_supervision_converters.py`
+- Evidence: `qa/live_verification/external_supervision_converters_static_20260719.json`
+
+### MF-P9-05.12 inactive v2 DAZ ontology snapshot
+- `build_v2_ontology_snapshot` / `publish_v2_ontology_snapshot` + schema `daz_ontology_v2_snapshot`
+- `activation_status=approved_design_not_active`; `mapping_authority=false`; appended IDs 56..64
+- Refuses v1 source and `body_parts_v1` path leakage; CLI `--version v2`
+- Fixture publish: `qa/fixtures/daz/ontology_v2_inactive_snapshots/`
+- Evidence: `qa/live_verification/daz_inactive_v2_ontology_snapshot_static_20260719.json`
+
+### Training authority firewall
+- `NON_TRAINING_AUTHORITY_LABELS` rejects `operationally_certified_artifact`, `synthetic_exact`, etc. in `normalize_truth_tier` / dataset builder
+- Evidence: `qa/live_verification/training_authority_firewall_static_20260719.json`
+
+### MF-P7-07.03 currency CI STATIC
+- CI step runs `tests/test_shadow_tournament_registration.py` (shadow + `verify_shadow_currency_registry_static`)
+- Strict require-pass still withheld (`--allow-failed-review`); MF-P7-07.01 still honest FAIL
+- Evidence: `qa/live_verification/shadow_currency_ci_static_binding_20260719.json`
+
+### Focused tests
+`pytest` converters + daz ontology snapshot + truth_tiers + shadow registration: 26 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No `split_dedup_passed` / no source admitted
+- No retrieval 18k materialization; no MaskedWarehouse full dHash
+- No body_parts_v2 production activation
+- P6-11/12 remain AWAITING_MAIN
+- Doctor-green not claimed
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal script
+

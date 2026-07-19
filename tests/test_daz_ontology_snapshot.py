@@ -12,12 +12,15 @@ from maskfactory.cli import main
 from maskfactory.daz.mapping import (
     OntologySnapshotError,
     build_v1_ontology_snapshot,
+    build_v2_ontology_snapshot,
     publish_ontology_snapshot,
+    publish_v2_ontology_snapshot,
 )
 from maskfactory.validation import validate_document
 
 ROOT = Path(__file__).resolve().parents[1]
 ONTOLOGY = ROOT / "configs" / "ontology.yaml"
+ONTOLOGY_V2 = ROOT / "configs" / "ontology_v2.yaml"
 
 
 def test_v1_snapshot_comes_from_canonical_loader_and_is_deterministic() -> None:
@@ -81,6 +84,46 @@ def test_snapshot_publication_rejects_schema_and_digest_tamper(tmp_path: Path) -
     schema_tamper["material_label_count"] = 15
     with pytest.raises(OntologySnapshotError, match="snapshot_schema_invalid"):
         publish_ontology_snapshot(schema_tamper, tmp_path)
+
+
+def test_v2_inactive_snapshot_has_appended_ids_and_no_mapping_authority() -> None:
+    snapshot = build_v2_ontology_snapshot(ONTOLOGY_V2)
+    assert validate_document(snapshot, "daz_ontology_v2_snapshot") == ()
+    assert snapshot["ontology_version"] == "body_parts_v2"
+    assert snapshot["activation_status"] == "approved_design_not_active"
+    assert snapshot["mapping_authority"] is False
+    assert [label["id"] for label in snapshot["part_labels"]] == list(range(65))
+    assert snapshot["appended_part_ids"] == list(range(56, 65))
+    assert snapshot["disabled_part_labels"] == ["left_ear", "right_ear"]
+    assert snapshot["snapshot_id"].startswith("ontology_v2_")
+
+
+def test_v2_snapshot_refuses_v1_source_and_v1_path_leakage(tmp_path: Path) -> None:
+    with pytest.raises(OntologySnapshotError, match="ontology_version_invalid"):
+        build_v2_ontology_snapshot(ONTOLOGY)
+    with pytest.raises(OntologySnapshotError, match="ontology_version_invalid"):
+        build_v1_ontology_snapshot(ONTOLOGY_V2)
+
+    snapshot = build_v2_ontology_snapshot(ONTOLOGY_V2)
+    v1_root = tmp_path / "body_parts_v1" / "ontology_snapshots"
+    with pytest.raises(OntologySnapshotError, match="v2_v1_path_leakage"):
+        publish_v2_ontology_snapshot(snapshot, v1_root)
+
+    target, published = publish_v2_ontology_snapshot(
+        snapshot, tmp_path / "body_parts_v2" / "ontology_snapshots"
+    )
+    assert published is True
+    assert target.is_file()
+    assert publish_v2_ontology_snapshot(
+        snapshot, tmp_path / "body_parts_v2" / "ontology_snapshots"
+    ) == (target, False)
+
+    authority_tamper = copy.deepcopy(snapshot)
+    authority_tamper["mapping_authority"] = True
+    with pytest.raises(OntologySnapshotError, match="v2_mapping_authority_forbidden"):
+        publish_v2_ontology_snapshot(
+            authority_tamper, tmp_path / "body_parts_v2" / "leak_authority"
+        )
 
 
 def test_cli_publishes_and_returns_stable_error_code(tmp_path: Path) -> None:

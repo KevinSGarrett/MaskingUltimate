@@ -8338,29 +8338,50 @@ def daz_mappings() -> None:
 
 @daz_mappings.command("ontology-snapshot")
 @click.option(
+    "--version",
+    type=click.Choice(["v1", "v2"]),
+    default="v1",
+    show_default=True,
+    help="v1 = active mapping authority; v2 = inactive approved-design draft only.",
+)
+@click.option(
     "--source",
     type=click.Path(path_type=Path, dir_okay=False, exists=True),
-    default=Path("configs/ontology.yaml"),
-    show_default=True,
+    default=None,
+    help="Defaults to configs/ontology.yaml (v1) or configs/ontology_v2.yaml (v2).",
 )
 @click.option(
     "--output",
     type=click.Path(path_type=Path, file_okay=False),
-    default=Path(r"F:\DAZ\07_mappings\genesis9\body_parts_v1\ontology_snapshots"),
-    show_default=True,
+    default=None,
+    help="Defaults to F:\\DAZ\\...\\body_parts_v1|v2\\ontology_snapshots.",
 )
-def daz_mappings_ontology_snapshot(source: Path, output: Path) -> None:
-    """Freeze canonical MaskFactory v1 IDs for downstream DAZ mapping jobs."""
+def daz_mappings_ontology_snapshot(version: str, source: Path | None, output: Path | None) -> None:
+    """Freeze MaskFactory ontology IDs for DAZ mapping (v2 remains inactive)."""
     from .daz import DazErrorCode, result_envelope
     from .daz.mapping import (
         OntologySnapshotError,
         build_v1_ontology_snapshot,
+        build_v2_ontology_snapshot,
         publish_ontology_snapshot,
+        publish_v2_ontology_snapshot,
     )
 
+    if source is None:
+        source = (
+            Path("configs/ontology.yaml") if version == "v1" else Path("configs/ontology_v2.yaml")
+        )
+    if output is None:
+        output = Path(rf"F:\DAZ\07_mappings\genesis9\body_parts_{version}\ontology_snapshots")
     try:
-        snapshot = build_v1_ontology_snapshot(source)
-        target, published = publish_ontology_snapshot(snapshot, output)
+        if version == "v1":
+            snapshot = build_v1_ontology_snapshot(source)
+            target, published = publish_ontology_snapshot(snapshot, output)
+            reason = "daz_ontology_snapshot_complete"
+        else:
+            snapshot = build_v2_ontology_snapshot(source)
+            target, published = publish_v2_ontology_snapshot(snapshot, output)
+            reason = "daz_ontology_v2_inactive_snapshot_complete"
     except (OntologySnapshotError, OSError, ValueError) as exc:
         reason = exc.reason if isinstance(exc, OntologySnapshotError) else str(exc)
         click.echo(
@@ -8373,11 +8394,15 @@ def daz_mappings_ontology_snapshot(source: Path, output: Path) -> None:
     click.echo(
         json.dumps(
             result_envelope(
-                reason="daz_ontology_snapshot_complete",
+                reason=reason,
                 entity_ids=(snapshot["snapshot_id"],),
                 data={
                     "snapshot": snapshot,
                     "publication": {"path": str(target), "published": published},
+                    "mapping_authority": snapshot.get("mapping_authority", True),
+                    "activation_status": snapshot.get(
+                        "activation_status", "active_v1_mapping_input"
+                    ),
                 },
             ),
             sort_keys=True,

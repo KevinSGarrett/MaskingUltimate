@@ -23,6 +23,18 @@ LEGACY_TRUTH_ALIASES = {
     "residual_human_queue": MACHINE_CANDIDATE,
 }
 
+# Authority labels that must never enter training truth-tier readers/builders.
+# DAZ synthetic packages may use synthetic_exact only as non-training provenance
+# and must ingest as weighted_pseudo_label when training-eligible.
+NON_TRAINING_AUTHORITY_LABELS = frozenset(
+    {
+        "operationally_certified_artifact",
+        "synthetic_exact",
+        "external_labeled_reference",
+        "qa_passed_machine_candidate",
+    }
+)
+
 
 @dataclass(frozen=True)
 class TruthTierPolicy:
@@ -99,9 +111,16 @@ def validate_truth_tier_policy(document: Mapping[str, Any]) -> dict[str, TruthTi
 
 def normalize_truth_tier(value: str) -> str:
     normalized = LEGACY_TRUTH_ALIASES.get(value, value)
+    if normalized in NON_TRAINING_AUTHORITY_LABELS:
+        raise TruthTierError(f"non-training authority cannot enter training truth tiers: {value}")
     if normalized not in TRUTH_TIERS:
         raise TruthTierError(f"unknown truth tier: {value}")
     return normalized
+
+
+def require_training_truth_tier(value: str) -> str:
+    """Normalize a tier and refuse non-training / operational / synthetic labels."""
+    return normalize_truth_tier(value)
 
 
 def truth_tier_from_record(record: Mapping[str, Any]) -> str:
@@ -140,12 +159,14 @@ __all__ = [
     "HUMAN_ANCHOR_GOLD",
     "LEGACY_TRUTH_ALIASES",
     "MACHINE_CANDIDATE",
+    "NON_TRAINING_AUTHORITY_LABELS",
     "TRUTH_TIERS",
     "TruthTierCounts",
     "TruthTierError",
     "TruthTierPolicy",
     "WEIGHTED_PSEUDO_LABEL",
     "normalize_truth_tier",
+    "require_training_truth_tier",
     "summarize_truth_tiers",
     "truth_tier_from_record",
     "validate_truth_tier_policy",

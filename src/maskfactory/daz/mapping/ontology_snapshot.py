@@ -1,4 +1,8 @@
-"""Freeze the canonical MaskFactory v1 ontology for DAZ mapping jobs."""
+"""Freeze MaskFactory ontology snapshots for DAZ mapping jobs.
+
+v1 snapshots are the only active mapping authority input. v2 snapshots are
+inactive approved-design drafts that must never leak into v1 mapping authority.
+"""
 
 from __future__ import annotations
 
@@ -18,6 +22,10 @@ from ...validation import require_valid_document
 EXPECTED_VERSION = "body_parts_v1"
 EXPECTED_PART_IDS = tuple(range(56))
 EXPECTED_MATERIAL_IDS = tuple(range(16))
+EXPECTED_V2_VERSION = "body_parts_v2"
+EXPECTED_V2_PART_IDS = tuple(range(65))
+EXPECTED_V2_APPENDED_PART_IDS = tuple(range(56, 65))
+V2_ACTIVATION_STATUS = "approved_design_not_active"
 
 
 class OntologySnapshotError(ValueError):
@@ -116,13 +124,147 @@ def build_v1_ontology_snapshot(
     return document
 
 
-def publish_ontology_snapshot(snapshot: Mapping[str, Any], output_root: Path) -> tuple[Path, bool]:
+def build_v2_ontology_snapshot(
+    source: Path,
+    *,
+    source_locator: str = "configs/ontology_v2.yaml",
+) -> dict[str, Any]:
+    """Freeze inactive body_parts_v2 as a draft DAZ snapshot (no mapping authority)."""
+    source = Path(source)
     try:
-        require_valid_document(snapshot, "daz_ontology_snapshot")
+        source_bytes = source.read_bytes()
+        raw = yaml.safe_load(source_bytes)
+        ontology = load_ontology(source)
+    except (OSError, yaml.YAMLError, OntologyError) as exc:
+        raise OntologySnapshotError("ontology_load_failed", type(exc).__name__) from exc
+    if not isinstance(raw, dict):
+        raise OntologySnapshotError("ontology_shape_invalid", "source root must be a mapping")
+    if ontology.version != EXPECTED_V2_VERSION:
+        raise OntologySnapshotError(
+            "ontology_version_invalid",
+            f"expected {EXPECTED_V2_VERSION}, found {ontology.version}",
+        )
+    if raw.get("left_right_convention") != "character_perspective":
+        raise OntologySnapshotError(
+            "left_right_convention_invalid", "v2 must use character_perspective"
+        )
+    if raw.get("visible_pixel_only") is not True:
+        raise OntologySnapshotError(
+            "visibility_contract_invalid", "v2 mapping draft must be visible-pixel-only"
+        )
+
+    part_labels = ontology.labels_for_map("part")
+    part_ids = tuple(label.id for label in part_labels)
+    if part_ids != EXPECTED_V2_PART_IDS:
+        raise OntologySnapshotError(
+            "part_id_contract_invalid",
+            "canonical v2 PART IDs must be ordered and contiguous 0..64",
+        )
+    derived = tuple(label for label in ontology.labels if label.map == "none")
+    material_labels = ontology.labels_for_map("material")
+    material_ids = tuple(label.id for label in material_labels)
+    if material_ids != EXPECTED_MATERIAL_IDS:
+        raise OntologySnapshotError(
+            "material_id_contract_invalid",
+            "canonical v2 MATERIAL IDs must be ordered and contiguous 0..15",
+        )
+    other_indexed = tuple(
+        label
+        for label in ontology.labels
+        if label.id is not None and label.map not in {"part", "material"}
+    )
+    if other_indexed:
+        raise OntologySnapshotError(
+            "unexpected_indexed_map", "v2 DAZ snapshot found an unsupported indexed map"
+        )
+
+    loader_path = Path(__file__).resolve().parents[2] / "ontology.py"
+    core: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "ontology_version": ontology.version,
+        "activation_status": V2_ACTIVATION_STATUS,
+        "mapping_authority": False,
+        "source": {
+            "locator": source_locator,
+            "sha256": hashlib.sha256(source_bytes).hexdigest(),
+            "loader_locator": "src/maskfactory/ontology.py",
+            "loader_sha256": _sha256_file(loader_path),
+        },
+        "left_right_convention": raw["left_right_convention"],
+        "visible_pixel_only": raw["visible_pixel_only"],
+        "part_id_min": 0,
+        "part_id_max": 64,
+        "part_label_count": len(part_labels),
+        "enabled_part_label_count": sum(1 for label in part_labels if label.enabled),
+        "disabled_part_labels": [label.name for label in part_labels if not label.enabled],
+        "appended_part_ids": list(EXPECTED_V2_APPENDED_PART_IDS),
+        "part_labels": [_label_record(label, ontology) for label in part_labels],
+        "material_id_min": 0,
+        "material_id_max": 15,
+        "material_label_count": len(material_labels),
+        "material_labels": [_label_record(label, ontology) for label in material_labels],
+        "derived_labels": [_label_record(label, ontology) for label in derived],
+        "protected_classes": list(raw.get("protected_classes", [])),
+        "projected_templates": list(raw.get("projected_templates", [])),
+    }
+    canonical_sha = _canonical_sha(core)
+    document = {
+        **core,
+        "snapshot_id": f"ontology_v2_{canonical_sha[:24]}",
+        "canonical_sha256": canonical_sha,
+    }
+    require_valid_document(document, "daz_ontology_v2_snapshot")
+    return document
+
+
+def publish_ontology_snapshot(snapshot: Mapping[str, Any], output_root: Path) -> tuple[Path, bool]:
+    return _publish_ontology_snapshot(
+        snapshot,
+        output_root,
+        schema_name="daz_ontology_snapshot",
+        id_prefix="ontology_v1_",
+    )
+
+
+def publish_v2_ontology_snapshot(
+    snapshot: Mapping[str, Any], output_root: Path
+) -> tuple[Path, bool]:
+    if snapshot.get("mapping_authority") is not False:
+        raise OntologySnapshotError(
+            "v2_mapping_authority_forbidden",
+            "inactive v2 snapshots cannot claim mapping authority",
+        )
+    if snapshot.get("activation_status") != V2_ACTIVATION_STATUS:
+        raise OntologySnapshotError(
+            "v2_activation_status_invalid",
+            "inactive v2 snapshots must remain approved_design_not_active",
+        )
+    if "body_parts_v1" in str(output_root).replace("\\", "/"):
+        raise OntologySnapshotError(
+            "v2_v1_path_leakage",
+            "inactive v2 snapshots cannot publish under a body_parts_v1 path",
+        )
+    return _publish_ontology_snapshot(
+        snapshot,
+        output_root,
+        schema_name="daz_ontology_v2_snapshot",
+        id_prefix="ontology_v2_",
+    )
+
+
+def _publish_ontology_snapshot(
+    snapshot: Mapping[str, Any],
+    output_root: Path,
+    *,
+    schema_name: str,
+    id_prefix: str,
+) -> tuple[Path, bool]:
+    try:
+        require_valid_document(snapshot, schema_name)
     except ValueError as exc:
         raise OntologySnapshotError("snapshot_schema_invalid", str(exc)) from exc
     snapshot_id = snapshot.get("snapshot_id")
-    if not isinstance(snapshot_id, str) or not snapshot_id.startswith("ontology_v1_"):
+    if not isinstance(snapshot_id, str) or not snapshot_id.startswith(id_prefix):
         raise OntologySnapshotError("snapshot_identity_invalid", "snapshot identity is invalid")
     canonical_sha = snapshot.get("canonical_sha256")
     core = {
@@ -131,7 +273,7 @@ def publish_ontology_snapshot(snapshot: Mapping[str, Any], output_root: Path) ->
         if key not in {"snapshot_id", "canonical_sha256"}
     }
     computed_sha = _canonical_sha(core)
-    if canonical_sha != computed_sha or snapshot_id != f"ontology_v1_{computed_sha[:24]}":
+    if canonical_sha != computed_sha or snapshot_id != f"{id_prefix}{computed_sha[:24]}":
         raise OntologySnapshotError(
             "snapshot_digest_invalid",
             "snapshot identity or canonical digest does not match content",

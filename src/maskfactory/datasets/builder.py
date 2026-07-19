@@ -38,7 +38,7 @@ from ..truth_tiers import (
     MACHINE_CANDIDATE,
     WEIGHTED_PSEUDO_LABEL,
     TruthTierPolicy,
-    normalize_truth_tier,
+    require_training_truth_tier,
     validate_truth_tier_policy,
 )
 from .authority import evaluate_certified_volume_gates, serialized_reader_capabilities
@@ -590,7 +590,8 @@ def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolic
     source_role = lineage.get("kind") if isinstance(lineage, dict) else manifest.get("source_role")
     explicit = manifest.get("truth_tier")
     if isinstance(explicit, str):
-        tier = normalize_truth_tier(explicit)
+        # Operational / synthetic_exact labels fail closed before volume accounting.
+        tier = require_training_truth_tier(explicit)
     else:
         statuses = {
             entry.get("status")

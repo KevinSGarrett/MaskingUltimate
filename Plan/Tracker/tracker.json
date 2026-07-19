@@ -1482,12 +1482,17 @@
           "ts": "2026-07-15T15:46:38+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15 recovery confirmation after the external-VHD/Docker incident: direct Ubuntu-22.04 and F: VHD readability pass; identical standalone CUDA probe passes in 1.917s after one cold-start timeout; repeat live doctor PASS=11 WARN=1 SKIP=0 FAIL=0 with 14/14 registered model smokes. Sole warning is 130.9 GiB free, above the 75 GiB ingest block. Evidence: qa/live_verification/wsl_docker_recovery_confirmation_20260715.json"
+        },
+        {
+          "ts": "2026-07-19T21:00:25+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LIVE 2026-07-19: Historical all-green completion retained as past gate evidence only. Current live doctor is NOT all-green (disk_free FAIL ~10.8 GiB; WSL preflight timeouts). Do not reuse historical doctor-green as current RUNTIME_PASS. See MF-P0-EXIT."
         }
       ],
       "evidence": "qa/live_verification/restored_machine_doctor_20260713.json and qa/reports/cvat_sam2_smoke.json; full WSL suite passes and Ruff check/format are clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-15T15:46:38+00:00",
+      "updated_at": "2026-07-19T21:00:25+00:00",
       "orphaned": false
     },
     "MF-P0-08.01": {
@@ -1704,7 +1709,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-14T07:48:12+00:00",
@@ -1755,12 +1760,17 @@
           "ts": "2026-07-18T21:36:32+00:00",
           "actor": "ai_agent",
           "text": "2026-07-18 Docker maintenance rollback: all 38 persistent containers are stopped/exited; the disposable nuclio-local-storage-reader auto-removed under its own lifecycle. Docker Desktop is stuck starting because its official log records DockerDesktop/Wsl/CommandTimedOut for wsl.exe -l -v --all. No VHD copy/relocation, setting change, prune, Compose down, persistent-container removal, service restart, UAC, wsl shutdown/terminate, worker wake, or provider call occurred. NEEDS KEVIN: save unrelated work and perform a normal Windows Restart; post-restart recovery verification is required before backup/relocation resumes."
+        },
+        {
+          "ts": "2026-07-19T21:00:25+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LIVE 2026-07-19: Doctor re-probe NOT all-green. PASS=7 FAIL=4 WARN=1 after clearing stale gpu.lock and starting Ubuntu. FAIL: torch_cuda/registered_models/wsl_roundtrip (WSL true ~24s > doctor 10s preflight), disk_free ~10.8 GiB (BLOCK ingest). PASS: cvat_api 2.24.0, cvat_project, nuclio pth-sam2, ollama_image, png_strict, sqlite, wsl_backing_store. Smokes: smoke_cvat_sam2=pass; smoke_ollama_vlm=pass. Highest current runtime tier for Docker services: RUNTIME_PASS_BOUNDED (CVAT/Nuclio/Ollama). Doctor all-green = RUNTIME_BLOCKED (disk+WSL latency). SAM 3.1/Meta gates still open."
         }
       ],
-      "evidence": "qa/live_verification/docker_maintenance_rollback_20260718T2132Z.json; completion_credit=false; relocation_performed=false; backup_performed=false; 38/38 persistent containers exited, zero running; Docker engine pipe unavailable; held worker manifest SHA-256 02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a unchanged.",
+      "evidence": "Live doctor 2026-07-19 PASS=7 FAIL=4; qa/reports/cvat_sam2_smoke.json; qa/reports/ollama_vlm_smoke.json; C: ~10.8 GiB free.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-18T21:36:32+00:00",
+      "updated_at": "2026-07-19T21:00:25+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {
@@ -19848,8 +19858,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 86,
       "notes": [
         {
           "ts": "2026-07-19T01:16:07+00:00",
@@ -19875,12 +19885,17 @@
           "ts": "2026-07-19T20:48:05+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:30+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_external_adapter_conformance.py + fixture_main harness (main_adoption_complete=false). Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: Producer adapter conformance verifier is fixture-complete (STATIC_PASS). Fixture Main synthetic consumer must not close production. Remains blocked pending Main-supplied pinned production MaskFactoryAdapter package and signed conformance observation. MaskFactory must not implement Main orchestration.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:05+00:00",
+      "updated_at": "2026-07-19T20:59:30+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {
@@ -19895,8 +19910,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 84,
       "notes": [
         {
           "ts": "2026-07-19T01:20:44+00:00",
@@ -19927,12 +19942,17 @@
           "ts": "2026-07-19T20:48:05+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:31+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_mode_a_package_read.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode A immutable package-read evidence is fixture-verified (STATIC_PASS). No accepted production adopted-package/exact operational-wrapper authority (not fabricated).",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:05+00:00",
+      "updated_at": "2026-07-19T20:59:31+00:00",
       "orphaned": false
     },
     "MF-P6-11.03": {
@@ -19947,8 +19967,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 78,
       "notes": [
         {
           "ts": "2026-07-19T01:30:01+00:00",
@@ -19979,12 +19999,17 @@
           "ts": "2026-07-19T20:48:05+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:31+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_mode_b_localhost_client.py + fixture_main. Not RUNTIME_PASS_BOUNDED live predict / PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode B localhost client fixture-verified (STATIC_PASS). No champion-backed live predict proof or production cross-boundary adoption.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:05+00:00",
+      "updated_at": "2026-07-19T20:59:31+00:00",
       "orphaned": false
     },
     "MF-P6-11.04": {
@@ -19999,8 +20024,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-19T01:35:40+00:00",
@@ -20026,12 +20051,17 @@
           "ts": "2026-07-19T20:48:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:32+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_receipt_arbitration_conformance.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.02 and MF-P6-11.03 incomplete. Producer-side exact-scope normalizer/conformance oracle fixture-verified (STATIC_PASS). Awaiting Main-signed arbitration decision.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:06+00:00",
+      "updated_at": "2026-07-19T20:59:32+00:00",
       "orphaned": false
     },
     "MF-P6-11.05": {
@@ -20046,8 +20076,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T01:40:01+00:00",
@@ -20073,12 +20103,17 @@
           "ts": "2026-07-19T20:48:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:32+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_bridge_feedback_intake.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/STATIC_PASS: MF-P6-11.01 incomplete. Additive authenticated feedback intake ledger fixture-verified (STATIC_PASS). No production Main feedback authority fabricated.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:06+00:00",
+      "updated_at": "2026-07-19T20:59:32+00:00",
       "orphaned": false
     },
     "MF-P6-11.06": {
@@ -20093,8 +20128,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-19T01:46:09+00:00",
@@ -20120,12 +20155,17 @@
           "ts": "2026-07-19T20:48:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:33+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_bridge_journal.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive signed producer journal fixture-verified (STATIC_PASS). Awaiting Main durable journal store/idempotency/key lifecycle evidence.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:06+00:00",
+      "updated_at": "2026-07-19T20:59:33+00:00",
       "orphaned": false
     },
     "MF-P6-11.07": {
@@ -20140,8 +20180,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-19T02:09:12+00:00",
@@ -20182,12 +20222,17 @@
           "ts": "2026-07-19T20:48:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:33+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_bridge_failure_control.py + fixture_main. Not RUNTIME_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS HARD BLOCKER: MF-P6-11.03 and MF-P6-11.06 incomplete. Additive producer admission/fault-injection conformance fixture-verified (STATIC_PASS). Awaiting Main live circuit-breaker/DAG/retry signed evidence.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:06+00:00",
+      "updated_at": "2026-07-19T20:59:33+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {
@@ -20202,8 +20247,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 86,
       "notes": [
         {
           "ts": "2026-07-19T02:18:36+00:00",
@@ -20229,12 +20274,17 @@
           "ts": "2026-07-19T20:48:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:34+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_bridge_recovery.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.06 and MF-P6-11.07 incomplete. Additive receipt-last recovery drills fixture-verified (STATIC_PASS). Awaiting Main restart store + live unknown-outcome reconciler.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:07+00:00",
+      "updated_at": "2026-07-19T20:59:34+00:00",
       "orphaned": false
     },
     "MF-P6-12.01": {
@@ -20266,12 +20316,17 @@
           "ts": "2026-07-19T20:26:23+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: declared packaging blocker MF-P6-10.04 cleared. Producer verify clause satisfied (clean install + stale-node negative without dirty-source authority). Remaining Main restart-store / live pack activation is outside this verify clause and not claimed. Marked complete."
+        },
+        {
+          "ts": "2026-07-19T20:59:59+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier for this item remains STATIC_PASS / bounded producer packaging acceptance (clean-install + stale-node negatives). Not dirty-worktree PRODUCTION publish, not Main adoption, not doctor-green. Prior complete retained only for producer verify clause; PRODUCTION_EVIDENCE_PASS not claimed."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_integration_release.py proves clean-install inventory parity, stale-node wipe on reinstall, dirty-source and editable-install rejection, schema/OpenAPI inventories, receipt-last activation, and rollback evidence after MF-P6-10.04 complete. Additive producer acceptance only; no dirty-worktree production publish or Main adoption claimed.",
+      "evidence": "STATIC_PASS producer packaging: qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; tests/test_integration_release.py. No PRODUCTION dirty-worktree publish.",
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:23+00:00",
+      "updated_at": "2026-07-19T20:59:59+00:00",
       "orphaned": false
     },
     "MF-P6-12.02": {
@@ -20286,8 +20341,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 84,
       "notes": [
         {
           "ts": "2026-07-19T03:19:34+00:00",
@@ -20308,12 +20363,17 @@
           "ts": "2026-07-19T20:48:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:57+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED (live ComfyUI/Main), VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, or gold. Restored honest blocked status. AWAITING_MAIN."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_mode_a_vertical_slice.py + fixture_main (mf_p6_12_02_complete=false). Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "CROSS-PROJECT/DEPENDENCY/STATIC_PASS: MF-P6-11.02 incomplete; Main/ComfyUI execution receipts absent. Producer Mode A vertical-slice fixture = STATIC_PASS only. No pinned Main adapter execution or ComfyUI inpaint/edit result/history hashes.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:07+00:00",
+      "updated_at": "2026-07-19T20:59:57+00:00",
       "orphaned": false
     },
     "MF-P6-12.03": {
@@ -20328,8 +20388,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "blocked",
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-19T03:23:27+00:00",
@@ -20350,12 +20410,17 @@
           "ts": "2026-07-19T20:48:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
+        },
+        {
+          "ts": "2026-07-19T20:59:58+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED (live ComfyUI/Main), VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, or gold. Restored honest blocked status. AWAITING_MAIN."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": null,
+      "evidence": "STATIC_PASS only: tests/test_multi_person_mode_a_vertical_slice.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
+      "blocked_reason": "CROSS-PROJECT/DEPENDENCY/STATIC_PASS: MF-P6-12.02 incomplete. Producer duo fixture = STATIC_PASS only. No adopted package + Main/ComfyUI two-person execution evidence.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:07+00:00",
+      "updated_at": "2026-07-19T20:59:58+00:00",
       "orphaned": false
     },
     "MF-P6-12.04": {
@@ -20371,7 +20436,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 90,
+      "percent_complete": 86,
       "notes": [
         {
           "ts": "2026-07-19T03:27:47+00:00",
@@ -20392,12 +20457,17 @@
           "ts": "2026-07-19T20:48:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main: credited 86%->90% for fixture offer/circuit bind; still blocked on champion-backed live predict."
+        },
+        {
+          "ts": "2026-07-19T20:59:59+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier STATIC_PASS (producer Mode B vertical-slice fixtures). Not RUNTIME_PASS_BOUNDED (live GPU champion/loopback predict absent). Not PRODUCTION_EVIDENCE_PASS. Percent held at pre-fixture_main 86%."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": "LIVE/CROSS-PROJECT: fixture_main binds Mode B offer/circuit under fixture_authority and producer draft/service-down/certify vectors pass, but Mode B vertical slice remains producer_partial with champion_backed_prediction_absent (no live Windows loopback/champion GPU prediction). claim_boundary.mf_p6_12_04_complete stays false.",
+      "evidence": "STATIC_PASS only: tests/test_mode_b_vertical_slice.py. live_gpu_champion_complete=false; windows_loopback_complete=false.",
+      "blocked_reason": "CROSS-PROJECT/DEPENDENCY/LIVE/STATIC_PASS: MF-P6-11.03 and MF-P6-11.07 incomplete; true live Windows loopback health plus champion-backed GPU prediction absent. Producer fixture = STATIC_PASS; claim_boundary.mf_p6_12_04_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:07+00:00",
+      "updated_at": "2026-07-19T20:59:59+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {
@@ -20413,7 +20483,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 88,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-19T03:32:21+00:00",
@@ -20434,12 +20504,17 @@
           "ts": "2026-07-19T20:48:07+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main: credited 82%->88% for fixture-bound producer_partial qualification; still blocked on 12.04 and production qualification claim."
+        },
+        {
+          "ts": "2026-07-19T21:00:00+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier STATIC_PASS (producer_partial matrix). Not PRODUCTION_EVIDENCE_PASS. Percent restored to pre-fixture_main 82%."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": "HARD BLOCKER: MF-P6-12.04 remains incomplete. Fixture_main pins adoption/qualification/adapter/ComfyUI hashes under fixture_authority and matrix reaches producer_partial with consumer_binding.complete=true, but establishes_production_qualification=false and mf_p6_12_05_complete stays false; no production signed qualification bundle.",
+      "evidence": "STATIC_PASS only: tests/test_cross_project_qualification.py producer_partial. No trusted signed production qualification bundle.",
+      "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.02 through MF-P6-12.04 incomplete; Main-runtime commit/adoption/qualification bindings absent. Producer matrix producer_partial only; claim_boundary.mf_p6_12_05_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:07+00:00",
+      "updated_at": "2026-07-19T21:00:00+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {
@@ -20455,7 +20530,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 80,
+      "percent_complete": 76,
       "notes": [
         {
           "ts": "2026-07-19T03:36:27+00:00",
@@ -20476,12 +20551,17 @@
           "ts": "2026-07-19T20:48:08+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 fixture_main: credited 76%->80% for fixture handoff bind + claim firewall refuse; cannot close core under fixture_authority."
+        },
+        {
+          "ts": "2026-07-19T21:00:00+00:00",
+          "actor": "proof_tier_correction",
+          "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier STATIC_PASS (final-release handoff evaluator fixtures). Not PRODUCTION_EVIDENCE_PASS / core close. Percent restored to 76%."
         }
       ],
-      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
-      "blocked_reason": "HARD BLOCKER DEPENDENCY: MF-P6-12.05 remains unresolved. Handoff evaluator binds fixture_main receipts but adds fixture_authority_cannot_close_core; core_autonomous_runtime_close_authorized=false; main_adoption_complete=false.",
+      "evidence": "STATIC_PASS only: tests/test_bridge_final_release_handoff.py. production_core_close_authorized=false.",
+      "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.05 unresolved. Final-release handoff fixtures only; no final producer runtime release, Main adoption receipt, or met core_autonomous_runtime.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:48:08+00:00",
+      "updated_at": "2026-07-19T21:00:00+00:00",
       "orphaned": false
     }
   }

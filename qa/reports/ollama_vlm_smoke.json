@@ -1,10 +1,10 @@
 {
-  "measured_at": "2026-07-13T23:44:19.640330+00:00",
+  "measured_at": "2026-07-19T20:50:17.594445+00:00",
   "base_url": "http://127.0.0.1:11434",
   "model": "qwen2.5vl:7b",
   "prompt_version": "p-part-v1-doc10",
   "fixture": "programmatically generated 1024x256 four-tile synthetic P-PART panel",
-  "latency_seconds": 16.802,
+  "latency_seconds": 10.24,
   "response": {
     "verdict": "pass",
     "confidence": 1,

@@ -8626,3 +8626,58 @@ python Plan/Tracker/tracker.py report
 
 **Evidence:** `qa/live_verification/bridge_fixture_main_producer_verify_20260719.json`; `runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json`
 
+## 2026-07-19 — PROOF-TIER CORRECTION + live climb (fixture_main complete claims revoked)
+
+**Lane:** Governance honesty / Docker-runtime / hard+visual QA
+**Authority:** `maskfactory-full-completion` plan proof tiers + `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`
+**Result:** Tracker corrected. Fixture Main STATIC evidence retained as credit only. False `complete` claims on MF-P6-11.01–11.08 and MF-P6-12.02–12.03 revoked.
+
+### Tracker corrections (`tracker.py set`, actor=`proof_tier_correction`)
+| Item | Was | Now | Highest honest tier |
+|---|---|---|---|
+| MF-P6-11.01–11.08 | complete 100% via fixture_main | blocked (86/84/78/80/88/90/80/86%) | `STATIC_PASS` + `AWAITING_MAIN` |
+| MF-P6-12.02–12.03 | complete 100% via fixture_main | blocked (84%/80%) | `STATIC_PASS` + `AWAITING_MAIN` |
+| MF-P6-12.01 | complete (producer packaging) | complete retained | `STATIC_PASS` / bounded producer packaging — not PRODUCTION publish |
+| MF-P6-12.04–12.06 | blocked (inflated %) | blocked 86/82/76% | `STATIC_PASS` only |
+| MF-P0-EXIT | partially_complete 90% | partially_complete 85% | Docker services `RUNTIME_PASS_BOUNDED`; doctor all-green `RUNTIME_BLOCKED` |
+
+### Live Docker / doctor / smokes (re-probed)
+- Docker Desktop up: server `29.4.3`, context `docker-desktop`
+- CVAT production `localhost:8080` → version **2.24.0**; Nuclio `pth-sam2` ready; Ollama `0.32.1`
+- `tools/smoke_cvat_sam2.py` → pass; `tools/smoke_ollama_vlm.py` → pass
+- `uv run maskfactory doctor` → PASS=7 FAIL=4 WARN=1
+  - PASS: cvat_api, cvat_project, nuclio_interactor, ollama_image, wsl_backing_store, png_strict, sqlite_writable
+  - FAIL: torch_cuda / registered_models / wsl_roundtrip (WSL `true` ~24s > doctor 10s preflight); disk_free ~**10.8 GiB** (ingest BLOCK)
+- Cleared stale `runs/gpu.lock` (dead pid 425); Ubuntu-22.04 started (GPU visible via nvidia-smi)
+- Historical MF-P0-07.04 doctor-green must not be reused as current claim
+
+### Hard QA / Visual QA climb
+- `maskfactory verify-package img_2ca794d19be9` → **PASS** → `HARD_QA_PASS_BOUNDED` for that draft package
+- `pytest tests/test_qc_seeded_defects.py tests/test_qc_p1.py` → 23 passed
+- Pixel review of `qa_panels/left_forearm.png` + `chest_upper_torso.png` → defects (noise/leak; garment-biased chest) → **not** `VISUAL_QA_PASS_BOUNDED`
+- Live Ollama VLM advisory on left_forearm returned pass@0.9 but is advisory only; human pixel review vetoes gold claim
+- Evidence: `qa/live_verification/visual_qa_img_2ca794d19be9_20260719.json`, `qa/live_verification/proof_tier_runtime_probe_20260719.json`
+
+### Core proof-tier ledger (highest achieved)
+| Surface | Highest tier | Blocker |
+|---|---|---|
+| P6-07..10 producer contracts | `STATIC_PASS` (many items complete for contract verify) | n/a for contracts |
+| P6-11.01–11.08 bridge adapter/runtime | `STATIC_PASS` | `AWAITING_MAIN` real adapter/journal/circuit evidence |
+| P6-12.01 integration release producer | `STATIC_PASS` / producer packaging complete | dirty-worktree PRODUCTION publish not claimed |
+| P6-12.02–12.06 qualification/handoff | `STATIC_PASS` | Main/ComfyUI + deps; 12.05/12.06 hard blockers |
+| Docker CVAT/Nuclio/Ollama services | `RUNTIME_PASS_BOUNDED` | — |
+| Doctor all-green | `RUNTIME_BLOCKED` | C: disk ~10.8 GiB; WSL preflight latency |
+| Package hard QC (sample draft) | `HARD_QA_PASS_BOUNDED` | not gold |
+| Package visual QA (sample draft) | `VISUAL_QA_REVIEWED_WITH_DEFECTS` | mask noise / garment bias |
+| `core_autonomous_runtime` | blocked | P6-11/12 Main deps + doctor/disk |
+| EC2 | `EC2_DEFERRED` | — |
+| Audio QA | `AUDIO_QA_N_A_CORE` | Main-owned |
+
+### Exact Kevin blockers
+1. Free C: disk above 75 GiB ingest floor (currently ~10.8 GiB) — without destructive prune of governed data
+2. Main-repo production artifacts: pinned MaskFactoryAdapter, adoption/arbitration/journal/circuit/restart receipts (cannot be fixture_main)
+3. Optional: WSL doctor preflight latency / Ubuntu health (agent started distro; `true` still ~24s)
+4. Prior Kevin blockers unchanged: SAM 3.1 terms/WSL VHD if needed, human-anchor sources, DVC AWS creds, Meta checkpoints
+
+**Commands:** docker info/ps; curl CVAT about + Ollama version; uv run maskfactory doctor; tools/smoke_*; verify-package; tracker.py set/validate/report
+

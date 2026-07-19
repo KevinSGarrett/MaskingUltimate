@@ -7505,3 +7505,18 @@ Cleanup:                                stopped only owned WSL client PID 35240;
 Preservation:                           Docker, CVAT, Nuclio, WSL distro state, model files, worker records, frozen contracts, and dirty MF-P6-08.05 paths were not changed
 Truth boundary:                         no service-health, champion prediction, certificate, release, or Main adoption claim; independent MaskFactory work continues
 Evidence:                              `qa/live_verification/maskfactory_service_recovery_followup_20260719.json`
+
+## 2026-07-19 02:17 UTC - Recovery contracts verified; receipt-last transaction engine absent
+
+**Result:** MF-P6-11.08 receives 45% contract/primitives credit and remains item-blocked. Signed
+receipt-last and unknown-submission semantics exist, but no durable transaction or recovery executor does.
+
+Verified foundation:                   exact receipt timing/route/lease/resource/artifact/authority/revocation/release/capability bindings; receipt-last-only event rule; four exact unknown-outcome reconciliations; release byte closure; token-safe GPU lock
+Focused validation:                    13 contract/reconciliation/release/installer/GPU/runtime tests pass; Ruff passes
+Receipt-last probe:                    trusted `receipt_committed` event with an invented unresolved receipt digest validates because the chain accepts no receipt/artifact resolver
+Current-state probe:                   a re-signed receipt with a drifted capability hash validates alone and fails only when the exact external exchange context is supplied
+Installed-pack probe:                  stale unpublished node survives reinstall; no closed manifest or installation receipt is emitted; copy occurs in place
+Missing runtime:                       no artifact->receipt->event->checkpoint transaction, journal replay, provider-history reconciliation, decision-time snapshot bundle, authority-bound cache, exact installed-tree validator, or kill/rollback matrix
+Prepared unit:                         `MF-CURSOR-11.08-BRIDGE-RECOVERY-ATOMICITY`; five absent/clean additive producer paths held behind 10.07/11.06/11.07
+Preservation:                           scheduled maintenance and worker lanes remain disabled; no frozen/dirty/worker/WSL/Docker/CVAT state changed
+Evidence:                              `qa/live_verification/bridge_recovery_atomicity_gap_audit_20260719.json`

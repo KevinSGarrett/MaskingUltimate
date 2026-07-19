@@ -9049,3 +9049,65 @@ Backups under `runtime_artifacts/bounded_visual_residual_20260719/backups/`
 - No doctor-green, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, or invented champion win
 
 **Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification; tracker.py note/metrics pointer; commit milestone artifact only
+## 2026-07-19 22:34 UTC — STATIC-only portfolio: holdout ablation + DAZ engineering fixtures
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
+**Items:** MF-P9-13.08 (70% partial); MF-P9-06.10 (40% partial)
+**Result:** STATIC_PASS only — never gold; no doctor-green; no live holdout; no DAZ render/accept; no AWAITING_MAIN close
+
+### MF-P9-13.08 real holdout ablation gate
+- `src/maskfactory/external_supervision_holdout_ablation.py`: frozen human-anchor holdout binding required
+- Source/label scopes remain active only if primary improve/non-inferior and hard_bucket/identity/boundary/calibration all pass
+- Builder/launcher refuse `ablation_active=true` without sealed report; packages wire optional ablation binding
+- `admission_ready=false`; `live_holdout_executed=false`
+- Evidence: `qa/live_verification/external_supervision_holdout_ablation_static_20260719.json`
+
+### MF-P9-06.10 DAZ engineering fixture-set contract
+- `src/maskfactory/daz/scenes/engineering_fixtures.py` + schema `daz_engineering_fixture_set`
+- Deterministic 24 solo unrendered fixtures with coverage dimensions + recipe hashes
+- Refuses rendered/accepted/training_eligible/mapping_authority/live_daz_execution claims
+- Published: `qa/fixtures/daz/engineering_fixture_sets/`
+- Evidence: `qa/live_verification/daz_engineering_fixture_set_static_20260719.json`
+
+### Focused tests
+`pytest` holdout ablation + engineering fixtures + packages: 17 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No frozen live human-anchor holdout execution
+- No source admitted live / no ablation-based warehouse activation
+- No rendered or accepted DAZ engineering fixtures
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+
+
+
+## 2026-07-19 - Technology currency STATIC refresh (honest FAIL sealed)
+
+**Lane:** MF-P7-07.01 / MF-P7-07.03 STATIC currency review integrity (proof-tier)
+**Result:** integrity_pass_policy_fail — signature/chain/current-input PASS with --allow-failed-review; strict policy remains FAIL
+
+### What changed
+- Detected live active_input_hash_mismatch solely from Plan/DECISIONS_LOG.md drift (f910976e... -> e5a0862f...)
+- Archived immutable prior review d503f42f644baaa008056f78 under qa/governance/currency/reviews/
+- Built/signed new scheduled_90_day review 38a72efc80e2ca02c7a7985d / review SHA-256 4d60db8fe0ba1eb551e9113fc0b72e713af2d280aeabe619f152e7609027030c with active signer 5892e515..., chaining prior review SHA-256 c2959fc5...
+- Updated configs/governance/currency_review_key_history.json latest pointer to the new review
+
+### Exact missing artifacts (policy FAIL; not invented)
+All five active roles (person_detector/yolo11m_person, interactive_segmenter/sam2_1_large, geometry_provider/densepose_r50_fpn_s1x, pose_provider/dwpose_133, silhouette_provider/birefnet_general) lack:
+1. role benchmark certificate (benchmark_certificate_missing)
+2. rollback evidence record (rollback_evidence_missing; qa/governance/currency/rollback_evidence.json has records: [])
+3. distinct rollback provider (rollback_provider_not_distinct; each role rollback alias equals active alias)
+
+Strict codes: benchmark_certificate_missing, rollback_evidence_missing, rollback_provider_not_distinct, currency_review_not_passing
+
+### Verification
+- allow-failed integrity exit 0; strict exit 1 with exact codes above
+- focused currency + CI partition tests 37/37; Ruff clean on those files
+- CI continues integrity lane with --allow-failed-review; strict require-pass withheld
+
+### Evidence
+qa/live_verification/currency_review_integrity_20260719.json sha256 a4c679d92ee066a3d0cfd7f34890dcddb183c70e81c03d2275b39019e8535c26
+
+### Honest non-claims
+- No PRODUCTION_EVIDENCE_PASS, doctor-green, promotion, certificate issuance, or fabricated rollback wins

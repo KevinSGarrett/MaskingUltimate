@@ -1,0 +1,32 @@
+{
+  "accepted": false,
+  "canonical_sha256": "c3e9b2a7a4c39671169f9b0bd1504fdfc1736dda7b8af416d2c55660f7d295b6",
+  "doctor_green_claimed": false,
+  "fixture_count": 24,
+  "gold_claimed": false,
+  "implementation": {
+    "module": "src/maskfactory/daz/scenes/engineering_fixtures.py",
+    "schema": "src/maskfactory/schemas/daz_engineering_fixture_set.schema.json",
+    "tests": [
+      "tests/test_daz_engineering_fixtures.py"
+    ]
+  },
+  "items": [
+    "MF-P9-06.10"
+  ],
+  "live_daz_execution": false,
+  "mapping_authority": false,
+  "proof_tier": "STATIC_PASS",
+  "published": true,
+  "published_path": "qa\\fixtures\\daz\\engineering_fixture_sets\\daz_engineering_fixture_set_c3e9b2a7a4c39671169f9b0b.json",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    "...."
+  ],
+  "rendered": false,
+  "result": "pass_daz_engineering_fixture_set_contract",
+  "runtime_pass_claimed": false,
+  "set_id": "daz_engineering_fixture_set_c3e9b2a7a4c39671169f9b0b",
+  "sha256": "7bb94949bc803caffbeec9b3184d1a6c6f16505d44dcef0d75966d1135056d44",
+  "training_eligible": false
+}

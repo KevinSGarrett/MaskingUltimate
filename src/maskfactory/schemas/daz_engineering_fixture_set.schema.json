@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_engineering_fixture_set.schema.json",
+  "title": "DAZ solo engineering fixture-set contract (STATIC unrendered)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "fixture_count",
+    "master_seed",
+    "person_count",
+    "rendered",
+    "accepted",
+    "training_eligible",
+    "mapping_authority",
+    "live_daz_execution",
+    "coverage_dimensions",
+    "fixtures",
+    "set_id",
+    "canonical_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "daz_engineering_fixture_set" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_engineering_fixture_set_static_only_unrendered"
+    },
+    "fixture_count": {
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 100
+    },
+    "master_seed": {
+      "type": "integer",
+      "minimum": 0,
+      "exclusiveMaximum": 9223372036854775808
+    },
+    "person_count": { "const": 1 },
+    "rendered": { "const": false },
+    "accepted": { "const": false },
+    "training_eligible": { "const": false },
+    "mapping_authority": { "const": false },
+    "live_daz_execution": { "const": false },
+    "coverage_dimensions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "pose_family",
+          "camera_framing",
+          "wardrobe_class",
+          "lighting_family",
+          "anatomy_variant",
+          "prop_presence"
+        ]
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/fixture" }
+    },
+    "set_id": {
+      "type": "string",
+      "pattern": "^daz_engineering_fixture_set_[0-9a-f]{24}$"
+    },
+    "canonical_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scene_id",
+        "fixture_index",
+        "person_count",
+        "status",
+        "rendered",
+        "accepted",
+        "training_eligible",
+        "coverage",
+        "recipe_stub",
+        "recipe_sha256"
+      ],
+      "properties": {
+        "scene_id": {
+          "type": "string",
+          "pattern": "^daz_scene_eng_[0-9]{3}$"
+        },
+        "fixture_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "person_count": { "const": 1 },
+        "status": { "const": "engineering_unrendered" },
+        "rendered": { "const": false },
+        "accepted": { "const": false },
+        "training_eligible": { "const": false },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pose_family",
+            "camera_framing",
+            "wardrobe_class",
+            "lighting_family",
+            "anatomy_variant",
+            "prop_presence"
+          ],
+          "properties": {
+            "pose_family": { "type": "string", "minLength": 1 },
+            "camera_framing": { "type": "string", "minLength": 1 },
+            "wardrobe_class": { "type": "string", "minLength": 1 },
+            "lighting_family": { "type": "string", "minLength": 1 },
+            "anatomy_variant": { "type": "string", "minLength": 1 },
+            "prop_presence": { "type": "string", "minLength": 1 }
+          }
+        },
+        "recipe_stub": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scene_id",
+            "master_seed",
+            "person_count",
+            "coverage",
+            "named_random_streams"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string",
+              "pattern": "^daz_scene_eng_[0-9]{3}$"
+            },
+            "master_seed": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMaximum": 9223372036854775808
+            },
+            "person_count": { "const": 1 },
+            "coverage": { "type": "object" },
+            "named_random_streams": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "recipe_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

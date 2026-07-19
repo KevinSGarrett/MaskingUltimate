@@ -8870,3 +8870,38 @@ Managed logs: `logs/maskfactory_8765_20260719T213725309Z.stdout.log` / `.stderr.
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal script
 
+
+## 2026-07-19 — Bounded visual repair wave (DurableRepairExecutor)
+
+**Lane:** Bounded autonomous repair toward visual improvement (proof-tier; no gold claim)
+**Authority:** operational_repair / decide_bounded_repair / remove_small_components; Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
+**Actor:** bounded_visual_repair
+
+### Docker / runtime (re-probed)
+- CVAT localhost:8080 → 2.24.0; Ollama 0.32.1; Docker Desktop live
+
+### Attempts (worst documented defects from hard_visual_qa_corpus_climb)
+| Target | Defect class | Outcome | Notes |
+|---|---|---|---|
+| img_51945db358cb/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 34→1 CC; drop 2071 px; hard QC pass |
+| img_cdab0311dc96/p0 left_hand_base | noise_artifacts | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 87→1 CC; drop 642 px |
+| img_7b7a3c7d5dd3/p0 chest_upper_torso | noise_spray | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 799→2 CC; drop 2972 px; connected salt-pepper remains |
+| img_2ca794d19be9/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 37→1 CC; drop 1358 px |
+| img_b2b46c45d8e0/p0 left_forearm | exclusivity_bleed | ABSTAIN_BOUNDED | bleed connected to main CC; no live promote |
+| img_e5163e08baac/p0 left_forearm | underfill | ABSTAIN_BOUNDED | guard veto area_sanity / component_overflow |
+| img_a3d2663ad90d/p0 hair | multi_person_half_fill | ABSTAIN_BOUNDED | structural half-fill not remediable by CC cleanup |
+
+### Hard / Visual tiers (honest)
+- Hard QC after promote + all_parts sync: **HARD_QA_PASS_BOUNDED** (verify-package sample 14/14 PASS)
+- Visual: **VISUAL_QA_REVIEWED_WITH_DEFECTS** (noise islands reduced; garment/underfill/bleed/half-fill remain)
+- **Not claimed:** VISUAL_QA_PASS_BOUNDED, gold, human_approved_gold
+
+### Evidence
+`qa/live_verification/bounded_visual_repair_20260719.json` sha256 `3c2fc7b4505b20c349cad54059806939c2414492210fcc8bab89b33b7a7a937c`
+Backups under `runtime_artifacts/bounded_visual_repair_20260719/backups/`
+
+### Blockers
+1. VISUAL_QA_PASS_BOUNDED blocked by residual garment bias / underfill / exclusivity bleed / multi-person half-fill
+2. human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)
+3. Doctor all-green still RUNTIME_BLOCKED (disk / WSL) — unchanged this lane
+

@@ -1,0 +1,269 @@
+{
+  "blockers": [
+    "VISUAL_QA_PASS_BOUNDED blocked: residual garment bias / underfill / exclusivity bleed / multi-person half-fill",
+    "human_approved_gold still requires Kevin CVAT correction"
+  ],
+  "claims_not_established": [
+    "VISUAL_QA_PASS_BOUNDED",
+    "gold",
+    "human_approved_gold",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "contracts": [
+    "maskfactory.autonomy.operational_repair.DurableRepairExecutor",
+    "maskfactory.autonomy.repair.decide_bounded_repair",
+    "remove_small_components hypothesis (workhorse tool family)"
+  ],
+  "docker_preflight": {
+    "cvat_localhost_8080": "2.24.0",
+    "ollama": "0.32.1",
+    "server_note": "Docker Desktop live; CVAT/Nuclio/Ollama probed this wave"
+  },
+  "hard_qa_reverify_after_all_parts_sync": {
+    "command": "uv run maskfactory verify-package --root data/packages --sample 20",
+    "expected_from_wave": "14/14 PASS HARD_QA_PASS_BOUNDED"
+  },
+  "lane": "bounded_visual_repair_toward_improvement",
+  "post_repair_visual_review": {
+    "highest_visual_tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+    "img_2ca794d19be9/p0/left_forearm": "speckle CCs reduced (37->1); garment/chest defects out of scope unchanged",
+    "img_51945db358cb/p0/left_forearm": "noise islands removed (34->1 CC); residual wrist/edge holes + contour artifacts remain",
+    "img_7b7a3c7d5dd3/p0/chest_upper_torso": "disconnected spray reduced (799->2 CC); connected salt-pepper / underfill pattern remains inside kept components",
+    "img_cdab0311dc96/p0/left_hand_base": "stray CC artifacts reduced (87->1); sharp wrist cut / non-anatomical edge remain",
+    "not_claimed": "VISUAL_QA_PASS_BOUNDED"
+  },
+  "results": [
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "a6a4c6a0f302c0581180f91062f00b8e4f15891077c65186294d29dcf14b705d",
+          "components_after": 1,
+          "components_before": 34,
+          "drop_px": 2071,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 97580,
+        "components": 34,
+        "excess": 33,
+        "score": 0.17500000000000004
+      },
+      "defect_class": "noise_leak",
+      "outcome": "ACCEPTED_REVERSIBLE_REPAIR_BOUNDED",
+      "promote": {
+        "part_sha256": "a6a4c6a0f302c0581180f91062f00b8e4f15891077c65186294d29dcf14b705d",
+        "qc": [],
+        "qc_passed": true
+      },
+      "promoted": true,
+      "reason": "noise-component cleanup accepted via DurableRepairExecutor; hard QC re-pass; visual gold NOT claimed",
+      "target": "img_51945db358cb/p0/left_forearm"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "42fe4f730e42582dd9f915e5f96a6efda4c83053d6e617b733904b3d3671245c",
+          "components_after": 1,
+          "components_before": 87,
+          "drop_px": 642,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 75944,
+        "components": 87,
+        "excess": 86,
+        "score": 0.1597701149425288
+      },
+      "defect_class": "noise_artifacts",
+      "outcome": "ACCEPTED_REVERSIBLE_REPAIR_BOUNDED",
+      "promote": {
+        "part_sha256": "42fe4f730e42582dd9f915e5f96a6efda4c83053d6e617b733904b3d3671245c",
+        "qc": [],
+        "qc_passed": true
+      },
+      "promoted": true,
+      "reason": "noise-component cleanup accepted via DurableRepairExecutor; hard QC re-pass; visual gold NOT claimed",
+      "target": "img_cdab0311dc96/p0/left_hand_base"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "2d325a665a5b958713595bdb7d26e71135cc57a41630a01cd0e411693a90add4",
+          "components_after": 2,
+          "components_before": 799,
+          "drop_px": 2972,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 43131,
+        "components": 799,
+        "excess": 797,
+        "score": 0.15212765957446805
+      },
+      "defect_class": "noise_spray",
+      "outcome": "ACCEPTED_REVERSIBLE_REPAIR_BOUNDED",
+      "promote": {
+        "part_sha256": "2d325a665a5b958713595bdb7d26e71135cc57a41630a01cd0e411693a90add4",
+        "qc": [],
+        "qc_passed": true
+      },
+      "promoted": true,
+      "reason": "noise-component cleanup accepted via DurableRepairExecutor; hard QC re-pass; visual gold NOT claimed",
+      "target": "img_7b7a3c7d5dd3/p0/chest_upper_torso"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "2b2f4d14d75c9af1609c52198a01772720aa517a8e3db8603989f8db892fd729",
+          "components_after": 1,
+          "components_before": 37,
+          "drop_px": 1358,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 94854,
+        "components": 37,
+        "excess": 36,
+        "score": 0.17297297297297298
+      },
+      "defect_class": "noise_leak",
+      "outcome": "ACCEPTED_REVERSIBLE_REPAIR_BOUNDED",
+      "promote": {
+        "part_sha256": "2b2f4d14d75c9af1609c52198a01772720aa517a8e3db8603989f8db892fd729",
+        "qc": [],
+        "qc_passed": true
+      },
+      "promoted": true,
+      "reason": "noise-component cleanup accepted via DurableRepairExecutor; hard QC re-pass; visual gold NOT claimed",
+      "target": "img_2ca794d19be9/p0/left_forearm"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "4eaaa08a88e71aae56012212d2ba0bd6b7f21fcaddf2d7d0462b9a5dc14b076f",
+          "components_after": 1,
+          "components_before": 10,
+          "drop_px": 32,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 114987,
+        "components": 10,
+        "excess": 9,
+        "score": 0.2625
+      },
+      "defect_class": "exclusivity_bleed",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "executor accepted map child but defect_class=exclusivity_bleed or drop_px=32 not sufficient for live promote; parent preserved",
+      "target": "img_b2b46c45d8e0/p0/left_forearm"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "7dcf85b692cf6ab1f84ece6fc0ad60739d3ad9f87275d7b821afe761a59fa138",
+          "components_after": 1,
+          "components_before": 45,
+          "drop_px": 6122,
+          "executor_outcome": "rolled_back_retry_distinct_hypothesis",
+          "executor_reason": "candidate_guard_veto:candidate_area_sanity",
+          "guard_eligible": false,
+          "guard_vetoes": [
+            "candidate_area_sanity"
+          ],
+          "hypothesis": "remove_small_components_max_ontology"
+        },
+        {
+          "accepted_map_sha256": "7dcf85b692cf6ab1f84ece6fc0ad60739d3ad9f87275d7b821afe761a59fa138",
+          "components_after": 3,
+          "components_before": 45,
+          "drop_px": 311,
+          "executor_outcome": "rolled_back_retry_distinct_hypothesis",
+          "executor_reason": "candidate_guard_veto:candidate_component_overflow,candidate_area_sanity",
+          "guard_eligible": false,
+          "guard_vetoes": [
+            "candidate_component_overflow",
+            "candidate_area_sanity"
+          ],
+          "hypothesis": "drop_tiny_lt_64px"
+        }
+      ],
+      "baseline": {
+        "area": 35746,
+        "components": 45,
+        "excess": 44,
+        "score": 0.16888888888888898
+      },
+      "defect_class": "underfill",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "rolled_back_retry_distinct_hypothesis",
+      "target": "img_e5163e08baac/p0/left_forearm"
+    },
+    {
+      "attempts": [
+        {
+          "accepted_map_sha256": "1fe906428471f4bb73bd8e24ad5a8648488b7705a11a6422b03e4fbbdd3121d3",
+          "components_after": 4,
+          "components_before": 13,
+          "drop_px": 9,
+          "executor_outcome": "accepted_reversible_repair",
+          "executor_reason": "complete_map_qa_improved",
+          "guard_eligible": true,
+          "guard_vetoes": [],
+          "hypothesis": "remove_small_components_max_ontology"
+        }
+      ],
+      "baseline": {
+        "area": 330153,
+        "components": 13,
+        "excess": 9,
+        "score": 0.43903846153846154
+      },
+      "defect_class": "multi_person_half_fill",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "executor accepted map child but defect_class=multi_person_half_fill or drop_px=9 not sufficient for live promote; parent preserved",
+      "target": "img_a3d2663ad90d/p0/hair"
+    }
+  ],
+  "started_at": "2026-07-19T21:38:35.455574+00:00",
+  "summary": {
+    "abstain_bounded": 3,
+    "accepted_promoted": 4,
+    "hard_qa_after": {
+      "discovered": 14,
+      "failed": [],
+      "passed": 14
+    },
+    "highest_hard_tier": "HARD_QA_PASS_BOUNDED",
+    "highest_visual_tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+    "visual_note": "Noise-component repairs may improve panels but residual garment/underfill/bleed/half-fill defects remain; never claim VISUAL_QA_PASS_BOUNDED."
+  },
+  "ts": "2026-07-19T21:55:26.527825+00:00"
+}

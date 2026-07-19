@@ -314,10 +314,28 @@ def rehearse_v2_authority_pair(
 
     if any(path.read_bytes() != data for path, data in source_before.items()):
         raise OntologyV2ActivationError("rehearsal mutated an active production authority")
+    from .ontology_v2_inactive_gates import (
+        OntologyV2InactiveGateError,
+        require_inactive_v2_authority,
+    )
+
+    try:
+        require_inactive_v2_authority(
+            {
+                "activation_status": "approved_design_not_active",
+                "ontology_version": "body_parts_v2",
+                "active_runtime_ontology": "body_parts_v1",
+                "production_activation_performed": False,
+                "mapping_authority": False,
+            }
+        )
+    except OntologyV2InactiveGateError as exc:
+        raise OntologyV2ActivationError(str(exc)) from exc
     document = {
         "schema_version": "1.0.0",
         "mode": "isolated_copy_no_production_activation",
         "active_ontology_preserved": "body_parts_v1",
+        "activation_status": "approved_design_not_active",
         "production_activation_performed": False,
         "inactive_drift_check": "pass",
         "inactive": inactive,

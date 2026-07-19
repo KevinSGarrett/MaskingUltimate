@@ -392,6 +392,15 @@ def migrate_v1_manifest_document(manifest: Mapping[str, Any]) -> dict[str, Any]:
     if result.get("files") != source.get("files"):
         raise OntologyV2ManifestError("migration changed the authoritative files map")
     require_valid_v2_manifest(result)
+    from .ontology_v2_inactive_gates import (
+        OntologyV2InactiveGateError,
+        refuse_migration_production_claims,
+    )
+
+    try:
+        refuse_migration_production_claims(result)
+    except OntologyV2InactiveGateError as exc:
+        raise OntologyV2ManifestError(str(exc)) from exc
     return result
 
 
@@ -596,13 +605,30 @@ def migrate_v1_manifest_file(
     *,
     report_path: Path | str,
     dry_run: bool = True,
+    extras: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    from .ontology_v2_inactive_gates import (
+        OntologyV2InactiveGateError,
+        refuse_apply_when_activation_requested,
+        refuse_migration_production_claims,
+    )
+
+    try:
+        refuse_apply_when_activation_requested(dry_run=dry_run, extras=extras)
+    except OntologyV2InactiveGateError as exc:
+        raise OntologyV2ManifestError(str(exc)) from exc
     path = Path(manifest_path).resolve()
     report, target_bytes = plan_v1_to_v2_manifest_migration(path)
     source_bytes = path.read_bytes()
     report["mode"] = "dry_run" if dry_run else "apply"
     report["applied"] = False
     report["backup"] = None
+    report["production_activation_performed"] = False
+    report["activation_status"] = "approved_design_not_active"
+    try:
+        refuse_migration_production_claims(report)
+    except OntologyV2InactiveGateError as exc:
+        raise OntologyV2ManifestError(str(exc)) from exc
     if not dry_run:
         backup = path.with_name(f".{path.name}.body_parts_v1.backup")
         if backup.exists():

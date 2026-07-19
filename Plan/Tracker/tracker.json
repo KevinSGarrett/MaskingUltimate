@@ -11170,12 +11170,17 @@
           "ts": "2026-07-15T05:49:16+00:00",
           "actor": "ai_agent",
           "text": "Activation-ready control and executable formulas pass; active derived.yaml correctly remains v1 until the complete v2 gate."
+        },
+        {
+          "ts": "2026-07-19T22:43:44+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: inactive authority gate strengthened (require_inactive_v2_authority + rehearsal wiring). Remaining 10% still MF-P7-06.06 real registry/config/workflow/model activation; no production activation claimed."
         }
       ],
-      "evidence": "Inactive body_parts_v2 authority is generator-drift-clean with 65 PART classes and 52 executable derived formulas, including all 12 approved anatomy unions. V2 visible-body formulas cover atomic IDs 1..49, 54..55, and 56..64 while excluding protected 50..53; active v1 silhouette behavior is explicitly regression-preserved. Isolated paired switch proves exact post-replace bytes and exact v1 restoration after seeded second-write and post-validation failures; active production v1 bytes remain unchanged. 8 dedicated, 78 focused, full 1,203/1,203; Ruff/CI YAML/generator/diff clean. qa/live_verification/ontology_v2_derived_activation_20260715.json. Remaining 10% is the real complete MF-P7-06.06 registry/config/workflow/model activation and rollback; no production activation claimed.",
+      "evidence": "Inactive body_parts_v2 authority remains generator-drift-clean; STATIC inactive-path gates sealed in qa/live_verification/ontology_v2_inactive_path_gates_static_20260719.json. Remaining 10% is real MF-P7-06.06 activation/rollback; no production activation claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T05:55:52+00:00",
+      "updated_at": "2026-07-19T22:43:44+00:00",
       "orphaned": false
     },
     "MF-P1-10.06": {
@@ -11339,11 +11344,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:43:44+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: migration path now refuses production/activation/gold claims via refuse_migration_production_claims; apply refuses activate_v2 extras. Already complete; hardening only."
+        }
+      ],
       "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:50+00:00",
+      "updated_at": "2026-07-19T22:43:44+00:00",
       "orphaned": false
     },
     "MF-P1-11.05": {
@@ -11360,11 +11371,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:43:44+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: migration refusal hardening reaffirms no implicit-negative/activation conversion; no status change (already complete)."
+        }
+      ],
       "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:51+00:00",
+      "updated_at": "2026-07-19T22:43:44+00:00",
       "orphaned": false
     },
     "MF-P1-11.06": {
@@ -11381,11 +11398,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:43:44+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: inactive-path report binds supervision refusal; still complete; no gold/activation claim."
+        }
+      ],
       "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:51+00:00",
+      "updated_at": "2026-07-19T22:43:44+00:00",
       "orphaned": false
     },
     "MF-P1-11.07": {
@@ -11610,13 +11633,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: supply/authorize enough governed pilot sources and perform the human-anchor decisions needed to cover all v2 classes/states.",
+      "status": "partially_complete",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-19T22:43:43+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC pilot gate advanced; NEEDS KEVIN sources remain for real pilot completion. No v2 production activation."
+        }
+      ],
+      "evidence": "STATIC_PASS 2026-07-19: ontology_v2_inactive_gates CVAT pilot matrix contract + fixture probe readiness (24 distinct probes, all 9 states/classes structurally covered). pilot_complete=false; kevin_pilot_sources_authorized=false. Evidence: qa/live_verification/ontology_v2_inactive_path_gates_static_20260719.json sha256 d0a47ef9bc02abc47501d9420ea04576e3a81cbfc6510c08e6dc8db1e9fe3a8e. Completion still requires Kevin governed pilot sources (20-30) and human-anchor decisions.",
+      "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:53:41+00:00",
+      "updated_at": "2026-07-19T22:43:43+00:00",
       "orphaned": false
     },
     "MF-P1-12.10": {
@@ -11633,11 +11662,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T22:43:45+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: remains blocked on MF-P1-12.09 Kevin pilot decisions. No signed pilot report fabricated; fixture gates do not satisfy this item."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: complete the MF-P1-12.09 pilot decisions so real review time, ambiguities, task IDs, and guideline revisions can be recorded.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:53:41+00:00",
+      "updated_at": "2026-07-19T22:43:45+00:00",
       "orphaned": false
     },
     "MF-P1-13.01": {
@@ -16727,18 +16762,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 40,
+      "percent_complete": 48,
       "notes": [
         {
           "ts": "2026-07-19T22:34:57+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: engineering fixture-set contract (24 unrendered solo) landed. Never accepted/rendered; D5 render/accept path still required for completion."
+        },
+        {
+          "ts": "2026-07-19T22:44:45+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: engineering fixture-set v1.1 — policy-aligned coverage, full marginal coverage, sealed synthetic recipes, CLI. Never accepted/rendered; D5 render/accept path still required."
         }
       ],
-      "evidence": "STATIC_PASS only: build/validate/publish_engineering_fixture_set + daz_engineering_fixture_set schema; deterministic 24 solo unrendered fixtures with coverage dimensions and recipe hashes; refuses rendered/accepted/training_eligible/mapping_authority/live DAZ claims. Fixture publish under qa/fixtures/daz/engineering_fixture_sets/. Evidence: qa/live_verification/daz_engineering_fixture_set_static_20260719.json. Not accepted rendered fixture set / no live DAZ.",
+      "evidence": "STATIC_PASS only: schema 1.1.0 build/validate/publish + CLI build-engineering-fixture-set/validate-engineering-fixture-set; 24 solo unrendered fixtures with policy vocab, exact 8 streams, sealable synthetic daz_resolved_scene_recipe drafts (fixture-only assets); refuses rendered/accepted/training_eligible/mapping_authority/live_daz/live_qualified claims. Published qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json; prior v1.0 retained. Evidence: qa/live_verification/daz_engineering_fixture_set_v11_static_20260719.json. Not accepted rendered fixture set / no live DAZ.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:34:57+00:00",
+      "updated_at": "2026-07-19T22:44:45+00:00",
       "orphaned": false
     },
     "MF-P9-07.01": {

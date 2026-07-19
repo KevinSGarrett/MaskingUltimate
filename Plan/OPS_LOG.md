@@ -9111,3 +9111,25 @@ qa/live_verification/currency_review_integrity_20260719.json sha256 a4c679d92ee0
 
 ### Honest non-claims
 - No PRODUCTION_EVIDENCE_PASS, doctor-green, promotion, certificate issuance, or fabricated rollback wins
+
+## 2026-07-19 22:45 UTC — Ontology-v2 inactive-path STATIC gates
+
+**Lane:** Proof-tier STATIC only (host-side code/tests/fixtures/evidence)
+**Items:** MF-P1-12.09 (35% partial); MF-P1-10.05 note (still 90%); MF-P1-11.04/05/06 notes (already complete); MF-P1-12.10 remains blocked
+**Result:** STATIC_PASS only — never body_parts_v2 production activation; never Kevin pilot completion
+
+### What landed
+- `src/maskfactory/ontology_v2_inactive_gates.py`: inactive authority require, migration production/gold refusal, CVAT v2 pilot matrix contract + fixture-probe readiness evaluator
+- Wired into migration apply (`extras.activate_v2` refused), activation rehearsal, and CVAT v2 push
+- Fixture publish: `qa/fixtures/ontology_v2_inactive_path/`
+- Evidence: `qa/live_verification/ontology_v2_inactive_path_gates_static_20260719.json` sha256 `d0a47ef9bc02abc47501d9420ea04576e3a81cbfc6510c08e6dc8db1e9fe3a8e`
+
+### Focused tests
+`pytest` inactive gates + migration + cvat_v2 + derived activation: 35 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No body_parts_v2 production activation
+- No kevin_pilot_sources_authorized / pilot_complete
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal

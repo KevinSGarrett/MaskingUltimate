@@ -77,6 +77,25 @@ def push_v2_images(
 ) -> tuple[int, ...]:
     config = load_v2_cvat_config(config_path)
     project_id, mapping = load_v2_mapping(config)
+    from ..ontology_v2_inactive_gates import (
+        OntologyV2InactiveGateError,
+        require_inactive_v2_authority,
+    )
+
+    try:
+        require_inactive_v2_authority(
+            {
+                "activation_status": "approved_design_not_active",
+                "ontology_version": "body_parts_v2",
+                "active_runtime_ontology": "body_parts_v1",
+                "production_activation_performed": False,
+                "pilot_complete": False,
+                "kevin_pilot_sources_authorized": False,
+                "mapping_authority": False,
+            }
+        )
+    except OntologyV2InactiveGateError as exc:
+        raise CvatV2Error(str(exc)) from exc
     records_root = (
         Path(config["_task_records_dir"]) if task_records is None else Path(task_records).resolve()
     )

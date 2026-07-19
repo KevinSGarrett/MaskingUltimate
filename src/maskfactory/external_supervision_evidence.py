@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -65,6 +66,32 @@ def seal_payload(value: Mapping[str, Any]) -> str:
     """Return the deterministic self-seal for a mapping, excluding its seal field."""
 
     return canonical_json_sha256({key: item for key, item in value.items() if key != "seal_sha256"})
+
+
+def publish_immutable_evidence(value: Mapping[str, Any], output_path: Path) -> str:
+    """Atomically publish canonical JSON, allowing only byte-identical repetition."""
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = (
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    if output.exists():
+        existing = output.read_bytes()
+        if existing != payload:
+            raise ValueError("immutable evidence path already has different bytes")
+        return hashlib.sha256(existing).hexdigest()
+    temporary = output.with_name(f".{output.name}.{os.getpid()}.partial")
+    try:
+        with temporary.open("xb") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, output)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    return hashlib.sha256(payload).hexdigest()
 
 
 def verify_qualification_evidence_bundle(
@@ -199,6 +226,7 @@ __all__ = [
     "EvidenceBundleVerification",
     "GATE_ARTIFACT_TYPES",
     "canonical_json_sha256",
+    "publish_immutable_evidence",
     "seal_payload",
     "verify_qualification_evidence_bundle",
 ]

@@ -64,7 +64,7 @@ def test_published_manifest_is_atomic_and_hash_bound(tmp_path: Path):
 
     changed = dict(manifest)
     changed["source"] = "different"
-    with pytest.raises(SourceHashManifestError, match="immutable manifest path"):
+    with pytest.raises(SourceHashManifestError, match="immutable .* path"):
         publish_source_hash_manifest(changed, output)
 
 

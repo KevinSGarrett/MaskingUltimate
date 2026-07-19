@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import Any, Iterable
 
-from .external_supervision_evidence import seal_payload
+from .external_supervision_evidence import publish_immutable_evidence, seal_payload
 
 
 class SourceHashManifestError(ValueError):
@@ -93,27 +93,10 @@ def build_source_hash_manifest(
 def publish_source_hash_manifest(manifest: dict[str, Any], output_path: Path) -> str:
     """Atomically publish a manifest and return its file SHA-256."""
 
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    payload = (
-        json.dumps(manifest, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n"
-    ).encode("utf-8")
-    if output.exists():
-        existing = output.read_bytes()
-        if existing != payload:
-            raise SourceHashManifestError("immutable manifest path already has different bytes")
-        return hashlib.sha256(existing).hexdigest()
-    temporary = output.with_name(f".{output.name}.{os.getpid()}.partial")
     try:
-        with temporary.open("xb") as handle:
-            handle.write(payload)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, output)
-    finally:
-        if temporary.exists():
-            temporary.unlink()
-    return hashlib.sha256(payload).hexdigest()
+        return publish_immutable_evidence(manifest, output_path)
+    except ValueError as exc:
+        raise SourceHashManifestError(str(exc)) from exc
 
 
 def _hash_file(path: Path) -> str:

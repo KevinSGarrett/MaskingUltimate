@@ -7717,3 +7717,16 @@ Production gap:                         no persisted production qualification bu
 Prepared scope:                         `MF-CURSOR-12.05-CROSS-PROJECT-QUALIFICATION-MATRIX`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         currency policy was not relabeled; no production matrix, signed pass bundle, runtime/worker action, or hard-blocker completion claim
 Evidence:                              `qa/live_verification/bridge_cross_project_qualification_gap_audit_20260719.json`
+
+## 2026-07-19 03:35 UTC - Final handoff state resumable; runtime release not publishable
+
+**Result:** MF-P6-12.06 receives 45% claim-firewall/preservation/hydration credit and remains
+blocked behind hard-blocker MF-P6-12.05 plus missing release/adoption receipts.
+
+Verified foundation:                   MF-P6-07.07 complete; exactly three independent completion profiles; producer/Main task/PR/commit/worktree/12-contract/seal lineage preserved; reconciliation/runtime handoffs self-bound and truthful
+Focused validation:                    11 profile/handoff/claim-firewall tests pass; Ruff passes; tracker validates 798 items with no structural problems
+Current status:                         `core_autonomous_runtime=blocked` with 43 open driving items; QA contains no production release snapshot or Main adoption receipt
+Finalization authority:                 final Git/GitHub publication, tracker closure and reciprocal handoff remain Codex-owned and unexecuted until exact runtime evidence exists
+Preservation boundary:                  no PR/worktree merge/delete/rewrite, no currency-policy relabel, no optional-profile status change, and no fabricated final receipt
+Truth boundary:                         no final producer release, Main adoption, reciprocal acknowledgement, core closure, or item completion claim
+Evidence:                              `qa/live_verification/bridge_final_release_handoff_gap_audit_20260719.json`

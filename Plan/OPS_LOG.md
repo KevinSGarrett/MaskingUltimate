@@ -7535,3 +7535,16 @@ Worker reconciliation:                 the additive Sonnet/Cursor/Sonnet chain n
 Prepared scope:                         `MF-CURSOR-09.01-ADDITIVE-IDENTITY-DECISION`; six additive paths remain absent/clean; frozen v1 mutation remains forbidden
 Truth boundary:                         no identity decision, cache/release/use/authority grant, runtime mutation, or item completion claim
 Evidence:                              `qa/live_verification/bridge_identity_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:32 UTC - Transform structure current; executable replay still absent
+
+**Result:** Hard-blocker MF-P6-09.02 receives 50% structural foundation credit and remains
+dependency/implementation blocked behind MF-P6-09.01.
+
+Verified foundation:                   typed source/crop/output spaces, crop/resize/pad/flip/project parameters, dimensions, hashes, sequence, inverse strategy and round-trip policy; semantic validation covers hashes, contiguity, operation form, bounds/dimensions, continuity and matrix invertibility
+Focused validation:                    6 bridge/semantic/crop tests pass; Ruff passes; all governing hashes match the accepted 2026-07-18 audit
+Fail-closed probes:                     opaque-only project parameters fail schema `oneOf`; singular project matrix fails `transform_invertible`
+Policy/execution gap:                   a fully rehashed/trusted chain asserting `maximum_error_px=1000000.0` validates; no executor/inverter applies points, boxes, binary masks, protected regions or ontology side swaps and no measured replay record exists
+Prepared scope:                         `MF-CURSOR-09.02-EXECUTABLE-TRANSFORMS`; four additive paths remain absent/clean and disjoint; not dispatched while 09.01 and worker lanes are blocked/disabled
+Truth boundary:                         no executable geometry, inverse, runtime evidence, downstream authorization, worker/provider action, or item completion claim
+Evidence:                              `qa/live_verification/executable_transform_gap_revalidation_20260719.json`

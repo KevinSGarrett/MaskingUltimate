@@ -19065,19 +19065,24 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 50,
       "notes": [
         {
           "ts": "2026-07-18T23:02:31+00:00",
           "actor": "codex",
           "text": "2026-07-18 static acceptance audit: frozen v1 contracts already declare typed contiguous transform chains and structural validators check hashes, geometry, invertibility, and receipt/certificate bindings, but no standalone executor/inverter proves actual point/box/mask/protected-region replay, ontology side swaps, inverse construction, or measured round-trip error. Prepared disjoint MF-CURSOR-09.02-EXECUTABLE-TRANSFORMS with zero completion credit; do not dispatch or implement until held prerequisite MF-P6-09.01 request ...41be7553 is adopted. See qa/live_verification/executable_transform_gap_audit_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T02:32:24+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 current-head revalidation credits 50% structural foundation: 6 focused bridge/semantic/crop tests and Ruff pass; all governing hashes match the accepted 2026-07-18 audit. Opaque parameters and singular project matrices fail correctly, but a trusted chain asserting maximum_error_px=1000000 validates and no execute/invert API exists. Preserved four-path additive packet remains absent and was not dispatched."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/executable_transform_gap_revalidation_20260719.json",
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-09.01 remains blocked. Frozen typed/hash-bound transform structure and semantic validation are strong, but no producer executor/inverter, pinned tolerance policy, measured replay evidence, ontology side-swap execution, or exhaustive protected-region fault suite exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T23:02:31+00:00",
+      "updated_at": "2026-07-19T02:32:24+00:00",
       "orphaned": false
     },
     "MF-P6-09.03": {

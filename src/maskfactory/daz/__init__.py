@@ -1,5 +1,12 @@
 """Optional, default-disabled DAZ exact-synthetic supervision lane."""
 
+from .backup import (
+    TierABackupPolicy,
+    create_tier_a_backup,
+    load_tier_a_backup_policy,
+    restore_tier_a_test,
+    verify_tier_a_backup,
+)
 from .control import (
     DazControlError,
     DazErrorCode,
@@ -92,6 +99,7 @@ __all__ = [
     "RegisteredRootResolver",
     "RetentionClassPolicy",
     "RetentionPolicy",
+    "TierABackupPolicy",
     "WindowObservation",
     "PROHIBITED_EXTENSIONS",
     "append_event",
@@ -104,6 +112,7 @@ __all__ = [
     "build_retention_plan",
     "daz_foundation_doctor",
     "collect_monitoring_snapshot",
+    "create_tier_a_backup",
     "deploy_script_bundle",
     "detect_daz_dialog",
     "find_prohibited_source_assets",
@@ -116,6 +125,7 @@ __all__ = [
     "inspect_state_database",
     "load_control_configuration",
     "load_alert_policy",
+    "load_tier_a_backup_policy",
     "load_retention_policy",
     "load_daz_runtime_profile",
     "load_typed_daz_configuration",
@@ -129,6 +139,7 @@ __all__ = [
     "read_terminal_result",
     "running_daz_processes",
     "result_envelope",
+    "restore_tier_a_test",
     "required_reservation_bytes",
     "reserve_job_storage",
     "scheduler_status",
@@ -140,6 +151,7 @@ __all__ = [
     "run_daz_job",
     "validate_daz_configuration",
     "validate_monitoring_snapshot",
+    "verify_tier_a_backup",
     "validate_synthetic_authority",
     "validate_synthetic_share",
 ]

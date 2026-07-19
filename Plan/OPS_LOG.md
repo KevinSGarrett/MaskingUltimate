@@ -7813,3 +7813,16 @@ Focused validation:                     9 monitoring/alert tests pass; 47 monito
 Live preservation:                      no live monitoring invocation or DB mutation; F control remains disabled/paused/draining; four maintenance tasks remain Disabled; no DAZ, WSL or worker-lane action
 Remaining:                              production stage/resource/replay/coverage telemetry; pilot-calibrated thresholds; reviewed live local alert and daily report
 Evidence:                              `qa/live_verification/daz_monitoring_alert_contract_20260719.json`
+
+## 2026-07-19 04:53 UTC - Isolated Tier A backup and hash-restore foundation passes
+
+**Result:** MF-P9-12.04 advances from 0% to 60% with a closed Tier A bundle and clean-root
+byte/hash/SQLite restore fixture; the governed live restore drill remains open.
+
+Backup contract:                       exact non-symlink inventory; SQLite backup API; payload byte/hash records; self-sealed manifest; atomic completed-directory promotion
+Restore contract:                      empty target only; pre-copy verification; exact restored hashes; required control/registry/mapping/recipe/queue/package/lineage categories; queue integrity
+Focused validation:                     5 backup tests and 14 backup/monitoring regressions pass; Ruff, Black 25.1 hook, schema and diff checks pass
+Preservation:                           no D: use, live F backup, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
+Remaining:                              CLI, separate governed destination, drained live clean-root drill, registry rebuild, semantic replay, package verification and dataset/model lineage query
+Truth boundary:                         semantic replay and lineage query are explicitly recorded unexecuted; no live restore or item-completion claim
+Evidence:                              `qa/live_verification/daz_tier_a_backup_restore_foundation_20260719.json`

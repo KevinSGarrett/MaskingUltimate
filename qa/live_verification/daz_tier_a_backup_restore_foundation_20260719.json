@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_tier_a_backup_restore_foundation",
+  "captured_at": "2026-07-19T04:53:20.2274921Z",
+  "project_head_before_commit": "adc064da07336f70238dc8f1d4fefd26086e1352",
+  "tracker_item": "MF-P9-12.04",
+  "status": "ISOLATED_TIER_A_BACKUP_AND_CLEAN_ROOT_HASH_RESTORE_PASS_LIVE_DRILL_OPEN",
+  "percent_supported": 60,
+  "implemented": [
+    "Closed Tier A policy covers control, runtime snapshots, registries, mappings, recipes, queue DB, package metadata, and dataset/model-lineage manifests.",
+    "Backup creation inventories exact non-symlink files, uses the SQLite backup API for the queue, hashes every payload, self-seals the manifest, and atomically promotes a completed backup directory.",
+    "Verification rejects manifest, file-set, size, hash, policy, tier, and SQLite-integrity drift.",
+    "Restore-test requires an empty root, verifies before copying, rechecks every restored hash and required category, and reports semantic replay and lineage query as explicitly unexecuted."
+  ],
+  "validation": {
+    "focused_command": "python -m pytest -q tests/test_daz_backup.py",
+    "focused_tests_passed": 5,
+    "regression_command": "python -m pytest -q tests/test_daz_backup.py tests/test_daz_monitoring.py",
+    "regression_tests_passed": 14,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "schema_validation": "PASS",
+    "diff_check": "PASS"
+  },
+  "live_preservation": {
+    "scheduled_backup_tasks_reenabled": false,
+    "D_drive_used": false,
+    "F_drive_backup_created": false,
+    "DAZ_or_WSL_launched": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Add the governed backup create/verify/restore-test CLI and separately configured real backup destination.",
+    "Run a drained live Tier A backup and clean-root restore on a separate destination, never D: while that volume is absent.",
+    "Execute registry rebuild, exact recipe semantic replay, one package verification, and one dataset/model lineage query against the restored root.",
+    "Record restore duration, missing-file result, and full evidence hash before activation."
+  ],
+  "source_hashes": {
+    "configs/daz/backup.yaml": "28d583114e3d6270a486239360c8e52ae4b9e3ba234bf230835df05232d90553",
+    "src/maskfactory/schemas/daz_backup.schema.json": "a2c88889d571f0f3659f4e55e2ed56edcc2c8598409583ff5652b5f3b709cb01",
+    "src/maskfactory/daz/backup.py": "5f36114adddf23ecd07fd01d6947cef83d2e1e18a60a4ea2bc32ce328d56a408",
+    "src/maskfactory/daz/__init__.py": "96433677674eaff71fd80ce61f5e1ebc9e55ed5959c0d439c4a7740cc02a5dda",
+    "tests/test_daz_backup.py": "8bed9822acbbb94b0f1c3c3bec5be0b0c961651c360de291703b28f22275df65"
+  },
+  "claim_boundary": "This proves an isolated Tier A byte/hash/SQLite restore foundation only. It does not use a real backup destination, run a live restore, execute semantic replay or lineage recovery, re-enable scheduled maintenance, or complete MF-P9-12.04."
+}

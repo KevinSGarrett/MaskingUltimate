@@ -7548,3 +7548,16 @@ Policy/execution gap:                   a fully rehashed/trusted chain asserting
 Prepared scope:                         `MF-CURSOR-09.02-EXECUTABLE-TRANSFORMS`; four additive paths remain absent/clean and disjoint; not dispatched while 09.01 and worker lanes are blocked/disabled
 Truth boundary:                         no executable geometry, inverse, runtime evidence, downstream authorization, worker/provider action, or item completion claim
 Evidence:                              `qa/live_verification/executable_transform_gap_revalidation_20260719.json`
+
+## 2026-07-19 02:43 UTC - Artifact declarations bind strongly; actual consumption/cache gate absent
+
+**Result:** MF-P6-09.04 receives 50% declared-binding foundation credit and remains blocked behind
+MF-P6-09.01/09.02 plus its missing producer consumption decision.
+
+Verified foundation:                   strict request/receipt/certificate media/source/subject/provider/artifact/transform/QA/authority/lineage/revocation fields; exact exchange bindings; semantic artifact identities; production document comparison; release byte closure
+Focused validation:                    4 transaction/ownership/receipt/release tests pass; Ruff passes; governing hashes match the accepted 2026-07-18 audit
+Trusted gaps:                           model artifact SHA drift passes with stale asserted stack/fingerprint; output encoded/decoded hashes can be redeclared and internally rehashed with no file; QA report hash can change with no evidence bytes
+Cache boundary:                         receipt has no cache fields and no artifact-consumption/cache decision API exists
+Prepared scope:                         `MF-CURSOR-09.04-ARTIFACT-CONSUMPTION-BINDING`; four additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no actual-byte consumption, provider/QA recomputation, freshness/tombstone, cache authorization, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_artifact_binding_gap_revalidation_20260719.json`

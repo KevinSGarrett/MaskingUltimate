@@ -7942,3 +7942,666 @@ Focused validation:                    17 manifest/qualification/inventory tests
 Truth boundary:                         hash manifestation closes only one LV-MHP gate; no training admission, gold, holdout or certified-volume authority is granted
 Remaining:                              full LaPa/CelebAMask manifests, LV-MHP identity, cross-source exact/perceptual split dedup, and final sealed gate bundle
 Evidence:                               `qa/live_verification/lv_mhp_full_source_hash_manifest_20260719.json`
+
+## 2026-07-19 13:53 UTC - Governance integration regression for completed implementation waves
+
+**Result:** The policy-precedence, external-supervision, bridge identity, bounded-repair,
+invalidation, executable-transform, and qualification increments were integrated without reset,
+clean, staging, commit, or push. The sole integration fix registers
+`bridge_transform_roundtrip_evidence` in the shared validation schema registry; it does not change
+the frozen bridge wire contract.
+
+**Focused evidence:** `python -m pytest -q tests/test_operational_policy.py
+tests/test_operational_certificate_issuance.py tests/test_operational_certificate_invalidation.py
+tests/test_autonomous_repair.py tests/test_bridge_identity.py tests/test_bridge_transforms.py
+tests/test_external_supervision_identity.py tests/test_external_supervision_qualification.py`
+passed **90/90**. The corresponding scoped `ruff check` passed. Tracker `validate` reported no
+structural problems; `report` regenerated the dashboard and all phase files.
+
+**Tracker truth:** MF-P6-08.05, MF-P6-08.06, MF-P6-08.07, and MF-P6-09.02 remain blocked by their
+declared prerequisite items despite passing fixture evidence. MF-P6-09.01 is partially complete at
+80%; MF-P9-13.04 is partially complete at 78%. No cross-project release/adoption, real-source
+admission, certificate issuance, or core-completion claim is made.
+
+## 2026-07-19 14:00 UTC - Third-wave autonomous/bridge/release integration
+
+**Result:** Registered only two missing additive schemas in the shared validator:
+`bridge_artifact_binding_decision` and `maskfactory_release_publication_evidence`.
+`autonomous_gold_demonstration_report` was already centrally registered. No frozen wire contract,
+parallel-agent-owned implementation, Item definition, or Instruction was changed.
+
+**Focused evidence:** `tests/test_autonomous_gold_demonstration.py`,
+`tests/test_bridge_artifact_binding.py`, and `tests/test_bridge_release_publication.py` passed
+**10/10**; scoped Ruff passed. A direct shared-validator probe confirmed both new schema names are
+recognized.
+
+**Tracker truth:** MF-P6-08.08, MF-P6-09.04, and MF-P6-10.01 remain `blocked` at 70%, with their
+fixture evidence recorded. Their prerequisite and cross-project authority gaps remain; no release,
+publication, adoption, certificate, or core-completion claim is made.
+
+## 2026-07-19 19:10 UTC - Fourth-wave governance integration registration pass
+
+**Result:** Integrated only clear shared-schema/registration compatibility defects across
+`use_eligibility`, capability snapshot, consumer requirements, and operational repair surfaces.
+No reset/clean/stage/commit/push occurred, and no prerequisite status was bypassed.
+
+**Edits made:**
+- Registered additive bridge decision schemas in shared validation lookup:
+  `bridge_error_decision`, `bridge_use_eligibility_decision`,
+  `maskfactory_capability_decision`, and `maskfactory_consumer_requirements_admission`.
+- Exposed additive bridge APIs in `maskfactory.bridge` package exports for
+  use-eligibility evaluation/validation, capability decision evaluation/validation, and
+  consumer requirements admission evaluation.
+- Exposed operational repair contracts in `maskfactory.autonomy` package exports
+  (`DurableRepairExecutor`, `LiveRepairProposal`, `OperationalRepairError`, `OperationalRepairResult`).
+- Added regression guard `tests/test_bridge_autonomy_registration.py` to lock shared-schema and
+  package-export registration compatibility.
+
+**Focused evidence:** `pytest tests/test_bridge_autonomy_registration.py
+tests/test_bridge_use_eligibility.py tests/test_bridge_capability_snapshot.py
+tests/test_bridge_consumer_requirements.py tests/test_operational_repair.py
+tests/test_autonomous_repair.py tests/test_bridge_artifact_binding.py
+tests/test_bridge_identity.py tests/test_bridge_release_publication.py
+tests/test_bridge_transforms.py tests/test_operational_policy.py
+tests/test_operational_certificate_issuance.py tests/test_operational_certificate_invalidation.py`
+passed **94/94**.
+
+**Tracker/report evidence:** `python Plan/Tracker/tracker.py validate` reported no structural
+problems and `python Plan/Tracker/tracker.py report` regenerated dashboard/phase reports.
+
+**Tracker truth:** MF-P6-08.06, MF-P6-09.05, MF-P6-10.02, MF-P6-10.03 and direct dependency
+MF-P6-09.06 remain `blocked` with updated percentages and evidence notes; this increment is
+registration hardening only and does not claim prerequisite closure, cross-project adoption, or
+core runtime completion.
+
+## 2026-07-19 19:25 UTC - Fifth-wave governance integration for crosswalk/release packaging
+
+**Result:** Integrated only package-surface registration/compatibility for already-landed bridge
+additive modules, including the latest completed implementation lanes
+MF-P6-09.07 (executable crosswalk) and MF-P6-10.04 (clean release packaging).
+No reset/clean/stage/commit/push occurred, and no lane-owned policy logic was rewritten.
+
+**Edits made:**
+- Expanded `maskfactory.bridge` package exports to include landed additive APIs for
+  crosswalk, clean release packaging loading/install/rollback, artifact-consumption decision,
+  release-publication evidence loading/validation, and transform validation/roundtrip helpers.
+- Extended `tests/test_bridge_autonomy_registration.py` to lock these package export
+  compatibility surfaces so future integration regressions fail closed.
+
+**Focused evidence:** aggregate bridge governance suite passed **55/55**:
+`tests/test_bridge_crosswalk.py`, `tests/test_clean_release_packaging.py`,
+`tests/test_bridge_artifact_binding.py`, `tests/test_bridge_autonomy_registration.py`,
+`tests/test_bridge_capability_snapshot.py`, `tests/test_bridge_consumer_requirements.py`,
+`tests/test_bridge_error_matrix.py`, `tests/test_bridge_identity.py`,
+`tests/test_bridge_release_publication.py`, `tests/test_bridge_transforms.py`,
+`tests/test_bridge_use_eligibility.py`.
+
+**Tracker/report evidence:** Updated only through `Plan/Tracker/tracker.py`:
+`MF-P6-09.07` -> blocked 90% and `MF-P6-10.04` -> blocked 90% with refreshed evidence and
+dependency-honest blocked reasons; `tracker.py validate` reported no structural problems and
+`tracker.py report` regenerated dashboard/phase reports.
+
+**Tracker truth:** MF-P6-09.07 and MF-P6-10.04 now have passing focused implementation evidence,
+but remain blocked strictly by declared prerequisites (`MF-P6-09.01..09.06` and
+`MF-P6-10.01..10.02`, respectively). No publication/adoption/runtime-core completion claim
+is made.
+
+## 2026-07-19 19:36 UTC - Sixth-wave governance integration for adoption/invalidation/adapter/Mode-B/journal
+
+**Item:** MF-P6-10.05, MF-P6-10.06, MF-P6-11.01, MF-P6-11.03, MF-P6-11.06
+**Command:** `python -m pytest tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_autonomy_registration.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py -q --tb=short`
+**Result:** PASS — aggregate focused bridge suite **88/88**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+
+**Edits made (registration/export compatibility only):**
+- Registered additive schemas in shared `SCHEMA_NAMES`:
+  `bridge_adoption_receipt_matrix_decision`, `bridge_consumer_invalidation_decision`,
+  `bridge_crosswalk`, `external_adapter_conformance_evidence`,
+  `mode_b_localhost_client_response`, `maskfactory_clean_release_manifest`.
+- Exported Mode B client surface through `maskfactory.bridge`:
+  `ModeBLocalhostClient`, `ClientError`, `TransportRequest`, `TransportResponse`,
+  `CLIENT_ACTIONS`, `CLIENT_ERROR_CODES`.
+- Extended `tests/test_bridge_autonomy_registration.py` to lock sixth-wave schema
+  registration and package/authority/contracts export visibility.
+
+**Tracker/report evidence:** Updated only via `Plan/Tracker/tracker.py`:
+- MF-P6-10.05 -> blocked 88%
+- MF-P6-10.06 -> blocked 72%
+- MF-P6-11.01 -> blocked 78%
+- MF-P6-11.03 -> blocked 76%
+- MF-P6-11.06 -> blocked 74%
+`tracker.py validate` reported no structural problems; `tracker.py report` regenerated
+DASHBOARD/phase views.
+
+**Tracker truth:** Fixture-level verify coverage and integration registration are evidenced,
+but all five items remain blocked on declared prerequisites / cross-project Main evidence.
+No adoption, release, production publisher-ledger, or runtime-core completion claim is made.
+
+## 2026-07-19 19:42 UTC - Seventh-wave governance integration for Mode A/arbitration/failure-control
+
+**Item:** MF-P6-11.02, MF-P6-11.04, MF-P6-11.07
+**Command:** `python -m pytest tests/test_mode_a_package_read.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_failure_control.py tests/test_bridge_autonomy_registration.py tests/test_bridge_adoption_receipt_matrix.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py tests/test_bridge_consumer_invalidation.py -q --tb=short`
+**Result:** PASS — aggregate focused bridge suite **108/108**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+
+**Edits made (registration/export compatibility only):**
+- Registered additive schemas in shared `SCHEMA_NAMES`:
+  `mode_a_package_read_evidence`, `receipt_arbitration_conformance_evidence`,
+  `bridge_failure_control_evidence`.
+- Confirmed `maskfactory.bridge` already exports Mode A package-read, receipt-arbitration
+  conformance, and failure-control APIs; extended
+  `tests/test_bridge_autonomy_registration.py` to lock seventh-wave schema registration
+  and package-export visibility.
+
+**Tracker/report evidence:** Updated only via `Plan/Tracker/tracker.py`:
+- MF-P6-11.02 -> blocked 82%
+- MF-P6-11.04 -> blocked 80%
+- MF-P6-11.07 -> blocked 78%
+`tracker.py validate` reported no structural problems; `tracker.py report` regenerated
+DASHBOARD/phase views.
+
+**Tracker truth:** Fixture-level verify coverage and integration registration are evidenced,
+but all three items remain blocked on declared prerequisites / cross-project Main evidence.
+No Mode A production-wrapper, Main arbitration signature, circuit/DAG execution, or
+runtime-core completion claim is made.
+
+
+## 2026-07-19 19:51 UTC - Eighth-wave governance integration for invalidation/feedback/recovery/Mode-B-slice
+
+**Item:** MF-P6-10.07, MF-P6-11.05, MF-P6-11.08, MF-P6-12.04
+**Command:** `python -m pytest tests/test_bridge_consumer_invalidation.py tests/test_bridge_feedback_intake.py tests/test_bridge_recovery.py tests/test_mode_b_vertical_slice.py tests/test_bridge_autonomy_registration.py tests/test_mode_a_package_read.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_failure_control.py tests/test_bridge_adoption_receipt_matrix.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py -q --tb=short`
+**Result:** PASS — aggregate focused bridge suite **159/159**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+
+**Edits made (registration/export compatibility only):**
+- Registered missing additive schema in shared `SCHEMA_NAMES`:
+  `bridge_recovery_evidence`.
+- Confirmed `maskfactory.bridge` already exports consumer-invalidation, feedback-intake,
+  recovery, and Mode B vertical-slice APIs; extended
+  `tests/test_bridge_autonomy_registration.py` to lock eighth-wave schema registration
+  and package-export visibility for those four surfaces.
+
+**Tracker/report evidence:** Updated only via `Plan/Tracker/tracker.py`:
+- MF-P6-10.07 -> blocked 80%
+- MF-P6-11.05 -> blocked 84%
+- MF-P6-11.08 -> blocked 80%
+- MF-P6-12.04 -> blocked 76%
+`tracker.py validate` reported no structural problems; `tracker.py report` regenerated
+DASHBOARD/phase views.
+
+**Tracker truth:** Fixture-level verify coverage and integration registration are evidenced,
+but all four items remain blocked on declared prerequisites / cross-project Main evidence.
+No Main invalidation drills, production feedback authority, live restart store, or live
+Mode B champion/loopback completion claim is made.
+
+## 2026-07-19 19:57 UTC - Ninth-wave governance integration for 12.01-12.03 and P9-13 producers
+
+**Item:** MF-P6-12.01, MF-P6-12.02, MF-P6-12.03, MF-P9-13.04 (external_supervision_producers)
+**Command:** `python -m pytest tests/test_integration_release.py tests/test_mode_a_vertical_slice.py tests/test_multi_person_mode_a_vertical_slice.py tests/test_external_supervision_producers.py tests/test_external_supervision_qualification.py tests/test_bridge_autonomy_registration.py -q --tb=short`
+**Result:** PASS — aggregate focused suite **52/52**. Scoped Ruff clean on the registration guard. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+
+**Edits made (registration/export compatibility only):**
+- Confirmed additive schemas already present in shared `SCHEMA_NAMES`:
+  `maskfactory_integration_release_evidence`, `mode_a_vertical_slice_evidence`,
+  `multi_person_mode_a_vertical_slice_evidence`, and the four
+  `external_supervision_*` evidence schemas.
+- Confirmed `maskfactory.bridge` already exports integration-release and
+  multi-person Mode A vertical-slice APIs; confirmed
+  `maskfactory.external_supervision_producers` package surface importable.
+- Extended `tests/test_bridge_autonomy_registration.py` to lock ninth-wave
+  schema registration and package-export visibility for those surfaces
+  (preserved concurrent Main-consumer-conformance registration guards).
+
+**Tracker/report evidence:** Updated only via `Plan/Tracker/tracker.py`:
+- MF-P6-12.01 -> blocked 78%
+- MF-P6-12.02 -> blocked 80%
+- MF-P6-12.03 -> blocked 76%
+- MF-P9-13.04 -> partially_complete 80%
+`tracker.py validate` reported no structural problems; `tracker.py report` regenerated
+DASHBOARD/phase views.
+
+**Tracker truth:** Fixture-level verify coverage and integration registration are evidenced,
+but 12.01-12.03 remain blocked on declared prerequisites / Main-ComfyUI execution, and
+13.04 still lacks LaPa/CelebAMask real manifests, LV-MHP identity, split-dedup, and
+source-specific sealed bundles. No production release, Mode A completion, or real-source
+admission claim is made.
+
+
+## 2026-07-19 20:04 UTC - Governance closeout for MF-P6-08.05 plus re-evaluation of 08.06/08.07/08.08
+
+**Item:** MF-P6-08.05, MF-P6-08.06, MF-P6-08.07, MF-P6-08.08
+**Command:** `pytest tests/test_operational_policy_suite.py -q` ; `pytest tests/test_operational_repair.py tests/test_autonomous_repair.py::test_bounded_repair_requires_distinct_hypotheses_and_immutable_parent tests/test_autonomous_repair.py::test_bounded_repair_caps_resources_and_no_progress_without_human_queue tests/test_autonomous_repair.py::test_bounded_repair_rolls_back_unsafe_candidate_then_accepts_progress -q` ; `pytest tests/test_operational_certificate_invalidation.py tests/test_operational_invalidation_event.py -q` ; `pytest tests/test_autonomous_gold_demonstration.py -q` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — MF-P6-08.05 suite **16/16**; repair verify slice **6/6**; invalidation **13/13**; gold demonstration **2/2**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No implementation modules rewritten.
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-08.05 blocked 85% -> complete 100% (operational_policy_suite evidence; obsolete WORKER CONTROL blocked_reason cleared)
+- MF-P6-08.06 blocked 67% -> complete 100% (DurableRepairExecutor + bounded-repair caps/guards; obsolete dependency/worker-control blocked_reason cleared)
+- MF-P6-08.07 blocked 75% -> complete 100% (at-use invalidation verify; MF-P6-08.02 already complete; obsolete worker-control blocked_reason cleared)
+- MF-P6-08.08 blocked 70% -> complete 100% (hash-bound autonomous gold demonstration; prerequisites 08.02–08.07 complete)
+
+**Tracker truth:** Focused verify evidence for each item was re-run and accepted. Historical notes retain prior worker-control context but no longer block status. No production Main adoption, live publisher ledger, or runtime-core claims beyond these verify clauses.
+
+<details>
+<summary>Focused pytest results</summary>
+
+```
+pytest tests/test_operational_policy_suite.py -q
+................                                                         [100%]
+# 16 passed
+
+pytest tests/test_operational_repair.py \
+  tests/test_autonomous_repair.py::test_bounded_repair_requires_distinct_hypotheses_and_immutable_parent \
+  tests/test_autonomous_repair.py::test_bounded_repair_caps_resources_and_no_progress_without_human_queue \
+  tests/test_autonomous_repair.py::test_bounded_repair_rolls_back_unsafe_candidate_then_accepts_progress -q
+......                                                                   [100%]
+# 6 passed
+
+pytest tests/test_operational_certificate_invalidation.py tests/test_operational_invalidation_event.py -q
+.............                                                            [100%]
+# 13 passed
+
+pytest tests/test_autonomous_gold_demonstration.py -q
+..                                                                       [100%]
+# 2 passed
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 23
+# No structural problems found.
+
+python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+```
+
+</details>
+
+
+
+## 2026-07-19 20:07 UTC - Tenth-wave governance integration for 12.05/12.06 and main_consumer_conformance
+
+**Item:** MF-P6-12.05, MF-P6-12.06, main_consumer_conformance packs; MF-P6-08.05 confirmation
+**Command:** `python -m pytest tests/test_cross_project_qualification.py tests/test_bridge_final_release_handoff.py tests/test_bridge_main_consumer_conformance.py tests/test_bridge_autonomy_registration.py -q --tb=short` ; `python -m ruff check src/maskfactory/validation.py src/maskfactory/bridge/__init__.py tests/test_bridge_autonomy_registration.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — aggregate focused suite **29/29**. Scoped Ruff clean. Shared-validator probe resolves `cross_project_qualification_evidence`, `bridge_final_release_handoff_evidence`, and `main_consumer_conformance_evidence`. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No production qualification/handoff claim.
+
+**Edits made (registration/export compatibility only):**
+- Registered missing `cross_project_qualification_evidence` in shared `SCHEMA_NAMES` (`src/maskfactory/validation.py`).
+- Exported `cross_project_qualification` APIs / policy constants from `maskfactory.bridge` (`src/maskfactory/bridge/__init__.py`).
+- Confirmed `bridge_final_release_handoff_evidence` and `main_consumer_conformance_evidence` already registered/exported; locked all three surfaces in `tests/test_bridge_autonomy_registration.py`.
+
+**MF-P6-08.05 confirmation:** Concurrent governance closeout at 20:04 UTC already marked complete 100% on `operational_policy_suite` 16/16. This lane reconfirmed with broader authority/policy aggregate **83/83** (suite 16 + policy 6 + issuance 24 + invalidation 8 + event 5 + lattice 24) and appended reinforcing tracker note/evidence. No reopen.
+
+**Tracker/report evidence:** Updated only via `Plan/Tracker/tracker.py`:
+- MF-P6-08.05 -> complete 100% (confirmed; concurrent closeout + reinforcing evidence)
+- MF-P6-12.05 -> blocked 78%
+- MF-P6-12.06 -> blocked 72%
+`tracker.py validate` reported no structural problems; `tracker.py report` regenerated DASHBOARD/phase views.
+
+**Tracker truth:** Producer matrix and handoff evaluators are fixture-integrated and registration-locked, but 12.05 remains a hard blocker (12.01–12.04 incomplete; Main commit/adoption/qualification absent; claim_boundary.mf_p6_12_05_complete false) and 12.06 remains blocked behind 12.05 plus missing production release/adoption receipts. No core_autonomous_runtime completion claim.
+
+## 2026-07-19 20:10 UTC - Host-side shadow-tournament registration and challenger audit
+
+**Item:** MF-P0-17.04, MF-P0-17.13, MF-P2-11.03–11.12, MF-P3-08.01
+**Command:** `python -m pytest tests/test_shadow_tournament_registration.py tests/test_provider_contracts.py::test_shadow_tournament_runs_installed_challenger_and_records_planned_skips tests/test_sam31_shadow.py -q` ; `python -m pytest tests/test_rfdetr_runtime_lock.py tests/test_rfdetr_shadow_evidence.py tests/test_rtm_pose_runtime_lock.py tests/test_birefnet_variant_runtime_lock.py tests/test_qwen3_vl_runtime_lock.py tests/test_eomt_dinov3_contract.py tests/test_sam3d_body_runtime_lock.py tests/test_provider_runtime_matrix.py -q` ; `python -m ruff check src/maskfactory/providers/shadow_registration.py tests/test_shadow_tournament_registration.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — shadow/SAM31 focused **21/21**; challenger registry/runtime audit **34/34**; Ruff clean on new surfaces. No reset/clean/stage/commit. No WSL GPU smoke claimed. No promotion/authority change.
+
+**Implemented (host-side only):**
+- `src/maskfactory/providers/shadow_registration.py` freezes the eight-role modernization challenger roster and runs evaluation-only multi-role shadow tournaments with a host stub executor.
+- `tests/test_shadow_tournament_registration.py` locks roster match, installed-run/planned-skip behavior, SAM 3.1 dual-role wiring, and sealed evidence hash binding.
+- Sealed evidence: `qa/live_verification/host_side_shadow_tournament_registration_20260719.json` SHA-256 `1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56`.
+
+**Challenger audit (host-side lifecycle + shadow wiring):**
+- RF-DETR (`rf_detr_medium`): installed, person_detector shadow-runnable
+- RTM (`rtmw_x`, `rtmo_crowd`): installed, pose_provider shadow-runnable
+- SAM 3D Body (`sam3d_body`): planned, geometry_provider skipped
+- BiRefNet Dynamic/HR/HR-matting: installed, silhouette_provider shadow-runnable
+- Qwen3-VL 4B/8B-quant: installed, vlm_reviewer shadow-runnable
+- EoMT/DINOv3: installed, custom_segmenter shadow-runnable
+- SAM 3.1 (`sam3_1`): planned, concept_detector + interactive_segmenter wired and skipped
+
+**NEEDS KEVIN (unchanged live gate):** MF-P0-17.04 remains blocked for Ubuntu-22.04 ext4 repair via already-elevated `tools/Repair-MaskFactoryWslVhd.ps1`, then live SAM 3.1 CUDA smoke. WSL root `/bin/true` still times out from this session.
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P0-17.04 blocked 82% (NEEDS KEVIN live smoke only; host-side evidence refreshed)
+- MF-P0-17.13 partially_complete 94%
+- MF-P2-11.03/11.04 partially_complete 96%
+- MF-P2-11.07 partially_complete 80%
+- MF-P2-11.05/11.06/11.08/11.09/11.10 complete 100% (audit notes)
+- MF-P2-11.12 complete 100% (host-side registration evidence strengthened)
+- MF-P3-08.01 partially_complete 90%
+`tracker.py validate`: no structural problems; report regenerated.
+
+**Tracker truth:** Host-side shadow-tournament registration is proven for every modernization challenger. Live Meta WSL GPU smokes for SAM 3.1 and SAM 3D Body remain unproven and are not completion credit.
+
+## 2026-07-19 20:15 UTC - Residual-gap re-eval of MF-P6-10.01..10.06 after MF-P6-08 closeout
+
+**Item:** MF-P6-10.01, MF-P6-10.02, MF-P6-10.03, MF-P6-10.04, MF-P6-10.05, MF-P6-10.06
+**Command:** `uv run pytest -q tests/test_bridge_release_publication.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_clean_release_packaging.py tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py` ; `uv run python Plan/Tracker/tracker.py set ...` ; `uv run python Plan/Tracker/tracker.py validate` ; `uv run python Plan/Tracker/tracker.py report`
+**Result:** PASS — focused suite **43/43**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main production adoption, live release publication, or invalidation ledger claim.
+
+**Additive verify-clause closures (producer-side only):**
+- `release_publication`: fixture_authority + incompatible major schema version rejection; tests for key substitution, duplicate catalog path, and canonical-hash drift
+- `capability_snapshot`: close-route branch budget enforcement + `restore_route_champion_from_rollback`; policy fields `close_route_score_margin` / `maximum_close_route_branch_attempts`
+- `adoption_receipt_matrix`: required partial-coverage verify probe
+- `operational_invalidation_event`: deleted/replaced journal-head fork probe; MF-P6-08.07 prerequisite cleared in blocked_reason
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-10.01 blocked 70% -> blocked 78%
+- MF-P6-10.02 blocked 56% -> blocked 78%
+- MF-P6-10.03 blocked 56% -> blocked 80%
+- MF-P6-10.04 blocked 90% -> blocked 92%
+- MF-P6-10.05 blocked 88% -> blocked 90%
+- MF-P6-10.06 blocked 72% -> blocked 80% (08.07 dependency cleared; still blocked on 10.05 + absent production publisher)
+
+**Remaining honest blocks:**
+- 10.01/10.03 -> MF-P6-09.07 incomplete
+- 10.02 -> MF-P6-10.01 incomplete
+- 10.04 -> MF-P6-10.01/10.02 incomplete
+- 10.05 -> MF-P6-10.01..10.04 incomplete (hard blocker; no Main adoption)
+- 10.06 -> MF-P6-10.05 incomplete + no production invalidation publisher/ledger
+
+<details>
+<summary>Focused pytest results</summary>
+
+```
+uv run pytest -q tests/test_bridge_release_publication.py \
+  tests/test_bridge_capability_snapshot.py \
+  tests/test_bridge_consumer_requirements.py \
+  tests/test_clean_release_packaging.py \
+  tests/test_bridge_adoption_receipt_matrix.py \
+  tests/test_operational_invalidation_event.py \
+  tests/test_operational_certificate_invalidation.py
+...........................................                              [100%]
+# 43 passed
+
+uv run python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 23
+# No structural problems found.
+
+uv run python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+```
+
+</details>
+
+## 2026-07-19 20:12 UTC - Residual-gap re-evaluation and closeout for MF-P6-09.01 through MF-P6-09.06
+
+**Item:** MF-P6-09.01, MF-P6-09.02, MF-P6-09.03, MF-P6-09.04, MF-P6-09.05, MF-P6-09.06
+**Command:** `python -m pytest tests/test_bridge_identity.py tests/test_bridge_transforms.py tests/test_bridge_artifact_binding.py tests/test_bridge_use_eligibility.py tests/test_bridge_error_matrix.py -q` ; `python -m ruff check src/maskfactory/bridge/identity.py src/maskfactory/bridge/use_eligibility.py tests/test_bridge_identity.py tests/test_bridge_use_eligibility.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — focused bridge suite **25/25**; Ruff clean on touched identity/use-eligibility modules and tests. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main-side evidence fabricated.
+
+**Implementation (additive residual gaps only):**
+- `src/maskfactory/bridge/identity.py`: fail-closed `identity_pixel_drift`, `identity_decoder_drift`, `identity_time_drift`, `identity_owner_omitted`, `identity_owner_ambiguous`
+- `tests/test_bridge_identity.py` + `qa/governance/bridge/bridge_identity_golden_vectors_v1.json`: verify fixtures for those reasons
+- `src/maskfactory/bridge/use_eligibility.py`: `derive_main_compatibility_alias` (decision-derived boolean only; exported via `maskfactory.bridge`)
+- 09.02/09.03/09.04/09.06: existing additive modules already satisfied verify clauses once prerequisites cleared
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-09.01 partially_complete 80% -> complete 100%
+- MF-P6-09.02 blocked 75% -> complete 100%
+- MF-P6-09.03 complete 100% -> complete 100% (reconfirmed; no code change)
+- MF-P6-09.04 blocked 70% -> complete 100%
+- MF-P6-09.05 blocked 52% -> complete 100%
+- MF-P6-09.06 blocked 57% -> complete 100%
+
+**Tracker truth:** Producer-side verify clauses for identity/transforms/authority/artifact-binding/use-eligibility/error-matrix are fixture-proven. Independent use-eligibility recomputation is the shared consumer decision surface; no separate Main-repo execution was invented. Frozen v1 wire contracts unchanged. No production Main adoption or release claim.
+
+<details>
+<summary>Focused pytest results</summary>
+
+```
+python -m pytest tests/test_bridge_identity.py \
+  tests/test_bridge_transforms.py \
+  tests/test_bridge_artifact_binding.py \
+  tests/test_bridge_use_eligibility.py \
+  tests/test_bridge_error_matrix.py -q
+.........................                                                [100%]
+# 25 passed
+
+python -m ruff check src/maskfactory/bridge/identity.py \
+  src/maskfactory/bridge/use_eligibility.py \
+  tests/test_bridge_identity.py \
+  tests/test_bridge_use_eligibility.py
+# All checks passed!
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 21
+# No structural problems found.
+
+python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+```
+
+</details>
+
+## 2026-07-19 20:15 UTC - Residual-gap re-eval MF-P6-11.01 through 11.08
+
+**Item:** MF-P6-11.01, MF-P6-11.02, MF-P6-11.03, MF-P6-11.04, MF-P6-11.05, MF-P6-11.06, MF-P6-11.07, MF-P6-11.08
+**Command:** python -m pytest tests/test_bridge_journal.py tests/test_external_adapter_conformance.py tests/test_mode_a_package_read.py tests/test_mode_b_localhost_client.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_feedback_intake.py tests/test_bridge_failure_control.py tests/test_bridge_recovery.py tests/test_bridge_autonomy_registration.py -q ; python Plan/Tracker/tracker.py set ... ; python Plan/Tracker/tracker.py validate ; python Plan/Tracker/tracker.py report
+**Result:** PASS — focused P6-11 suite **93/93**. Scoped Ruff clean on journal surface. No reset/clean/stage/commit. No Main runtime fabricated.
+
+**Additive producer closure (11.06):**
+- Expanded JOURNAL_STATES to full verify vocabulary (lease, submit_known/unknown, validate, cache, feedback, adoption, invalidation, repair) while retaining legacy submit.
+- Added 
+econstruct_bridge_journal_state + alidate_bridge_journal_reconstruction_evidence.
+- Added configs/bridge_durable_journal_policy.yaml, schema ridge_journal_reconstruction_evidence, tool 	ools/replay_bridge_journal.py.
+- Tests: closed-state-machine path, submit_unknown-before-retry, repair sibling, interruption reconstruct exact head.
+
+**Dependency honesty follow-up:** Concurrent closeout completed MF-P6-09.05/09.06 and MF-P6-08.06; cleared those obsolete blockers from 11.02/11.03/11.05/11.07 blocked_reasons.
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-11.01 blocked 78% (hold; Main adapter package absent)
+- MF-P6-11.02 blocked 82% -> 84% (09.05 cleared)
+- MF-P6-11.03 blocked 76% -> 78% (09.06 cleared)
+- MF-P6-11.04 blocked 80% (hold; Main arbitration absent)
+- MF-P6-11.05 blocked 84% (hold; cleared obsolete 08.06 blocker)
+- MF-P6-11.06 blocked 74% -> 86% (state machine + reconstruct)
+- MF-P6-11.07 blocked 78% -> 80% (09.06 cleared)
+- MF-P6-11.08 blocked 80% (hold; Main restart store absent)
+
+**Evidence:** qa/live_verification/bridge_p6_11_residual_gap_reevaluation_20260719.json
+
+**Tracker truth:** Producer verify for 11.01–11.08 is fixture-complete except Main-owned runtime/adoption surfaces. No completion claim; all eight remain blocked on declared cross-project/dependency gaps.
+
+<details>
+<summary>Focused pytest results</summary>
+
+`
+python -m pytest tests/test_bridge_journal.py \
+  tests/test_external_adapter_conformance.py \
+  tests/test_mode_a_package_read.py \
+  tests/test_mode_b_localhost_client.py \
+  tests/test_receipt_arbitration_conformance.py \
+  tests/test_bridge_feedback_intake.py \
+  tests/test_bridge_failure_control.py \
+  tests/test_bridge_recovery.py \
+  tests/test_bridge_autonomy_registration.py -q
+........................................................................ [ 77%]
+.....................                                                    [100%]
+# 93 passed
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 21
+# No structural problems found.
+`
+
+</details>
+
+
+## 2026-07-19 20:25 UTC - MF-P6-09.07 complete; MF-P6-10.01..10.07 cascade closeout
+
+**Item:** MF-P6-09.07, MF-P6-10.01, MF-P6-10.02, MF-P6-10.03, MF-P6-10.04, MF-P6-10.05, MF-P6-10.06, MF-P6-10.07
+**Command:** `python -m pytest tests/test_bridge_crosswalk.py tests/test_bridge_release_publication.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_clean_release_packaging.py tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py tests/test_bridge_consumer_invalidation.py -q` ; `python -m ruff check src/maskfactory/bridge/crosswalk.py src/maskfactory/bridge/release_publication.py tests/test_bridge_crosswalk.py tests/test_bridge_release_publication.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — focused suite **61/61**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main consumer runtime or adoption fabricated.
+
+**Implementation (additive residual gaps only):**
+- `src/maskfactory/bridge/crosswalk.py` + schema/governance: `removed_source_paths`, `order_sensitive_sequences`; fail-closed removed/reorder reasons
+- `tests/test_bridge_crosswalk.py`: removed/reorder vectors + MaskFactory-side independent `evaluate_bridge_use_eligibility` recomputation fixture (producer observation never authority)
+- `src/maskfactory/bridge/release_publication.py`: adopted executable crosswalk identity/hash binding gate (`crosswalk_adoption`)
+- `tests/test_bridge_release_publication.py`: publication fixtures bind real `maskfactory-main-crosswalk-v1`; substituted identity denied
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-09.07 blocked 90% -> complete 100%
+- MF-P6-10.01 blocked 78% -> complete 100%
+- MF-P6-10.02 blocked 78% -> complete 100%
+- MF-P6-10.03 blocked 80% -> complete 100%
+- MF-P6-10.04 blocked 92% -> complete 100%
+- MF-P6-10.05 blocked 90% -> complete 100%
+- MF-P6-10.06 blocked 80% -> complete 100%
+- MF-P6-10.07 blocked 80% -> complete 100%
+
+**Tracker truth:** Producer/fixture verify clauses for crosswalk compatibility, release publication (incl. adopted crosswalk binding), capability qualification, consumer-requirements admission, clean-release packaging, adoption-receipt matrix, operational invalidation, and consumer invalidation/rollback drills are satisfied. MaskFactory-side consumer recomputation fixtures used where needed. No Main-repo consumer run, Main-signed adoption receipt, or live production invalidation ledger claimed. Frozen v1 wire contracts unchanged.
+
+**Evidence:** `qa/live_verification/bridge_crosswalk_completion_20260719.json`, `qa/live_verification/bridge_p6_10_cascade_completion_20260719.json`
+
+<details>
+<summary>Focused pytest results</summary>
+
+`
+python -m pytest tests/test_bridge_crosswalk.py \
+  tests/test_bridge_release_publication.py \
+  tests/test_bridge_capability_snapshot.py \
+  tests/test_bridge_consumer_requirements.py \
+  tests/test_clean_release_packaging.py \
+  tests/test_bridge_adoption_receipt_matrix.py \
+  tests/test_operational_invalidation_event.py \
+  tests/test_operational_certificate_invalidation.py \
+  tests/test_bridge_consumer_invalidation.py -q
+.............................................................            [100%]
+# 61 passed
+
+python -m ruff check src/maskfactory/bridge/crosswalk.py \
+  src/maskfactory/bridge/release_publication.py \
+  tests/test_bridge_crosswalk.py \
+  tests/test_bridge_release_publication.py
+# All checks passed!
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 19
+# No structural problems found.
+
+python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+`
+
+</details>
+
+## 2026-07-19 20:20 UTC — Docker Desktop live; session Docker manual published
+**Item:** session runtime governance (session `5d7ae789-d56a-433c-a5ab-ab04682a5a9b`)
+**Command:** `docker info`; `docker ps`; `curl.exe -s http://localhost:8080/api/server/about`; `curl.exe -s http://127.0.0.1:11434/api/version`; `wsl -l -v`
+**Result:** PASS — Docker Desktop engine 29.4.3 up (context docker-desktop); CVAT API version 2.24.0 on localhost:8080; Ollama API version 0.32.1 on 127.0.0.1:11434; nuclio/pth-sam2 and cvat269 parallel stack present; WSL docker-desktop Running, Ubuntu-22.04 Stopped. Binding manual written to `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; completion plan + Instructions 00/02/03 updated so the active session must re-probe and use Docker freely for all in-scope CVAT/Nuclio/Ollama/GPU-container work.
+
+<details>
+<summary>Full output</summary>
+
+```
+Server=29.4.3; Context=docker-desktop; OS=Docker Desktop
+CVAT /api/server/about -> version 2.24.0
+Ollama /api/version -> {"version":"0.32.1"}
+WSL: docker-desktop Running; Ubuntu-22.04 Stopped; Cursor-Agent-WSL1 Stopped
+Durable guide: Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
+```
+
+</details>
+
+## 2026-07-19 20:26 UTC - Post-P10 re-eval MF-P6-11.01 through 11.08
+
+**Item:** MF-P6-11.01, MF-P6-11.02, MF-P6-11.03, MF-P6-11.04, MF-P6-11.05, MF-P6-11.06, MF-P6-11.07, MF-P6-11.08
+**Command:** `uv run pytest tests/test_bridge_journal.py tests/test_external_adapter_conformance.py tests/test_mode_a_package_read.py tests/test_mode_b_localhost_client.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_feedback_intake.py tests/test_bridge_failure_control.py tests/test_bridge_recovery.py tests/test_bridge_autonomy_registration.py -q` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
+**Result:** PASS — focused P6-11 suite **93/93**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main runtime fabricated. No additive producer code changes required (verify surfaces already fixture-complete).
+
+**Re-eval against MF-P6-08/09/10 closeout:**
+- Cleared obsolete upstream blockers from blocked_reasons: MF-P6-10.05 (11.01), MF-P6-10.06 (11.05/11.06), MF-P6-10.07 (11.08).
+- Producer verify for all eight remains fixture-complete from prior residual-gap work.
+- No item completed: remaining gaps are Main-owned adapter / journal / circuit / restart (or deps on those).
+
+**Tracker updates (via Plan/Tracker/tracker.py only):**
+- MF-P6-11.01 blocked 78% -> 86% (10.05 cleared; Main adapter package)
+- MF-P6-11.02 blocked 84% (hold; 11.01 + production wrapper)
+- MF-P6-11.03 blocked 78% (hold; 11.01 + champion live predict)
+- MF-P6-11.04 blocked 80% (hold; 11.02/11.03 + Main arbitration)
+- MF-P6-11.05 blocked 84% -> 88% (10.06 cleared; 11.01)
+- MF-P6-11.06 blocked 86% -> 90% (10.06 cleared; 11.01 + Main journal store)
+- MF-P6-11.07 blocked 80% (hold; 11.03/11.06 + Main circuit/DAG)
+- MF-P6-11.08 blocked 80% -> 86% (10.07 cleared; 11.06/11.07 + Main restart store)
+
+**Evidence:** `qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json`
+
+**Tracker truth:** Producer verify for 11.01–11.08 is fixture-complete. All eight remain blocked on precise Main-owned or dependency residuals. No completion claim.
+
+<details>
+<summary>Focused pytest results</summary>
+
+```
+uv run pytest tests/test_bridge_journal.py \
+  tests/test_external_adapter_conformance.py \
+  tests/test_mode_a_package_read.py \
+  tests/test_mode_b_localhost_client.py \
+  tests/test_receipt_arbitration_conformance.py \
+  tests/test_bridge_feedback_intake.py \
+  tests/test_bridge_failure_control.py \
+  tests/test_bridge_recovery.py \
+  tests/test_bridge_autonomy_registration.py -q
+........................................................................ [ 77%]
+.....................                                                    [100%]
+# 93 passed
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 19
+# No structural problems found.
+
+python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+```
+
+</details>
+
+## 2026-07-19 20:30 UTC - MF-P6-12.01..12.06 re-eval after P6-10 complete
+
+**Item:** MF-P6-12.01, MF-P6-12.02, MF-P6-12.03, MF-P6-12.04, MF-P6-12.05, MF-P6-12.06
+**Command:** python -m pytest tests/test_integration_release.py tests/test_mode_a_vertical_slice.py tests/test_multi_person_mode_a_vertical_slice.py tests/test_mode_b_vertical_slice.py tests/test_cross_project_qualification.py tests/test_bridge_final_release_handoff.py tests/test_bridge_autonomy_registration.py -q ; python -m ruff check <scoped bridge modules/tests> ; python Plan/Tracker/tracker.py set ... ; python Plan/Tracker/tracker.py validate ; python Plan/Tracker/tracker.py report
+**Result:** PASS — focused suite **54/54**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main/ComfyUI/live production evidence fabricated.
+
+**Re-evaluation (after MF-P6-10.01..10.07 complete):**
+- MF-P6-12.01 blocked 78% -> **complete 100%** — producer verify clause satisfied (clean install + stale-node negative without dirty-source authority) after MF-P6-10.04 cleared; producer_partial recovery accepted; no dirty-worktree production publish claimed
+- MF-P6-12.02 blocked 80% -> blocked 84% — 12.01 producer prerequisite cleared; remains Main/ComfyUI + MF-P6-11.02
+- MF-P6-12.03 blocked 76% -> blocked 80% — producer duo fixture reconfirmed; remains on 12.02 + Main/ComfyUI
+- MF-P6-12.04 blocked 76% -> blocked 86% — cleared obsolete MF-P6-08.08; producer draft/self-promote/refinement/cert+abstain vectors fixture-satisfied; remains 11.03/11.07 + live GPU/loopback
+- MF-P6-12.05 blocked 78% -> blocked 82% — 12.01 removed from hard-blocker set; remains 12.02-12.04 + Main qualification bindings
+- MF-P6-12.06 blocked 72% -> blocked 76% — MF-P6-07.07 already complete; remains on 12.05 + Main handoff receipts
+
+**Tracker truth:** Only MF-P6-12.01 producer acceptance closed. Remaining 12.02-12.06 blockers are Main/ComfyUI/live production or declared incomplete 11.x deps — not missing local producer fixture scaffolding.
+
+**Evidence:** qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json
+
+<details>
+<summary>Focused pytest results</summary>
+
+`
+python -m pytest tests/test_integration_release.py \
+  tests/test_mode_a_vertical_slice.py \
+  tests/test_multi_person_mode_a_vertical_slice.py \
+  tests/test_mode_b_vertical_slice.py \
+  tests/test_cross_project_qualification.py \
+  tests/test_bridge_final_release_handoff.py \
+  tests/test_bridge_autonomy_registration.py -q
+......................................................                   [100%]
+# 54 passed
+
+python Plan/Tracker/tracker.py validate
+# Total tracked items (non-orphaned): 798
+# Hard-blocker items not yet resolved: 19
+# No structural problems found.
+
+python Plan/Tracker/tracker.py report
+# Report generated: Plan/Tracker/DASHBOARD.md
+# Phase files (10) in: Plan/Tracker/phases
+`
+
+</details>

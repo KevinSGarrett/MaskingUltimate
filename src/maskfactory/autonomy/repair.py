@@ -78,6 +78,194 @@ class RepairGuardResult:
     vetoes: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class BoundedRepairLimits:
+    """Per-label limits for a reversible autonomous repair transaction."""
+
+    maximum_attempts: int
+    maximum_elapsed_seconds: float
+    maximum_resource_units: float
+    maximum_no_progress_attempts: int
+    minimum_score_improvement_ppm: int
+
+
+@dataclass(frozen=True)
+class RepairAttempt:
+    """An immutable, evaluated child hypothesis descended from one parent."""
+
+    accepted_parent_id: str
+    hypothesis_id: str
+    score_ppm: int
+    elapsed_seconds: float
+    resource_units: float
+
+
+@dataclass(frozen=True)
+class BoundedRepairDecision:
+    """A decision that never creates a human-review queue."""
+
+    outcome: str
+    reason: str
+    accepted_parent_id: str
+    attempt_number: int
+    no_progress_count: int
+    rollback_required: bool
+
+
+def repair_limits_from_policy(policy: Mapping[str, Any]) -> BoundedRepairLimits:
+    """Extract the finite repair budget from the governed autonomy policy."""
+    try:
+        limits = BoundedRepairLimits(
+            maximum_attempts=int(policy["maximum_attempts_per_label"]),
+            maximum_elapsed_seconds=float(policy["maximum_elapsed_seconds_per_label"]),
+            maximum_resource_units=float(policy["maximum_resource_units_per_label"]),
+            maximum_no_progress_attempts=int(policy["maximum_no_progress_attempts"]),
+            minimum_score_improvement_ppm=int(policy["minimum_score_improvement_ppm"]),
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise AutonomousRepairError("bounded repair policy limits are invalid") from exc
+    if (
+        limits.maximum_attempts < 1
+        or limits.maximum_elapsed_seconds <= 0
+        or limits.maximum_resource_units <= 0
+        or limits.maximum_no_progress_attempts < 1
+        or not 0 <= limits.minimum_score_improvement_ppm <= 1_000_000
+    ):
+        raise AutonomousRepairError("bounded repair policy limits are outside their safe range")
+    return limits
+
+
+def decide_bounded_repair(
+    *,
+    accepted_parent_id: str,
+    hypothesis_id: str,
+    guard: RepairGuardResult,
+    current_score_ppm: int,
+    attempt_elapsed_seconds: float,
+    attempt_resource_units: float,
+    limits: BoundedRepairLimits,
+    history: tuple[RepairAttempt, ...] = (),
+) -> BoundedRepairDecision:
+    """Accept a guarded child, retry with a distinct hypothesis, or abstain.
+
+    Every non-acceptance result requires rollback to ``accepted_parent_id``.  The
+    controller deliberately has no human-queue outcome: exhausted, unsafe, or
+    non-progressing work becomes a typed autonomous abstention.
+    """
+    if not isinstance(accepted_parent_id, str) or not accepted_parent_id:
+        raise AutonomousRepairError("accepted repair parent identity is required")
+    if (
+        not isinstance(guard, RepairGuardResult)
+        or not isinstance(hypothesis_id, str)
+        or not hypothesis_id
+        or not isinstance(current_score_ppm, int)
+        or isinstance(current_score_ppm, bool)
+        or not 0 <= current_score_ppm <= 1_000_000
+        or not np.isfinite(attempt_elapsed_seconds)
+        or attempt_elapsed_seconds < 0
+        or not np.isfinite(attempt_resource_units)
+        or attempt_resource_units < 0
+    ):
+        raise AutonomousRepairError("bounded repair attempt fields are invalid")
+    if any(
+        not isinstance(attempt, RepairAttempt)
+        or attempt.accepted_parent_id != accepted_parent_id
+        or not isinstance(attempt.hypothesis_id, str)
+        or not attempt.hypothesis_id
+        or not isinstance(attempt.score_ppm, int)
+        or isinstance(attempt.score_ppm, bool)
+        or not 0 <= attempt.score_ppm <= 1_000_000
+        or not np.isfinite(attempt.elapsed_seconds)
+        or attempt.elapsed_seconds < 0
+        or not np.isfinite(attempt.resource_units)
+        or attempt.resource_units < 0
+        for attempt in history
+    ):
+        raise AutonomousRepairError("repair history is not bound to the accepted parent")
+    if len({attempt.hypothesis_id for attempt in history}) != len(history):
+        raise AutonomousRepairError("repair history contains duplicate hypotheses")
+
+    attempt_number = len(history) + 1
+    common = {
+        "accepted_parent_id": accepted_parent_id,
+        "attempt_number": attempt_number,
+        "rollback_required": True,
+    }
+    if attempt_number > limits.maximum_attempts:
+        return BoundedRepairDecision(
+            "rolled_back_abstain", "attempt_cap_exhausted", no_progress_count=0, **common
+        )
+    if hypothesis_id in {attempt.hypothesis_id for attempt in history}:
+        return BoundedRepairDecision(
+            "rolled_back_abstain", "hypothesis_not_distinct", no_progress_count=0, **common
+        )
+    if (
+        sum(attempt.elapsed_seconds for attempt in history) + attempt_elapsed_seconds
+        > limits.maximum_elapsed_seconds
+    ):
+        return BoundedRepairDecision(
+            "rolled_back_abstain", "time_cap_exhausted", no_progress_count=0, **common
+        )
+    if (
+        sum(attempt.resource_units for attempt in history) + attempt_resource_units
+        > limits.maximum_resource_units
+    ):
+        return BoundedRepairDecision(
+            "rolled_back_abstain", "resource_cap_exhausted", no_progress_count=0, **common
+        )
+
+    previous_score = history[-1].score_ppm if history else None
+    no_progress_count = (
+        0
+        if previous_score is None
+        or current_score_ppm - previous_score >= limits.minimum_score_improvement_ppm
+        else _trailing_no_progress_count(history, limits) + 1
+    )
+    if no_progress_count >= limits.maximum_no_progress_attempts:
+        return BoundedRepairDecision(
+            "rolled_back_abstain",
+            "no_progress_cap_exhausted",
+            no_progress_count=no_progress_count,
+            **common,
+        )
+    if not guard.eligible:
+        if attempt_number >= limits.maximum_attempts:
+            return BoundedRepairDecision(
+                "rolled_back_abstain",
+                "unsafe_candidate_at_attempt_cap",
+                no_progress_count=no_progress_count,
+                **common,
+            )
+        return BoundedRepairDecision(
+            "rolled_back_retry_distinct_hypothesis",
+            "candidate_guard_veto:" + ",".join(guard.vetoes),
+            no_progress_count=no_progress_count,
+            **common,
+        )
+    return BoundedRepairDecision(
+        "accepted_reversible_repair",
+        "bounded_guard_passed",
+        no_progress_count=no_progress_count,
+        rollback_required=False,
+        accepted_parent_id=accepted_parent_id,
+        attempt_number=attempt_number,
+    )
+
+
+def _trailing_no_progress_count(
+    history: tuple[RepairAttempt, ...], limits: BoundedRepairLimits
+) -> int:
+    if len(history) < 2:
+        return 0
+    count = 0
+    for previous, current in zip(history, history[1:]):
+        if current.score_ppm - previous.score_ppm < limits.minimum_score_improvement_ppm:
+            count += 1
+        else:
+            count = 0
+    return count
+
+
 def load_repair_regions(
     prompts_path: Path | None,
     *,
@@ -535,15 +723,20 @@ def _box_area(box: tuple[int, int, int, int]) -> int:
 
 __all__ = [
     "AutonomousRepairError",
+    "BoundedRepairDecision",
+    "BoundedRepairLimits",
+    "RepairAttempt",
     "RepairGuardResult",
     "RepairRegion",
     "build_pose_side_evidence",
     "atomic_boundary_vetoes",
     "evaluate_repair_candidate",
+    "decide_bounded_repair",
     "expand_box",
     "immutable_protected_union",
     "load_repair_regions",
     "merge_specialist_repair_regions",
     "normalized_roi_points_to_source",
     "requires_reconstruction",
+    "repair_limits_from_policy",
 ]

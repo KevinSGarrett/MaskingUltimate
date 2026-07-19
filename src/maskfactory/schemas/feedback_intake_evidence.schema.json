@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/feedback_intake_evidence.schema.json",
+  "title": "Additive bridge feedback intake evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "policy_id",
+    "policy_sha256",
+    "decided_at",
+    "status",
+    "outcome",
+    "rejection_reasons",
+    "feedback_id",
+    "feedback_payload_sha256",
+    "parent_preservation",
+    "consumed_context",
+    "child_candidate",
+    "mining_retention",
+    "operational_repair_handoff",
+    "journal_event",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "record_type": {
+      "const": "feedback_intake_evidence"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "rejected"
+      ]
+    },
+    "outcome": {
+      "enum": [
+        "rejected",
+        "mining_only",
+        "candidate_created",
+        "quarantine_and_abstain",
+        "idempotent_replay"
+      ]
+    },
+    "rejection_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "feedback_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "feedback_payload_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "parent_preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_package_sha256_before",
+        "parent_package_sha256_after",
+        "parent_certificate_sha256_before",
+        "parent_certificate_sha256_after",
+        "parent_bytes_unchanged",
+        "truth_created",
+        "gold_mutated"
+      ],
+      "properties": {
+        "parent_package_sha256_before": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_package_sha256_after": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_certificate_sha256_before": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_certificate_sha256_after": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_bytes_unchanged": {
+          "type": "boolean"
+        },
+        "truth_created": {
+          "const": false
+        },
+        "gold_mutated": {
+          "const": false
+        }
+      }
+    },
+    "consumed_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_receipt_id",
+        "parent_receipt_payload_sha256",
+        "parent_request_id",
+        "parent_request_payload_sha256",
+        "release_id",
+        "capability_snapshot_sha256",
+        "policy_sha256",
+        "certificate_id",
+        "certificate_sha256",
+        "source_decoded_pixel_sha256",
+        "transform_chain_sha256",
+        "qa_report_sha256",
+        "hypothesis_id",
+        "material_change_sha256",
+        "ledger_entry_count",
+        "journal_head_sha256"
+      ],
+      "properties": {
+        "parent_receipt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parent_receipt_payload_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_request_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parent_request_payload_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "release_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "capability_snapshot_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "policy_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "certificate_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "certificate_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_decoded_pixel_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "transform_chain_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "qa_report_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "hypothesis_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "material_change_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "ledger_entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "journal_head_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "child_candidate": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "candidate_sha256",
+        "parent_receipt_id",
+        "parent_receipt_payload_sha256",
+        "parent_request_payload_sha256",
+        "hypothesis_id",
+        "material_change_sha256",
+        "feedback_id",
+        "feedback_payload_sha256",
+        "requested_action",
+        "creates_truth",
+        "mutates_parent"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_receipt_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_receipt_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_request_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "hypothesis_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_change_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "feedback_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "feedback_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "requested_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "creates_truth": {
+          "const": false
+        },
+        "mutates_parent": {
+          "const": false
+        }
+      }
+    },
+    "mining_retention": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "corpus_kind",
+        "observation_sha256s",
+        "enters_training_gold",
+        "enters_operational_certificate_evidence",
+        "enters_production_masks"
+      ],
+      "properties": {
+        "corpus_kind": {
+          "const": "advisory_non_gold"
+        },
+        "observation_sha256s": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sha256"
+          }
+        },
+        "enters_training_gold": {
+          "const": false
+        },
+        "enters_operational_certificate_evidence": {
+          "const": false
+        },
+        "enters_production_masks": {
+          "const": false
+        }
+      }
+    },
+    "operational_repair_handoff": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "accepted_parent_id",
+        "hypothesis_id",
+        "material_change_sha256",
+        "eligible_for_durable_repair"
+      ],
+      "properties": {
+        "accepted_parent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hypothesis_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "material_change_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "eligible_for_durable_repair": {
+          "type": "boolean"
+        }
+      }
+    },
+    "journal_event": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "event_type",
+        "event_body_sha256",
+        "producer_owned"
+      ],
+      "properties": {
+        "event_type": {
+          "enum": [
+            "repair_feedback_accepted",
+            "repair_feedback_rejected"
+          ]
+        },
+        "event_body_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "producer_owned": {
+          "const": true
+        }
+      }
+    },
+    "decision_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

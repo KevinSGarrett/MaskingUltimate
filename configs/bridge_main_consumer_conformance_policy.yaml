@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+policy_id: maskfactory-bridge-main-consumer-conformance-v1
+policy_version: 1.0.0
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+  - policy_sha256
+claim_boundary:
+  producer_fixture_pack_is_not_main_adoption: true
+  main_adoption_complete_requires_main_supplied_artifacts: true
+  fabricate_main_adoption_forbidden: true
+fixture_pack_relative_root: tests/fixtures/main_consumer_conformance
+main_artifact_inbox_relative_root: runtime_artifacts/main_consumer_conformance/inbox
+required_pack_members:
+- pack_manifest_v1.json
+- receipt_shapes/adopted_receipt_shape_v1.json
+- receipt_shapes/rejected_receipt_shape_v1.json
+- receipt_shapes/partially_adopted_receipt_shape_v1.json
+- adapter_observations/accepted_observation_template_v1.json
+- adapter_observations/rejected_dirty_worktree_template_v1.json
+- adapter_observations/rejected_internal_dependency_template_v1.json
+- disagreement_vectors/requirements_capability_disagreement_v1.json
+main_supplied_artifact_names:
+  adoption_receipt: adoption_receipt.json
+  adapter_observation: adapter_observation.json
+  requirements_capability_bundle: requirements_capability_bundle.json
+required_compatibility_checks:
+- api_contract
+- artifact_security
+- authority_policy
+- canonicalization
+- capabilities
+- contract_tests
+- media_scope
+- node_pack
+- ontology
+- package_format
+- release_hash
+- revocation_freshness
+- signature
+- signed_journal
+- trust_anchor
+- wire_schemas
+harness_statuses:
+- producer_fixture_ready
+- awaiting_main
+- accepted
+- rejected
+reason_codes:
+- eligible
+- pack_member_missing
+- pack_member_hash_drift
+- pack_manifest_invalid
+- receipt_shape_drift
+- adapter_template_drift
+- disagreement_vector_drift
+- main_artifact_missing
+- main_adoption_receipt_shape_mismatch
+- main_adoption_decision_incoherent
+- main_adapter_observation_rejected
+- main_requirements_capability_disagreement
+- main_fabrication_claim_forbidden
+- policy_drift
+policy_sha256: 588c12f5a4f8134347fb3afe29d18608718a601733d6d342cd42359dc11104aa

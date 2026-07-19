@@ -268,6 +268,11 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
         or not 0.7 <= float(repair.get("minimum_advisory_pass_confidence", 0)) <= 0.95
         or int(repair.get("minimum_independent_pass_reviewers", 0)) < 3
         or not 0 <= float(repair.get("complete_map_score_tolerance", -1)) <= 0.01
+        or not 1 <= int(repair.get("maximum_attempts_per_label", 0)) <= 10
+        or float(repair.get("maximum_elapsed_seconds_per_label", 0)) <= 0
+        or float(repair.get("maximum_resource_units_per_label", 0)) <= 0
+        or not 1 <= int(repair.get("maximum_no_progress_attempts", 0)) <= 10
+        or not 0 <= int(repair.get("minimum_score_improvement_ppm", -1)) <= 1_000_000
     ):
         raise AutonomyCalibrationError("autonomy repair contract is invalid")
     review_draft = operations.get("review_draft")

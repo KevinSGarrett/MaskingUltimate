@@ -1,0 +1,70 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-failure-control-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+maximum_attempts_bounds:
+  minimum: 1
+  maximum: 10
+retryable_failure_domains:
+  - availability
+  - resource
+terminal_failure_domains:
+  - compatibility
+  - capability
+  - identity
+  - transform
+  - authority
+  - trust
+  - integrity
+  - invariant
+fault_domain_map:
+  outage: availability
+  timeout: availability
+  oom: resource
+  incompatible_authority: authority
+circuit_states:
+  - closed
+  - open
+  - half_open
+circuit_required_fields:
+  - route_key
+  - release_id
+  - state
+  - failure_threshold
+  - observation_window_ms
+  - cooldown_ms
+  - opened_at
+  - half_open_probe_allowed
+  - evidence_sha256
+forbidden_fallback_kinds:
+  - empty_mask
+  - wrong_owner
+  - weaker_authority
+  - unqualified_provider
+  - undeclared_cpu_route
+  - stale_mask
+rejection_reason_codes:
+  - deadline_expired
+  - resource_envelope_infeasible
+  - retry_budget_exhausted
+  - non_transient_retry_forbidden
+  - silent_fallback_forbidden
+  - circuit_open_blocks_route
+  - circuit_evidence_invalid
+  - scoped_block_overreach
+  - scoped_block_underreach
+  - main_retry_evidence_invalid
+  - main_scoped_block_evidence_invalid
+  - error_matrix_rejected
+  - provider_invocation_forbidden
+  - fallback_artifact_present
+  - external_main_prerequisite_unmet
+external_main_prerequisites:
+  - main_circuit_breaker_execution
+  - main_scoped_dag_blocking
+  - main_retry_attempt_accounting
+  - main_signed_failure_evidence
+policy_sha256: e5592becbe96432c28c021de72e7aad51b58b8839bb698b4ebfd1930e2af51b1

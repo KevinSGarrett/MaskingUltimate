@@ -157,6 +157,11 @@ repair:
   publish_only_to_reversible_review_draft: true
   maximum_committee_rounds_per_label: 3
   maximum_total_candidates_per_label: 12
+  maximum_attempts_per_label: 3
+  maximum_elapsed_seconds_per_label: 300
+  maximum_resource_units_per_label: 12
+  maximum_no_progress_attempts: 2
+  minimum_score_improvement_ppm: 1000
   target_reviewer_pass_confidence: 0.95
   minimum_advisory_pass_confidence: 0.80
   minimum_independent_pass_reviewers: 3

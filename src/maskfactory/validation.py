@@ -74,6 +74,7 @@ SCHEMA_NAMES = frozenset(
         "autonomy_metrics_inputs",
         "autonomy_risk_buckets",
         "autonomy_stability",
+        "operational_policy_evidence",
         "completion_bundle_input",
         "completion_bundle_policy",
         "completion_bundle_report",
@@ -162,8 +163,29 @@ SCHEMA_NAMES = frozenset(
         "completion_profile",
         "maskfactory_qualification_bundle",
         "operational_autonomy_certificate",
+        "operational_invalidation_event",
+        "autonomous_gold_demonstration_report",
+        "bridge_error_decision",
+        "bridge_artifact_binding_decision",
+        "bridge_use_eligibility_decision",
+        "bridge_adoption_receipt_matrix_decision",
+        "bridge_final_release_handoff_evidence",
+        "bridge_consumer_invalidation_decision",
+        "bridge_crosswalk",
+        "cross_project_qualification_evidence",
+        "external_adapter_conformance_evidence",
+        "main_consumer_conformance_evidence",
+        "mode_b_localhost_client_response",
+        "mode_a_vertical_slice_evidence",
+        "mode_b_vertical_slice_evidence",
+        "multi_person_mode_a_vertical_slice_evidence",
+        "maskfactory_release_publication_evidence",
+        "maskfactory_integration_release_evidence",
         "maskfactory_release_snapshot",
+        "maskfactory_clean_release_manifest",
+        "maskfactory_capability_decision",
         "maskfactory_capability_snapshot",
+        "maskfactory_consumer_requirements_admission",
         "maskfactory_consumer_requirements",
         "mask_acquisition_request",
         "mask_acquisition_receipt",
@@ -173,6 +195,18 @@ SCHEMA_NAMES = frozenset(
         "mask_repair_feedback",
         "mask_bridge_event",
         "mask_bridge_semantic_invariant_profile",
+        "bridge_identity_decision",
+        "bridge_transform_roundtrip_evidence",
+        "mode_a_package_read_evidence",
+        "receipt_arbitration_conformance_evidence",
+        "bridge_failure_control_evidence",
+        "bridge_recovery_evidence",
+        "bridge_journal_reconstruction_evidence",
+        "feedback_intake_evidence",
+        "external_supervision_qualification_evidence",
+        "external_supervision_source_hash_manifest",
+        "external_supervision_identity_evidence",
+        "external_supervision_split_dedup_evidence",
     }
 )
 VISIBLE_STATES = frozenset({"visible", "partially_visible"})
@@ -510,6 +544,20 @@ INVALIDATION_REASON_POLICY = {
         {"artifact", "certificate", "provider_stack"},
         {"quarantine_artifact", "block_dependent_pass"},
     ),
+}
+
+OPERATIONAL_INVALIDATION_REASON_TARGET_KIND = {
+    "signing_key_rotated": "signing_key",
+    "signing_key_revoked": "signing_key",
+    "certificate_revoked": "certificate",
+    "certificate_superseded": "certificate",
+    "package_invalidated": "package",
+    "provider_stack_changed": "provider_stack",
+    "ontology_changed": "ontology",
+    "policy_changed": "policy",
+    "capability_changed": "capability_snapshot",
+    "release_superseded": "release",
+    "release_revoked": "release",
 }
 
 
@@ -2114,6 +2162,278 @@ def validate_mask_authority_invalidation_event(
                 "authority, trust, contract and adoption invalidations must block until exact revalidation",
             )
         )
+    return tuple(sorted(set(issues)))
+
+
+def validate_operational_invalidation_event(
+    event: Mapping[str, Any],
+    *,
+    trusted_signing_keys: Mapping[str, Mapping[str, Any]] | None = None,
+    expected_journal_position: Mapping[str, Any] | None = None,
+    seen_event_ids: Iterable[str] | None = None,
+    seen_idempotency_keys: Mapping[str, str] | None = None,
+) -> tuple[ValidationIssue, ...]:
+    """Validate trusted, idempotent operational invalidation continuity."""
+    issues: list[ValidationIssue] = list(validate_document(event, "operational_invalidation_event"))
+    hash_issue = _declared_hash_issue(
+        event, hash_field="event_payload_sha256", excluded=("event_payload_sha256", "signature")
+    )
+    if hash_issue:
+        issues.append(hash_issue)
+    issues.extend(
+        _ed25519_signature_issues(
+            event,
+            payload_hash_field="event_payload_sha256",
+            trusted_signing_keys=trusted_signing_keys,
+            required_role="producer_journal",
+            decision_time=event.get("occurred_at"),
+        )
+    )
+    if event.get("fixture_only") is False:
+        issues.extend(_production_signing_key_issues(event, trusted_signing_keys))
+    issues.extend(
+        _timestamp_order_issues(
+            (
+                ("/occurred_at", event.get("occurred_at")),
+                ("/effective_at", event.get("effective_at")),
+            ),
+            allow_equal=True,
+        )
+    )
+
+    reason = event.get("reason")
+    target_scope = event.get("target_scope")
+    if isinstance(target_scope, Mapping):
+        target_kind = target_scope.get("target_kind")
+        expected_kind = OPERATIONAL_INVALIDATION_REASON_TARGET_KIND.get(reason)
+        if expected_kind is not None and target_kind != expected_kind:
+            issues.append(
+                _issue(
+                    "/target_scope/target_kind",
+                    "operational_invalidation_reason_target_kind",
+                    "reason requires an exact target-kind scope",
+                )
+            )
+        targets = target_scope.get("targets")
+        dedupe: set[tuple[Any, Any, Any]] = set()
+        canonical_targets: list[dict[str, Any]] = []
+        if isinstance(targets, list):
+            for index, target in enumerate(targets):
+                pointer = f"/target_scope/targets/{index}"
+                if not isinstance(target, Mapping):
+                    continue
+                row_kind = target.get("target_kind")
+                if row_kind != target_kind:
+                    issues.append(
+                        _issue(
+                            f"{pointer}/target_kind",
+                            "operational_invalidation_target_set_non_homogeneous",
+                            "all scoped targets must be homogeneous for one target kind",
+                        )
+                    )
+                key = (row_kind, target.get("target_id"), target.get("target_sha256"))
+                if key in dedupe:
+                    issues.append(
+                        _issue(
+                            pointer,
+                            "operational_invalidation_target_set_duplicate",
+                            "exact target rows must be unique per event",
+                        )
+                    )
+                dedupe.add(key)
+                canonical_targets.append(
+                    {
+                        "target_kind": target.get("target_kind"),
+                        "target_id": target.get("target_id"),
+                        "target_sha256": target.get("target_sha256"),
+                    }
+                )
+            try:
+                expected_scope_sha256 = canonical_document_sha256(
+                    {"target_kind": target_kind, "targets": canonical_targets}
+                )
+            except (TypeError, ValueError):
+                expected_scope_sha256 = None
+            if (
+                expected_scope_sha256 is not None
+                and target_scope.get("scope_sha256") != expected_scope_sha256
+            ):
+                issues.append(
+                    _issue(
+                        "/target_scope/scope_sha256",
+                        "operational_invalidation_scope_hash",
+                        "target scope hash must bind the exact target set",
+                    )
+                )
+
+    if reason == "release_superseded" and not isinstance(event.get("supersession"), Mapping):
+        issues.append(
+            _issue(
+                "/supersession",
+                "operational_invalidation_supersession",
+                "release supersession invalidation requires exact supersession binding",
+            )
+        )
+    if reason != "release_superseded" and event.get("supersession") is not None:
+        issues.append(
+            _issue(
+                "/supersession",
+                "operational_invalidation_supersession",
+                "supersession binding is only legal for release_superseded reason",
+            )
+        )
+    if reason == "release_revoked" and not isinstance(event.get("rollback"), Mapping):
+        issues.append(
+            _issue(
+                "/rollback",
+                "operational_invalidation_rollback",
+                "release revocation invalidation requires exact rollback binding",
+            )
+        )
+    if reason != "release_revoked" and event.get("rollback") is not None:
+        issues.append(
+            _issue(
+                "/rollback",
+                "operational_invalidation_rollback",
+                "rollback binding is only legal for release_revoked reason",
+            )
+        )
+
+    sequence = event.get("sequence")
+    causation = event.get("causation_id")
+    journal_position = event.get("journal_position")
+    if isinstance(journal_position, Mapping):
+        previous_sequence = journal_position.get("previous_sequence")
+        previous_event_id = journal_position.get("previous_event_id")
+        if isinstance(sequence, int) and isinstance(previous_sequence, int):
+            if previous_sequence != sequence - 1:
+                issues.append(
+                    _issue(
+                        "/journal_position/previous_sequence",
+                        "operational_invalidation_journal_reorder",
+                        "journal previous sequence must be exactly one less than event sequence",
+                    )
+                )
+            if sequence == 1 and previous_sequence != 0:
+                issues.append(
+                    _issue(
+                        "/journal_position/previous_sequence",
+                        "operational_invalidation_journal_genesis",
+                        "genesis invalidation event must start from previous sequence zero",
+                    )
+                )
+        if sequence == 1:
+            if causation is not None:
+                issues.append(
+                    _issue(
+                        "/causation_id",
+                        "operational_invalidation_journal_genesis",
+                        "genesis invalidation event cannot declare a causation id",
+                    )
+                )
+            if (
+                previous_event_id is not None
+                or journal_position.get("previous_event_sha256") is not None
+            ):
+                issues.append(
+                    _issue(
+                        "/journal_position",
+                        "operational_invalidation_journal_genesis",
+                        "genesis invalidation event cannot bind a prior event pointer",
+                    )
+                )
+        elif isinstance(sequence, int) and sequence > 1:
+            if not isinstance(causation, str) or not causation:
+                issues.append(
+                    _issue(
+                        "/causation_id",
+                        "operational_invalidation_journal_causation",
+                        "non-genesis invalidation event must declare a causation id",
+                    )
+                )
+            elif previous_event_id != causation:
+                issues.append(
+                    _issue(
+                        "/journal_position/previous_event_id",
+                        "operational_invalidation_journal_causation",
+                        "journal previous_event_id must equal causation_id",
+                    )
+                )
+
+    if isinstance(expected_journal_position, Mapping):
+        if expected_journal_position.get("stream_id") is not None and event.get(
+            "stream_id"
+        ) != expected_journal_position.get("stream_id"):
+            issues.append(
+                _issue(
+                    "/stream_id",
+                    "operational_invalidation_journal_fork",
+                    "event stream id does not match pinned journal stream",
+                )
+            )
+        expected_sequence = expected_journal_position.get("next_sequence")
+        if isinstance(expected_sequence, int) and event.get("sequence") != expected_sequence:
+            issues.append(
+                _issue(
+                    "/sequence",
+                    "operational_invalidation_journal_reorder",
+                    "event sequence does not match pinned next journal sequence",
+                )
+            )
+        if isinstance(journal_position, Mapping):
+            if expected_journal_position.get("head_event_id") is not None and journal_position.get(
+                "previous_event_id"
+            ) != expected_journal_position.get("head_event_id"):
+                issues.append(
+                    _issue(
+                        "/journal_position/previous_event_id",
+                        "operational_invalidation_journal_fork",
+                        "event previous_event_id does not match pinned journal head",
+                    )
+                )
+            if expected_journal_position.get(
+                "head_event_sha256"
+            ) is not None and journal_position.get(
+                "previous_event_sha256"
+            ) != expected_journal_position.get(
+                "head_event_sha256"
+            ):
+                issues.append(
+                    _issue(
+                        "/journal_position/previous_event_sha256",
+                        "operational_invalidation_journal_fork",
+                        "event previous_event_sha256 does not match pinned journal head hash",
+                    )
+                )
+    event_id = event.get("event_id")
+    if isinstance(event_id, str) and event_id in set(seen_event_ids or ()):
+        issues.append(
+            _issue(
+                "/event_id",
+                "operational_invalidation_journal_replay",
+                "event id has already been observed in this journal stream",
+            )
+        )
+    if isinstance(seen_idempotency_keys, Mapping):
+        idempotency_key = event.get("idempotency_key")
+        if isinstance(idempotency_key, str) and idempotency_key in seen_idempotency_keys:
+            previous_hash = seen_idempotency_keys[idempotency_key]
+            if previous_hash == event.get("event_payload_sha256"):
+                issues.append(
+                    _issue(
+                        "/idempotency_key",
+                        "operational_invalidation_idempotency_replay",
+                        "idempotency key was already consumed by the same event payload",
+                    )
+                )
+            else:
+                issues.append(
+                    _issue(
+                        "/idempotency_key",
+                        "operational_invalidation_idempotency_fork",
+                        "idempotency key was already consumed by a different payload hash",
+                    )
+                )
     return tuple(sorted(set(issues)))
 
 

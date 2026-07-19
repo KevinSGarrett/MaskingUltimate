@@ -15,11 +15,18 @@ from PIL import Image
 from maskfactory.authority import (
     OperationalCertificateIssuanceError,
     bind_complete_map_report,
+    bind_operational_policy_report,
     build_complete_map_hard_veto_report,
     canonical_decoded_raster_sha256,
+    evaluate_operational_policy,
     issue_operational_autonomy_certificate,
+    load_operational_policy,
+    prepare_operational_policy_replay,
 )
+from maskfactory.autonomy.stability import evaluate_candidate_stability, load_stability_policy
 from maskfactory.intelligence import CriticQuorumDecision, critic_quorum_sha256
+from maskfactory.io.png_strict import write_binary_mask
+from maskfactory.ontology import get_ontology
 from maskfactory.qa.checks import QcResult
 from maskfactory.validation import (
     artifact_identity_sha256,
@@ -58,6 +65,10 @@ PASSING_COMPLETE_MAP_QC = (
     "QC-016",
     "QC-018",
 )
+OPERATIONAL_POLICY_EVALUATOR_ID = "maskfactory.operational_policy.v1"
+OPERATIONAL_POLICY_EVALUATOR_SHA256 = hashlib.sha256(
+    b"operational-policy-test-executor"
+).hexdigest()
 
 
 def _sha(path: Path) -> str:
@@ -92,6 +103,92 @@ def _complete_map_report(
         critic_confidence=1.0,
         evaluator_id="maskfactory.complete_map_hard_veto.v1",
         evaluator_sha256=hashlib.sha256(b"complete-map-hard-veto-test-executor").hexdigest(),
+    )
+
+
+def _operational_policy_report(tmp_path: Path, certificate: dict) -> dict:
+    label = certificate["bound_artifacts"][0]["label"]
+    risk_bucket = "large_parts"
+    certificate["pipeline_policy_binding"]["seed"] = 1337
+    certificate["qualified_route_scope"]["risk_buckets"] = [risk_bucket]
+    scope = {
+        "candidate_id": "operational-certificate-candidate",
+        "source_decoded_pixel_sha256": certificate["source_binding"]["decoded_pixel_sha256"],
+        "output_artifact_identity_sha256s": certificate["certified_output_scope"][
+            "artifact_identity_sha256s"
+        ],
+        "pipeline_fingerprint": certificate["execution_binding"]["execution_fingerprint_sha256"],
+        "risk_bucket": risk_bucket,
+        "label": label,
+        "seed": 1337,
+    }
+    base = np.zeros((64, 64), dtype=bool)
+    base[13:51, 17:45] = True
+    base_path = write_binary_mask(tmp_path / "stability/base.png", base)
+    swap = get_ontology().label(label).swap_partner or label
+    variants = []
+    for perturbation in ("resize", "crop", "color", "prompt", "horizontal_flip"):
+        candidate = np.flip(base, axis=1) if perturbation == "horizontal_flip" else base
+        path = write_binary_mask(tmp_path / f"stability/{perturbation}.png", candidate)
+        variants.append(
+            {
+                "perturbation": perturbation,
+                "mask_path": path,
+                "reported_label": swap if perturbation == "horizontal_flip" else label,
+                "inverse_aligned": perturbation != "horizontal_flip",
+            }
+        )
+    stability_policy = load_stability_policy()
+    stability = evaluate_candidate_stability(
+        base_path,
+        variants,
+        candidate_id=scope["candidate_id"],
+        pipeline_fingerprint=scope["pipeline_fingerprint"],
+        risk_bucket=risk_bucket,
+        label=label,
+        policy=stability_policy,
+    )
+    truth = np.zeros((48, 48), dtype=bool)
+    truth[12:36, 14:34] = True
+    truth_path = write_binary_mask(tmp_path / "synthetic/truth.png", truth)
+    shifted = np.roll(truth, 3, axis=1)
+    missing = truth.copy()
+    missing[28:36, :] = False
+    candidates = {
+        "exact_truth": write_binary_mask(tmp_path / "synthetic/exact.png", truth),
+        "boundary_shift": write_binary_mask(tmp_path / "synthetic/shift.png", shifted),
+        "missing_area": write_binary_mask(tmp_path / "synthetic/missing.png", missing),
+        "side_inconsistency": write_binary_mask(tmp_path / "synthetic/side.png", truth),
+    }
+    synthetic = [
+        {
+            "case_id": f"certificate-{kind}",
+            "case_kind": kind,
+            "truth_mask_path": truth_path,
+            "candidate_mask_path": candidates[kind],
+            "expected_label": label,
+            "reported_label": swap if kind == "side_inconsistency" else label,
+        }
+        for kind in ("exact_truth", "boundary_shift", "missing_area", "side_inconsistency")
+    ]
+    policy = load_operational_policy()
+    replay = prepare_operational_policy_replay(
+        stability,
+        synthetic,
+        candidate_scope=scope,
+        policy=policy,
+        stability_policy=stability_policy,
+    )
+    return evaluate_operational_policy(
+        stability,
+        synthetic,
+        replay,
+        report_id="operational-certificate-policy",
+        candidate_scope=scope,
+        policy=policy,
+        stability_policy=stability_policy,
+        evaluator_id=OPERATIONAL_POLICY_EVALUATOR_ID,
+        evaluator_sha256=OPERATIONAL_POLICY_EVALUATOR_SHA256,
     )
 
 
@@ -199,6 +296,8 @@ def _prepare(tmp_path: Path, *, instance_context: str = "solo") -> dict:
         critic_evidence_sha256=hashlib.sha256(b"critic-evidence-fixture").hexdigest(),
     )
     certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(critic_decision)
+    operational_policy_report = _operational_policy_report(tmp_path, certificate)
+    certificate = bind_operational_policy_report(certificate, operational_policy_report)
     report = _complete_map_report(certificate, instance_context=instance_context)
     certificate = bind_complete_map_report(certificate, report)
     authoritative = {field: copy.deepcopy(certificate[field]) for field in AUTHORITATIVE_BINDINGS}
@@ -217,6 +316,7 @@ def _prepare(tmp_path: Path, *, instance_context: str = "solo") -> dict:
         "journal": journal,
         "complete_map_report": report,
         "critic_quorum_decision": critic_decision,
+        "operational_policy_report": operational_policy_report,
     }
 
 
@@ -239,6 +339,10 @@ def _issue(prepared: dict, **overrides):
             ).hexdigest()
         },
         "critic_quorum_decision": prepared["critic_quorum_decision"],
+        "operational_policy_report": prepared["operational_policy_report"],
+        "trusted_operational_policy_evaluators": {
+            OPERATIONAL_POLICY_EVALUATOR_ID: OPERATIONAL_POLICY_EVALUATOR_SHA256
+        },
     }
     arguments.update(overrides)
     return issue_operational_autonomy_certificate(prepared["certificate"], **arguments)

@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_identity_evidence","fixture":true,"gate":"instance_identity_validated","schema_version":"1.0.0","seal_sha256":"ea9dc769c8799d0a277466e559fe4f010c5fcc448d55093c3d986e355549666d","source":"lv_mhp_v1","source_masks_are_gold":false,"status":"PASS"}

@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mode_a_vertical_slice_evidence.schema.json",
+  "title": "Mode A vertical slice producer evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "fixture_truth_tier",
+    "status",
+    "rejection_reasons",
+    "package_read",
+    "adapter_conformance",
+    "use_eligibility",
+    "identity_chain",
+    "handoff_journal",
+    "downstream_envelope",
+    "recovery_probe",
+    "claim_boundary",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "mode_a_vertical_slice_evidence" },
+    "decided_at": { "type": "string", "minLength": 1 },
+    "policy_id": { "const": "maskfactory-bridge-mode-a-vertical-slice-v1" },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "fixture_truth_tier": { "const": "synthetic_contract_fixture" },
+    "status": { "enum": ["accepted", "rejected", "producer_partial"] },
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "package_read": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "authority_ceiling",
+        "production_eligible",
+        "wrapper_status",
+        "decision_sha256",
+        "package_revision",
+        "transform_roundtrip_passed"
+      ],
+      "properties": {
+        "status": { "enum": ["accepted", "rejected"] },
+        "authority_ceiling": {
+          "enum": ["qa_passed_noncertified", "certified", "draft", "hypothesis", "invalid"]
+        },
+        "production_eligible": { "type": "boolean" },
+        "wrapper_status": {
+          "enum": ["none", "active", "stale", "revoked", "out_of_scope"]
+        },
+        "decision_sha256": { "$ref": "#/$defs/sha256" },
+        "package_revision": { "type": ["string", "null"], "minLength": 1 },
+        "transform_roundtrip_passed": { "type": ["boolean", "null"] }
+      }
+    },
+    "adapter_conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "decision_sha256", "adapter_package_sha256", "bridge_contract"],
+      "properties": {
+        "status": { "enum": ["accepted", "rejected"] },
+        "decision_sha256": { "$ref": "#/$defs/sha256" },
+        "adapter_package_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bridge_contract": { "type": ["string", "null"], "minLength": 1 }
+      }
+    },
+    "use_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "exact_use_scope", "decision_sha256", "reasons"],
+      "properties": {
+        "eligible": { "type": "boolean" },
+        "exact_use_scope": { "const": "production_conditioning" },
+        "decision_sha256": { "$ref": "#/$defs/sha256" },
+        "reasons": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "identity_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_image_sha256",
+        "character_id",
+        "character_revision",
+        "character_instance_id",
+        "person_index",
+        "package_revision",
+        "mask_encoded_sha256",
+        "mask_decoded_pixel_sha256",
+        "transform_chain_sha256",
+        "ontology_sha256",
+        "workflow_sha256",
+        "result_sha256",
+        "history_sha256",
+        "authority_decision_sha256",
+        "complete_producer_bindings",
+        "complete_downstream_bindings"
+      ],
+      "properties": {
+        "source_image_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "character_id": { "type": ["string", "null"], "minLength": 1 },
+        "character_revision": { "type": ["string", "null"], "minLength": 1 },
+        "character_instance_id": { "type": ["string", "null"], "minLength": 1 },
+        "person_index": { "type": ["integer", "null"], "minimum": 0 },
+        "package_revision": { "type": ["string", "null"], "minLength": 1 },
+        "mask_encoded_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "mask_decoded_pixel_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "transform_chain_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "ontology_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "workflow_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "result_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "history_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "authority_decision_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "complete_producer_bindings": { "type": "boolean" },
+        "complete_downstream_bindings": { "const": false }
+      }
+    },
+    "handoff_journal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "journal_id",
+        "head_state",
+        "entry_count",
+        "head_entry_sha256",
+        "checkpoint_sha256",
+        "history_valid"
+      ],
+      "properties": {
+        "journal_id": { "type": "string", "minLength": 1 },
+        "head_state": { "enum": ["admit", "route", "submit"] },
+        "entry_count": { "type": "integer", "minimum": 1 },
+        "head_entry_sha256": { "$ref": "#/$defs/sha256" },
+        "checkpoint_sha256": { "$ref": "#/$defs/sha256" },
+        "history_valid": { "type": "boolean" }
+      }
+    },
+    "downstream_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intended_workflow_sha256",
+        "intended_operation",
+        "main_adapter_execution_receipt_present",
+        "comfyui_inpaint_result_present",
+        "comfyui_history_present",
+        "fabricated_receipt_rejected",
+        "binding_status"
+      ],
+      "properties": {
+        "intended_workflow_sha256": { "$ref": "#/$defs/sha256" },
+        "intended_operation": { "const": "comfyui_inpaint_edit" },
+        "main_adapter_execution_receipt_present": { "const": false },
+        "comfyui_inpaint_result_present": { "const": false },
+        "comfyui_history_present": { "const": false },
+        "fabricated_receipt_rejected": { "type": "boolean" },
+        "binding_status": {
+          "enum": ["producer_ready_awaiting_main", "rejected_fabricated", "rejected"]
+        }
+      }
+    },
+    "recovery_probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kill_boundary",
+        "status",
+        "outcome_unknown_reconciled",
+        "decision_sha256"
+      ],
+      "properties": {
+        "kill_boundary": { "const": "submitted_unknown" },
+        "status": { "enum": ["accepted", "rejected"] },
+        "outcome_unknown_reconciled": { "type": "boolean" },
+        "decision_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_fixture_slice_complete",
+        "adopted_integration_release_complete",
+        "main_adapter_execution_complete",
+        "comfyui_inpaint_edit_complete",
+        "mf_p6_12_02_complete"
+      ],
+      "properties": {
+        "producer_fixture_slice_complete": { "type": "boolean" },
+        "adopted_integration_release_complete": { "const": false },
+        "main_adapter_execution_complete": { "const": false },
+        "comfyui_inpaint_edit_complete": { "const": false },
+        "mf_p6_12_02_complete": { "const": false },
+        "notes": { "type": "string" }
+      }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullable_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

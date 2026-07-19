@@ -1,0 +1,40 @@
+{
+  "artifact_type": "maskfactory_bridge_consumer_invalidation_revalidation",
+  "generated_at": "2026-07-19T19:29:00Z",
+  "policy_id": "maskfactory-bridge-consumer-invalidation-v1",
+  "results": [
+    {
+      "case": "stale_cache_snapshot",
+      "status": "rejected",
+      "reasons": [
+        "stale_cache_snapshot"
+      ],
+      "decision_sha256": "73a8c2a6cf587437149808eb2be9ce124c0369304482d9a05de238b3082f7a99"
+    },
+    {
+      "case": "revocation_head_drift",
+      "status": "rejected",
+      "reasons": [
+        "revocation_head_drift"
+      ],
+      "decision_sha256": "25296fbb30649f567c03c818692fff1b46393716e86945ad3e48862eefcc2da9"
+    },
+    {
+      "case": "restart_recovery_marker_missing",
+      "status": "rejected",
+      "reasons": [
+        "restart_recovery_marker_missing"
+      ],
+      "decision_sha256": "5f0793a165fd065c3ed8cae82f421ed5ad8a6c968f10f2665dfa0a35617ad6c3"
+    },
+    {
+      "case": "rollback_target_compatibility_proof_missing",
+      "status": "rejected",
+      "reasons": [
+        "rollback_target_not_last_compatible",
+        "compatibility_proof_artifact_missing"
+      ],
+      "decision_sha256": "5c0d5cb8cdcb3322593bf87a340f3c3de31e403c1d1672771b0e0b40321c7602"
+    }
+  ]
+}

@@ -27,6 +27,12 @@ from .multi_person_scope import (
     MultiPersonCertificationScopeResult,
     evaluate_multi_person_certification_scope,
 )
+from .operational_repair import (
+    DurableRepairExecutor,
+    LiveRepairProposal,
+    OperationalRepairError,
+    OperationalRepairResult,
+)
 from .operations import (
     build_multi_person_audit_queue,
     build_weekly_audit_queue,
@@ -36,14 +42,19 @@ from .operations import (
 )
 from .pseudo_dataset import build_weighted_pseudo_manifest
 from .repair import (
+    BoundedRepairDecision,
+    BoundedRepairLimits,
+    RepairAttempt,
     RepairGuardResult,
     RepairRegion,
     build_pose_side_evidence,
+    decide_bounded_repair,
     evaluate_repair_candidate,
     immutable_protected_union,
     load_repair_regions,
     merge_specialist_repair_regions,
     normalized_roi_points_to_source,
+    repair_limits_from_policy,
     requires_reconstruction,
 )
 from .tournament import CandidateEvidence, TournamentDecision, run_candidate_tournament
@@ -63,19 +74,28 @@ __all__ = [
     "build_pose_side_evidence",
     "build_weekly_audit_queue",
     "build_weighted_pseudo_manifest",
+    "BoundedRepairDecision",
+    "BoundedRepairLimits",
+    "RepairAttempt",
     "RepairGuardResult",
     "RepairRegion",
     "evaluate_repair_candidate",
+    "decide_bounded_repair",
     "immutable_protected_union",
     "load_repair_regions",
     "merge_specialist_repair_regions",
     "normalized_roi_points_to_source",
+    "repair_limits_from_policy",
     "requires_reconstruction",
     "evaluate_immediate_revocation",
     "evaluate_multi_person_candidate_gate",
     "evaluate_multi_person_certification_scope",
     "load_autonomy_config",
     "load_scoped_certificate",
+    "LiveRepairProposal",
+    "DurableRepairExecutor",
+    "OperationalRepairError",
+    "OperationalRepairResult",
     "run_candidate_tournament",
     "process_audit_outcomes",
     "process_multi_person_audit_outcomes",

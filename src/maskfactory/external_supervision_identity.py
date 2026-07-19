@@ -30,7 +30,7 @@ def build_lv_mhp_identity_evidence(source_root: Path) -> dict[str, Any]:
 
     images: dict[str, Path] = {}
     for path in images_root.iterdir():
-        if path.is_symlink() or not path.is_file() or path.suffix.casefold() != ".jpg":
+        if path.is_symlink() or not path.is_file() or path.suffix != ".jpg":
             raise ExternalIdentityError(f"unexpected image entry: {path.name}")
         if path.stem in images:
             raise ExternalIdentityError(f"duplicate image identity: {path.stem}")

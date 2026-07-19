@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/operational_policy_evidence.schema.json",
+  "title": "MaskFactory operational policy perturbation and replay evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "report_id", "candidate_scope", "policy", "evaluator",
+    "perturbation", "synthetic_truth", "replay", "decision", "gate_bindings",
+    "report_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "report_id": {"$ref": "#/$defs/id"},
+    "candidate_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id", "source_decoded_pixel_sha256", "output_artifact_identity_sha256s",
+        "pipeline_fingerprint", "risk_bucket", "label", "seed"
+      ],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/id"},
+        "source_decoded_pixel_sha256": {"$ref": "#/$defs/sha256"},
+        "output_artifact_identity_sha256s": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256"}
+        },
+        "pipeline_fingerprint": {"$ref": "#/$defs/sha256"},
+        "risk_bucket": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "seed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["policy_id", "policy_sha256", "stability_policy_id", "stability_policy_sha256"],
+      "properties": {
+        "policy_id": {"$ref": "#/$defs/id"},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "stability_policy_id": {"$ref": "#/$defs/id"},
+        "stability_policy_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "evaluator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evaluator_id", "evaluator_sha256"],
+      "properties": {
+        "evaluator_id": {"$ref": "#/$defs/id"},
+        "evaluator_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "perturbation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_sha256", "passed", "failures"],
+      "properties": {
+        "evidence_sha256": {"$ref": "#/$defs/sha256"},
+        "passed": {"type": "boolean"},
+        "failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "synthetic_truth": {
+      "type": "object", "additionalProperties": false,
+      "required": ["case_kinds", "cases", "passed", "evidence_sha256"],
+      "properties": {
+        "case_kinds": {
+          "type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/synthetic_kind"}
+        },
+        "cases": {
+          "type": "array", "minItems": 4, "maxItems": 4,
+          "items": {"$ref": "#/$defs/synthetic_case"}
+        },
+        "passed": {"type": "boolean"},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "replay": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observations", "reproducible", "evidence_sha256"],
+      "properties": {
+        "observations": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": {"$ref": "#/$defs/replay_observation"}
+        },
+        "reproducible": {"type": "boolean"},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "decision": {"$ref": "#/$defs/decision"},
+    "gate_bindings": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["gate_id", "evidence_sha256", "executor_id", "executor_sha256"],
+        "properties": {
+          "gate_id": {"enum": ["perturbation", "metamorphic", "stability_replay"]},
+          "evidence_sha256": {"$ref": "#/$defs/sha256"},
+          "executor_id": {"$ref": "#/$defs/id"},
+          "executor_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"},
+    "synthetic_kind": {"enum": ["exact_truth", "boundary_shift", "missing_area", "side_inconsistency"]},
+    "synthetic_case": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "case_id", "case_kind", "truth_mask_sha256", "candidate_mask_sha256",
+        "expected_label", "reported_label", "pixel_equal", "label_equal",
+        "expected_status", "observed_status", "detected_findings", "passed"
+      ],
+      "properties": {
+        "case_id": {"$ref": "#/$defs/id"},
+        "case_kind": {"$ref": "#/$defs/synthetic_kind"},
+        "truth_mask_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_mask_sha256": {"$ref": "#/$defs/sha256"},
+        "expected_label": {"type": "string", "minLength": 1},
+        "reported_label": {"type": "string", "minLength": 1},
+        "pixel_equal": {"type": "boolean"},
+        "label_equal": {"type": "boolean"},
+        "expected_status": {"enum": ["pass", "autonomous_abstention"]},
+        "observed_status": {"enum": ["pass", "autonomous_abstention"]},
+        "detected_findings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "decision_core": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "status", "abstention_codes", "output_artifact_identity_sha256s",
+        "label", "risk_bucket", "policy_sha256", "seed"
+      ],
+      "properties": {
+        "status": {"enum": ["pass", "autonomous_abstention"]},
+        "abstention_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "output_artifact_identity_sha256s": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256"}
+        },
+        "label": {"type": "string", "minLength": 1},
+        "risk_bucket": {"type": "string", "minLength": 1},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "seed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "status", "abstention_codes", "output_artifact_identity_sha256s",
+        "label", "risk_bucket", "policy_sha256", "seed",
+        "may_issue_certificate", "decision_sha256"
+      ],
+      "properties": {
+        "status": {"enum": ["pass", "autonomous_abstention"]},
+        "abstention_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "output_artifact_identity_sha256s": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256"}
+        },
+        "label": {"type": "string", "minLength": 1},
+        "risk_bucket": {"type": "string", "minLength": 1},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "seed": {"type": "integer", "minimum": 0},
+        "may_issue_certificate": {"type": "boolean"},
+        "decision_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "replay_observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["replay_id", "input_sha256", "decision", "decision_sha256"],
+      "properties": {
+        "replay_id": {"$ref": "#/$defs/id"},
+        "input_sha256": {"$ref": "#/$defs/sha256"},
+        "decision": {"$ref": "#/$defs/decision_core"},
+        "decision_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

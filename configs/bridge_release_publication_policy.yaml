@@ -1,0 +1,32 @@
+policy_id: maskfactory-release-publication-v1
+policy_version: 1.0.0
+status: additive_pending_crosswalk
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - publication_payload_sha256
+    - signature
+publication:
+  require_clean_git_worktree: true
+  require_origin_repository_identity: true
+  require_exact_catalog_closure: true
+  require_exactly_one_runtime_provenance_branch: true
+  require_production_ed25519_producer_release_key: true
+  require_structured_install_and_rollback_argv: true
+required_catalog_bindings:
+  - release_binding
+  - crosswalk_binding
+  - installation.installer
+  - installation.manifest
+  - installation.verification_workflow
+  - rollback.command
+  - rollback.verification_evidence
+  - trust_checkpoint.key_registry
+  - trust_checkpoint.rotation_policy
+  - trust_checkpoint.revocation_state
+  - trust_checkpoint.journal_checkpoint
+frozen_v1_compatibility: additive_only
+claim_boundary: >-
+  This policy validates observed release-publication evidence. It cannot publish
+  a release, replace MF-P6-09.07 crosswalk qualification, reconstruct a clean
+  build, or establish consumer adoption.

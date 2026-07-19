@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "bridge_use_eligibility_golden_vectors",
+  "policy_id": "maskfactory-bridge-use-eligibility-v1",
+  "policy_sha256": "2091798bde20a05cfc169631acc0ed3d2194ffc66527f86004fb2413452ae0d4",
+  "vectors": [
+    {
+      "id": "eligible_exact_production",
+      "exact_use_scope": "production_conditioning",
+      "expected_eligible": true,
+      "expected_reasons": ["eligible"]
+    },
+    {
+      "id": "partial_certificate_scope",
+      "exact_use_scope": "production_conditioning",
+      "expected_eligible": false,
+      "expected_reason": "certificate_scope_incomplete"
+    },
+    {
+      "id": "producer_scope_disagreement",
+      "exact_use_scope": "production_conditioning",
+      "expected_eligible": false,
+      "expected_reason": "policy_observation_disagrees"
+    },
+    {
+      "id": "global_or_llm_shortcut",
+      "exact_use_scope": "production_conditioning",
+      "expected_eligible": false,
+      "expected_reason": "global_certified_shortcut"
+    }
+  ]
+}

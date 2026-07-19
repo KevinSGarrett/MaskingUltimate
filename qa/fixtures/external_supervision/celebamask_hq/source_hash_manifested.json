@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_source_hash_manifest","fixture":true,"gate":"source_hash_manifested","schema_version":"1.0.0","seal_sha256":"fc0d3843d004c0707c7940509a5399f843c817cf76b6298c689842b8c7e0942d","source":"celebamask_hq","source_masks_are_gold":false,"status":"PASS"}

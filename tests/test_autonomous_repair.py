@@ -6,9 +6,12 @@ from pathlib import Path
 import numpy as np
 
 from maskfactory.autonomy.repair import (
+    BoundedRepairLimits,
+    RepairAttempt,
     RepairRegion,
     atomic_boundary_vetoes,
     build_pose_side_evidence,
+    decide_bounded_repair,
     evaluate_repair_candidate,
     immutable_protected_union,
     load_repair_regions,
@@ -21,6 +24,131 @@ from maskfactory.io.png_strict import write_binary_mask
 from maskfactory.ontology import get_ontology
 from maskfactory.serve.providers import Sam2InteractiveRefiner
 from maskfactory.stages.s07_sam2 import SamCandidate
+
+
+def _eligible_repair_guard() -> object:
+    return evaluate_repair_candidate(
+        np.pad(np.ones((2, 2), dtype=bool), 4),
+        current_mask=np.pad(np.ones((2, 2), dtype=bool), 4),
+        protected_mask=np.zeros((10, 10), dtype=bool),
+        label="right_foot_base",
+        roi_xyxy=(0, 0, 10, 10),
+        person_bbox_xyxy=(0, 0, 10, 10),
+        ordinary_max_changed_fraction=0.75,
+        reconstruction_max_changed_fraction=2.0,
+        maximum_protected_overlap_fraction=0.01,
+        maximum_outside_roi_fraction=0.005,
+        expected_area_slack=1.0,
+    )
+
+
+def test_bounded_repair_requires_distinct_hypotheses_and_immutable_parent() -> None:
+    limits = BoundedRepairLimits(3, 60, 4, 2, 1_000)
+    history = (RepairAttempt("parent-sha", "hypothesis-a", 500_000, 1, 1),)
+    decision = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-a",
+        guard=_eligible_repair_guard(),
+        current_score_ppm=600_000,
+        attempt_elapsed_seconds=1,
+        attempt_resource_units=1,
+        limits=limits,
+        history=history,
+    )
+
+    assert decision.outcome == "rolled_back_abstain"
+    assert decision.reason == "hypothesis_not_distinct"
+    assert decision.rollback_required
+    assert decision.accepted_parent_id == "parent-sha"
+
+
+def test_bounded_repair_caps_resources_and_no_progress_without_human_queue() -> None:
+    limits = BoundedRepairLimits(3, 60, 2, 2, 1_000)
+    history = (
+        RepairAttempt("parent-sha", "hypothesis-a", 500_000, 1, 1),
+        RepairAttempt("parent-sha", "hypothesis-b", 500_500, 1, 1),
+    )
+    decision = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-c",
+        guard=_eligible_repair_guard(),
+        current_score_ppm=500_900,
+        attempt_elapsed_seconds=1,
+        attempt_resource_units=1,
+        limits=limits,
+        history=history,
+    )
+
+    assert decision.outcome == "rolled_back_abstain"
+    assert decision.reason == "resource_cap_exhausted"
+    assert "human" not in decision.outcome
+
+    time_capped = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-c",
+        guard=_eligible_repair_guard(),
+        current_score_ppm=500_900,
+        attempt_elapsed_seconds=59,
+        attempt_resource_units=0,
+        limits=BoundedRepairLimits(4, 60, 4, 2, 1_000),
+        history=history,
+    )
+    assert time_capped.reason == "time_cap_exhausted"
+
+    decision = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-c",
+        guard=_eligible_repair_guard(),
+        current_score_ppm=500_900,
+        attempt_elapsed_seconds=1,
+        attempt_resource_units=0,
+        limits=BoundedRepairLimits(4, 60, 4, 2, 1_000),
+        history=history,
+    )
+    assert decision.outcome == "rolled_back_abstain"
+    assert decision.reason == "no_progress_cap_exhausted"
+    assert decision.rollback_required
+
+
+def test_bounded_repair_rolls_back_unsafe_candidate_then_accepts_progress() -> None:
+    limits = BoundedRepairLimits(3, 60, 4, 2, 1_000)
+    unsafe = evaluate_repair_candidate(
+        np.ones((10, 10), dtype=bool),
+        current_mask=np.pad(np.ones((2, 2), dtype=bool), 4),
+        protected_mask=np.zeros((10, 10), dtype=bool),
+        label="right_foot_base",
+        roi_xyxy=(0, 0, 10, 10),
+        person_bbox_xyxy=(0, 0, 10, 10),
+        ordinary_max_changed_fraction=0.75,
+        reconstruction_max_changed_fraction=2.0,
+        maximum_protected_overlap_fraction=0.01,
+        maximum_outside_roi_fraction=0.005,
+        expected_area_slack=1.0,
+    )
+    retry = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-a",
+        guard=unsafe,
+        current_score_ppm=500_000,
+        attempt_elapsed_seconds=1,
+        attempt_resource_units=1,
+        limits=limits,
+    )
+    accepted = decide_bounded_repair(
+        accepted_parent_id="parent-sha",
+        hypothesis_id="hypothesis-b",
+        guard=_eligible_repair_guard(),
+        current_score_ppm=600_000,
+        attempt_elapsed_seconds=1,
+        attempt_resource_units=1,
+        limits=limits,
+        history=(RepairAttempt("parent-sha", "hypothesis-a", 500_000, 1, 1),),
+    )
+
+    assert retry.outcome == "rolled_back_retry_distinct_hypothesis"
+    assert retry.rollback_required
+    assert accepted.outcome == "accepted_reversible_repair"
+    assert not accepted.rollback_required
 
 
 def test_atomic_foot_boundary_rejects_whole_foot_when_toes_are_visible() -> None:

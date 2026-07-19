@@ -1,0 +1,8 @@
+schema_version: 1.0.0
+policy_id: operational-mask-qa-v1
+stability_policy_id: candidate_stability_v1
+required_perturbations: [resize, crop, color, prompt, horizontal_flip]
+required_gate_ids: [perturbation, metamorphic, stability_replay]
+required_synthetic_case_kinds: [exact_truth, boundary_shift, missing_area, side_inconsistency]
+replay_count: 2
+fixed_seed: 1337

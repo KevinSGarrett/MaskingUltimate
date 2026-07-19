@@ -1,0 +1,51 @@
+{
+  "adapter_identity": {
+    "package_name": "comfy-main-maskfactory-adapter",
+    "package_version": "1.0.0",
+    "package_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "git_commit": "1111111111111111111111111111111111111111",
+    "git_tree": "2222222222222222222222222222222222222222",
+    "repository_clean": true,
+    "install_mode": "wheel"
+  },
+  "producer_state": {
+    "release_status": "published",
+    "adoption_decision": "adopted",
+    "repository_clean": true
+  },
+  "contract_bindings": {
+    "bridge_contract": "maskfactory-comfyui-bridge/1.0",
+    "api_contract": "maskfactory-api/1.0",
+    "package_format": "maskfactory-package/1.0",
+    "ontology_version": "body_parts_v1",
+    "node_pack_version": "1.0.0",
+    "wire_schemas": [
+      {"name": "maskfactory_release_snapshot", "version": "1.0.0"},
+      {"name": "maskfactory_capability_snapshot", "version": "1.0.0"},
+      {"name": "maskfactory_consumer_requirements", "version": "1.0.0"},
+      {"name": "mask_acquisition_request", "version": "1.0.0"},
+      {"name": "mask_acquisition_receipt", "version": "1.0.0"},
+      {"name": "mask_bridge_error", "version": "1.0.0"},
+      {"name": "maskfactory_adoption_receipt", "version": "1.0.0"},
+      {"name": "mask_authority_invalidation_event", "version": "1.0.0"},
+      {"name": "mask_repair_feedback", "version": "1.0.0"},
+      {"name": "mask_bridge_event", "version": "1.0.0"},
+      {"name": "operational_autonomy_certificate", "version": "1.0.0"},
+      {"name": "mask_bridge_semantic_invariant_profile", "version": "1.0.0"}
+    ],
+    "used_openapi_paths": ["/health", "/models", "/predict", "/refine"]
+  },
+  "boundary_observations": {
+    "imports": [
+      "maskfactory.contracts",
+      "maskfactory.contracts.maskfactory_adapter",
+      "typing"
+    ],
+    "documented_dependencies": [
+      "maskfactory.contracts",
+      "maskfactory.contracts.maskfactory_adapter"
+    ],
+    "comfyui_node_ids": [],
+    "mutable_path_dependencies": []
+  }
+}

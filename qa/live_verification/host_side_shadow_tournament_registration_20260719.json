@@ -1,0 +1,404 @@
+{
+  "artifact_type": "host_side_shadow_tournament_registration",
+  "authority": "host_side_shadow_registration_only_no_wsl_gpu_or_promotion_authority",
+  "challenger_audit": {
+    "birefnet_dynamic": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "silhouette_provider"
+      ],
+      "shadow_runnable": true
+    },
+    "birefnet_hr": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "silhouette_provider"
+      ],
+      "shadow_runnable": true
+    },
+    "birefnet_hr_matting": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "silhouette_provider"
+      ],
+      "shadow_runnable": true
+    },
+    "eomt_dinov3": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "custom_segmenter"
+      ],
+      "shadow_runnable": true
+    },
+    "qwen3_vl_4b": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "vlm_reviewer"
+      ],
+      "shadow_runnable": true
+    },
+    "qwen3_vl_8b_quantized": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "vlm_reviewer"
+      ],
+      "shadow_runnable": true
+    },
+    "rf_detr_medium": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "person_detector"
+      ],
+      "shadow_runnable": true
+    },
+    "rtmo_crowd": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "pose_provider"
+      ],
+      "shadow_runnable": true
+    },
+    "rtmw_x": {
+      "lifecycle_state": "installed",
+      "roles": [
+        "pose_provider"
+      ],
+      "shadow_runnable": true
+    },
+    "sam3_1": {
+      "lifecycle_state": "planned",
+      "roles": [
+        "concept_detector",
+        "interactive_segmenter"
+      ],
+      "shadow_runnable": false
+    },
+    "sam3d_body": {
+      "lifecycle_state": "planned",
+      "roles": [
+        "geometry_provider"
+      ],
+      "shadow_runnable": false
+    }
+  },
+  "completion_credit": false,
+  "executed_call_count": 24,
+  "executed_calls": [
+    {
+      "provider_key": "sam3_litetext_s0",
+      "role": "concept_detector",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "sam3_litetext_s0",
+      "role": "concept_detector",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "eomt_dinov3",
+      "role": "custom_segmenter",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "eomt_dinov3",
+      "role": "custom_segmenter",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "sam3_litetext_s0",
+      "role": "interactive_segmenter",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "sam3_litetext_s0",
+      "role": "interactive_segmenter",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "rf_detr_medium",
+      "role": "person_detector",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "rf_detr_medium",
+      "role": "person_detector",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "rtmw_x",
+      "role": "pose_provider",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "rtmw_x",
+      "role": "pose_provider",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "rtmo_crowd",
+      "role": "pose_provider",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "rtmo_crowd",
+      "role": "pose_provider",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "birefnet_dynamic",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "birefnet_dynamic",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "birefnet_hr",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "birefnet_hr",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "birefnet_hr_matting",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "birefnet_hr_matting",
+      "role": "silhouette_provider",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "qwen2_5_vl_7b",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "qwen2_5_vl_7b",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "qwen3_vl_4b",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "qwen3_vl_4b",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-b"
+    },
+    {
+      "provider_key": "qwen3_vl_8b_quantized",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-a"
+    },
+    {
+      "provider_key": "qwen3_vl_8b_quantized",
+      "role": "vlm_reviewer",
+      "sample_id": "host-shadow-sample-b"
+    }
+  ],
+  "planned_skips_by_role": {
+    "concept_detector": {
+      "sam3_1": "lifecycle_state=planned"
+    },
+    "custom_segmenter": {
+      "mask2former_swin_t": "lifecycle_state=planned",
+      "segformer_b2": "lifecycle_state=planned"
+    },
+    "geometry_provider": {
+      "sam3d_body": "lifecycle_state=planned"
+    },
+    "interactive_segmenter": {
+      "sam3_1": "lifecycle_state=planned"
+    },
+    "person_detector": {
+      "yolo26_person": "lifecycle_state=planned"
+    },
+    "pose_provider": {},
+    "silhouette_provider": {},
+    "vlm_reviewer": {}
+  },
+  "promotion_claimed": false,
+  "result": "pass_host_side_shadow_tournaments_no_live_gpu",
+  "role_manifest_sha256": {
+    "concept_detector": "f192e4f279fb9da6ebe938d367f60fed79ba78eca4268d819b4bbfddc00933f6",
+    "custom_segmenter": "1985972a8f1ac170d7a484ad6563ca72e6c5960a1d07c8b7980e7033908997e2",
+    "geometry_provider": "3010009c52ea73fc25c52c47fa8d57a9b0c0bf55816c8a25f062c1fbc466bd5b",
+    "interactive_segmenter": "bd8beec6f438aaf213018e2dc1fb4e1bc90f0b6bac32a88245a0fac22d3ef990",
+    "person_detector": "774bae8eb9ff61d4e3e55a8318483730dd66357910bee5a20aef58d6cf065e95",
+    "pose_provider": "36ad50385062ab58393bbf34afe1eee40d563f40c66ecceaa4031b5ce6e96de3",
+    "silhouette_provider": "340e46784c3b6c861c5971775a7888c46430eab768f982a971c74ff93254ec52",
+    "vlm_reviewer": "1ef4b49bbffda59fa877f4f85b978c9d2cd7802cda6985c1de33d87369f42727"
+  },
+  "roster": {
+    "active_providers": {
+      "geometry_provider": "densepose_r50_fpn_s1x",
+      "interactive_segmenter": "sam2_1_large",
+      "person_detector": "yolo11m_person",
+      "pose_provider": "dwpose_133",
+      "silhouette_provider": "birefnet_general"
+    },
+    "authority": "host_side_shadow_registration_only_no_wsl_gpu_or_promotion_authority",
+    "challenger_lifecycle": {
+      "birefnet_dynamic": "installed",
+      "birefnet_hr": "installed",
+      "birefnet_hr_matting": "installed",
+      "eomt_dinov3": "installed",
+      "mask2former_swin_t": "planned",
+      "qwen2_5_vl_7b": "installed",
+      "qwen3_vl_4b": "installed",
+      "qwen3_vl_8b_quantized": "installed",
+      "rf_detr_medium": "installed",
+      "rtmo_crowd": "installed",
+      "rtmw_x": "installed",
+      "sam3_1": "planned",
+      "sam3_litetext_s0": "installed",
+      "sam3d_body": "planned",
+      "segformer_b2": "planned",
+      "yolo26_person": "planned"
+    },
+    "expected_challengers": {
+      "concept_detector": [
+        "sam3_1",
+        "sam3_litetext_s0"
+      ],
+      "custom_segmenter": [
+        "segformer_b2",
+        "mask2former_swin_t",
+        "eomt_dinov3"
+      ],
+      "geometry_provider": [
+        "sam3d_body"
+      ],
+      "interactive_segmenter": [
+        "sam3_1",
+        "sam3_litetext_s0"
+      ],
+      "person_detector": [
+        "rf_detr_medium",
+        "yolo26_person"
+      ],
+      "pose_provider": [
+        "rtmw_x",
+        "rtmo_crowd"
+      ],
+      "silhouette_provider": [
+        "birefnet_dynamic",
+        "birefnet_hr",
+        "birefnet_hr_matting"
+      ],
+      "vlm_reviewer": [
+        "qwen2_5_vl_7b",
+        "qwen3_vl_4b",
+        "qwen3_vl_8b_quantized"
+      ]
+    },
+    "modernization_challengers": [
+      "birefnet_dynamic",
+      "birefnet_hr",
+      "birefnet_hr_matting",
+      "eomt_dinov3",
+      "qwen3_vl_4b",
+      "qwen3_vl_8b_quantized",
+      "rf_detr_medium",
+      "rtmo_crowd",
+      "rtmw_x",
+      "sam3_1",
+      "sam3d_body"
+    ],
+    "observed_challengers": {
+      "concept_detector": [
+        "sam3_1",
+        "sam3_litetext_s0"
+      ],
+      "custom_segmenter": [
+        "segformer_b2",
+        "mask2former_swin_t",
+        "eomt_dinov3"
+      ],
+      "geometry_provider": [
+        "sam3d_body"
+      ],
+      "interactive_segmenter": [
+        "sam3_1",
+        "sam3_litetext_s0"
+      ],
+      "person_detector": [
+        "rf_detr_medium",
+        "yolo26_person"
+      ],
+      "pose_provider": [
+        "rtmw_x",
+        "rtmo_crowd"
+      ],
+      "silhouette_provider": [
+        "birefnet_dynamic",
+        "birefnet_hr",
+        "birefnet_hr_matting"
+      ],
+      "vlm_reviewer": [
+        "qwen2_5_vl_7b",
+        "qwen3_vl_4b",
+        "qwen3_vl_8b_quantized"
+      ]
+    },
+    "result": "pass_roster_matches_pipeline",
+    "sam31_shadow_roles": [
+      "concept_detector",
+      "interactive_segmenter"
+    ]
+  },
+  "runnable_by_role": {
+    "concept_detector": [
+      "sam3_litetext_s0"
+    ],
+    "custom_segmenter": [
+      "eomt_dinov3"
+    ],
+    "geometry_provider": [],
+    "interactive_segmenter": [
+      "sam3_litetext_s0"
+    ],
+    "person_detector": [
+      "rf_detr_medium"
+    ],
+    "pose_provider": [
+      "rtmw_x",
+      "rtmo_crowd"
+    ],
+    "silhouette_provider": [
+      "birefnet_dynamic",
+      "birefnet_hr",
+      "birefnet_hr_matting"
+    ],
+    "vlm_reviewer": [
+      "qwen2_5_vl_7b",
+      "qwen3_vl_4b",
+      "qwen3_vl_8b_quantized"
+    ]
+  },
+  "sam31_shadow_wiring": {
+    "host_side_skip_recorded": true,
+    "lifecycle_state": "planned",
+    "live_wsl_gpu_smoke": "needs_kevin_ubuntu_ext4_repair",
+    "roles": [
+      "concept_detector",
+      "interactive_segmenter"
+    ]
+  },
+  "sample_ids": [
+    "host-shadow-sample-a",
+    "host-shadow-sample-b"
+  ],
+  "schema_version": "1.0.0",
+  "sha256": "1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56",
+  "wsl_gpu_smoke_claimed": false
+}

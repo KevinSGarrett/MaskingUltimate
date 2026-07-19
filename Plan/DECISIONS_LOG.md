@@ -1084,3 +1084,175 @@ the autonomous core.
 
 **Approved by:** Kevin's explicit autonomous-core and no-mandatory-human-mask direction; implemented
 as the authoritative doc-24/tracker claim firewall
+
+## 2026-07-19 — Retain prerequisite truth after fixture-level integration success
+
+**Item(s) affected:** MF-P6-08.05, MF-P6-08.06, MF-P6-08.07, MF-P6-09.01,
+MF-P6-09.02, MF-P9-13.04
+
+**Decision:** Record the passing governance regression as item evidence without converting
+fixture-tested implementation into completion. Preserve declared dependency states: MF-P6-08.05,
+MF-P6-08.06, MF-P6-08.07, and MF-P6-09.02 remain blocked; MF-P6-09.01 and MF-P9-13.04 remain
+partially complete. Register the transform replay schema in shared validation, but do not widen the
+frozen bridge protocol.
+
+**Evidence:** 90 focused tests and scoped Ruff passed on 2026-07-19. `tracker.py validate` found no
+structural problems and `tracker.py report` regenerated the authoritative views. The evidence is
+fixture-level only: it does not establish a cross-project adoption/release, real external-source
+admission, operational certificate issuance, or autonomous-core completion.
+
+**Why:** Explicit dependency and claim boundaries prevent passing local contracts from fabricating
+runtime or cross-project authority.
+
+## 2026-07-19 — Register additive third-wave evidence schemas without changing authority
+
+**Item(s) affected:** MF-P6-08.08, MF-P6-09.04, MF-P6-10.01
+
+**Decision:** Register `bridge_artifact_binding_decision` and
+`maskfactory_release_publication_evidence` in the shared validation registry. The autonomous
+demonstration report was already registered. Retain all three items as blocked because their
+fixture evidence does not satisfy declared prerequisite, publication, adoption, or runtime-authority
+requirements.
+
+**Evidence:** Ten focused autonomous-demonstration, artifact-binding, and release-publication tests
+plus scoped Ruff passed on 2026-07-19. A direct shared-validator probe confirms both added schema
+names resolve rather than raising an unknown-schema error.
+
+**Why:** All governed evidence schemas must be reachable through the shared validation path, but
+local, synthetic, and fixture-only tests cannot establish cross-project or production authority.
+
+## 2026-07-19 — Treat fourth-wave fixes as registration-only governance integration
+
+**Item(s) affected:** MF-P6-08.06, MF-P6-09.05, MF-P6-09.06, MF-P6-10.02, MF-P6-10.03
+
+**Decision:** Accept only additive shared-schema/registration compatibility repairs for this
+integration pass: register the missing bridge decision/admission schemas in the shared validator
+and expose already-implemented bridge/operational-repair contracts through package exports.
+Do not treat these changes as dependency closure or authority completion.
+
+**Evidence:** Aggregate focused regression suite passed 94/94 across bridge/autonomy contract
+tests (including prior bridge/autonomy suites) and tracker validate/report passed after status
+updates via `Plan/Tracker/tracker.py`.
+
+**Why:** These defects were integration-surface failures (schema lookup and package visibility),
+not missing policy semantics. Fixing them improves cross-module compatibility while preserving
+truthful blocked-state governance for unresolved prerequisites.
+
+## 2026-07-19 — Keep crosswalk/release-packaging integration registration-only
+
+**Item(s) affected:** MF-P6-09.07, MF-P6-10.04
+
+**Decision:** For this governance lane pass, apply only clear compatibility registration fixes:
+expose already-landed additive bridge modules through `maskfactory.bridge` and lock those exports
+with focused registration tests. Do not modify lane-owned policy semantics, and do not upgrade
+status to complete while declared prerequisites remain unresolved.
+
+**Evidence:** Focused aggregate bridge suite passed 55/55 on 2026-07-19, including crosswalk and
+clean-release packaging tests plus package export registration coverage. Tracker updates were made
+only via `Plan/Tracker/tracker.py`, then `tracker.py validate` and `tracker.py report` both passed.
+
+**Why:** The observed gap was integration-surface compatibility, not missing core logic. Enforcing
+export visibility and regression guards improves cross-module consumption while preserving strict
+dependency truth and avoiding fabricated completion claims.
+
+## 2026-07-19 — Keep sixth-wave bridge integration registration-only
+
+**Item(s) affected:** MF-P6-10.05, MF-P6-10.06, MF-P6-11.01, MF-P6-11.03, MF-P6-11.06
+
+**Decision:** Integrate completed sixth-wave additive surfaces only through clear shared-schema,
+package-registration, and export compatibility repairs. Register missing additive evidence
+schemas in the shared validator, expose the Mode B localhost client through `maskfactory.bridge`,
+and lock those surfaces with registration regression tests. Do not rewrite lane-owned policy
+logic, and do not mark any of the five items complete while declared prerequisites and
+Main-owned production evidence remain unresolved.
+
+**Evidence:** Aggregate focused bridge suite passed 88/88 on 2026-07-19 covering adoption receipt
+matrix, operational invalidation, external adapter conformance, Mode B localhost client, bridge
+journal, registration guards, and adjacent bridge regressions. Tracker updates were made only
+via `Plan/Tracker/tracker.py`; `validate` found no structural problems and `report` regenerated
+authoritative views. Statuses remain blocked at raised fixture-credit percentages.
+
+**Why:** The observed gaps were integration-surface compatibility failures (unknown schema names
+and missing package exports), not missing sixth-wave policy implementations. Registration-only
+integration preserves frozen-v1 compatibility and honest dependency/claim boundaries.
+
+## 2026-07-19 — Keep seventh-wave Mode A/arbitration/failure-control integration registration-only
+
+**Item(s) affected:** MF-P6-11.02, MF-P6-11.04, MF-P6-11.07
+
+**Decision:** Integrate completed seventh-wave additive surfaces only through clear shared-schema
+and package-export registration compatibility repairs. Register the three missing additive
+evidence schemas in the shared validator, lock Mode A package-read / receipt-arbitration /
+failure-control package exports with registration regression tests, and do not mark any of the
+three items complete while declared prerequisites and Main-owned production evidence remain
+unresolved.
+
+**Evidence:** Aggregate focused bridge suite passed 108/108 on 2026-07-19 covering Mode A package
+read, receipt arbitration conformance, failure control, registration guards, and adjacent bridge
+regressions. Tracker updates were made only via `Plan/Tracker/tracker.py`; `validate` found no
+structural problems and `report` regenerated authoritative views. Statuses remain blocked at
+raised fixture-credit percentages (82%/80%/78%).
+
+**Why:** The observed gaps were integration-surface compatibility failures (unknown schema names
+in the shared validator path), not missing seventh-wave policy implementations. Registration-only
+integration preserves frozen-v1 compatibility and honest dependency/claim boundaries.
+
+
+## 2026-07-19 — Keep eighth-wave invalidation/feedback/recovery/Mode-B-slice integration registration-only
+
+**Item(s) affected:** MF-P6-10.07, MF-P6-11.05, MF-P6-11.08, MF-P6-12.04
+
+**Decision:** Integrate completed eighth-wave additive surfaces only through clear shared-schema
+and package-export registration compatibility repairs. Register the missing
+`bridge_recovery_evidence` schema in the shared validator, lock consumer-invalidation /
+feedback-intake / recovery / Mode B vertical-slice package exports with registration
+regression tests, and do not mark any of the four items complete while declared
+prerequisites and Main-owned production evidence remain unresolved.
+
+**Evidence:** Aggregate focused bridge suite passed 159/159 on 2026-07-19 covering consumer
+invalidation, feedback intake, recovery, Mode B vertical slice, registration guards, and
+adjacent bridge regressions. Tracker updates were made only via `Plan/Tracker/tracker.py`;
+`validate` found no structural problems and `report` regenerated authoritative views.
+Statuses remain blocked at raised fixture-credit percentages (80%/84%/80%/76%).
+
+**Why:** The observed gap was an integration-surface compatibility failure (unknown
+`bridge_recovery_evidence` schema name in the shared validator path) plus unlocked export
+visibility for the four surfaces, not missing eighth-wave policy implementations.
+Registration-only integration preserves frozen-v1 compatibility and honest
+dependency/claim boundaries.
+
+## 2026-07-19 — Keep ninth-wave 12.01-12.03 / P9-13 producers integration registration-only
+
+**Item(s) affected:** MF-P6-12.01, MF-P6-12.02, MF-P6-12.03, MF-P9-13.04
+
+**Decision:** Integrate completed ninth-wave additive surfaces only through clear shared-schema
+and package-export registration compatibility repairs. Lock
+`maskfactory_integration_release_evidence`, Mode A / multi-person Mode A vertical-slice
+schemas and bridge exports, plus external-supervision qualification/hash/identity/split-dedup
+schemas and the `external_supervision_producers` package surface with registration regression
+tests. Do not mark any of the four items complete while declared prerequisites, Main/ComfyUI
+execution, or real-source qualification gates remain unresolved.
+
+**Evidence:** Aggregate focused suite passed 52/52 on 2026-07-19 covering integration release,
+Mode A vertical slice, multi-person Mode A vertical slice, external supervision producers/
+qualification, and registration guards. Tracker updates were made only via
+`Plan/Tracker/tracker.py`; `validate` found no structural problems and `report` regenerated
+authoritative views. Statuses remain blocked / partially_complete at raised fixture-credit
+percentages (78%/80%/76%/80%).
+
+**Why:** Shared schemas and bridge/producers package exports were already present from the
+implementation lanes; the observed integration gap was unlocked registration-guard coverage
+for those surfaces. Registration-only integration preserves frozen-v1 compatibility and honest
+dependency/claim boundaries.
+
+
+
+## 2026-07-19 — Keep tenth-wave 12.05/12.06 / main_consumer_conformance integration registration-only
+
+**Item(s) affected:** MF-P6-12.05, MF-P6-12.06; main_consumer_conformance registration surface; MF-P6-08.05 confirmation
+
+**Decision:** Integrate completed additive producer surfaces for cross-project qualification, final-release handoff, and main-consumer conformance only through clear shared-schema and package-export registration compatibility repairs. Register the missing `cross_project_qualification_evidence` schema, export the qualification APIs from `maskfactory.bridge`, lock handoff/conformance registration guards, and do not mark MF-P6-12.05 or MF-P6-12.06 complete while declared prerequisites and Main/production bindings remain unresolved. Confirm MF-P6-08.05 as complete after concurrent governance closeout plus reconfirmed operational policy/authority focused evidence.
+
+**Evidence:** Aggregate focused suite passed 29/29 on 2026-07-19 covering cross-project qualification, final-release handoff, main-consumer conformance, and registration guards; scoped Ruff clean. Broader 08.05 authority/policy aggregate passed 83/83. Tracker updates were made only via `Plan/Tracker/tracker.py`; `validate` found no structural problems and `report` regenerated authoritative views. 12.05/12.06 remain blocked at raised fixture-credit percentages (78%/72%); 08.05 remains complete 100%.
+
+**Why:** The observed gap for 12.05 was an integration-surface compatibility failure (unknown schema name + missing package exports). Handoff and main-consumer conformance schemas/exports were already present and only needed registration-guard locks. Registration-only integration preserves frozen-v1 compatibility and honest dependency/claim boundaries; producer_partial matrix evidence must not fabricate production qualification or final handoff authority.

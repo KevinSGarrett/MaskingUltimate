@@ -43,6 +43,14 @@ GATE_ARTIFACT_TYPES: dict[str, str] = {
     "split_dedup_passed": "external_supervision_split_dedup_evidence",
 }
 
+SHARED_GATE_SOURCES: dict[str, str] = {
+    "split_dedup_passed": "all_eligible_external_sources",
+}
+
+
+class ExternalSupervisionEvidenceError(ValueError):
+    """A qualification bundle cannot safely bind its evidence artifacts."""
+
 
 @dataclass(frozen=True)
 class EvidenceBundleVerification:
@@ -94,6 +102,60 @@ def publish_immutable_evidence(value: Mapping[str, Any], output_path: Path) -> s
     return hashlib.sha256(payload).hexdigest()
 
 
+def build_qualification_evidence_bundle(
+    *,
+    source: str,
+    gate_artifact_paths: Mapping[str, Path],
+    project_root: Path,
+) -> dict[str, Any]:
+    """Bind existing project-contained PASS artifacts into one sealed bundle.
+
+    This never creates a source manifest or other gate artifact. Callers must
+    first collect and validate actual source data, so unavailable source trees
+    remain unqualified.
+    """
+
+    expected_gates = CANONICAL_REQUIRED_GATES_BY_SOURCE.get(source)
+    if expected_gates is None:
+        raise ExternalSupervisionEvidenceError(f"unknown canonical source: {source}")
+    if set(gate_artifact_paths) != set(expected_gates):
+        raise ExternalSupervisionEvidenceError(
+            "gate artifact paths must match the canonical gate set exactly"
+        )
+
+    root = Path(project_root).resolve(strict=True)
+    records: list[dict[str, str]] = []
+    for gate in expected_gates:
+        artifact_path = _resolve_project_artifact(root, gate_artifact_paths[gate])
+        raw_bytes = artifact_path.read_bytes()
+        tokens: list[str] = []
+        record = {
+            "gate": gate,
+            "artifact_type": GATE_ARTIFACT_TYPES[gate],
+            "artifact_path": artifact_path.relative_to(root).as_posix(),
+            "artifact_sha256": hashlib.sha256(raw_bytes).hexdigest(),
+        }
+        if not _verify_gate_record(record, source=source, gate=gate, root=root, tokens=tokens):
+            raise ExternalSupervisionEvidenceError(
+                f"gate artifact cannot be bound: {gate}: {', '.join(tokens)}"
+            )
+        records.append(record)
+    bundle: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "artifact_type": "external_supervision_qualification_evidence_bundle",
+        "source": source,
+        "gates": records,
+    }
+    bundle["seal_sha256"] = seal_payload(bundle)
+    return bundle
+
+
+def publish_qualification_evidence_bundle(bundle: Mapping[str, Any], output_path: Path) -> str:
+    """Publish a previously verified qualification bundle immutably."""
+
+    return publish_immutable_evidence(bundle, output_path)
+
+
 def verify_qualification_evidence_bundle(
     bundle: Mapping[str, Any],
     *,
@@ -134,7 +196,11 @@ def verify_qualification_evidence_bundle(
     if set(records) != set(expected_gates):
         tokens.append("canonical_gate_set_mismatch")
 
-    root = Path(project_root).resolve(strict=True)
+    try:
+        root = Path(project_root).resolve(strict=True)
+    except (FileNotFoundError, OSError):
+        tokens.append("evidence_bundle_project_root_unavailable")
+        return EvidenceBundleVerification(source, False, (), None, tuple(tokens))
     completed: list[str] = []
     for gate in expected_gates:
         record = records.get(gate)
@@ -199,7 +265,7 @@ def _verify_gate_record(
     if (
         artifact.get("schema_version") != "1.0.0"
         or artifact.get("artifact_type") != expected_type
-        or artifact.get("source") != source
+        or artifact.get("source") != SHARED_GATE_SOURCES.get(gate, source)
         or artifact.get("gate") != gate
         or artifact.get("status") != "PASS"
     ):
@@ -208,7 +274,30 @@ def _verify_gate_record(
     if artifact.get("seal_sha256") != seal_payload(artifact):
         tokens.append(f"gate_artifact_seal_invalid:{gate}")
         return False
+    # External source masks must never be admitted as MaskFactory gold via gate artifacts.
+    if artifact.get("source_masks_are_gold") is True:
+        tokens.append(f"gate_artifact_gold_claim_forbidden:{gate}")
+        return False
+    if artifact.get("gold_authority_granted") is True:
+        tokens.append(f"gate_artifact_gold_claim_forbidden:{gate}")
+        return False
     return True
+
+
+def _resolve_project_artifact(root: Path, raw_path: Path) -> Path:
+    path = Path(raw_path)
+    if path.is_absolute():
+        raise ExternalSupervisionEvidenceError("gate artifact path must be project-relative")
+    try:
+        resolved = (root / path).resolve(strict=True)
+        resolved.relative_to(root)
+    except (FileNotFoundError, OSError, ValueError) as exc:
+        raise ExternalSupervisionEvidenceError(
+            f"gate artifact is unavailable or escapes project root: {path}"
+        ) from exc
+    if not resolved.is_file():
+        raise ExternalSupervisionEvidenceError(f"gate artifact is not a file: {path}")
+    return resolved
 
 
 def _is_sha256(value: object) -> bool:
@@ -224,9 +313,13 @@ def _is_sha256(value: object) -> bool:
 __all__ = [
     "CANONICAL_REQUIRED_GATES_BY_SOURCE",
     "EvidenceBundleVerification",
+    "ExternalSupervisionEvidenceError",
     "GATE_ARTIFACT_TYPES",
+    "SHARED_GATE_SOURCES",
+    "build_qualification_evidence_bundle",
     "canonical_json_sha256",
     "publish_immutable_evidence",
+    "publish_qualification_evidence_bundle",
     "seal_payload",
     "verify_qualification_evidence_bundle",
 ]

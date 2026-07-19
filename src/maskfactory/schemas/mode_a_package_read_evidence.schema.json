@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mode_a_package_read_evidence.schema.json",
+  "title": "Mode A immutable package read evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "access_mode",
+    "exact_use_scope",
+    "status",
+    "authority_ceiling",
+    "production_eligible",
+    "rejection_reasons",
+    "observed",
+    "immutable_handles",
+    "write_methods_exposed",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "mode_a_package_read_evidence"},
+    "decided_at": {"type": "string", "minLength": 1},
+    "policy_id": {"const": "maskfactory-bridge-mode-a-package-read-v1"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "access_mode": {"const": "mode_a_package_read"},
+    "exact_use_scope": {
+      "enum": [
+        "production_conditioning",
+        "downstream_promotion_support",
+        "repair_seed",
+        "qa",
+        "diagnostic"
+      ]
+    },
+    "status": {"enum": ["accepted", "rejected"]},
+    "authority_ceiling": {
+      "enum": ["qa_passed_noncertified", "certified"]
+    },
+    "production_eligible": {"type": "boolean"},
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "observed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_id",
+        "person_index",
+        "label",
+        "artifact_kind",
+        "raw_part_status",
+        "owner_id",
+        "scene_instance_id",
+        "character_revision",
+        "source_encoded_sha256",
+        "source_decoded_pixel_sha256",
+        "mask_encoded_sha256",
+        "mask_decoded_sha256",
+        "manifest_sha256",
+        "package_sha256",
+        "ontology_sha256",
+        "ontology_version",
+        "transform_chain_sha256",
+        "transform_roundtrip_passed",
+        "release_payload_sha256",
+        "capability_snapshot_sha256",
+        "revocation_head_sha256",
+        "wrapper_certificate_sha256",
+        "wrapper_status"
+      ],
+      "properties": {
+        "image_id": {"type": ["string", "null"]},
+        "person_index": {"type": ["integer", "null"], "minimum": 0},
+        "label": {"type": ["string", "null"]},
+        "artifact_kind": {"type": ["string", "null"]},
+        "raw_part_status": {"type": ["string", "null"]},
+        "owner_id": {"type": ["string", "null"]},
+        "scene_instance_id": {"type": ["string", "null"]},
+        "character_revision": {"type": ["string", "null"]},
+        "source_encoded_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "source_decoded_pixel_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "mask_encoded_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "mask_decoded_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "package_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "ontology_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "ontology_version": {"type": ["string", "null"]},
+        "transform_chain_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "transform_roundtrip_passed": {"type": ["boolean", "null"]},
+        "release_payload_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "capability_snapshot_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "revocation_head_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "wrapper_certificate_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "wrapper_status": {
+          "enum": ["none", "active", "stale", "revoked", "out_of_scope", "invalid"]
+        }
+      }
+    },
+    "immutable_handles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_id",
+        "package_revision",
+        "artifact_id",
+        "catalog_entry_sha256",
+        "mask_relative_path",
+        "source_relative_path"
+      ],
+      "properties": {
+        "package_id": {"type": ["string", "null"]},
+        "package_revision": {"type": ["string", "null"]},
+        "artifact_id": {"type": ["string", "null"]},
+        "catalog_entry_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "mask_relative_path": {"type": ["string", "null"]},
+        "source_relative_path": {"type": ["string", "null"]}
+      }
+    },
+    "write_methods_exposed": {"const": false},
+    "decision_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -3,17 +3,23 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 from jsonschema import Draft202012Validator
 
 from maskfactory.external_supervision_evidence import (
     CANONICAL_REQUIRED_GATES_BY_SOURCE,
     GATE_ARTIFACT_TYPES,
+    SHARED_GATE_SOURCES,
+    ExternalSupervisionEvidenceError,
+    build_qualification_evidence_bundle,
+    publish_qualification_evidence_bundle,
     seal_payload,
 )
 from maskfactory.external_supervision_qualification import (
     verify_external_qualification_evidence,
 )
+from maskfactory.validation import schema_validator, validate_document
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "configs" / "maskedwarehouse_inventory.json"
@@ -40,38 +46,33 @@ def _sealed(value: dict) -> dict:
     return value
 
 
-def _evidence_bundle(tmp_path: Path, source: str) -> dict:
-    records = []
+def _gate_artifact_paths(tmp_path: Path, source: str) -> dict[str, Path]:
+    artifact_directory = tmp_path / source
+    artifact_directory.mkdir(parents=True, exist_ok=True)
+    paths: dict[str, Path] = {}
     for gate in CANONICAL_REQUIRED_GATES_BY_SOURCE[source]:
         artifact_type = GATE_ARTIFACT_TYPES[gate]
         artifact = _sealed(
             {
                 "schema_version": "1.0.0",
                 "artifact_type": artifact_type,
-                "source": source,
+                "source": SHARED_GATE_SOURCES.get(gate, source),
                 "gate": gate,
                 "status": "PASS",
             }
         )
-        path = tmp_path / source / f"{gate}.json"
-        path.parent.mkdir(parents=True, exist_ok=True)
+        path = artifact_directory / f"{gate}.json"
         payload = json.dumps(artifact, sort_keys=True).encode("utf-8")
         path.write_bytes(payload)
-        records.append(
-            {
-                "gate": gate,
-                "artifact_type": artifact_type,
-                "artifact_path": path.relative_to(tmp_path).as_posix(),
-                "artifact_sha256": hashlib.sha256(payload).hexdigest(),
-            }
-        )
-    return _sealed(
-        {
-            "schema_version": "1.0.0",
-            "artifact_type": "external_supervision_qualification_evidence_bundle",
-            "source": source,
-            "gates": records,
-        }
+        paths[gate] = path.relative_to(tmp_path)
+    return paths
+
+
+def _evidence_bundle(tmp_path: Path, source: str) -> dict:
+    return build_qualification_evidence_bundle(
+        source=source,
+        gate_artifact_paths=_gate_artifact_paths(tmp_path, source),
+        project_root=tmp_path,
     )
 
 
@@ -104,7 +105,53 @@ def test_admission_is_deterministic_with_complete_gate_set(tmp_path: Path):
 def test_evidence_bundle_schema_accepts_complete_fixture(tmp_path: Path):
     schema = json.loads(EVIDENCE_SCHEMA.read_text(encoding="utf-8"))
     Draft202012Validator.check_schema(schema)
-    Draft202012Validator(schema).validate(_evidence_bundle(tmp_path, "lv_mhp_v1"))
+    bundle = _evidence_bundle(tmp_path, "lv_mhp_v1")
+    Draft202012Validator(schema).validate(bundle)
+    assert validate_document(bundle, "external_supervision_qualification_evidence") == ()
+
+
+@pytest.mark.parametrize(
+    "schema_name",
+    (
+        "external_supervision_qualification_evidence",
+        "external_supervision_source_hash_manifest",
+        "external_supervision_identity_evidence",
+        "external_supervision_split_dedup_evidence",
+    ),
+)
+def test_external_supervision_schemas_are_registered(schema_name: str):
+    assert schema_validator(schema_name) is not None
+
+
+def test_sealed_bundle_uses_project_relative_artifacts_and_immutable_publication(
+    tmp_path: Path,
+):
+    bundle = _evidence_bundle(tmp_path, "lapa")
+    output = tmp_path / "evidence" / "lapa-qualification.json"
+
+    published_hash = publish_qualification_evidence_bundle(bundle, output)
+
+    assert published_hash == hashlib.sha256(output.read_bytes()).hexdigest()
+    assert all(not Path(record["artifact_path"]).is_absolute() for record in bundle["gates"])
+    assert verify_external_qualification_evidence(
+        _load_provenance(),
+        _load_inventory(),
+        source="lapa",
+        evidence_bundle=bundle,
+        project_root=tmp_path,
+    ).admitted
+
+
+def test_bundle_builder_does_not_fabricate_unavailable_source_artifacts(tmp_path: Path):
+    with pytest.raises(ExternalSupervisionEvidenceError, match="unavailable"):
+        build_qualification_evidence_bundle(
+            source="lapa",
+            gate_artifact_paths={
+                gate: Path(f"missing/{gate}.json")
+                for gate in CANONICAL_REQUIRED_GATES_BY_SOURCE["lapa"]
+            },
+            project_root=tmp_path,
+        )
 
 
 def test_missing_gate_fails_closed_with_unmet_gate(tmp_path: Path):

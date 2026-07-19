@@ -68,3 +68,10 @@ def test_malformed_annotation_name_fails_closed(tmp_path: Path):
     (root / "annotations" / "ambiguous.png").write_bytes(b"mask")
     with pytest.raises(ExternalIdentityError, match="malformed annotation identity"):
         build_lv_mhp_identity_evidence(root)
+
+
+def test_noncanonical_image_extension_fails_before_schema_publication(tmp_path: Path):
+    root = _fixture(tmp_path)
+    (root / "images" / "0002.jpg").rename(root / "images" / "0002.JPG")
+    with pytest.raises(ExternalIdentityError, match="unexpected image entry"):
+        build_lv_mhp_identity_evidence(root)

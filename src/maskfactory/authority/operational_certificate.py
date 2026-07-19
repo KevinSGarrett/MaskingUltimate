@@ -29,6 +29,7 @@ from maskfactory.validation import (
 )
 
 from .complete_map_hard_veto import validate_complete_map_report_binding
+from .operational_policy import validate_operational_policy_report_binding
 
 _AUTHORITATIVE_BINDINGS = (
     "release_binding",
@@ -235,6 +236,8 @@ def issue_operational_autonomy_certificate(
     complete_map_hard_veto_report: Mapping[str, Any],
     trusted_hard_veto_evaluators: Mapping[str, str],
     critic_quorum_decision: CriticQuorumDecision,
+    operational_policy_report: Mapping[str, Any],
+    trusted_operational_policy_evaluators: Mapping[str, str],
 ) -> dict[str, Any]:
     """Issue exact-output authority, or reject without returning a partial certificate."""
     document = copy.deepcopy(dict(unsigned_certificate))
@@ -264,23 +267,6 @@ def issue_operational_autonomy_certificate(
     )
     if complete_map_issues:
         raise OperationalCertificateIssuanceError(*complete_map_issues)
-    critic_codes: list[str] = []
-    if (
-        critic_quorum_decision.status != "pass"
-        or len(critic_quorum_decision.independent_families) < 2
-        or set(critic_quorum_decision.family_verdicts.values()) != {"pass"}
-        or critic_quorum_decision.blockers
-        or critic_quorum_decision.explicit_uncertainty
-    ):
-        critic_codes.append("independent_critic_quorum_failed")
-    if critic_quorum_decision.may_clear_hard_veto or critic_quorum_decision.may_issue_certificate:
-        critic_codes.append("critic_authority_escalation")
-    if document.get("qa_evidence", {}).get("critic_report_sha256") != critic_quorum_sha256(
-        critic_quorum_decision
-    ):
-        critic_codes.append("critic_report_hash_mismatch")
-    if critic_codes:
-        raise OperationalCertificateIssuanceError(*critic_codes)
     if journal_state.get("fork_detected") is not False:
         raise OperationalCertificateIssuanceError("signed_journal_fork")
     revocation = document.get("revocation")
@@ -342,6 +328,31 @@ def issue_operational_autonomy_certificate(
         raise OperationalCertificateIssuanceError("certified_output_scope_mismatch")
     if document.get("lineage", {}).get("output_artifact_identity_sha256s") != identities:
         raise OperationalCertificateIssuanceError("output_lineage_mismatch")
+
+    operational_policy_codes = validate_operational_policy_report_binding(
+        operational_policy_report,
+        document,
+        trusted_evaluators=trusted_operational_policy_evaluators,
+    )
+    if operational_policy_codes:
+        raise OperationalCertificateIssuanceError(*operational_policy_codes)
+    critic_codes: list[str] = []
+    if (
+        critic_quorum_decision.status != "pass"
+        or len(critic_quorum_decision.independent_families) < 2
+        or set(critic_quorum_decision.family_verdicts.values()) != {"pass"}
+        or critic_quorum_decision.blockers
+        or critic_quorum_decision.explicit_uncertainty
+    ):
+        critic_codes.append("independent_critic_quorum_failed")
+    if critic_quorum_decision.may_clear_hard_veto or critic_quorum_decision.may_issue_certificate:
+        critic_codes.append("critic_authority_escalation")
+    if document.get("qa_evidence", {}).get("critic_report_sha256") != critic_quorum_sha256(
+        critic_quorum_decision
+    ):
+        critic_codes.append("critic_report_hash_mismatch")
+    if critic_codes:
+        raise OperationalCertificateIssuanceError(*critic_codes)
 
     key, public = _load_signing_key(
         Path(private_key_path),

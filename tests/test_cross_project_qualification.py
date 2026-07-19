@@ -51,7 +51,7 @@ def test_policy_self_hash_and_closed_row_set() -> None:
 
 
 def test_producer_partial_when_main_commit_and_adoption_absent() -> None:
-    evidence = build_cross_project_qualification_evidence()
+    evidence = build_cross_project_qualification_evidence(bind_fixture_main=False)
     assert validate_cross_project_qualification_evidence(evidence) == ()
     assert evidence["status"] == "producer_partial"
     assert evidence["claim_boundary"]["producer_matrix_executable"] is True
@@ -66,7 +66,7 @@ def test_producer_partial_when_main_commit_and_adoption_absent() -> None:
 
 
 def test_binds_actual_producer_hashes_and_lineage() -> None:
-    evidence = build_cross_project_qualification_evidence()
+    evidence = build_cross_project_qualification_evidence(bind_fixture_main=False)
     producer = evidence["producer_binding"]
     assert isinstance(producer["producer_git_commit"], str)
     assert len(producer["producer_git_commit"]) == 40
@@ -86,7 +86,7 @@ def test_binds_actual_producer_hashes_and_lineage() -> None:
 
 
 def test_frozen_compatibility_projection_is_closed_16() -> None:
-    evidence = build_cross_project_qualification_evidence()
+    evidence = build_cross_project_qualification_evidence(bind_fixture_main=False)
     projection = evidence["frozen_compatibility_projection"]
     assert len(projection) == 16
     assert {row["check"] for row in projection} == ADOPTION_COMPATIBILITY_CHECKS
@@ -105,7 +105,8 @@ def test_rejects_fabricated_main_receipt_and_currency_relabel() -> None:
             },
             "claimed_currency_status": "pass",
             "claim_production_qualification": True,
-        }
+        },
+        bind_fixture_main=False,
     )
     assert validate_cross_project_qualification_evidence(evidence) == ()
     assert evidence["status"] == "rejected"
@@ -120,7 +121,8 @@ def test_planning_head_is_not_accepted_as_runtime_main_pin() -> None:
     evidence = build_cross_project_qualification_evidence(
         {
             "pinned_main_runtime_git_commit": "a54a7ed2bad472f77168e190b9881b4f7e7cc589",
-        }
+        },
+        bind_fixture_main=False,
     )
     # A bare planning/runtime commit without adoption/qualification still fails closed.
     assert evidence["status"] == "producer_partial"
@@ -132,7 +134,7 @@ def test_planning_head_is_not_accepted_as_runtime_main_pin() -> None:
 
 
 def test_seeded_negative_rows_pass_when_faults_fail_closed() -> None:
-    evidence = build_cross_project_qualification_evidence()
+    evidence = build_cross_project_qualification_evidence(bind_fixture_main=False)
     by_id = {row["row_id"]: row for row in evidence["matrix_results"]}
     for row_id in (
         "mx.compat.unknown_field_neg",
@@ -148,7 +150,7 @@ def test_seeded_negative_rows_pass_when_faults_fail_closed() -> None:
 
 
 def test_validate_rejects_decision_hash_drift() -> None:
-    evidence = build_cross_project_qualification_evidence()
+    evidence = build_cross_project_qualification_evidence(bind_fixture_main=False)
     tampered = dict(evidence)
     tampered["decision_sha256"] = "0" * 64
     issues = validate_cross_project_qualification_evidence(tampered)
@@ -156,12 +158,15 @@ def test_validate_rejects_decision_hash_drift() -> None:
 
 
 def test_run_persists_evidence(tmp_path: Path) -> None:
-    evidence = run_cross_project_qualification(tmp_path / "mx")
+    evidence = run_cross_project_qualification(
+        tmp_path / "mx", repo_root=tmp_path, bind_fixture_main=False
+    )
     path = tmp_path / "mx" / "cross_project_qualification_evidence.json"
     assert path.is_file()
     loaded = json.loads(path.read_text(encoding="utf-8"))
     assert loaded["decision_sha256"] == evidence["decision_sha256"]
     assert loaded["status"] == "producer_partial"
+    assert loaded["claim_boundary"]["fixture_main_bound"] is False
 
 
 def test_external_main_dependencies_are_explicit() -> None:

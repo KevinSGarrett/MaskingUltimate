@@ -280,7 +280,9 @@
         "may_impersonate_main_adoption",
         "may_mutate_optional_profiles",
         "core_closed",
-        "optional_profile_status_changed"
+        "optional_profile_status_changed",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
       ],
       "properties": {
         "establishes_handoff_validation_only": { "const": true },
@@ -288,7 +290,9 @@
         "may_impersonate_main_adoption": { "const": false },
         "may_mutate_optional_profiles": { "const": false },
         "core_closed": { "type": "boolean" },
-        "optional_profile_status_changed": { "const": false }
+        "optional_profile_status_changed": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false }
       }
     },
     "decision_sha256": { "$ref": "#/$defs/sha256" }

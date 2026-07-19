@@ -236,12 +236,23 @@ def test_harness_rejects_dirty_adapter_observation(tmp_path: Path) -> None:
     assert "main_adapter_observation_rejected" in evidence["rejection_reasons"]
 
 
-def test_default_inbox_under_maskfactory_runtime_artifacts_is_awaiting() -> None:
+def test_default_inbox_never_claims_main_adoption_complete() -> None:
     inbox = ROOT / "runtime_artifacts" / "main_consumer_conformance" / "inbox"
     assert inbox.is_dir()
-    # Ensure no accidental Main adoption artifacts are treated as complete.
-    for name in ("adoption_receipt.json", "adapter_observation.json"):
-        assert not (inbox / name).exists()
     evidence = run_main_consumer_conformance_harness()
-    assert evidence["status"] == "awaiting_main"
+    # Empty inbox awaits Main; fixture_main synthetic artifacts may accept shapes.
+    # Either way the claim firewall forbids main_adoption_complete.
+    assert evidence["status"] in {"awaiting_main", "accepted"}
     assert evidence["main_adoption_complete"] is False
+    if evidence["status"] == "accepted":
+        claim = (
+            ROOT
+            / "runtime_artifacts"
+            / "main_consumer_conformance"
+            / ("fixture_main_claim_boundary.json")
+        )
+        assert claim.is_file()
+        boundary = json.loads(claim.read_text(encoding="utf-8"))
+        assert boundary.get("authority_kind") == "fixture_authority"
+        assert boundary.get("consumer_kind") == "synthetic_main_consumer"
+        assert boundary.get("production_main_adoption_complete") is False

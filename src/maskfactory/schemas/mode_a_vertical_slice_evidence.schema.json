@@ -128,7 +128,7 @@
         "history_sha256": { "$ref": "#/$defs/nullable_sha256" },
         "authority_decision_sha256": { "$ref": "#/$defs/nullable_sha256" },
         "complete_producer_bindings": { "type": "boolean" },
-        "complete_downstream_bindings": { "const": false }
+        "complete_downstream_bindings": { "type": "boolean" }
       }
     },
     "handoff_journal": {
@@ -166,12 +166,21 @@
       "properties": {
         "intended_workflow_sha256": { "$ref": "#/$defs/sha256" },
         "intended_operation": { "const": "comfyui_inpaint_edit" },
-        "main_adapter_execution_receipt_present": { "const": false },
-        "comfyui_inpaint_result_present": { "const": false },
-        "comfyui_history_present": { "const": false },
+        "main_adapter_execution_receipt_present": { "type": "boolean" },
+        "comfyui_inpaint_result_present": { "type": "boolean" },
+        "comfyui_history_present": { "type": "boolean" },
         "fabricated_receipt_rejected": { "type": "boolean" },
         "binding_status": {
-          "enum": ["producer_ready_awaiting_main", "rejected_fabricated", "rejected"]
+          "enum": [
+            "producer_ready_awaiting_main",
+            "fixture_main_bound",
+            "rejected_fabricated",
+            "rejected"
+          ]
+        },
+        "authority_kind": {
+          "type": ["string", "null"],
+          "enum": [null, "fixture_authority"]
         }
       }
     },
@@ -199,7 +208,9 @@
         "adopted_integration_release_complete",
         "main_adapter_execution_complete",
         "comfyui_inpaint_edit_complete",
-        "mf_p6_12_02_complete"
+        "mf_p6_12_02_complete",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
       ],
       "properties": {
         "producer_fixture_slice_complete": { "type": "boolean" },
@@ -207,6 +218,9 @@
         "main_adapter_execution_complete": { "const": false },
         "comfyui_inpaint_edit_complete": { "const": false },
         "mf_p6_12_02_complete": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "fixture_main_hash_chain_complete": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false },
         "notes": { "type": "string" }
       }
     },

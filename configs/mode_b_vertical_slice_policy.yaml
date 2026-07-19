@@ -51,5 +51,6 @@ reason_codes:
   - abstained_branch_incomplete
   - live_loopback_unavailable
   - champion_backed_prediction_absent
+  - fixture_main_binding_invalid
   - eligible
-policy_sha256: 67f3a7853eecbd8f65fecc8dd9da4300eb1b3667e740df1bd6f55c30f860cba6
+policy_sha256: ad11497a98aca41e7bdef1d059e21de70d1f550364bee434599c408578f77e13

@@ -1256,3 +1256,14 @@ dependency/claim boundaries.
 **Evidence:** Aggregate focused suite passed 29/29 on 2026-07-19 covering cross-project qualification, final-release handoff, main-consumer conformance, and registration guards; scoped Ruff clean. Broader 08.05 authority/policy aggregate passed 83/83. Tracker updates were made only via `Plan/Tracker/tracker.py`; `validate` found no structural problems and `report` regenerated authoritative views. 12.05/12.06 remain blocked at raised fixture-credit percentages (78%/72%); 08.05 remains complete 100%.
 
 **Why:** The observed gap for 12.05 was an integration-surface compatibility failure (unknown schema name + missing package exports). Handoff and main-consumer conformance schemas/exports were already present and only needed registration-guard locks. Registration-only integration preserves frozen-v1 compatibility and honest dependency/claim boundaries; producer_partial matrix evidence must not fabricate production qualification or final handoff authority.
+
+## 2026-07-19 — Distinguish fixture_authority Main consumer from production Comfy_UI_Main
+
+**Item(s) affected:** MF-P6-11.01–11.08, MF-P6-12.02–12.06; `core_autonomous_runtime` claim firewall
+
+**Decision:** Treat `src/maskfactory/bridge/fixture_main/` as a closed-fixture / pinned cross-project adoption evidence surface (`authority_kind=fixture_authority`, `consumer_kind=synthetic_main_consumer`) that may satisfy producer verify clauses for adapter, Mode A package read, Mode B typed client, arbitration, feedback, journal, failure-control, recovery, and Mode A single/duo vertical-slice hash chains. Do **not** equate fixture_main with KevinSGarrett/Comfy_UI_Main production adoption: keep `main_adoption_complete=false` and `production_core_close_authorized=false`, and keep handoff rejection reason `fixture_authority_cannot_close_core`. Mark tracker complete only where verify clauses are honestly closed by fixture_main + producer fixtures (11.01–11.08, 12.02–12.03). Leave 12.04–12.06 open for champion-backed live Mode B prediction, production qualification binding, and authorized core close.
+
+**Evidence:** Focused suite 108/108 PASS on 2026-07-19; `qa/live_verification/bridge_fixture_main_producer_verify_20260719.json`; tracker updates only via `Plan/Tracker/tracker.py`; validate clean; report regenerated; `core_autonomous_runtime` status blocked with open items MF-P6-12.04/12.05/12.06.
+
+**Why:** Core completion profile allows closed fixtures and pinned cross-project adoption evidence without laundering synthetic receipts into production Main authority or independent_real_accuracy claims.
+

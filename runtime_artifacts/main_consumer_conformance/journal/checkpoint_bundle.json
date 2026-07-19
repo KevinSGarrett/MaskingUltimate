@@ -1,0 +1,282 @@
+{
+  "checkpoint": {
+    "checkpoint_id": "fixture-main-ckpt-001",
+    "checkpoint_payload_sha256": "85e952820b2a87358a16c1ee4c566f1041a7ac0d7834ec90817df8f7124b632b",
+    "checkpoint_sha256": "1a72560ed828e2f0ce9bab72b89ba30e0c9d05289847d4229e8df617099d3109",
+    "created_at": "2026-07-19T14:10:00Z",
+    "entry_count": 6,
+    "head_entry_sha256": "68ec538bc72f189871a5bdaeb17410638949c624c6e616456f77cd17df6ed5e7",
+    "head_sequence": 5,
+    "journal_chain_sha256": "418a985526ab3b0c7a1bae931c983f992e5e724d043169955803431e0c5dbb22",
+    "journal_id": "fixture-main-journal-v1",
+    "previous_checkpoint_sha256": null,
+    "record_type": "maskfactory_bridge_journal_checkpoint",
+    "schema_version": "1.0.0",
+    "signature": {
+      "algorithm": "ed25519",
+      "key_id": "mf-journal-fixture",
+      "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+      "signed_payload_format": "sha256_digest_bytes",
+      "signed_payload_sha256": "85e952820b2a87358a16c1ee4c566f1041a7ac0d7834ec90817df8f7124b632b",
+      "value_base64": "xy7xz8E5sJKlsyjuiXOkd+ogXQzm5uk4XKD6oqxFm8HP31Izsk2jWfQXLm8Q0KxvyeSpmOjjDOvHT2cTRd92DA=="
+    }
+  },
+  "claim_boundary": {
+    "artifact": "journal_bundle",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "entries": [
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "298475801f8e6e5e8ee1451e8f2657cb97a7a637296a1ad26ee26ca91a29d057",
+      "entry_sha256": "418a8c89116d3abe249f9f15fe25a11387cb69745a6ef9f44c77aebf1a51e3a2",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "admit"
+      },
+      "event_body_sha256": "2f8bf102040c1c00fb3941759cfe9dc08a4e5aa563399e6c9e362a01ef6a43fc",
+      "idempotency_key": "fixture-main-admit-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:00:00Z",
+      "previous_entry_sha256": null,
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 0,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "298475801f8e6e5e8ee1451e8f2657cb97a7a637296a1ad26ee26ca91a29d057",
+        "value_base64": "+q/y+8VNhJxV6sSEfrC6JUI6j6mezBcBiaKmGJdeaAi/na1ZT2WPM7FFyM8oEn7yAMgMwT3zh3KdGWCWFD2eBw=="
+      },
+      "state": "admit"
+    },
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "969119b61e3b01241156ecaf705a5ee96f30848c11ca1b6d102eca00b10e8598",
+      "entry_sha256": "51fac3da2cfe0f97b8f74fadaed02fca28f3bd65d70c6c893e164b4d175599bf",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "route"
+      },
+      "event_body_sha256": "93cb34e9612965c6ac9b80e3d5c013304e2b209968e5a6f4f16cbcb7eceb3102",
+      "idempotency_key": "fixture-main-route-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:01:00Z",
+      "previous_entry_sha256": "418a8c89116d3abe249f9f15fe25a11387cb69745a6ef9f44c77aebf1a51e3a2",
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 1,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "969119b61e3b01241156ecaf705a5ee96f30848c11ca1b6d102eca00b10e8598",
+        "value_base64": "iB77AojdQugIgzmP5X+IFNILfgdZC5Do8aomTzuNyrNw1Hj89rheV5D6kqrHLeV4guTX90O3zb9wdRCajLVOCg=="
+      },
+      "state": "route"
+    },
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "648b0d72eaabe82ac101b1f832ef39d73f1d7509c12383d289521c6a95b7099c",
+      "entry_sha256": "a70a77aea83c1af64efe6c03cc5e3e9fd3138cd2f7ed32520d9d2754277a5039",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "submit"
+      },
+      "event_body_sha256": "3f43e095ed5a32422ae962c567dc381dbc7b4958f861321702e50d51d87444f2",
+      "idempotency_key": "fixture-main-submit-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:02:00Z",
+      "previous_entry_sha256": "51fac3da2cfe0f97b8f74fadaed02fca28f3bd65d70c6c893e164b4d175599bf",
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 2,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "648b0d72eaabe82ac101b1f832ef39d73f1d7509c12383d289521c6a95b7099c",
+        "value_base64": "WuiaW0beKPQAa7I727zbivAoDtXoPI9gpyl9haDqWAUU86Ioelz9nWVb+Xf+Eopzk5by6VlYtGbyQRkyft1bCw=="
+      },
+      "state": "submit"
+    },
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "392be2aea86ca787400e11364f9ef3075149c04a0d57b67e4962ffcb3424a5da",
+      "entry_sha256": "1666827607a7b62bea49f239eeda8eae41c01f9ffda53358d800fa2039218b74",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "reconcile"
+      },
+      "event_body_sha256": "e62fcd5830fb770e353b0ab7337727b285a9081baf71ff4ae5ca6b6dcb696424",
+      "idempotency_key": "fixture-main-reconcile-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:03:00Z",
+      "previous_entry_sha256": "a70a77aea83c1af64efe6c03cc5e3e9fd3138cd2f7ed32520d9d2754277a5039",
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 3,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "392be2aea86ca787400e11364f9ef3075149c04a0d57b67e4962ffcb3424a5da",
+        "value_base64": "WUFfgyVigkq5Dnfx2qq4zvErr3A/8opZMFg89KBjxoiepQLFd0lec5igIQRV2ESt50D743KyqoThqtFottqZAg=="
+      },
+      "state": "reconcile"
+    },
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "12371c3aa3af7cb4fc1a02e1ec3e038c84b2d799fb39893ccfb5f048fbcb4ae7",
+      "entry_sha256": "6e59d6a998e67bede0f0951628433baa0493ee27188f8e7d29b5083065d73442",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "result"
+      },
+      "event_body_sha256": "04a02753bd8f701a11e01306158d5617a89d806b4b84c05a238a16945c0e10d2",
+      "idempotency_key": "fixture-main-result-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:04:00Z",
+      "previous_entry_sha256": "1666827607a7b62bea49f239eeda8eae41c01f9ffda53358d800fa2039218b74",
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 4,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "12371c3aa3af7cb4fc1a02e1ec3e038c84b2d799fb39893ccfb5f048fbcb4ae7",
+        "value_base64": "9TQOI/BpNRYFNrz+dq7xZn2QQ/At5YyRYWAI+1uA6EAnTwlxhnSI2I0TEvb757lCE/8puu+M4yc+ZD3Xxc7GAA=="
+      },
+      "state": "result"
+    },
+    {
+      "checkpoint_sha256": null,
+      "entry_payload_sha256": "415069cd9c2fa8eb5c2f7e5cb9c0f03d5bbaf7201086edfd620f5a7565e6cc7a",
+      "entry_sha256": "68ec538bc72f189871a5bdaeb17410638949c624c6e616456f77cd17df6ed5e7",
+      "event_body": {
+        "authority_kind": "fixture_authority",
+        "consumer_kind": "synthetic_main_consumer",
+        "phase": "decision"
+      },
+      "event_body_sha256": "39946e75617c2f9d01cbe394d858bbc326dfb2a0fa80f56586f2548b270a7ec8",
+      "idempotency_key": "fixture-main-decision-001",
+      "journal_id": "fixture-main-journal-v1",
+      "occurred_at": "2026-07-19T14:05:00Z",
+      "previous_entry_sha256": "6e59d6a998e67bede0f0951628433baa0493ee27188f8e7d29b5083065d73442",
+      "record_type": "maskfactory_bridge_journal_entry",
+      "schema_version": "1.0.0",
+      "sequence": 5,
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "mf-journal-fixture",
+        "public_key_base64": "ypOsFwUYcHHWe4PH/w7+gQjo7EUwV113JoeTM9vavnw=",
+        "signed_payload_format": "sha256_digest_bytes",
+        "signed_payload_sha256": "415069cd9c2fa8eb5c2f7e5cb9c0f03d5bbaf7201086edfd620f5a7565e6cc7a",
+        "value_base64": "OvIP8adSnBuLbWTwfkHbZmgeh2NleSnkZo87HKZLF+ukIU8MWIwbHavKCRI5gtjDw3zDVMJxeypXMNp2g/wHBQ=="
+      },
+      "state": "decision"
+    }
+  ],
+  "history_issues": [],
+  "history_valid": true,
+  "journal_id": "fixture-main-journal-v1",
+  "main_prerequisites_satisfied": [
+    "main_atomic_append_side_effect_commit",
+    "main_durable_append_only_retention",
+    "main_idempotency_key_namespace",
+    "main_trusted_journal_key_lifecycle"
+  ],
+  "reconstruction": {
+    "closed_state_machine": {
+      "allowed_next_states": [
+        "adoption",
+        "feedback",
+        "invalidation",
+        "recovery",
+        "repair",
+        "retry",
+        "rollback"
+      ],
+      "covered_states": [
+        "admit",
+        "route",
+        "submit",
+        "reconcile",
+        "result",
+        "decision"
+      ],
+      "current_state": "decision",
+      "terminal": false
+    },
+    "decided_at": "2026-07-19T15:00:00Z",
+    "decision_sha256": "5122d24e9fe75fd748bd6d8bbcf05fc7ec10ec6435127d51d089afc233a0d4c5",
+    "entry_count": 6,
+    "external_main_prerequisites": {
+      "required": [
+        "main_atomic_append_side_effect_commit",
+        "main_durable_append_only_retention",
+        "main_idempotency_key_namespace",
+        "main_trusted_journal_key_lifecycle"
+      ],
+      "satisfied": [
+        "main_atomic_append_side_effect_commit",
+        "main_durable_append_only_retention",
+        "main_idempotency_key_namespace",
+        "main_trusted_journal_key_lifecycle"
+      ],
+      "unmet": []
+    },
+    "head_entry_sha256": "68ec538bc72f189871a5bdaeb17410638949c624c6e616456f77cd17df6ed5e7",
+    "head_sequence": 5,
+    "head_state": "decision",
+    "idempotency_index": {
+      "fixture-main-admit-001": "2f8bf102040c1c00fb3941759cfe9dc08a4e5aa563399e6c9e362a01ef6a43fc",
+      "fixture-main-decision-001": "39946e75617c2f9d01cbe394d858bbc326dfb2a0fa80f56586f2548b270a7ec8",
+      "fixture-main-reconcile-001": "e62fcd5830fb770e353b0ab7337727b285a9081baf71ff4ae5ca6b6dcb696424",
+      "fixture-main-result-001": "04a02753bd8f701a11e01306158d5617a89d806b4b84c05a238a16945c0e10d2",
+      "fixture-main-route-001": "93cb34e9612965c6ac9b80e3d5c013304e2b209968e5a6f4f16cbcb7eceb3102",
+      "fixture-main-submit-001": "3f43e095ed5a32422ae962c567dc381dbc7b4958f861321702e50d51d87444f2"
+    },
+    "journal_chain_sha256": "418a985526ab3b0c7a1bae931c983f992e5e724d043169955803431e0c5dbb22",
+    "journal_id": "fixture-main-journal-v1",
+    "latest_checkpoint_head_sequence": 5,
+    "latest_checkpoint_sha256": "1a72560ed828e2f0ce9bab72b89ba30e0c9d05289847d4229e8df617099d3109",
+    "policy_id": "maskfactory-bridge-durable-journal-v1",
+    "policy_sha256": "80f7f2d29424cf420c7df4e3a5c13234a0b85753469a66ff909471a695b0570a",
+    "record_type": "bridge_journal_reconstruction_evidence",
+    "rejection_reasons": [],
+    "schema_version": "1.0.0",
+    "status": "reconstructed"
+  },
+  "trusted_signing_keys": {
+    "mf-journal-fixture": {
+      "public_key_sha256": "c5b940ed3f65c391965de8295fc5d25f474fa57b48d36eb10ad363b8539c1b79",
+      "roles": [
+        "producer_journal"
+      ],
+      "status": "active",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    }
+  }
+}

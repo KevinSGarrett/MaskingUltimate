@@ -81,7 +81,8 @@
         "pinned_main_runtime_git_commit",
         "adoption_receipt_present",
         "qualification_bundle_signature_present",
-        "complete"
+        "complete",
+        "fixture_main_bound"
       ],
       "properties": {
         "main_consumer_planning_head": {
@@ -94,6 +95,11 @@
         },
         "adoption_receipt_present": { "type": "boolean" },
         "qualification_bundle_signature_present": { "type": "boolean" },
+        "fixture_main_bound": { "type": "boolean" },
+        "authority_kind": {
+          "type": ["string", "null"],
+          "enum": [null, "fixture_authority"]
+        },
         "adoption_receipt_sha256": {
           "type": ["string", "null"],
           "pattern": "^[0-9a-f]{64}$"
@@ -248,12 +254,16 @@
         "producer_matrix_executable",
         "establishes_production_qualification",
         "mf_p6_12_05_complete",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim",
         "notes"
       ],
       "properties": {
         "producer_matrix_executable": { "type": "boolean" },
         "establishes_production_qualification": { "const": false },
         "mf_p6_12_05_complete": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false },
         "notes": { "type": "string", "minLength": 1 }
       }
     },

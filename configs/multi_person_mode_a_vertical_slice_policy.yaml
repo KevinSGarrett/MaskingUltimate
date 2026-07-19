@@ -44,5 +44,6 @@ reason_codes:
   - ownership_ambiguity_present
   - adopted_package_transaction_absent
   - main_adapter_execution_absent
+  - fixture_main_binding_invalid
   - eligible
-policy_sha256: 3ce9eca3c41e7307f5aa508e31d057fc628bbf3d40c9b967c78bc633f43cfbac
+policy_sha256: a551cc6a31ea21082092a0f5228c3625a65d8ef89bb7432b3999ae330a551e47

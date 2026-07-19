@@ -18,9 +18,12 @@ from maskfactory.bridge import (
     FAILURE_CONTROL_POLICY_ID,
     FINAL_RELEASE_HANDOFF_EXTERNAL_MAIN_DEPENDENCIES,
     FINAL_RELEASE_HANDOFF_POLICY_ID,
+    FIXTURE_MAIN_AUTHORITY_KIND,
+    FIXTURE_MAIN_CONSUMER_KIND,
     JOURNAL_POLICY_ID,
     RECOVERY_EXTERNAL_MAIN_DEPENDENCIES,
     RECOVERY_POLICY_ID,
+    SYNTHETIC_MAIN_GIT_COMMIT,
     AdoptionReceiptMatrixError,
     BridgeJournalError,
     CapabilityQualificationError,
@@ -32,6 +35,8 @@ from maskfactory.bridge import (
     FeedbackIntakeError,
     FeedbackIntakeLedger,
     FinalReleaseHandoffError,
+    FixtureMainBindingError,
+    FixtureMainError,
     IntegrationReleaseError,
     MainConsumerConformanceError,
     ModeAPackageReadError,
@@ -67,14 +72,18 @@ from maskfactory.bridge import (
     intake_bridge_feedback,
     load_clean_release_manifest,
     load_crosswalk_definition,
+    load_fixture_main_binding,
     load_publication_evidence,
     load_tracker_data,
+    materialize_fixture_main,
     normalize_and_arbitrate_receipts,
+    observation_from_fixture_main_binding,
     publish_and_validate_against_release_root,
     reconstruct_bridge_journal_state,
     regenerate_profile_status_inputs,
     rollback_clean_release,
     run_cross_project_qualification,
+    run_fixture_main_producer_verify,
     run_integration_release_acceptance,
     run_main_consumer_conformance_harness,
     run_mode_a_vertical_slice,
@@ -246,6 +255,15 @@ def test_bridge_package_exports_additive_contracts() -> None:
     assert OperationalInvalidationError
     assert TransformValidationError
     assert UseEligibilityError
+    assert FIXTURE_MAIN_AUTHORITY_KIND
+    assert FIXTURE_MAIN_CONSUMER_KIND
+    assert SYNTHETIC_MAIN_GIT_COMMIT
+    assert materialize_fixture_main
+    assert run_fixture_main_producer_verify
+    assert load_fixture_main_binding
+    assert observation_from_fixture_main_binding
+    assert FixtureMainError
+    assert FixtureMainBindingError
 
 
 def test_external_supervision_producers_package_surface() -> None:

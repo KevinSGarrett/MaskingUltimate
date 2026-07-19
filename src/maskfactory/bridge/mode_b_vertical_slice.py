@@ -52,6 +52,7 @@ from maskfactory.authority.operational_policy import (
 )
 from maskfactory.autonomy.stability import evaluate_candidate_stability, load_stability_policy
 from maskfactory.bridge.failure_control import simulate_fault_injection
+from maskfactory.bridge.fixture_main.binding import load_fixture_main_binding
 from maskfactory.bridge.mode_b_localhost_client import ModeBLocalhostClient
 from maskfactory.bridge.runtime_client_types import (
     ERROR_SERVICE_UNAVAILABLE,
@@ -896,12 +897,22 @@ def run_mode_b_vertical_slice(
     decided_at: str = "2026-07-19T14:00:00Z",
     client: ModeBLocalhostClient | None = None,
     probe_live_loopback: bool = False,
+    bind_fixture_main: bool | Path | Mapping[str, Any] = False,
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Run the producer-side Mode B vertical slice and return closed evidence."""
     policy = _policy()
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     reasons: set[str] = set()
+
+    fixture_binding: dict[str, Any] | None = None
+    if bind_fixture_main is True:
+        fixture_binding = load_fixture_main_binding(repo_root, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Path):
+        fixture_binding = load_fixture_main_binding(bind_fixture_main, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Mapping):
+        fixture_binding = dict(bind_fixture_main)
 
     active_client = client or ModeBLocalhostClient(transport=build_fixture_mode_b_transport())
     draft = run_mode_b_draft_actions(active_client)
@@ -955,11 +966,27 @@ def run_mode_b_vertical_slice(
     if not refinement["inflation_rejected"]:
         reasons.add("descendant_authority_inflation")
 
+    fixture_bound = bool(
+        fixture_binding
+        and fixture_binding.get("present")
+        and fixture_binding.get("valid")
+        and isinstance(fixture_binding.get("requirements_capability_bundle"), Mapping)
+        and isinstance(fixture_binding.get("failure_control_observation"), Mapping)
+    )
+    if fixture_binding is not None and fixture_binding.get("present") and not fixture_bound:
+        reasons.add("fixture_main_binding_invalid")
+
     live_probe = {
         "windows_loopback_health": "not_probed",
         "champion_backed_live_prediction": False,
         "live_service_used": False,
-        "detail": "fixture transport used; live GPU champion prediction not claimed",
+        "fixture_main_bound": fixture_bound,
+        "authority_kind": "fixture_authority" if fixture_bound else None,
+        "detail": (
+            "fixture Main Mode B offer/circuit bound; live GPU champion still absent"
+            if fixture_bound
+            else "fixture transport used; live GPU champion prediction not claimed"
+        ),
     }
     if probe_live_loopback:
         import urllib.error
@@ -1050,11 +1077,14 @@ def run_mode_b_vertical_slice(
             "live_gpu_champion_complete": False,
             "windows_loopback_complete": False,
             "mf_p6_12_04_complete": False,
+            "fixture_main_bound": fixture_bound,
+            "independent_real_accuracy_claim": False,
             "notes": (
                 "Producer fixture path covers draft Mode B actions, typed service-down, "
                 "self-promotion refusal, and an independent exact-output certification/"
-                "abstention transaction. Live Windows loopback health and champion-backed "
-                "GPU prediction remain open blockers."
+                "abstention transaction. Fixture Main may bind synthetic offer/circuit "
+                "receipts under fixture_authority; live Windows loopback and champion-"
+                "backed GPU prediction remain open and never imply independent_real_accuracy."
             ),
         },
         "decision_sha256": "",
@@ -1089,8 +1119,11 @@ def validate_mode_b_vertical_slice_evidence(evidence: Mapping[str, Any]) -> tupl
     reasons = evidence.get("rejection_reasons")
     if not isinstance(reasons, list) or not set(reasons).issubset(allowed):
         issues.append("decision_reason_code")
-    if evidence.get("claim_boundary", {}).get("mf_p6_12_04_complete") is True:
+    claim = _mapping(evidence.get("claim_boundary"))
+    if claim.get("mf_p6_12_04_complete") is True:
         issues.append("completion_overclaim")
+    if claim.get("independent_real_accuracy_claim") is True:
+        issues.append("independent_real_accuracy_overclaim")
     if evidence.get("live_probe", {}).get("champion_backed_live_prediction") is True:
         issues.append("champion_overclaim")
     if evidence.get("self_promotion", {}).get("rejected") is not True:

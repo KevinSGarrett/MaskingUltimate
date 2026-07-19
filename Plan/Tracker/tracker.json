@@ -19848,8 +19848,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 86,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:16:07+00:00",
@@ -19870,12 +19870,17 @@
           "ts": "2026-07-19T20:26:16+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: MF-P6-10.05 cleared. Producer verify remains fixture-complete. No Main adapter package fabricated. Credited 78% -> 86%. Remains blocked on live Main adapter/conformance evidence."
+        },
+        {
+          "ts": "2026-07-19T20:48:05+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_external_adapter_conformance.py; maskfactory.bridge MaskFactoryAdapter boundary + conformance builder/validator",
-      "blocked_reason": "CROSS-PROJECT: MF-P6-10.05 is complete. Producer adapter conformance verifier is fixture-complete (adopted-contract-only; rejects internal-module/node-ID/mutable-path/dirty/editable/version-drift). Remains blocked pending Main-supplied pinned production MaskFactoryAdapter package and signed conformance observation against the adopted release. MaskFactory must not implement Main orchestration.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:16+00:00",
+      "updated_at": "2026-07-19T20:48:05+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {
@@ -19890,8 +19895,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 84,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:20:44+00:00",
@@ -19917,12 +19922,17 @@
           "ts": "2026-07-19T20:26:17+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: Mode A package-read verify remains fixture-complete. Hold 84%. Still blocked on MF-P6-11.01 and production wrapper/adopted catalog authority."
+        },
+        {
+          "ts": "2026-07-19T20:48:05+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_mode_a_package_read.py; MF-P6-09.05 complete",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-11.01 remains incomplete (MF-P6-09.05 complete). Additive Mode A immutable package-read evidence is fixture-verified, but the external adapter prerequisite is unmet and no accepted production adopted-package/exact operational-wrapper authority exists (not fabricated).",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:17+00:00",
+      "updated_at": "2026-07-19T20:48:05+00:00",
       "orphaned": false
     },
     "MF-P6-11.03": {
@@ -19937,8 +19947,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 78,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:30:01+00:00",
@@ -19964,12 +19974,17 @@
           "ts": "2026-07-19T20:26:18+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: Mode B typed closed-response verify remains fixture-complete. Hold 78%. Still blocked on MF-P6-11.01 and Main champion-backed live predict."
+        },
+        {
+          "ts": "2026-07-19T20:48:05+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_mode_b_localhost_client.py; MF-P6-09.06 complete",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-11.01 remains incomplete (MF-P6-09.06 complete). Additive Mode B localhost client with typed closed responses is fixture-verified, but the external adapter prerequisite is unmet and no champion-backed live predict proof or production cross-boundary adoption exists (not fabricated).",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:18+00:00",
+      "updated_at": "2026-07-19T20:48:05+00:00",
       "orphaned": false
     },
     "MF-P6-11.04": {
@@ -19984,8 +19999,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:35:40+00:00",
@@ -20006,12 +20021,17 @@
           "ts": "2026-07-19T20:26:18+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: producer receipt-arbitration oracle verify remains fixture-complete. Hold 80%. No Main-signed arbitration fabricated."
+        },
+        {
+          "ts": "2026-07-19T20:48:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_receipt_arbitration_conformance.py Mode A dominates draft, close branch/abstain, incompatible scope/latent, freshness/preservation/cost/no-silent-weaken",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-11.02 and MF-P6-11.03 remain incomplete. Producer-side exact-scope normalizer and conformance oracle are fixture-verified; MaskFactory must not impersonate Main routing choice/branch/abstention. Remains blocked pending those deps and a Main-signed arbitration decision.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:18+00:00",
+      "updated_at": "2026-07-19T20:48:06+00:00",
       "orphaned": false
     },
     "MF-P6-11.05": {
@@ -20026,8 +20046,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 88,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:40:01+00:00",
@@ -20048,12 +20068,17 @@
           "ts": "2026-07-19T20:26:18+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: cleared obsolete MF-P6-10.06 from blocked_reason. Feedback-intake verify remains fixture-complete. Credited 84% -> 88%. Remains blocked on MF-P6-11.01."
+        },
+        {
+          "ts": "2026-07-19T20:48:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_bridge_feedback_intake.py duplicate-hypothesis/no-progress/cap/replay/forgery/stale-parent/unauthorized-write/conflicting-observation + drift fail-closed",
-      "blocked_reason": "DEPENDENCY: MF-P6-11.01 remains incomplete (MF-P6-10.06 now complete and removed from blockers). Additive authenticated feedback intake ledger/decision surface is fixture-verified; no production Main feedback authority fabricated.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:18+00:00",
+      "updated_at": "2026-07-19T20:48:06+00:00",
       "orphaned": false
     },
     "MF-P6-11.06": {
@@ -20068,8 +20093,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T01:46:09+00:00",
@@ -20090,12 +20115,17 @@
           "ts": "2026-07-19T20:26:19+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: MF-P6-10.06 cleared. Producer journal verify remains fixture-complete. Credited 86% -> 90%. Remains blocked on MF-P6-11.01 and live Main journal store evidence."
+        },
+        {
+          "ts": "2026-07-19T20:48:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; configs/bridge_durable_journal_policy.yaml; reconstruct_bridge_journal_state; tests/test_bridge_journal.py closed state machine + interruption reconstruct",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-10.06 is complete; MF-P6-11.01 remains incomplete. Additive signed producer journal covers the full closed state vocabulary, interruption reconstruct, policy/schema/CLI, and idempotency/fork/delete/reorder probes. Remains blocked on MF-P6-11.01 and Main durable atomic append+side-effect persistence, retention, idempotency namespace, and trusted journal key lifecycle evidence.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:19+00:00",
+      "updated_at": "2026-07-19T20:48:06+00:00",
       "orphaned": false
     },
     "MF-P6-11.07": {
@@ -20110,8 +20140,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T02:09:12+00:00",
@@ -20147,12 +20177,17 @@
           "ts": "2026-07-19T20:26:19+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: failure-control fault-injection verify remains fixture-complete. Hold 80%. Remains blocked on MF-P6-11.03/11.06 and Main circuit/DAG/retry evidence."
+        },
+        {
+          "ts": "2026-07-19T20:48:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_bridge_failure_control.py; MF-P6-09.06 complete",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-11.03 and MF-P6-11.06 remain incomplete (MF-P6-09.06 complete). Additive producer admission and fault-injection conformance are fixture-verified. Remains blocked pending those deps and Main live circuit-breaker execution, scoped DAG blocking, retry-attempt accounting, and signed failure evidence.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:19+00:00",
+      "updated_at": "2026-07-19T20:48:06+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {
@@ -20167,8 +20202,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 86,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T02:18:36+00:00",
@@ -20189,12 +20224,17 @@
           "ts": "2026-07-19T20:26:19+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P10 re-eval: MF-P6-10.07 cleared. Recovery kill/reconcile verify remains fixture-complete. Credited 80% -> 86%. Remains blocked on MF-P6-11.06/11.07 and Main restart store."
+        },
+        {
+          "ts": "2026-07-19T20:48:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json; focused P6-11 suite 93/93 PASS; MF-P6-10.05/10.06/10.07 now complete; producer verify fixture-complete; no Main runtime fabricated; tests/test_bridge_recovery.py receipt-last, outcome_unknown reconcile-before-retry, kill-at-boundary, capability/node-pack drift, GPU contention, rollback without duplicate",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT: MF-P6-10.07 is complete; MF-P6-11.06 and MF-P6-11.07 remain incomplete. Additive receipt-last recovery evidence builder/validator and kill/reconcile drills are fixture-verified. Remains blocked on those deps and Main restart store plus live unknown-outcome reconciler (no fabricated Main restart authority).",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:19+00:00",
+      "updated_at": "2026-07-19T20:48:07+00:00",
       "orphaned": false
     },
     "MF-P6-12.01": {
@@ -20246,8 +20286,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 84,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T03:19:34+00:00",
@@ -20263,12 +20303,17 @@
           "ts": "2026-07-19T20:26:23+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: MF-P6-12.01 producer prerequisite cleared. Credited 80% -> 84%. Remains blocked only on MF-P6-11.02 and true Main/ComfyUI downstream execution gaps."
+        },
+        {
+          "ts": "2026-07-19T20:48:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_mode_a_vertical_slice.py producer_partial with complete producer identity bindings; mf_p6_12_02_complete=false",
-      "blocked_reason": "CROSS-PROJECT/DEPENDENCY: MF-P6-11.02 remains incomplete, and Main/ComfyUI execution receipts are absent. Producer Mode A vertical-slice fixture covers adopted package read with active wrapper, adapter conformance, use-eligibility, identity chain, handoff journal, intended inpaint workflow hash, fabricated-receipt refusal, and recovery probe. MF-P6-12.01 producer integration-release acceptance is now complete, but no pinned Main adapter execution or ComfyUI inpaint/edit result/history hashes exist.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:23+00:00",
+      "updated_at": "2026-07-19T20:48:07+00:00",
       "orphaned": false
     },
     "MF-P6-12.03": {
@@ -20283,8 +20328,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-19T03:23:27+00:00",
@@ -20300,12 +20345,17 @@
           "ts": "2026-07-19T20:26:24+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: reconfirmed producer multi-person fixture. Credited 76% -> 80%. Remains blocked on MF-P6-12.02 and Main/ComfyUI two-person execution."
+        },
+        {
+          "ts": "2026-07-19T20:48:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main governance: closed-fixture/pinned synthetic Main consumer satisfies verify under fixture_authority; does not claim KevinSGarrett/Comfy_UI_Main production adoption or production_core_close."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_multi_person_mode_a_vertical_slice.py producer fixture with seeded fault rejection; mf_p6_12_03_complete=false",
-      "blocked_reason": "CROSS-PROJECT/DEPENDENCY: MF-P6-12.02 remains incomplete. Producer overlapping/contact duo fixture covers distinct character instances, ownership/skeleton/protected/transform evidence, multi-person gate pass, seeded wrong-person/cross-instance rejection, and zero-ownership-ambiguity verdict, but no adopted package + Main/ComfyUI two-person execution evidence exists.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:24+00:00",
+      "updated_at": "2026-07-19T20:48:07+00:00",
       "orphaned": false
     },
     "MF-P6-12.04": {
@@ -20321,7 +20371,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 86,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-19T03:27:47+00:00",
@@ -20337,12 +20387,17 @@
           "ts": "2026-07-19T20:26:24+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: cleared obsolete MF-P6-08.08 dependency. Producer verify vectors satisfied in fixtures. Credited 76% -> 86%. Remains blocked on MF-P6-11.03/11.07 and live GPU/loopback gaps only."
+        },
+        {
+          "ts": "2026-07-19T20:48:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main: credited 86%->90% for fixture offer/circuit bind; still blocked on champion-backed live predict."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_mode_b_vertical_slice.py producer_partial proves draft/self-promote/refinement/certified+abstained; live_gpu_champion_complete=false; windows_loopback_complete=false; mf_p6_12_04_complete=false",
-      "blocked_reason": "CROSS-PROJECT/DEPENDENCY/LIVE: MF-P6-08.08 is complete, but MF-P6-11.03 and MF-P6-11.07 remain incomplete, and true live Windows loopback health plus champion-backed GPU prediction are absent. Producer fixture verifies draft-only health/predict/refine, typed service-down, no self-promotion, refinement authority ceiling, and independent certified/abstained evidence branches; claim_boundary.mf_p6_12_04_complete stays false.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": "LIVE/CROSS-PROJECT: fixture_main binds Mode B offer/circuit under fixture_authority and producer draft/service-down/certify vectors pass, but Mode B vertical slice remains producer_partial with champion_backed_prediction_absent (no live Windows loopback/champion GPU prediction). claim_boundary.mf_p6_12_04_complete stays false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:24+00:00",
+      "updated_at": "2026-07-19T20:48:07+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {
@@ -20358,7 +20413,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 82,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T03:32:21+00:00",
@@ -20374,12 +20429,17 @@
           "ts": "2026-07-19T20:26:25+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: MF-P6-12.01 cleared from hard-blocker set. Credited 78% -> 82%. Remains hard-blocked on 12.02-12.04 and Main production bindings."
+        },
+        {
+          "ts": "2026-07-19T20:48:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main: credited 82%->88% for fixture-bound producer_partial qualification; still blocked on 12.04 and production qualification claim."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_cross_project_qualification.py producer_partial matrix; mf_p6_12_05_complete=false; no production signed qualification bundle",
-      "blocked_reason": "HARD BLOCKER: MF-P6-12.02 through MF-P6-12.04 remain incomplete (MF-P6-12.01 producer acceptance now complete), and Main-runtime commit/adoption/qualification bindings remain absent. Producer matrix is executable as producer_partial with closed row set and fail-closed seeded negatives, but claim_boundary.mf_p6_12_05_complete stays false and no trusted signed production qualification bundle binds both commits plus release/capability/requirements/adoption/test/artifact bytes.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": "HARD BLOCKER: MF-P6-12.04 remains incomplete. Fixture_main pins adoption/qualification/adapter/ComfyUI hashes under fixture_authority and matrix reaches producer_partial with consumer_binding.complete=true, but establishes_production_qualification=false and mf_p6_12_05_complete stays false; no production signed qualification bundle.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:25+00:00",
+      "updated_at": "2026-07-19T20:48:07+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {
@@ -20395,7 +20455,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 76,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-19T03:36:27+00:00",
@@ -20411,12 +20471,17 @@
           "ts": "2026-07-19T20:26:27+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 post-P6-10 re-eval: confirmed MF-P6-07.07 already complete. Credited 72% -> 76%. Remains blocked solely on MF-P6-12.05 and missing Main/production handoff receipts."
+        },
+        {
+          "ts": "2026-07-19T20:48:08+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 fixture_main: credited 76%->80% for fixture handoff bind + claim firewall refuse; cannot close core under fixture_authority."
         }
       ],
-      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json; focused suite 54/54 PASS (integration_release + mode_a/multi_person/mode_b vertical slices + cross_project_qualification + final_release_handoff + registration); Ruff clean on scoped bridge modules; tests/test_bridge_final_release_handoff.py fixture-proven evaluator/profile separation/claim firewall; MF-P6-07.07 already complete; no production handoff",
-      "blocked_reason": "HARD BLOCKER DEPENDENCY: MF-P6-12.05 remains unresolved (MF-P6-07.07 already complete). Final-release handoff evaluator, tracker profile regeneration, and claim firewall are fixture-proven, but no final producer runtime release, Main adoption receipt, reciprocal acknowledgement, or recomputed met core_autonomous_runtime profile exists.",
+      "evidence": "qa/live_verification/bridge_fixture_main_producer_verify_20260719.json; runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json; mode_a+multi fixture_main accepted; focused bridge suite 108/108 PASS; main_adoption_complete=false; production_core_close_authorized=false",
+      "blocked_reason": "HARD BLOCKER DEPENDENCY: MF-P6-12.05 remains unresolved. Handoff evaluator binds fixture_main receipts but adds fixture_authority_cannot_close_core; core_autonomous_runtime_close_authorized=false; main_adoption_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:26:27+00:00",
+      "updated_at": "2026-07-19T20:48:08+00:00",
       "orphaned": false
     }
   }

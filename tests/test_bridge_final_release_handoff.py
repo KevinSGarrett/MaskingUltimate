@@ -121,6 +121,8 @@ def test_missing_main_adoption_proves_incomplete_core_and_refuses_close() -> Non
         tracker_data=load_tracker_data(),
         producer_git_commit=PRODUCER,
         decided_at="2026-07-19T15:00:00Z",
+        # Isolate true Main-absence from auto-bind of repo fixture_main artifacts.
+        bind_fixture_main=False,
     )
     assert evidence["status"] == "incomplete_core"
     assert evidence["core_autonomous_runtime_close_authorized"] is False

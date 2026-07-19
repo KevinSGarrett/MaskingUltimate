@@ -8605,3 +8605,24 @@ python Plan/Tracker/tracker.py report
 `
 
 </details>
+
+## 2026-07-19 — Fixture Main consumer closes producer verify loops under fixture_authority
+
+**Lane:** Governance / bridge fixture_main
+**Items:** MF-P6-11.01–11.08 complete; MF-P6-12.02–12.03 complete; MF-P6-12.04–12.06 remain blocked
+**Result:** PASS — focused bridge suite **108/108**. Tracker validate: no structural problems. `core_autonomous_runtime` remains **blocked** with exactly three open driving items (12.04/12.05/12.06).
+
+**What landed:**
+- Governed synthetic Main consumer at `src/maskfactory/bridge/fixture_main/` materializes hash-bound inbox + related evidence under `runtime_artifacts/main_consumer_conformance/`
+- Producer verify loops 11.01–11.08 and 12.02–12.03 close via fixture_main + existing producer surfaces
+- Qualification additive fix: fixture-bound release hashes no longer fail rollback row; currency/QA catalog falls back to canonical repo tree; slice bind detects pre-merged fixture observation
+- Claim firewall preserved: `main_adoption_complete=false`, `production_core_close_authorized=false`, `fixture_authority_cannot_close_core` on handoff
+- Registration exports locked for fixture_main symbols
+
+**Honest non-completions:**
+- MF-P6-12.04: Mode B `producer_partial` / `champion_backed_prediction_absent`
+- MF-P6-12.05: blocked on 12.04; qualification `producer_partial` under fixture_authority (not production qualification)
+- MF-P6-12.06: handoff binds fixture receipts but refuses core close
+
+**Evidence:** `qa/live_verification/bridge_fixture_main_producer_verify_20260719.json`; `runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json`
+

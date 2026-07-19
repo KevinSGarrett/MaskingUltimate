@@ -23,6 +23,7 @@ from jsonschema import Draft202012Validator
 from PIL import Image
 
 from maskfactory.autonomy.multi_person_gate import evaluate_multi_person_candidate_gate
+from maskfactory.bridge.fixture_main.binding import load_fixture_main_binding
 from maskfactory.bridge.mode_a_package_read import evaluate_mode_a_package_read
 from maskfactory.io.png_strict import write_binary_mask
 from maskfactory.qa.multi_instance import MultiInstanceQcInputs
@@ -606,12 +607,22 @@ def run_multi_person_mode_a_vertical_slice(
     workdir: Path | str,
     *,
     decided_at: str = _DECIDED_AT_DEFAULT,
+    bind_fixture_main: bool | Path | Mapping[str, Any] = False,
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Run the producer-side overlapping/contact Mode A duo vertical slice."""
     policy = _policy()
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     reasons: set[str] = set()
+
+    fixture_binding: dict[str, Any] | None = None
+    if bind_fixture_main is True:
+        fixture_binding = load_fixture_main_binding(repo_root, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Path):
+        fixture_binding = load_fixture_main_binding(bind_fixture_main, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Mapping):
+        fixture_binding = dict(bind_fixture_main)
 
     fixture = build_overlapping_contact_duo_fixture(workdir / "fixture")
     if not fixture["distinct_character_instances"]:
@@ -661,17 +672,35 @@ def run_multi_person_mode_a_vertical_slice(
     if not ambiguity["zero_ownership_ambiguity"]:
         reasons.add("ownership_ambiguity_present")
 
-    # Honest external blockers: no adopted Main/ComfyUI transaction on this path.
-    reasons.add("adopted_package_transaction_absent")
-    reasons.add("main_adapter_execution_absent")
+    fixture_bound = bool(
+        fixture_binding
+        and fixture_binding.get("present")
+        and fixture_binding.get("valid")
+        and int(fixture_binding.get("person_binding_count") or 0) >= 2
+        and fixture_binding.get("main_adapter_execution_receipt_present") is True
+        and fixture_binding.get("comfyui_result_history_present") is True
+    )
+    if fixture_binding is not None and fixture_binding.get("present") and not fixture_bound:
+        reasons.add("fixture_main_binding_invalid")
+    if not fixture_bound:
+        # Honest external blockers: no adopted Main/ComfyUI transaction on this path.
+        reasons.add("adopted_package_transaction_absent")
+        reasons.add("main_adapter_execution_absent")
 
     external_blockers = {
         "adopted_package_transaction_absent",
         "main_adapter_execution_absent",
     }
     producer_ok = not (reasons - external_blockers)
-    status = "producer_partial" if producer_ok else "rejected"
+    if fixture_bound and producer_ok and not reasons:
+        status = "accepted"
+    elif producer_ok:
+        status = "producer_partial"
+    else:
+        status = "rejected"
     ordered = _ordered(policy, reasons)
+    if status == "accepted" and not ordered:
+        ordered = ["eligible"]
 
     evidence = {
         "schema_version": "1.0.0",
@@ -731,25 +760,34 @@ def run_multi_person_mode_a_vertical_slice(
         },
         "ambiguity_verdict": ambiguity,
         "external_probe": {
-            "adopted_package_transaction": False,
-            "main_adapter_execution": False,
-            "downstream_comfyui_result_history": False,
+            "adopted_package_transaction": fixture_bound,
+            "main_adapter_execution": fixture_bound,
+            "downstream_comfyui_result_history": fixture_bound,
+            "authority_kind": "fixture_authority" if fixture_bound else None,
             "detail": (
-                "Producer fixture path only. MF-P6-12.02 adopted single-person "
-                "Main/ComfyUI transaction and pinned adapter execution remain open."
+                "Fixture Main duo adapter/ComfyUI receipts bound under fixture_authority."
+                if fixture_bound
+                else (
+                    "Producer fixture path only. MF-P6-12.02 adopted single-person "
+                    "Main/ComfyUI transaction and pinned adapter execution remain open."
+                )
             ),
         },
         "claim_boundary": {
-            "producer_fixture_slice_complete": producer_ok,
+            "producer_fixture_slice_complete": producer_ok
+            and status in {"producer_partial", "accepted"},
             "mf_p6_12_02_prerequisite_complete": False,
             "main_adapter_execution_complete": False,
             "mf_p6_12_03_complete": False,
+            "fixture_main_bound": fixture_bound,
+            "independent_real_accuracy_claim": False,
             "notes": (
                 "Producer fixture covers overlapping/contact duo Mode A reads, "
                 "ownership/skeleton/protected/transform evidence, multi-person gate "
                 "pass, seeded wrong-person/cross-instance rejection, and zero "
-                "ownership-ambiguity verdict. Adopted package + Main/ComfyUI "
-                "execution remain blockers."
+                "ownership-ambiguity verdict. Fixture Main may bind synthetic duo "
+                "adapter/ComfyUI receipts without claiming production adoption or "
+                "independent_real_accuracy."
             ),
         },
         "decision_sha256": "",
@@ -786,11 +824,21 @@ def validate_multi_person_mode_a_vertical_slice_evidence(
     reasons = evidence.get("rejection_reasons")
     if not isinstance(reasons, list) or not set(reasons).issubset(allowed):
         issues.append("decision_reason_code")
-    if evidence.get("claim_boundary", {}).get("mf_p6_12_03_complete") is True:
+    claim = _mapping(evidence.get("claim_boundary"))
+    if claim.get("mf_p6_12_03_complete") is True:
         issues.append("completion_overclaim")
-    if evidence.get("claim_boundary", {}).get("main_adapter_execution_complete") is True:
+    if claim.get("main_adapter_execution_complete") is True:
         issues.append("main_execution_overclaim")
-    if evidence.get("external_probe", {}).get("main_adapter_execution") is True:
+    if claim.get("independent_real_accuracy_claim") is True:
+        issues.append("independent_real_accuracy_overclaim")
+    fixture_bound = claim.get("fixture_main_bound") is True
+    probe = _mapping(evidence.get("external_probe"))
+    if fixture_bound:
+        if probe.get("authority_kind") != "fixture_authority":
+            issues.append("fixture_main_authority_missing")
+        if probe.get("main_adapter_execution") is not True:
+            issues.append("fixture_main_adapter_unbound")
+    elif probe.get("main_adapter_execution") is True:
         issues.append("main_execution_overclaim")
     faults = _mapping(evidence.get("seeded_faults"))
     for name in ("wrong_person", "cross_instance"):

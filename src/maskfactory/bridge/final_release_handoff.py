@@ -212,6 +212,8 @@ def evaluate_final_release_handoff(
     claim_firewall_ok: bool = True,
     fabricated_core_complete_claim: bool = False,
     decided_at: str | None = None,
+    bind_fixture_main: bool = False,
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Evaluate final release + adoption handoff and regenerate profile inputs."""
     policy = _policy()
@@ -219,6 +221,28 @@ def evaluate_final_release_handoff(
     gates: list[dict[str, Any]] = []
     decided = decided_at or _utc_now()
     decision_time = at_time or decided
+
+    fixture_main_bound = False
+    if bind_fixture_main and adoption_receipt is None:
+        from maskfactory.bridge.fixture_main.binding import load_fixture_main_binding
+        from maskfactory.bridge.fixture_main.runtime import SYNTHETIC_MAIN_GIT_COMMIT
+
+        binding = load_fixture_main_binding(repo_root, decided_at=decided)
+        if binding.get("present") and binding.get("valid"):
+            fixture_main_bound = True
+            adoption_receipt = binding.get("adoption_receipt")
+            if qualification_bundle is None:
+                qualification_bundle = binding.get("qualification_bundle")
+            if consumer_git_commit is None:
+                consumer_git_commit = SYNTHETIC_MAIN_GIT_COMMIT
+            # Fixture authority may bind receipts but never authorize core close.
+            reasons.add("fixture_authority_cannot_close_core")
+            claim_firewall_ok = claim_firewall_ok and (
+                _mapping(binding.get("claim_boundary")).get("independent_real_accuracy_claim")
+                is not True
+            )
+        elif binding.get("present") and not binding.get("valid"):
+            reasons.add("main_adoption_not_production_authority")
 
     release = _mapping(release_snapshot)
     release_present = bool(release)
@@ -274,6 +298,14 @@ def evaluate_final_release_handoff(
 
     adoption = _mapping(adoption_receipt)
     adoption_present = bool(adoption)
+    if adoption_present and not fixture_main_bound:
+        from maskfactory.bridge.fixture_main.runtime import SYNTHETIC_MAIN_GIT_COMMIT
+
+        consumer_commit = _commit(_mapping(adoption.get("consumer")).get("git_commit"))
+        key_id = _mapping(adoption.get("signature")).get("key_id")
+        if consumer_commit == SYNTHETIC_MAIN_GIT_COMMIT or key_id == "comfy-main-adoption-fixture":
+            fixture_main_bound = True
+            reasons.add("fixture_authority_cannot_close_core")
     adoption_id = (
         adoption.get("adoption_id") if isinstance(adoption.get("adoption_id"), str) else None
     )
@@ -699,6 +731,8 @@ def evaluate_final_release_handoff(
             "may_mutate_optional_profiles": False,
             "core_closed": False,
             "optional_profile_status_changed": False,
+            "fixture_main_bound": fixture_main_bound,
+            "independent_real_accuracy_claim": False,
         },
         "decision_sha256": "",
     }

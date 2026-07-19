@@ -35,6 +35,8 @@ rejection_reason_codes:
 - claim_firewall_violated
 - core_close_refused_without_exact_gates
 - fabricated_core_complete_claim
+- fixture_authority_cannot_close_core
+- independent_real_accuracy_overclaim
 external_main_prerequisites:
 - main_production_adoption_receipt
 - main_installed_runtime_identities
@@ -45,4 +47,4 @@ claim_limits:
   may_close_core_without_exact_gates: false
   may_impersonate_main_adoption: false
   may_mutate_optional_profiles: false
-policy_sha256: 3166e5dd8bbdc265d6395e84deb0a48d806b2ecf47b167e943ee05683ee8bd1e
+policy_sha256: 1306ad8e01cc0438c71a7371624f0da8edeefcc8f955b5012180c9c0b9d89b10

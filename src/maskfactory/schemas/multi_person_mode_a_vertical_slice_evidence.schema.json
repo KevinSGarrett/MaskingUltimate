@@ -188,9 +188,13 @@
         "downstream_comfyui_result_history"
       ],
       "properties": {
-        "adopted_package_transaction": { "const": false },
-        "main_adapter_execution": { "const": false },
-        "downstream_comfyui_result_history": { "const": false },
+        "adopted_package_transaction": { "type": "boolean" },
+        "main_adapter_execution": { "type": "boolean" },
+        "downstream_comfyui_result_history": { "type": "boolean" },
+        "authority_kind": {
+          "type": ["string", "null"],
+          "enum": [null, "fixture_authority"]
+        },
         "detail": { "type": "string" }
       }
     },
@@ -201,13 +205,17 @@
         "producer_fixture_slice_complete",
         "mf_p6_12_02_prerequisite_complete",
         "main_adapter_execution_complete",
-        "mf_p6_12_03_complete"
+        "mf_p6_12_03_complete",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
       ],
       "properties": {
         "producer_fixture_slice_complete": { "type": "boolean" },
         "mf_p6_12_02_prerequisite_complete": { "const": false },
         "main_adapter_execution_complete": { "const": false },
         "mf_p6_12_03_complete": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false },
         "notes": { "type": "string" }
       }
     },

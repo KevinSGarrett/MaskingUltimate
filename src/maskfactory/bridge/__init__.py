@@ -87,6 +87,22 @@ from .final_release_handoff import (
     regenerate_profile_status_inputs,
     validate_final_release_handoff_evidence,
 )
+from .fixture_main import (
+    AUTHORITY_KIND as FIXTURE_MAIN_AUTHORITY_KIND,
+)
+from .fixture_main import (
+    CONSUMER_KIND as FIXTURE_MAIN_CONSUMER_KIND,
+)
+from .fixture_main import (
+    SYNTHETIC_MAIN_GIT_COMMIT,
+    FixtureMainBindingError,
+    FixtureMainError,
+    FixtureMainRuntime,
+    load_fixture_main_binding,
+    materialize_fixture_main,
+    observation_from_fixture_main_binding,
+    run_fixture_main_producer_verify,
+)
 from .identity import (
     assignment_evidence_sha256,
     build_bridge_identity_decision,
@@ -234,15 +250,20 @@ __all__ = [
     "FAILURE_DOMAINS",
     "FINAL_RELEASE_HANDOFF_EXTERNAL_MAIN_DEPENDENCIES",
     "FINAL_RELEASE_HANDOFF_POLICY_ID",
+    "FIXTURE_MAIN_AUTHORITY_KIND",
+    "FIXTURE_MAIN_CONSUMER_KIND",
     "FailureControlError",
     "FeedbackIntakeError",
     "FeedbackIntakeLedger",
     "FinalReleaseHandoffError",
+    "FixtureMainError",
+    "FixtureMainRuntime",
     "IntegrationReleaseError",
     "JOURNAL_POLICY_ID",
     "JOURNAL_STATES",
     "MATRIX_ID",
     "MainConsumerConformanceError",
+    "SYNTHETIC_MAIN_GIT_COMMIT",
     "ModeAPackageReadError",
     "ModeAVerticalSliceError",
     "ModeBLocalhostClient",
@@ -321,6 +342,11 @@ __all__ = [
     "rollback_clean_release",
     "run_cross_project_qualification",
     "run_integration_release_acceptance",
+    "FixtureMainBindingError",
+    "load_fixture_main_binding",
+    "materialize_fixture_main",
+    "observation_from_fixture_main_binding",
+    "run_fixture_main_producer_verify",
     "run_main_consumer_conformance_harness",
     "run_mode_a_vertical_slice",
     "run_mode_b_draft_actions",

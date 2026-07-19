@@ -37,6 +37,7 @@ reason_codes:
   - downstream_receipt_fabricated
   - main_adapter_execution_absent
   - comfyui_result_history_absent
+  - fixture_main_binding_invalid
   - raw_status_escalation
   - eligible
-policy_sha256: 57b71d9b577b4265b270d19af58c345a25bdb8eca78f9b6a84778c6031582f39
+policy_sha256: acb4085b046c66036345b9edea7de9dcfc6aac8f3fe30c259e24127049193805

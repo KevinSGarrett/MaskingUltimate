@@ -30,6 +30,7 @@ from maskfactory.bridge.external_adapter_conformance import (
     build_external_adapter_conformance_evidence,
     validate_external_adapter_conformance_evidence,
 )
+from maskfactory.bridge.fixture_main.binding import load_fixture_main_binding
 from maskfactory.bridge.journal import (
     append_bridge_journal_event,
     checkpoint_bridge_journal,
@@ -511,15 +512,25 @@ def run_mode_a_vertical_slice(
     *,
     decided_at: str = DECIDED_AT_DEFAULT,
     fabricated_downstream_claim: Mapping[str, Any] | None = None,
+    bind_fixture_main: bool | Path | Mapping[str, Any] = False,
+    repo_root: Path | None = None,
 ) -> dict[str, Any]:
     """Run the producer-side single-person Mode A vertical slice.
 
-    ``workdir`` is reserved for future on-disk package materialization; fixture
-    evaluation is in-memory and deterministic.
+    When ``bind_fixture_main`` is true/path/mapping, bind fixture Main
+    adoption/adapter/ComfyUI receipts if present; remain fail-closed when absent.
     """
     del workdir  # reserved; fixtures remain in-memory
     policy = _policy()
     reasons: set[str] = set()
+
+    fixture_binding: dict[str, Any] | None = None
+    if bind_fixture_main is True:
+        fixture_binding = load_fixture_main_binding(repo_root, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Path):
+        fixture_binding = load_fixture_main_binding(bind_fixture_main, decided_at=decided_at)
+    elif isinstance(bind_fixture_main, Mapping):
+        fixture_binding = dict(bind_fixture_main)
 
     request, package_evidence = build_fixture_adopted_package(person_index=0)
     package_read = evaluate_mode_a_package_read(request, package_evidence, decided_at=decided_at)
@@ -614,9 +625,26 @@ def run_mode_a_vertical_slice(
     if fabrication["rejected"]:
         reasons.add("downstream_receipt_fabricated")
 
-    # Honest absence of Main/ComfyUI execution is always recorded for fixture runs.
-    reasons.add("main_adapter_execution_absent")
-    reasons.add("comfyui_result_history_absent")
+    fixture_bound = bool(
+        fixture_binding
+        and fixture_binding.get("present")
+        and fixture_binding.get("valid")
+        and fixture_binding.get("main_adapter_execution_receipt_present") is True
+        and fixture_binding.get("comfyui_result_history_present") is True
+    )
+    if fixture_binding is not None and fixture_binding.get("present") and not fixture_bound:
+        reasons.add("fixture_main_binding_invalid")
+    if fixture_bound:
+        identity["result_sha256"] = fixture_binding.get("result_sha256")
+        identity["history_sha256"] = fixture_binding.get("history_sha256")
+        identity["complete_downstream_bindings"] = all(
+            isinstance(identity.get(key), str) and len(identity[key]) == 64
+            for key in ("result_sha256", "history_sha256", "workflow_sha256")
+        )
+    else:
+        # Honest absence of Main/ComfyUI execution is recorded when unbound.
+        reasons.add("main_adapter_execution_absent")
+        reasons.add("comfyui_result_history_absent")
 
     recovery = simulate_kill_at_boundary(
         kill_boundary="submitted_unknown",
@@ -640,6 +668,9 @@ def run_mode_a_vertical_slice(
     if fabrication["rejected"]:
         status = "rejected"
         binding_status = "rejected_fabricated"
+    elif fixture_bound and producer_ok and not reasons:
+        status = "accepted"
+        binding_status = "fixture_main_bound"
     elif producer_ok:
         status = "producer_partial"
         binding_status = "producer_ready_awaiting_main"
@@ -648,6 +679,11 @@ def run_mode_a_vertical_slice(
         binding_status = "rejected"
 
     ordered = _ordered(policy, reasons)
+    if status == "accepted" and not ordered:
+        ordered = ["eligible"]
+    hash_chain_complete = bool(
+        fixture_bound and identity.get("complete_downstream_bindings") is True
+    )
     evidence = {
         "schema_version": "1.0.0",
         "record_type": "mode_a_vertical_slice_evidence",
@@ -692,29 +728,33 @@ def run_mode_a_vertical_slice(
         "downstream_envelope": {
             "intended_workflow_sha256": workflow["workflow_sha256"],
             "intended_operation": "comfyui_inpaint_edit",
-            "main_adapter_execution_receipt_present": False,
-            "comfyui_inpaint_result_present": False,
-            "comfyui_history_present": False,
-            # Always true on the producer path: fabrication is refused, and honest
-            # absence is not treated as a successful Main/ComfyUI receipt.
+            "main_adapter_execution_receipt_present": fixture_bound,
+            "comfyui_inpaint_result_present": fixture_bound,
+            "comfyui_history_present": fixture_bound,
+            # Fabrication is refused; fixture Main receipts are distinct from fabrication.
             "fabricated_receipt_rejected": True,
             "binding_status": binding_status,
+            "authority_kind": "fixture_authority" if fixture_bound else None,
         },
         "recovery_probe": recovery_probe,
         "claim_boundary": {
-            "producer_fixture_slice_complete": producer_ok and status == "producer_partial",
+            "producer_fixture_slice_complete": producer_ok
+            and status in {"producer_partial", "accepted"},
             "adopted_integration_release_complete": False,
             "main_adapter_execution_complete": False,
             "comfyui_inpaint_edit_complete": False,
             "mf_p6_12_02_complete": False,
+            "fixture_main_bound": fixture_bound,
+            "fixture_main_hash_chain_complete": hash_chain_complete,
+            "independent_real_accuracy_claim": False,
             "notes": (
                 "Producer fixture path covers adopted Mode A package read with active "
                 "wrapper, adapter conformance binding, independent use-eligibility, "
                 "complete producer identity hashes, signed handoff journal through submit, "
                 "intended inpaint workflow hash, fabricated-receipt refusal, and "
-                "submitted_unknown recovery probe. Real adopted integration-release "
-                "clean-install, pinned Main adapter execution, and ComfyUI inpaint/edit "
-                "result/history receipts remain open external blockers."
+                "submitted_unknown recovery probe. Fixture Main may bind synthetic "
+                "adapter/ComfyUI receipts under fixture_authority without claiming "
+                "production Main adoption or independent_real_accuracy."
             ),
         },
         "decision_sha256": "",
@@ -756,20 +796,33 @@ def validate_mode_a_vertical_slice_evidence(evidence: Mapping[str, Any]) -> tupl
         issues.append("main_execution_overclaim")
     if claim.get("comfyui_inpaint_edit_complete") is True:
         issues.append("comfyui_execution_overclaim")
+    if claim.get("independent_real_accuracy_claim") is True:
+        issues.append("independent_real_accuracy_overclaim")
+    fixture_bound = claim.get("fixture_main_bound") is True
     identity = _mapping(evidence.get("identity_chain"))
-    if identity.get("complete_downstream_bindings") is True:
-        issues.append("downstream_binding_overclaim")
-    if identity.get("result_sha256") is not None or identity.get("history_sha256") is not None:
-        issues.append("fabricated_downstream_identity")
     envelope = _mapping(evidence.get("downstream_envelope"))
-    if envelope.get("main_adapter_execution_receipt_present") is True:
-        issues.append("main_receipt_overclaim")
-    if envelope.get("comfyui_inpaint_result_present") is True:
-        issues.append("comfyui_result_overclaim")
-    if envelope.get("comfyui_history_present") is True:
-        issues.append("comfyui_history_overclaim")
+    if fixture_bound:
+        if envelope.get("authority_kind") != "fixture_authority":
+            issues.append("fixture_main_authority_missing")
+        if envelope.get("binding_status") != "fixture_main_bound":
+            issues.append("fixture_main_binding_status")
+        if identity.get("complete_downstream_bindings") is not True:
+            issues.append("fixture_main_hash_chain_incomplete")
+        if claim.get("fixture_main_hash_chain_complete") is not True:
+            issues.append("fixture_main_hash_chain_incomplete")
+    else:
+        if identity.get("complete_downstream_bindings") is True:
+            issues.append("downstream_binding_overclaim")
+        if identity.get("result_sha256") is not None or identity.get("history_sha256") is not None:
+            issues.append("fabricated_downstream_identity")
+        if envelope.get("main_adapter_execution_receipt_present") is True:
+            issues.append("main_receipt_overclaim")
+        if envelope.get("comfyui_inpaint_result_present") is True:
+            issues.append("comfyui_result_overclaim")
+        if envelope.get("comfyui_history_present") is True:
+            issues.append("comfyui_history_overclaim")
     package = _mapping(evidence.get("package_read"))
-    if evidence.get("status") == "producer_partial":
+    if evidence.get("status") in {"producer_partial", "accepted"}:
         if package.get("status") != "accepted" or package.get("wrapper_status") != "active":
             issues.append("partial_without_package_read")
         if _mapping(evidence.get("adapter_conformance")).get("status") != "accepted":

@@ -137,6 +137,20 @@ def _git_head(repo_root: Path) -> str | None:
     return value if len(value) == 40 and all(ch in "0123456789abcdef" for ch in value) else None
 
 
+def _resolve_repo_file(root: Path, relative: str) -> Path:
+    """Prefer ``root`` copy; fall back to canonical MaskFactory tree for fixed QA files."""
+    candidate = root / relative
+    if candidate.is_file():
+        return candidate
+    fallback = REPO_ROOT / relative
+    return fallback if fallback.is_file() else candidate
+
+
+def _fixture_main_bound(obs: Mapping[str, Any]) -> bool:
+    binding = _mapping(obs.get("fixture_main_binding"))
+    return binding.get("valid") is True and binding.get("authority_kind") == "fixture_authority"
+
+
 def _load_json(path: Path) -> dict[str, Any] | None:
     if not path.is_file():
         return None
@@ -868,7 +882,7 @@ def _exec_invalidation(
 
 
 def _exec_rollback(
-    row: Mapping[str, Any], _obs: Mapping[str, Any], decided_at: str, ctx: dict[str, Any]
+    row: Mapping[str, Any], obs: Mapping[str, Any], decided_at: str, ctx: dict[str, Any]
 ) -> dict[str, Any]:
     vectors = _load_json(
         REPO_ROOT / "qa/governance/bridge/consumer_invalidation_golden_vectors_v1.json"
@@ -884,12 +898,14 @@ def _exec_rollback(
         None,
     )
     release_bound = isinstance(ctx.get("release_payload_sha256"), str)
-    # Producer path: rollback proof absence must remain rejected (fail closed), and
-    # production release bytes remain unbound until 12.01 publication exists.
+    fixture_bound = _fixture_main_bound(obs)
+    # Producer path: rollback proof absence must remain rejected (fail closed).
+    # Production release bytes stay unbound until a non-fixture publication exists;
+    # fixture_authority may bind synthetic release hashes without failing this row.
     passed = (
         isinstance(rollback_case, Mapping)
         and rollback_case.get("expect_status") == "rejected"
-        and release_bound is False
+        and (release_bound is False or fixture_bound)
     )
     return _row_result(
         row,
@@ -897,7 +913,10 @@ def _exec_rollback(
         decided_at=decided_at,
         test_ids=["rollback_missing_proof_rejected", "release_unbound_honest"],
         evidence_ids=["ev-invalidation-vectors"],
-        detail=f"rollback_case={rollback_case};release_bound={release_bound}",
+        detail=(
+            f"rollback_case={rollback_case};release_bound={release_bound};"
+            f"fixture_main_bound={fixture_bound}"
+        ),
     )
 
 
@@ -927,15 +946,23 @@ def _exec_nofallback(
     )
 
 
+def _slice_status_ok(status: object, claim: Mapping[str, Any]) -> bool:
+    """Producer-partial, or fixture-Main-bound accepted, both keep completion false."""
+    if status == "producer_partial":
+        return True
+    return status == "accepted" and claim.get("fixture_main_bound") is True
+
+
 def _exec_slice_mode_a(
     row: Mapping[str, Any], _obs: Mapping[str, Any], decided_at: str, ctx: dict[str, Any]
 ) -> dict[str, Any]:
     mode_a = _mapping(ctx.get("mode_a_slice"))
     claim = _mapping(mode_a.get("claim_boundary"))
     passed = (
-        mode_a.get("status") == "producer_partial"
+        _slice_status_ok(mode_a.get("status"), claim)
         and claim.get("producer_fixture_slice_complete") is True
         and claim.get("mf_p6_12_02_complete") is False
+        and claim.get("independent_real_accuracy_claim") is not True
     )
     return _row_result(
         row,
@@ -953,9 +980,10 @@ def _exec_slice_multi(
     multi = _mapping(ctx.get("multi_person_slice"))
     claim = _mapping(multi.get("claim_boundary"))
     passed = (
-        multi.get("status") == "producer_partial"
+        _slice_status_ok(multi.get("status"), claim)
         and claim.get("producer_fixture_slice_complete") is True
         and claim.get("mf_p6_12_03_complete") is False
+        and claim.get("independent_real_accuracy_claim") is not True
     )
     return _row_result(
         row,
@@ -974,10 +1002,11 @@ def _exec_slice_mode_b(
     claim = _mapping(mode_b.get("claim_boundary"))
     cert = _mapping(mode_b.get("certification_transaction"))
     passed = (
-        mode_b.get("status") == "producer_partial"
+        _slice_status_ok(mode_b.get("status"), claim)
         and claim.get("producer_fixture_slice_complete") is True
         and cert.get("exact_original_prediction_bound") is True
         and claim.get("mf_p6_12_04_complete") is False
+        and claim.get("independent_real_accuracy_claim") is not True
     )
     return _row_result(
         row,
@@ -1186,22 +1215,94 @@ def build_cross_project_qualification_evidence(
     decided_at: str = DECIDED_AT_DEFAULT,
     repo_root: Path | None = None,
     ensure_slice_evidence: bool = True,
+    bind_fixture_main: bool | None = None,
 ) -> dict[str, Any]:
-    """Execute the producer matrix and bind available hashes fail-closed."""
+    """Execute the producer matrix and bind available hashes fail-closed.
+
+    ``bind_fixture_main``:
+    - ``None`` (default): bind only when fixture Main artifacts are already present
+    - ``True``: require/attempt fixture Main binding
+    - ``False``: never consume fixture Main inbox artifacts
+    """
     policy = _policy()
     root = Path(repo_root) if repo_root is not None else REPO_ROOT
     obs = _mapping(observation)
     reasons: set[str] = set()
+
+    fixture_binding = None
+    if bind_fixture_main is not False:
+        from maskfactory.bridge.fixture_main.binding import (
+            load_fixture_main_binding,
+            observation_from_fixture_main_binding,
+        )
+
+        fixture_binding = load_fixture_main_binding(root, decided_at=decided_at)
+        if fixture_binding.get("present") and fixture_binding.get("valid"):
+            if bind_fixture_main is True or bind_fixture_main is None:
+                if "fixture_main_binding" not in obs:
+                    merged = observation_from_fixture_main_binding(fixture_binding)
+                    merged.update(obs)
+                    obs = merged
+        elif (
+            bind_fixture_main is True
+            and fixture_binding.get("present")
+            and not fixture_binding.get("valid")
+        ):
+            reasons.add("fabricated_main_receipt")
 
     if ensure_slice_evidence:
         mode_a_path = root / "runtime_artifacts/mode_a_vertical_slice_scratch/evidence.json"
         multi_path = (
             root / "runtime_artifacts/multi_person_mode_a_vertical_slice_scratch/evidence.json"
         )
-        if not mode_a_path.is_file():
-            run_mode_a_vertical_slice(mode_a_path.parent)
-        if not multi_path.is_file():
-            run_multi_person_mode_a_vertical_slice(multi_path.parent)
+        mode_b_path = root / "runtime_artifacts/mode_b_vertical_slice_scratch/evidence.json"
+        bind_slices = bool(
+            bind_fixture_main is not False
+            and (
+                (
+                    fixture_binding
+                    and fixture_binding.get("present")
+                    and fixture_binding.get("valid")
+                )
+                or _fixture_main_bound(obs)
+            )
+        )
+
+        def _persist(path: Path, evidence: Mapping[str, Any]) -> None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                json.dumps(dict(evidence), indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+
+        if not mode_a_path.is_file() or bind_slices:
+            _persist(
+                mode_a_path,
+                run_mode_a_vertical_slice(
+                    mode_a_path.parent,
+                    bind_fixture_main=bind_slices,
+                    repo_root=root,
+                ),
+            )
+        if not multi_path.is_file() or bind_slices:
+            _persist(
+                multi_path,
+                run_multi_person_mode_a_vertical_slice(
+                    multi_path.parent,
+                    bind_fixture_main=bind_slices,
+                    repo_root=root,
+                ),
+            )
+        if not mode_b_path.is_file() or bind_slices:
+            from maskfactory.bridge.mode_b_vertical_slice import run_mode_b_vertical_slice
+
+            _persist(
+                mode_b_path,
+                run_mode_b_vertical_slice(
+                    mode_b_path.parent,
+                    bind_fixture_main=bind_slices,
+                    repo_root=root,
+                ),
+            )
 
     mode_a_slice = _load_json(
         root / "runtime_artifacts/mode_a_vertical_slice_scratch/evidence.json"
@@ -1212,16 +1313,15 @@ def build_cross_project_qualification_evidence(
     mode_b_slice = _load_json(
         root / "runtime_artifacts/mode_b_vertical_slice_scratch/evidence.json"
     )
-    currency_review = _load_json(root / "qa/governance/currency/current_review.json")
+    currency_path = _resolve_repo_file(root, "qa/governance/currency/current_review.json")
+    currency_review = _load_json(currency_path)
     currency_file_sha = (
-        _sha256_bytes((root / "qa/governance/currency/current_review.json").read_bytes())
-        if (root / "qa/governance/currency/current_review.json").is_file()
-        else None
+        _sha256_bytes(currency_path.read_bytes()) if currency_path.is_file() else None
     )
 
     producer_commit = obs.get("producer_git_commit")
     if not isinstance(producer_commit, str):
-        producer_commit = _git_head(root)
+        producer_commit = _git_head(root) or _git_head(REPO_ROOT)
     wire_manifest = _wire_manifest_sha256()
     lineage = _mapping(policy.get("preserved_contract_lineage"))
 
@@ -1381,13 +1481,16 @@ def build_cross_project_qualification_evidence(
             root / "runtime_artifacts/multi_person_mode_a_vertical_slice_scratch/evidence.json",
         ),
         ("ev-mode-b-slice", root / "runtime_artifacts/mode_b_vertical_slice_scratch/evidence.json"),
-        ("ev-currency-review", root / "qa/governance/currency/current_review.json"),
+        ("ev-currency-review", currency_path),
         (
             "ev-invalidation-vectors",
-            root / "qa/governance/bridge/consumer_invalidation_golden_vectors_v1.json",
+            _resolve_repo_file(
+                root, "qa/governance/bridge/consumer_invalidation_golden_vectors_v1.json"
+            ),
         ),
     ):
-        entry = _file_catalog_entry(evidence_id, path, relative_to=root)
+        catalog_root = root if path.resolve().is_relative_to(root.resolve()) else REPO_ROOT
+        entry = _file_catalog_entry(evidence_id, path, relative_to=catalog_root)
         if entry is not None:
             catalog.append(entry)
     if not catalog:
@@ -1428,12 +1531,19 @@ def build_cross_project_qualification_evidence(
         "external_main_prerequisite_unmet",
         "release_capability_requirements_unbound",
     }
+    fixture_main_bound = bool(
+        isinstance(obs.get("fixture_main_binding"), Mapping)
+        and _mapping(obs.get("fixture_main_binding")).get("valid") is True
+        and _mapping(obs.get("fixture_main_binding")).get("authority_kind") == "fixture_authority"
+    )
     producer_ok = producer_complete and not (reasons - external_only)
     if (
         consumer_complete
         and producer_ok
         and obs.get("claim_production_qualification") is not True
         and not reasons
+        and not fixture_main_bound
+        and policy.get("fixture_truth_tier") != "synthetic_contract_fixture"
     ):
         status = "accepted"
     elif producer_ok:
@@ -1441,15 +1551,11 @@ def build_cross_project_qualification_evidence(
     else:
         status = "rejected"
 
-    if status == "accepted":
-        # Belt-and-suspenders: never accept fixture tier as production.
-        if policy.get("fixture_truth_tier") == "synthetic_contract_fixture":
-            status = "producer_partial"
-            reasons.add("fixture_evidence_claimed_as_production")
-
     ordered = _ordered(policy, reasons) or (["eligible"] if status == "accepted" else [])
     if status != "accepted" and ordered == ["eligible"]:
         ordered = _ordered(policy, reasons | {"external_main_prerequisite_unmet"})
+    if fixture_main_bound and status == "producer_partial" and not ordered:
+        ordered = ["eligible"]
 
     evidence = {
         "schema_version": "1.0.0",
@@ -1479,6 +1585,8 @@ def build_cross_project_qualification_evidence(
                 qualification_sha if isinstance(qualification_sha, str) else None
             ),
             "complete": consumer_complete,
+            "fixture_main_bound": fixture_main_bound,
+            "authority_kind": "fixture_authority" if fixture_main_bound else None,
         },
         "release_capability_requirements_binding": {
             "release_payload_sha256": (
@@ -1525,6 +1633,8 @@ def build_cross_project_qualification_evidence(
             "producer_matrix_executable": producer_ok and status == "producer_partial",
             "establishes_production_qualification": False,
             "mf_p6_12_05_complete": False,
+            "fixture_main_bound": fixture_main_bound,
+            "independent_real_accuracy_claim": False,
             "notes": policy["claim_boundary"]["notes"],
         },
         "decision_sha256": "",
@@ -1579,6 +1689,8 @@ def validate_cross_project_qualification_evidence(
         issues.append("completion_overclaim")
     if claim.get("establishes_production_qualification") is True:
         issues.append("production_qualification_overclaim")
+    if claim.get("independent_real_accuracy_claim") is True:
+        issues.append("independent_real_accuracy_overclaim")
     consumer = _mapping(evidence.get("consumer_binding"))
     if evidence.get("status") == "accepted" and consumer.get("complete") is not True:
         issues.append("accepted_without_main_bindings")
@@ -1598,6 +1710,7 @@ def run_cross_project_qualification(
     observation: Mapping[str, Any] | None = None,
     decided_at: str = DECIDED_AT_DEFAULT,
     repo_root: Path | None = None,
+    bind_fixture_main: bool | None = None,
 ) -> dict[str, Any]:
     """Run the matrix and optionally persist evidence under ``workdir``."""
     workdir = Path(workdir)
@@ -1607,6 +1720,7 @@ def run_cross_project_qualification(
         decided_at=decided_at,
         repo_root=repo_root,
         ensure_slice_evidence=True,
+        bind_fixture_main=bind_fixture_main,
     )
     output = workdir / "cross_project_qualification_evidence.json"
     output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -165,6 +165,11 @@
         },
         "champion_backed_live_prediction": { "const": false },
         "live_service_used": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "authority_kind": {
+          "type": ["string", "null"],
+          "enum": [null, "fixture_authority"]
+        },
         "detail": { "type": "string" }
       }
     },
@@ -175,13 +180,17 @@
         "producer_fixture_slice_complete",
         "live_gpu_champion_complete",
         "windows_loopback_complete",
-        "mf_p6_12_04_complete"
+        "mf_p6_12_04_complete",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
       ],
       "properties": {
         "producer_fixture_slice_complete": { "type": "boolean" },
         "live_gpu_champion_complete": { "const": false },
         "windows_loopback_complete": { "const": false },
         "mf_p6_12_04_complete": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false },
         "notes": { "type": "string" }
       }
     },

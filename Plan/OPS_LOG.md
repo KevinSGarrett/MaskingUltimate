@@ -7345,3 +7345,17 @@ Signed correlation:                     request/signature, dispatch/signature, a
 Scope defect preserved:                 obsolete request permitted a frozen v1 invalidation schema and positive fixture, but neither changed; any replacement must be additive and exclude all frozen v1 bytes
 Disposition:                            adoption `NOT_APPLICABLE`; do not wake or duplicate the terminal request; MF-P6-08.07 remains item-blocked at 50% pending a correctly rooted additive request
 Evidence:                              `qa/live_verification/invalidation_worker_terminal_reconciliation_20260719.json`
+
+## 2026-07-19 00:53 UTC - Reproducible release installation gap isolated
+
+**Result:** MF-P6-10.04 remains open with zero completion credit. The developer node-pack installer
+works for basic copies, but it is neither a clean release installer nor a reversible transaction.
+
+Existing foundation:                   two focused installer/dependency-light tests and Ruff pass; localhost API pin and deterministic local config are preserved
+Live authority defect:                 active MaskFactory is editable from `C:\Comfy_UI_Main_Masking`; installer and node bytes resolve directly from that worktree
+Stale-file probe:                      seeded `stale_unpublished_node.py` survives installation; no closed manifest, release identity, per-file hashes, verification receipt, or completion marker is emitted
+Rollback/atomicity:                    live target is mutated in place; no prior snapshot, atomic switch, rollback callable/command, or crash recovery exists
+Build probe:                           no-isolation wheel build fails with `invalid command bdist_wheel`; `wheel` is unpinned/absent and build-system requirements are open-ended, so clean reproducibility is not established
+Prepared unit:                         `MF-CURSOR-10.04-REPRODUCIBLE-RELEASE-INSTALLATION`; five absent/clean additive paths are disjoint from held 10.01 and dirty 08.05 paths, held until 10.01/10.02 are adopted
+Truth boundary:                        no release built, installed, adopted, or rolled back; frozen v1, worker records, live node trees, Docker/WSL, and project runtime were not changed
+Evidence:                              `qa/live_verification/bridge_release_installation_gap_audit_20260719.json`

@@ -2557,6 +2557,11 @@ def daz_retention() -> None:
     """Plan or explicitly apply hash-bound DAZ file retention."""
 
 
+@daz.group("monitor")
+def daz_monitor() -> None:
+    """Build local-only truth-labeled dashboards and alerts."""
+
+
 @daz.group("lineage")
 def daz_lineage() -> None:
     """Query and revoke immutable DAZ supervision lineage."""
@@ -8555,6 +8560,61 @@ def daz_retention_apply(plan_id: str, config_root: Path, dry_run: bool) -> None:
     try:
         configuration = load_control_configuration(config_root)
         report = apply_retention_plan(configuration, plan_id=plan_id, dry_run=dry_run)
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_monitor.command("snapshot")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/alerts.yaml"),
+    show_default=True,
+)
+@click.option("--f-free-bytes", type=click.IntRange(min=0), required=True)
+@click.option("--c-free-bytes", type=click.IntRange(min=0), required=True)
+def daz_monitor_snapshot(
+    config_root: Path,
+    policy: Path,
+    f_free_bytes: int,
+    c_free_bytes: int,
+) -> None:
+    """Read current governed state and emit a local alert/dashboard/daily bundle."""
+    from .daz import (
+        build_daily_report,
+        build_dashboard,
+        collect_monitoring_snapshot,
+        evaluate_alerts,
+        load_alert_policy,
+        load_control_configuration,
+        result_envelope,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        snapshot = collect_monitoring_snapshot(
+            configuration,
+            observed_f_free_bytes=f_free_bytes,
+            observed_c_free_bytes=c_free_bytes,
+        )
+        evaluation = evaluate_alerts(load_alert_policy(policy), snapshot)
+        report = result_envelope(
+            reason="daz_monitoring_snapshot",
+            evidence_paths=(str(configuration.paths.state_database), str(policy)),
+            data={
+                "snapshot": snapshot,
+                "alerts": evaluation,
+                "dashboard": build_dashboard(snapshot, evaluation),
+                "daily_report": build_daily_report(snapshot, evaluation),
+            },
+        )
     except (OSError, ValueError) as exc:
         _emit_daz_error(exc)
     click.echo(json.dumps(report, sort_keys=True))

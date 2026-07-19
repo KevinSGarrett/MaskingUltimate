@@ -17874,13 +17874,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-19T04:47:51+00:00",
+          "actor": "codex",
+          "text": "Implemented inactive local-only alert policy, strict monitoring schemas, read-only DB collector, deterministic severity/suppression evaluator, truth-labeled dashboard/daily report, and read-only CLI snapshot. Alert fixtures and DAZ control/storage regressions pass. Remaining: production D7/worker telemetry, pilot-calibrated thresholds, and reviewed live local alert/daily-report evidence."
+        }
+      ],
+      "evidence": "qa/live_verification/daz_monitoring_alert_contract_20260719.json",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T04:47:51+00:00",
       "orphaned": false
     },
     "MF-P9-12.04": {

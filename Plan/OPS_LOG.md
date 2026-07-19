@@ -7798,3 +7798,18 @@ Live preservation:                      F control remains `enabled=false`, `paus
 Remaining:                              governed D9-08 measured p95 inputs; bounded F-drive fill/drain and disposable retention rehearsal; dependent backup/restore/recovery/soak evidence
 Truth boundary:                         no live deletion, production reservation profile, DAZ activation, backup/recovery completion or item-completion claim
 Evidence:                              `qa/live_verification/daz_storage_reservation_retention_contract_20260719.json`
+
+## 2026-07-19 04:47 UTC - Local DAZ monitoring and alert fixtures implemented inactive
+
+**Result:** MF-P9-12.03 advances from 0% to 80% with deterministic local alert fixtures and
+truth-labeled dashboard/daily-report output; production telemetry and live delivery remain open.
+
+Policy:                                 closed local-only info/warning/high/critical rules with report, pause/investigate, drain and stop-ingestion/preserve-evidence actions
+Collector:                              read-only SQLite integrity, queue, lease, reservation, retry, crash, package and dataset counters plus explicit host signals
+Alert safety:                           deterministic hash; severity ordering; lower-severity incident-group suppression; critical corrupt-DB/semantic-defect/source-in-Git fixtures
+Truth boundary:                         accepted DAZ counts are labeled `accepted_synthetic_scenes` and `train_only_synthetic`; real accuracy, real gold and zero-touch operation are explicitly not claimed
+CLI:                                    read-only JSON `maskfactory daz monitor snapshot`
+Focused validation:                     9 monitoring/alert tests pass; 47 monitoring/storage/scheduler/control/runtime regressions pass; Ruff, Black 25.1 hook and diff integrity pass
+Live preservation:                      no live monitoring invocation or DB mutation; F control remains disabled/paused/draining; four maintenance tasks remain Disabled; no DAZ, WSL or worker-lane action
+Remaining:                              production stage/resource/replay/coverage telemetry; pilot-calibrated thresholds; reviewed live local alert and daily report
+Evidence:                              `qa/live_verification/daz_monitoring_alert_contract_20260719.json`

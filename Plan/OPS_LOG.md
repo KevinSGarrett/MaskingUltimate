@@ -7899,3 +7899,19 @@ Broader suite truth:                   1,340 DAZ-selected tests collected; four 
 Post-state:                             F control remains disabled/paused/drained at revision 1 with zero leases; no DAZ process; all four maintenance tasks remain Disabled
 Remaining:                              D11 governed system/live-safe campaign, disk-fill/GPU-contention branches, and a complete bounded broader DAZ regression result
 Evidence:                              `qa/live_verification/daz_failure_campaign_20260719.json`
+
+## 2026-07-19 06:09 UTC - MaskFactory localhost service restored after normal restart
+
+**Result:** The bounded MF-P6-11.07 service preflight blocker is cleared: the pinned Ubuntu
+runtime is healthy on exact localhost, while the item's dependency and failure-controller gap remains open at 40%.
+
+Pinned runtime:                         `/home/kevin/miniforge3/envs/maskfactory/bin/python`; Python 3.11.15; FastAPI 0.139.0; Uvicorn 0.51.0; repository `maskfactory.cli`
+Managed launch:                         Windows WSL client PID 42128; Linux service PID 425; hidden window; stdout/stderr captured in `logs/maskfactory_8765_.stdout.log` and `.stderr.log`
+Listener:                               WSL `ss` proves only `127.0.0.1:8765`, never `0.0.0.0` or `::`
+Health:                                 Windows `/health` HTTP 200/status `ok`; pipeline 0.0.1; Mode-B API 1.0.0; RTX 5060 visible with 7,899 MiB free
+Models:                                 Windows `/models` HTTP 200; 17 governed model records; zero champions and zero loaded models
+GPU exclusion:                          readable `runs/gpu.lock` belongs to Linux PID 425 with purpose `serve_mode_b`
+Failed attempt:                         first quote-heavy import canary failed in shell parsing before Python ran and receives no credit; no service/process launched by that attempt
+Preservation:                           no Cursor/Claude wrapper, worker-control repair, scheduled-task enable, Docker/CVAT/Nuclio mutation, model-file mutation, or operational-certificate dirty-path mutation
+Truth boundary:                         no `/predict`, `/refine`, champion, role-certificate, retry/circuit/DAG-block, or MF-P6-11.07 completion claim
+Evidence:                              `qa/live_verification/maskfactory_service_recovery_post_restart_20260719.json`

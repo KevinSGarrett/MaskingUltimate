@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_failure_campaign_report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "campaign_id", "campaign_kind", "captured_at", "policy_sha256", "workspace_root", "live_root", "passed", "scenario_count", "scenarios", "report_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "campaign_id": {"type": "string", "pattern": "^failure_campaign_[A-Za-z0-9_.-]+$"},
+    "campaign_kind": {"const": "isolated_deterministic_fixture"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "workspace_root": {"type": "string", "minLength": 1},
+    "live_root": {"type": "string", "minLength": 1},
+    "passed": {"type": "boolean"},
+    "scenario_count": {"const": 5},
+    "scenarios": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/scenario"}
+    },
+    "report_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario", "passed", "expected", "observed", "evidence"],
+      "properties": {
+        "scenario": {"enum": ["drive_loss", "db_corruption", "crash", "popup", "oom"]},
+        "passed": {"type": "boolean"},
+        "expected": {"type": "object"},
+        "observed": {"type": "object"},
+        "evidence": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

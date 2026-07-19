@@ -2572,6 +2572,11 @@ def daz_recovery() -> None:
     """Build and publish deterministic Tier A/B/C recovery matrices."""
 
 
+@daz.group("failure-campaign")
+def daz_failure_campaign() -> None:
+    """Exercise failure recovery in a disposable fixture, never the live DAZ root."""
+
+
 @daz.group("lineage")
 def daz_lineage() -> None:
     """Query and revoke immutable DAZ supervision lineage."""
@@ -8881,6 +8886,89 @@ def daz_recovery_matrix(
     click.echo(json.dumps(report, sort_keys=True))
     if not matrix["recoverable"]:
         raise click.exceptions.Exit(77)
+
+
+@daz_failure_campaign.command("run")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/failure_campaign.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--runtime-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/runtime.yaml"),
+    show_default=True,
+)
+@click.option("--workspace", type=click.Path(path_type=Path, file_okay=False), required=True)
+@click.option("--campaign-id", required=True)
+@click.option(
+    "--apply",
+    "apply_changes",
+    is_flag=True,
+    help="Create and exercise a new disposable fixture workspace.",
+)
+def daz_failure_campaign_run(
+    config_root: Path,
+    policy: Path,
+    runtime_policy: Path,
+    workspace: Path,
+    campaign_id: str,
+    apply_changes: bool,
+) -> None:
+    """Dry-run by default; --apply runs no DAZ, WSL, GPU, or live-root mutation."""
+    from .daz import (
+        load_control_configuration,
+        load_daz_runtime_profile,
+        load_failure_campaign_policy,
+        plan_failure_campaign,
+        result_envelope,
+        run_failure_campaign,
+    )
+
+    try:
+        configuration = load_control_configuration(config_root)
+        campaign_policy = load_failure_campaign_policy(policy)
+        document = (
+            run_failure_campaign(
+                campaign_policy,
+                workspace,
+                live_root=configuration.paths.root,
+                campaign_id=campaign_id,
+                runtime_profile=load_daz_runtime_profile(runtime_policy),
+            )
+            if apply_changes
+            else plan_failure_campaign(
+                campaign_policy,
+                workspace,
+                live_root=configuration.paths.root,
+                campaign_id=campaign_id,
+            )
+        )
+        passed = bool(document.get("passed", True))
+        report = result_envelope(
+            code=0 if passed else 78,
+            reason=(
+                "daz_failure_campaign_passed"
+                if apply_changes and passed
+                else "daz_failure_campaign_failed" if apply_changes else "daz_failure_campaign_plan"
+            ),
+            entity_ids=(campaign_id,),
+            evidence_paths=(str(policy), str(workspace)),
+            data={"apply": apply_changes, "campaign": document},
+        )
+    except (OSError, ValueError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+    if apply_changes and not passed:
+        raise click.exceptions.Exit(78)
 
 
 @golden_reference.command("import")

@@ -7881,3 +7881,21 @@ Code validation:                        72 integrated tests pass; Ruff, Black 25
 Preservation:                           runtime remains disabled/paused/draining; all four maintenance tasks Disabled; no DAZ/WSL launch or MF-P6-08.05 mutation
 Remaining boundary:                     recipe/dataset-model categories are absent, so semantic replay, accepted-package verification, registry rebuild and lineage query remain unexecuted; rebuild/omit routes await eligible artifacts
 Evidence:                              `qa/live_verification/daz_live_backup_migration_recovery_restore_20260719.json`
+
+## 2026-07-19 06:00 UTC - Isolated five-scenario DAZ failure campaign passes
+
+**Result:** MF-P9-12.06 advances from 0% to 82% with closed, fixture-only recovery
+contracts and a sealed bounded machine campaign; the dependent D11 system campaign remains open.
+
+Isolation:                              disposable `C:\MaskFactory_FailureCampaigns\failure_campaign_mf_p9_12_06_20260719`; `F:\DAZ` was a read-only exclusion boundary; no DAZ/WSL/Docker/GPU launch
+Drive loss:                             missing required root refused promotion, requested pause/drain semantics, and preserved the partial as unaccepted
+DB corruption:                         corrupt original preserved; integrity failure detected; verified snapshot restored to a new path; integrity `ok`; one unique accepted row and no duplication
+Crash:                                 exit 137 without a terminal result failed closed; partial remained unaccepted and no artifact was promoted
+Popup:                                 dialog metadata caused quarantine and injected process-tree termination; watchdog records no UI input and no artifact promotion
+OOM:                                   exactly one lower-cost retry changed only render samples/tile size; renderer, resolution, ontology and other protected fields stayed fixed; persistent OOM quarantined
+Campaign seal:                         report SHA256 `508841112df2202b235e202278269de3cad42fb7d53fb76ee0ed3b68c45a8304`; 5/5 scenarios passed
+Focused validation:                    51 campaign/worker/scheduler/backup/recovery tests pass; Ruff and diff integrity pass
+Broader suite truth:                   1,340 DAZ-selected tests collected; four broad runs detached and remained active without summaries, so their exact owned PIDs were stopped (`OWNED_PYTEST_REMAINING=0`) and no broad pass/failure is inferred
+Post-state:                             F control remains disabled/paused/drained at revision 1 with zero leases; no DAZ process; all four maintenance tasks remain Disabled
+Remaining:                              D11 governed system/live-safe campaign, disk-fill/GPU-contention branches, and a complete bounded broader DAZ regression result
+Evidence:                              `qa/live_verification/daz_failure_campaign_20260719.json`

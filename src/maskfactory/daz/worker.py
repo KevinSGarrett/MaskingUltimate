@@ -181,6 +181,7 @@ def _watch_process(
     timeout_seconds: float,
     started_monotonic: float,
     popup_detector: Callable[[int, tuple[str, ...]], WindowObservation | None],
+    process_terminator: Callable[[ProcessLike], None] | None = None,
 ) -> DazWorkerOutcome:
     patterns = tuple(str(value).casefold() for value in profile.watchdog["dialog_title_patterns"])
     poll_seconds = float(profile.watchdog["poll_interval_seconds"])
@@ -203,7 +204,7 @@ def _watch_process(
 
         dialog = popup_detector(process.pid, patterns)
         if dialog is not None:
-            _terminate_process_tree(process)
+            (process_terminator or _terminate_process_tree)(process)
             evidence = _watchdog_document(
                 recipe,
                 "dialog_detected",
@@ -219,7 +220,7 @@ def _watch_process(
                 "quarantined", "dialog_detected", process.poll(), elapsed, None, dialog
             )
         if elapsed >= timeout_seconds:
-            _terminate_process_tree(process)
+            (process_terminator or _terminate_process_tree)(process)
             write_watchdog_evidence(
                 files.watchdog_evidence,
                 _watchdog_document(recipe, "timeout", elapsed, dialog=None),

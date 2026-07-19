@@ -1,0 +1,29 @@
+schema_version: 1.0.0
+fixture_only: true
+required_scenarios: [drive_loss, db_corruption, crash, popup, oom]
+drive_loss:
+  action: pause_and_drain
+  partial_acceptance_allowed: false
+db_corruption:
+  preserve_corrupt_original: true
+  restore_to_new_path: true
+  duplicate_acceptance_allowed: false
+crash:
+  missing_terminal_result_action: fail
+  partial_acceptance_allowed: false
+popup:
+  action: quarantine
+  process_tree_termination_required: true
+  ui_input_allowed: false
+oom:
+  maximum_lower_cost_retries: 1
+  persistent_failure_action: quarantine
+  allowed_override_fields: [render_samples, tile_size]
+  protected_recipe_fields:
+    - operation
+    - bundle_version
+    - content_directories
+    - payload.renderer
+    - payload.annotation_width
+    - payload.annotation_height
+    - payload.ontology_id

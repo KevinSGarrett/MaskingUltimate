@@ -17975,13 +17975,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 82,
+      "notes": [
+        {
+          "ts": "2026-07-19T06:02:15+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented closed-schema fixture-only failure campaign and CLI. Bounded machine proof passed drive loss, DB corruption, crash, popup, and OOM without DAZ/WSL/Docker/GPU/live-root mutation. Kept partial: final D11 system/live-safe campaign, disk-fill/GPU-contention branches, and a complete broader DAZ pytest result remain open; broader selection terminated during an existing acceptance-certificate test and is not claimed passing."
+        },
+        {
+          "ts": "2026-07-19T06:04:39+00:00",
+          "actor": "ai_agent",
+          "text": "Correction to prior note: the broad DAZ pytest runs did not prove a failure in the acceptance-certificate test. Four owned runs detached from their command sessions and remained active without summaries; their exact PIDs were stopped, zero remained, and no broad pass/failure is inferred."
+        }
+      ],
+      "evidence": "qa/live_verification/daz_failure_campaign_20260719.json; sealed disposable campaign report C:\\MaskFactory_FailureCampaigns\\failure_campaign_mf_p9_12_06_20260719\\failure_campaign_report.json (SHA256 508841112df2202b235e202278269de3cad42fb7d53fb76ee0ed3b68c45a8304); 5/5 scenarios passed; focused regressions 51 passed",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T06:04:39+00:00",
       "orphaned": false
     },
     "MF-P9-12.07": {

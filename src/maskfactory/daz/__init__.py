@@ -23,6 +23,13 @@ from .control import (
     result_envelope,
     set_control_state,
 )
+from .failure_campaign import (
+    FailureCampaignPolicy,
+    build_oom_recovery_decision,
+    load_failure_campaign_policy,
+    plan_failure_campaign,
+    run_failure_campaign,
+)
 from .lineage import (
     ingest_adapted_scene,
     query_descendants,
@@ -103,6 +110,7 @@ __all__ = [
     "DazRuntimePaths",
     "DazRuntimeProfile",
     "DazWorkerOutcome",
+    "FailureCampaignPolicy",
     "GIB",
     "AlertPolicy",
     "PROTECTED_RETENTION_CLASSES",
@@ -119,6 +127,7 @@ __all__ = [
     "apply_capacity_control",
     "apply_retention_plan",
     "build_event",
+    "build_oom_recovery_decision",
     "build_daily_report",
     "build_dashboard",
     "build_daz_command",
@@ -139,6 +148,7 @@ __all__ = [
     "ingest_adapted_scene",
     "inspect_state_database",
     "load_control_configuration",
+    "load_failure_campaign_policy",
     "load_alert_policy",
     "load_tier_a_backup_policy",
     "plan_tier_a_backup",
@@ -155,6 +165,7 @@ __all__ = [
     "register_retention_artifact",
     "operation_timeout",
     "prepare_job_files",
+    "plan_failure_campaign",
     "publish_recovery_matrix",
     "read_terminal_result",
     "running_daz_processes",
@@ -169,6 +180,7 @@ __all__ = [
     "stage_recipe",
     "storage_capacity_decision",
     "run_daz_job",
+    "run_failure_campaign",
     "validate_daz_configuration",
     "validate_monitoring_snapshot",
     "verify_tier_a_backup",

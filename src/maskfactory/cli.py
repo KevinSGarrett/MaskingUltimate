@@ -1728,6 +1728,110 @@ def autonomy_verify_specialist_static_contracts(output: Path | None) -> None:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
+@autonomy.command("verify-horizon-go-no-go-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed MF-P7-05.01/05.02 horizon go/no-go STATIC report JSON.",
+)
+def autonomy_verify_horizon_go_no_go_static(output: Path | None) -> None:
+    """Seal STATIC horizon go/no-go binders (multi-person + video).
+
+    Binds Plan/HORIZON_*_GO_NO_GO.md and refuses production/independent-real GO
+    without required evidence. Never claims GO, doctor-green, gold, or EXIT.
+    """
+    from .horizon_go_no_go_static import (
+        HorizonGoNoGoStaticError,
+        run_horizon_go_no_go_static_suite,
+    )
+
+    try:
+        report = run_horizon_go_no_go_static_suite()
+    except HorizonGoNoGoStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        envelope = {
+            **report,
+            "result": "pass_horizon_go_no_go_static_no_go_retained",
+            "implementation": {
+                "module": "src/maskfactory/horizon_go_no_go_static.py",
+                "schema": ("src/maskfactory/schemas/horizon_go_no_go_static_report.schema.json"),
+                "tests": ["tests/test_horizon_go_no_go_static.py"],
+                "cli": "maskfactory autonomy verify-horizon-go-no-go-static",
+                "memos": [
+                    "Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md",
+                    "Plan/HORIZON_VIDEO_GO_NO_GO.md",
+                ],
+            },
+        }
+        body = json.dumps(
+            {k: v for k, v in envelope.items() if k != "file_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={envelope['file_sha256']}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@autonomy.command("verify-selective-autonomy-e2e-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed MF-P9-15.08 e2e STATIC report JSON.",
+)
+def autonomy_verify_selective_autonomy_e2e_static(output: Path | None) -> None:
+    """Seal STATIC generate→critic→repair→certify→audit control-flow binder (MF-P9-15.08).
+
+    Never claims the live headline demo, measured quality/labor, doctor-green, gold,
+    Main-complete, or PRODUCTION_EVIDENCE_PASS.
+    """
+    from .selective_autonomy_e2e_static import (
+        SelectiveAutonomyE2EStaticError,
+        run_selective_autonomy_e2e_static_suite,
+    )
+
+    try:
+        report = run_selective_autonomy_e2e_static_suite()
+    except SelectiveAutonomyE2EStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        envelope = {
+            **report,
+            "result": "pass_selective_autonomy_e2e_static_control_flow_only",
+            "implementation": {
+                "module": "src/maskfactory/selective_autonomy_e2e_static.py",
+                "schema": (
+                    "src/maskfactory/schemas/" "selective_autonomy_e2e_static_report.schema.json"
+                ),
+                "tests": ["tests/test_selective_autonomy_e2e_static.py"],
+                "cli": "maskfactory autonomy verify-selective-autonomy-e2e-static",
+            },
+        }
+        body = json.dumps(
+            {k: v for k, v in envelope.items() if k != "file_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={envelope['file_sha256']}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
 @autonomy.command("verify-selective-autonomy-targets-static")
 @click.option(
     "--output",
@@ -10509,6 +10613,50 @@ def incident_reindex_drill(database: Path, packages_root: Path, output_dir: Path
     except (OSError, ReindexError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(report)
+
+
+@incident.command("verify-ops-static-contracts")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed P7 ops STATIC contracts report JSON.",
+)
+def incident_verify_ops_static_contracts(output: Path | None) -> None:
+    """Seal backup/restore, nightly reindex/verify-package, and failure-mining ops STATIC binders.
+
+    Never claims D10, live B1/B2 media restore, human-anchor packages, doctor-green, or gold.
+    """
+    from .ops_static_contracts import OpsStaticContractError, run_ops_static_contract_suite
+
+    try:
+        report = run_ops_static_contract_suite()
+    except OpsStaticContractError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        envelope = {
+            **report,
+            "result": "pass_ops_static_contracts_d10_restore_still_needs_kevin",
+            "implementation": {
+                **report.get("implementation", {}),
+                "schema": "src/maskfactory/schemas/ops_static_contracts_report.schema.json",
+                "cli": "maskfactory incident verify-ops-static-contracts",
+            },
+        }
+        body = json.dumps(
+            {k: v for k, v in envelope.items() if k != "file_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={envelope['file_sha256']}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
 @main.command()

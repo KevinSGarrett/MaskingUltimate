@@ -8755,11 +8755,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:41:19+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: executable horizon video go/no-go binder seals Plan/HORIZON_VIDEO_GO_NO_GO.md; refuses production/independent-real GO without temporal certificate + bridge + optional 10-clip evidence. Schema forces NO_GO. Evidence qa/live_verification/horizon_go_no_go_static_20260719.json seal_sha256 b8563a5db2d9feec2738b71f62b450cf7fc76a1999619033e1d884bb5268eb3e. Never claims GO/EXIT."
+        }
+      ],
       "evidence": "HORIZON_VIDEO_GO_NO_GO.md records evidence-based NO-GO and specifies temporal package/track identity, SAM2 keyframe/drift QA, CVAT authority, operator cost model, pilot requirements, zero identity-switch gate and D1-D11 prerequisite.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T08:22:46+00:00",
+      "updated_at": "2026-07-19T23:41:19+00:00",
       "orphaned": false
     },
     "MF-P7-05.02": {
@@ -8776,11 +8782,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:41:19+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: executable horizon multi-person go/no-go binder seals Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md; architecture-into-P8 retained; refuses independent-real/production GO without MF-P8-10/D11/G9 evidence. Schema forces NO_GO. Evidence qa/live_verification/horizon_go_no_go_static_20260719.json. Never claims GO/MF-P8-EXIT."
+        }
+      ],
       "evidence": "HORIZON_MULTI_PERSON_GO_NO_GO.md records architecture GO already superseded into doc17/P8, explains per-instance ownership without ontology namespaces and throughput impact, while retaining production NO-GO until real MF-P8-10/D11/G9 evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T08:22:46+00:00",
+      "updated_at": "2026-07-19T23:41:19+00:00",
       "orphaned": false
     },
     "MF-P7-EXIT": {
@@ -8797,11 +8809,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:41:20+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: horizon go/no-go binder reaffirms NO_GO for independent_real_accuracy / scale_daz_maturity headline; mf_p7_exit_complete=false schema-enforced. Evidence qa/live_verification/horizon_go_no_go_static_20260719.json. Remains NEEDS KEVIN."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: the revised headline test requires 20 governed unseen images and a preselected blinded human-anchor audit; certificate-covered cases must run without routine per-image approval.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:40+00:00",
+      "updated_at": "2026-07-19T23:41:20+00:00",
       "orphaned": false
     },
     "MF-P0-09.01": {

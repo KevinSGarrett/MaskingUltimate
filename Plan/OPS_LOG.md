@@ -9566,3 +9566,35 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 - No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-selective-autonomy-targets-static; evidence seal; git commit/push
+
+## 2026-07-19 23:41 UTC - STATIC horizon multi-person/video go/no-go binders (P7-05)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P7-05.01 note (already complete); MF-P7-05.02 note (already complete); MF-P7-EXIT remains blocked
+**Result:** STATIC_PASS only - decisions remain NO_GO; never claims production/independent-real GO, EXIT, doctor-green, or gold
+
+### What landed
+- `src/maskfactory/horizon_go_no_go_static.py`: binds Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md + Plan/HORIZON_VIDEO_GO_NO_GO.md
+- Multi-person: architecture-into-P8 retained; independent-real/production GO refused without MF-P8-10 / D11 / G9 / SOP-1..6 evidence
+- Video: core contract/runtime implementation authorized; production use + independent-real GO refused without temporal certificate/bridge (+ optional 10-clip corpus/cost) evidence
+- Negative fixtures prove claim-GO-without-evidence fails closed
+- Schema `horizon_go_no_go_static_report` registered in validation.SCHEMA_NAMES
+- CLI: `maskfactory autonomy verify-horizon-go-no-go-static`
+- Schema-enforced honesty: all horizon decisions const NO_GO; mf_p7_exit_complete=false; mf_p8_exit_complete=false
+
+### Evidence
+`qa/live_verification/horizon_go_no_go_static_20260719.json` file sha256 `972f8cc198725a2f6dc73eb2d6a508e59b63006977f63d130dd083bf595dcdb2`
+- binder seal_sha256 `b8563a5db2d9feec2738b71f62b450cf7fc76a1999619033e1d884bb5268eb3e`
+- report_id `hgn_b8563a5db2d9feec2738b71f`
+
+### Focused tests
+`pytest` tests/test_horizon_go_no_go_static.py: 6 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No multi-person independent_real_accuracy / production GO
+- No video production-use GO or independent real-video GO
+- No MF-P7-EXIT / MF-P8-EXIT
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-horizon-go-no-go-static; evidence seal; git commit
+

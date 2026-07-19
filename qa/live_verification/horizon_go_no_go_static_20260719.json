@@ -1,0 +1,147 @@
+{
+  "artifact_type": "horizon_go_no_go_static_report",
+  "authority": "horizon_go_no_go_static_only_no_production_or_independent_real_go",
+  "checked_at": "2026-07-19T23:45:09Z",
+  "checks": {
+    "multi_person_go_refused_without_evidence": "pass",
+    "multi_person_memo_bound": "pass",
+    "video_independent_go_refused_without_evidence": "pass",
+    "video_memo_bound": "pass",
+    "video_production_go_refused_without_evidence": "pass"
+  },
+  "doctor_green_claimed": false,
+  "file_sha256": "ec7f89345c55ac72af3331ede260a7d1bafa4e693bc46a430dd0e95246c8d9eb",
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "multi_person_independent_real_accuracy_go",
+    "multi_person_production_go",
+    "video_production_use_go",
+    "video_independent_real_accuracy_go",
+    "mf_p8_exit_complete",
+    "mf_p7_exit_complete",
+    "doctor_green",
+    "gold",
+    "VISUAL_QA_PASS_BOUNDED",
+    "Main-complete",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "implementation": {
+    "cli": "maskfactory autonomy verify-horizon-go-no-go-static",
+    "memos": [
+      "Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md",
+      "Plan/HORIZON_VIDEO_GO_NO_GO.md"
+    ],
+    "module": "src/maskfactory/horizon_go_no_go_static.py",
+    "schema": "src/maskfactory/schemas/horizon_go_no_go_static_report.schema.json",
+    "tests": [
+      "tests/test_horizon_go_no_go_static.py"
+    ]
+  },
+  "items": [
+    "MF-P7-05.01",
+    "MF-P7-05.02"
+  ],
+  "main_complete_claimed": false,
+  "memo_bindings": {
+    "multi_person": {
+      "bytes": 3057,
+      "path": "Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md",
+      "sha256": "2b5726349124adeb52e89de53b97c23bd8066a74e55da3fd3d41b0344adf1434"
+    },
+    "video": {
+      "bytes": 3935,
+      "path": "Plan/HORIZON_VIDEO_GO_NO_GO.md",
+      "sha256": "5bee4ed22de478b4b2519908497cb07ae6c0aadd7f67fd11dae1800077acb60b"
+    }
+  },
+  "mf_p7_exit_complete": false,
+  "mf_p8_exit_complete": false,
+  "multi_person": {
+    "architecture_into_p8": true,
+    "evidence_complete": false,
+    "independent_real_accuracy_decision": "NO_GO",
+    "missing_evidence_keys": [
+      "governed_real_2_to_4_person_images_ge_10",
+      "kevin_sop_1_through_6_complete",
+      "d11_demonstration_recorded",
+      "g9_cross_instance_bleed_rate_zero",
+      "mf_p8_10_01_through_06_complete",
+      "mf_p8_exit_complete"
+    ],
+    "production_promotion_decision": "NO_GO",
+    "required_evidence_keys": [
+      "governed_real_2_to_4_person_images_ge_10",
+      "kevin_sop_1_through_6_complete",
+      "d11_demonstration_recorded",
+      "g9_cross_instance_bleed_rate_zero",
+      "mf_p8_10_01_through_06_complete",
+      "mf_p8_exit_complete"
+    ]
+  },
+  "multi_person_independent_real_accuracy_decision": "NO_GO",
+  "multi_person_independent_real_accuracy_go_claimed": false,
+  "multi_person_negative_go_fixture_blocked": true,
+  "multi_person_production_go_claimed": false,
+  "multi_person_production_promotion_decision": "NO_GO",
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "report_id": "hgn_bf4933787acc46642956ae07",
+  "result": "pass_horizon_go_no_go_static_no_go_retained",
+  "schema_version": "1.0.0",
+  "seal_sha256": "bf4933787acc46642956ae07ea340f40a8eb2394f499520b5daf6031411e4472",
+  "sha256": "253f0fa98aff107ea25d8400aa567ea8564e307ba086b1baacbc595f3b783dfe",
+  "video": {
+    "core_contract_implementation_authorized": true,
+    "independent_evidence_complete": false,
+    "independent_missing_evidence_keys": [
+      "temporal_package_schema_qualified",
+      "track_identity_ownership_authority",
+      "temporal_hard_qa_clean",
+      "zero_identity_switch_gate",
+      "autonomous_temporal_certificate",
+      "bridge_gates_pass",
+      "governed_10_clip_corpus",
+      "reviewed_truth_present",
+      "measured_drift_present",
+      "operator_cost_evidence_present"
+    ],
+    "independent_real_accuracy_decision": "NO_GO",
+    "independent_required_evidence_keys": [
+      "temporal_package_schema_qualified",
+      "track_identity_ownership_authority",
+      "temporal_hard_qa_clean",
+      "zero_identity_switch_gate",
+      "autonomous_temporal_certificate",
+      "bridge_gates_pass",
+      "governed_10_clip_corpus",
+      "reviewed_truth_present",
+      "measured_drift_present",
+      "operator_cost_evidence_present"
+    ],
+    "production_evidence_complete": false,
+    "production_missing_evidence_keys": [
+      "temporal_package_schema_qualified",
+      "track_identity_ownership_authority",
+      "temporal_hard_qa_clean",
+      "zero_identity_switch_gate",
+      "autonomous_temporal_certificate",
+      "bridge_gates_pass"
+    ],
+    "production_required_evidence_keys": [
+      "temporal_package_schema_qualified",
+      "track_identity_ownership_authority",
+      "temporal_hard_qa_clean",
+      "zero_identity_switch_gate",
+      "autonomous_temporal_certificate",
+      "bridge_gates_pass"
+    ],
+    "production_use_decision": "NO_GO"
+  },
+  "video_independent_negative_go_fixture_blocked": true,
+  "video_independent_real_accuracy_decision": "NO_GO",
+  "video_independent_real_accuracy_go_claimed": false,
+  "video_production_negative_go_fixture_blocked": true,
+  "video_production_use_decision": "NO_GO",
+  "video_production_use_go_claimed": false,
+  "visual_qa_pass_claimed": false
+}

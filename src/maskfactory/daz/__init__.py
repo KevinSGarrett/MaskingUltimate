@@ -50,6 +50,7 @@ from .policy import (
     validate_synthetic_share,
 )
 from .protocol import DazJobFiles, prepare_job_files, read_terminal_result, stage_recipe
+from .recovery import RecoveryPolicy, evaluate_recovery_matrix, load_recovery_policy
 from .runtime import (
     DazRuntimePaths,
     DazRuntimeProfile,
@@ -99,6 +100,7 @@ __all__ = [
     "PROTECTED_RETENTION_CLASSES",
     "RETENTION_CLASSES",
     "RegisteredRootResolver",
+    "RecoveryPolicy",
     "RetentionClassPolicy",
     "RetentionPolicy",
     "TierABackupPolicy",
@@ -120,6 +122,7 @@ __all__ = [
     "find_prohibited_source_assets",
     "finish_lease",
     "evaluate_alerts",
+    "evaluate_recovery_matrix",
     "inspect_acquisition_queue",
     "initialize_daz_root",
     "initialize_state_database",
@@ -131,6 +134,7 @@ __all__ = [
     "plan_tier_a_backup",
     "plan_tier_a_restore_test",
     "load_retention_policy",
+    "load_recovery_policy",
     "load_daz_runtime_profile",
     "load_typed_daz_configuration",
     "lease_next_job",

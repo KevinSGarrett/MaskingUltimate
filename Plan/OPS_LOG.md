@@ -7838,3 +7838,15 @@ Focused validation:                     7 backup tests and 54 backup/monitoring/
 Preservation:                           no scheduled-task enable, D: use, live F backup, DAZ, WSL or MF-P6-08.05 mutation
 Remaining:                              real separate destination, drained live create/verify/restore, registry rebuild, semantic replay, package verification and dataset/model lineage query
 Evidence:                              `qa/live_verification/daz_tier_a_backup_cli_foundation_20260719.json`
+
+## 2026-07-19 05:04 UTC - Closed package-metadata and optional-bulk recovery policy implemented
+
+**Result:** MF-P9-12.05 advances from 0% to 55% with a deterministic Tier A/B/C recovery
+matrix foundation; live inventory classification and route execution remain open.
+
+Authority rule:                         package metadata is Tier A backup-only; referenced Tier A/B accepted authority cannot be rebuilt or omitted
+Optional bulk rule:                     Tier C rebuild/omit requires source hash, rebuild recipe ID and toolchain hash; unknown or incomplete rows block the matrix
+Focused validation:                     9 recovery tests and 16 backup/recovery regressions pass; Ruff, Black 25.1, schema and diff checks pass
+Preservation:                           no live matrix, bulk copy/delete, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
+Remaining:                              actual inventory/reference classification, CLI publication, backup-evidence binding and clean-root/live recovery route exercises
+Evidence:                              `qa/live_verification/daz_recovery_matrix_foundation_20260719.json`

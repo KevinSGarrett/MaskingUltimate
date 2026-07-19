@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "source-mask alignment QA only; external masks are never gold",
+  "source": "celebamask_hq",
+  "face_panel_count": 5,
+  "body_panel_count": 0,
+  "all_dimensions_match": true,
+  "visual_review_required": true,
+  "source_masks_are_gold": false,
+  "training_or_gold_admission": false,
+  "contact_sheets": {
+    "face_celebamask_hq": {
+      "path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face_celebamask_hq_contact_sheet.jpg",
+      "sha256": "0e72194b7824414777906d5bcf6b0ce263cb820c33760d3209afdc7069cb0527",
+      "rows": 5
+    }
+  },
+  "records": [
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\0.jpg",
+      "source_sha256": "92583489fae83d937ed33b51459e41bf52104b87b4214ea9390512d860c88c2d",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\0",
+      "mask_sha256": "2fcc3ea013e72587a976e5e4a3354585a6c46b8c42d14f0da6d9002f97dc54c3",
+      "mask_encoding": "celebamask_hq_composited_uint8_label_map",
+      "native_image_dimensions": [
+        1024,
+        1024
+      ],
+      "mask_dimensions": [
+        512,
+        512
+      ],
+      "alignment_resize_policy": "image_to_mask_bilinear",
+      "dimensions": [
+        512,
+        512
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        1,
+        6,
+        8,
+        10,
+        12,
+        16,
+        17
+      ],
+      "panel_path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face\\01_0.jpg",
+      "panel_sha256": "32abcfae94e619f69e4ae4106becd604bdacb46340bee66bf6caa91cc752038f",
+      "source": "face_celebamask_hq",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\1.jpg",
+      "source_sha256": "18b35dd98b31c0390f04d6bbc0ddaaec6432474679ac0b8454afb7343ecb779d",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\1",
+      "mask_sha256": "c70742b1244f45d2162a858ea92e2030c15b2df639a68e3475598db8ee80a0fa",
+      "mask_encoding": "celebamask_hq_composited_uint8_label_map",
+      "native_image_dimensions": [
+        1024,
+        1024
+      ],
+      "mask_dimensions": [
+        512,
+        512
+      ],
+      "alignment_resize_policy": "image_to_mask_bilinear",
+      "dimensions": [
+        512,
+        512
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        1,
+        5,
+        10,
+        12,
+        16,
+        17
+      ],
+      "panel_path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face\\02_1.jpg",
+      "panel_sha256": "80976b8599e6b7d3fd96819367e5dd4517fb6cc4004e20199b69b3239b84ec8c",
+      "source": "face_celebamask_hq",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\2.jpg",
+      "source_sha256": "b764542cc120974f53fe5aae9d2eb870986be3e370c37d4fa5907dac3dc0c88b",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\2",
+      "mask_sha256": "2ed7afb003172a8215b121a1ff463c95c179e644673859912b450afaba2b7a05",
+      "mask_encoding": "celebamask_hq_composited_uint8_label_map",
+      "native_image_dimensions": [
+        1024,
+        1024
+      ],
+      "mask_dimensions": [
+        512,
+        512
+      ],
+      "alignment_resize_policy": "image_to_mask_bilinear",
+      "dimensions": [
+        512,
+        512
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        1,
+        7,
+        8,
+        10,
+        12,
+        16,
+        17
+      ],
+      "panel_path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face\\03_2.jpg",
+      "panel_sha256": "b93aca74b88521cfc4320cb1ed5fc573101281d0d83d20cf9662c3ab4a6e0f9c",
+      "source": "face_celebamask_hq",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\3.jpg",
+      "source_sha256": "3bdef2e7880e0e2570884a01d79ac00627c294e90c9a282b84a79e1433c4723a",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\3",
+      "mask_sha256": "55d2aeb3feaa3ea8bd727f55074924d0c83cdb30b4ff777597620a118af5db3a",
+      "mask_encoding": "celebamask_hq_composited_uint8_label_map",
+      "native_image_dimensions": [
+        1024,
+        1024
+      ],
+      "mask_dimensions": [
+        512,
+        512
+      ],
+      "alignment_resize_policy": "image_to_mask_bilinear",
+      "dimensions": [
+        512,
+        512
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        1,
+        6,
+        7,
+        8,
+        10,
+        12,
+        16,
+        17
+      ],
+      "panel_path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face\\04_3.jpg",
+      "panel_sha256": "dceba6ace21a8949e9d59499929d0fd2742a8667e08ec6abb52cdb17fc634943",
+      "source": "face_celebamask_hq",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\4.jpg",
+      "source_sha256": "cda5d71ff5729f21492efadb6f4d574624de9b6ce7ddbea7800708189306efe6",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\4",
+      "mask_sha256": "167edd2eb2b589c6594db83824a97a51ba3917d878008e4f59d874a5b5680c41",
+      "mask_encoding": "celebamask_hq_composited_uint8_label_map",
+      "native_image_dimensions": [
+        1024,
+        1024
+      ],
+      "mask_dimensions": [
+        512,
+        512
+      ],
+      "alignment_resize_policy": "image_to_mask_bilinear",
+      "dimensions": [
+        512,
+        512
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        1,
+        5,
+        6,
+        10,
+        12,
+        13,
+        16,
+        17
+      ],
+      "panel_path": "C:\\Comfy_UI_Main_Masking\\work\\celebamask_hq_alignment\\face\\05_4.jpg",
+      "panel_sha256": "26d8679c0b873e9b9d98e9897e431363d0e9f50fc2676ae7b3b094360d6f7a58",
+      "source": "face_celebamask_hq",
+      "category": "face"
+    }
+  ]
+}

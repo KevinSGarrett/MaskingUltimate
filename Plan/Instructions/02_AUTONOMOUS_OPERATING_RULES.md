@@ -24,6 +24,13 @@ already decided. A small number of actions genuinely need Kevin — see
 `06_BLOCKERS_AMBIGUITY_AND_ESCALATION.md` for the exact list. Everything
 else is yours to execute.
 
+**Docker Desktop is in that autonomous scope.** When the engine is up, you
+start/repair/smoke CVAT, Nuclio/SAM2, Ollama, and GPU containers yourself
+per `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`. Do not pause to ask whether
+you may use Docker, and do not treat a stale “Docker was off” memory as
+current state — live-probe first, then operate the stack for every in-scope
+verify clause.
+
 ## 2. Spec Fidelity — Build To The Document, Not To Memory
 
 Every checklist item carries a `spec_ref`. Before implementing anything,
@@ -144,3 +151,23 @@ most spec-consistent option, log the decision and reasoning in
 `Plan\DECISIONS_LOG.md`, and only proceed with confidence if the conservative
 reading is clearly sound — otherwise mark the item `blocked` with a
 `NEEDS KEVIN:` reason and move to other actionable work.
+
+## 11. Proof Tiers — Never Promote Fixture Or Static Credit
+
+Evidence has an honest maximum tier. Do not close core items, claim
+doctor-green, or mark production complete on weaker proof.
+
+| Tier vocabulary | Meaning |
+|---|---|
+| `STATIC_PASS` | Schemas, fixtures, sealed producers, host-side contracts, unit/integration tests without live GPU/Main/production authority |
+| `RUNTIME_PASS_BOUNDED` | Live local runtime proof inside an explicit bound (service smoke, package hard QA on a named artifact) |
+| `VISUAL_QA_PASS_BOUNDED` | Human/agent pixel review pass on named artifacts; defects veto gold |
+| `PRODUCTION_EVIDENCE_PASS` | Real adopted Main/ComfyUI/production receipts bound by commit/hash |
+| `AWAITING_MAIN` | Producer STATIC credit retained; blocked until KevinSGarrett/Comfy_UI_Main supplies real artifacts |
+| `RUNTIME_BLOCKED` / `EC2_DEFERRED` | Explicit non-pass states; never relabel as pass |
+
+Rules:
+- Fixture Main / `fixture_authority` / producer_partial = **`STATIC_PASS` only**. Never `complete` P6-11/12 on that alone.
+- Tracker notes and blocked reasons for those items must use `STATIC_PASS` / `AWAITING_MAIN` vocabulary via `tracker.py` only.
+- Docker Desktop is autonomous when up (`Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`), but a past green doctor or smoke does **not** remain current — re-probe. Do not claim doctor-green while disk/WSL/preflight fails.
+- External MaskedWarehouse masks are never gold; strategy receipts and sample probes are not admission.

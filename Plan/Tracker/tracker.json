@@ -12396,12 +12396,17 @@
           "ts": "2026-07-19T20:10:12+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19: strengthened host-side multi-role shadow tournament registration/tests; no WSL GPU or promotion claimed."
+        },
+        {
+          "ts": "2026-07-19T21:31:07+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS hardening 2026-07-19: host-side shadow evidence now binds proof_tier=STATIC_PASS and rejects runtime/visual/production overclaims; added verify_shadow_currency_registry_static (currency review may honestly FAIL). Sealed qa/live_verification/host_side_shadow_tournament_registration_20260719.json + host_side_shadow_currency_registry_static_20260719.json. No WSL GPU, promotion, or RUNTIME_PASS claimed."
         }
       ],
       "evidence": "All provider-contract challengers remain catalog-bound and shadow-only. Host-side frozen roster in src/maskfactory/providers/shadow_registration.py matches configs/pipeline.yaml for all eight roles; run_host_side_shadow_tournaments executes installed challengers and records planned skips (including sam3_1/sam3d_body/yolo26) with evaluation-only authority. Sealed evidence qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56; tests/test_shadow_tournament_registration.py 6/6 plus prior shadow selection guards.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T20:10:12+00:00",
+      "updated_at": "2026-07-19T21:31:07+00:00",
       "orphaned": false
     },
     "MF-P2-11.13": {
@@ -18239,7 +18244,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-16T03:11:06+00:00",
@@ -18265,12 +18270,17 @@
           "ts": "2026-07-19T19:56:09+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 governance integration: advanced to 80% for external_supervision_producers package-surface lock and project-contained sealed gate producers. No real-source admission credit: LaPa/CelebAMask manifests, LV-MHP identity, split-dedup, and final sealed bundles remain required."
+        },
+        {
+          "ts": "2026-07-19T21:31:07+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: CelebAMask-HQ bounded alignment panels sealed (5 samples, image_to_mask_bilinear); visual_alignment_qa_passed project-contained. Split-dedup strategy receipt STATIC_PASS (Plan/MASKEDWAREHOUSE_SPLIT_DEDUP_STRATEGY.md) — full ~57k corpus NOT materialized; split_dedup_passed remains open for all three sources. Never gold; any_source_admitted=false. Evidence: qa/external_supervision/celebamask_hq/visual_alignment_qa_passed.json; qa/external_supervision/shared/split_dedup_strategy_receipt.json; gap report seal 9872e7e455e6dec8."
         }
       ],
       "evidence": "2026-07-19 ninth-wave governance aggregate: 52 focused tests passed (integration_release/mode_a/multi_person/external_supervision_producers/qualification/registration). Shared SCHEMA_NAMES and bridge/producers package surfaces locked. Sealed project-contained gate producers and fixture gate sets pass; LaPa/CelebAMask real manifests, LV-MHP identity, split-dedup, and source-specific sealed bundles remain.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T19:56:09+00:00",
+      "updated_at": "2026-07-19T21:31:07+00:00",
       "orphaned": false
     },
     "MF-P9-13.05": {
@@ -19910,12 +19920,17 @@
           "ts": "2026-07-19T20:59:30+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
+        },
+        {
+          "ts": "2026-07-19T21:31:08+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS retained / AWAITING_MAIN unchanged 2026-07-19. Parallel STATIC work was MaskedWarehouse qualification + host-side shadow/currency only; no production Main close."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_external_adapter_conformance.py + fixture_main harness (main_adoption_complete=false). Not PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: Producer adapter conformance verifier is fixture-complete (STATIC_PASS). Fixture Main synthetic consumer must not close production. Remains blocked pending Main-supplied pinned production MaskFactoryAdapter package and signed conformance observation. MaskFactory must not implement Main orchestration.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: Producer adapter conformance remains fixture-complete only. No Main-supplied production MaskFactoryAdapter. 2026-07-19 STATIC wave did not advance this item.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:30+00:00",
+      "updated_at": "2026-07-19T21:31:08+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {
@@ -20529,12 +20544,17 @@
           "ts": "2026-07-19T21:00:00+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER LEDGER 2026-07-19: Highest tier STATIC_PASS (producer_partial matrix). Not PRODUCTION_EVIDENCE_PASS. Percent restored to pre-fixture_main 82%."
+        },
+        {
+          "ts": "2026-07-19T21:31:08+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS only / AWAITING_MAIN 2026-07-19. No PRODUCTION_EVIDENCE_PASS. Parallel STATIC increments elsewhere do not close this hard blocker."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_cross_project_qualification.py producer_partial. No trusted signed production qualification bundle.",
       "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.02 through MF-P6-12.04 incomplete; Main-runtime commit/adoption/qualification bindings absent. Producer matrix producer_partial only; claim_boundary.mf_p6_12_05_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T21:00:00+00:00",
+      "updated_at": "2026-07-19T21:31:08+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {

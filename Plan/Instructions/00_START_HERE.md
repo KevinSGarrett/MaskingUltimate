@@ -51,6 +51,23 @@ accuracy and post-core scale/DAZ scope and is not end-to-end authority. The
 dashboard separates core from optional blockers and prioritizes unfinished
 core items. Trust it over any assumption about "where the project probably is."
 
+Also re-read `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md` and live-probe Docker
+before any CVAT/Nuclio/Ollama/GPU-container work:
+
+```
+docker info
+docker ps
+curl.exe -s http://localhost:8080/api/server/about
+curl.exe -s http://127.0.0.1:11434/api/version
+```
+
+When Docker Desktop is up, operate those stacks yourself — do not wait for
+Kevin to start containers, and do not trust a prior memory that Docker was off.
+Do not claim doctor-green from chat memory; re-run `maskfactory doctor` when
+the claim matters. Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
+`RUNTIME_PASS_BOUNDED`, etc.) is defined in `02_AUTONOMOUS_OPERATING_RULES.md`
+§11 — fixture/Main-simulator credit never closes P6-11/12 production.
+
 ---
 
 ## 3. What MaskFactory Is, In Three Sentences

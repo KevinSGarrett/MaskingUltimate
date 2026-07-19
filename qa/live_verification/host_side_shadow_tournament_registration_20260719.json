@@ -226,7 +226,9 @@
     "silhouette_provider": {},
     "vlm_reviewer": {}
   },
+  "production_evidence_pass_claimed": false,
   "promotion_claimed": false,
+  "proof_tier": "STATIC_PASS",
   "result": "pass_host_side_shadow_tournaments_no_live_gpu",
   "role_manifest_sha256": {
     "concept_detector": "f192e4f279fb9da6ebe938d367f60fed79ba78eca4268d819b4bbfddc00933f6",
@@ -385,6 +387,7 @@
       "qwen3_vl_8b_quantized"
     ]
   },
+  "runtime_pass_claimed": false,
   "sam31_shadow_wiring": {
     "host_side_skip_recorded": true,
     "lifecycle_state": "planned",
@@ -399,6 +402,7 @@
     "host-shadow-sample-b"
   ],
   "schema_version": "1.0.0",
-  "sha256": "1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56",
+  "sha256": "a8a837b578fbe797270c515d9dbdfc8cb1b6fa009293e654eb5fdfbaf28b5104",
+  "visual_qa_pass_claimed": false,
   "wsl_gpu_smoke_claimed": false
 }

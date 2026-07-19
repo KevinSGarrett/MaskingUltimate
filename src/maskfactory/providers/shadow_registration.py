@@ -25,6 +25,8 @@ DEFAULT_EXTERNAL_REGISTRY = ROOT / "configs" / "external_sources.yaml"
 DEFAULT_MODEL_REGISTRY = ROOT / "models" / "model_registry.json"
 
 AUTHORITY = "host_side_shadow_registration_only_no_wsl_gpu_or_promotion_authority"
+PROOF_TIER = "STATIC_PASS"
+CURRENCY_REVIEW_PATH = ROOT / "qa" / "governance" / "currency" / "current_review.json"
 
 # Frozen modernization roster. Order matches configs/pipeline.yaml challengers.
 EXPECTED_SHADOW_CHALLENGERS: dict[str, tuple[str, ...]] = {
@@ -244,6 +246,10 @@ def run_host_side_shadow_tournaments(
         "schema_version": "1.0.0",
         "artifact_type": "host_side_shadow_tournament_registration",
         "authority": AUTHORITY,
+        "proof_tier": PROOF_TIER,
+        "runtime_pass_claimed": False,
+        "visual_qa_pass_claimed": False,
+        "production_evidence_pass_claimed": False,
         "completion_credit": False,
         "wsl_gpu_smoke_claimed": False,
         "promotion_claimed": False,
@@ -295,23 +301,152 @@ def validate_host_side_shadow_evidence(document: Mapping[str, Any]) -> None:
         raise ShadowRegistrationError("host_side_shadow_evidence_hash_mismatch")
     if document.get("authority") != AUTHORITY:
         raise ShadowRegistrationError("host_side_shadow_authority_invalid")
+    if document.get("proof_tier") != PROOF_TIER:
+        raise ShadowRegistrationError("host_side_shadow_proof_tier_invalid")
     if document.get("wsl_gpu_smoke_claimed") is not False:
         raise ShadowRegistrationError("host_side_shadow_overclaims_wsl_gpu")
     if document.get("promotion_claimed") is not False:
         raise ShadowRegistrationError("host_side_shadow_overclaims_promotion")
     if document.get("completion_credit") is not False:
         raise ShadowRegistrationError("host_side_shadow_overclaims_completion")
+    if document.get("runtime_pass_claimed") is not False:
+        raise ShadowRegistrationError("host_side_shadow_overclaims_runtime_pass")
+    if document.get("visual_qa_pass_claimed") is not False:
+        raise ShadowRegistrationError("host_side_shadow_overclaims_visual_qa")
+    if document.get("production_evidence_pass_claimed") is not False:
+        raise ShadowRegistrationError("host_side_shadow_overclaims_production")
+
+
+def verify_shadow_currency_registry_static(
+    *,
+    pipeline_path: Path = DEFAULT_PIPELINE,
+    external_registry_path: Path = DEFAULT_EXTERNAL_REGISTRY,
+    model_registry_path: Path = DEFAULT_MODEL_REGISTRY,
+    currency_review_path: Path = CURRENCY_REVIEW_PATH,
+) -> dict[str, Any]:
+    """STATIC consistency: shadow roster, registry lifecycles, and currency binding.
+
+    Does not verify cryptographic currency pass/fail policy closure and never
+    claims RUNTIME_PASS / PRODUCTION_EVIDENCE_PASS.
+    """
+    roster = verify_shadow_challenger_roster(
+        pipeline_path=pipeline_path,
+        external_registry_path=external_registry_path,
+        model_registry_path=model_registry_path,
+    )
+    registry = json.loads(Path(model_registry_path).read_text(encoding="utf-8"))
+    models_raw = registry.get("models")
+    models_by_key: dict[str, Mapping[str, Any]] = {}
+    if isinstance(models_raw, Mapping):
+        models_by_key = {
+            str(key): value for key, value in models_raw.items() if isinstance(value, Mapping)
+        }
+    elif isinstance(models_raw, list):
+        for entry in models_raw:
+            if isinstance(entry, Mapping) and isinstance(entry.get("key"), str):
+                models_by_key[entry["key"]] = entry
+    else:
+        raise ShadowRegistrationError("model_registry_models_invalid")
+
+    currency_path = Path(currency_review_path)
+    if not currency_path.is_file():
+        raise ShadowRegistrationError("currency_review_missing")
+    currency = json.loads(currency_path.read_text(encoding="utf-8"))
+    if not isinstance(currency, Mapping):
+        raise ShadowRegistrationError("currency_review_invalid")
+    currency_bytes = currency_path.read_bytes()
+    currency_file_sha256 = hashlib.sha256(currency_bytes).hexdigest()
+
+    pipeline = _load_pipeline(pipeline_path)
+    catalog = pipeline.get("provider_catalog")
+    if not isinstance(catalog, Mapping):
+        raise ShadowRegistrationError("provider_catalog_invalid")
+
+    planned_active: list[str] = []
+    lifecycle_drift: list[str] = []
+    missing_registry: list[str] = []
+    for role, challengers in EXPECTED_SHADOW_CHALLENGERS.items():
+        active = roster["active_providers"].get(role)
+        for provider_key in challengers:
+            lifecycle = roster["challenger_lifecycle"][provider_key]
+            catalog_entry = catalog.get(provider_key)
+            if not isinstance(catalog_entry, Mapping):
+                missing_registry.append(provider_key)
+                continue
+            registry_key = catalog_entry.get("key")
+            if catalog_entry.get("registry") == "external_sources":
+                # External-source lifecycle is already validated by selection.
+                if active == provider_key and lifecycle == "planned":
+                    planned_active.append(f"{role}:{provider_key}")
+                continue
+            if not isinstance(registry_key, str):
+                missing_registry.append(provider_key)
+                continue
+            model_entry = models_by_key.get(registry_key)
+            if model_entry is None:
+                missing_registry.append(provider_key)
+                continue
+            registered_lifecycle = model_entry.get("lifecycle_state")
+            if registered_lifecycle != lifecycle:
+                lifecycle_drift.append(f"{provider_key}:{lifecycle}!={registered_lifecycle}")
+            if active == provider_key and lifecycle == "planned":
+                planned_active.append(f"{role}:{provider_key}")
+    if missing_registry:
+        raise ShadowRegistrationError(
+            "shadow_challenger_registry_missing:" + ",".join(sorted(set(missing_registry)))
+        )
+
+    if planned_active:
+        raise ShadowRegistrationError(
+            "planned_challenger_owns_active_role:" + ",".join(planned_active)
+        )
+    if lifecycle_drift:
+        raise ShadowRegistrationError(
+            "shadow_registry_lifecycle_drift:" + ",".join(sorted(lifecycle_drift))
+        )
+
+    document: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "artifact_type": "host_side_shadow_currency_registry_static",
+        "authority": AUTHORITY,
+        "proof_tier": PROOF_TIER,
+        "runtime_pass_claimed": False,
+        "production_evidence_pass_claimed": False,
+        "promotion_claimed": False,
+        "completion_credit": False,
+        "roster_result": roster["result"],
+        "currency_review_path": (
+            currency_path.relative_to(ROOT).as_posix()
+            if currency_path.is_relative_to(ROOT)
+            else str(currency_path)
+        ),
+        "currency_review_file_sha256": currency_file_sha256,
+        "currency_review_id": currency.get("review_id"),
+        "currency_policy_result": currency.get("policy_result")
+        or currency.get("result")
+        or currency.get("status"),
+        "active_providers": dict(roster["active_providers"]),
+        "challenger_lifecycle": dict(roster["challenger_lifecycle"]),
+        "result": "pass_shadow_currency_registry_static_only",
+    }
+    document["sha256"] = _canonical_sha256(
+        {key: value for key, value in document.items() if key != "sha256"}
+    )
+    return document
 
 
 __all__ = [
     "AUTHORITY",
+    "CURRENCY_REVIEW_PATH",
     "DEFAULT_HOST_SAMPLE_IDS",
     "EXPECTED_SHADOW_CHALLENGERS",
     "MODERNIZATION_CHALLENGERS",
+    "PROOF_TIER",
     "SAM31_SHADOW_ROLES",
     "ShadowRegistrationError",
     "expected_shadow_challengers",
     "run_host_side_shadow_tournaments",
     "validate_host_side_shadow_evidence",
     "verify_shadow_challenger_roster",
+    "verify_shadow_currency_registry_static",
 ]

@@ -64,9 +64,15 @@ def test_license_and_remap_evidence_seal_never_gold_for_all_eligible_sources():
         assert remap_artifact["remap_plan_path"] == f"configs/remap/{source}.yaml"
 
 
-def test_alignment_evidence_pass_for_lapa_and_lv_fails_closed_for_celeba():
+def test_alignment_evidence_pass_for_lapa_lv_and_celeba():
     manifest = json.loads(ALIGNMENT_MANIFEST.read_text(encoding="utf-8"))
     review = json.loads(ALIGNMENT_REVIEW.read_text(encoding="utf-8"))
+    celeba_manifest = json.loads(
+        (ROOT / "qa/reports/celebamask_hq_alignment_manifest.json").read_text(encoding="utf-8")
+    )
+    celeba_review = json.loads(
+        (ROOT / "qa/reports/celebamask_hq_alignment_review.json").read_text(encoding="utf-8")
+    )
 
     lapa = build_alignment_evidence(
         source="lapa", alignment_manifest=manifest, alignment_review=review
@@ -74,14 +80,17 @@ def test_alignment_evidence_pass_for_lapa_and_lv_fails_closed_for_celeba():
     lv = build_alignment_evidence(
         source="lv_mhp_v1", alignment_manifest=manifest, alignment_review=review
     )
+    celeba = build_alignment_evidence(
+        source="celebamask_hq",
+        alignment_manifest=celeba_manifest,
+        alignment_review=celeba_review,
+    )
     assert lapa["panel_count"] == 5
     assert lv["panel_count"] == 5
+    assert celeba["panel_count"] == 5
     assert lapa["source_masks_are_gold"] is False
-
-    with pytest.raises(ExternalSupervisionProducerError, match="no sealed visual alignment"):
-        build_alignment_evidence(
-            source="celebamask_hq", alignment_manifest=manifest, alignment_review=review
-        )
+    assert celeba["source_masks_are_gold"] is False
+    assert celeba["status"] == "PASS"
 
 
 def test_gold_claim_rejected_on_publish_and_bundle_verify(tmp_path: Path):

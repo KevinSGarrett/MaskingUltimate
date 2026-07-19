@@ -27,6 +27,38 @@ def _save_pair(image_path: Path, mask_path: Path, seed: int) -> None:
     Image.fromarray(mask).save(mask_path)
 
 
+def test_generates_celeba_face_alignment_panels(tmp_path: Path) -> None:
+    celeba_root = tmp_path / "CelebAMask-HQ"
+    for index in range(5):
+        image_path = celeba_root / "CelebA-HQ-img" / f"{index}.jpg"
+        mask_dir = celeba_root / "CelebAMask-HQ-mask-anno" / str(index)
+        image_path.parent.mkdir(parents=True, exist_ok=True)
+        mask_dir.mkdir(parents=True, exist_ok=True)
+        y, x = np.mgrid[:32, :32]
+        image = np.stack(
+            ((x + index) * 7 % 256, (y + index) * 9 % 256, (x + y) * 4 % 256), axis=2
+        ).astype(np.uint8)
+        Image.fromarray(image).resize((64, 64)).save(image_path)
+        # Official-style 2x smaller mask canvas.
+        mask = ((x // 8 + y // 8 + index) % 2 * 255).astype(np.uint8)
+        Image.fromarray(mask).save(mask_dir / f"{index:05d}_skin.png")
+        Image.fromarray((mask // 2).astype(np.uint8)).save(mask_dir / f"{index:05d}_hair.png")
+
+    output_root = tmp_path / "panels"
+    manifest_path = tmp_path / "celeba_manifest.json"
+    manifest = MODULE.generate_celeba_overlays(tmp_path, output_root, manifest_path, sample_count=5)
+    assert manifest["face_panel_count"] == 5
+    assert manifest["source"] == "celebamask_hq"
+    assert manifest["source_masks_are_gold"] is False
+    assert manifest["training_or_gold_admission"] is False
+    assert all(record["source"] == "face_celebamask_hq" for record in manifest["records"])
+    assert all(
+        record["alignment_resize_policy"] == "image_to_mask_bilinear"
+        for record in manifest["records"]
+    )
+    assert Path(manifest["contact_sheets"]["face_celebamask_hq"]["path"]).is_file()
+
+
 def test_generates_five_face_and_five_body_alignment_panels(tmp_path: Path) -> None:
     for index in range(5):
         stem = f"face_{index}"

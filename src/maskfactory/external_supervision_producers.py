@@ -47,8 +47,21 @@ NEVER_GOLD_AUTHORITIES = frozenset(
 ALIGNMENT_SOURCE_KEYS: dict[str, frozenset[str]] = {
     "lapa": frozenset({"face_lapa", "lapa"}),
     "lv_mhp_v1": frozenset({"body_lv_mhp_v1", "lv_mhp_v1"}),
-    # CelebAMask-HQ has inventory/remap coverage but no sealed visual alignment panels yet.
-    "celebamask_hq": frozenset(),
+    "celebamask_hq": frozenset({"face_celebamask_hq", "celebamask_hq"}),
+}
+ALIGNMENT_ARTIFACT_PATHS: dict[str, tuple[str, str]] = {
+    "lapa": (
+        "qa/reports/maskedwarehouse_alignment_manifest.json",
+        "qa/reports/maskedwarehouse_alignment_review.json",
+    ),
+    "lv_mhp_v1": (
+        "qa/reports/maskedwarehouse_alignment_manifest.json",
+        "qa/reports/maskedwarehouse_alignment_review.json",
+    ),
+    "celebamask_hq": (
+        "qa/reports/celebamask_hq_alignment_manifest.json",
+        "qa/reports/celebamask_hq_alignment_review.json",
+    ),
 }
 OFF_PROJECT_MANIFEST_NAMES = {
     "celebamask_hq": "celebamask_hq_source_hash_manifest_v1.json",
@@ -280,6 +293,9 @@ def build_alignment_evidence(
         }
         for record in selected
     ]
+    face_sheet = alignment_review.get("face_contact_sheet_sha256")
+    if face_sheet is None:
+        face_sheet = alignment_review.get("face_celebamask_hq_contact_sheet_sha256")
     evidence: dict[str, Any] = {
         "schema_version": "1.0.0",
         "artifact_type": GATE_ARTIFACT_TYPES["visual_alignment_qa_passed"],
@@ -289,7 +305,7 @@ def build_alignment_evidence(
         "source_masks_are_gold": False,
         "alignment_purpose": purpose,
         "review_status": alignment_review.get("status"),
-        "face_contact_sheet_sha256": alignment_review.get("face_contact_sheet_sha256"),
+        "face_contact_sheet_sha256": face_sheet,
         "body_contact_sheet_sha256": alignment_review.get("body_contact_sheet_sha256"),
         "panel_count": len(panel_bindings),
         "panels": panel_bindings,
@@ -472,17 +488,8 @@ def produce_project_contained_evidence(
     provenance_path = provenance_path or root / "configs" / "maskedwarehouse_provenance.yaml"
     inventory_path = inventory_path or root / "configs" / "maskedwarehouse_inventory.json"
     remap_root = remap_root or root / "configs" / "remap"
-    alignment_manifest_path = (
-        alignment_manifest_path
-        or root / "qa" / "reports" / "maskedwarehouse_alignment_manifest.json"
-    )
-    alignment_review_path = (
-        alignment_review_path or root / "qa" / "reports" / "maskedwarehouse_alignment_review.json"
-    )
     provenance = yaml.safe_load(provenance_path.read_text(encoding="utf-8"))
     inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
-    alignment_manifest = json.loads(alignment_manifest_path.read_text(encoding="utf-8"))
-    alignment_review = json.loads(alignment_review_path.read_text(encoding="utf-8"))
 
     published: dict[str, Any] = {"sources": {}, "materialized": [], "errors": []}
     evidence_base = root / evidence_root
@@ -521,6 +528,17 @@ def produce_project_contained_evidence(
             published["errors"].append(f"{source}:deterministic_remap_tested:{exc}")
 
         try:
+            manifest_rel, review_rel = ALIGNMENT_ARTIFACT_PATHS[source]
+            if alignment_manifest_path is not None and source != "celebamask_hq":
+                source_manifest_path = Path(alignment_manifest_path)
+            else:
+                source_manifest_path = root / manifest_rel
+            if alignment_review_path is not None and source != "celebamask_hq":
+                source_review_path = Path(alignment_review_path)
+            else:
+                source_review_path = root / review_rel
+            alignment_manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
+            alignment_review = json.loads(source_review_path.read_text(encoding="utf-8"))
             alignment_artifact = build_alignment_evidence(
                 source=source,
                 alignment_manifest=alignment_manifest,
@@ -606,7 +624,10 @@ def produce_project_contained_evidence(
         off_project_manifest_root=Path(off_project_manifest_root),
     )
     gap_path = evidence_base / "qualification_gap_report.json"
-    publish_immutable_evidence(gap, gap_path)
+    # Gap reports are regenerable status ledgers (not admission seals).
+    _publish_regenerable_gap_report(
+        gap, gap_path, archive_root=evidence_base / "gap_report_archive"
+    )
     published["gap_report_path"] = gap_path.relative_to(root).as_posix()
     published["gap_report_seal_sha256"] = gap["seal_sha256"]
     published["any_source_admitted"] = False
@@ -651,12 +672,15 @@ def _collect_blockers(
         if source == "celebamask_hq" and "visual_alignment_qa_passed" in info["missing_gates"]:
             blockers.append(
                 "celebamask_hq:visual_alignment_qa_passed:"
-                "no CelebAMask-HQ contact-sheet/panel QA is sealed; only LaPa face panels exist"
+                "bounded CelebAMask-HQ contact-sheet/panel QA not sealed under "
+                "qa/reports/celebamask_hq_alignment_*"
             )
         if "split_dedup_passed" in info["missing_gates"]:
             blockers.append(
                 f"{source}:split_dedup_passed:"
-                "live cross-source dHash over ~57k images not materialized in project tree"
+                "full ~57k cross-source dHash deferred per "
+                "Plan/MASKEDWAREHOUSE_SPLIT_DEDUP_STRATEGY.md; "
+                "STATIC sample/strategy receipt is not admission"
             )
     if not identity_available and "instance_identity_validated" in sources.get("lv_mhp_v1", {}).get(
         "missing_gates", ()
@@ -670,6 +694,32 @@ def _collect_blockers(
             seen.add(item)
             ordered.append(item)
     return ordered
+
+
+def _publish_regenerable_gap_report(
+    gap: Mapping[str, Any],
+    gap_path: Path,
+    *,
+    archive_root: Path,
+) -> str:
+    """Publish current gap report; archive prior distinct bytes instead of failing closed."""
+
+    payload = (
+        json.dumps(gap, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    path = Path(gap_path)
+    if path.exists() and path.read_bytes() != payload:
+        previous = json.loads(path.read_text(encoding="utf-8"))
+        previous_seal = str(
+            previous.get("seal_sha256") or hashlib.sha256(path.read_bytes()).hexdigest()
+        )
+        archive_root = Path(archive_root)
+        archive_root.mkdir(parents=True, exist_ok=True)
+        archive_path = archive_root / f"{previous_seal[:24]}.json"
+        if not archive_path.exists():
+            archive_path.write_bytes(path.read_bytes())
+        path.unlink()
+    return publish_immutable_evidence(gap, path)
 
 
 def _link_or_copy(source: Path, destination: Path) -> str:
@@ -786,6 +836,7 @@ if __name__ == "__main__":
 
 
 __all__ = [
+    "ALIGNMENT_ARTIFACT_PATHS",
     "ALIGNMENT_SOURCE_KEYS",
     "DEFAULT_EVIDENCE_ROOT",
     "DEFAULT_LIVE_ARTIFACT_ROOT",

@@ -11,17 +11,22 @@ from maskfactory.providers.shadow_registration import (
     AUTHORITY,
     EXPECTED_SHADOW_CHALLENGERS,
     MODERNIZATION_CHALLENGERS,
+    PROOF_TIER,
     SAM31_SHADOW_ROLES,
     ShadowRegistrationError,
     expected_shadow_challengers,
     run_host_side_shadow_tournaments,
     validate_host_side_shadow_evidence,
     verify_shadow_challenger_roster,
+    verify_shadow_currency_registry_static,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = (
     ROOT / "qa" / "live_verification" / "host_side_shadow_tournament_registration_20260719.json"
+)
+CURRENCY_REGISTRY_EVIDENCE = (
+    ROOT / "qa" / "live_verification" / "host_side_shadow_currency_registry_static_20260719.json"
 )
 
 
@@ -60,6 +65,9 @@ def test_host_side_shadow_tournaments_run_installed_and_skip_planned() -> None:
     document = run_host_side_shadow_tournaments()
     validate_host_side_shadow_evidence(document)
     assert document["result"] == "pass_host_side_shadow_tournaments_no_live_gpu"
+    assert document["proof_tier"] == PROOF_TIER
+    assert document["runtime_pass_claimed"] is False
+    assert document["production_evidence_pass_claimed"] is False
     assert document["wsl_gpu_smoke_claimed"] is False
     assert document["promotion_claimed"] is False
     assert document["completion_credit"] is False
@@ -134,3 +142,20 @@ def test_sealed_live_verification_evidence_is_hash_bound() -> None:
     assert document["sha256"] == fresh["sha256"]
     assert document["role_manifest_sha256"] == fresh["role_manifest_sha256"]
     assert set(document["challenger_audit"]) == MODERNIZATION_CHALLENGERS
+    assert document["proof_tier"] == PROOF_TIER
+
+
+def test_shadow_currency_registry_static_is_honest_and_sealed() -> None:
+    document = verify_shadow_currency_registry_static()
+    assert document["proof_tier"] == PROOF_TIER
+    assert document["runtime_pass_claimed"] is False
+    assert document["production_evidence_pass_claimed"] is False
+    assert document["promotion_claimed"] is False
+    assert document["result"] == "pass_shadow_currency_registry_static_only"
+    # Current signed currency review may honestly FAIL policy; do not require pass.
+    assert document["currency_review_file_sha256"]
+    assert (
+        CURRENCY_REGISTRY_EVIDENCE.is_file()
+    ), f"missing sealed evidence: {CURRENCY_REGISTRY_EVIDENCE}"
+    sealed = json.loads(CURRENCY_REGISTRY_EVIDENCE.read_text(encoding="utf-8"))
+    assert sealed["sha256"] == document["sha256"]

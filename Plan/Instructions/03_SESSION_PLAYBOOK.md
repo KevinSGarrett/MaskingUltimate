@@ -16,26 +16,39 @@ because the work is done or because context/time is running out.
    and Suggested Next Actions. The portfolio percentage and optional/
    portfolio blockers include independent-accuracy and scale/DAZ work and
    cannot redefine core completion.
-3. If any item was left `in_progress` from a previous session, run
+3. **Docker runtime awareness (mandatory).** Re-read
+   `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`. Live-probe Docker Desktop
+   (`docker info`, `docker ps`, CVAT `localhost:8080/api/server/about`,
+   Ollama `127.0.0.1:11434/api/version`, `wsl -l -v`) before any
+   CVAT/Nuclio/Ollama/GPU-container work. Do not trust a prior chat memory
+   that Docker was off. When the engine is up, start/repair/smoke services
+   yourself (`python tools/bootstrap_cvat.py`, smokes, `maskfactory doctor`)
+   for every in-scope need — do not wait for Kevin to operate containers.
+   Never treat a prior doctor-green as current without a fresh probe.
+4. **Proof-tier honesty.** Before marking bridge/core items complete, re-read
+   `02` §11. P6-11/12 producer fixture work is `STATIC_PASS` +
+   `AWAITING_MAIN` until real Main adoption/runtime evidence exists. Record
+   tracker notes only through `tracker.py` using that vocabulary.
+5. If any item was left `in_progress` from a previous session, run
    `python tracker.py show <id>` and read its `notes` — the last note
    should tell you exactly what was done and what's left. If it doesn't
    (an older session didn't leave a clean handoff), reconstruct state by
    checking what actually exists on disk before assuming anything.
-4. Before starting work in a phase you haven't touched yet, confirm its
+6. Before starting work in a phase you haven't touched yet, confirm its
    entry gate is actually satisfied (see `DASHBOARD.md`'s Entry Gate column
    and `07_PHASE_QUICK_REFERENCE.md`) — e.g. don't start P5 training items
    before `metrics.certified_training_package_count >= 200` for the training
    profile. Do not apply that rule to doc-24 P6-07..12: the core autonomy/
    bridge lane intentionally has no D6, human, volume, full-library, DAZ, or
    soak prerequisite.
-5. If the session will touch the MaskFactory↔ComfyUI bridge, release,
+7. If the session will touch the MaskFactory↔ComfyUI bridge, release,
    adoption, schema mapping, invalidation, or either preserved worktree, read
    `09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md`, verify both pinned
    task IDs, verify the current packet against
    `10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json`, and inspect
    the latest durable producer/Main handoff before any cleanup, rebase,
    replacement, or runtime use.
-6. Decide the scope for this session: usually a full item cluster (e.g. all
+8. Decide the scope for this session: usually a full item cluster (e.g. all
    of `MF-P2-05.*`) rather than a single isolated item, since items within a
    cluster are almost always one coherent implementation task split into
    checkable sub-steps (see `04` §3).

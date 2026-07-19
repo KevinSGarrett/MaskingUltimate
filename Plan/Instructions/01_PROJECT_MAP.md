@@ -40,6 +40,9 @@ gold." Both matter; they answer different questions.
 | 04 | `04_DATA_SCHEMAS_AND_MANIFESTS.md` | Full JSON schemas: manifest, qa_report, model registry, failure queue, coverage matrix, state DB |
 | 05 | `05_SYSTEM_ARCHITECTURE.md` | Component architecture, module boundaries, consensus engine, VRAM schedule |
 | 06 | `06_ENVIRONMENT_AND_INSTALLATION.md` | Hardware plan, exact env builds, every model checkpoint, CVAT deployment |
+| — | `DOCKER_RUNTIME_AND_SESSION_USE.md` | Day-to-day Docker Desktop / CVAT / Nuclio / Ollama operating manual for agents (live-probe + use freely) |
+| — | `MASKEDWAREHOUSE_SOURCE_REGISTRY.md` | Eligible MaskedWarehouse sources; never-gold admission rules |
+| — | `MASKEDWAREHOUSE_SPLIT_DEDUP_STRATEGY.md` | STATIC deferred full-corpus split-dedup plan; not admission |
 | 07 | `07_PIPELINE_STAGE_SPECS.md` | Stages S00–S15: I/O contracts, algorithms, runtime budgets |
 | 08 | `08_SPECIALIST_LANES_SPEC.md` | Hand/finger, chest/breast/clothing, hair/face, feet/toes, 3D-prior lanes |
 | 09 | `09_AUTO_QA_VALIDATION_SPEC.md` | All 34 automatic checks (QC-001…034), metrics, topology rules |

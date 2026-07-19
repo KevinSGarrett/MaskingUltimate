@@ -8765,3 +8765,35 @@ Free C: disk above 75 GiB ingest floor (currently ~22.9 GiB) - without destructi
 
 ### Evidence
 qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
+
+## 2026-07-19 — STATIC-only MaskedWarehouse + shadow/currency hardening
+
+**Lane:** Proof-tier STATIC increments (no runtime/visual/production claim)
+**Items:** MF-P9-13.04 (88% partial); MF-P2-11.12 note; MF-P6-11.01 / MF-P6-12.05 remain AWAITING_MAIN
+**Result:** STATIC_PASS only — never gold; no doctor-green; no Main close
+
+### MaskedWarehouse sealed qualification
+- CelebAMask-HQ bounded alignment: 5 panels + contact sheet (1024→512 `image_to_mask_bilinear`); visual review PASS for alignment QA only
+- Sealed `qa/external_supervision/celebamask_hq/visual_alignment_qa_passed.json` (project-contained)
+- Gap report: celeba missing gates now only `split_dedup_passed` (was also visual_alignment)
+- Split-dedup: `Plan/MASKEDWAREHOUSE_SPLIT_DEDUP_STRATEGY.md` + `external_supervision_dedup_strategy.py` strategy receipt `STRATEGY_DEFERRED` / `STATIC_PASS`; full ~57k corpus NOT materialized; `admission_ready=false`
+- Regenerable gap archive under `qa/external_supervision/gap_report_archive/`
+
+### Host-side shadow / currency / registry
+- `shadow_registration` binds `proof_tier=STATIC_PASS` and rejects runtime/visual/production overclaims
+- New `verify_shadow_currency_registry_static` (currency policy may honestly FAIL)
+- Sealed: `host_side_shadow_tournament_registration_20260719.json`; `host_side_shadow_currency_registry_static_20260719.json`
+
+### Instructions
+- `02` §11 proof-tier vocabulary; `00`/`01`/`03` Docker + STATIC_PASS / AWAITING_MAIN pointers
+
+### Tests
+`pytest` focused: 23 passed (overlays, producers, dedup, dedup_strategy, shadow registration). Ruff clean on touched files.
+
+### Honest non-claims
+- No `split_dedup_passed` admission gate
+- No source admitted / no gold
+- P6-11/12 remain AWAITING_MAIN (STATIC_PASS credit only)
+- Doctor-green not claimed; no destructive disk free
+
+**Commands:** tools/generate_maskedwarehouse_overlays.py --celeba-only; produce_project_contained_evidence; tracker.py set/validate/report; pytest focused suite

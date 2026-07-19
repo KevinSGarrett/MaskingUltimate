@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "reviewed_at": "2026-07-19T21:28:30Z",
+  "reviewer": "ai_agent",
+  "status": "passed",
+  "manifest": "qa/reports/celebamask_hq_alignment_manifest.json",
+  "face_celebamask_hq_contact_sheet_sha256": "0e72194b7824414777906d5bcf6b0ce263cb820c33760d3209afdc7069cb0527",
+  "face_contact_sheet_sha256": "0e72194b7824414777906d5bcf6b0ce263cb820c33760d3209afdc7069cb0527",
+  "body_contact_sheet_sha256": null,
+  "checks": {
+    "face_panels_reviewed": 5,
+    "body_panels_reviewed": 0,
+    "source_mask_alignment": "pass",
+    "dimension_match_after_official_512_resize": "pass",
+    "alignment_resize_policy": "image_to_mask_bilinear",
+    "source_images_committed_to_git": false,
+    "training_or_gold_admission": false
+  },
+  "notes": "STATIC visual alignment QA only for five CelebAMask-HQ samples (0-4). HQ images are 1024 and official part masks are 512; panels resize image to mask size for overlay review. External source masks remain non-gold; split_dedup_passed and admission remain open."
+}

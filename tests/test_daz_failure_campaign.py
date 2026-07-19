@@ -79,7 +79,9 @@ def test_failure_campaign_schemas_and_policy_are_closed(tmp_path: Path) -> None:
         Draft202012Validator.check_schema(schema)
     policy = load_failure_campaign_policy(POLICY)
     assert policy.document["required_scenarios"] == [
+        "disk_full",
         "drive_loss",
+        "gpu_contention",
         "db_corruption",
         "crash",
         "popup",
@@ -152,7 +154,7 @@ def test_oom_allows_one_lower_cost_retry_then_quarantines_without_semantic_drift
         )
 
 
-def test_full_isolated_campaign_passes_all_five_scenarios_without_live_mutation(
+def test_full_isolated_campaign_passes_all_seven_scenarios_without_live_mutation(
     tmp_path: Path,
 ) -> None:
     live = tmp_path / "live"
@@ -169,9 +171,11 @@ def test_full_isolated_campaign_passes_all_five_scenarios_without_live_mutation(
         captured_at=datetime(2026, 7, 19, 6, 0, tzinfo=UTC),
     )
     assert report["passed"] is True
-    assert report["scenario_count"] == 5
+    assert report["scenario_count"] == 7
     assert [row["scenario"] for row in report["scenarios"]] == [
+        "disk_full",
         "drive_loss",
+        "gpu_contention",
         "db_corruption",
         "crash",
         "popup",
@@ -186,6 +190,14 @@ def test_full_isolated_campaign_passes_all_five_scenarios_without_live_mutation(
         json.dumps(sealed, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
     ).hexdigest()
     assert written["report_sha256"] == expected_seal
+
+    disk_full = report["scenarios"][0]
+    assert disk_full["observed"]["real_disk_filled"] is False
+    assert disk_full["observed"]["new_work_allowed"] is False
+    contention = report["scenarios"][2]
+    assert contention["observed"]["contention_refused"] is True
+    assert contention["observed"]["real_gpu_work_started"] is False
+    assert contention["observed"]["concurrent_gpu_work_started"] is False
 
 
 def test_failure_campaign_cli_is_dry_run_default_and_apply_is_explicit(tmp_path: Path) -> None:

@@ -16,12 +16,21 @@ from typing import Any, Mapping
 import yaml
 from jsonschema import Draft202012Validator
 
+from ..gpu import GpuLock, GpuLockBusyError, read_lock
 from .control import DazControlError, DazErrorCode
 from .protocol import prepare_job_files
 from .runtime import DazRuntimeProfile
 from .worker import WindowObservation, _watch_process
 
-SCENARIOS = ("drive_loss", "db_corruption", "crash", "popup", "oom")
+SCENARIOS = (
+    "disk_full",
+    "drive_loss",
+    "gpu_contention",
+    "db_corruption",
+    "crash",
+    "popup",
+    "oom",
+)
 
 
 @dataclass(frozen=True)
@@ -129,7 +138,9 @@ def run_failure_campaign(
         encoding="utf-8",
     )
     scenarios = [
+        _exercise_disk_full(workspace, policy),
         _exercise_drive_loss(workspace),
+        _exercise_gpu_contention(workspace),
         _exercise_db_corruption(workspace),
         _exercise_crash(workspace, runtime_profile),
         _exercise_popup(workspace, runtime_profile),
@@ -219,6 +230,57 @@ def build_oom_recovery_decision(
     }
 
 
+def _exercise_disk_full(workspace: Path, policy: FailureCampaignPolicy) -> dict[str, Any]:
+    root = workspace / "disk_full"
+    staged = root / "partial.bin"
+    accepted = root / "accepted.bin"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(b"partial-not-authoritative")
+    settings = policy.document["disk_full"]
+    decision = {
+        "fixture_capacity_bytes": int(settings["fixture_capacity_bytes"]),
+        "simulated_free_bytes": int(settings["simulated_free_bytes"]),
+        "required_free_bytes": int(settings["required_free_bytes"]),
+    }
+    enough_capacity = decision["simulated_free_bytes"] >= decision["required_free_bytes"]
+    if enough_capacity:
+        _guard_promotion(staged, accepted, required_root=root)
+    evidence_path = root / "capacity_decision.json"
+    evidence_path.write_text(
+        json.dumps(
+            {
+                **decision,
+                "new_work_allowed": enough_capacity,
+                "action": "none" if enough_capacity else str(settings["action"]),
+                "artifact_promoted": accepted.exists(),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    passed = not enough_capacity and staged.exists() and not accepted.exists()
+    return {
+        "scenario": "disk_full",
+        "passed": passed,
+        "expected": {
+            "action": "pause_and_drain",
+            "new_work_allowed": False,
+            "artifact_promoted": False,
+        },
+        "observed": {
+            **decision,
+            "action": "pause_and_drain" if not enough_capacity else "none",
+            "new_work_allowed": enough_capacity,
+            "partial_preserved_unaccepted": staged.exists(),
+            "artifact_promoted": accepted.exists(),
+            "real_disk_filled": False,
+        },
+        "evidence": [str(staged), str(evidence_path)],
+    }
+
+
 def _exercise_drive_loss(workspace: Path) -> dict[str, Any]:
     root = workspace / "drive_loss/fixture_drive"
     staged = root / "20_tmp/partial.bin"
@@ -249,6 +311,63 @@ def _exercise_drive_loss(workspace: Path) -> dict[str, Any]:
             "partial_preserved_unaccepted": staged.exists(),
         },
         "evidence": [str(staged), str(workspace / "fixture_boundary.json")],
+    }
+
+
+def _exercise_gpu_contention(workspace: Path) -> dict[str, Any]:
+    root = workspace / "gpu_contention"
+    root.mkdir(parents=True)
+    lock_path = root / "gpu.lock"
+    evidence_path = root / "contention_decision.json"
+    refused = False
+    reason = ""
+    owner: Mapping[str, Any] | None = None
+    with GpuLock(lock_path, purpose="fixture_existing_owner", image_id="fixture_owner"):
+        owner = read_lock(lock_path)
+        try:
+            GpuLock(lock_path, purpose="daz_fixture_render", image_id="fixture_waiter").acquire()
+        except GpuLockBusyError as exc:
+            refused = True
+            reason = str(exc)
+        lock_preserved = lock_path.is_file()
+    released_after_owner = not lock_path.exists()
+    evidence_path.write_text(
+        json.dumps(
+            {
+                "action": "wait_then_timeout",
+                "contention_refused": refused,
+                "existing_owner": dict(owner or {}),
+                "lock_preserved_until_owner_release": lock_preserved,
+                "released_by_owner": released_after_owner,
+                "concurrent_gpu_work_started": False,
+                "real_gpu_work_started": False,
+                "reason": reason,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    passed = refused and lock_preserved and released_after_owner and owner is not None
+    return {
+        "scenario": "gpu_contention",
+        "passed": passed,
+        "expected": {
+            "action": "wait_then_timeout",
+            "concurrent_gpu_work_started": False,
+            "existing_lock_preserved": True,
+        },
+        "observed": {
+            "contention_refused": refused,
+            "reason": reason,
+            "owner_purpose": owner.get("purpose") if owner else None,
+            "lock_preserved_until_owner_release": lock_preserved,
+            "released_by_owner": released_after_owner,
+            "concurrent_gpu_work_started": False,
+            "real_gpu_work_started": False,
+        },
+        "evidence": [str(evidence_path)],
     }
 
 

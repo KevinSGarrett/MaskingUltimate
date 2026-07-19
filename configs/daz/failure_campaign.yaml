@@ -1,6 +1,12 @@
 schema_version: 1.0.0
 fixture_only: true
-required_scenarios: [drive_loss, db_corruption, crash, popup, oom]
+required_scenarios: [disk_full, drive_loss, gpu_contention, db_corruption, crash, popup, oom]
+disk_full:
+  fixture_capacity_bytes: 4096
+  simulated_free_bytes: 1024
+  required_free_bytes: 2048
+  action: pause_and_drain
+  partial_acceptance_allowed: false
 drive_loss:
   action: pause_and_drain
   partial_acceptance_allowed: false
@@ -15,6 +21,10 @@ popup:
   action: quarantine
   process_tree_termination_required: true
   ui_input_allowed: false
+gpu_contention:
+  action: wait_then_timeout
+  concurrent_gpu_work_allowed: false
+  automatic_stale_lock_reclamation_allowed: false
 oom:
   maximum_lower_cost_retries: 1
   persistent_failure_action: quarantine

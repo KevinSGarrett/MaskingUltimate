@@ -13,11 +13,11 @@
     "workspace_root": {"type": "string", "minLength": 1},
     "live_root": {"type": "string", "minLength": 1},
     "passed": {"type": "boolean"},
-    "scenario_count": {"const": 5},
+    "scenario_count": {"const": 7},
     "scenarios": {
       "type": "array",
-      "minItems": 5,
-      "maxItems": 5,
+      "minItems": 7,
+      "maxItems": 7,
       "items": {"$ref": "#/$defs/scenario"}
     },
     "report_sha256": {"$ref": "#/$defs/sha256"}
@@ -29,7 +29,7 @@
       "additionalProperties": false,
       "required": ["scenario", "passed", "expected", "observed", "evidence"],
       "properties": {
-        "scenario": {"enum": ["drive_loss", "db_corruption", "crash", "popup", "oom"]},
+        "scenario": {"enum": ["disk_full", "drive_loss", "gpu_contention", "db_corruption", "crash", "popup", "oom"]},
         "passed": {"type": "boolean"},
         "expected": {"type": "object"},
         "observed": {"type": "object"},

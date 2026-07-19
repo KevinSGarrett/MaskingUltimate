@@ -7704,3 +7704,16 @@ Missing transaction:                    no contract-native signed predict/refine
 Prepared scope:                         `MF-CURSOR-12.04-MODE-B-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no live prediction/certificate issuance, production promotion, runtime mutation, worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_mode_b_vertical_slice_gap_audit_20260719.json`
+
+## 2026-07-19 03:31 UTC - Qualification validators strong; production matrix unexecuted
+
+**Result:** Hard-blocker MF-P6-12.05 receives 50% validator/evidence foundation credit and remains
+blocked behind MF-P6-12.01 through 12.04 plus missing production matrix inputs.
+
+Verified foundation:                   strict signed qualification/adoption schemas, executed-result and evidence-byte binding, frozen compatibility/identity/authority/idempotency/journal/invalidation semantics, release byte closure and fixture firewall
+Focused validation:                    45 bridge qualification/adoption/journal/currency tests pass; Ruff passes
+Currency truth boundary:               `--allow-failed-review` exits 0 while reporting `status=fail`; strict exits 1 on `benchmark_certificate_missing`, `currency_review_not_passing`, `rollback_evidence_missing`, `rollback_provider_not_distinct`
+Production gap:                         no persisted production qualification bundle binds actual MaskFactory/Main commits and release/capability/requirements/adoption/test/artifact bytes; no real cross-project fault campaign exists
+Prepared scope:                         `MF-CURSOR-12.05-CROSS-PROJECT-QUALIFICATION-MATRIX`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         currency policy was not relabeled; no production matrix, signed pass bundle, runtime/worker action, or hard-blocker completion claim
+Evidence:                              `qa/live_verification/bridge_cross_project_qualification_gap_audit_20260719.json`

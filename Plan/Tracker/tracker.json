@@ -19362,13 +19362,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 55,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:05:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: frozen event/schema and signed lifecycle-chain foundations pass 3 focused tests, Ruff and JSON parsing. Trusted re-sign probes still accept missing release rollback, mixed target kinds, extra actions, arbitrary journal position, and same-idempotency/different-body events. No production publisher or append-only invalidation ledger exists. Evidence: qa/live_verification/bridge_invalidation_publication_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-08.07 and MF-P6-10.05 are not accepted. A new additive publisher/ledger must resolve live state and evidence, enforce homogeneous targets and exact actions, require rollback/supersession bytes, and atomically enforce stream/checkpoint/idempotency continuity without changing frozen v1.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:05:07+00:00",
       "orphaned": false
     },
     "MF-P6-10.07": {

@@ -7373,3 +7373,16 @@ Ownership boundary:                    MaskFactory may validate producer conform
 Prepared unit:                         `MF-CURSOR-10.05-ADOPTION-CONFORMANCE-DECISION`; five absent/clean additive paths are held behind 10.01-10.04 and disjoint from existing held/dirty paths
 Truth boundary:                        no production receipt, release, certificate, or adoption claim; frozen v1 and all worker/dirty scopes unchanged
 Evidence:                              `qa/live_verification/bridge_adoption_decision_gap_audit_20260719.json`
+
+## 2026-07-19 01:04 UTC - Invalidation event foundations verified; publisher ledger missing
+
+**Result:** MF-P6-10.06 receives 55% foundation credit but remains item-blocked. The frozen event and
+lifecycle validators are strong; lossless publication, exact policy, and idempotent ledger behavior are absent.
+
+Verified foundation:                   strict trusted producer-journal signature, 27-reason taxonomy, lowering exact targets, action coverage/deadlines, supersession shape, and signed lifecycle hash/sequence/state replay
+Focused validation:                    3/3 taxonomy/lifecycle/trust tests, Ruff, and schema parsing pass
+Trusted probes still clean:             release revocation with no rollback binding; mixed artifact+certificate targets; extra `refresh_release` action; arbitrary sequence/causation; two different bodies sharing one idempotency key
+Missing authority:                      no production publisher, batch/ledger validator, exact action equality, homogeneous target enforcement, byte-resolved evidence/rollback/supersession, atomic append, checkpoint update, or concurrency/recovery proof
+Prepared unit:                         `MF-CURSOR-10.06-INVALIDATION-PUBLICATION-LEDGER`; five absent/clean additive paths are disjoint from held 08.07/10.01-10.05 and dirty 08.05 scopes
+Disposition:                            held behind MF-P6-08.07 and MF-P6-10.05; no event published, no worker dispatched, no frozen bytes changed
+Evidence:                              `qa/live_verification/bridge_invalidation_publication_gap_audit_20260719.json`

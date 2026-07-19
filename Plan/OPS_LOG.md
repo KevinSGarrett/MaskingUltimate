@@ -7222,3 +7222,17 @@ Missing decision:                      exact code-specific affected scope, compl
 Prepared unit:                         `MF-CURSOR-09.06-ADDITIVE-ERROR-DECISION`; five new absent/clean paths wrap the frozen v1 error and current policy after upstream identity/transform/artifact/authority/eligibility decisions are adopted
 Verification:                          2/2 focused existing bridge tests and Ruff pass; frozen v1 bytes, validation matrix, queued worker paths, Docker, WSL, and runtime state were not changed
 Evidence:                              `qa/live_verification/bridge_error_decision_gap_audit_20260718.json`
+
+## 2026-07-18 23:59 UTC - Executable MaskFactory-to-Main crosswalk gap isolated
+
+**Result:** MF-P6-09.07 remains open with zero completion credit. Frozen v1 schemas and
+release/adoption catalogs are strict and byte-bound, but no executable field/enum/version mapping
+artifact exists between MaskFactory and Main.
+
+Existing strength:                     exact 12-schema set, strict unknown-field rejection, exact v1 versions/hashes, release byte closure, consumer requirements, qualification/adoption checks, canonical JSON, and semantic invariants are already enforced
+Version probes:                        unknown field fails `additionalProperties`; request schema 1.1.0 and 2.0.0 both fail `const`; no future minor addition is permitted implicitly
+Ordering boundary:                     JSON object key order is correctly non-semantic under frozen canonicalization; the new crosswalk must reject reorder only for declared order-sensitive arrays, transforms, gate vectors, catalogs, rule precedence, and mapping sequence
+Missing artifact:                      source/target JSON pointers, conversions, enum maps, required/drop/default/reject rules, explicit minor additions, producer-observation handling, exhaustive path coverage, and exact Main consumer test binding
+Prepared unit:                         `MF-CURSOR-09.07-EXECUTABLE-CROSSWALK`; five new absent/clean paths are disjoint and held until 09.01-09.06 decisions are adopted
+Verification:                          3/3 focused schema/release/adoption tests and Ruff pass; frozen v1 bytes, queued worker paths, Docker, WSL, and runtime state were not changed
+Evidence:                              `qa/live_verification/bridge_crosswalk_gap_audit_20260718.json`

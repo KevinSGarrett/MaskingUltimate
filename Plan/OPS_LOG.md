@@ -8905,3 +8905,44 @@ Backups under `runtime_artifacts/bounded_visual_repair_20260719/backups/`
 2. human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)
 3. Doctor all-green still RUNTIME_BLOCKED (disk / WSL) — unchanged this lane
 
+## 2026-07-19 - Mode B predict draft-provider policy investigation (no force-register)
+
+**Item:** MF-P6-12.04 (related MF-P6-11.03, MF-P6-02.03)
+**Lane:** Proof-tier RUNTIME climb investigation; service retained; no registry mutation
+**Result:** Policy forbids temporary draft/challenger/incumbent Mode B `/predict` provider. Predict remains **AWAITING_RUNTIME** (STATIC_BLOCKED_BY_POLICY for draft serving path). Health/models stay RUNTIME_PASS_BOUNDED.
+
+### Question
+Can a governed draft-only challenger/incumbent be registered as a temporary Mode B predict provider without inventing a training champion win?
+
+### Verdict
+**NO.** Do not force-register. No draft prediction role / incumbent smoke serving role exists for `/predict`.
+
+### Live re-probe (Windows loopback 127.0.0.1:8765)
+| Surface | Result |
+|---|---|
+| GET /health | 200 status=ok; configured_models=[]; loaded_models=[] |
+| GET /models | 200; 17 governed; champions=0 |
+| POST /predict | HTTP 503 `champion prediction provider is not configured` |
+
+### Policy gates (STATIC_PASS)
+1. `configure_champion_predictor` - `serving predictor may load champion_* roles only` (refuses `primary_human_parsing_*` and `challenger_bodypart`)
+2. `create_production_runtime` - configures sequential champions only when complete `champion_bodypart`+`champion_hand`+`champion_clothing` set is present; otherwise predictor stays None
+3. `register_training_candidate` - `completed body-part runs register only as challenger_bodypart` (refuses `champion_*`)
+4. Promotion path remains measured P5 transactions (MF-P5-10.11) - inventing a champion pointer is forbidden
+
+### Draft authority clarification
+Mode B "draft" means response authority floor (`draft_model_generated`, `promotion_eligible=false`), **not** permission to serve non-champion checkpoints.
+
+### Disposition
+- Did **not** wire a temporary predict provider
+- Did **not** mutate `models/model_registry.json`
+- Unblock path: measured champion promotion, then re-prove RUNTIME_PASS_BOUNDED predict+refine under draft authority floor
+
+### Evidence
+`qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json` self_sha256 `edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3`
+
+### Honest non-claims
+- No RUNTIME_PASS_BOUNDED predict
+- No VISUAL / PRODUCTION claim
+- No invented champion win
+- MF-P6-12.04 remains blocked/incomplete at 86%

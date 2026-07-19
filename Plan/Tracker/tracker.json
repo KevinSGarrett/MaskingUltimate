@@ -8034,12 +8034,17 @@
           "ts": "2026-07-12T08:18:55+00:00",
           "actor": "ai_agent",
           "text": "Advanced live residency evidence from on-demand-per-request to spec-aligned on-demand interactive session: cold 7.98s, warm 0.0589s. Final 1% is real champion bodypart/hand/clothing sequential execution."
+        },
+        {
+          "ts": "2026-07-19T22:00:39+00:00",
+          "actor": "proof_tier_runtime_climb",
+          "text": "PROOF-TIER 2026-07-19: Live serve confirms sequential champion residency idle path — configured_models=[] / loaded_models=[] with champions=0; predictor not auto-wired from primary_human_parsing_* incumbents. Hold residency contract; live champion slots still AWAITING_RUNTIME. Evidence: mode_b_predict_draft_provider_policy_blocker_20260719.json"
         }
       ],
       "evidence": "Sequential champion slots remain fixture-proven with forced close between roles. Live RTX HTTP evidence now proves SAM2 loads lazily on first /refine, retains exactly one image embedding for warm clicks, and is released before any champion request or shutdown; bounded probe leaves no lock. Real champion slot residency remains gated by trained promoted roles.",
       "blocked_reason": "NEEDS KEVIN: sequential residency and live SAM2 are proven; final real body/hand/clothing slot residency requires trained promoted champion checkpoints.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:33:00+00:00",
+      "updated_at": "2026-07-19T22:00:39+00:00",
       "orphaned": false
     },
     "MF-P6-02.04": {
@@ -20076,12 +20081,17 @@
           "ts": "2026-07-19T20:59:31+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
+        },
+        {
+          "ts": "2026-07-19T22:00:38+00:00",
+          "actor": "proof_tier_runtime_climb",
+          "text": "PROOF-TIER 2026-07-19: Confirmed no draft-only Mode B predict provider path for client live smoke. Localhost /predict remains AWAITING_RUNTIME until measured champion_* promotion (not challenger/incumbent substitution). Draft authority floor (promotion_eligible=false) applies to champion-backed draft responses only. Hold 78%. Evidence: qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json"
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_mode_b_localhost_client.py + fixture_main. Not RUNTIME_PASS_BOUNDED live predict / PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode B localhost client fixture-verified (STATIC_PASS). No champion-backed live predict proof or production cross-boundary adoption.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:31+00:00",
+      "updated_at": "2026-07-19T22:00:38+00:00",
       "orphaned": false
     },
     "MF-P6-11.04": {
@@ -20539,12 +20549,17 @@
           "ts": "2026-07-19T21:41:03+00:00",
           "actor": "proof_tier_runtime_climb",
           "text": "PROOF-TIER RUNTIME climb 2026-07-19: Started pinned Ubuntu maskfactory serve on 127.0.0.1:8765 (WSL client PID 13824 / Linux PID 467; serve_mode_b lock). Windows GET /health 200 status=ok; /models 200 with 17 governed records and 0 champions. Surface tier mode_b_windows_loopback_health_models=RUNTIME_PASS_BOUNDED. Predict typed 503 no champion. Refine bounded 30s timeout (curl exit 28) — not retried under disk pressure. Evidence: qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json (self_sha256 e9c5ea1a...). Service retained running. Item remains blocked/incomplete."
+        },
+        {
+          "ts": "2026-07-19T22:00:37+00:00",
+          "actor": "proof_tier_runtime_climb",
+          "text": "PROOF-TIER policy investigation 2026-07-19: Asked whether a governed draft-only challenger/incumbent can temporarily serve Mode B /predict without inventing a training champion win. Verdict NO. Gates: (1) configure_champion_predictor champion_* roles only — refuses primary_human_parsing_* and challenger_bodypart; (2) create_production_runtime configures predictor only when complete champion_bodypart+hand+clothing set present (else predictor=None; health/models still RUNTIME_PASS_BOUNDED); (3) register_training_candidate refuses champion_* (challenger_bodypart only); (4) live POST /predict HTTP 503 champion prediction provider is not configured; champions=0. Draft means response authority floor (promotion_eligible=false), not draft-model serving. Did not force-register. Predict remains AWAITING_RUNTIME / STATIC_BLOCKED_BY_POLICY for draft provider. Evidence: qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json self_sha256=edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3"
         }
       ],
-      "evidence": "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json self_sha256=e9c5ea1a5a83806b37b7e3171675740cd845e27ed74125c6e073e0a7003a1dae",
-      "blocked_reason": "LIVE/CROSS-PROJECT: Windows loopback /health+/models = RUNTIME_PASS_BOUNDED (pinned Ubuntu serve retained). Predict AWAITING_RUNTIME: champion provider not configured (HTTP 503; champions=0). Refine AWAITING_RUNTIME: on-demand refiner load >30s under ~32 GiB free. MF-P6-11.03/11.07 incomplete. No champion-backed prediction, VISUAL, or PRODUCTION claim. claim_boundary.mf_p6_12_04_complete=false.",
+      "evidence": "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json self_sha256=edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3",
+      "blocked_reason": "LIVE/CROSS-PROJECT + POLICY: /health+/models RUNTIME_PASS_BOUNDED (champions=0). Predict AWAITING_RUNTIME: no temporary draft/incumbent serving role — serving predictor may load champion_* only; create_production_runtime leaves predictor unconfigured until complete measured champion set; HTTP 503 champion prediction provider is not configured. Force-register forbidden (would invent champion win). Refine AWAITING_RUNTIME (prior on-demand load timeout). MF-P6-11.03/11.07 incomplete. claim_boundary.mf_p6_12_04_complete=false. Evidence: mode_b_predict_draft_provider_policy_blocker_20260719.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T21:41:03+00:00",
+      "updated_at": "2026-07-19T22:00:37+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {

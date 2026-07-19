@@ -15947,13 +15947,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 68,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:13:08+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: sealed hidden_gui retention decision + command contract. Remaining: live headless-vs-hidden-GUI mode benchmark (D2-10)."
+        }
+      ],
+      "evidence": "STATIC_PASS only: host-side worker mode decision retains hidden_gui as production mode; headless remains challenger and is refused without live mode benchmark. Module src/maskfactory/daz/worker_isolation_static.py + schema daz_worker_mode_decision_static_report; build_daz_command refuses non-hidden_gui / persistent_worker / -headless injection. Evidence: qa/live_verification/daz_worker_isolation_static_20260719.json file sha256 3ff10e1370c66c8ebcc13871b25bb4fcf27742c1b2bb49ad36863870d600984c; mode seal 3d47ab0874ae7cb2805c46764522e8668cc11b7f9c1545250165d07176f55a0a. Not live mode benchmark; headless not promoted.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T23:13:08+00:00",
       "orphaned": false
     },
     "MF-P9-03.11": {
@@ -15968,13 +15974,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 68,
+      "notes": [
+        {
+          "ts": "2026-07-19T23:13:09+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: sealed clean-restart / dirty-scene isolation contract. Remaining: live repeated-job fixture on MaskFactoryDAZ (D2-11)."
+        }
+      ],
+      "evidence": "STATIC_PASS only: clean-restart / no dirty-scene reuse host fixture contract. Module src/maskfactory/daz/worker_isolation_static.py + schema daz_clean_restart_static_report; binds process_per_job, persistent_worker=false, startup_scene_empty (worker_main.dsa startup_scene_not_empty), refuse parallel DAZ, job-private state, partial-not-accepted, repeated-job isolation. Evidence: qa/live_verification/daz_worker_isolation_static_20260719.json clean seal 58307bd7619761853c75287f430a32bee192c77a06e2ba170a9266880134ae0e. Not live repeated-job DAZ Studio fixture.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T02:34:41+00:00",
+      "updated_at": "2026-07-19T23:13:09+00:00",
       "orphaned": false
     },
     "MF-P9-04.01": {
@@ -16846,7 +16858,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 58,
+      "percent_complete": 65,
       "notes": [
         {
           "ts": "2026-07-19T22:34:57+00:00",
@@ -16867,12 +16879,17 @@
           "ts": "2026-07-19T22:56:02+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: published 72-fixture scale variant. Never accepted/rendered; D5 render/accept path still required."
+        },
+        {
+          "ts": "2026-07-19T23:13:11+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: published 100-fixture scale variant (ceiling of 24-100 range). Never accepted/rendered; D5 render/accept path still required."
         }
       ],
-      "evidence": "STATIC_PASS only: published 72-fixture unrendered engineering set daz_engineering_fixture_set_5a2427e86c09c753e0a4dd40 under schema 1.1.0 (24/48 retained). Evidence: qa/live_verification/daz_engineering_fixture_set_72_static_20260719.json. Never accepted/rendered; D5 path still required.",
+      "evidence": "STATIC_PASS only: published 100-fixture unrendered engineering set daz_engineering_fixture_set_754ed9a8dbb2f59882457b41 under schema 1.1.0 (24/48/72 retained). Evidence: qa/live_verification/daz_engineering_fixture_set_100_static_20260719.json sha256 b2b2a78cfdacde7253f4e9f07e591fe1f12f1d3ffcf9f995902bf3dd9390197f. Never accepted/rendered; D5 path still required.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:56:02+00:00",
+      "updated_at": "2026-07-19T23:13:11+00:00",
       "orphaned": false
     },
     "MF-P9-07.01": {

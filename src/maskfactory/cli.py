@@ -1606,6 +1606,35 @@ def autonomy() -> None:
     """Progressive autonomous mask calibration and candidate tournaments."""
 
 
+@autonomy.command("verify-multi-person-static-contracts")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed multi-person STATIC contracts report JSON.",
+)
+def autonomy_verify_multi_person_static_contracts(output: Path | None) -> None:
+    """Run fixture-seeded multi-person gate + residual-routing STATIC contracts.
+
+    Never claims MF-P8-11.07 real demo, Kevin sources, doctor-green, or gold.
+    """
+    from .autonomy.multi_person_static_contracts import (
+        MultiPersonStaticContractError,
+        run_multi_person_static_contract_suite,
+    )
+
+    try:
+        report = run_multi_person_static_contract_suite()
+    except MultiPersonStaticContractError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
 @autonomy.command("evaluate-stability")
 @click.argument("manifest_path", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(

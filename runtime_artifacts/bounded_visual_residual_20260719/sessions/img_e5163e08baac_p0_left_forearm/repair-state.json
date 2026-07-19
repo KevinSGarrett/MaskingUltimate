@@ -1,0 +1,20 @@
+{
+  "accepted_map_path": "C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\bounded_visual_residual_20260719\\sessions\\img_e5163e08baac_p0_left_forearm\\accepted_parent.png",
+  "accepted_map_sha256": "7dcf85b692cf6ab1f84ece6fc0ad60739d3ad9f87275d7b821afe761a59fa138",
+  "accepted_parent_id": "img_e5163e08baac-p0-left_forearm-residual-v1",
+  "attempts": [
+    {
+      "accepted_parent_id": "img_e5163e08baac-p0-left_forearm-residual-v1",
+      "accepted_parent_map_sha256": "7dcf85b692cf6ab1f84ece6fc0ad60739d3ad9f87275d7b821afe761a59fa138",
+      "candidate_mask_sha256": "4a1976bdb021f09216cc576f6011eb735a9770486865aaf0ed9be552b50b566c",
+      "elapsed_seconds": 1.0,
+      "hypothesis_id": "remove_small_components_max_ontology",
+      "outcome": "rolled_back_retry_distinct_hypothesis",
+      "reason": "candidate_guard_veto:candidate_area_sanity",
+      "resource_units": 1.0,
+      "score_ppm": 175010
+    }
+  ],
+  "schema_version": "1.0.0",
+  "terminal_outcome": null
+}

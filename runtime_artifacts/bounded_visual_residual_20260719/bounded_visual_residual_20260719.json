@@ -1,0 +1,101 @@
+{
+  "blockers": [
+    "VISUAL_QA_PASS_BOUNDED blocked: residual garment bias / underfill / exclusivity bleed / multi-person half-fill",
+    "human_approved_gold still requires Kevin CVAT correction"
+  ],
+  "claims_not_established": [
+    "VISUAL_QA_PASS_BOUNDED",
+    "gold",
+    "human_approved_gold",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "contracts": [
+    "maskfactory.autonomy.visual_defect_policy.decide_visual_repair_promotion",
+    "maskfactory.autonomy.operational_repair.DurableRepairExecutor",
+    "clear_forbidden_material_then_max_components (narrow exclusivity)"
+  ],
+  "correction_note": "img_2ca794d19be9 chest was briefly promoted by a compound hypothesis that dropped only noise CCs (forbidden_material_drop_px=0). Rolled back from backup; policy now requires forbidden_material_drop_px>=64 to prevent CC-only smuggle through material-clear gate.",
+  "lane": "bounded_visual_residual_after_noise_cc",
+  "prior_wave": "qa/live_verification/bounded_visual_repair_20260719.json",
+  "research_summary": {
+    "exclusivity_bleed": "Connected hip bleed has no S05 pose ROI; garment-clear destroys mask.",
+    "garment_bias": "Semantic sports-bra/underwear chest shape is not remediable without human redraw. Only footwear/sock material on chest is safe to clear when forbidden_material_drop_px>=64.",
+    "multi_person_half_fill": "Identity half-cut requires Kevin CVAT correction.",
+    "underfill": "Missing limb mass cannot be invented by dilation/hole-fill."
+  },
+  "results": [
+    {
+      "components_after": 2,
+      "components_before": 96,
+      "defect_class": "garment_bias",
+      "drop_px": 50895,
+      "forbidden_material_drop_px": 41739,
+      "hypothesis": "clear_forbidden_material_then_max_components",
+      "outcome": "ACCEPTED_REVERSIBLE_REPAIR_BOUNDED",
+      "promote": {
+        "chest_area_after": 226930,
+        "footwear_on_chest_after": 0,
+        "part_sha256": "e1f12bb325a5a0024994f04f62ce4535ac645566210b61db441b0ea53ab7bf84",
+        "qc_passed": true
+      },
+      "promoted": true,
+      "reason": "forbidden-material exclusivity clear (footwear/sock on chest) + max-CC; hard QC pass; sports-bra garment bias residual remains",
+      "research_note": "Sock exclusivity on chest cleared; structural garment-bias bra shape unchanged.",
+      "target": "img_51945db358cb/p0/chest_upper_torso"
+    },
+    {
+      "defect_class": "garment_bias",
+      "forbidden_material_drop_px": 0,
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "forbidden_material_drop_px=0; refusing CC-only smuggle; underwear/lace garment bias not remediable without false gold",
+      "rolled_back_false_promote": true,
+      "target": "img_2ca794d19be9/p0/chest_upper_torso"
+    },
+    {
+      "defect_class": "exclusivity_bleed",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "connected hip/trunk bleed; no S05 pose ROI; morphology cannot cut bleed without inventing forearm boundary",
+      "target": "img_b2b46c45d8e0/p0/left_forearm"
+    },
+    {
+      "defect_class": "underfill",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "underfill not remediable by bounded morphology; area_sanity veto on shrink; fill would invent mass",
+      "target": "img_e5163e08baac/p0/left_forearm"
+    },
+    {
+      "defect_class": "multi_person_half_fill",
+      "outcome": "ABSTAIN_BOUNDED",
+      "promoted": false,
+      "reason": "structural multi-person half-fill / identity cut; material clear not promotable on hair",
+      "target": "img_a3d2663ad90d/p0/hair"
+    }
+  ],
+  "seeded_defect_tests": {
+    "coverage": [
+      "structural classes ABSTAIN even if executor accepts",
+      "noise classes may promote with drop/excess",
+      "material clear requires forbidden_material_drop_px>=64",
+      "CC-only smuggle through material-clear gate refused",
+      "multi_person_half_fill never promotes via material clear",
+      "connected exclusivity bleed CC cleanup drop_px=0"
+    ],
+    "path": "tests/test_visual_defect_abstention.py"
+  },
+  "summary": {
+    "abstain_bounded": 4,
+    "accepted_promoted": 1,
+    "hard_qa_after": {
+      "discovered": 14,
+      "failed": [],
+      "passed": 14
+    },
+    "highest_hard_tier": "HARD_QA_PASS_BOUNDED",
+    "highest_visual_tier": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+    "visual_note": "Sock exclusivity on one chest improved; residual garment bias / underfill / connected bleed / half-fill remain. Never VISUAL_QA_PASS_BOUNDED."
+  },
+  "ts": "2026-07-19T22:24:49.254226+00:00"
+}

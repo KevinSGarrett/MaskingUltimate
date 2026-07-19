@@ -2986,12 +2986,17 @@
           "ts": "2026-07-19T21:55:49+00:00",
           "actor": "ai_agent",
           "text": "PROOF-TIER: 4 ACCEPTED_REVERSIBLE_REPAIR_BOUNDED noise cleanups; 3 ABSTAIN_BOUNDED; never VISUAL_QA_PASS_BOUNDED or gold from this wave."
+        },
+        {
+          "ts": "2026-07-19T22:25:07+00:00",
+          "actor": "ai_agent",
+          "text": "PROOF-TIER residual wave: 1 ACCEPTED (51945 chest footwear/sock exclusivity clear via clear_forbidden_material_then_max_components); 4 ABSTAIN (2ca794 garment bias rolled back false promote; connected exclusivity bleed; underfill; multi-person half-fill). Policy+seeded tests added. Hard 14/14 PASS. Visual remains VISUAL_QA_REVIEWED_WITH_DEFECTS — never VISUAL_QA_PASS_BOUNDED."
         }
       ],
-      "evidence": "PROOF-TIER bounded visual repair 2026-07-19: DurableRepairExecutor accepted+promoted noise CC cleanup on img_51945/cdab/7b7a/2ca794; hard QC 14/14 PASS (HARD_QA_PASS_BOUNDED). Visual still VISUAL_QA_REVIEWED_WITH_DEFECTS. ABSTAIN_BOUNDED on exclusivity bleed, underfill, multi-person half-fill. Evidence qa/live_verification/bounded_visual_repair_20260719.json sha256 3c2fc7b4505b20c349cad54059806939c2414492210fcc8bab89b33b7a7a937c",
+      "evidence": "qa/live_verification/bounded_visual_residual_20260719.json sha256 ccf223c98874452b908aad03e8f339688ccfdc43d7ba548ee58be7eb5f4cf823; tests/test_visual_defect_abstention.py; src/maskfactory/autonomy/visual_defect_policy.py",
       "blocked_reason": "NEEDS KEVIN: drafts remain HARD_QA_PASS_BOUNDED after bounded noise repairs (4 promoted) but VISUAL_QA_REVIEWED_WITH_DEFECTS; underfill/bleed/half-fill/garment ABSTAIN_BOUNDED; human_approved_gold still requires Kevin CVAT correction. Human-anchor train count remains 0.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T21:55:49+00:00",
+      "updated_at": "2026-07-19T22:25:07+00:00",
       "orphaned": false
     },
     "MF-P1-08.05": {

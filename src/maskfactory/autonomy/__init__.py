@@ -58,6 +58,14 @@ from .repair import (
     requires_reconstruction,
 )
 from .tournament import CandidateEvidence, TournamentDecision, run_candidate_tournament
+from .visual_defect_policy import (
+    BLOCKED_VISUAL_PASS_CLAIM,
+    HIGHEST_VISUAL_TIER_WITH_RESIDUALS,
+    STRUCTURAL_ABSTAIN_DEFECT_CLASSES,
+    VisualRepairPromotionDecision,
+    decide_visual_repair_promotion,
+    seeded_structural_defect_kinds,
+)
 
 __all__ = [
     "CandidateEvidence",
@@ -106,4 +114,10 @@ __all__ = [
     "select_sparse_human_audits",
     "verify_autonomy_certificate",
     "write_lifecycle_sidecar",
+    "BLOCKED_VISUAL_PASS_CLAIM",
+    "HIGHEST_VISUAL_TIER_WITH_RESIDUALS",
+    "STRUCTURAL_ABSTAIN_DEFECT_CLASSES",
+    "VisualRepairPromotionDecision",
+    "decide_visual_repair_promotion",
+    "seeded_structural_defect_kinds",
 ]

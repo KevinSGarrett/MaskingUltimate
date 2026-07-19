@@ -8979,3 +8979,44 @@ Mode B "draft" means response authority floor (`draft_model_generated`, `promoti
 - Doctor-green not claimed
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal script
+## 2026-07-19 — Residual visual-defect wave (material exclusivity + abstention)
+
+**Lane:** Continue visual-defect lane after noise CC repairs (proof-tier; no gold claim)
+**Authority:** `maskfactory.autonomy.visual_defect_policy`; DurableRepairExecutor; Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
+**Actor:** bounded_visual_residual
+
+### Research (safe vs unsafe)
+| Defect | Safe autonomous repair? | Why |
+|---|---|---|
+| garment bias (semantic bra/underwear chest shape) | No | Requires human redraw; morphology invents/destroys anatomy |
+| footwear/sock material on chest (exclusivity) | Yes (narrow) | Ontologically forbidden material on `chest_upper_torso`; drop-only |
+| underfill | No | Fill/dilate invents limb mass; shrink hits area_sanity |
+| exclusivity bleed (connected hip↔forearm) | No | Single CC; no S05 pose ROI; garment-clear destroys mask |
+| multi-person half-fill | No | Identity/ownership cut; Kevin CVAT |
+
+### Attempts
+| Target | Defect | Outcome | Notes |
+|---|---|---|---|
+| img_51945db358cb/p0 chest_upper_torso | garment_bias + sock exclusivity | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | `clear_forbidden_material_then_max_components`; forbidden drop 41739 px; 96→2 CC; hard QC pass; bra garment-bias residual remains |
+| img_2ca794d19be9/p0 chest_upper_torso | garment_bias | ABSTAIN_BOUNDED | forbidden_material_drop_px=0; false CC-only promote rolled back from backup |
+| img_b2b46c45d8e0/p0 left_forearm | exclusivity_bleed | ABSTAIN_BOUNDED | connected bleed |
+| img_e5163e08baac/p0 left_forearm | underfill | ABSTAIN_BOUNDED | no safe fill |
+| img_a3d2663ad90d/p0 hair | multi_person_half_fill | ABSTAIN_BOUNDED | identity half-cut |
+
+### Policy / tests
+- Added `src/maskfactory/autonomy/visual_defect_policy.py` (fail-closed promotion gate; requires `forbidden_material_drop_px>=64` for material-clear hypotheses)
+- Seeded tests: `tests/test_visual_defect_abstention.py` (16 passed)
+
+### Hard / Visual tiers (honest)
+- Hard QC: **HARD_QA_PASS_BOUNDED** (verify-package sample 14/14 PASS)
+- Visual: **VISUAL_QA_REVIEWED_WITH_DEFECTS**
+- **Not claimed:** VISUAL_QA_PASS_BOUNDED, gold, human_approved_gold
+
+### Evidence
+`qa/live_verification/bounded_visual_residual_20260719.json` sha256 `ccf223c98874452b908aad03e8f339688ccfdc43d7ba548ee58be7eb5f4cf823`
+Backups under `runtime_artifacts/bounded_visual_residual_20260719/backups/`
+
+### Blockers
+1. VISUAL_QA_PASS_BOUNDED blocked by residual garment bias / underfill / exclusivity bleed / multi-person half-fill
+2. human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)
+

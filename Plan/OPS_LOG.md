@@ -7250,3 +7250,17 @@ Missing release proof:                 conditional `native_venv` versus `contain
 Prepared unit:                         `MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE`; five absent/clean additive paths are held until MF-P6-09.07 is adopted and do not change frozen v1
 Verification:                          both probes reproduced; 5/5 focused release/archive tests and Ruff pass; frozen v1, dirty 08.05 paths, queued workers, Docker, WSL, and runtime state were not changed
 Evidence:                              `qa/live_verification/bridge_release_publication_gap_audit_20260718.json`
+
+## 2026-07-19 00:13 UTC - Consumer-requirements producer admission gap isolated
+
+**Result:** MF-P6-10.03 remains open with zero completion credit. The frozen requirements
+document authenticates Main intent and closes its shape, but MaskFactory lacks a use-time replay,
+crosswalk, trust, authority, and normalized capability admission decision.
+
+Existing strength:                     strict canonical consumer-role signature; bounded nonce authentication; exact 12 names; both authorities; unique capability IDs; required/optional arrays; typed media/person/transform/authority/resource envelopes
+Use-time boundary:                     authentication is checked at the document's own `created_at`; no decision-time or durable nonce/body ledger is accepted by the requirements validator
+Trusted probes:                        substituted embedded key-set hash, invented authority tier, capability/top-level label contradiction, and substituted schema ID/path/hash all remained validator-clean after trusted re-sign
+Missing decision:                      current-use freshness/replay, adopted trust-registry resolution, closed authority lattice, exact 09.07 crosswalk resolution, envelope normalization, and deterministic required-versus-optional coverage
+Prepared unit:                         `MF-CURSOR-10.03-CONSUMER-REQUIREMENTS-ADMISSION`; five absent/clean additive paths are held until MF-P6-09.07 is adopted and remain disjoint from all other held units
+Verification:                          all four probes reproduced; 3/3 focused bridge tests and Ruff pass; frozen v1, dirty 08.05 paths, worker records, Docker, WSL, and runtime state were not changed
+Evidence:                              `qa/live_verification/bridge_consumer_requirements_gap_audit_20260718.json`

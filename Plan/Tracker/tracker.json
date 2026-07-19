@@ -19252,11 +19252,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T00:14:47+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 static acceptance audit: zero completion credit. The frozen signed Main requirements document is structurally strong, but trusted re-sign probes show substituted embedded trust identity, unknown authority tier, capability/top-level label contradiction, and substituted schema identity remain validator-clean; current validation also lacks use-time freshness and a durable replay ledger. Prepared disjoint additive MF-CURSOR-10.03-CONSUMER-REQUIREMENTS-ADMISSION; held until MF-P6-09.07 is adopted. Evidence: qa/live_verification/bridge_consumer_requirements_gap_audit_20260718.json"
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T00:14:47+00:00",
       "orphaned": false
     },
     "MF-P6-10.04": {

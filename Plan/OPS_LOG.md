@@ -7386,3 +7386,16 @@ Missing authority:                      no production publisher, batch/ledger va
 Prepared unit:                         `MF-CURSOR-10.06-INVALIDATION-PUBLICATION-LEDGER`; five absent/clean additive paths are disjoint from held 08.07/10.01-10.05 and dirty 08.05 scopes
 Disposition:                            held behind MF-P6-08.07 and MF-P6-10.05; no event published, no worker dispatched, no frozen bytes changed
 Evidence:                              `qa/live_verification/bridge_invalidation_publication_gap_audit_20260719.json`
+
+## 2026-07-19 01:10 UTC - Consumer invalidation/recovery contract audited; execution evidence absent
+
+**Result:** MF-P6-10.07 receives 25% contract-foundation credit but remains item-blocked. Signed
+cache/rollback lifecycle vocabulary exists; no Main consumer execution or recovery evidence exists.
+
+Verified foundation:                   frozen events cover cache tombstone/rebuild, adoption revalidation/invalidation, and rollback start/complete; trusted consumer signatures, hash-chain, sequence, causation, state replay, head, and checkpoint validation pass
+Trusted cache probe:                   a signed active -> tombstoned -> active chain passes with no cache inventory, route scope, current authority/freshness recheck, tombstone receipt, or rebuilt-byte evidence
+Trusted rollback probe:                a signed none -> rolling_back -> rolled_back chain passes with no displaced/target adoption, installed-tree hashes, atomic pointer switch, rollback command, recovery receipt, or post-switch smoke
+Ownership boundary:                    Main owns cache/routes/adoption/rollback execution and consumer signatures; MaskFactory owns invalidation publication plus conformance validation of exact signed Main action evidence
+Prepared unit:                         `MF-CURSOR-10.07-CONSUMER-INVALIDATION-CONFORMANCE`; five absent/clean producer-only additive paths are held behind 10.01-10.06 and Main runtime evidence
+Disposition:                            no Main cache, route, adoption, install, rollback, or lifecycle state changed; no worker dispatched; frozen v1 and dirty/held scopes unchanged
+Evidence:                              `qa/live_verification/bridge_consumer_invalidation_recovery_gap_audit_20260719.json`

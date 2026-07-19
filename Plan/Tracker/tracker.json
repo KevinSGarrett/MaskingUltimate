@@ -18861,7 +18861,7 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
+      "status": "blocked",
       "percent_complete": 70,
       "notes": [
         {
@@ -18883,12 +18883,17 @@
           "ts": "2026-07-18T20:56:49+00:00",
           "actor": "codex",
           "text": "2026-07-18 recovery handoff: signed precedence-correction intent intent_20260718T204939214Z_mask_operational_certificate_precedence_correction_aa7101df is READY but deferred/not woken, pinned to clean snapshot 093b9b1d74fb21ec5653d9dae395af878a8f0909 until exact-shim WSL canaries pass. No completion credit or Codex duplication. See qa/live_verification/capacity_and_worker_recovery_checkpoint_20260718.json."
+        },
+        {
+          "ts": "2026-07-19T00:24:43+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent revalidation: current preserved bytes still return operational_policy_output_scope_mismatch before authoritative certified_output_scope_mismatch. Ruff/schema pass; Black module absent in the Windows host interpreter. Item-only block; overall MaskFactory goal remains active. Evidence: qa/live_verification/operational_policy_precedence_revalidation_20260719.json"
         }
       ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "WORKER CONTROL: exact authority precedence remains direct certificate integrity -> operational policy binding -> advisory critic; focused result is 29 passed/1 failed. Signed correction intent ...aa7101df is not executable as issued because Claude preflight ...c3ac420a used C:\\Comfy_UI_Main\\runtime_artifacts outside the registered MaskFactory trusted packet root; dependent Cursor ...af58febb has no provider result. Reissue the signed chain under the canonical MaskFactory trusted root; do not duplicate in Codex.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-18T20:56:49+00:00",
+      "updated_at": "2026-07-19T00:24:43+00:00",
       "orphaned": false
     },
     "MF-P6-08.06": {

@@ -7277,3 +7277,17 @@ Missing qualification:                 actual installed-byte resolution, stack s
 Prepared unit:                         `MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION`; five absent/clean additive paths are held until MF-P6-10.01 is adopted and remain disjoint from all other units
 Verification:                          all four probes reproduced; 3/3 focused bridge tests and Ruff pass; model files, frozen v1, dirty 08.05 paths, worker records, Docker, WSL, and runtime state were not changed
 Evidence:                              `qa/live_verification/bridge_capability_snapshot_gap_audit_20260718.json`
+
+## 2026-07-19 00:23 UTC - MF-P6-08.05 precedence failure revalidated; correction chain invalid
+
+**Result:** MF-P6-08.05 is locally blocked at 70% with zero new completion credit. The preserved
+policy implementation still has one authority-order defect, and its signed replacement chain failed
+before a provider could run because the scope packet used the wrong trusted project root.
+
+Focused result:                        29 passed / 1 failed; direct `certified_output_scope_mismatch` is still masked by `operational_policy_output_scope_mismatch`
+Required precedence:                   direct certificate integrity → operational policy binding → advisory critic
+Static validation:                     Ruff and JSON schema parsing pass; Black is absent from the Windows host interpreter and was not represented as a code pass
+Correction lineage:                    intent `...aa7101df`; Claude preflight `...c3ac420a` dead-lettered because its packet was under `C:\Comfy_UI_Main\runtime_artifacts`; dependent Cursor `...af58febb` remains queued and has no provider result
+Unblock contract:                      reissue the signed high-assurance chain under the registered MaskFactory trusted packet root with the same exact origin task/base/scope; require Cursor implementation, independent review, and complete validators
+Preservation:                          current dirty scope, rejected worktree, queued records, Docker, WSL, model files, and frozen contracts were not changed; no direct wrapper or Codex implementation was used
+Evidence:                              `qa/live_verification/operational_policy_precedence_revalidation_20260719.json`

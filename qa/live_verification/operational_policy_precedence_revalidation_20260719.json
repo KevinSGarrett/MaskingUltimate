@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_operational_policy_precedence_revalidation",
+  "recorded_at": "2026-07-19T00:23:49Z",
+  "project_head": "eb8b3f687b4593516bdc26b0d06fa4550d27c395",
+  "tracker_item": "MF-P6-08.05",
+  "status": "ITEM_BLOCKED_CORRECTION_CHAIN_INVALID",
+  "completion_credit": false,
+  "authority_precedence_required": [
+    "direct_certificate_integrity",
+    "operational_policy_binding",
+    "advisory_critic"
+  ],
+  "current_result": {
+    "focused_tests_passed": 29,
+    "focused_tests_failed": 1,
+    "failed_test": "tests/test_operational_certificate_issuance.py::test_issuer_refuses_scope_validity_revocation_and_ownership_drift",
+    "expected_authoritative_code": "certified_output_scope_mismatch",
+    "observed_masking_code": "operational_policy_output_scope_mismatch",
+    "interpretation": "The policy report is compared to the caller-supplied certificate before exact output identities are recomputed from mask bytes. A drifted certified scope therefore masks the direct certificate-integrity decision.",
+    "ruff": "PASS",
+    "schema_json": "PASS",
+    "black": "NOT_RUN_MODULE_ABSENT_IN_WINDOWS_HOST_INTERPRETER"
+  },
+  "worker_lineage": {
+    "rejected_request": "p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8",
+    "rejected_adoption_percent": 0,
+    "correction_intent": "intent_20260718T204939214Z_mask_operational_certificate_precedence_correction_aa7101df",
+    "preflight_request": "p000_20260718T221326220Z_mask_operational_certificate_precedence_correction_sonnet_preflight_c3ac420a",
+    "preflight_status": "FAIL_RETRY_BUDGET_EXHAUSTED",
+    "preflight_issue": "The signed scope packet was placed under C:\\Comfy_UI_Main\\runtime_artifacts instead of a registered MaskFactory trusted packet root.",
+    "cursor_request": "p000_20260718T221327474Z_mask_operational_certificate_precedence_correction_af58febb",
+    "cursor_status": "QUEUED_DEPENDENCY_FAILED_NOT_ADOPTABLE",
+    "provider_result_available": false,
+    "codex_reimplementation_allowed": false
+  },
+  "required_unblock": "Reissue the signed high-assurance correction chain with its scope packet under the registered canonical MaskFactory trusted packet root, preserve origin_task_id 019f4cfc-60c3-7500-8626-261dcf70db5d and base snapshot 093b9b1d74fb21ec5653d9dae395af878a8f0909, then require Cursor implementation plus independent review and all validator commands.",
+  "hash_bound_inputs": {
+    "configs/operational_autonomy_policy.yaml": "ed885a3eea7a91df22169ff8ac469cb7b29844aa9a7b8c55d5af9145bd0c956a",
+    "src/maskfactory/authority/__init__.py": "05f2e9888022005871b23fd688546deb8739b9a66ef9f75333d902ea520c39f3",
+    "src/maskfactory/authority/operational_certificate.py": "d2b541ccb5c8bcc69784b44ac2eab49b98ddb8f2a880b9630100651d9c7dfd84",
+    "src/maskfactory/authority/operational_policy.py": "764073480dd313e048d63aed66776a892db80a2421ff3a061de8d5037b376cec",
+    "src/maskfactory/schemas/operational_policy_evidence.schema.json": "6d7f4c201319e8506dc9937d1382557b273eedd38c8f217da81a931a5db9651e",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "tests/test_operational_certificate_issuance.py": "5e020dcf5d0da878865f16bc2f9cb1b02166b41cccb0dd52b7347dbe7ae8b5b4",
+    "tests/test_operational_policy.py": "57f5795d6b1e687a8bc260deefcd05483ac379cdf961a6fd6925d4af7b4eb15a",
+    "correction_cursor_request": "01a2973f1c74cd054e81e0c5ea423b8f91f030d95dbe21f3a614647eb5d5f3e6",
+    "correction_preflight_dispatch_record": "e63347982ff2c7c868e8378e279eba2b2c393b037726a5a3b590584923d59750"
+  },
+  "preservation": {
+    "dirty_scope_modified": false,
+    "rejected_worker_worktree_deleted": false,
+    "queued_request_modified_or_woken": false,
+    "direct_cursor_or_claude_wrapper_used": false,
+    "tracker_completion_credit_awarded": false
+  },
+  "claim_boundary": "This revalidation confirms the existing implementation remains useful but unacceptable. It does not adopt worker output, fix the precedence defect, complete MF-P6-08.05, or weaken direct certificate integrity."
+}

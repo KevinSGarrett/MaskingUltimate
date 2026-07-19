@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_autonomous_gold_demonstration_gap_audit",
+  "recorded_at": "2026-07-19T03:42:21Z",
+  "project_head": "d7721b0448cb8ff6c06a4f2c74a86b100b582f5d",
+  "tracker_item": "MF-P6-08.08",
+  "status": "CERTIFICATE_QA_CRITIC_FOUNDATIONS_STRONG_COMPLETE_GOVERNED_DEMONSTRATION_ABSENT",
+  "percent_supported": 55,
+  "completion_credit": false,
+  "prerequisite_state": {
+    "MF-P6-08.02": "complete_100_percent_deterministic_operational_certificate_issuer",
+    "MF-P6-08.03": "complete_100_percent_complete_map_hard_veto",
+    "MF-P6-08.04": "complete_100_percent_intelligence_and_critic_control_plane",
+    "MF-P6-08.05": "blocked_70_percent_authority_precedence_regression",
+    "MF-P6-08.06": "blocked_40_percent_repair_executor_and_typed_autonomous_abstention_incomplete",
+    "MF-P6-08.07": "blocked_50_percent_at_use_invalidation_decision_absent"
+  },
+  "verified_foundations": [
+    "Deterministic exact-byte operational certificate issuance and direct certificate scope validation exist.",
+    "Complete-map hard veto and multi-person ownership/scope guards exist and cannot be replaced by an advisory critic vote.",
+    "The intelligence control plane records critic quorum and typed disagreement without granting higher authority.",
+    "Bounded repair foundations enforce iteration, provenance, output-change and safety constraints.",
+    "The signed invalidation taxonomy/event contract and legacy single-/multi-person lowering foundations exist.",
+    "Single- and multi-person authority-scope unit coverage is present."
+  ],
+  "focused_verification": {
+    "tests_collected": 67,
+    "tests_passed": 66,
+    "tests_failed": 1,
+    "ruff": "PASS",
+    "commands": [
+      "python -m pytest -q tests/test_operational_certificate_issuance.py",
+      "python -m pytest -q tests/test_autonomous_repair.py tests/test_binary_review_decisions.py tests/test_intelligence_control_plane.py tests/test_autonomy_multi_person_scope.py plus focused bridge invalidation/event tests",
+      "ruff check governing MF-P6-08.08 paths"
+    ]
+  },
+  "known_precedence_failure": {
+    "test": "tests/test_operational_certificate_issuance.py::test_issuer_refuses_scope_validity_revocation_and_ownership_drift",
+    "expected_code": "certified_output_scope_mismatch",
+    "observed_codes": [
+      "operational_policy_output_scope_mismatch"
+    ],
+    "meaning": "The MF-P6-08.05 policy binding currently masks a direct certificate-integrity failure; direct certificate integrity must precede policy binding, which must precede advisory critic logic."
+  },
+  "existing_repair_evidence_review": {
+    "path": "qa/live_verification/autonomous_repair_execution_20260714.json",
+    "qualifies": false,
+    "observed_terminal_state": "residual_human_queue",
+    "reason": "The shadow evidence does not prove autonomous typed abstention and does not bind accepted, repaired, abstained, certified and revoked single-/multi-person branches into one governed report."
+  },
+  "missing_demonstration_paths": [
+    "configs/autonomous_gold_demonstration_policy.yaml",
+    "src/maskfactory/autonomy/demonstration.py",
+    "src/maskfactory/schemas/autonomous_gold_demonstration_report.schema.json",
+    "tools/run_autonomous_gold_demonstration.py",
+    "tests/test_autonomous_gold_demonstration.py"
+  ],
+  "missing_acceptance": [
+    "Correct MF-P6-08.05 certificate/policy/critic precedence without weakening direct integrity or hard-veto authority.",
+    "Complete MF-P6-08.06 bounded repair with a typed autonomous abstention terminal state and no residual mandatory-human queue in the default autonomous path.",
+    "Complete MF-P6-08.07 at-use signed invalidation authority decisions against the current trusted journal head.",
+    "Run governed single- and multi-person inputs through one deterministic candidate-to-QA-to-repair-or-abstain-to-certificate-to-revocation demonstration.",
+    "Publish one hash-bound report proving accepted, repaired, abstained, certified and revoked cases and zero hard-veto bypass."
+  ],
+  "future_additive_scope_candidate": {
+    "work_unit_id": "MF-CURSOR-08.08-AUTONOMOUS-GOLD-DEMONSTRATION",
+    "state": "HELD_PREREQUISITES_OPEN_NOT_DISPATCHED",
+    "paths": [
+      "configs/autonomous_gold_demonstration_policy.yaml",
+      "src/maskfactory/autonomy/demonstration.py",
+      "src/maskfactory/schemas/autonomous_gold_demonstration_report.schema.json",
+      "tools/run_autonomous_gold_demonstration.py",
+      "tests/test_autonomous_gold_demonstration.py"
+    ],
+    "worker_lane_boundary": "Do not duplicate or dispatch while worker lanes remain disabled and MF-P6-08.05 through MF-P6-08.07 are unresolved."
+  },
+  "source_hashes": {
+    "qa/live_verification/operational_certificate_issuance_20260717.json": "62e0dda942c2aa9ff0b8962c57a9914606348e630f2804612d770ced9520b70a",
+    "qa/live_verification/complete_map_hard_veto_20260717.json": "fee9f4d0c1a09bfc20f179e0310baae13bdd469ccce7ede8610e92242be52c30",
+    "qa/live_verification/autonomous_intelligence_control_plane_20260717.json": "f56658cb186c7167341247b6eef0e14592f3a6a8456366d95d927ba965211990",
+    "qa/live_verification/operational_policy_precedence_revalidation_20260719.json": "d199a70a3651e36310d1b306a499cee747cb991a0ffb3961fcf2c64120171b82",
+    "qa/live_verification/bounded_operational_repair_gap_revalidation_20260719.json": "aa86120490bbfeefb97d4851a40d80e05f8599d8b93f3f95605519558cdbd88d",
+    "qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json": "236e45d89868d0e2c551eee7fb862b1333a9d2e74956b4ede86ef2e6483da458",
+    "qa/live_verification/autonomous_repair_execution_20260714.json": "cd8a0658090ecdce4b9cc30695bb8275c61e5067eb7139fbf8055e409ca0ea11",
+    "tests/test_operational_certificate_issuance.py": "5e020dcf5d0da878865f16bc2f9cb1b02166b41cccb0dd52b7347dbe7ae8b5b4"
+  },
+  "preservation": {
+    "frozen_v1_modified": false,
+    "existing_MF_P6_08_05_dirty_scope_modified": false,
+    "worker_request_created_or_duplicated": false,
+    "runtime_model_or_tracker_prerequisite_state_changed": false
+  },
+  "claim_boundary": "This audit supports honest partial progress only. It does not demonstrate the complete autonomous flow, certify or revoke a production output, approve a mask, complete MF-P6-08.08, or claim autonomous-gold production readiness."
+}

@@ -7730,3 +7730,16 @@ Finalization authority:                 final Git/GitHub publication, tracker cl
 Preservation boundary:                  no PR/worktree merge/delete/rewrite, no currency-policy relabel, no optional-profile status change, and no fabricated final receipt
 Truth boundary:                         no final producer release, Main adoption, reciprocal acknowledgement, core closure, or item completion claim
 Evidence:                              `qa/live_verification/bridge_final_release_handoff_gap_audit_20260719.json`
+
+## 2026-07-19 03:42 UTC - Autonomous QA/certificate foundations strong; governed end-to-end demonstration absent
+
+**Result:** MF-P6-08.08 receives 55% foundation credit and remains blocked behind
+MF-P6-08.05 through MF-P6-08.07 plus the missing unified governed demonstration.
+
+Verified foundation:                   deterministic certificate issuance, complete-map hard veto, critic quorum, bounded repair guards, signed invalidation taxonomy and single-/multi-person scope coverage
+Focused validation:                    67 checks collected; 66 pass; one reproduces the known MF-P6-08.05 certificate-policy authority-precedence regression; Ruff passes
+Existing shadow evidence:               `autonomous_repair_execution_20260714.json` ends in `residual_human_queue` and does not prove autonomous typed abstention or the complete accepted/repaired/certified/revoked branch set
+Missing demonstration:                  no governed runner/report/schema/policy/test binds accepted, repaired, abstained, certified and revoked single-/multi-person cases with zero hard-veto bypass
+Prepared scope:                         `MF-CURSOR-08.08-AUTONOMOUS-GOLD-DEMONSTRATION`; five additive paths remain absent; held until prerequisites resolve and worker lanes are qualified
+Truth boundary:                         no production certificate/revocation, mask approval, runtime/worker mutation, autonomous-gold readiness or item completion claim
+Evidence:                              `qa/live_verification/autonomous_gold_demonstration_gap_audit_20260719.json`

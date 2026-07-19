@@ -16492,18 +16492,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T21:44:04+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: inactive v2 DAZ ontology snapshot + no-v1-leakage tests. Remaining: live DAZ mapping bundle use after D4-11; never activates body_parts_v2."
+        },
+        {
+          "ts": "2026-07-19T22:48:39+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: ontology_v2_inactive_gates strengthen inactive DAZ/v2 authority path (no production activation). Remaining: live DAZ mapping bundle use after D4-11; never activates body_parts_v2."
         }
       ],
       "evidence": "STATIC_PASS only: build_v2_ontology_snapshot + publish_v2_ontology_snapshot + schema daz_ontology_v2_snapshot; activation_status=approved_design_not_active; mapping_authority=false; appended IDs 56..64; refuses v1 source and body_parts_v1 path leakage. Fixture publish under qa/fixtures/daz/ontology_v2_inactive_snapshots/. Evidence: qa/live_verification/daz_inactive_v2_ontology_snapshot_static_20260719.json. No live DAZ facet mapping / production activation claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T21:44:04+00:00",
+      "updated_at": "2026-07-19T22:48:39+00:00",
       "orphaned": false
     },
     "MF-P9-06.01": {
@@ -16772,7 +16777,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 48,
+      "percent_complete": 52,
       "notes": [
         {
           "ts": "2026-07-19T22:34:57+00:00",
@@ -16783,12 +16788,17 @@
           "ts": "2026-07-19T22:44:45+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: engineering fixture-set v1.1 — policy-aligned coverage, full marginal coverage, sealed synthetic recipes, CLI. Never accepted/rendered; D5 render/accept path still required."
+        },
+        {
+          "ts": "2026-07-19T22:48:39+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: published 48-fixture scale variant under schema 1.1.0. Never accepted/rendered; D5 render/accept path still required."
         }
       ],
-      "evidence": "STATIC_PASS only: schema 1.1.0 build/validate/publish + CLI build-engineering-fixture-set/validate-engineering-fixture-set; 24 solo unrendered fixtures with policy vocab, exact 8 streams, sealable synthetic daz_resolved_scene_recipe drafts (fixture-only assets); refuses rendered/accepted/training_eligible/mapping_authority/live_daz/live_qualified claims. Published qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json; prior v1.0 retained. Evidence: qa/live_verification/daz_engineering_fixture_set_v11_static_20260719.json. Not accepted rendered fixture set / no live DAZ.",
+      "evidence": "STATIC_PASS only: schema 1.1.0 engineering fixture-set plus published 24 and 48 solo unrendered sets (full marginal coverage, sealed synthetic resolved recipes, CLI). 48-set proves 24-100 headroom. Refuses rendered/accepted/training_eligible/mapping_authority/live DAZ. Published qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json and daz_engineering_fixture_set_df43f46bb70227d626218bfe.json. Evidence: qa/live_verification/daz_engineering_fixture_set_v1_1_static_20260719.json (and prior v11 seal). Not accepted rendered fixture set.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:44:45+00:00",
+      "updated_at": "2026-07-19T22:48:39+00:00",
       "orphaned": false
     },
     "MF-P9-07.01": {
@@ -18447,12 +18457,17 @@
           "ts": "2026-07-19T22:05:49+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: gated train-only package materializer + composition card. Never gold; any_source_admitted_live=false; completion withheld until live qualification gates (esp. split_dedup) admit real warehouse rows."
+        },
+        {
+          "ts": "2026-07-19T22:48:38+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: holdout ablation report now published beside train-only packages and enforced by dataset builder/launcher when ablation_active claimed. Still STATIC_PASS; live_warehouse_admission=false."
         }
       ],
       "evidence": "STATIC_PASS only: src/maskfactory/external_supervision_packages.py materialize_qualified_train_only_packages writes gated train-only packages + source/label/weight dataset_card; builder/launcher refuse ungated external_labeled_reference rows. Fixture evidence bundles may admit hermetically; live_warehouse_admission=false; admission_ready=false. Evidence: qa/live_verification/external_supervision_packages_batch_cap_static_20260719.json. Not live source admission; depends on MF-P9-13.04 split_dedup_passed + MF-P9-13.05.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:05:49+00:00",
+      "updated_at": "2026-07-19T22:48:38+00:00",
       "orphaned": false
     },
     "MF-P9-13.07": {
@@ -18474,12 +18489,17 @@
           "ts": "2026-07-19T22:05:50+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: external-label batch cap + certified-real dominance enforced in builder and launcher. Never gold; no live warehouse batch claimed."
+        },
+        {
+          "ts": "2026-07-19T22:48:38+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC 2026-07-19: external batch-cap training authority path now co-enforces holdout ablation binding via launcher. Never gold; no live warehouse batch claimed."
         }
       ],
       "evidence": "STATIC_PASS only: validate_external_batch_cap enforces maximum_combined_external_batch_fraction=0.35 and certified-real dominance/majority; wired into datasets/builder.py and training/launch.py with builder/launcher metric agreement; boundary (0.35) and bypass (>0.35) plus ungated refuse tests pass. Evidence: qa/live_verification/external_supervision_packages_batch_cap_static_20260719.json. Not PRODUCTION_EVIDENCE_PASS / live batch claim.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:05:50+00:00",
+      "updated_at": "2026-07-19T22:48:38+00:00",
       "orphaned": false
     },
     "MF-P9-13.08": {
@@ -18495,18 +18515,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-19T22:34:54+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: holdout ablation source/label activation gate landed. Never gold; live_holdout_executed=false; completion withheld until frozen real human-anchor holdout ablations exist."
+        },
+        {
+          "ts": "2026-07-19T22:48:37+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: builder/launcher training-authority wiring for ablation_active. Never gold; live_holdout_executed=false; completion withheld until frozen real human-anchor holdout ablations exist."
         }
       ],
-      "evidence": "STATIC_PASS only: src/maskfactory/external_supervision_holdout_ablation.py decides source/label activation from frozen human-anchor holdout ablations; only non-regressing/non-inferior scopes remain active (hard_bucket/identity/boundary/calibration); builder/launcher refuse ablation_active without sealed report; packages bind optional ablation. Evidence: qa/live_verification/external_supervision_holdout_ablation_static_20260719.json. Not live holdout execution; frozen real human-anchor holdout still required for completion.",
+      "evidence": "STATIC_PASS only: holdout ablation now wired through dataset builder + training launcher training authority. sample_truth propagates ablation_active/label_names; builder discovers holdout_ablation_report.json; launcher requires bound sealed report when ablation_active=true; schema external_supervision_holdout_ablation_report registered. Evidence: qa/live_verification/external_supervision_holdout_ablation_builder_launch_static_20260719.json. Not live holdout execution; frozen real human-anchor holdout still required for completion.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:34:54+00:00",
+      "updated_at": "2026-07-19T22:48:37+00:00",
       "orphaned": false
     },
     "MF-P9-14.01": {

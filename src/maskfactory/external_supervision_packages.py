@@ -490,6 +490,7 @@ def materialize_qualified_train_only_packages(
                 "active_count": sealed_ablation["active_count"],
                 "inactive_count": sealed_ablation["inactive_count"],
                 "live_holdout_executed": False,
+                "report_path": "holdout_ablation_report.json",
             }
             if sealed_ablation is not None
             else {
@@ -505,6 +506,14 @@ def materialize_qualified_train_only_packages(
         {key: value for key, value in report.items() if key != "seal_sha256"}
     )
     publish_immutable_evidence(report, destination / "batch_manifest.json")
+    if sealed_ablation is not None:
+        publish_immutable_evidence(
+            dict(sealed_ablation), destination / "holdout_ablation_report.json"
+        )
+        # Also publish beside packages/ so dataset builder discovery finds it.
+        publish_immutable_evidence(
+            dict(sealed_ablation), packages_root / "holdout_ablation_report.json"
+        )
     return report
 
 

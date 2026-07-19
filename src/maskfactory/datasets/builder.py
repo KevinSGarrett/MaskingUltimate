@@ -18,6 +18,10 @@ from PIL import Image
 
 from ..daz.policy import validate_synthetic_authority, validate_synthetic_share
 from ..external_supervision import EXTERNAL_LABEL_ROLE
+from ..external_supervision_holdout_ablation import (
+    ExternalHoldoutAblationError,
+    discover_holdout_ablation_report,
+)
 from ..external_supervision_packages import (
     ExternalSupervisionPackageError,
     assert_builder_accepts_only_gated_external_rows,
@@ -210,6 +214,13 @@ def build_dataset(
                 qualification = manifest.get("external_qualification")
                 if not isinstance(qualification, Mapping):
                     qualification = {}
+                parts = manifest.get("parts")
+                label_names = (
+                    sorted(str(name) for name in parts.keys()) if isinstance(parts, Mapping) else []
+                )
+                ablation_active = qualification.get("ablation_active")
+                if ablation_active is None:
+                    ablation_active = manifest.get("ablation_active")
                 sample_truth[sample_id].update(
                     {
                         "holdout_eligible": False,
@@ -224,6 +235,8 @@ def build_dataset(
                         "external_evidence_bundle_sha256": qualification.get(
                             "evidence_bundle_sha256"
                         ),
+                        "label_names": label_names,
+                        "ablation_active": ablation_active is True,
                     }
                 )
             if split == "calibration":
@@ -372,7 +385,13 @@ def build_dataset(
         _one_authority_record_per_image(sample_truth.values())
     )
     try:
-        assert_builder_accepts_only_gated_external_rows(sample_truth.values())
+        ablation_report = discover_holdout_ablation_report(Path(packages_root))
+    except ExternalHoldoutAblationError as exc:
+        raise ValueError(f"external supervision holdout ablation failed: {exc}") from exc
+    try:
+        assert_builder_accepts_only_gated_external_rows(
+            sample_truth.values(), ablation_report=ablation_report
+        )
         external_metrics = validate_external_batch_cap(
             _one_authority_record_per_image(sample_truth.values())
         )
@@ -393,6 +412,23 @@ def build_dataset(
         truth_metrics=truth_metrics,
     )
     (destination / "dataset_card.md").write_text(card, encoding="utf-8")
+    holdout_ablation_binding: dict[str, Any]
+    if ablation_report is not None:
+        holdout_ablation_binding = {
+            "bound": True,
+            "seal_sha256": ablation_report["seal_sha256"],
+            "active_count": ablation_report["active_count"],
+            "inactive_count": ablation_report["inactive_count"],
+            "live_holdout_executed": False,
+            "admission_ready": False,
+            "report": dict(ablation_report),
+        }
+    else:
+        holdout_ablation_binding = {
+            "bound": False,
+            "live_holdout_executed": False,
+            "admission_ready": False,
+        }
     (destination / "build_manifest.json").write_text(
         json.dumps(
             {
@@ -406,6 +442,7 @@ def build_dataset(
                 "truth_metrics": truth_metrics,
                 "synthetic_metrics": synthetic_metrics,
                 "external_batch_metrics": external_metrics,
+                "holdout_ablation": holdout_ablation_binding,
                 "certified_volume_gates": volume_gates,
                 "reference_benchmark_isolation": reference_isolation,
                 "sample_weights": "sample_weights.json",

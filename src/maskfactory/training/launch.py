@@ -169,7 +169,19 @@ def validate_training_dataset_authority(dataset_root: Path) -> int:
                     f"one image has mixed external/non-external authority: {image_id}"
                 )
             external_by_image[image_id] = normalized
-        assert_launcher_accepts_only_gated_external_rows(external_by_image.values())
+        ablation_binding = build.get("holdout_ablation")
+        ablation_report = None
+        if isinstance(ablation_binding, dict) and ablation_binding.get("bound") is True:
+            ablation_report = ablation_binding.get("report")
+            if not isinstance(ablation_report, dict):
+                raise TrainingLaunchError("holdout ablation bound without sealed report payload")
+            if ablation_binding.get("live_holdout_executed") is True:
+                raise TrainingLaunchError(
+                    "training refuses live_holdout_executed=true on STATIC ablation binding"
+                )
+        assert_launcher_accepts_only_gated_external_rows(
+            external_by_image.values(), ablation_report=ablation_report
+        )
         external_metrics = validate_external_batch_cap(external_by_image.values())
     except ExternalSupervisionPackageError as exc:
         raise TrainingLaunchError(f"external supervision training authority failed: {exc}") from exc

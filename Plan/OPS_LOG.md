@@ -9165,3 +9165,31 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal
 
+
+## 2026-07-19 22:50 UTC - STATIC holdout ablation builder/launcher wiring + 48-fixture publish
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/evidence only)
+**Items:** MF-P9-13.08 (82% partial); MF-P9-13.06/13.07 notes; MF-P9-06.10 (52% partial); MF-P9-05.12 note (88%)
+**Result:** STATIC_PASS only - never gold; no doctor-green; no live holdout; no DAZ render/accept; no Main-complete; no PRODUCTION_EVIDENCE_PASS
+
+### MF-P9-13.08 residual: training-authority wiring
+- Dataset builder discovers `holdout_ablation_report.json`, propagates `ablation_active` + `label_names` into `sample_truth`, binds sealed report into `build_manifest.holdout_ablation`
+- Training launcher refuses `ablation_active=true` without bound sealed report payload
+- Packages materializer publishes sealed report beside batch + packages root
+- Schema: `external_supervision_holdout_ablation_report`
+- Evidence: `qa/live_verification/external_supervision_holdout_ablation_builder_launch_static_20260719.json` sha256 `ae95729b8851efbc74a6c87bc47a0cb5c1198884b736768c50401550c9c506d6`
+
+### MF-P9-06.10 scale headroom
+- Published 48-fixture unrendered set `daz_engineering_fixture_set_df43f46bb70227d626218bfe` (24 set retained)
+- Evidence: `qa/live_verification/daz_engineering_fixture_set_v1_1_static_20260719.json`
+
+### Focused tests
+`pytest` holdout ablation + training launch + engineering fixtures + ontology inactive gates: 31 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No frozen live human-anchor holdout execution / no source admitted live
+- No accepted/rendered DAZ engineering fixtures
+- No body_parts_v2 production activation / no Kevin pilot completion
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal

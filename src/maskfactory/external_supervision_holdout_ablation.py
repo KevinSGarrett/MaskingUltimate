@@ -12,10 +12,12 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from .external_supervision import EXTERNAL_LABEL_ROLE
 from .truth_tiers import HUMAN_ANCHOR_GOLD, WEIGHTED_PSEUDO_LABEL
+from .validation import ArtifactValidationError, require_valid_document
 
 PROOF_TIER = "STATIC_PASS"
 AUTHORITY = "external_supervision_holdout_ablation_static_only_no_live_holdout"
@@ -64,9 +66,7 @@ def require_frozen_human_anchor_holdout(binding: Mapping[str, Any]) -> dict[str,
     ):
         raise ExternalHoldoutAblationError("frozen holdout fingerprint_sha256 invalid")
     if truth_tier != HUMAN_ANCHOR_GOLD:
-        raise ExternalHoldoutAblationError(
-            "holdout ablation requires truth_tier=human_anchor_gold"
-        )
+        raise ExternalHoldoutAblationError("holdout ablation requires truth_tier=human_anchor_gold")
     if partition not in HOLDOUT_PARTITIONS:
         raise ExternalHoldoutAblationError(
             "holdout ablation requires a frozen holdout/test partition"
@@ -122,9 +122,7 @@ def _validate_regression_buckets(row: Mapping[str, Any]) -> None:
         if not isinstance(margin, (int, float)) or isinstance(margin, bool) or float(margin) < 0:
             raise ExternalHoldoutAblationError(f"regression bucket margin invalid: {name}")
         if float(delta) < -float(margin):
-            raise ExternalHoldoutAblationError(
-                f"regression bucket non-inferiority failed: {name}"
-            )
+            raise ExternalHoldoutAblationError(f"regression bucket non-inferiority failed: {name}")
 
 
 def evaluate_source_label_ablation(
@@ -271,6 +269,10 @@ def active_scope_keys(report: Mapping[str, Any]) -> set[tuple[str, tuple[str, ..
 def require_ablation_report(report: Mapping[str, Any]) -> Mapping[str, Any]:
     if not isinstance(report, Mapping):
         raise ExternalHoldoutAblationError("ablation report missing")
+    try:
+        require_valid_document(dict(report), "external_supervision_holdout_ablation_report")
+    except ArtifactValidationError as exc:
+        raise ExternalHoldoutAblationError(f"ablation report schema invalid: {exc}") from exc
     if report.get("schema_version") != SCHEMA_VERSION:
         raise ExternalHoldoutAblationError("ablation report schema_version invalid")
     if report.get("artifact_type") != ARTIFACT_TYPE:
@@ -284,14 +286,32 @@ def require_ablation_report(report: Mapping[str, Any]) -> Mapping[str, Any]:
     if report.get("gold_claimed") is True:
         raise ExternalHoldoutAblationError("ablation report cannot claim gold")
     if report.get("admission_ready") is True:
-        raise ExternalHoldoutAblationError(
-            "STATIC ablation report cannot set admission_ready=true"
-        )
+        raise ExternalHoldoutAblationError("STATIC ablation report cannot set admission_ready=true")
     require_frozen_human_anchor_holdout(report.get("frozen_holdout", {}))
     payload = {key: value for key, value in report.items() if key != "seal_sha256"}
     if report.get("seal_sha256") != _canonical_sha256(payload):
         raise ExternalHoldoutAblationError("ablation report seal_sha256 mismatch")
     return report
+
+
+def discover_holdout_ablation_report(packages_root: Path | str) -> dict[str, Any] | None:
+    """Load a sealed ablation report beside a package batch, if present."""
+
+    root = Path(packages_root)
+    for candidate in (
+        root / "holdout_ablation_report.json",
+        root.parent / "holdout_ablation_report.json",
+    ):
+        if not candidate.is_file():
+            continue
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise ExternalHoldoutAblationError(
+                f"holdout ablation report unreadable: {candidate}"
+            ) from exc
+        return dict(require_ablation_report(payload))
+    return None
 
 
 def assert_only_ablation_active_external_rows(
@@ -307,9 +327,7 @@ def assert_only_ablation_active_external_rows(
     for row in rows:
         if row.get("source_role") != EXTERNAL_LABEL_ROLE:
             if row.get("ablation_active") is True:
-                raise ExternalHoldoutAblationError(
-                    "non-external row cannot claim ablation_active"
-                )
+                raise ExternalHoldoutAblationError("non-external row cannot claim ablation_active")
             continue
         claimed = row.get("ablation_active")
         if claimed is True:
@@ -322,9 +340,7 @@ def assert_only_ablation_active_external_rows(
                 source = source.get("external_source") or source.get("source")
             labels = row.get("label_names") or row.get("label_scope")
             if not isinstance(source, str):
-                raise ExternalHoldoutAblationError(
-                    "ablation_active external row missing source"
-                )
+                raise ExternalHoldoutAblationError("ablation_active external row missing source")
             key = (source, _normalize_label_scope(labels))
             if key not in active_keys:
                 raise ExternalHoldoutAblationError(
@@ -364,6 +380,7 @@ __all__ = [
     "active_scope_keys",
     "assert_only_ablation_active_external_rows",
     "decide_active_external_supervision",
+    "discover_holdout_ablation_report",
     "evaluate_source_label_ablation",
     "filter_active_selections",
     "require_ablation_report",

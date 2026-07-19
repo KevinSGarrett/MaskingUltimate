@@ -1699,6 +1699,88 @@ def autonomy_verify_multi_person_static_contracts(output: Path | None) -> None:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
+@autonomy.command("verify-specialist-static-contracts")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed specialist STATIC contracts report JSON.",
+)
+def autonomy_verify_specialist_static_contracts(output: Path | None) -> None:
+    """Run fixture-seeded hand/chest/hair/feet + QC-panel + residual STATIC contracts.
+
+    Never claims MF-P3-07 SOP cadence, 100 certified packages, MF-P3-EXIT, or gold.
+    """
+    from .lanes.specialist_static_contracts import (
+        SpecialistStaticContractError,
+        run_specialist_static_contract_suite,
+    )
+
+    try:
+        report = run_specialist_static_contract_suite()
+    except SpecialistStaticContractError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@autonomy.command("verify-selective-autonomy-targets-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed MF-P9-15.01/15.03 STATIC targets report JSON.",
+)
+def autonomy_verify_selective_autonomy_targets_static(output: Path | None) -> None:
+    """Seal STATIC quality/labor product-target binders (MF-P9-15.01 / MF-P9-15.03).
+
+    Never claims blinded holdout measurement, production labor measurement,
+    doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.
+    """
+    from .selective_autonomy_targets_static import (
+        SelectiveAutonomyTargetsStaticError,
+        run_selective_autonomy_targets_static_suite,
+    )
+
+    try:
+        report = run_selective_autonomy_targets_static_suite()
+    except SelectiveAutonomyTargetsStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        envelope = {
+            **report,
+            "result": "pass_selective_autonomy_targets_static",
+            "implementation": {
+                "module": "src/maskfactory/selective_autonomy_targets_static.py",
+                "schema": (
+                    "src/maskfactory/schemas/"
+                    "selective_autonomy_targets_static_report.schema.json"
+                ),
+                "tests": ["tests/test_selective_autonomy_targets_static.py"],
+                "cli": "maskfactory autonomy verify-selective-autonomy-targets-static",
+            },
+        }
+        # Re-seal envelope file hash separately from binder seal_sha256.
+        body = json.dumps(
+            {k: v for k, v in envelope.items() if k != "file_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={envelope['file_sha256']}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
 @autonomy.command("evaluate-stability")
 @click.argument("manifest_path", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(

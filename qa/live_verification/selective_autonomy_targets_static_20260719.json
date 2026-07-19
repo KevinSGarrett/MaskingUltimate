@@ -1,0 +1,90 @@
+{
+  "anti_collapse_buckets": [
+    "label",
+    "multi_person_stratum",
+    "clothing_nudity_state",
+    "pose",
+    "occlusion",
+    "hard_bucket"
+  ],
+  "anti_collapse_checks": {
+    "aggregate_cannot_hide_failing_bucket": true,
+    "aggregate_cannot_hide_failing_hard_anatomy_scope": true,
+    "hard_anatomy_scopes_present": true,
+    "required_buckets_present": true
+  },
+  "anti_collapse_negative_fixture_blocked": true,
+  "artifact_type": "selective_autonomy_targets_static_report",
+  "authority": "selective_autonomy_targets_static_only_no_holdout_no_production_labor_measurement",
+  "blinded_human_anchor_holdout_measured": false,
+  "checked_at": "2026-07-19T23:36:43Z",
+  "checks": {
+    "anti_bucket_collapse": "pass",
+    "labor_targets_bound": "pass",
+    "quality_targets_bound": "pass",
+    "review_time_proxy_refusal": "pass"
+  },
+  "doctor_green_claimed": false,
+  "file_sha256": "0d5bbcfde0d570aee1f027ed5cb4e4d6edb5117816cff08c36e63c517b400d72",
+  "gold_claimed": false,
+  "hard_anatomy_scopes": [
+    "fingers",
+    "toes",
+    "hair",
+    "anatomy_clothing_boundaries"
+  ],
+  "holdout_metrics_pass_claimed": false,
+  "honest_non_claims": [
+    "mf_p9_15_01_complete",
+    "mf_p9_15_03_complete",
+    "blinded_human_anchor_holdout_measured",
+    "production_labor_measured",
+    "review_time_proxy_accepted",
+    "doctor_green",
+    "gold",
+    "VISUAL_QA_PASS_BOUNDED",
+    "Main-complete",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "implementation": {
+    "cli": "maskfactory autonomy verify-selective-autonomy-targets-static",
+    "module": "src/maskfactory/selective_autonomy_targets_static.py",
+    "schema": "src/maskfactory/schemas/selective_autonomy_targets_static_report.schema.json",
+    "tests": [
+      "tests/test_selective_autonomy_targets_static.py"
+    ]
+  },
+  "items": [
+    "MF-P9-15.01",
+    "MF-P9-15.03"
+  ],
+  "labor_proxy_negative_fixture_blocked": true,
+  "labor_proxy_refusal_checks": {
+    "forbidden_proxy_fields_absent": true,
+    "requires_measured_production_denominators": true,
+    "review_time_proxy_authority_rejected": true
+  },
+  "labor_targets": {
+    "manual_pixel_edit_fraction_maximum": 0.01,
+    "routine_human_touch_fraction_maximum": 0.05,
+    "zero_touch_fraction_minimum": 0.95
+  },
+  "main_complete_claimed": false,
+  "mf_p9_15_01_complete": false,
+  "mf_p9_15_03_complete": false,
+  "production_evidence_pass_claimed": false,
+  "production_labor_measured": false,
+  "proof_tier": "STATIC_PASS",
+  "quality_targets": {
+    "hard_anatomy_mean_iou": 0.85,
+    "ordinary_boundary_f1": 0.9,
+    "ordinary_part_mean_iou": 0.95
+  },
+  "report_id": "sats_bb5f4200e18becff112965f1",
+  "result": "pass_selective_autonomy_targets_static",
+  "review_time_proxy_accepted": false,
+  "schema_version": "1.0.0",
+  "seal_sha256": "bb5f4200e18becff112965f107ffd0a3eba5e3e8f7f7cd3eda5d2f41589e1db3",
+  "sha256": "92a5b44cc875ddea771819942db960a745170fdbcdaa73231a50d7e585eb02e9",
+  "visual_qa_pass_claimed": false
+}

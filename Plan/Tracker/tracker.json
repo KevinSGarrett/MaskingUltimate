@@ -5494,11 +5494,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:29+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: specialist residual/preselected-audit routing re-proven for hand/chest/hair/feet labels via fixture binder (certificate-covered serve-without-routine-review; uncertified residual-only; review sample excludes certificate-covered routine). Evidence qa/live_verification/specialist_static_contracts_20260719.json. Item remains complete; no gold/SOP claim."
+        }
+      ],
       "evidence": "run_uncertainty_qc implements disagreement>.5 over >3% ROUTE, SAM2 predicted_iou<.5 WARN, parsing/pose degraded ROUTE; seeded threshold/severity test and 283-test suite passed.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T04:51:54+00:00",
+      "updated_at": "2026-07-19T23:36:29+00:00",
       "orphaned": false
     },
     "MF-P3-06.07": {
@@ -5557,11 +5563,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:18+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: fixture-seeded specialist residual/preselected-audit routing binder proves certificate-covered specialist labels serve without routine review and review samples exclude certificate-covered routine destinations. Does NOT satisfy SOP-2/3/4 Kevin cadence. Evidence qa/live_verification/specialist_static_contracts_20260719.json file sha256 57d073fa16d36e063b80e315fe7b7f9cf73629373234586565dce92872f251f1."
+        }
+      ],
       "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: active SOP-2/3/4 cadence requires Kevin's manual CVAT correction work; specialist tooling and handoffs are implemented.",
+      "blocked_reason": "NEEDS KEVIN: active SOP-2/3/4 cadence requires Kevin's manual CVAT correction work; specialist tooling and STATIC residual routing binder are implemented.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:51+00:00",
+      "updated_at": "2026-07-19T23:36:18+00:00",
       "orphaned": false
     },
     "MF-P3-07.02": {
@@ -5578,11 +5590,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:19+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: specialist STATIC binder schema-enforces certified_package_count=0 and mf_p3_07_02_100_certified_complete=false. Same evidence sha256 57d073fa.... Remains blocked at 0 certified packages."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "Certified count is 0. Reaching 100 may combine human-anchor train and autonomous-certified packages; Kevin is required only for source supply, anchor calibration, residuals, and audits.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:56:25+00:00",
+      "updated_at": "2026-07-19T23:36:19+00:00",
       "orphaned": false
     },
     "MF-P3-07.03": {
@@ -5599,11 +5617,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:19+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: labor/throughput metrics still require Kevin review minutes; STATIC binder refuses mf_p3_07_03_labor_metrics_complete. Same evidence sha256 57d073fa...."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: median review time requires real Kevin-entered review_tasks minutes across approved packages.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:53+00:00",
+      "updated_at": "2026-07-19T23:36:19+00:00",
       "orphaned": false
     },
     "MF-P3-07.04": {
@@ -5620,11 +5644,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:20+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: fresh-day second-look remains Kevin-only; STATIC binder refuses mf_p3_07_04_second_look_complete. Same evidence sha256 57d073fa...."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: the fresh-day second-look habit is a human review activity reserved to Kevin.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:53+00:00",
+      "updated_at": "2026-07-19T23:36:20+00:00",
       "orphaned": false
     },
     "MF-P3-EXIT": {
@@ -5641,11 +5671,17 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:36:20+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: hand/chest/hair/feet lane contracts + QC panel fixtures + residual routing sealed; schema-enforced mf_p3_exit_complete=false and certified_package_count=0. Evidence qa/live_verification/specialist_static_contracts_20260719.json. P3 EXIT remains blocked."
+        }
+      ],
       "evidence": null,
       "blocked_reason": "P3 exit requires live specialist use, 100 tier-separated certified packages, and measured labor and quality evidence; the autonomous-certificate path is not calibrated yet.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:56:26+00:00",
+      "updated_at": "2026-07-19T23:36:20+00:00",
       "orphaned": false
     },
     "MF-P4-01.01": {
@@ -19033,19 +19069,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "partially_complete",
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-16T03:11:12+00:00",
           "actor": "codex",
           "text": "Acceptance thresholds are frozen in configs/autonomous_masks.yaml and Plan document 23; no blinded real holdout result is claimed yet."
+        },
+        {
+          "ts": "2026-07-19T23:36:55+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: quality acceptance-target binder + anti-collapse refuse sealed. Blinded real human-anchor holdout report still required for completion; no metric win claimed."
         }
       ],
-      "evidence": null,
+      "evidence": "STATIC_PASS only: quality product-target binder freezes ordinary mIoU>=0.95 / boundary-F1>=0.90 / hard-anatomy mIoU>=0.85 from configs/autonomous_masks.yaml; anti-bucket-collapse refuse (label/multi-person/clothing/pose/occlusion/hard_bucket + hard anatomy scopes). Evidence qa/live_verification/selective_autonomy_targets_static_20260719.json seal_sha256 bb5f4200e18becff112965f107ffd0a3eba5e3e8f7f7cd3eda5d2f41589e1db3. Never blinded holdout measurement; mf_p9_15_01_complete=false.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:12+00:00",
+      "updated_at": "2026-07-19T23:36:55+00:00",
       "orphaned": false
     },
     "MF-P9-15.02": {
@@ -19072,12 +19113,17 @@
           "ts": "2026-07-19T22:56:02+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: zero-tolerance hard-gate binder sealed. Remaining: production audit evidence across final autonomous system."
+        },
+        {
+          "ts": "2026-07-19T23:36:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 adjacent: MF-P9-15.01/15.03 quality+labor target binders sealed alongside prior hard-gate binder; production audit still false."
         }
       ],
       "evidence": "STATIC_PASS only: selective_autonomy_hard_gates binds zero-tolerance cross-instance bleed / left-right swaps / format integrity to existing QC-001..003 and QC-035/036 identities; seeded-violation families must fail closed; production_audit_complete=false. Evidence: qa/live_verification/selective_autonomy_hard_gates_static_20260719.json sha256 2014b704ba1bbd2e7aef54afbb617bf8fd6dc0d5f6882a73ec9849688be83282. Not production audit completion.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T22:56:02+00:00",
+      "updated_at": "2026-07-19T23:36:56+00:00",
       "orphaned": false
     },
     "MF-P9-15.03": {
@@ -19092,19 +19138,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "partially_complete",
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-16T03:11:15+00:00",
           "actor": "codex",
           "text": "Labor targets are frozen; zero-touch >=0.95 and manual pixel-edit <=0.01 require measured production evidence, not a proxy."
+        },
+        {
+          "ts": "2026-07-19T23:36:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: labor target binder + review-time proxy refusal sealed. Measured production report with package/pixel denominators still required; no zero-touch performance claim."
         }
       ],
-      "evidence": null,
+      "evidence": "STATIC_PASS only: labor product-target binder freezes zero-touch>=0.95 / routine-touch<=0.05 / manual-pixel-edit<=0.01; review-time proxy fields/authority fail closed. Same evidence seal_sha256 bb5f4200e18becff112965f107ffd0a3eba5e3e8f7f7cd3eda5d2f41589e1db3. Never production labor measurement; mf_p9_15_03_complete=false.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:15+00:00",
+      "updated_at": "2026-07-19T23:36:56+00:00",
       "orphaned": false
     },
     "MF-P9-15.04": {

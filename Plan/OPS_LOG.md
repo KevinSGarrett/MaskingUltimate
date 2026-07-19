@@ -1,4 +1,4 @@
-# Operations Log
+๏ปฟ# Operations Log
 
 Append-only record of operational events worth preserving as evidence:
 `maskfactory doctor` runs, benchmarks, backup/restore drills, and any other
@@ -111,7 +111,7 @@ Ollama     : 0.31.2 native Windows; has llava:13b, qwen2.5:14b, qwen2.5:32b
              (NOT the spec VLMs ? MF-P0-05 wants qwen2.5vl:7b + llama3.2-vision:11b + qwen2.5:7b-instruct in a Docker container)
 Host       : 31.3 GB RAM, 16 logical CPUs
 DISK FLAG  : C: 150.7 GB free of 951.6 GB (85% used) -- at doctor "warn" floor
-             (<150 warn / <75 block-ingest per doc 15 ง4), below the 200 GB target.
+             (<150 warn / <75 block-ingest per doc 15 ยง4), below the 200 GB target.
              WSL /dev/sdd (951 G avail) is a dynamically-growing .vhdx bounded by
              C: physical free. Watch this before large model/dataset pulls.
 ```
@@ -121,7 +121,7 @@ DISK FLAG  : C: 150.7 GB free of 951.6 GB (85% used) -- at doctor "warn" floor
 ## 2026-07-10 08:05 UTC ? Small-file I/O benchmark: ext4 hot workdir vs /mnt/c
 **Item:** MF-P0-01.09
 **Command:** `bash mfwork_bench.sh` (create + delete 500 tiny files in each location)
-**Result:** PASS ? ext4 hot workdir is ~26ื faster; justifies the `~/mfwork` rule (doc 06 ง1).
+**Result:** PASS ? ext4 hot workdir is ~26ร— faster; justifies the `~/mfwork` rule (doc 06 ยง1).
 
 <details>
 <summary>Numbers</summary>
@@ -187,7 +187,7 @@ COMPLETED & VERIFIED THIS SESSION
                    *** sm_120 Blackwell CUDA smoke PASS (capability (12,0), real matmul) ***
                    all pipeline deps; env/requirements.lock.txt + env/maskfactory_env.yml.
   MF-P0-08    (7)  git init (branch main, autocrlf=false); png_strict.py (ONLY mask
-                   writer, self-test 10/10); src/maskfactory scaffold (65 files, doc 05 ง3);
+                   writer, self-test 10/10); src/maskfactory scaffold (65 files, doc 05 ยง3);
                    pyproject + console script (maskfactory --help lists all cmds);
                    no-raw-mask-writer test; CI workflow; pre-commit (ruff+black+hooks) green.
   MF-P0-09.*  (4)  configs/external_sources.yaml: 16 providers + 15 datasets + 4 platforms,
@@ -218,7 +218,7 @@ NEXT ACTIONABLE (P0 remaining, dependency-aware)
                   -> P0-06 model checkpoints M1-M12 (+detectron2 source build) -> P0-07 doctor.
   Local/no-download: P0-10 Civitai workflow review, P0-13 MaskedWarehouse inventory,
                   P0-11 `maskfactory external probe`. P0-14 (adult/NSFW intake) = handle
-                  with governance care (doc 16 ง2.2; nothing to gold/training without
+                  with governance care (doc 16 ยง2.2; nothing to gold/training without
                   recorded license+consent+allowed-use).
 ```
 
@@ -867,13 +867,13 @@ interactive CVAT gate:   saved SAM2 mask verified in job 1
 quality:                 72 pytest tests passed; pre-commit --all-files passed
 D9 artifacts:            env/maskfactory_env.yml, env/requirements.lock.txt, and models/model_registry.json tracked
 implementation commit:   57f0e2e
-roadmap:                  doc 14 ง1 marks MF-P0-01 through MF-P0-08 and P0 exit PASS
+roadmap:                  doc 14 ยง1 marks MF-P0-01 through MF-P0-08 and P0 exit PASS
 tracker:                  90 / 90 P0 items complete
 ```
 
 ## 2026-07-11 00:14 UTC - Per-instance manifest schema implemented
 **Items:** MF-P1-01.01
-**Result:** PASS - the authoritative doc 04 ง1 manifest contract and doc 17 ง6
+**Result:** PASS - the authoritative doc 04 ยง1 manifest contract and doc 17 ยง6
 multi-person amendment are encoded as strict JSON Schema Draft 2020-12.
 
 ```
@@ -887,7 +887,7 @@ focused tests:            3 passed (full contract, required authority block, uns
 
 ## 2026-07-11 00:23 UTC - Remaining P1 schema family implemented
 **Items:** MF-P1-01.02, MF-P1-01.03, MF-P1-01.04, MF-P1-01.05, MF-P1-01.06
-**Result:** PASS - all remaining doc 04 machine contracts and the doc 03 ง5
+**Result:** PASS - all remaining doc 04 machine contracts and the doc 03 ยง5
 crop contract are strict Draft 2020-12 schemas with acceptance fixtures.
 
 ```
@@ -3671,7 +3671,7 @@ validation:                   35 focused and 639 full tests passed; Ruff/format 
 
 **Result:** PASS - active v1 uses 56 logits for authoritative IDs 0..55, including background 0.
 
-authority:                     approved doc 18 ง1 explicitly invalidates the old 57-class phrase
+authority:                     approved doc 18 ยง1 explicitly invalidates the old 57-class phrase
 v1 contract:                   IDs 0..55 -> exactly 56 logits
 v2 contract:                   append-only IDs 0..64 -> exactly 65 logits
 configs corrected:             SegFormer-B3 and Mask2Former-SwinB num_classes 57 -> 56
@@ -5347,7 +5347,7 @@ matrix, gated Meta artifacts, screening result, and enrichment runs remain open.
 Pre-result policy:                  `provider_benchmark_matrix_v1`, canonical SHA-256 `65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a`, frozen before any eligible aggregate result
 Screening stage:                    exact SAM2.1-only, SAM3.1 direct, SAM3.1 discovery to SAM2.1/SAM3.1, and RF-DETR detection to SAM2.1/SAM3.1 routes
 Finalist stage:                     one to six routes selected only by a hash-sealed screening result; every selected route expands exactly 60 cells
-Enrichment grid:                    DensePose with/without SAM 3D Body ื five BiRefNet/ViTMatte variants ื DWPose/RTMW-X/RTMO-L ื MediaPipe Hands off/on
+Enrichment grid:                    DensePose with/without SAM 3D Body ร— five BiRefNet/ViTMatte variants ร— DWPose/RTMW-X/RTMO-L ร— MediaPipe Hands off/on
 Shared identity:                    one image-disjoint human-anchor holdout, prompt set, part set, hardware profile, ontology, QA, pipeline, measurement bundle, and 14 provider artifact hashes across every cell
 Measurement freeze:                19 required quality, instance, safety, labor, VRAM, latency, failure, and determinism measurement families are named before results
 Fail-closed behavior:               altered/conflated shared identities, provider substitutions, missing/reordered routes, invalid finalist evidence, partial grids, source drift, late policy edits, and seal tampering are rejected
@@ -6666,7 +6666,7 @@ Evidence:                             `qa/reports/daz_ingestion_revocation_linea
 
 ## 2026-07-17 04:38 UTC - Deterministic duo placement, overlap, and contact recipe matrix implemented
 
-**Result:** MF-P9-09.01 now has a complete offline MM/MF/FF ื separated/overlap/contact recipe
+**Result:** MF-P9-09.01 now has a complete offline MM/MF/FF ร— separated/overlap/contact recipe
 matrix with resolved-scene integration; it remains at 85% until qualified D5/D7 live authority and
 actual DAZ duo renders independently verify placement, visibility, and contact constraints.
 
@@ -6849,7 +6849,7 @@ Evidence:                             `qa/reports/daz_concentration_limits_20260
 **Result:** MF-P9-10.06 now has a complete offline D7 feedback adapter and adaptive simulation; it
 remains at 85% until qualified live D7 outcomes and live D3/D5 qualifications can run a live cycle.
 
-Outcome authority:                    every observation embeds a complete V0โ??V8 validation report that is semantically rebuilt against the versioned registry; snapshots and observations are content-addressed; only an explicit acceptance-certificate ID/hash reference can increase accepted coverage
+Outcome authority:                    every observation embeds a complete V0รข??V8 validation report that is semantically rebuilt against the versioned registry; snapshots and observations are content-addressed; only an explicit acceptance-certificate ID/hash reference can increase accepted coverage
 Acceptance-aware statistics:          demand, scene-family/combination, and asset reports expose validation failure, acceptance yield, GPU cost per accept, actual useful label visibility, underfilled target cells, reason counts, and assembly/geometry/render camera failure regions
 Future-only adaptation:               at least two matching outcomes are required; smoothed failure and normalized GPU cost update predicted rejection cost, useful/predicted pixels update visibility gain, and demand failure rate may raise but never lower failure-mining priority
 Evidence-backed restrictions:         only three independent failed reports, at least 75% asset failure, an eligible asset/mapping reason, and an explicitly affected asset ID can set future `compatibility_eligible=false`; arbitrary failures and unaffected assets cannot create a restriction
@@ -8785,7 +8785,7 @@ qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 - Sealed: `host_side_shadow_tournament_registration_20260719.json`; `host_side_shadow_currency_registry_static_20260719.json`
 
 ### Instructions
-- `02` ง11 proof-tier vocabulary; `00`/`01`/`03` Docker + STATIC_PASS / AWAITING_MAIN pointers
+- `02` ยง11 proof-tier vocabulary; `00`/`01`/`03` Docker + STATIC_PASS / AWAITING_MAIN pointers
 
 ### Tests
 `pytest` focused: 23 passed (overlays, producers, dedup, dedup_strategy, shadow registration). Ruff clean on touched files.
@@ -9506,3 +9506,63 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 - STATIC portfolio binders do not advance AWAITING_MAIN or champions
 
 **Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification seals; OPS_LOG append; commit milestone + OPS_LOG
+
+## 2026-07-19 23:36 UTC - STATIC P3 specialist lane/panel/residual binder
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P3-06.06 note (already complete); MF-P3-07.01..04 remain blocked; MF-P3-EXIT remains blocked
+**Result:** STATIC_PASS only - never SOP cadence; never 100 certified; never P3 EXIT; never Kevin review minutes
+
+### What landed
+- `src/maskfactory/lanes/specialist_static_contracts.py`: fixture-seeded hand/chest/hair/feet lane contracts, mandatory chest + hairline QC panels (2560x512), certificate-aware residual/preselected-audit routing for specialist labels
+- Schema `specialist_static_contracts_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory autonomy verify-specialist-static-contracts`
+- Schema-enforced honesty: `mf_p3_07_*_complete=false`, `mf_p3_exit_complete=false`, `certified_package_count=0`, `kevin_sop_cadence_required=true`
+
+### Evidence
+`qa/live_verification/specialist_static_contracts_20260719.json` file sha256 `57d073fa16d36e063b80e315fe7b7f9cf73629373234586565dce92872f251f1`
+- binder seal_sha256 `447b9f712f6f8a9131529288dd37a6f8a7da236385d3e5744448446b7baf7429`
+- report_id `ssc_447b9f712f6f8a9131529288`
+
+### Focused tests
+`pytest` tests/test_specialist_static_contracts.py: 2 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P3-07.01 SOP-2/3/4 Kevin cadence
+- No MF-P3-07.02 100 certified packages (count remains 0)
+- No MF-P3-07.03 labor metrics / Kevin review minutes
+- No MF-P3-07.04 fresh-day second-look
+- No MF-P3-EXIT
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-specialist-static-contracts; evidence seal
+
+## 2026-07-19 23:37 UTC - STATIC selective-autonomy quality/labor target binders (P9-15)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P9-15.01 (35% partial); MF-P9-15.03 (35% partial); MF-P9-15.02 note (88% retained)
+**Result:** STATIC_PASS only - never blinded holdout measurement; never production labor measurement; never doctor-green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS
+
+### What landed
+- `src/maskfactory/selective_autonomy_targets_static.py`: binds frozen Plan-23 / `configs/autonomous_masks.yaml` quality floors (ordinary mIoU ?0.95, boundary-F1 ?0.90, hard-anatomy mIoU ?0.85) and labor bounds (zero-touch ?0.95, routine touch ?0.05, manual pixel-edit ?0.01)
+- Anti-bucket-collapse refuse: aggregate cannot hide failing label / multi-person / clothing-nudity / pose / occlusion / hard_bucket strata, nor hard-anatomy scopes (fingers/toes/hair/anatomy_clothing_boundaries)
+- Labor review-time proxy refuse: minutes/CVAT-click proxies cannot stand in for package/pixel denominators
+- Schema `selective_autonomy_targets_static_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory autonomy verify-selective-autonomy-targets-static`
+- Schema-enforced honesty: `mf_p9_15_01_complete=false`, `mf_p9_15_03_complete=false`, `blinded_human_anchor_holdout_measured=false`, `production_labor_measured=false`
+
+### Evidence
+`qa/live_verification/selective_autonomy_targets_static_20260719.json` file sha256 `0d5bbcfde0d570aee1f027ed5cb4e4d6edb5117816cff08c36e63c517b400d72`
+- binder seal_sha256 `bb5f4200e18becff112965f107ffd0a3eba5e3e8f7f7cd3eda5d2f41589e1db3`
+- report_id `sats_bb5f4200e18becff112965f1`
+
+### Focused tests
+`pytest` test_selective_autonomy_targets_static + test_selective_autonomy_hard_gates: 7 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P9-15.01 blinded real human-anchor holdout metric pass
+- No MF-P9-15.03 measured production zero-touch / labor report
+- No MF-P9-15.08 end-to-end autonomous headline
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; autonomy verify-selective-autonomy-targets-static; evidence seal; git commit/push

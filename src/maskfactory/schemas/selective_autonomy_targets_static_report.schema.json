@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/selective_autonomy_targets_static_report.schema.json",
+  "title": "MaskFactory selective autonomy targets STATIC report (MF-P9-15.01/15.03)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "quality_targets",
+    "labor_targets",
+    "hard_anatomy_scopes",
+    "anti_collapse_buckets",
+    "anti_collapse_checks",
+    "anti_collapse_negative_fixture_blocked",
+    "labor_proxy_refusal_checks",
+    "labor_proxy_negative_fixture_blocked",
+    "checks",
+    "mf_p9_15_01_complete",
+    "mf_p9_15_03_complete",
+    "blinded_human_anchor_holdout_measured",
+    "production_labor_measured",
+    "review_time_proxy_accepted",
+    "holdout_metrics_pass_claimed",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "selective_autonomy_targets_static_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {
+      "const": "selective_autonomy_targets_static_only_no_holdout_no_production_labor_measurement"
+    },
+    "checked_at": {"type": "string", "minLength": 1},
+    "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["MF-P9-15.01", "MF-P9-15.03"]
+      }
+    },
+    "quality_targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hard_anatomy_mean_iou",
+        "ordinary_boundary_f1",
+        "ordinary_part_mean_iou"
+      ],
+      "properties": {
+        "ordinary_part_mean_iou": {"const": 0.95},
+        "ordinary_boundary_f1": {"const": 0.9},
+        "hard_anatomy_mean_iou": {"const": 0.85}
+      }
+    },
+    "labor_targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manual_pixel_edit_fraction_maximum",
+        "routine_human_touch_fraction_maximum",
+        "zero_touch_fraction_minimum"
+      ],
+      "properties": {
+        "zero_touch_fraction_minimum": {"const": 0.95},
+        "routine_human_touch_fraction_maximum": {"const": 0.05},
+        "manual_pixel_edit_fraction_maximum": {"const": 0.01}
+      }
+    },
+    "hard_anatomy_scopes": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "fingers",
+          "toes",
+          "hair",
+          "anatomy_clothing_boundaries"
+        ]
+      }
+    },
+    "anti_collapse_buckets": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "label",
+          "multi_person_stratum",
+          "clothing_nudity_state",
+          "pose",
+          "occlusion",
+          "hard_bucket"
+        ]
+      }
+    },
+    "anti_collapse_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "aggregate_cannot_hide_failing_bucket",
+        "aggregate_cannot_hide_failing_hard_anatomy_scope",
+        "hard_anatomy_scopes_present",
+        "required_buckets_present"
+      ],
+      "properties": {
+        "required_buckets_present": {"const": true},
+        "aggregate_cannot_hide_failing_bucket": {"const": true},
+        "hard_anatomy_scopes_present": {"const": true},
+        "aggregate_cannot_hide_failing_hard_anatomy_scope": {"const": true}
+      }
+    },
+    "anti_collapse_negative_fixture_blocked": {"const": true},
+    "labor_proxy_refusal_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forbidden_proxy_fields_absent",
+        "requires_measured_production_denominators",
+        "review_time_proxy_authority_rejected"
+      ],
+      "properties": {
+        "forbidden_proxy_fields_absent": {"const": true},
+        "review_time_proxy_authority_rejected": {"const": true},
+        "requires_measured_production_denominators": {"const": true}
+      }
+    },
+    "labor_proxy_negative_fixture_blocked": {"const": true},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anti_bucket_collapse",
+        "labor_targets_bound",
+        "quality_targets_bound",
+        "review_time_proxy_refusal"
+      ],
+      "properties": {
+        "quality_targets_bound": {"const": "pass"},
+        "labor_targets_bound": {"const": "pass"},
+        "anti_bucket_collapse": {"const": "pass"},
+        "review_time_proxy_refusal": {"const": "pass"}
+      }
+    },
+    "mf_p9_15_01_complete": {"const": false},
+    "mf_p9_15_03_complete": {"const": false},
+    "blinded_human_anchor_holdout_measured": {"const": false},
+    "production_labor_measured": {"const": false},
+    "review_time_proxy_accepted": {"const": false},
+    "holdout_metrics_pass_claimed": {"const": false},
+    "doctor_green_claimed": {"const": false},
+    "gold_claimed": {"const": false},
+    "visual_qa_pass_claimed": {"const": false},
+    "main_complete_claimed": {"const": false},
+    "production_evidence_pass_claimed": {"const": false},
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "report_id": {"type": "string", "pattern": "^sats_[a-f0-9]{24}$"},
+    "seal_sha256": {"$ref": "#/$defs/sha256"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

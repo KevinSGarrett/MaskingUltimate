@@ -1,0 +1,25 @@
+{
+  "accepted": false,
+  "canonical_sha256": "5a2427e86c09c753e0a4dd40626a6477330735e32e9a289f24b5375676c1b7b7",
+  "doctor_green_claimed": false,
+  "fixture_count": 72,
+  "gold_claimed": false,
+  "items": [
+    "MF-P9-06.10"
+  ],
+  "live_daz_execution": false,
+  "main_complete_claimed": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "published_path": "qa\\fixtures\\daz\\engineering_fixture_sets\\daz_engineering_fixture_set_5a2427e86c09c753e0a4dd40.json",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    ".............                                                            [100%]"
+  ],
+  "rendered": false,
+  "result": "pass_engineering_fixture_set_72_static",
+  "set_id": "daz_engineering_fixture_set_5a2427e86c09c753e0a4dd40",
+  "sha256": "1ba91a88340046cd16567b4ddd720f73508d78984a5808499acb758958d7bdfa",
+  "training_eligible": false,
+  "visual_qa_pass_claimed": false
+}

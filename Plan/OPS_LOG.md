@@ -9288,3 +9288,15 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 
 **Commands:** pytest focused; tracker.py set/validate/report; comfy verify-static-contracts evidence seal
 
+
+## 2026-07-19 23:02 UTC - Restore full CLI after accidental truncation + land procedural primitive code
+
+**Lane:** Preserve-all-work repair + STATIC_PASS portfolio climb
+**Items:** MF-P9-03.09 / MF-P9-15.02 / MF-P9-06.10 (tracker notes retained); CLI integrity
+**Result:** Restored `src/maskfactory/cli.py` from pre-truncation tip `f155d35d`, re-merged `comfy verify-static-contracts`, and landed host procedural-primitive + hard-gate implementation files that were registered in tracker/validation but missing from the truncated commit.
+
+### Honest non-claims
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+- No live DAZ Studio primitive smoke
+
+**Commands:** git checkout f155d35d -- src/maskfactory/cli.py; merge verify-static-contracts; pytest focused

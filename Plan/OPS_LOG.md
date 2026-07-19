@@ -7463,3 +7463,16 @@ Missing transaction:                    no intake API/ledger, mandatory evidence
 Prepared unit:                         `MF-CURSOR-11.05-FEEDBACK-INTAKE-LEDGER`; five absent/clean additive paths held behind 10.06/11.01/08.06
 Disposition:                            no feedback accepted/rejected, candidate created, parent/gold mutated, worker dispatched, or frozen bytes changed
 Evidence:                              `qa/live_verification/bridge_feedback_intake_gap_audit_20260719.json`
+
+## 2026-07-19 01:44 UTC - Signed chain validator passes; durable bridge journal absent
+
+**Result:** MF-P6-11.06 receives 50% validation/mechanics credit and remains item-blocked. The
+signed in-memory lifecycle is strong; no persistent journal, state materialization, or restart recovery exists.
+
+Verified foundation:                   trusted signed chain, closed producer/state transitions, stream/sequence/prior-hash/causation replay, unknown-submission outcomes, checkpoint comparison, and idempotency collision semantics; 7 focused tests and Ruff pass
+Tamper probes:                         deleting genesis and reordering events produce sequence/hash/causation/state/checkpoint failures; same-key/same-body is clean and different-body collides
+Checkpoint boundary:                  caller-supplied checkpoint has no signature fields; validator returns issues only and does not persist/reconstruct authoritative state
+Reusable mechanics only:              workflow SQLite WAL/single-writer and failure-queue locked fsync append-once exist but contain no bridge events, signatures, heads, bodies/results, or state
+Prepared unit:                         `MF-CURSOR-11.06-DURABLE-BRIDGE-JOURNAL`; five absent/clean additive paths held behind 10.06/11.01
+Disposition:                            no journal/service/worker/frozen/dirty state mutated and no durable recovery claim
+Evidence:                              `qa/live_verification/bridge_durable_journal_gap_audit_20260719.json`

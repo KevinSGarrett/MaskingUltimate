@@ -16519,18 +16519,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 55,
+      "percent_complete": 60,
       "notes": [
         {
           "ts": "2026-07-16T13:10:56+00:00",
           "actor": "ai_agent",
           "text": "The doc-30 resolved scene contract is now schema-validated with one-to-four canonical character records, registry/runtime/script/ontology/mapping/asset bindings, camera/crop/relationship invariants, exact SHA-256 sealing, and immutable publication. Live mapping and rendered-scene evidence remain prerequisites."
+        },
+        {
+          "ts": "2026-07-19T22:44:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: engineering fixture-set now emits sealable synthetic daz_resolved_scene_recipe drafts per scene (fixture-only assets). Live mapping/rendered-scene evidence remain prerequisites."
         }
       ],
-      "evidence": "Schema fixtures reject non-finite/non-JSON values, duplicate/noncanonical construction identities, missing relationship participants, crop overflow, stream mismatch, and hash tampering. CLI seal/validate replay is idempotent. Full suite 1,803/1,803. Evidence: qa/reports/daz_scene_recipe_determinism_20260716.json.",
+      "evidence": "STATIC_PASS adjacent to MF-P9-06.10 v1.1: each engineering fixture embeds seal/validate-complete synthetic resolved recipes via seal_resolved_scene_recipe; schema/stream/camera/crop invariants fixture-proven. Evidence: qa/live_verification/daz_engineering_fixture_set_v11_static_20260719.json. No live mapping or rendered scenes claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T13:10:56+00:00",
+      "updated_at": "2026-07-19T22:44:56+00:00",
       "orphaned": false
     },
     "MF-P9-06.02": {
@@ -16546,18 +16551,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 73,
       "notes": [
         {
           "ts": "2026-07-16T13:10:56+00:00",
           "actor": "ai_agent",
           "text": "Eight named streams are independently derived from master seed, scene ID, and namespace with a pinned SHA-256-to-u64 algorithm. Canonical UTF-8 JSON ignores mapping insertion order while preserving resolved array order; exact replay bytes and recipe SHA are fixture-proven."
+        },
+        {
+          "ts": "2026-07-19T22:44:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: engineering fixture stubs and synthetic resolved recipes bind exact REQUIRED_RANDOM_STREAMS with CLI replay. Live DAZ stream readback still required for completion."
         }
       ],
-      "evidence": "Fixed stream vectors, scene-ID separation, mapping-order-independent sealing, two-run byte-identical CLI publication, non-finite refusal, and tamper detection pass. Full suite 1,803/1,803. Evidence: qa/reports/daz_scene_recipe_determinism_20260716.json.",
+      "evidence": "STATIC_PASS adjacent to MF-P9-06.10 v1.1: stream_contract equals REQUIRED_RANDOM_STREAMS; stub and resolved-recipe stream recomputation fail-closed; CLI build/validate replay idempotent. Evidence: qa/live_verification/daz_engineering_fixture_set_v11_static_20260719.json. No live DAZ claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T13:10:56+00:00",
+      "updated_at": "2026-07-19T22:44:56+00:00",
       "orphaned": false
     },
     "MF-P9-06.03": {

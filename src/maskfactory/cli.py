@@ -4302,6 +4302,108 @@ def daz_assets_qualification_impact(
     )
 
 
+@daz_recipes.command("build-engineering-fixture-set")
+@click.option("--fixture-count", type=click.IntRange(24, 100), default=24, show_default=True)
+@click.option("--master-seed", type=click.IntRange(min=0), default=20260719, show_default=True)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("qa/fixtures/daz/engineering_fixture_sets"),
+    show_default=True,
+)
+def daz_recipes_build_engineering_fixture_set(
+    fixture_count: int, master_seed: int, output: Path
+) -> None:
+    """Build/publish a STATIC unrendered 24–100 solo engineering fixture set."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import (
+        EngineeringFixtureError,
+        build_engineering_fixture_set,
+        publish_engineering_fixture_set,
+    )
+
+    try:
+        document = build_engineering_fixture_set(
+            fixture_count=fixture_count, master_seed=master_seed
+        )
+        target, published = publish_engineering_fixture_set(document, output)
+    except (EngineeringFixtureError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, EngineeringFixtureError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_engineering_fixture_set_built",
+                entity_ids=(document["set_id"],),
+                evidence_paths=(str(target),),
+                data={
+                    "set_id": document["set_id"],
+                    "canonical_sha256": document["canonical_sha256"],
+                    "fixture_count": document["fixture_count"],
+                    "schema_version": document["schema_version"],
+                    "rendered": False,
+                    "accepted": False,
+                    "training_eligible": False,
+                    "live_daz_execution": False,
+                    "live_qualified_assets": False,
+                    "publication": {"path": str(target), "published": published},
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("validate-engineering-fixture-set")
+@click.argument("fixture_set", type=click.Path(path_type=Path, dir_okay=False, exists=True))
+def daz_recipes_validate_engineering_fixture_set(fixture_set: Path) -> None:
+    """Validate a STATIC engineering fixture-set document (never accepted/rendered)."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.scenes import EngineeringFixtureError, validate_engineering_fixture_set
+
+    try:
+        document = validate_engineering_fixture_set(
+            json.loads(fixture_set.read_text(encoding="utf-8"))
+        )
+    except (EngineeringFixtureError, json.JSONDecodeError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, EngineeringFixtureError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_engineering_fixture_set_valid",
+                entity_ids=(document["set_id"],),
+                evidence_paths=(str(fixture_set),),
+                data={
+                    "set_id": document["set_id"],
+                    "canonical_sha256": document["canonical_sha256"],
+                    "fixture_count": document["fixture_count"],
+                    "schema_version": document["schema_version"],
+                    "full_marginal_coverage": document["coverage_summary"][
+                        "full_marginal_coverage"
+                    ],
+                    "rendered": False,
+                    "accepted": False,
+                    "live_qualified_assets": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("seal")
 @click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(

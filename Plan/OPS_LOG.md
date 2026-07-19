@@ -9133,3 +9133,35 @@ qa/live_verification/currency_review_integrity_20260719.json sha256 a4c679d92ee0
 - No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+
+## 2026-07-19 22:45 UTC - STATIC DAZ engineering fixture-set v1.1 hardening
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
+**Items:** MF-P9-06.10 (48% partial); MF-P9-06.01 (60% partial); MF-P9-06.02 (73% partial)
+**Result:** STATIC_PASS only - never gold; no doctor-green; no live DAZ render/accept; no live qualified assets; scale_daz_maturity remains post-core
+
+### MF-P9-06.10 engineering fixture-set contract v1.1
+- Schema bumped to 1.1.0 with policy-aligned coverage enums (pose/framing/wardrobe/lighting/anatomy/prop)
+- Full marginal coverage required across all declared value sets
+- Exact REQUIRED_RANDOM_STREAMS contract + curriculum_stage=engineering
+- Each of 24 fixtures embeds a sealable synthetic daz_resolved_scene_recipe (fixture-only asset IDs)
+- CLI: maskfactory daz recipes build-engineering-fixture-set|validate-engineering-fixture-set
+- Published: qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json
+- Prior v1.0 fixture retained immutably: daz_engineering_fixture_set_c3e9b2a7a4c39671169f9b0b.json
+- Evidence: qa/live_verification/daz_engineering_fixture_set_v11_static_20260719.json
+
+### Adjacent STATIC (06.01 / 06.02)
+- 06.01: engineering set now emits seal/validate-complete synthetic resolved recipes (still unrendered; no live mapping)
+- 06.02: fixture stubs + resolved recipes bind exact eight named streams with golden CLI replay
+
+### Focused tests
+pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- Not an accepted rendered engineering fixture set (D5-10 verify still open)
+- Synthetic recipes are not live/qualified assets
+- No DAZ Studio launch, no F: acquisition/render below 150 GiB floor
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / core_autonomous_runtime close
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal
+

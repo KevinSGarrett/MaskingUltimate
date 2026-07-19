@@ -4870,6 +4870,105 @@ def daz_recipes_seal_worker_isolation_static(runtime_config: Path, output: Path)
     )
 
 
+@daz_recipes.command("seal-validation-static-contracts")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/daz_validation_static_contracts_20260719.json"),
+    show_default=True,
+)
+def daz_recipes_seal_validation_static_contracts(output: Path) -> None:
+    """Seal MF-P9-08 V0–V9 / acceptance / repair / S00 STATIC binders.
+
+    Never claims live DAZ validation, accepted packages, pilot completion, or gold.
+    """
+    from .daz import DazErrorCode, result_envelope
+    from .daz.validation_static_contracts import (
+        DazValidationStaticError,
+        run_daz_validation_static_suite,
+    )
+
+    try:
+        report = run_daz_validation_static_suite()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        output.write_bytes(payload)
+    except DazValidationStaticError as exc:
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=str(exc)),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_validation_static_contracts_sealed",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(output),),
+                data={
+                    "seal_sha256": report["seal_sha256"],
+                    "file_sha256": hashlib.sha256(payload).hexdigest(),
+                    "mf_p9_08_10_pilot_complete": False,
+                    "live_daz_validation_executed": False,
+                    "accepted_package_produced": False,
+                    "gold_claimed": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+@daz_recipes.command("seal-ops-static-contracts")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/daz_ops_static_contracts_20260719.json"),
+    show_default=True,
+)
+def daz_recipes_seal_ops_static_contracts(output: Path) -> None:
+    """Seal MF-P9-12 backup/scheduler/storage/recovery/failure-campaign STATIC binders.
+
+    Never claims seven-day soak, live DAZ activation, or gold.
+    """
+    from .daz import DazErrorCode, result_envelope
+    from .daz.ops_static_contracts import DazOpsStaticError, run_daz_ops_static_suite
+
+    try:
+        report = run_daz_ops_static_suite()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        output.write_bytes(payload)
+    except DazOpsStaticError as exc:
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=str(exc)),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_ops_static_contracts_sealed",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(output),),
+                data={
+                    "seal_sha256": report["seal_sha256"],
+                    "file_sha256": hashlib.sha256(payload).hexdigest(),
+                    "mf_p9_12_07_soak_complete": False,
+                    "mf_p9_12_09_activation_complete": False,
+                    "live_daz_execution": False,
+                    "gold_claimed": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("seal")
 @click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(
@@ -10644,6 +10743,35 @@ def incident_verify_ops_static_contracts(output: Path | None) -> None:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
+@incident.command("verify-ops-bootstrap-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed P1-09 ops-bootstrap STATIC residual report JSON.",
+)
+def incident_verify_ops_bootstrap_static(output: Path | None) -> None:
+    """Seal hash-manifest integrity, multi-package reindex, and DVC wiring honesty binders.
+
+    Never claims MF-P1-07.09 DVC S3 push, live B1 restore, doctor-green, or gold.
+    """
+    from .ops_bootstrap_static import OpsBootstrapStaticError, run_ops_bootstrap_static_suite
+
+    try:
+        report = run_ops_bootstrap_static_suite()
+    except OpsBootstrapStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        output.write_bytes(payload)
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={hashlib.sha256(payload).hexdigest()}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
 @main.command()
 @click.option("--apply", "apply_changes", is_flag=True, help="Apply the reviewed plan.")
 @click.option("--yes", is_flag=True, help="Confirm apply non-interactively.")
@@ -11455,6 +11583,60 @@ def models_rollback_interactive(
 @main.group()
 def external() -> None:
     """External foundation provider operations (doc 16)."""
+
+
+@external.command("verify-civitai-workflow-intake-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed Civitai workflow intake STATIC report JSON.",
+)
+def external_verify_civitai_workflow_intake_static(output: Path | None) -> None:
+    """Seal STATIC Civitai workflow admission + license/provenance binders.
+
+    Binds Plan/CIVITAI_WORKFLOW_INTAKE.md and configs/civitai_classifications.json.
+    Never requires Plan/Civitai downloads, paid Civitai access, Kevin credentials,
+    gold promotion, doctor-green, or live ComfyUI runs.
+    """
+    from .civitai_workflow_intake_static import (
+        CivitaiWorkflowIntakeStaticError,
+        run_civitai_workflow_intake_static_suite,
+    )
+
+    try:
+        report = run_civitai_workflow_intake_static_suite()
+    except CivitaiWorkflowIntakeStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        envelope = {
+            **report,
+            "result": "pass_civitai_workflow_intake_static_no_gold_no_paid_download",
+            "implementation": {
+                "module": "src/maskfactory/civitai_workflow_intake_static.py",
+                "schema": (
+                    "src/maskfactory/schemas/civitai_workflow_intake_static_report.schema.json"
+                ),
+                "tests": ["tests/test_civitai_workflow_intake_static.py"],
+                "cli": "maskfactory external verify-civitai-workflow-intake-static",
+                "memos": ["Plan/CIVITAI_WORKFLOW_INTAKE.md"],
+                "classifications": ["configs/civitai_classifications.json"],
+            },
+        }
+        body = json.dumps(
+            {k: v for k, v in envelope.items() if k != "file_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        )
+        envelope["file_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
+        output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+        click.echo(f"seal_sha256={report['seal_sha256']}")
+        click.echo(f"file_sha256={envelope['file_sha256']}")
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
 @external.command("import-discovery")

@@ -9709,3 +9709,64 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 
 **Commands:** pytest focused; tracker.py set/validate/report; seal evidence; git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"/push
 
+## 2026-07-19 23:54 UTC - STATIC Civitai workflow intake admission + license/provenance binders
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P0-10.01..04 notes (already complete); MF-P0-14.01 note (already complete)
+**Result:** STATIC_PASS only - never gold promotion; never paid Civitai download; never Kevin credentials; never Plan/Civitai extracted runtime
+
+### What landed
+- `src/maskfactory/civitai_workflow_intake_static.py`: binds Plan/CIVITAI_WORKFLOW_INTAKE.md + configs/civitai_classifications.json
+- Classification admission: 79 records; mask_authority=none; uniform proposal_or_reference_only; counts 31/17/6/23/2
+- Workflow admissions (no extracted JSON): imageToOpenPose graph reference; mask_add_remove_self annotation aid; both refuse direct gold
+- Metadata-only disposition: 6 HTTP-401 variants download_action=unnecessary (no paid/manual download for STATIC)
+- License/provenance gate: refuse direct gold + training without separate license/provenance/consent review
+- Schema `civitai_workflow_intake_static_report` registered in validation.SCHEMA_NAMES
+- CLI: `maskfactory external verify-civitai-workflow-intake-static`
+- Schema-enforced honesty: gold/paid_download/kevin_credentials/extracted_runtime claimed=false
+
+### Evidence
+`qa/live_verification/civitai_workflow_intake_static_20260719.json` file sha256 `eadb141bbf3dfaf2bbfec283bdc2fa805d2267cc311c2ff5dc68081d83074d0a`
+- binder seal_sha256 `2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17`
+- report_id `cwi_2bbe2c5aa3efe8a57038d8ee`
+
+### Focused tests
+`pytest` tests/test_civitai_workflow_intake_static.py: 6 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No Civitai gold promotion
+- No paid Civitai download / Kevin credentials
+- No Plan/Civitai extracted ComfyUI runtime claim
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; external verify-civitai-workflow-intake-static; evidence seal; git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"
+
+
+
+## 2026-07-19 23:56 UTC - STATIC P1-09 ops-bootstrap residuals (hash/reindex/DVC wiring)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P1-09.03 / MF-P7-03.04 notes (already complete); MF-P1-09.05 (35% blocked); MF-P1-07.09 (65% blocked NEEDS KEVIN)
+**Result:** STATIC_PASS only - never DVC S3 push; never live B1 restore; never human-anchor package authority
+
+### What landed
+- `src/maskfactory/ops_bootstrap_static.py`: fixture QC-006 hash-manifest integrity (pass + tamper + untracked fail-closed), multi-package reindex rebuild-clean + dry-run zero-diff, DVC wiring honesty (config remote, resolver, remote list, gitignore descriptor exceptions, bootstrap pins, push never attempted, MF-P1-07.09 overclaim refused)
+- Schema `ops_bootstrap_static_report` registered in `validation.SCHEMA_NAMES`
+- CLI: `maskfactory incident verify-ops-bootstrap-static`
+- Schema-enforced honesty: `mf_p1_07_09_complete=false`, `mf_p1_09_05_complete=false`, `dvc_push_attempted=false`, `dvc_s3_push_succeeded=false`, `kevin_dvc_s3_push_required=true`, `kevin_b1_restore_required=true`
+
+### Evidence
+`qa/live_verification/ops_bootstrap_static_20260719.json` file sha256 `6c54fa4e17074a7fd0422a64046474a03bc6bd6c4edca6b56a95f3849cece249`
+- binder seal_sha256 `5c598d9dd8778bd0165cf196d5c4b99e2b8e1444576f93f7393e718ff9a41bf2`
+- report_id `obs_5c598d9dd8778bd0165cf196`
+
+### Focused tests
+`pytest` tests/test_ops_bootstrap_static.py: 3 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P1-07.09 DVC S3 push / AWS credentials used
+- No MF-P1-09.05 live B1 restore drill
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; incident verify-ops-bootstrap-static; evidence seal; git commit
+

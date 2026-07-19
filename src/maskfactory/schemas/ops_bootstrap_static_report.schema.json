@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/ops_bootstrap_static_report.schema.json",
+  "title": "MaskFactory P1-09 ops-bootstrap STATIC residual report",
+  "description": "STATIC_PASS binder for fixture QC-006 hash-manifest integrity, multi-package reindex rebuild-clean, and DVC wiring honesty without AWS/S3 push. Never completes MF-P1-07.09 or live B1 restore.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "hash_manifest_checks",
+    "package_reindex_checks",
+    "dvc_wiring_checks",
+    "checks",
+    "mf_p1_07_09_complete",
+    "mf_p1_09_05_complete",
+    "dvc_s3_push_succeeded",
+    "dvc_push_attempted",
+    "aws_credentials_present",
+    "b1_mirror_present",
+    "human_anchor_package_present",
+    "kevin_dvc_s3_push_required",
+    "kevin_b1_restore_required",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "dvc_runtime",
+    "implementation",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "ops_bootstrap_static_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "ops_bootstrap_static_only_no_dvc_s3_push_no_b1_restore_no_human_anchor_package_authority"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "hash_manifest_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_qc006_hash_integrity_pass",
+        "fixture_qc006_tamper_detected",
+        "fixture_qc006_untracked_detected"
+      ],
+      "properties": {
+        "fixture_qc006_hash_integrity_pass": { "const": true },
+        "fixture_qc006_tamper_detected": { "const": true },
+        "fixture_qc006_untracked_detected": { "const": true }
+      }
+    },
+    "package_reindex_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "multi_package_reindex_missing_before_rebuild",
+        "multi_package_reindex_rebuild_clean",
+        "multi_package_reindex_dry_run_zero_diff"
+      ],
+      "properties": {
+        "multi_package_reindex_missing_before_rebuild": { "const": true },
+        "multi_package_reindex_rebuild_clean": { "const": true },
+        "multi_package_reindex_dry_run_zero_diff": { "const": true }
+      }
+    },
+    "dvc_wiring_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dvc_config_remote_bound",
+        "dvc_resolver_available",
+        "dvc_remote_list_matches_config",
+        "dvc_gitignore_descriptor_exceptions",
+        "dvc_bootstrap_pins_match_lock",
+        "dvc_push_not_attempted",
+        "mf_p1_07_09_overclaim_refused"
+      ],
+      "properties": {
+        "dvc_config_remote_bound": { "const": true },
+        "dvc_resolver_available": { "const": true },
+        "dvc_remote_list_matches_config": { "const": true },
+        "dvc_gitignore_descriptor_exceptions": { "const": true },
+        "dvc_bootstrap_pins_match_lock": { "const": true },
+        "dvc_push_not_attempted": { "const": true },
+        "mf_p1_07_09_overclaim_refused": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash_manifest_integrity_binder",
+        "package_reindex_static_binder",
+        "dvc_wiring_honesty_binder"
+      ],
+      "properties": {
+        "hash_manifest_integrity_binder": { "const": "pass" },
+        "package_reindex_static_binder": { "const": "pass" },
+        "dvc_wiring_honesty_binder": { "const": "pass" }
+      }
+    },
+    "mf_p1_07_09_complete": { "const": false },
+    "mf_p1_09_05_complete": { "const": false },
+    "dvc_s3_push_succeeded": { "const": false },
+    "dvc_push_attempted": { "const": false },
+    "aws_credentials_present": { "type": "boolean" },
+    "b1_mirror_present": { "const": false },
+    "human_anchor_package_present": { "const": false },
+    "kevin_dvc_s3_push_required": { "const": true },
+    "kevin_b1_restore_required": { "const": true },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "dvc_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["remote_name", "remote_url", "dvc_version_token", "executable_basename"],
+      "properties": {
+        "remote_name": { "const": "maskfactory-dvc-dev" },
+        "remote_url": { "const": "s3://maskfactory-dvc-dev" },
+        "dvc_version_token": { "type": "string", "minLength": 1 },
+        "executable_basename": { "type": "string", "minLength": 1 }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "scripts", "tests"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "scripts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "report_id": { "type": "string", "pattern": "^obs_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

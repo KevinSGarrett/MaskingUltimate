@@ -2880,12 +2880,17 @@
           "ts": "2026-07-12T09:53:22+00:00",
           "actor": "ai_agent",
           "text": "Verification count correction after adding fail-closed subprocess-timeout coverage: focused DVC/package/dataset suite is 27 passed; full suite remains green."
+        },
+        {
+          "ts": "2026-07-19T23:56:26+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: ops_bootstrap_static re-proves DVC wiring honesty (remote s3://maskfactory-dvc-dev, resolver, remote list, gitignore descriptors, bootstrap pins) with dvc_push_attempted=false and mf_p1_07_09_complete=false. No AWS push. Evidence qa/live_verification/ops_bootstrap_static_20260719.json."
         }
       ],
       "evidence": "qa/live_verification/dvc_s3_runtime_20260712.json records runtime versions, S3 capability, initialized remote, production wiring, valid local-add md5 descriptor, 26 focused tests, full-suite pass, and the negative credential audit.",
       "blocked_reason": "NEEDS KEVIN: DVC is installed, initialized, production-wired, and locally verified; completion requires Kevin-authorized AWS credentials plus the first eligible human-anchor or autonomous-certified package for the governed S3 push.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:53:50+00:00",
+      "updated_at": "2026-07-19T23:56:26+00:00",
       "orphaned": false
     },
     "MF-P1-08.01": {
@@ -3134,12 +3139,17 @@
           "ts": "2026-07-19T23:46:42+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: nightly verify-package --root data/packages --sample 10 after B5/B1 rebound in ops_static_contracts. Evidence qa/live_verification/ops_static_contracts_20260719.json."
+        },
+        {
+          "ts": "2026-07-19T23:56:26+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 residual: ops_bootstrap_static seals fixture QC-006 hash-manifest integrity binder adjacent to nightly verify-package. Evidence qa/live_verification/ops_bootstrap_static_20260719.json seal 5c598d9dd8778bd0165cf196d5c4b99e2b8e1444576f93f7393e718ff9a41bf2. Item remains complete."
         }
       ],
       "evidence": "qa/live_verification/windows_task_registration_20260712.json: Task Scheduler registration exited 0 under KEVIN\\kevin; all four tasks are enabled/Ready, LIMITED, action- and schedule-verified. tools/nightly_backup.ps1 parses cleanly after the live-discovered LASTEXITCODE fix; tests/test_backup_ops.py 4/4 pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:46:42+00:00",
+      "updated_at": "2026-07-19T23:56:26+00:00",
       "orphaned": false
     },
     "MF-P1-09.04": {
@@ -3182,7 +3192,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 30,
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-19T23:45:57+00:00",
@@ -3198,12 +3208,17 @@
           "ts": "2026-07-19T23:48:56+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19 frozen evidence: ops_static_contracts file sha256 b95a85504a20414bb3ebea45ba2c85c42871c50b773d1727073da1f822b89cc3. Live B1 restore remains NEEDS KEVIN."
+        },
+        {
+          "ts": "2026-07-19T23:56:26+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 residual: ops_bootstrap_static seals QC-006 hash-manifest + multi-package reindex without claiming live B1 restore. Evidence qa/live_verification/ops_bootstrap_static_20260719.json file sha256 6c54fa4e17074a7fd0422a64046474a03bc6bd6c4edca6b56a95f3849cece249. Remains NEEDS KEVIN for real B1 restore."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: no P1-08 human-anchor package or B1 mirror exists yet; the restore drill needs one corrected seed package first.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:48:56+00:00",
+      "updated_at": "2026-07-19T23:56:26+00:00",
       "orphaned": false
     },
     "MF-P1-EXIT": {
@@ -8722,12 +8737,17 @@
           "ts": "2026-07-19T23:46:41+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: nightly reindex/verify-package binder re-proves fixture IP-3 copy-only reindex (source untouched) + rebuild-clean + nightly verify-package --sample 10 wiring after B5/B1. Item already complete; no new live drill. Evidence qa/live_verification/ops_static_contracts_20260719.json."
+        },
+        {
+          "ts": "2026-07-19T23:56:26+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19 residual: ops_bootstrap_static multi-package reindex binder proves two-fixture rebuild-clean + dry-run zero-diff (beyond single-package IP-3 in ops_static_contracts). Evidence qa/live_verification/ops_bootstrap_static_20260719.json. Item remains complete."
         }
       ],
       "evidence": "Implemented maskfactory incident reindex-drill; 7 seeded reindex tests pass. Executed live on exact copy qa/live_verification/ip3/maskfactory_ip3_copy_20260711T083019Z.sqlite: before/after diff clean, rebuilt copy 49152 bytes, source data/maskfactory.sqlite stayed 0 bytes with identical SHA256 e3b0...b855. Empty-state rehearsal is explicitly recorded.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:46:41+00:00",
+      "updated_at": "2026-07-19T23:56:26+00:00",
       "orphaned": false
     },
     "MF-P7-03.05": {
@@ -9025,11 +9045,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:54:53+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
+        }
+      ],
       "evidence": "Reviewed all 79 local manifest records; configs/civitai_classifications.json contains one valid primary classification per unique (id,file_name): 31 provider_inference, 17 comfyui_graph_reference, 6 annotation_aid, 23 qa_visualization, 2 reject. Generator --check PASS; pytest classification invariants PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-10T03:10:30+00:00",
-      "updated_at": "2026-07-10T17:13:13+00:00",
+      "updated_at": "2026-07-19T23:54:53+00:00",
       "orphaned": false
     },
     "MF-P0-10.02": {
@@ -9046,11 +9072,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:54:54+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
+        }
+      ],
       "evidence": "Inspected imageToOpenPose.json (12 nodes/11 links) and documented exact core + comfyui_controlnet_aux 1.1.0 + comfyui-openpose 1.0.0 + cg-use-everywhere 6.2.1 + rgthree requirements, referenced model files, outputs, and authority limits in Plan/CIVITAI_WORKFLOW_INTAKE.md.",
       "blocked_reason": null,
       "created_at": "2026-07-10T03:10:30+00:00",
-      "updated_at": "2026-07-10T17:13:14+00:00",
+      "updated_at": "2026-07-19T23:54:54+00:00",
       "orphaned": false
     },
     "MF-P0-10.03": {
@@ -9067,11 +9099,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:54:54+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
+        }
+      ],
       "evidence": "Inspected mask_add_remove_self.json (22 nodes/22 links); documented Impact Subpack/Impact Pack/ComfyUI Essentials/rgthree nodes, add/subtract graph behavior, canonical-label-map import, png_strict regeneration, QA, provenance, and human-approval boundary in Plan/CIVITAI_WORKFLOW_INTAKE.md.",
       "blocked_reason": null,
       "created_at": "2026-07-10T03:10:30+00:00",
-      "updated_at": "2026-07-10T17:13:15+00:00",
+      "updated_at": "2026-07-19T23:54:54+00:00",
       "orphaned": false
     },
     "MF-P0-10.04": {
@@ -9088,11 +9126,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T23:54:54+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
+        }
+      ],
       "evidence": "All 6 metadata-only HTTP-401 variants recorded as superseded_by_downloaded_variant with download_action=unnecessary and specific downloaded replacement in configs/civitai_classifications.json and Plan/CIVITAI_WORKFLOW_INTAKE.md; pytest metadata disposition invariant PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-10T03:10:30+00:00",
-      "updated_at": "2026-07-10T17:13:15+00:00",
+      "updated_at": "2026-07-19T23:54:54+00:00",
       "orphaned": false
     },
     "MF-P0-11.01": {
@@ -9341,12 +9385,17 @@
           "ts": "2026-07-10T19:57:48+00:00",
           "actor": "ai_agent",
           "text": "Policy corrected per Kevin: adult/NSFW labeling is not a training exclusion."
+        },
+        {
+          "ts": "2026-07-19T23:54:55+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
         }
       ],
       "evidence": "Classified all 79 records / 71 unique Civitai IDs; policy now explicitly permits eligible adult/NSFW assets as training data and as seeds for human-reviewed gold after provenance, license, adult-age/consent, allowed-use, intake, annotation, and QA gates; focused Civitai tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:57:48+00:00",
+      "updated_at": "2026-07-19T23:54:55+00:00",
       "orphaned": false
     },
     "MF-P0-14.02": {

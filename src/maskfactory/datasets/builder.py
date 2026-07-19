@@ -10,13 +10,20 @@ import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import numpy as np
 import yaml
 from PIL import Image
 
 from ..daz.policy import validate_synthetic_authority, validate_synthetic_share
+from ..external_supervision import EXTERNAL_LABEL_ROLE
+from ..external_supervision_packages import (
+    ExternalSupervisionPackageError,
+    assert_builder_accepts_only_gated_external_rows,
+    require_external_package_qualification,
+    validate_external_batch_cap,
+)
 from ..io.hashing import sha256_file
 from ..io.png_strict import write_label_map
 from ..ontology import Ontology, get_ontology, load_ontology
@@ -199,6 +206,26 @@ def build_dataset(
                         "maximum_synthetic_image_fraction": 0.30,
                     }
                 )
+            if truth.source_role == EXTERNAL_LABEL_ROLE:
+                qualification = manifest.get("external_qualification")
+                if not isinstance(qualification, Mapping):
+                    qualification = {}
+                sample_truth[sample_id].update(
+                    {
+                        "holdout_eligible": False,
+                        "calibration_eligible": False,
+                        "dataset_volume_eligible": False,
+                        "counts_as_human_anchor_gold": False,
+                        "counts_as_autonomous_certified_gold": False,
+                        "external_qualification_admitted": bool(
+                            qualification.get("admitted") is True
+                        ),
+                        "external_source": qualification.get("source"),
+                        "external_evidence_bundle_sha256": qualification.get(
+                            "evidence_bundle_sha256"
+                        ),
+                    }
+                )
             if split == "calibration":
                 _copy_sample(
                     package,
@@ -344,6 +371,13 @@ def build_dataset(
     synthetic_metrics = validate_synthetic_share(
         _one_authority_record_per_image(sample_truth.values())
     )
+    try:
+        assert_builder_accepts_only_gated_external_rows(sample_truth.values())
+        external_metrics = validate_external_batch_cap(
+            _one_authority_record_per_image(sample_truth.values())
+        )
+    except ExternalSupervisionPackageError as exc:
+        raise ValueError(f"external supervision batch authority failed: {exc}") from exc
     volume_gates = evaluate_certified_volume_gates(
         int(truth_metrics["certified_training_package_count"]), coverage
     )
@@ -371,6 +405,7 @@ def build_dataset(
                 "instances": split_instances,
                 "truth_metrics": truth_metrics,
                 "synthetic_metrics": synthetic_metrics,
+                "external_batch_metrics": external_metrics,
                 "certified_volume_gates": volume_gates,
                 "reference_benchmark_isolation": reference_isolation,
                 "sample_weights": "sample_weights.json",
@@ -651,6 +686,18 @@ def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolic
         raise ValueError(
             f"training_loss_weight {weight} does not match {tier} policy {expected_weight}"
         )
+    if source_role == EXTERNAL_LABEL_ROLE:
+        try:
+            require_external_package_qualification(
+                {
+                    **manifest,
+                    "source_role": EXTERNAL_LABEL_ROLE,
+                    "truth_tier": tier,
+                    "truth_partition": partition,
+                }
+            )
+        except ExternalSupervisionPackageError as exc:
+            raise ValueError(str(exc)) from exc
     if source_origin == "synthetic":
         validate_synthetic_authority(
             {

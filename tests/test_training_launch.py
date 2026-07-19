@@ -210,6 +210,85 @@ def test_launcher_independently_enforces_daz_train_only_weight_and_thirty_percen
         validate_training_dataset_authority(root)
 
 
+def test_launcher_enforces_external_batch_cap_and_ungated_refuse(tmp_path: Path) -> None:
+    root = _dataset(tmp_path)
+    build_path = root / "build_manifest.json"
+    weights_path = root / "sample_weights.json"
+    build = json.loads(build_path.read_text(encoding="utf-8"))
+    weights = json.loads(weights_path.read_text(encoding="utf-8"))
+    sample_ids = list(weights["samples"])
+
+    def mark_external(sample_id: str, *, admitted: bool = True) -> None:
+        weights["samples"][sample_id] = {
+            "image_id": sample_id.rsplit("_p", 1)[0],
+            "truth_tier": "weighted_pseudo_label",
+            "truth_partition": "train",
+            "training_loss_weight": 0.15,
+            "dataset_volume_eligible": False,
+            "source_role": "external_labeled_reference",
+            "external_qualification_admitted": admitted,
+            "holdout_eligible": False,
+            "counts_as_human_anchor_gold": False,
+            "counts_as_autonomous_certified_gold": False,
+        }
+
+    for sample_id in sample_ids[:70]:
+        mark_external(sample_id)
+    build["truth_metrics"]["certified_training_package_count"] = 130
+    build["external_batch_metrics"] = {
+        "total_images": 200,
+        "external_images": 70,
+        "certified_real_images": 130,
+        "external_image_share": 0.35,
+        "certified_real_image_share": 0.65,
+        "maximum_combined_external_batch_fraction": 0.35,
+        "certified_real_dominant": True,
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    weights_path.write_text(json.dumps(weights), encoding="utf-8")
+    assert validate_training_dataset_authority(root) == 130
+
+    mark_external(sample_ids[70])
+    build["truth_metrics"]["certified_training_package_count"] = 129
+    build["external_batch_metrics"] = {
+        "total_images": 200,
+        "external_images": 71,
+        "certified_real_images": 129,
+        "external_image_share": 0.355,
+        "certified_real_image_share": 0.645,
+        "maximum_combined_external_batch_fraction": 0.35,
+        "certified_real_dominant": True,
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    weights_path.write_text(json.dumps(weights), encoding="utf-8")
+    with pytest.raises(TrainingLaunchError, match="external label share .* exceeds"):
+        validate_training_dataset_authority(root)
+
+    # Reset to a legal mix then prove ungated refuse.
+    weights["samples"][sample_ids[70]] = {
+        "truth_tier": "human_anchor_gold",
+        "truth_partition": "train",
+        "training_loss_weight": 1.0,
+    }
+    for sample_id in sample_ids[:70]:
+        mark_external(sample_id, admitted=True)
+    mark_external(sample_ids[0], admitted=False)
+    build["truth_metrics"]["certified_training_package_count"] = 130
+    build["external_batch_metrics"] = {
+        "total_images": 200,
+        "external_images": 70,
+        "certified_real_images": 130,
+        "external_image_share": 0.35,
+        "certified_real_image_share": 0.65,
+        "maximum_combined_external_batch_fraction": 0.35,
+        "certified_real_dominant": True,
+    }
+    build_path.write_text(json.dumps(build), encoding="utf-8")
+    weights_path.write_text(json.dumps(weights), encoding="utf-8")
+    with pytest.raises(TrainingLaunchError, match="ungated external"):
+        validate_training_dataset_authority(root)
+
+
 def test_launcher_holds_gpu_runs_compiled_config_and_requires_checkpoint(tmp_path: Path) -> None:
     runs_root = tmp_path / "runs"
 

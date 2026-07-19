@@ -15,6 +15,11 @@ import yaml
 
 from ..datasets.authority import P5_CERTIFIED_ENTRY_COUNT, serialized_reader_capabilities
 from ..daz.policy import DazPolicyError, validate_synthetic_share
+from ..external_supervision_packages import (
+    ExternalSupervisionPackageError,
+    assert_launcher_accepts_only_gated_external_rows,
+    validate_external_batch_cap,
+)
 from ..gpu import GpuLock
 from ..models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
@@ -146,6 +151,33 @@ def validate_training_dataset_authority(dataset_root: Path) -> int:
         reported_synthetic = synthetic_metrics
     if reported_synthetic != synthetic_metrics:
         raise TrainingLaunchError("builder/launcher synthetic composition metrics disagree")
+    try:
+        external_by_image: dict[str, dict[str, Any]] = {}
+        for sample_id, row in records.items():
+            if not isinstance(row, dict):
+                continue
+            image_id = row.get("image_id")
+            if not isinstance(image_id, str) or not image_id:
+                image_id = sample_id.rsplit("_p", 1)[0]
+            normalized = dict(row)
+            normalized["image_id"] = image_id
+            previous = external_by_image.get(image_id)
+            if previous is not None and previous.get("source_role") != normalized.get(
+                "source_role"
+            ):
+                raise TrainingLaunchError(
+                    f"one image has mixed external/non-external authority: {image_id}"
+                )
+            external_by_image[image_id] = normalized
+        assert_launcher_accepts_only_gated_external_rows(external_by_image.values())
+        external_metrics = validate_external_batch_cap(external_by_image.values())
+    except ExternalSupervisionPackageError as exc:
+        raise TrainingLaunchError(f"external supervision training authority failed: {exc}") from exc
+    reported_external = build.get("external_batch_metrics")
+    if reported_external is None and external_metrics["external_images"] == 0:
+        reported_external = external_metrics
+    if reported_external != external_metrics:
+        raise TrainingLaunchError("builder/launcher external composition metrics disagree")
     for split, partition in (
         ("calibration", "calibration"),
         ("test_holdout", "holdout"),

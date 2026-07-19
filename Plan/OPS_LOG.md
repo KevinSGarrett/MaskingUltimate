@@ -8946,3 +8946,36 @@ Mode B "draft" means response authority floor (`draft_model_generated`, `promoti
 - No VISUAL / PRODUCTION claim
 - No invented champion win
 - MF-P6-12.04 remains blocked/incomplete at 86%
+
+## 2026-07-19 — STATIC-only portfolio: gated external packages + batch cap
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
+**Items:** MF-P9-13.06 (75% partial); MF-P9-13.07 (80% partial); MF-P9-13.05/13.04 notes only
+**Result:** STATIC_PASS only — never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no live warehouse admission
+
+### MF-P9-13.06 gated train-only packages
+- `src/maskfactory/external_supervision_packages.py`: `materialize_qualified_train_only_packages`
+- Writes frozen package trees + `dataset_card.md` with source/label/weight composition
+- Requires qualification evidence bundle admission; refuses blocked/ungated sources and gold claims
+- `admission_ready=false`; `live_warehouse_admission=false`
+- Builder refuses ungated `external_labeled_reference` rows (`require_external_package_qualification`)
+
+### MF-P9-13.07 external-label batch cap
+- `validate_external_batch_cap`: `maximum_combined_external_batch_fraction=0.35`
+- Certified-real must dominate external share and remain majority when external present
+- Wired into `datasets/builder.py` and `training/launch.py` with metric agreement
+- Boundary (0.35) pass + bypass (>0.35) fail + ungated refuse tests
+
+### Focused tests
+`pytest` packages + launcher external cap: 8+1 passed. Ruff clean on touched files.
+
+### Evidence
+`qa/live_verification/external_supervision_packages_batch_cap_static_20260719.json` sha256 `296c0e61057fc8b5a850623a24be1a2646538d63958a25c6179e83741ff02a79`
+
+### Honest non-claims
+- No `split_dedup_passed` / no source admitted live
+- No retrieval 18k materialization
+- P6-11/12 remain AWAITING_MAIN where applicable
+- Doctor-green not claimed
+
+**Commands:** pytest focused; tracker.py set/validate/report; evidence seal script

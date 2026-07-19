@@ -9020,3 +9020,32 @@ Backups under `runtime_artifacts/bounded_visual_residual_20260719/backups/`
 1. VISUAL_QA_PASS_BOUNDED blocked by residual garment bias / underfill / exclusivity bleed / multi-person half-fill
 2. human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)
 
+## 2026-07-19 - Milestone proof-tier freeze (post-wave inventory)
+
+**Lane:** Durable milestone report only (no tier inflation; no status promotions)
+**Artifact:** `qa/live_verification/milestone_proof_tiers_20260719.json` self_sha256 `135ad8e5e40f3692f058ae5c039842fe49f2c30a8c05247f7bd430f7ae20d9b1`
+
+### Profile
+| Profile | Status | Highest tier claimed |
+|---|---|---|
+| `core_autonomous_runtime` | blocked | STATIC_PASS (profile); live surfaces up to RUNTIME_PASS_BOUNDED only |
+| Production / Main close | not claimed | PRODUCTION_EVIDENCE_PASS absent |
+
+### Key surfaces (honest ceilings)
+| Surface | Highest tier | Exact blockers |
+|---|---|---|
+| doctor_all_green | RUNTIME_BLOCKED | Kevin disk C: ~23-32 GiB <75 ingest; WSL cold/aborted registered_models |
+| CVAT 2.24 / Nuclio SAM2 / Ollama VLM smokes | RUNTIME_PASS_BOUNDED | (bound to local smoke only) |
+| Mode B /health+/models | RUNTIME_PASS_BOUNDED | champions=0 |
+| Mode B /predict | AWAITING_RUNTIME | champions=0; HTTP 503; draft provider policy forbid |
+| Mode B /refine | AWAITING_RUNTIME | on-demand load timeout under disk pressure |
+| Bridge P6-11/12 (except 12.01) | STATIC_PASS / AWAITING_MAIN | no Main adoption / PRODUCTION_EVIDENCE_PASS |
+| Package hard QA (repaired sample) | HARD_QA_PASS_BOUNDED | not gold |
+| Package visual QA | VISUAL_QA_REVIEWED_WITH_DEFECTS | garment/underfill/bleed/half-fill residual |
+| human_approved_gold | blocked | NEEDS KEVIN CVAT (MF-P1-08.*) |
+
+### Honest non-claims
+- No `core_autonomous_runtime` complete
+- No doctor-green, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, or invented champion win
+
+**Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification; tracker.py note/metrics pointer; commit milestone artifact only

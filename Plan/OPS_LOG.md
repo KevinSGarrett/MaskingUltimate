@@ -7305,3 +7305,16 @@ Worker boundary:                       request `...e143d970` remains nonterminal
 Required disposition:                  do not duplicate or adopt; authorized control plane must terminalize it, then reissue an additive unit leaving all frozen v1 bytes unchanged
 Truth boundary:                        50% foundation credit only; no operational invalidation application, concurrency/history proof, runtime authority, certificate, release, or Main adoption claim
 Evidence:                              `qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json`
+
+## 2026-07-19 00:38 UTC - Authoritative MaskFactory service recovered after restart
+
+**Result:** The pinned Ubuntu-22.04 MaskFactory environment is again serving on exact loopback at
+`127.0.0.1:8765`; the service remains running under managed stdout/stderr capture.
+
+Interpreter:                           `/home/kevin/miniforge3/envs/maskfactory/bin/python`; FastAPI 0.139.0, Uvicorn 0.51.0, repository `maskfactory.cli`; no unqualified Python used
+Owned process:                         Windows WSL client PID 38364; Linux `kevin` Python PID 353; exact pinned command and project `PYTHONPATH`
+Acceptance gates:                      WSL and Windows show only `127.0.0.1:8765`; `/health` 200/status ok; `/models` 200 with 17 governed records; readable `runs/gpu.lock` has PID 353 and purpose `serve_mode_b`
+Managed logs:                          `logs/maskfactory_8765_20260719T003442531Z.stdout.log` and `.stderr.log`; hashes remain deferred while their managed process handles are open
+Truth boundary:                        zero champion roles are configured, so this is service-health evidence only and does not claim champion-backed `/predict`, a production certificate, release publication, or ComfyUI adoption
+Preservation:                          frozen contracts, worker records/worktrees, dirty MF-P6-08.05 scope, Docker/CVAT/Nuclio, model files, and tracker completion state were not changed
+Evidence:                              `qa/live_verification/maskfactory_service_recovery_20260719.json`

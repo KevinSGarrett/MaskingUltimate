@@ -7691,3 +7691,16 @@ Fault boundary:                         seeded producer unit faults block, but n
 Prepared scope:                         `MF-CURSOR-12.03-MULTI-PERSON-MODE-A-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         no cross-project execution, real accepted output, production authority, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_multi_person_mode_a_vertical_slice_gap_audit_20260719.json`
+
+## 2026-07-19 03:27 UTC - Mode B draft/certificate foundations strong; live chain absent
+
+**Result:** MF-P6-12.04 receives 45% draft-runtime/issuer foundation credit and remains blocked
+behind MF-P6-08.08/11.03/11.07 plus missing live exact-output transaction evidence.
+
+Verified foundation:                   in-process health/models/predict/refine under GPU lease; raw outputs stay draft; service-down hint and inpaint workflow; access-mode/parent/training-truth ceilings; deterministic exact-byte issuer; hard vetoes override critics
+Focused validation:                    21 runtime/authority/certificate tests pass; Ruff passes
+Live probe:                             Windows GET `127.0.0.1:8765/health` timed out in 2 seconds; service was not restarted from this audit
+Missing transaction:                    no contract-native signed predict/refine/error exchange, champion-backed original prediction, separate same-output certification call, or complete certified/abstained branch report
+Prepared scope:                         `MF-CURSOR-12.04-MODE-B-VERTICAL-SLICE`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no live prediction/certificate issuance, production promotion, runtime mutation, worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_mode_b_vertical_slice_gap_audit_20260719.json`

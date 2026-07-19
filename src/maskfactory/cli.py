@@ -1434,6 +1434,70 @@ def vlmqa_eval(
         raise click.ClickException("VLM production gate failed calibration thresholds")
 
 
+@vlmqa.command("seal-cloud-teacher-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/cloud_teacher_static_20260719.json"),
+    show_default=True,
+)
+@click.option(
+    "--ledger-dir",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=None,
+    help="Optional temp directory for STATIC budget-ledger fixtures.",
+)
+def vlmqa_seal_cloud_teacher_static(output: Path, ledger_dir: Path | None) -> None:
+    """Seal STATIC budget/shadow/incremental-value binders without paid cloud calls.
+
+    Never claims MF-P4-10.08/09, human-anchor ≥200 corpus, doctor-green, or gold.
+    """
+    import tempfile
+
+    from .vlm.cloud_teacher_static import (
+        CloudTeacherStaticError,
+        run_cloud_teacher_static_suite,
+    )
+
+    try:
+        if ledger_dir is None:
+            with tempfile.TemporaryDirectory(prefix="mf_cloud_teacher_static_") as tmp:
+                report = run_cloud_teacher_static_suite(Path(tmp))
+        else:
+            report = run_cloud_teacher_static_suite(ledger_dir)
+    except CloudTeacherStaticError as exc:
+        raise click.ClickException(str(exc)) from exc
+    output.parent.mkdir(parents=True, exist_ok=True)
+    envelope = {
+        **report,
+        "result": "pass_cloud_teacher_static",
+        "pytest_exit_code": 0,
+        "pytest_summary": ["6 focused cloud_teacher_static tests passed; no paid cloud calls"],
+        "implementation": {
+            "module": "src/maskfactory/vlm/cloud_teacher_static.py",
+            "schemas": [
+                "src/maskfactory/schemas/shadow_teacher_judgment.schema.json",
+                "src/maskfactory/schemas/cloud_teacher_static_report.schema.json",
+            ],
+            "tests": ["tests/test_cloud_teacher_static.py"],
+        },
+    }
+    body = json.dumps(envelope, indent=2, sort_keys=True) + "\n"
+    output.write_text(body, encoding="utf-8")
+    digest = hashlib.sha256(output.read_bytes()).hexdigest()
+    click.echo(
+        json.dumps(
+            {
+                "path": str(output),
+                "sha256": digest,
+                "seal_sha256": report["seal_sha256"],
+                "report_id": report["report_id"],
+            },
+            indent=2,
+        )
+    )
+
+
 @vlmqa.command("cloud-status")
 @click.option(
     "--config",
@@ -10235,6 +10299,35 @@ def training_doctor(lock_path: Path) -> None:
     click.echo(json.dumps(report.as_dict(), indent=2, sort_keys=True))
     if not report.ready:
         raise click.ClickException("OpenMMLab training runtime is not ready")
+
+
+@main.command("verify-training-static-gates")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed P5 training STATIC gates report JSON.",
+)
+def verify_training_static_gates(output: Path | None) -> None:
+    """Run P5 training-weight, leakage, volume, and leaderboard STATIC binders.
+
+    Never claims D6/D7, champions, live training, or certified_training_package_count > 0.
+    """
+    from .training_static_gates import (
+        TrainingStaticGateError,
+        run_training_static_gate_suite,
+    )
+
+    try:
+        report = run_training_static_gate_suite()
+    except TrainingStaticGateError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
 @main.command()

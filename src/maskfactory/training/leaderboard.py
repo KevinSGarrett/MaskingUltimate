@@ -9,10 +9,51 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Iterable
 
+from ..truth_tiers import HUMAN_ANCHOR_GOLD
 from ..validation import ArtifactValidationError, validate_document
 
 INSTANCE_CONTEXTS = ("solo", "duo", "small_group")
 STANDING_BASELINES = ("sam2_only", "sam2_pose", "sam2_parsing", "draft_pipeline_full")
+FINAL_EVALUATION_AUTHORITY = "final_holdout"
+FINAL_HOLDOUT_SPLITS = frozenset({"test_holdout", "hard_case_holdout"})
+EVALUATION_AUTHORITIES = frozenset(
+    {"final_holdout", "diagnostic", "standing_baseline", "human_ceiling"}
+)
+
+
+def enforce_final_evaluation_authority(row: dict[str, Any]) -> dict[str, Any]:
+    """Reject autonomous/pseudo/machine truth as final holdout evaluation authority.
+
+    Rows without ``evaluation_authority`` are unchanged (standing baselines / legacy).
+    When ``evaluation_authority == final_holdout``, require human-anchor gold on a
+    frozen holdout split plus an evaluation-manifest identity.
+    """
+    authority = row.get("evaluation_authority")
+    if authority is None:
+        return row
+    if authority not in EVALUATION_AUTHORITIES:
+        raise ValueError(f"unknown evaluation_authority: {authority}")
+    if authority != FINAL_EVALUATION_AUTHORITY:
+        return row
+    tier = row.get("evaluation_truth_tier")
+    if tier != HUMAN_ANCHOR_GOLD:
+        raise ValueError(
+            "final_holdout evaluation authority requires evaluation_truth_tier="
+            f"{HUMAN_ANCHOR_GOLD!r}; autonomous/pseudo/machine truth is ineligible"
+        )
+    if row.get("split") not in FINAL_HOLDOUT_SPLITS:
+        raise ValueError(
+            "final_holdout evaluation authority requires split in "
+            f"{sorted(FINAL_HOLDOUT_SPLITS)}"
+        )
+    manifest = row.get("evaluation_manifest_sha256")
+    if (
+        not isinstance(manifest, str)
+        or len(manifest) != 64
+        or any(ch not in "0123456789abcdef" for ch in manifest)
+    ):
+        raise ValueError("final_holdout evaluation authority requires evaluation_manifest_sha256")
+    return row
 
 
 def normalize_leaderboard_row(row: dict[str, Any]) -> dict[str, Any]:
@@ -33,7 +74,7 @@ def normalize_leaderboard_row(row: dict[str, Any]) -> dict[str, Any]:
     issues = validate_document(normalized, "leaderboard")
     if issues:
         raise ArtifactValidationError(issues)
-    return normalized
+    return enforce_final_evaluation_authority(normalized)
 
 
 def append_leaderboard_row(path: Path, row: dict[str, Any]) -> dict[str, Any]:

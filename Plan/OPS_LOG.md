@@ -6,16 +6,16 @@ command execution an item in `Plan\Items\*.md` or `Plan\15_RISKS_OPERATIONS_RUNB
 tells you to log here. See `Plan\Instructions\03_SESSION_PLAYBOOK.md` for
 when to write an entry.
 
-**Format:** newest entries at the bottom, chronological, append-only —
+**Format:** newest entries at the bottom, chronological, append-only ?
 never edit or delete a past entry, even if it later turns out to be
 irrelevant (that's what "log" means). One `##` heading per event.
 
 ---
 
-## TEMPLATE — copy this block for each new entry, then fill it in
+## TEMPLATE ? copy this block for each new entry, then fill it in
 
 ```
-## <YYYY-MM-DD HH:MM UTC> — <short title>
+## <YYYY-MM-DD HH:MM UTC> ? <short title>
 **Item:** <MF-P#-##.## if this entry is evidence for a tracker item>
 **Command:** `<the exact command that was run>`
 **Result:** <PASS / FAIL / one-line summary>
@@ -33,12 +33,12 @@ irrelevant (that's what "log" means). One `##` heading per event.
 
 ---
 
-## EXAMPLE (illustrative only — not a real log entry, delete or leave as reference)
+## EXAMPLE (illustrative only ? not a real log entry, delete or leave as reference)
 
-## 2026-01-01 00:00 UTC — Example doctor run
+## 2026-01-01 00:00 UTC ? Example doctor run
 **Item:** MF-P0-07.04
 **Command:** `maskfactory doctor`
-**Result:** PASS — all checks green
+**Result:** PASS ? all checks green
 
 <details>
 <summary>Full output</summary>
@@ -56,8 +56,8 @@ irrelevant (that's what "log" means). One `##` heading per event.
 
 <!-- Real entries begin below this line. -->
 
-## 2026-07-10 07:45 UTC — Tracker unstick: leaked file handle on tracker.json cleared
-**Item:** (none — build infrastructure)
+## 2026-07-10 07:45 UTC ? Tracker unstick: leaked file handle on tracker.json cleared
+**Item:** (none ? build infrastructure)
 **Command:** `python tracker.py rebuild` (had been failing with `PermissionError [WinError 5]` at `os.replace(tracker.json.tmp -> tracker.json)`)
 **Result:** RESOLVED.
 
@@ -91,7 +91,7 @@ in Plan\Items while the tracker was frozen (a whole new Phase 8):
 
 </details>
 
-## 2026-07-10 07:55 UTC — Environment baseline survey
+## 2026-07-10 07:55 UTC ? Environment baseline survey
 **Item:** MF-P0-01.01 (driver); baseline evidence for MF-P0-01.03/.04/.05/.10
 **Command:** `nvidia-smi`; `wsl --version`; `wsl -l -v`; WSL interior probe; `ollama list`
 **Result:** PASS (driver + WSL foundation present; see disk flag)
@@ -104,24 +104,24 @@ GPU        : NVIDIA GeForce RTX 5060 Laptop GPU, driver 592.01 (>=591 PASS), 815
 WSL        : v2.7.3.0, kernel 6.6.114.1-microsoft-standard-WSL2 (>=2.3 PASS)
 Distros    : Ubuntu-22.04, docker-desktop
 Ubuntu     : 22.04.5 LTS; /etc/wsl.conf [boot] systemd=true; systemctl is-system-running = running (PASS)
-nvcc       : absent (PASS — pip cu128 wheels provide CUDA runtime, per pitfall 7)
+nvcc       : absent (PASS ? pip cu128 wheels provide CUDA runtime, per pitfall 7)
 GPU in WSL : nvidia-smi inside Ubuntu shows RTX 5060 (PASS)
 Docker     : Docker Desktop installed, daemon NOT running
 Ollama     : 0.31.2 native Windows; has llava:13b, qwen2.5:14b, qwen2.5:32b
-             (NOT the spec VLMs — MF-P0-05 wants qwen2.5vl:7b + llama3.2-vision:11b + qwen2.5:7b-instruct in a Docker container)
+             (NOT the spec VLMs ? MF-P0-05 wants qwen2.5vl:7b + llama3.2-vision:11b + qwen2.5:7b-instruct in a Docker container)
 Host       : 31.3 GB RAM, 16 logical CPUs
 DISK FLAG  : C: 150.7 GB free of 951.6 GB (85% used) -- at doctor "warn" floor
-             (<150 warn / <75 block-ingest per doc 15 §4), below the 200 GB target.
+             (<150 warn / <75 block-ingest per doc 15 �4), below the 200 GB target.
              WSL /dev/sdd (951 G avail) is a dynamically-growing .vhdx bounded by
              C: physical free. Watch this before large model/dataset pulls.
 ```
 
 </details>
 
-## 2026-07-10 08:05 UTC — Small-file I/O benchmark: ext4 hot workdir vs /mnt/c
+## 2026-07-10 08:05 UTC ? Small-file I/O benchmark: ext4 hot workdir vs /mnt/c
 **Item:** MF-P0-01.09
 **Command:** `bash mfwork_bench.sh` (create + delete 500 tiny files in each location)
-**Result:** PASS — ext4 hot workdir is ~26× faster; justifies the `~/mfwork` rule (doc 06 §1).
+**Result:** PASS ? ext4 hot workdir is ~26� faster; justifies the `~/mfwork` rule (doc 06 �1).
 
 <details>
 <summary>Numbers</summary>
@@ -140,10 +140,10 @@ confirmed PASS (touch + delete) in the same run.
 
 </details>
 
-## 2026-07-10 08:20 UTC — conda env `maskfactory` + PyTorch cu128 on Blackwell (sm_120)
-**Item:** MF-P0-02.01…02.09 (esp. MF-P0-02.05/02.06 — the sm_120 gate)
-**Command:** `bash build_env.sh` (Miniforge → conda create py3.11 → pip torch cu128 → sm_120 smoke → deps → freeze)
-**Result:** PASS — Blackwell sm_120 CUDA kernels confirmed working.
+## 2026-07-10 08:20 UTC ? conda env `maskfactory` + PyTorch cu128 on Blackwell (sm_120)
+**Item:** MF-P0-02.01?02.09 (esp. MF-P0-02.05/02.06 ? the sm_120 gate)
+**Command:** `bash build_env.sh` (Miniforge ? conda create py3.11 ? pip torch cu128 ? sm_120 smoke ? deps ? freeze)
+**Result:** PASS ? Blackwell sm_120 CUDA kernels confirmed working.
 
 <details>
 <summary>sm_120 verification (the critical P0 gotcha)</summary>
@@ -171,7 +171,7 @@ MF-P1-07.09 (to be logged then).
 
 </details>
 
-## 2026-07-10 ~08:45 UTC — Session handoff (P0 progress 0 -> 31/90)
+## 2026-07-10 ~08:45 UTC ? Session handoff (P0 progress 0 -> 31/90)
 **Item:** (session summary for the next session)
 **Result:** 31/393 overall (P0 34.4%). Foundation + repo backbone done & verified.
 
@@ -187,13 +187,13 @@ COMPLETED & VERIFIED THIS SESSION
                    *** sm_120 Blackwell CUDA smoke PASS (capability (12,0), real matmul) ***
                    all pipeline deps; env/requirements.lock.txt + env/maskfactory_env.yml.
   MF-P0-08    (7)  git init (branch main, autocrlf=false); png_strict.py (ONLY mask
-                   writer, self-test 10/10); src/maskfactory scaffold (65 files, doc 05 §3);
+                   writer, self-test 10/10); src/maskfactory scaffold (65 files, doc 05 �3);
                    pyproject + console script (maskfactory --help lists all cmds);
                    no-raw-mask-writer test; CI workflow; pre-commit (ruff+black+hooks) green.
   MF-P0-09.*  (4)  configs/external_sources.yaml: 16 providers + 15 datasets + 4 platforms,
                    with license flags (7 need verify: sapiens/rmbg NC, yolo AGPL, etc.).
 
-BLOCKED — NEEDS KEVIN
+BLOCKED ? NEEDS KEVIN
   MF-P0-08.02  Create GitHub repo under Scentiment-Dev + push. gh IS authed
                (KevinSGarrett active w/ repo+workflow; also KevinGarrett-Scentiment).
                Need: org, which account, repo name, private visibility. Local repo
@@ -207,7 +207,7 @@ KEY GOTCHAS FOR NEXT SESSION
   * Docker Desktop is INSTALLED but STOPPED -> start it before P0-03/04/05.
   * Ollama: native Windows install has llava/qwen2.5 (wrong). Spec (P0-05) wants a
     DOCKER Ollama + qwen2.5vl:7b + llama3.2-vision:11b + qwen2.5:7b-instruct.
-  * `wsl --update` hangs on interactive UAC (non-interactive session) — skip; WSL 2.7.3 already ok.
+  * `wsl --update` hangs on interactive UAC (non-interactive session) ? skip; WSL 2.7.3 already ok.
   * Plan/Civitai/ (~9 GB weights + adult preview imagery) is git-ignored (DECISIONS_LOG);
     still on disk for the P0-10/13/14 review tasks. Run all WSL work as user 'kevin';
     conda: `source ~/miniforge3/etc/profile.d/conda.sh && conda activate maskfactory`.
@@ -218,15 +218,15 @@ NEXT ACTIONABLE (P0 remaining, dependency-aware)
                   -> P0-06 model checkpoints M1-M12 (+detectron2 source build) -> P0-07 doctor.
   Local/no-download: P0-10 Civitai workflow review, P0-13 MaskedWarehouse inventory,
                   P0-11 `maskfactory external probe`. P0-14 (adult/NSFW intake) = handle
-                  with governance care (doc 16 §2.2; nothing to gold/training without
+                  with governance care (doc 16 �2.2; nothing to gold/training without
                   recorded license+consent+allowed-use).
 ```
 
 </details>
 
-## 2026-07-10 17:52 UTC — Docker Desktop, WSL integration, container GPU
+## 2026-07-10 17:52 UTC ? Docker Desktop, WSL integration, container GPU
 **Items:** MF-P0-03.01, MF-P0-03.02, MF-P0-03.03
-**Result:** PASS — Docker Desktop 4.74.0 is running on the Linux/WSL2 engine;
+**Result:** PASS ? Docker Desktop 4.74.0 is running on the Linux/WSL2 engine;
 Ubuntu-22.04 integration enabled and verified; CUDA 12.8 container sees the GPU.
 
 ```
@@ -241,10 +241,10 @@ GPU:                   NVIDIA GeForce RTX 5060 Laptop GPU, 8151 MiB
 container result:      PASS; no running GPU processes after exit
 ```
 
-## 2026-07-10 17:55 UTC — CVAT checkout pinned
+## 2026-07-10 17:55 UTC ? CVAT checkout pinned
 **Item:** MF-P0-03.04
 **Command:** `git clone --branch v2.24.0 --depth 1 https://github.com/cvat-ai/cvat.git cvat`
-**Result:** PASS — exact tag and commit verified in the clean checkout.
+**Result:** PASS ? exact tag and commit verified in the clean checkout.
 
 ```
 tag:    v2.24.0
@@ -253,9 +253,9 @@ path:   C:\Comfy_UI_Main_Masking\cvat
 config: configs/cvat.yaml
 ```
 
-## 2026-07-10 18:14 UTC — CVAT local cluster and administrator verified
+## 2026-07-10 18:14 UTC ? CVAT local cluster and administrator verified
 **Items:** MF-P0-03.05, MF-P0-03.06, MF-P0-03.07, MF-P0-03.08, MF-P0-03.09
-**Result:** PASS — pinned CVAT 2.24.0 is live on localhost, its full serverless
+**Result:** PASS ? pinned CVAT 2.24.0 is live on localhost, its full serverless
 compose stack is stable, the shared data mount is read-only, and the local
 `kevin` superuser/token were provisioned and authenticated without logging secrets.
 
@@ -284,9 +284,9 @@ Docker 29 compatibility required two reproducible, version-recorded shims:
   Verification showed zero current Docker-provider errors and Django, not UI nginx,
   handling API POSTs.
 
-## 2026-07-10 18:55 UTC — CPU SAM2 Nuclio interactor deployed and smoke-tested
+## 2026-07-10 18:55 UTC ? CPU SAM2 Nuclio interactor deployed and smoke-tested
 **Items:** MF-P0-04.01, MF-P0-04.02, MF-P0-04.03, MF-P0-04.05
-**Result:** PASS — CVAT lists `pth-sam2` as a v2 interactor; Nuclio reports
+**Result:** PASS ? CVAT lists `pth-sam2` as a v2 interactor; Nuclio reports
 `ready` 1/1; a synthetic task invoked through CVAT returned a valid binary mask.
 
 ```
@@ -867,13 +867,13 @@ interactive CVAT gate:   saved SAM2 mask verified in job 1
 quality:                 72 pytest tests passed; pre-commit --all-files passed
 D9 artifacts:            env/maskfactory_env.yml, env/requirements.lock.txt, and models/model_registry.json tracked
 implementation commit:   57f0e2e
-roadmap:                  doc 14 §1 marks MF-P0-01 through MF-P0-08 and P0 exit PASS
+roadmap:                  doc 14 �1 marks MF-P0-01 through MF-P0-08 and P0 exit PASS
 tracker:                  90 / 90 P0 items complete
 ```
 
 ## 2026-07-11 00:14 UTC - Per-instance manifest schema implemented
 **Items:** MF-P1-01.01
-**Result:** PASS - the authoritative doc 04 §1 manifest contract and doc 17 §6
+**Result:** PASS - the authoritative doc 04 �1 manifest contract and doc 17 �6
 multi-person amendment are encoded as strict JSON Schema Draft 2020-12.
 
 ```
@@ -887,7 +887,7 @@ focused tests:            3 passed (full contract, required authority block, uns
 
 ## 2026-07-11 00:23 UTC - Remaining P1 schema family implemented
 **Items:** MF-P1-01.02, MF-P1-01.03, MF-P1-01.04, MF-P1-01.05, MF-P1-01.06
-**Result:** PASS - all remaining doc 04 machine contracts and the doc 03 §5
+**Result:** PASS - all remaining doc 04 machine contracts and the doc 03 �5
 crop contract are strict Draft 2020-12 schemas with acceptance fixtures.
 
 ```
@@ -926,7 +926,7 @@ database schema:           images, stage_runs, review_tasks, training_runs; fore
 durability:                WAL mode; schema user_version=1; 30 s busy timeout; transactional commit/rollback
 writer policy:             atomic PID/host/timestamp owner file; concurrent orchestrator refused; lease always released
 dashboard policy:          URI mode=ro plus PRAGMA query_only=ON
-main state chain:           ingested→drafted→auto_qa→vlm_qa→in_review→corrected→approved_gold→exported
+main state chain:           ingested?drafted?auto_qa?vlm_qa?in_review?corrected?approved_gold?exported
 governed branches:         rejected, quarantined, deprecated with explicit recovery/terminal transitions
 double enforcement:        transition API rejects skips/unknowns; SQL CHECK rejects direct invalid statuses
 focused tests:             8 passed including WAL, FKs, rollback, writer contention, full chain, branches, and bypass attempts
@@ -934,7 +934,7 @@ focused tests:             8 passed including WAL, FKs, rollback, writer content
 
 ## 2026-07-11 00:41 UTC - File-only stage orchestrator implemented
 **Items:** MF-P1-02.03
-**Result:** PASS - the full S00–S15 graph, including S08.5 and S09.5, now has
+**Result:** PASS - the full S00?S15 graph, including S08.5 and S09.5, now has
 deterministic planning, content-hash caching, and idempotent filesystem promotion.
 
 ```
@@ -1571,7 +1571,7 @@ live fixture:             qa/fixtures/smoke/ultralytics_bus_adults.jpg
 live S01 result:           3 detected/promoted adults; person_bbox.json and p0/p1/p2 context crops under qa/live_verification/s01_bus
 S02 runner:               pinned BiRefNet remote code + local safetensors; fp16 CUDA; geometry-preserving <=2048 tiles; 128 overlap; float32 .npy confidence
 S02 integration:          confidence validated then thresholded 0.5; component policy; full-canvas mask/confidence; bbox-ratio QC
-live S02 result:           unavailable — wsl --list --quiet currently reports no distro; Ubuntu-22.04 returns WSL_E_DISTRO_NOT_FOUND
+live S02 result:           unavailable ? wsl --list --quiet currently reports no distro; Ubuntu-22.04 returns WSL_E_DISTRO_NOT_FOUND
 status discipline:        older successful model smoke was not reused as proof that the new production adapter ran
 tests:                    306 tests pass on clean rerun; Ruff clean (one prior transient Windows directory-rename test failure passed isolated and full rerun)
 ```
@@ -3409,7 +3409,7 @@ remaining item gate:        MF-P2-06.08 requires the governed 10-fixture set; li
 
 ```
 QC-013 root cause:          protected other_person ID50 was tested against the protected mask itself, producing eight guaranteed 100% self-overlaps
-QC-013 correction:          protected IDs 50..53 are excluded; body atomics remain subject to the ≤0.5% protected-overlap gate
+QC-013 correction:          protected IDs 50..53 are excluded; body atomics remain subject to the ?0.5% protected-overlap gate
 QC-013 live result:         29/29 PASS after forced rerun (previously 21 pass / 8 false fail)
 QC-014 root cause:          production adapter supplied only DensePose despite the required pose-skeleton + MediaPipe + DensePose vote contract
 QC-014 correction:          anatomical pose-chain proximity now supplies the skeleton signal for breasts, arms/hands/fingers, hips/glutes, and legs/feet
@@ -3671,7 +3671,7 @@ validation:                   35 focused and 639 full tests passed; Ruff/format 
 
 **Result:** PASS - active v1 uses 56 logits for authoritative IDs 0..55, including background 0.
 
-authority:                     approved doc 18 §1 explicitly invalidates the old 57-class phrase
+authority:                     approved doc 18 �1 explicitly invalidates the old 57-class phrase
 v1 contract:                   IDs 0..55 -> exactly 56 logits
 v2 contract:                   append-only IDs 0..64 -> exactly 65 logits
 configs corrected:             SegFormer-B3 and Mask2Former-SwinB num_classes 57 -> 56
@@ -4069,7 +4069,7 @@ optional work:                   P5 hair/chest/AWS triggers and P7 synthetic boo
 authority preserved:             no source acquisition, age override, CVAT clicks, human-review impersonation, paid launch, or active-VHD mutation occurred
 evidence:                        qa/live_verification/remaining_dependency_audit_20260712.json
 
-## 2026-07-12 — Multi-provider shadow teachers and gold-only improvement controls implemented
+## 2026-07-12 ? Multi-provider shadow teachers and gold-only improvement controls implemented
 
 **Result:** The local-Qwen/Gemini/OpenAI/Anthropic strategy is implemented as disabled-by-default,
 shadow-only infrastructure. No paid API request or external image transmission occurred.
@@ -4085,7 +4085,7 @@ operations:                      nonbillable cloud-status, frozen evaluator, gol
 specification:                   doc 19 added; docs 10 and 12 amended; default configs keep all providers and cloud execution disabled
 verification at log time:        64 focused cloud/S11/workhorse/VLM/architecture tests passed; Ruff format/check clean; monolithic host closed stdout before completion, so no full-suite claim; no real-provider quality claim made
 
-## 2026-07-12 — Kevin Image1 reference collection normalized without false gold promotion
+## 2026-07-12 ? Kevin Image1 reference collection normalized without false gold promotion
 
 **Result:** `Golden/Image1` was imported into a lossless, hash-verified MaskFactory reference tree. It
 is useful evidence and a calibration seed, but it is not counted as a full package gold.
@@ -4102,7 +4102,7 @@ implementation:                   golden_reference.py, golden_image1_mapping.yam
 verification:                     61 selected reference/cloud/S11/workhorse/VLM tests pass; Ruff format/check clean; tracker validation pending log update
 security note:                    provider credentials are read without logging and legacy `Provider: key` syntax is supported; canonical `*_API_KEY=` remains preferred
 
-## 2026-07-12 — First authorized multi-provider Image1 mask audit completed
+## 2026-07-12 ? First authorized multi-provider Image1 mask audit completed
 
 **Result:** Real Gemini, OpenAI, and Anthropic image contracts were repaired and exercised on Kevin's
 human-authored hair reference. No provider received mask or gold authority.
@@ -4120,7 +4120,7 @@ failure accounting:               invalid/interrupted dispatched calls charged f
 authority:                         original hair reference unchanged; no candidate created; no quick pass; no promotion claim from one case
 evidence:                          qa/teacher_learning/image1_live_comparison_20260712.json plus provider reports and SAM rejection report
 
-## 2026-07-12 — Progressive autonomous mask tournament and 95%-confidence gate implemented
+## 2026-07-12 ? Progressive autonomous mask tournament and 95%-confidence gate implemented
 
 **Result:** MaskFactory now has a deterministic control plane for graduating labels from residual review
 to machine-verified candidates and eventually calibrated autonomous acceptance.
@@ -5347,7 +5347,7 @@ matrix, gated Meta artifacts, screening result, and enrichment runs remain open.
 Pre-result policy:                  `provider_benchmark_matrix_v1`, canonical SHA-256 `65220c865e54b12e5558cfac9d05bd19ffd9cbbafd7d8ebf8e585be1ccb4977a`, frozen before any eligible aggregate result
 Screening stage:                    exact SAM2.1-only, SAM3.1 direct, SAM3.1 discovery to SAM2.1/SAM3.1, and RF-DETR detection to SAM2.1/SAM3.1 routes
 Finalist stage:                     one to six routes selected only by a hash-sealed screening result; every selected route expands exactly 60 cells
-Enrichment grid:                    DensePose with/without SAM 3D Body × five BiRefNet/ViTMatte variants × DWPose/RTMW-X/RTMO-L × MediaPipe Hands off/on
+Enrichment grid:                    DensePose with/without SAM 3D Body � five BiRefNet/ViTMatte variants � DWPose/RTMW-X/RTMO-L � MediaPipe Hands off/on
 Shared identity:                    one image-disjoint human-anchor holdout, prompt set, part set, hardware profile, ontology, QA, pipeline, measurement bundle, and 14 provider artifact hashes across every cell
 Measurement freeze:                19 required quality, instance, safety, labor, VRAM, latency, failure, and determinism measurement families are named before results
 Fail-closed behavior:               altered/conflated shared identities, provider substitutions, missing/reordered routes, invalid finalist evidence, partial grids, source drift, late policy edits, and seal tampering are rejected
@@ -5452,7 +5452,7 @@ Evidence:                           `qa/live_verification/multi_person_tournamen
 
 ## 2026-07-15 13:13 UTC - Multi-person family availability bound to governance
 
-**Result:** MF-P8-11.03 advances to 75%; “when available” is now an executable,
+**Result:** MF-P8-11.03 advances to 75%; ?when available? is now an executable,
 frozen governance rule rather than a caller assertion, while live SAM 3.1 qualification
 and real multi-person tournament execution remain open.
 
@@ -6143,7 +6143,7 @@ Body constraints:                     shoulder/torso, pelvis/hip, arm/hand, leg/
 Age contract:                         adult_21_29, adult_30_44, adult_45_64, adult_65_plus only; face/body/skin/posture/hair are five correlated channels rather than one slider
 Readback boundary:                    each age profile records skin/hair/posture tags and explicitly requires an asset-property mapping plus final DAZ applied-controller readback
 Statistical proof:                    800 profiles, 100 per two-anatomy x four-age stratum; body tiers 0.50625/0.34545/0.14830; face 0.517102/0.338807/0.144091; maximum target deviation 0.017102
-Correlation proof:                   six declared pairs measured 0.430586–0.774863 against a 0.25 floor; bounds, distribution, correlations, and all constraints pass
+Correlation proof:                   six declared pairs measured 0.430586?0.774863 against a 0.25 floor; bounds, distribution, correlations, and all constraints pass
 Replay/CLI:                           exact profile and report hashes replay; immutable `generate-profile`, `profile-report`, and `validate-profile` commands pass idempotently
 Live boundary:                        no asset-specific morph value, final DAZ property value, or live render is claimed from normalized fixture evidence
 Capacity:                             F remains soft at 150,760,476,672 bytes / 140.407 GiB free; no new F/DAZ work started
@@ -6206,7 +6206,7 @@ Evidence:                             `qa/reports/daz_asset_smoke_qualification_
 **Result:** MF-P9-06.01/.02 now have fixture-complete deterministic contracts and remain partial until
 qualified live assets, the frozen mapping bundle, and DAZ render/replay evidence exist.
 
-Resolved contract:                    doc-30 scene ID/family, master seed, registry/runtime/script/ontology/render bindings, coverage demands, 1–4 characters, relationships, camera, lighting, environment, props, and recipe SHA-256
+Resolved contract:                    doc-30 scene ID/family, master seed, registry/runtime/script/ontology/render bindings, coverage demands, 1?4 characters, relationships, camera, lighting, environment, props, and recipe SHA-256
 Identity invariants:                  construction IDs are canonical c0..cN; requested promoted IDs are unique; relationship participants must exist; camera crops cannot exceed resolution
 Numeric safety:                       NaN/Inf, non-JSON values, and non-string object keys fail before serialization or hashing
 Named streams:                        characters, poses, placement, camera, lighting, environment, render, and degrade derive independently from master seed + scene ID + namespace using pinned `sha256_first_u64_be_v1`
@@ -6357,7 +6357,7 @@ it remains partial until the hidden DAZ worker produces and replays a qualified 
 
 Namespace:                            background is 0; p0/p1/p2/p3 map exactly to integer IDs 1/2/3/4; one through four people are supported and construction order remains separate
 Codec:                                single-channel 16-bit PNG only, exact nearest-neighbor decode, no palette/scaling; ICC/gamma/sRGB/chromaticity/transparency metadata and all nine ID-map effects fail closed
-Exhaustive proof:                     one 256x256 fixture round-trips all 65,536 unsigned values 0–65,535 byte-semantically into `uint16` with exact equality
+Exhaustive proof:                     one 256x256 fixture round-trips all 65,536 unsigned values 0?65,535 byte-semantically into `uint16` with exact equality
 Ownership:                            every owner has known unique scene-node IDs; visible IDs must be declared; every person is nonempty and at least 4% of final pixels
 Prominence:                           final decoded pixel counts recompute p-index ordering, with construction ID as deterministic tie break; reversed prominence rejects
 Freeze/replay:                        before, sidecar, after, annotation-restore, and terminal scene hashes, plan/contract sidecars, resolution/crop, and repeated semantic file hash must agree exactly
@@ -6375,7 +6375,7 @@ remains partial until the Genesis 9 facet mapping and a qualified live DAZ PART 
 
 Ontology authority:                   consumes the already frozen `body_parts_v1` snapshot from the canonical MaskFactory loader; no DAZ-local handwritten label list exists
 Version isolation:                    v1 is the only active synthetic PART ontology; v2 remains explicitly inactive and cannot enter this contract before its separate activation/mapping work
-Active IDs:                           enabled state is read from the snapshot: IDs 0–53 active, IDs 54–55 disabled; the all-active fixture emits and verifies every active ID
+Active IDs:                           enabled state is read from the snapshot: IDs 0?53 active, IDs 54?55 disabled; the all-active fixture emits and verifies every active ID
 Mapping gate:                         requires an approved content-addressed mapping bound to exact ontology snapshot, mapping-set, topology-mapping, and active-ID hashes; fixture bindings are not relabeled as a live G9 mapping
 Pixel invariants:                     every visible instance pixel has one nonbackground PART and every nonbackground PART has an instance; inactive, disabled, arbitrary, empty-expected, and unaligned pixels reject
 Freeze/replay:                        before/sidecar/after/restore/terminal scene hashes, plan/contract/mapping/ontology sidecars, instance file hash, and repeated PART file hash must agree exactly
@@ -6473,7 +6473,7 @@ Complements:                          `other_person` is exactly all visible non-
 Package surface:                      each p-index receives the eleven-file minimum source package plus common scene/image/family IDs, deterministic package ID, geometry-render lineage, QA, and exhaustive non-self hashes
 Truth boundary:                       DAZ remains synthetic geometry-exact `weighted_pseudo_label`, train-only at weight 0.20; it counts as neither human-anchor nor autonomous-certified real gold and cannot fabricate CVAT/reviewer/calibration fields
 Publication/CLI:                      `plan-package-derivation` and `derive-scene-packages` produce immutable idempotent contracts and atomically published scene trees; conflicting trees reject
-Fixture proof:                       25 focused and 366 combined D6 cases cover 1–4 people, all active PART IDs, exact complements, RGB byte identity, source tampering, semantic defects, atomic replay, immutable conflicts, and CLI replay
+Fixture proof:                       25 focused and 366 combined D6 cases cover 1?4 people, all active PART IDs, exact complements, RGB byte identity, source tampering, semantic defects, atomic replay, immutable conflicts, and CLI replay
 Asset-root reconciliation:            autonomous-downloader content and original/legacy DIM roots remain independent governed inventory sources; neither source is assumed to contain the full asset set
 Live boundary:                        no fixture output is claimed as a qualified live DAZ conversion, accepted synthetic training sample, or final S00 package
 Capacity/mutation boundary:           F soft hold remains respected; no download, install, acquisition, DAZ launch, render, live export, asset move, or asset relabel occurred
@@ -6654,7 +6654,7 @@ allow the same transaction and descendant query to run against live accepted evi
 State migration:                      the dedicated WAL/foreign-key database advances from schema v2 to v3 without losing existing rows and adds immutable lineage entities/edges, ingest records, revocations, and revocation impacts
 Ingestion authority:                  the exact passing adapter/QA binding, accepted scene/certificate authority, synthetic manifest contract, every package byte/tree hash, identity, ontology, provider/tier/owner/transform/certificate scope, and one-through-four-person package set are reverified in one transaction
 Lineage graph:                        immutable authority and ontology nodes bind the technical certificate, then scene, packages, dataset snapshots, training runs, and models; parent-type restrictions prevent invalid graph construction
-Descendant query:                     deterministic transitive lookup reaches mapping→certificate→scene→package→dataset→run→model and fails closed for a nonexistent root
+Descendant query:                     deterministic transitive lookup reaches mapping?certificate?scene?package?dataset?run?model and fails closed for a nonexistent root
 Revocation propagation:              exact root/evidence hashes revoke the technical certificate, scene, and packages; exclude affected data from future snapshots; mark runs/models affected; prevent new use; retain historical membership/manifests; and emit immutable impacts plus one event
 CLI/dry run:                          `daz ingest`, `daz lineage verify`, and `daz lineage revoke` emit machine-readable envelopes; both mutations have proven non-writing dry runs
 Seeded proof:                         T-074 mapping change reaches every downstream artifact; T-087 accepted packages ingest; T-088 byte tamper and T-089 missing mandatory file reject; invalid parents, stale authorities, hash rebinding, replay conflicts, and partial transactions fail closed
@@ -6666,7 +6666,7 @@ Evidence:                             `qa/reports/daz_ingestion_revocation_linea
 
 ## 2026-07-17 04:38 UTC - Deterministic duo placement, overlap, and contact recipe matrix implemented
 
-**Result:** MF-P9-09.01 now has a complete offline MM/MF/FF × separated/overlap/contact recipe
+**Result:** MF-P9-09.01 now has a complete offline MM/MF/FF � separated/overlap/contact recipe
 matrix with resolved-scene integration; it remains at 85% until qualified D5/D7 live authority and
 actual DAZ duo renders independently verify placement, visibility, and contact constraints.
 
@@ -6742,7 +6742,7 @@ relationship fixtures; it remains at 85% until qualified live D6-08 and D8-01 ev
 
 D6/D8 authority binding:              a passing hash-replayed D6 relationship report must match the accepted final-camera assignment's scene, scene-state, raster resolution, duo-selection ID/hash, and complete instance/p-index mapping
 Reciprocal records:                   every unordered numeric instance pair projects to its final p-index pair; contact emits both directed contact edges; front ownership emits `occludes` and its inverse `occluded_by`; mixed ownership emits both directions
-Geometry/depth separation:            contact replays 0–4 mm distance, at most 2 mm penetration, compatible normals, and positive 3D contact regions; occlusion remains visible-instance plus linear-depth authority; RGB inference is forbidden
+Geometry/depth separation:            contact replays 0?4 mm distance, at most 2 mm penetration, compatible normals, and positive 3D contact regions; occlusion remains visible-instance plus linear-depth authority; RGB inference is forbidden
 Recipe consistency:                   separated, overlap-without-contact, and contact-support semantics are independently enforced against the replayed selected duo family; a mismatch blocks
 Seeded proof:                         overlap without 3D proximity produces no contact and four reciprocal mixed-occlusion edges; true contact plus mixed occlusion produces six directed edges; coherently rehashed missing reciprocal edges, family mismatch, scene-state rebinding, record tamper, and publication conflict reject
 Lineage/publication:                  report, assignment, selection, policies, construction/instance/p-index mapping, projected record ID/hash, closed schema, atomic immutable publication, and CLI replay are bound
@@ -6849,7 +6849,7 @@ Evidence:                             `qa/reports/daz_concentration_limits_20260
 **Result:** MF-P9-10.06 now has a complete offline D7 feedback adapter and adaptive simulation; it
 remains at 85% until qualified live D7 outcomes and live D3/D5 qualifications can run a live cycle.
 
-Outcome authority:                    every observation embeds a complete V0â€“V8 validation report that is semantically rebuilt against the versioned registry; snapshots and observations are content-addressed; only an explicit acceptance-certificate ID/hash reference can increase accepted coverage
+Outcome authority:                    every observation embeds a complete V0�??V8 validation report that is semantically rebuilt against the versioned registry; snapshots and observations are content-addressed; only an explicit acceptance-certificate ID/hash reference can increase accepted coverage
 Acceptance-aware statistics:          demand, scene-family/combination, and asset reports expose validation failure, acceptance yield, GPU cost per accept, actual useful label visibility, underfilled target cells, reason counts, and assembly/geometry/render camera failure regions
 Future-only adaptation:               at least two matching outcomes are required; smoothed failure and normalized GPU cost update predicted rejection cost, useful/predicted pixels update visibility gain, and demand failure rate may raise but never lower failure-mining priority
 Evidence-backed restrictions:         only three independent failed reports, at least 75% asset failure, an eligible asset/mapping reason, and an explicitly affected asset ID can set future `compatibility_eligible=false`; arbitrary failures and unaffected assets cannot create a restriction
@@ -7285,7 +7285,7 @@ policy implementation still has one authority-order defect, and its signed repla
 before a provider could run because the scope packet used the wrong trusted project root.
 
 Focused result:                        29 passed / 1 failed; direct `certified_output_scope_mismatch` is still masked by `operational_policy_output_scope_mismatch`
-Required precedence:                   direct certificate integrity → operational policy binding → advisory critic
+Required precedence:                   direct certificate integrity ? operational policy binding ? advisory critic
 Static validation:                     Ruff and JSON schema parsing pass; Black is absent from the Windows host interpreter and was not represented as a code pass
 Correction lineage:                    intent `...aa7101df`; Claude preflight `...c3ac420a` dead-lettered because its packet was under `C:\Comfy_UI_Main\runtime_artifacts`; dependent Cursor `...af58febb` remains queued and has no provider result
 Unblock contract:                      reissue the signed high-assurance chain under the registered MaskFactory trusted packet root with the same exact origin task/base/scope; require Cursor implementation, independent review, and complete validators
@@ -7854,7 +7854,7 @@ Evidence:                              `qa/live_verification/daz_recovery_matrix
 ## 2026-07-19 05:14 UTC - Recovery matrix is state-derived and hash-bound to Tier A backup
 
 **Result:** MF-P9-12.05 advances from 55% to 80%; exact state/package/reference derivation,
-immutable publication and backup-matrix binding pass, while the live v2→v4 migration remains open.
+immutable publication and backup-matrix binding pass, while the live v2?v4 migration remains open.
 
 State binding:                          active retention files are path/size/SHA-verified; package payloads are canonical Tier-A metadata; dataset membership binds references
 CLI:                                    `daz recovery matrix` is dry-run by default, publishes only with `--apply`, is immutable/idempotent and exits 77 on blockers
@@ -7862,7 +7862,7 @@ Backup binding:                         create seals the passing matrix SHA; ver
 Integrated validation:                  70 recovery/backup/monitoring/storage/scheduler/control/runtime tests pass; Ruff, Black 25.1 and diff checks pass
 Live read-only result:                   F queue DB quick-check `ok`, WAL, schema v2; migrations 3/4 and their nine tables are absent, so matrix generation fails closed before querying
 Preservation:                           no DB migration, live matrix publication, backup/restore, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
-Next dependency:                        governed live Tier-A backup must precede v2→v4 migration, integrity recheck and live matrix rerun
+Next dependency:                        governed live Tier-A backup must precede v2?v4 migration, integrity recheck and live matrix rerun
 Evidence:                              `qa/live_verification/daz_recovery_matrix_operational_binding_20260719.json`
 
 ## 2026-07-19 05:38 UTC - Live Tier A backup, v4 migration, matrix binding and restore pass
@@ -7872,7 +7872,7 @@ recovery/restore evidence; activation-only recipe/package/lineage routes remain 
 
 Rejected evidence:                      first pre-v4 bundle preserved and rejected for unmanifested `queue.sqlite-wal`/`-shm`; never used as authority
 Pre-v4 rollback:                        4,147 files / 756,547,219 bytes; seal `14b1ef40...a058`; queue integrity `ok`; zero sidecars
-Migration:                              live F queue schema 2→4 via migrations 3/4; quick-check `ok`; zero FK errors; no missing tables
+Migration:                              live F queue schema 2?4 via migrations 3/4; quick-check `ok`; zero FK errors; no missing tables
 Legacy classification:                 exact hashes for one R0 script, one R1 scene state and three R3 validation diagnostics; all strategy `backup`; no accepted/gold claim
 Recovery matrix:                        5 records, zero blockers, published hash `3bc18cbe...0beb`; 2,904,216 backup bytes; 1,111,074 optional-bulk bytes
 Post-v4 backup:                         4,147 files / 756,645,523 bytes; seal `3fc1e115...eb3c`; exact matrix binding; queue integrity `ok`
@@ -8050,7 +8050,7 @@ is made.
 
 **Item:** MF-P6-10.05, MF-P6-10.06, MF-P6-11.01, MF-P6-11.03, MF-P6-11.06
 **Command:** `python -m pytest tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_autonomy_registration.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py -q --tb=short`
-**Result:** PASS — aggregate focused bridge suite **88/88**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+**Result:** PASS ? aggregate focused bridge suite **88/88**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
 
 **Edits made (registration/export compatibility only):**
 - Registered additive schemas in shared `SCHEMA_NAMES`:
@@ -8080,7 +8080,7 @@ No adoption, release, production publisher-ledger, or runtime-core completion cl
 
 **Item:** MF-P6-11.02, MF-P6-11.04, MF-P6-11.07
 **Command:** `python -m pytest tests/test_mode_a_package_read.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_failure_control.py tests/test_bridge_autonomy_registration.py tests/test_bridge_adoption_receipt_matrix.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py tests/test_bridge_consumer_invalidation.py -q --tb=short`
-**Result:** PASS — aggregate focused bridge suite **108/108**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+**Result:** PASS ? aggregate focused bridge suite **108/108**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
 
 **Edits made (registration/export compatibility only):**
 - Registered additive schemas in shared `SCHEMA_NAMES`:
@@ -8108,7 +8108,7 @@ runtime-core completion claim is made.
 
 **Item:** MF-P6-10.07, MF-P6-11.05, MF-P6-11.08, MF-P6-12.04
 **Command:** `python -m pytest tests/test_bridge_consumer_invalidation.py tests/test_bridge_feedback_intake.py tests/test_bridge_recovery.py tests/test_mode_b_vertical_slice.py tests/test_bridge_autonomy_registration.py tests/test_mode_a_package_read.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_failure_control.py tests/test_bridge_adoption_receipt_matrix.py tests/test_external_adapter_conformance.py tests/test_mode_b_localhost_client.py tests/test_bridge_journal.py tests/test_bridge_crosswalk.py tests/test_clean_release_packaging.py tests/test_bridge_artifact_binding.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_bridge_error_matrix.py tests/test_bridge_identity.py tests/test_bridge_release_publication.py tests/test_bridge_transforms.py tests/test_bridge_use_eligibility.py -q --tb=short`
-**Result:** PASS — aggregate focused bridge suite **159/159**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+**Result:** PASS ? aggregate focused bridge suite **159/159**. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
 
 **Edits made (registration/export compatibility only):**
 - Registered missing additive schema in shared `SCHEMA_NAMES`:
@@ -8135,7 +8135,7 @@ Mode B champion/loopback completion claim is made.
 
 **Item:** MF-P6-12.01, MF-P6-12.02, MF-P6-12.03, MF-P9-13.04 (external_supervision_producers)
 **Command:** `python -m pytest tests/test_integration_release.py tests/test_mode_a_vertical_slice.py tests/test_multi_person_mode_a_vertical_slice.py tests/test_external_supervision_producers.py tests/test_external_supervision_qualification.py tests/test_bridge_autonomy_registration.py -q --tb=short`
-**Result:** PASS — aggregate focused suite **52/52**. Scoped Ruff clean on the registration guard. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
+**Result:** PASS ? aggregate focused suite **52/52**. Scoped Ruff clean on the registration guard. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No completion claim.
 
 **Edits made (registration/export compatibility only):**
 - Confirmed additive schemas already present in shared `SCHEMA_NAMES`:
@@ -8168,13 +8168,13 @@ admission claim is made.
 
 **Item:** MF-P6-08.05, MF-P6-08.06, MF-P6-08.07, MF-P6-08.08
 **Command:** `pytest tests/test_operational_policy_suite.py -q` ; `pytest tests/test_operational_repair.py tests/test_autonomous_repair.py::test_bounded_repair_requires_distinct_hypotheses_and_immutable_parent tests/test_autonomous_repair.py::test_bounded_repair_caps_resources_and_no_progress_without_human_queue tests/test_autonomous_repair.py::test_bounded_repair_rolls_back_unsafe_candidate_then_accepts_progress -q` ; `pytest tests/test_operational_certificate_invalidation.py tests/test_operational_invalidation_event.py -q` ; `pytest tests/test_autonomous_gold_demonstration.py -q` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — MF-P6-08.05 suite **16/16**; repair verify slice **6/6**; invalidation **13/13**; gold demonstration **2/2**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No implementation modules rewritten.
+**Result:** PASS ? MF-P6-08.05 suite **16/16**; repair verify slice **6/6**; invalidation **13/13**; gold demonstration **2/2**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No implementation modules rewritten.
 
 **Tracker updates (via Plan/Tracker/tracker.py only):**
 - MF-P6-08.05 blocked 85% -> complete 100% (operational_policy_suite evidence; obsolete WORKER CONTROL blocked_reason cleared)
 - MF-P6-08.06 blocked 67% -> complete 100% (DurableRepairExecutor + bounded-repair caps/guards; obsolete dependency/worker-control blocked_reason cleared)
 - MF-P6-08.07 blocked 75% -> complete 100% (at-use invalidation verify; MF-P6-08.02 already complete; obsolete worker-control blocked_reason cleared)
-- MF-P6-08.08 blocked 70% -> complete 100% (hash-bound autonomous gold demonstration; prerequisites 08.02–08.07 complete)
+- MF-P6-08.08 blocked 70% -> complete 100% (hash-bound autonomous gold demonstration; prerequisites 08.02?08.07 complete)
 
 **Tracker truth:** Focused verify evidence for each item was re-run and accepted. Historical notes retain prior worker-control context but no longer block status. No production Main adoption, live publisher ledger, or runtime-core claims beyond these verify clauses.
 
@@ -8219,7 +8219,7 @@ python Plan/Tracker/tracker.py report
 
 **Item:** MF-P6-12.05, MF-P6-12.06, main_consumer_conformance packs; MF-P6-08.05 confirmation
 **Command:** `python -m pytest tests/test_cross_project_qualification.py tests/test_bridge_final_release_handoff.py tests/test_bridge_main_consumer_conformance.py tests/test_bridge_autonomy_registration.py -q --tb=short` ; `python -m ruff check src/maskfactory/validation.py src/maskfactory/bridge/__init__.py tests/test_bridge_autonomy_registration.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — aggregate focused suite **29/29**. Scoped Ruff clean. Shared-validator probe resolves `cross_project_qualification_evidence`, `bridge_final_release_handoff_evidence`, and `main_consumer_conformance_evidence`. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No production qualification/handoff claim.
+**Result:** PASS ? aggregate focused suite **29/29**. Scoped Ruff clean. Shared-validator probe resolves `cross_project_qualification_evidence`, `bridge_final_release_handoff_evidence`, and `main_consumer_conformance_evidence`. No reset/clean/stage/commit/push. No lane-owned policy semantics rewritten. No production qualification/handoff claim.
 
 **Edits made (registration/export compatibility only):**
 - Registered missing `cross_project_qualification_evidence` in shared `SCHEMA_NAMES` (`src/maskfactory/validation.py`).
@@ -8234,13 +8234,13 @@ python Plan/Tracker/tracker.py report
 - MF-P6-12.06 -> blocked 72%
 `tracker.py validate` reported no structural problems; `tracker.py report` regenerated DASHBOARD/phase views.
 
-**Tracker truth:** Producer matrix and handoff evaluators are fixture-integrated and registration-locked, but 12.05 remains a hard blocker (12.01–12.04 incomplete; Main commit/adoption/qualification absent; claim_boundary.mf_p6_12_05_complete false) and 12.06 remains blocked behind 12.05 plus missing production release/adoption receipts. No core_autonomous_runtime completion claim.
+**Tracker truth:** Producer matrix and handoff evaluators are fixture-integrated and registration-locked, but 12.05 remains a hard blocker (12.01?12.04 incomplete; Main commit/adoption/qualification absent; claim_boundary.mf_p6_12_05_complete false) and 12.06 remains blocked behind 12.05 plus missing production release/adoption receipts. No core_autonomous_runtime completion claim.
 
 ## 2026-07-19 20:10 UTC - Host-side shadow-tournament registration and challenger audit
 
-**Item:** MF-P0-17.04, MF-P0-17.13, MF-P2-11.03–11.12, MF-P3-08.01
+**Item:** MF-P0-17.04, MF-P0-17.13, MF-P2-11.03?11.12, MF-P3-08.01
 **Command:** `python -m pytest tests/test_shadow_tournament_registration.py tests/test_provider_contracts.py::test_shadow_tournament_runs_installed_challenger_and_records_planned_skips tests/test_sam31_shadow.py -q` ; `python -m pytest tests/test_rfdetr_runtime_lock.py tests/test_rfdetr_shadow_evidence.py tests/test_rtm_pose_runtime_lock.py tests/test_birefnet_variant_runtime_lock.py tests/test_qwen3_vl_runtime_lock.py tests/test_eomt_dinov3_contract.py tests/test_sam3d_body_runtime_lock.py tests/test_provider_runtime_matrix.py -q` ; `python -m ruff check src/maskfactory/providers/shadow_registration.py tests/test_shadow_tournament_registration.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — shadow/SAM31 focused **21/21**; challenger registry/runtime audit **34/34**; Ruff clean on new surfaces. No reset/clean/stage/commit. No WSL GPU smoke claimed. No promotion/authority change.
+**Result:** PASS ? shadow/SAM31 focused **21/21**; challenger registry/runtime audit **34/34**; Ruff clean on new surfaces. No reset/clean/stage/commit. No WSL GPU smoke claimed. No promotion/authority change.
 
 **Implemented (host-side only):**
 - `src/maskfactory/providers/shadow_registration.py` freezes the eight-role modernization challenger roster and runs evaluation-only multi-role shadow tournaments with a host stub executor.
@@ -8274,7 +8274,7 @@ python Plan/Tracker/tracker.py report
 
 **Item:** MF-P6-10.01, MF-P6-10.02, MF-P6-10.03, MF-P6-10.04, MF-P6-10.05, MF-P6-10.06
 **Command:** `uv run pytest -q tests/test_bridge_release_publication.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_clean_release_packaging.py tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py` ; `uv run python Plan/Tracker/tracker.py set ...` ; `uv run python Plan/Tracker/tracker.py validate` ; `uv run python Plan/Tracker/tracker.py report`
-**Result:** PASS — focused suite **43/43**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main production adoption, live release publication, or invalidation ledger claim.
+**Result:** PASS ? focused suite **43/43**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main production adoption, live release publication, or invalidation ledger claim.
 
 **Additive verify-clause closures (producer-side only):**
 - `release_publication`: fixture_authority + incompatible major schema version rejection; tests for key substitution, duplicate catalog path, and canonical-hash drift
@@ -8327,7 +8327,7 @@ uv run python Plan/Tracker/tracker.py report
 
 **Item:** MF-P6-09.01, MF-P6-09.02, MF-P6-09.03, MF-P6-09.04, MF-P6-09.05, MF-P6-09.06
 **Command:** `python -m pytest tests/test_bridge_identity.py tests/test_bridge_transforms.py tests/test_bridge_artifact_binding.py tests/test_bridge_use_eligibility.py tests/test_bridge_error_matrix.py -q` ; `python -m ruff check src/maskfactory/bridge/identity.py src/maskfactory/bridge/use_eligibility.py tests/test_bridge_identity.py tests/test_bridge_use_eligibility.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — focused bridge suite **25/25**; Ruff clean on touched identity/use-eligibility modules and tests. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main-side evidence fabricated.
+**Result:** PASS ? focused bridge suite **25/25**; Ruff clean on touched identity/use-eligibility modules and tests. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main-side evidence fabricated.
 
 **Implementation (additive residual gaps only):**
 - `src/maskfactory/bridge/identity.py`: fail-closed `identity_pixel_drift`, `identity_decoder_drift`, `identity_time_drift`, `identity_owner_omitted`, `identity_owner_ambiguous`
@@ -8379,7 +8379,7 @@ python Plan/Tracker/tracker.py report
 
 **Item:** MF-P6-11.01, MF-P6-11.02, MF-P6-11.03, MF-P6-11.04, MF-P6-11.05, MF-P6-11.06, MF-P6-11.07, MF-P6-11.08
 **Command:** python -m pytest tests/test_bridge_journal.py tests/test_external_adapter_conformance.py tests/test_mode_a_package_read.py tests/test_mode_b_localhost_client.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_feedback_intake.py tests/test_bridge_failure_control.py tests/test_bridge_recovery.py tests/test_bridge_autonomy_registration.py -q ; python Plan/Tracker/tracker.py set ... ; python Plan/Tracker/tracker.py validate ; python Plan/Tracker/tracker.py report
-**Result:** PASS — focused P6-11 suite **93/93**. Scoped Ruff clean on journal surface. No reset/clean/stage/commit. No Main runtime fabricated.
+**Result:** PASS ? focused P6-11 suite **93/93**. Scoped Ruff clean on journal surface. No reset/clean/stage/commit. No Main runtime fabricated.
 
 **Additive producer closure (11.06):**
 - Expanded JOURNAL_STATES to full verify vocabulary (lease, submit_known/unknown, validate, cache, feedback, adoption, invalidation, repair) while retaining legacy submit.
@@ -8402,7 +8402,7 @@ econstruct_bridge_journal_state + alidate_bridge_journal_reconstruction_evidenc
 
 **Evidence:** qa/live_verification/bridge_p6_11_residual_gap_reevaluation_20260719.json
 
-**Tracker truth:** Producer verify for 11.01–11.08 is fixture-complete except Main-owned runtime/adoption surfaces. No completion claim; all eight remain blocked on declared cross-project/dependency gaps.
+**Tracker truth:** Producer verify for 11.01?11.08 is fixture-complete except Main-owned runtime/adoption surfaces. No completion claim; all eight remain blocked on declared cross-project/dependency gaps.
 
 <details>
 <summary>Focused pytest results</summary>
@@ -8434,7 +8434,7 @@ python Plan/Tracker/tracker.py validate
 
 **Item:** MF-P6-09.07, MF-P6-10.01, MF-P6-10.02, MF-P6-10.03, MF-P6-10.04, MF-P6-10.05, MF-P6-10.06, MF-P6-10.07
 **Command:** `python -m pytest tests/test_bridge_crosswalk.py tests/test_bridge_release_publication.py tests/test_bridge_capability_snapshot.py tests/test_bridge_consumer_requirements.py tests/test_clean_release_packaging.py tests/test_bridge_adoption_receipt_matrix.py tests/test_operational_invalidation_event.py tests/test_operational_certificate_invalidation.py tests/test_bridge_consumer_invalidation.py -q` ; `python -m ruff check src/maskfactory/bridge/crosswalk.py src/maskfactory/bridge/release_publication.py tests/test_bridge_crosswalk.py tests/test_bridge_release_publication.py` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — focused suite **61/61**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main consumer runtime or adoption fabricated.
+**Result:** PASS ? focused suite **61/61**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main consumer runtime or adoption fabricated.
 
 **Implementation (additive residual gaps only):**
 - `src/maskfactory/bridge/crosswalk.py` + schema/governance: `removed_source_paths`, `order_sensitive_sequences`; fail-closed removed/reorder reasons
@@ -8490,10 +8490,10 @@ python Plan/Tracker/tracker.py report
 
 </details>
 
-## 2026-07-19 20:20 UTC — Docker Desktop live; session Docker manual published
+## 2026-07-19 20:20 UTC ? Docker Desktop live; session Docker manual published
 **Item:** session runtime governance (session `5d7ae789-d56a-433c-a5ab-ab04682a5a9b`)
 **Command:** `docker info`; `docker ps`; `curl.exe -s http://localhost:8080/api/server/about`; `curl.exe -s http://127.0.0.1:11434/api/version`; `wsl -l -v`
-**Result:** PASS — Docker Desktop engine 29.4.3 up (context docker-desktop); CVAT API version 2.24.0 on localhost:8080; Ollama API version 0.32.1 on 127.0.0.1:11434; nuclio/pth-sam2 and cvat269 parallel stack present; WSL docker-desktop Running, Ubuntu-22.04 Stopped. Binding manual written to `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; completion plan + Instructions 00/02/03 updated so the active session must re-probe and use Docker freely for all in-scope CVAT/Nuclio/Ollama/GPU-container work.
+**Result:** PASS ? Docker Desktop engine 29.4.3 up (context docker-desktop); CVAT API version 2.24.0 on localhost:8080; Ollama API version 0.32.1 on 127.0.0.1:11434; nuclio/pth-sam2 and cvat269 parallel stack present; WSL docker-desktop Running, Ubuntu-22.04 Stopped. Binding manual written to `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; completion plan + Instructions 00/02/03 updated so the active session must re-probe and use Docker freely for all in-scope CVAT/Nuclio/Ollama/GPU-container work.
 
 <details>
 <summary>Full output</summary>
@@ -8512,7 +8512,7 @@ Durable guide: Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
 
 **Item:** MF-P6-11.01, MF-P6-11.02, MF-P6-11.03, MF-P6-11.04, MF-P6-11.05, MF-P6-11.06, MF-P6-11.07, MF-P6-11.08
 **Command:** `uv run pytest tests/test_bridge_journal.py tests/test_external_adapter_conformance.py tests/test_mode_a_package_read.py tests/test_mode_b_localhost_client.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_feedback_intake.py tests/test_bridge_failure_control.py tests/test_bridge_recovery.py tests/test_bridge_autonomy_registration.py -q` ; `python Plan/Tracker/tracker.py set ...` ; `python Plan/Tracker/tracker.py validate` ; `python Plan/Tracker/tracker.py report`
-**Result:** PASS — focused P6-11 suite **93/93**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main runtime fabricated. No additive producer code changes required (verify surfaces already fixture-complete).
+**Result:** PASS ? focused P6-11 suite **93/93**. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main runtime fabricated. No additive producer code changes required (verify surfaces already fixture-complete).
 
 **Re-eval against MF-P6-08/09/10 closeout:**
 - Cleared obsolete upstream blockers from blocked_reasons: MF-P6-10.05 (11.01), MF-P6-10.06 (11.05/11.06), MF-P6-10.07 (11.08).
@@ -8531,7 +8531,7 @@ Durable guide: Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
 
 **Evidence:** `qa/live_verification/bridge_p6_11_post_p10_reevaluation_20260719.json`
 
-**Tracker truth:** Producer verify for 11.01–11.08 is fixture-complete. All eight remain blocked on precise Main-owned or dependency residuals. No completion claim.
+**Tracker truth:** Producer verify for 11.01?11.08 is fixture-complete. All eight remain blocked on precise Main-owned or dependency residuals. No completion claim.
 
 <details>
 <summary>Focused pytest results</summary>
@@ -8566,17 +8566,17 @@ python Plan/Tracker/tracker.py report
 
 **Item:** MF-P6-12.01, MF-P6-12.02, MF-P6-12.03, MF-P6-12.04, MF-P6-12.05, MF-P6-12.06
 **Command:** python -m pytest tests/test_integration_release.py tests/test_mode_a_vertical_slice.py tests/test_multi_person_mode_a_vertical_slice.py tests/test_mode_b_vertical_slice.py tests/test_cross_project_qualification.py tests/test_bridge_final_release_handoff.py tests/test_bridge_autonomy_registration.py -q ; python -m ruff check <scoped bridge modules/tests> ; python Plan/Tracker/tracker.py set ... ; python Plan/Tracker/tracker.py validate ; python Plan/Tracker/tracker.py report
-**Result:** PASS — focused suite **54/54**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main/ComfyUI/live production evidence fabricated.
+**Result:** PASS ? focused suite **54/54**; Ruff clean. Tracker validate: no structural problems. Report regenerated. No reset/clean/stage/commit. No Main/ComfyUI/live production evidence fabricated.
 
 **Re-evaluation (after MF-P6-10.01..10.07 complete):**
-- MF-P6-12.01 blocked 78% -> **complete 100%** — producer verify clause satisfied (clean install + stale-node negative without dirty-source authority) after MF-P6-10.04 cleared; producer_partial recovery accepted; no dirty-worktree production publish claimed
-- MF-P6-12.02 blocked 80% -> blocked 84% — 12.01 producer prerequisite cleared; remains Main/ComfyUI + MF-P6-11.02
-- MF-P6-12.03 blocked 76% -> blocked 80% — producer duo fixture reconfirmed; remains on 12.02 + Main/ComfyUI
-- MF-P6-12.04 blocked 76% -> blocked 86% — cleared obsolete MF-P6-08.08; producer draft/self-promote/refinement/cert+abstain vectors fixture-satisfied; remains 11.03/11.07 + live GPU/loopback
-- MF-P6-12.05 blocked 78% -> blocked 82% — 12.01 removed from hard-blocker set; remains 12.02-12.04 + Main qualification bindings
-- MF-P6-12.06 blocked 72% -> blocked 76% — MF-P6-07.07 already complete; remains on 12.05 + Main handoff receipts
+- MF-P6-12.01 blocked 78% -> **complete 100%** ? producer verify clause satisfied (clean install + stale-node negative without dirty-source authority) after MF-P6-10.04 cleared; producer_partial recovery accepted; no dirty-worktree production publish claimed
+- MF-P6-12.02 blocked 80% -> blocked 84% ? 12.01 producer prerequisite cleared; remains Main/ComfyUI + MF-P6-11.02
+- MF-P6-12.03 blocked 76% -> blocked 80% ? producer duo fixture reconfirmed; remains on 12.02 + Main/ComfyUI
+- MF-P6-12.04 blocked 76% -> blocked 86% ? cleared obsolete MF-P6-08.08; producer draft/self-promote/refinement/cert+abstain vectors fixture-satisfied; remains 11.03/11.07 + live GPU/loopback
+- MF-P6-12.05 blocked 78% -> blocked 82% ? 12.01 removed from hard-blocker set; remains 12.02-12.04 + Main qualification bindings
+- MF-P6-12.06 blocked 72% -> blocked 76% ? MF-P6-07.07 already complete; remains on 12.05 + Main handoff receipts
 
-**Tracker truth:** Only MF-P6-12.01 producer acceptance closed. Remaining 12.02-12.06 blockers are Main/ComfyUI/live production or declared incomplete 11.x deps — not missing local producer fixture scaffolding.
+**Tracker truth:** Only MF-P6-12.01 producer acceptance closed. Remaining 12.02-12.06 blockers are Main/ComfyUI/live production or declared incomplete 11.x deps ? not missing local producer fixture scaffolding.
 
 **Evidence:** qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json
 
@@ -8606,15 +8606,15 @@ python Plan/Tracker/tracker.py report
 
 </details>
 
-## 2026-07-19 — Fixture Main consumer closes producer verify loops under fixture_authority
+## 2026-07-19 ? Fixture Main consumer closes producer verify loops under fixture_authority
 
 **Lane:** Governance / bridge fixture_main
-**Items:** MF-P6-11.01–11.08 complete; MF-P6-12.02–12.03 complete; MF-P6-12.04–12.06 remain blocked
-**Result:** PASS — focused bridge suite **108/108**. Tracker validate: no structural problems. `core_autonomous_runtime` remains **blocked** with exactly three open driving items (12.04/12.05/12.06).
+**Items:** MF-P6-11.01?11.08 complete; MF-P6-12.02?12.03 complete; MF-P6-12.04?12.06 remain blocked
+**Result:** PASS ? focused bridge suite **108/108**. Tracker validate: no structural problems. `core_autonomous_runtime` remains **blocked** with exactly three open driving items (12.04/12.05/12.06).
 
 **What landed:**
 - Governed synthetic Main consumer at `src/maskfactory/bridge/fixture_main/` materializes hash-bound inbox + related evidence under `runtime_artifacts/main_consumer_conformance/`
-- Producer verify loops 11.01–11.08 and 12.02–12.03 close via fixture_main + existing producer surfaces
+- Producer verify loops 11.01?11.08 and 12.02?12.03 close via fixture_main + existing producer surfaces
 - Qualification additive fix: fixture-bound release hashes no longer fail rollback row; currency/QA catalog falls back to canonical repo tree; slice bind detects pre-merged fixture observation
 - Claim firewall preserved: `main_adoption_complete=false`, `production_core_close_authorized=false`, `fixture_authority_cannot_close_core` on handoff
 - Registration exports locked for fixture_main symbols
@@ -8626,35 +8626,35 @@ python Plan/Tracker/tracker.py report
 
 **Evidence:** `qa/live_verification/bridge_fixture_main_producer_verify_20260719.json`; `runtime_artifacts/main_consumer_conformance/fixture_main_producer_verify_evidence.json`
 
-## 2026-07-19 — PROOF-TIER CORRECTION + live climb (fixture_main complete claims revoked)
+## 2026-07-19 ? PROOF-TIER CORRECTION + live climb (fixture_main complete claims revoked)
 
 **Lane:** Governance honesty / Docker-runtime / hard+visual QA
 **Authority:** `maskfactory-full-completion` plan proof tiers + `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`
-**Result:** Tracker corrected. Fixture Main STATIC evidence retained as credit only. False `complete` claims on MF-P6-11.01–11.08 and MF-P6-12.02–12.03 revoked.
+**Result:** Tracker corrected. Fixture Main STATIC evidence retained as credit only. False `complete` claims on MF-P6-11.01?11.08 and MF-P6-12.02?12.03 revoked.
 
 ### Tracker corrections (`tracker.py set`, actor=`proof_tier_correction`)
 | Item | Was | Now | Highest honest tier |
 |---|---|---|---|
-| MF-P6-11.01–11.08 | complete 100% via fixture_main | blocked (86/84/78/80/88/90/80/86%) | `STATIC_PASS` + `AWAITING_MAIN` |
-| MF-P6-12.02–12.03 | complete 100% via fixture_main | blocked (84%/80%) | `STATIC_PASS` + `AWAITING_MAIN` |
-| MF-P6-12.01 | complete (producer packaging) | complete retained | `STATIC_PASS` / bounded producer packaging — not PRODUCTION publish |
-| MF-P6-12.04–12.06 | blocked (inflated %) | blocked 86/82/76% | `STATIC_PASS` only |
+| MF-P6-11.01?11.08 | complete 100% via fixture_main | blocked (86/84/78/80/88/90/80/86%) | `STATIC_PASS` + `AWAITING_MAIN` |
+| MF-P6-12.02?12.03 | complete 100% via fixture_main | blocked (84%/80%) | `STATIC_PASS` + `AWAITING_MAIN` |
+| MF-P6-12.01 | complete (producer packaging) | complete retained | `STATIC_PASS` / bounded producer packaging ? not PRODUCTION publish |
+| MF-P6-12.04?12.06 | blocked (inflated %) | blocked 86/82/76% | `STATIC_PASS` only |
 | MF-P0-EXIT | partially_complete 90% | partially_complete 85% | Docker services `RUNTIME_PASS_BOUNDED`; doctor all-green `RUNTIME_BLOCKED` |
 
 ### Live Docker / doctor / smokes (re-probed)
 - Docker Desktop up: server `29.4.3`, context `docker-desktop`
-- CVAT production `localhost:8080` → version **2.24.0**; Nuclio `pth-sam2` ready; Ollama `0.32.1`
-- `tools/smoke_cvat_sam2.py` → pass; `tools/smoke_ollama_vlm.py` → pass
-- `uv run maskfactory doctor` → PASS=7 FAIL=4 WARN=1
+- CVAT production `localhost:8080` ? version **2.24.0**; Nuclio `pth-sam2` ready; Ollama `0.32.1`
+- `tools/smoke_cvat_sam2.py` ? pass; `tools/smoke_ollama_vlm.py` ? pass
+- `uv run maskfactory doctor` ? PASS=7 FAIL=4 WARN=1
   - PASS: cvat_api, cvat_project, nuclio_interactor, ollama_image, wsl_backing_store, png_strict, sqlite_writable
   - FAIL: torch_cuda / registered_models / wsl_roundtrip (WSL `true` ~24s > doctor 10s preflight); disk_free ~**10.8 GiB** (ingest BLOCK)
 - Cleared stale `runs/gpu.lock` (dead pid 425); Ubuntu-22.04 started (GPU visible via nvidia-smi)
 - Historical MF-P0-07.04 doctor-green must not be reused as current claim
 
 ### Hard QA / Visual QA climb
-- `maskfactory verify-package img_2ca794d19be9` → **PASS** → `HARD_QA_PASS_BOUNDED` for that draft package
-- `pytest tests/test_qc_seeded_defects.py tests/test_qc_p1.py` → 23 passed
-- Pixel review of `qa_panels/left_forearm.png` + `chest_upper_torso.png` → defects (noise/leak; garment-biased chest) → **not** `VISUAL_QA_PASS_BOUNDED`
+- `maskfactory verify-package img_2ca794d19be9` ? **PASS** ? `HARD_QA_PASS_BOUNDED` for that draft package
+- `pytest tests/test_qc_seeded_defects.py tests/test_qc_p1.py` ? 23 passed
+- Pixel review of `qa_panels/left_forearm.png` + `chest_upper_torso.png` ? defects (noise/leak; garment-biased chest) ? **not** `VISUAL_QA_PASS_BOUNDED`
 - Live Ollama VLM advisory on left_forearm returned pass@0.9 but is advisory only; human pixel review vetoes gold claim
 - Evidence: `qa/live_verification/visual_qa_img_2ca794d19be9_20260719.json`, `qa/live_verification/proof_tier_runtime_probe_20260719.json`
 
@@ -8662,19 +8662,19 @@ python Plan/Tracker/tracker.py report
 | Surface | Highest tier | Blocker |
 |---|---|---|
 | P6-07..10 producer contracts | `STATIC_PASS` (many items complete for contract verify) | n/a for contracts |
-| P6-11.01–11.08 bridge adapter/runtime | `STATIC_PASS` | `AWAITING_MAIN` real adapter/journal/circuit evidence |
+| P6-11.01?11.08 bridge adapter/runtime | `STATIC_PASS` | `AWAITING_MAIN` real adapter/journal/circuit evidence |
 | P6-12.01 integration release producer | `STATIC_PASS` / producer packaging complete | dirty-worktree PRODUCTION publish not claimed |
-| P6-12.02–12.06 qualification/handoff | `STATIC_PASS` | Main/ComfyUI + deps; 12.05/12.06 hard blockers |
-| Docker CVAT/Nuclio/Ollama services | `RUNTIME_PASS_BOUNDED` | — |
+| P6-12.02?12.06 qualification/handoff | `STATIC_PASS` | Main/ComfyUI + deps; 12.05/12.06 hard blockers |
+| Docker CVAT/Nuclio/Ollama services | `RUNTIME_PASS_BOUNDED` | ? |
 | Doctor all-green | `RUNTIME_BLOCKED` | C: disk ~10.8 GiB; WSL preflight latency |
 | Package hard QC (sample draft) | `HARD_QA_PASS_BOUNDED` | not gold |
 | Package visual QA (sample draft) | `VISUAL_QA_REVIEWED_WITH_DEFECTS` | mask noise / garment bias |
 | `core_autonomous_runtime` | blocked | P6-11/12 Main deps + doctor/disk |
-| EC2 | `EC2_DEFERRED` | — |
+| EC2 | `EC2_DEFERRED` | ? |
 | Audio QA | `AUDIO_QA_N_A_CORE` | Main-owned |
 
 ### Exact Kevin blockers
-1. Free C: disk above 75 GiB ingest floor (currently ~10.8 GiB) — without destructive prune of governed data
+1. Free C: disk above 75 GiB ingest floor (currently ~10.8 GiB) ? without destructive prune of governed data
 2. Main-repo production artifacts: pinned MaskFactoryAdapter, adoption/arbitration/journal/circuit/restart receipts (cannot be fixture_main)
 3. Optional: WSL doctor preflight latency / Ubuntu health (agent started distro; `true` still ~24s)
 4. Prior Kevin blockers unchanged: SAM 3.1 terms/WSL VHD if needed, human-anchor sources, DVC AWS creds, Meta checkpoints
@@ -8682,7 +8682,7 @@ python Plan/Tracker/tracker.py report
 **Commands:** docker info/ps; curl CVAT about + Ollama version; uv run maskfactory doctor; tools/smoke_*; verify-package; tracker.py set/validate/report
 
 
-## 2026-07-19 � HARD_QA + VISUAL_QA corpus climb (draft packages)
+## 2026-07-19 ? HARD_QA + VISUAL_QA corpus climb (draft packages)
 
 **Lane:** Climb HARD_QA + VISUAL_QA on available packages/drafts
 **Authority:** `maskfactory-full-completion` proof tiers + `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`
@@ -8690,7 +8690,7 @@ python Plan/Tracker/tracker.py report
 
 ### Inventory
 8 image packages under `data/packages` with real `source.png` + `qa_panels`:
-`img_2ca794d19be9`, `img_51945db358cb`, `img_6d6bb33f01a1` (p0�p3), `img_7b7a3c7d5dd3` (p0�p2), `img_a3d2663ad90d` (p0�p1), `img_b2b46c45d8e0`, `img_cdab0311dc96`, `img_e5163e08baac`.
+`img_2ca794d19be9`, `img_51945db358cb`, `img_6d6bb33f01a1` (p0?p3), `img_7b7a3c7d5dd3` (p0?p2), `img_a3d2663ad90d` (p0?p1), `img_b2b46c45d8e0`, `img_cdab0311dc96`, `img_e5163e08baac`.
 
 ### Hard QA
 - `uv run maskfactory verify-package --root data/packages --sample 20` ? **14/14 PASS** (0 FAIL)
@@ -8712,8 +8712,8 @@ Reviewed `all_parts` / part panels across 9 instance packages. Defects include b
 - P6-11/12 remain **`AWAITING_MAIN`** / `STATIC_PASS` only
 
 ### Tracker
-- `MF-P1-08.04` blocked 55% � HARD_QA credit + visual defects noted; human gold still Kevin
-- `MF-P0-EXIT` partially_complete 85% � doctor-green still open
+- `MF-P1-08.04` blocked 55% ? HARD_QA credit + visual defects noted; human gold still Kevin
+- `MF-P0-EXIT` partially_complete 85% ? doctor-green still open
 
 ### Evidence
 `qa/live_verification/hard_visual_qa_corpus_climb_20260719.json` sha256 `ed0b8aee81950603a487eb1ca174dce338deb28b650a0360fe712629ce4e426e`
@@ -8723,7 +8723,7 @@ Reviewed `all_parts` / part panels across 9 instance packages. Defects include b
 |---|---|---|
 | Draft package hard QC (14 instances) | `HARD_QA_PASS_BOUNDED` | not gold |
 | Draft package visual QA | `VISUAL_QA_REVIEWED_WITH_DEFECTS` | noise/leak/underfill/garment/multi-person |
-| Docker CVAT/Nuclio/Ollama | `RUNTIME_PASS_BOUNDED` | � |
+| Docker CVAT/Nuclio/Ollama | `RUNTIME_PASS_BOUNDED` | ? |
 | Doctor all-green | `RUNTIME_BLOCKED` | disk ~10.8 GiB; WSL latency |
 | P6-11/12 bridge | `STATIC_PASS` | `AWAITING_MAIN` |
 
@@ -8766,14 +8766,14 @@ Free C: disk above 75 GiB ingest floor (currently ~22.9 GiB) - without destructi
 ### Evidence
 qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 
-## 2026-07-19 — STATIC-only MaskedWarehouse + shadow/currency hardening
+## 2026-07-19 ? STATIC-only MaskedWarehouse + shadow/currency hardening
 
 **Lane:** Proof-tier STATIC increments (no runtime/visual/production claim)
 **Items:** MF-P9-13.04 (88% partial); MF-P2-11.12 note; MF-P6-11.01 / MF-P6-12.05 remain AWAITING_MAIN
-**Result:** STATIC_PASS only — never gold; no doctor-green; no Main close
+**Result:** STATIC_PASS only ? never gold; no doctor-green; no Main close
 
 ### MaskedWarehouse sealed qualification
-- CelebAMask-HQ bounded alignment: 5 panels + contact sheet (1024→512 `image_to_mask_bilinear`); visual review PASS for alignment QA only
+- CelebAMask-HQ bounded alignment: 5 panels + contact sheet (1024?512 `image_to_mask_bilinear`); visual review PASS for alignment QA only
 - Sealed `qa/external_supervision/celebamask_hq/visual_alignment_qa_passed.json` (project-contained)
 - Gap report: celeba missing gates now only `split_dedup_passed` (was also visual_alignment)
 - Split-dedup: `Plan/MASKEDWAREHOUSE_SPLIT_DEDUP_STRATEGY.md` + `external_supervision_dedup_strategy.py` strategy receipt `STRATEGY_DEFERRED` / `STATIC_PASS`; full ~57k corpus NOT materialized; `admission_ready=false`
@@ -8785,7 +8785,7 @@ qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 - Sealed: `host_side_shadow_tournament_registration_20260719.json`; `host_side_shadow_currency_registry_static_20260719.json`
 
 ### Instructions
-- `02` §11 proof-tier vocabulary; `00`/`01`/`03` Docker + STATIC_PASS / AWAITING_MAIN pointers
+- `02` �11 proof-tier vocabulary; `00`/`01`/`03` Docker + STATIC_PASS / AWAITING_MAIN pointers
 
 ### Tests
 `pytest` focused: 23 passed (overlays, producers, dedup, dedup_strategy, shadow registration). Ruff clean on touched files.
@@ -8798,7 +8798,7 @@ qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 
 **Commands:** tools/generate_maskedwarehouse_overlays.py --celeba-only; produce_project_contained_evidence; tracker.py set/validate/report; pytest focused suite
 
-## 2026-07-19 — Mode B loopback RUNTIME_PASS_BOUNDED (health/models only)
+## 2026-07-19 ? Mode B loopback RUNTIME_PASS_BOUNDED (health/models only)
 
 **Item:** MF-P6-12.04
 **Lane:** Bounded RUNTIME climb (proof-tier); service retained
@@ -8814,8 +8814,8 @@ qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json
 ### Surfaces
 | Surface | Tier | Evidence |
 |---|---|---|
-| Windows `/health` 200 status ok | RUNTIME_PASS_BOUNDED | body_sha256 `8983e668…aaff` |
-| Windows `/models` 200; 17 governed; champions=0 | RUNTIME_PASS_BOUNDED | body_sha256 `4a3a89dd…1f90` |
+| Windows `/health` 200 status ok | RUNTIME_PASS_BOUNDED | body_sha256 `8983e668?aaff` |
+| Windows `/models` 200; 17 governed; champions=0 | RUNTIME_PASS_BOUNDED | body_sha256 `4a3a89dd?1f90` |
 | `POST /predict` | AWAITING_RUNTIME | HTTP 503 `champion prediction provider is not configured` |
 | `POST /refine` | AWAITING_RUNTIME | valid-clicks probe curl exit 28 / 30s timeout; not retried under disk pressure |
 
@@ -8829,15 +8829,15 @@ Managed logs: `logs/maskfactory_8765_20260719T213725309Z.stdout.log` / `.stderr.
 - MF-P6-12.04 remains blocked/incomplete at 86%
 
 
-## 2026-07-19 21:44 UTC — STATIC-only portfolio: converters, inactive v2, firewalls, currency CI
+## 2026-07-19 21:44 UTC ? STATIC-only portfolio: converters, inactive v2, firewalls, currency CI
 
 **Lane:** Proof-tier STATIC increments (host-side code/tests/docs/evidence only)
 **Items:** MF-P9-13.05 (80% partial); MF-P9-05.12 (85% partial); MF-P7-07.03 (97% partial); training authority firewall residual; MF-P9-13.04/14.06 notes only
-**Result:** STATIC_PASS only — never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no 18k retrieval copy
+**Result:** STATIC_PASS only ? never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no 18k retrieval copy
 
 ### MF-P9-13.05 role-aware converters
 - `src/maskfactory/external_supervision_converters.py`: LaPa/LV-MHP indexed + CelebAMask component converters
-- `split_required` / multi-PART → PART ignore 255; single-PART direct/merge maps; single material votes retained
+- `split_required` / multi-PART ? PART ignore 255; single-PART direct/merge maps; single material votes retained
 - Gold/holdout/blocked sources fail closed; `admission_ready=false`
 - Tests: `tests/test_external_supervision_converters.py`
 - Evidence: `qa/live_verification/external_supervision_converters_static_20260719.json`
@@ -8871,22 +8871,22 @@ Managed logs: `logs/maskfactory_8765_20260719T213725309Z.stdout.log` / `.stderr.
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal script
 
 
-## 2026-07-19 — Bounded visual repair wave (DurableRepairExecutor)
+## 2026-07-19 ? Bounded visual repair wave (DurableRepairExecutor)
 
 **Lane:** Bounded autonomous repair toward visual improvement (proof-tier; no gold claim)
 **Authority:** operational_repair / decide_bounded_repair / remove_small_components; Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
 **Actor:** bounded_visual_repair
 
 ### Docker / runtime (re-probed)
-- CVAT localhost:8080 → 2.24.0; Ollama 0.32.1; Docker Desktop live
+- CVAT localhost:8080 ? 2.24.0; Ollama 0.32.1; Docker Desktop live
 
 ### Attempts (worst documented defects from hard_visual_qa_corpus_climb)
 | Target | Defect class | Outcome | Notes |
 |---|---|---|---|
-| img_51945db358cb/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 34→1 CC; drop 2071 px; hard QC pass |
-| img_cdab0311dc96/p0 left_hand_base | noise_artifacts | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 87→1 CC; drop 642 px |
-| img_7b7a3c7d5dd3/p0 chest_upper_torso | noise_spray | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 799→2 CC; drop 2972 px; connected salt-pepper remains |
-| img_2ca794d19be9/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 37→1 CC; drop 1358 px |
+| img_51945db358cb/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 34?1 CC; drop 2071 px; hard QC pass |
+| img_cdab0311dc96/p0 left_hand_base | noise_artifacts | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 87?1 CC; drop 642 px |
+| img_7b7a3c7d5dd3/p0 chest_upper_torso | noise_spray | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 799?2 CC; drop 2972 px; connected salt-pepper remains |
+| img_2ca794d19be9/p0 left_forearm | noise_leak | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | 37?1 CC; drop 1358 px |
 | img_b2b46c45d8e0/p0 left_forearm | exclusivity_bleed | ABSTAIN_BOUNDED | bleed connected to main CC; no live promote |
 | img_e5163e08baac/p0 left_forearm | underfill | ABSTAIN_BOUNDED | guard veto area_sanity / component_overflow |
 | img_a3d2663ad90d/p0 hair | multi_person_half_fill | ABSTAIN_BOUNDED | structural half-fill not remediable by CC cleanup |
@@ -8903,7 +8903,7 @@ Backups under `runtime_artifacts/bounded_visual_repair_20260719/backups/`
 ### Blockers
 1. VISUAL_QA_PASS_BOUNDED blocked by residual garment bias / underfill / exclusivity bleed / multi-person half-fill
 2. human_approved_gold still requires Kevin CVAT correction (MF-P1-08.*)
-3. Doctor all-green still RUNTIME_BLOCKED (disk / WSL) — unchanged this lane
+3. Doctor all-green still RUNTIME_BLOCKED (disk / WSL) ? unchanged this lane
 
 ## 2026-07-19 - Mode B predict draft-provider policy investigation (no force-register)
 
@@ -8947,11 +8947,11 @@ Mode B "draft" means response authority floor (`draft_model_generated`, `promoti
 - No invented champion win
 - MF-P6-12.04 remains blocked/incomplete at 86%
 
-## 2026-07-19 — STATIC-only portfolio: gated external packages + batch cap
+## 2026-07-19 ? STATIC-only portfolio: gated external packages + batch cap
 
 **Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
 **Items:** MF-P9-13.06 (75% partial); MF-P9-13.07 (80% partial); MF-P9-13.05/13.04 notes only
-**Result:** STATIC_PASS only — never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no live warehouse admission
+**Result:** STATIC_PASS only ? never gold; no doctor-green; no AWAITING_MAIN close; no 57k dHash; no live warehouse admission
 
 ### MF-P9-13.06 gated train-only packages
 - `src/maskfactory/external_supervision_packages.py`: `materialize_qualified_train_only_packages`
@@ -8979,7 +8979,7 @@ Mode B "draft" means response authority floor (`draft_model_generated`, `promoti
 - Doctor-green not claimed
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal script
-## 2026-07-19 — Residual visual-defect wave (material exclusivity + abstention)
+## 2026-07-19 ? Residual visual-defect wave (material exclusivity + abstention)
 
 **Lane:** Continue visual-defect lane after noise CC repairs (proof-tier; no gold claim)
 **Authority:** `maskfactory.autonomy.visual_defect_policy`; DurableRepairExecutor; Plan/DOCKER_RUNTIME_AND_SESSION_USE.md
@@ -8991,13 +8991,13 @@ Mode B "draft" means response authority floor (`draft_model_generated`, `promoti
 | garment bias (semantic bra/underwear chest shape) | No | Requires human redraw; morphology invents/destroys anatomy |
 | footwear/sock material on chest (exclusivity) | Yes (narrow) | Ontologically forbidden material on `chest_upper_torso`; drop-only |
 | underfill | No | Fill/dilate invents limb mass; shrink hits area_sanity |
-| exclusivity bleed (connected hip↔forearm) | No | Single CC; no S05 pose ROI; garment-clear destroys mask |
+| exclusivity bleed (connected hip?forearm) | No | Single CC; no S05 pose ROI; garment-clear destroys mask |
 | multi-person half-fill | No | Identity/ownership cut; Kevin CVAT |
 
 ### Attempts
 | Target | Defect | Outcome | Notes |
 |---|---|---|---|
-| img_51945db358cb/p0 chest_upper_torso | garment_bias + sock exclusivity | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | `clear_forbidden_material_then_max_components`; forbidden drop 41739 px; 96→2 CC; hard QC pass; bra garment-bias residual remains |
+| img_51945db358cb/p0 chest_upper_torso | garment_bias + sock exclusivity | ACCEPTED_REVERSIBLE_REPAIR_BOUNDED | `clear_forbidden_material_then_max_components`; forbidden drop 41739 px; 96?2 CC; hard QC pass; bra garment-bias residual remains |
 | img_2ca794d19be9/p0 chest_upper_torso | garment_bias | ABSTAIN_BOUNDED | forbidden_material_drop_px=0; false CC-only promote rolled back from backup |
 | img_b2b46c45d8e0/p0 left_forearm | exclusivity_bleed | ABSTAIN_BOUNDED | connected bleed |
 | img_e5163e08baac/p0 left_forearm | underfill | ABSTAIN_BOUNDED | no safe fill |
@@ -9049,11 +9049,11 @@ Backups under `runtime_artifacts/bounded_visual_residual_20260719/backups/`
 - No doctor-green, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, or invented champion win
 
 **Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification; tracker.py note/metrics pointer; commit milestone artifact only
-## 2026-07-19 22:34 UTC — STATIC-only portfolio: holdout ablation + DAZ engineering fixtures
+## 2026-07-19 22:34 UTC ? STATIC-only portfolio: holdout ablation + DAZ engineering fixtures
 
 **Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
 **Items:** MF-P9-13.08 (70% partial); MF-P9-06.10 (40% partial)
-**Result:** STATIC_PASS only — never gold; no doctor-green; no live holdout; no DAZ render/accept; no AWAITING_MAIN close
+**Result:** STATIC_PASS only ? never gold; no doctor-green; no live holdout; no DAZ render/accept; no AWAITING_MAIN close
 
 ### MF-P9-13.08 real holdout ablation gate
 - `src/maskfactory/external_supervision_holdout_ablation.py`: frozen human-anchor holdout binding required
@@ -9085,7 +9085,7 @@ Backups under `runtime_artifacts/bounded_visual_residual_20260719/backups/`
 ## 2026-07-19 - Technology currency STATIC refresh (honest FAIL sealed)
 
 **Lane:** MF-P7-07.01 / MF-P7-07.03 STATIC currency review integrity (proof-tier)
-**Result:** integrity_pass_policy_fail — signature/chain/current-input PASS with --allow-failed-review; strict policy remains FAIL
+**Result:** integrity_pass_policy_fail ? signature/chain/current-input PASS with --allow-failed-review; strict policy remains FAIL
 
 ### What changed
 - Detected live active_input_hash_mismatch solely from Plan/DECISIONS_LOG.md drift (f910976e... -> e5a0862f...)
@@ -9112,11 +9112,11 @@ qa/live_verification/currency_review_integrity_20260719.json sha256 a4c679d92ee0
 ### Honest non-claims
 - No PRODUCTION_EVIDENCE_PASS, doctor-green, promotion, certificate issuance, or fabricated rollback wins
 
-## 2026-07-19 22:45 UTC � Ontology-v2 inactive-path STATIC gates
+## 2026-07-19 22:45 UTC ? Ontology-v2 inactive-path STATIC gates
 
 **Lane:** Proof-tier STATIC only (host-side code/tests/fixtures/evidence)
 **Items:** MF-P1-12.09 (35% partial); MF-P1-10.05 note (still 90%); MF-P1-11.04/05/06 notes (already complete); MF-P1-12.10 remains blocked
-**Result:** STATIC_PASS only � never body_parts_v2 production activation; never Kevin pilot completion
+**Result:** STATIC_PASS only ? never body_parts_v2 production activation; never Kevin pilot completion
 
 ### What landed
 - `src/maskfactory/ontology_v2_inactive_gates.py`: inactive authority require, migration production/gold refusal, CVAT v2 pilot matrix contract + fixture-probe readiness evaluator
@@ -9257,11 +9257,11 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 - No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; evidence seal
-## 2026-07-19 23:00 UTC — STATIC serving/ComfyUI contracts (P6-06 residual)
+## 2026-07-19 23:00 UTC ? STATIC serving/ComfyUI contracts (P6-06 residual)
 
 **Lane:** Proof-tier STATIC increments (host-side code/tests/evidence only)
 **Items:** MF-P6-06.08 (80% partial); notes on MF-P6-01.02 / MF-P6-04.02 / MF-P6-06.02 / MF-P6-06.04
-**Result:** STATIC_PASS only — never Mode B predict complete; never Main adoption; never champion-backed predict; never production release install
+**Result:** STATIC_PASS only ? never Mode B predict complete; never Main adoption; never champion-backed predict; never production release install
 
 ### What landed
 - `src/maskfactory/serve/static_contracts.py`: closed source node-pack inventory hashes; `enforce_serving_provenance` schema+redaction; `enforce_serving_route_static` authority firewall; frozen workflow preflight contract rebind
@@ -9269,7 +9269,7 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 - Developer `comfy install` writes `node_pack_inventory.json`; verify refuses `stale_unmanifested_files`
 - CLI: `maskfactory comfy verify-static-contracts`
 - Wired into `serve/api.py` provenance builder and `serve/routing.py`
-- Resealed `qa/governance/serving_workflow_performance_v1.json` → `d48666d930c4deb8eed214ba00434a66e8601930e723ae56a887aa88905a6666` (api.py governing hash after enforcement wiring)
+- Resealed `qa/governance/serving_workflow_performance_v1.json` ? `d48666d930c4deb8eed214ba00434a66e8601930e723ae56a887aa88905a6666` (api.py governing hash after enforcement wiring)
 
 ### Evidence
 `qa/live_verification/serving_static_contracts_20260719.json` sha256 `e5916d96ed025fb6bf02e18a51f853dc3dde853d5fa2c180acf7c8eca707e6da`
@@ -9305,13 +9305,13 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 
 **Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
 **Items:** MF-P4-03.03 (note, already complete); MF-P4-11.14 (note, already complete); MF-P4-EXIT remains blocked
-**Result:** STATIC_PASS only — never D4; never VLM calibration; never human-anchor authority
+**Result:** STATIC_PASS only ? never D4; never VLM calibration; never human-anchor authority
 
 ### What landed
 - Schema `acquisition_plan` + `failure_mining_static_report` registered in `validation.SCHEMA_NAMES`
 - `src/maskfactory/qa/failure_mining_static.py`: machine-readable plan builder, closed action kinds, mining abstention routing (no human-anchor corpora required), STATIC binder seal
 - `write_acquisition_plan` now emits companion `acquisition_plan_<date>.json` beside Markdown; S15 result records `acquisition_plan_json` and explicit `d4_complete=false` / `vlm_calibration_complete=false`
-- Abstention routes: empty queue, invalid/missing clusterer themes, text-LLM unavailable → `residual_mining_queue` without weekly-plan / D4 / VLM-calibration authority
+- Abstention routes: empty queue, invalid/missing clusterer themes, text-LLM unavailable ? `residual_mining_queue` without weekly-plan / D4 / VLM-calibration authority
 
 ### Evidence
 `qa/live_verification/failure_mining_static_20260719.json` sha256 `8be69f37649841cc1be342c5d82ed1650aa92eb92d935ba68b0fdbbd94585117`
@@ -9385,3 +9385,84 @@ pytest multi_person_static_contracts + autonomy_multi_person_gate + serving_rout
 - No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-worker-isolation-static; evidence seal
+
+
+## 2026-07-19 23:22 UTC - STATIC P5 training-weight / leakage / leaderboard binder
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P5-10.12 (35% blocked); MF-P5-06.01 note; MF-P5-10.02/10.05 notes (already complete)
+**Result:** STATIC_PASS only ? never D6/D7; never champion; never live training; certified_training_package_count remains 0
+
+### What landed
+- src/maskfactory/training_static_gates.py: binds canonical truth-tier weights/eligibility, partition leakage firewalls, certified=0 volume honesty (effective weight cannot open P5/D5), and leaderboard final-authority schema checks
+- Schema 	raining_static_gates_report registered in alidation.SCHEMA_NAMES
+- Leaderboard: optional evaluation_authority / evaluation_truth_tier / evaluation_manifest_sha256; enforce_final_evaluation_authority requires human_anchor_gold + holdout split for inal_holdout and rejects autonomous/pseudo/machine
+- CLI: maskfactory verify-training-static-gates
+- Flip/swap (MF-P5-02.02) recorded as prior complete credit only
+
+### Evidence
+qa/live_verification/training_static_gates_20260719.json file sha256 8e1eaac023ce2b0db199102c7bb7a0af32b875c2ab2b4fe362cd67c642380770
+- seal_sha256 f49fadafedc8abcd608de954d8f9832c01bd5a2b7da9a7c80d738042a377d340
+- report_id tsg_f49fadafedc8abcd608de954
+- certified_training_package_count=0; p5_entry_gate_open=false; d6/d7/champion claimed=false
+
+### Focused tests
+pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb): focused suite green. Ruff clean on touched files. Added tzdata runtime dep so Windows/uv ZoneInfo can seal America/Chicago budget ledgers.
+
+### Honest non-claims
+- No live SegFormer/Mask2Former training run
+- No D6/G7 or D7 measured win
+- No champion_bodypart / champion_hand / champion_clothing
+- No nonzero certified_training_package_count / P5 entry gate still closed
+- No live human-anchor holdout evaluation rows
+- No doctor-green / gold / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; verify-training-static-gates; evidence seal
+
+## 2026-07-19 23:27 UTC - STATIC cloud-teacher budget/shadow/incremental-value binders (P4)
+
+**Lane:** Proof-tier STATIC increments (host-side code/tests/schemas/evidence only)
+**Items:** MF-P4-10.04 (note, already complete); MF-P4-10.05 (note, already complete); MF-P4-10.07 (note, already complete); MF-P4-10.08 remains NEEDS KEVIN blocked; MF-P4-10.09 remains NEEDS KEVIN / HARD BLOCKER blocked
+**Result:** STATIC_PASS only - never MF-P4-10.08/09 complete; never paid cloud calls; never human-anchor ?200 corpus; never doctor-green/gold
+
+### What landed
+- Schema `shadow_teacher_judgment` + `cloud_teacher_static_report` registered in validation.SCHEMA_NAMES
+- `src/maskfactory/vlm/cloud_teacher_static.py`: budget circuit-breaker proof (hash-chained $15 hard-cap trip, duplicate request refuse, no paid dispatch), shadow judgment schema builder, unanimous-cloud+deterministic-veto ? residual_human_queue (no quick-pass/gold/blocker clearance), incremental-value corpus structural audit (rejects undersize/<200, train leakage, image-disjoint violations, coverage gaps) with forced `mf_p4_10_08_complete=false` / `mf_p4_10_09_complete=false`
+- CLI: `maskfactory vlmqa seal-cloud-teacher-static`
+- Config contract proof: shadow_only, $14.50/$15.00/$1.00, max 3 calls/image, minimum_cases=200
+
+### Evidence
+`qa/live_verification/cloud_teacher_static_20260719.json` sha256 `c732f21800a3a7295a792f8f2da3c58d8071e96a4a05cc3ec68b4455a5489436`
+- binder seal_sha256 `9d97e40c2ae8e66096b1717c858daf517538f1a286a004d208328089aa29a113`
+- report_id `cts_9d97e40c2ae8e66096b1717c`
+
+### Focused tests
+`pytest` test_cloud_teacher_static + test_cloud_teacher: 36 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No MF-P4-10.08 frozen ?200 human-anchor corpus
+- No MF-P4-10.09 simultaneous threshold gate pass / live provider evaluation
+- No paid cloud calls / billable dispatch
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set notes; vlmqa seal-cloud-teacher-static; evidence seal
+
+## 2026-07-19 23:30 UTC - STATIC portfolio climb seal (P4 cloud-teacher + P5 training gates)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P4-10.05/07 notes; MF-P4-10.08/09 remain blocked; MF-P5-10.01..05 notes; MF-P5-06.01 90% blocked; MF-P5-10.12 40% blocked; MF-P5-02.02 note
+**Result:** STATIC_PASS only - never doctor-green; never gold; never VISUAL_QA_PASS_BOUNDED; never Main-complete; never PRODUCTION_EVIDENCE_PASS
+
+### What landed (this climb)
+- Cloud-teacher STATIC binder + CLI seal path; tzdata added so uv/Windows can ZoneInfo America/Chicago budget ledgers
+- P5 training STATIC binder + final_holdout leaderboard authority fields
+- Sealed evidence:
+  - qa/live_verification/cloud_teacher_static_20260719.json file sha256 c732f21800a3a7295a792f8f2da3c58d8071e96a4a05cc3ec68b4455a5489436
+  - qa/live_verification/training_static_gates_20260719.json file sha256 8e1eaac023ce2b0db199102c7bb7a0af32b875c2ab2b4fe362cd67c642380770
+
+### Honest non-claims
+- No paid cloud calls / no MF-P4-10.08/09 complete
+- No live training / D6/D7 / champions / certified_training_package_count > 0
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; vlmqa seal-cloud-teacher-static; verify-training-static-gates; git commit/push

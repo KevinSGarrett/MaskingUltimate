@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/training_static_gates_report.schema.json",
+  "title": "MaskFactory P5 training STATIC gates report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "weight_eligibility_checks",
+    "leakage_firewall_checks",
+    "volume_honesty",
+    "leaderboard_schema_checks",
+    "checks",
+    "flip_swap_ci_already_complete",
+    "certified_training_package_count",
+    "p5_entry_gate_open",
+    "d6_claimed",
+    "d7_claimed",
+    "champion_claimed",
+    "live_training_run_claimed",
+    "live_holdout_evaluation_claimed",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "training_static_gates_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {
+      "const": "training_static_gates_only_no_live_training_d6_d7_champion_or_certified_corpus"
+    },
+    "checked_at": {"type": "string", "minLength": 1},
+    "weight_eligibility_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_truth_tier_weights",
+        "non_training_authority_rejected",
+        "machine_candidate_ineligible",
+        "only_human_anchor_holdout_eligible"
+      ],
+      "properties": {
+        "canonical_truth_tier_weights": {"const": true},
+        "non_training_authority_rejected": {"const": true},
+        "machine_candidate_ineligible": {"const": true},
+        "only_human_anchor_holdout_eligible": {"const": true}
+      }
+    },
+    "leakage_firewall_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trainer_cannot_read_holdout",
+        "trainer_cannot_read_calibration",
+        "pseudo_generator_cannot_read_holdout",
+        "threshold_tuner_cannot_read_train",
+        "certificate_fitter_cannot_read_holdout",
+        "final_evaluator_cannot_read_train"
+      ],
+      "properties": {
+        "trainer_cannot_read_holdout": {"const": true},
+        "trainer_cannot_read_calibration": {"const": true},
+        "pseudo_generator_cannot_read_holdout": {"const": true},
+        "threshold_tuner_cannot_read_train": {"const": true},
+        "certificate_fitter_cannot_read_holdout": {"const": true},
+        "final_evaluator_cannot_read_train": {"const": true}
+      }
+    },
+    "volume_honesty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checks",
+        "certified_training_package_count",
+        "human_anchor_train_count",
+        "autonomous_certified_gold_count",
+        "effective_training_weight_units_diagnostic",
+        "p5_entry_passed",
+        "d5_passed"
+      ],
+      "properties": {
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "certified_count_zero_blocks_p5",
+            "effective_weight_cannot_open_p5",
+            "d5_blocked_at_zero_certified",
+            "formula_human_plus_autonomous_only"
+          ],
+          "properties": {
+            "certified_count_zero_blocks_p5": {"const": true},
+            "effective_weight_cannot_open_p5": {"const": true},
+            "d5_blocked_at_zero_certified": {"const": true},
+            "formula_human_plus_autonomous_only": {"const": true}
+          }
+        },
+        "certified_training_package_count": {"const": 0},
+        "human_anchor_train_count": {"const": 0},
+        "autonomous_certified_gold_count": {"const": 0},
+        "effective_training_weight_units_diagnostic": {"type": "number", "minimum": 0},
+        "p5_entry_passed": {"const": false},
+        "d5_passed": {"const": false}
+      }
+    },
+    "leaderboard_schema_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_schema_accepts_valid_row",
+        "final_authority_requires_human_anchor",
+        "final_authority_rejects_autonomous",
+        "final_authority_rejects_pseudo",
+        "final_authority_rejects_machine_candidate",
+        "final_authority_requires_holdout_split"
+      ],
+      "properties": {
+        "base_schema_accepts_valid_row": {"const": true},
+        "final_authority_requires_human_anchor": {"const": true},
+        "final_authority_rejects_autonomous": {"const": true},
+        "final_authority_rejects_pseudo": {"const": true},
+        "final_authority_rejects_machine_candidate": {"const": true},
+        "final_authority_requires_holdout_split": {"const": true}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "training_weight_eligibility",
+        "leakage_firewalls",
+        "certified_volume_honesty",
+        "leaderboard_final_authority_schema"
+      ],
+      "properties": {
+        "training_weight_eligibility": {"const": "pass"},
+        "leakage_firewalls": {"const": "pass"},
+        "certified_volume_honesty": {"const": "pass"},
+        "leaderboard_final_authority_schema": {"const": "pass"}
+      }
+    },
+    "flip_swap_ci_already_complete": {"const": true},
+    "certified_training_package_count": {"const": 0},
+    "p5_entry_gate_open": {"const": false},
+    "d6_claimed": {"const": false},
+    "d7_claimed": {"const": false},
+    "champion_claimed": {"const": false},
+    "live_training_run_claimed": {"const": false},
+    "live_holdout_evaluation_claimed": {"const": false},
+    "doctor_green_claimed": {"const": false},
+    "gold_claimed": {"const": false},
+    "production_evidence_pass_claimed": {"const": false},
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "report_id": {"type": "string", "pattern": "^tsg_[a-f0-9]{24}$"},
+    "seal_sha256": {"$ref": "#/$defs/sha256"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

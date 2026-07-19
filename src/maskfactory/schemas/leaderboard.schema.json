@@ -33,7 +33,24 @@
     "latency_ms_1024": { "type": "number", "minimum": 0 },
     "vram_gb": { "type": "number", "minimum": 0 },
     "seeds": { "type": "array", "uniqueItems": true, "items": { "type": "integer" } },
-    "notes": { "type": "string" }
+    "notes": { "type": "string" },
+    "evaluation_authority": {
+      "type": "string",
+      "enum": ["final_holdout", "diagnostic", "standing_baseline", "human_ceiling"]
+    },
+    "evaluation_truth_tier": {
+      "type": "string",
+      "enum": [
+        "human_anchor_gold",
+        "autonomous_certified_gold",
+        "weighted_pseudo_label",
+        "machine_candidate"
+      ]
+    },
+    "evaluation_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
   },
   "$defs": {
     "unit": { "type": "number", "minimum": 0, "maximum": 1 },

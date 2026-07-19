@@ -1,0 +1,103 @@
+{
+  "artifact_type": "cloud_teacher_static_report",
+  "authority": "cloud_teacher_static_only_no_paid_calls_no_mf_p4_10_08_09_human_anchor_authority",
+  "budget_proof": {
+    "circuit_breaker_tripped": true,
+    "duplicate_request_refused": true,
+    "hard_limit_usd": "15.000000",
+    "paid_cloud_calls_executed": false,
+    "reservation_usd": "1.000000"
+  },
+  "checks": {
+    "budget_circuit_breaker": "pass",
+    "config_shadow_budget_defaults": "pass",
+    "incremental_value_corpus_audit": "pass",
+    "shadow_consensus_residual": "pass",
+    "shadow_teacher_schema": "pass"
+  },
+  "config_proof": {
+    "hard_limit_usd": 15.0,
+    "maximum_calls_per_image": 3,
+    "minimum_incremental_cases": 200,
+    "mode": "shadow_only",
+    "operational_limit_usd": 14.5,
+    "reservation_usd": 1.0
+  },
+  "coverage_themes_required": [
+    "serious_anatomy_swap",
+    "missing_part",
+    "neighbor_person_contamination",
+    "clothing_skin_boundary",
+    "hair",
+    "hands_fingers",
+    "feet_toes",
+    "occlusion",
+    "multi_person_contact",
+    "good_mask"
+  ],
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p4_10_08_complete",
+    "mf_p4_10_09_complete",
+    "human_anchor_ge_200_corpus",
+    "paid_cloud_calls_executed",
+    "doctor_green",
+    "gold",
+    "PRODUCTION_EVIDENCE_PASS",
+    "quick_pass_authority",
+    "blocker_clearance_authority"
+  ],
+  "human_anchor_ge_200_corpus": false,
+  "implementation": {
+    "module": "src/maskfactory/vlm/cloud_teacher_static.py",
+    "schemas": [
+      "src/maskfactory/schemas/shadow_teacher_judgment.schema.json",
+      "src/maskfactory/schemas/cloud_teacher_static_report.schema.json"
+    ],
+    "tests": [
+      "tests/test_cloud_teacher_static.py"
+    ]
+  },
+  "incremental_audit_fixture_failures": [
+    "case_count_below_200:10"
+  ],
+  "items": [
+    "MF-P4-10.04",
+    "MF-P4-10.05",
+    "MF-P4-10.07",
+    "MF-P4-10.08",
+    "MF-P4-10.09"
+  ],
+  "mf_p4_10_08_complete": false,
+  "mf_p4_10_09_complete": false,
+  "minimum_incremental_cases": 200,
+  "paid_cloud_calls_executed": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    "6 focused cloud_teacher_static tests passed; no paid cloud calls"
+  ],
+  "report_id": "cts_9d97e40c2ae8e66096b1717c",
+  "result": "pass_cloud_teacher_static",
+  "schema_version": "1.0.0",
+  "seal_sha256": "9d97e40c2ae8e66096b1717c858daf517538f1a286a004d208328089aa29a113",
+  "seeded_fixture_blocks": {
+    "budget_circuit_breaker": true,
+    "config_shadow_budget_defaults": true,
+    "coverage_gap_rejected": true,
+    "leakage_and_duplicate_rejected": true,
+    "mf_p4_10_08_09_overclaim_refused": true,
+    "shadow_judgment_schema": true,
+    "unanimous_cloud_deterministic_veto_residual": true,
+    "undersized_corpus_rejected": true
+  },
+  "shadow_consensus": {
+    "destination": "residual_human_queue",
+    "may_approve_gold": false,
+    "may_clear_blocks": false,
+    "may_create_quick_pass": false,
+    "reason": "deterministic_veto_overrides_shadow_consensus"
+  }
+}

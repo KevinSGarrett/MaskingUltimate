@@ -19353,19 +19353,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "blocked",
+      "percent_complete": 20,
       "notes": [
         {
           "ts": "2026-07-19T00:54:27+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 static acceptance audit: zero completion credit. Basic node-pack copy/config tests pass, but the live install resolves from an editable dirty worktree, stale files survive merge-in-place copy, no install manifest/hash verification/atomic switch/rollback exists, and a clean wheel probe cannot run without an unpinned missing wheel build dependency. Prepared disjoint additive MF-CURSOR-10.04-REPRODUCIBLE-RELEASE-INSTALLATION; held until 10.01/10.02 are adopted. Evidence: qa/live_verification/bridge_release_installation_gap_audit_20260719.json"
+        },
+        {
+          "ts": "2026-07-19T03:10:33+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 revalidation: credited 20% for dependency-light node/workflow/config installation and read-only node runtime. Fresh temp-tree probe confirms a seeded stale node survives, no install manifest or rollback callable exists, and no-build-isolation wheel creation fails with missing bdist_wheel. Two focused tests pass; Ruff clean. Conda YAML pins wheel, but pyproject remains ranged and general requirements lock/active interpreter do not provide it. See qa/live_verification/bridge_release_installation_gap_revalidation_20260719.json."
         }
       ],
-      "evidence": null,
-      "blocked_reason": null,
+      "evidence": "qa/live_verification/bridge_release_installation_gap_revalidation_20260719.json",
+      "blocked_reason": "MF-P6-10.01 and MF-P6-10.02 remain incomplete. The developer node-copy installer works, but it consumes editable working-tree bytes, preserves stale files, has no closed manifest/hash verification/atomic switch/recovery/rollback, and the active clean wheel probe cannot reconstruct a wheel.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T00:54:27+00:00",
+      "updated_at": "2026-07-19T03:10:33+00:00",
       "orphaned": false
     },
     "MF-P6-10.05": {

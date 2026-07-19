@@ -7639,3 +7639,16 @@ Missing admission:                      validator has no producer use-time or re
 Prepared scope:                         `MF-CURSOR-10.03-CONSUMER-REQUIREMENTS-ADMISSION`; five additive paths remain absent/clean; held without dispatch or duplication
 Truth boundary:                         MaskFactory did not fabricate Main intent; no requirements admission/adoption, runtime/worker action, or item completion claim
 Evidence:                              `qa/live_verification/bridge_consumer_requirements_gap_revalidation_20260719.json`
+
+## 2026-07-19 03:10 UTC - Developer node copy works; production install/rollback absent
+
+**Result:** MF-P6-10.04 receives 20% developer-installer foundation credit and remains blocked
+behind MF-P6-10.01/10.02 plus missing reproducible transactional installation.
+
+Verified foundation:                   dependency-light node/workflow/config copy uses localhost service identity; installed node runtime stays package-read-only and avoids heavy dependencies
+Focused validation:                    2 installer/runtime tests pass; Ruff passes; governing source hashes match the accepted audit
+Fresh negative probes:                  seeded stale node survives merge-in-place copy; no install manifest or rollback callable exists; no-build-isolation wheel returns 1 with `invalid command bdist_wheel`
+Build nuance:                            Conda YAML pins wheel/setuptools, but pyproject build requirements remain ranged, the general requirements lock lacks wheel, and the active system interpreter lacks it
+Prepared scope:                         `MF-CURSOR-10.04-REPRODUCIBLE-RELEASE-INSTALLATION`; five additive paths remain absent/clean; held without dispatch or duplication
+Truth boundary:                         no reproducible package, trusted release-root install, atomic recovery, rollback, runtime/worker action, or item completion claim
+Evidence:                              `qa/live_verification/bridge_release_installation_gap_revalidation_20260719.json`

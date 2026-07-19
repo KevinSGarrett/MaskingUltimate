@@ -7412,3 +7412,16 @@ Missing proof:                         no rejection of internal-module, dirty-wo
 Prepared unit:                         `MF-CURSOR-11.01-EXTERNAL-ADAPTER-CONFORMANCE`; five absent/clean producer-only additive paths held behind 10.01-10.05 and Main adapter evidence
 Disposition:                            no Main adapter or producer runtime mutated; no worker dispatched; frozen v1 and preserved dirty/held scopes unchanged
 Evidence:                              `qa/live_verification/bridge_external_adapter_boundary_gap_audit_20260719.json`
+
+## 2026-07-19 01:19 UTC - Mode A read path rejects writes but permits authority bypass
+
+**Result:** Hard-blocker MF-P6-11.02 receives 30% read-safety credit and remains item-blocked. The
+thin loader is read-only and geometry-safe, but it is not an immutable production-authority decision.
+
+Verified foundation:                   package path escape, unsupported version, shape, strict-binary, truth-tree write, and multi-person separation checks exist; 4 focused tests pass
+Rejected-status probe:                 browser excludes rejected p0, but direct `MFLoadGoldMask(image_id,p0,label)` still accepts it with area 54; browser status is not an authority gate
+Byte-drift probe:                      same-dimension strict-binary mask replacement is accepted with area 600 because the minimal manifest has no hash binding
+Missing authority:                      no adopted release/catalog, source/mask hashes, owner/assignment, transform, revocation head, exact operational wrapper, intended-use decision, or descendant authority ceiling is validated
+Prepared unit:                         `MF-CURSOR-11.02-MODE-A-IMMUTABLE-PACKAGE-READ`; five absent/clean additive paths held behind 08.05, 09.05, and 11.01
+Disposition:                            no package/runtime/worker/frozen bytes changed; raw manifest/status receives no production authority credit
+Evidence:                              `qa/live_verification/bridge_mode_a_package_read_gap_audit_20260719.json`

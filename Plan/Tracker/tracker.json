@@ -19443,13 +19443,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 30,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:20:44+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: safe path/version/shape/binary/no-write foundations pass, but direct loading accepts rejected-status p0 and a changed same-size binary mask because raw package bytes/status are not authority-bound. Producer-only additive unit prepared and held. Evidence: qa/live_verification/bridge_mode_a_package_read_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-08.05, MF-P6-09.05, and MF-P6-11.01 are not accepted. Current thin Mode A nodes are read-only but direct load bypasses rejected status and accepts changed bytes; no adopted immutable catalog, owner/transform/revocation validation, independent intended-use decision, or exact operational wrapper exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:20:44+00:00",
       "orphaned": false
     },
     "MF-P6-11.03": {

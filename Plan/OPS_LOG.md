@@ -7264,3 +7264,16 @@ Missing decision:                      current-use freshness/replay, adopted tru
 Prepared unit:                         `MF-CURSOR-10.03-CONSUMER-REQUIREMENTS-ADMISSION`; five absent/clean additive paths are held until MF-P6-09.07 is adopted and remain disjoint from all other held units
 Verification:                          all four probes reproduced; 3/3 focused bridge tests and Ruff pass; frozen v1, dirty 08.05 paths, worker records, Docker, WSL, and runtime state were not changed
 Evidence:                              `qa/live_verification/bridge_consumer_requirements_gap_audit_20260718.json`
+
+## 2026-07-19 00:16 UTC - Capability qualification and champion-state gap isolated
+
+**Result:** MF-P6-10.02 remains open with zero completion credit. The frozen capability snapshot
+has strong shape, lifecycle, expiry, health, route, and mode-consistency checks, but its provider
+evidence is not resolved to installed bytes, signed qualifications, or append-only champion history.
+
+Existing strength:                     typed partial-library snapshot; conditional runtime shape; unique stacks/routes; promoted certificate presence/scope expiry; current availability; eligible modes require advertised healthy promoted routes
+Recomputed-hash probes:                changed model hash with stale stack hash, invented certificate IDs, performance observed in 2000, and invented champion identity all remained validator-clean after only the top snapshot hash was recomputed
+Missing qualification:                 actual installed-byte resolution, stack self-hash, signed route-scoped benchmark certificate, evidence freshness/independence, contextual ledger, closed champion/challenger transaction, and tested rollback binding
+Prepared unit:                         `MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION`; five absent/clean additive paths are held until MF-P6-10.01 is adopted and remain disjoint from all other units
+Verification:                          all four probes reproduced; 3/3 focused bridge tests and Ruff pass; model files, frozen v1, dirty 08.05 paths, worker records, Docker, WSL, and runtime state were not changed
+Evidence:                              `qa/live_verification/bridge_capability_snapshot_gap_audit_20260718.json`

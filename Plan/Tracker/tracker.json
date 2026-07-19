@@ -19231,11 +19231,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-19T00:18:40+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 static acceptance audit: zero completion credit. The frozen capability snapshot strongly checks shape, lifecycle, expiry, health, routes and mode eligibility, but recomputed-top-hash probes show changed model bytes with stale stack hash, invented certificate, stale performance and invented champion identities remain validator-clean. Prepared disjoint additive MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION; held until MF-P6-10.01 is adopted. Evidence: qa/live_verification/bridge_capability_snapshot_gap_audit_20260718.json"
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T00:18:40+00:00",
       "orphaned": false
     },
     "MF-P6-10.03": {

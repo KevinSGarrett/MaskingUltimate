@@ -17,11 +17,17 @@ from maskfactory.daz.backup import (
     verify_tier_a_backup,
 )
 from maskfactory.daz.control import DazControlError
+from maskfactory.daz.recovery import (
+    evaluate_recovery_matrix,
+    load_recovery_policy,
+    publish_recovery_matrix,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "configs" / "daz" / "backup.yaml"
 SCHEMA = ROOT / "src" / "maskfactory" / "schemas" / "daz_backup.schema.json"
 CONFIG = ROOT / "configs" / "daz"
+RECOVERY_POLICY = CONFIG / "recovery.yaml"
 CAPTURED = datetime(2026, 7, 19, 5, 15, tzinfo=UTC)
 
 
@@ -135,6 +141,22 @@ def test_backup_destination_inside_source_and_missing_category_are_refused(tmp_p
 def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: Path) -> None:
     source = _source(tmp_path)
     destination = tmp_path / "backups"
+    recovery_matrix = tmp_path / "recovery_matrix.json"
+    matrix = evaluate_recovery_matrix(
+        load_recovery_policy(RECOVERY_POLICY),
+        [
+            {
+                "artifact_id": "control",
+                "artifact_type": "package_metadata",
+                "tier": "A",
+                "strategy": "backup",
+                "referenced": True,
+                "bytes": 10,
+                "content_sha256": "a" * 64,
+            }
+        ],
+    )
+    publish_recovery_matrix(matrix, recovery_matrix)
     runner = CliRunner()
     base = [
         "daz",
@@ -150,6 +172,8 @@ def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: 
         str(destination),
         "--backup-id",
         "backup_cli_a",
+        "--recovery-matrix",
+        str(recovery_matrix),
     ]
     planned = runner.invoke(main, base)
     assert planned.exit_code == 0, planned.output
@@ -161,7 +185,17 @@ def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: 
     backup = destination / "backup_cli_a"
     assert backup.is_dir()
     verified = runner.invoke(
-        main, ["daz", "backup", "verify", str(backup), "--policy", str(POLICY)]
+        main,
+        [
+            "daz",
+            "backup",
+            "verify",
+            str(backup),
+            "--policy",
+            str(POLICY),
+            "--recovery-matrix",
+            str(recovery_matrix),
+        ],
     )
     assert verified.exit_code == 0, verified.output
     assert json.loads(verified.output)["data"]["passed"] is True
@@ -176,6 +210,8 @@ def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: 
         str(target),
         "--policy",
         str(POLICY),
+        "--recovery-matrix",
+        str(recovery_matrix),
     ]
     restore_plan = runner.invoke(main, restore_base)
     assert restore_plan.exit_code == 0, restore_plan.output
@@ -186,6 +222,25 @@ def test_backup_cli_is_dry_run_default_then_create_verify_and_restore(tmp_path: 
     document = json.loads(restored.output)
     assert document["reason"] == "tier_a_restore_test_passed"
     assert document["data"]["restore"]["passed"] is True
+    assert document["data"]["restore"]["recovery_matrix_sha256"] == matrix["matrix_sha256"]
+
+
+def test_backup_verification_rejects_wrong_recovery_matrix_binding(tmp_path: Path) -> None:
+    source = _source(tmp_path)
+    policy = load_tier_a_backup_policy(POLICY)
+    manifest = create_tier_a_backup(
+        source,
+        tmp_path / "backups",
+        policy,
+        backup_id="backup_fixture_a",
+        recovery_matrix_sha256="a" * 64,
+    )
+    with pytest.raises(DazControlError, match="binding mismatch"):
+        verify_tier_a_backup(
+            Path(manifest["backup_path"]),
+            policy,
+            expected_recovery_matrix_sha256="b" * 64,
+        )
 
 
 def test_backup_cli_rejects_nonempty_restore_without_overwriting(tmp_path: Path) -> None:

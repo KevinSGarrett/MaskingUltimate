@@ -7850,3 +7850,17 @@ Focused validation:                     9 recovery tests and 16 backup/recovery 
 Preservation:                           no live matrix, bulk copy/delete, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
 Remaining:                              actual inventory/reference classification, CLI publication, backup-evidence binding and clean-root/live recovery route exercises
 Evidence:                              `qa/live_verification/daz_recovery_matrix_foundation_20260719.json`
+
+## 2026-07-19 05:14 UTC - Recovery matrix is state-derived and hash-bound to Tier A backup
+
+**Result:** MF-P9-12.05 advances from 55% to 80%; exact state/package/reference derivation,
+immutable publication and backup-matrix binding pass, while the live v2→v4 migration remains open.
+
+State binding:                          active retention files are path/size/SHA-verified; package payloads are canonical Tier-A metadata; dataset membership binds references
+CLI:                                    `daz recovery matrix` is dry-run by default, publishes only with `--apply`, is immutable/idempotent and exits 77 on blockers
+Backup binding:                         create seals the passing matrix SHA; verify/restore can require it and reject mismatch
+Integrated validation:                  70 recovery/backup/monitoring/storage/scheduler/control/runtime tests pass; Ruff, Black 25.1 and diff checks pass
+Live read-only result:                   F queue DB quick-check `ok`, WAL, schema v2; migrations 3/4 and their nine tables are absent, so matrix generation fails closed before querying
+Preservation:                           no DB migration, live matrix publication, backup/restore, scheduled-task enable, DAZ, WSL or MF-P6-08.05 mutation
+Next dependency:                        governed live Tier-A backup must precede v2→v4 migration, integrity recheck and live matrix rerun
+Evidence:                              `qa/live_verification/daz_recovery_matrix_operational_binding_20260719.json`

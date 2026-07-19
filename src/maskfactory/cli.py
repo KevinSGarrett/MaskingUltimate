@@ -2567,6 +2567,11 @@ def daz_backup() -> None:
     """Plan, create, verify, and restore-test governed Tier-A backups."""
 
 
+@daz.group("recovery")
+def daz_recovery() -> None:
+    """Build and publish deterministic Tier A/B/C recovery matrices."""
+
+
 @daz.group("lineage")
 def daz_lineage() -> None:
     """Query and revoke immutable DAZ supervision lineage."""
@@ -8642,6 +8647,11 @@ def daz_monitor_snapshot(
 @click.option("--source-root", type=click.Path(path_type=Path, file_okay=False, exists=True))
 @click.option("--destination-root", type=click.Path(path_type=Path, file_okay=False), required=True)
 @click.option("--backup-id", required=True)
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional published passing recovery matrix to bind into the backup seal.",
+)
 @click.option("--apply", "apply_changes", is_flag=True, help="Create the sealed backup bundle.")
 def daz_backup_create(
     tier: str,
@@ -8650,12 +8660,14 @@ def daz_backup_create(
     source_root: Path | None,
     destination_root: Path,
     backup_id: str,
+    recovery_matrix: Path | None,
     apply_changes: bool,
 ) -> None:
     """Dry-run by default; --apply creates one exact Tier-A backup."""
     from .daz import (
         create_tier_a_backup,
         load_control_configuration,
+        load_recovery_matrix,
         load_tier_a_backup_policy,
         plan_tier_a_backup,
         result_envelope,
@@ -8664,6 +8676,8 @@ def daz_backup_create(
     try:
         configuration = load_control_configuration(config_root)
         backup_policy = load_tier_a_backup_policy(policy)
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        matrix_sha256 = str(matrix["matrix_sha256"]) if matrix is not None else None
         source = source_root or configuration.paths.root
         document = (
             create_tier_a_backup(
@@ -8671,6 +8685,7 @@ def daz_backup_create(
                 destination_root,
                 backup_policy,
                 backup_id=backup_id,
+                recovery_matrix_sha256=matrix_sha256,
             )
             if apply_changes
             else plan_tier_a_backup(
@@ -8678,6 +8693,7 @@ def daz_backup_create(
                 destination_root,
                 backup_policy,
                 backup_id=backup_id,
+                recovery_matrix_sha256=matrix_sha256,
             )
         )
         report = result_envelope(
@@ -8699,12 +8715,29 @@ def daz_backup_create(
     default=Path("configs/daz/backup.yaml"),
     show_default=True,
 )
-def daz_backup_verify(backup_root: Path, policy: Path) -> None:
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Require the backup to bind this exact passing matrix.",
+)
+def daz_backup_verify(backup_root: Path, policy: Path, recovery_matrix: Path | None) -> None:
     """Verify the manifest seal, exact file set, hashes, and queue integrity."""
-    from .daz import load_tier_a_backup_policy, result_envelope, verify_tier_a_backup
+    from .daz import (
+        load_recovery_matrix,
+        load_tier_a_backup_policy,
+        result_envelope,
+        verify_tier_a_backup,
+    )
 
     try:
-        verification = verify_tier_a_backup(backup_root, load_tier_a_backup_policy(policy))
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        verification = verify_tier_a_backup(
+            backup_root,
+            load_tier_a_backup_policy(policy),
+            expected_recovery_matrix_sha256=(
+                str(matrix["matrix_sha256"]) if matrix is not None else None
+            ),
+        )
         report = result_envelope(
             reason="tier_a_backup_verified",
             entity_ids=(str(verification["backup_id"]),),
@@ -8725,15 +8758,22 @@ def daz_backup_verify(backup_root: Path, policy: Path) -> None:
     default=Path("configs/daz/backup.yaml"),
     show_default=True,
 )
+@click.option(
+    "--recovery-matrix",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Require the backup to bind this exact passing matrix.",
+)
 @click.option("--apply", "apply_changes", is_flag=True, help="Restore into the empty target root.")
 def daz_backup_restore_test(
     backup_root: Path,
     target: Path,
     policy: Path,
+    recovery_matrix: Path | None,
     apply_changes: bool,
 ) -> None:
     """Dry-run by default; --apply copies and verifies the isolated restore."""
     from .daz import (
+        load_recovery_matrix,
         load_tier_a_backup_policy,
         plan_tier_a_restore_test,
         restore_tier_a_test,
@@ -8742,10 +8782,22 @@ def daz_backup_restore_test(
 
     try:
         backup_policy = load_tier_a_backup_policy(policy)
+        matrix = load_recovery_matrix(recovery_matrix) if recovery_matrix is not None else None
+        expected_matrix = str(matrix["matrix_sha256"]) if matrix is not None else None
         document = (
-            restore_tier_a_test(backup_root, target, backup_policy)
+            restore_tier_a_test(
+                backup_root,
+                target,
+                backup_policy,
+                expected_recovery_matrix_sha256=expected_matrix,
+            )
             if apply_changes
-            else plan_tier_a_restore_test(backup_root, target, backup_policy)
+            else plan_tier_a_restore_test(
+                backup_root,
+                target,
+                backup_policy,
+                expected_recovery_matrix_sha256=expected_matrix,
+            )
         )
         report = result_envelope(
             reason="tier_a_restore_test_passed" if apply_changes else "tier_a_restore_test_plan",
@@ -8756,6 +8808,79 @@ def daz_backup_restore_test(
     except (OSError, ValueError) as exc:
         _emit_daz_error(exc)
     click.echo(json.dumps(report, sort_keys=True))
+
+
+@daz_recovery.command("matrix")
+@click.option(
+    "--config-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=Path("configs/daz"),
+    show_default=True,
+)
+@click.option(
+    "--policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/recovery.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--records",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    help="Optional governed JSON record array; default reads current DAZ state read-only.",
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False))
+@click.option("--apply", "apply_changes", is_flag=True, help="Publish the immutable matrix.")
+def daz_recovery_matrix(
+    config_root: Path,
+    policy: Path,
+    records: Path | None,
+    output: Path | None,
+    apply_changes: bool,
+) -> None:
+    """Evaluate the full recovery matrix; publication is explicit and immutable."""
+    from .daz import (
+        build_recovery_records_from_state,
+        evaluate_recovery_matrix,
+        load_control_configuration,
+        load_recovery_policy,
+        publish_recovery_matrix,
+        result_envelope,
+    )
+
+    try:
+        recovery_policy = load_recovery_policy(policy)
+        if records is None:
+            configuration = load_control_configuration(config_root)
+            record_rows = build_recovery_records_from_state(configuration)
+            evidence_paths = [str(configuration.paths.state_database), str(policy)]
+        else:
+            loaded = json.loads(records.read_text(encoding="utf-8"))
+            record_rows = loaded.get("records") if isinstance(loaded, dict) else loaded
+            if not isinstance(record_rows, list):
+                raise ValueError("recovery records must be a JSON array or object with records")
+            evidence_paths = [str(records), str(policy)]
+        matrix = evaluate_recovery_matrix(recovery_policy, record_rows)
+        if apply_changes and output is None:
+            raise ValueError("--output is required with --apply")
+        publication = (
+            publish_recovery_matrix(matrix, output)
+            if apply_changes and output is not None
+            else {"published": False, "path": str(output) if output is not None else None}
+        )
+        if output is not None:
+            evidence_paths.append(str(output))
+        report = result_envelope(
+            code=0 if matrix["recoverable"] else 77,
+            reason="recovery_matrix_passed" if matrix["recoverable"] else "recovery_matrix_blocked",
+            entity_ids=(str(matrix["matrix_sha256"]),),
+            evidence_paths=tuple(evidence_paths),
+            data={"apply": apply_changes, "matrix": matrix, "publication": publication},
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        _emit_daz_error(exc)
+    click.echo(json.dumps(report, sort_keys=True))
+    if not matrix["recoverable"]:
+        raise click.exceptions.Exit(77)
 
 
 @golden_reference.command("import")

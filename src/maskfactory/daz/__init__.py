@@ -50,7 +50,15 @@ from .policy import (
     validate_synthetic_share,
 )
 from .protocol import DazJobFiles, prepare_job_files, read_terminal_result, stage_recipe
-from .recovery import RecoveryPolicy, evaluate_recovery_matrix, load_recovery_policy
+from .recovery import (
+    RETENTION_TO_RECOVERY_TIER,
+    RecoveryPolicy,
+    build_recovery_records_from_state,
+    evaluate_recovery_matrix,
+    load_recovery_matrix,
+    load_recovery_policy,
+    publish_recovery_matrix,
+)
 from .runtime import (
     DazRuntimePaths,
     DazRuntimeProfile,
@@ -101,6 +109,7 @@ __all__ = [
     "RETENTION_CLASSES",
     "RegisteredRootResolver",
     "RecoveryPolicy",
+    "RETENTION_TO_RECOVERY_TIER",
     "RetentionClassPolicy",
     "RetentionPolicy",
     "TierABackupPolicy",
@@ -114,6 +123,7 @@ __all__ = [
     "build_dashboard",
     "build_daz_command",
     "build_retention_plan",
+    "build_recovery_records_from_state",
     "daz_foundation_doctor",
     "collect_monitoring_snapshot",
     "create_tier_a_backup",
@@ -135,6 +145,7 @@ __all__ = [
     "plan_tier_a_restore_test",
     "load_retention_policy",
     "load_recovery_policy",
+    "load_recovery_matrix",
     "load_daz_runtime_profile",
     "load_typed_daz_configuration",
     "lease_next_job",
@@ -144,6 +155,7 @@ __all__ = [
     "register_retention_artifact",
     "operation_timeout",
     "prepare_job_files",
+    "publish_recovery_matrix",
     "read_terminal_result",
     "running_daz_processes",
     "result_envelope",

@@ -63,6 +63,7 @@ def create_tier_a_backup(
     *,
     backup_id: str,
     captured_at: datetime | None = None,
+    recovery_matrix_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Create an immutable hash manifest and payload without following links."""
     source = Path(source_root).resolve(strict=True)
@@ -77,6 +78,7 @@ def create_tier_a_backup(
             entity_ids=(backup_id,),
         )
     files = _inventory(source, policy.include_roots)
+    matrix_sha256 = _optional_sha256(recovery_matrix_sha256, "recovery matrix")
     category_presence = _category_presence((row[0] for row in files), policy.required_categories)
     missing = sorted(key for key, present in category_presence.items() if not present)
     if missing:
@@ -109,6 +111,7 @@ def create_tier_a_backup(
             "tier": "A",
             "captured_at": _timestamp(captured_at),
             "policy_sha256": policy.sha256,
+            "recovery_matrix_sha256": matrix_sha256,
             "files": manifest_files,
             "category_presence": category_presence,
         }
@@ -130,6 +133,7 @@ def plan_tier_a_backup(
     policy: TierABackupPolicy,
     *,
     backup_id: str,
+    recovery_matrix_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Validate the exact source/destination boundary without creating any bytes."""
     source = Path(source_root).resolve(strict=True)
@@ -144,6 +148,7 @@ def plan_tier_a_backup(
             entity_ids=(backup_id,),
         )
     files = _inventory(source, policy.include_roots)
+    matrix_sha256 = _optional_sha256(recovery_matrix_sha256, "recovery matrix")
     categories = _category_presence((row[0] for row in files), policy.required_categories)
     missing = sorted(key for key, present in categories.items() if not present)
     if missing:
@@ -161,13 +166,19 @@ def plan_tier_a_backup(
         "destination_root": str(destination),
         "backup_path": str(final),
         "policy_sha256": policy.sha256,
+        "recovery_matrix_sha256": matrix_sha256,
         "file_count": len(files),
         "source_bytes": sum(path.stat().st_size for _, path in files),
         "category_presence": categories,
     }
 
 
-def verify_tier_a_backup(backup_root: Path, policy: TierABackupPolicy) -> dict[str, Any]:
+def verify_tier_a_backup(
+    backup_root: Path,
+    policy: TierABackupPolicy,
+    *,
+    expected_recovery_matrix_sha256: str | None = None,
+) -> dict[str, Any]:
     root = Path(backup_root).resolve(strict=True)
     manifest_path = root / "manifest.json"
     try:
@@ -183,6 +194,11 @@ def verify_tier_a_backup(backup_root: Path, policy: TierABackupPolicy) -> dict[s
         raise DazControlError(DazErrorCode.STATE_DATABASE_INVALID, "backup manifest seal mismatch")
     if manifest.get("policy_sha256") != policy.sha256 or manifest.get("tier") != "A":
         raise DazControlError(DazErrorCode.STATE_DATABASE_INVALID, "backup policy/tier mismatch")
+    expected_matrix = _optional_sha256(expected_recovery_matrix_sha256, "recovery matrix")
+    if expected_matrix is not None and manifest.get("recovery_matrix_sha256") != expected_matrix:
+        raise DazControlError(
+            DazErrorCode.STATE_DATABASE_INVALID, "backup recovery matrix binding mismatch"
+        )
     expected = {str(row["path"]): row for row in manifest["files"]}
     observed_files = {
         path.relative_to(root / "payload").as_posix(): path
@@ -211,6 +227,7 @@ def verify_tier_a_backup(backup_root: Path, policy: TierABackupPolicy) -> dict[s
         "total_bytes": sum(int(row["bytes"]) for row in expected.values()),
         "queue_integrity": integrity,
         "category_presence": manifest["category_presence"],
+        "recovery_matrix_sha256": manifest.get("recovery_matrix_sha256"),
     }
 
 
@@ -218,6 +235,8 @@ def restore_tier_a_test(
     backup_root: Path,
     target_root: Path,
     policy: TierABackupPolicy,
+    *,
+    expected_recovery_matrix_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Restore to an empty root and verify manifest hashes and required categories."""
     backup = Path(backup_root).resolve(strict=True)
@@ -226,7 +245,11 @@ def restore_tier_a_test(
     if target.exists() and any(target.iterdir()):
         raise DazControlError(DazErrorCode.SCHEDULER_REFUSED, "restore target is not empty")
     target.mkdir(parents=True, exist_ok=True)
-    verification = verify_tier_a_backup(backup, policy)
+    verification = verify_tier_a_backup(
+        backup,
+        policy,
+        expected_recovery_matrix_sha256=expected_recovery_matrix_sha256,
+    )
     try:
         shutil.copytree(backup / "payload", target, dirs_exist_ok=True, symlinks=False)
         restored = {
@@ -253,6 +276,7 @@ def restore_tier_a_test(
             "queue_integrity": queue_integrity,
             "semantic_replay_executed": False,
             "lineage_query_executed": False,
+            "recovery_matrix_sha256": verification["recovery_matrix_sha256"],
         }
     except Exception:
         shutil.rmtree(target, ignore_errors=True)
@@ -263,6 +287,8 @@ def plan_tier_a_restore_test(
     backup_root: Path,
     target_root: Path,
     policy: TierABackupPolicy,
+    *,
+    expected_recovery_matrix_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Verify a backup and empty target without restoring any payload bytes."""
     backup = Path(backup_root).resolve(strict=True)
@@ -270,7 +296,11 @@ def plan_tier_a_restore_test(
     _require_outside(target, backup, "restore target")
     if target.exists() and any(target.iterdir()):
         raise DazControlError(DazErrorCode.SCHEDULER_REFUSED, "restore target is not empty")
-    verification = verify_tier_a_backup(backup, policy)
+    verification = verify_tier_a_backup(
+        backup,
+        policy,
+        expected_recovery_matrix_sha256=expected_recovery_matrix_sha256,
+    )
     return {
         **verification,
         "apply": False,
@@ -340,6 +370,14 @@ def _sqlite_integrity(path: Path | None) -> str | None:
 def _require_outside(candidate: Path, protected: Path, label: str) -> None:
     if candidate == protected or candidate.is_relative_to(protected):
         raise DazControlError(DazErrorCode.SCHEDULER_REFUSED, f"{label} is inside protected root")
+
+
+def _optional_sha256(value: str | None, label: str) -> str | None:
+    if value is None:
+        return None
+    if len(value) != 64 or any(character not in "0123456789abcdef" for character in value.lower()):
+        raise DazControlError(DazErrorCode.CONFIG_INVALID, f"{label} hash is invalid")
+    return value.lower()
 
 
 def _timestamp(value: datetime | None) -> str:

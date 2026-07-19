@@ -4535,6 +4535,91 @@ def daz_recipes_verify_procedural_primitive(bundle: Path) -> None:
     )
 
 
+@daz_recipes.command("seal-worker-isolation-static")
+@click.option(
+    "--runtime-config",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/daz/runtime.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/daz_worker_isolation_static_20260719.json"),
+    show_default=True,
+)
+def daz_recipes_seal_worker_isolation_static(runtime_config: Path, output: Path) -> None:
+    """Seal STATIC headless-vs-hidden-GUI decision + clean-restart contracts."""
+    from .daz import DazErrorCode, result_envelope
+    from .daz.worker_isolation_static import (
+        MODE_BENCHMARK_DIMENSIONS,
+        WorkerIsolationStaticError,
+        build_worker_isolation_portfolio_report,
+        decide_worker_execution_mode,
+        evaluate_clean_restart_fixture,
+        evaluate_mode_benchmark_matrix,
+    )
+
+    try:
+        false_row = {key: False for key in MODE_BENCHMARK_DIMENSIONS}
+        matrix = evaluate_mode_benchmark_matrix(hidden_gui=false_row, headless=false_row)
+        mode = decide_worker_execution_mode(runtime_config, benchmark_matrix=matrix)
+        clean = evaluate_clean_restart_fixture(
+            observations={
+                "job_a_id": "job_static_a",
+                "job_b_id": "job_static_b",
+                "job_a_startup_node_count": 0,
+                "job_b_startup_node_count": 0,
+                "job_a_process_exited": True,
+                "job_b_launched_after_job_a_exit": True,
+                "shared_scene_state_reused": False,
+                "partial_promoted_to_accepted": False,
+                "parallel_daz_pids_observed": 0,
+                "process_lifetime": "process_per_job",
+                "persistent_worker": False,
+                "no_default_scene": True,
+            }
+        )
+        portfolio = build_worker_isolation_portfolio_report(mode_decision=mode, clean_restart=clean)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            **portfolio,
+            "mode_decision": mode,
+            "clean_restart": clean,
+        }
+        output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except (WorkerIsolationStaticError, OSError, ValueError) as exc:
+        reason = exc.reason if isinstance(exc, WorkerIsolationStaticError) else str(exc)
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=reason),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_worker_isolation_static_sealed",
+                entity_ids=(mode["report_id"], clean["report_id"]),
+                evidence_paths=(str(output),),
+                data={
+                    "selected_production_mode": mode["selected_production_mode"],
+                    "mode_decision_seal_sha256": mode["seal_sha256"],
+                    "clean_restart_seal_sha256": clean["seal_sha256"],
+                    "portfolio_seal_sha256": portfolio["seal_sha256"],
+                    "live_daz_execution": False,
+                    "live_mode_benchmark_complete": False,
+                    "live_repeated_job_fixture_complete": False,
+                    "headless_promoted": False,
+                    "gold_claimed": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("seal")
 @click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(

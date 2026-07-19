@@ -54,6 +54,16 @@ def build_daz_command(
 ) -> list[str]:
     if profile.instance_name != "MaskFactoryDAZ":
         raise DazPolicyError("DAZ worker instance name is not isolated")
+    # STATIC/production contract: hidden-GUI only until a live headless parity suite
+    # (MF-P9-03.10) exists. Never inject experimental -headless here.
+    if profile.execution_mode != "hidden_gui":
+        raise DazPolicyError(
+            "DAZ worker execution_mode must remain hidden_gui until live mode benchmark"
+        )
+    if profile.process_lifetime != "process_per_job":
+        raise DazPolicyError("DAZ worker process_lifetime must remain process_per_job")
+    if profile.safety.get("persistent_worker"):
+        raise DazPolicyError("DAZ persistent workers are disabled pending clean-restart soak")
     return [
         str(executable),
         "-instanceName",

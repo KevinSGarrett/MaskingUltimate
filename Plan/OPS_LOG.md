@@ -9355,3 +9355,33 @@ pytest multi_person_static_contracts + autonomy_multi_person_gate + serving_rout
 
 **Commands:** pytest focused; tracker.py set notes; evidence seal
 
+
+## 2026-07-19 23:14 UTC - STATIC worker mode decision + clean restart + 100 fixtures
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/evidence only)
+**Items:** MF-P9-03.10 (68% partial); MF-P9-03.11 (68% partial); MF-P9-06.10 (65% partial)
+**Result:** STATIC_PASS only - never gold; no doctor-green; no live DAZ Studio launch; no headless promotion; no Main-complete; no PRODUCTION_EVIDENCE_PASS
+
+### MF-P9-03.10 worker mode decision
+- \src/maskfactory/daz/worker_isolation_static.py\ + schema \daz_worker_mode_decision_static_report- Retains \hidden_gui\ as production mode; refuses headless/debug under STATIC; live mode benchmark overclaims fail closed
+- \uild_daz_command\ refuses non-\hidden_gui\, persistent workers, and \-headless\ injection
+- CLI: \maskfactory daz recipes seal-worker-isolation-static
+### MF-P9-03.11 clean restart / no dirty-scene reuse
+- Schema \daz_clean_restart_static_report\ binds process_per_job, empty startup scene (\startup_scene_not_empty\), refuse parallel DAZ, job-private state, partial-not-accepted, repeated-job isolation
+- Dirty-scene reuse / partial promotion fail closed
+
+### MF-P9-06.10 scale headroom
+- Published 100-fixture unrendered set \daz_engineering_fixture_set_754ed9a8dbb2f59882457b41\ (24/48/72 retained)
+- Evidence: \qa/live_verification/daz_engineering_fixture_set_100_static_20260719.json\ sha256 \2b2a78cfdacde7253f4e9f07e591fe1f12f1d3ffcf9f995902bf3dd9390197f
+### Evidence
+\qa/live_verification/daz_worker_isolation_static_20260719.json\ file sha256 ff10e1370c66c8ebcc13871b25bb4fcf27742c1b2bb49ad36863870d600984c- mode seal d47ab0874ae7cb2805c46764522e8668cc11b7f9c1545250165d07176f55a0a- clean-restart seal 8307bd7619761853c75287f430a32bee192c77a06e2ba170a9266880134ae0e- portfolio seal e7302fff6ba8ec6e987e013b9531f54c53c3c519901922fdd13438358c604b
+### Focused tests
+\pytest\ worker isolation + runtime worker + engineering fixtures: 35 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- No live headless-vs-hidden-GUI mode benchmark / no headless promotion
+- No live repeated-job DAZ Studio fixture / no seven-day soak
+- No accepted/rendered engineering fixtures
+- No doctor-green / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-worker-isolation-static; evidence seal

@@ -1,0 +1,122 @@
+{
+  "authority": "daz_worker_isolation_static_only",
+  "clean_restart": {
+    "all_checks_pass": true,
+    "artifact_type": "daz_clean_restart_static_report",
+    "authority": "daz_worker_isolation_static_only",
+    "checks": {
+      "job_private_state": true,
+      "no_default_scene": true,
+      "partial_not_accepted": true,
+      "persistent_worker_disabled": true,
+      "process_per_job": true,
+      "refuse_parallel_daz": true,
+      "repeated_job_isolation": true,
+      "startup_scene_empty": true
+    },
+    "dirty_scene_reuse_allowed": false,
+    "doctor_green_claimed": false,
+    "gold_claimed": false,
+    "jobs": {
+      "job_a_id": "job_static_a",
+      "job_b_id": "job_static_b"
+    },
+    "live_daz_execution": false,
+    "live_repeated_job_fixture_complete": false,
+    "main_complete_claimed": false,
+    "production_evidence_pass_claimed": false,
+    "proof_tier": "STATIC_PASS",
+    "report_id": "dcrs_58307bd7619761853c75287f",
+    "required_checks": [
+      "process_per_job",
+      "persistent_worker_disabled",
+      "no_default_scene",
+      "startup_scene_empty",
+      "refuse_parallel_daz",
+      "job_private_state",
+      "partial_not_accepted",
+      "repeated_job_isolation"
+    ],
+    "schema_version": "1.0.0",
+    "seal_sha256": "58307bd7619761853c75287f430a32bee192c77a06e2ba170a9266880134ae0e",
+    "visual_qa_pass_claimed": false,
+    "worker_script_binding": {
+      "process_exit_after_job": true,
+      "source": "integrations/daz/scripts/1.0.0/worker_main.dsa",
+      "startup_scene_empty_error": "startup_scene_not_empty"
+    }
+  },
+  "clean_restart_report_id": "dcrs_58307bd7619761853c75287f",
+  "clean_restart_seal_sha256": "58307bd7619761853c75287f430a32bee192c77a06e2ba170a9266880134ae0e",
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "headless_promoted": false,
+  "items": [
+    "MF-P9-03.10",
+    "MF-P9-03.11"
+  ],
+  "live_daz_execution": false,
+  "live_mode_benchmark_complete": false,
+  "live_repeated_job_fixture_complete": false,
+  "main_complete_claimed": false,
+  "mode_decision": {
+    "artifact_type": "daz_worker_mode_decision_static_report",
+    "authority": "daz_worker_isolation_static_only",
+    "benchmark_matrix": {
+      "dimensions": [
+        "startup_success",
+        "runtime_probe",
+        "dialog_rate",
+        "crash_oom",
+        "output_hash_parity",
+        "renderer_plugin_compat",
+        "latency",
+        "vram"
+      ],
+      "headless_all_pass": false,
+      "headless_promotion_eligible": false,
+      "hidden_gui_all_pass": false,
+      "live_mode_benchmark_complete": false
+    },
+    "challenger_mode": "headless",
+    "command_contract": {
+      "hidden_window_launch": true,
+      "includes_headless_flag": false,
+      "includes_instance_name": true,
+      "includes_no_default_scene": true,
+      "includes_no_prompt": true
+    },
+    "debug_mode": "interactive_debug",
+    "decision": "retain_hidden_gui_pending_live_headless_parity",
+    "doctor_green_claimed": false,
+    "gold_claimed": false,
+    "headless_promoted": false,
+    "live_daz_execution": false,
+    "live_mode_benchmark_complete": false,
+    "main_complete_claimed": false,
+    "production_evidence_pass_claimed": false,
+    "profile_bindings": {
+      "execution_mode": "hidden_gui",
+      "instance_name": "MaskFactoryDAZ",
+      "no_default_scene": true,
+      "no_prompt": true,
+      "persistent_worker": false,
+      "process_lifetime": "process_per_job",
+      "profile_id": "maskfactory_daz_hidden_v1"
+    },
+    "proof_tier": "STATIC_PASS",
+    "report_id": "dwmd_3d47ab0874ae7cb2805c4676",
+    "schema_version": "1.0.0",
+    "seal_sha256": "3d47ab0874ae7cb2805c46764522e8668cc11b7f9c1545250165d07176f55a0a",
+    "selected_production_mode": "hidden_gui",
+    "visual_qa_pass_claimed": false
+  },
+  "mode_decision_report_id": "dwmd_3d47ab0874ae7cb2805c4676",
+  "mode_decision_seal_sha256": "3d47ab0874ae7cb2805c46764522e8668cc11b7f9c1545250165d07176f55a0a",
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "result": "pass_daz_worker_isolation_static",
+  "seal_sha256": "10e7302fff6ba8ec6e987e013b9531f54c53c3c519901922fdd13438358c604b",
+  "selected_production_mode": "hidden_gui",
+  "visual_qa_pass_claimed": false
+}

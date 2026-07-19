@@ -19497,13 +19497,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "blocked",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-19T01:35:40+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 independent acceptance audit: two focused receipt tests and Ruff pass. Same-source/subject/transform Mode A and Mode B fixtures validate independently, but no pair/set comparison or signed choice/branch/abstention exists; preservation risk and arbitration policy are absent. Evidence: qa/live_verification/bridge_receipt_arbitration_gap_audit_20260719.json"
+        }
+      ],
       "evidence": null,
-      "blocked_reason": null,
+      "blocked_reason": "DEPENDENCY/IMPLEMENTATION: MF-P6-11.02 and MF-P6-11.03 are not accepted, and Main has not supplied a signed arbitration decision. Individual receipt semantics are strong, but no exact-scope normalizer, current-state eligibility recheck, preservation/freshness/cost policy, authority dominance, deterministic branch/abstain rule, or producer conformance validator exists.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-17T11:28:28+00:00",
+      "updated_at": "2026-07-19T01:35:40+00:00",
       "orphaned": false
     },
     "MF-P6-11.05": {

@@ -7438,3 +7438,16 @@ Missing client/service contract:       no signed request admission/hash/idempote
 Prepared unit:                         `MF-CURSOR-11.03-MODE-B-CONTRACT-SERVICE`; five additive paths plus clean api.py held behind 09.06/11.01; Main client remains separately owned
 Disposition:                            live service not restarted; no champion prediction, worker dispatch, frozen mutation, or production Mode B claim
 Evidence:                              `qa/live_verification/bridge_mode_b_client_service_gap_audit_20260719.json`
+
+## 2026-07-19 01:34 UTC - Receipt authority validation passes; arbitration layer absent
+
+**Result:** MF-P6-11.04 receives 35% individual-receipt foundation credit and remains item-blocked.
+No Mode A/Mode B normalizer, deterministic arbitrator, or signed Main decision evidence exists.
+
+Verified foundation:                   frozen receipts bind exact scope, artifacts, transforms, QA, authority, lineage, eligibility, timing/resources, trusted signature, and parent ceilings; 2 focused tests and Ruff pass
+Same-scope probe:                      valid Mode A noncertified and valid Mode B certified fixtures share source/subject/transform and both report eligibility, but no comparison or decision is produced
+Missing policy:                        no comparable-scope partition, current eligibility recheck, preservation-risk/cost normalization, authority dominance, epsilon/tie rule, branch/abstain outcome, order invariance, or incompatible-latent guard
+Ownership boundary:                    Main executes/signs arbitration; MaskFactory validates exact producer authority and a signed Main decision but cannot choose Main routes
+Prepared unit:                         `MF-CURSOR-11.04-RECEIPT-ARBITRATION-CONFORMANCE`; five absent/clean producer-only additive paths held behind 11.02/11.03 and Main decision evidence
+Disposition:                            no route selected, worker dispatched, or frozen/dirty bytes changed
+Evidence:                              `qa/live_verification/bridge_receipt_arbitration_gap_audit_20260719.json`

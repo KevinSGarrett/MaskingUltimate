@@ -1791,12 +1791,17 @@
           "ts": "2026-07-19T23:35:13+00:00",
           "actor": "milestone_proof_tiers",
           "text": "MILESTONE refresh 2026-07-19 r2: doctor_all_green still RUNTIME_BLOCKED (Kevin disk ~30.8 GiB <75; WSL). Bounded CVAT/Nuclio/Ollama remain RUNTIME_PASS_BOUNDED only. Evidence: milestone_proof_tiers_20260719.json self_sha256=2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349."
+        },
+        {
+          "ts": "2026-07-20T00:52:24+00:00",
+          "actor": "ai_agent",
+          "text": "PROOF-TIER LIVE runtime climb 2026-07-19/20: WSL warmed; Docker CVAT 2.24.0 + Nuclio pth-sam2 smoke (14.603s fg=21491 after cold wait) + host Ollama VLM smoke (43.149s) = RUNTIME_PASS_BOUNDED each. Host-only doctor PASS=5 FAIL=4. Doctor all-green=RUNTIME_BLOCKED. C: free collapsed ~29.5->~4.5 GiB during wave (<<75 GiB ingest). No wipe. Kevin disk blocker remains. Evidence: qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json"
         }
       ],
-      "evidence": "Doctor still RUNTIME_BLOCKED (~10.8 GiB disk + WSL latency). Docker CVAT/Nuclio/Ollama RUNTIME_PASS_BOUNDED. Package corpus HARD_QA_PASS_BOUNDED 14/14; VISUAL_QA_REVIEWED_WITH_DEFECTS. Evidence qa/live_verification/hard_visual_qa_corpus_climb_20260719.json",
+      "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:35:13+00:00",
+      "updated_at": "2026-07-20T00:52:24+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {
@@ -21499,12 +21504,17 @@
           "ts": "2026-07-19T23:35:13+00:00",
           "actor": "milestone_proof_tiers",
           "text": "MILESTONE refresh 2026-07-19 r2: qa/live_verification/milestone_proof_tiers_20260719.json self_sha256=2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349. Post-STATIC inventory; health/models RUNTIME_PASS_BOUNDED (champions=0); predict/refine AWAITING_RUNTIME unchanged. No PRODUCTION_EVIDENCE_PASS."
+        },
+        {
+          "ts": "2026-07-20T00:52:25+00:00",
+          "actor": "ai_agent",
+          "text": "PROOF-TIER LIVE runtime climb 2026-07-19/20: Mode B health/models still RUNTIME_PASS_BOUNDED (champions=0). /predict still AWAITING_RUNTIME (HTTP 503; no invented champions). /refine longer-timeout retry SKIPPED under ~4.5-5.8 GiB free (unsafe); prior 30s timeout under ~32 GiB stands. claim_boundary.mf_p6_12_04_complete=false. Evidence: qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json"
         }
       ],
-      "evidence": "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json self_sha256=edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3",
+      "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
       "blocked_reason": "LIVE/CROSS-PROJECT + POLICY: /health+/models RUNTIME_PASS_BOUNDED (champions=0). Predict AWAITING_RUNTIME: no temporary draft/incumbent serving role — serving predictor may load champion_* only; create_production_runtime leaves predictor unconfigured until complete measured champion set; HTTP 503 champion prediction provider is not configured. Force-register forbidden (would invent champion win). Refine AWAITING_RUNTIME (prior on-demand load timeout). MF-P6-11.03/11.07 incomplete. claim_boundary.mf_p6_12_04_complete=false. Evidence: mode_b_predict_draft_provider_policy_blocker_20260719.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T23:35:13+00:00",
+      "updated_at": "2026-07-20T00:52:25+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {

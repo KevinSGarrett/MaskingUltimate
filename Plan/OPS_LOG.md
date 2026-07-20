@@ -9975,3 +9975,49 @@ pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean.
 - No DVC S3 push / B1 restore / CVAT human_approved_gold / live SAM3.1 CUDA smoke / paid cloud-teacher / multi-person demo
 
 **Commands:** author needs_kevin_actions JSON from residual inventory + milestone proof tiers; OPS_LOG append; git commit (preserve other WIP)
+
+## 2026-07-20 ~00:40 UTC - PROOF-TIER runtime climb (WSL warm + Docker reprobe; disk collapse)
+
+**Lane:** Proof-tier RUNTIME climb after STATIC residual_blocker_inventory exhausted
+**Actor:** proof_tier_runtime_climb
+**Result:** Bounded CVAT/Nuclio/Ollama + Mode B health RUNTIME_PASS_BOUNDED; doctor all-green + Mode B refine still RUNTIME_BLOCKED/AWAITING_RUNTIME. No wipe. No invented champions. No PRODUCTION_EVIDENCE_PASS/gold/visual-pass/Main-complete.
+
+### Live probe
+- WSL Ubuntu-22.04 warmed (Running); docker-desktop Running; Docker 29.4.3
+- CVAT production localhost:8080 -> 2.24.0
+- Nuclio pth-sam2 ready; non-destructive `docker restart nuclio-nuclio-pth-sam2` after 504/503; smoke pass after 90s cold wait
+- Ollama 0.32.1 via native ollama.exe serve (pid observed)
+- Mode B serve retained on 127.0.0.1:8765; /health+/models ok; /predict HTTP 503 (champions=0)
+- C: free observed this wave: ~29.5 -> ~4.5 GiB (Docker/Nuclio/Ollama activity); still <<75 GiB ingest floor
+
+### Doctor (honest)
+- Full `uv run maskfactory doctor`: NOT run to completion under unsafe ~5 GiB headroom (RUNTIME_BLOCKED)
+- Host-only programmatic subset `run_doctor(..., preflight_wsl=False)`: PASS=5 FAIL=4
+  - PASS: cvat_api, cvat_project, wsl_backing_store, png_strict, sqlite_writable
+  - FAIL: disk_free ~5.8 GiB; nuclio_interactor 45s timeout (later smoke pass); ollama_image 45s timeout (later smoke pass 43.149s); gpu_lock stale-age while Mode B pid still alive
+- Neither path credits doctor all-green
+
+### Bounded RUNTIME smokes
+- tools/smoke_cvat_sam2.py: pass; 14.603s; fg=21491 -> RUNTIME_PASS_BOUNDED
+- tools/smoke_ollama_vlm.py: pass; qwen2.5vl:7b; 43.149s -> RUNTIME_PASS_BOUNDED
+- Mode B health/models: RUNTIME_PASS_BOUNDED (champions=0)
+- Mode B /refine longer-timeout retry: SKIPPED (disk ~4.5–5.8 GiB unsafe) -> remains AWAITING_RUNTIME
+- Mode B /predict: AWAITING_RUNTIME (503; no invented champions)
+- Doctor all-green: RUNTIME_BLOCKED
+
+### Disk reclaim candidates (Kevin decision - no wipe performed)
+- Ephemeral-ish (approx): pip\Cache 6.0 GiB measured; uv/Temp/hf prior-wave ~11.3/~6.0/~3.3 GiB (re-measure hung under pressure)
+- Docker system df reclaimable images ~0.9 GiB only; docker_data.vhdx ~68.11 GiB (not ephemeral cleanup)
+- Do not wipe: MaskedWarehouse, models/, packages, .ollama, Docker volumes without Kevin authorization
+
+### Exact Kevin disk blocker
+Free C: disk above 75 GiB ingest floor (currently ~4.39 GiB after collapse from ~29.5 GiB) - without destructive prune of governed data (MaskedWarehouse/models/packages/Docker volumes).
+
+### Milestone revision
+- qa/live_verification/milestone_proof_tiers_20260719.json revision `post_runtime_climb_disk_collapse_20260719` self_sha256 `3e5f7a8ab725817a5889ea82e55920fdff5b0912004196a50e5b0e568ff51de9` (supersedes `66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e`)
+
+### Evidence
+- qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json sha256 `21e491fb694a440a2e27e580976588fef1ac5c0ef02a0cfb766e4932cd7e71d2`
+- qa/reports/ollama_vlm_smoke.json (latency 43.149s)
+
+**Commands:** warm WSL; docker/CVAT/Nuclio/Ollama reprobe; host-only doctor subset; smoke_cvat_sam2; smoke_ollama_vlm; Mode B health/predict probe; skip refine under disk; seal evidence; tracker notes; milestone revision; commit evidence only

@@ -10629,15 +10629,12 @@ Evidence: qa/live_verification/wsl_ubuntu_io_error_20260720.json (self_sha256 a5
 
 Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json; script runtime_artifacts/_seal_c_vs_f_data_package_reconcile_20260720.py.
 
-## 2026-07-20 14:56 UTC - WSL I/O-error vs F: restore reconcile (CURRENT probe BROKEN)
+## 2026-07-20 15:14 UTC - WSL I/O-error vs F: restore reconcile (CURRENT probe BROKEN)
 
-**Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile (needs_agent_actions_20260720.json)
-**Command:** `wsl -d Ubuntu-22.04 -- echo ok`; `python runtime_artifacts/_seal_wsl_io_error_f_restore_reconcile_20260720.py`; `python runtime_artifacts/_update_needs_agent_actions_wsl_reconcile_20260720.py`
-**Result:** RECONCILED. Linked sibling seals `qa/live_verification/wsl_ubuntu_io_error_20260720.json` (point-in-time execvpe I/O error) and `qa/live_verification/f_drive_restored_20260720T0933Z.json` (later HEALTHY WRITE_OK). Session-start probe this turn returned `ok` (exit 0); seal-time/CURRENT probe FAILED with `Failed to attach disk ... ERROR_SHARING_VIOLATION` (Ubuntu-22.04 Stopped; F: present; VHDX path present). `needs_agent_actions` action_id=repair_ubuntu_2204_ext4_vhd status -> STILL_BROKEN_PROBE_FAILED. Docker-GPU remains parallel/primary CUDA train/serve path (independent of Ubuntu).
+**Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile
+**Result:** RECONCILED. Linked wsl_ubuntu_io_error_20260720.json + f_drive_restored_20260720T0933Z.json. CURRENT STILL_BROKEN_PROBE_FAILED (ERROR_SHARING_VIOLATION). Docker-GPU parallel CUDA path.
 
-No wsl --shutdown (protect live Docker Desktop), no elevated e2fsck, no prune/wipe, no tier inflation.
-
-Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 a429a0b0609f4eaa...).
+Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 47506f118846d66e...).
 
 ## 2026-07-20 14:49 UTC - DAZ validation/ops/coverage STATIC re-verify FINAL (F:\DAZ read-when-present, 26 entries)
 **Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
@@ -10749,12 +10746,18 @@ Evidence:
 - qa/live_verification/isolated_consumer_climb4_20260720T1506.json
 
 
-## 2026-07-20 15:06 UTC - Tournament/gold admission climb (F: restored, Docker mid-wave DOWN, 0 candidates)
-**Item:** autonomous gold admission / machine_verified_candidate (production runs/)
-**Command:** `python tools/gpu_sequencer.py plan --consumer nuclio-sam2|ollama-vlm`; `python runtime_artifacts/_scan_runs_status_20260720.py`; `python tools/build_autonomous_gold_admission.py --label torso --context solo --pipeline-fingerprint runtime-probe-20260720T1447 --output qa/live_verification/autonomous_gold_admission_20260720T1447.json`; Docker Desktop cold relaunch (non-destructive); `python runtime_artifacts/_seal_tournament_gold_admission_20260720T1506.py`
-**Result:** HONEST FAIL-CLOSED. F: present (~127.6 GiB free). Gold SOURCE roots readable (MaskedWarehouse CelebAMask-HQ/LaPa/LV-MHP; F:\Reference_Images; F:\DAZ 25 top dirs). data/ kept on C: backup (USB auto-repoint FORBIDDEN; brief mis-repoint reverted). GPU sequencer: both nuclio-sam2 and ollama-vlm `run_now` (~7771 MiB free, sequential). Production runs/: 4462 json, **machine_verified_candidate=0**, calibrated_auto_accepted=0. Admission status `insufficient_autonomous_verified_samples` (certificate_minted=false, no fabrication). Docker engine crashed mid-wave (npipe missing); cold relaunch did not recover in window; host Ollama 0.32.1 stayed UP; host torch 2.12.1+cpu CUDA=false. champions=0; autonomous_certified_gold=0.
+## 2026-07-20 09:57 UTC (14:57Z) - >=3 independent mask families ONLINE (local CUDA) + gold admission re-drive
+**Item:** multi_provider_gpu_tournament_toward_autonomous_gold / families_online gate
+**Command:** ComfyUI CUDA venv smokes (faceparse_bisenet, birefnet_general copy-path, schp_atr) + tools/build_autonomous_gold_admission.py + runtime_artifacts/_seal_families_online_gold_drive_20260720.py
+**Result:** RUNTIME_PASS_BOUNDED for family-count gate. Live independent mask families = **3**: `faceparse_bisenet` (exact registry smoke SHA `8c3235e1…`), `birefnet_general` (local CUDA; Windows symlink blocked official WSL smoke helper so weights were copied), `schp_atr` (local CUDA, revision eb84c432…). Runtime: `C:/Comfy_UI_Main/ComfyUI/.venv` torch **2.11.0+cu128**, RTX 5060, GPU-sequenced after `ollama stop` (~7.7 GiB free).
 
-Evidence: qa/live_verification/tournament_gold_admission_climb_20260720T1506.json (self_sha256 5dac35ed1e74e857cf883d0d83453bb899e97754cb982ef42322142d4ede6f18); qa/live_verification/autonomous_gold_admission_20260720T1447.json (self_sha256 fe30a0123be32a6a1bbc7243f521348b2f8eb31a93afba77a5a47707e73a75d4).
+Gold-volume sources **present** (MaskedWarehouse `C:\Comfy_UI_Main\MaskedWarehouse`, reference library on F:, DAZ on F:). Autonomous-gold admission re-run remains honestly **`insufficient_autonomous_verified_samples`** (machine_verified_candidate=0, calibrated_auto_accepted=0, champions=0). No Wilson samples fabricated; no champions force-registered. Docker engine was DOWN at seal (sibling VHD migrate / Desktop churn) so nuclio SAM2 not counted this wave.
 
-## 2026-07-20 — Isolated-consumer climb3 + sibling Main consumer scaffold (MF-P6-11/12)
-STATIC_PASS. Seals: isolated_consumer_dod_climb3_20260720T0948.json + sibling_main_consumer_scaffold_20260720.json. Credits 11.01=88 11.02=88 11.07=84. Main sibling branch codex/maskfactory-sibling-consumer-scaffold @6f73ee00. Wave64 dirty Main untouched. HARD blockers OPEN.
+Evidence: `qa/live_verification/families_online_gold_drive_20260720T0957.json`; admission `qa/live_verification/autonomous_gold_admission_families_online_20260720T0957.json`. Next: sequenced multi-provider tournament on gold-volume images -> real sidecars under `runs/` -> admission `--corpus`.
+
+## 2026-07-20 15:10 UTC - DAZ read-when-present STATIC seal+commit (single-process atomic)
+**Item:** MF-P9-08 / 10 / 12 STATIC (F:\\DAZ read-when-present, 26 entries)
+**Command:** python runtime_artifacts/_seal_and_commit_daz_read_when_present_20260720.py
+**Result:** STATIC_PASS. Single-process seal+CAS-commit. F:\\DAZ present (26 entries); gold_volume_sources daz present/readable; doctor soft_capacity_only=True free_gib=127.629; binders {'coverage_planner_static': 'dcp_5e51b474c086e19f7b2e894d', 'ops_static_contracts': 'dos_1c30ade715982cec8b0f9b97', 'validation_static_contracts': 'dvs_b8a6ce231ab54f7764ca8ee0'}; pytest_exit=0. No live Studio/gold/pilot/soak claims.
+
+Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 cc02ab28040d567c9da269edb6e651dcdc9532bc8e6c16c1f503daef6552575a).

@@ -10385,3 +10385,10 @@ branch codex/maskfactory-runtime-implementation @ 447b0f9b
 
 ### Exact Kevin blocker
 Elevated WSL engine repair (`wsl --update` / Docker Desktop WSL backend restart or host reboot) - docker-desktop distro will not start; blocks all Docker-backed doctor checks. Ubuntu-22.04 ext4 VHD repair still pending (MF-P0-17.04).
+
+
+## 2026-07-20 - Visual QA certifiable-subset climb (autonomous, my stream)
+
+- Agent live pixel-review of EXTERNAL ground-truth certifiable subset: 5 CelebAMask-HQ face + 5 LaPa face + 5 LV-MHP body = 15 named panels. Zero blocking defects -> VISUAL_QA_PASS_BOUNDED (agent pixel-review verdict per 02_AUTONOMOUS_OPERATING_RULES s11). source_masks_are_gold=false; never gold; human CVAT NOT required; no docker builds.
+- Machine draft corpus (data/packages, 14 instances) re-reviewed live; STAYS VISUAL_QA_REVIEWED_WITH_DEFECTS (structural defects need human CVAT).
+- Binding evidence committed 4c72cb44: qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json; milestone surface external_supervision_visual_qa_bounded_subset (scoped VISUAL_QA_PASS_BOUNDED). Tracker MF-P0-13.03 CHANGELOG audit committed 84c809cc.

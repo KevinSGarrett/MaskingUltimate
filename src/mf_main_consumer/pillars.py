@@ -98,12 +98,25 @@ def _consumer_source_clean() -> bool:
 
     Generated run artifacts (``receipts/``, ``dist/``) are git-ignored, so
     producing a receipt never flips this to dirty -- the flag honestly reflects
-    the state of the committed adapter boundary source.
+    the state of the committed adapter boundary source. A clean tree yields empty
+    porcelain output, so we must read the return code rather than treat empty
+    stdout as a git failure.
     """
-    status = _git("status", "--porcelain")
-    if status is None:
+    try:
+        out = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=CONSUMER_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
         return False
-    tracked_mods = [line for line in status.splitlines() if line and not line.startswith("??")]
+    if out.returncode != 0:
+        return False
+    tracked_mods = [
+        line for line in out.stdout.splitlines() if line and not line.startswith("??")
+    ]
     return not tracked_mods
 
 

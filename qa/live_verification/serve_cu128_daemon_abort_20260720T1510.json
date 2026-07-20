@@ -1,0 +1,108 @@
+{
+  "artifact_type": "serve_cu128_daemon_abort_wave",
+  "authority": "FULL AUTONOMY: build maskfactory/serve:cu128 + tools/smoke_docker_gpu_serve.py; Abort if daemon dies; restore CVAT 2.24; seal; commit+push.",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_established": [
+    "serve_build_aborted_on_daemon_death",
+    "prior_sibling_torch_cu128_layer_eof_documented",
+    "c_free_collapsed_during_wake_cycles_documented",
+    "ollama_host_still_up_0_32_1"
+  ],
+  "claims_not_established": [
+    "serve_image_build_success",
+    "torch_cuda_available_in_container",
+    "serve_health_models_answered_in_container",
+    "cvat_2_24_restored",
+    "smoke_docker_gpu_serve_pass",
+    "train_image_build_success",
+    "doctor_all_green",
+    "champions>0",
+    "autonomous_certified_gold"
+  ],
+  "cvat": {
+    "about_at_abort": "unreachable (timeout)",
+    "bootstrap_error": "docker pull alpine:3.17 failed \u2014 npipe dockerDesktopLinuxEngine missing",
+    "bootstrap_tool": "tools/bootstrap_cvat.py",
+    "note": "Containers were briefly visible as Up (cvat/server:v2.24.0) during the short engine-up window, then lost when the daemon died; could not re-assert stack without a stable engine.",
+    "production_target": "localhost:8080 CVAT v2.24.0",
+    "restore_attempted": true,
+    "restore_succeeded": false
+  },
+  "disk": {
+    "c_free_gib_at_abort": 30.76,
+    "c_free_gib_at_wave_start": 75.21,
+    "c_free_gib_mid_wave_peak_observed": 90.88,
+    "docker_data_vhdx_gib": 68.11,
+    "docker_data_vhdx_path": "C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+    "note": "C: free collapsed during failed Docker Desktop wake cycles; below safe ~60 GiB serve-build gate. No docker system prune / volume wipe."
+  },
+  "engine_status": {
+    "com_docker_service": "Running (last probe) but engine pipe absent",
+    "context": "desktop-linux",
+    "docker_client_version": "29.6.1",
+    "docker_server_version": null,
+    "final": "DOWN",
+    "further_restarts_aborted": true,
+    "named_pipe_dockerDesktopLinuxEngine": false,
+    "prior_build_failure": "runtime_artifacts/_serve_cu128_build_20260720.log EOF during nvidia-cudnn-cu12 download inside Dockerfile.serve torch cu128 layer",
+    "restart_cycles_attempted": 2,
+    "wsl_list": {
+      "Cursor-Agent-WSL1": "Stopped",
+      "Ubuntu-22.04": "Stopped",
+      "docker-desktop": "Stopped"
+    }
+  },
+  "evidence_refs": [
+    "runtime_artifacts/_serve_cu128_build_20260720.log",
+    "runtime_artifacts/_serve_cu128_build_coordination_20260720.json",
+    "qa/live_verification/_bootstrap_cvat_serve_build_20260720T0949.log"
+  ],
+  "honesty": [
+    "RUNTIME_BLOCKED is the honest tier; no RUNTIME_PASS_BOUNDED inflation.",
+    "CVAT restore could not complete because the engine would not stay up.",
+    "Disk headroom that looked sufficient at wave start (~75 GiB) collapsed to ~31 GiB during wake failures; heavy torch cu128 rebuild would be unsafe even if the daemon returned.",
+    "Desktop backend logs showed repeated 'backend already running, signaling show-dashboard' without publishing dockerDesktopLinuxEngine."
+  ],
+  "mandate_applied": "Abort if daemon dies (no further heavy build / restart thrash).",
+  "next_deliberate_step": "Stabilize Docker Desktop once (no parallel builds): confirm named pipe + docker ps healthy + C: free >= ~60 GiB; bootstrap_cvat.py for 2.24; sole builder: docker build -f docker/Dockerfile.serve -t maskfactory/serve:cu128 . ; then python tools/smoke_docker_gpu_serve.py --serve-image maskfactory/serve:cu128.",
+  "no_open_human_stop_states": true,
+  "non_destructive_guarantees": [
+    "No docker system prune / prune -a --volumes.",
+    "No CVAT volume wipe / docker volume rm.",
+    "No Docker Desktop factory reset.",
+    "No edits to compose pins or settings-store.json.",
+    "No further wake thrash after abort decision (protect engine + disk).",
+    "Serve build not re-launched after daemon death."
+  ],
+  "ollama": {
+    "endpoint": "http://127.0.0.1:11434/api/version",
+    "host": "UP",
+    "runtime": "native/host loopback (independent of Docker daemon)",
+    "version": "0.32.1"
+  },
+  "project_head_at_authoring": "9eaf87a3e55e85ca9346ceb5f699875538510492",
+  "proof_tier": "RUNTIME_BLOCKED",
+  "recorded_at": "2026-07-20T15:10:35.135588Z",
+  "result": "ABORTED_DAEMON_DEATH",
+  "schema_version": "1.0.0",
+  "self_sha256": "c8dba0443691512a7fc4bb4a6d355883c21580c573c2f5566cb4a52995e07e7d",
+  "sequence": [
+    "Preflight: docker CLI client 29.6.1 present; named pipe dockerDesktopLinuxEngine ABSENT; C: free ~75.21 GiB; Ollama host 0.32.1 UP; CVAT unreachable.",
+    "Wake 1: launched Docker Desktop; engine came UP (server 29.6.1); docker ps showed production cvat/*:v2.24.0 + cvat269 + nuclio/pth-sam2 recovering (~1 min uptime).",
+    "CVAT /api/server/about still 404/warming when first probed; image maskfactory/serve:cu128 ABSENT.",
+    "Prior sibling build log runtime_artifacts/_serve_cu128_build_20260720.log shows torch cu128 pip reached nvidia-cudnn-cu12 ~657.9 MB download then: ERROR failed to build: rpc Unavailable EOF (daemon died mid-wheel).",
+    "bootstrap_cvat.py then failed: npipe dockerDesktopLinuxEngine missing again (daemon dead).",
+    "Abort path: stopped thrashing heavy build; one careful wsl --shutdown + Desktop relaunch; docker-desktop WSL stayed Stopped / flapped Running without Linux engine pipe.",
+    "Second wake attempt started com.docker.service + explicit wsl -d docker-desktop; still no dockerDesktopLinuxEngine pipe after multi-minute poll.",
+    "Final probes: Ubuntu-22.04 Stopped; docker-desktop Stopped; pipes absent; CVAT timeout; Ollama 0.32.1 still UP; C: free collapsed ~75->~30.76 GiB during failed wake cycles (vhdx still 68.11 GiB on C:); no prune/wipe performed."
+  ],
+  "serve_image": {
+    "build_aborted_reason": "daemon died; mandate abort; C: free collapsed to ~31 GiB",
+    "build_attempted_this_wave": false,
+    "dockerfile": "docker/Dockerfile.serve",
+    "image_present": false,
+    "smoke_run": false,
+    "smoke_tool": "tools/smoke_docker_gpu_serve.py",
+    "tag": "maskfactory/serve:cu128"
+  }
+}

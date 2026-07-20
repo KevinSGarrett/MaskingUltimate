@@ -1,4 +1,9 @@
-"""Race-safe isolated commit of ONLY the nuclio package re-seg path files."""
+"""Race-safe isolated commit+push of ONLY the nuclio package re-seg path files.
+
+Uses a private GIT_INDEX_FILE and compare-and-swap against origin tip so parallel
+agents cannot steal the shared index. Does not run `git checkout` (that was
+racing working trees).
+"""
 
 from __future__ import annotations
 
@@ -35,40 +40,62 @@ def main() -> None:
     missing = [p for p in PATHS if not (ROOT / p).is_file()]
     if missing:
         raise SystemExit(f"missing paths: {missing}")
-    for attempt in range(1, 12):
-        head = run(["git", "rev-parse", "HEAD"]).stdout.strip()
+
+    for attempt in range(1, 16):
+        fetch = run(["git", "fetch", "origin", BRANCH], check=False)
+        if fetch.returncode != 0:
+            print("fetch_warn", fetch.stderr.strip())
+            time.sleep(2)
+            continue
+        parent = run(["git", "rev-parse", f"origin/{BRANCH}"]).stdout.strip()
         env = os.environ.copy()
         env["GIT_INDEX_FILE"] = str(TMP_INDEX)
         if TMP_INDEX.exists():
             TMP_INDEX.unlink()
-        run(["git", "read-tree", head], env=env)
+        run(["git", "read-tree", parent], env=env)
         run(["git", "add", "--", *PATHS], env=env)
         tree = run(["git", "write-tree"], env=env).stdout.strip()
-        commit = run(
-            ["git", "commit-tree", tree, "-p", head, "-F", str(MSG)]
-        ).stdout.strip()
-        cas = run(
-            ["git", "update-ref", f"refs/heads/{BRANCH}", commit, head],
-            check=False,
-        )
-        if cas.returncode == 0:
-            print(f"committed {commit} parent {head} (attempt {attempt})")
+        # Skip empty commit if tree identical to parent tree.
+        parent_tree = run(["git", "rev-parse", f"{parent}^{{tree}}"]).stdout.strip()
+        if tree == parent_tree:
+            print(f"already_on_origin parent={parent} (attempt {attempt})")
             if TMP_INDEX.exists():
                 TMP_INDEX.unlink()
-            # Move working tree HEAD view forward for this shell.
-            run(["git", "checkout", BRANCH], check=False)
-            push = run(["git", "push", "origin", BRANCH], check=False)
-            print(push.stdout)
-            print(push.stderr)
-            print("push_rc", push.returncode)
-            print("HEAD", run(["git", "rev-parse", "HEAD"]).stdout.strip())
-            stream = run(["git", "status", "--short", "--", *PATHS])
-            print("stream_status:\n" + stream.stdout)
-            print("stream_clean", not any(line[:2].strip() for line in stream.stdout.splitlines()))
+            print("HEAD_origin", parent)
             return
-        print(f"CAS lost (attempt {attempt}); retrying: {cas.stderr.strip()}")
-        time.sleep(1.5)
-    raise SystemExit("failed to land isolated commit after retries")
+        commit = run(
+            ["git", "commit-tree", tree, "-p", parent, "-F", str(MSG)]
+        ).stdout.strip()
+        # Point local branch at our commit only if it still matches parent.
+        cas = run(
+            ["git", "update-ref", f"refs/heads/{BRANCH}", commit, parent],
+            check=False,
+        )
+        if cas.returncode != 0:
+            print(f"local CAS lost (attempt {attempt}): {cas.stderr.strip()}")
+            time.sleep(1.5)
+            continue
+        push = run(
+            ["git", "push", "origin", f"{commit}:refs/heads/{BRANCH}"],
+            check=False,
+        )
+        if push.returncode == 0:
+            print(f"pushed {commit} parent {parent} (attempt {attempt})")
+            if TMP_INDEX.exists():
+                TMP_INDEX.unlink()
+            # Refresh remote-tracking ref.
+            run(["git", "fetch", "origin", BRANCH], check=False)
+            print("origin_HEAD", run(["git", "rev-parse", f"origin/{BRANCH}"]).stdout.strip())
+            # Working tree may still show ?? until reset; report blob presence.
+            for path in PATHS[:4]:
+                show = run(["git", "cat-file", "-e", f"{commit}:{path}"], check=False)
+                print(f"in_commit {path}={show.returncode == 0}")
+            return
+        print(f"push lost (attempt {attempt}): {push.stderr.strip()}")
+        # Roll local branch back to parent so we do not leave a divergent tip.
+        run(["git", "update-ref", f"refs/heads/{BRANCH}", parent], check=False)
+        time.sleep(2)
+    raise SystemExit("failed to land isolated commit+push after retries")
 
 
 if __name__ == "__main__":

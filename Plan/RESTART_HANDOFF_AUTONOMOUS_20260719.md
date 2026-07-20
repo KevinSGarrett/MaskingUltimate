@@ -4,6 +4,19 @@ Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin 
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**
 
+## Latest wave (2026-07-20 09:57 UTC — ≥3 mask families ONLINE via local CUDA + gold admission re-drive)
+
+Stream scope: **families-online + gold admission** (coordinated with siblings; left Docker VHD migrate / Dockerfile.train / isolated-consumer edits untouched).
+
+- **Families ONLINE = 3 (gate cleared):** aceparse_bisenet, irefnet_general, schp_atr all produced live CUDA masks via C:/Comfy_UI_Main/ComfyUI/.venv torch **2.11.0+cu128** (RTX 5060). faceparse matched registry smoke SHA 8c3235e1…. BiRefNet used Windows-safe weight copy (symlink privilege blocked). SCHP ATR revision eb84c432…. GPU-sequenced after ollama stop.
+- **Gold admission — honest insufficient:** uild_autonomous_gold_admission → insufficient_autonomous_verified_samples (machine_verified_candidate=0). Gold-volume roots **present** (MaskedWarehouse / reference / DAZ). champions=0; no fabrication.
+- **Docker:** engine DOWN at seal (Desktop churn / sibling VHD migrate); nuclio SAM2 not counted this wave.
+- **Evidence:** qa/live_verification/families_online_gold_drive_20260720T0957.json (self_sha256 859b5d1e…); admission …/autonomous_gold_admission_families_online_20260720T0957.json.
+- **Next:** sequenced ≥3-family tournament on gold-volume images → real 
+uns/ sidecars → admission --corpus.
+
+
+
 ## Latest wave (2026-07-20 09:36 UTC — Docker-GPU declared SOLE CUDA train/serve path; WSL repair DEFERRED)
 
 HEAD `eb17dd21` at authoring (branch churned by parallel siblings since). Docs/evidence-only stream; this

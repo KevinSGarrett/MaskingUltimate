@@ -1,0 +1,26 @@
+qa(daz): re-verify DAZ validation/ops/coverage STATIC on restored F: (0 honest transitions)
+
+Removable F: reconnected after the 14:35Z hard-stop
+(docker_relocation_f_absent_blocked_20260720T1435Z.json). Resumed the DAZ
+foundation/ops/coverage climb directly against live F:\DAZ paths:
+
+- F:\DAZ root identity re-confirmed (root_uuid 6bd1b3ba..., volume {1aa3276c...});
+  foundation doctor PASS all checks, 181.21 GiB free. Fresh probe committed
+  (qa/live_verification/_daz_status_probe.json).
+- Re-sealed the three DAZ static contract binders against live F: paths:
+  validation V0-V9/acceptance/repair/S00 (dvs_b8a6ce23...),
+  ops backup/scheduler/storage/recovery/failure-campaign (dos_1c30ade7...),
+  coverage planner (dcp_c3ccee69...).
+- Host procedural-primitive golden bundle re-verified byte-identical
+  (canonical 7c6483dd...).
+- Focused DAZ suite (validation/ops/coverage/proc-primitive/worker-isolation/
+  foundation) 23 passed, exit 0.
+- Consolidated wave evidence
+  qa/live_verification/daz_stream_f_restored_reverify_20260720T1440Z.json
+  (self_sha256 da08ff35...), OPS_LOG entry appended.
+
+Honest scope: host-side STATIC re-verification only. F: is a removable drive
+(still not a fixed second disk for Docker VHDX relocation). NO live DAZ Studio
+execution, accepted packages, pilot, seven-day soak, live activation/calibration,
+ablation corpus, doctor-all-green beyond DAZ foundation, visual-QA-pass, or gold
+claimed. No tracker status/percent transitions.

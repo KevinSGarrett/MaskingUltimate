@@ -1,0 +1,93 @@
+{
+  "evidence_id": "docker_desktop_stats_repair_20260720T0635Z",
+  "recorded_at_utc": "2026-07-20T06:35:00Z",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "repo_head": "fccb4a9c",
+  "symptom": {
+    "ui": "Docker Desktop showed Container CPU usage — Data unavailable at this time; containers appeared stuck",
+    "cli_before": "docker info hung / timed out; com.docker.backend high CPU; CVAT :8080 timed out while Ollama sometimes still answered",
+    "contributing_factors": [
+      "C: free space collapsed to ~3.9–10 GB during concurrent GPU image builds (disk thrash)",
+      "serve-image build (maskfactory/serve:cu128) crashed Docker Desktop daemon/buildkit (sibling agent c50abb3a)",
+      "docker system df / docker info storage accounting path severely slow or wedged under pressure"
+    ]
+  },
+  "repair": {
+    "this_agent_restarted_again": false,
+    "left_already_restored_engine_alone": true,
+    "prior_restores": [
+      {
+        "actor": "this_agent_earlier_in_session",
+        "action": "non-destructive Docker Desktop force-stop + relaunch; wsl --terminate docker-desktop; no prune/volume wipe",
+        "result": "pipes cleared; engine relaunched; docker stats returned CPU%; containers auto-restarted"
+      },
+      {
+        "actor": "sibling_agent_c50abb3a",
+        "action": "Docker Desktop restart after serve-image build crashed daemon; restored CVAT 2.24 / nuclio / Ollama",
+        "repo_head_at_report": "fccb4a9c"
+      }
+    ],
+    "destructive_ops": "none (no docker system prune -a --volumes, no volume rm)"
+  },
+  "probe_after_20260720T0634Z": {
+    "c_free_gb": 18.04,
+    "docker_info": {
+      "outcome": "TIMEOUT_90s",
+      "note": "Server info format still slow/wedged; not treated as MaskFactory blocker because ps/stats/HTTP services healthy"
+    },
+    "docker_stats_no_stream": {
+      "outcome": "PASS",
+      "cpu_percent_present": true,
+      "sample": [
+        {
+          "name": "cvat_server",
+          "cpu": "1.29%",
+          "mem": "354.8MiB / 23.47GiB"
+        },
+        {
+          "name": "nuclio-nuclio-pth-sam2",
+          "cpu": "14.98%",
+          "mem": "785.3MiB / 8GiB"
+        },
+        {
+          "name": "nuclio",
+          "cpu": "23.34%",
+          "mem": "75.85MiB / 23.47GiB"
+        },
+        {
+          "name": "cvat_clickhouse",
+          "cpu": "149.43%",
+          "mem": "334.2MiB / 23.47GiB"
+        }
+      ]
+    },
+    "cvat_about": {
+      "url": "http://localhost:8080/api/server/about",
+      "version": "2.24.0",
+      "outcome": "PASS"
+    },
+    "ollama_version": {
+      "url": "http://127.0.0.1:11434/api/version",
+      "version": "0.32.1",
+      "outcome": "PASS"
+    },
+    "nuclio_dashboard": {
+      "url": "http://127.0.0.1:8070",
+      "http_code": 200,
+      "outcome": "PASS"
+    }
+  },
+  "verdict": {
+    "stats_working": true,
+    "cvat_production_ok": true,
+    "ollama_ok": true,
+    "nuclio_ok": true,
+    "second_restart_performed": false,
+    "remaining_risk": [
+      "C: free space still tight (~18 GB); large image builds can re-crash the daemon",
+      "docker info may remain slow; prefer docker ps / docker stats / HTTP probes for health",
+      "cvat269 rehearsal stack still running alongside production 2.24 — keep isolated"
+    ]
+  },
+  "self_sha256": "1521e539a903f53468e7751146e78a8af5b908b0de1770de6f6269dce362a394"
+}

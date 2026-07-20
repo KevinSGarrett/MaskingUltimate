@@ -10274,3 +10274,21 @@ champions=0, no gold/Main-complete/doctor-green, no minted autonomous certificat
 - **Honest status:** containerized serve smoke NOT claimed. GPU-container CUDA access (RTX 5060 cap
   12,0) stands. Retry the build with raised WSL2 memory/disk headroom, then run
   `tools/smoke_docker_gpu_serve.py`. Re-sealed evidence self_sha256 ea1a2c75…
+
+## 2026-07-20 06:35 UTC - Docker Desktop stats / hung-engine repair verification (no second restart)
+**Item:** runtime / Docker Desktop health
+**Command:** `docker info` (90s bound); `docker stats --no-stream`; `curl.exe -s http://localhost:8080/api/server/about`; `curl.exe -s http://127.0.0.1:11434/api/version`; Nuclio `http://127.0.0.1:8070`
+**Result:** PASS for MaskFactory runtime — `docker stats` returns CPU%%; CVAT **2.24.0**; Ollama **0.32.1**; Nuclio HTTP 200. Did **not** restart Docker Desktop again (sibling `c50abb3a` + earlier session restart already restored engine). `docker info` still TIMEOUT@90s (residual slow accounting path). C: free ~18 GB. No prune/volume wipe.
+
+<details>
+<summary>Evidence</summary>
+
+```
+qa/live_verification/docker_desktop_stats_repair_20260720T0635Z.json
+branch codex/maskfactory-runtime-implementation @ fccb4a9c
+stats sample: cvat_server 1.29%; nuclio-nuclio-pth-sam2 14.98%; nuclio 23.34%
+second_restart_performed=false
+```
+
+</details>
+

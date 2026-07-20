@@ -2,8 +2,8 @@
   "artifact_type": "needs_agent_actions",
   "schema_version": "1.0.0",
   "local_date": "2026-07-19",
-  "recorded_at": "2026-07-20T04:09:31Z",
-  "project_head_at_authoring": "585c2c4294a8e57318ebcda4349fa7d8231c4407",
+  "recorded_at": "2026-07-20T04:30:44Z",
+  "project_head_at_authoring": "c378499bdbbc7f26d1a9a08918408107907e2f01",
   "authority": "agent_executable_action_queue_zero_human_wait_states",
   "execution_wave_evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json",
   "supersedes": {
@@ -173,8 +173,21 @@
     "Main-complete / MF-P6-12.06",
     "PRODUCTION_EVIDENCE_PASS",
     "live SAM 3.1 CUDA WSL smoke",
-    "core_autonomous_runtime complete"
+    "core_autonomous_runtime complete",
+    "autonomous_certified_gold",
+    "Main adoption receipts (MF-P6-11.02/11.07/12.05)"
   ],
   "no_open_human_stop_states": true,
-  "self_sha256": "37e1097cb85d915377214793aabe5a08ea5ab8875af783798e8bb7ede46865bb"
+  "latest_reverification": {
+    "recorded_at": "2026-07-20T04:30:44Z",
+    "head": "c378499bdbbc7f26d1a9a08918408107907e2f01",
+    "evidence": "qa/live_verification/autonomy_reverify_20260720T0430.json",
+    "champions": 0,
+    "mode_b_predict": "AWAITING_RUNTIME (champions=0 + host FastAPI serve deps missing; serve/train runtime=WSL down)",
+    "audit_queue_root_cause": "population_count=0 is downstream of an empty calibration lifecycle (0 calibrated_auto_accepted sidecars). Requires human-anchor-gold certificate (~>=270 zero-defect audits); data/packages has 0 approved_gold/human_anchor_gold. Not a code bug; not fabricable.",
+    "training_runtime": "host torch 2.12.1+cpu; training-doctor ready=false; WSL Ubuntu-22.04 corrupt (E_FAIL); IsAdmin=False -> e2fsck elevation-gated. Docker GPU CUDA container is the agent-executable substitute path.",
+    "vram_action": "DAZ NOT killed (live user GUI session; destructive). VRAM freeing moot: train/serve runtimes unavailable on host regardless.",
+    "main_adoption": "Producer bridge + cross-project PASS at HEAD; run_cross_project_qualification=producer_partial. Main C:/Comfy_UI_Main HEAD b36001b9 = separate unrelated active project (Wave64), dirty tree, NO MaskFactory consumer surface. Real receipts require isolated Main-side consumer build; not fabricated."
+  },
+  "self_sha256": "bf70119fd20fa2eeb7354d5c0cdad26e19dae3a13e1caf22e84973dda72369d5"
 }

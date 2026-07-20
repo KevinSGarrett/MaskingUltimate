@@ -4,6 +4,28 @@ Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin 
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**
 
+## Latest wave (2026-07-20 — champions + Main re-verify, honest hard-gate root cause)
+
+HEAD `c378499b`. Live re-probe: Docker 29.4.3; CVAT 2.24.0 (localhost:8080) + cvat269; Ollama 0.32.1;
+nuclio pth-sam2 healthy; GPU RTX 5060 ~2182 MiB free (DAZ pid52340 + python + Cursor); WSL Ubuntu-22.04
+still corrupt (E_FAIL); `IsAdmin=False`; host torch **2.12.1+cpu**; training-doctor **ready=false**;
+`maskfactory serve` cannot start on host (**FastAPI serving deps missing** — serve/train runtime = WSL, down).
+
+- **Workstream A champions — HONESTLY BLOCKED (champions=0):** `data/packages` = 28 manifests, **0
+  approved_gold / 0 human_anchor_gold / 0 autonomous_certified_gold**. Audit-queue `population_count=0` is a
+  **downstream symptom** — `build_weekly_audit_queue` counts only `calibrated_auto_accepted` lifecycle
+  sidecars (0 exist); the 1648 files in `work/instances` are instance manifests, not autonomy sidecars.
+  Calibration certificate needs a frozen **human-anchor-gold** corpus (~≥270 zero-defect audits for the
+  0.01 Wilson bound) that does not exist and cannot be fabricated. Training a champion additionally needs a
+  CUDA training runtime (host CPU-only; WSL down; elevation unavailable) + gold training volume (0). Did
+  **not** kill DAZ (live user GUI). Mode B `/predict` = **AWAITING_RUNTIME**.
+- **Workstream B Main adoption — producer verified, Main NOT fabricated:** producer bridge + cross-project
+  suite PASS at HEAD; `run_cross_project_qualification` → `producer_partial` (mf_p6_12_05_complete=false).
+  Main repo `C:/Comfy_UI_Main` HEAD `b36001b9` is a separate, unrelated active project (Wave64) with a dirty
+  tree and **no MaskFactory consumer surface**. Real MF-P6-11.02/11.07/12.05 receipts require an isolated
+  Main-side consumer build; not fabricated; Main dirty branch untouched.
+- **Evidence:** `qa/live_verification/autonomy_reverify_20260720T0430.json` (self_sha256 `0bc9740a…`).
+
 ## Latest wave (2026-07-19 late — agent queue execution, honest)
 
 Milestone revision `post_agent_queue_execution_20260719` self_sha256

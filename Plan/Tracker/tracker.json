@@ -8100,12 +8100,17 @@
           "ts": "2026-07-12T08:18:54+00:00",
           "actor": "ai_agent",
           "text": "Added one-image interactive session reuse: identical image bytes reuse the SAM2 embedding across click requests; a changed image closes/rebuilds it, champion predict closes it before sequential slots, and service stop releases it."
+        },
+        {
+          "ts": "2026-07-20T04:28:46+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 autonomous re-verify at HEAD c378499b: champions=0; Mode B /predict AWAITING_RUNTIME. Host serve deps missing (FastAPI); full serve/train runtime = WSL Ubuntu-22.04 which is corrupt (ext4 E_FAIL) with elevation unavailable (IsAdmin=False); host torch 2.12.1+cpu. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
         }
       ],
       "evidence": "qa/live_verification/serve_refine_cuda_20260712.json proves live localhost health plus multipart SAM2 /refine on RTX 5060: cold load/embed 7.979531s, warm click 0.058920s, HTTP 200 strict 810x1080 binary mask and exact SAM2 provenance. FastAPI multipart annotations and default Windows local-CUDA settings are corrected; session cleanup leaves no gpu.lock. /predict remains unavailable until all three trained champion roles exist.",
       "blocked_reason": "NEEDS KEVIN: endpoint/SAM2 live evidence is complete; final /predict proof requires real promoted champion_bodypart/champion_hand/champion_clothing checkpoints, which depend on P5 training.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:33:00+00:00",
+      "updated_at": "2026-07-20T04:28:46+00:00",
       "orphaned": false
     },
     "MF-P6-02.02": {
@@ -21002,12 +21007,17 @@
           "ts": "2026-07-19T20:59:31+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
+        },
+        {
+          "ts": "2026-07-20T04:29:02+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_mode_a_package_read.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode A immutable package-read evidence is fixture-verified (STATIC_PASS). No accepted production adopted-package/exact operational-wrapper authority (not fabricated).",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:31+00:00",
+      "updated_at": "2026-07-20T04:29:02+00:00",
       "orphaned": false
     },
     "MF-P6-11.03": {
@@ -21287,12 +21297,17 @@
           "ts": "2026-07-19T20:59:33+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
+        },
+        {
+          "ts": "2026-07-20T04:29:03+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_failure_control.py + fixture_main. Not RUNTIME_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS HARD BLOCKER: MF-P6-11.03 and MF-P6-11.06 incomplete. Additive producer admission/fault-injection conformance fixture-verified (STATIC_PASS). Awaiting Main live circuit-breaker/DAG/retry signed evidence.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:33+00:00",
+      "updated_at": "2026-07-20T04:29:03+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {
@@ -21547,12 +21562,17 @@
           "ts": "2026-07-20T00:52:25+00:00",
           "actor": "ai_agent",
           "text": "PROOF-TIER LIVE runtime climb 2026-07-19/20: Mode B health/models still RUNTIME_PASS_BOUNDED (champions=0). /predict still AWAITING_RUNTIME (HTTP 503; no invented champions). /refine longer-timeout retry SKIPPED under ~4.5-5.8 GiB free (unsafe); prior 30s timeout under ~32 GiB stands. claim_boundary.mf_p6_12_04_complete=false. Evidence: qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json"
+        },
+        {
+          "ts": "2026-07-20T04:28:46+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 autonomous re-verify at HEAD c378499b: champions=0; Mode B /predict AWAITING_RUNTIME. Host serve deps missing (FastAPI); full serve/train runtime = WSL Ubuntu-22.04 which is corrupt (ext4 E_FAIL) with elevation unavailable (IsAdmin=False); host torch 2.12.1+cpu. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
         }
       ],
       "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
       "blocked_reason": "LIVE/CROSS-PROJECT + POLICY: /health+/models RUNTIME_PASS_BOUNDED (champions=0). Predict AWAITING_RUNTIME: no temporary draft/incumbent serving role — serving predictor may load champion_* only; create_production_runtime leaves predictor unconfigured until complete measured champion set; HTTP 503 champion prediction provider is not configured. Force-register forbidden (would invent champion win). Refine AWAITING_RUNTIME (prior on-demand load timeout). MF-P6-11.03/11.07 incomplete. claim_boundary.mf_p6_12_04_complete=false. Evidence: mode_b_predict_draft_provider_policy_blocker_20260719.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T00:52:25+00:00",
+      "updated_at": "2026-07-20T04:28:46+00:00",
       "orphaned": false
     },
     "MF-P6-12.05": {
@@ -21599,12 +21619,17 @@
           "ts": "2026-07-19T21:31:08+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS only / AWAITING_MAIN 2026-07-19. No PRODUCTION_EVIDENCE_PASS. Parallel STATIC increments elsewhere do not close this hard blocker."
+        },
+        {
+          "ts": "2026-07-20T04:29:03+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_cross_project_qualification.py producer_partial. No trusted signed production qualification bundle.",
       "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.02 through MF-P6-12.04 incomplete; Main-runtime commit/adoption/qualification bindings absent. Producer matrix producer_partial only; claim_boundary.mf_p6_12_05_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T21:31:08+00:00",
+      "updated_at": "2026-07-20T04:29:03+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {

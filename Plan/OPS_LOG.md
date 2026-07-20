@@ -10182,3 +10182,26 @@ HEAD at start `585c2c42`. Re-probed live: Docker 29.4.3; CVAT 2.24.0 (localhost:
 - qa/live_verification/host_side_shadow_currency_registry_static_20260719.json (sha256 b58bac74…)
 
 **Commands:** live docker/CVAT/Ollama/WSL/GPU probe; doctor (PASS=8 FAIL=4); elevation probes (IsInRole/schtasks); docker --gpus all nvidia-smi; verify-package (source + restored); pip install dvc; dvc remote add --local + add + push + status; autonomy verify-multi-person-static-contracts; autonomy build-audit-queue (empty); pytest producer-bridge (90) + statics (19) + shadow (7); rebind shadow currency seal; build agent_queue_execution seal; regen needs_agent_actions; append OPS_LOG; tracker report/validate; update handoff; commit+push
+
+## 2026-07-20 — Autonomous re-verify wave: champions (A) + Main adoption (B); honest hard-gate root cause
+
+HEAD `c378499b`. Re-probed live: Docker 29.4.3; CVAT 2.24.0 (localhost:8080) + cvat269 rehearsal; Ollama 0.32.1; nuclio pth-sam2 healthy; GPU RTX 5060 8151 MiB total / ~2182 MiB free (DAZStudio pid52340 + python pid10912 + Cursor resident); WSL Ubuntu-22.04 still corrupt (`/bin/true` -> E_FAIL step 2); `IsAdmin=False` (elevation still unavailable); host torch **2.12.1+cpu** (no CUDA); training-doctor **ready=false** (mmengine/mmcv/mmseg/mmdet missing); `maskfactory serve` cannot start on host (**FastAPI serving deps missing** — full serve/train runtime lives in WSL, which is down).
+
+### Workstream A — Champions (HONESTLY BLOCKED; champions=0; no fabrication)
+- Gold corpus probe: `data/packages` = 28 manifests, **approved_gold=0, human_anchor_gold=0, autonomous_certified_gold=0**.
+- **Audit-queue root cause (precise):** `build_weekly_audit_queue` counts only lifecycle sidecars with `status == calibrated_auto_accepted`; there are 0. The 1648 files under `work/instances` are instance manifests (complete/ready/residual/none), **not** autonomy lifecycle sidecars. `population_count=0` is a **downstream symptom of an empty calibration lifecycle, not a code bug**.
+- **Calibration gate:** `build_autonomy_certificate` requires a frozen image-disjoint **human-anchor-gold** audit corpus (min 30/bucket AND Wilson false-accept upper bound ≤0.01 ⇒ ~≥270 zero-defect audits) bound to immutable approved_gold packages. With 0 human-anchor gold this can never pass. Fabricating audits / bypassing human-anchor authority is **forbidden**.
+- **Training gate:** champion promotion needs a sealed MMSeg run → registered candidate → measured shadow win. No CUDA training runtime (host CPU-only; WSL down; elevation unavailable) and **0 gold training volume**. Not possible now.
+- **VRAM:** did **not** kill DAZ Studio (live user GUI session; unsafe/destructive). Freeing VRAM is moot — train/serve runtimes are unavailable on host regardless of VRAM.
+- **Mode B `/predict`:** AWAITING_RUNTIME (champions=0 + host serve deps missing). Re-probe not applicable until an honest champion>0 exists.
+
+### Workstream B — Main adoption (producer verified; Main NOT fabricated)
+- Producer bridge + cross-project suite **PASS** at HEAD (15 test modules: journal/adapter/mode_a/mode_b/arbitration/feedback/failure_control/recovery/registration/cross_project/consumer_conformance/producer_e2e/consumer_invalidation/consumer_requirements/fixture_main).
+- `run_cross_project_qualification` → **status=producer_partial**, producer_matrix_executable=true, mf_p6_12_05_complete=false, establishes_production_qualification=false (synthetic observation only).
+- Main repo `C:/Comfy_UI_Main` HEAD `b36001b9` (branch `codex/workflow_plan_update_improvements`) is a **separate unrelated active project** (Wave64 audio/video) with a dirty tree and **no MaskFactory consumer surface**. Real MF-P6-11.02/11.07/12.05 receipts require an isolated Main-side consumer build; **not fabricated; Main dirty branch not disturbed**.
+
+### Evidence
+- qa/live_verification/autonomy_reverify_20260720T0430.json (self_sha256 0bc9740a…)
+- runtime_artifacts/_xproj_qual_probe_20260719.json (producer_partial)
+
+**Commands:** live docker/CVAT/Ollama/WSL/GPU probe; IsAdmin + `wsl -- /bin/true`; training-doctor; gold-corpus probe; autonomy CLI inspect; `maskfactory serve` host probe (deps missing); pytest producer-bridge+cross-project (PASS); run_cross_project_qualification (--list-main-dependencies + generate); tracker set notes (Mode B + Main HARD items) + report; seal autonomy_reverify; append OPS_LOG; update handoff + needs_agent_actions + milestone; commit+push

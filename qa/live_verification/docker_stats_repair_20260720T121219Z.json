@@ -1,0 +1,41 @@
+{
+  "measured_at_utc": "2026-07-20T17:12:19.7343113Z",
+  "probe": "docker_stats_repair",
+  "docker_restart_performed": false,
+  "reason_no_restart": "CLI docker stats --no-stream returned numeric CPU% with exit 0; Desktop UI N/A is often UI lag when CLI works",
+  "stats_cli": {
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_ms": 2727,
+    "container_rows": 39,
+    "na_or_unavailable_rows": 0,
+    "sample_rows": [
+      "nuclio-local-storage-reader|2.60%|0.01%",
+      "cvat_server|0.41%|1.60%",
+      "cvat_worker_export|0.24%|1.48%",
+      "cvat_worker_import|0.15%|1.50%",
+      "cvat_worker_chunks|0.16%|1.51%"
+    ]
+  },
+  "cvat_production": {
+    "endpoint": "http://localhost:8080/api/server/about",
+    "version": "2.24.0",
+    "ok": true
+  },
+  "ollama": {
+    "endpoint": "http://127.0.0.1:11434/api/version",
+    "version": "0.32.1",
+    "ok": true
+  },
+  "desktop_ui_note": "Docker Desktop may still show Container CPU usage Data unavailable / N/A; refresh or reopen Desktop UI \u2014 engine/CLI metrics healthy; no restore needed",
+  "restore_performed": false,
+  "sam2_smoke": {
+    "ok": true,
+    "command": "python tools/smoke_cvat_sam2.py",
+    "result": "pass",
+    "task_id": 1,
+    "latency_seconds": 14.433,
+    "report": "qa/reports/cvat_sam2_smoke.json",
+    "note": "First attempt 503 while pth-sam2 reinitialized; retry PASS after Nuclio ready"
+  }
+}

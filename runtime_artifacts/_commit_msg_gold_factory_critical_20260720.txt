@@ -1,0 +1,3 @@
+qa(gold): seal critical status and remaining-feed tournament emit launcher
+
+Authoritative Gold Factory report: live_families=5, 128-feed real MVC 22/106 remaining, gold=0, champions=0; GPU-seq remaining emit waits behind active batch_b.

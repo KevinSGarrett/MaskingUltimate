@@ -1,0 +1,78 @@
+{
+  "artifact_type": "gold_factory_critical_status",
+  "authority": "autonomous_certified_gold_profile",
+  "blocker": {
+    "detail": "no_autonomous_certified_gold; GPU-seq tournament emit in flight (batch_b); remaining/full-feed waiters queued",
+    "primary": "no_autonomous_certified_gold",
+    "secondary": "wilson_exact_zero_failure_sample_gap"
+  },
+  "champions": 0,
+  "evidence_tier": "RUNTIME_PASS_BOUNDED",
+  "gold": 0,
+  "honesty_boundary": {
+    "glue_emit_not_real_mvc_coverage": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "no_lock_steal": true
+  },
+  "lane": "GOLD_FACTORY_CRITICAL",
+  "live_families": [
+    "faceparse_bisenet",
+    "birefnet_general",
+    "schp_atr",
+    "nuclio_pth_sam2",
+    "densepose_rcnn_r50_fpn_s1x"
+  ],
+  "live_families_count": 5,
+  "model": "cursor-grok-4.5-high-fast",
+  "mvc": {
+    "base_128_feed_covered_real": 22,
+    "base_128_feed_remaining_real": 106,
+    "by_fingerprint_top": {
+      "emit-path-cli-prove-batch-v1-20260720T171247Z": 24,
+      "emit-path-cli-prove-batch-v1-20260720T171322Z": 24,
+      "emit-path-cli-prove-batch-v1-20260720T171454Z": 32,
+      "emit-path-cli-prove-batch-v1-20260720T171547Z": 50,
+      "emit-path-cli-prove-batch-v1-20260720T171637Z": 96,
+      "multiprovider-local-cuda-tournament-20260720-v1": 27,
+      "tournament-emit-batch-v1-20260720T171248Z": 16,
+      "tournament-emit-batch-v1-20260720T171323Z": 16,
+      "tournament-emit-batch-v1-20260720T171548Z": 30,
+      "tournament-emit-batch-v1-20260720T171603Z": 32,
+      "tournament-emit-batch-v1-20260720T171637Z": 20,
+      "tournament-emit-batch-v1-20260720T171640Z": 21
+    },
+    "expanded_feed_covered_real": 23,
+    "expanded_feed_remaining_real": 233,
+    "expanded_feed_total": 256,
+    "peak_reported": 51,
+    "pool_unique_all_fps": 377,
+    "pool_unique_real_multiprovider_fp": 25,
+    "post_hard_qa_live_approx": 43
+  },
+  "recorded_at": "2026-07-20T17:18:40.564212Z",
+  "report": {
+    "MVC_128_feed_real": 22,
+    "MVC_128_feed_remaining_real": 106,
+    "MVC_expanded_feed_real": 23,
+    "MVC_expanded_feed_remaining_real": 233,
+    "MVC_expanded_feed_total": 256,
+    "MVC_peak": 51,
+    "MVC_pool_all_fps_unique": 377,
+    "MVC_pool_real_fp_unique": 25,
+    "MVC_post_hard_qa_live": 43,
+    "blocker": "no_autonomous_certified_gold; GPU-seq tournament emit in flight (batch_b); remaining/full-feed waiters queued",
+    "champions": 0,
+    "gold": 0,
+    "live_families": 5,
+    "live_family_ids": [
+      "faceparse_bisenet",
+      "birefnet_general",
+      "schp_atr",
+      "nuclio_pth_sam2",
+      "densepose_rcnn_r50_fpn_s1x"
+    ]
+  },
+  "schema_version": "1.1.0",
+  "self_sha256": "6a21310808559ef90d89e13f3c3f7965c2e8aa7ca8ed27b0e236eb1016c284e2"
+}

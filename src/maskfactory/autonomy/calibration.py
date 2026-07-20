@@ -15,7 +15,7 @@ import yaml
 from ..datasets.authority import require_partition_capability
 from ..qa.checks import run_qc001_010
 from ..truth_tiers import validate_truth_tier_policy
-from ..validation import validate_document
+from ..validation import canonical_document_sha256, validate_document
 from .risk_buckets import (
     RiskBucketError,
     canonical_sha256,
@@ -25,6 +25,12 @@ from .risk_buckets import (
 from .stability import StabilityError, load_stability_policy, verify_stability_evidence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+# Governed autonomous-gold admission profile (approved amendment authority
+# replacement). Additive to the human-anchor path; never weakens Wilson math.
+AUTONOMOUS_GOLD_PROFILE_PATH = Path("configs/autonomy_autonomous_gold_profile.yaml")
+AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA = "2.0.0-autonomous"
+AUTONOMOUS_GOLD_AUTHORITY = "autonomous_certified_gold_profile"
 
 
 class AutonomyCalibrationError(RuntimeError):
@@ -568,6 +574,7 @@ def verify_autonomy_certificate(
     pipeline_fingerprint: str,
     risk_bucket: str | None = None,
     allow_legacy: bool = False,
+    allow_autonomous_profile: bool = False,
     now: datetime | None = None,
 ) -> tuple[bool, str]:
     if instance_context not in {"solo", "duo", "small_group"}:
@@ -580,6 +587,14 @@ def verify_autonomy_certificate(
             return False, "legacy_certificate_not_authoritative_for_autonomous_gold"
         if certificate.get("audit_authority") != "human_approved_gold_only":
             return False, "certificate_human_anchor_authority_missing"
+    elif schema_version == AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA:
+        # Governed autonomous-gold admission authority (approved amendment).
+        # Default-off: the hot tournament path only honors it when the caller
+        # explicitly opts in via ``allow_autonomous_profile``.
+        if not allow_autonomous_profile:
+            return False, "autonomous_profile_not_enabled"
+        if certificate.get("audit_authority") != AUTONOMOUS_GOLD_AUTHORITY:
+            return False, "certificate_autonomous_authority_missing"
     elif schema_version != "2.0.0" or certificate.get("audit_authority") != "human_anchor_gold":
         return False, "certificate_human_anchor_authority_missing"
     claimed = certificate.get("sha256")
@@ -608,6 +623,219 @@ def verify_autonomy_certificate(
     if current >= expires:
         return False, "certificate_expired"
     return True, "certificate_valid"
+
+
+def load_autonomous_gold_profile(
+    path: Path = AUTONOMOUS_GOLD_PROFILE_PATH,
+) -> dict[str, Any]:
+    """Load and hash-verify the governed autonomous-gold admission profile."""
+    resolved = _project_path(path)
+    document = yaml.safe_load(resolved.read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise AutonomyCalibrationError("autonomous-gold profile is not a mapping")
+    if (
+        document.get("schema_version") != "1.0.0"
+        or document.get("profile_id") != "maskfactory-autonomous-certified-gold-admission-v1"
+        or document.get("enabled") is not True
+        or document.get("authority") != AUTONOMOUS_GOLD_AUTHORITY
+    ):
+        raise AutonomyCalibrationError("autonomous-gold profile identity is invalid")
+    expected = canonical_document_sha256(document, excluded_top_level_fields=("profile_sha256",))
+    if document.get("profile_sha256") != expected:
+        raise AutonomyCalibrationError("autonomous-gold profile hash mismatch")
+    replacement = document.get("authority_replacement")
+    floors = document.get("statistical_floors")
+    if not isinstance(replacement, dict) or not isinstance(floors, dict):
+        raise AutonomyCalibrationError("autonomous-gold profile contract is incomplete")
+    if (
+        replacement.get("does_not_weaken_wilson_math") is not True
+        or replacement.get("preserves_exact_bounds") is not True
+        or replacement.get("never_trains_against_human_anchor_holdout") is not True
+        or int(document.get("independent_provider_families_minimum", 0)) < 3
+        or document.get("require_candidate_stability") is not True
+        or document.get("require_perturbation_stability") is not True
+        or document.get("require_complete_map_hard_veto_pass") is not True
+        or not 0.95 <= float(floors.get("confidence_level", 0)) < 1
+        or int(floors.get("minimum_autonomous_verified_per_risk_bucket", 0)) < 1
+        or not 0 < float(floors.get("maximum_false_accept_upper_bound", 0)) <= 0.01
+        or not 0 < float(floors.get("maximum_serious_false_accept_upper_bound", 0)) <= 0.005
+        or floors.get("aggregate_false_accept_bound_method") != "one_sided_wilson"
+        or floors.get("serious_false_accept_bound_method") != "exact_zero_failure"
+        or int(floors.get("maximum_certificate_age_days", 0)) <= 0
+    ):
+        raise AutonomyCalibrationError("autonomous-gold profile floors are invalid")
+    return document
+
+
+_AUTONOMOUS_RECORD_FIELDS = {
+    "record_id",
+    "image_id",
+    "label",
+    "context",
+    "risk_bucket",
+    "pipeline_fingerprint",
+    "machine_accepted",
+    "independent_family_count",
+    "cross_family_disagreement",
+    "serious_cross_family_disagreement",
+    "candidate_stability_pass",
+    "perturbation_stability_pass",
+    "complete_map_hard_veto_pass",
+    "machine_lifecycle_path",
+    "machine_lifecycle_sha256",
+    "machine_mask_path",
+    "machine_mask_sha256",
+}
+
+
+def build_autonomous_gold_certificate(
+    corpus_path: Path,
+    *,
+    label: str,
+    context: str,
+    instance_context: str = "solo",
+    risk_bucket: str | None = None,
+    pipeline_fingerprint: str,
+    profile: Mapping[str, Any] | None = None,
+    now: datetime | None = None,
+    machine_artifacts_root: Path = Path("runs"),
+    machine_authority_validator: MachineAuthorityValidator | None = None,
+) -> dict[str, Any]:
+    """Mint an autonomous-gold certificate from independent multi-provider agreement.
+
+    Replaces the human-audit authority with the approved autonomous authority
+    (independent cross-family agreement + stability + hard-veto QA) while keeping
+    the exact one-sided Wilson and zero-failure bounds unchanged. Fails closed on
+    thin evidence; never fabricates samples.
+    """
+    profile_doc = dict(profile) if profile is not None else load_autonomous_gold_profile()
+    floors = profile_doc["statistical_floors"]
+    families_minimum = int(profile_doc["independent_provider_families_minimum"])
+    bucket = risk_bucket or context
+    if instance_context not in {"solo", "duo", "small_group"}:
+        raise AutonomyCalibrationError("autonomous certificate instance context is invalid")
+    if any(
+        not isinstance(value, str) or not value.strip()
+        for value in (label, context, bucket, pipeline_fingerprint)
+    ):
+        raise AutonomyCalibrationError("autonomous certificate scope is empty")
+    raw = Path(corpus_path).read_bytes()
+    document = json.loads(raw)
+    if set(document) != {"schema_version", "frozen", "image_disjoint", "records"}:
+        raise AutonomyCalibrationError("autonomous corpus has the wrong top-level shape")
+    if document["schema_version"] != "1.0.0" or document["frozen"] is not True:
+        raise AutonomyCalibrationError("autonomous corpus must be schema 1.0.0 and frozen")
+    if (
+        profile_doc["require_image_disjoint_corpus"] is True
+        and document["image_disjoint"] is not True
+    ):
+        raise AutonomyCalibrationError("autonomous corpus is not image-disjoint")
+    records = [
+        record
+        for record in document["records"]
+        if isinstance(record, dict)
+        and record.get("risk_bucket", record.get("context")) == bucket
+        and record.get("machine_accepted") is True
+    ]
+    if any(set(record) != _AUTONOMOUS_RECORD_FIELDS for record in records):
+        raise AutonomyCalibrationError("autonomous corpus record has the wrong shape")
+    if len({record["record_id"] for record in records}) != len(records):
+        raise AutonomyCalibrationError("autonomous record IDs are not unique")
+    if len({record["image_id"] for record in records}) != len(records):
+        raise AutonomyCalibrationError("autonomous images are not disjoint")
+    validate_machine = machine_authority_validator or verify_machine_audit_record
+    eligible: list[dict[str, Any]] = []
+    for record in records:
+        if (
+            not isinstance(record["independent_family_count"], int)
+            or not isinstance(record["cross_family_disagreement"], bool)
+            or not isinstance(record["serious_cross_family_disagreement"], bool)
+            or (
+                record["serious_cross_family_disagreement"] is True
+                and record["cross_family_disagreement"] is not True
+            )
+            or any(
+                not isinstance(record[key], bool)
+                for key in (
+                    "candidate_stability_pass",
+                    "perturbation_stability_pass",
+                    "complete_map_hard_veto_pass",
+                )
+            )
+            or any(
+                not isinstance(record[key], str)
+                or len(record[key]) != 64
+                or any(character not in "0123456789abcdef" for character in record[key])
+                for key in ("machine_lifecycle_sha256", "machine_mask_sha256")
+            )
+        ):
+            raise AutonomyCalibrationError("autonomous record authority is invalid")
+        if profile_doc["require_exact_pipeline_fingerprint"] is True and (
+            record["pipeline_fingerprint"] != pipeline_fingerprint
+        ):
+            raise AutonomyCalibrationError("autonomous corpus pipeline fingerprint mismatch")
+        validate_machine(record, Path(machine_artifacts_root))
+        # A sample is autonomously VERIFIED only when it clears every independence
+        # and stability gate; those that don't are simply not admitted to the set.
+        if (
+            record["independent_family_count"] >= families_minimum
+            and record["candidate_stability_pass"] is True
+            and record["perturbation_stability_pass"] is True
+            and record["complete_map_hard_veto_pass"] is True
+        ):
+            eligible.append(record)
+    sample_count = len(eligible)
+    false_accepts = sum(record["cross_family_disagreement"] is True for record in eligible)
+    serious_false_accepts = sum(
+        record["serious_cross_family_disagreement"] is True for record in eligible
+    )
+    confidence = float(floors["confidence_level"])
+    false_upper = _wilson_upper(false_accepts, sample_count, confidence)
+    serious_upper = _exact_zero_failure_upper(serious_false_accepts, sample_count, confidence)
+    failures: list[str] = []
+    minimum_floor = int(floors["minimum_autonomous_verified_per_risk_bucket"])
+    if sample_count < minimum_floor:
+        failures.append("insufficient_autonomous_verified_samples")
+    if false_upper > float(floors["maximum_false_accept_upper_bound"]):
+        failures.append("false_accept_upper_bound_exceeded")
+    if serious_upper > float(floors["maximum_serious_false_accept_upper_bound"]):
+        failures.append("serious_false_accept_upper_bound_exceeded")
+    issued = (now or datetime.now(UTC)).astimezone(UTC)
+    expires = issued + timedelta(days=int(floors["maximum_certificate_age_days"]))
+    certificate = {
+        "schema_version": AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA,
+        "audit_authority": AUTONOMOUS_GOLD_AUTHORITY,
+        "profile_id": profile_doc["profile_id"],
+        "profile_sha256": profile_doc["profile_sha256"],
+        "certificate_id": hashlib.sha256(
+            f"{bucket}\0{instance_context}\0{pipeline_fingerprint}\0auto\0"
+            f"{hashlib.sha256(raw).hexdigest()}".encode()
+        ).hexdigest()[:24],
+        "risk_bucket": bucket,
+        "instance_context": instance_context,
+        "covered_labels": sorted({str(record["label"]) for record in eligible}),
+        "covered_contexts": sorted({str(record["context"]) for record in eligible}),
+        "pipeline_fingerprint": pipeline_fingerprint,
+        "corpus_sha256": hashlib.sha256(raw).hexdigest(),
+        "independent_provider_families_minimum": families_minimum,
+        "sample_count": sample_count,
+        "false_accept_count": false_accepts,
+        "serious_false_accept_count": serious_false_accepts,
+        "confidence_level": confidence,
+        "minimum_audits_per_risk_bucket": minimum_floor,
+        "aggregate_false_accept_bound_method": "one_sided_wilson",
+        "serious_false_accept_bound_method": "exact_zero_failure",
+        "false_accept_upper_bound": false_upper,
+        "serious_false_accept_upper_bound": serious_upper,
+        "issued_at": issued.isoformat().replace("+00:00", "Z"),
+        "expires_at": expires.isoformat().replace("+00:00", "Z"),
+        "passed": not failures,
+        "failures": failures,
+    }
+    certificate["sha256"] = hashlib.sha256(
+        json.dumps(certificate, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    return certificate
 
 
 def verify_human_gold_audit_record(record: dict[str, Any], packages_root: Path) -> None:
@@ -755,9 +983,13 @@ def _sha256_file(path: Path) -> str:
 
 
 __all__ = [
+    "AUTONOMOUS_GOLD_AUTHORITY",
+    "AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA",
     "AutonomyCalibrationError",
+    "build_autonomous_gold_certificate",
     "build_autonomy_certificate",
     "build_autonomy_pipeline_fingerprint",
+    "load_autonomous_gold_profile",
     "load_autonomy_config",
     "verify_autonomy_certificate",
     "verify_human_gold_audit_record",

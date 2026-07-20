@@ -1,0 +1,75 @@
+# syntax=docker/dockerfile:1.7
+#
+# MaskFactory TRAIN GPU runtime (governed, private/personal/noncommercial).
+#
+# Purpose: satisfy `maskfactory training-doctor` INSIDE a container with real
+# CUDA on the host NVIDIA stack (RTX 5060, sm_120), bypassing the corrupt WSL
+# Ubuntu-22.04 ext4 VHD. This image compiles the full MMCV ops extension
+# (mmcv._ext) from source for compute capability 12.0, exactly as required by
+# env/openmmlab_training_stack.lock.json.
+#
+# This is a heavy from-source build (nvcc compile of MMCV ops for sm_120). It is
+# reproducible and governed; it is NOT expected to be fast. The base uses the
+# CUDA 12.8 devel image so nvcc is present for the ops build.
+#
+# Build:
+#   docker build -f docker/Dockerfile.train -t maskfactory/train:cu128 .
+# Probe inside:
+#   docker run --rm --gpus all maskfactory/train:cu128 \
+#     python -m maskfactory training-doctor
+
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04 AS train
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    MASKFACTORY_CONTAINER_RUNTIME=train_cu128 \
+    # MMCV ops build environment (mirrors env/openmmlab_training_stack.lock.json).
+    FORCE_CUDA=1 \
+    MMCV_WITH_OPS=1 \
+    TORCH_CUDA_ARCH_LIST=12.0 \
+    CUDA_HOME=/usr/local/cuda
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3.11 python3.11-dev python3.11-venv python3-pip \
+        git build-essential ninja-build ca-certificates \
+        libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/bin/python3.11 /usr/local/bin/python \
+    && ln -sf /usr/bin/python3.11 /usr/local/bin/python3
+
+RUN python -m pip install --upgrade pip setuptools wheel
+
+# torch/torchvision cu128 first so MMCV builds its ops against this ABI.
+RUN pip install --index-url https://download.pytorch.org/whl/cu128 \
+    torch==2.11.0+cu128 torchvision==0.26.0+cu128
+
+# OpenMMLab core: mmengine + mmseg + mmdet wheels; MMCV built from source pinned
+# commit for sm_120 (env/openmmlab_training_stack.lock.json).
+RUN pip install mmengine==0.10.7
+RUN pip install \
+        "numpy==1.26.4" \
+        addict==2.4.0 yapf==0.43.0 termcolor==3.3.0 \
+        prettytable==3.16.0 terminaltables==3.1.10 ftfy==6.3.1
+RUN git clone https://github.com/open-mmlab/mmcv.git /opt/mmcv \
+    && cd /opt/mmcv \
+    && git checkout 57c4e25e06e2d4f8a9357c84bcd24089a284dc88 \
+    && MMCV_WITH_OPS=1 FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=12.0 \
+       pip install -v -e . \
+    && python -c "import mmcv._ext; print('mmcv._ext OK')"
+RUN pip install --no-deps mmsegmentation==1.2.2 mmdet==3.3.0
+
+# Curated serve/doctor subset + MaskFactory package (needed for MMSeg dataset /
+# transform / metric registration checks in training-doctor).
+COPY docker/requirements-serve.txt /tmp/requirements-serve.txt
+RUN pip install -r /tmp/requirements-serve.txt
+WORKDIR /opt/maskfactory
+COPY pyproject.toml README.md* /opt/maskfactory/
+COPY src /opt/maskfactory/src
+RUN pip install --no-deps -e .
+
+WORKDIR /workspace
+CMD ["python", "-m", "maskfactory", "training-doctor"]

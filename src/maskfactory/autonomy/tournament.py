@@ -76,6 +76,7 @@ def run_candidate_tournament(
     instance_context: str = "solo",
     multi_person_gate: MultiPersonCandidateGateResult | None = None,
     multi_person_scope: MultiPersonCertificationScopeResult | None = None,
+    allow_autonomous_profile: bool = False,
 ) -> TournamentDecision:
     if not candidates:
         raise AutonomyTournamentError("candidate tournament requires at least one candidate")
@@ -125,6 +126,7 @@ def run_candidate_tournament(
         instance_context=instance_context,
         pipeline_fingerprint=pipeline_fingerprint,
         risk_bucket=(multi_person_scope.risk_bucket if multi_person_scope is not None else None),
+        allow_autonomous_profile=allow_autonomous_profile,
     )
     if not eligible:
         return _decision(

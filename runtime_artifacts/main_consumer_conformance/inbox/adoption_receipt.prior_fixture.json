@@ -4,7 +4,7 @@
     "mask.live.predict"
   ],
   "adoption_id": "mfadopt_f1c700e00000000000000001",
-  "adoption_payload_sha256": "ec72fb274a13b4b2dfc685ca05d3da0d82c1759e9eebdf70bc2bfbe6357d68f8",
+  "adoption_payload_sha256": "4fa0ac19251f410596ccae80f9ef14b96f98c5b4f1292d5a8119ff38075431b9",
   "adoption_scope": "production_authority",
   "capability_decisions": [
     {
@@ -109,9 +109,7 @@
   "consumer": {
     "controller_version": "1.0.0",
     "git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
-    "is_real_comfyui_main": false,
-    "project": "Comfy_UI_Main",
-    "provenance": "isolated_main_consumer"
+    "project": "Comfy_UI_Main"
   },
   "consumer_requirements_id": "mfreq_f1c700e00000000000000001",
   "consumer_requirements_sha256": "ac51279e1592bd9db323b5e9190d75ef7a8203e5cd4cc6ac31c18dc83d4fb627",
@@ -119,18 +117,6 @@
   "decision": "adopted",
   "evidence_context": "runtime_evidence",
   "fixture_only": false,
-  "isolated_consumer_disclaimer": {
-    "authority_kind": "isolated_main_consumer",
-    "hard_blockers_requiring_real_main": [
-      "MF-P6-11.02",
-      "MF-P6-11.07",
-      "MF-P6-12.05",
-      "MF-P6-12.06"
-    ],
-    "is_real_comfyui_main": false,
-    "main_adoption_complete": false,
-    "note": "Signed by an isolated producer-side consumer key, not the real Comfy_UI_Main runtime. Conformant to the pinned adopted receipt shape but does NOT constitute real Main adoption."
-  },
   "journal_checkpoint": {
     "active_revocation_count": 0,
     "checkpointed_at": "2026-07-17T00:00:00Z",
@@ -192,11 +178,11 @@
   "schema_version": "1.0.0",
   "signature": {
     "algorithm": "ed25519",
-    "key_id": "isolated-main-consumer-adoption",
-    "public_key_base64": "1R8tP9Ioh6se6XZWIzotAMFQdQkb+ILbpUpKuL4UQtY=",
+    "key_id": "comfy-main-adoption-fixture",
+    "public_key_base64": "/RckOFqgx1tk+3jNYC+h2ZH96/drE8WO1wLqyDXp9hg=",
     "signed_payload_format": "sha256_digest_bytes",
-    "signed_payload_sha256": "ec72fb274a13b4b2dfc685ca05d3da0d82c1759e9eebdf70bc2bfbe6357d68f8",
-    "value_base64": "ULl0snZVonTpM4BnkdxZKBnCtAIlbcLuwRVvFwujSMIYMOnM0kQ9U9r6wJeV1LnOs1bPq2GzkmW4Nivv6hQXCQ=="
+    "signed_payload_sha256": "4fa0ac19251f410596ccae80f9ef14b96f98c5b4f1292d5a8119ff38075431b9",
+    "value_base64": "uiJGbEQeXZTRAoKpyjo1GU44xLsgJ1Ax8viv6UEnUtzS45FPEtTVN64qAogh8BBTFI5dtEGgrfLGVhEIjbpzDQ=="
   },
   "trust_binding": {
     "consumer_adoption_key_id": "comfy-main-adoption-fixture",

@@ -137,6 +137,33 @@ Expect driver-visible RTX 5060 Laptop GPU. Failure is typed infrastructure evide
 
 ---
 
+## 6b. Governed serve/train GPU images (`docker/compose.gpu.yml`)
+
+These images run the CUDA `maskfactory serve` and `training-doctor` runtimes as host-NVIDIA containers, bypassing the corrupt WSL Ubuntu-22.04 ext4 VHD.
+
+| Image | Dockerfile | Purpose |
+|-------|-----------|---------|
+| `maskfactory/serve:cu128` | `docker/Dockerfile.serve` | Mode-B `serve` `/health`,`/models` (torch cu128, no nvcc). |
+| `maskfactory/train:cu128` | `docker/Dockerfile.train` | `training-doctor`; builds `mmcv._ext` from source for sm_120 (CUDA 12.8 **devel** base, nvcc present) per `env/openmmlab_training_stack.lock.json`. |
+
+**Build-safety (READ FIRST):** the train image is a heavy from-source `nvcc` compile and the serve image pulls ~7 GiB of torch+CUDA wheels. A large install has crashed the Docker daemon on the constrained WSL2 backend before. **Do not** kick off these builds when disk is tight (<~30 GiB free) or a sibling build/reclaim is in flight. Build deliberately, out of band, with WSL2 memory/disk headroom:
+
+```powershell
+docker compose -f docker/compose.gpu.yml build maskfactory-train   # heavy sm_120 mmcv build
+docker compose -f docker/compose.gpu.yml run --rm maskfactory-train # training-doctor
+```
+
+**STATIC contract (no build, no engine, always safe):** verify that `Dockerfile.train` + the `maskfactory-train` compose service stay coherent with the runtime lock (torch pin, mmcv locked commit + `mmcv._ext` build, sm_120 arch list, OpenMMLab pins, `shm_size`, `pull_policy: never`, loopback):
+
+```powershell
+python -m maskfactory verify-docker-train-contract --output qa/live_verification/docker_train_contract_static_<ts>.json
+python tools/verify_docker_train_contract.py            # convenience wrapper
+```
+
+**LIVE train smoke (never builds):** `tools/smoke_docker_gpu_train.py` runs `training-doctor` inside the prebuilt image and **fails closed with `image_absent`** if `maskfactory/train:cu128` does not exist — it will never trigger the heavy build for you. `training-doctor` green in-container (`mmcv._ext` sm_120 + registered datasets/transforms/metric) is a live claim only that smoke may establish; the STATIC contract never asserts it.
+
+---
+
 ## 7. When the session MUST use Docker
 
 Use Docker (probe → start/repair → smoke → evidence) for any of:
@@ -182,6 +209,8 @@ Do **not** wait for Kevin to start containers if Docker Desktop is already runni
 | WSL distros | `wsl -l -v` |
 | Start Ubuntu WSL | `wsl -d Ubuntu-22.04` (only when needed) |
 | GPU in container | `docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi` |
+| Train image STATIC contract (safe) | `python -m maskfactory verify-docker-train-contract` |
+| Train image LIVE smoke (never builds) | `python tools/smoke_docker_gpu_train.py --output qa/live_verification/smoke_docker_gpu_train_<ts>.json` |
 
 ---
 

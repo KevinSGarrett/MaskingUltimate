@@ -1,3 +1,0 @@
-runtime(families): re-smoke 3 live CUDA families; fix BiRefNet Windows invoke
-
-Point birefnet/schp registry runners at ComfyUI local CUDA (copy-not-symlink), re-verify faceparse/birefnet/schp, and seal the >=3 family floor.

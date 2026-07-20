@@ -1,0 +1,109 @@
+{
+  "artifact_type": "sam2_family_gold_advance",
+  "authority": "autonomous_certified_gold_profile",
+  "evidence_tier": "RUNTIME_PASS_BOUNDED",
+  "gpu_sequencing": {
+    "no_foreign_eviction": true,
+    "ollama_model": "qwen2.5vl:7b",
+    "ollama_role": "critic_only_after_sam2",
+    "ollama_sequence": "qa/live_verification/_gpu_seq_ollama_critic_20260720T1153.json",
+    "ollama_sequence_sha256": "c0f30497b153eb9492fecd81d9d08b55486d851ed1f7c16b3e5027c8b1c4c0f6",
+    "order": [
+      "nuclio-sam2",
+      "ollama-vlm critic-only",
+      "unload ollama",
+      "reconfirm nuclio-sam2"
+    ],
+    "plan": "qa/live_verification/_gpu_plan_nuclio_sam2_gold_20260720T1152.json",
+    "plan_sha256": "435d925e1a8d75d1251366d1860f034361463c42b72f90f843d3b022975018d6",
+    "post_critic_sam2_wait": "qa/live_verification/_gpu_wait_nuclio_sam2_post_critic_20260720T1159.json",
+    "post_critic_sam2_wait_sha256": "90e7416a8c6b3d26470aec03c778ebb17bcb076820f51e94530544908c472930",
+    "wait": "qa/live_verification/_gpu_wait_nuclio_sam2_20260720T1151.json",
+    "wait_sha256": "4e05c3225a5cfb4b3cdda035c81f2910aa1cc23da6bb08b99e3631e3714e2019"
+  },
+  "honesty_boundary": {
+    "cpu_sam2_is_independent_of_local_cuda_sam2_1_large": true,
+    "families_online_does_not_mint_gold": true,
+    "no_image_builds": true,
+    "no_prune": true,
+    "no_volume_wipe": true,
+    "vlm_is_advisory_critic_only": true
+  },
+  "next_agent_step": "Tournament siblings may count nuclio_pth_sam2 as a live independent family. GPU-sequence remaining Comfy CUDA families + multi-provider tournament; Ollama qwen2.5vl:7b critic-only after SAM2 slot released.",
+  "ollama_critic": {
+    "checks_pass": true,
+    "latency_seconds": 122.217,
+    "may_approve_gold": false,
+    "may_author_masks": false,
+    "may_clear_blocks": false,
+    "measured_at": "2026-07-20T16:58:59.436494+00:00",
+    "model": "qwen2.5vl:7b",
+    "role": "qa_router_only_advisory",
+    "smoke_report": "qa/reports/ollama_vlm_smoke.json",
+    "smoke_report_sha256": "3506f850de609d054253757da21c417b52953a7ad3a734c87a71a80812d3052f",
+    "verdict": "pass"
+  },
+  "project_head_at_seal": "2d3e00cfe212a8dfda1f4d79496b09b32b805e5c",
+  "recorded_at": "2026-07-20T17:02:27.293476Z",
+  "runtime_probe": {
+    "cvat": {
+      "reachable": true,
+      "version": "2.24.0"
+    },
+    "docker_sam2": {
+      "container": "nuclio-nuclio-pth-sam2",
+      "healthy": true,
+      "ps_line": "nuclio-nuclio-pth-sam2\tUp 5 minutes (healthy)"
+    },
+    "gpu_policy": "Plan/GPU_SEQUENCING_AND_VRAM_BUDGET.md; sequential nuclio-sam2 then ollama-vlm critic-only; no foreign eviction; no image builds; no volume wipe"
+  },
+  "sam2_family": {
+    "checks": {
+      "binary_0_255": true,
+      "negative_point_background": true,
+      "nonempty_foreground": true,
+      "positive_point_foreground": true,
+      "shape_256x256": true
+    },
+    "container": {
+      "container": "nuclio-nuclio-pth-sam2",
+      "healthy": true,
+      "ps_line": "nuclio-nuclio-pth-sam2\tUp 5 minutes (healthy)"
+    },
+    "family_key": "nuclio_pth_sam2",
+    "foreground_pixels": 21491,
+    "function_id": "pth-sam2",
+    "function_name": "Segment Anything 2.1 (CPU)",
+    "kind": "independent_mask_source",
+    "latency_seconds": 32.513,
+    "measured_at": "2026-07-20T17:02:00.226203+00:00",
+    "runtime": "nuclio_cpu_interactor_via_cvat_2_24",
+    "smoke_report": "qa/reports/cvat_sam2_smoke.json",
+    "smoke_report_sha256": "71650ad030e12a171c301e7963807bd31896c24e3567773e513fd74b019f9c6c",
+    "task_id": 1
+  },
+  "schema_version": "1.0.0",
+  "seal_gate": {
+    "advances_gold_family_floor": true,
+    "force_registered_champions": false,
+    "minted_autonomous_certified_gold": false,
+    "minted_wilson_samples": false,
+    "rule": "seal_only_if_sam2_smoke_pass_advances_gold_family",
+    "sam2_smoke_pass": true
+  },
+  "self_sha256": "c46cdbfb03a66355200eb49cfe52b2b43849ada0e6e1b95e9b3af211a3166708",
+  "tournament_sibling_help": {
+    "claim": "SAM2 smoke PASS advances gold-factory family availability; does not mint gold",
+    "families_online_pointer": "qa/live_verification/families_online_tournament_sibling_latest.json",
+    "families_online_self_sha256": "c702355422848f79603ddae912033686c287ab4b3ee190d60bff8e62452a3bca",
+    "live_independent_mask_families": [
+      "faceparse_bisenet",
+      "birefnet_general",
+      "schp_atr",
+      "nuclio_pth_sam2"
+    ],
+    "live_independent_mask_families_count": 4,
+    "meets_tournament_family_floor": true,
+    "purpose": "Prove nuclio_pth_sam2 is a live independent family siblings can count toward the >=3 family floor / optional fourth family"
+  }
+}

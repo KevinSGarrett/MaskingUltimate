@@ -1,0 +1,58 @@
+{
+  "baseline_free_mib": 225,
+  "consumer": "ollama-vlm",
+  "decision": {
+    "consumer": "ollama-vlm",
+    "decision": "wait_lock",
+    "foreign_holders": [],
+    "free_mib": 1559,
+    "lock_state": "active",
+    "reasons": [
+      "free=1559 MiB, required=7168 MiB, safety=512 MiB -> insufficient",
+      "gpu.lock held by purpose='pipeline' pid=35332 age=226s; serialize behind current owner",
+      "timed out after 120s waiting for a GPU slot"
+    ],
+    "required_mib": 7168,
+    "safety_mib": 512
+  },
+  "poll_trail": [
+    {
+      "at": "2026-07-20T16:56:03.712775Z",
+      "decision": "wait_lock",
+      "free_mib": 278
+    },
+    {
+      "at": "2026-07-20T16:56:23.197302Z",
+      "decision": "wait_lock",
+      "free_mib": 267
+    },
+    {
+      "at": "2026-07-20T16:56:53.432054Z",
+      "decision": "wait_lock",
+      "free_mib": 1559
+    }
+  ],
+  "reclaims": [
+    {
+      "consumer": "ollama-text",
+      "detail": "keep_alive=0 accepted for qwen2.5:7b-instruct (done_reason=unload)",
+      "free_after_mib": 165,
+      "free_before_mib": 390,
+      "freed_mib": -225,
+      "method": "ollama_unload",
+      "status": "ok",
+      "target": "qwen2.5:7b-instruct"
+    },
+    {
+      "consumer": "nuclio-sam2",
+      "detail": "restarted container nuclio-nuclio-pth-sam2",
+      "free_after_mib": 304,
+      "free_before_mib": 172,
+      "freed_mib": 132,
+      "method": "docker_restart",
+      "status": "ok",
+      "target": "nuclio-nuclio-pth-sam2"
+    }
+  ],
+  "sequenced_at": "2026-07-20T16:56:53.441259Z"
+}

@@ -1,0 +1,15 @@
+{
+  "advances_gold_family_floor": true,
+  "artifact_type": "sam2_family_gold_advance_latest",
+  "cvat_version": "2.24.0",
+  "family_key": "nuclio_pth_sam2",
+  "foreground_pixels": 21491,
+  "latency_seconds": 32.513,
+  "minted_gold": false,
+  "recorded_at": "2026-07-20T17:02:27.293476Z",
+  "sam2_smoke_pass": true,
+  "schema_version": "1.0.0",
+  "seal_path": "qa/live_verification/sam2_family_gold_advance_20260720T1153.json",
+  "self_sha256": "e9a4895bafcf82f9927e9d8060c465c41aeef65c8ef6cd12273a1f1fafc3042d",
+  "self_sha256_of_seal": "c46cdbfb03a66355200eb49cfe52b2b43849ada0e6e1b95e9b3af211a3166708"
+}

@@ -52,6 +52,9 @@ from maskfactory.io.hashing import sha256_file  # noqa: E402
 from maskfactory.io.png_strict import write_binary_mask  # noqa: E402
 from maskfactory.providers.contracts import ProviderIdentity  # noqa: E402
 from maskfactory.qa.metrics import iou  # noqa: E402
+from maskfactory.serve.providers import production_sam2_runtime_options  # noqa: E402
+from maskfactory.stages.s05_geometry import PromptPlan  # noqa: E402
+from maskfactory.stages.s07_sam2 import MODEL_CONFIGS, WslSam2Provider  # noqa: E402
 
 LABEL = "torso"
 CONTEXT = "solo"
@@ -205,7 +208,26 @@ def _largest_component(mask: np.ndarray) -> np.ndarray:
 
 def _majority(masks: list[np.ndarray]) -> np.ndarray:
     stack = np.stack([(m != 0).astype(np.uint8) for m in masks], axis=0)
-    return _largest_component(((stack.sum(axis=0) >= 2).astype(np.uint8)) * 255)
+    threshold = len(masks) // 2 + 1
+    return _largest_component(((stack.sum(axis=0) >= threshold).astype(np.uint8)) * 255)
+
+
+def _bbox_from_mask(mask: np.ndarray, *, pad: int = 8) -> tuple[int, int, int, int]:
+    binary = mask != 0
+    if not binary.any():
+        height, width = mask.shape[:2]
+        return (0, 0, max(1, width), max(1, height))
+    ys, xs = np.where(binary)
+    height, width = binary.shape
+    left = max(0, int(xs.min()) - pad)
+    top = max(0, int(ys.min()) - pad)
+    right = min(width, int(xs.max()) + 1 + pad)
+    bottom = min(height, int(ys.max()) + 1 + pad)
+    if right <= left:
+        right = min(width, left + 1)
+    if bottom <= top:
+        bottom = min(height, top + 1)
+    return (left, top, right, bottom)
 
 
 class BiRefNetRunner:
@@ -409,6 +431,69 @@ class FaceparseRunner:
         torch.cuda.empty_cache()
 
 
+class Sam2LocalCudaRunner:
+    """Governed local-CUDA SAM2.1 large with BiRefNet box prior (OOM → base_plus)."""
+
+    def __init__(self, work_dir: Path) -> None:
+        self.work_dir = Path(work_dir)
+        self.work_dir.mkdir(parents=True, exist_ok=True)
+        options = production_sam2_runtime_options()
+        self.provider = WslSam2Provider(
+            {
+                "sam2.1_hiera_large": SAM2_LARGE,
+                "sam2.1_hiera_base_plus": SAM2_BASE,
+            },
+            dict(MODEL_CONFIGS),
+            self.work_dir,
+            **options,
+        )
+        self.model_name = "sam2.1_hiera_large"
+
+    def infer(self, image_path: Path, prior_mask: np.ndarray) -> np.ndarray:
+        image, _original = _load_working_rgb(image_path)
+        rgb = np.asarray(image)
+        height, width = rgb.shape[:2]
+        prior = _resize_nn(prior_mask, (height, width))
+        try:
+            return self._predict(rgb, prior, model=self.model_name)
+        except Exception as exc:  # noqa: BLE001 — OOM / load fall back once
+            if self.model_name == "sam2.1_hiera_large" and (
+                "out of memory" in str(exc).lower() or "CUDA" in str(exc)
+            ):
+                torch.cuda.empty_cache()
+                self.model_name = "sam2.1_hiera_base_plus"
+                return self._predict(rgb, prior, model=self.model_name)
+            raise
+
+    def _predict(self, rgb: np.ndarray, prior: np.ndarray, *, model: str) -> np.ndarray:
+        embedding = self.provider.embed(rgb, model=model, precision="fp16")
+        try:
+            box = _bbox_from_mask(prior)
+            cx = (box[0] + box[2]) // 2
+            cy = (box[1] + box[3]) // 2
+            plan = PromptPlan(
+                label=LABEL,
+                box_xyxy=box,
+                positive_points=((cx, cy),),
+                negative_points=(),
+                prior_quality="low",
+                multimask_output=True,
+            )
+            candidates = self.provider.predict(embedding, plan, multimask_output=True)
+            best = max(candidates, key=lambda item: item.predicted_iou)
+            return ((best.logits > 0).astype(np.uint8)) * 255
+        finally:
+            self.provider.close(embedding)
+            torch.cuda.empty_cache()
+
+    def close(self) -> None:
+        torch.cuda.empty_cache()
+
+
+# Glue-contract alias used by tournament_families.assert_cli_invokes_configured_families.
+Sam2Runner = Sam2LocalCudaRunner
+
+
 def _identities() -> tuple[ProviderIdentity, ...]:
     runtime = "local_cuda_comfyui_torch_2.11.0+cu128"
     return (
@@ -431,6 +516,13 @@ def _identities() -> tuple[ProviderIdentity, ...]:
             role="face_parser",
             model_family="faceparse",
             source_commit="d2e684c",
+            runtime_fingerprint=runtime,
+        ),
+        ProviderIdentity(
+            provider_key="sam2_1_large",
+            role="interactive_segmenter",
+            model_family="sam2",
+            source_commit="2b90b9f5ceec907a1c18123530e92e794ad901a4",
             runtime_fingerprint=runtime,
         ),
     )
@@ -585,7 +677,7 @@ def main() -> int:
     # Admission / corpus assembly always scan production runs/, not the batch subdir.
     os.environ["MASKFACTORY_MACHINE_ROOT"] = str(production_machine_root)
 
-    # GPU-sequence: BiRefNet -> SCHP -> faceparse (never concurrent).
+    # GPU-sequence: BiRefNet -> SCHP -> faceparse -> SAM2 (never concurrent).
     biref = BiRefNetRunner()
     biref_masks: dict[str, np.ndarray] = {}
     for path in images:
@@ -604,6 +696,13 @@ def main() -> int:
         face_masks[str(path)] = face.infer(path)
     face.close()
 
+    sam2 = Sam2LocalCudaRunner(machine_root / "_sam2_work")
+    sam2_masks: dict[str, np.ndarray] = {}
+    for path in images:
+        key = str(path)
+        sam2_masks[key] = sam2.infer(path, biref_masks[key])
+    sam2.close()
+
     rows: list[dict[str, Any]] = []
     for path in images:
         key = str(path)
@@ -614,6 +713,7 @@ def main() -> int:
                     "birefnet_general": biref_masks[key],
                     "schp_atr": schp_masks[key],
                     "faceparse_bisenet": face_masks[key],
+                    "sam2_1_large": sam2_masks[key],
                 },
                 work_root=machine_root,
                 production_machine_root=production_machine_root,

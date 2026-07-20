@@ -1,0 +1,77 @@
+# Governed multi-provider tournament family invocation map.
+#
+# Smokes that prove a family is "online" are not enough — every CLI listed
+# under cli_tools MUST actually invoke each required family during a
+# tournament run (GPU-sequenced; never concurrent on the single 8 GiB card).
+#
+# Required core = 3 live local-CUDA mask families + SAM2.1 local-CUDA.
+
+schema_version: "1.0.0"
+map_id: multiprovider_tournament_families_v1
+authority: multiprovider_local_cuda_tournament_family_invocation
+required_minimum_independent_families: 3
+local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+
+families:
+  - provider_key: birefnet_general
+    model_family: birefnet
+    role: silhouette_provider
+    runtime: local_cuda
+    required: true
+    invocation_key: birefnet_general
+    runner: birefnet_runner
+
+  - provider_key: schp_atr
+    model_family: schp
+    role: parsing_provider
+    runtime: local_cuda
+    required: true
+    invocation_key: schp_atr
+    runner: schp_runner
+
+  - provider_key: faceparse_bisenet
+    model_family: faceparse
+    role: face_parser
+    runtime: local_cuda
+    required: true
+    invocation_key: faceparse_bisenet
+    runner: faceparse_runner
+
+  - provider_key: sam2_1_large
+    model_family: sam2
+    role: interactive_segmenter
+    runtime: local_cuda
+    required: true
+    invocation_key: sam2_1_large
+    runner: sam2_local_cuda_runner
+    box_prior: birefnet_general
+    checkpoint: models/sam2/sam2.1_hiera_large.pt
+    oom_fallback_checkpoint: models/sam2/sam2.1_hiera_base_plus.pt
+    source_path: models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4
+    dependency_site: models/runtime_cache/sam2_deps
+
+  - provider_key: densepose_rcnn_r50_fpn_s1x
+    model_family: densepose
+    role: geometry_provider
+    runtime: wsl_cuda
+    required: false
+    invocation_key: densepose_rcnn_r50_fpn_s1x
+    runner: densepose_wsl_runner
+    checkpoint: models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl
+
+cli_tools:
+  - tools/run_multiprovider_gold_tournament.py
+  - tools/run_gold_volume_multiprovider_tournament.py
+
+gpu_sequence:
+  - birefnet_general
+  - schp_atr
+  - faceparse_bisenet
+  - sam2_1_large
+
+claim_boundary:
+  densepose_optional_independent_family: true
+  wiring_only: false
+  does_not_claim_gold: true
+  does_not_claim_champions: true
+  families_online_smoke_is_not_tournament_invocation: true

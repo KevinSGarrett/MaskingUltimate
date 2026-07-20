@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "output_sha256": "70567801d4e3fe6bc5ffde312d412369b3ca95cda88219aa737bb9ea6d469143",
+  "image_shape": [
+    1080,
+    810
+  ],
+  "instance_count": 5,
+  "boxes": [
+    [
+      672.034,
+      391.912,
+      810.0,
+      879.692
+    ],
+    [
+      48.832,
+      400.838,
+      245.244,
+      904.026
+    ],
+    [
+      219.951,
+      400.477,
+      347.466,
+      858.86
+    ],
+    [
+      2.175,
+      561.681,
+      76.937,
+      879.425
+    ],
+    [
+      116.009,
+      729.96,
+      157.147,
+      819.637
+    ]
+  ],
+  "scores": [
+    0.999564,
+    0.99927,
+    0.998023,
+    0.95278,
+    0.838524
+  ],
+  "tensor_shapes": {
+    "coarse_segm": [
+      5,
+      2,
+      112,
+      112
+    ],
+    "fine_segm": [
+      5,
+      25,
+      112,
+      112
+    ],
+    "u": [
+      5,
+      25,
+      112,
+      112
+    ],
+    "v": [
+      5,
+      25,
+      112,
+      112
+    ]
+  },
+  "fine_label_min": 1,
+  "fine_label_max": 24,
+  "fine_nonzero_fraction": 1.0,
+  "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "capability": [
+    12,
+    0
+  ],
+  "family": "densepose_rcnn_r50_fpn_s1x",
+  "runtime": "wsl_cuda_miniforge_maskfactory",
+  "runner": "densepose_r50_cuda_wsl",
+  "matches_registry_smoke_sha256": true,
+  "recorded_at": "2026-07-20T17:03:53.046069Z",
+  "wsl_python": "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+  "config": "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml",
+  "checkpoint": "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl"
+}

@@ -9954,3 +9954,24 @@ pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean.
 - No live 1k pilot / 10k ablation / accepted coverage / gold / doctor-green / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest; tracker.py set/validate/report; seal; git commit/push
+
+## 2026-07-20 00:18 UTC - NEEDS_KEVIN operator action list (open; none claimed done)
+
+**Lane:** Operator-facing residual action list after residual-blocker inventory + milestone proof tiers
+**Result:** Action list only - NEVER claims disk reclaim, WSL repair, CVAT SOP-1, DVC push, Main adoption, Meta terms/live SAM3.1, cloud-teacher budget, or multi-person sources are done
+
+### What landed
+- qa/live_verification/needs_kevin_actions_20260719.json: concise Kevin action list grouped by disk reclaim, WSL VHD repair, CVAT human-anchor SOP, DVC AWS (+B1 restore seed), Main adoption artifacts, SAM3.1/Meta terms, cloud-teacher budget, multi-person sources
+- Each action includes exact command(s) or expected artifact path plus tracker items unblocked
+- status=OPEN_NONE_COMPLETE; authority=operator_action_list_only_none_of_these_actions_are_claimed_done
+
+### Evidence
+- qa/live_verification/needs_kevin_actions_20260719.json file_sha256 0f785cb1a9d3a6d2846cdb17bb98c5ab092b9374bf755813ec53caeeceb9c17c
+- Sources: residual_blocker_inventory_20260719.json seal_sha256 256567020d952a1608d537872eadd988a5c5ff51b7a77d0dec8cb24f7255898b; milestone_proof_tiers_20260719.json self_sha256 66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e
+
+### Honest non-claims
+- No action in the list is complete
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+- No DVC S3 push / B1 restore / CVAT human_approved_gold / live SAM3.1 CUDA smoke / paid cloud-teacher / multi-person demo
+
+**Commands:** author needs_kevin_actions JSON from residual inventory + milestone proof tiers; OPS_LOG append; git commit (preserve other WIP)

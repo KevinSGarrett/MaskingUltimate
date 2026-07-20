@@ -1,0 +1,18 @@
+{
+  "artifact_type": "tournament_sample_set_sibling_feed_latest",
+  "counts_by_source": {
+    "characters": 7,
+    "daz": 3,
+    "maskedwarehouse": 62,
+    "reference_library": 16,
+    "ultimate_masking_reference_images": 40
+  },
+  "feed_path": "qa/live_verification/tournament_sample_set_sibling_feed_20260720T1650.json",
+  "feed_self_sha256": "9520147d76ff330a7041365d2d72e8d7129462510785775269e66024bb3eac4d",
+  "recorded_at": "2026-07-20T16:53:05.136025Z",
+  "sample_count": 128,
+  "sample_set_path": "qa/live_verification/tournament_sample_set_gold_volume_20260720T1650.json",
+  "sample_set_self_sha256": "21ba6829fedf2369d04962c722c17a2ef8eaa6b7e16ecc9cca9f6f23f8f0c05f",
+  "schema_version": "1.0.0",
+  "self_sha256": "cd66b95b7ce1955f8927657c2b35f1e877cfc2f58fa8f90a20a1f1f40e9afa89"
+}

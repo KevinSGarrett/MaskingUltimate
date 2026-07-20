@@ -10867,3 +10867,17 @@ Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json 
 **Result:** FIXED. Tournament previously wrote corpus envelopes rooted at batch subdirs so `machine_lifecycle_path` failed under `runs/` (smoke OK, MVC=0 for admission). Canonical `emit_lifecycle_and_corpus_record` + repair rewrite paths relative to production `runs/`. Live pool: **machine_verified_candidate_count=33**, envelopes_seen=33, all 33 resolvable; admission still `insufficient_autonomous_verified_samples` (Wilson/cert floor; certificate_minted=false; no fabrication). Families live earlier this wave (>=3 Comfy CUDA).
 
 Evidence: qa/live_verification/autonomous_gold_admission_emit_fix_20260720T1625.json; corpus_envelope_repair_20260720T1625.json; autonomous_gold_admission_mvc_prove_20260720T1647.json.
+
+## 2026-07-20 16:54 UTC - Tournament corpus expanded to ≥100 (image-disjoint gold volumes)
+**Item:** GOLD FACTORY / tournament sample set sibling feed (MaskedWarehouse + Reference_Images + DAZ RO)
+**Command:** `python runtime_artifacts/_expand_gold_volume_corpus_20260720.py --ts 20260720T1650`
+**Result:** DONE. Frozen image-disjoint tournament SOURCE corpus expanded from prior 96 → **128** (≥100 target met):
+
+- preserved_base=96 from tournament_sample_set_gold_volume_20260720T1625.json (hash-verified)
+- mw_expand_added=32 (CelebA / LaPa / LV-MHP / swimsuit / body archive); daz_added=0 (only 3 DAZ RGB stills on disk; no Studio)
+- counts_by_source: maskedwarehouse=62, ultimate=40, reference_library=16, characters=7, daz=3
+- Sibling feed + latest pointer published for GPU siblings
+- Read-only sources; no bytes copied; no F: data junction; external labels NOT gold; no interactive DAZ
+
+Evidence: qa/live_verification/tournament_sample_set_gold_volume_20260720T1650.json (self_sha256 21ba6829...); sibling feed self_sha256 9520147d...; corpus self_sha256 c445d15b...
+

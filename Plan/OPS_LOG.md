@@ -9881,13 +9881,10 @@ Remaining open next-queue items are mostly Kevin/Main/disk blocked: P1-08 CVAT h
 - Schema-enforced honesty: mf_p9_10_07_pilot_complete=false, mf_p9_10_08_live_calibration_complete=false, mf_p9_10_09_ablation_corpus_complete=false, mf_p9_10_10_accepted_coverage_complete=false, live_daz_render/accept=false, accepted_scene_count=0
 
 ### Evidence
-- qa/live_verification/daz_coverage_planner_static_20260719.json file_sha256 3a8db25d039c2240d3e789192f046b40f9261ca8a76c6d1bee07343ac31d8f50 seal_sha256 4852f9b23acaba5bcf7828bc1fe4d526160814bbb69d26b30b97fda115af4f81 report_id dcp_4852f9b23acaba5bcf7828bc
+- qa/live_verification/daz_coverage_planner_static_20260719.json file_sha256 444f37df28b980ccf2950615e908c53052b89765878efa8d34bbe0217094840a seal_sha256 abf05039fcd8dcae7388834f6157b144216993b95e58b4e68c32baa68a017ab5 report_id dcp_abf05039fcd8dcae7388834f
 
 ### Focused tests
 pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean on touched files.
-
-### Residual blockers (honest)
-Live D8/D9 accept path still required for MF-P9-10.07..10 completion. Remaining open next-queue items remain mostly Kevin/Main/disk blocked: P1-08 CVAT human-anchor, P6-11/12 AWAITING_MAIN, doctor/model WSL+disk, MF-P9-13.04 ~57k split-dedup, MF-P9-14.06 18k retrieval under 150 GiB floor, live DAZ Studio smoke/soak/activation.
 
 ### Honest non-claims
 - No MF-P9-10.07 live 1,000-scene accepted pilot
@@ -9896,4 +9893,64 @@ Live D8/D9 accept path still required for MF-P9-10.07..10 completion. Remaining 
 - No MF-P9-10.10 accepted coverage minima / gold
 - No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
-**Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-coverage-planner-static; evidence seal; git commit/push
+**Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-coverage-planner-static; evidence seal; git commit
+
+## 2026-07-20 00:15 UTC - Sealed residual-blocker inventory (host-side STATIC gaps exhausted)
+
+**Lane:** Proof-tier residual inventory after MF-P9-10 STATIC seal
+**Result:** STATIC_PASS inventory only - never completes items; host_side_static_gaps_remain=false
+
+### What landed
+- src/maskfactory/residual_blocker_inventory.py: classifies unfinished tracker items into non-delegable residual classes (Kevin CVAT, Kevin other, AWAITING_MAIN, disk-heavy corpus, live DAZ, live GPU/WSL, human-anchor holdout, provider promotion live, dependency chains)
+- Schema residual_blocker_inventory_report registered in validation.SCHEMA_NAMES
+- CLI: maskfactory incident seal-residual-blocker-inventory
+- Schema-enforced honesty: host_side_static_gaps_remain=false; any_item_completed_by_this_inventory=false; doctor_green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS refused
+
+### Evidence
+- qa/live_verification/residual_blocker_inventory_20260719.json file_sha256 5cd55aae6f6aafa1b3710cb451a98d655ba9f25bfc1c7cbd905e245f02466988 seal_sha256 256567020d952a1608d537872eadd988a5c5ff51b7a77d0dec8cb24f7255898b report_id rbi_256567020d952a1608d53787
+- unfinished_item_count=229
+- residual_class_counts: NEEDS_KEVIN_CVAT=13, NEEDS_KEVIN_OTHER=48, AWAITING_MAIN=14, DISK_HEAVY_CORPUS=4, LIVE_DAZ_STUDIO=98, LIVE_GPU_WSL=7, HUMAN_ANCHOR_HOLDOUT=19, PROVIDER_PROMOTION_LIVE=7, DEPENDENCY_ON_NON_DELEGABLE=19
+
+### Focused tests
+pytest tests/test_daz_coverage_planner_static.py + tests/test_residual_blocker_inventory.py: 6 passed. Ruff clean on touched files.
+
+### Honest non-claims
+- Inventory does not complete any tracker item
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+- Remaining work is non-delegable Kevin/Main/disk/live DAZ/GPU/holdout authority
+
+**Commands:** pytest focused; tracker.py validate/report; incident seal-residual-blocker-inventory; OPS_LOG append; git commit
+
+## 2026-07-20 00:14 UTC - STATIC MF-P9-10 coverage planner reseal (reconcile)
+
+**Lane:** Proof-tier STATIC (host-side only); reconcile after parallel binder collision
+**Items:** MF-P9-10.01..10 as previously partial
+**Result:** STATIC_PASS only - never live DAZ render/accept; never doctor-green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS
+
+### Evidence (authoritative reseal)
+- qa/live_verification/daz_coverage_planner_static_20260719.json file_sha256 2fd5d125d79f0f5cecf90c05cb0cdc3d6ebad857a40fee0d1ceca0de46004853 seal_sha256 6555e1517cd4f9c8d714192f714d29f9f035d282dc5a95cb21ddd1390fba9218 report_id dcp_6555e1517cd4f9c8d714192f
+- Supersedes earlier same-day seals 4852f9b2... / 6b66667f... written during parallel binder collision
+
+### Focused tests
+pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean.
+
+### Honest non-claims
+- No live 1k pilot / 10k ablation / accepted coverage / gold / doctor-green / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; reseal; git commit/push
+
+## 2026-07-20 00:15 UTC - STATIC MF-P9-10 coverage planner authoritative seal
+
+**Lane:** Proof-tier STATIC (host-side only)
+**Items:** MF-P9-10.01..06 88%; MF-P9-10.07 62%; MF-P9-10.08 60%; MF-P9-10.09 58%; MF-P9-10.10 60%
+**Result:** STATIC_PASS only - never live DAZ render/accept; never doctor-green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS
+
+### Evidence (authoritative)
+- qa/live_verification/daz_coverage_planner_static_20260719.json file_sha256 5467de4908eeeb433491fbf9d3838589bee04d9d00d06a7bb8d1ef0d37ff9556 seal_sha256 39275a8b33de223f7592a4ed2fe08d3879b925891876804a5733f72a48d361d6 report_id dcp_39275a8b33de223f7592a4ed
+- Module src/maskfactory/daz/coverage_planner_static.py + schema daz_coverage_planner_static_report + CLI daz recipes seal-coverage-planner-static
+- pytest tests/test_daz_coverage_planner_static.py: 3 passed
+
+### Honest non-claims
+- No live 1k pilot / 10k ablation / accepted coverage / gold / doctor-green / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest; tracker.py set/validate/report; seal; git commit/push

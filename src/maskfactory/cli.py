@@ -4969,6 +4969,61 @@ def daz_recipes_seal_ops_static_contracts(output: Path) -> None:
     )
 
 
+@daz_recipes.command("seal-coverage-planner-static")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/daz_coverage_planner_static_20260719.json"),
+    show_default=True,
+)
+def daz_recipes_seal_coverage_planner_static(output: Path) -> None:
+    """Seal MF-P9-10 coverage planner / pilot-plan / ablation STATIC binders.
+
+    Never claims live DAZ render/accept, 1k/10k accepted corpora, or gold.
+    """
+    from .daz import DazErrorCode, result_envelope
+    from .daz.coverage_planner_static import (
+        DazCoveragePlannerStaticError,
+        run_daz_coverage_planner_static_suite,
+    )
+
+    try:
+        report = run_daz_coverage_planner_static_suite()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        output.write_bytes(payload)
+    except DazCoveragePlannerStaticError as exc:
+        click.echo(
+            json.dumps(
+                result_envelope(code=int(DazErrorCode.SCENE_RECIPE_INVALID), reason=str(exc)),
+                sort_keys=True,
+            )
+        )
+        raise click.exceptions.Exit(int(DazErrorCode.SCENE_RECIPE_INVALID))
+    click.echo(
+        json.dumps(
+            result_envelope(
+                reason="daz_coverage_planner_static_sealed",
+                entity_ids=(report["report_id"],),
+                evidence_paths=(str(output),),
+                data={
+                    "seal_sha256": report["seal_sha256"],
+                    "file_sha256": hashlib.sha256(payload).hexdigest(),
+                    "mf_p9_10_07_pilot_complete": False,
+                    "mf_p9_10_08_live_calibration_complete": False,
+                    "mf_p9_10_09_ablation_corpus_complete": False,
+                    "mf_p9_10_10_accepted_coverage_complete": False,
+                    "live_daz_render_executed": False,
+                    "live_daz_accept_executed": False,
+                    "accepted_scene_count": 0,
+                    "gold_claimed": False,
+                },
+            ),
+            sort_keys=True,
+        )
+    )
+
+
 @daz_recipes.command("seal")
 @click.argument("draft", type=click.Path(path_type=Path, dir_okay=False, exists=True))
 @click.option(
@@ -10770,6 +10825,37 @@ def incident_verify_ops_bootstrap_static(output: Path | None) -> None:
         click.echo(f"file_sha256={hashlib.sha256(payload).hexdigest()}")
     else:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
+@incident.command("seal-residual-blocker-inventory")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=Path("qa/live_verification/residual_blocker_inventory_20260719.json"),
+    show_default=True,
+)
+def incident_seal_residual_blocker_inventory(output: Path) -> None:
+    """Seal unfinished-item residual inventory after host-side STATIC wave.
+
+    Never completes items; never claims doctor-green/gold/Main-complete.
+    """
+    from .residual_blocker_inventory import (
+        ResidualBlockerInventoryError,
+        run_residual_blocker_inventory_suite,
+    )
+
+    try:
+        report = run_residual_blocker_inventory_suite()
+    except ResidualBlockerInventoryError as exc:
+        raise click.ClickException(str(exc)) from exc
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    output.write_bytes(payload)
+    click.echo(output)
+    click.echo(f"seal_sha256={report['seal_sha256']}")
+    click.echo(f"file_sha256={hashlib.sha256(payload).hexdigest()}")
+    click.echo(f"unfinished_item_count={report['unfinished_item_count']}")
+    click.echo(f"host_side_static_gaps_remain={report['host_side_static_gaps_remain']}")
 
 
 @main.command()

@@ -165,6 +165,8 @@ SCHEMA_NAMES = frozenset(
         "daz_clean_restart_static_report",
         "daz_validation_static_contracts_report",
         "daz_ops_static_contracts_report",
+        "daz_coverage_planner_static_report",
+        "residual_blocker_inventory_report",
         "external_supervision_holdout_ablation_report",
         "daz_scene_recipe",
         "daz_training_policy",

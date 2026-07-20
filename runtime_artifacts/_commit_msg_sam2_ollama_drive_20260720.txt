@@ -1,0 +1,3 @@
+evidence(gold): seal honest SAM2+Ollama autonomous-gold drive (MVC=0)
+
+Nuclio SAM2 smoke failed 503 then Docker engine DOWN after restart; Ollama VLM critic PASS. Admission remains insufficient_autonomous_verified_samples with zero machine_verified_candidate — no fabrication.

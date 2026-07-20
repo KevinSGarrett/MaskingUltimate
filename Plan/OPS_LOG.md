@@ -10014,10 +10014,10 @@ pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean.
 Free C: disk above 75 GiB ingest floor (currently ~4.39 GiB after collapse from ~29.5 GiB) - without destructive prune of governed data (MaskedWarehouse/models/packages/Docker volumes).
 
 ### Milestone revision
-- qa/live_verification/milestone_proof_tiers_20260719.json revision `post_runtime_climb_disk_collapse_20260719` self_sha256 `3e5f7a8ab725817a5889ea82e55920fdff5b0912004196a50e5b0e568ff51de9` (supersedes `66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e`)
+- qa/live_verification/milestone_proof_tiers_20260719.json revision `post_runtime_climb_disk_collapse_20260719` self_sha256 `8c792773780e4a7a3d19b80649ac78b2b88e8448001b1fc7829a6e330bd0a32b` (supersedes `66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e`)
 
 ### Evidence
-- qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json sha256 `21e491fb694a440a2e27e580976588fef1ac5c0ef02a0cfb766e4932cd7e71d2`
+- qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json sha256 `e6284d6e8d538989a9609a74bba26de8cfc984e88fe0e94a223447667ea73333`
 - qa/reports/ollama_vlm_smoke.json (latency 43.149s)
 
 **Commands:** warm WSL; docker/CVAT/Nuclio/Ollama reprobe; host-only doctor subset; smoke_cvat_sam2; smoke_ollama_vlm; Mode B health/predict probe; skip refine under disk; seal evidence; tracker notes; milestone revision; commit evidence only

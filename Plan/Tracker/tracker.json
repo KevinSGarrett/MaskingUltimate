@@ -17515,18 +17515,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-16T22:46:19+00:00",
           "actor": "ai_agent",
           "text": "Implemented the closed V0-V9 validation result schema/registry, per-reason owner/severity/retry/evidence bindings, safe relative evidence paths, exact validator version/reason/status semantics, scene V0-V8 versus corpus V9 scoping, required-set aggregation where warnings never pass and registered N/A may satisfy applicability, immutable reports, and CLI. Software/contract verify clause passes; remains partial only because declared D1/D6 live-acceptance dependencies are not complete. No DAZ/F-drive mutation occurred."
+        },
+        {
+          "ts": "2026-07-20T00:00:38+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_validation_registry_20260716.json; 72/72 focused V0-V9 contract tests; 2701/2701 full repository tests; Ruff and targeted Black pass; 118 schemas parse; CLI aggregation replay pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T22:46:19+00:00",
+      "updated_at": "2026-07-20T00:00:38+00:00",
       "orphaned": false
     },
     "MF-P9-08.02": {
@@ -17542,18 +17547,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-16T23:24:23+00:00",
           "actor": "ai_agent",
           "text": "Implemented closed V2 recipe, V3 assembly, and V4 geometry validators with normalized registry results, exact input evidence snapshots, canonical recipe variant authority, asset/mapping/numeric/resource resolution, exact node/readback/fit/framing gates, topology/full-vertex-scan/collision/contact/visibility gates, and seeded failures for every registered reason family. Warnings remain non-passing. Software/seeded-defect verify clause passes; remains partial pending declared D5 and D7-01 live-authority dependencies plus a qualified live DAZ validation run. No DAZ/F-drive mutation occurred."
+        },
+        {
+          "ts": "2026-07-20T00:00:42+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_strict_scene_validators_20260716.json; 131/131 focused V2-V4 tests; 1066/1066 DAZ-selected tests; 2754/2754 full repository tests; Ruff and targeted format pass; 118 schemas parse; DAZ config valid; immutable CLI replay pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T23:40:17+00:00",
+      "updated_at": "2026-07-20T00:00:42+00:00",
       "orphaned": false
     },
     "MF-P9-08.03": {
@@ -17569,18 +17579,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T00:18:56+00:00",
           "actor": "codex",
           "text": "Closed independent V5 actual-render and V6 every-pixel semantic validators are implemented. V5 rebinds D6 execution and same-state replay reports, independently hashes/decodes actual outputs, checks dimensions/codecs/content/EXR headers, and supports canonical diagnostic trees. V6 scans complete RGB/instance/part/material/protected/alpha/skeleton/surface/depth-discontinuity rasters for closed IDs, exact owners, ontology mappings, components, scoped areas, anatomical adjacency, side/front-back votes, and boundary agreement. Explicit provider/tier/ontology/owner/package/certificate/transform context prevents authority inference or gold relabeling. Live D6/D7-01 qualification remains outstanding."
+        },
+        {
+          "ts": "2026-07-20T00:00:44+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_pass_semantic_validators_20260717.json; 16/16 new, 571/571 focused, 1078/1078 DAZ-selected, and 2770/2770 full tests; Ruff/targeted-format/schema/config/diff checks pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T00:18:56+00:00",
+      "updated_at": "2026-07-20T00:00:44+00:00",
       "orphaned": false
     },
     "MF-P9-08.04": {
@@ -17596,18 +17611,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T00:50:46+00:00",
           "actor": "codex",
           "text": "Implemented closed deterministic bounded repair and retry governance. Nine exact repair defect/action bindings consume five blueprint budgets per demand and reason family; every scheduled repair creates a lineage-linked recipe revision and mandates full downstream revalidation. Six authority fields are immutable. Non-repairable ID/mapping/topology/ownership/pass/package defects reject without deltas; only repeated qualifying hard failures recommend quarantine. Hash-chained history replay detects attempt, revision, summary, authority, and entry tampering even after hashes are recomputed. Exhaustion is one-time and emits an honest coverage deficit."
+        },
+        {
+          "ts": "2026-07-20T00:00:46+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_repair_retry_20260717.json; 25/25 new, 255/255 focused, 1103/1103 DAZ-selected, and 2795/2795 full tests; Ruff/precommit Black/120 schemas/29 DAZ YAML/tracker/diff checks pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T00:50:46+00:00",
+      "updated_at": "2026-07-20T00:00:46+00:00",
       "orphaned": false
     },
     "MF-P9-08.05": {
@@ -17623,18 +17643,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T01:28:04+00:00",
           "actor": "codex",
           "text": "Software and seeded certificate-replay clause complete. Honest completion remains gated by declared D7-01..04 qualified live authorities and an independently replayed live acceptance certificate. No DAZ/F-drive work was launched; F soft hold respected."
+        },
+        {
+          "ts": "2026-07-20T00:00:48+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_acceptance_certificate_20260717.json — closed policy/schema; independent certificate rebuild; V0-V8 measurement capture; replay/package/registry/ontology/revision cross-binding; repair-revision reports; immutable CLI publication; 21/21 new, 260/260 adjacent, 2816/2816 full tests; Ruff and Black pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T01:28:04+00:00",
+      "updated_at": "2026-07-20T00:00:48+00:00",
       "orphaned": false
     },
     "MF-P9-08.06": {
@@ -17677,18 +17702,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T02:34:29+00:00",
           "actor": "codex",
           "text": "Implemented the complete offline S00/package adapter and package-fixture verify clause: replayed acceptance certificate, rehashed/decoded D6 packages, canonical ontology load, exact one-to-four-person complements, byte-preserving no-rerender publication, synthetic source/candidate records, Mode-A authority binding, and immutable manifests. Honest completion remains gated only by qualified live D6 pass authority and a live D7-05 certificate; no live ingestion is claimed. F soft hold and Main repository preservation were respected."
+        },
+        {
+          "ts": "2026-07-20T00:00:50+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_s00_package_adapter_20260717.json — 17/17 new, 176/176 focused adjacent, 2902/2902 full tests; one-to-four-person fixtures; 11-file byte equality; certificate/ontology/package/transform binding; source immutability; adversarial policy/authority/tamper tests; Ruff/Black pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T02:34:29+00:00",
+      "updated_at": "2026-07-20T00:00:50+00:00",
       "orphaned": false
     },
     "MF-P9-08.08": {
@@ -17704,18 +17734,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T03:15:22+00:00",
           "actor": "codex",
           "text": "Implemented the complete offline existing-QC plus DAZ-specific adapted-package QA clause. Fourteen applicable MaskFactory checks retain their original IDs/meanings, QC-008/QC-010/QC-037 are explicit reasoned not-applicable states rather than false passes, and seven DAZ blocking checks independently cover certificate, authority, integrity, lineage, truth, adult/no-human construction, and adapter invariants. All 21 required checks must pass for freeze eligibility. Honest completion remains gated by running the same immutable report against a qualified live D7-07 package; no live freeze or ingestion is claimed."
+        },
+        {
+          "ts": "2026-07-20T00:00:52+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_adapted_package_qc_20260717.json — closed applicability/report contracts; read-only atomic QA publication; 1-4 person positives; seeded hash/ID/overlap/truth/authority/policy/report failures; 16/16 new, 98/98 focused, 2918/2918 full tests; Ruff/Black pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T03:15:22+00:00",
+      "updated_at": "2026-07-20T00:00:52+00:00",
       "orphaned": false
     },
     "MF-P9-08.09": {
@@ -17731,18 +17766,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-17T03:57:01+00:00",
           "actor": "codex",
           "text": "Offline implementation complete: transactional ingest, schema v3 migration, deterministic descendant query, exact-hash revocation propagation, append-only evidence, CLI and dry-run paths pass. Honest live boundary: D1 and a qualified live D7-07 package remain unavailable, so no live package ingestion or production descendant revocation is claimed."
+        },
+        {
+          "ts": "2026-07-20T00:00:53+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
         }
       ],
-      "evidence": "qa/reports/daz_ingestion_revocation_lineage_20260717.json; 15/15 final lineage/migration tests, 163/163 adjacent tests, 2927/2927 full tests; Ruff and changed-surface Black pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-17T03:57:01+00:00",
+      "updated_at": "2026-07-20T00:00:53+00:00",
       "orphaned": false
     },
     "MF-P9-08.10": {
@@ -18464,18 +18504,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T04:06:20+00:00",
           "actor": "codex",
           "text": "2026-07-19: implemented inactive deterministic SQLite scheduling plus hash-linked pause/resume/drain and JSON worker status/control CLI. Twenty-seven scheduler/control/runtime tests pass; Ruff, Black 25.1 hook and diff check pass. Live F control remains disabled/paused/draining and four maintenance tasks remain Disabled. Remaining: production worker run-loop wiring, bounded governed F-queue rehearsal, and dependent heartbeat/recovery/resource/soak work."
+        },
+        {
+          "ts": "2026-07-20T00:00:54+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_scheduler_control_contract_20260719.json",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T04:06:20+00:00",
+      "updated_at": "2026-07-20T00:00:54+00:00",
       "orphaned": false
     },
     "MF-P9-12.02": {
@@ -18491,18 +18536,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T04:37:53+00:00",
           "actor": "codex",
           "text": "Implemented inactive exact reservations, v4 durable ledger, closed R0-R7 retention policy, deterministic plans, dry-run-default exact apply, lease/reference/hash/path guards, and scheduler reservation consume/release. Fixture fill/drain and deletion tests pass. Remaining: governed D9-08 measured p95 inputs, bounded live F-drive fill/drain and disposable retention rehearsal, then backup/recovery/soak evidence."
+        },
+        {
+          "ts": "2026-07-20T00:00:56+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_storage_reservation_retention_contract_20260719.json",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T04:37:53+00:00",
+      "updated_at": "2026-07-20T00:00:56+00:00",
       "orphaned": false
     },
     "MF-P9-12.03": {
@@ -18518,18 +18568,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-19T04:47:51+00:00",
           "actor": "codex",
           "text": "Implemented inactive local-only alert policy, strict monitoring schemas, read-only DB collector, deterministic severity/suppression evaluator, truth-labeled dashboard/daily report, and read-only CLI snapshot. Alert fixtures and DAZ control/storage regressions pass. Remaining: production D7/worker telemetry, pilot-calibrated thresholds, and reviewed live local alert/daily-report evidence."
+        },
+        {
+          "ts": "2026-07-20T00:00:57+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_monitoring_alert_contract_20260719.json",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T04:47:51+00:00",
+      "updated_at": "2026-07-20T00:00:57+00:00",
       "orphaned": false
     },
     "MF-P9-12.04": {
@@ -18545,7 +18600,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 94,
       "notes": [
         {
           "ts": "2026-07-19T04:54:28+00:00",
@@ -18561,12 +18616,17 @@
           "ts": "2026-07-19T05:40:20+00:00",
           "actor": "codex",
           "text": "Completed verified live pre-v4 Tier-A backup, safe v2->v4 migration, matrix-bound post-v4 backup, and clean-root exact payload/SQLite restore. Preserved one rejected WAL-sidecar attempt as failure evidence. Remaining activation gates are recipe semantic replay, accepted-package verification, registry rebuild, and dataset/model lineage query once those currently absent materials exist."
+        },
+        {
+          "ts": "2026-07-20T00:00:58+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_live_backup_migration_recovery_restore_20260719.json",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T05:40:20+00:00",
+      "updated_at": "2026-07-20T00:00:58+00:00",
       "orphaned": false
     },
     "MF-P9-12.05": {
@@ -18582,7 +18642,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 94,
       "notes": [
         {
           "ts": "2026-07-19T05:05:26+00:00",
@@ -18598,12 +18658,17 @@
           "ts": "2026-07-19T05:40:21+00:00",
           "actor": "codex",
           "text": "Completed live state-derived package/bulk recovery matrix after classifying five legacy composite-reference files, published passing hash 3bc18cbe..., bound it to the verified post-v4 backup, and restored it cleanly. Remaining: exercise rebuild/omit routes and activation-complete recipe/package/dataset-model recovery when eligible artifacts exist."
+        },
+        {
+          "ts": "2026-07-20T00:00:59+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_live_backup_migration_recovery_restore_20260719.json",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T05:40:21+00:00",
+      "updated_at": "2026-07-20T00:00:59+00:00",
       "orphaned": false
     },
     "MF-P9-12.06": {
@@ -18619,7 +18684,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 94,
       "notes": [
         {
           "ts": "2026-07-19T06:02:15+00:00",
@@ -18635,12 +18700,17 @@
           "ts": "2026-07-19T07:02:43+00:00",
           "actor": "ai_agent",
           "text": "Extended the isolated campaign with deterministic disk-full refusal and real GpuLock contention semantics on a fixture-only lock. Seven of seven scenarios pass; live service health and serve_mode_b lock were unchanged. Remains partial pending bounded real DAZ process/lease exercises and D11 seven-day soak."
+        },
+        {
+          "ts": "2026-07-20T00:01:01+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_failure_campaign_extended_20260719.json; sealed seven-scenario report SHA256 21aeffc2a8afbb0a2be55c99b11b5833fc2f8e65114306a182f259eaa11aae6c; 20 focused and 1,342 DAZ tests pass",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T07:02:43+00:00",
+      "updated_at": "2026-07-20T00:01:01+00:00",
       "orphaned": false
     },
     "MF-P9-12.07": {
@@ -18677,18 +18747,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-19T06:47:40+00:00",
           "actor": "ai_agent",
           "text": "Implemented sealed manifest-set generation, strict event replay, new-target v4/WAL reconstruction, table/integrity comparison, sealed registry-view publication, immutable manifest publication, and dry-run-default CLI. Remains open pending D11-07 seven-day soak plus real Tier-A clean-root registry/mapping/recipe/Tier-B/package/lineage replay."
+        },
+        {
+          "ts": "2026-07-20T00:01:01+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-19: daz_ops_static_contracts sealed (Tier-A backup/restore + pause/drain/resume + retention/reservation + recovery matrix + failure-campaign plan honesty). Evidence qa/live_verification/daz_ops_static_contracts_20260719.json seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e. Never soak / live DAZ activation / gold."
         }
       ],
-      "evidence": "qa/live_verification/daz_clean_root_history_reconstruction_20260719.json; 8 focused reconstruction tests and full 1,342-test DAZ suite pass; Ruff/format/diff clean",
+      "evidence": "STATIC_PASS only: src/maskfactory/daz/ops_static_contracts.py + schema daz_ops_static_contracts_report; CLI daz recipes seal-ops-static-contracts. Evidence qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f. Never seven-day soak (12.07), live activation (12.09), doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-19T06:47:40+00:00",
+      "updated_at": "2026-07-20T00:01:01+00:00",
       "orphaned": false
     },
     "MF-P9-12.09": {

@@ -9770,3 +9770,52 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 
 **Commands:** pytest focused; tracker.py set/validate/report; incident verify-ops-bootstrap-static; evidence seal; git commit
 
+## 2026-07-20 00:02 UTC - STATIC DAZ validation + ops portfolio climb (P9-08 / P9-12)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P9-08.01..05/07..09 (88% partial); MF-P9-12.01/02 (88%); MF-P9-12.03 (85%); MF-P9-12.04..06 (94%); MF-P9-12.08 (75%)
+**Result:** STATIC_PASS only - never live DAZ Studio validation/accepted packages/pilot; never soak/activation; never doctor-green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS
+
+### What landed
+- src/maskfactory/daz/validation_static_contracts.py: V0-V9 registry closure; warn/fail cannot satisfy required sets; acceptance certificate honesty (warnings/failures cannot accept; synthetic_exact only); repair retry budgets + authority freeze; S00 adapter refuses gold truth tiers / keeps body_parts_v2 inactive
+- Schema daz_validation_static_contracts_report registered in alidation.SCHEMA_NAMES
+- CLI: maskfactory daz recipes seal-validation-static-contracts
+- src/maskfactory/daz/ops_static_contracts.py: Tier-A backup create/verify/clean-root restore bit-identical; pause/drain/resume + leasing blocked while paused; retention/reservation deterministic bytes + soft-floor bind; recovery matrix recoverable + blocked rows; failure-campaign plan closed (no live runtime/bytes/apply) with soak/activation overclaim refuse
+- Schema daz_ops_static_contracts_report registered in alidation.SCHEMA_NAMES
+- CLI: maskfactory daz recipes seal-ops-static-contracts
+- Schema-enforced honesty: mf_p9_08_*_complete=false, mf_p9_08_10_pilot_complete=false, mf_p9_12_07_soak_complete=false, mf_p9_12_09_activation_complete=false, live_daz_*=false
+
+### Evidence
+- qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40
+- qa/live_verification/daz_ops_static_contracts_20260719.json file_sha256 0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c seal_sha256 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e report_id dos_935461c966be9954f347b25f
+
+### Focused tests
+pytest test_daz_validation_static_contracts + test_daz_ops_static_contracts (+ ops_bootstrap retained): 7 passed. Ruff clean on touched files.
+
+### Residual blockers (honest)
+Remaining open next-queue items are mostly Kevin/Main/disk blocked: P1-08 CVAT human-anchor, P6-11/12 AWAITING_MAIN, doctor/model WSL+disk, MF-P9-13.04 ~57k split-dedup, MF-P9-14.06 18k retrieval under 150 GiB floor, live DAZ Studio smoke/soak/activation. Host-side STATIC residual still available on MF-P9-10 coverage planner and similar fixture binders.
+
+### Honest non-claims
+- No MF-P9-08.10 pilot / accepted DAZ packages / live Studio validation
+- No MF-P9-12.07 seven-day soak / MF-P9-12.09 live activation
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-validation-static-contracts; daz recipes seal-ops-static-contracts; evidence seal; git commit/push
+
+## 2026-07-20 00:02 UTC - STATIC portfolio climb seal (DAZ validation + DAZ ops)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P9-08.* 88% partial; MF-P9-12.* bumped as above; prior horizon/ops/P9-15.08 / ops-bootstrap / civitai waves preserved
+**Result:** STATIC_PASS only - never doctor-green; never gold; never VISUAL_QA_PASS_BOUNDED; never Main-complete; never PRODUCTION_EVIDENCE_PASS
+
+### What landed (this climb)
+- DAZ validation STATIC binder (V0-V9 / acceptance / repair / S00)
+- DAZ ops STATIC binder (backup/scheduler/storage/recovery/failure-campaign)
+- Sealed evidence listed in the preceding OPS_LOG entry
+
+### Honest non-claims
+- No live DAZ Studio / accepted packages / soak / activation
+- No AWAITING_MAIN close / no Kevin CVAT / no disk-heavy corpus materialization
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; seal evidence; git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"/push

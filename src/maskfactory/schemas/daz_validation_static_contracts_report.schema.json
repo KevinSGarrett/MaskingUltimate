@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_validation_static_contracts_report.schema.json",
+  "title": "MaskFactory DAZ validation STATIC contracts report (MF-P9-08)",
+  "description": "STATIC_PASS binder for V0-V9 registry, acceptance certificate honesty, repair budgets, and S00 adapter policy. Never claims live DAZ validation, accepted packages, pilot completion, or gold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "registry_checks",
+    "acceptance_checks",
+    "repair_checks",
+    "s00_checks",
+    "checks",
+    "negative_fixtures",
+    "mf_p9_08_01_complete",
+    "mf_p9_08_05_complete",
+    "mf_p9_08_10_pilot_complete",
+    "live_daz_validation_executed",
+    "accepted_package_produced",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "bindings",
+    "implementation",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "daz_validation_static_contracts_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_validation_static_only_no_live_daz_accepted_package_pilot_or_gold_authority"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "MF-P9-08.01",
+          "MF-P9-08.02",
+          "MF-P9-08.03",
+          "MF-P9-08.04",
+          "MF-P9-08.05",
+          "MF-P9-08.07",
+          "MF-P9-08.08",
+          "MF-P9-08.09"
+        ]
+      }
+    },
+    "registry_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "v0_v9_layers_closed",
+        "ten_required_validators_bound",
+        "warnings_cannot_satisfy_required",
+        "warn_status_set_fails_closed",
+        "fail_status_set_fails_closed"
+      ],
+      "properties": {
+        "v0_v9_layers_closed": { "const": true },
+        "ten_required_validators_bound": { "const": true },
+        "warnings_cannot_satisfy_required": { "const": true },
+        "warn_status_set_fails_closed": { "const": true },
+        "fail_status_set_fails_closed": { "const": true }
+      }
+    },
+    "acceptance_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptance_policy_loads",
+        "warnings_cannot_satisfy_acceptance",
+        "failures_cannot_satisfy_acceptance",
+        "synthetic_exact_truth_tier_only",
+        "overclaim_accepted_package_refused"
+      ],
+      "properties": {
+        "acceptance_policy_loads": { "const": true },
+        "warnings_cannot_satisfy_acceptance": { "const": true },
+        "failures_cannot_satisfy_acceptance": { "const": true },
+        "synthetic_exact_truth_tier_only": { "const": true },
+        "overclaim_accepted_package_refused": { "const": true }
+      }
+    },
+    "repair_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repair_retry_policy_loads",
+        "bounded_retry_budgets_present",
+        "deterministic_history_contract"
+      ],
+      "properties": {
+        "repair_retry_policy_loads": { "const": true },
+        "bounded_retry_budgets_present": { "const": true },
+        "deterministic_history_contract": { "const": true }
+      }
+    },
+    "s00_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "s00_adapter_policy_loads",
+        "adapter_refuses_gold_authority",
+        "adapter_mapping_authority_false"
+      ],
+      "properties": {
+        "s00_adapter_policy_loads": { "const": true },
+        "adapter_refuses_gold_authority": { "const": true },
+        "adapter_mapping_authority_false": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_v0_v9_binder",
+        "acceptance_certificate_binder",
+        "repair_retry_binder",
+        "s00_adapter_binder"
+      ],
+      "properties": {
+        "registry_v0_v9_binder": { "const": "pass" },
+        "acceptance_certificate_binder": { "const": "pass" },
+        "repair_retry_binder": { "const": "pass" },
+        "s00_adapter_binder": { "const": "pass" }
+      }
+    },
+    "negative_fixtures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completion_overclaim_blocked",
+        "registry_warn_policy_tamper_blocked"
+      ],
+      "properties": {
+        "completion_overclaim_blocked": { "const": true },
+        "registry_warn_policy_tamper_blocked": { "const": true }
+      }
+    },
+    "mf_p9_08_01_complete": { "const": false },
+    "mf_p9_08_05_complete": { "const": false },
+    "mf_p9_08_10_pilot_complete": { "const": false },
+    "live_daz_validation_executed": { "const": false },
+    "accepted_package_produced": { "const": false },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "visual_qa_pass_claimed": { "const": false },
+    "main_complete_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_sha256",
+        "acceptance_policy_sha256",
+        "repair_policy_sha256",
+        "s00_policy_sha256"
+      ],
+      "properties": {
+        "registry_sha256": { "$ref": "#/$defs/sha256" },
+        "acceptance_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "repair_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "s00_policy_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "configs", "tests"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "configs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "report_id": { "type": "string", "pattern": "^dvs_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

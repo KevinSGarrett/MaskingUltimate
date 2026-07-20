@@ -4,6 +4,55 @@ Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin 
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**
 
+## Latest wave (2026-07-20 09:36 UTC — Docker-GPU declared SOLE CUDA train/serve path; WSL repair DEFERRED)
+
+HEAD `eb17dd21` at authoring (branch churned by parallel siblings since). Docs/evidence-only stream; this
+stream's durable record is the immutable seal below (siblings rewrite the handoff/queue live). **Zero human blockers.**
+
+- **Decision — Docker-GPU is the SOLE local CUDA train/serve runtime; WSL Ubuntu-22.04 repair DEFERRED.**
+  WSL repair is genuinely blocked (this shell is **non-admin** — the scripted elevated e2fsck /
+  `tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair` would raise an interactive UAC prompt = a human wait
+  state) and the on-disk `Ubuntu-22.04` ext4 VHD is corrupt (`wsl -d Ubuntu-22.04 -- /bin/true` → Error
+  code 6 / E_FAIL). Deferred without blocking any train/serve lane; it only gates the WSL-specific live
+  SAM 3.1 CUDA smoke (MF-P2-11.07). (`F:` is a **removable/flapping** USB drive — present at this wave's
+  probe at 181.2 GiB but recorded physically absent by a sibling minutes earlier; the Docker-GPU path is
+  C:-resident and **F:-independent**, so neither the WSL repair nor F: availability blocks train/serve.)
+- **GPU passthrough — live-proven this wave (`RUNTIME_PASS_BOUNDED`).** `docker run --rm --gpus all
+  nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi …` enumerated **RTX 5060 Laptop GPU, driver 592.01,
+  8151 MiB total / ~1247 MiB free** (VRAM tight; a cosmetic `unexpected EOF` raced container teardown
+  *after* the query row printed — not a passthrough failure).
+- **Serve/train build paths — Ubuntu-22.04(WSL)-INDEPENDENT + STATIC-coherent.** Both governed contract
+  suites re-ran **STATIC_PASS**: `docker_serve_contract_static_20260720T093557Z.json` (`dsc_e651e9b9…`;
+  `base_is_slim_python_not_cuda_devel`, `torch_cu128_index_used`, `no_wsl_only_editable_git_or_file_deps`)
+  and `docker_train_contract_static_20260720T093557Z.json` (`dtc_c652d774…`). `Dockerfile.serve` =
+  `python:3.11-slim` + torch cu128 wheels (needs only the host NVIDIA driver via `--gpus all`);
+  `Dockerfile.train` = `nvidia/cuda:12.8.0-devel-ubuntu22.04` **Docker Hub** base (container OS, independent
+  of the corrupt local WSL Ubuntu-22.04 ext4 VHD). Neither depends on the WSL Ubuntu distro.
+- **Heavy image builds — deliberately DEFERRED out-of-band (not run).** Per
+  `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md` §6b build-safety: the ~7 GiB serve torch pull + from-source
+  sm_120 nvcc train compile have crashed the constrained WSL2 daemon before; with ~37 containers live the
+  builds are deferred to protect the running production CVAT stack. This wave establishes build-path
+  **viability** (Ubuntu-independent + STATIC-green + GPU present), not build success.
+- **No tier inflation.** champions=0, gold=0, no torch-CUDA-in-container, no containerized serve/train green.
+  `needs_agent_actions_20260720.json` carries `wsl_repair_disposition=DEFERRED_NON_ADMIN_DOCKER_GPU_IS_SOLE_CUDA_PATH`,
+  `docker_gpu_evidence` → this wave's seal, and Docker-GPU serve/train as leading build priorities.
+- **Evidence (durable, this stream owns it):**
+  `qa/live_verification/docker_gpu_sole_cuda_path_wsl_deferred_20260720.json` (self_sha256 `ca82795a…`);
+  serve/train STATIC contracts above; OPS_LOG 14:36 UTC entry.
+
+## Latest wave (2026-07-20 14:48 UTC — gold-volume path map read-when-present; no USB junction)
+
+- **Correction:** Sibling "MaskedWarehouse/reference/DAZ not on disk" was working-tree-scoped. With F:
+  present (USB Seagate), live probe selected all three tournament-input roots:
+  `C:\Comfy_UI_Main\MaskedWarehouse`, `F:\Reference_Images\Ultimate_Masking_Reference_Images`,
+  `F:\DAZ`.
+- **Wiring:** `configs/gold_volume_sources.yaml` + `src/maskfactory/autonomy/gold_volume_sources.py`;
+  admission driver records `tournament_input_roots`; multi-person slices default via
+  `default_maskedwarehouse_lv_mhp_root()`. Read-when-present only — **no** junction of `data/` /
+  models / Docker VHDX onto USB (`data/` stays on C: backup).
+- **Evidence:** `qa/live_verification/gold_volume_path_map_20260720T1448Z.json`
+  (self_sha256 `a43ce08e…`). Tests: `tests/test_gold_volume_sources.py` 5/5. No tier inflation.
+
 ## Latest wave (2026-07-20 — tracker/evidence-hygiene sweep under multi-agent parallel execution)
 
 Stream scope: **tracker + evidence hygiene only** (no feature work). Multi-agent parallel execution is

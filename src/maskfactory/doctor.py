@@ -388,6 +388,104 @@ def check_disk_free(path: Path = ROOT / "data") -> CheckResult:
     return _result("disk_free", "PASS", detail)
 
 
+# Host policy: F: is the Seagate USB external (BusType=USB). Never host live data/ there.
+# GetDriveTypeW often reports USB HDDs as FIXED, so letter policy is dispositive for F:.
+REMOVABLE_POLICY_DRIVE_LETTERS = frozenset({"F"})
+_DRIVE_REMOVABLE = 2
+
+
+def _drive_letter(path: Path) -> str | None:
+    drive = path.drive
+    if len(drive) >= 2 and drive[1] == ":":
+        return drive[0].upper()
+    return None
+
+
+def _windows_get_drive_type(letter: str) -> int | None:
+    """Return WinAPI GetDriveTypeW code, or None when the call is unavailable."""
+    if os.name != "nt":
+        return None
+    try:
+        return int(ctypes.windll.kernel32.GetDriveTypeW(f"{letter}:\\"))
+    except (AttributeError, OSError, ValueError):
+        return None
+
+
+def _is_junction_or_symlink(path: Path) -> bool:
+    try:
+        if hasattr(path, "is_junction") and path.is_junction():
+            return True
+    except (OSError, NotImplementedError, ValueError):
+        pass
+    try:
+        if hasattr(os.path, "isjunction") and os.path.isjunction(path):
+            return True
+    except (OSError, ValueError):
+        pass
+    try:
+        return path.is_symlink()
+    except OSError:
+        return False
+
+
+def check_data_junction_not_removable_usb(path: Path = ROOT / "data") -> CheckResult:
+    """FAIL when data/ resolves onto removable/USB media (esp. policy drive F:).
+
+    Live data/ on a flapping USB volume leaves MASKFACTORY_DATA_PATH and the CVAT
+    share dangling on disconnect. Cold offload mirrors on F: remain allowed; the
+    sole live junction target must not be removable USB.
+    """
+    if os.name != "nt":
+        return _result(
+            "data_junction_not_removable_usb",
+            "SKIP",
+            "Windows-only data/ junction durability check",
+        )
+    if not path.exists():
+        return _result(
+            "data_junction_not_removable_usb",
+            "FAIL",
+            f"data path missing: {path}",
+            "Restore data/ (prefer on-C: backup junction), never retarget onto USB F:.",
+        )
+    try:
+        resolved = path.resolve()
+    except OSError as exc:
+        return _result(
+            "data_junction_not_removable_usb",
+            "FAIL",
+            f"data path unresolvable: {exc}",
+            "Repair dangling junction; retarget to a fixed local volume (not USB F:).",
+        )
+    letter = _drive_letter(resolved)
+    if letter is None:
+        return _result(
+            "data_junction_not_removable_usb",
+            "WARN",
+            f"resolved target has no drive letter: {resolved}",
+            "Confirm data/ lives on a fixed local NTFS volume, not removable USB.",
+        )
+    drive_type = _windows_get_drive_type(letter)
+    link_note = "junction/symlink" if _is_junction_or_symlink(path) else "directory"
+    detail = f"{link_note} {path} -> {resolved} (drive={letter}:)"
+    if letter in REMOVABLE_POLICY_DRIVE_LETTERS:
+        return _result(
+            "data_junction_not_removable_usb",
+            "FAIL",
+            f"{detail}; policy drive {letter}: is removable USB",
+            "Repoint data/ to a fixed local target (e.g. data_c_backup_relocated on C:). "
+            "F: may be a cold offload mirror only — never the sole live junction target.",
+        )
+    if drive_type == _DRIVE_REMOVABLE:
+        return _result(
+            "data_junction_not_removable_usb",
+            "FAIL",
+            f"{detail}; GetDriveTypeW=DRIVE_REMOVABLE",
+            "Repoint data/ off removable media onto a fixed governed volume.",
+        )
+    return _result("data_junction_not_removable_usb", "PASS", detail)
+
+
 def _registered_ubuntu_vhd() -> Path | None:
     """Resolve the registered Ubuntu VHD without trying to start the distro."""
     if os.name != "nt":
@@ -558,6 +656,7 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_nuclio_interactor,
     check_ollama_image,
     check_disk_free,
+    check_data_junction_not_removable_usb,
     check_wsl_backing_store,
     check_wsl_roundtrip,
     check_png_strict,

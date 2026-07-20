@@ -193,6 +193,24 @@ Do **not** wait for Kevin to start containers if Docker Desktop is already runni
 
 ---
 
+## 8b. Removable F: USB — never host live `data/` or Docker VHDX
+
+**Binding host fact:** `F:` is a USB external drive (Seagate BUP Slim; `Get-Disk` BusType=`USB`). `Get-Volume`/`DriveType=Fixed` is misleading for this enclosure — BusType wins. The drive disconnects; siblings have observed it physically absent mid-session.
+
+| Asset | Allowed on F:? | Rule |
+|-------|----------------|------|
+| Live Docker `docker_data.vhdx` | **No** | Engine store stays on C:; relocating onto USB reproduces daemon crash-loops. |
+| Repo `data/` junction (sole live target) | **No** | Keep on fixed local (current durable target: `data_c_backup_relocated` on C:). Unplug leaves `MASKFACTORY_DATA_PATH` / CVAT share dangling. |
+| Cold offload / read-when-present corpora (DAZ, archival mirrors, non-engine WSL VHDs) | **Yes, when present** | Graceful typed FAIL/SKIP if F: absent — never silent crash, never force-retarget live runtime onto F:. |
+
+**Doctor guard:** `maskfactory doctor` runs `check_data_junction_not_removable_usb` — **FAIL** if `data/` resolves onto policy drive `F:` or `GetDriveTypeW=DRIVE_REMOVABLE`. **PASS** when the junction/directory resolves to a fixed local volume.
+
+**Move guard:** `tools/move_data_to_junction.ps1` refuses targets on policy letter `F:` or `BusType=USB` (rehearsal and apply).
+
+Evidence / policy seals: `qa/live_verification/f_drive_usb_policy_20260720.json`, `docker_migrate_abort_usb_removable_f_20260720T1437Z.json`, `data_junction_abort_f_keep_c_20260720T1438Z.json`.
+
+---
+
 ## 9. Quick command cheat sheet
 
 | Goal | Command |
@@ -206,6 +224,7 @@ Do **not** wait for Kevin to start containers if Docker Desktop is already runni
 | Ollama version | `curl.exe -s http://127.0.0.1:11434/api/version` |
 | VLM smoke | `python tools/smoke_ollama_vlm.py` |
 | Full runtime gate | `python -m maskfactory doctor` |
+| data/ not on USB F: | doctor check `data_junction_not_removable_usb` (see §8b) |
 | WSL distros | `wsl -l -v` |
 | Start Ubuntu WSL | `wsl -d Ubuntu-22.04` (only when needed) |
 | GPU in container | `docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi` |

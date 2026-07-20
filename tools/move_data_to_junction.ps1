@@ -22,6 +22,27 @@ $SourceBytes = (Get-ChildItem -LiteralPath $Source -File -Recurse -Force |
 if ($null -eq $SourceBytes) { $SourceBytes = 0 }
 $TargetRoot = [System.IO.Path]::GetPathRoot($TargetPath)
 $DriveVisible = Test-Path -LiteralPath $TargetRoot
+$DriveLetter = if ($TargetRoot -and $TargetRoot.Length -ge 1) {
+    $TargetRoot.Substring(0, 1).ToUpperInvariant()
+} else {
+    ''
+}
+# Host policy: F: is USB-removable Seagate. GetDriveType often lies (FIXED) for USB HDD —
+# BusType=USB / policy letter is dispositive. Never junction live data/datasets/runs onto it.
+$RemovablePolicyLetters = @('F')
+$TargetBusType = $null
+if ($DriveLetter -and $DriveVisible) {
+    try {
+        $TargetBusType = (
+            Get-Partition -DriveLetter $DriveLetter -ErrorAction Stop |
+                Get-Disk -ErrorAction Stop |
+                Select-Object -ExpandProperty BusType -First 1
+        )
+    } catch {
+        $TargetBusType = $null
+    }
+}
+$RejectedRemovable = ($DriveLetter -in $RemovablePolicyLetters) -or ($TargetBusType -eq 'USB')
 
 $Plan = [ordered]@{
     mode = if ($Apply) { 'apply' } else { 'rehearsal' }
@@ -30,15 +51,25 @@ $Plan = [ordered]@{
     rollback_directory = $Backup
     source_bytes = [int64]$SourceBytes
     target_volume_visible = $DriveVisible
+    target_drive_letter = $DriveLetter
+    target_bus_type = $TargetBusType
+    rejected_removable_usb = [bool]$RejectedRemovable
     safeguards = @(
         'robocopy exit code must be <8',
         'source renamed only after mirror succeeds',
         'junction removed and source restored on verification failure',
         'backup directory is never automatically deleted',
-        'models is not an allowed source'
+        'models is not an allowed source',
+        'target must not be removable USB (policy F: / BusType=USB)'
     )
 }
 $Plan | ConvertTo-Json -Depth 4
+
+if ($RejectedRemovable) {
+    throw ("refusing junction onto removable USB target ${TargetPath} " +
+        "(drive=${DriveLetter}: bus=${TargetBusType}). Use a fixed local volume; " +
+        "F: is cold-offload only. See Plan/DOCKER_RUNTIME_AND_SESSION_USE.md §8b.")
+}
 
 if (-not $Apply) {
     Write-Host 'REHEARSAL ONLY: no filesystem changes made.'

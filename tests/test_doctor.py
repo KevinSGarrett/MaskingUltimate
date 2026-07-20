@@ -15,6 +15,7 @@ from maskfactory.doctor import (
     LOCAL_INFERENCE_TIMEOUT_SECONDS,
     CheckResult,
     check_cvat_project,
+    check_data_junction_not_removable_usb,
     check_disk_free,
     check_gpu_lock,
     check_registered_models,
@@ -43,6 +44,7 @@ def test_default_doctor_battery_covers_every_p0_requirement() -> None:
         "check_nuclio_interactor",
         "check_ollama_image",
         "check_disk_free",
+        "check_data_junction_not_removable_usb",
         "check_wsl_backing_store",
         "check_wsl_roundtrip",
         "check_png_strict",
@@ -131,6 +133,62 @@ def test_disk_thresholds_match_operations_runbook(tmp_path: Path) -> None:
         with patch("maskfactory.doctor.shutil.disk_usage") as disk_usage:
             disk_usage.return_value = type("Usage", (), {"free": free * gib})()
             assert check_disk_free(tmp_path).status == expected
+
+
+def test_data_junction_fails_when_resolved_onto_policy_usb_f(tmp_path: Path) -> None:
+    data = tmp_path / "data"
+    data.mkdir()
+    usb_target = Path("F:/MaskFactory_DataRelocated")
+    with (
+        patch("maskfactory.doctor.os.name", "nt"),
+        patch.object(Path, "resolve", return_value=usb_target),
+        patch("maskfactory.doctor._windows_get_drive_type", return_value=3),
+        patch("maskfactory.doctor._is_junction_or_symlink", return_value=True),
+    ):
+        result = check_data_junction_not_removable_usb(data)
+
+    assert result.status == "FAIL"
+    assert result.name == "data_junction_not_removable_usb"
+    assert "policy drive F:" in result.detail
+    assert "data_c_backup_relocated" in result.hint
+
+
+def test_data_junction_fails_when_getdrivetype_removable(tmp_path: Path) -> None:
+    data = tmp_path / "data"
+    data.mkdir()
+    target = Path("E:/external_data")
+    with (
+        patch("maskfactory.doctor.os.name", "nt"),
+        patch.object(Path, "resolve", return_value=target),
+        patch("maskfactory.doctor._windows_get_drive_type", return_value=2),
+        patch("maskfactory.doctor._is_junction_or_symlink", return_value=True),
+    ):
+        result = check_data_junction_not_removable_usb(data)
+
+    assert result.status == "FAIL"
+    assert "DRIVE_REMOVABLE" in result.detail
+
+
+def test_data_junction_passes_on_fixed_local_target(tmp_path: Path) -> None:
+    data = tmp_path / "data"
+    data.mkdir()
+    fixed = Path("C:/Comfy_UI_Main_Masking/data_c_backup_relocated")
+    with (
+        patch("maskfactory.doctor.os.name", "nt"),
+        patch.object(Path, "resolve", return_value=fixed),
+        patch("maskfactory.doctor._windows_get_drive_type", return_value=3),
+        patch("maskfactory.doctor._is_junction_or_symlink", return_value=True),
+    ):
+        result = check_data_junction_not_removable_usb(data)
+
+    assert result.status == "PASS"
+    assert "drive=C:" in result.detail
+
+
+def test_data_junction_skips_off_windows(tmp_path: Path) -> None:
+    with patch("maskfactory.doctor.os.name", "posix"):
+        result = check_data_junction_not_removable_usb(tmp_path)
+    assert result.status == "SKIP"
 
 
 def test_wsl_backing_store_reports_missing_vhd_before_boot(tmp_path: Path) -> None:

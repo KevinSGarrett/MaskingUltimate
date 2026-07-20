@@ -10392,3 +10392,40 @@ Elevated WSL engine repair (`wsl --update` / Docker Desktop WSL backend restart 
 - Agent live pixel-review of EXTERNAL ground-truth certifiable subset: 5 CelebAMask-HQ face + 5 LaPa face + 5 LV-MHP body = 15 named panels. Zero blocking defects -> VISUAL_QA_PASS_BOUNDED (agent pixel-review verdict per 02_AUTONOMOUS_OPERATING_RULES s11). source_masks_are_gold=false; never gold; human CVAT NOT required; no docker builds.
 - Machine draft corpus (data/packages, 14 instances) re-reviewed live; STAYS VISUAL_QA_REVIEWED_WITH_DEFECTS (structural defects need human CVAT).
 - Binding evidence committed 4c72cb44: qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json; milestone surface external_supervision_visual_qa_bounded_subset (scoped VISUAL_QA_PASS_BOUNDED). Tracker MF-P0-13.03 CHANGELOG audit committed 84c809cc.
+
+## 2026-07-20 07:53 UTC - Measured-path autonomous-gold audit-queue wiring (honest, champions=0)
+**Item:** MF autonomy measured path (certified gold -> P5 -> shadow -> promotion -> Mode B /predict)
+**Command:** pytest tests/test_autonomous_gold_audit_queue_wiring.py tests/test_autonomy.py tests/test_autonomous_gold_admission.py tests/test_s11_production.py tests/test_serve_api.py
+**Result:** PASS - fixed dropped autonomous-gold plumbing (default-OFF); no gold, no champion, no tier inflation.
+
+Root cause: population_count=0 is the honest downstream symptom of zero certified gold, but
+the governed autonomous-certified-gold authority was ALSO unreachable on the runtime path:
+
+un_autonomous_correction_loop dropped llow_autonomous_profile and 
+un_s11_production
+never forwarded it to 
+un_candidate_tournament. A valid governed autonomous-gold certificate
+could therefore never raise a decision to calibrated_auto_accepted, so the weekly audit queue
+could never observe a population even after real gold/certs exist.
+
+Fix (default OFF -> zero regression, no forced champions):
+- src/maskfactory/autonomy/controller.py: thread llow_autonomous_profile through every
+  tournament round of the bounded correction loop.
+- src/maskfactory/vlm/production.py: 
+un_s11_production accepts
+  utonomy_allow_autonomous_profile (default False) and forwards it to the authoritative
+  
+un_candidate_tournament call. The non-gold review-draft convergence tournament stays
+  certificate=None (unchanged).
+- 	ests/test_autonomous_gold_audit_queue_wiring.py: OFF -> machine_verified_candidate
+  (audit population 0); ON + passing governed cert -> calibrated_auto_accepted ->
+  uild_weekly_audit_queue population_count=30.
+
+Serve Mode B: create_production_runtime already discovers champions via champion_status() and
+configures the sequential predictor only when all champion_* roles exist; honest 503
+(AWAITING_RUNTIME) otherwise. Verified no bug; no change needed.
+
+Honest state unchanged: champions=0, approved/autonomous gold=0, 0 autonomy lifecycle sidecars in
+runs/, audit-queue population_count=0, Mode B /predict = AWAITING_RUNTIME. Evidence:
+qa/live_verification/measured_path_autonomous_gold_wiring_20260720T0745.json
+(self_sha256 8e98ec20...).

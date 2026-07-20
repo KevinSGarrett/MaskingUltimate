@@ -1,0 +1,86 @@
+{
+  "artifact_type": "measured_champions_path_production",
+  "claim_boundary": {
+    "audit_queue_root_is_production_runs": true,
+    "does_not_mutate_model_registry_roles": true,
+    "no_champion_force_registered": true,
+    "no_champion_registered_by_this_tool": true,
+    "promotion_requires_mark_benchmarked_plus_matrix_bundle": true,
+    "wilson_math_unchanged": true
+  },
+  "corpus_summary": null,
+  "evidence_tier": "AWAITING_RUNTIME",
+  "git_head": "6b1ad4ef965be08f7db13411f7d206d26d68f788",
+  "measured_path_stages": [
+    {
+      "pool": {
+        "calibrated_auto_accepted_count": 0,
+        "corpus_record_envelopes_seen": 0,
+        "lifecycle_sidecars_seen": 0,
+        "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+        "machine_verified_candidate_count": 0
+      },
+      "role": "scan production runs/ autonomy lifecycle + corpus envelopes",
+      "stage": "1_discover",
+      "tier": "RUNTIME_PASS_BOUNDED"
+    },
+    {
+      "note": "no *.corpus_record.json envelopes beside production autonomy sidecars",
+      "role": "frozen image-disjoint autonomous-verification corpus",
+      "stage": "2_assemble_corpus",
+      "tier": "AWAITING_RUNTIME"
+    },
+    {
+      "outcomes_status": "empty",
+      "output": "qa/autonomy/audit_queues/2026-W30_measured_path_probe.json",
+      "population_count": 0,
+      "role": "build_weekly_audit_queue from production runs/",
+      "selected_count": 0,
+      "stage": "3_audit_queue",
+      "tier": "EMPTY_POPULATION"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models register-training-candidate <run> <key>. Refuses champion_* (no force-register).",
+      "role": "register_training_candidate -> challenger_bodypart only",
+      "stage": "4_p5_register",
+      "tier": "READY_WHEN_TRAINING_COMPLETE"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models mark-benchmarked <key> --certificate <cert.json>. Requires validated custom-segmenter certificate; never assigns champion_*.",
+      "role": "mark-benchmarked (installed -> benchmarked)",
+      "stage": "5_shadow_benchmark",
+      "tier": "READY_WHEN_CERTIFICATE_EXISTS"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models promote-custom-segmenter <key> --matrix-bundle <dir>. Not executed by this orchestrator; force-register forbidden.",
+      "role": "promote_custom_segmenter_role (smoke-first, transactional)",
+      "stage": "6_promote",
+      "tier": "READY_WHEN_BENCHMARKED_PLUS_MATRIX_BUNDLE"
+    }
+  ],
+  "next_agent_step": "Sibling multi-provider GPU tournament must emit machine_verified_candidate sidecars under runs/**/autonomy/ with companion *.corpus_record.json envelopes (>=3 independent families). Then re-run this tool; champions>0 only via measured promote_custom_segmenter_role \u2014 never force-register.",
+  "production_honest_state": {
+    "mode_b_predict_reason": "champion prediction provider is not configured (champions=0)",
+    "mode_b_predict_status": "AWAITING_RUNTIME",
+    "production_audit_queue_population_count": 0,
+    "production_autonomy_lifecycle_sidecars_in_runs": 0,
+    "production_champion_count": 0,
+    "production_champion_history_rows": 0,
+    "production_champions": {},
+    "production_corpus_record_envelopes": 0
+  },
+  "recorded_at": "2026-07-20T15:18:07.379065Z",
+  "schema_version": "1.0.0",
+  "scope": {
+    "context": "solo",
+    "label": "torso",
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "period_id": "2026-W30",
+    "pipeline_fingerprint": null
+  },
+  "self_sha256": "1f72df501d552cba6ff8b1600ca104482692e75582ca7c6e558cdf74ea553b96",
+  "status": "awaiting_tournament_candidates"
+}

@@ -1,0 +1,4 @@
+feat(bridge): scaffold MaskFactory sibling consumer on clean origin/main
+
+Isolated worktree branch for MF-P6-11/12 consumer pin receipts without
+touching the dirty Wave64 tree. authority_kind=sibling_main_consumer only.

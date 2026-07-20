@@ -15683,12 +15683,17 @@
           "ts": "2026-07-20T08:21:45+00:00",
           "actor": "ai_agent",
           "text": "2026-07-20: RUNTIME_PASS_BOUNDED local LV-MHP-v1 duo gate run (qa/live_verification/local_multi_person_source_runtime_20260720.json) upgrades the underlying gate proof from STATIC/fixture to real pixels, but explicitly uses external-supervision sources, NOT Kevin-governed 2-4-person demo images (kevin_governed_multi_person_sources_used=false, mf_p8_11_07_demo_complete=false). Does NOT satisfy this item's real 10-20 Kevin-governed image demo, certificate-covered routing, blinded audit, or D11/G9 measurement. Remains blocked, NEEDS KEVIN, 0%."
+        },
+        {
+          "ts": "2026-07-20T15:20:23+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20: RUNTIME_PASS_BOUNDED warehouse Mode A+contact QC climb on real LV-MHP-v1 groups 2/3/4 (qa/live_verification/local_multi_person_mode_a_group_slice_20260720T1004.json; 24/24 contact group_pass; Mode A reads+seeded fail-closed+QC-035/036/AUT-MP gates). External-supervision only; mf_p8_11_07_demo_complete=false. Remains blocked 0%."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: sufficient governed 2-4-person sources and the preselected blinded human-anchor audit are required; certificate-covered instances otherwise route automatically.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-20T08:21:45+00:00",
+      "updated_at": "2026-07-20T15:20:23+00:00",
       "orphaned": false
     },
     "MF-P8-11.08": {

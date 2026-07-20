@@ -10761,3 +10761,18 @@ Evidence: `qa/live_verification/families_online_gold_drive_20260720T0957.json`; 
 **Result:** STATIC_PASS. Single-process seal+CAS-commit. F:\\DAZ present (26 entries); gold_volume_sources daz present/readable; doctor soft_capacity_only=True free_gib=127.629; binders {'coverage_planner_static': 'dcp_5e51b474c086e19f7b2e894d', 'ops_static_contracts': 'dos_1c30ade715982cec8b0f9b97', 'validation_static_contracts': 'dvs_b8a6ce231ab54f7764ca8ee0'}; pytest_exit=0. No live Studio/gold/pilot/soak claims.
 
 Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 cc02ab28040d567c9da269edb6e651dcdc9532bc8e6c16c1f503daef6552575a).
+
+## 2026-07-20 15:05 UTC - Multi-person Mode A / contact QC climb on warehouse LV-MHP groups
+
+**Item:** multi_person Mode A package-QC + contact gate climb (warehouse sources)
+**Command:** \python -m pytest tests/test_local_multi_person_mode_a_group_slice.py -q\; \python tools/run_local_multi_person_mode_a_group_slice.py --limit-per-size 8 --workdir runtime_artifacts/lvmhp_mode_a_group_slice_scratch_20260720T1004 --output qa/live_verification/local_multi_person_mode_a_group_slice_20260720T1004.json\; verify seal
+**Result:** RUNTIME_PASS_BOUNDED. Advances prior duo Mode A package-QC runtime by driving real \evaluate_mode_a_package_read\ across MaskedWarehouse LV-MHP-v1 groups of 2/3/4 with contact-preferred selection, plus live QC-035/036 + AUT-MP-001/002/003 under duo and small_group contexts.
+
+- 24/24 groups processed and group_pass (8 per size); 24/24 contact group_pass
+- Mode A reads all accepted with distinct package ids + transform round-trips for every promoted instance
+- All seeded Mode A faults fail-closed (wrong_owner, instance_mismatch)
+- All seeded gate faults blocked (QC-035 exclusivity, QC-036 bleed, AUT-MP-001 containment, AUT-MP-002 nonreciprocity)
+- Hermetic pytest guard: 2 passed
+- Honest non-claims preserved: no MF-P8-11.07 Kevin-governed demo, no gold/champions/doctor-green/PRODUCTION_EVIDENCE_PASS, package_authority_tier=fixture_authority, independent_real_accuracy_claim=false
+
+Evidence: qa/live_verification/local_multi_person_mode_a_group_slice_20260720T1004.json (seal_sha256 8c16d92039396ea7e85516bfd0eee1cf77948588b5fca957cc0f2c19d8aa16e9; sha256 75f5c9fbc38fa516bd7499dd2a9ea9157ba8b92051c86d9413fa0014858a2295).

@@ -10634,7 +10634,7 @@ Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json
 **Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile
 **Result:** RECONCILED. Linked wsl_ubuntu_io_error_20260720.json + f_drive_restored_20260720T0933Z.json. CURRENT STILL_BROKEN_PROBE_FAILED (ERROR_SHARING_VIOLATION). Docker-GPU parallel CUDA path.
 
-Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 47506f118846d66e...).
+Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 60d87d57a296bbcd...).
 
 ## 2026-07-20 14:49 UTC - DAZ validation/ops/coverage STATIC re-verify FINAL (F:\DAZ read-when-present, 26 entries)
 **Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
@@ -10783,3 +10783,33 @@ Evidence: qa/live_verification/local_multi_person_mode_a_group_slice_20260720T10
 **Result:** PASS (local-tier RUNTIME_PASS_BOUNDED). Restored seed package **img_a3d2663ad90d** (252 files / 8,367,171 bytes) from on-C: backup `data_c_backup_relocated/packages` into empty drill target `runtime_artifacts/b1_restore_drill`. `verify-package` PASS for instances **p0** and **p1**. Independent source integrity PASS for `img_51945db358cb/p0`. `data/` junction unchanged (still C: backup). Official `D:\MaskFactoryBackup` B1 media **absent** — not claimed. DVC local C: backup already PASS (prior seal). No doctor-green / gold / visual-pass inflation.
 
 Evidence: qa/live_verification/b1_restore_drill_local_c_backup_20260720T1517Z.json
+
+
+## 2026-07-20 — Measured champions path production glue (champions=0; no force-register)
+**Item:** MF measured path runs/ → audit queue → P5 → mark-benchmarked → promote
+**Command:** pytest glue + `tools/run_measured_champions_path.py`
+**Result:** Wired production discovery/orchestrator; honest state champions=0 predict=AWAITING_RUNTIME.
+
+Glue (new modules; no force-register):
+- `autonomy/production_audit.py` + `tools/build_production_audit_queue.py` (runs/**/autonomy)
+- `autonomy/corpus.py` envelopes + assemble tool
+- `models/benchmark.py` + `tools/mark_benchmarked_candidate.py` (installed→benchmarked)
+- `tools/run_measured_champions_path.py` orchestrator
+- Contested patches (CLI default runs/, S11 profile env, corpus envelopes) re-applied best-effort
+
+Evidence: `qa/live_verification/measured_champions_path_production_20260720T1526.json` self_sha256 `b9c7cbd299c6b6f22454057a9f69768692bf1ebe55e2428044167c121bc9c02a`.
+
+## 2026-07-20 15:14 UTC - DAZ read-when-present STATIC seal+commit (unique binder paths)
+**Item:** MF-P9-08 / 10 / 12 STATIC (F:\\DAZ read-when-present, 26 entries)
+**Command:** python runtime_artifacts/_seal_and_commit_daz_read_when_present_20260720.py
+**Result:** STATIC_PASS. Unique timestamped binder paths bound into seal (parallel-safe). F:\\DAZ present (26); gold_volume daz present/readable; soft_capacity_only=True free_gib=127.629; binders {'coverage_planner_static': 'dcp_2327183a54d821d6f3938828', 'ops_static_contracts': 'dos_e831efe565a738f1de8da544', 'validation_static_contracts': 'dvs_61d6b00c3f97f547fd7d4e8a'}; pytest=0. No live Studio/gold/pilot/soak.
+
+Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 57dd331f060eab20a81dafc19d6abe3a35f87f3917c59ad7fde5d030ec3de80a).
+
+## 2026-07-20 15:06 UTC - Tournament/gold admission climb (F: restored, Docker mid-wave DOWN, 0 candidates)
+**Item:** autonomous gold admission / machine_verified_candidate (production runs/)
+**Command:** `python tools/gpu_sequencer.py plan --consumer nuclio-sam2|ollama-vlm`; `python runtime_artifacts/_scan_runs_status_20260720.py`; `python tools/build_autonomous_gold_admission.py --label torso --context solo --pipeline-fingerprint runtime-probe-20260720T1447 --output qa/live_verification/autonomous_gold_admission_20260720T1447.json`; Docker Desktop cold relaunch (non-destructive); `python runtime_artifacts/_seal_tournament_gold_admission_20260720T1506.py`
+**Result:** HONEST FAIL-CLOSED. F: present (~127.6 GiB free). Gold SOURCE roots readable (MaskedWarehouse CelebAMask-HQ/LaPa/LV-MHP; F:\Reference_Images; F:\DAZ 25 top dirs). data/ kept on C: backup (USB auto-repoint FORBIDDEN; brief mis-repoint reverted). GPU sequencer: both nuclio-sam2 and ollama-vlm `run_now` (~7771 MiB free, sequential). Production runs/: 4462 json, **machine_verified_candidate=0**, calibrated_auto_accepted=0. Admission status `insufficient_autonomous_verified_samples` (certificate_minted=false, no fabrication). Docker engine crashed mid-wave (npipe missing); cold relaunch did not recover in window; host Ollama 0.32.1 stayed UP; host torch 2.12.1+cpu CUDA=false. champions=0; autonomous_certified_gold=0.
+
+Evidence: qa/live_verification/tournament_gold_admission_climb_20260720T1506.json (self_sha256 5dac35ed1e74e857cf883d0d83453bb899e97754cb982ef42322142d4ede6f18); qa/live_verification/autonomous_gold_admission_20260720T1447.json (self_sha256 fe30a0123be32a6a1bbc7243f521348b2f8eb31a93afba77a5a47707e73a75d4).
+

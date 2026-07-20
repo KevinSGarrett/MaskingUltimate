@@ -10776,3 +10776,10 @@ Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json 
 - Honest non-claims preserved: no MF-P8-11.07 Kevin-governed demo, no gold/champions/doctor-green/PRODUCTION_EVIDENCE_PASS, package_authority_tier=fixture_authority, independent_real_accuracy_claim=false
 
 Evidence: qa/live_verification/local_multi_person_mode_a_group_slice_20260720T1004.json (seal_sha256 8c16d92039396ea7e85516bfd0eee1cf77948588b5fca957cc0f2c19d8aa16e9; sha256 75f5c9fbc38fa516bd7499dd2a9ea9157ba8b92051c86d9413fa0014858a2295).
+
+## 2026-07-20 15:17 UTC - B1 restore drill re-run from C: backup seed (verify-package PASS)
+**Item:** MF-P1-09.05
+**Command:** `robocopy data_c_backup_relocated\packages\img_a3d2663ad90d runtime_artifacts\b1_restore_drill\img_a3d2663ad90d /E /COPY:DAT /R:2 /W:2`; `maskfactory verify-package img_a3d2663ad90d --root runtime_artifacts/b1_restore_drill`; `maskfactory verify-package img_51945db358cb --root data/packages`
+**Result:** PASS (local-tier RUNTIME_PASS_BOUNDED). Restored seed package **img_a3d2663ad90d** (252 files / 8,367,171 bytes) from on-C: backup `data_c_backup_relocated/packages` into empty drill target `runtime_artifacts/b1_restore_drill`. `verify-package` PASS for instances **p0** and **p1**. Independent source integrity PASS for `img_51945db358cb/p0`. `data/` junction unchanged (still C: backup). Official `D:\MaskFactoryBackup` B1 media **absent** — not claimed. DVC local C: backup already PASS (prior seal). No doctor-green / gold / visual-pass inflation.
+
+Evidence: qa/live_verification/b1_restore_drill_local_c_backup_20260720T1517Z.json

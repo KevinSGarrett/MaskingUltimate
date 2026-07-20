@@ -73,7 +73,7 @@
         "Produce autonomous_certified_gold packages (counts toward certified_training_package_count alongside human_anchor)."
       ],
       "former": "sop1_jobs_21_to_25 (priority 3, NEEDS_KEVIN CVAT human correction)",
-      "honest_note": "The governed leaderboard final authority still requires a human_anchor holdout for champion promotion. To keep zero human blockers, the legitimate agent path is a governed autonomous-gold admission tier \u2014 implementing that is an agent policy task, NOT a Kevin annotation task. Not fabricated here.",
+      "honest_note": "The governed leaderboard final authority still requires a human_anchor holdout for champion promotion. To keep zero human blockers, the legitimate agent path is a governed autonomous-gold admission tier — implementing that is an agent policy task, NOT a Kevin annotation task. Not fabricated here.",
       "reclassification": "Human anchors are NOT operational gold (mandate). CVAT SOP-1 human correction is deferred/superseded by the autonomous-gold path.",
       "status": "SUPERSEDED_AUTONOMOUS_PATH",
       "unblocks": [
@@ -109,14 +109,21 @@
     },
     {
       "action_id": "b1_restore_drill_local",
-      "evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json",
-      "executed": "Seed package img_a3d2663ad90d (252 files, 8.0 MB) restored via robocopy to runtime_artifacts/b1_restore_drill; `maskfactory verify-package img_a3d2663ad90d --root runtime_artifacts/b1_restore_drill` -> PASS for instances p0 and p1 (~33s). Independent source integrity confirmed (verify-package img_51945db358cb -> PASS).",
+      "evidence": "qa/live_verification/b1_restore_drill_local_c_backup_20260720T1517Z.json",
+      "executed": "Re-run 2026-07-20: seed img_a3d2663ad90d (252 files, 8.0 MB) restored via robocopy from data_c_backup_relocated/packages to runtime_artifacts/b1_restore_drill; `maskfactory verify-package img_a3d2663ad90d --root runtime_artifacts/b1_restore_drill` -> PASS p0+p1; independent `img_51945db358cb` PASS. D:\\MaskFactoryBackup absent.",
       "former": "b1_restore_drill_one_package (priority 4, NEEDS_KEVIN)",
       "no_human_wait": true,
       "status": "DONE_LOCAL",
       "unblocks": [
         "MF-P1-09.05"
-      ]
+      ],
+      "rerun_20260720T1517": {
+        "evidence": "qa/live_verification/b1_restore_drill_local_c_backup_20260720T1517Z.json",
+        "self_sha256": "a8a1a5468bd58c9bd4a14462db25ca0087aa2eb510d1bb59c6c8e18245efd785",
+        "source": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated\\packages\\img_a3d2663ad90d",
+        "tier": "RUNTIME_PASS_BOUNDED",
+        "verify_package": "PASS p0+p1"
+      }
     },
     {
       "action_id": "main_adoption_agent_executable",
@@ -143,7 +150,7 @@
       "agent_executable_path": [
         "Checkpoint already hash-bound on disk at models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt (no webpage acceptance idle needed; local weights present).",
         "python tools\\probe_meta_checkpoint_access.py to re-confirm local access readiness.",
-        "Live CUDA SAM 3.1 smoke depends on repair_ubuntu_2204_ext4_vhd (elevated e2fsck) \u2014 reclassified above as scripted agent step, not human."
+        "Live CUDA SAM 3.1 smoke depends on repair_ubuntu_2204_ext4_vhd (elevated e2fsck) — reclassified above as scripted agent step, not human."
       ],
       "depends_on": [
         "repair_ubuntu_2204_ext4_vhd"
@@ -366,7 +373,7 @@
     "DONE_AUTONOMOUS items are backed by sealed live evidence this session",
     "No tier inflation: doctor not all-green; champions=0; no gold/Main-complete/PRODUCTION_EVIDENCE_PASS",
     "Genuine elevation/hardware gates are reclassified as agent-executable-from-elevated-shell (scripted, no human judgment) WITH an autonomous fallback already executed so no lane waits",
-    "Human-anchor accuracy items are superseded (not blocking) by the autonomous-gold path per mandate; final champion authority still honestly requires either human_anchor holdout OR a governed autonomous-gold admission \u2014 not fabricated"
+    "Human-anchor accuracy items are superseded (not blocking) by the autonomous-gold path per mandate; final champion authority still honestly requires either human_anchor holdout OR a governed autonomous-gold admission — not fabricated"
   ],
   "host_snapshot": {
     "c_above_75_repair_floor": false,
@@ -411,7 +418,7 @@
       "action_id": "disk_ephemeral_reclaim_above_75_gib",
       "rank": 1,
       "status": "CRITICAL_AGENT_EXECUTABLE_NOW",
-      "why_now": "C: free 19.4 GiB (CRITICAL; << 75 GiB floor). Reclaim docker build cache / ephemeral only \u2014 no volume wipe, no prune of CVAT volumes. Do NOT migrate docker_data.vhdx to USB F:."
+      "why_now": "C: free 19.4 GiB (CRITICAL; << 75 GiB floor). Reclaim docker build cache / ephemeral only — no volume wipe, no prune of CVAT volumes. Do NOT migrate docker_data.vhdx to USB F:."
     },
     {
       "action_id": "restore_docker_engine_and_cvat_stack",
@@ -447,7 +454,7 @@
       "action_id": "migrate_docker_vhdx_c_to_f",
       "rank": "CANCELLED",
       "status": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
-      "why_now": "F: BusType=USB Seagate \u2014 never host live docker_data.vhdx on removable media. Reconfirmed this wave."
+      "why_now": "F: BusType=USB Seagate — never host live docker_data.vhdx on removable media. Reconfirmed this wave."
     }
   ],
   "local_date": "2026-07-20",

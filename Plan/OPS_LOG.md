@@ -10058,3 +10058,30 @@ Free C: disk above 75 GiB ingest floor (currently ~4.39 GiB after collapse from 
 ### Evidence
 - qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json self_sha256 \ec987c30448dce147585e746a80b1043706a6601185c370c199a18e970b4a574\ file_sha256 \ba39a5e3c791f7ccde93f0cde91eb13017569d0c6c0324dce175ef22b060e489
 **Commands:** git push; pip cache purge; uv cache clean --force / rd cache subtrees; Temp pip-* pattern remove; docker/CVAT/Ollama reprobe; seal evidence; OPS_LOG append; commit+push evidence
+
+## 2026-07-20 ~02:00 UTC - Autonomous session handoff (post_ephemeral_reclaim)
+
+**Lane:** Proof-tier session close / restart handoff
+**Actor:** autonomous_session_handoff
+**Result:** Durable handoff written; milestone revision bumped to post_ephemeral_reclaim with current disk figure. core_autonomous_runtime remains blocked. No project-complete claim. No governed wipe.
+
+### State sealed
+- Host STATIC gaps exhausted: residual_blocker_inventory host_side_static_gaps_remain=false
+- P6-08/09/10 producer contracts complete; P6-11/12 AWAITING_MAIN (STATIC_PASS); fixture_main cannot close production core
+- RUNTIME_PASS_BOUNDED: CVAT 2.24, Nuclio SAM2, Ollama VLM, Mode B health/models (champions=0)
+- RUNTIME_BLOCKED: doctor all-green (C: ~12.65 GiB at seal / ~12.781 GiB at reclaim seal; still <<75)
+- AWAITING_RUNTIME: Mode B predict (champions=0); Mode B refine (disk)
+- VISUAL_QA_REVIEWED_WITH_DEFECTS; HARD_QA_PASS_BOUNDED
+- needs_kevin_actions_20260719.json remains OPEN_NONE_COMPLETE (file_sha256 0f785cb1a9d3a6d2846cdb17bb98c5ab092b9374bf755813ec53caeeceb9c17c)
+- Evidence parent HEAD: e6a799cf (pushed)
+
+### Artifacts
+- Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md (branch HEAD, tiers, Kevin actions, do-not-wipe, resume)
+- qa/live_verification/milestone_proof_tiers_20260719.json revision `post_ephemeral_reclaim` self_sha256 `7986f63423c5d3a0477a2ea98777cc76665c5f369240931ea60341e4ee5829dc` (supersedes `8c792773780e4a7a3d19b80649ac78b2b88e8448001b1fc7829a6e330bd0a32b`)
+- Tracker notes: MF-P0-EXIT + MF-P6-12.06 (core profile still blocked)
+
+### Honest non-claims
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS / core close
+- No Kevin action from needs_kevin_actions list claimed done
+
+**Commands:** seal milestone revision; write RESTART_HANDOFF; tracker set notes; OPS_LOG append; commit+push handoff only

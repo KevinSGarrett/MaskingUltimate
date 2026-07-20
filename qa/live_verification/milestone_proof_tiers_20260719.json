@@ -1,18 +1,20 @@
 {
   "artifact_type": "milestone_proof_tiers",
   "schema_version": "1.0.0",
-  "recorded_at": "2026-07-20T00:53:27Z",
+  "recorded_at": "2026-07-20T01:53:11Z",
   "local_date": "2026-07-19",
-  "revision": "post_runtime_climb_disk_collapse_20260719",
-  "supersedes_self_sha256": "66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e",
+  "revision": "post_ephemeral_reclaim",
+  "supersedes_self_sha256": "8c792773780e4a7a3d19b80649ac78b2b88e8448001b1fc7829a6e330bd0a32b",
   "branch": "codex/maskfactory-runtime-implementation",
-  "project_head_at_authoring": "34df5cac06c4b2bb0ad8e3378329e7cfea044297",
+  "project_head_at_authoring": "e6a799cf27f13abbb57afb6c531319a0e5dc076a",
   "authority": [
     "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md §11 proof-tier vocabulary",
     "Plan/Tracker/DASHBOARD.md",
-    "Plan/OPS_LOG.md proof-tier runtime climb 2026-07-20 ~00:17–00:40 UTC",
+    "Plan/OPS_LOG.md ephemeral reclaim 2026-07-20 01:49 UTC + autonomous session handoff",
     "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md",
-    "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json"
+    "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
+    "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+    "Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md"
   ],
   "honesty_rules": [
     "Do not inflate tiers",
@@ -50,9 +52,9 @@
     "highest_live_surface_tier_seen": "RUNTIME_PASS_BOUNDED",
     "production_evidence": "NOT_CLAIMED",
     "profile_complete": false,
-    "rationale": "Host-side STATIC gaps exhausted (residual_blocker_inventory). Runtime climb re-warmed WSL and re-probed Docker CVAT/Nuclio/Ollama: bounded smokes RUNTIME_PASS_BOUNDED; doctor all-green still RUNTIME_BLOCKED. C: free collapsed ~29.5→~4.5 GiB during the wave; Mode B refine longer-timeout retry skipped under disk pressure. Mode B health/models remain RUNTIME_PASS_BOUNDED (champions=0); predict AWAITING_RUNTIME (no invented champions). No PRODUCTION_EVIDENCE_PASS / gold / visual-pass / Main-complete.",
+    "rationale": "Host-side STATIC gaps exhausted (residual_blocker_inventory host_side_static_gaps_remain=false). Runtime climb: CVAT 2.24 / Nuclio SAM2 / Ollama VLM / Mode B health+models = RUNTIME_PASS_BOUNDED; doctor all-green RUNTIME_BLOCKED. Safe ephemeral reclaim raised C: ~4.07→~12.78 GiB (still <<75). Mode B predict AWAITING_RUNTIME (champions=0). P6-08/09/10 producer contracts complete; P6-11/12 AWAITING_MAIN (STATIC_PASS). VISUAL_QA_REVIEWED_WITH_DEFECTS; HARD_QA_PASS_BOUNDED. No PRODUCTION_EVIDENCE_PASS / gold / visual-pass / Main-complete / core close.",
     "exact_blockers": [
-      "KEVIN: Free C: above 75 GiB ingest floor (current host ~4.49 GiB after wave collapse from ~29.5 GiB; observed band ~4.5–29.5 GiB on 2026-07-19/20) without unauthorized destructive prune of MaskedWarehouse/models/packages/Docker volumes",
+      "KEVIN: Free C: above 75 GiB ingest floor (current host ~12.65 GiB after ephemeral reclaim from ~4.07 GiB; still <<75) without unauthorized destructive prune of MaskedWarehouse/models/packages/Docker volumes",
       "KEVIN: MF-P1-08.02..08.05 CVAT SOP-1 human-anchor correction (jobs 21–25 staged; human_anchor_train_count=0)",
       "KEVIN: MF-P1-07.09 DVC S3 push (kevin_dvc_s3_push_required=true; aws_credentials_present=false)",
       "KEVIN: MF-P1-09.05 live B1 restore drill (kevin_b1_restore_required=true; b1_mirror_present=false; needs corrected seed package)",
@@ -61,8 +63,8 @@
       "MAIN: AWAITING_MAIN MF-P6-11.01..11.08 — no Main-supplied production MaskFactoryAdapter / adopted-package / exact operational-wrapper / Main-signed journal/circuit evidence",
       "MAIN: AWAITING_MAIN MF-P6-12.02..12.06 — no Main/ComfyUI execution receipts, qualification bindings, or reciprocal commit pin; PRODUCTION_EVIDENCE_PASS absent",
       "MAIN HARD BLOCKERS named: MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 (blocks MF-P6-12.06 / core close)",
-      "DISK: doctor_all_green RUNTIME_BLOCKED — C: <<75 GiB BLOCK ingest; host-only doctor PASS=5 FAIL=4; full doctor not completed under unsafe headroom",
-      "DISK: Mode B /refine AWAITING_RUNTIME — longer-timeout retry skipped at ~4.5–5.8 GiB free; prior 30s timeout under ~32 GiB still stands",
+      "DISK: doctor_all_green RUNTIME_BLOCKED — C: ~12.65 GiB after ephemeral reclaim (<<75 GiB BLOCK ingest); host-only doctor PASS=5 FAIL=4 retained; full doctor not completed under unsafe headroom",
+      "DISK: Mode B /refine AWAITING_RUNTIME — longer-timeout retry still skipped under <<75 GiB; prior 30s timeout under ~32 GiB still stands",
       "DISK (post-core DAZ): storage new-work paused (free <150 GiB DAZ volume soft floor); live hashing 2859/41094; 0 qualified assets",
       "CHAMPION: champions=0; champion_bodypart/hand/clothing not promoted; certified_training_package_count=0; P5 entry gate closed",
       "CHAMPION: Mode B /predict AWAITING_RUNTIME — HTTP 503 champion prediction provider is not configured; draft-provider force-register forbidden by policy",
@@ -86,7 +88,7 @@
         "HARD: MF-P6-12.05"
       ],
       "disk": [
-        "C: free <75 GiB BLOCK ingest (current ~4.49 GiB after collapse from ~29.5 GiB)",
+        "C: free <75 GiB BLOCK ingest (current ~12.65 GiB after ephemeral reclaim; was ~4.07 GiB)",
         "doctor registered_models / WSL smokes not run under unsafe disk pressure",
         "Mode B refine longer-timeout retry skipped under disk pressure",
         "DAZ soft floor 150 GiB blocks new storage work (post-core)"
@@ -103,6 +105,7 @@
       "MF-P6-12.05"
     ],
     "evidence": [
+      "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
       "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
       "Plan/Tracker/DASHBOARD.md",
       "qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json",
@@ -123,8 +126,8 @@
       "id": "doctor_all_green",
       "highest_tier_achieved": "RUNTIME_BLOCKED",
       "exact_blockers": [
-        "disk_free: C: ~4.49 GiB at seal (<75 GiB BLOCK ingest); wave collapse from ~29.5 GiB",
-        "host-only doctor PASS=5 FAIL=4 (disk_free, nuclio 45s timeout, ollama 45s timeout, gpu_lock stale-age)",
+        "disk_free: C: ~12.65 GiB at handoff seal (<75 GiB BLOCK ingest); post-ephemeral reclaim from ~4.07 GiB (reclaim seal after=12.781 GiB)",
+        "host-only doctor PASS=5 FAIL=4 (disk_free, nuclio 45s timeout, ollama 45s timeout, gpu_lock stale-age) — retained from runtime climb",
         "full maskfactory doctor NOT_RUN_TO_COMPLETION under unsafe disk headroom"
       ],
       "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json"
@@ -185,7 +188,7 @@
       "id": "mode_b_refine",
       "highest_tier_achieved": "AWAITING_RUNTIME",
       "exact_blockers": [
-        "longer-timeout refine retry SKIPPED under ~4.5–5.8 GiB free (unsafe); prior 30s timeout under ~32 GiB still stands"
+        "longer-timeout refine retry SKIPPED under <<75 GiB free (~12.65 GiB post-reclaim still unsafe vs ingest floor); prior 30s timeout under ~32 GiB still stands"
       ],
       "evidence": [
         "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
@@ -440,6 +443,14 @@
   ],
   "recent_waves_summarized": [
     {
+      "wave": "autonomous_session_handoff_20260719",
+      "result": "RESTART_HANDOFF_AUTONOMOUS written; milestone revision post_ephemeral_reclaim; core still blocked"
+    },
+    {
+      "wave": "ephemeral_disk_reclaim_pip_uv_temp",
+      "result": "Reclaimed ~8.715 GiB caches; C: 4.067→12.781 GiB; doctor still RUNTIME_BLOCKED (<<75); no governed wipe"
+    },
+    {
       "wave": "proof_tier_runtime_reprobe",
       "result": "CVAT/Nuclio/Ollama RUNTIME_PASS_BOUNDED; doctor RUNTIME_BLOCKED (Kevin disk + WSL)"
     },
@@ -508,7 +519,7 @@
     "Civitai gold promotion / paid download / extracted runtime"
   ],
   "kevin_decisions_still_required": [
-    "Free C: above 75 GiB ingest floor without unauthorized destructive prune (candidates listed in proof_tier_runtime_reprobe disk_reclaim_candidates_kevin_decision)",
+    "Free C: above 75 GiB ingest floor (current ~12.65 GiB after ephemeral reclaim; still <<75) without unauthorized destructive prune (see needs_kevin_actions_20260719.json disk_reclaim_above_75_gib)",
     "CVAT human-anchor correction for MF-P1-08.* (SOP-1 jobs 21–25)",
     "Authorize AWS credentials + first eligible package for MF-P1-07.09 DVC S3 push",
     "Supply corrected human-anchor seed package for MF-P1-09.05 B1 restore drill",
@@ -518,7 +529,8 @@
     "WSL Ubuntu-22.04 root ext4 repair (elevated Repair-MaskFactoryWslVhd.ps1) for MF-P0-17.04 live CUDA smoke"
   ],
   "host_snapshot_at_authoring": {
-    "disk_free_gib_c": 4.42,
+    "disk_free_gib_c": 12.65,
+    "disk_free_gib_c_at_reclaim_seal": 12.781,
     "disk_ingest_floor_gib": 75,
     "doctor_all_green": false,
     "champions": 0,
@@ -527,7 +539,11 @@
     "aws_credentials_present": false,
     "b1_mirror_present": false,
     "mode_b_refine_attempted_this_wave": false,
-    "runtime_evidence_sha256": "e6284d6e8d538989a9609a74bba26de8cfc984e88fe0e94a223447667ea73333"
+    "ephemeral_reclaim_evidence": "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
+    "ephemeral_reclaim_self_sha256": "ec987c30448dce147585e746a80b1043706a6601185c370c199a18e970b4a574",
+    "runtime_evidence_sha256": "e6284d6e8d538989a9609a74bba26de8cfc984e88fe0e94a223447667ea73333",
+    "needs_kevin_actions": "qa/live_verification/needs_kevin_actions_20260719.json",
+    "host_side_static_gaps_remain": false
   },
-  "self_sha256": "8c792773780e4a7a3d19b80649ac78b2b88e8448001b1fc7829a6e330bd0a32b"
+  "self_sha256": "7986f63423c5d3a0477a2ea98777cc76665c5f369240931ea60341e4ee5829dc"
 }

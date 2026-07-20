@@ -1,0 +1,61 @@
+{
+  "after_resolvable_envelope_count": 33,
+  "artifact_type": "corpus_envelope_root_repair",
+  "authority": "autonomous_certified_gold_profile",
+  "before_resolvable_envelope_count": 0,
+  "claim_boundary": {
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "preserves_independence_stability_fields": true,
+    "rewrites_path_bindings_only": true
+  },
+  "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+  "recorded_at": "2026-07-20T15:41:14.123750Z",
+  "repair": {
+    "already_ok": 8,
+    "already_ok_lifecycle_paths": [
+      "autonomous_gold_tournament_20260720T1538/img_00453ba6c3bc/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_004620669155/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_004f247b31c0/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_00ba03b0e059/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_09a02318d5c5/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_1908052a723b/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_1cc6b4b062b8/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720T1538/img_1eb5497c69df/autonomy/torso.json"
+    ],
+    "dry_run": false,
+    "failed": 0,
+    "failures": [],
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "repaired": 25,
+    "repaired_lifecycle_paths": [
+      "autonomous_gold_tournament_20260720_cbackup/img_06e833fe6114/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_18b35dd98b31/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_1fefcf18f994/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_27a15c06e014/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_299450cab24e/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_37dde48f50a6/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_444dc44e8b28/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_7f850c056507/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_7fba49271577/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_92583489fae8/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_9266dadbc93b/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_9926febaa4d6/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_9b0a56c9c07b/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_a0384e6e2478/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_a2d2024b6740/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_a6b860ba9b51/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_af3634f654cf/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_b12b4c67d276/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_b8d68771b387/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_c2b8784ad11c/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_d88fef6e4b7f/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_daea40f85990/autonomy/torso.json",
+      "autonomous_gold_tournament_20260720_cbackup/img_ea7d388a47a7/autonomy/torso.json",
+      "autonomous_gold_tournament_smoke2/img_18b35dd98b31/autonomy/torso.json",
+      "autonomous_gold_tournament_smoke2/img_92583489fae8/autonomy/torso.json"
+    ]
+  },
+  "schema_version": "1.0.0",
+  "self_sha256": "49182a88783775e7f27098f9017a3b845c2ba32343f9391f740b1a6614a4558e"
+}

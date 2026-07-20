@@ -10860,3 +10860,10 @@ Evidence: qa/live_verification/family_availability_matrix_20260720T1525.json; _s
 **Result:** STATIC_PASS. Unique timestamped binder paths bound into seal (parallel-safe). F:\\DAZ present (26); gold_volume daz present/readable; soft_capacity_only=True free_gib=127.629; binders {'coverage_planner_static': 'dcp_d3831a4b1dd196a31a5fb3fe', 'ops_static_contracts': 'dos_8aecc93e1805d180c2da2005', 'validation_static_contracts': 'dvs_37b5f14e7d46d6aa2e0d57c9'}; pytest=0. No live Studio/gold/pilot/soak.
 
 Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 48b969bc1c968172d14f911eb2d67dab986406259736b310ac4fe41457d03a3b).
+
+## 2026-07-20 16:47 UTC - Emit glue: tournament sidecars admit under production runs/ (MVC=33)
+**Item:** GOLD FACTORY emit path / machine_verified_candidate admission scan
+**Command:** pytest tests/test_autonomy_emit_path.py; tools/repair_corpus_envelope_roots.py; tools/build_autonomous_gold_admission.py --machine-root runs
+**Result:** FIXED. Tournament previously wrote corpus envelopes rooted at batch subdirs so `machine_lifecycle_path` failed under `runs/` (smoke OK, MVC=0 for admission). Canonical `emit_lifecycle_and_corpus_record` + repair rewrite paths relative to production `runs/`. Live pool: **machine_verified_candidate_count=33**, envelopes_seen=33, all 33 resolvable; admission still `insufficient_autonomous_verified_samples` (Wilson/cert floor; certificate_minted=false; no fabrication). Families live earlier this wave (>=3 Comfy CUDA).
+
+Evidence: qa/live_verification/autonomous_gold_admission_emit_fix_20260720T1625.json; corpus_envelope_repair_20260720T1625.json; autonomous_gold_admission_mvc_prove_20260720T1647.json.

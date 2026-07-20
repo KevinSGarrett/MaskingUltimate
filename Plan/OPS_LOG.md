@@ -10481,3 +10481,38 @@ Sealed: qa/live_verification/isolated_consumer_dod_climb2_20260720.json
 (self_sha256 a450273eea23309bfe84096dc9a9ea280528d01fe8fac41cef78bd17769bd3f1).
 Tracker: MF-P6-11.04 / MF-P6-11.08 blocked -> blocked (evidence notes only; portfolio 565/798 = 70.8%
 unchanged). HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN (AWAITING_MAIN). champions=0; no core close.
+
+## 2026-07-20 14:35 UTC -- Docker VHDX relocation to F: BLOCKED (F: physically absent); data/ junction repaired to C: backup; CVAT 2.24 recovered
+**Item:** Docker data relocation (disk-pressure crash-loop mitigation) + production CVAT 2.24 recovery
+**Command:** `Get-Disk`; `Get-Partition`; `mountvol`; `mklink /J data data_c_backup_relocated`; `python tools/bootstrap_cvat.py`; `python tools/smoke_cvat_sam2.py`
+**Result:** BLOCKED (relocation not performed - no F: drive exists) / PASS (data/ path restored, CVAT 2.24 up, SAM2 smoke pass). No volume wipe, no prune, VHDX untouched.
+
+Requested VHDX relocation C: -> F: is IMPOSSIBLE and was NOT forced. Live probe: only ONE physical
+disk (Disk 0 SKHynix NVMe 953.9 GB = C:). F: is not unmounted/offline - it is a removed external
+drive (Win32_LogicalDisk shows only C:; the two unlettered volumes are WINRE_DRV/SYSTEM_DRV; Get-PSDrive
+F -> DriveNotFoundException). Earlier readiness snapshots (2026-07-18..20T0820) that saw F: ~181-249 GiB
+free no longer hold. Docker data VHDX stays at C:\Users\kevin\AppData\Local\Docker\wsl\disk\docker_data.vhdx
+(68.11 GiB); docker-desktop WSL BasePath still C:\...\Docker\wsl\main; Docker Root /var/lib/docker, server 29.6.1.
+Forcing a retarget to a missing/removable F: would guarantee daemon failure and risk CVAT volume data -> hard stop.
+
+Collateral fix: the prior data/ -> F:\MaskFactory_DataRelocated relocation became a DANGLING junction when
+F: disconnected (dir data -> File Not Found), breaking MASKFACTORY_DATA_PATH. Repointed data/ junction to the
+retained on-C: backup C:\Comfy_UI_Main_Masking\data_c_backup_relocated (2.98 GiB; cvat, cvat_v2, images,
+incoming, maskfactory.sqlite, packages). Non-destructive, reversible; a parallel sibling had converged on the
+same target (idempotent). data/ is now C:-resident and F:-independent.
+
+CVAT 2.24 was flapping under disk pressure (cvat_server Bad Gateway; workers export/import/chunks/annotation
+Exited 255). bootstrap_cvat.py brought all 17 cvat_* containers Up and stable; tools/smoke_cvat_sam2.py PASS
+(task_id=1, latency 19.8s, foreground 21491px, pth-sam2). Ollama 0.32.1 up. C: free 75.96 GiB (just above 75 GiB floor).
+
+Kevin action: durable Docker/data offload needs a PERMANENT fixed second disk, not a removable F:.
+Evidence: qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json (self_sha256 629cf2989779...).
+
+## 2026-07-20 09:31 UTC (14:31Z) - Disk repair confirmed DONE; reprioritize serve/train/tournament
+**Item:** needs_agent_actions_20260720.json (disk_headroom_above_75_gib + live_priorities_this_wave)
+**Command:** python runtime_artifacts/_update_needs_agent_actions_disk_done_reprioritize_20260720T0931.py; python runtime_artifacts/_seal_disk_repair_done_reprioritize_20260720T0931.py
+**Result:** DONE. disk_headroom_above_75_gib status DONE_AUTONOMOUS -> DONE_CONFIRMED (C: free 91.71 GiB, above the 75 GiB repair/ingest floor; Docker engine UP, 32 running containers, production CVAT v2.24 + nuclio-pth-sam2 healthy, Ollama 0.32.1). No residual disk blocker for GPU-container serve/train/tournament work.
+
+Re-ranked `live_priorities_this_wave` to the requested order: 1) retry_serve_cu128_build_and_containerized_smoke, 2) build_train_cu128_and_training_doctor, 3) multi_provider_gpu_tournament_toward_autonomous_gold, 4) main_adoption_isolated_consumer_hard_blockers (unchanged, AWAITING_MAIN), 5) repair_ubuntu_2204_ext4_vhd (unchanged, elevated-shell substitute active). host_snapshot untouched (already reflected the live C:/Docker state from the prior coordinator-helper re-probe at HEAD 139b4536).
+
+Honest scope: queue/priority update only. No tier inflation - champions=0, gold=0, PRODUCTION_EVIDENCE_PASS not claimed. Sealed brief: qa/live_verification/disk_repair_done_reprioritize_20260720T0931.json (self_sha256 a51849f3...). Queue self_sha256 updated to 2f4dcc76....

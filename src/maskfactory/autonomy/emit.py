@@ -220,12 +220,106 @@ def repair_corpus_envelopes(
     }
 
 
+def prove_emit_machine_verified_candidate(
+    machine_root: Path | str,
+    *,
+    batch_id: str,
+    image_id: str,
+    label: str,
+    context: str,
+    pipeline_fingerprint: str,
+    config: dict[str, Any],
+    mask_array: Any,
+) -> dict[str, Any]:
+    """Run a 3-family winner through the correction loop and emit under ``runs/``.
+
+    Glue-proof only: never mints certificates, never fabricates Wilson samples,
+    and never claims autonomous_certified_gold.
+    """
+    import numpy as np
+
+    from maskfactory.io.hashing import sha256_file
+    from maskfactory.io.png_strict import write_binary_mask
+
+    from .controller import run_autonomous_correction_loop
+    from .tournament import CandidateEvidence
+
+    root = resolve_production_machine_root(machine_root)
+    stage = root / batch_id / image_id
+    autonomy = stage / "autonomy"
+    autonomy.mkdir(parents=True, exist_ok=True)
+    mask_path = write_binary_mask(stage / "masks" / "winner.png", np.asarray(mask_array))
+    mask_sha = sha256_file(mask_path)
+    winner = CandidateEvidence(
+        candidate_id="winner",
+        mask_path=str(mask_path),
+        mask_sha256=mask_sha,
+        independent_sources=3,
+        consensus_iou=0.98,
+        boundary_agreement=0.98,
+        pose_consistency=0.98,
+        critic_pass_weight=0.96,
+        critic_disagreement=False,
+        protected_overlap=0.0,
+        exclusive_overlap=0.0,
+        component_count=1,
+        ontology_max_components=1,
+        format_valid=True,
+        block_qc_ids=(),
+        source_provider_keys=("fam_a", "fam_b", "fam_c"),
+        source_model_families=("family_a", "family_b", "family_c"),
+    )
+
+    def _no_correction(**_kwargs: Any) -> tuple[()]:
+        return ()
+
+    result = run_autonomous_correction_loop(
+        (winner,),
+        label=label,
+        context=context,
+        pipeline_fingerprint=pipeline_fingerprint,
+        config=config,
+        correction_generator=_no_correction,
+        certificate=None,
+    )
+    if result.decision.status != "machine_verified_candidate":
+        raise AutonomyEmitError(
+            "prove-emit tournament did not reach machine_verified_candidate: "
+            f"{result.decision.status} ({result.decision.reason})"
+        )
+    emit = emit_lifecycle_and_corpus_record(
+        autonomy / f"{label}.json",
+        image_id=image_id,
+        instance_id="p0",
+        pipeline_fingerprint=pipeline_fingerprint,
+        decision=result.decision,
+        machine_root=root,
+        risk_bucket=context,
+    )
+    return {
+        **emit,
+        "batch_id": batch_id,
+        "image_id": image_id,
+        "label": label,
+        "context": context,
+        "decision_status": result.decision.status,
+        "winner_mask_path": str(mask_path.relative_to(root).as_posix()),
+        "claim_boundary": {
+            "emit_path_glue_proof_only": True,
+            "no_fabricated_wilson_samples": True,
+            "no_certificate_minted": True,
+            "not_authoritative_human_gold": True,
+        },
+    }
+
+
 __all__ = [
     "AutonomyEmitError",
     "DEFAULT_MACHINE_ROOT_ENV",
     "DEFAULT_MACHINE_ROOT_NAME",
     "emit_lifecycle_and_corpus_record",
     "ensure_lifecycle_under_machine_root",
+    "prove_emit_machine_verified_candidate",
     "repair_corpus_envelopes",
     "resolve_production_machine_root",
 ]

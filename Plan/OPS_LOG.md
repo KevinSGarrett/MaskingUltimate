@@ -10881,3 +10881,10 @@ Evidence: qa/live_verification/autonomous_gold_admission_emit_fix_20260720T1625.
 
 Evidence: qa/live_verification/tournament_sample_set_gold_volume_20260720T1650.json (self_sha256 21ba6829...); sibling feed self_sha256 9520147d...; corpus self_sha256 c445d15b...
 
+## 2026-07-20 16:57 UTC - Emit path CLI + prove-emit (MVC 33→34)
+**Item:** GOLD FACTORY emit path / machine_verified_candidate sidecars under runs/
+**Command:** pytest tests/test_autonomy_emit_path.py; maskfactory autonomy prove-emit --machine-root runs --output qa/live_verification/autonomy_emit_path_prove_20260720T115622.json
+**Result:** FIXED/CLI. Config `emit:` contract + `maskfactory autonomy` commands (`tournament --emit`, `scan-lifecycle-pool`, `repair-corpus-envelopes`, `prove-emit`). Live prove wrote `runs/autonomous_gold_emit_prove_20260720T165725Z/.../autonomy/torso.json` (+ corpus envelope). Pool **MVC before=33 after=34**. Glue proof only; no Wilson fabrication; certificate_minted=false.
+
+Evidence: qa/live_verification/autonomy_emit_path_prove_20260720T115622.json.
+

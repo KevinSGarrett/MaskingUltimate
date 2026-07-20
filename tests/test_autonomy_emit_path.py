@@ -18,6 +18,7 @@ from maskfactory.autonomy.corpus import (
 from maskfactory.autonomy.emit import (
     AutonomyEmitError,
     emit_lifecycle_and_corpus_record,
+    prove_emit_machine_verified_candidate,
     repair_corpus_envelopes,
     resolve_production_machine_root,
 )
@@ -202,3 +203,27 @@ def test_resolve_production_machine_root_prefers_env(tmp_path: Path, monkeypatch
     target.mkdir()
     monkeypatch.setenv("MASKFACTORY_MACHINE_ROOT", str(target))
     assert resolve_production_machine_root() == target.resolve()
+
+
+def test_prove_emit_writes_mvc_under_machine_root(tmp_path: Path):
+    machine_root = tmp_path / "runs"
+    machine_root.mkdir()
+    before = scan_lifecycle_pool(machine_root)
+    assert before["machine_verified_candidate_count"] == 0
+    mask = np.pad(np.ones((8, 8), dtype=np.uint8) * 255, ((4, 4), (4, 4)))
+    emit = prove_emit_machine_verified_candidate(
+        machine_root,
+        batch_id="autonomous_gold_emit_prove_test",
+        image_id=_image_id("prove"),
+        label=LABEL,
+        context=CONTEXT,
+        pipeline_fingerprint=PIPELINE_FP,
+        config=_config(),
+        mask_array=mask,
+    )
+    assert emit["lifecycle_status"] == "machine_verified_candidate"
+    assert Path(emit["lifecycle_path"]).is_file()
+    assert emit["corpus_envelope_written"] is True
+    after = scan_lifecycle_pool(machine_root)
+    assert after["machine_verified_candidate_count"] == 1
+    assert after["corpus_record_envelopes_seen"] == 1

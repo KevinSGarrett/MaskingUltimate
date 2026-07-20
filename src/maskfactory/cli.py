@@ -2039,11 +2039,43 @@ def autonomy_build_certificate(
     show_default=True,
 )
 @click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+@click.option(
+    "--emit/--no-emit",
+    default=False,
+    show_default=True,
+    help=(
+        "When the winner is machine_verified_candidate, also write the lifecycle "
+        "sidecar + corpus envelope under --machine-root (production runs/)."
+    ),
+)
+@click.option(
+    "--machine-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+    help="Production machine root admission scans (default: runs/).",
+)
+@click.option("--image-id", default=None, help="Required with --emit.")
+@click.option("--instance-id", default="p0", show_default=True)
+@click.option(
+    "--lifecycle-relpath",
+    default=None,
+    help="Relative path under --machine-root for the lifecycle JSON (requires .../autonomy/...).",
+)
 def autonomy_tournament(
-    input_path: Path, certificate: Path | None, config_path: Path, output: Path
+    input_path: Path,
+    certificate: Path | None,
+    config_path: Path,
+    output: Path,
+    emit: bool,
+    machine_root: Path,
+    image_id: str | None,
+    instance_id: str,
+    lifecycle_relpath: str | None,
 ) -> None:
-    """Select a hard-vetoed candidate and apply any valid autonomy certificate."""
+    """Select a hard-vetoed candidate and optionally emit MVC sidecars under runs/."""
     from .autonomy.calibration import load_autonomy_config
+    from .autonomy.emit import AutonomyEmitError, emit_lifecycle_and_corpus_record
     from .autonomy.tournament import (
         AutonomyTournamentError,
         CandidateEvidence,
@@ -2064,9 +2096,30 @@ def autonomy_tournament(
             certificate=cert,
         )
         payload = decision.as_dict()
+        emit_meta: dict[str, Any] | None = None
+        if emit:
+            if not image_id:
+                raise click.ClickException("--image-id is required with --emit")
+            if not lifecycle_relpath:
+                raise click.ClickException("--lifecycle-relpath is required with --emit")
+            if decision.status != "machine_verified_candidate":
+                raise click.ClickException(
+                    f"--emit requires machine_verified_candidate, got {decision.status!r}"
+                )
+            emit_meta = emit_lifecycle_and_corpus_record(
+                Path(lifecycle_relpath),
+                image_id=image_id,
+                instance_id=instance_id,
+                pipeline_fingerprint=document["pipeline_fingerprint"],
+                decision=decision,
+                machine_root=machine_root,
+                risk_bucket=document.get("context"),
+            )
+            payload["emit"] = emit_meta
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     except (
+        AutonomyEmitError,
         AutonomyTournamentError,
         OSError,
         ValueError,
@@ -2076,6 +2129,143 @@ def autonomy_tournament(
     ) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(json.dumps(payload, sort_keys=True))
+
+
+@autonomy.command("scan-lifecycle-pool")
+@click.option(
+    "--machine-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), default=None)
+def autonomy_scan_lifecycle_pool(machine_root: Path, output: Path | None) -> None:
+    """Honest MVC / calibrated pool counts under production runs/."""
+    from .autonomy.corpus import scan_lifecycle_pool
+
+    pool = scan_lifecycle_pool(machine_root)
+    text = json.dumps(pool, indent=2, sort_keys=True) + "\n"
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+        click.echo(output)
+    click.echo(json.dumps(pool, sort_keys=True))
+
+
+@autonomy.command("repair-corpus-envelopes")
+@click.option(
+    "--machine-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+)
+@click.option("--dry-run", is_flag=True, default=False)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_repair_corpus_envelopes(machine_root: Path, dry_run: bool, output: Path) -> None:
+    """Rewrite corpus envelopes so artifact paths resolve under production runs/."""
+    from .autonomy.emit import repair_corpus_envelopes
+
+    report = repair_corpus_envelopes(machine_root, dry_run=dry_run)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    click.echo(
+        json.dumps(
+            {k: report[k] for k in ("repaired", "already_ok", "failed", "dry_run")}, sort_keys=True
+        )
+    )
+
+
+@autonomy.command("prove-emit")
+@click.option(
+    "--machine-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=Path("runs"),
+    show_default=True,
+)
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/autonomous_masks.yaml"),
+    show_default=True,
+)
+@click.option("--label", default="torso", show_default=True)
+@click.option("--context", default="solo", show_default=True)
+@click.option(
+    "--pipeline-fingerprint",
+    default="emit-path-cli-prove-v1",
+    show_default=True,
+)
+@click.option("--output", type=click.Path(path_type=Path, dir_okay=False), required=True)
+def autonomy_prove_emit(
+    machine_root: Path,
+    config_path: Path,
+    label: str,
+    context: str,
+    pipeline_fingerprint: str,
+    output: Path,
+) -> None:
+    """Prove tournament winners emit MVC sidecars under runs/ (glue proof, not gold)."""
+    from datetime import UTC, datetime
+
+    import numpy as np
+
+    from .autonomy.calibration import load_autonomy_config
+    from .autonomy.corpus import scan_lifecycle_pool
+    from .autonomy.emit import AutonomyEmitError, prove_emit_machine_verified_candidate
+
+    try:
+        config = load_autonomy_config(config_path)
+        before = scan_lifecycle_pool(machine_root)
+        stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+        batch_id = f"autonomous_gold_emit_prove_{stamp}"
+        image_id = "img_" + hashlib.sha256(f"emit-prove:{stamp}".encode()).hexdigest()[:12]
+        mask = np.pad(np.ones((8, 8), dtype=np.uint8) * 255, ((4, 4), (4, 4)))
+        emit = prove_emit_machine_verified_candidate(
+            machine_root,
+            batch_id=batch_id,
+            image_id=image_id,
+            label=label,
+            context=context,
+            pipeline_fingerprint=pipeline_fingerprint,
+            config=config,
+            mask_array=mask,
+        )
+        after = scan_lifecycle_pool(machine_root)
+        evidence = {
+            "artifact_type": "autonomy_emit_path_prove",
+            "schema_version": "1.0.0",
+            "recorded_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+            "authority": "emit_path_glue_proof_only",
+            "before_pool": before,
+            "after_pool": after,
+            "emit": emit,
+            "mvc_before": int(before["machine_verified_candidate_count"]),
+            "mvc_after": int(after["machine_verified_candidate_count"]),
+            "sidecar_written": bool(emit.get("lifecycle_path")),
+            "claim_boundary": emit.get("claim_boundary"),
+        }
+        body = json.dumps(
+            {k: v for k, v in evidence.items() if k != "self_sha256"},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        evidence["self_sha256"] = hashlib.sha256(body).hexdigest()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except (AutonomyEmitError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "mvc_before": evidence["mvc_before"],
+                "mvc_after": evidence["mvc_after"],
+                "lifecycle_path": emit.get("lifecycle_path"),
+                "output": str(output),
+            },
+            sort_keys=True,
+        )
+    )
 
 
 @autonomy.command("build-audit-queue")
@@ -11295,7 +11485,6 @@ def models_register_training_candidate(
         f"{entry['key']}: role={entry['role']} run={entry['training_run']} "
         f"sha256={entry['sha256']} verified=true"
     )
-
 
 
 @models.command("mark-benchmarked")

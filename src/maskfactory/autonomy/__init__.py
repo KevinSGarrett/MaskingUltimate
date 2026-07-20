@@ -17,6 +17,13 @@ from .calibration import (
     verify_autonomy_certificate,
 )
 from .controller import AutonomousLoopResult, run_autonomous_correction_loop
+from .emit import (
+    AutonomyEmitError,
+    emit_lifecycle_and_corpus_record,
+    prove_emit_machine_verified_candidate,
+    repair_corpus_envelopes,
+    resolve_production_machine_root,
+)
 from .lifecycle import load_scoped_certificate, write_lifecycle_sidecar
 from .multi_person_gate import (
     MultiPersonCandidateGateResult,
@@ -68,8 +75,13 @@ from .visual_defect_policy import (
 )
 
 __all__ = [
+    "AutonomyEmitError",
     "CandidateEvidence",
     "MaskCandidateInput",
+    "emit_lifecycle_and_corpus_record",
+    "prove_emit_machine_verified_candidate",
+    "repair_corpus_envelopes",
+    "resolve_production_machine_root",
     "MultiPersonCandidateGateResult",
     "MultiPersonCertificationScopeResult",
     "MultiPersonGateCheck",

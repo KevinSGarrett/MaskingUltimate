@@ -93,7 +93,7 @@ def build_autonomy_pipeline_fingerprint(
 
 def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> dict[str, Any]:
     document = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(document, dict) or set(document) != {
+    required_top = {
         "schema_version",
         "enabled",
         "mode",
@@ -105,8 +105,32 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
         "operations",
         "repair",
         "retraining",
-    }:
+    }
+    optional_top = {"emit"}
+    if (
+        not isinstance(document, dict)
+        or not required_top.issubset(document)
+        or (set(document) - required_top - optional_top)
+    ):
         raise AutonomyCalibrationError("autonomy config has the wrong top-level contract")
+    if "emit" in document:
+        emit = document["emit"]
+        if not isinstance(emit, dict) or set(emit) != {
+            "production_machine_root",
+            "production_machine_root_env",
+            "lifecycle_dir_name",
+            "require_autonomy_directory",
+            "corpus_record_suffix",
+        }:
+            raise AutonomyCalibrationError("autonomy emit config has the wrong contract")
+        if (
+            emit["production_machine_root"] != "runs"
+            or emit["production_machine_root_env"] != "MASKFACTORY_MACHINE_ROOT"
+            or emit["lifecycle_dir_name"] != "autonomy"
+            or emit["require_autonomy_directory"] is not True
+            or emit["corpus_record_suffix"] != ".corpus_record.json"
+        ):
+            raise AutonomyCalibrationError("autonomy emit config values are invalid")
     if document["schema_version"] != "2.0.0" or document["enabled"] is not True:
         raise AutonomyCalibrationError("autonomy config must be enabled schema 2.0.0")
     if document["mode"] != "autonomous_certified_gold":

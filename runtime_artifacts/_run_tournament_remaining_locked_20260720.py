@@ -33,10 +33,12 @@ REMAINING_LATEST = (
     REPO / "qa/live_verification/tournament_sample_set_remaining_uncovered_latest.json"
 )
 MACHINE_ROOT = REPO / "runs" / "autonomous_gold_tournament_remaining_20260720"
+# Only real multiprovider tournament FP counts as feed coverage for Wilson admission.
+REAL_PIPELINE_FP = "multiprovider-local-cuda-tournament-20260720-v1"
 CHUNK = 24
 WAIT_TIMEOUT_S = 10800
 POLL_S = 30
-MAX_CHUNKS = 6
+MAX_CHUNKS = 8
 
 
 def _seal(doc: dict[str, Any]) -> dict[str, Any]:
@@ -46,7 +48,8 @@ def _seal(doc: dict[str, Any]) -> dict[str, Any]:
     return doc
 
 
-def _mvc_ids() -> set[str]:
+def _mvc_ids(*, real_fp_only: bool = True) -> set[str]:
+    """Image ids with MVC. Default: only real multiprovider FP (Wilson-eligible)."""
     ids: set[str] = set()
     for path in (REPO / "runs").rglob("autonomy/*.json"):
         if path.name.endswith(".corpus_record.json"):
@@ -55,38 +58,47 @@ def _mvc_ids() -> set[str]:
             doc = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
-        if doc.get("status") == "machine_verified_candidate":
-            ids.add(str(doc.get("image_id") or path.parent.parent.name))
+        if doc.get("status") != "machine_verified_candidate":
+            continue
+        if real_fp_only and str(doc.get("pipeline_fingerprint") or "") != REAL_PIPELINE_FP:
+            continue
+        ids.add(str(doc.get("image_id") or path.parent.parent.name))
     return ids
 
 
 def _refresh_remaining() -> Path:
     feed = json.loads(FEED_POINTER.read_text(encoding="utf-8"))
     sample_set = json.loads((REPO / feed["sample_set_path"]).read_text(encoding="utf-8"))
-    mvc = _mvc_ids()
+    mvc = _mvc_ids(real_fp_only=True)
     remaining = [
         sample
         for sample in sample_set["samples"]
         if f"img_{sample['source_sha256'][:12]}" not in mvc
     ]
+    # Preserve ordered_sample_ids for the tournament CLI loader.
+    remaining_ids = [sample["sample_id"] for sample in remaining if "sample_id" in sample]
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     doc = {
         "artifact_type": "tournament_sample_set",
         "schema_version": "1.0.0",
-        "role": "tournament_remaining_uncovered_from_sibling_128",
+        "role": "tournament_remaining_real_fp_uncovered_from_sibling_128",
         "parent_sample_set_path": feed["sample_set_path"].replace("\\", "/"),
         "parent_self_sha256": sample_set.get("self_sha256"),
         "sibling_feed_path": str(FEED_POINTER.relative_to(REPO)).replace("\\", "/"),
+        "pipeline_fingerprint_required": REAL_PIPELINE_FP,
         "sample_count": len(remaining),
         "samples": remaining,
+        "ordered_sample_ids": remaining_ids,
+        "image_disjoint": bool(sample_set.get("image_disjoint")),
         "gold_authority": False,
         "mask_authored": False,
         "recorded_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         "coverage_baseline": {
             "feed_total": int(feed.get("sample_count") or len(sample_set["samples"])),
-            "already_mvc_in_runs": int(feed.get("sample_count") or 128) - len(remaining),
-            "remaining": len(remaining),
-            "pool_mvc_unique_ids": len(mvc),
+            "already_real_fp_mvc": len(sample_set["samples"]) - len(remaining),
+            "remaining_missing_real_fp": len(remaining),
+            "pool_real_fp_mvc_unique_ids": len(mvc),
+            "ignores_prove_emit_synthetic_fp": True,
         },
     }
     body = json.dumps(

@@ -1,0 +1,207 @@
+{
+  "artifact_type": "isolated_main_consumer_run",
+  "authority_kind": "isolated_main_consumer",
+  "checks": [
+    {
+      "adapter_maskfactory_imports": [
+        "maskfactory.contracts"
+      ],
+      "check": "isolated_adapter_conformance",
+      "decision_sha256": "303d27423f3e1dca5654251bd7eed702f6a259440487bb545ec34a4d7e6e0827",
+      "passed": true,
+      "rejection_reasons": [],
+      "status": "accepted",
+      "validation_issues": []
+    },
+    {
+      "check": "isolated_signed_journal",
+      "checkpoint_sha256": "a60e8a8915b4598e62d77df1daf5ba9273667d4fbba1a7b6287f68fe4bb85a5b",
+      "entry_count": 3,
+      "issues": [],
+      "passed": true,
+      "replay_idempotent": true
+    },
+    {
+      "bounded_retry_budget_enforced": true,
+      "check": "isolated_failure_control_circuit",
+      "circuit_open_blocks_route": true,
+      "faults": [
+        {
+          "fault": "outage",
+          "passed": true,
+          "status": "accepted"
+        },
+        {
+          "fault": "timeout",
+          "passed": true,
+          "status": "accepted"
+        },
+        {
+          "fault": "oom",
+          "passed": true,
+          "status": "accepted"
+        },
+        {
+          "fault": "incompatible_authority",
+          "passed": true,
+          "status": "accepted"
+        }
+      ],
+      "healthy_admission_permits_provider": true,
+      "passed": true
+    },
+    {
+      "baseline_certified": true,
+      "case_count": 6,
+      "cases": [
+        {
+          "authority_ceiling": "certified",
+          "case": "valid_wrapper_certified",
+          "passed": true,
+          "production_eligible": true,
+          "status": "accepted"
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "path_escape",
+          "passed": true,
+          "production_eligible": false,
+          "status": "rejected"
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "mask_hash_drift",
+          "passed": true,
+          "production_eligible": false,
+          "status": "rejected"
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "qa_noncertified_accepts_capped",
+          "passed": true,
+          "production_eligible": false,
+          "status": "accepted"
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "mutation_attempt",
+          "passed": true,
+          "production_eligible": false,
+          "status": "rejected"
+        },
+        {
+          "authority_ceiling": "certified",
+          "case": "multi_person_wrapper_certified",
+          "passed": true,
+          "production_eligible": true,
+          "status": "accepted"
+        }
+      ],
+      "check": "isolated_mode_a_package_read",
+      "passed": true
+    },
+    {
+      "check": "isolated_cross_project_producer_partial",
+      "decision_sha256": "e4d66015967fafecde5af0e1167efbc4638a7b189f73e336b27c4f589156a9fc",
+      "establishes_production_qualification": false,
+      "mf_p6_12_05_complete": false,
+      "passed": true,
+      "status": "producer_partial",
+      "validation_issues": []
+    },
+    {
+      "adoption_payload_sha256": "a586302838db86e0b84e00c56a6e848ee8d1b0af4e3b4a150fff7691705617ce",
+      "attestation": {
+        "adopted": {
+          "api_contract": "maskfactory-api/1.0",
+          "bridge_contract": "maskfactory-comfyui-bridge/1.0",
+          "producer_git_commit": "903d4266a0819397805c0e56b2892f4bdd7c888d",
+          "requirements_id": "mfreq_0123456789abcdef01234567",
+          "requirements_sha256": "2bcd82b4de188923c5ff668dc76b0305646406b0b19e2f7dc75a2199f99ee35d",
+          "wire_schema_versions": {
+            "mask_acquisition_receipt": "1.0.0",
+            "mask_acquisition_request": "1.0.0",
+            "mask_authority_invalidation_event": "1.0.0",
+            "mask_bridge_error": "1.0.0",
+            "mask_bridge_event": "1.0.0",
+            "mask_bridge_semantic_invariant_profile": "1.0.0",
+            "mask_repair_feedback": "1.0.0",
+            "maskfactory_adoption_receipt": "1.0.0",
+            "maskfactory_capability_snapshot": "1.0.0",
+            "maskfactory_consumer_requirements": "1.0.0",
+            "maskfactory_release_snapshot": "1.0.0",
+            "operational_autonomy_certificate": "1.0.0"
+          }
+        },
+        "adoption_payload_sha256": "a586302838db86e0b84e00c56a6e848ee8d1b0af4e3b4a150fff7691705617ce",
+        "authority_kind": "isolated_main_consumer",
+        "consumer": {
+          "controller_version": "1.0.0",
+          "git_commit": "9b61c8660ae50859c6c68eea056368b6fd431cd9",
+          "is_real_comfyui_main": false,
+          "project": "Comfy_UI_Main_MaskFactory_Consumer",
+          "provenance": "isolated_main_consumer"
+        },
+        "decided_at": "2026-07-20T05:00:00Z",
+        "disclaimer": "Signed by an isolated producer-side consumer key (key_id 'isolated-main-consumer-adoption', NOT a 'comfy-main-*' Main trust-anchored key). This attestation is real cryptographic evidence of isolated-consumer adoption of the producer contracts; it deliberately does NOT satisfy validate_maskfactory_adoption_receipt for production Comfy_UI_Main adoption, and does NOT close HARD blockers MF-P6-11.02/11.07/12.05/12.06.",
+        "is_real_comfyui_main": false,
+        "main_adoption_complete": false,
+        "record_type": "isolated_main_consumer_adoption_attestation",
+        "schema_version": "1.0.0",
+        "signature": {
+          "algorithm": "ed25519",
+          "key_id": "isolated-main-consumer-adoption",
+          "public_key_base64": "UzkqD6XS5kCJbgULtUpiVyDoasn4oP2AggGELLECe08=",
+          "signed_payload_format": "sha256_digest_bytes",
+          "signed_payload_sha256": "a586302838db86e0b84e00c56a6e848ee8d1b0af4e3b4a150fff7691705617ce",
+          "value_base64": "0DFMuvurwDIsQLnh0Qou/vOv6xfR1WjQIndP8ln3GqpXlRHkJbMmhQ0MTtEb1jMQKzXBRSALuBnowTAJiirDAg=="
+        }
+      },
+      "check": "isolated_adoption_attestation_signed",
+      "key_id": "isolated-main-consumer-adoption",
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "advances": [
+      "MF-P6-11.01 (external MaskFactoryAdapter boundary: contracts-only imports accepted by the producer conformance verifier, real sdist package hash + git identity, no node-id / mutable-path / internal coupling)",
+      "MF-P6-11.06 (trusted-signed append-only journal + checkpoint + history validation + same-key/same-body replay idempotency, real machinery)",
+      "MF-P6-11.02 (Mode A immutable package-read: certified + multi-person accept; QA noncertified ceiling; path/hash/mutation refusals)",
+      "MF-P6-11.07 (failure-control circuit: fault-injection provider refusal, exact scoped-DAG blocking, healthy-admit/open-circuit, bounded-retry-budget, no-silent-fallback)",
+      "MF-P6-12.05 (producer_partial cross-project qualification matrix, real execution, honest ceiling)",
+      "adoption attestation (isolated-consumer-signed, real Ed25519, explicitly not a comfy-main-* Main trust key)"
+    ],
+    "advances_are_isolated_consumer_only": true,
+    "does_not_close_any_hard_blocker": true,
+    "establishes_production_qualification": false,
+    "hard_blockers_still_open": [
+      "MF-P6-11.02",
+      "MF-P6-11.07",
+      "MF-P6-12.05",
+      "MF-P6-12.06"
+    ],
+    "isolated_consumer_is_not_fixture_authority": true,
+    "isolated_consumer_is_not_real_comfyui_main": true,
+    "main_adoption_complete": false,
+    "next_agent_step": "Real HARD-close receipts require the actual Comfy_UI_Main runtime to consume this adapter package and emit Main-trust-key-signed adoption/qualification/adapter-execution/result-history artifacts. Comfy_UI_Main is a dirty Wave64 tree and was NOT touched."
+  },
+  "consumer_git_commit": "9b61c8660ae50859c6c68eea056368b6fd431cd9",
+  "consumer_project": "Comfy_UI_Main_MaskFactory_Consumer",
+  "consumer_version": "1.0.0",
+  "decided_at": "2026-07-20T05:00:00Z",
+  "is_real_comfyui_main": false,
+  "live_producer_worktree_dirty": true,
+  "producer_git_commit": "903d4266a0819397805c0e56b2892f4bdd7c888d",
+  "producer_repo": "C:\\Comfy_UI_Main_Masking",
+  "recorded_at": "2026-07-20T15:06:15.941758Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "b5c03c1ddef9f57f56a9efad35012801d3e6412c9413e1363d88bed8f492f739",
+  "summary": {
+    "isolated_adapter_conformance": true,
+    "isolated_adoption_attestation_signed": true,
+    "isolated_cross_project_producer_partial": true,
+    "isolated_failure_control_circuit": true,
+    "isolated_mode_a_package_read": true,
+    "isolated_signed_journal": true
+  }
+}

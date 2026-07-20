@@ -1,0 +1,95 @@
+{
+  "artifact_type": "data_junction_forced_c_backup",
+  "authority": [
+    "CRITICAL FULL AUTONOMY: NEVER put critical runtime data/ on USB F:",
+    "qa/live_verification/f_drive_usb_policy_20260720.json (rule_2)",
+    "qa/live_verification/data_junction_abort_f_keep_c_20260720T1438Z.json",
+    "Plan/OPS_LOG.md (this wave)"
+  ],
+  "binding_policy": {
+    "auto_repoint_to_f": "FORBIDDEN",
+    "statement": "Agents MUST NOT auto-repoint or re-junction repo data/ onto USB F: (or any removable/hot-pluggable volume). Live target remains C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated. F: may hold cold mirrors / DAZ / WSL VHDX only with graceful degrade.",
+    "usb_data_junction": "FORBIDDEN"
+  },
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "data_junction_on_f",
+    "f_drive_durable_for_maskfactory_data",
+    "docker_vhdx_relocated_to_f",
+    "doctor_all_green",
+    "champions>0",
+    "gold>0",
+    "reindex_db_fully_clean"
+  ],
+  "drives": {
+    "c_free_gib": 68.13,
+    "f_classified": "usb_removable_unstable_do_not_use_for_data_junction",
+    "f_free_gib": 127.63,
+    "f_present": true
+  },
+  "honesty": [
+    "Junction already targeted C backup at probe time; no mutation required.",
+    "C and F package name sets compared; F-only packages would be robocopied to C before any re-junction.",
+    "maskfactory reindex --dry-run invoked; packages readable (>=8). stale_rows (if any) are index drift, not missing packages.",
+    "Auto-repoint of data/ to F: is FORBIDDEN in needs_agent_actions."
+  ],
+  "junction": {
+    "expected_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "fsutil_print_name": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "is_reparse_point": true,
+    "path": "C:\\Comfy_UI_Main_Masking\\data",
+    "realpath": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "resolves_on_c": true,
+    "resolves_on_f": false,
+    "target_matches_expected": true
+  },
+  "linked_evidence": [
+    "qa/live_verification/data_junction_abort_f_keep_c_20260720T1438Z.json",
+    "qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json",
+    "qa/live_verification/f_drive_usb_policy_20260720.json",
+    "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json"
+  ],
+  "local_date": "2026-07-20",
+  "mutation": {
+    "commands": [],
+    "performed": false,
+    "reason": "already_on_c_backup"
+  },
+  "packages": {
+    "c_backup_count": 8,
+    "count": 8,
+    "f_mirror_count": 8,
+    "names": [
+      "img_2ca794d19be9",
+      "img_51945db358cb",
+      "img_6d6bb33f01a1",
+      "img_7b7a3c7d5dd3",
+      "img_a3d2663ad90d",
+      "img_b2b46c45d8e0",
+      "img_cdab0311dc96",
+      "img_e5163e08baac"
+    ],
+    "packages_only_on_c": [],
+    "packages_only_on_f": [],
+    "readable_via_junction": true
+  },
+  "project_head_at_authoring": "7f7c30ff144b3aa37bb37ddbcf3e15d65e1b46d6",
+  "recorded_at": "2026-07-20T15:04:22.470095Z",
+  "reindex_dry_run": {
+    "clean": false,
+    "exit_code": 0,
+    "extra_in_db": [],
+    "missing_in_db": [],
+    "stale_rows": {
+      "img_cdab0311dc96": {
+        "updated_at": {
+          "database": "2026-07-14T00:24:32.787628+00:00",
+          "manifest": "2026-07-14T00:24:32.693291+00:00"
+        }
+      }
+    }
+  },
+  "schema_version": "1.0.0",
+  "self_sha256": "9cbf186019c33e237448efb426152b4af69461935ee241ad7a12f59932bf2b9c",
+  "verdict": "FORCED_DATA_JUNCTION_ON_C_BACKUP"
+}

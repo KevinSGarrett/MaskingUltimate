@@ -1,0 +1,60 @@
+{
+  "artifact_type": "sibling_main_consumer_scaffold_wave",
+  "authority": "autonomous_sibling_main_consumer_scaffold_zero_human_wait",
+  "authority_kind": "sibling_main_consumer",
+  "claims_not_established": [
+    "real_comfyui_main_adoption",
+    "main_adoption_complete / MF-P6-12.06 core close",
+    "champions>0",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "hard_blockers_still_open": [
+    "MF-P6-11.02",
+    "MF-P6-11.07",
+    "MF-P6-12.05",
+    "MF-P6-12.06"
+  ],
+  "is_real_comfyui_main": false,
+  "main_adoption_complete": false,
+  "next_agent_step": "Deepen Main-side journal/circuit/adapter execution on the sibling branch against the producer pin; return Main-signed qualification/adoption/result-history artifacts to MaskFactory. Keep Wave64 dirty tree untouched.",
+  "package": {
+    "adapter_conformance_status": "accepted",
+    "path": "C:/w/maskfactory-sibling-consumer/Plan/07_IMPLEMENTATION/scripts/maskfactory_sibling_consumer",
+    "producer_pin_sha256": "66b9240c21528766076efc8bec8c722a3b7f478973ce3385d2783e890c5e79b1"
+  },
+  "producer_git_commit": "a741c2cd6202c7d9f47b4e3f37bccee3e46b98eb",
+  "recorded_at": "2026-07-20T15:05:42Z",
+  "scaffold_payload_sha256": "c8f6fc06fcecb0b913c81ac32c557566992dc1aaeb9d7f9295ebea4d802ad4e9",
+  "self_sha256": "5f3b819697869737a3fbd86fc1ad2f8499169a862c17bc282b29bae208fdafec",
+  "sibling_run": {
+    "all_pass": true,
+    "checks_passed": 4,
+    "checks_total": 4,
+    "path": "C:/w/maskfactory-sibling-consumer/runtime_artifacts/maskfactory_sibling_consumer/run_evidence.json",
+    "self_sha256": "9905e9eaa8ae2e86eae8aaa8f4034f220ceff5075725453ea0b31e1e55e98a28"
+  },
+  "sibling_worktree": {
+    "branch": "codex/maskfactory-sibling-consumer-scaffold",
+    "head": "6f73ee003b2bc3d66ec0bf3b7e66f87da0f57721",
+    "origin_main": "a3bff6b35d7a54667876d2c2016c5a40542b4e94",
+    "pushed_branch": "codex/maskfactory-sibling-consumer-scaffold",
+    "remote": "origin/codex/maskfactory-sibling-consumer-scaffold",
+    "sibling_root": "C:\\w\\maskfactory-sibling-consumer"
+  },
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "sibling-main-consumer-scaffold",
+    "public_key_base64": "ChrorPcQnb/awQui+S+MvonLJEy4vU2SZoQSdt+zxA8=",
+    "signed_payload_format": "sha256_digest_bytes",
+    "signed_payload_sha256": "c8f6fc06fcecb0b913c81ac32c557566992dc1aaeb9d7f9295ebea4d802ad4e9",
+    "value_base64": "nAK5/NJjF2RxKAVnvwOlFubyxgVOWXmRIVNZNJzbSYLp0l7Fu4AovOSnghnsOdDXusmQpe2pkiaqsC4orihhAg=="
+  },
+  "tier_note": "STATIC_PASS sibling-consumer scaffold on isolated clean origin/main worktree C:/w/maskfactory-sibling-consumer (branch codex/maskfactory-sibling-consumer-scaffold). Signed sibling pin receipt emitted (authority_kind=sibling_main_consumer). Dirty Wave64 C:/Comfy_UI_Main was NOT touched. Does NOT close any HARD blocker.",
+  "wave64_dirty_main_untouched": true,
+  "wave64_probe": {
+    "branch_line": "## codex/workflow_plan_update_improvements...origin/codex/workflow_plan_update_improvements [ahead 3]",
+    "head": "88cc2557d77904a87b463758b6898aff79cc505f",
+    "path": "C:\\Comfy_UI_Main",
+    "touched": false
+  }
+}

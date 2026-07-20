@@ -36,7 +36,7 @@
   "project_head": "c14d1ea1c1c6e942ccfe8a014e5606e635943177",
   "recorded_at": "2026-07-20T14:45:24.191803Z",
   "schema_version": "1.0.0",
-  "self_sha256": "1ced6b7862bb6080303dc72af8431ac8c0a8fd422e01ab0825bd4c5d526c4c9d",
+  "self_sha256": "cf6d68b1650cda73add9e48b9eef452409905ce282b22edb22c0457b4ad6cc59",
   "torch_probe": {
     "command": "wsl -d Ubuntu-22.04 -- python3 -c \"import torch\"",
     "error": "ModuleNotFoundError: No module named 'torch'",
@@ -58,7 +58,7 @@
     "distro": "Ubuntu-22.04",
     "elevation_still_unavailable": true,
     "recovery_action": "wsl --shutdown (full VM restart), non-destructive",
-    "root_cause_note": "Same underlying on-disk ext4 corruption documented in qa/live_verification/wsl_external_vhd_storage_incident_20260715.json / wsl_ubuntu_io_error_20260720.json is NOT proven repaired by a shutdown alone (no e2fsck run); this is reported as a self-clearing wake, consistent with the prior pattern of transient self-clears after a Docker Desktop / WSL2 VM restart, not a durable fsck-verified fix.",
+    "root_cause_note": "CORRECTED this wave per qa/live_verification/f_drive_restored_20260720T0933Z.json: the distro ext4.vhdx lives on the removable F: drive; the Error code 6 symptom was F:-unreachable (a brief USB disconnect/reconnect), NOT on-disk ext4 corruption as originally suspected in wsl_ubuntu_io_error_20260720.json. wsl --shutdown worked because F: had already reconnected; genuine wake, still depends on F: staying attached.",
     "state_after": "Running (responsive; 'ok' on exec)",
     "state_before": "unresponsive / Error code 6 (E_FAIL) on exec"
   }

@@ -10141,3 +10141,44 @@ Free C: disk above 75 GiB ingest floor (currently ~4.39 GiB after collapse from 
 - qa/live_verification/needs_agent_actions_20260719.json (self_sha256 f8d121ce…)
 
 **Commands:** docker/CVAT/Ollama/WSL probe; measure data/ & drives; robocopy data->F:; junction swap; doctor disk_free PASS; full doctor x3 (PASS=8 FAIL=4); clear stale gpu_lock; docker --gpus all nvidia-smi; smoke_cvat_sam2; smoke_ollama_vlm; 93 producer bridge tests; build needs_agent_actions; supersede needs_kevin; reseal milestone; tracker set+metrics+report+validate; rewrite handoff; append OPS_LOG; commit+push
+
+---
+
+## 2026-07-19 (late) — Agent queue execution wave (DVC local + B1 restore + statics + producer re-verify + seal rebind); WSL still elevation-gated
+
+HEAD at start `585c2c42`. Re-probed live: Docker 29.4.3; CVAT 2.24.0 (localhost:8080); Ollama 0.32.1; nuclio pth-sam2 healthy; WSL Ubuntu-22.04 Stopped; GPU RTX 5060 driver 592.01 ~377 MiB free (DAZStudio.exe + Ollama resident). doctor re-run: PASS=8 FAIL=4 (unchanged root cause).
+
+### WSL VHD repair (item 1) — elevation PROVEN unavailable; Docker-GPU substitute active
+- `wsl -d Ubuntu-22.04 -- /bin/true` -> **distribution failed to start, Error code 6, step 2, E_FAIL** (on-disk ext4 corruption confirmed).
+- Elevation probes (all non-interactive): `IsInRole(Administrator)=False`; `schtasks /create /rl HIGHEST` -> **Access is denied**; `Start-Process -Verb RunAs` would raise interactive UAC (human wait) so not attempted. Elevation genuinely unavailable in this shell.
+- Substitute re-proven: `docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi` -> RTX 5060, driver 592.01, 8151 MiB -> RUNTIME_PASS_BOUNDED.
+- Reclassified next-elevated-shell: `tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair -StopDockerDesktop` then re-run doctor + SAM 3.1 CUDA WSL smoke.
+
+### DVC local-first (item 3) — DONE local tier
+- dvc 3.67.1 installed. **Honest finding:** `dvc add data/packages` FAILS — the F: junction resolves the target outside the git repo, and dvc requires targets inside the git workdir.
+- Local remote `maskfactory-dvc-local` -> `F:/MaskFactory_DataRelocated/dvc_local_remote`. `dvc add` in-repo drill package -> 52 objects / 6.06 MB cache; `dvc push -r maskfactory-dvc-local` -> **52 files pushed**; `dvc status -c` -> **in sync**. Cloud s3 deferred (needs dvc-s3 + AWS creds).
+
+### B1 restore drill (item 3) — DONE local
+- Seed pkg `img_a3d2663ad90d` (252 files, 8 MB) restored via robocopy to `runtime_artifacts/b1_restore_drill`; `maskfactory verify-package --root runtime_artifacts/b1_restore_drill` -> **PASS p0+p1** (~33s). Source integrity independently PASS (`verify-package img_51945db358cb`).
+
+### Statics (items 5 & 8) — STATIC_PASS
+- `autonomy verify-multi-person-static-contracts` -> STATIC_PASS (seal `multi_person_static_contracts_20260719T2245.json`).
+- `tests/test_cloud_teacher_static.py` + multi-person + release static tests PASS (19 total).
+
+### Main adoption (item 4) — producer re-verified, Main-ready
+- Main repo present at `C:/Comfy_UI_Main` HEAD `2393fbb7` (separate git; contract bridge only). Producer bridge / consumer conformance **90 focused tests PASS** at HEAD. Real Main-side receipts (HARD MF-P6-11.02/11.07/12.05) remain a dedicated cross-repo Main session (do not commit MaskFactory into Main).
+
+### Shadow currency-registry STATIC seal rebind (honesty repair)
+- `test_shadow_currency_registry_static_is_honest_and_sealed` was RED: the signed 90-day currency review was refreshed to `38a72efc` earlier today, drifting the static seal. Rebound `host_side_shadow_currency_registry_static_20260719.json` (old sha `ec2f1bc0…` -> new `b58bac74…`); currency_policy_result **stays `fail`** (no pass invented). `tests/test_shadow_tournament_registration.py` -> **7/7 PASS**.
+
+### Champions (item 2) — HONESTLY BLOCKED, no fabrication
+- `autonomy build-audit-queue --period-id 2026-W29` -> **outcomes_status=empty, population_count=0** (work/instances p0..p3 empty; no calibrated autoaccepted masks exist to certify). champions=0; force-register FORBIDDEN (not performed).
+- Compounding blockers: VISUAL_QA_REVIEWED_WITH_DEFECTS (not PASS); ~0.4 GiB free VRAM (no live P5 training); WSL down (no SAM 3.1 drafts); human_anchor_train_count=0. Legitimate measured path unchanged and documented in the seal.
+
+### Evidence
+- qa/live_verification/agent_queue_execution_20260719T2300.json (self_sha256 c25b31a7…)
+- qa/live_verification/needs_agent_actions_20260719.json (regenerated; self_sha256 37e1097c…)
+- qa/live_verification/multi_person_static_contracts_20260719T2245.json (seal_sha256 9634be0d…)
+- qa/live_verification/host_side_shadow_currency_registry_static_20260719.json (sha256 b58bac74…)
+
+**Commands:** live docker/CVAT/Ollama/WSL/GPU probe; doctor (PASS=8 FAIL=4); elevation probes (IsInRole/schtasks); docker --gpus all nvidia-smi; verify-package (source + restored); pip install dvc; dvc remote add --local + add + push + status; autonomy verify-multi-person-static-contracts; autonomy build-audit-queue (empty); pytest producer-bridge (90) + statics (19) + shadow (7); rebind shadow currency seal; build agent_queue_execution seal; regen needs_agent_actions; append OPS_LOG; tracker report/validate; update handoff; commit+push

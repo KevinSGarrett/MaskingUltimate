@@ -4,6 +4,34 @@ Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin 
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**
 
+## Latest wave (2026-07-19 late — agent queue execution, honest)
+
+Milestone revision `post_agent_queue_execution_20260719` self_sha256
+`8b87568ee7264fc2fbc33e2ed646edf245601cbab90d3b2196db0adc94019a20`
+(supersedes `0581b4ab…`). Evidence:
+`qa/live_verification/agent_queue_execution_20260719T2300.json` (self_sha256 `c25b31a7…`).
+
+- **DVC local-first (item 3): DONE local tier.** dvc 3.67.1; local remote `maskfactory-dvc-local` →
+  `F:/MaskFactory_DataRelocated/dvc_local_remote`; 52 objects pushed; `dvc status -c` in sync.
+  Honest finding: `dvc add data/packages` fails because the F: junction resolves the target **outside**
+  the git workdir. Cloud s3 push still deferred (needs `dvc-s3` + AWS creds).
+- **B1 restore drill (item 3): DONE local.** `img_a3d2663ad90d` restored to
+  `runtime_artifacts/b1_restore_drill`; `verify-package` PASS p0+p1.
+- **Multi-person (item 8) + cloud-teacher (item 7): STATIC_PASS.** `autonomy
+  verify-multi-person-static-contracts` PASS (seal `multi_person_static_contracts_20260719T2245.json`);
+  cloud-teacher local static PASS. Real demos / paid cloud still not claimed.
+- **Main adoption (item 4): producer re-verified.** Main repo present at `C:/Comfy_UI_Main` HEAD
+  `2393fbb7` (separate git). 90 focused producer/consumer bridge tests PASS at HEAD. Real Main-side
+  receipts (HARD MF-P6-11.02/11.07/12.05) remain a dedicated cross-repo Main session.
+- **WSL repair (item 1): elevation PROVEN unavailable** in this shell (IsInRole=False; `schtasks /rl
+  HIGHEST` access-denied; RunAs would raise UAC). Docker GPU CUDA proof (RTX 5060, driver 592.01) is the
+  active substitute; scripted `Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair` deferred to next elevated shell.
+- **Champions (item 2): HONESTLY BLOCKED.** `autonomy build-audit-queue` → population_count=0 (empty
+  lifecycle: no calibrated autoaccepted masks); + VISUAL_QA defects + ~0.4 GiB free VRAM + human_anchor=0.
+  champions=0; force-register FORBIDDEN.
+- **Honesty repair:** rebound the drifted shadow currency-registry STATIC seal to the current signed
+  review `38a72efc` (policy still `fail`); shadow suite 7/7 PASS.
+
 ## Authoritative worktree
 
 | Field | Value |

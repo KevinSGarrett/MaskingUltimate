@@ -2903,12 +2903,17 @@
           "ts": "2026-07-19T23:56:26+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: ops_bootstrap_static re-proves DVC wiring honesty (remote s3://maskfactory-dvc-dev, resolver, remote list, gitignore descriptors, bootstrap pins) with dvc_push_attempted=false and mf_p1_07_09_complete=false. No AWS push. Evidence qa/live_verification/ops_bootstrap_static_20260719.json."
+        },
+        {
+          "ts": "2026-07-20T04:10:36+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 (late): local-first DVC push/cache PASS (dvc 3.67.1; local remote maskfactory-dvc-local on F:; 52 objects pushed; dvc status -c in sync). Honest finding: F: junction blocks dvc add of data/packages (target outside git workdir). Cloud s3 push still deferred (needs dvc-s3+AWS). Evidence: qa/live_verification/agent_queue_execution_20260719T2300.json"
         }
       ],
       "evidence": "qa/live_verification/dvc_s3_runtime_20260712.json records runtime versions, S3 capability, initialized remote, production wiring, valid local-add md5 descriptor, 26 focused tests, full-suite pass, and the negative credential audit.",
       "blocked_reason": "NEEDS KEVIN: DVC is installed, initialized, production-wired, and locally verified; completion requires Kevin-authorized AWS credentials plus the first eligible human-anchor or autonomous-certified package for the governed S3 push.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:56:26+00:00",
+      "updated_at": "2026-07-20T04:10:36+00:00",
       "orphaned": false
     },
     "MF-P1-08.01": {
@@ -3231,12 +3236,17 @@
           "ts": "2026-07-19T23:56:26+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19 residual: ops_bootstrap_static seals QC-006 hash-manifest + multi-package reindex without claiming live B1 restore. Evidence qa/live_verification/ops_bootstrap_static_20260719.json file sha256 6c54fa4e17074a7fd0422a64046474a03bc6bd6c4edca6b56a95f3849cece249. Remains NEEDS KEVIN for real B1 restore."
+        },
+        {
+          "ts": "2026-07-20T04:10:37+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 (late): local B1 restore drill PASS - img_a3d2663ad90d restored to runtime_artifacts/b1_restore_drill; verify-package PASS p0+p1. Evidence: qa/live_verification/agent_queue_execution_20260719T2300.json"
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: no P1-08 human-anchor package or B1 mirror exists yet; the restore drill needs one corrected seed package first.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-19T23:56:26+00:00",
+      "updated_at": "2026-07-20T04:10:37+00:00",
       "orphaned": false
     },
     "MF-P1-EXIT": {
@@ -13569,12 +13579,17 @@
           "ts": "2026-07-19T23:28:45+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS 2026-07-19: incremental-value corpus structural audit machinery landed (image-disjoint/leakage/coverage/<200 fail-closed). Never completes this item; human-anchor >=200 corpus + Kevin billable auth still required."
+        },
+        {
+          "ts": "2026-07-20T04:10:48+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 (late): cloud-teacher local STATIC path re-verified PASS (test_cloud_teacher_static). Paid cloud calls deferred (no budget/env). Evidence: qa/live_verification/agent_queue_execution_20260719T2300.json"
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: the ≥200-case image-disjoint human-anchor corpus and any billable cloud-evaluation authorization are not yet available.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T23:28:45+00:00",
+      "updated_at": "2026-07-20T04:10:48+00:00",
       "orphaned": false
     },
     "MF-P4-10.09": {
@@ -15642,12 +15657,17 @@
           "ts": "2026-07-19T23:09:44+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19: Fixture-seeded STATIC binder sealed at qa/live_verification/multi_person_static_contracts_20260719.json (exclusivity/bleed/identity/contact gates + residual routing). STATIC_PASS only; does NOT satisfy MF-P8-11.07 real 10-20 image demo. Remains NEEDS KEVIN."
+        },
+        {
+          "ts": "2026-07-20T04:10:48+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-19 (late): multi-person STATIC contracts re-verified PASS (exclusivity/bleed/identity/contact gates + residual routing). Seal multi_person_static_contracts_20260719T2245.json. Real 10-20 image demo still NOT claimed."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: sufficient governed 2-4-person sources and the preselected blinded human-anchor audit are required; certificate-covered instances otherwise route automatically.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T23:09:44+00:00",
+      "updated_at": "2026-07-20T04:10:48+00:00",
       "orphaned": false
     },
     "MF-P8-11.08": {

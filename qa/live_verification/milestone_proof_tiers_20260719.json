@@ -1,12 +1,12 @@
 {
   "artifact_type": "milestone_proof_tiers",
   "schema_version": "1.0.0",
-  "recorded_at": "2026-07-20T03:30:37Z",
+  "recorded_at": "2026-07-20T04:11:44Z",
   "local_date": "2026-07-19",
-  "revision": "post_disk_relocation_doctor_climb_20260719",
-  "supersedes_self_sha256": "7986f63423c5d3a0477a2ea98777cc76665c5f369240931ea60341e4ee5829dc",
+  "revision": "post_agent_queue_execution_20260719",
+  "supersedes_self_sha256": "0581b4ab08b060f3738d48463ffe5bfbea80590b5bbe1f75bb41a54b9f457e34",
   "branch": "codex/maskfactory-runtime-implementation",
-  "project_head_at_authoring": "512607d1b8b11d174a048ecddafebd7cabef86e7",
+  "project_head_at_authoring": "585c2c4294a8e57318ebcda4349fa7d8231c4407",
   "authority": [
     "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md §11 proof-tier vocabulary",
     "Plan/Tracker/DASHBOARD.md",
@@ -16,7 +16,8 @@
     "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
     "Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md",
     "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
-    "qa/live_verification/needs_agent_actions_20260719.json"
+    "qa/live_verification/needs_agent_actions_20260719.json",
+    "qa/live_verification/agent_queue_execution_20260719T2300.json"
   ],
   "honesty_rules": [
     "Do not inflate tiers",
@@ -54,13 +55,13 @@
     "highest_live_surface_tier_seen": "RUNTIME_PASS_BOUNDED",
     "production_evidence": "NOT_CLAIMED",
     "profile_complete": false,
-    "rationale": "AUTONOMOUS DISK UNBLOCK: data/ relocated (reversible junction) to governed F: drive; doctor.check_disk_free FAIL->PASS (251.1 GiB). Full `maskfactory doctor` now RUNS TO COMPLETION (was RUNTIME_BLOCKED): PASS=8 FAIL=4. gpu_lock stale lock cleared (FAIL->PASS). Autonomous Docker GPU CUDA container proof (RTX 5060 driver 592.01). Remaining doctor FAILs: 3 rooted in the Ubuntu-22.04 ext4 VHD read-only/corruption (torch_cuda, registered_models, wsl_roundtrip; elevation-gated e2fsck) + 1 from 8GB GPU VRAM contention (nuclio SAM2 vs ollama qwen2.5vl each RUNTIME_PASS_BOUNDED individually via smokes). CVAT 2.24 / Nuclio SAM2 / Ollama VLM / Mode B health+models remain RUNTIME_PASS_BOUNDED. Mode B predict AWAITING_RUNTIME (champions=0; force-register forbidden). P6-11/12 AWAITING_MAIN (producer 93 tests PASS; STATIC_PASS). VISUAL_QA_REVIEWED_WITH_DEFECTS; HARD_QA_PASS_BOUNDED. No doctor-green / gold / visual-pass / Main-complete / PRODUCTION_EVIDENCE_PASS / core close. needs_kevin superseded by needs_agent_actions.",
+    "rationale": "AGENT QUEUE EXECUTION WAVE (honest, local-first): local DVC push/cache PASS (52 objects to a local F: remote; dvc status -c in sync; cloud s3 still deferred — needs dvc-s3 + AWS creds); local B1 restore drill PASS (restored package verify-package p0+p1); multi-person + cloud-teacher + release STATIC contracts PASS; producer bridge / consumer conformance re-verified (90 tests PASS at HEAD); shadow currency-registry STATIC seal rebound to the current signed review 38a72efc (policy still honestly fail). WSL Ubuntu-22.04 ext4 VHD repair remains elevation-gated: this session's shell is non-elevated (IsInRole=False; schtasks /rl HIGHEST access denied; RunAs=UAC) — Docker GPU CUDA container proof (RTX 5060 driver 592.01) is the active substitute and the scripted e2fsck is deferred to the next elevated shell. Champions still 0: autonomy build-audit-queue population_count=0 (empty lifecycle) + VISUAL_QA_REVIEWED_WITH_DEFECTS + ~0.4 GiB free VRAM + human_anchor=0; force-register FORBIDDEN. No doctor-green / gold / visual-pass / Main-complete / cloud DVC S3 / PRODUCTION_EVIDENCE_PASS / core close.",
     "exact_blockers": [
       "RESOLVED (autonomous): disk ingest floor — data/ relocated to governed F: (>250 GiB free); doctor disk_free PASS 251.1 GiB (was FAIL). Reversible; C: backup at data_c_backup_relocated.",
       "AGENT (scripted-from-elevated-shell): MF-P0-17.04 WSL Ubuntu-22.04 ext4 VHD offline e2fsck (Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair). Autonomous fallback DONE: Docker GPU CUDA container proof. 3 doctor FAILs share this root cause.",
       "GPU CONTENTION: 1 doctor FAIL rotates between nuclio SAM2 / ollama qwen2.5vl on the shared 8GB GPU; both RUNTIME_PASS_BOUNDED individually via dedicated smokes.",
       "AGENT (autonomous-gold, supersedes human anchors): VISUAL_QA_REVIEWED_WITH_DEFECTS -> VISUAL_QA_PASS_BOUNDED then autonomous_certified_gold; MF-P1-08.* human SOP-1 deferred/superseded.",
-      "AGENT (local-first): MF-P1-07.09 DVC local push; MF-P1-09.05 local B1 restore drill from seed package.",
+      "DONE (local tier): MF-P1-07.09 DVC local push/cache PASS (52 objects to local F: remote, in sync); MF-P1-09.05 local B1 restore drill PASS (verify-package p0+p1). Cloud DVC S3 push still deferred.",
       "MAIN (agent-executable in Main repo, not human): AWAITING_MAIN MF-P6-11.01..11.08 / MF-P6-12.02..12.06; producer side 93 tests PASS + fixture_complete/consumer pack Main-ready.",
       "MAIN HARD BLOCKERS named: MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 (blocks MF-P6-12.06 / core close) until real Main-side artifacts exist.",
       "AGENT (local): MF-P4-10.08/10.09 local teacher corpus; MF-P8-11.07 local multi-person sources (DAZ/MaskedWarehouse/reference).",
@@ -94,6 +95,7 @@
       "MF-P6-12.05"
     ],
     "evidence": [
+      "qa/live_verification/agent_queue_execution_20260719T2300.json",
       "qa/live_verification/needs_agent_actions_20260719.json",
       "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
       "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
@@ -530,12 +532,18 @@
     "champions": 0,
     "certified_training_package_count": 0,
     "aws_credentials_present": false,
-    "b1_mirror_present": false,
+    "dvc_local_push": "DONE (maskfactory-dvc-local on F:; 52 objects; in sync)",
+    "dvc_cloud_s3_push": false,
+    "b1_restore_drill_local": "PASS (img_a3d2663ad90d p0+p1)",
+    "producer_bridge_tests": "90 PASS at HEAD",
+    "main_repo_present": "C:/Comfy_UI_Main HEAD 2393fbb7 (separate git)",
     "gpu_container_cuda_proof": "RTX 5060 driver 592.01 (docker --gpus all nvidia-smi)",
-    "wsl_ubuntu_2204": "ext4 VHD read-only fallback (I/O error); elevation-gated e2fsck",
-    "runtime_evidence_sha256": "056baa1a646ce18ec133b3743f285035b0456af7713bd76651e4e817d91b26b7",
+    "gpu_free_vram_mib_approx": 377,
+    "wsl_ubuntu_2204": "Stopped; /bin/true -> distribution failed to start (E_FAIL); on-disk ext4 corruption; elevation-gated e2fsck",
+    "wsl_elevation_available": false,
+    "runtime_evidence_sha256": "7f5d4f1b9f261b15b5b3582afc044f91c5887f3ca19c33d2c294c0cd6c2f1df9",
     "needs_agent_actions": "qa/live_verification/needs_agent_actions_20260719.json",
     "host_side_static_gaps_remain": false
   },
-  "self_sha256": "0581b4ab08b060f3738d48463ffe5bfbea80590b5bbe1f75bb41a54b9f457e34"
+  "self_sha256": "8b87568ee7264fc2fbc33e2ed646edf245601cbab90d3b2196db0adc94019a20"
 }

@@ -1,0 +1,41 @@
+{
+  "artifact_type": "multi_person_static_contracts_report",
+  "authority": "multi_person_static_contracts_only_no_real_demo_kevin_sources_or_production_authority",
+  "checked_at": "2026-07-20T03:49:59Z",
+  "checks": {
+    "exclusivity_bleed_identity_contact_gates": "pass",
+    "residual_routing_and_split_integrity": "pass"
+  },
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p8_11_07_real_demo",
+    "kevin_governed_multi_person_sources",
+    "d11_g9_headline_measurement",
+    "doctor_green",
+    "gold",
+    "production_evidence_pass"
+  ],
+  "kevin_multi_person_sources_required": true,
+  "main_complete_claimed": false,
+  "mf_p8_11_07_demo_complete": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "real_10_20_image_demo_claimed": false,
+  "report_id": "mpsc_9634be0d097608a65a35eef1",
+  "schema_version": "1.0.0",
+  "seal_sha256": "9634be0d097608a65a35eef1b3f219c2790cf93e76ab810159485047bf630bed",
+  "seeded_gate_blocks": {
+    "bleed_qc036": true,
+    "contact_reciprocity_aut_mp_002_003": true,
+    "exclusivity_qc035": true,
+    "identity_containment_aut_mp_001": true
+  },
+  "seeded_routing_checks": {
+    "certified_duo_serves_without_routine_review": true,
+    "failed_gate_routes_residual": true,
+    "mixed_certified_residual_one_truth_partition": true
+  },
+  "sha256": "b0fa6d470679064d11e24d738d0de10cb41c7395701296fe19c513d28bc865dd",
+  "visual_qa_pass_claimed": false
+}

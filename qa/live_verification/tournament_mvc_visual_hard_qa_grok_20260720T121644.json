@@ -1,0 +1,368 @@
+{
+  "apply_demote": true,
+  "artifact_type": "tournament_mvc_visual_hard_qa",
+  "authority": [
+    "configs/vlm.yaml governance (may_author_masks=false, may_approve_gold=false)",
+    "src/maskfactory/autonomy/visual_defect_policy.py",
+    "tools/gpu_sequencer.py ollama-vlm consumer"
+  ],
+  "autonomous_certified_gold": 0,
+  "blocker": null,
+  "demoted_to_residual": 0,
+  "honesty_rules": [
+    "NOT a draft-corpus VISUAL_QA_REVIEWED_WITH_DEFECTS seal",
+    "Source/DAZ/warehouse masks are never gold",
+    "VISUAL_QA_PASS_BOUNDED forbidden when structural residuals remain",
+    "autonomous_certified_gold only via admission certificate path after retained MVC"
+  ],
+  "lane": "GOLD_FACTORY_visual_hard_qa_tournament_mvc_only",
+  "machine_roots": [
+    "runs/autonomous_gold_tournament_20260720_cbackup",
+    "runs/autonomous_gold_tournament_20260720T1538",
+    "runs/autonomous_gold_tournament_smoke2"
+  ],
+  "mvc_reviewed": 6,
+  "next_agent_step": "Re-run assemble_autonomous_verification_corpus + build_autonomous_gold_admission --corpus on retained MVC; Wilson gates still apply \u2014 do not fabricate gold.",
+  "outcomes": {
+    "VISUAL_HARD_QA_PASS_BOUNDED": 6
+  },
+  "pipeline_fingerprint_filter_note": "multiprovider-local-cuda-tournament-20260720-v1",
+  "recorded_at": "2026-07-20T17:17:46.015091Z",
+  "retained_machine_verified_candidate": 6,
+  "rows": [
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.561587,
+      "hard_vetoes": [],
+      "image_id": "img_06e833fe6114",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_06e833fe6114/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_06e833fe6114/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "939aad483ede4deb66f2c34dabc57e8abb7e807b3a48a321a326ea41b325cf2f",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_06e833fe6114/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\1000.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 62,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 16.628,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action required. The segmentation is precise and clear.",
+        "evidence": "The mask accurately captures the torso silhouette without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.879825,
+      "hard_vetoes": [],
+      "image_id": "img_18b35dd98b31",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_18b35dd98b31/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_18b35dd98b31/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "ed39f8ad395dde171ac1388bcb1e480a48bf2b5defa0a0196adcbfda6f3c5661",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_18b35dd98b31/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\1.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 62,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 13.631,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further adjustments needed. The mask is precise and clear.",
+        "evidence": "The mask accurately outlines the torso silhouette without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.916656,
+      "hard_vetoes": [],
+      "image_id": "img_1fefcf18f994",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_1fefcf18f994/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_1fefcf18f994/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "8f30607375bc1f73ca4518dc0fea923e25a7c41ef65d66269479c955f2eb46bf",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_1fefcf18f994/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\10005.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 61,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 6.031,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action required. The segmentation is precise and complete.",
+        "evidence": "The mask accurately captures the torso silhouette without any visible issues.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.654367,
+      "hard_vetoes": [],
+      "image_id": "img_27a15c06e014",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_27a15c06e014/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_27a15c06e014/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "efeb769217aa59b42e7f1a2dc4957184c43d56828f80e4dbb179599c2265b1d7",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_27a15c06e014/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\1001.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 61,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 5.932,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action required. The segmentation is precise and complete.",
+        "evidence": "The mask accurately captures the torso silhouette without any visible issues.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.66601,
+      "hard_vetoes": [],
+      "image_id": "img_299450cab24e",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_299450cab24e/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_299450cab24e/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "0e72a07d7ea6e430f128962c7041af81b0efd25645871ad0f53bfe97ecd700f4",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_299450cab24e/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\10001.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 61,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 4.708,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action required. The mask is correctly segmented.",
+        "evidence": "The mask accurately captures the torso silhouette without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "claims_forbidden": [
+        "gold",
+        "autonomous_certified_gold",
+        "source_warehouse_gold"
+      ],
+      "component_count": 1,
+      "defect_classes": [],
+      "fg_fraction": 0.687595,
+      "hard_vetoes": [],
+      "image_id": "img_37dde48f50a6",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_37dde48f50a6/autonomy/torso.json",
+      "note": "Hard veto + governed VLM critic passed; remains machine_verified_candidate toward autonomous_certified_gold admission \u2014 not gold yet.",
+      "outcome": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "panel_path": "runs/autonomous_gold_tournament_20260720_cbackup/img_37dde48f50a6/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "08888ca26b4cc0e39e9994139f48604b51c06a485cc8063cd039a19d8d567c0b",
+      "prior_status": "machine_verified_candidate",
+      "retained_as": "machine_verified_candidate",
+      "review_sidecar": "runs/autonomous_gold_tournament_20260720_cbackup/img_37dde48f50a6/autonomy/torso.visual_hard_qa.json",
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\10010.jpg",
+      "structural_abstain_classes": [],
+      "visual_tier": "VISUAL_HARD_QA_PASS_BOUNDED",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 61,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 7.443,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action needed. The segmentation is precise and clear.",
+        "evidence": "The mask accurately segments the torso without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    }
+  ],
+  "schema_version": "1.0.0",
+  "self_sha256": "1c38b63a556a4b11012ccb9e4f7be929c6ab55755dca5ac09398573e604deaa4",
+  "vlm_model": "qwen2.5vl:7b",
+  "vlm_skipped": false
+}

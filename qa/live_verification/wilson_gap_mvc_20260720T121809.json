@@ -1,0 +1,56 @@
+{
+  "admission_status": "fail_closed",
+  "agent": "cursor-grok-4.5-high-fast",
+  "artifact_type": "wilson_gap_mvc_quantification",
+  "assembled_record_count": 23,
+  "autonomous_certified_gold": 0,
+  "certificate_failures": [
+    "insufficient_autonomous_verified_samples",
+    "false_accept_upper_bound_exceeded",
+    "serious_false_accept_upper_bound_exceeded"
+  ],
+  "certificate_passed": false,
+  "claim_boundary": {
+    "certificate_minted": false,
+    "no_fabricated_samples": true,
+    "prove_emit_glue_not_wilson_authority": true
+  },
+  "eligible_count": 23,
+  "false_accept_count": 0,
+  "floors": {
+    "binding_constraint": "exact_zero_failure_serious",
+    "binding_floor": 598,
+    "exact_zero_serious_n_for_sfa_floor": 598,
+    "maximum_false_accept_upper_bound": 0.01,
+    "maximum_serious_false_accept_upper_bound": 0.005,
+    "minimum_autonomous_verified_per_risk_bucket": 30,
+    "wilson_zero_defect_n_for_fa_floor": 268
+  },
+  "gap_to_climb": 575,
+  "lane": "GOLD_FACTORY",
+  "pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1",
+  "pool": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 397,
+    "lifecycle_sidecars_seen": 446,
+    "machine_root": "runs",
+    "machine_verified_candidate_count": 446
+  },
+  "recorded_at": "2026-07-20T17:19:01.221168Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "c9e0429bfdde2d92f5da8562135b99ff018583b0457a69f362862cd4dace892d",
+  "serious_exact_upper_bound_now": 0.12212338890652308,
+  "serious_false_accept_count": 0,
+  "siblings_emitting": true,
+  "visual_hard_qa": {
+    "artifact": "qa/live_verification/tournament_mvc_visual_hard_qa_grok_20260720T121644.json",
+    "mvc_reviewed": 6,
+    "outcomes": {
+      "VISUAL_HARD_QA_PASS_BOUNDED": 6
+    },
+    "retained_machine_verified_candidate": 6,
+    "self_sha256": "1c38b63a556a4b11012ccb9e4f7be929c6ab55755dca5ac09398573e604deaa4",
+    "vlm_model": "qwen2.5vl:7b"
+  },
+  "wilson_false_accept_upper_bound_now": 0.1052513617899941
+}

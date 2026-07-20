@@ -10922,3 +10922,36 @@ Evidence: `qa/live_verification/lifecycle_pool_scan_20260720T120353.json`; `corp
 **Command:** `python tools/gpu_sequencer.py sequence --consumer ollama-vlm`; `python tools/run_tournament_ollama_critic_router.py` (cbackup + remaining MVC roots)
 **Result:** RUNTIME_PASS_BOUNDED. **critic_runs=25** (advisory scores only). GPU-seq `ollama-vlm` `run_now` (~7799 MiB). Governance: role=qa_router_only, may_author_masks=false, may_approve_gold=false. **multi_family_agreement_replaced=false**; lifecycle_mutations=0; MVC status preserved. Outcomes: {'CRITIC_SCORED_ADVISORY': 25, 'ABSTAIN_BOUNDED': 8}. Tool: `tools/run_tournament_ollama_critic_router.py`. Evidence: `qa/live_verification/tournament_ollama_critic_router_wave_20260720T1212.json` (self_sha256 6aa639a74c21…).
 
+## 2026-07-20 17:19 UTC - GOLD FACTORY tournament --emit MVC climb (cursor-grok-4.5-high-fast)
+
+**Item:** Continue `autonomy tournament --emit` MVC climb; report MVC/gold/champions; commit+push
+**Command:** Stop Ollama to free VRAM for sibling CUDA batch holders; `python runtime_artifacts/_batch_emit_mvc_more_images_20260720.py` (prove-emit×24 + `tournament --emit`×16); `python runtime_artifacts/_seal_wilson_gap_mvc_admission_20260720T1705.py`; `maskfactory models champions`
+**Result:** RUNTIME_PASS_BOUNDED climb. This-wave emit **MVC 75→123** (+48; tournament --emit 16/16 ok). Parallel sibling emitters continued; sealed pool **MVC≈448**, envelopes≈399–444, **gold=0**, **champions={}**. Wilson binding still exact_zero_failure_serious **n=598** → gap≈154; admission `insufficient_autonomous_verified_samples`. Docker CLI healthy; GPU lock held by batch-B multiprovider (no lock steal). Glue-proof emit included; no Wilson fabrication; no force-registered champions; not human gold.
+
+Evidence: `qa/live_verification/gold_factory_tournament_emit_mvc_climb_20260720T1716.json` (self_sha256 78cc0e80…); `autonomy_batch_emit_more_images_20260720T171435Z.json` (e0c6a2aa…); `wilson_sample_gap_mvc_20260720T171828Z.json` (1bdcffef…).
+
+
+## 2026-07-20 17:18 UTC - GOLD FACTORY CRITICAL status + remaining-feed emit queue
+**Item:** GOLD FACTORY CRITICAL — grow real MVC on remaining 128-feed / warehouse under GPU-seq
+**Command:** python tools/gpu_sequencer.py probe; live batch_b multiprovider tournament emit (holder); _run_tournament_remaining_locked_20260720.py + full-sibling-feed waiters queued (no lock steal); 
+untime_artifacts/_seal_gold_factory_status_20260720T1717.py
+**Result:** RUNTIME_PASS_BOUNDED status seal. **live_families=5** (faceparse_bisenet, birefnet_general, schp_atr, nuclio_pth_sam2, densepose_rcnn_r50_fpn_s1x). **MVC peak=51**, post-hard-QA live ~**43**; authoritative real multiprovider FP unique=**25**; base **128-feed covered_real=22 / remaining=106** (sibling pointer also expanded to 256). **gold=0**, **champions=0**. Blocker: no `autonomous_certified_gold`; GPU-seq tournament emit in flight (batch_b) with remaining/full-feed waiters queued. Glue prove-emit/tournament-emit sidecars inflate pool counts and are not counted as real feed coverage.
+
+Evidence: `qa/live_verification/gold_factory_critical_status_20260720T171840Z.json` (self_sha256 6a213108…); `gold_factory_critical_status_latest.json`; `family_availability_matrix_20260720T1703.json`.
+
+## 2026-07-20 17:19 UTC - GOLD FACTORY admission + Wilson gap + Ollama visual/hard QA (cursor-grok-4.5-high-fast)
+
+**Item:** GOLD FACTORY — uild_autonomous_gold_admission, Wilson gap quantify, visual/hard QA on real MVC, emit-with-siblings, report MVC/gold/blocker, commit+push
+**Command:** live probe (Docker 29.6.1, CVAT 2.24.0, Ollama 0.32.1); 	ools/build_autonomous_gold_admission.py (pool + --corpus); 	ools/assemble_autonomous_verification_corpus.py --pipeline-fingerprint multiprovider-local-cuda-tournament-20260720-v1; 	ools/run_tournament_mvc_visual_hard_qa.py (cbackup/1538/smoke2, limit 6, --apply-demote, qwen2.5vl:7b); Wilson gap seal
+**Result:** HONEST fail-closed. Pool **MVC≥34** (live ~437–470; sibling glue prove/tournament-emit inflated total). Fingerprint-filtered torso/solo corpus **sample_count=23** → certificate **fail_closed** (insufficient_autonomous_verified_samples, Wilson FA UB 0.105 > 0.01, serious exact UB 0.122 > 0.005). Binding floor = **exact_zero_failure_serious n=598** (Wilson zero-defect n=268; min bucket=30) → **gap_to_climb=575**. **gold=0**, certificate_minted=false. Visual/hard QA on real MVC: **6/6 VISUAL_HARD_QA_PASS_BOUNDED** (demoted=0; governance may_approve_gold=false). Batch-C multiprovider sibling still holding GPU lock for further real emits — keep emitting until Wilson climb possible. No fabricated Wilson samples; no force-registered champions.
+
+Evidence: qa/live_verification/autonomous_gold_admission_fp_20260720T121809.json; wilson_gap_mvc_20260720T121809.json (self_sha256 c9e0429b…); 	ournament_mvc_visual_hard_qa_grok_20260720T121644.json (self_sha256 1c38b63a…); qa/autonomy/corpora/autonomous_verification_fp_20260720T121809.json.
+
+
+## 2026-07-20 17:20 UTC - GOLD FACTORY Wilson gap seal MVC~43-51 (cursor-grok-4.5-high-fast)
+
+**Item:** GOLD FACTORY — admission + exact Wilson gap to `autonomous_certified_gold` at authoritative MVC~43-51; keep climbing; commit+push seal with numbers
+**Command:** `python runtime_artifacts/_batch_emit_mvc_more_images_20260720.py --prove-n 50 --tournament-n 30`; `python runtime_artifacts/_seal_wilson_gap_mvc_admission_20260720T1705.py`; `python runtime_artifacts/_seal_wilson_gap_mvc43_51_20260720.py`; `tools/build_autonomous_gold_admission.py`
+**Result:** HONEST fail-closed. Authoritative band **MVC live=43 / peak=51** (real multiprovider / post-hard-QA; glue pool inflated ~477 not counted as feed coverage). Floors: **n_wilson=268** (one-sided 95% FA UB≤0.01), **n_exact=598** (exact zero-failure serious ≤0.005; **binding**). Exact gaps: at MVC=43 → **Wilson gap=225**, binding gap=555; at MVC=51 → **Wilson gap=217**, binding gap=547. Admission `insufficient_autonomous_verified_samples`; **gold=0**; certificate_minted=false; champions untouched. Wilson math unchanged; no fabricated samples. Climb continues on remaining real feed under GPU-seq (no lock steal).
+
+Evidence: `qa/live_verification/wilson_gap_mvc43_51_20260720T172025Z.json` (self_sha256 ee0562f4…); `wilson_gap_mvc43_51_latest.json`; `autonomous_gold_admission_mvc43_51_20260720T172025Z.json`; `runtime_artifacts/_seal_wilson_gap_mvc43_51_20260720.py`.

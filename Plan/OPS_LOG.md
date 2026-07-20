@@ -10263,3 +10263,14 @@ champions=0, no gold/Main-complete/doctor-green, no minted autonomous certificat
 **Commands:** live docker/CVAT/Ollama/GPU probe; docker build serve/train (cu128); run_isolated_main_consumer
 (6/6 PASS); pytest autonomous-gold (7) + autonomy (33) + bridge conformance (18); build_autonomous_gold_admission
 (insufficient samples honest FAIL); ruff; tracker set --note; seal three-unblocks; append OPS_LOG; commit+push
+
+### Correction — serve image build crashed the daemon; Docker/CVAT restored
+- The `maskfactory/serve:cu128` build reached the torch cu128 install (~7 GiB of torch+CUDA wheels) and
+  the Docker Desktop daemon/buildkit disconnected (`failed to receive status: rpc error: code =
+  Unavailable desc = ... EOF`) — the constrained WSL2 backend was exhausted and the engine went down.
+- **Restored services** (per the do-not-leave-services-down rule): restarted Docker Desktop; waited for
+  the daemon; verified production **CVAT 2.24.0** at `http://localhost:8080/api/server/about`,
+  **nuclio-nuclio-pth-sam2** healthy, and **Ollama 0.32.1** all back up (containers auto-restarted).
+- **Honest status:** containerized serve smoke NOT claimed. GPU-container CUDA access (RTX 5060 cap
+  12,0) stands. Retry the build with raised WSL2 memory/disk headroom, then run
+  `tools/smoke_docker_gpu_serve.py`. Re-sealed evidence self_sha256 ea1a2c75…

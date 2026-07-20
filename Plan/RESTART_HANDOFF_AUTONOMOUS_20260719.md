@@ -13,10 +13,14 @@ no gold/Main-complete/doctor-green, no minted autonomous certificate.
 - **Unblock 1 (Docker GPU train/serve):** `docker/Dockerfile.serve` (torch cu128 + serve/doctor subset
   + maskfactory), `docker/Dockerfile.train` (CUDA 12.8 devel, builds `mmcv._ext` for sm_120),
   `docker/compose.gpu.yml`, `.dockerignore`, `tools/smoke_docker_gpu_serve.py`. GPU-container CUDA
-  access (RTX 5060 cap 12,0) = RUNTIME_PASS_BOUNDED. Serve image build (torch cu128 ≈7 GiB) is slow on
-  the WSL2 backend; the containerized serve /health+/models smoke is **PENDING build completion** —
-  run `tools/smoke_docker_gpu_serve.py --serve-image maskfactory/serve:cu128` to seal it. Not claimed
-  until green.
+  access (RTX 5060 cap 12,0) = RUNTIME_PASS_BOUNDED. The serve image build reached the torch cu128
+  install (~7 GiB of torch+CUDA wheels) and the **Docker Desktop daemon/buildkit disconnected (RPC
+  Unavailable EOF)** — the constrained WSL2 backend was exhausted and the engine went down. Docker
+  Desktop was **restarted and production CVAT 2.24.0 / nuclio pth-sam2 / Ollama 0.32.1 verified
+  restored.** The Dockerfile/compose/.dockerignore/smoke assets are correct and committed; the
+  containerized serve smoke is **NOT claimed**. RETRY: raise WSL2 memory/disk headroom (Docker Desktop
+  settings or `.wslconfig`) or use a runtime base + prebuilt wheel cache, then run
+  `tools/smoke_docker_gpu_serve.py --serve-image maskfactory/serve:cu128`.
 - **Unblock 2 (autonomous-gold admission tier):** `configs/autonomy_autonomous_gold_profile.yaml`
   (sealed) + `calibration.build_autonomous_gold_certificate` + `verify_autonomy_certificate(
   allow_autonomous_profile=…)` (default OFF, threaded through `run_tournament`). Replaces human-anchor
@@ -29,8 +33,9 @@ no gold/Main-complete/doctor-green, no minted autonomous certificate.
   6/6 checks PASS, harness `accepted` (`main_adoption_complete=False`), cross-project `producer_partial`.
   HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN; `C:/Comfy_UI_Main` untouched.
 - **Evidence:** `qa/live_verification/three_unblocks_execution_20260720T0530.json` (self_sha256 `2b930335…`).
-- **Remaining agent queue:** (a) finish `maskfactory/serve:cu128` build → run serve smoke → seal
-  containerized serve RUNTIME_PASS_BOUNDED; (b) build `maskfactory/train:cu128` → `training-doctor` in
+- **Remaining agent queue:** (a) RETRY `maskfactory/serve:cu128` build with more WSL2 headroom (the
+  first attempt crashed the daemon on the ~7 GiB torch install) → run serve smoke → seal containerized
+  serve RUNTIME_PASS_BOUNDED; (b) build `maskfactory/train:cu128` → `training-doctor` in
   container; (c) run the multi-provider tournament in the GPU container on gold-volume sources to
   produce `machine_verified_candidate` masks → assemble a frozen image-disjoint autonomous corpus →
   `build_autonomous_gold_admission --corpus …` → drive a package to autonomous_certified_gold; (d) real

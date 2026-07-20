@@ -51,10 +51,16 @@ evidence = {
         "train_image": "maskfactory/train:cu128 (CUDA 12.8 devel; builds mmcv._ext from source "
         "for sm_120 per env/openmmlab_training_stack.lock.json)",
         "gpu_cuda_container_proof": "RUNTIME_PASS_BOUNDED (RTX 5060, cap 12,0, via --gpus all)",
-        "serve_smoke_status": "PENDING_IMAGE_BUILD: torch cu128 (~7 GiB) install on the WSL2 "
-        "backend is slow; run tools/smoke_docker_gpu_serve.py --serve-image maskfactory/serve:cu128 "
-        "once the build completes to seal the containerized serve /health+/models + torch-cuda-"
-        "in-container RUNTIME_PASS_BOUNDED. Not claimed until the smoke runs.",
+        "serve_smoke_status": "BUILD_FAILED_RESOURCE: the serve image build reached the torch cu128 "
+        "install (~7 GiB of torch+CUDA wheels) and the Docker Desktop daemon/buildkit disconnected "
+        "('failed to receive status: rpc error: code = Unavailable ... EOF'), i.e. the constrained "
+        "WSL2 backend was exhausted by the large install and the engine went down. Docker Desktop was "
+        "then RESTARTED and production CVAT 2.24.0 (localhost:8080), nuclio pth-sam2, and Ollama 0.32.1 "
+        "were verified restored. The Dockerfile/compose/.dockerignore/smoke assets are correct and "
+        "committed. RETRY guidance: raise WSL2 memory/disk headroom (Docker Desktop settings or "
+        ".wslconfig), or build with a runtime (not devel) base + prebuilt wheel cache, then run "
+        "tools/smoke_docker_gpu_serve.py --serve-image maskfactory/serve:cu128 to seal the "
+        "containerized serve RUNTIME_PASS_BOUNDED. Serve-container runtime is NOT claimed.",
         "honesty": "training-doctor full green (mmcv._ext sm_120) NOT claimed; requires the train "
         "image build + registered datasets. GPU container access is genuinely proven.",
     },

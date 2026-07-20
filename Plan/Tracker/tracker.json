@@ -20950,12 +20950,17 @@
           "ts": "2026-07-19T21:31:08+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS retained / AWAITING_MAIN unchanged 2026-07-19. Parallel STATIC work was MaskedWarehouse qualification + host-side shadow/currency only; no production Main close."
+        },
+        {
+          "ts": "2026-07-20T05:54:23+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated Main-side consumer (tools/run_isolated_main_consumer.py) executes the real adapter boundary/journal/circuit and emits an adoption receipt signed by an isolated-consumer key (authority_kind=isolated_main_consumer, NOT fixture_authority, NOT real Comfy_UI_Main). Producer+isolated-consumer evidence only; HARD 11.02/11.07/12.05/12.06 remain OPEN pending real Main. Evidence: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_*.json"
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_external_adapter_conformance.py + fixture_main harness (main_adoption_complete=false). Not PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "AWAITING_MAIN/STATIC_PASS: Producer adapter conformance remains fixture-complete only. No Main-supplied production MaskFactoryAdapter. 2026-07-19 STATIC wave did not advance this item.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T21:31:08+00:00",
+      "updated_at": "2026-07-20T05:54:23+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {

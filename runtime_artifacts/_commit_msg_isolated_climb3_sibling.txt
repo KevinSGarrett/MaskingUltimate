@@ -1,5 +1,0 @@
-feat(bridge): climb3 isolated-consumer matrices + sibling Main scaffold
-
-Deepen MF-P6-11.02/11.07 producer+isolated evidence (23 Mode A cases,
-circuit/DAG failure-control) and scaffold a clean-origin/main sibling
-consumer worktree. Wave64 dirty Main untouched; HARD blockers remain open.

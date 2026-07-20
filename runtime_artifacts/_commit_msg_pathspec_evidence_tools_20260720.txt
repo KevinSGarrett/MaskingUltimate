@@ -1,5 +1,0 @@
-feat(bridge): pathspec-seal climb3 sibling, measured champions path, C-backup junction
-
-Private-index commit of coherent evidence/tools remaining after origin@6b1ad4ef:
-isolated-consumer climb3 matrices + sibling Main scaffold, measured champions-path
-glue/tests, forced C: data-junction backup seal. No secrets; champions=0 honest.

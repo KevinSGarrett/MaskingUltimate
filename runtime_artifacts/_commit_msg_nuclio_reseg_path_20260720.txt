@@ -1,5 +1,0 @@
-feat(repair): wire WSL-independent nuclio package re-seg path
-
-Add CVAT/Nuclio pth-sam2 client and agent CLI for part refine with
-promotion gates that never claim VISUAL_QA_PASS. Live apply blocked
-this wave by Docker engine down; seal reachability and next step.

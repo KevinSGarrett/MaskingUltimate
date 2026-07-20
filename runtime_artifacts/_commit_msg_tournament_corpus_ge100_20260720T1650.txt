@@ -1,3 +1,0 @@
-feat(tournament): expand image-disjoint gold-volume corpus to 128 samples
-
-Publish sibling feed from MaskedWarehouse + Reference_Images + DAZ RO (≥100 target) for multi-provider GPU runners without treating external labels as gold.

@@ -1,3 +1,0 @@
-qa(gold): wire/run Ollama qwen2.5vl critic/router on tournament MVC
-
-Governed qa_router_only scoring (may_author_masks=false, may_approve_gold=false) via GPU-sequenced ollama-vlm; advisory scores only — never replaces multi-family agreement.

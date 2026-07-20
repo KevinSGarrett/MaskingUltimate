@@ -1,4 +1,0 @@
-evidence(bridge): MF-P6-11.02/11.07 climb4 STATIC_PASS depth (HARD still OPEN)
-
-Durable climb4 runner deepens Mode A to 30 cases and failure-control flags;
-sibling MaskFactory_Consumer 6/6. Credits 11.02→88 / 11.07→84. No real Main.

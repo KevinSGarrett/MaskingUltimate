@@ -10888,3 +10888,23 @@ Evidence: qa/live_verification/tournament_sample_set_gold_volume_20260720T1650.j
 
 Evidence: qa/live_verification/autonomy_emit_path_prove_20260720T115622.json.
 
+## 2026-07-20 16:55 UTC - Re-smoke + seal live mask families (local ComfyUI CUDA)
+**Item:** GOLD FACTORY / family-count gate (faceparse_bisenet, birefnet_general, schp_atr)
+**Command:** Fixed BiRefNet Windows invoke (copy-not-symlink in tools/smoke_birefnet_wsl.py); registered birefnet_general_cuda_local + schp_atr_cuda_local; \python runtime_artifacts/_bringup_families_tournament_sibling_20260720T1511.py\; registry runners re-invoked via ComfyUI torch 2.11.0+cu128
+**Result:** RUNTIME_PASS_BOUNDED. Live independent mask families = **3** (floor met): \aceparse_bisenet\ (SHA \8c3235e1...\), \irefnet_general\ (SHA \d8155bfb...\), \schp_atr\ (SHA dbf9312...\). Optional nuclio_pth_sam2 reachable this wave (count 4 in latest pointer). Registry smoke runners now point at local ComfyUI CUDA (WSL deferred). No Main/Docker builds. No gold minted.
+
+Evidence: qa/live_verification/families_online_tournament_sibling_20260720T1652.json (self_sha256 a313c087...); families_online_tournament_sibling_latest.json; models/model_registry.json runners birefnet_general_cuda_local / schp_atr_cuda_local / faceparse_bisenet_cuda_local.
+
+## 2026-07-20 17:02 UTC - SAM2 family gold advance (nuclio pth-sam2 + Ollama critic-only)
+**Item:** GOLD FACTORY / tournament sibling SAM2 family availability
+**Command:** `python tools/gpu_sequencer.py release --consumer ollama-vlm`; wait nuclio-sam2; `python tools/smoke_cvat_sam2.py`; sequence ollama-vlm; `python tools/smoke_ollama_vlm.py`; unload ollama; re-smoke SAM2; `python runtime_artifacts/_seal_sam2_family_gold_advance_20260720T1153.py`
+**Result:** RUNTIME_PASS_BOUNDED. CVAT 2.24.0 + nuclio-nuclio-pth-sam2 healthy. SAM2 smoke **PASS** (task_id=1, fg=21491, latency 13.216s then post-critic reconfirm 32.513s). Ollama **qwen2.5vl:7b critic-only PASS** (122.217s; governance may_approve_gold=false). GPU-sequenced; no image builds; no volume wipe; sibling pipeline lock respected (no foreign eviction). Seal advances gold-factory family floor with `nuclio_pth_sam2` as live independent family; **no gold minted**, certificate_minted=false, champions untouched.
+
+Evidence: qa/live_verification/sam2_family_gold_advance_20260720T1153.json (self_sha256 c46cdbfb...); sam2_family_gold_advance_latest.json; gpu plan/wait/seq artifacts under qa/live_verification/_gpu_*nuclio_sam2* / _gpu_*ollama_critic* 20260720T115*.
+
+## 2026-07-20 17:03 UTC - DensePose independent family ONLINE (WSL CUDA)
+**Item:** GOLD FACTORY / one more independent mask family (DensePose; not host-SAM2 duplicate; not Sapiens2)
+**Command:** WSL `miniforge3/envs/maskfactory` `tools/smoke_densepose_wsl.py` (ext4-copied helper); registry smoke re-seal; tournament family map optional register
+**Result:** RUNTIME_PASS_BOUNDED. Fresh DensePose R50-FPN CUDA smoke PASS (5 instances, fine charts 1..24, SHA `70567801…` matches registry). Live independent families = **5**: `faceparse_bisenet`, `birefnet_general`, `schp_atr`, `nuclio_pth_sam2`, `densepose_rcnn_r50_fpn_s1x`. Host-SAM2 skipped (correlated with `nuclio_pth_sam2`). No multi-GB Docker image build. No gold minted; champions=0.
+
+Evidence: `qa/live_verification/families_online_tournament_sibling_20260720T1703.json` (self_sha256 `866ca057038ede5b45a8ddcc28eee81c6047711c69a7a0228b79b3954f997ae5`).

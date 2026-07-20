@@ -1,0 +1,93 @@
+{
+  "acceptance_checks": {
+    "acceptance_policy_loads": true,
+    "failures_cannot_satisfy_acceptance": true,
+    "overclaim_accepted_package_refused": true,
+    "synthetic_exact_truth_tier_only": true,
+    "warnings_cannot_satisfy_acceptance": true
+  },
+  "accepted_package_produced": false,
+  "artifact_type": "daz_validation_static_contracts_report",
+  "authority": "daz_validation_static_only_no_live_daz_accepted_package_pilot_or_gold_authority",
+  "bindings": {
+    "acceptance_policy_sha256": "9f20a84cae22382700b489efc5a47eb13393ef30865a10741c34e87fcab78cde",
+    "registry_sha256": "d23290e37671620725bf49fe116e30c70f59582caebc86d16e4f9ff0eb82ddb7",
+    "repair_policy_sha256": "ebc5d5f12f8c7cec37e24db143d107042038c847c9f09c28a09a36914d9ea4dc",
+    "s00_policy_sha256": "a1cbea792e37c7d67ca9ce23f37dab289207c7b01bbff1a14a3495589be90fc2"
+  },
+  "checked_at": "2026-07-20T15:27:08Z",
+  "checks": {
+    "acceptance_certificate_binder": "pass",
+    "registry_v0_v9_binder": "pass",
+    "repair_retry_binder": "pass",
+    "s00_adapter_binder": "pass"
+  },
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p9_08_01_complete",
+    "mf_p9_08_05_complete",
+    "mf_p9_08_10_pilot_complete",
+    "live_daz_validation_executed",
+    "accepted_package_produced",
+    "doctor_green",
+    "gold",
+    "Main-complete",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "implementation": {
+    "configs": [
+      "configs/daz/validation_registry.yaml",
+      "configs/daz/acceptance_certificate_policy.yaml",
+      "configs/daz/repair_retry_policy.yaml",
+      "configs/daz/s00_package_adapter.yaml"
+    ],
+    "module": "src/maskfactory/daz/validation_static_contracts.py",
+    "tests": [
+      "tests/test_daz_validation_static_contracts.py"
+    ]
+  },
+  "items": [
+    "MF-P9-08.01",
+    "MF-P9-08.02",
+    "MF-P9-08.03",
+    "MF-P9-08.04",
+    "MF-P9-08.05",
+    "MF-P9-08.07",
+    "MF-P9-08.08",
+    "MF-P9-08.09"
+  ],
+  "live_daz_validation_executed": false,
+  "main_complete_claimed": false,
+  "mf_p9_08_01_complete": false,
+  "mf_p9_08_05_complete": false,
+  "mf_p9_08_10_pilot_complete": false,
+  "negative_fixtures": {
+    "completion_overclaim_blocked": true,
+    "registry_warn_policy_tamper_blocked": true
+  },
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "registry_checks": {
+    "fail_status_set_fails_closed": true,
+    "ten_required_validators_bound": true,
+    "v0_v9_layers_closed": true,
+    "warn_status_set_fails_closed": true,
+    "warnings_cannot_satisfy_required": true
+  },
+  "repair_checks": {
+    "bounded_retry_budgets_present": true,
+    "deterministic_history_contract": true,
+    "repair_retry_policy_loads": true
+  },
+  "report_id": "dvs_61d6b00c3f97f547fd7d4e8a",
+  "s00_checks": {
+    "adapter_mapping_authority_false": true,
+    "adapter_refuses_gold_authority": true,
+    "s00_adapter_policy_loads": true
+  },
+  "schema_version": "1.0.0",
+  "seal_sha256": "61d6b00c3f97f547fd7d4e8aacba418f3997552ed77ce000b69337488b8683ab",
+  "sha256": "06304de649f004df77106abbaba44eeae0309ae4b7c25c847bd7df3f9bfe48d9",
+  "visual_qa_pass_claimed": false
+}

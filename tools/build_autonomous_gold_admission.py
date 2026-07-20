@@ -36,6 +36,10 @@ from maskfactory.autonomy.calibration import (
     load_autonomous_gold_profile,
     verify_autonomy_certificate,
 )
+from maskfactory.autonomy.gold_volume_sources import (
+    GoldVolumeSourcesError,
+    probe_gold_volume_sources,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 NEXT_STEP = (
@@ -106,6 +110,20 @@ def main() -> int:
 
     pool = scan_verified_candidates(args.machine_root)
     evidence["autonomous_verified_pool"] = pool
+
+    try:
+        gold_volumes = probe_gold_volume_sources()
+        evidence["gold_volume_sources"] = gold_volumes.to_dict()
+        evidence["tournament_input_roots"] = {
+            name: str(path) for name, path in sorted(gold_volumes.selected_roots().items())
+        }
+    except GoldVolumeSourcesError as exc:
+        evidence["gold_volume_sources"] = {
+            "present": False,
+            "error": str(exc),
+            "junction_critical_runtime_to_usb": False,
+        }
+        evidence["tournament_input_roots"] = {}
 
     if args.corpus is None:
         # Honest state report: no fabricated corpus. Fail closed with next step.

@@ -10615,3 +10615,10 @@ Per explicit direction and the sibling `docker_gpu_sole_cuda_path_wsl_deferred_2
 No wipes, no destructive ops, no tier inflation - champions/gold/doctor-green/PRODUCTION_EVIDENCE_PASS untouched by this seal.
 
 Evidence: qa/live_verification/wsl_ubuntu_io_error_20260720.json (self_sha256 a58bf9c8...).
+
+## 2026-07-20 14:53 UTC - C backup vs F: DataRelocated package reconcile (copy missing onto C; keep C junction)
+**Item:** data_c_vs_f_package_reconcile / keep runtime on fixed-disk C: backup
+**Command:** Compare `data_c_backup_relocated\packages` vs `F:\MaskFactory_DataRelocated\packages` (counts, per-package files/bytes/newest); robocopy /L residual; robocopy /E copy F-only `dvc_local_remote` onto C backup; fsutil/junction re-verify.
+**Result:** PASS. Packages **8 = 8** with identical names, file counts, total bytes (2,787,901,171), and newest mtimes on every package — **no package copy required**. F: had one fuller top-level tree (`dvc_local_remote`, 52 files / 6,349,602 bytes) absent from C; **copied** onto `C:\Comfy_UI_Main_Masking\data_c_backup_relocated\dvc_local_remote` via robocopy (real files, exit 1 = copied). `data/` junction remains `C:\Comfy_UI_Main_Masking\data_c_backup_relocated` — **never re-junctioned to USB F:**. F: tree left intact. Via junction: 8 packages readable. C free ~90.93 GiB; F free ~127.76 GiB (removable/unstable — not for `data/`).
+
+Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json; script runtime_artifacts/_seal_c_vs_f_data_package_reconcile_20260720.py.

@@ -1,0 +1,274 @@
+{
+  "artifact_type": "gold_volume_tournament_path_map",
+  "authority": "gold_volume_tournament_input_path_map_read_only",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "autonomous_certified_gold",
+    "machine_verified_candidate_sidecars_in_runs",
+    "champions>0",
+    "doctor_all_green",
+    "PRODUCTION_EVIDENCE_PASS",
+    "multi_provider_tournament_pass"
+  ],
+  "compose_wiring": {
+    "all_services_ro_wired": true,
+    "compose_gold_overlay_ref": "docker/compose.gold-volumes.yml",
+    "compose_gold_overlay_sha256": "b9f5e966a9671e647732de54cb87546a237bd59b07b22a542dc3dc6e82bb4974",
+    "compose_gpu_ref": "docker/compose.gpu.yml",
+    "compose_gpu_sha256": "2b965df09fa82dbb82ddf3672cb397f50bf2d77ae2251bf6bf37726fc3865399",
+    "compose_usage": "docker compose -f docker/compose.gpu.yml -f docker/compose.gold-volumes.yml run --rm maskfactory-train",
+    "expected_ro_mounts": [
+      "C:/Comfy_UI_Main/MaskedWarehouse:/gold/maskedwarehouse:ro",
+      "F:/Reference_Images:/gold/reference:ro",
+      "F:/DAZ:/gold/daz:ro"
+    ],
+    "services": {
+      "maskfactory-serve": {
+        "gold_env": {
+          "MASKFACTORY_GOLD_DAZ": "/gold/daz",
+          "MASKFACTORY_GOLD_MASKEDWAREHOUSE": "/gold/maskedwarehouse",
+          "MASKFACTORY_GOLD_REFERENCE": "/gold/reference",
+          "MASKFACTORY_GOLD_VOLUME_MAP": "/opt/maskfactory/configs/gold_volume_tournament_inputs.yaml"
+        },
+        "ro_mounts_present": true,
+        "volumes": [
+          "C:/Comfy_UI_Main/MaskedWarehouse:/gold/maskedwarehouse:ro",
+          "F:/Reference_Images:/gold/reference:ro",
+          "F:/DAZ:/gold/daz:ro"
+        ]
+      },
+      "maskfactory-train": {
+        "gold_env": {
+          "MASKFACTORY_GOLD_DAZ": "/gold/daz",
+          "MASKFACTORY_GOLD_MASKEDWAREHOUSE": "/gold/maskedwarehouse",
+          "MASKFACTORY_GOLD_REFERENCE": "/gold/reference",
+          "MASKFACTORY_GOLD_VOLUME_MAP": "/opt/maskfactory/configs/gold_volume_tournament_inputs.yaml"
+        },
+        "ro_mounts_present": true,
+        "volumes": [
+          "C:/Comfy_UI_Main/MaskedWarehouse:/gold/maskedwarehouse:ro",
+          "F:/Reference_Images:/gold/reference:ro",
+          "F:/DAZ:/gold/daz:ro"
+        ]
+      }
+    }
+  },
+  "docker_contracts": {
+    "note": "STATIC contracts evaluate compose.gpu.yml alone; gold mounts live in the overlay.",
+    "serve_issues": [],
+    "serve_ready": true,
+    "train_issues": [],
+    "train_ready": true
+  },
+  "evidence_tier": "RUNTIME_PROBE_BOUNDED",
+  "git_head_at_authoring": "17b0f0d48ceae13eeee530103fd128166d36d5cb",
+  "honesty_boundary": {
+    "daz_not_real_gold": true,
+    "external_labels_not_gold": true,
+    "no_champions_force_registered": true,
+    "no_gold_claimed": true,
+    "no_machine_verified_candidate_fabricated": true,
+    "no_tournament_executed": true,
+    "no_writes_into_gold_volume_roots": true,
+    "read_only_inputs_only": true
+  },
+  "live_probe": {
+    "access_mode": "read_only",
+    "claim_boundary": {
+      "daz_is_weighted_pseudo_train_only": true,
+      "does_not_claim_champions": true,
+      "does_not_claim_gold": true,
+      "does_not_claim_tournament_pass": true,
+      "external_labels_are_not_gold": true,
+      "wiring_only": true
+    },
+    "compose_bind_mounts": [
+      {
+        "read_only": true,
+        "source": "C:/Comfy_UI_Main/MaskedWarehouse",
+        "target": "/gold/maskedwarehouse"
+      },
+      {
+        "read_only": true,
+        "source": "F:/Reference_Images",
+        "target": "/gold/reference"
+      },
+      {
+        "read_only": true,
+        "source": "F:/DAZ",
+        "target": "/gold/daz"
+      }
+    ],
+    "container_env": {
+      "MASKFACTORY_GOLD_DAZ": "/gold/daz",
+      "MASKFACTORY_GOLD_MASKEDWAREHOUSE": "/gold/maskedwarehouse",
+      "MASKFACTORY_GOLD_REFERENCE": "/gold/reference",
+      "MASKFACTORY_GOLD_VOLUME_MAP": "/opt/maskfactory/configs/gold_volume_tournament_inputs.yaml"
+    },
+    "f_drive_present": true,
+    "map_id": "maskfactory_gold_volume_tournament_inputs_v1",
+    "probes": {
+      "daz_path_registry": {
+        "exists": true,
+        "path": "F:\\DAZ\\00_control\\path_registry.json",
+        "readable": true
+      },
+      "daz_root": {
+        "child_count": 26,
+        "exists": true,
+        "is_dir": true,
+        "label": "daz",
+        "path": "F:\\DAZ",
+        "readable": true
+      },
+      "daz_root_identity": {
+        "exists": true,
+        "path": "F:\\DAZ\\00_control\\root_identity.json",
+        "readable": true
+      },
+      "daz_tournament_subroots": [
+        {
+          "child_count": 10,
+          "exists": true,
+          "is_dir": true,
+          "label": "daz.tournament_subroots.annotations",
+          "path": "F:\\DAZ\\13_annotations",
+          "readable": true
+        },
+        {
+          "child_count": 5,
+          "exists": true,
+          "is_dir": true,
+          "label": "daz.tournament_subroots.datasets",
+          "path": "F:\\DAZ\\15_datasets",
+          "readable": true
+        },
+        {
+          "child_count": 4,
+          "exists": true,
+          "is_dir": true,
+          "label": "daz.tournament_subroots.exports",
+          "path": "F:\\DAZ\\16_maskfactory_exports",
+          "readable": true
+        },
+        {
+          "child_count": 4,
+          "exists": true,
+          "is_dir": true,
+          "label": "daz.tournament_subroots.renders",
+          "path": "F:\\DAZ\\12_renders",
+          "readable": true
+        }
+      ],
+      "maskedwarehouse_datasets": [
+        {
+          "child_count": 8,
+          "exists": true,
+          "is_dir": true,
+          "label": "maskedwarehouse.datasets.body_archive",
+          "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\archive",
+          "readable": true
+        },
+        {
+          "child_count": 7,
+          "exists": true,
+          "is_dir": true,
+          "label": "maskedwarehouse.datasets.celebamask_hq",
+          "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ",
+          "readable": true
+        },
+        {
+          "child_count": 3,
+          "exists": true,
+          "is_dir": true,
+          "label": "maskedwarehouse.datasets.lapa",
+          "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa",
+          "readable": true
+        },
+        {
+          "child_count": 1,
+          "exists": true,
+          "is_dir": true,
+          "label": "maskedwarehouse.datasets.lv_mhp_v1",
+          "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1",
+          "readable": true
+        },
+        {
+          "child_count": 15,
+          "exists": true,
+          "is_dir": true,
+          "label": "maskedwarehouse.datasets.swimsuit_preview",
+          "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\UniDataPro_swimsuit-human-segmentation-dataset",
+          "readable": true
+        }
+      ],
+      "maskedwarehouse_root": {
+        "child_count": 3,
+        "exists": true,
+        "is_dir": true,
+        "label": "maskedwarehouse",
+        "path": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+        "readable": true
+      },
+      "reference_database": {
+        "exists": true,
+        "path": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_library.sqlite",
+        "readable": true
+      },
+      "reference_root": {
+        "child_count": 79,
+        "exists": true,
+        "is_dir": true,
+        "label": "reference",
+        "path": "F:\\Reference_Images",
+        "readable": true
+      }
+    },
+    "required_roots_present": true,
+    "roots": {
+      "access_mode": "read_only",
+      "daz": "F:\\DAZ",
+      "map_path": "C:\\Comfy_UI_Main_Masking\\configs\\gold_volume_tournament_inputs.yaml",
+      "maskedwarehouse": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+      "reference": "F:\\Reference_Images",
+      "using_container_roots": false
+    }
+  },
+  "map_config": {
+    "access_mode": "read_only",
+    "map_id": "maskfactory_gold_volume_tournament_inputs_v1",
+    "path": "configs/gold_volume_tournament_inputs.yaml",
+    "sha256": "3bee5505b64691d0ac5dfd5aa380400764caf2d2cd97d97c8a0643a796fc8db8"
+  },
+  "next_agent_step": "With Docker-GPU + >=3 independent mask families available, run the multi-provider tournament using these RO /gold/* mounts (or host roots) to emit real machine_verified_candidate sidecars under runs/, freeze an image-disjoint corpus, then build_autonomous_gold_admission --corpus.",
+  "paths_found": {
+    "container_roots": {
+      "daz": "/gold/daz",
+      "maskedwarehouse": "/gold/maskedwarehouse",
+      "reference": "/gold/reference"
+    },
+    "daz_host": "F:\\DAZ",
+    "daz_root_uuid": "6bd1b3ba-162a-400b-96dc-e4951b892a04",
+    "daz_tournament_subroots": {
+      "annotations": "F:\\DAZ\\13_annotations",
+      "datasets": "F:\\DAZ\\15_datasets",
+      "exports": "F:\\DAZ\\16_maskfactory_exports",
+      "renders": "F:\\DAZ\\12_renders"
+    },
+    "daz_volume_unique_id": "\\\\?\\Volume{1aa3276c-0000-0000-0000-100000000000}\\",
+    "maskedwarehouse_datasets": {
+      "body_archive": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\archive",
+      "celebamask_hq": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ",
+      "lapa": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa",
+      "lv_mhp_v1": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1",
+      "swimsuit_preview": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\UniDataPro_swimsuit-human-segmentation-dataset"
+    },
+    "maskedwarehouse_host": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+    "reference_database": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_library.sqlite",
+    "reference_host": "F:\\Reference_Images",
+    "reference_output_root": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images"
+  },
+  "recorded_at": "2026-07-20T14:55:06.405806Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "9d6777453fb3bed89c9d6c08bbd9b02537848e273c47ceb30b125aab3c3ea717"
+}

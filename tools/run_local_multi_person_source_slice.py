@@ -33,6 +33,7 @@ import numpy as np
 from PIL import Image
 from scipy import ndimage
 
+from maskfactory.autonomy.gold_volume_sources import default_maskedwarehouse_lv_mhp_root
 from maskfactory.autonomy.multi_person_gate import evaluate_multi_person_candidate_gate
 from maskfactory.qa.multi_instance import MultiInstanceQcInputs
 
@@ -319,12 +320,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--source-root",
         type=Path,
-        default=Path(r"C:\Comfy_UI_Main\MaskedWarehouse\Body\LV-MHP-v1"),
+        default=None,
+        help="Defaults to read-when-present MaskedWarehouse LV-MHP via gold_volume_sources.",
     )
     parser.add_argument("--limit", type=int, default=12)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--verify", action="store_true")
     args = parser.parse_args(argv)
+    source_root = args.source_root or default_maskedwarehouse_lv_mhp_root()
 
     if args.verify:
         document = json.loads(args.output.read_text(encoding="utf-8"))
@@ -334,7 +337,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"seal mismatch: recomputed={recomputed} stored={document.get('sha256')}"
             )
     else:
-        document = run_local_multi_person_source_slice(args.source_root, args.limit)
+        document = run_local_multi_person_source_slice(source_root, args.limit)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(
             json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"

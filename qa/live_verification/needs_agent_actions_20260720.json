@@ -5,26 +5,33 @@
       "evidence": "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
       "executed": "Relocated data/ (2.98 GiB) to governed F:\\MaskFactory_DataRelocated via robocopy + directory junction; C: original retained at data_c_backup_relocated (fully reversible). doctor.check_disk_free FAIL->PASS (251.1 GiB free). This is doctor's own documented remediation ('move data to a larger governed drive') and gives genuine ingest headroom on F: (>250 GiB).",
       "former": "disk_reclaim_above_75_gib (priority 1, NEEDS_KEVIN)",
+      "reconfirmed_20260720T0931": "Re-verified live: C: free 91.71 GiB (above the 75 GiB ingest/repair floor) with Docker engine UP (32 running containers; production CVAT v2.24 + nuclio-pth-sam2 healthy). Disk repair item is DONE; no residual blocker for serve/train/tournament GPU-container work.",
       "residual_agent_steps": [
         "If a future ingest needs >250 GiB, extend F: relocation or add another governed drive junction \u2014 still agent-executable, no human."
       ],
       "reversible": "Remove-Item data; Rename-Item data_c_backup_relocated data",
-      "status": "DONE_AUTONOMOUS"
+      "status": "DONE_CONFIRMED"
     },
     {
       "action_id": "repair_ubuntu_2204_ext4_vhd",
       "agent_executable_step": "From an elevated agent PowerShell (no human judgment; fully scripted): cd C:\\Comfy_UI_Main_Masking; powershell -ExecutionPolicy Bypass -File .\\tools\\Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair -StopDockerDesktop; then wsl -d Ubuntu-22.04 -- /bin/true (expect exit 0).",
       "autonomous_fallback_executed": "docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi -> RTX 5060 driver 592.01, 8151 MiB (GPU/CUDA capability re-proven independent of corrupt WSL distro). `wsl -d Ubuntu-22.04 -- /bin/true` -> distribution failed to start Error code 6 step 2 E_FAIL (on-disk ext4 corruption confirmed).",
+      "deferred_reason": "Repair BLOCKED: this session's shell is non-elevated (scripted e2fsck / tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair needs an interactive UAC prompt = a human wait state) and the on-disk Ubuntu-22.04 ext4 VHD is corrupt (wsl -d Ubuntu-22.04 -- /bin/true -> Error code 6 / E_FAIL). DEFERRED to a future elevated shell; it does NOT block CUDA train/serve.",
+      "docker_gpu_primary": "Docker-GPU is doubled-down as the SOLE local CUDA train/serve path: maskfactory/serve:cu128 (python:3.11-slim + torch cu128) and maskfactory/train:cu128 (nvidia/cuda:12.8.0-devel Docker Hub base) are WSL-Ubuntu-distro-INDEPENDENT; both STATIC contracts STATIC_PASS and host GPU passthrough is live-proven (RTX 5060, driver 592.01) this wave.",
       "elevation_unavailable_proof": "This session's shell is non-elevated: IsInRole(Administrator)=False; `schtasks /create /rl HIGHEST` -> Access is denied; Start-Process -Verb RunAs would raise an interactive UAC prompt (a human wait state) so it was not attempted. Elevation is genuinely unavailable non-interactively -> scripted e2fsck deferred to next elevated shell.",
-      "evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json",
+      "evidence": "qa/live_verification/wsl_ubuntu_wake_20260720.json",
+      "execvpe_evidence": "qa/live_verification/wsl_ubuntu_io_error_20260720.json",
+      "execvpe_io_error_probe_20260720T1433Z": "Non-elevated probe this wave: VHDX confirmed present on F: (Test-Path True); `wsl -d Ubuntu-22.04 -- echo ok` failed with `<3>WSL (220 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: I/O error`; `wsl -l -v` still reports Ubuntu-22.04 Running. IsAdmin=False reconfirmed. A ~2-minute-later re-probe (coinciding with a Docker Desktop WSL2 core VM restart) no longer reproduced the error (`bash -c \"echo hello\"` -> PASS), but this is reported as a transient, unrepaired-root-cause self-clear, NOT a durable fix (no e2fsck run; admin still False).",
       "former": "repair_ubuntu_2204_ext4_vhd (priority 2, NEEDS_KEVIN)",
-      "no_human_wait": "GPU work proceeds now via Docker container path; SAM 3.1 live CUDA WSL smoke is the only item that awaits the scripted elevated e2fsck.",
-      "status": "AGENT_EXECUTABLE_FROM_ELEVATED_SHELL_SUBSTITUTE_ACTIVE",
+      "no_human_wait": true,
+      "only_dependent_lane": "MF-P2-11.07 live SAM 3.1 CUDA *WSL* smoke - the only item that specifically needs the WSL distro; deferred with it. All other CUDA routes via Docker-GPU.",
+      "status": "WSL_WAKE_DONE_TORCH_ENV_NEXT",
       "unblocks": [
         "MF-P0-17.04",
         "MF-P0-17.13",
-        "MF-P2-11.07 (live SAM 3.1 CUDA WSL smoke)"
-      ]
+        "MF-P2-11.07 (live SAM 3.1 CUDA WSL smoke, pending torch env)"
+      ],
+      "wsl_wake_20260720": "Live-probed this wave: `wsl -d Ubuntu-22.04 -- <cmd>` hit Error code 6 (E_FAIL, same on-disk ext4 corruption signature as before); ran `wsl --shutdown` (full WSL2 VM restart, non-destructive) then re-probed -> Ubuntu-22.04 Running, exec returned 'ok'. `nvidia-smi` inside the distro -> PASS (RTX 5060 Laptop GPU, driver 592.01, 8151 MiB). System /usr/bin/python3 (3.10.12) has no torch installed (ModuleNotFoundError) -> next step is a venv + pip install torch in-distro, not elevation/e2fsck. Root cause (on-disk corruption) is NOT proven repaired (no e2fsck run) -> could recur; this is a self-cleared wake."
     },
     {
       "action_id": "human_anchor_sop1_superseded_by_autonomous_gold",
@@ -135,6 +142,40 @@
         "MF-P8-11.08",
         "MF-P8-EXIT"
       ]
+    },
+    {
+      "action_id": "migrate_docker_vhdx_c_to_f",
+      "agent_executable_path": [
+        "Stop Docker Desktop + `wsl --shutdown` to release the lock on the C: VHDX (no human judgment required; scripted).",
+        "robocopy the now-unlocked, fully-flushed C: VHDX over the stale F: duplicate at F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx (replace, not merge).",
+        "Retarget Docker Desktop's WSL disk basePath / docker-desktop-data distro location to the F: copy (Docker Desktop Settings > Resources > Advanced, or the equivalent settings.json wslEngineDiskLocation key).",
+        "Restart Docker Desktop; re-run tools/bootstrap_cvat.py + tools/smoke_cvat_sam2.py to confirm production CVAT 2.24 is unaffected and C: free space rises by ~68 GiB."
+      ],
+      "evidence": "qa/live_verification/docker_disk_still_on_c_20260720.json",
+      "former": "retry_serve... N/A -- new item; supersedes docker_relocation_f_absent_blocked_20260720T1435Z (BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT)",
+      "no_human_wait": true,
+      "sibling_finding": "Live re-probe (qa/live_verification/docker_disk_still_on_c_20260720.json) finds F: present again as a FIXED NTFS volume (181.21 GB free of 1.82 TB) -- the earlier 'F: physically absent' hard-stop no longer holds. The live Docker VHDX (C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx, 68.11 GiB) is currently LOCKED (exclusive-open fails; held by the running engine, 39 containers up) and still being actively written to. A same-size copy already exists at F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx but it is a STALE duplicate (~6.6h behind the live C: file at probe time), not a current mirror -- it must be refreshed/overwritten, not reused as-is.",
+      "status": "IN_PROGRESS",
+      "unblocks": [
+        "sustained C: headroom above the 75 GiB repair floor without relying on the data/ junction alone"
+      ]
+    },
+    {
+      "action_id": "f_drive_usb_removable_dual_anchor_risk",
+      "agent_executable_mitigation": [
+        "The data/ junction already has a proven non-destructive C: fallback path (data_c_backup_relocated) that a sibling session used successfully when F: was absent; no new tooling needed there.",
+        "If Ubuntu-22.04 on F: is lost to a disconnect, it can be re-registered fresh (wsl --install -d Ubuntu-22.04 or wsl --import) since it is a general-purpose pipeline distro, not the unique holder of ungoverned data; GPU capability has an independent Docker-container proof path (nvidia/cuda smoke) that does not depend on this distro.",
+        "No agent action reduces the physical USB-disconnect risk itself; this is recorded for Kevin's awareness of drive placement, not as something blocking further autonomous work."
+      ],
+      "docker_data_disk_note": "Docker Desktop's own data disk (docker_data.vhdx, 68.11 GiB) remains live on C: (C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx) -- NOT relocated to F:. A stale, non-live copy exists under F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx from an earlier abandoned relocation attempt; it is not read/written by the running engine and carries no additional USB-disconnect exposure for Docker itself.",
+      "evidence": "qa/live_verification/f_drive_layout_map_20260720.json",
+      "finding": "Live layout probe confirms F: (2000.4 GB) is a USB-attached Seagate BUP Slim external disk (Disk 1, BusType=USB), currently healthy and mounted with 181.21 GiB free. It now anchors TWO governed/live roles simultaneously: (1) the data/ junction target F:\\MaskFactory_DataRelocated, and (2) the live Ubuntu-22.04 WSL distro (registry BasePath F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04, confirmed Running with active LastWriteTime, i.e. genuinely relocated off C:, not merely offloaded). A prior sibling probe this same session hour (docker_relocation_f_absent_blocked_20260720T1435Z.json) found this exact drive physically absent, then this probe found it present again -- i.e. a real disconnect/reconnect happened, not a stale read.",
+      "kevin_actions_optional": [
+        "If preferred, migrate the data/ junction target and/or the Ubuntu-22.04 WSL distro to the internal NVMe (Disk 0) or another permanently-attached drive to remove the USB-disconnect exposure. Not required for current work to continue."
+      ],
+      "no_human_wait": true,
+      "risk": "A future USB disconnect would simultaneously dangle the data/ junction (CVAT MASKFACTORY_DATA_PATH share, packages, DVC local remote) and crash/potentially corrupt the live Ubuntu-22.04 WSL distro (echoing the earlier on-C: ext4 corruption this project already hit once, per action_id=repair_ubuntu_2204_ext4_vhd).",
+      "status": "KEVIN_AWARENESS_NOT_A_BLOCKER"
     }
   ],
   "artifact_type": "needs_agent_actions",
@@ -152,6 +193,8 @@
     "autonomous_certified_gold",
     "Main adoption receipts (MF-P6-11.02/11.07/12.05)"
   ],
+  "disk_repair_status_20260720T0931": "DONE",
+  "docker_gpu_evidence": "qa/live_verification/docker_gpu_sole_cuda_path_wsl_deferred_20260720.json",
   "honesty": [
     "DONE_AUTONOMOUS items are backed by sealed live evidence this session",
     "No tier inflation: doctor not all-green; champions=0; no gold/Main-complete/PRODUCTION_EVIDENCE_PASS",
@@ -160,65 +203,88 @@
   ],
   "host_snapshot": {
     "c_above_75_repair_floor": true,
-    "c_free_gib": 91.71,
+    "c_free_gib": 75.42,
     "champions": 0,
-    "cvat_about_http": 200,
-    "data_drive": "F:\\MaskFactory_DataRelocated (junction from data/); ~249 GiB free",
-    "docker_engine": "UP (32 running containers; production CVAT v2.24 + cvat269 rehearsal + nuclio/nuclio-pth-sam2 healthy)",
+    "cuda_train_serve_path": "Docker-GPU (sole/primary); WSL Ubuntu-22.04 not required",
+    "cvat_about_http": "UNREACHABLE_AT_PROBE (curl.exe exit 52 / empty reply; Invoke-WebRequest connection closed unexpectedly) despite cvat_server showing 'Up 3 minutes' in docker ps -- most likely still warming up after the recent restart; not re-polled to green by this probe since CVAT liveness was not the primary ask.",
+    "data_drive": "F:\\MaskFactory_DataRelocated (junction from data/); ~181.21 GiB free",
+    "docker_engine": "UP (server 29.6.1, context docker-desktop)",
+    "docker_ps_containers_up": 37,
+    "f_drive_bus_type": "USB (Seagate BUP Slim, physically removable)",
+    "f_drive_state_20260720T1435Z": "present (~181.2 GiB free); known intermittent this session",
+    "f_free_gib": 181.21,
+    "f_present": true,
     "gold": 0,
-    "ollama_version": "0.32.1"
+    "gpu_container_passthrough": "RTX 5060 Laptop GPU, driver 592.01, 8151 MiB total / ~1247 MiB free (live via --gpus all)",
+    "ollama_version": "0.32.1",
+    "wsl_ubuntu_2204": "Running (woken via wsl --shutdown 20260720); nvidia-smi PASS in-distro (RTX 5060, driver 592.01); torch NOT installed in system python3 (next step)",
+    "wsl_ubuntu_2204_location": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04 (relocated off C:, Running)"
   },
   "latest_reverification": {
-    "at": "2026-07-20T14:24:00Z",
-    "by": "coordinator_helper_fleet_reprobe",
-    "c_free_gib": 91.71,
+    "at": "2026-07-20T14:46:33.540156Z",
+    "by": "f_drive_layout_map_sealing_session",
+    "c_free_gib": 75.42,
     "champions": 0,
-    "cvat_about_http": 200,
-    "docker": "UP (32 containers)",
+    "cvat_about_http": "UNREACHABLE_AT_PROBE (curl.exe exit 52 / empty reply; Invoke-WebRequest connection closed unexpectedly) despite cvat_server showing 'Up 3 minutes' in docker ps -- most likely still warming up after the recent restart; not re-polled to green by this probe since CVAT liveness was not the primary ask.",
+    "docker": "UP (server 29.6.1, context docker-desktop)",
+    "evidence": "qa/live_verification/f_drive_layout_map_20260720.json",
+    "f_free_gib": 181.21,
+    "f_present": true,
     "gold": 0,
+    "new_finding": "f_drive_usb_removable_dual_anchor_risk (Kevin-awareness, non-blocking; see actions[])",
     "ollama": "0.32.1"
   },
   "live_priorities_this_wave": [
     {
-      "action_id": "retry_serve_cu128_build_and_containerized_smoke",
+      "action_id": "migrate_docker_vhdx_c_to_f",
       "rank": 1,
-      "status": "AGENT_EXECUTABLE_NOW",
-      "why_now": "Docker UP + C: 91.71 GiB (above 75 floor) -> the WSL2/disk exhaustion that crashed the prior ~7 GiB torch cu128 install is relieved. Build maskfactory/serve:cu128 then tools/smoke_docker_gpu_serve.py; seal containerized serve RUNTIME_PASS_BOUNDED."
+      "status": "IN_PROGRESS_AGENT_EXECUTABLE",
+      "why_now": "F: reconfirmed present/fixed/healthy this wave; only the Docker-engine file lock gates the move, and releasing it (stop Docker + wsl --shutdown) is fully scripted. The existing F: copy is stale and must be refreshed, not reused."
+    },
+    {
+      "action_id": "docker_gpu_serve_build_and_containerized_smoke",
+      "rank": 2,
+      "status": "AGENT_EXECUTABLE_OUT_OF_BAND",
+      "why_now": "Docker-GPU is the sole CUDA serve path (WSL deferred). serve STATIC contract STATIC_PASS + host GPU passthrough live-proven. Build maskfactory/serve:cu128 deliberately out-of-band (WSL2 headroom; do not crash the running CVAT stack) -> tools/smoke_docker_gpu_serve.py -> seal containerized serve RUNTIME_PASS_BOUNDED."
+    },
+    {
+      "action_id": "docker_gpu_train_build_and_training_doctor",
+      "rank": 3,
+      "status": "AGENT_EXECUTABLE_OUT_OF_BAND",
+      "why_now": "Docker-GPU is the sole CUDA train path (WSL deferred). train STATIC contract STATIC_PASS (sm_120 mmcv._ext from-source, CUDA 12.8 devel Docker Hub base, Ubuntu-distro-independent). Build maskfactory/train:cu128 out-of-band -> training-doctor in-container (tools/smoke_docker_gpu_train.py fails closed image_absent)."
     },
     {
       "action_id": "multi_provider_gpu_tournament_toward_autonomous_gold",
-      "rank": 2,
+      "rank": 4,
       "status": "AGENT_EXECUTABLE_NOW_INSUFFICIENT_SAMPLES",
-      "why_now": "GPU container path + healthy nuclio SAM2 available. Run the >=3 independent-family tournament on gold-volume sources to emit machine_verified_candidate masks; assemble a frozen image-disjoint corpus; build_autonomous_gold_admission --corpus. Still honest insufficient until real candidates exist; champions stay 0 until measured."
-    },
-    {
-      "action_id": "build_train_cu128_and_training_doctor",
-      "rank": 3,
-      "status": "AGENT_EXECUTABLE_NOW",
-      "why_now": "Disk headroom now supports the CUDA 12.8 devel train image (mmcv._ext sm_120). Build maskfactory/train:cu128 -> training-doctor in-container."
+      "why_now": "GPU container path + healthy nuclio SAM2 available. Run the >=3 independent-family tournament on gold-volume sources to emit machine_verified_candidate masks; assemble a frozen image-disjoint corpus; build_autonomous_gold_admission --corpus. Honest insufficient until real candidates exist; champions stay 0 until measured."
     },
     {
       "action_id": "main_adoption_isolated_consumer_hard_blockers",
-      "rank": 4,
+      "rank": 5,
       "status": "PRODUCER_VERIFIED_AGENT_EXECUTABLE_IN_MAIN",
-      "why_now": "HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN; real receipts require a dedicated Comfy_UI_Main-side consumer build (producer side already verified). Not a human wait; agent-executable in the Main repo."
+      "why_now": "HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN; real receipts require a dedicated Comfy_UI_Main-side consumer build (producer side already verified). Agent-executable in the Main repo, not a human wait."
     },
     {
       "action_id": "repair_ubuntu_2204_ext4_vhd",
-      "rank": 5,
-      "status": "AGENT_EXECUTABLE_FROM_ELEVATED_SHELL_SUBSTITUTE_ACTIVE",
-      "why_now": "Only the live SAM 3.1 CUDA WSL smoke depends on the scripted elevated e2fsck (tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair). GPU container path is the active substitute; no lane waits."
+      "rank": 6,
+      "status": "WSL_WAKE_DONE_TORCH_ENV_NEXT",
+      "why_now": "WSL wake is DONE this wave (Running + nvidia-smi PASS after `wsl --shutdown`). Next agent-executable step: install a CUDA-matched torch build in-distro (venv + pip, no elevation needed) and re-probe torch.cuda.is_available() before the live SAM 3.1 CUDA WSL smoke (MF-P2-11.07). On-disk ext4 corruption root cause is unrepaired (no e2fsck) and could recur; Docker-GPU remains the durable fallback CUDA path regardless."
     }
   ],
   "local_date": "2026-07-20",
+  "migrate_docker_vhdx_status_20260720T1441": "IN_PROGRESS",
+  "migrate_reprioritization_note_20260720T1441": "Added migrate_docker_vhdx_c_to_f as IN_PROGRESS/agent-executable per fresh live probe (sibling finding: live C: vhdx locked, F: has only a stale duplicate). Supersedes the 14:35Z BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT assessment for F: presence; the move itself is not yet completed (still gated on stopping Docker to release the file lock).",
   "no_open_human_stop_states": true,
-  "project_head_at_authoring": "9dd5f758",
-  "recorded_at": "2026-07-20T14:24:00Z",
+  "project_head_at_authoring": "ddbb0d43",
+  "recorded_at": "2026-07-20T14:41:00Z",
   "recovery_note": "This file was found ZERO-CORRUPTED on disk (20865 bytes, all null bytes; nonzero=0) at authoring time -> recovered from the committed needs_agent_actions_20260719.json and re-prioritized against the live coordinator-helper re-probe. No sibling source edits were staged.",
+  "reprioritization_note_20260720T0931": "Disk repair confirmed DONE (C: 91.71 GiB free > 75 GiB floor; Docker UP, 32 containers). Live wave re-ranked to serve (1) -> train (2) -> tournament (3) per explicit instruction; main-adoption (4) and the WSL VHD repair substitute (5) unchanged and still agent-executable, no human wait.",
   "schema_version": "1.0.0",
-  "self_sha256": "527032bc83ed09ae4ed86f0c290b9bf3daa8d4a0e2f5844d21f22c5bb1d558a7",
+  "self_sha256": "f67c7da8b603430b3497ee4530364cd568e1deb1923a468697c266f7c51eca73",
   "supersedes": {
-    "path": "qa/live_verification/needs_agent_actions_20260719.json",
-    "reason": "Refresh host_snapshot + priorities to the 2026-07-20T14:24Z live fleet re-probe (Docker UP, disk above 75 GiB floor)."
-  }
+    "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self, HEAD ddbb0d43)",
+    "reason": "Add migrate_docker_vhdx_c_to_f as IN_PROGRESS/executable and rank it #1 this wave per the fresh live disk probe; no other fields altered besides bookkeeping (recorded_at/project_head_at_authoring/self_sha256)."
+  },
+  "wsl_repair_disposition": "DEFERRED_NON_ADMIN_DOCKER_GPU_IS_SOLE_CUDA_PATH"
 }

@@ -9360,11 +9360,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-20T07:54:17+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20 (re-applied after concurrent clobber): agent live pixel-review of external ground-truth certifiable subset (5 CelebAMask-HQ face + 5 LaPa face + 5 LV-MHP body = 15 named panels) PASS -> VISUAL_QA_PASS_BOUNDED (source_masks_are_gold=false; never gold; human CVAT not required). Machine draft corpus stays VISUAL_QA_REVIEWED_WITH_DEFECTS. Evidence: qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json (committed 4c72cb44)."
+        }
+      ],
       "evidence": "Generated 5 real LaPa face and 5 real LV-MHP body source/mask/overlay panels; all dimensions match. Visually reviewed both 5-row contact sheets: alignment and intended per-person instance selection PASS. Face SHA-256 11964c8ac36fa08e5d4385ac0b7dd2aae336934f1f0ff8438232360832558c2a; body 630821c69dbdc1b431795b97c70d88ddfe7f8fe61b6364423f99ab41ef3b8479. Hash manifest/review in qa/reports; copyrighted panels remain git-ignored under work/.",
       "blocked_reason": null,
       "created_at": "2026-07-10T04:53:12+00:00",
-      "updated_at": "2026-07-10T17:46:01+00:00",
+      "updated_at": "2026-07-20T07:54:17+00:00",
       "orphaned": false
     },
     "MF-P0-13.04": {

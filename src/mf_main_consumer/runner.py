@@ -27,6 +27,7 @@ from .pillars import (
     run_adoption_attestation,
     run_cross_project_qualification,
     run_failure_control_circuit,
+    run_mode_a_package_read,
     run_signed_journal,
 )
 from .producer_bridge import producer_git_head, producer_root, producer_worktree_dirty
@@ -38,6 +39,7 @@ PILLARS: tuple[tuple[str, Callable[[], dict[str, Any]]], ...] = (
     ("isolated_adapter_conformance", run_adapter_conformance),
     ("isolated_signed_journal", run_signed_journal),
     ("isolated_failure_control_circuit", run_failure_control_circuit),
+    ("isolated_mode_a_package_read", run_mode_a_package_read),
     ("isolated_cross_project_producer_partial", run_cross_project_qualification),
     ("isolated_adoption_attestation_signed", run_adoption_attestation),
 )
@@ -81,8 +83,11 @@ def build_receipt() -> dict[str, Any]:
                 "package hash + git identity, no node-id / mutable-path / internal coupling)",
                 "MF-P6-11.06 (trusted-signed append-only journal + checkpoint + history "
                 "validation + same-key/same-body replay idempotency, real machinery)",
+                "MF-P6-11.02 (Mode A immutable package-read: certified + multi-person "
+                "accept; QA noncertified ceiling; path/hash/mutation refusals)",
                 "MF-P6-11.07 (failure-control circuit: fault-injection provider refusal, "
-                "exact scoped-DAG blocking, bounded-retry-budget, no-silent-fallback)",
+                "exact scoped-DAG blocking, healthy-admit/open-circuit, bounded-retry-budget, "
+                "no-silent-fallback)",
                 "MF-P6-12.05 (producer_partial cross-project qualification matrix, real "
                 "execution, honest ceiling)",
                 "adoption attestation (isolated-consumer-signed, real Ed25519, "

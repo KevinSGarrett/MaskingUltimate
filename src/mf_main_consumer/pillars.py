@@ -36,9 +36,15 @@ from maskfactory.bridge.external_adapter_conformance import (
     validate_external_adapter_conformance_evidence,
 )
 from maskfactory.bridge.failure_control import (
+    build_failure_control_evidence,
     simulate_fault_injection,
     validate_failure_control_evidence,
 )
+from maskfactory.bridge.mode_a_package_read import (
+    evaluate_mode_a_package_read,
+    validate_mode_a_package_read_evidence,
+)
+from maskfactory.bridge.mode_a_vertical_slice import build_fixture_adopted_package
 from maskfactory.bridge.journal import (
     append_bridge_journal_event,
     checkpoint_bridge_journal,
@@ -364,11 +370,168 @@ def run_failure_control_circuit() -> dict[str, Any]:
         "retry_permitted"
     ) is False and validate_failure_control_evidence(budget_ev) == ()
 
+    # Healthy closed-circuit admission must PERMIT provider invocation (positive baseline).
+    circuit_body = {
+        "route_key": "mode-b/predict",
+        "release_id": "mfrel_sibling_consumer_circuit",
+        "state": "closed",
+        "failure_threshold": 3,
+        "observation_window_ms": 60000,
+        "cooldown_ms": 5000,
+        "opened_at": None,
+        "half_open_probe_allowed": False,
+    }
+    circuit_body["evidence_sha256"] = canonical_document_sha256(
+        circuit_body, excluded_top_level_fields=("evidence_sha256",)
+    )
+    healthy_ev = build_failure_control_evidence(
+        {
+            "at_time": DECIDED_AT,
+            "request": request,
+            "route_requirements": route,
+            "failure": {},
+            "main_circuit_evidence": circuit_body,
+            "main_retry_evidence": {},
+            "main_scoped_block_evidence": {},
+            "fallback_attempt": {},
+            "dag_passes": dag,
+        },
+        decided_at=DECIDED_AT,
+    )
+    healthy_admits = (
+        healthy_ev.get("status") == "accepted"
+        and (healthy_ev.get("admission") or {}).get("provider_invocation_permitted") is True
+        and (healthy_ev.get("circuit") or {}).get("blocks_route") is False
+        and validate_failure_control_evidence(healthy_ev) == ()
+    )
+
+    open_body = dict(circuit_body, state="open", opened_at="2026-07-20T04:00:00Z")
+    open_body["evidence_sha256"] = canonical_document_sha256(
+        open_body, excluded_top_level_fields=("evidence_sha256",)
+    )
+    open_ev = build_failure_control_evidence(
+        {
+            "at_time": DECIDED_AT,
+            "request": request,
+            "route_requirements": route,
+            "failure": {},
+            "main_circuit_evidence": open_body,
+            "main_retry_evidence": {},
+            "main_scoped_block_evidence": {},
+            "fallback_attempt": {},
+            "dag_passes": dag,
+        },
+        decided_at=DECIDED_AT,
+    )
+    circuit_open_blocks = (
+        (open_ev.get("circuit") or {}).get("blocks_route") is True
+        and (open_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and validate_failure_control_evidence(open_ev) == ()
+    )
+
     return {
         "check": "isolated_failure_control_circuit",
-        "passed": all(row["passed"] for row in faults) and retry_budget_enforced,
+        "passed": (
+            all(row["passed"] for row in faults)
+            and retry_budget_enforced
+            and healthy_admits
+            and circuit_open_blocks
+        ),
         "faults": faults,
         "bounded_retry_budget_enforced": retry_budget_enforced,
+        "healthy_admission_permits_provider": healthy_admits,
+        "circuit_open_blocks_route": circuit_open_blocks,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Pillar 3b: Mode A immutable package-read (MF-P6-11.02 sample matrix)
+# ---------------------------------------------------------------------------
+MODE_A_DECIDED_AT = "2026-07-19T14:00:00Z"
+
+
+def run_mode_a_package_read() -> dict[str, Any]:
+    """Exercise real Mode A package-read accept + fail-closed refusals from the sibling."""
+    import copy
+
+    cases: list[dict[str, Any]] = []
+
+    def _row(
+        name: str,
+        request: dict[str, Any],
+        evidence: dict[str, Any],
+        *,
+        expect_accepted: bool,
+        expect_reason: str | None = None,
+    ) -> None:
+        result = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
+        issues = validate_mode_a_package_read_evidence(result)
+        reasons = result.get("rejection_reasons") or []
+        accepted = result.get("status") == "accepted"
+        reason_ok = expect_reason is None or expect_reason in reasons
+        authority_ok = accepted or (
+            result.get("production_eligible") is False
+            and result.get("authority_ceiling") != "certified"
+        )
+        cases.append(
+            {
+                "case": name,
+                "status": result.get("status"),
+                "authority_ceiling": result.get("authority_ceiling"),
+                "production_eligible": result.get("production_eligible"),
+                "passed": bool(
+                    accepted == expect_accepted
+                    and reason_ok
+                    and issues == ()
+                    and result.get("write_methods_exposed") is False
+                    and authority_ok
+                ),
+            }
+        )
+
+    request, evidence = build_fixture_adopted_package()
+    _row("valid_wrapper_certified", request, evidence, expect_accepted=True)
+    baseline = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
+    baseline_certified = (
+        baseline.get("authority_ceiling") == "certified"
+        and baseline.get("production_eligible") is True
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["relative_paths"]["mask"] = "../../escape/secrets.png"
+    _row("path_escape", request, evidence, expect_accepted=False, expect_reason="path_escape")
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["mask_encoded"] = b"tampered-mask-encoded!!"
+    _row("mask_hash_drift", request, evidence, expect_accepted=False, expect_reason="mask_hash_drift")
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    evidence = copy.deepcopy(evidence)
+    request["exact_use_scope"] = "qa"
+    evidence["wrapper"] = None
+    _row("qa_noncertified_accepts_capped", request, evidence, expect_accepted=True)
+    if cases[-1]["authority_ceiling"] != "qa_passed_noncertified" or cases[-1][
+        "production_eligible"
+    ]:
+        cases[-1]["passed"] = False
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["write_requested"] = True
+    _row("mutation_attempt", request, evidence, expect_accepted=False, expect_reason="mutation_attempt")
+
+    request, evidence = build_fixture_adopted_package(person_index=1)
+    _row("multi_person_wrapper_certified", request, evidence, expect_accepted=True)
+
+    return {
+        "check": "isolated_mode_a_package_read",
+        "passed": baseline_certified and all(c["passed"] for c in cases),
+        "baseline_certified": baseline_certified,
+        "case_count": len(cases),
+        "cases": cases,
     }
 
 

@@ -29,7 +29,8 @@ contracts from the sibling MaskFactory checkout at
 |---|---|---|
 | adapter | `maskfactory.bridge.external_adapter_conformance.build_external_adapter_conformance_evidence` | MF-P6-11.01 |
 | journal | `maskfactory.bridge.journal.append_bridge_journal_event` / `checkpoint_bridge_journal` / `validate_bridge_journal_history` | MF-P6-11.06 |
-| circuit | `maskfactory.bridge.failure_control.simulate_fault_injection` | MF-P6-11.07 |
+| circuit | `maskfactory.bridge.failure_control.simulate_fault_injection` / `build_failure_control_evidence` | MF-P6-11.07 |
+| mode_a | `maskfactory.bridge.mode_a_package_read.evaluate_mode_a_package_read` | MF-P6-11.02 |
 | qualification | `maskfactory.bridge.cross_project_qualification.build_cross_project_qualification_evidence` | MF-P6-12.05 |
 | adoption | Ed25519 signature over a canonical-json-sealed attestation | MF-P6-11/12 adoption |
 

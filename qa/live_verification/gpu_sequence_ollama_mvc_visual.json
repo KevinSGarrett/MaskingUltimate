@@ -1,0 +1,218 @@
+{
+  "baseline_free_mib": 7618,
+  "consumer": "ollama-vlm",
+  "decision": {
+    "consumer": "ollama-vlm",
+    "decision": "wait_lock",
+    "foreign_holders": [],
+    "free_mib": 7021,
+    "lock_state": "active",
+    "reasons": [
+      "free=7021 MiB, required=7168 MiB, safety=512 MiB -> insufficient",
+      "gpu.lock held by purpose='pipeline' pid=35544 age=189s; serialize behind current owner",
+      "timed out after 600s waiting for a GPU slot"
+    ],
+    "required_mib": 7168,
+    "safety_mib": 512
+  },
+  "poll_trail": [
+    {
+      "at": "2026-07-20T17:13:42.506294Z",
+      "decision": "wait_lock",
+      "free_mib": 7723
+    },
+    {
+      "at": "2026-07-20T17:13:57.401794Z",
+      "decision": "wait_lock",
+      "free_mib": 7761
+    },
+    {
+      "at": "2026-07-20T17:14:11.260562Z",
+      "decision": "wait_lock",
+      "free_mib": 7773
+    },
+    {
+      "at": "2026-07-20T17:14:24.245747Z",
+      "decision": "wait_lock",
+      "free_mib": 7772
+    },
+    {
+      "at": "2026-07-20T17:14:36.238976Z",
+      "decision": "wait_lock",
+      "free_mib": 7771
+    },
+    {
+      "at": "2026-07-20T17:14:48.096460Z",
+      "decision": "wait_lock",
+      "free_mib": 7775
+    },
+    {
+      "at": "2026-07-20T17:15:03.685058Z",
+      "decision": "wait_lock",
+      "free_mib": 3648
+    },
+    {
+      "at": "2026-07-20T17:15:15.975205Z",
+      "decision": "wait_lock",
+      "free_mib": 6041
+    },
+    {
+      "at": "2026-07-20T17:15:29.733613Z",
+      "decision": "wait_lock",
+      "free_mib": 6041
+    },
+    {
+      "at": "2026-07-20T17:15:43.073677Z",
+      "decision": "wait_lock",
+      "free_mib": 3822
+    },
+    {
+      "at": "2026-07-20T17:15:56.953080Z",
+      "decision": "wait_lock",
+      "free_mib": 7179
+    },
+    {
+      "at": "2026-07-20T17:16:10.539238Z",
+      "decision": "wait_lock",
+      "free_mib": 6048
+    },
+    {
+      "at": "2026-07-20T17:16:23.969422Z",
+      "decision": "wait_lock",
+      "free_mib": 7371
+    },
+    {
+      "at": "2026-07-20T17:16:38.200881Z",
+      "decision": "wait_lock",
+      "free_mib": 7474
+    },
+    {
+      "at": "2026-07-20T17:16:52.000535Z",
+      "decision": "wait_lock",
+      "free_mib": 7619
+    },
+    {
+      "at": "2026-07-20T17:17:17.927361Z",
+      "decision": "wait_lock",
+      "free_mib": 760
+    },
+    {
+      "at": "2026-07-20T17:17:35.194484Z",
+      "decision": "wait_lock",
+      "free_mib": 1211
+    },
+    {
+      "at": "2026-07-20T17:17:51.140016Z",
+      "decision": "wait_lock",
+      "free_mib": 1266
+    },
+    {
+      "at": "2026-07-20T17:18:06.806924Z",
+      "decision": "wait_lock",
+      "free_mib": 177
+    },
+    {
+      "at": "2026-07-20T17:18:27.272138Z",
+      "decision": "wait_lock",
+      "free_mib": 1778
+    },
+    {
+      "at": "2026-07-20T17:18:44.601041Z",
+      "decision": "wait_lock",
+      "free_mib": 1776
+    },
+    {
+      "at": "2026-07-20T17:19:05.291930Z",
+      "decision": "wait_lock",
+      "free_mib": 1441
+    },
+    {
+      "at": "2026-07-20T17:19:21.695229Z",
+      "decision": "wait_lock",
+      "free_mib": 1461
+    },
+    {
+      "at": "2026-07-20T17:19:42.863963Z",
+      "decision": "wait_lock",
+      "free_mib": 1593
+    },
+    {
+      "at": "2026-07-20T17:20:07.636260Z",
+      "decision": "wait_lock",
+      "free_mib": 1216
+    },
+    {
+      "at": "2026-07-20T17:20:30.025647Z",
+      "decision": "wait_headroom",
+      "free_mib": 1654
+    },
+    {
+      "at": "2026-07-20T17:20:50.435708Z",
+      "decision": "wait_lock",
+      "free_mib": 1465
+    },
+    {
+      "at": "2026-07-20T17:21:08.754557Z",
+      "decision": "wait_lock",
+      "free_mib": 7752
+    },
+    {
+      "at": "2026-07-20T17:21:27.391856Z",
+      "decision": "wait_lock",
+      "free_mib": 7758
+    },
+    {
+      "at": "2026-07-20T17:21:47.326350Z",
+      "decision": "wait_lock",
+      "free_mib": 5972
+    },
+    {
+      "at": "2026-07-20T17:22:05.719353Z",
+      "decision": "wait_lock",
+      "free_mib": 5748
+    },
+    {
+      "at": "2026-07-20T17:22:26.782304Z",
+      "decision": "wait_lock",
+      "free_mib": 7321
+    },
+    {
+      "at": "2026-07-20T17:22:58.439441Z",
+      "decision": "wait_lock",
+      "free_mib": 7320
+    },
+    {
+      "at": "2026-07-20T17:23:15.062017Z",
+      "decision": "wait_lock",
+      "free_mib": 7653
+    },
+    {
+      "at": "2026-07-20T17:23:44.777949Z",
+      "decision": "wait_lock",
+      "free_mib": 7021
+    }
+  ],
+  "reclaims": [
+    {
+      "consumer": "ollama-text",
+      "detail": "keep_alive=0 accepted for qwen2.5:7b-instruct (done_reason=unload)",
+      "free_after_mib": 7724,
+      "free_before_mib": 6550,
+      "freed_mib": 1174,
+      "method": "ollama_unload",
+      "status": "ok",
+      "target": "qwen2.5:7b-instruct"
+    },
+    {
+      "consumer": "nuclio-sam2",
+      "detail": "restarted container nuclio-nuclio-pth-sam2",
+      "free_after_mib": 7723,
+      "free_before_mib": 7723,
+      "freed_mib": 0,
+      "method": "docker_restart",
+      "status": "ok",
+      "target": "nuclio-nuclio-pth-sam2"
+    }
+  ],
+  "sequenced_at": "2026-07-20T17:23:44.779472Z"
+}

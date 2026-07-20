@@ -1,0 +1,63 @@
+{
+  "admission_failures": [
+    "false_accept_upper_bound_exceeded",
+    "serious_false_accept_upper_bound_exceeded"
+  ],
+  "admission_seal": "qa/live_verification/autonomous_gold_admission_after_visual_20260720T122023.json",
+  "admission_status": "fail_closed",
+  "artifact_type": "gold_factory_visual_hard_qa_lane",
+  "blocker": "wilson_false_accept_upper_bound_exceeded_n31_need_approx_270_zero_defect",
+  "certificate_minted": false,
+  "counts": {
+    "admission_false_accept_upper_bound": 0.08026998460298293,
+    "admission_sample_count": 31,
+    "autonomous_certified_gold": 0,
+    "machine_verified_candidate": 104,
+    "residual_demoted_by_visual_hard_qa": 2,
+    "visual_hard_qa_pass_bounded": 25
+  },
+  "git_head": "2d0b40efbeef980e33e6bcac7342d86723ab4830",
+  "honesty": [
+    "NOT draft-corpus VISUAL_QA_REVIEWED_WITH_DEFECTS theater",
+    "Ollama qwen2.5vl:7b critic-only (may_author_masks=false, may_approve_gold=false)",
+    "autonomous_certified_gold remains 0 until Wilson floors clear"
+  ],
+  "lane": "GOLD_FACTORY_visual_hard_qa",
+  "model": "cursor-grok-4.5-high-fast",
+  "next_agent_step": "Keep tournament emitting MVC; re-run visual/hard QA on new winners; grow image-disjoint VLM-passed corpus toward Wilson n\u2248270 zero-defect before autonomous_certified_gold can mint.",
+  "primary_visual_qa_seal": "qa/live_verification/tournament_mvc_visual_hard_qa_20260720T1153.json",
+  "primary_visual_qa_sha256": "e2cc631012b4467769d850abee781e7623cb8f7dbf03e15fd157a9c4ff410bba",
+  "recorded_at": "2026-07-20T17:21:57.802101Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "3ba366537a90b4cf7fd5b383574e7224d351254c4bce6a80425d9d5865c3d370",
+  "tooling_fixes": [
+    "tools/run_tournament_mvc_visual_hard_qa.py: broader source index, skip existing pass sidecars, no demote on source index gap, Ollama transport retries, discover emit_prove/autonomous_gold roots"
+  ],
+  "vlm_pass_image_ids": [
+    "img_06e833fe6114",
+    "img_18b35dd98b31",
+    "img_18b35dd98b31",
+    "img_1fefcf18f994",
+    "img_27a15c06e014",
+    "img_299450cab24e",
+    "img_37dde48f50a6",
+    "img_444dc44e8b28",
+    "img_7f850c056507",
+    "img_7fba49271577",
+    "img_92583489fae8",
+    "img_92583489fae8",
+    "img_9266dadbc93b",
+    "img_9926febaa4d6",
+    "img_9b0a56c9c07b",
+    "img_a0384e6e2478",
+    "img_a2d2024b6740",
+    "img_a6b860ba9b51",
+    "img_af3634f654cf",
+    "img_b12b4c67d276",
+    "img_b8d68771b387",
+    "img_c2b8784ad11c",
+    "img_d88fef6e4b7f",
+    "img_daea40f85990",
+    "img_ea7d388a47a7"
+  ]
+}

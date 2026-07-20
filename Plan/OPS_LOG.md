@@ -1,4 +1,4 @@
-﻿# Operations Log
+# Operations Log
 
 Append-only record of operational events worth preserving as evidence:
 `maskfactory doctor` runs, benchmarks, backup/restore drills, and any other
@@ -8383,8 +8383,9 @@ python Plan/Tracker/tracker.py report
 
 **Additive producer closure (11.06):**
 - Expanded JOURNAL_STATES to full verify vocabulary (lease, submit_known/unknown, validate, cache, feedback, adoption, invalidation, repair) while retaining legacy submit.
-- Added 
-econstruct_bridge_journal_state + alidate_bridge_journal_reconstruction_evidence.
+- Added
+econstruct_bridge_journal_state +
+alidate_bridge_journal_reconstruction_evidence.
 - Added configs/bridge_durable_journal_policy.yaml, schema ridge_journal_reconstruction_evidence, tool 	ools/replay_bridge_journal.py.
 - Tests: closed-state-machine path, submit_unknown-before-retry, repair sibling, interruption reconstruct exact head.
 
@@ -9336,7 +9337,8 @@ pytest tests/test_daz_engineering_fixtures.py: 7 passed. Ruff clean on touched f
 
 ### What landed
 - src/maskfactory/autonomy/multi_person_static_contracts.py: fixture-seeded exclusivity (QC-035), bleed (QC-036), identity (AUT-MP-001), contact reciprocity (AUT-MP-002/003) hard blocks + residual routing / one-truth-partition checks
-- Schema multi_person_static_contracts_report registered in alidation.SCHEMA_NAMES
+- Schema multi_person_static_contracts_report registered in
+alidation.SCHEMA_NAMES
 - CLI: maskfactory autonomy verify-multi-person-static-contracts
 - Explicit mf_p8_11_07_demo_complete=false and kevin_multi_person_sources_required=true (schema-enforced)
 
@@ -9395,8 +9397,10 @@ pytest multi_person_static_contracts + autonomy_multi_person_gate + serving_rout
 
 ### What landed
 - src/maskfactory/training_static_gates.py: binds canonical truth-tier weights/eligibility, partition leakage firewalls, certified=0 volume honesty (effective weight cannot open P5/D5), and leaderboard final-authority schema checks
-- Schema 	raining_static_gates_report registered in alidation.SCHEMA_NAMES
-- Leaderboard: optional evaluation_authority / evaluation_truth_tier / evaluation_manifest_sha256; enforce_final_evaluation_authority requires human_anchor_gold + holdout split for inal_holdout and rejects autonomous/pseudo/machine
+- Schema 	raining_static_gates_report registered in
+alidation.SCHEMA_NAMES
+- Leaderboard: optional evaluation_authority / evaluation_truth_tier / evaluation_manifest_sha256; enforce_final_evaluation_authority requires human_anchor_gold + holdout split for
+inal_holdout and rejects autonomous/pseudo/machine
 - CLI: maskfactory verify-training-static-gates
 - Flip/swap (MF-P5-02.02) recorded as prior complete credit only
 
@@ -9778,10 +9782,12 @@ pytest training_static_gates + leaderboard (+ cloud_teacher_static in same climb
 
 ### What landed
 - src/maskfactory/daz/validation_static_contracts.py: V0-V9 registry closure; warn/fail cannot satisfy required sets; acceptance certificate honesty (warnings/failures cannot accept; synthetic_exact only); repair retry budgets + authority freeze; S00 adapter refuses gold truth tiers / keeps body_parts_v2 inactive
-- Schema daz_validation_static_contracts_report registered in alidation.SCHEMA_NAMES
+- Schema daz_validation_static_contracts_report registered in
+alidation.SCHEMA_NAMES
 - CLI: maskfactory daz recipes seal-validation-static-contracts
 - src/maskfactory/daz/ops_static_contracts.py: Tier-A backup create/verify/clean-root restore bit-identical; pause/drain/resume + leasing blocked while paused; retention/reservation deterministic bytes + soft-floor bind; recovery matrix recoverable + blocked rows; failure-campaign plan closed (no live runtime/bytes/apply) with soak/activation overclaim refuse
-- Schema daz_ops_static_contracts_report registered in alidation.SCHEMA_NAMES
+- Schema daz_ops_static_contracts_report registered in
+alidation.SCHEMA_NAMES
 - CLI: maskfactory daz recipes seal-ops-static-contracts
 - Schema-enforced honesty: mf_p9_08_*_complete=false, mf_p9_08_10_pilot_complete=false, mf_p9_12_07_soak_complete=false, mf_p9_12_09_activation_complete=false, live_daz_*=false
 
@@ -10401,9 +10407,9 @@ Elevated WSL engine repair (`wsl --update` / Docker Desktop WSL backend restart 
 Root cause: population_count=0 is the honest downstream symptom of zero certified gold, but
 the governed autonomous-certified-gold authority was ALSO unreachable on the runtime path:
 
-un_autonomous_correction_loop dropped llow_autonomous_profile and 
+un_autonomous_correction_loop dropped llow_autonomous_profile and
 un_s11_production
-never forwarded it to 
+never forwarded it to
 un_candidate_tournament. A valid governed autonomous-gold certificate
 could therefore never raise a decision to calibrated_auto_accepted, so the weekly audit queue
 could never observe a population even after real gold/certs exist.
@@ -10411,10 +10417,10 @@ could never observe a population even after real gold/certs exist.
 Fix (default OFF -> zero regression, no forced champions):
 - src/maskfactory/autonomy/controller.py: thread llow_autonomous_profile through every
   tournament round of the bounded correction loop.
-- src/maskfactory/vlm/production.py: 
+- src/maskfactory/vlm/production.py:
 un_s11_production accepts
   utonomy_allow_autonomous_profile (default False) and forwards it to the authoritative
-  
+
 un_candidate_tournament call. The non-gold review-draft convergence tournament stays
   certificate=None (unchanged).
 - 	ests/test_autonomous_gold_audit_queue_wiring.py: OFF -> machine_verified_candidate
@@ -10622,3 +10628,13 @@ Evidence: qa/live_verification/wsl_ubuntu_io_error_20260720.json (self_sha256 a5
 **Result:** PASS. Packages **8 = 8** with identical names, file counts, total bytes (2,787,901,171), and newest mtimes on every package — **no package copy required**. F: had one fuller top-level tree (`dvc_local_remote`, 52 files / 6,349,602 bytes) absent from C; **copied** onto `C:\Comfy_UI_Main_Masking\data_c_backup_relocated\dvc_local_remote` via robocopy (real files, exit 1 = copied). `data/` junction remains `C:\Comfy_UI_Main_Masking\data_c_backup_relocated` — **never re-junctioned to USB F:**. F: tree left intact. Via junction: 8 packages readable. C free ~90.93 GiB; F free ~127.76 GiB (removable/unstable — not for `data/`).
 
 Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json; script runtime_artifacts/_seal_c_vs_f_data_package_reconcile_20260720.py.
+
+## 2026-07-20 14:56 UTC - WSL I/O-error vs F: restore reconcile (CURRENT probe BROKEN)
+
+**Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile (needs_agent_actions_20260720.json)
+**Command:** `wsl -d Ubuntu-22.04 -- echo ok`; `python runtime_artifacts/_seal_wsl_io_error_f_restore_reconcile_20260720.py`; `python runtime_artifacts/_update_needs_agent_actions_wsl_reconcile_20260720.py`
+**Result:** RECONCILED. Linked sibling seals `qa/live_verification/wsl_ubuntu_io_error_20260720.json` (point-in-time execvpe I/O error) and `qa/live_verification/f_drive_restored_20260720T0933Z.json` (later HEALTHY WRITE_OK). Session-start probe this turn returned `ok` (exit 0); seal-time/CURRENT probe FAILED with `Failed to attach disk ... ERROR_SHARING_VIOLATION` (Ubuntu-22.04 Stopped; F: present; VHDX path present). `needs_agent_actions` action_id=repair_ubuntu_2204_ext4_vhd status -> STILL_BROKEN_PROBE_FAILED. Docker-GPU remains parallel/primary CUDA train/serve path (independent of Ubuntu).
+
+No wsl --shutdown (protect live Docker Desktop), no elevated e2fsck, no prune/wipe, no tier inflation.
+
+Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 a429a0b0609f4eaa...).

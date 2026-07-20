@@ -1,0 +1,174 @@
+{
+  "artifact_type": "c_vs_f_data_package_reconcile",
+  "authority": [
+    "FULL AUTONOMY stream: compare C backup vs F DataRelocated; copy missing onto C; never re-junction data/ to F:",
+    "Plan/OPS_LOG.md (this wave)"
+  ],
+  "branch": "codex/maskfactory-runtime-implementation",
+  "c_backup": {
+    "dvc_local_remote_bytes_after": 6349602,
+    "dvc_local_remote_files_after": 52,
+    "images_dir_count": 23,
+    "package_count": 8,
+    "package_names": [
+      "img_2ca794d19be9",
+      "img_51945db358cb",
+      "img_6d6bb33f01a1",
+      "img_7b7a3c7d5dd3",
+      "img_a3d2663ad90d",
+      "img_b2b46c45d8e0",
+      "img_cdab0311dc96",
+      "img_e5163e08baac"
+    ],
+    "path": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "top_level_dirs_after": [
+      "cvat",
+      "cvat_v2",
+      "dvc_local_remote",
+      "images",
+      "incoming",
+      "packages"
+    ],
+    "top_level_dirs_before": [
+      "cvat",
+      "cvat_v2",
+      "images",
+      "incoming",
+      "packages"
+    ],
+    "total_package_bytes": 2787901171
+  },
+  "claims_not_established": [
+    "data_junction_on_f",
+    "f_drive_durable_for_maskfactory_data",
+    "new_packages_discovered_on_f",
+    "docker_vhdx_relocated_to_f"
+  ],
+  "comparison": {
+    "f_only_top_level_before_copy": [
+      "dvc_local_remote"
+    ],
+    "packages_copied_f_to_c": [],
+    "packages_identical": true,
+    "packages_only_on_c": [],
+    "packages_only_on_f": [],
+    "per_package": [
+      {
+        "bytes_match": true,
+        "files": 372,
+        "name": "img_2ca794d19be9",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 685,
+        "name": "img_51945db358cb",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 548,
+        "name": "img_6d6bb33f01a1",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 406,
+        "name": "img_7b7a3c7d5dd3",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 252,
+        "name": "img_a3d2663ad90d",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 140,
+        "name": "img_b2b46c45d8e0",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 724,
+        "name": "img_cdab0311dc96",
+        "newest_mtime_match": true
+      },
+      {
+        "bytes_match": true,
+        "files": 178,
+        "name": "img_e5163e08baac",
+        "newest_mtime_match": true
+      }
+    ],
+    "robocopy_packages_list_only_exit": 0,
+    "robocopy_packages_list_only_files": 0
+  },
+  "decision": "PACKAGES_EQUAL_COPY_DVC_ONLY_KEEP_C_JUNCTION",
+  "disk": {
+    "c_free_gib": 90.93,
+    "f_classified": "online_but_removable_unstable_do_not_use_for_data_junction",
+    "f_free_gib": 127.76
+  },
+  "f_data_relocated": {
+    "dvc_local_remote_bytes": 6349602,
+    "dvc_local_remote_files": 52,
+    "images_dir_count": 23,
+    "package_count": 8,
+    "package_names": [
+      "img_2ca794d19be9",
+      "img_51945db358cb",
+      "img_6d6bb33f01a1",
+      "img_7b7a3c7d5dd3",
+      "img_a3d2663ad90d",
+      "img_b2b46c45d8e0",
+      "img_cdab0311dc96",
+      "img_e5163e08baac"
+    ],
+    "path": "F:\\MaskFactory_DataRelocated",
+    "present": true,
+    "top_level_dirs": [
+      "cvat",
+      "cvat_v2",
+      "dvc_local_remote",
+      "images",
+      "incoming",
+      "packages"
+    ],
+    "total_package_bytes": 2787901171
+  },
+  "honesty": [
+    "C and F each had exactly 8 packages with identical file counts, total bytes (2787901171), and newest mtimes; no package directories needed copying.",
+    "F-only material difference was dvc_local_remote (52 files / 6349602 bytes); copied onto C backup via robocopy (not junction).",
+    "data/ junction left pointing at C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated; never re-junctioned to USB F:.",
+    "F:\\MaskFactory_DataRelocated left intact (not wiped)."
+  ],
+  "junction": {
+    "is_reparse_point": true,
+    "packages_readable_via_junction": 8,
+    "path": "C:\\Comfy_UI_Main_Masking\\data",
+    "resolves_off_f": false,
+    "resolves_on_c": true,
+    "target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated"
+  },
+  "mutation": {
+    "commands": [
+      "robocopy F:\\MaskFactory_DataRelocated\\dvc_local_remote C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated\\dvc_local_remote /E /COPY:DAT /R:2 /W:2"
+    ],
+    "copy_method": "robocopy /E /COPY:DAT (real files, not junction)",
+    "data_junction_mutated": false,
+    "dvc_local_remote_copied": true,
+    "f_tree_deleted": false,
+    "packages_copied": false,
+    "prune_performed": false,
+    "rejunction_to_f": false,
+    "robocopy_dvc_exit": 1,
+    "robocopy_dvc_exit_meaning": "1 = files copied successfully",
+    "wipe_performed": false
+  },
+  "project_head_at_authoring": "874642513c99d70092748b437e392732829a02f4",
+  "recorded_at": "2026-07-20T14:54:49Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "2655f2c55741fff2a08957ce4ead82311ec7d48430bb6a022b32a49d3c79aa22"
+}

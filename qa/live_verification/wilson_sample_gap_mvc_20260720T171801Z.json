@@ -1,0 +1,85 @@
+{
+  "admission": {
+    "certificate_minted": false,
+    "exit_code": 1,
+    "output": "qa/live_verification/autonomous_gold_admission_wilson_gap_20260720T171801Z.json",
+    "status": "insufficient_autonomous_verified_samples"
+  },
+  "artifact_type": "wilson_sample_gap_to_autonomous_certified_gold",
+  "authority": "autonomous_certified_gold_profile",
+  "autonomous_certified_gold": 0,
+  "calibrated_auto_accepted": 0,
+  "claim_boundary": {
+    "certificate_minted": false,
+    "mvc_is_not_autonomous_certified_gold": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "wilson_math_unchanged": true
+  },
+  "envelopes": 389,
+  "exact_sample_gap": {
+    "formula": "gap = max(0, binding_n - mvc) with binding_n = max(min_bucket, n_wilson, n_exact)",
+    "gap_to_binding_floor": 160,
+    "gap_to_exact_serious_floor": 160,
+    "gap_to_wilson_floor": 0,
+    "pre_repair_gap_binding": 185,
+    "pre_repair_gap_exact": 185,
+    "pre_repair_gap_wilson": 0
+  },
+  "git_head": "2d0b40efbeef980e33e6bcac7342d86723ab4830",
+  "git_head_short": "2d0b40ef",
+  "lane": "GOLD_FACTORY",
+  "mvc": 438,
+  "mvc_gate": {
+    "met": true,
+    "required_minimum": 33
+  },
+  "next_agent_step": "Emit/repair genuine machine_verified_candidate envelopes until MVC>=598 (binding=exact_zero_failure_serious); current gap=160. Run visual+VLM critic on real MVC; then assemble image-disjoint corpus and re-run admission --corpus.",
+  "observed_bounds_at_current_mvc": {
+    "exact_serious_upper_0_defect": 0.006816234766836904,
+    "mvc": 438,
+    "wilson_false_accept_upper_0_defect": 0.006139118271329901
+  },
+  "pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1",
+  "pool_after_repair": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 389,
+    "lifecycle_sidecars_seen": 438,
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "machine_verified_candidate_count": 438
+  },
+  "pool_before_repair": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 364,
+    "lifecycle_sidecars_seen": 413,
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "machine_verified_candidate_count": 413
+  },
+  "profile_id": "maskfactory-autonomous-certified-gold-admission-v1",
+  "profile_sha256": "789d9e0af3a72cd8ff5fa4b0229cbcf662a3f904e9b336f6483a2fbfc287c823",
+  "recorded_at": "2026-07-20T17:19:00.782979Z",
+  "repair": {
+    "exit_code": 0,
+    "output": "qa/live_verification/corpus_envelope_repair_wilson_gap_20260720T171801Z.json",
+    "stdout_tail": "{\"after\": 383, \"before\": 373, \"failed\": 0, \"output\": \"C:\\\\Comfy_UI_Main_Masking\\\\qa\\\\live_verification\\\\corpus_envelope_repair_wilson_gap_20260720T171801Z.json\", \"repaired\": 0}\n"
+  },
+  "schema_version": "1.0.0",
+  "self_sha256": "0b28b08ac9b097fd1c090ad0e9634a1f5c5509edfd4ac44a5a24bc6bf035f739",
+  "statistical_floors": {
+    "aggregate_false_accept_bound_method": "one_sided_wilson",
+    "confidence_level": 0.95,
+    "maximum_false_accept_upper_bound": 0.01,
+    "maximum_serious_false_accept_upper_bound": 0.005,
+    "minimum_autonomous_verified_per_risk_bucket": 30,
+    "serious_false_accept_bound_method": "exact_zero_failure",
+    "z_one_sided": 1.6448536269514715
+  },
+  "zero_defect_requirements": {
+    "binding_constraint": "exact_zero_failure_serious",
+    "binding_n": 598,
+    "exact_upper_at_n": 0.004997058694246492,
+    "n_for_exact_serious_le_0_005": 598,
+    "n_for_wilson_false_accept_le_0_01": 268,
+    "wilson_upper_at_n": 0.009994414667589548
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "authoritative_gold": false,
+  "certificate_reason": "certificate_absent_or_failed",
+  "certificate_valid": false,
+  "context": "solo",
+  "emit": {
+    "corpus_envelope_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_tournament_emit_20260720T171248Z\\img_0b3da89ea57a\\autonomy\\torso.corpus_record.json",
+    "corpus_envelope_relpath": "autonomous_gold_tournament_emit_20260720T171248Z/img_0b3da89ea57a/autonomy/torso.corpus_record.json",
+    "corpus_envelope_written": true,
+    "corpus_record": {
+      "candidate_stability_pass": true,
+      "complete_map_hard_veto_pass": true,
+      "context": "solo",
+      "cross_family_disagreement": false,
+      "image_id": "img_0b3da89ea57a",
+      "independent_family_count": 3,
+      "label": "torso",
+      "machine_accepted": true,
+      "machine_lifecycle_path": "autonomous_gold_tournament_emit_20260720T171248Z/img_0b3da89ea57a/autonomy/torso.json",
+      "machine_lifecycle_sha256": "b31f74a5de07590330c044ca65fac0b29833884d202a2cdfed0343e702f87df0",
+      "machine_mask_path": "autonomous_gold_tournament_emit_20260720T171248Z/img_0b3da89ea57a/masks/winner.png",
+      "machine_mask_sha256": "ffd1f5a03db2ee8a9afc5ad7eff9e2e22e24020d20743ea0a25e5c3a94b0c789",
+      "perturbation_stability_pass": true,
+      "pipeline_fingerprint": "tournament-emit-batch-v1-20260720T171248Z",
+      "record_id": "7decbe168d339bf751a744a8bbb0fd1ad3bc7ed1d923cbd096d816423b6626f2",
+      "risk_bucket": "solo",
+      "serious_cross_family_disagreement": false
+    },
+    "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_tournament_emit_20260720T171248Z\\img_0b3da89ea57a\\autonomy\\torso.json",
+    "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171248Z/img_0b3da89ea57a/autonomy/torso.json",
+    "lifecycle_status": "machine_verified_candidate",
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs"
+  },
+  "human_audit_required": true,
+  "label": "torso",
+  "ranking": [
+    {
+      "candidate_id": "winner",
+      "eligible": true,
+      "evidence": {
+        "block_qc_ids": [],
+        "boundary_agreement": 0.98,
+        "candidate_id": "winner",
+        "component_count": 1,
+        "consensus_iou": 0.98,
+        "critic_disagreement": false,
+        "critic_pass_weight": 0.96,
+        "exclusive_overlap": 0.0,
+        "format_valid": true,
+        "independent_sources": 3,
+        "mask_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_tournament_emit_20260720T171248Z\\img_0b3da89ea57a\\masks\\winner.png",
+        "mask_sha256": "ffd1f5a03db2ee8a9afc5ad7eff9e2e22e24020d20743ea0a25e5c3a94b0c789",
+        "ontology_max_components": 1,
+        "pose_consistency": 0.98,
+        "protected_overlap": 0.0,
+        "source_model_families": [
+          "family_a",
+          "family_b",
+          "family_c"
+        ],
+        "source_provider_keys": [
+          "fam_a",
+          "fam_b",
+          "fam_c"
+        ]
+      },
+      "score": 0.9179999999999999,
+      "vetoes": []
+    }
+  ],
+  "reason": "winner passed all hard vetoes and tournament margins",
+  "runner_up_score": null,
+  "status": "machine_verified_candidate",
+  "training_loss_weight": 0.0,
+  "truth_tier": "machine_candidate",
+  "winner_id": "winner",
+  "winner_score": 0.9179999999999999
+}

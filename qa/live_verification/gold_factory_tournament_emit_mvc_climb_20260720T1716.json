@@ -1,0 +1,45 @@
+{
+  "artifact_type": "gold_factory_tournament_emit_mvc_climb",
+  "authority": "autonomous_certified_gold_profile",
+  "autonomous_certified_gold": 0,
+  "calibrated_auto_accepted": 0,
+  "champions": {},
+  "champions_count": 0,
+  "docker_cli": "healthy",
+  "envelopes": 399,
+  "evidence_tier": "RUNTIME_PASS_BOUNDED",
+  "honesty_boundary": {
+    "emit_path_glue_proof_included": true,
+    "mvc_is_not_autonomous_certified_gold": true,
+    "no_certificate_minted": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "not_authoritative_human_gold": true,
+    "parallel_sibling_emit_inflates_pool": true
+  },
+  "lane": "GOLD_FACTORY",
+  "model": "cursor-grok-4.5-high-fast",
+  "mvc": 448,
+  "next_agent_step": "Emit/repair genuine machine_verified_candidate envelopes until MVC>=598 (binding=exact_zero_failure_serious); current gap=154. Run visual+VLM critic on real MVC; then assemble image-disjoint corpus and re-run admission --corpus.",
+  "real_multiprovider_fp": "multiprovider-local-cuda-tournament-20260720-v1",
+  "recorded_at": "2026-07-20T17:19:10.936343Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "78cc0e802f755ebb6cc1f63b468110ad3152baef486f0b21a2bc666e58d00818",
+  "this_wave_emit": {
+    "batch_evidence": "qa/live_verification/autonomy_batch_emit_more_images_20260720T171435Z.json",
+    "batch_self_sha256": "e0c6a2aa620baa0727790327a4e5bcd930ff4d72fd1a28d4fcf5d0fbf2201116",
+    "delta": 48,
+    "mvc_after": 123,
+    "mvc_before": 75,
+    "prove_emit_count": 24,
+    "tournament_emit_ok": 16
+  },
+  "wilson_gap": {
+    "admission_status": "insufficient_autonomous_verified_samples",
+    "binding_n": 598,
+    "evidence": "qa\\live_verification\\wilson_sample_gap_mvc_20260720T171828Z.json",
+    "gap_to_binding_floor": 154,
+    "mvc_at_wilson_seal": 444,
+    "self_sha256": "1bdcffefaa2e69c5ac15e01f923892520662969abcdfdd3ff2c6677ec81c914b"
+  }
+}

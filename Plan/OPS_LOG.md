@@ -10749,11 +10749,12 @@ Evidence:
 - qa/live_verification/isolated_consumer_climb4_20260720T1506.json
 
 
-## 2026-07-20 09:57 UTC (14:57Z) - >=3 independent mask families ONLINE (local CUDA) + gold admission re-drive
-**Item:** multi_provider_gpu_tournament_toward_autonomous_gold / families_online gate
-**Command:** ComfyUI CUDA venv smokes (faceparse_bisenet, birefnet_general copy-path, schp_atr) + tools/build_autonomous_gold_admission.py + runtime_artifacts/_seal_families_online_gold_drive_20260720.py
-**Result:** RUNTIME_PASS_BOUNDED for family-count gate. Live independent mask families = **3**: `faceparse_bisenet` (exact registry smoke SHA `8c3235e1…`), `birefnet_general` (local CUDA; Windows symlink blocked official WSL smoke helper so weights were copied), `schp_atr` (local CUDA, revision eb84c432…). Runtime: `C:/Comfy_UI_Main/ComfyUI/.venv` torch **2.11.0+cu128**, RTX 5060, GPU-sequenced after `ollama stop` (~7.7 GiB free).
+## 2026-07-20 15:06 UTC - Tournament/gold admission climb (F: restored, Docker mid-wave DOWN, 0 candidates)
+**Item:** autonomous gold admission / machine_verified_candidate (production runs/)
+**Command:** `python tools/gpu_sequencer.py plan --consumer nuclio-sam2|ollama-vlm`; `python runtime_artifacts/_scan_runs_status_20260720.py`; `python tools/build_autonomous_gold_admission.py --label torso --context solo --pipeline-fingerprint runtime-probe-20260720T1447 --output qa/live_verification/autonomous_gold_admission_20260720T1447.json`; Docker Desktop cold relaunch (non-destructive); `python runtime_artifacts/_seal_tournament_gold_admission_20260720T1506.py`
+**Result:** HONEST FAIL-CLOSED. F: present (~127.6 GiB free). Gold SOURCE roots readable (MaskedWarehouse CelebAMask-HQ/LaPa/LV-MHP; F:\Reference_Images; F:\DAZ 25 top dirs). data/ kept on C: backup (USB auto-repoint FORBIDDEN; brief mis-repoint reverted). GPU sequencer: both nuclio-sam2 and ollama-vlm `run_now` (~7771 MiB free, sequential). Production runs/: 4462 json, **machine_verified_candidate=0**, calibrated_auto_accepted=0. Admission status `insufficient_autonomous_verified_samples` (certificate_minted=false, no fabrication). Docker engine crashed mid-wave (npipe missing); cold relaunch did not recover in window; host Ollama 0.32.1 stayed UP; host torch 2.12.1+cpu CUDA=false. champions=0; autonomous_certified_gold=0.
 
-Gold-volume sources **present** (MaskedWarehouse `C:\Comfy_UI_Main\MaskedWarehouse`, reference library on F:, DAZ on F:). Autonomous-gold admission re-run remains honestly **`insufficient_autonomous_verified_samples`** (machine_verified_candidate=0, calibrated_auto_accepted=0, champions=0). No Wilson samples fabricated; no champions force-registered. Docker engine was DOWN at seal (sibling VHD migrate / Desktop churn) so nuclio SAM2 not counted this wave.
+Evidence: qa/live_verification/tournament_gold_admission_climb_20260720T1506.json (self_sha256 5dac35ed1e74e857cf883d0d83453bb899e97754cb982ef42322142d4ede6f18); qa/live_verification/autonomous_gold_admission_20260720T1447.json (self_sha256 fe30a0123be32a6a1bbc7243f521348b2f8eb31a93afba77a5a47707e73a75d4).
 
-Evidence: `qa/live_verification/families_online_gold_drive_20260720T0957.json`; admission `qa/live_verification/autonomous_gold_admission_families_online_20260720T0957.json`. Next: sequenced multi-provider tournament on gold-volume images -> real sidecars under `runs/` -> admission `--corpus`.
+## 2026-07-20 — Isolated-consumer climb3 + sibling Main consumer scaffold (MF-P6-11/12)
+STATIC_PASS. Seals: isolated_consumer_dod_climb3_20260720T0948.json + sibling_main_consumer_scaffold_20260720.json. Credits 11.01=88 11.02=88 11.07=84. Main sibling branch codex/maskfactory-sibling-consumer-scaffold @6f73ee00. Wave64 dirty Main untouched. HARD blockers OPEN.

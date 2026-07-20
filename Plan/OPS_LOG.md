@@ -10638,3 +10638,38 @@ Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json
 No wsl --shutdown (protect live Docker Desktop), no elevated e2fsck, no prune/wipe, no tier inflation.
 
 Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 a429a0b0609f4eaa...).
+
+## 2026-07-20 14:49 UTC - DAZ validation/ops/coverage STATIC re-verify FINAL (F:\DAZ read-when-present, 26 entries)
+**Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
+**Command:** python runtime_artifacts/_seal_daz_stream_read_when_present_20260720T1449.py (internally: daz_status; probe_gold_volume_sources; 6 focused daz pytest; post-pytest re-seal of validation/ops/coverage binders)
+**Result:** STATIC_PASS (host deterministic). F:\DAZ present with exactly 26 top-level entries; gold_volume_sources daz candidate selected (map_id maskfactory-gold-volume-sources-read-when-present-v1; present/readable/markers_ok). Foundation doctor: storage soft (127.629 GiB free) so acquisition_pool_capacity_safe refuses new_work — acceptable_for_static_reverify=true (not a hard block). Binders bound after pytest (race-resistant): validation dvs_b8a6ce23..., ops dos_1c30ade7..., coverage dcp_c6513718...; procedural-primitive golden bundle re-verified (canonical 7c6483dd...); focused suite 23 passed (exit 0).
+
+Supersedes the earlier same-timestamp draft OPS_LOG line that pre-assumed healthy storage / incomplete binder IDs. Honest scope unchanged: NO live DAZ Studio execution, accepted packages, pilot, soak, activation/calibration, ablation corpus, doctor-all-green, visual-QA-pass, or gold. F: remains removable USB. No tracker status/percent transitions.
+Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 6b6095d8b4277559f0e444e3ca123301fe1ad56f05dde8629f18574970215e79).
+
+## 2026-07-20 15:02 UTC - Live fleet reprobe; seal fleet_status; refresh needs_agent_actions
+**Item:** fleet_status + needs_agent_actions (coordinator helper, zero human wait)
+**Command:** docker info/ps/stats; curl CVAT/Ollama; wsl -l -v; Get-Disk F:; python runtime_artifacts/_seal_fleet_status_20260720T1502.py; python runtime_artifacts/_update_needs_agent_actions_fleet_reprobe_20260720T1502.py
+**Result:** SEALED (honest flap). Docker briefly UP at ~14:52Z (server 29.6.1, 39 containers, stats OK, nuclio-pth-sam2 healthy; CVAT host about HTTP 404 during warmup). Engine then flapped: dockerDesktopLinuxEngine pipe missing / docker info timeout; docker-desktop WSL Stopped at seal while Ubuntu-22.04 Running again. CVAT loopback refused (10061). Ollama native 0.32.1 continuously green. F: USB Seagate BUP Slim Online (~127.63 GiB free; earlier ~181 GiB). C: ~89.8 GiB free (above 75 GiB floor). migrate_docker_vhdx_c_to_f confirmed ABORTED_USB_REMOVABLE_F (sibling abort seal). Priorities re-ranked: restore Docker/CVAT -> serve:cu128 -> train:cu128 -> tournament -> Main HARD. No wipe. No tier inflation (champions=0, no gold/doctor-green/PRODUCTION_EVIDENCE_PASS).
+
+Evidence: qa/live_verification/fleet_status_20260720T1502.json (self_sha256 008bbe630710...); qa/live_verification/needs_agent_actions_20260720.json (self_sha256 b4d9e69b1f57...).
+
+## 2026-07-20 15:00 UTC - data/ junction on-C confirmed; USB data junction FORBIDDEN
+**Item:** data_junction_on_c_confirmed / needs_agent_actions usb_data_junction_policy
+**Command:** sutil reparsepoint query data; python runtime_artifacts/_seal_data_junction_on_c_confirmed_20260720.py; python runtime_artifacts/_update_needs_agent_actions_forbid_usb_data_junction_20260720.py
+**Result:** CONFIRMED. Live probe: data/ -> C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (not F:). Packages via junction: 8, readable. Mutation: none. needs_agent_actions now binding usb_data_junction_policy=FORBIDDEN + action_id=forbid_usb_data_junction. Agents must not re-junction data/ onto USB F:.
+
+Evidence: qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json (self_sha256 3e7cf00c64a8369b...).
+
+## 2026-07-20 15:05 UTC - Tournament sample set (≥50, image-disjoint) from Ultimate + MaskedWarehouse
+**Item:** tournament input sample selection / sibling tournament feed
+**Command:** `python runtime_artifacts/_build_tournament_sample_set_20260720.py --ts 20260720T1505`
+**Result:** DONE. Bounded frozen image-disjoint tournament SOURCE sample set staged read-only:
+
+- sample_count=**64** (target ≥50 met; max_total=64; unique sha256=64)
+- Ultimate_Masking_Reference_Images/benchmark_reference: 49 samples across clothing/person-count categories
+- MaskedWarehouse: 15 samples (CelebAMask-HQ + LaPa/val + Body/archive)
+- Sibling feed: `qa/live_verification/tournament_sample_set_sibling_feed_20260720T1505.json` + stable latest pointer
+- No bytes copied into repo; no F: junction; external labels NOT gold; champions/gold untouched
+
+Evidence: qa/live_verification/tournament_sample_set_ultimate_mw_20260720T1505.json (self_sha256 967e94b7...); feed self_sha256 f63c1f79...

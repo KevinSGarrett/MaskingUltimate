@@ -1,0 +1,94 @@
+{
+  "artifact_type": "fleet_status",
+  "authority": "coordinator_helper_live_fleet_reprobe_zero_human_wait",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "doctor_all_green",
+    "champions>0",
+    "human_approved_gold / autonomous_certified_gold",
+    "VISUAL_QA_PASS_BOUNDED (project-wide)",
+    "PRODUCTION_EVIDENCE_PASS",
+    "Main adoption receipts (MF-P6-11.02/11.07/12.05/12.06)",
+    "core_autonomous_runtime complete",
+    "docker_vhdx_relocated_to_f",
+    "stable_docker_engine_this_window"
+  ],
+  "highest_tiers_unchanged": {
+    "core_autonomous_runtime": "STATIC_PASS profile; live ceiling RUNTIME_PASS_BOUNDED; profile_complete=false",
+    "cvat_nuclio_ollama": "RUNTIME_PASS_BOUNDED when engine up; currently flapping \u2014 do not claim green doctor",
+    "mode_b_predict": "AWAITING_RUNTIME (champions=0)",
+    "p6_11_12_bridge": "STATIC_PASS + AWAITING_MAIN (HARD MF-P6-11.02/11.07/12.05/12.06 OPEN)"
+  },
+  "live_probe": {
+    "cvat_about": {
+      "authoritative_note": "When engine is up, prefer in-container GET on cvat_server for version 2.24.0 (host loopback flaps under restart/sibling load).",
+      "error_now": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+      "http_status_now": null,
+      "prior_window": "HTTP 404 during post-restart warmup (~32s uptime)",
+      "url": "http://127.0.0.1:8080/api/server/about"
+    },
+    "disk": {
+      "above_repair_floor": true,
+      "c_free_gib": 83.58,
+      "docker_data_vhdx_on_c": true,
+      "f_disk_json": "{\"FriendlyName\":\"Seagate BUP Slim BK\",\"BusType\":\"USB\",\"OperationalStatus\":\"Online\"}",
+      "f_drive": "F: USB Seagate BUP Slim Online; MaskFactory_DataRelocated present=True; free ~127.63 GiB (was ~181 GiB earlier this wave)",
+      "f_free_gib": 127.63,
+      "repair_floor_gib": 75,
+      "trend": "C swung this wave: 75.22 (UP) -> 89.8 -> 68.35 (BELOW floor) -> 83.58 GiB now; F: 181.19 -> 127.63 GiB USB Online",
+      "volatility_note": "C free crossed below/above 75 floor within minutes during Docker flap; treat headroom as fragile."
+    },
+    "docker_engine": {
+      "docker_stats_now": "unavailable (engine pipe missing or timed out)",
+      "note": "Engine flapped this wave: healthy docker ps/stats at ~14:52Z (39 containers), then npipe dockerDesktopLinuxEngine missing; Docker Desktop processes may still be running while WSL docker-desktop distro reports Stopped. Re-launch attempted.",
+      "nuclio_pth_sam2": "healthy_in_prior_window_14:52Z",
+      "prior_healthy_window_this_wave": {
+        "at": "2026-07-20T14:52:00Z",
+        "c_free_gib": 75.22,
+        "cvat269_rehearsal": "UP (migration rehearsal only)",
+        "cvat_host_about": "HTTP 404 during post-restart warmup (~32s uptime)",
+        "docker_server": "29.6.1",
+        "docker_stats": "responsive (--no-stream OK; mem limit 23.47GiB)",
+        "f_free_gib": 181.19,
+        "production_cvat_v2_24": "UP (cvat_* + traefik + nuclio/nuclio-pth-sam2 healthy)",
+        "running_containers": 39
+      },
+      "production_cvat_v2_24": "UP_IN_PRIOR_WINDOW",
+      "running_containers_now": 0,
+      "server_version_now": "Command '['docker', 'info', '--format', '{{.ServerVersion}}']' timed out after 15 seconds",
+      "state": "DOWN_OR_FLAPPING"
+    },
+    "ollama": {
+      "http_status": 200,
+      "provider": "native_windows (C:\\Users\\kevin\\AppData\\Local\\Programs\\Ollama\\ollama.exe)",
+      "url": "http://127.0.0.1:11434/api/version",
+      "version": "0.32.1"
+    },
+    "probe_timeline": [
+      "14:49Z engine DOWN (pipe missing); Ubuntu Running WRITE_OK; Ollama 0.32.1; F USB Online",
+      "14:49Z Start-Process Docker Desktop",
+      "14:52Z engine UP 29.6.1; 39 containers; stats OK; CVAT host about HTTP 404 (warmup)",
+      "14:54Z engine DOWN again; WSL Ubuntu attach SHARING_VIOLATION on F: vhdx",
+      "15:00Z docker-desktop + Ubuntu Stopped; CVAT HTTP 000; Ollama still 0.32.1"
+    ],
+    "probed_at": "2026-07-20T15:03:51Z",
+    "wsl": {
+      "docker_desktop_distro_at_seal": "Stopped (engine API timeout / pipe missing)",
+      "ubuntu_2204_at_seal": "Running at final snap (was WRITE_OK earlier; mid-wave SHARING_VIOLATION on F:\\...\\Ubuntu-22.04\\ext4.vhdx attach; briefly Stopped during engine flap)",
+      "vhdx_on_f_present": true,
+      "wsl_lv_raw": "NAME                 STATE           VERSION\n\n* Ubuntu-22.04         Running         2\n\n  docker-desktop       Stopped         2\n\n  Cursor-Agent-WSL1    Stopped         1"
+    }
+  },
+  "local_date": "2026-07-20",
+  "no_open_human_stop_states": true,
+  "notes": [
+    "Live fleet is FLAPPING this window: Docker was briefly healthy (39 containers + stats) then engine/WSL Stopped. Ollama native 0.32.1 remains the durable VLM endpoint.",
+    "migrate_docker_vhdx_c_to_f is ABORTED (F: is USB Seagate) \u2014 evidence docker_migrate_abort_usb_removable_f_20260720T1437Z.json. Live docker_data.vhdx stays on C: NVMe.",
+    "Top agent work after engine restore: bootstrap_cvat + smoke_cvat_sam2, then serve:cu128 / train:cu128 out-of-band, then multi-provider tournament toward autonomous gold. No tier inflation.",
+    "C: free 83.58 GiB at final seal (ABOVE 75 after a mid-wave dip to ~68.4). Ephemeral reclaim remains top priority because headroom is volatile. F: 127.63 GiB USB Online."
+  ],
+  "project_head_at_authoring": "8a99f637",
+  "recorded_at": "2026-07-20T15:05:07Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "23b108e8d01557cb4cb1091634af078d619dd50ca44588417b020f5b00b8715a"
+}

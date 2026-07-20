@@ -10680,12 +10680,3 @@ Evidence: qa/live_verification/tournament_sample_set_ultimate_mw_20260720T1505.j
 **Result:** PASS. Sibling had already copied F-only `dvc_local_remote` (52 files / 6,349,602 bytes) onto `C:\Comfy_UI_Main_Masking\data_c_backup_relocated\dvc_local_remote`. Retargeted gitignored `.dvc/config.local` from `F:/MaskFactory_DataRelocated/dvc_local_remote` -> C: backup path. `dvc status -c` -> **Cache and remote are in sync**; `dvc push -r maskfactory-dvc-local` -> **Everything is up to date**; post-push status -c still in sync. `data/` junction unchanged (still C: backup). F: tree left intact as secondary mirror. Cloud s3 push still deferred (no AWS creds / dvc-s3 on active PATH dvc). No tier inflation.
 
 Evidence: qa/live_verification/dvc_local_c_backup_verify_20260720T1503Z.json; script runtime_artifacts/_seal_dvc_local_c_backup_verify_20260720.py.
-
-## 2026-07-20 09:57 UTC (14:57Z) - >=3 independent mask families ONLINE (local CUDA) + gold admission re-drive
-**Item:** multi_provider_gpu_tournament_toward_autonomous_gold / families_online gate
-**Command:** ComfyUI CUDA venv smokes (faceparse_bisenet, birefnet_general copy-path, schp_atr) + tools/build_autonomous_gold_admission.py + runtime_artifacts/_seal_families_online_gold_drive_20260720.py
-**Result:** RUNTIME_PASS_BOUNDED for family-count gate. Live independent mask families = **3**: `faceparse_bisenet` (exact registry smoke SHA `8c3235e1…`), `birefnet_general` (local CUDA; Windows symlink blocked official WSL smoke helper so weights were copied), `schp_atr` (local CUDA, revision eb84c432…). Runtime: `C:/Comfy_UI_Main/ComfyUI/.venv` torch **2.11.0+cu128**, RTX 5060, GPU-sequenced after `ollama stop` (~7.7 GiB free).
-
-Gold-volume sources **present** (MaskedWarehouse `C:\Comfy_UI_Main\MaskedWarehouse`, reference library on F:, DAZ on F:). Autonomous-gold admission re-run remains honestly **`insufficient_autonomous_verified_samples`** (machine_verified_candidate=0, calibrated_auto_accepted=0, champions=0). No Wilson samples fabricated; no champions force-registered. Docker engine was DOWN at seal (sibling VHD migrate / Desktop churn) so nuclio SAM2 not counted this wave.
-
-Evidence: `qa/live_verification/families_online_gold_drive_20260720T0957.json`; admission `qa/live_verification/autonomous_gold_admission_families_online_20260720T0957.json`. Next: sequenced multi-provider tournament on gold-volume images -> real sidecars under `runs/` -> admission `--corpus`.

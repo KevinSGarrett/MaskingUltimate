@@ -1,1 +1,0 @@
-{"artifact_type":"external_supervision_alignment_evidence","fixture":true,"gate":"visual_alignment_qa_passed","schema_version":"1.0.0","seal_sha256":"2454274a6285399657bfa89cea1b7c0af4d24b488932adf519673cadbfe9d5d5","source":"lapa","source_masks_are_gold":false,"status":"PASS"}

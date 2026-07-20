@@ -1,5 +1,0 @@
-evidence(tournament): freeze ≥50 image-disjoint Ultimate+MW sample set for sibling feed
-
-Stage a bounded, content-hash-disjoint tournament source corpus (64 samples)
-from Ultimate_Masking_Reference_Images + MaskedWarehouse and publish the sibling
-tournament feed pointer. Read-only inputs only; no gold/champion claims.

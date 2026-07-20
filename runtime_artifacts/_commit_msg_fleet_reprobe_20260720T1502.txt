@@ -1,3 +1,0 @@
-﻿evidence(fleet): seal 15:02Z reprobe; Docker flap; refresh agent queue
-
-Live docker ps/stats briefly green (39ct) then engine/WSL flapped; Ollama native stayed up; F: USB Online. Priorities: reclaim C headroom, restore CVAT stack, then serve/train/tournament. Migrate-to-F stays cancelled (USB policy).

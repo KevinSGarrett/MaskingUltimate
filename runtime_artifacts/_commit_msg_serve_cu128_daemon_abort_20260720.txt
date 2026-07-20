@@ -1,3 +1,0 @@
-evidence(serve): abort cu128 build after Docker daemon death; seal RUNTIME_BLOCKED
-
-Daemon died mid torch/cu128 wheel (EOF) and would not stay up; C: free collapsed ~75→~31 GiB during wake thrash. No prune/wipe; CVAT restore incomplete; Ollama stayed up.

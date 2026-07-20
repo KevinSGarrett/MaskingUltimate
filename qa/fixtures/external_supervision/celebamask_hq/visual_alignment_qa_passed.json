@@ -1,1 +1,0 @@
-{"artifact_type":"external_supervision_alignment_evidence","fixture":true,"gate":"visual_alignment_qa_passed","schema_version":"1.0.0","seal_sha256":"b6579169bf3dbed24c119cf275071ec94037a518417a227cc63e8a1e286729f9","source":"celebamask_hq","source_masks_are_gold":false,"status":"PASS"}

@@ -1,7 +1,0 @@
-evidence(gold): F: restored climb; admission fail-closed at 0 machine_verified_candidate
-
-Drive tournament → machine_verified_candidate → autonomous gold admission honestly.
-GPU sequencer planned nuclio-sam2 + ollama-vlm as sequential run_now. Production
-runs/ pool scan and admission driver both report 0 candidates (no fabrication).
-Docker engine crashed mid-wave (npipe missing); cold relaunch unrecovered in
-window. data/ stays on C: backup (USB auto-repoint FORBIDDEN). champions=0.

@@ -1,8 +1,0 @@
-Seal F: drive layout map (Offload/DataRelocated/data junction) and flag USB dual-anchor risk
-
-Live probe confirms F:\MaskFactory_DataRelocated data/ junction is healthy, Docker's
-docker_data.vhdx remains live on C: (F: copy is a stale abandoned-relocation snapshot),
-and the Ubuntu-22.04 WSL distro has genuinely relocated to F:\MaskFactory_Offload_20260714.
-Reconciles against a same-hour sibling report that found F: physically absent (real USB
-disconnect/reconnect, not a stale read). needs_agent_actions updated with a non-blocking
-Kevin-awareness item: F: is a removable USB drive now anchoring two live/governed roles.

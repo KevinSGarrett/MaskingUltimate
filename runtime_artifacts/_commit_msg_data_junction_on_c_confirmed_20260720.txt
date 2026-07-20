@@ -1,3 +1,0 @@
-evidence(data): confirm data/ junction on C backup; forbid USB data junction
-
-Seal live fsutil/realpath proof that data/ -> data_c_backup_relocated (not F:), bind usb_data_junction=FORBIDDEN in needs_agent_actions, and OPS_LOG the confirmation.

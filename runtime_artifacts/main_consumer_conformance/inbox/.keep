@@ -1,2 +1,0 @@
-Drop Main-supplied adoption_receipt.json, adapter_observation.json, and optional requirements_capability_bundle.json here for fail-closed validation.
-Absence means awaiting_main; presence never fabricates adoption without shape match.

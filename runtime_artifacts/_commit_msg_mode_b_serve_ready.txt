@@ -1,3 +1,0 @@
-evidence(serve): host Mode B FastAPI path ready; /predict auto-wires when champions>0
-
-Docker serve:cu128 deferred (engine flap). Seal mode_b_serve_ready_20260720T1545.

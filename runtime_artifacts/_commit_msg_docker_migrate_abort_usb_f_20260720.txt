@@ -1,3 +1,0 @@
-﻿Abort Docker VHDX migrate: F: is USB removable Seagate.
-
-Hard-stop relocation of live docker_data.vhdx onto disconnect-prone external media; keep Docker on C: and seal probe evidence.

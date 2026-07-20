@@ -1,2 +1,0 @@
-PROMPT_VERSION: p-manifest-v1-doc10
-Lint the supplied manifest against the ontology: visibility states complete, derived subsets consistent, occlusion graph acyclic, and notes specific enough for review. Answer STRICT JSON only: {"findings":[{"severity":"BLOCK|ROUTE|WARN","path":"JSON pointer","problem":"concise finding","suggestion":"concise correction"}],"overall":"pass|needs_human"}.

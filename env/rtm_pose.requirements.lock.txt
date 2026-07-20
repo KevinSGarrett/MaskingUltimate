@@ -1,9 +1,0 @@
-# Isolated --target layer used with C:/Comfy_UI_Main/ComfyUI/.venv.
-# MMPose itself is built from the exact source revision in env/rtm_pose.lock.json.
-json-tricks==3.17.3
-mmcv-lite==2.1.0
-mmdet==3.2.0
-mmengine==0.10.7
-munkres==1.1.4
-numpy==1.26.4
-xtcocotools==1.14.3

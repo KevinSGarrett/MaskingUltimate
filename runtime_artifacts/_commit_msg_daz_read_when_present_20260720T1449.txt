@@ -1,3 +1,0 @@
-﻿qa(daz): re-verify validation/ops/coverage STATIC with F:\DAZ read-when-present (26 entries)
-
-Seal host-side STATIC binders against live removable F:\DAZ via gold_volume_sources; soft storage floor noted; no live Studio/gold claims.

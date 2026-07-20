@@ -1,1 +1,0 @@
-{"artifact_type":"external_supervision_split_dedup_evidence","fixture":true,"gate":"split_dedup_passed","schema_version":"1.0.0","seal_sha256":"95dee0de0fecf17e57650bf60d10dcad5e480d06ae86c45086f4cf00bd6ab4c5","source":"all_eligible_external_sources","source_masks_are_gold":false,"status":"PASS"}

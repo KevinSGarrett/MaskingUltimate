@@ -1,0 +1,1 @@
+docs(ops): append DVC C: backup local-remote verify OPS_LOG entry

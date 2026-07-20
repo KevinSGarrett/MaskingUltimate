@@ -1117,10 +1117,122 @@ def run_cross_project_qualification_depth() -> dict[str, Any]:
         }
     )
 
+    # climb5 depth additions (align with producer tools/run_isolated_main_consumer_climb5.py)
+    adoption_only = _xproj(
+        {
+            "producer_git_commit": head,
+            "pinned_main_runtime_git_commit": "c" * 40,
+            "adoption_receipt": {
+                "adoption_id": "mfadopt_sibling_climb5_adoption_only",
+                "adoption_payload_sha256": "1" * 64,
+                "signature": {"key_id": "comfy-main-adoption-prod"},
+            },
+        }
+    )
+    adoption_reasons = set(adoption_only.get("rejection_reasons") or [])
+    rows.append(
+        {
+            "case": "adoption_alone_external_prereq_unmet",
+            "passed": bool(
+                adoption_only.get("status") == "producer_partial"
+                and "external_main_prerequisite_unmet" in adoption_reasons
+                and "main_qualification_signature_absent" in adoption_reasons
+                and (adoption_only.get("consumer_binding") or {}).get("complete") is False
+                and validate_cross_project_qualification_evidence(adoption_only) == ()
+            ),
+        }
+    )
+
+    qual_only = _xproj(
+        {
+            "producer_git_commit": head,
+            "pinned_main_runtime_git_commit": "c" * 40,
+            "qualification_bundle": {
+                "qualification_id": "mfqual_sibling_climb5_only",
+                "qualification_payload_sha256": "2" * 64,
+                "signature": {
+                    "key_id": "comfy-main-qualification-prod",
+                    "value_base64": "c2libGluZy1jbGltYi1xdWFs",
+                },
+            },
+        }
+    )
+    qual_reasons = set(qual_only.get("rejection_reasons") or [])
+    rows.append(
+        {
+            "case": "qualification_alone_external_prereq_unmet",
+            "passed": bool(
+                qual_only.get("status") == "producer_partial"
+                and "external_main_prerequisite_unmet" in qual_reasons
+                and "main_adapter_execution_absent" in qual_reasons
+                and (qual_only.get("consumer_binding") or {}).get("complete") is False
+                and validate_cross_project_qualification_evidence(qual_only) == ()
+            ),
+        }
+    )
+
+    adapter_hist = _xproj(
+        {
+            "producer_git_commit": head,
+            "pinned_main_runtime_git_commit": "c" * 40,
+            "main_adapter_execution_receipt_present": True,
+            "comfyui_result_history_present": True,
+        }
+    )
+    ah_reasons = set(adapter_hist.get("rejection_reasons") or [])
+    rows.append(
+        {
+            "case": "adapter_history_without_adoption_insufficient",
+            "passed": bool(
+                adapter_hist.get("status") == "producer_partial"
+                and "external_main_prerequisite_unmet" in ah_reasons
+                and "adoption_receipt_absent" in ah_reasons
+                and (adapter_hist.get("consumer_binding") or {}).get("complete") is False
+                and validate_cross_project_qualification_evidence(adapter_hist) == ()
+                and (adapter_hist.get("claim_boundary") or {}).get("mf_p6_12_05_complete") is False
+            ),
+        }
+    )
+
+    prod_over = copy.deepcopy(baseline)
+    prod_over["claim_boundary"] = dict(prod_over.get("claim_boundary") or {})
+    prod_over["claim_boundary"]["establishes_production_qualification"] = True
+    rows.append(
+        {
+            "case": "production_qualification_overclaim_detected",
+            "passed": "production_qualification_overclaim"
+            in validate_cross_project_qualification_evidence(prod_over),
+        }
+    )
+
+    acc_over = copy.deepcopy(baseline)
+    acc_over["claim_boundary"] = dict(acc_over.get("claim_boundary") or {})
+    acc_over["claim_boundary"]["independent_real_accuracy_claim"] = True
+    rows.append(
+        {
+            "case": "independent_real_accuracy_overclaim_detected",
+            "passed": "independent_real_accuracy_overclaim"
+            in validate_cross_project_qualification_evidence(acc_over),
+        }
+    )
+
+    forged_accept = copy.deepcopy(baseline)
+    forged_accept["status"] = "accepted"
+    forged_accept["consumer_binding"] = dict(forged_accept.get("consumer_binding") or {})
+    forged_accept["consumer_binding"]["complete"] = False
+    rows.append(
+        {
+            "case": "accepted_without_main_bindings_detected",
+            "passed": "accepted_without_main_bindings"
+            in validate_cross_project_qualification_evidence(forged_accept),
+        }
+    )
+
     return {
         "check": "isolated_cross_project_qualification_depth",
         "passed": all(row["passed"] for row in rows),
         "baseline_decision_sha256": baseline.get("decision_sha256"),
+        "prior_case_count": 8,
         "case_count": len(rows),
         "cases": rows,
     }
@@ -1280,10 +1392,148 @@ def run_final_release_firewall_depth() -> dict[str, Any]:
         }
     )
 
+    # climb5 depth additions (align with producer tools/run_isolated_main_consumer_climb5.py)
+    commit_pin = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot={
+            **_released_snapshot(fixture_only=False),
+            "producer": {"git_commit": "a" * 40},
+        },
+        release_publication_issues=[],
+        producer_git_commit="b" * 40,
+        consumer_git_commit="c" * 40,
+        adoption_receipt={
+            "adoption_id": "mfadopt_sibling_climb5_commit_pin",
+            "adoption_payload_sha256": "3" * 64,
+            "adoption_scope": "production_authority",
+            "decision": "adopted",
+            "production_use_authorized": True,
+            "fixture_only": False,
+            "release_id": "mfrel_sibling_firewall_depth",
+            "release_payload_sha256": "d" * 64,
+            "consumer_git_commit": "d" * 40,
+            "signature": {"key_id": "comfy-main-adoption-prod"},
+        },
+    )
+    rows.append(
+        {
+            "case": "producer_consumer_commit_pin_mismatch_refused",
+            "passed": bool(
+                commit_pin.get("core_autonomous_runtime_close_authorized") is False
+                and "producer_consumer_commit_pin_mismatch"
+                in (commit_pin.get("rejection_reasons") or [])
+                and validate_final_release_handoff_evidence(commit_pin) == ()
+            ),
+        }
+    )
+
+    qual_bind = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot=_released_snapshot(fixture_only=False),
+        release_publication_issues=[],
+        adoption_receipt={
+            "adoption_id": "mfadopt_sibling_climb5_qual_bind",
+            "adoption_payload_sha256": "4" * 64,
+            "adoption_scope": "production_authority",
+            "decision": "adopted",
+            "production_use_authorized": True,
+            "fixture_only": False,
+            "release_id": "mfrel_sibling_firewall_depth",
+            "release_payload_sha256": "d" * 64,
+            "qualification_bundle_id": "mfqual_wrong",
+            "qualification_bundle_sha256": "5" * 64,
+            "signature": {"key_id": "comfy-main-adoption-prod"},
+        },
+        qualification_bundle={
+            "qualification_id": "mfqual_sibling_climb5",
+            "qualification_payload_sha256": "6" * 64,
+            "fixture_only": False,
+        },
+    )
+    rows.append(
+        {
+            "case": "qualification_bundle_binding_failed_refused",
+            "passed": bool(
+                qual_bind.get("core_autonomous_runtime_close_authorized") is False
+                and "qualification_bundle_binding_failed"
+                in (qual_bind.get("rejection_reasons") or [])
+                and validate_final_release_handoff_evidence(qual_bind) == ()
+            ),
+        }
+    )
+
+    ack_incomplete = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot=_released_snapshot(fixture_only=False),
+        release_publication_issues=[],
+        adoption_receipt={
+            "adoption_id": "mfadopt_sibling_climb5_ack",
+            "adoption_payload_sha256": "7" * 64,
+            "adoption_scope": "production_authority",
+            "decision": "adopted",
+            "production_use_authorized": True,
+            "fixture_only": False,
+            "release_id": "mfrel_sibling_firewall_depth",
+            "release_payload_sha256": "d" * 64,
+            "signature": {"key_id": "comfy-main-adoption-prod"},
+        },
+        reciprocal_acknowledgement={
+            "acknowledgement_id": "mfack_sibling_climb5_incomplete",
+        },
+    )
+    ack_reasons = set(ack_incomplete.get("rejection_reasons") or [])
+    ack_gates = {
+        g.get("gate_id"): g for g in (ack_incomplete.get("exact_core_close_gates") or [])
+    }
+    rows.append(
+        {
+            "case": "acknowledgement_binding_incomplete_refused",
+            "passed": bool(
+                ack_incomplete.get("core_autonomous_runtime_close_authorized") is False
+                and (
+                    "reciprocal_acknowledgement_binding_failed" in ack_reasons
+                    or ack_gates.get("reciprocal_producer_acknowledgement", {}).get("status")
+                    in ("failed", "missing")
+                )
+                and validate_final_release_handoff_evidence(ack_incomplete) == ()
+            ),
+        }
+    )
+
+    isolated_auth = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot=_released_snapshot(fixture_only=False),
+        release_publication_issues=[],
+        adoption_receipt={
+            "adoption_id": "mfadopt_sibling_climb5_isolated_auth",
+            "adoption_payload_sha256": "8" * 64,
+            "adoption_scope": "production_authority",
+            "decision": "adopted",
+            "production_use_authorized": True,
+            "fixture_only": False,
+            "release_id": "mfrel_sibling_firewall_depth",
+            "release_payload_sha256": "d" * 64,
+            "authority_kind": "isolated_main_consumer",
+            "signature": {"key_id": "isolated-main-consumer-adoption"},
+        },
+    )
+    rows.append(
+        {
+            "case": "isolated_consumer_authority_cannot_close_core",
+            "passed": bool(
+                isolated_auth.get("core_autonomous_runtime_close_authorized") is False
+                and isolated_auth.get("status") in ("incomplete_core", "rejected")
+                and validate_final_release_handoff_evidence(isolated_auth) == ()
+                and (isolated_auth.get("claim_boundary") or {}).get("core_closed") is not True
+            ),
+        }
+    )
+
     return {
         "check": "isolated_final_release_firewall_depth",
         "passed": all(row["passed"] for row in rows),
         "honest_decision_sha256": honest.get("decision_sha256"),
+        "prior_case_count": 8,
         "case_count": len(rows),
         "cases": rows,
     }

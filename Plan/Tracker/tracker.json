@@ -13632,12 +13632,17 @@
           "ts": "2026-07-19T23:28:56+00:00",
           "actor": "ai_agent",
           "text": "STATIC residual binder preserved alongside P5 training gates: schema-bound shadow_teacher_judgment + cloud_teacher_static_report reject overclaims. Live provider incremental-value gate still blocked on MF-P4-10.08 corpus."
+        },
+        {
+          "ts": "2026-07-20T08:12:13+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS 2026-07-20: the >=200 image-disjoint corpus prerequisite (MF-P4-10.08 structure) is now satisfied by a real 228-case corpus (qa/live_verification/cloud_teacher_local_corpus_20260720.json). Threshold evaluation (serious/overall recall, precision, false-pass, incremental, usefulness, cost) still requires real provider/teacher predictions vs frozen human truth -> AWAITING_RUNTIME (no paid cloud, no GPU tournament this wave). HARD BLOCKER retained; mf_p4_10_09_complete=false."
         }
       ],
       "evidence": null,
       "blocked_reason": "No frozen ≥200-case incremental-value report exists because MF-P4-10.08 lacks the required human-anchor corpus and any approved live provider budget.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T23:28:56+00:00",
+      "updated_at": "2026-07-20T08:12:13+00:00",
       "orphaned": false
     },
     "MF-P4-10.10": {

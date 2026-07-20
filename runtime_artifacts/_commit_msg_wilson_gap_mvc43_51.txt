@@ -1,0 +1,3 @@
+qa(gold): seal Wilson gap MVC43–51 → 225/217; binding 555/547
+
+Admission insufficient; gold=0; n_wilson=268 n_exact=598 binding; keep climbing real feed.

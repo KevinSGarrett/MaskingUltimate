@@ -1,0 +1,86 @@
+{
+  "admission": {
+    "certificate_minted": false,
+    "exit_code": 1,
+    "output": "qa/live_verification/autonomous_gold_admission_mvc43_51_20260720T172025Z.json",
+    "status": "insufficient_autonomous_verified_samples"
+  },
+  "artifact_type": "wilson_sample_gap_to_autonomous_certified_gold",
+  "authoritative_gaps": {
+    "at_mvc_43_post_hard_qa_live": {
+      "exact_serious_upper_0_defect": 0.06729675341386787,
+      "gap_to_binding_floor": 555,
+      "gap_to_exact_serious_floor": 555,
+      "gap_to_wilson_floor": 225,
+      "mvc": 43,
+      "wilson_false_accept_upper_0_defect": 0.05919508334503749
+    },
+    "at_mvc_51_peak": {
+      "exact_serious_upper_0_defect": 0.0570479523604428,
+      "gap_to_binding_floor": 547,
+      "gap_to_exact_serious_floor": 547,
+      "gap_to_wilson_floor": 217,
+      "mvc": 51,
+      "wilson_false_accept_upper_0_defect": 0.05037735920888619
+    },
+    "exact_binding_gap_at_peak_51": 547,
+    "exact_binding_gap_primary": 555,
+    "exact_wilson_gap_at_peak_51": 217,
+    "exact_wilson_gap_primary": 225,
+    "formula": "gap = max(0, floor_n - mvc); wilson_floor=n_for_FA_UB<=0.01; binding=max(min_bucket,n_wilson,n_exact)",
+    "primary_report_mvc": 43
+  },
+  "authority": "autonomous_certified_gold_profile",
+  "autonomous_certified_gold": 0,
+  "calibrated_auto_accepted": 0,
+  "claim_boundary": {
+    "authoritative_mvc_band_is_43_to_51": true,
+    "certificate_minted": false,
+    "glue_emit_not_real_mvc_coverage": true,
+    "mvc_is_not_autonomous_certified_gold": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "wilson_math_unchanged": true
+  },
+  "git_head": "2d0b40efbeef980e33e6bcac7342d86723ab4830",
+  "git_head_short": "2d0b40ef",
+  "lane": "GOLD_FACTORY",
+  "model": "cursor-grok-4.5-high-fast",
+  "mvc_band": {
+    "label": "MVC~43-51",
+    "peak_reported": 51,
+    "pool_unique_real_multiprovider_fp": 25,
+    "post_hard_qa_live": 43,
+    "source_status": "qa/live_verification/gold_factory_critical_status_20260720T171840Z.json"
+  },
+  "next_agent_step": "Grow real multiprovider MVC from 43 toward binding_n=598 (Wilson floor 268 gap=225; binding gap=555). Continue GPU-seq tournament on remaining feed; assemble image-disjoint corpus; re-run admission --corpus.",
+  "pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1",
+  "pool_scan_inflated_not_authoritative_for_real_feed": {
+    "gap_to_binding_floor_if_counted": 121,
+    "gap_to_wilson_floor_if_counted": 0,
+    "machine_verified_candidate_count": 477,
+    "note": "includes prove-emit/tournament-emit glue; not real multiprovider feed coverage"
+  },
+  "profile_id": "maskfactory-autonomous-certified-gold-admission-v1",
+  "profile_sha256": "789d9e0af3a72cd8ff5fa4b0229cbcf662a3f904e9b336f6483a2fbfc287c823",
+  "recorded_at": "2026-07-20T17:20:47.990676Z",
+  "schema_version": "1.1.0",
+  "self_sha256": "ee0562f47ff621ac17783faa23d0a29390e6794e0ac5de1cb5e1c413097ef29a",
+  "statistical_floors": {
+    "aggregate_false_accept_bound_method": "one_sided_wilson",
+    "confidence_level": 0.95,
+    "maximum_false_accept_upper_bound": 0.01,
+    "maximum_serious_false_accept_upper_bound": 0.005,
+    "minimum_autonomous_verified_per_risk_bucket": 30,
+    "serious_false_accept_bound_method": "exact_zero_failure",
+    "z_one_sided": 1.6448536269514715
+  },
+  "zero_defect_requirements": {
+    "binding_constraint": "exact_zero_failure_serious",
+    "binding_n": 598,
+    "exact_upper_at_n": 0.004997058694246492,
+    "n_for_exact_serious_le_0_005": 598,
+    "n_for_wilson_false_accept_le_0_01": 268,
+    "wilson_upper_at_n": 0.009994414667589548
+  }
+}

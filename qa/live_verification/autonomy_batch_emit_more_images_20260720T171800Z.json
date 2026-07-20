@@ -1,0 +1,737 @@
+{
+  "after_pool": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 358,
+    "lifecycle_sidecars_seen": 407,
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "machine_verified_candidate_count": 407
+  },
+  "artifact_type": "autonomy_batch_emit_more_images",
+  "authority": "emit_path_glue_proof_only",
+  "before_pool": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 126,
+    "lifecycle_sidecars_seen": 126,
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "machine_verified_candidate_count": 126
+  },
+  "claim_boundary": {
+    "emit_path_glue_proof_only": true,
+    "no_certificate_minted": true,
+    "no_fabricated_wilson_samples": true,
+    "not_authoritative_human_gold": true
+  },
+  "lane": "GOLD_FACTORY",
+  "model": "cursor-grok-4.5-high-fast",
+  "mvc_after": 407,
+  "mvc_before": 126,
+  "prove_emit_rows": [
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b00",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_c3ea1e2f7b63",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b00\\img_c3ea1e2f7b63\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b01",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_5f704403503d",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b01\\img_5f704403503d\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b02",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_39e9a44f8723",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b02\\img_39e9a44f8723\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b03",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_55a0406ce30e",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b03\\img_55a0406ce30e\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b04",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_3a9bc2188b4c",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b04\\img_3a9bc2188b4c\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b05",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_ca5fafe3e941",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b05\\img_ca5fafe3e941\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b06",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_930aadb82fed",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b06\\img_930aadb82fed\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b07",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_d68d12cb67fd",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b07\\img_d68d12cb67fd\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b08",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_e7e3e6813f31",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b08\\img_e7e3e6813f31\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b09",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_4339feccf4e2",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b09\\img_4339feccf4e2\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b10",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_4aaf97793617",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b10\\img_4aaf97793617\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b11",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_d1259a6d13dc",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b11\\img_d1259a6d13dc\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b12",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_4e77f8d1900b",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b12\\img_4e77f8d1900b\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b13",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_ddad23debb49",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b13\\img_ddad23debb49\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b14",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_b38de94fc04c",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b14\\img_b38de94fc04c\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b15",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_7117ee4785bf",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b15\\img_7117ee4785bf\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b16",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_caf0a1706516",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b16\\img_caf0a1706516\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b17",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_246a6beabd49",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b17\\img_246a6beabd49\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b18",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_1a64ea2b3750",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b18\\img_1a64ea2b3750\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b19",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_ec690bd3d15b",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b19\\img_ec690bd3d15b\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b20",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_dae8ab908b0d",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b20\\img_dae8ab908b0d\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b21",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_8c73d3d86512",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b21\\img_8c73d3d86512\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b22",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_617fc0c95d28",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b22\\img_617fc0c95d28\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b23",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_dc9455d933ed",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b23\\img_dc9455d933ed\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b24",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_fa27070e8d27",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b24\\img_fa27070e8d27\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b25",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_ded6e520c237",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b25\\img_ded6e520c237\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b26",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_d4bcc38cc949",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b26\\img_d4bcc38cc949\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b27",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_1793dbd3d5f2",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b27\\img_1793dbd3d5f2\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b28",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_96010659bcd6",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b28\\img_96010659bcd6\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b29",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_9015e89d31fc",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b29\\img_9015e89d31fc\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b30",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_6ffb95376d4b",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b30\\img_6ffb95376d4b\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b31",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_46b1e88c6562",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b31\\img_46b1e88c6562\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b32",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_5e055aded35a",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b32\\img_5e055aded35a\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b33",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_575c7de6604e",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b33\\img_575c7de6604e\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b34",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_d8bdd6e82f76",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b34\\img_d8bdd6e82f76\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b35",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_74b30301fd09",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b35\\img_74b30301fd09\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b36",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_6f05fff68638",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b36\\img_6f05fff68638\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b37",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_f0d60ff4d640",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b37\\img_f0d60ff4d640\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b38",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_437f5b1bbdf5",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b38\\img_437f5b1bbdf5\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b39",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_34a0db184e17",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b39\\img_34a0db184e17\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b40",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_c639a9385796",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b40\\img_c639a9385796\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b41",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_12c0e8ac5a29",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b41\\img_12c0e8ac5a29\\autonomy\\face.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b42",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_e83ef472ce48",
+      "label": "hair",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b42\\img_e83ef472ce48\\autonomy\\hair.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b43",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_7d3411883587",
+      "label": "left_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b43\\img_7d3411883587\\autonomy\\left_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b44",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_4a401d42b70d",
+      "label": "right_hand",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b44\\img_4a401d42b70d\\autonomy\\right_hand.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b45",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_2e2c2c0fc8c7",
+      "label": "left_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b45\\img_2e2c2c0fc8c7\\autonomy\\left_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b46",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_ab46779396e9",
+      "label": "right_foot",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b46\\img_ab46779396e9\\autonomy\\right_foot.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b47",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_75c8c3f9f7f5",
+      "label": "skin",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b47\\img_75c8c3f9f7f5\\autonomy\\skin.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b48",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_f4f39b13b192",
+      "label": "torso",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b48\\img_f4f39b13b192\\autonomy\\torso.json",
+      "mode": "prove_emit"
+    },
+    {
+      "batch_id": "autonomous_gold_emit_prove_20260720T171547Z_b49",
+      "decision_status": "machine_verified_candidate",
+      "image_id": "img_3b4681e56643",
+      "label": "face",
+      "lifecycle_path": "C:\\Comfy_UI_Main_Masking\\runs\\autonomous_gold_emit_prove_20260720T171547Z_b49\\img_3b4681e56643\\autonomy\\face.json",
+      "mode": "prove_emit"
+    }
+  ],
+  "prove_n": 50,
+  "recorded_at": "2026-07-20T17:18:00.499109Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "d1cfd5ea02770fbc693254120ac60fc577fcb411f1a5a45a81d696104a8ce4eb",
+  "tournament_emit_rows": [
+    {
+      "exit_code": 0,
+      "image_id": "img_3bb0645a0bb7",
+      "label": "torso",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_3bb0645a0bb7/autonomy/torso.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_00_torso.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_de1f06fdd324",
+      "label": "face",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_de1f06fdd324/autonomy/face.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_01_face.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_6c376945651d",
+      "label": "hair",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_6c376945651d/autonomy/hair.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_02_hair.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_c8cbc473db52",
+      "label": "left_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_c8cbc473db52/autonomy/left_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_03_left_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_0c98e96b2489",
+      "label": "right_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_0c98e96b2489/autonomy/right_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_04_right_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_731931adcc35",
+      "label": "left_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_731931adcc35/autonomy/left_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_05_left_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_c7b23fb68ade",
+      "label": "right_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_c7b23fb68ade/autonomy/right_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_06_right_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_5541d33be666",
+      "label": "skin",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_5541d33be666/autonomy/skin.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_07_skin.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_064a7b0a0f6c",
+      "label": "torso",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_064a7b0a0f6c/autonomy/torso.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_08_torso.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_7dfd796a7686",
+      "label": "face",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_7dfd796a7686/autonomy/face.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_09_face.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_67f18e03158d",
+      "label": "hair",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_67f18e03158d/autonomy/hair.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_10_hair.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_1925d438834a",
+      "label": "left_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_1925d438834a/autonomy/left_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_11_left_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_8b17769c6045",
+      "label": "right_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_8b17769c6045/autonomy/right_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_12_right_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_7eaec49cba4a",
+      "label": "left_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_7eaec49cba4a/autonomy/left_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_13_left_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_d934bfc647dd",
+      "label": "right_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_d934bfc647dd/autonomy/right_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_14_right_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_c1520e69bc60",
+      "label": "skin",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_c1520e69bc60/autonomy/skin.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_15_skin.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_b72dbbaf5270",
+      "label": "torso",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_b72dbbaf5270/autonomy/torso.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_16_torso.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_76985be9835c",
+      "label": "face",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_76985be9835c/autonomy/face.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_17_face.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_d3fa4d322e7a",
+      "label": "hair",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_d3fa4d322e7a/autonomy/hair.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_18_hair.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_1ebb937ed63b",
+      "label": "left_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_1ebb937ed63b/autonomy/left_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_19_left_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_7c3aaf8fdf2e",
+      "label": "right_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_7c3aaf8fdf2e/autonomy/right_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_20_right_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_64644246fe84",
+      "label": "left_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_64644246fe84/autonomy/left_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_21_left_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_f1ab1d6a2760",
+      "label": "right_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_f1ab1d6a2760/autonomy/right_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_22_right_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_98b8141a975d",
+      "label": "skin",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_98b8141a975d/autonomy/skin.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_23_skin.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_1abfc820be85",
+      "label": "torso",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_1abfc820be85/autonomy/torso.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_24_torso.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_51f4211b4042",
+      "label": "face",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_51f4211b4042/autonomy/face.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_25_face.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_e0dca9577a08",
+      "label": "hair",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_e0dca9577a08/autonomy/hair.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_26_hair.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_009f07bf782b",
+      "label": "left_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_009f07bf782b/autonomy/left_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_27_left_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_0cbd6b276504",
+      "label": "right_hand",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_0cbd6b276504/autonomy/right_hand.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_28_right_hand.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    },
+    {
+      "exit_code": 0,
+      "image_id": "img_cee8f76ff2f3",
+      "label": "left_foot",
+      "lifecycle_relpath": "autonomous_gold_tournament_emit_20260720T171548Z/img_cee8f76ff2f3/autonomy/left_foot.json",
+      "mode": "tournament_emit",
+      "output": "qa/live_verification/tournament_emit_decision_20260720T171548Z_29_left_foot.json",
+      "stderr_tail": "",
+      "stdout_tail": "milies\": [\"family_a\", \"family_b\", \"family_c\"], \"source_provider_keys\": [\"fam_a\", \"fam_b\", \"fam_c\"]}, \"score\": 0.9179999999999999, \"vetoes\": []}], \"reason\": \"winner passed all hard vetoes and tournament margins\", \"runner_up_score\": null, \"status\": \"machine_verified_candidate\", \"training_loss_weight\": 0.0, \"truth_tier\": \"machine_candidate\", \"winner_id\": \"winner\", \"winner_score\": 0.9179999999999999}\n"
+    }
+  ],
+  "tournament_n": 30
+}

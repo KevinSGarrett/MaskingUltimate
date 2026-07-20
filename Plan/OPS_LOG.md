@@ -10634,7 +10634,7 @@ Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json
 **Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile
 **Result:** RECONCILED. Linked wsl_ubuntu_io_error_20260720.json + f_drive_restored_20260720T0933Z.json. CURRENT STILL_BROKEN_PROBE_FAILED (ERROR_SHARING_VIOLATION). Docker-GPU parallel CUDA path.
 
-Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 0d19efe9b1ef2af6...).
+Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 4f747b89315cf2fe...).
 
 ## 2026-07-20 14:49 UTC - DAZ validation/ops/coverage STATIC re-verify FINAL (F:\DAZ read-when-present, 26 entries)
 **Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
@@ -10816,3 +10816,32 @@ Credits: MF-P6-11.02 86→88; MF-P6-11.07 83→85; MF-P6-12.05 83→84; MF-P6-12
 
 Evidence: qa/live_verification/tournament_gold_admission_climb_20260720T1506.json (self_sha256 5dac35ed1e74e857cf883d0d83453bb899e97754cb982ef42322142d4ede6f18); qa/live_verification/autonomous_gold_admission_20260720T1447.json (self_sha256 fe30a0123be32a6a1bbc7243f521348b2f8eb31a93afba77a5a47707e73a75d4).
 
+
+
+## 2026-07-20 15:20 UTC — ABORT maskfactory/serve:cu128 build (daemon EOF mid-export)
+**Item:** Mode-B GPU serve image build + smoke (FULL AUTONOMY)
+**Command:** `docker compose -f docker/compose.gpu.yml build maskfactory-serve`; restore via traefik/nuclio restart; (no smoke)
+**Result:** ABORT. Preflight PASS (engine 29.6.1 UP, C: free 91.72 GiB >=40, F: absent so Docker data stayed on WSL default). Build completed Dockerfile steps 1-10 then failed at `exporting layers` with `rpc error ... EOF`. Image `maskfactory/serve:cu128` ABSENT. `tools/smoke_docker_gpu_serve.py` NOT run (fail-closed). Daemon returned 500 then auto-recovered; CVAT about temporarily restored to 2.24.0 after `docker restart traefik`. SAM2 invoke 503; `docker restart nuclio-nuclio-pth-sam2` hit zombie PID and knocked the engine down again. Final: `com.docker.service` Stopped (non-elevated Start-Service denied), pipe missing, CVAT unreachable; host Ollama 0.32.1 still UP. No prune/volume wipe. No build retry.
+
+Evidence: `qa/live_verification/serve_cu128_build_abort_20260720T1520.json` (self_sha256 `5d20df97ec81f7ac00aaa8aff6080471d71a5df682177ff35d56a92bf9a021b3`).
+## 2026-07-20 — Measured champions path production glue (champions=0; no force-register)
+**Item:** MF measured path runs/ → audit queue → P5 → mark-benchmarked → promote
+**Command:** pytest glue + tools/run_measured_champions_path.py
+**Result:** Wired production path; live pool mvc>=23 envelopes with >=3 families; champions=0; Mode B /predict=AWAITING_RUNTIME. No force-register.
+
+Glue: production_audit + corpus envelopes + mark-benchmarked + orchestrator. Contested CLI/S11 patches best-effort.
+Evidence: qa/live_verification/measured_champions_path_production_20260720T1530.json
+
+## 2026-07-20 15:17 UTC - Tournament-sibling mask families ONLINE (fresh CUDA smokes)
+**Item:** 64-sample tournament sibling family-count gate / BiRefNet+SCHP+faceparse bring-up
+**Command:** `python tools/gpu_sequencer.py plan --consumer pipeline` (run_now, free~7748 MiB) then `python runtime_artifacts/_bringup_families_tournament_sibling_20260720T1511.py` (sequential faceparse -> birefnet -> schp_atr via ComfyUI cu128 venv)
+**Result:** RUNTIME_PASS_BOUNDED. Live independent mask families = **3**: `faceparse_bisenet` (registry smoke SHA `8c3235e1…`), `birefnet_general` (local CUDA copy-not-symlink; SHA `d8155bfb…`), `schp_atr` (local CUDA; SHA `3dbf9312…`, revision eb84c432…). Meets tournament floor (>=3). Runtime: `C:/Comfy_UI_Main/ComfyUI/.venv` torch **2.11.0+cu128**, RTX 5060. WSL Ubuntu Running (nvidia-smi OK) but maskfactory conda torch cold-import exits 15 — host-SAM2 WSL deferred. Docker engine DOWN (named pipe absent) — nuclio SAM2 not counted. Sibling feed still 64 samples (`tournament_sample_set_sibling_feed_latest.json`). No gold minted; champions=0.
+
+Evidence: `qa/live_verification/families_online_tournament_sibling_20260720T1514.json` (self_sha256 d0bc2cc7…); latest pointer `qa/live_verification/families_online_tournament_sibling_latest.json`. Next: GPU-sequence multi-provider tournament on the 64-sample feed -> machine_verified_candidate sidecars -> admission `--corpus`.
+## 2026-07-20 — Measured champions path production glue (champions=0; no force-register)
+**Item:** MF measured path runs/ → audit queue → P5 → mark-benchmarked → promote
+**Command:** pytest glue + tools/run_measured_champions_path.py
+**Result:** Wired production path; live pool mvc>=23 envelopes with >=3 families; champions=0; Mode B /predict=AWAITING_RUNTIME. No force-register.
+
+Glue: production_audit + corpus envelopes + mark-benchmarked + orchestrator. Contested CLI/S11 patches best-effort.
+Evidence: qa/live_verification/measured_champions_path_production_20260720T1530.json

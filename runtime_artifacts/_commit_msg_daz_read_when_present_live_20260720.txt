@@ -1,0 +1,3 @@
+qa(daz): seal+commit read-when-present STATIC via unique binder paths
+
+Bind validation/ops/coverage to timestamped evidence files so parallel agents cannot overwrite sealed hashes; soft storage floor noted; no live Studio/gold claims.

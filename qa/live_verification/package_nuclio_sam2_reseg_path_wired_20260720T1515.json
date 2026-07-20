@@ -1,0 +1,107 @@
+{
+  "artifact_type": "package_nuclio_sam2_reseg_path_wired",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-20T15:22:26.741666+00:00",
+  "local_date": "2026-07-20",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "project_head_at_authoring": "96a809c8e19d620db586c47d9d5743c03fd8b252",
+  "lane": "Wire agent-executable package part re-seg/repair path that does NOT require WSL Ubuntu VHD: CVAT/Nuclio pth-sam2 invoke from tools.",
+  "implemented": {
+    "NuclioSam2Client": "authenticated GET/POST to /api/lambda/functions/pth-sam2",
+    "derive_clicks_from_mask": "largest-CC positives + protected negatives + ROI",
+    "decide_sam2_nuclio_promotion": "promotes fragmentation/underfill when CC excess drops + hard QC; never claims VISUAL_QA_PASS_BOUNDED",
+    "tools/repair_package_nuclio_sam2.py": "agent CLI: upload package source.png to CVAT task, invoke SAM2, guard via evaluate_repair_candidate + compose_candidate_map_transactional, optional --apply with backup/rollback + verify-package"
+  },
+  "file_hashes": {
+    "provider": {
+      "path": "src/maskfactory/providers/nuclio_sam2.py",
+      "exists": true,
+      "sha256": "98cc7e5d8b1a6078f0b923d90a645b64e56a9ce090f9769d7a112a0253f89bbb"
+    },
+    "tool": {
+      "path": "tools/repair_package_nuclio_sam2.py",
+      "exists": true,
+      "sha256": "1f04b55055e9285c28c44d11612745ead3c820734719d21d35fdf1c6546e4d33"
+    },
+    "unit_tests": {
+      "path": "tests/test_nuclio_sam2_clicks.py",
+      "exists": true,
+      "sha256": "94234db5d8044ac2d00386765c0273b3e1fbfd95da6282f53dcbaa76b22c9575"
+    },
+    "policy_patch_helper": {
+      "path": "runtime_artifacts/_patch_visual_defect_policy_nuclio_20260720.py",
+      "exists": true,
+      "sha256": "789d19fc468bb60b368b41af42a41f8b318681c814f7450401d01b6b0601c10c"
+    }
+  },
+  "unit_tests": {
+    "command": "pytest tests/test_nuclio_sam2_clicks.py tests/test_visual_defect_abstention.py -q",
+    "returncode": 0,
+    "stdout_tail": "...................                                                      [100%]\n"
+  },
+  "live_runtime_probe": {
+    "docker_engine_up": false,
+    "docker_server_version": null,
+    "docker_stderr_tail": "failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n",
+    "cvat_about_up_2_24": false,
+    "cvat_stdout_tail": "",
+    "wsl_ubuntu_required": false,
+    "note": "Earlier this wave Docker+CVAT+nuclio-pth-sam2 were UP (cvat_sam2 smoke PASS / RUNTIME_PASS_BOUNDED). Mid-wave the docker-desktop WSL distro stopped and npipe dockerDesktopLinuxEngine vanished; bootstrap_cvat cannot proceed until the engine returns."
+  },
+  "attempted_instance_repair": {
+    "target": "img_51945db358cb/p0/left_thigh",
+    "defect_class": "fragmentation",
+    "pre_metrics": {
+      "components": 77,
+      "max_components": 1,
+      "baseline_excess": 76,
+      "area_px": 464361
+    },
+    "apply_requested": true,
+    "package_mutated": false,
+    "outcome": "BLOCKED_DOCKER_ENGINE_DOWN",
+    "error_class": "requests.exceptions.ConnectionError / docker npipe missing"
+  },
+  "repair_reachability": {
+    "path_wired": true,
+    "path_executable_when_cvat_up": true,
+    "live_apply_this_wave": false,
+    "wsl_vhd_required": false,
+    "blocker": "Docker Desktop engine down (docker-desktop WSL Stopped; npipe absent)"
+  },
+  "before_after_visual_tier": {
+    "machine_package_corpus": {
+      "before": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+      "after": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+    }
+  },
+  "visual_qa_pass_bounded_claimed": false,
+  "highest_tier_achieved": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+  "exact_blocker": "Package nuclio re-seg path is wired and unit-tested, but live CVAT/Nuclio invoke is unreachable because Docker Desktop engine is down (docker-desktop WSL Stopped).",
+  "what_would_unblock": [
+    "Start Docker Desktop until `docker info` returns a ServerVersion and `wsl -l -v` shows docker-desktop Running.",
+    "python tools/bootstrap_cvat.py (production CVAT v2.24 on localhost:8080).",
+    "python tools/smoke_cvat_sam2.py -> PASS.",
+    "python tools/repair_package_nuclio_sam2.py --image-id img_51945db358cb --instance p0 --label left_thigh --defect-class fragmentation --apply",
+    "Re-run verify-package + agent pixel review; still do not fabricate VISUAL_QA_PASS_BOUNDED if other structural residuals remain."
+  ],
+  "claims_not_established": [
+    "VISUAL_QA_PASS_BOUNDED",
+    "gold / human_approved_gold / autonomous_certified_gold",
+    "live package part mutation this wave",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "honesty": [
+    "Path wiring is real code + green unit tests; live apply was attempted and blocked by engine down.",
+    "No VISUAL_QA_PASS_BOUNDED fabrication.",
+    "WSL Ubuntu VHD is not required for this path."
+  ],
+  "evidence_pointers": [
+    "src/maskfactory/providers/nuclio_sam2.py",
+    "tools/repair_package_nuclio_sam2.py",
+    "tests/test_nuclio_sam2_clicks.py",
+    "qa/live_verification/visual_qa_machine_corpus_sam2_up_reachability_20260720T1430.json",
+    "qa/reports/cvat_sam2_smoke.json"
+  ],
+  "self_sha256": "79d6d153e5a6a0fdf762b893bd65d700b5a44a64b0e12527239b8887fd04f212"
+}

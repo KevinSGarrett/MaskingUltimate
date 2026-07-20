@@ -10021,3 +10021,40 @@ Free C: disk above 75 GiB ingest floor (currently ~4.39 GiB after collapse from 
 - qa/reports/ollama_vlm_smoke.json (latency 43.149s)
 
 **Commands:** warm WSL; docker/CVAT/Nuclio/Ollama reprobe; host-only doctor subset; smoke_cvat_sam2; smoke_ollama_vlm; Mode B health/predict probe; skip refine under disk; seal evidence; tracker notes; milestone revision; commit evidence only
+
+## 2026-07-20 01:49 UTC - Ephemeral disk reclaim (pip/uv/Temp build caches only)
+
+**Lane:** Proof-tier safe cache reclaim after RUNTIME_BLOCKED disk collapse
+**Actor:** proof_tier_disk_ephemeral_reclaim
+**Result:** Reclaimed ~8.715 GiB ephemeral caches; C: 4.067 -> 12.781 GiB. Still <<75 GiB ingest floor. Doctor all-green remains RUNTIME_BLOCKED. No doctor-green claim. Governed data preserved.
+
+### Push
+- Branch \codex/maskfactory-runtime-implementation\ pushed to origin before reclaim: range \be0767e..8eeaed9c\ (HEAD was \8eeaed9c\)
+
+### Disk before/after
+- Before: 4.067 GiB (4366544896 bytes)
+- After: 12.781 GiB (13723975680 bytes)
+- Delta: +8.715 GiB
+- Ingest floor: 75 GiB — still_below_ingest_floor=true
+
+### Exact paths reclaimed
+1. \C:\\Users\\kevin\\AppData\\Local\\pip\\Cache\ — \python -m pip cache purge\ (1617 files / 6409.1 MB / 60 dirs)
+2. \C:\\Users\\kevin\\AppData\\Local\\uv\\cache\ — cache-only subtrees with CACHEDIR.TAG: removed archive-v0, wheels-v5, sdists-v9, simple-v18, interpreter-v4, environments-v2; builds-v0 partial remain (Access denied on locked python.exe)
+3. \C:\\Users\\kevin\\AppData\\Local\\Temp\\pip-*\ build-cache name patterns only (pip-build-env/metadata/unpack/install/…); not whole Temp; some Access denied survivors left
+
+### Not touched
+- MaskedWarehouse, models/, data/packages, \.ollama\, Docker VHDX, Docker volumes/CVAT data, qa/, Plan/, committed runtime_artifacts evidence JSON
+
+### Live probe after reclaim
+- Docker 29.4.3 / docker-desktop up
+- CVAT production localhost:8080 -> 2.24.0 (RUNTIME_PASS_BOUNDED)
+- Nuclio pth-sam2 ready / healthy (RUNTIME_PASS_BOUNDED)
+- Ollama 0.32.1 at 127.0.0.1:11434 (RUNTIME_PASS_BOUNDED)
+
+### Doctor honesty
+- Doctor all-green: RUNTIME_BLOCKED (free ~12.781 GiB <<75)
+- Pointer: \qa/live_verification/needs_kevin_actions_20260719.json\ action_id \disk_reclaim_above_75_gib- No PRODUCTION_EVIDENCE_PASS / gold / visual-pass / Main-complete
+
+### Evidence
+- qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json self_sha256 \ec987c30448dce147585e746a80b1043706a6601185c370c199a18e970b4a574\ file_sha256 \ba39a5e3c791f7ccde93f0cde91eb13017569d0c6c0324dce175ef22b060e489
+**Commands:** git push; pip cache purge; uv cache clean --force / rd cache subtrees; Temp pip-* pattern remove; docker/CVAT/Ollama reprobe; seal evidence; OPS_LOG append; commit+push evidence

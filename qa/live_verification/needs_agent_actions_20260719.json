@@ -2,8 +2,8 @@
   "artifact_type": "needs_agent_actions",
   "schema_version": "1.0.0",
   "local_date": "2026-07-19",
-  "recorded_at": "2026-07-20T04:30:44Z",
-  "project_head_at_authoring": "c378499bdbbc7f26d1a9a08918408107907e2f01",
+  "recorded_at": "2026-07-20T07:28:47Z",
+  "project_head_at_authoring": "447b0f9b642e568e54467d592fb3307525810489",
   "authority": "agent_executable_action_queue_zero_human_wait_states",
   "execution_wave_evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json",
   "supersedes": {
@@ -189,5 +189,13 @@
     "vram_action": "DAZ NOT killed (live user GUI session; destructive). VRAM freeing moot: train/serve runtimes unavailable on host regardless.",
     "main_adoption": "Producer bridge + cross-project PASS at HEAD; run_cross_project_qualification=producer_partial. Main C:/Comfy_UI_Main HEAD b36001b9 = separate unrelated active project (Wave64), dirty tree, NO MaskFactory consumer surface. Real receipts require isolated Main-side consumer build; not fabricated."
   },
-  "self_sha256": "bf70119fd20fa2eeb7354d5c0cdad26e19dae3a13e1caf22e84973dda72369d5"
+  "parallel_execution_reconcile": {
+    "recorded_at": "2026-07-20T07:28:47Z",
+    "head": "447b0f9b642e568e54467d592fb3307525810489",
+    "stream": "tracker_and_evidence_hygiene_only",
+    "evidence_hygiene_sweep": "qa/live_verification/tracker_evidence_hygiene_sweep_20260720.json",
+    "status_transitions_applied": 0,
+    "note": "Multi-agent parallel execution active (sibling source edits in working tree left untouched). Evidence-hygiene sweep confirmed the tracker already reflects all sealed STATIC_PASS/RUNTIME_PASS_BOUNDED evidence; 0 unfinished items could honestly advance on existing sealed proof. Report regenerated; validate PASS (798 items, 0 structural problems)."
+  },
+  "self_sha256": "bce2fcde419635a3b7ac6e18d77a08be92c36abe6ba716a93a9a1cda088ecf73"
 }

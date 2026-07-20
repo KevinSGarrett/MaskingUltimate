@@ -1,21 +1,24 @@
 """Real bridge-contract pillars executed by the isolated Main-side consumer.
 
 Every pillar calls the genuine producer machinery published in the ``maskfactory``
-package -- no mocks, no re-implementation. The four pillars named in the runner
-are:
+package -- no mocks, no re-implementation. Pillars:
 
   * adapter        -> external-adapter conformance verifier (contracts-only boundary)
   * journal        -> trusted-signed append-only journal + checkpoint + history validation
-  * circuit        -> failure-control / no-silent-fallback fault-injection circuit
-  * qualification  -> cross-project qualification matrix (honest ``producer_partial`` ceiling)
+  * circuit        -> deepened failure-control / no-silent-fallback fault-injection (11.07)
+  * mode_a         -> adversarial Mode A immutable package-read matrix (11.02)
+  * qualification  -> honest producer_partial + adversarial depth matrix (12.05)
+  * firewall       -> final-release core-close firewall depth matrix (12.06)
+  * adoption       -> cryptographically real, isolated-consumer-signed attestation
 
-plus a cryptographically real, isolated-consumer-signed adoption attestation.
+HARD blockers that require the real Comfy_UI_Main runtime stay OPEN.
 """
 
 from __future__ import annotations
 
 import ast
 import base64
+import copy
 import gzip
 import hashlib
 import io
@@ -40,16 +43,20 @@ from maskfactory.bridge.failure_control import (
     simulate_fault_injection,
     validate_failure_control_evidence,
 )
-from maskfactory.bridge.mode_a_package_read import (
-    evaluate_mode_a_package_read,
-    validate_mode_a_package_read_evidence,
+from maskfactory.bridge.final_release_handoff import (
+    evaluate_final_release_handoff,
+    validate_final_release_handoff_evidence,
 )
-from maskfactory.bridge.mode_a_vertical_slice import build_fixture_adopted_package
 from maskfactory.bridge.journal import (
     append_bridge_journal_event,
     checkpoint_bridge_journal,
     validate_bridge_journal_history,
 )
+from maskfactory.bridge.mode_a_package_read import (
+    evaluate_mode_a_package_read,
+    validate_mode_a_package_read_evidence,
+)
+from maskfactory.bridge.mode_a_vertical_slice import build_fixture_adopted_package
 from maskfactory.contracts import (
     ADOPTED_CONTRACT_VERSIONS,
     ADOPTED_OPENAPI_PATHS,
@@ -64,9 +71,8 @@ CONSUMER_ROOT = Path(__file__).resolve().parents[2]
 PKG_DIR = Path(__file__).resolve().parent
 DIST_DIR = CONSUMER_ROOT / "dist"
 DECIDED_AT = "2026-07-20T05:00:00Z"
+MODE_A_DECIDED_AT = "2026-07-19T14:00:00Z"
 
-# HARD blockers that genuinely require the real Comfy_UI_Main runtime and can
-# never be closed by an isolated producer-side consumer.
 HARD_BLOCKERS_REQUIRING_REAL_MAIN: tuple[str, ...] = (
     "MF-P6-11.02",
     "MF-P6-11.07",
@@ -100,14 +106,7 @@ def _consumer_git_tree() -> str | None:
 
 
 def _consumer_source_clean() -> bool:
-    """True when the tracked adapter source tree has no uncommitted modifications.
-
-    Generated run artifacts (``receipts/``, ``dist/``) are git-ignored, so
-    producing a receipt never flips this to dirty -- the flag honestly reflects
-    the state of the committed adapter boundary source. A clean tree yields empty
-    porcelain output, so we must read the return code rather than treat empty
-    stdout as a git failure.
-    """
+    """True when the tracked adapter source tree has no uncommitted modifications."""
     try:
         out = subprocess.run(
             ["git", "status", "--porcelain"],
@@ -140,11 +139,7 @@ def _adapter_imports() -> tuple[list[str], list[str]]:
 
 
 def build_consumer_sdist() -> tuple[Path, str]:
-    """Build a deterministic source distribution of the adapter package.
-
-    Backs ``install_mode='sdist'`` / ``package_sha256`` with real, reproducible
-    bytes rather than a fabricated hash.
-    """
+    """Build a deterministic source distribution of the adapter package."""
     files = sorted(PKG_DIR.rglob("*.py"))
     tar_buf = io.BytesIO()
     with tarfile.open(fileobj=tar_buf, mode="w") as tf:
@@ -168,9 +163,6 @@ def build_consumer_sdist() -> tuple[Path, str]:
     return out, hashlib.sha256(gz_bytes).hexdigest()
 
 
-# ---------------------------------------------------------------------------
-# Isolated-consumer signing key (deterministic, self-controlled)
-# ---------------------------------------------------------------------------
 def _isolated_key(role: str) -> tuple[Ed25519PrivateKey, str]:
     seed = hashlib.sha256(
         f"comfy-main-maskfactory-consumer-isolated-v1:{role}".encode()
@@ -194,8 +186,6 @@ def run_adapter_conformance() -> dict[str, Any]:
             "repository_clean": _consumer_source_clean(),
             "install_mode": "sdist",
         },
-        # The bridge adopts a pinned, published release snapshot; repository_clean
-        # here describes that immutable release cut, not the live producer tree.
         "producer_state": {
             "release_status": "published",
             "adoption_decision": "adopted",
@@ -259,7 +249,6 @@ def run_signed_journal() -> dict[str, Any]:
             private_key=key,
             signing_key_id=key_id,
         )
-    # Same-key / same-body replay must be idempotent (no new entry).
     replay_entries, _, replayed = append_bridge_journal_event(
         entries,
         journal_id="isolated-main-consumer-journal-v1",
@@ -292,11 +281,28 @@ def run_signed_journal() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# Pillar 3: failure-control / no-silent-fallback circuit
+# Pillar 3: deepened failure-control / no-silent-fallback (MF-P6-11.07)
 # ---------------------------------------------------------------------------
+def _fc_circuit(*, state: str = "closed", half_open_probe_allowed: bool = False) -> dict[str, Any]:
+    body = {
+        "route_key": "mode-b/predict",
+        "release_id": "mfrel_sibling_consumer_circuit",
+        "state": state,
+        "failure_threshold": 3,
+        "observation_window_ms": 60000,
+        "cooldown_ms": 5000,
+        "opened_at": "2026-07-20T04:00:00Z" if state != "closed" else None,
+        "half_open_probe_allowed": half_open_probe_allowed,
+    }
+    body["evidence_sha256"] = canonical_document_sha256(
+        body, excluded_top_level_fields=("evidence_sha256",)
+    )
+    return body
+
+
 def run_failure_control_circuit() -> dict[str, Any]:
     request = {
-        "request_id": "mfareq_isolated_00000001",
+        "request_id": "mfareq_sibling_consumer_0001",
         "pass_id": "pass_predict",
         "attempt_number": 1,
         "created_at": "2026-07-20T04:00:00Z",
@@ -345,23 +351,53 @@ def run_failure_control_circuit() -> dict[str, Any]:
         admission = evidence.get("admission") or {}
         scoped = evidence.get("scoped_dag") or {}
         no_fallback = evidence.get("no_silent_fallback") or {}
-        passed = bool(
-            evidence.get("status") == "accepted"
-            and admission.get("provider_invocation_permitted") is False
-            and scoped.get("scope_exact") is True
-            and scoped.get("blocked_pass_ids") == expected_blocked
-            and scoped.get("continuing_pass_ids") == expected_continuing
-            and no_fallback.get("enforced") is True
-            and no_fallback.get("fallback_artifact_present") is False
-            and issues == ()
+        faults.append(
+            {
+                "fault": fault,
+                "status": evidence.get("status"),
+                "passed": bool(
+                    evidence.get("status") == "accepted"
+                    and admission.get("provider_invocation_permitted") is False
+                    and scoped.get("scope_exact") is True
+                    and scoped.get("blocked_pass_ids") == expected_blocked
+                    and scoped.get("continuing_pass_ids") == expected_continuing
+                    and no_fallback.get("enforced") is True
+                    and no_fallback.get("fallback_artifact_present") is False
+                    and issues == ()
+                ),
+            }
         )
-        faults.append({"fault": fault, "status": evidence.get("status"), "passed": passed})
 
-    # Exhausted retry budget must never authorize another retry.
-    exhausted = dict(request, attempt_number=3)
+    deadline_ev = simulate_fault_injection(
+        fault_kind="timeout",
+        request=request,
+        route_requirements=route,
+        dag_passes=dag,
+        decided_at=DECIDED_AT,
+        at_time="2026-07-20T07:00:00Z",
+    )
+    deadline_enforced = (
+        (deadline_ev.get("admission") or {}).get("deadline_met") is False
+        and (deadline_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and validate_failure_control_evidence(deadline_ev) == ()
+    )
+
+    resource_ev = simulate_fault_injection(
+        fault_kind="timeout",
+        request=request,
+        route_requirements=dict(route, required_vram_mb=999_999_999),
+        dag_passes=dag,
+        decided_at=DECIDED_AT,
+    )
+    resource_enforced = (
+        (resource_ev.get("admission") or {}).get("resource_feasible") is False
+        and (resource_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and validate_failure_control_evidence(resource_ev) == ()
+    )
+
     budget_ev = simulate_fault_injection(
         fault_kind="outage",
-        request=exhausted,
+        request=dict(request, attempt_number=3),
         route_requirements=route,
         dag_passes=dag,
         decided_at=DECIDED_AT,
@@ -370,105 +406,205 @@ def run_failure_control_circuit() -> dict[str, Any]:
         "retry_permitted"
     ) is False and validate_failure_control_evidence(budget_ev) == ()
 
-    # Healthy closed-circuit admission must PERMIT provider invocation (positive baseline).
-    circuit_body = {
-        "route_key": "mode-b/predict",
-        "release_id": "mfrel_sibling_consumer_circuit",
-        "state": "closed",
-        "failure_threshold": 3,
-        "observation_window_ms": 60000,
-        "cooldown_ms": 5000,
-        "opened_at": None,
-        "half_open_probe_allowed": False,
-    }
-    circuit_body["evidence_sha256"] = canonical_document_sha256(
-        circuit_body, excluded_top_level_fields=("evidence_sha256",)
-    )
-    healthy_ev = build_failure_control_evidence(
-        {
+    def _obs(circuit: dict[str, Any], **extra: Any) -> dict[str, Any]:
+        body: dict[str, Any] = {
             "at_time": DECIDED_AT,
             "request": request,
             "route_requirements": route,
             "failure": {},
-            "main_circuit_evidence": circuit_body,
+            "main_circuit_evidence": circuit,
             "main_retry_evidence": {},
             "main_scoped_block_evidence": {},
             "fallback_attempt": {},
             "dag_passes": dag,
-        },
-        decided_at=DECIDED_AT,
+        }
+        body.update(extra)
+        return body
+
+    healthy_ev = build_failure_control_evidence(
+        _obs(_fc_circuit(state="closed")), decided_at=DECIDED_AT
     )
     healthy_admits = (
         healthy_ev.get("status") == "accepted"
         and (healthy_ev.get("admission") or {}).get("provider_invocation_permitted") is True
         and (healthy_ev.get("circuit") or {}).get("blocks_route") is False
+        and (healthy_ev.get("no_silent_fallback") or {}).get("fallback_artifact_present") is False
         and validate_failure_control_evidence(healthy_ev) == ()
     )
 
-    open_body = dict(circuit_body, state="open", opened_at="2026-07-20T04:00:00Z")
-    open_body["evidence_sha256"] = canonical_document_sha256(
-        open_body, excluded_top_level_fields=("evidence_sha256",)
+    open_ev = build_failure_control_evidence(_obs(_fc_circuit(state="open")), decided_at=DECIDED_AT)
+    circuit_open_blocks = (
+        (open_ev.get("circuit") or {}).get("state") == "open"
+        and (open_ev.get("circuit") or {}).get("blocks_route") is True
+        and (open_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and (open_ev.get("no_silent_fallback") or {}).get("fallback_artifact_present") is False
+        and validate_failure_control_evidence(open_ev) == ()
     )
-    open_ev = build_failure_control_evidence(
+
+    half_blocked_ev = build_failure_control_evidence(
+        _obs(_fc_circuit(state="half_open", half_open_probe_allowed=False)),
+        decided_at=DECIDED_AT,
+    )
+    half_probe_ev = build_failure_control_evidence(
+        _obs(_fc_circuit(state="half_open", half_open_probe_allowed=True)),
+        decided_at=DECIDED_AT,
+    )
+    half_open_gated = (
+        (half_blocked_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and (half_probe_ev.get("admission") or {}).get("provider_invocation_permitted") is True
+        and validate_failure_control_evidence(half_blocked_ev) == ()
+        and validate_failure_control_evidence(half_probe_ev) == ()
+    )
+
+    fallback_ev = build_failure_control_evidence(
+        _obs(
+            _fc_circuit(state="closed"),
+            fallback_attempt={
+                "artifact_present": True,
+                "artifact_kind": "empty_mask",
+                "allow_silent_fallback": False,
+            },
+        ),
+        decided_at=DECIDED_AT,
+    )
+    fallback_refused = (
+        fallback_ev.get("status") == "rejected"
+        and "silent_fallback_forbidden" in (fallback_ev.get("rejection_reasons") or [])
+        and "fallback_artifact_present" in (fallback_ev.get("rejection_reasons") or [])
+        and (fallback_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and (fallback_ev.get("no_silent_fallback") or {}).get("fallback_artifact_present") is True
+        and (fallback_ev.get("no_silent_fallback") or {}).get("enforced") is True
+        and validate_failure_control_evidence(fallback_ev) == ()
+    )
+
+    overreach_ev = build_failure_control_evidence(
         {
             "at_time": DECIDED_AT,
             "request": request,
             "route_requirements": route,
-            "failure": {},
-            "main_circuit_evidence": open_body,
+            "failure": {"fault_kind": "outage"},
+            "main_circuit_evidence": _fc_circuit(state="closed"),
             "main_retry_evidence": {},
+            "main_scoped_block_evidence": {
+                "blocked_pass_ids": ["pass_predict", "pass_refine", "pass_unrelated"],
+                "continuing_pass_ids": [],
+                "contains_fallback_artifact": False,
+            },
+            "fallback_attempt": {},
+            "dag_passes": dag,
+        },
+        decided_at=DECIDED_AT,
+    )
+    underreach_ev = build_failure_control_evidence(
+        {
+            "at_time": DECIDED_AT,
+            "request": request,
+            "route_requirements": route,
+            "failure": {"fault_kind": "outage"},
+            "main_circuit_evidence": _fc_circuit(state="closed"),
+            "main_retry_evidence": {},
+            "main_scoped_block_evidence": {
+                "blocked_pass_ids": ["pass_predict"],
+                "continuing_pass_ids": ["pass_refine", "pass_unrelated"],
+                "contains_fallback_artifact": False,
+            },
+            "fallback_attempt": {},
+            "dag_passes": dag,
+        },
+        decided_at=DECIDED_AT,
+    )
+    scoped_overreach_rejected = (
+        (overreach_ev.get("scoped_dag") or {}).get("scope_exact") is False
+        and (overreach_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+    )
+    scoped_underreach_rejected = (
+        (underreach_ev.get("scoped_dag") or {}).get("scope_exact") is False
+        and (underreach_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+    )
+
+    bad_retry_ev = build_failure_control_evidence(
+        {
+            "at_time": DECIDED_AT,
+            "request": request,
+            "route_requirements": route,
+            "failure": {"fault_kind": "incompatible_authority"},
+            "main_circuit_evidence": _fc_circuit(state="closed"),
+            "main_retry_evidence": {
+                "retry_requested": True,
+                "retry_reason": "authority_mismatch",
+                "allow_silent_fallback": False,
+            },
             "main_scoped_block_evidence": {},
             "fallback_attempt": {},
             "dag_passes": dag,
         },
         decided_at=DECIDED_AT,
     )
-    circuit_open_blocks = (
-        (open_ev.get("circuit") or {}).get("blocks_route") is True
-        and (open_ev.get("admission") or {}).get("provider_invocation_permitted") is False
-        and validate_failure_control_evidence(open_ev) == ()
+    bad_retry_rejected = (
+        bad_retry_ev.get("status") == "rejected"
+        and bool(
+            {"main_retry_evidence_invalid", "non_transient_retry_forbidden"}
+            & set(bad_retry_ev.get("rejection_reasons") or [])
+        )
+        and (bad_retry_ev.get("admission") or {}).get("provider_invocation_permitted") is False
     )
 
     return {
         "check": "isolated_failure_control_circuit",
         "passed": (
             all(row["passed"] for row in faults)
+            and deadline_enforced
+            and resource_enforced
             and retry_budget_enforced
             and healthy_admits
             and circuit_open_blocks
+            and half_open_gated
+            and fallback_refused
+            and scoped_overreach_rejected
+            and scoped_underreach_rejected
+            and bad_retry_rejected
         ),
         "faults": faults,
+        "deadline_enforced": deadline_enforced,
+        "resource_envelope_enforced": resource_enforced,
         "bounded_retry_budget_enforced": retry_budget_enforced,
         "healthy_admission_permits_provider": healthy_admits,
         "circuit_open_blocks_route": circuit_open_blocks,
+        "half_open_probe_gated": half_open_gated,
+        "silent_fallback_refused": fallback_refused,
+        "scoped_dag_overreach_rejected": scoped_overreach_rejected,
+        "scoped_dag_underreach_rejected": scoped_underreach_rejected,
+        "incoherent_main_retry_rejected": bad_retry_rejected,
     }
 
 
 # ---------------------------------------------------------------------------
-# Pillar 3b: Mode A immutable package-read (MF-P6-11.02 sample matrix)
+# Pillar 4: Mode A immutable package-read adversarial matrix (MF-P6-11.02)
 # ---------------------------------------------------------------------------
-MODE_A_DECIDED_AT = "2026-07-19T14:00:00Z"
-
-
 def run_mode_a_package_read() -> dict[str, Any]:
     """Exercise real Mode A package-read accept + fail-closed refusals from the sibling."""
-    import copy
-
     cases: list[dict[str, Any]] = []
 
-    def _row(
+    def _evaluate(
         name: str,
         request: dict[str, Any],
         evidence: dict[str, Any],
         *,
         expect_accepted: bool,
         expect_reason: str | None = None,
+        expect_ceiling: str | None = None,
+        expect_production_eligible: bool | None = None,
     ) -> None:
         result = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
         issues = validate_mode_a_package_read_evidence(result)
         reasons = result.get("rejection_reasons") or []
         accepted = result.get("status") == "accepted"
         reason_ok = expect_reason is None or expect_reason in reasons
+        ceiling_ok = expect_ceiling is None or result.get("authority_ceiling") == expect_ceiling
+        prod_ok = (
+            expect_production_eligible is None
+            or result.get("production_eligible") is expect_production_eligible
+        )
         authority_ok = accepted or (
             result.get("production_eligible") is False
             and result.get("authority_ceiling") != "certified"
@@ -479,9 +615,12 @@ def run_mode_a_package_read() -> dict[str, Any]:
                 "status": result.get("status"),
                 "authority_ceiling": result.get("authority_ceiling"),
                 "production_eligible": result.get("production_eligible"),
+                "rejection_reasons": reasons,
                 "passed": bool(
                     accepted == expect_accepted
                     and reason_ok
+                    and ceiling_ok
+                    and prod_ok
                     and issues == ()
                     and result.get("write_methods_exposed") is False
                     and authority_ok
@@ -490,7 +629,7 @@ def run_mode_a_package_read() -> dict[str, Any]:
         )
 
     request, evidence = build_fixture_adopted_package()
-    _row("valid_wrapper_certified", request, evidence, expect_accepted=True)
+    _evaluate("valid_wrapper_certified", request, evidence, expect_accepted=True)
     baseline = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
     baseline_certified = (
         baseline.get("authority_ceiling") == "certified"
@@ -498,33 +637,310 @@ def run_mode_a_package_read() -> dict[str, Any]:
     )
 
     request, evidence = build_fixture_adopted_package()
+    request["escalate_raw_status"] = True
+    _evaluate(
+        "raw_status_escalation",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="raw_status_escalation",
+    )
+
+    request, evidence = build_fixture_adopted_package()
     evidence = copy.deepcopy(evidence)
     evidence["relative_paths"]["mask"] = "../../escape/secrets.png"
-    _row("path_escape", request, evidence, expect_accepted=False, expect_reason="path_escape")
+    _evaluate("path_escape", request, evidence, expect_accepted=False, expect_reason="path_escape")
 
     request, evidence = build_fixture_adopted_package()
     evidence = copy.deepcopy(evidence)
     evidence["bytes"]["mask_encoded"] = b"tampered-mask-encoded!!"
-    _row("mask_hash_drift", request, evidence, expect_accepted=False, expect_reason="mask_hash_drift")
+    _evaluate(
+        "mask_hash_drift", request, evidence, expect_accepted=False, expect_reason="mask_hash_drift"
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["wrapper"]["status"] = "expired"
+    _evaluate(
+        "stale_wrapper", request, evidence, expect_accepted=False, expect_reason="wrapper_stale"
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["wrapper"]["permitted_use_scopes"] = ["thumbnail_preview"]
+    _evaluate(
+        "wrapper_out_of_scope",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="wrapper_out_of_scope",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["subject"]["canonical_person_id"] = "attacker-person"
+    _evaluate("wrong_owner", request, evidence, expect_accepted=False, expect_reason="wrong_owner")
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["write_requested"] = True
+    _evaluate(
+        "mutation_attempt",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="mutation_attempt",
+    )
 
     request, evidence = build_fixture_adopted_package()
     request = copy.deepcopy(request)
     evidence = copy.deepcopy(evidence)
     request["exact_use_scope"] = "qa"
     evidence["wrapper"] = None
-    _row("qa_noncertified_accepts_capped", request, evidence, expect_accepted=True)
-    if cases[-1]["authority_ceiling"] != "qa_passed_noncertified" or cases[-1][
-        "production_eligible"
-    ]:
-        cases[-1]["passed"] = False
+    _evaluate(
+        "qa_noncertified_read_accepts_capped",
+        request,
+        evidence,
+        expect_accepted=True,
+        expect_ceiling="qa_passed_noncertified",
+        expect_production_eligible=False,
+    )
 
     request, evidence = build_fixture_adopted_package()
     evidence = copy.deepcopy(evidence)
-    evidence["write_requested"] = True
-    _row("mutation_attempt", request, evidence, expect_accepted=False, expect_reason="mutation_attempt")
+    evidence["wrapper"] = None
+    _evaluate(
+        "wrapper_missing_production",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="wrapper_missing",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["wrapper"]["revocation_status"] = "revoked"
+    _evaluate(
+        "wrapper_revoked",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="wrapper_revoked",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["catalog"]["adoption_decision"] = "pending"
+    _evaluate(
+        "catalog_not_adopted",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="catalog_not_adopted",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["source_encoded"] = b"tampered-source-encoded!"
+    _evaluate(
+        "source_hash_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="source_hash_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["manifest"] = b'{"parts":{"left_forearm":{"status":"tampered"}}}'
+    _evaluate(
+        "manifest_hash_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="manifest_hash_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["catalog"]["packages"][0]["package_sha256"] = "0" * 64
+    _evaluate(
+        "package_hash_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="package_hash_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["ontology_version"] = "body_parts_v2"
+    _evaluate(
+        "ontology_mismatch",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="ontology_mismatch",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["subject"]["scene_instance_id"] = "scene-instance-attacker"
+    _evaluate(
+        "instance_mismatch",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="instance_mismatch",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["subject"]["character_revision"] = "char-rev-attacker"
+    _evaluate(
+        "character_revision_mismatch",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="character_revision_mismatch",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["raw_part_status"] = "rejected_needs_fix"
+    _evaluate(
+        "rejected_part_status",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="rejected_part_status",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["revocation_identity"] = b"not-a-signed-revocation-record"
+    _evaluate(
+        "revocation_not_current",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="revocation_not_current",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["catalog"]["packages"][0]["transform_chain_sha256"] = "a" * 64
+    _evaluate(
+        "transform_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="transform_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["artifact_kind"] = "refinement"
+    request["claim_parent_authority"] = True
+    _evaluate(
+        "derived_authority_escalation",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="derived_authority_escalation",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    evidence = copy.deepcopy(evidence)
+    request["claimed_authority_state"] = "certified"
+    evidence["wrapper"] = None
+    _evaluate(
+        "claimed_certified_without_wrapper",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="raw_status_escalation",
+    )
 
     request, evidence = build_fixture_adopted_package(person_index=1)
-    _row("multi_person_wrapper_certified", request, evidence, expect_accepted=True)
+    _evaluate(
+        "multi_person_wrapper_certified",
+        request,
+        evidence,
+        expect_accepted=True,
+        expect_ceiling="certified",
+        expect_production_eligible=True,
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["person_index"] = 9
+    _evaluate(
+        "missing_person_catalog_refused",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="catalog_not_adopted",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["release"] = b"tampered-release-bytes"
+    _evaluate(
+        "release_capability_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="release_capability_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    evidence = copy.deepcopy(evidence)
+    request["exact_use_scope"] = "diagnostic"
+    evidence["wrapper"] = None
+    _evaluate(
+        "diagnostic_noncertified_accepts_capped",
+        request,
+        evidence,
+        expect_accepted=True,
+        expect_ceiling="qa_passed_noncertified",
+        expect_production_eligible=False,
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["mutation_target"] = "masks/left_forearm.png"
+    _evaluate(
+        "mutation_target_write_forbidden",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="mutation_attempt",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["source_decoded_pixels"] = b"tampered-source-pixels!!"
+    _evaluate(
+        "source_pixel_hash_drift",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="source_hash_drift",
+    )
+
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["raw_part_status"] = "withdrawn"
+    _evaluate(
+        "withdrawn_part_status",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="rejected_part_status",
+    )
 
     return {
         "check": "isolated_mode_a_package_read",
@@ -536,7 +952,7 @@ def run_mode_a_package_read() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# Pillar 4: cross-project qualification (honest producer_partial ceiling)
+# Pillar 5: cross-project qualification (honest producer_partial ceiling)
 # ---------------------------------------------------------------------------
 def run_cross_project_qualification() -> dict[str, Any]:
     evidence = build_cross_project_qualification_evidence(
@@ -564,10 +980,319 @@ def run_cross_project_qualification() -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# Pillar 5b: qualification adversarial depth (MF-P6-12.05)
+# ---------------------------------------------------------------------------
+def run_cross_project_qualification_depth() -> dict[str, Any]:
+    head = producer_git_head()
+    rows: list[dict[str, Any]] = []
+
+    def _xproj(observation: dict[str, Any] | None) -> dict[str, Any]:
+        return build_cross_project_qualification_evidence(
+            observation=observation,
+            decided_at=DECIDED_AT,
+            repo_root=producer_root(),
+            bind_fixture_main=False,
+        )
+
+    baseline = _xproj({"producer_git_commit": head})
+    baseline_issues = validate_cross_project_qualification_evidence(baseline)
+    baseline_claim = baseline.get("claim_boundary") or {}
+    matrix_rows_pass = all(
+        row.get("result") == "pass" for row in (baseline.get("matrix_results") or [])
+    )
+    rows.append(
+        {
+            "case": "honest_producer_partial_baseline",
+            "passed": bool(
+                baseline.get("status") == "producer_partial"
+                and baseline_issues == ()
+                and matrix_rows_pass
+                and baseline_claim.get("mf_p6_12_05_complete") is False
+                and baseline_claim.get("establishes_production_qualification") is False
+            ),
+            "status": baseline.get("status"),
+            "decision_sha256": baseline.get("decision_sha256"),
+        }
+    )
+
+    fabricated = _xproj(
+        {
+            "producer_git_commit": head,
+            "fabricated_main_receipt": {
+                "main_adapter_execution_receipt_present": True,
+                "result_sha256": "a" * 64,
+                "history_sha256": "b" * 64,
+                "claim_mf_p6_12_05_complete": True,
+            },
+        }
+    )
+    rows.append(
+        {
+            "case": "fabricated_main_receipt_rejected",
+            "passed": bool(
+                fabricated.get("status") == "rejected"
+                and "fabricated_main_receipt" in (fabricated.get("rejection_reasons") or [])
+                and validate_cross_project_qualification_evidence(fabricated) == ()
+                and (fabricated.get("claim_boundary") or {}).get("mf_p6_12_05_complete") is False
+            ),
+        }
+    )
+
+    claimed = _xproj({"producer_git_commit": head, "claim_production_qualification": True})
+    rows.append(
+        {
+            "case": "fixture_claimed_as_production_rejected",
+            "passed": bool(
+                claimed.get("status") == "rejected"
+                and "fixture_evidence_claimed_as_production"
+                in (claimed.get("rejection_reasons") or [])
+                and validate_cross_project_qualification_evidence(claimed) == ()
+            ),
+        }
+    )
+
+    relabel = _xproj({"producer_git_commit": head, "claimed_currency_status": "pass"})
+    rows.append(
+        {
+            "case": "currency_relabel_rejected",
+            "passed": bool(
+                relabel.get("status") == "rejected"
+                and "currency_policy_relabel_forbidden" in (relabel.get("rejection_reasons") or [])
+                and validate_cross_project_qualification_evidence(relabel) == ()
+            ),
+        }
+    )
+
+    tampered_hash = copy.deepcopy(baseline)
+    tampered_hash["decision_sha256"] = "0" * 64
+    rows.append(
+        {
+            "case": "decision_hash_drift_detected",
+            "passed": "decision_hash_drift"
+            in validate_cross_project_qualification_evidence(tampered_hash),
+        }
+    )
+
+    overclaim = copy.deepcopy(baseline)
+    overclaim["claim_boundary"] = dict(overclaim.get("claim_boundary") or {})
+    overclaim["claim_boundary"]["mf_p6_12_05_complete"] = True
+    rows.append(
+        {
+            "case": "completion_overclaim_detected",
+            "passed": "completion_overclaim"
+            in validate_cross_project_qualification_evidence(overclaim),
+        }
+    )
+
+    row_drift = copy.deepcopy(baseline)
+    if isinstance(row_drift.get("matrix_results"), list) and row_drift["matrix_results"]:
+        row_drift["matrix_results"] = row_drift["matrix_results"][:-1]
+    rows.append(
+        {
+            "case": "matrix_row_set_drift_detected",
+            "passed": "matrix_row_set_drift"
+            in validate_cross_project_qualification_evidence(row_drift),
+        }
+    )
+
+    commit_only = _xproj(
+        {
+            "producer_git_commit": head,
+            "pinned_main_runtime_git_commit": "c" * 40,
+        }
+    )
+    consumer_binding = commit_only.get("consumer_binding") or {}
+    rows.append(
+        {
+            "case": "pinned_main_commit_alone_insufficient",
+            "passed": bool(
+                commit_only.get("status") == "producer_partial"
+                and consumer_binding.get("complete") is False
+                and validate_cross_project_qualification_evidence(commit_only) == ()
+                and (commit_only.get("claim_boundary") or {}).get(
+                    "establishes_production_qualification"
+                )
+                is False
+            ),
+        }
+    )
+
+    return {
+        "check": "isolated_cross_project_qualification_depth",
+        "passed": all(row["passed"] for row in rows),
+        "baseline_decision_sha256": baseline.get("decision_sha256"),
+        "case_count": len(rows),
+        "cases": rows,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Pillar 5c: final-release firewall depth (MF-P6-12.06)
+# ---------------------------------------------------------------------------
+def _released_snapshot(*, fixture_only: bool) -> dict[str, Any]:
+    return {
+        "release_id": "mfrel_sibling_firewall_depth",
+        "release_payload_sha256": "d" * 64,
+        "release_status": "published",
+        "fixture_only": fixture_only,
+        "producer": {"git_commit": "e" * 40},
+    }
+
+
+def run_final_release_firewall_depth() -> dict[str, Any]:
+    rows: list[dict[str, Any]] = []
+
+    honest = evaluate_final_release_handoff(decided_at=DECIDED_AT)
+    honest_claim = honest.get("claim_boundary") or {}
+    rows.append(
+        {
+            "case": "honest_incomplete_core",
+            "passed": bool(
+                honest.get("status") == "incomplete_core"
+                and honest.get("core_autonomous_runtime_close_authorized") is False
+                and "core_close_refused_without_exact_gates"
+                in (honest.get("rejection_reasons") or [])
+                and honest_claim.get("core_closed") is False
+                and validate_final_release_handoff_evidence(honest) == ()
+            ),
+            "decision_sha256": honest.get("decision_sha256"),
+        }
+    )
+
+    fabricated = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT, fabricated_core_complete_claim=True
+    )
+    rows.append(
+        {
+            "case": "fabricated_core_claim_rejected",
+            "passed": bool(
+                fabricated.get("status") == "rejected"
+                and fabricated.get("core_autonomous_runtime_close_authorized") is False
+                and "fabricated_core_complete_claim" in (fabricated.get("rejection_reasons") or [])
+                and validate_final_release_handoff_evidence(fabricated) == ()
+            ),
+        }
+    )
+
+    fixture_release = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot=_released_snapshot(fixture_only=True),
+        release_publication_issues=[],
+    )
+    gate_by_id = {
+        g.get("gate_id"): g for g in (fixture_release.get("exact_core_close_gates") or [])
+    }
+    rows.append(
+        {
+            "case": "fixture_only_release_refused",
+            "passed": bool(
+                fixture_release.get("status") == "incomplete_core"
+                and "final_producer_release_fixture_only"
+                in (fixture_release.get("rejection_reasons") or [])
+                and gate_by_id.get("final_producer_release_published", {}).get("status") != "met"
+                and fixture_release.get("core_autonomous_runtime_close_authorized") is False
+                and validate_final_release_handoff_evidence(fixture_release) == ()
+            ),
+        }
+    )
+
+    fixture_adoption = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        adoption_receipt={"signature": {"key_id": "comfy-main-adoption-fixture"}},
+    )
+    rows.append(
+        {
+            "case": "fixture_authority_cannot_close_core",
+            "passed": bool(
+                fixture_adoption.get("status") == "incomplete_core"
+                and "fixture_authority_cannot_close_core"
+                in (fixture_adoption.get("rejection_reasons") or [])
+                and (fixture_adoption.get("claim_boundary") or {}).get("fixture_main_bound") is True
+                and fixture_adoption.get("core_autonomous_runtime_close_authorized") is False
+                and validate_final_release_handoff_evidence(fixture_adoption) == ()
+            ),
+        }
+    )
+
+    pin_mismatch = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT,
+        release_snapshot=_released_snapshot(fixture_only=False),
+        release_publication_issues=[],
+        adoption_receipt={
+            "adoption_id": "mfadopt_sibling_firewall_depth",
+            "adoption_payload_sha256": "f" * 64,
+            "adoption_scope": "production_authority",
+            "decision": "adopted",
+            "production_use_authorized": True,
+            "fixture_only": False,
+            "release_id": "mfrel_some_other_release",
+            "release_payload_sha256": "1" * 64,
+            "signature": {"key_id": "comfy-main-adoption-prod"},
+        },
+    )
+    rows.append(
+        {
+            "case": "adoption_release_pin_mismatch_refused",
+            "passed": bool(
+                pin_mismatch.get("status") == "incomplete_core"
+                and "adoption_release_hash_pin_mismatch"
+                in (pin_mismatch.get("rejection_reasons") or [])
+                and pin_mismatch.get("core_autonomous_runtime_close_authorized") is False
+                and validate_final_release_handoff_evidence(pin_mismatch) == ()
+            ),
+        }
+    )
+
+    honest_gate_by_id = {g.get("gate_id"): g for g in (honest.get("exact_core_close_gates") or [])}
+    independence = (honest.get("profile_status_inputs") or {}).get("independence_proof") or {}
+    rows.append(
+        {
+            "case": "optional_profile_independence_held",
+            "passed": bool(
+                independence.get("optional_failure_cannot_revoke_core") is True
+                and independence.get("core_close_requires_exact_gates") is True
+                and honest_gate_by_id.get("optional_profiles_remain_independent", {}).get("status")
+                == "met"
+            ),
+        }
+    )
+
+    tampered_hash = copy.deepcopy(honest)
+    tampered_hash["decision_sha256"] = "0" * 64
+    rows.append(
+        {
+            "case": "decision_hash_drift_detected",
+            "passed": "decision_hash_drift"
+            in validate_final_release_handoff_evidence(tampered_hash),
+        }
+    )
+
+    gate_drift = copy.deepcopy(honest)
+    if (
+        isinstance(gate_drift.get("exact_core_close_gates"), list)
+        and gate_drift["exact_core_close_gates"]
+    ):
+        gate_drift["exact_core_close_gates"] = gate_drift["exact_core_close_gates"][:-1]
+    rows.append(
+        {
+            "case": "gate_set_drift_detected",
+            "passed": "gate_set_drift" in validate_final_release_handoff_evidence(gate_drift),
+        }
+    )
+
+    return {
+        "check": "isolated_final_release_firewall_depth",
+        "passed": all(row["passed"] for row in rows),
+        "honest_decision_sha256": honest.get("decision_sha256"),
+        "case_count": len(rows),
+        "cases": rows,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Signed adoption attestation (isolated authority)
 # ---------------------------------------------------------------------------
 def _adopted_requirements() -> dict[str, Any]:
-    """Read the producer's pinned requirements/capability bundle if available."""
     bundle_path = (
         producer_root()
         / "runtime_artifacts"
@@ -632,7 +1357,6 @@ def sign_adoption_attestation() -> dict[str, Any]:
         "signed_payload_sha256": attestation["adoption_payload_sha256"],
         "value_base64": base64.b64encode(private_key.sign(digest)).decode(),
     }
-    # Verify our own signature cryptographically (genuine, not decorative).
     private_key.public_key().verify(
         base64.b64decode(attestation["signature"]["value_base64"]), digest
     )

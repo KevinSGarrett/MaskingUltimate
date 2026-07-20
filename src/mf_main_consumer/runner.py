@@ -1,4 +1,4 @@
-"""Runner: execute the four bridge pillars and emit one sealed receipt.
+"""Runner: execute the bridge pillars and emit one sealed receipt.
 
 The receipt is labeled ``authority_kind = isolated_main_consumer`` and records,
 in the clear, that it is NOT the real Comfy_UI_Main runtime and that the HARD
@@ -26,7 +26,9 @@ from .pillars import (
     run_adapter_conformance,
     run_adoption_attestation,
     run_cross_project_qualification,
+    run_cross_project_qualification_depth,
     run_failure_control_circuit,
+    run_final_release_firewall_depth,
     run_mode_a_package_read,
     run_signed_journal,
 )
@@ -41,6 +43,8 @@ PILLARS: tuple[tuple[str, Callable[[], dict[str, Any]]], ...] = (
     ("isolated_failure_control_circuit", run_failure_control_circuit),
     ("isolated_mode_a_package_read", run_mode_a_package_read),
     ("isolated_cross_project_producer_partial", run_cross_project_qualification),
+    ("isolated_cross_project_qualification_depth", run_cross_project_qualification_depth),
+    ("isolated_final_release_firewall_depth", run_final_release_firewall_depth),
     ("isolated_adoption_attestation_signed", run_adoption_attestation),
 )
 
@@ -57,9 +61,22 @@ def build_receipt() -> dict[str, Any]:
         except Exception as exc:  # honest failure capture
             checks.append(_check_error(name, exc))
 
+    mode_a = next((c for c in checks if c.get("check") == "isolated_mode_a_package_read"), {})
+    failure = next(
+        (c for c in checks if c.get("check") == "isolated_failure_control_circuit"), {}
+    )
+    qual_depth = next(
+        (c for c in checks if c.get("check") == "isolated_cross_project_qualification_depth"),
+        {},
+    )
+    firewall = next(
+        (c for c in checks if c.get("check") == "isolated_final_release_firewall_depth"),
+        {},
+    )
+
     receipt: dict[str, Any] = {
         "artifact_type": "isolated_main_consumer_run",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "consumer_project": "Comfy_UI_Main_MaskFactory_Consumer",
         "consumer_version": __version__,
         "recorded_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
@@ -72,6 +89,25 @@ def build_receipt() -> dict[str, Any]:
         "live_producer_worktree_dirty": producer_worktree_dirty(),
         "checks": checks,
         "summary": {check["check"]: check["passed"] for check in checks},
+        "depth_summary": {
+            "mode_a_case_count": mode_a.get("case_count"),
+            "failure_control_flags": {
+                "deadline_enforced": failure.get("deadline_enforced"),
+                "resource_envelope_enforced": failure.get("resource_envelope_enforced"),
+                "bounded_retry_budget_enforced": failure.get("bounded_retry_budget_enforced"),
+                "healthy_admission_permits_provider": failure.get(
+                    "healthy_admission_permits_provider"
+                ),
+                "circuit_open_blocks_route": failure.get("circuit_open_blocks_route"),
+                "half_open_probe_gated": failure.get("half_open_probe_gated"),
+                "silent_fallback_refused": failure.get("silent_fallback_refused"),
+                "scoped_dag_overreach_rejected": failure.get("scoped_dag_overreach_rejected"),
+                "scoped_dag_underreach_rejected": failure.get("scoped_dag_underreach_rejected"),
+                "incoherent_main_retry_rejected": failure.get("incoherent_main_retry_rejected"),
+            },
+            "qualification_depth_case_count": qual_depth.get("case_count"),
+            "firewall_depth_case_count": firewall.get("case_count"),
+        },
         "claim_boundary": {
             "isolated_consumer_is_not_fixture_authority": True,
             "isolated_consumer_is_not_real_comfyui_main": True,
@@ -83,13 +119,19 @@ def build_receipt() -> dict[str, Any]:
                 "package hash + git identity, no node-id / mutable-path / internal coupling)",
                 "MF-P6-11.06 (trusted-signed append-only journal + checkpoint + history "
                 "validation + same-key/same-body replay idempotency, real machinery)",
-                "MF-P6-11.02 (Mode A immutable package-read: certified + multi-person "
-                "accept; QA noncertified ceiling; path/hash/mutation refusals)",
-                "MF-P6-11.07 (failure-control circuit: fault-injection provider refusal, "
-                "exact scoped-DAG blocking, healthy-admit/open-circuit, bounded-retry-budget, "
-                "no-silent-fallback)",
-                "MF-P6-12.05 (producer_partial cross-project qualification matrix, real "
-                "execution, honest ceiling)",
+                "MF-P6-11.02 (Mode A immutable package-read adversarial matrix: "
+                f"{mode_a.get('case_count', '?')} cases incl. certified/multi-person accept, "
+                "QA/diagnostic noncertified ceiling, path/hash/ontology/instance/wrapper/"
+                "mutation/revocation/transform refusals)",
+                "MF-P6-11.07 (failure-control depth: fault-injection, healthy-admit, "
+                "open/half-open circuit gating, silent-fallback refuse, scoped-DAG "
+                "over/under-reach, incoherent-retry reject, deadline/resource/retry-budget)",
+                "MF-P6-12.05 (producer_partial + adversarial qualification depth matrix: "
+                "fabricated-Main/fixture-as-prod/currency-relabel/hash-drift/overclaim/"
+                "row-drift refusals; pinned-Main-commit alone insufficient)",
+                "MF-P6-12.06 (final-release firewall depth: incomplete_core, fabricated-core/"
+                "fixture-release/fixture-adoption/pin-mismatch refusals; optional-profile "
+                "independence; decision/gate drift detection; core close NEVER authorized)",
                 "adoption attestation (isolated-consumer-signed, real Ed25519, "
                 "explicitly not a comfy-main-* Main trust key)",
             ],
@@ -136,6 +178,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"receipt: {output}")
     print(f"self_sha256: {receipt['self_sha256']}")
     print(f"all_pillars_passed: {all_passed}")
+    print(f"depth_summary: {json.dumps(receipt['depth_summary'], sort_keys=True)}")
     return 0 if all_passed else 1
 
 

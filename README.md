@@ -27,12 +27,14 @@ contracts from the sibling MaskFactory checkout at
 
 | Pillar | Producer API called | Item touched |
 |---|---|---|
-| adapter | `maskfactory.bridge.external_adapter_conformance.build_external_adapter_conformance_evidence` | MF-P6-11.01 |
-| journal | `maskfactory.bridge.journal.append_bridge_journal_event` / `checkpoint_bridge_journal` / `validate_bridge_journal_history` | MF-P6-11.06 |
-| circuit | `maskfactory.bridge.failure_control.simulate_fault_injection` / `build_failure_control_evidence` | MF-P6-11.07 |
-| mode_a | `maskfactory.bridge.mode_a_package_read.evaluate_mode_a_package_read` | MF-P6-11.02 |
-| qualification | `maskfactory.bridge.cross_project_qualification.build_cross_project_qualification_evidence` | MF-P6-12.05 |
-| adoption | Ed25519 signature over a canonical-json-sealed attestation | MF-P6-11/12 adoption |
+| adapter | `external_adapter_conformance` | MF-P6-11.01 |
+| journal | `journal` append/checkpoint/validate | MF-P6-11.06 |
+| circuit | `failure_control` fault-injection + circuit depth | MF-P6-11.07 |
+| mode_a | `mode_a_package_read` adversarial matrix (~30 cases) | MF-P6-11.02 |
+| qualification | `cross_project_qualification` producer_partial | MF-P6-12.05 |
+| qual_depth | adversarial qualification firewall matrix | MF-P6-12.05 |
+| firewall | `final_release_handoff` core-close firewall depth | MF-P6-12.06 |
+| adoption | Ed25519 isolated-consumer attestation | MF-P6-11/12 adoption |
 
 The adapter boundary in `src/mf_main_consumer/adapter.py` imports **only**
 `maskfactory.contracts` (verified by AST at runtime), so the producer conformance

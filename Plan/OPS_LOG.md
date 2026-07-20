@@ -10516,3 +10516,65 @@ Evidence: qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z
 Re-ranked `live_priorities_this_wave` to the requested order: 1) retry_serve_cu128_build_and_containerized_smoke, 2) build_train_cu128_and_training_doctor, 3) multi_provider_gpu_tournament_toward_autonomous_gold, 4) main_adoption_isolated_consumer_hard_blockers (unchanged, AWAITING_MAIN), 5) repair_ubuntu_2204_ext4_vhd (unchanged, elevated-shell substitute active). host_snapshot untouched (already reflected the live C:/Docker state from the prior coordinator-helper re-probe at HEAD 139b4536).
 
 Honest scope: queue/priority update only. No tier inflation - champions=0, gold=0, PRODUCTION_EVIDENCE_PASS not claimed. Sealed brief: qa/live_verification/disk_repair_done_reprioritize_20260720T0931.json (self_sha256 a51849f3...). Queue self_sha256 updated to 2f4dcc76....
+
+## 2026-07-20 14:41 UTC -- Removable F: RESTORED; data health OK; WSL Ubuntu-22.04 wakes healthy; DAZ/data/WSL paths unblocked
+**Item:** F: drive restoration re-verification (unblocks DAZ / F: data / WSL paths after the 14:35Z F-absent hard stop)
+**Command:** `Get-PSDrive F`; `Test-Path F:\MaskFactory_Offload_20260714[\WSL\Ubuntu-22.04\ext4.vhdx]`; `wsl -d Ubuntu-22.04 -- echo ok` (non-elevated); `python runtime_artifacts/_seal_f_drive_restored_20260720T0933.py`
+**Result:** PASS. F: online, 181.21 GiB free. Both F:\MaskFactory_Offload_20260714 and F:\MaskFactory_DataRelocated intact; F:\DAZ reachable (26 entries). WSL Ubuntu-22.04 wakes healthy (echo ok, kernel 6.18.33.2, / read/write WRITE_OK, exit 0) - no corruption/IO error. No mutation, no prune, no volume wipe.
+
+Kevin reports F: is back after the 2026-07-20 14:35Z hard stop (docker_relocation_f_absent_blocked...). Confirmed:
+Get-PSDrive F Free=181.21 GiB (194575269888 B); Test-Path F:\MaskFactory_Offload_20260714 = True; the registered
+Ubuntu-22.04 ext4.vhdx (53.56 GiB) at F:\MaskFactory_Offload_20260714\WSL\Ubuntu-22.04 = True.
+
+Honest correction: the earlier "Ubuntu-22.04 ext4 corrupt / Error code 6" symptom was a consequence of F: being
+DISCONNECTED (the distro's vhdx lives on F:), NOT on-disk ext4 corruption. With F: reconnected the distro boots
+clean and read/write works (WRITE_OK) - so that lane is unblocked; the live CUDA WSL smoke path reopens. Docker-GPU
+remains the primary GPU runtime; WSL is now additionally available.
+
+data/ health: junction resolves to the on-C: backup C:\Comfy_UI_Main_Masking\data_c_backup_relocated (8 packages,
+sqlite images=24) that a sibling repointed during the outage. F:\MaskFactory_DataRelocated is reachable again with an
+identical 8-package set + dvc_local_remote (sqlite images=24). Left data/ on the C: backup for outage resilience
+(strictly safer against future F: disconnects); repoint to F: is reversible and available on request - NOT auto-moved.
+
+F: is still a REMOVABLE drive that demonstrably disconnected; durable off-C: Docker VHDX relocation still needs a
+PERMANENT fixed second disk (Kevin action). No tier inflation: champions=0, gold=0, doctor not all-green, no
+docker_vhdx_relocated_to_f, no live SAM 3.1 CUDA WSL smoke claimed.
+Evidence: qa/live_verification/f_drive_restored_20260720T0933Z.json (self_sha256 e0ac39190c38...).
+
+## 2026-07-20 14:40 UTC - DAZ foundation/ops/coverage STATIC re-verify after F: restored
+**Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
+**Command:** python tools/daz_status.py; python -m maskfactory.cli daz recipes seal-validation-static-contracts|seal-ops-static-contracts|seal-coverage-planner-static; python -m maskfactory.cli daz recipes verify-procedural-primitive ...; python -m pytest (6 focused daz suites); python runtime_artifacts/_seal_daz_stream_f_restored_20260720T1440.py
+**Result:** STATIC_PASS. Removable F: reconnected after the 14:35Z hard-stop (docker_relocation_f_absent_blocked_20260720T1435Z.json). F:\DAZ root identity re-confirmed (root_uuid 6bd1b3ba..., volume {1aa3276c...}); foundation doctor PASS all checks, 181.21 GiB free. Re-sealed the three DAZ static binders against live F: paths (validation dvs_b8a6ce23..., ops dos_1c30ade7..., coverage dcp_c3ccee69...); host procedural-primitive golden bundle re-verified byte-identical (canonical 7c6483dd...); focused suite 23 passed (exit 0).
+
+Honest scope: host-side STATIC re-verification only. NO live DAZ Studio execution, accepted packages, pilot, seven-day soak, live activation/calibration, ablation corpus, doctor-all-green beyond DAZ foundation, visual-QA-pass, or gold claimed. F: is a removable drive (still not a fixed second disk for Docker VHDX relocation). No tracker status/percent transitions. Consolidated evidence: qa/live_verification/daz_stream_f_restored_reverify_20260720T1440Z.json (self_sha256 da08ff351af4be3d...).
+
+## 2026-07-20 14:38 UTC -- ABORT data/ re-junction to F:; keep C: backup target
+**Item:** data junction durability (F: removable/unstable)
+**Command:** `rmdir C:\Comfy_UI_Main_Masking\data`; `mklink /J data C:\Comfy_UI_Main_Masking\data_c_backup_relocated`; package readback via junction
+**Result:** PASS (reverted). Found `data/` pointing at `F:\MaskFactory_DataRelocated`; immediately re-junctioned to `C:\Comfy_UI_Main_Masking\data_c_backup_relocated`. F: tree left intact (not wiped). Packages via junction: 8, sample readable. C: free 91.31 GiB. F: present (~181 GiB free) but classified removable/unstable — do not use for `data/`.
+
+Evidence: qa/live_verification/data_junction_abort_f_keep_c_20260720T1438Z.json (self_sha256 a7bdcbe4a91827bd1016f990b85b0f405403cea6c13bb824ccf12559dc1b8c12).
+
+## 2026-07-20 14:45 UTC - WSL Ubuntu-22.04 execvpe/bash I/O-error probe sealed; Docker-GPU stays primary CUDA path
+**Item:** repair_ubuntu_2204_ext4_vhd (needs_agent_actions_20260720.json)
+**Command:** python runtime_artifacts/_seal_wsl_ubuntu_io_error_20260720.py; python runtime_artifacts/_update_needs_agent_actions_wsl_io_error_20260720.py
+**Result:** SEALED (probe, not a repair). F: is back online and `Test-Path F:\MaskFactory_Offload_20260714\WSL\Ubuntu-22.04\ext4.vhdx` -> True. Non-elevated (`IsAdmin=False`) probe: `wsl -d Ubuntu-22.04 -- echo ok` failed with `<3>WSL (220 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: I/O error`, even though `wsl -l -v` reported Ubuntu-22.04 Running. Elevation remains genuinely unavailable non-interactively this session (no UAC self-elevation attempted); the scripted repair (`tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair`) was not run.
+
+A ~2-minute-later re-probe in this same sealing pass, coinciding with an observed Docker Desktop WSL2 core VM restart cycle (`docker info` briefly 500'd, `docker ps` then showed 35 cvat_*/cvat269_*/nuclio containers freshly Up 7-9s), no longer reproduced the error (`wsl -d Ubuntu-22.04 -- bash -c "echo hello"` -> `hello`, exit 0). This is recorded honestly as a **transient self-clear, not a repair**: no e2fsck/offline VHD repair ran, admin is still False, and the documented ext4 root-filesystem corruption from the 2026-07-17 emergency_ro incident has not been remediated. F: itself is known-intermittent this session (disconnected/reconnected multiple times; see the 14:35Z OPS_LOG entry above where a concurrent sibling probe saw F: physically absent at essentially the same wave) - all F:/VHDX claims here are point-in-time.
+
+Per explicit direction and the sibling `docker_gpu_sole_cuda_path_wsl_deferred_20260720` reclassification already present in `needs_agent_actions_20260720.json`, Docker-GPU remains the primary/authoritative CUDA path for serve/train/tournament work; it does not depend on the Ubuntu-22.04 distribution at all, so no train/serve lane waits on this WSL state. `needs_agent_actions_20260720.json` was updated in-place (append onto the existing `repair_ubuntu_2204_ext4_vhd` action + host_snapshot/latest_reverification WSL notes only; no other fields touched) and re-sealed with a fresh `self_sha256` chained off the prior file's hash.
+
+No wipes, no destructive ops, no tier inflation - champions/gold/doctor-green/PRODUCTION_EVIDENCE_PASS untouched by this seal.
+
+Evidence: qa/live_verification/wsl_ubuntu_io_error_20260720.json (self_sha256 a58bf9c8...).
+
+## 2026-07-20 14:42 UTC -- Docker VHDX migrate to F: ABORTED (F: is USB removable Seagate)
+**Item:** Docker data relocation abort (critical update: F: removable)
+**Command:** `Test-Path F:\`; `Get-Disk`/`Get-Partition`; `Get-Volume F`; in-container CVAT about; `python tools/bootstrap_cvat.py`
+**Result:** ABORT_MIGRATE_ENTIRELY. No VHDX move, no settings-store dataFolder change, no prune, no volume wipe.
+
+Live probe: F: present (Test-Path True) but Get-Disk Disk1 BusType=USB FriendlyName="Seagate BUP Slim BK" (~1.86 TB). Get-Volume DriveType=Fixed is misleading for this USB HDD — BusType=USB is dispositive. Fixed disk is only Disk0 SKHynix NVMe (C:). Sibling cab71658 confirmed F: disconnects; never host live docker_data.vhdx on removable media.
+
+Docker data remains at C:\Users\kevin\AppData\Local\Docker\wsl\disk\docker_data.vhdx (68.11 GiB). settings-store.json has NO dataFolder to F:. Stale unlocked duplicate at F:\MaskFactory_Offload_20260714\DockerDesktop\wsl\disk\docker_data.vhdx left untouched. C: free ~91.3 GiB. bootstrap_cvat.py exit 0 (all cvat_* Running). Authoritative in-container GET /api/server/about -> CVAT 2.24.0; host loopback about flapped curl 52 under sibling load.
+
+Evidence: qa/live_verification/docker_migrate_abort_usb_removable_f_20260720T1437Z.json (self_sha256 fe72b3bb9a80809352916c65ea1becb7df3f18dadc0370d61b236d65369a3d75).

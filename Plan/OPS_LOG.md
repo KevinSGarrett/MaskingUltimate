@@ -10517,6 +10517,17 @@ Re-ranked `live_priorities_this_wave` to the requested order: 1) retry_serve_cu1
 
 Honest scope: queue/priority update only. No tier inflation - champions=0, gold=0, PRODUCTION_EVIDENCE_PASS not claimed. Sealed brief: qa/live_verification/disk_repair_done_reprioritize_20260720T0931.json (self_sha256 a51849f3...). Queue self_sha256 updated to 2f4dcc76....
 
+## 2026-07-20 14:36 UTC (09:36 local) -- Docker-GPU declared SOLE CUDA train/serve path; WSL Ubuntu-22.04 repair DEFERRED
+**Item:** needs_agent_actions_20260720.json (repair_ubuntu_2204_ext4_vhd + live_priorities_this_wave) + Docker-GPU serve/train build-path verification
+**Command:** docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi --query-gpu=...; python tools/verify_docker_serve_contract.py; python tools/verify_docker_train_contract.py; python runtime_artifacts/_seal_docker_gpu_sole_cuda_path_20260720.py; python runtime_artifacts/_update_needs_agent_actions_wsl_deferred_docker_primary_20260720.py
+**Result:** DONE (docs/evidence). WSL repair BLOCKED (non-admin shell -> scripted elevated e2fsck = UAC/human wait; Ubuntu-22.04 ext4 VHD corrupt, /bin/true -> Error code 6 / E_FAIL) and DEFERRED; it only gates the WSL-specific live SAM 3.1 smoke (MF-P2-11.07). Docker-GPU doubled-down as the SOLE CUDA train/serve path.
+
+GPU passthrough live-proven: `docker run --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi` -> RTX 5060 Laptop GPU, driver 592.01, 8151 MiB total / ~1247 MiB free (RUNTIME_PASS_BOUNDED; cosmetic 'unexpected EOF' raced teardown AFTER the query row printed). Serve+train Docker build paths re-verified WSL-Ubuntu-distro-INDEPENDENT + STATIC-coherent: verify_docker_serve_contract (dsc_e651e9b9..., STATIC_PASS; base_is_slim_python_not_cuda_devel, torch_cu128_index_used, no_wsl_only_editable_git_or_file_deps) and verify_docker_train_contract (dtc_c652d774..., STATIC_PASS; nvidia/cuda:12.8.0-devel Docker Hub base, sm_120 mmcv._ext from source). F: is a removable/flapping drive (present at probe 181.2 GiB; sibling logged ABSENT at 14:35Z) and is NOT relied upon -- the Docker-GPU path is C:-resident and F:-independent.
+
+Heavy image builds deliberately DEFERRED out-of-band (DOCKER_RUNTIME_AND_SESSION_USE.md sec 6b build-safety): ~7 GiB serve torch pull + from-source sm_120 nvcc train compile have crashed the constrained WSL2 daemon before; 37 containers live, so builds were not kicked off to protect the running production CVAT v2.24 stack. Build-path viability (Ubuntu-independent + STATIC-green + GPU present) established, not build success.
+
+No tier inflation: champions=0, gold=0, no torch-CUDA-in-container, no containerized serve/train green, no doctor-all-green. Sealed: qa/live_verification/docker_gpu_sole_cuda_path_wsl_deferred_20260720.json (self_sha256 ca82795a...). Queue self_sha256 -> 8c7b88df.... repair_ubuntu_2204_ext4_vhd status DEFERRED_WSL_REPAIR_DOCKER_GPU_PRIMARY; live_priorities re-ranked (1 docker_gpu_serve_build, 2 docker_gpu_train_build, 3 tournament, 4 main_adoption AWAITING_MAIN, 5 repair_ubuntu_2204 DEFERRED).
+
 ## 2026-07-20 14:41 UTC -- Removable F: RESTORED; data health OK; WSL Ubuntu-22.04 wakes healthy; DAZ/data/WSL paths unblocked
 **Item:** F: drive restoration re-verification (unblocks DAZ / F: data / WSL paths after the 14:35Z F-absent hard stop)
 **Command:** `Get-PSDrive F`; `Test-Path F:\MaskFactory_Offload_20260714[\WSL\Ubuntu-22.04\ext4.vhdx]`; `wsl -d Ubuntu-22.04 -- echo ok` (non-elevated); `python runtime_artifacts/_seal_f_drive_restored_20260720T0933.py`

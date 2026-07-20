@@ -222,7 +222,7 @@ def run_signed_journal() -> dict[str, Any]:
     trusted = {
         key_id: {
             "public_key_sha256": hashlib.sha256(key.public_key().public_bytes_raw()).hexdigest(),
-            "roles": ["consumer_journal"],
+            "roles": ["producer_journal"],
             "status": "active",
             "valid_from": "2026-01-01T00:00:00Z",
             "valid_until": "2027-01-01T00:00:00Z",

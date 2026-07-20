@@ -20,9 +20,23 @@
 
 FROM nvidia/cuda:12.8.0-devel-ubuntu22.04 AS train
 
+# Governance / provenance (private, personal, non-commercial). These labels make
+# the image self-describing so an operator can confirm which lock it targets
+# without introspecting the build history.
+LABEL org.opencontainers.image.title="maskfactory-train" \
+      org.opencontainers.image.description="Governed OpenMMLab sm_120 training runtime for maskfactory training-doctor" \
+      org.opencontainers.image.licenses="NONCOMMERCIAL" \
+      maskfactory.runtime="train_cu128" \
+      maskfactory.lock="env/openmmlab_training_stack.lock.json" \
+      maskfactory.torch="2.11.0+cu128" \
+      maskfactory.compute_capability="12.0"
+
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    # Network resilience for the large cu128 wheel + from-source ops pulls.
+    PIP_RETRIES=5 \
+    PIP_DEFAULT_TIMEOUT=120 \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     MASKFACTORY_CONTAINER_RUNTIME=train_cu128 \
@@ -43,9 +57,12 @@ RUN apt-get update \
 
 RUN python -m pip install --upgrade pip setuptools wheel
 
-# torch/torchvision cu128 first so MMCV builds its ops against this ABI.
+# torch/torchvision cu128 first so MMCV builds its ops against this ABI. The
+# post-install assertion fails the build closed if the cu128 index silently
+# resolved a CPU/non-cu128 wheel.
 RUN pip install --index-url https://download.pytorch.org/whl/cu128 \
-    torch==2.11.0+cu128 torchvision==0.26.0+cu128
+    torch==2.11.0+cu128 torchvision==0.26.0+cu128 \
+    && python -c "import torch; assert torch.__version__=='2.11.0+cu128', torch.__version__; print('torch cu128 OK')"
 
 # OpenMMLab core: mmengine + mmseg + mmdet wheels; MMCV built from source pinned
 # commit for sm_120 (env/openmmlab_training_stack.lock.json).
@@ -54,13 +71,20 @@ RUN pip install \
         "numpy==1.26.4" \
         addict==2.4.0 yapf==0.43.0 termcolor==3.3.0 \
         prettytable==3.16.0 terminaltables==3.1.10 ftfy==6.3.1
-RUN git clone https://github.com/open-mmlab/mmcv.git /opt/mmcv \
+# Reproducible from-source MMCV ops build at the exact locked commit. Uses a
+# partial (blobless) clone to avoid pulling the full history, checks out the
+# pinned sm_120 commit, then fails the build closed unless BOTH the resolved
+# distribution version equals the lock (2.1.0) AND the compiled mmcv._ext
+# extension imports (mmcv-lite would silently satisfy neither).
+RUN git clone --filter=blob:none https://github.com/open-mmlab/mmcv.git /opt/mmcv \
     && cd /opt/mmcv \
     && git checkout 57c4e25e06e2d4f8a9357c84bcd24089a284dc88 \
     && MMCV_WITH_OPS=1 FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=12.0 \
        pip install -v -e . \
+    && python -c "import importlib.metadata as m; v=m.version('mmcv'); assert v=='2.1.0', 'mmcv version drift: '+v" \
     && python -c "import mmcv._ext; print('mmcv._ext OK')"
-RUN pip install --no-deps mmsegmentation==1.2.2 mmdet==3.3.0
+RUN pip install --no-deps mmsegmentation==1.2.2 mmdet==3.3.0 \
+    && python -c "import importlib.metadata as m; assert m.version('mmsegmentation')=='1.2.2'; assert m.version('mmdet')=='3.3.0'; assert m.version('mmengine')=='0.10.7'; print('openmmlab pins OK')"
 
 # Curated serve/doctor subset + MaskFactory package (needed for MMSeg dataset /
 # transform / metric registration checks in training-doctor).

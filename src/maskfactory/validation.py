@@ -47,6 +47,7 @@ SCHEMA_NAMES = frozenset(
         "coverage_matrix_v2",
         "leaderboard",
         "training_static_gates_report",
+        "docker_train_contract_report",
         "mediapipe_vote_ablation_cases",
         "mediapipe_vote_ablation_policy",
         "mediapipe_vote_ablation_report",

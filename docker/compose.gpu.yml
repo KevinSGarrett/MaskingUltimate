@@ -35,6 +35,14 @@ services:
       dockerfile: docker/Dockerfile.train
     container_name: maskfactory_train_cu128
     gpus: all
+    # The image is built locally only (never pushed to a registry); never let
+    # compose attempt to pull maskfactory/train:cu128 from Docker Hub.
+    pull_policy: never
+    # Batch training-doctor / trainer runs must not be auto-restarted.
+    restart: "no"
+    # PyTorch DataLoader workers use /dev/shm; the 64MB default causes bus
+    # errors / silent worker deaths under real training. 8g is a safe floor.
+    shm_size: "8gb"
     volumes:
       - ..:/opt/maskfactory
     working_dir: /opt/maskfactory

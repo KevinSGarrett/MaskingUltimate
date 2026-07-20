@@ -10670,6 +10670,36 @@ def verify_training_static_gates(output: Path | None) -> None:
         click.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
+@main.command("verify-docker-train-contract")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=None,
+    help="Optional path for the sealed Docker train-image STATIC contract report JSON.",
+)
+def verify_docker_train_contract(output: Path | None) -> None:
+    """Prove docker/Dockerfile.train + compose train service match the runtime lock.
+
+    STATIC spec-coherence only. Never builds the image, never claims mmcv._ext
+    sm_120 compiled, training-doctor green, a champion, or a certified corpus.
+    """
+    from .training.docker_contract import (
+        DockerTrainContractError,
+        run_docker_train_contract_suite,
+    )
+
+    try:
+        report = run_docker_train_contract_suite()
+    except DockerTrainContractError as exc:
+        raise click.ClickException(str(exc)) from exc
+    if output is not None:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        click.echo(output)
+    else:
+        click.echo(json.dumps(report, indent=2, sort_keys=True))
+
+
 @main.command()
 @click.option("--compare", nargs=2, metavar="RUN_A RUN_B")
 @click.option("--format", "output_format", type=click.Choice(["table", "json"]), default="table")

@@ -1,0 +1,3 @@
+evidence(ops): reseal MF-P1-09.05 local B1 restore drill from C: backup seed
+
+Re-ran robocopy restore of img_a3d2663ad90d into runtime_artifacts/b1_restore_drill and verify-package PASS for p0+p1 (D: B1 media absent; local C: backup only).

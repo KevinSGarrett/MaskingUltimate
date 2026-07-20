@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comfy-main-maskfactory-consumer"
+version = "1.0.0"
+description = "Isolated Comfy_UI_Main-side MaskFactory bridge consumer (isolated_main_consumer authority; NOT the real Comfy_UI_Main runtime)."
+requires-python = ">=3.11"
+dependencies = [
+    # The producer contract package. Installed editable from the sibling
+    # MaskFactory repo, or resolved on sys.path by mf_main_consumer.producer_bridge.
+    # "maskfactory",  # provided by the sibling C:\Comfy_UI_Main_Masking checkout
+    "cryptography>=42",
+]
+
+[project.scripts]
+mf-main-consumer = "mf_main_consumer.runner:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

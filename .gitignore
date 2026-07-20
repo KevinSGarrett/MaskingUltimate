@@ -1,0 +1,10 @@
+# Generated run artifacts (sealed receipts are pinned into the MaskFactory
+# producer repo by hash; keeping them out of the tracked tree lets the adapter
+# source stay clean so conformance repository_clean stays honest).
+/receipts/*.json
+/dist/
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.pytest_cache/

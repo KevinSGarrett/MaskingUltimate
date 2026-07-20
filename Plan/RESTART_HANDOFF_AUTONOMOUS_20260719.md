@@ -4,6 +4,66 @@ Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin 
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**
 
+## Latest wave (2026-07-20 — tracker/evidence-hygiene sweep under multi-agent parallel execution)
+
+Stream scope: **tracker + evidence hygiene only** (no feature work). Multi-agent parallel execution is
+active — sibling agents hold uncommitted source edits in the shared working tree
+(`docker/Dockerfile.train`, `docker/compose.gpu.yml`, `tools/run_isolated_main_consumer.py`), are
+concurrently editing this handoff, and performed the sibling `c50abb3a` Docker Desktop restore. This
+stream committed **only** its own tracker-report/handoff/OPS_LOG/seal files and left all sibling
+in-flight edits unstaged and untouched.
+
+- **Sweep result: 0 honest status transitions.** Scanned 233 unresolved items (135
+  open/in_progress/partially_complete/failed + 98 blocked). Every remaining unfinished item is gated on
+  live/GPU/WSL/human-CVAT/Main-adoption/DAZ-Studio/gold evidence **not present on disk**. All 291 sealed
+  `STATIC_PASS`/`RUNTIME_PASS_BOUNDED` artifacts were already fully reflected by prior parallel waves; a
+  per-open-item grep found **no** un-applied sealed evidence, and `residual_blocker_inventory_20260719.json`
+  independently asserts `any_item_completed_by_this_inventory=false`.
+- **Honesty:** STATIC binders add STATIC_PASS surfaces only; they do not advance AWAITING_MAIN or
+  champions. No item was marked complete/not_applicable on weak proof — **zero transitions is the honest
+  outcome.** core_autonomous_runtime stays **blocked** (champions=0; P6-11/12 AWAITING_MAIN; HARD
+  MF-P6-11.02/11.07/12.05). Portfolio unchanged at **565/798 (70.8%)**.
+- **Hygiene applied:** `tracker.py report` regenerated `DASHBOARD.md` + `phases/*.md` (resyncing the
+  markdown to sibling-authored tracker.json notes, e.g. P6); `tracker.py validate` PASS (798 items, 0
+  structural problems, 19 hard-blockers unresolved). `needs_agent_actions_20260719.json` refreshed with a
+  `parallel_execution_reconcile` block and re-sealed.
+- **Evidence:** `qa/live_verification/tracker_evidence_hygiene_sweep_20260720.json`
+  (self_sha256 `a952582e…`); queue self_sha256 `bce2fcde…`.
+
+## Latest wave (2026-07-20 07:20 UTC — disk-safe reclaim + Docker RUNTIME_BLOCKED + host-path climb)
+
+HEAD `447b0f9b`. Live re-probe: Docker engine **down/unstable**; Ollama 0.32.1 (host) UP; CVAT down.
+
+- **Disk (item 1) — ephemeral reclaim DONE, no governed wipe:** cleared pip/uv/npm-cache/torch caches + user
+  Temp → **+11.11 GiB** (C: 17.18 → 28.29 GiB; now ~29.15 GiB). F: 249.42 GiB free. HuggingFace weights (~3.3
+  GiB), `models/`, `MaskedWarehouse`, `data/` (F: junction), Docker volumes / `docker_data.vhdx`, CVAT v2.24
+  data all **untouched**. `docker builder prune` **not run** (engine went down before a bounded CLI call
+  completed).
+- **Docker engine — RUNTIME_BLOCKED (honest):** relaunch → `docker version`/`ps` timed out >40s; a clean
+  `wsl --shutdown` restart brought the distro up but `docker ps` returned **500 Internal Server Error** on
+  `/containers/json`, then the **named pipe vanished** (daemon crashed while recovering the **68.11 GiB
+  `docker_data.vhdx`** with only ~29 GiB free on C:). Stopped restarting to protect the engine (mandate). No
+  prune / volume wipe / factory reset. **Repair next:** free C: to ≥75 GiB, OR relocate Docker Desktop "Disk
+  image location" to F: (admin-free GUI migration preserves CVAT volumes; do NOT blind-edit
+  settings-store.json), OR elevated `wsl --shutdown` + `Optimize-VHD`/`diskpart compact` + `e2fsck` of
+  `docker_data.vhdx`.
+- **Serve image (item 2) — NOT built:** `maskfactory/serve:cu128` build aborted; engine unhealthy and the
+  ~7 GiB torch cu128 install would risk another recovery crash. Smoke NOT_RUN. Still `AWAITING_RUNTIME`.
+- **Autonomous-gold (item 3) — honest insufficient:** `build_autonomous_gold_admission.py` →
+  **`insufficient_autonomous_verified_samples`** (0 `machine_verified_candidate`). The certificate needs
+  ~≥300 real machine-verified sidecars per risk bucket (one-sided Wilson ≤0.01, exact zero-failure ≤0.005),
+  each anchored to a ≥3 independent-family tournament winner in `runs/`; none exist and none can be
+  fabricated. Requires a working multi-provider GPU tournament runtime (Docker down this wave).
+- **Main (item 4) — isolated consumer real-run 6/6 PASS:** `run_isolated_main_consumer.py` →
+  isolated-consumer-signed adoption receipt + signed journal/checkpoint + failure-control circuit +
+  Main-consumer conformance harness (`accepted`, `main_adoption_complete=false`) + cross-project
+  `producer_partial`. HARD **MF-P6-11.02 / 11.07 / 12.05 / 12.06 remain OPEN** (real Comfy_UI_Main untouched).
+- **Tests:** 52 focused bridge/gold/consumer tests PASS at HEAD `447b0f9b`.
+- **Evidence:** `qa/live_verification/runtime_climb_disk_safe_20260720T0720.json` (self_sha256 `a79b2051…`);
+  `qa/live_verification/autonomous_gold_admission_20260720T021922.json`;
+  `runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T021815.json`.
+- **champions=0; no tier inflation.**
+
 ## Latest wave (2026-07-20 — three unblocks EXECUTED: Docker GPU + autonomous-gold tier + isolated consumer)
 
 Commit `6a011bb6` on `codex/maskfactory-runtime-implementation`. Built infrastructure (not

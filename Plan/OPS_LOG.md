@@ -10634,7 +10634,7 @@ Evidence: qa/live_verification/c_vs_f_data_package_reconcile_20260720T1453Z.json
 **Item:** repair_ubuntu_2204_ext4_vhd disposition reconcile
 **Result:** RECONCILED. Linked wsl_ubuntu_io_error_20260720.json + f_drive_restored_20260720T0933Z.json. CURRENT STILL_BROKEN_PROBE_FAILED (ERROR_SHARING_VIOLATION). Docker-GPU parallel CUDA path.
 
-Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 47506f118846d66e...).
+Evidence: qa/live_verification/wsl_io_error_f_restore_reconcile_20260720.json (self_sha256 0d19efe9b1ef2af6...).
 
 ## 2026-07-20 14:49 UTC - DAZ validation/ops/coverage STATIC re-verify FINAL (F:\DAZ read-when-present, 26 entries)
 **Item:** MF-P9-08.01 / 08.02 / 08.03 / 08.04 / 08.05 / 08.07 / 08.08 / 10.01 / 12.01 / 03.09
@@ -10783,3 +10783,28 @@ Evidence: qa/live_verification/local_multi_person_mode_a_group_slice_20260720T10
 **Result:** PASS (local-tier RUNTIME_PASS_BOUNDED). Restored seed package **img_a3d2663ad90d** (252 files / 8,367,171 bytes) from on-C: backup `data_c_backup_relocated/packages` into empty drill target `runtime_artifacts/b1_restore_drill`. `verify-package` PASS for instances **p0** and **p1**. Independent source integrity PASS for `img_51945db358cb/p0`. `data/` junction unchanged (still C: backup). Official `D:\MaskFactoryBackup` B1 media **absent** — not claimed. DVC local C: backup already PASS (prior seal). No doctor-green / gold / visual-pass inflation.
 
 Evidence: qa/live_verification/b1_restore_drill_local_c_backup_20260720T1517Z.json
+
+## 2026-07-20 15:26 UTC - train:cu128 build BLOCKED (Docker DOWN + C: critical)
+**Item:** docker_gpu_train_build_and_training_doctor
+**Command:** live docker/pipe/C:/image-inspect probe; hard Desktop restart+wait earlier this wave; python runtime_artifacts/_seal_train_cu128_blocked_20260720T1526.py
+**Result:** RUNTIME_BLOCKED (honest). Gate `serve:cu128 exists OR BuildKit free` fails closed: serve image absent; named pipe `dockerDesktopLinuxEngine` absent (BuildKit unavailable). C: free ~15–36 GiB during wave (CRITICAL, << 75 GiB floor / heavy CUDA-devel build gate). `docker_data.vhdx` still 68.11 GiB on C:. Did **not** start `docker compose -f docker/compose.gpu.yml build maskfactory-train`; did **not** run `tools/smoke_docker_gpu_train.py`. Further Docker wake thrash aborted (protect engine + disk). Ollama host 0.32.1 UP; CVAT about unreachable while engine DOWN. No prune/wipe; no USB vhdx migrate. champions=0; no training-doctor green claim.
+
+Evidence: qa/live_verification/train_cu128_blocked_20260720T1526.json. Next: ephemeral reclaim to >=75 GiB C: free -> single stable Docker wake -> sole-build train:cu128 (or serve first) -> training-doctor smoke.
+
+## 2026-07-20 15:17 UTC - Full-autonomy fleet re-probe; Docker DOWN; C: CRITICAL
+**Item:** needs_agent_actions_20260720.json + fleet_status_20260720T1505.json
+**Command:** live docker/CVAT/Ollama/WSL/F:USB probe; Docker Desktop wake + hard-restart; python runtime_artifacts/_seal_fleet_status_20260720T1505.py; python runtime_artifacts/_update_needs_agent_actions_fleet_reprobe_20260720T1505.py
+**Result:** SEALED. Docker briefly woke to 29.6.1 / 39 containers (cvat/traefik/nuclio/pth-sam2) then flapped; hard-restart ended DOWN (pipe=False at 15:17Z). CVAT host about HTTP 000. Ollama native 0.32.1 UP. F: USB Seagate present (127.63 GiB free). Get-Volume C SizeRemaining = 19.4 GiB CRITICAL (<< 75 GiB floor; docker_data.vhdx still 68.11 GiB on C:). data/ junction remains on C: backup; USB data junction FORBIDDEN. migrate_docker_vhdx_c_to_f remains CANCELLED_POLICY_BLOCKED_USB_REMOVABLE.
+
+Re-ranked live_priorities: 1) disk_ephemeral_reclaim CRITICAL, 2) restore_docker/CVAT after headroom, 3) host-CUDA tournament (families online), 4-5) container serve/train BLOCKED_DOCKER_AND_DISK, 6) main_adoption, CANCELLED) migrate USB. Merged onto sibling queue (preserve forbid_usb / families_online / Mode-B fields). No volume wipe/prune. No tier inflation.
+
+Evidence: qa/live_verification/fleet_status_20260720T1505.json (self_sha256 e55034c77f06...); needs_agent_actions_20260720.json (self_sha256 ac138eae8f46...).
+
+## 2026-07-20 15:22 UTC - Sibling-consumer climb5 (MF-P6-11.02/11.07/12.05/12.06 STATIC_PASS depth)
+
+**Item:** MF-P6-11.02, MF-P6-11.07, MF-P6-12.05, MF-P6-12.06 (HARD remain OPEN)
+**Command:** `python C:/Comfy_UI_Main_MaskFactory_Consumer/run_consumer.py` (clean tree HEAD db6d083)
+**Result:** STATIC_PASS deepened. Sibling consumer now **8/8 pillars PASS** with real producer machinery: Mode A **30/30** adversarial package-read; failure-control flags all true (healthy-admit/open/half-open/silent-fallback/scoped-DAG/incoherent-retry/deadline/resource/retry); qualification depth **8/8**; final-release firewall **8/8** (core close NEVER authorized). Receipt self_sha256 `ef779c93d824fb4805da434da560461559dae2504ff24b8fd658530733e7a6cc`; seal `isolated_sibling_consumer_climb5_20260720T1521.json` self_sha256 `b4b79a4ce0c8b794319c34f64620fe62bb9d2fc8624e72d2926cb96e1278e671`. Honest scope: producer + isolated-consumer only; `is_real_comfyui_main=false`; HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN (AWAITING_MAIN). Dirty Wave64 `C:/Comfy_UI_Main` untouched. champions=0; no core close.
+
+Credits: MF-P6-11.02 86→88; MF-P6-11.07 83→85; MF-P6-12.05 83→84; MF-P6-12.06 78→79 (blocked, STATIC_PASS only).
+

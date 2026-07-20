@@ -1,0 +1,95 @@
+{
+  "artifact_type": "serve_abort_gold_drive_wave",
+  "authority": "autonomous_full_autonomy_parallel_safe_zero_human_wait",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_established_this_wave": [
+    "serve_build_attempted_then_aborted_to_protect_docker",
+    "sibling_serve_sole_builder_coordination_honored",
+    "f_drive_gold_source_corpus_staged_read_only_41_records",
+    "autonomous_gold_admission_insufficient_samples_reconfirmed"
+  ],
+  "claims_not_established": [
+    "serve_cu128_built",
+    "smoke_docker_gpu_serve_pass",
+    "doctor_all_green",
+    "autonomous_certified_gold",
+    "champions>0",
+    "machine_verified_candidate>0",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "gold_counts": {
+    "approved_gold_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "calibrated_auto_accepted_count": 0,
+    "champions": 0,
+    "machine_verified_candidate_count": 0
+  },
+  "honesty": [
+    "No tier inflation: gold=0, champions=0, serve image absent, smoke not run.",
+    "Stopped Docker relaunch loops after pipe flap; Ollama host remains UP.",
+    "Host F: gold-volume SOURCE corpus is not a certificate and does not mint candidates.",
+    "Parallel-safe: no concurrent GPU Docker tournament while engine unstable."
+  ],
+  "lanes": {
+    "gold_tournament_host_parallel_safe": {
+      "admission": {
+        "certificate_passed": false,
+        "machine_verified_candidate_count": 0,
+        "path": "qa/live_verification/autonomous_gold_admission_20260720T1515.json",
+        "self_sha256": "abd23b141866b3740919ed66f365073883bd0d73348b827a2c73d7d6fae29404",
+        "status": "insufficient_autonomous_verified_samples"
+      },
+      "corpus_evidence": "qa/live_verification/f_drive_gold_source_corpus_20260720T1515.json",
+      "corpus_self_sha256": "0984a0e36a11f395225cba8fa1926b35ea4df74cf53811c773bdecef8088ab02",
+      "drive_evidence": "qa/live_verification/gold_tournament_drive_fdrive_20260720T1515.json",
+      "drive_self_sha256": "e54a6107d6e82636cea39c0a7546dff90f859304746daef9c0d287e630079307",
+      "f_used_read_only": true,
+      "families_online_prior": {
+        "evidence": "qa/live_verification/families_online_gold_drive_20260720T0957.json",
+        "live_independent_mask_families_count": 3,
+        "note": "Family-count gate (>=3) already cleared on host CUDA; drive script's embedded 1-family blocker text is stale relative to families_online seal. Sidecar emission still pending.",
+        "runtime": "local_cuda_comfyui_venv_torch_2.11.0+cu128"
+      },
+      "no_junction_to_f": true,
+      "staged_source_collection_count": 8,
+      "staged_source_record_count": 41,
+      "tool": "runtime_artifacts/_drive_gold_tournament_fdrive_20260720.py --ts 20260720T1515",
+      "verdict": "RUNTIME_PASS_BOUNDED_SOURCE_CORPUS_ONLY"
+    },
+    "serve_cu128_build_smoke": {
+      "attempts": [
+        {
+          "at": "2026-07-20T14:45:49Z",
+          "cmd": "docker build -f docker/Dockerfile.serve -t maskfactory/serve:cu128 .",
+          "log": "qa/live_verification/_serve_cu128_build_20260720T094550.log",
+          "result": "CLI EXIT=-1 during nvidia-cudnn-cu12 657.9MB download; engine stayed up initially"
+        },
+        {
+          "at": "2026-07-20T14:48:00Z",
+          "cmd": "Start-Process docker build ... (redirected)",
+          "result": "stuck resolving dockerfile:1.7; orphaned docker.exe CLI pile; Desktop flap"
+        }
+      ],
+      "coordination": {
+        "policy_honored_after_discovery": "Discovered runtime_artifacts/_serve_cu128_build_coordination_20260720.json (sole_builder_pid=53784). Stopped further serve builds from this stream. Sibling retry log empty; err=daemon npipe missing.",
+        "sibling_sole_builder": {}
+      },
+      "docker_engine_final": {
+        "cvat": "UNREACHABLE",
+        "destructive_ops": "none",
+        "ollama_host": "UP 0.32.1",
+        "pipe_dockerDesktopLinuxEngine": false,
+        "stop_hammering": true
+      },
+      "image_present": false,
+      "smoke": "NOT_RUN",
+      "verdict": "RUNTIME_BLOCKED_ABORTED_TO_PROTECT_DOCKER"
+    }
+  },
+  "model": "cursor-grok-4.5-high-fast",
+  "next_agent_step": "When Docker Desktop is stable AND C: free stays >=75 GiB AND no sibling sole-builder coordination lock: one deliberate maskfactory/serve:cu128 build then tools/smoke_docker_gpu_serve.py. In parallel on host CUDA (no Docker): GPU-sequence >=3-family tournament over the staged F:/Ultimate sample corpus to emit genuine machine_verified_candidate sidecars under runs/, then build_autonomous_gold_admission.py --corpus.",
+  "project_head_at_authoring": "e3ee17f357af86ee42563cc4fb6bad9f43fdc2de",
+  "recorded_at": "2026-07-20T15:16:45.753159Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "f34346e1acf1bef41770dc7cb387b235a195ae8813db00998ea46f2021084418"
+}

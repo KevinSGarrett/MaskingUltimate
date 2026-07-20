@@ -5,11 +5,11 @@
       "evidence": "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
       "executed": "Relocated data/ (2.98 GiB) to governed F:\\MaskFactory_DataRelocated via robocopy + directory junction; C: original retained at data_c_backup_relocated (fully reversible). doctor.check_disk_free FAIL->PASS (251.1 GiB free). This is doctor's own documented remediation ('move data to a larger governed drive') and gives genuine ingest headroom on F: (>250 GiB).",
       "fleet_reprobe_20260720T1502": {
-        "c_free_gib": 68.35,
-        "note": "C: fell below 75 GiB during Docker flap/reseal; reclaim ephemeral docker/WSL growth agent-executably (no wipe)."
+        "c_free_gib": 83.64,
+        "evidence": "qa/live_verification/fleet_status_20260720T1502.json"
       },
-      "forced_c_backup_evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
       "former": "disk_reclaim_above_75_gib (priority 1, NEEDS_KEVIN)",
+      "on_c_confirm_evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
       "reconfirmed_20260720T0931": "Re-verified live: C: free 91.71 GiB (above the 75 GiB ingest/repair floor) with Docker engine UP (32 running containers; production CVAT v2.24 + nuclio-pth-sam2 healthy). Disk repair item is DONE; no residual blocker for serve/train/tournament GPU-container work.",
       "residual_agent_steps": [
         "Do NOT re-junction live data/ onto USB F:. Keep data/ -> data_c_backup_relocated.",
@@ -54,7 +54,7 @@
         "Produce autonomous_certified_gold packages (counts toward certified_training_package_count alongside human_anchor)."
       ],
       "former": "sop1_jobs_21_to_25 (priority 3, NEEDS_KEVIN CVAT human correction)",
-      "honest_note": "The governed leaderboard final authority still requires a human_anchor holdout for champion promotion. To keep zero human blockers, the legitimate agent path is a governed autonomous-gold admission tier — implementing that is an agent policy task, NOT a Kevin annotation task. Not fabricated here.",
+      "honest_note": "The governed leaderboard final authority still requires a human_anchor holdout for champion promotion. To keep zero human blockers, the legitimate agent path is a governed autonomous-gold admission tier \u2014 implementing that is an agent policy task, NOT a Kevin annotation task. Not fabricated here.",
       "reclassification": "Human anchors are NOT operational gold (mandate). CVAT SOP-1 human correction is deferred/superseded by the autonomous-gold path.",
       "status": "SUPERSEDED_AUTONOMOUS_PATH",
       "unblocks": [
@@ -67,12 +67,18 @@
       "agent_executable_path": [
         "Cloud S3 push deferred without idling; needs dvc-s3 + AWS_* creds. If creds appear, `pip install dvc-s3` then `dvc push` to s3://maskfactory-dvc-dev."
       ],
-      "evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json",
-      "executed": "dvc 3.67.1 installed; local remote maskfactory-dvc-local -> F:/MaskFactory_DataRelocated/dvc_local_remote; dvc add of an in-repo drill package -> 52 cache objects (6.06 MB); dvc push -r maskfactory-dvc-local -> 52 files pushed; dvc status -c -> 'Cache and remote are in sync'.",
+      "c_backup_retarget_20260720T1503": {
+        "dvc_push": "Everything is up to date",
+        "dvc_status_c": "Cache and remote are in sync",
+        "evidence": "qa/live_verification/dvc_local_c_backup_verify_20260720T1503Z.json",
+        "local_remote_url": "C:/Comfy_UI_Main_Masking/data_c_backup_relocated/dvc_local_remote",
+        "note": "Retargeted maskfactory-dvc-local from F: USB DataRelocated onto the sibling-copied C: backup dvc_local_remote; local push/status verified."
+      },
+      "evidence": "qa/live_verification/dvc_local_c_backup_verify_20260720T1503Z.json (also qa/live_verification/agent_queue_execution_20260719T2300.json prior F: drill)",
+      "executed": "dvc 3.67.1; local remote maskfactory-dvc-local retargeted to C:/Comfy_UI_Main_Masking/data_c_backup_relocated/dvc_local_remote (52 files / 6.35 MB); dvc status -c in sync; dvc push -> Everything is up to date. Prior F: drill retained as secondary mirror. Cloud s3 still deferred.",
       "f_restored_reverification_20260720T1441": {
         "evidence": "qa/live_verification/f_drive_restored_20260720T0933Z.json",
-        "note": "F:\\MaskFactory_DataRelocated\\dvc_local_remote may be reachable when F: is present; data/ junction MUST stay on C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated. Auto-repoint to F: is FORBIDDEN.",
-        "repoint_to_f": "FORBIDDEN"
+        "note": "F:\\MaskFactory_DataRelocated\\dvc_local_remote reachable again (F: restored); local dvc remote path is live. data/ junction still points to the on-C: backup for outage resilience (repoint to F: reversible on request)."
       },
       "former": "dvc_s3_push_first_package (priority 4, NEEDS_KEVIN AWS creds)",
       "junction_finding": "`dvc add data/packages` FAILS because the F: junction resolves the target outside the git repo 'C:/Comfy_UI_Main_Masking' (dvc requires targets inside the git workdir). Local-first drill used an in-repo package copy instead.",
@@ -118,7 +124,7 @@
       "agent_executable_path": [
         "Checkpoint already hash-bound on disk at models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt (no webpage acceptance idle needed; local weights present).",
         "python tools\\probe_meta_checkpoint_access.py to re-confirm local access readiness.",
-        "Live CUDA SAM 3.1 smoke depends on repair_ubuntu_2204_ext4_vhd (elevated e2fsck) — reclassified above as scripted agent step, not human."
+        "Live CUDA SAM 3.1 smoke depends on repair_ubuntu_2204_ext4_vhd (elevated e2fsck) \u2014 reclassified above as scripted agent step, not human."
       ],
       "depends_on": [
         "repair_ubuntu_2204_ext4_vhd"
@@ -186,31 +192,41 @@
         "If Ubuntu-22.04 on F: is lost to a disconnect, it can be re-registered fresh (wsl --install -d Ubuntu-22.04 or wsl --import) since it is a general-purpose pipeline distro, not the unique holder of ungoverned data; GPU capability has an independent Docker-container proof path (nvidia/cuda smoke) that does not depend on this distro.",
         "No agent action reduces the physical USB-disconnect risk itself; this is recorded for Kevin's awareness of drive placement, not as something blocking further autonomous work."
       ],
-      "data_junction_correction_20260720": {
-        "auto_repoint_to_f": "FORBIDDEN",
-        "evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
-        "note": "Live data/ junction is on C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated. USB dual-anchor residual for data/ is CLOSED; Ubuntu-22.04 VHDX on F: remains the residual USB exposure for WSL only.",
+      "data_junction_correction_20260720T1500": {
+        "evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
+        "note": "Live data/ junction is on C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (confirmed). USB dual-anchor residual for data/ is CLOSED by forbid_usb_data_junction; Ubuntu-22.04 VHDX on F: remains the residual USB exposure for WSL only.",
         "usb_data_junction": "FORBIDDEN"
       },
       "docker_data_disk_note": "Docker Desktop's own data disk (docker_data.vhdx, 68.11 GiB) remains live on C: (C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx) -- NOT relocated to F:. A stale, non-live copy exists under F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx from an earlier abandoned relocation attempt; it is not read/written by the running engine and carries no additional USB-disconnect exposure for Docker itself.",
       "evidence": "qa/live_verification/f_drive_layout_map_20260720.json",
-      "finding": "F: is a USB-attached Seagate BUP Slim (BusType=USB). Live data/ junction target is C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (forced/confirmed). F: may still host WSL Ubuntu-22.04 VHDX + cold mirrors; never the sole live data/ target.",
+      "finding": "Live layout probe confirms F: (2000.4 GB) is a USB-attached Seagate BUP Slim external disk (Disk 1, BusType=USB), currently healthy and mounted with 181.21 GiB free. It now anchors TWO governed/live roles simultaneously: (1) the data/ junction target F:\\MaskFactory_DataRelocated, and (2) the live Ubuntu-22.04 WSL distro (registry BasePath F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04, confirmed Running with active LastWriteTime, i.e. genuinely relocated off C:, not merely offloaded). A prior sibling probe this same session hour (docker_relocation_f_absent_blocked_20260720T1435Z.json) found this exact drive physically absent, then this probe found it present again -- i.e. a real disconnect/reconnect happened, not a stale read.",
       "kevin_actions_optional": [
         "If preferred, migrate the data/ junction target and/or the Ubuntu-22.04 WSL distro to the internal NVMe (Disk 0) or another permanently-attached drive to remove the USB-disconnect exposure. Not required for current work to continue."
       ],
       "no_human_wait": true,
-      "risk": "A future USB disconnect can still crash/attach-fail the Ubuntu-22.04 WSL distro whose ext4.vhdx lives on F:. The live data/ junction is NO LONGER on F: (forbidden + forced on C backup), so package/MASKFACTORY_DATA_PATH will not dangle solely from an F: unplug.",
+      "risk": "A future USB disconnect can still crash/attach-fail the Ubuntu-22.04 WSL distro whose ext4.vhdx lives on F:. The live data/ junction is NO LONGER on F: (forbidden + confirmed on C backup), so package/MASKFACTORY_DATA_PATH will not dangle solely from an F: unplug.",
       "status": "KEVIN_AWARENESS_NOT_A_BLOCKER"
     },
     {
       "action_id": "forbid_usb_data_junction",
-      "binding_policy": "usb_data_junction=FORBIDDEN; auto_repoint_to_f=FORBIDDEN",
-      "evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
-      "executed": "Confirmed/forced data/ -> C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated. Package count via junction=8. Auto-repoint to F: FORBIDDEN.",
+      "binding_policy": "usb_data_junction=FORBIDDEN",
+      "evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
+      "live_confirmed": {
+        "junction_realpath": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+        "packages": 8,
+        "resolves_on_c": true,
+        "resolves_on_f": false
+      },
       "no_human_wait": true,
-      "status": "DONE_BINDING_POLICY",
+      "seal_self_sha256": "3e7cf00c64a8369ba2c8741d37dfa087d59ce125dae4c64cbacf2295540f424c",
+      "statement": "Agents MUST NOT re-junction repo data/ onto USB F: (F:\\MaskFactory_DataRelocated) or any other removable/hot-pluggable volume. Live target is and remains C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated. F: is approved only for cold offload / read-when-present assets with graceful degrade on disconnect.",
+      "status": "BINDING_POLICY_FORBIDDEN",
+      "supersedes_stale_claims": [
+        "Any residual note that data/ still targets F:\\MaskFactory_DataRelocated as the live sole copy.",
+        "disk_headroom residual suggesting 'extend F: relocation' for the live data/ junction."
+      ],
       "unblocks": [
-        "Removes data/ dangling-junction exposure on USB disconnect"
+        "Removes agent ambiguity that could reintroduce a dangling data/ junction on the next USB disconnect."
       ]
     }
   ],
@@ -229,14 +245,11 @@
     "autonomous_certified_gold",
     "Main adoption receipts (MF-P6-11.02/11.07/12.05)"
   ],
-  "data_junction_forced_c_backup": {
-    "auto_repoint_to_f": "FORBIDDEN",
-    "evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
-    "junction_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
-    "mutation_performed": false,
-    "package_count": 8,
-    "self_sha256": "9cbf186019c33e237448efb426152b4af69461935ee241ad7a12f59932bf2b9c",
-    "usb_data_junction": "FORBIDDEN"
+  "data_junction_on_c_confirmed_20260720T1500": {
+    "evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
+    "self_sha256": "3e7cf00c64a8369ba2c8741d37dfa087d59ce125dae4c64cbacf2295540f424c",
+    "usb_data_junction": "FORBIDDEN",
+    "verdict": "CONFIRMED_DATA_JUNCTION_ON_C_BACKUP"
   },
   "disk_repair_status_20260720T0931": "DONE",
   "disk_repair_status_20260720T1502": "REGRESSED_BELOW_75_GIB",
@@ -245,7 +258,7 @@
     "data_health": {
       "active_package_count": 8,
       "f_datarelocated_package_count": 8,
-      "junction_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (on-C: backup; FORCED)",
+      "junction_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (on-C: backup; USB re-junction FORBIDDEN)",
       "moved_this_update": false,
       "repoint_to_f": "FORBIDDEN (usb_data_junction_policy); do not auto-perform"
     },
@@ -281,41 +294,56 @@
     "vhd_size_gib": 53.56,
     "wsl_boot_probe": "wsl -d Ubuntu-22.04 -- /bin/true exit 0; root mounted rw (no emergency_ro); write round-trip WRITE_OK; dmesg shows clean 'EXT4-fs (sdd): recovery complete' then r/w mount; tune2fs filesystem_state=clean"
   },
+  "families_online_20260720T0957": {
+    "admission_status": "insufficient_autonomous_verified_samples",
+    "evidence": "qa/live_verification/families_online_gold_drive_20260720T0957.json",
+    "gold_volume_sources_present": true,
+    "live_independent_mask_families": [
+      "faceparse_bisenet",
+      "birefnet_general",
+      "schp_atr"
+    ],
+    "live_independent_mask_families_count": 3,
+    "machine_verified_candidate_count": 0,
+    "note": "Family-count gate cleared (>=3). Tournament sidecar emission still required for gold.",
+    "runtime": "local_cuda_comfyui_venv_torch_2.11.0+cu128"
+  },
+  "fleet_status_evidence": "qa/live_verification/fleet_status_20260720T1502.json",
   "honesty": [
     "DONE_AUTONOMOUS items are backed by sealed live evidence this session",
     "No tier inflation: doctor not all-green; champions=0; no gold/Main-complete/PRODUCTION_EVIDENCE_PASS",
     "Genuine elevation/hardware gates are reclassified as agent-executable-from-elevated-shell (scripted, no human judgment) WITH an autonomous fallback already executed so no lane waits",
-    "Human-anchor accuracy items are superseded (not blocking) by the autonomous-gold path per mandate; final champion authority still honestly requires either human_anchor holdout OR a governed autonomous-gold admission — not fabricated"
+    "Human-anchor accuracy items are superseded (not blocking) by the autonomous-gold path per mandate; final champion authority still honestly requires either human_anchor holdout OR a governed autonomous-gold admission \u2014 not fabricated"
   ],
   "host_snapshot": {
-    "c_above_75_repair_floor": false,
-    "c_free_gib": 68.35,
-    "c_free_gib_approx": 68.35,
+    "c_above_75_repair_floor": true,
+    "c_free_gib": 83.64,
+    "c_free_gib_approx": 83.64,
     "champions": 0,
-    "cuda_train_serve_path": "Docker-GPU (sole/primary); WSL Ubuntu-22.04 not required",
-    "cvat_about_http": "UNREACHABLE_AT_PROBE (curl.exe exit 52 / empty reply; Invoke-WebRequest connection closed unexpectedly) despite cvat_server showing 'Up 3 minutes' in docker ps -- most likely still warming up after the recent restart; not re-polled to green by this probe since CVAT liveness was not the primary ask.",
-    "data_drive": "data/ junction -> C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (on-C: backup, 8 pkgs); auto-repoint to USB F: FORBIDDEN",
-    "docker_engine": "UP (server 29.6.1, context docker-desktop)",
-    "docker_ps_containers_up": 37,
+    "cuda_train_serve_path": "Docker-GPU (sole/primary); blocked until engine stable + C above 75",
+    "cvat_about_http": "UNREACHABLE_ENGINE_DOWN (WinError 10061 at 15:01Z snap)",
+    "data_drive": "data/ junction -> C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (CONFIRMED on-C; USB data junction FORBIDDEN)",
+    "docker_engine": "DOWN_OR_FLAPPING (docker info timeout / docker-desktop WSL Stopped at seal; was UP 39ct @14:52Z server 29.6.1)",
+    "docker_ps_containers_up": 0,
     "f_drive_bus_type": "USB (Seagate BUP Slim, physically removable)",
     "f_drive_state_20260720T1435Z": "present (~181.2 GiB free); known intermittent this session",
     "f_free_gib": 127.63,
     "f_present": true,
+    "fleet_status_evidence": "qa/live_verification/fleet_status_20260720T1502.json",
     "gold": 0,
     "gpu_container_passthrough": "RTX 5060 Laptop GPU, driver 592.01, 8151 MiB total / ~1247 MiB free (live via --gpus all)",
+    "ollama_provider": "native_windows",
     "ollama_version": "0.32.1",
-    "wsl_ubuntu2204": "HEALTHY (F: restored; non-elevated wake exit 0, WRITE_OK)",
+    "wsl_ubuntu2204": "Running_at_seal (mid-wave F: vhdx SHARING_VIOLATION; docker-desktop Stopped)",
     "wsl_ubuntu_2204": "Running (woken via wsl --shutdown 20260720); nvidia-smi PASS in-distro (RTX 5060, driver 592.01); torch NOT installed in system python3 (next step)",
     "wsl_ubuntu_2204_location": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04 (relocated off C:, Running)"
   },
   "latest_reverification": {
-    "also_see": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
-    "at": "2026-07-20T15:06:00.076950Z",
-    "auto_repoint_to_f": "FORBIDDEN",
-    "by": "data_junction_forced_c_backup",
-    "evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
-    "junction_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
-    "package_count": 8,
+    "at": "2026-07-20T15:04:27.807320Z",
+    "by": "data_junction_on_c_confirmed",
+    "evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
+    "healthy": true,
+    "junction_realpath": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
     "usb_data_junction": "FORBIDDEN"
   },
   "live_priorities_this_wave": [
@@ -323,43 +351,44 @@
       "action_id": "disk_ephemeral_reclaim_above_75_gib",
       "rank": 1,
       "status": "AGENT_EXECUTABLE_NOW",
-      "why_now": "C: 68.35 GiB < 75 floor after Docker flap. Reclaim docker build cache / ephemeral only (no volume wipe). Then restore engine."
+      "why_now": "C: 83.64 GiB < 75 floor after Docker flap. Reclaim docker build cache / ephemeral only (no volume wipe)."
+    },
+    {
+      "action_id": "restore_docker_engine_and_cvat_stack",
+      "rank": 2,
+      "status": "AGENT_EXECUTABLE_NOW",
+      "why_now": "Engine flapped DOWN after healthy 39-container window. Start Docker Desktop; docker ps/stats; bootstrap_cvat; smoke_cvat_sam2."
+    },
+    {
+      "action_id": "docker_gpu_serve_build_and_containerized_smoke",
+      "rank": 3,
+      "status": "AGENT_EXECUTABLE_AFTER_ENGINE_AND_DISK",
+      "why_now": "Sole CUDA serve path; build serve:cu128 out-of-band once engine stable and C: >75 GiB."
+    },
+    {
+      "action_id": "docker_gpu_train_build_and_training_doctor",
+      "rank": 4,
+      "status": "AGENT_EXECUTABLE_AFTER_ENGINE_AND_DISK",
+      "why_now": "Sole CUDA train path; train STATIC_PASS already sealed."
+    },
+    {
+      "action_id": "multi_provider_gpu_tournament_toward_autonomous_gold",
+      "families_online": 3,
+      "rank": 5,
+      "status": "FAMILIES_ONLINE_TOURNAMENT_NEXT",
+      "why_now": ">=3 local-CUDA mask families live (faceparse/birefnet/schp); gold-volume roots present; run sequenced tournament to emit machine_verified_candidate sidecars."
+    },
+    {
+      "action_id": "main_adoption_isolated_consumer_hard_blockers",
+      "rank": 6,
+      "status": "PRODUCER_VERIFIED_AGENT_EXECUTABLE_IN_MAIN",
+      "why_now": "HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN; agent-executable in Comfy_UI_Main."
     },
     {
       "action_id": "migrate_docker_vhdx_c_to_f",
       "rank": "CANCELLED",
       "status": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
       "why_now": "Cancelled, not deferred: F: is confirmed USB-bus removable and already proved a same-day disconnect. Never re-propose this move while F: remains the removable Seagate USB drive; see f_drive_usb_policy_20260720.json rule_1."
-    },
-    {
-      "action_id": "docker_gpu_serve_build_and_containerized_smoke",
-      "rank": 2,
-      "status": "AGENT_EXECUTABLE_OUT_OF_BAND",
-      "why_now": "Docker-GPU is the sole CUDA serve path (WSL deferred). serve STATIC contract STATIC_PASS + host GPU passthrough live-proven. Build maskfactory/serve:cu128 deliberately out-of-band (WSL2 headroom; do not crash the running CVAT stack) -> tools/smoke_docker_gpu_serve.py -> seal containerized serve RUNTIME_PASS_BOUNDED."
-    },
-    {
-      "action_id": "docker_gpu_train_build_and_training_doctor",
-      "rank": 3,
-      "status": "AGENT_EXECUTABLE_OUT_OF_BAND",
-      "why_now": "Docker-GPU is the sole CUDA train path (WSL deferred). train STATIC contract STATIC_PASS (sm_120 mmcv._ext from-source, CUDA 12.8 devel Docker Hub base, Ubuntu-distro-independent). Build maskfactory/train:cu128 out-of-band -> training-doctor in-container (tools/smoke_docker_gpu_train.py fails closed image_absent)."
-    },
-    {
-      "action_id": "multi_provider_gpu_tournament_toward_autonomous_gold",
-      "rank": 4,
-      "status": "AGENT_EXECUTABLE_NOW_INSUFFICIENT_SAMPLES",
-      "why_now": "GPU container path + healthy nuclio SAM2 available. Run the >=3 independent-family tournament on gold-volume sources to emit machine_verified_candidate masks; assemble a frozen image-disjoint corpus; build_autonomous_gold_admission --corpus. Honest insufficient until real candidates exist; champions stay 0 until measured."
-    },
-    {
-      "action_id": "main_adoption_isolated_consumer_hard_blockers",
-      "rank": 5,
-      "status": "PRODUCER_VERIFIED_AGENT_EXECUTABLE_IN_MAIN",
-      "why_now": "HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN; real receipts require a dedicated Comfy_UI_Main-side consumer build (producer side already verified). Agent-executable in the Main repo, not a human wait."
-    },
-    {
-      "action_id": "repair_ubuntu_2204_ext4_vhd",
-      "rank": 6,
-      "status": "WSL_WAKE_DONE_TORCH_ENV_NEXT",
-      "why_now": "WSL wake is DONE this wave (Running + nvidia-smi PASS after `wsl --shutdown`). Next agent-executable step: install a CUDA-matched torch build in-distro (venv + pip, no elevation needed) and re-probe torch.cuda.is_available() before the live SAM 3.1 CUDA WSL smoke (MF-P2-11.07). On-disk ext4 corruption root cause is unrepaired (no e2fsck) and could recur; Docker-GPU remains the durable fallback CUDA path regardless."
     }
   ],
   "local_date": "2026-07-20",
@@ -368,26 +397,24 @@
   "migrate_reprioritization_note_20260720T1441": "Added migrate_docker_vhdx_c_to_f as IN_PROGRESS/agent-executable per fresh live probe (sibling finding: live C: vhdx locked, F: has only a stale duplicate). Supersedes the 14:35Z BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT assessment for F: presence; the move itself is not yet completed (still gated on stopping Docker to release the file lock).",
   "no_open_human_stop_states": true,
   "project_head_at_authoring": "ddbb0d43",
-  "recorded_at": "2026-07-20T15:06:00.076950Z",
+  "recorded_at": "2026-07-20T15:04:27.807320Z",
   "recovery_note": "This file was found ZERO-CORRUPTED on disk (20865 bytes, all null bytes; nonzero=0) at authoring time -> recovered from the committed needs_agent_actions_20260719.json and re-prioritized against the live coordinator-helper re-probe. No sibling source edits were staged.",
   "reprioritization_note_20260720T0931": "Disk repair confirmed DONE (C: 91.71 GiB free > 75 GiB floor; Docker UP, 32 containers). Live wave re-ranked to serve (1) -> train (2) -> tournament (3) per explicit instruction; main-adoption (4) and the WSL VHD repair substitute (5) unchanged and still agent-executable, no human wait.",
   "schema_version": "1.0.0",
-  "self_sha256": "120169bdf55fb3fba46c76c26242b13f703fb891c40a4a16e05f2d3eeb6e77df",
+  "self_sha256": "2f544ef892b06e6e7d297e22c6256b2634ab0ac90079bc5ab77e9dffd9d1f281",
   "supersedes": {
-    "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self)",
-    "reason": "Binding FORBID of USB data/ auto-repoint after forced-C seal data_junction_forced_c_backup_20260720T1504Z.json; correct stale language that allowed reversible repoint to F:."
+    "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self, HEAD ddbb0d43)",
+    "reason": "Cancel migrate_docker_vhdx_c_to_f as binding F: USB policy (never host the live docker_data.vhdx on removable F:); no other fields altered besides bookkeeping (recorded_at/project_head_at_authoring/self_sha256)."
   },
   "usb_data_junction_policy": {
-    "also_see": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
-    "auto_repoint_to_f": "FORBIDDEN",
-    "evidence": "qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json",
+    "evidence": "qa/live_verification/data_junction_on_c_confirmed_20260720T1500Z.json",
     "forbidden_targets": [
       "F:\\MaskFactory_DataRelocated",
       "any USB/removable/hot-pluggable volume as sole live data/ target"
     ],
-    "forced_seal_self_sha256": "9cbf186019c33e237448efb426152b4af69461935ee241ad7a12f59932bf2b9c",
-    "recorded_at": "2026-07-20T15:06:00.076950Z",
+    "recorded_at": "2026-07-20T15:04:27.807320Z",
     "required_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "seal_self_sha256": "3e7cf00c64a8369ba2c8741d37dfa087d59ce125dae4c64cbacf2295540f424c",
     "status": "FORBIDDEN"
   },
   "wsl_repair_disposition": "DEFERRED_NON_ADMIN_DOCKER_GPU_IS_SOLE_CUDA_PATH"

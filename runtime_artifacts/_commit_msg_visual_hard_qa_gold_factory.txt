@@ -1,0 +1,3 @@
+qa(gold): visual/hard QA + Ollama critic on tournament MVC
+
+Retain 25 VISUAL_HARD_QA_PASS_BOUNDED winners; admission still Wilson-blocked (n≈31, gold=0).

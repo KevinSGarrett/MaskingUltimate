@@ -4,13 +4,17 @@
       "action_id": "disk_headroom_above_75_gib",
       "evidence": "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
       "executed": "Relocated data/ (2.98 GiB) to governed F:\\MaskFactory_DataRelocated via robocopy + directory junction; C: original retained at data_c_backup_relocated (fully reversible). doctor.check_disk_free FAIL->PASS (251.1 GiB free). This is doctor's own documented remediation ('move data to a larger governed drive') and gives genuine ingest headroom on F: (>250 GiB).",
+      "fleet_reprobe_20260720T1502": {
+        "c_free_gib": 68.35,
+        "note": "C: fell below 75 GiB during Docker flap/reseal; reclaim ephemeral docker/WSL growth agent-executably (no wipe)."
+      },
       "former": "disk_reclaim_above_75_gib (priority 1, NEEDS_KEVIN)",
       "reconfirmed_20260720T0931": "Re-verified live: C: free 91.71 GiB (above the 75 GiB ingest/repair floor) with Docker engine UP (32 running containers; production CVAT v2.24 + nuclio-pth-sam2 healthy). Disk repair item is DONE; no residual blocker for serve/train/tournament GPU-container work.",
       "residual_agent_steps": [
         "If a future ingest needs >250 GiB, extend F: relocation or add another governed drive junction \u2014 still agent-executable, no human."
       ],
       "reversible": "Remove-Item data; Rename-Item data_c_backup_relocated data",
-      "status": "DONE_CONFIRMED"
+      "status": "REGRESSED_BELOW_FLOOR_AT_RESEAL"
     },
     {
       "action_id": "repair_ubuntu_2204_ext4_vhd",
@@ -159,19 +163,16 @@
     },
     {
       "action_id": "migrate_docker_vhdx_c_to_f",
-      "agent_executable_path": [
-        "Stop Docker Desktop + `wsl --shutdown` to release the lock on the C: VHDX (no human judgment required; scripted).",
-        "robocopy the now-unlocked, fully-flushed C: VHDX over the stale F: duplicate at F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx (replace, not merge).",
-        "Retarget Docker Desktop's WSL disk basePath / docker-desktop-data distro location to the F: copy (Docker Desktop Settings > Resources > Advanced, or the equivalent settings.json wslEngineDiskLocation key).",
-        "Restart Docker Desktop; re-run tools/bootstrap_cvat.py + tools/smoke_cvat_sam2.py to confirm production CVAT 2.24 is unaffected and C: free space rises by ~68 GiB."
-      ],
-      "evidence": "qa/live_verification/docker_disk_still_on_c_20260720.json",
-      "former": "retry_serve... N/A -- new item; supersedes docker_relocation_f_absent_blocked_20260720T1435Z (BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT)",
+      "binding_policy": "docker_data.vhdx MUST NEVER be relocated onto F: (or any other USB/removable volume) while it remains the live Docker Desktop engine store. It stays on C: permanently. F: is approved only for cold offload / read-when-present governed assets with graceful degrade on disconnect (see policy rules 1-3 in qa/live_verification/f_drive_usb_policy_20260720.json).",
+      "evidence": "qa/live_verification/f_drive_usb_policy_20260720.json",
+      "finding": "F: is a Seagate BUP Slim external drive attached over USB (BusType=USB per Get-PhysicalDisk; confirmed again live this pass). The prior IN_PROGRESS plan relied on Get-Volume reporting `DriveType=Fixed`, which for an NTFS-formatted external HDD reflects media/filesystem removability, not the physical USB bus -- it is NOT proof of a permanent/non-hot-pluggable attachment. This SAME drive was found completely physically absent earlier the same day (qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json), proving it genuinely disconnects mid-session. Hosting the live Docker Desktop data VHDX (docker_data.vhdx) on it would reproduce that exact daemon crash-loop / CVAT-outage failure mode on the next disconnect.",
+      "former": "migrate_docker_vhdx_c_to_f (rank 1, IN_PROGRESS, superseded by this cancellation)",
       "no_human_wait": true,
-      "sibling_finding": "Live re-probe (qa/live_verification/docker_disk_still_on_c_20260720.json) finds F: present again as a FIXED NTFS volume (181.21 GB free of 1.82 TB) -- the earlier 'F: physically absent' hard-stop no longer holds. The live Docker VHDX (C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx, 68.11 GiB) is currently LOCKED (exclusive-open fails; held by the running engine, 39 containers up) and still being actively written to. A same-size copy already exists at F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx but it is a STALE duplicate (~6.6h behind the live C: file at probe time), not a current mirror -- it must be refreshed/overwritten, not reused as-is.",
-      "status": "IN_PROGRESS",
+      "policy_source": "qa/live_verification/f_drive_usb_policy_20260720.json",
+      "reversible": "No mutation was ever completed for this item (Docker was never stopped, no robocopy was run, no retarget occurred) -- docker_data.vhdx remains on C: untouched at 68.11 GiB. Cancelling this item requires no rollback.",
+      "status": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
       "unblocks": [
-        "sustained C: headroom above the 75 GiB repair floor without relying on the data/ junction alone"
+        "Removes an active risk of a self-inflicted Docker/CVAT outage from a future F: USB disconnect during/after the relocation."
       ]
     },
     {
@@ -208,6 +209,7 @@
     "Main adoption receipts (MF-P6-11.02/11.07/12.05)"
   ],
   "disk_repair_status_20260720T0931": "DONE",
+  "disk_repair_status_20260720T1502": "REGRESSED_BELOW_75_GIB",
   "docker_gpu_evidence": "qa/live_verification/docker_gpu_sole_cuda_path_wsl_deferred_20260720.json",
   "f_drive_restored_20260720T1441": {
     "data_health": {
@@ -256,9 +258,9 @@
     "Human-anchor accuracy items are superseded (not blocking) by the autonomous-gold path per mandate; final champion authority still honestly requires either human_anchor holdout OR a governed autonomous-gold admission \u2014 not fabricated"
   ],
   "host_snapshot": {
-    "c_above_75_repair_floor": true,
-    "c_free_gib": 75.42,
-    "c_free_gib_approx": 75.3,
+    "c_above_75_repair_floor": false,
+    "c_free_gib": 68.35,
+    "c_free_gib_approx": 68.35,
     "champions": 0,
     "cuda_train_serve_path": "Docker-GPU (sole/primary); WSL Ubuntu-22.04 not required",
     "cvat_about_http": "UNREACHABLE_AT_PROBE (curl.exe exit 52 / empty reply; Invoke-WebRequest connection closed unexpectedly) despite cvat_server showing 'Up 3 minutes' in docker ps -- most likely still warming up after the recent restart; not re-polled to green by this probe since CVAT liveness was not the primary ask.",
@@ -267,7 +269,7 @@
     "docker_ps_containers_up": 37,
     "f_drive_bus_type": "USB (Seagate BUP Slim, physically removable)",
     "f_drive_state_20260720T1435Z": "present (~181.2 GiB free); known intermittent this session",
-    "f_free_gib": 181.21,
+    "f_free_gib": 127.63,
     "f_present": true,
     "gold": 0,
     "gpu_container_passthrough": "RTX 5060 Laptop GPU, driver 592.01, 8151 MiB total / ~1247 MiB free (live via --gpus all)",
@@ -277,20 +279,26 @@
     "wsl_ubuntu_2204_location": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04 (relocated off C:, Running)"
   },
   "latest_reverification": {
-    "at": "2026-07-20T14:48:26.641813Z",
+    "at": "2026-07-20T15:03:51Z",
     "by": "f_drive_restored_reverify_non_elevated",
-    "c_free_gib": 75.3,
+    "c_free_gib": 68.35,
     "evidence": "qa/live_verification/f_drive_restored_20260720T0933Z.json",
-    "f_free_gib": 181.21,
+    "f_free_gib": 127.63,
     "f_present": true,
     "wsl_ubuntu2204": "HEALTHY (non-elevated wake exit 0, WRITE_OK)"
   },
   "live_priorities_this_wave": [
     {
-      "action_id": "migrate_docker_vhdx_c_to_f",
+      "action_id": "disk_ephemeral_reclaim_above_75_gib",
       "rank": 1,
-      "status": "IN_PROGRESS_AGENT_EXECUTABLE",
-      "why_now": "F: reconfirmed present/fixed/healthy this wave; only the Docker-engine file lock gates the move, and releasing it (stop Docker + wsl --shutdown) is fully scripted. The existing F: copy is stale and must be refreshed, not reused."
+      "status": "AGENT_EXECUTABLE_NOW",
+      "why_now": "C: 68.35 GiB < 75 floor after Docker flap. Reclaim docker build cache / ephemeral only (no volume wipe). Then restore engine."
+    },
+    {
+      "action_id": "migrate_docker_vhdx_c_to_f",
+      "rank": "CANCELLED",
+      "status": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
+      "why_now": "Cancelled, not deferred: F: is confirmed USB-bus removable and already proved a same-day disconnect. Never re-propose this move while F: remains the removable Seagate USB drive; see f_drive_usb_policy_20260720.json rule_1."
     },
     {
       "action_id": "docker_gpu_serve_build_and_containerized_smoke",
@@ -324,19 +332,19 @@
     }
   ],
   "local_date": "2026-07-20",
-  "migrate_docker_vhdx_status_20260720T1441": "IN_PROGRESS",
+  "migrate_docker_vhdx_status_20260720T1441": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
+  "migrate_reprioritization_note_20260720T0955": "Cancelled migrate_docker_vhdx_c_to_f as binding policy per Kevin's explicit instruction and the sealed qa/live_verification/f_drive_usb_policy_20260720.json: F: is confirmed BusType=USB (Seagate BUP Slim) and already disconnected once the same day (docker_relocation_f_absent_blocked_20260720T1435Z.json) -- Get-Volume's 'DriveType=Fixed' reported in the superseded probe does not make it a safe permanent host for the live docker_data.vhdx. docker_data.vhdx stays on C: permanently. No mutation had been performed under the cancelled item, so no rollback is required.",
   "migrate_reprioritization_note_20260720T1441": "Added migrate_docker_vhdx_c_to_f as IN_PROGRESS/agent-executable per fresh live probe (sibling finding: live C: vhdx locked, F: has only a stale duplicate). Supersedes the 14:35Z BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT assessment for F: presence; the move itself is not yet completed (still gated on stopping Docker to release the file lock).",
   "no_open_human_stop_states": true,
-  "project_head_at_authoring": "21410832",
-  "recorded_at": "2026-07-20T14:48:26.641813Z",
+  "project_head_at_authoring": "ddbb0d43",
+  "recorded_at": "2026-07-20T15:03:51Z",
   "recovery_note": "This file was found ZERO-CORRUPTED on disk (20865 bytes, all null bytes; nonzero=0) at authoring time -> recovered from the committed needs_agent_actions_20260719.json and re-prioritized against the live coordinator-helper re-probe. No sibling source edits were staged.",
   "reprioritization_note_20260720T0931": "Disk repair confirmed DONE (C: 91.71 GiB free > 75 GiB floor; Docker UP, 32 containers). Live wave re-ranked to serve (1) -> train (2) -> tournament (3) per explicit instruction; main-adoption (4) and the WSL VHD repair substitute (5) unchanged and still agent-executable, no human wait.",
   "schema_version": "1.0.0",
-  "self_sha256": "107c127157b87071d24bd67226e212af153fc33cc6b1380173fad36bf1b8012a",
+  "self_sha256": "086d556f17eafd82d85e682cf59ea1e8d3f08c17e3cf6e3a390d39c9b27e17c5",
   "supersedes": {
-    "file_sha256": "a8a4476ae0863273fa9c4ce15e83e4310133bc90c95dfbabce7d47d9a673bb62",
-    "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self, this wave)",
-    "reason": "Append execvpe/bash-I/O-error probe evidence (qa/live_verification/wsl_ubuntu_io_error_20260720.json) onto the existing repair_ubuntu_2204_ext4_vhd action; no other fields changed besides host_snapshot/latest_reverification WSL notes."
+    "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self, HEAD ddbb0d43)",
+    "reason": "Cancel migrate_docker_vhdx_c_to_f as binding F: USB policy (never host the live docker_data.vhdx on removable F:); no other fields altered besides bookkeeping (recorded_at/project_head_at_authoring/self_sha256)."
   },
   "wsl_repair_disposition": "DEFERRED_NON_ADMIN_DOCKER_GPU_IS_SOLE_CUDA_PATH"
 }

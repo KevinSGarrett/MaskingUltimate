@@ -1,16 +1,16 @@
 {
   "artifact_type": "milestone_proof_tiers",
   "schema_version": "1.0.0",
-  "recorded_at": "2026-07-19T23:34:22Z",
+  "recorded_at": "2026-07-20T00:09:11Z",
   "local_date": "2026-07-19",
-  "revision": "post_static_portfolio_waves_r2",
-  "supersedes_self_sha256": "135ad8e5e40f3692f058ae5c039842fe49f2c30a8c05247f7bd430f7ae20d9b1",
+  "revision": "post_civitai_ops_bootstrap_daz_val_ops_static",
+  "supersedes_self_sha256": "2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349",
   "branch": "codex/maskfactory-runtime-implementation",
-  "project_head_at_authoring": "489cce6cc3243c2d8506220c71f1cd20ded7fa16",
+  "project_head_at_authoring": "6b54398abf03a99a65a61643e8afa769439e3ee3",
   "authority": [
     "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md §11 proof-tier vocabulary",
-    "Plan/Tracker/DASHBOARD.md (generated 2026-07-19T23:29:42+00:00)",
-    "Plan/OPS_LOG.md recent 2026-07-19 STATIC waves through 23:30 UTC",
+    "Plan/Tracker/DASHBOARD.md (generated 2026-07-20T00:01:17+00:00)",
+    "Plan/OPS_LOG.md STATIC seals through 2026-07-20 00:02 UTC (civitai / ops-bootstrap / DAZ validation+ops)",
     "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md"
   ],
   "honesty_rules": [
@@ -49,17 +49,53 @@
     "highest_live_surface_tier_seen": "RUNTIME_PASS_BOUNDED",
     "production_evidence": "NOT_CLAIMED",
     "profile_complete": false,
-    "rationale": "Producer bridge contracts and many host-side STATIC binders hold STATIC_PASS after 2026-07-19 portfolio waves; several local services hold RUNTIME_PASS_BOUNDED inside explicit bounds. Core finish line still requires Main adoption / PRODUCTION_EVIDENCE_PASS and remaining hard blockers (MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 → MF-P6-12.06). STATIC binders do not close AWAITING_MAIN items or invent champions.",
+    "rationale": "Host-side STATIC binders advanced through Civitai intake, ops-bootstrap, and DAZ validation/ops seals (all STATIC_PASS only). Core finish line still requires Main adoption / PRODUCTION_EVIDENCE_PASS and hard blockers MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 → MF-P6-12.06. STATIC binders do not close AWAITING_MAIN, invent champions, clear doctor disk, or substitute Kevin CVAT/DVC/B1 decisions.",
     "exact_blockers": [
-      "AWAITING_MAIN: MF-P6-11.01..11.08 and MF-P6-12.02..12.06 remain blocked; fixture/producer_partial credit only",
-      "MF-P6-12.04: Mode B /predict AWAITING_RUNTIME (champions=0; HTTP 503 champion prediction provider is not configured); draft-provider force-register forbidden by policy",
-      "MF-P6-12.04: Mode B /refine AWAITING_RUNTIME (bounded on-demand load timeout under disk pressure)",
-      "doctor_all_green RUNTIME_BLOCKED: C: disk below 75 GiB ingest floor (evidence ~22.9–31.8 GiB across 2026-07-19 probes; current host ~30.8 GiB) — Kevin disk decision; no destructive prune of MaskedWarehouse/models/packages/Docker volumes",
-      "doctor_all_green RUNTIME_BLOCKED: WSL Ubuntu cold/flaky preflight (>10s) and aborted registered_models smokes under low disk",
-      "No PRODUCTION_EVIDENCE_PASS / Main adoption / reciprocal commit pin for MF-P6-12.05/12.06",
-      "VISUAL_QA_PASS_BOUNDED not achieved on draft corpus (VISUAL_QA_REVIEWED_WITH_DEFECTS only); does not close gold but remains a quality residual",
-      "Champions absent: champion_bodypart/hand/clothing not promoted; certified_training_package_count=0; P5 entry gate closed"
+      "KEVIN: Free C: above 75 GiB ingest floor (current host ~30.08 GiB; observed band ~22.9–31.8 GiB on 2026-07-19) without unauthorized destructive prune of MaskedWarehouse/models/packages/Docker volumes",
+      "KEVIN: MF-P1-08.02..08.05 CVAT SOP-1 human-anchor correction (jobs 21–25 staged; human_anchor_train_count=0)",
+      "KEVIN: MF-P1-07.09 DVC S3 push (kevin_dvc_s3_push_required=true; aws_credentials_present=false)",
+      "KEVIN: MF-P1-09.05 live B1 restore drill (kevin_b1_restore_required=true; b1_mirror_present=false; needs corrected seed package)",
+      "KEVIN: MF-P0-17.04 WSL Ubuntu-22.04 root ext4 repair (elevated Repair-MaskFactoryWslVhd.ps1) before live CUDA SAM 3.1 smoke",
+      "KEVIN: MF-P4-10.08/10.09 ≥200 human-anchor cloud-teacher corpus + billable auth; MF-P8-11.07 multi-person demo sources",
+      "MAIN: AWAITING_MAIN MF-P6-11.01..11.08 — no Main-supplied production MaskFactoryAdapter / adopted-package / exact operational-wrapper / Main-signed journal/circuit evidence",
+      "MAIN: AWAITING_MAIN MF-P6-12.02..12.06 — no Main/ComfyUI execution receipts, qualification bindings, or reciprocal commit pin; PRODUCTION_EVIDENCE_PASS absent",
+      "MAIN HARD BLOCKERS named: MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 (blocks MF-P6-12.06 / core close)",
+      "DISK: doctor_all_green RUNTIME_BLOCKED — C: <75 GiB BLOCK ingest; WSL cold/flaky preflight and aborted registered_models smokes under disk pressure",
+      "DISK: Mode B /refine AWAITING_RUNTIME — prior on-demand load timeout (~30s) under ~32 GiB free; not retried under disk pressure",
+      "DISK (post-core DAZ): storage new-work paused (free <150 GiB DAZ volume soft floor); live hashing 2859/41094; 0 qualified assets",
+      "CHAMPION: champions=0; champion_bodypart/hand/clothing not promoted; certified_training_package_count=0; P5 entry gate closed",
+      "CHAMPION: Mode B /predict AWAITING_RUNTIME — HTTP 503 champion prediction provider is not configured; draft-provider force-register forbidden by policy",
+      "QUALITY residual (not gold closer): VISUAL_QA_PASS_BOUNDED not achieved (VISUAL_QA_REVIEWED_WITH_DEFECTS only)"
     ],
+    "blocker_classes": {
+      "kevin": [
+        "disk_reclaim_above_75_gib_ingest_floor",
+        "MF-P1-08 CVAT SOP-1 human-anchor correction",
+        "MF-P1-07.09 DVC S3 push credentials",
+        "MF-P1-09.05 B1 restore seed package",
+        "MF-P0-17.04 WSL VHD repair",
+        "MF-P4-10.08/09 cloud-teacher corpus authorization",
+        "MF-P8-11.07 multi-person demo sources"
+      ],
+      "main": [
+        "MF-P6-11.01..11.08 AWAITING_MAIN adapter/adoption/journal/circuit",
+        "MF-P6-12.02..12.06 AWAITING_MAIN qualification/handoff",
+        "HARD: MF-P6-11.02",
+        "HARD: MF-P6-11.07",
+        "HARD: MF-P6-12.05"
+      ],
+      "disk": [
+        "C: free <75 GiB BLOCK ingest (current ~30.08 GiB)",
+        "doctor registered_models / WSL smokes aborted under pressure",
+        "Mode B refine on-demand load timeout under disk pressure",
+        "DAZ soft floor 150 GiB blocks new storage work (post-core)"
+      ],
+      "champion": [
+        "champions=0 / certified_training_package_count=0",
+        "Mode B /predict HTTP 503 no champion provider",
+        "no D6/D7 measured win; P5 entry closed"
+      ]
+    },
     "open_hard_blockers_named": [
       "MF-P6-11.02",
       "MF-P6-11.07",
@@ -73,7 +109,11 @@
       "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json",
       "qa/live_verification/serving_static_contracts_20260719.json",
       "qa/live_verification/training_static_gates_20260719.json",
-      "qa/live_verification/cloud_teacher_static_20260719.json"
+      "qa/live_verification/cloud_teacher_static_20260719.json",
+      "qa/live_verification/civitai_workflow_intake_static_20260719.json",
+      "qa/live_verification/ops_bootstrap_static_20260719.json",
+      "qa/live_verification/daz_validation_static_contracts_20260719.json",
+      "qa/live_verification/daz_ops_static_contracts_20260719.json"
     ]
   },
   "surfaces": [
@@ -81,7 +121,7 @@
       "id": "doctor_all_green",
       "highest_tier_achieved": "RUNTIME_BLOCKED",
       "exact_blockers": [
-        "disk_free: C: ~22.9–31.8 GiB observed 2026-07-19; current host ~30.8 GiB (<75 GiB BLOCK ingest); Kevin disk reclaim decision pending",
+        "disk_free: C: ~22.9–31.8 GiB observed 2026-07-19; current host ~30.08 GiB (<75 GiB BLOCK ingest); Kevin disk reclaim decision pending",
         "torch_cuda / registered_models / wsl_roundtrip: WSL cold start and aborted heavy smokes under disk pressure",
         "full `maskfactory doctor` INCOMPLETE_ABORTED mid registered_models (reprobe evidence)"
       ],
@@ -152,7 +192,8 @@
       "exact_blockers": [
         "AWAITING_MAIN: no Main-supplied production MaskFactoryAdapter",
         "no production adopted-package / exact operational-wrapper authority",
-        "no champion-backed live predict proof for MF-P6-11.03"
+        "no champion-backed live predict proof for MF-P6-11.03",
+        "HARD BLOCKER MF-P6-11.02 / MF-P6-11.07 still open"
       ],
       "evidence": "Plan/Tracker/DASHBOARD.md Currently Blocked Core Items"
     },
@@ -253,6 +294,47 @@
       ]
     },
     {
+      "id": "civitai_workflow_intake_static",
+      "highest_tier_achieved": "STATIC_PASS",
+      "bound": "classification admission + license/provenance gate + workflow admissions; no extracted Plan/Civitai runtime",
+      "exact_blockers": [
+        "direct_gold_promotion_claimed=false; mask_authority=none; proposal_or_reference_only only",
+        "paid_civitai_download / kevin_credentials / plan_civitai_extracted_runtime not claimed",
+        "never gold / doctor-green / Main-complete / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "evidence": {
+        "path": "qa/live_verification/civitai_workflow_intake_static_20260719.json",
+        "file_sha256": "f4f60c30a41832ec3f3765ddfbd70cf714532dcedb35483bb3b9dd613b524da9",
+        "seal_sha256": "2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17",
+        "report_id": "cwi_2bbe2c5aa3efe8a57038d8ee"
+      }
+    },
+    {
+      "id": "ops_bootstrap_static_p1_09",
+      "highest_tier_achieved": "STATIC_PASS",
+      "bound": "fixture QC-006 hash integrity + multi-package reindex + DVC wiring honesty only",
+      "exact_blockers": [
+        "KEVIN: mf_p1_07_09_complete=false; kevin_dvc_s3_push_required=true; dvc_push_attempted=false; aws_credentials_present=false",
+        "KEVIN: mf_p1_09_05_complete=false; kevin_b1_restore_required=true; b1_mirror_present=false; human_anchor_package_present=false",
+        "never live B1 restore / DVC S3 push / doctor-green / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "evidence": {
+        "path": "qa/live_verification/ops_bootstrap_static_20260719.json",
+        "file_sha256": "b91befb85f6c597f90cafb3abf8a8d5e14a0a21477bbbfd1bf375bc94e8f9106",
+        "seal_sha256": "955bca97ae3286fcb47f998cbdb4246d800737c89251265edaaf1e1097071750",
+        "report_id": "obs_955bca97ae3286fcb47f998c"
+      }
+    },
+    {
+      "id": "ops_static_contracts_p7",
+      "highest_tier_achieved": "STATIC_PASS",
+      "bound": "backup/restore drill + nightly reindex/verify + failure-mining ops seals (fixture)",
+      "exact_blockers": [
+        "never D10 signed; never live B1/B2 media restore; never human-anchor package authority"
+      ],
+      "evidence": "qa/live_verification/ops_static_contracts_20260719.json"
+    },
+    {
       "id": "training_static_gates_p5",
       "highest_tier_achieved": "STATIC_PASS",
       "exact_blockers": [
@@ -292,6 +374,42 @@
       "evidence": "qa/live_verification/multi_person_static_contracts_20260719.json"
     },
     {
+      "id": "daz_validation_static_contracts",
+      "highest_tier_achieved": "STATIC_PASS",
+      "profile": "scale_daz_maturity (post_core; cannot block core)",
+      "bound": "V0-V9 registry + acceptance/repair/S00 honesty binders only",
+      "exact_blockers": [
+        "mf_p9_08_01_complete=false; mf_p9_08_05_complete=false; mf_p9_08_10_pilot_complete=false",
+        "live_daz_validation_executed=false; accepted_package_produced=false",
+        "body_parts_v2 remains inactive (S00 refuses gold truth tiers)",
+        "never live DAZ Studio validation / pilot / gold / Main-complete"
+      ],
+      "evidence": {
+        "path": "qa/live_verification/daz_validation_static_contracts_20260719.json",
+        "file_sha256": "186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879",
+        "seal_sha256": "447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02",
+        "report_id": "dvs_447b91df6a48369113689f40"
+      }
+    },
+    {
+      "id": "daz_ops_static_contracts",
+      "highest_tier_achieved": "STATIC_PASS",
+      "profile": "scale_daz_maturity (post_core; cannot block core)",
+      "bound": "Tier-A backup/restore + pause/drain + retention/reservation + recovery matrix + failure-campaign plan (fixture)",
+      "exact_blockers": [
+        "mf_p9_12_01_complete=false; mf_p9_12_07_soak_complete=false; mf_p9_12_09_activation_complete=false",
+        "live_daz_execution=false; seven_day_soak=false",
+        "DISK: soft_floor_gib=150.0 binds storage new-work pause on DAZ volume metric",
+        "never soak/activation / doctor-green / gold / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "evidence": {
+        "path": "qa/live_verification/daz_ops_static_contracts_20260719.json",
+        "file_sha256": "b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c",
+        "seal_sha256": "935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e",
+        "report_id": "dos_935461c966be9954f347b25f"
+      }
+    },
+    {
       "id": "daz_optional_scale_maturity",
       "highest_tier_achieved": "STATIC_PASS",
       "profile": "scale_daz_maturity (post_core; cannot block core)",
@@ -299,7 +417,8 @@
         "live hashing 2859/41094; 0 qualified assets; storage new-work paused (free <150 GiB floor on DAZ volume metric)",
         "body_parts_v2 inactive snapshot only (activation_status=approved_design_not_active)",
         "no live DAZ Studio launch / accepted engineering fixtures / headless promotion",
-        "production_audit_complete=false for selective autonomy hard gates"
+        "production_audit_complete=false for selective autonomy hard gates",
+        "MF-P9-08 pilot / MF-P9-12 soak+activation remain open after STATIC binders"
       ],
       "evidence": [
         "Plan/Tracker/DASHBOARD.md Live DAZ Vertical Slice",
@@ -307,7 +426,9 @@
         "qa/live_verification/daz_procedural_primitive_static_20260719.json",
         "qa/live_verification/daz_worker_isolation_static_20260719.json",
         "qa/live_verification/daz_engineering_fixture_set_100_static_20260719.json",
-        "qa/live_verification/selective_autonomy_hard_gates_static_20260719.json"
+        "qa/live_verification/selective_autonomy_hard_gates_static_20260719.json",
+        "qa/live_verification/daz_validation_static_contracts_20260719.json",
+        "qa/live_verification/daz_ops_static_contracts_20260719.json"
       ]
     }
   ],
@@ -347,6 +468,18 @@
     {
       "wave": "STATIC training_static_gates + cloud_teacher",
       "result": "STATIC_PASS; certified_count=0; no paid cloud; no champions/D6/D7"
+    },
+    {
+      "wave": "STATIC civitai_workflow_intake",
+      "result": "STATIC_PASS; 79 records proposal_or_reference_only; no gold/paid download/Kevin credentials"
+    },
+    {
+      "wave": "STATIC ops_bootstrap (hash/reindex/DVC wiring)",
+      "result": "STATIC_PASS; MF-P1-07.09/09.05 remain Kevin-gated (no S3 push / no B1 restore)"
+    },
+    {
+      "wave": "STATIC DAZ validation + DAZ ops contracts",
+      "result": "STATIC_PASS; no live Studio validation/accepted packages/soak/activation"
     }
   ],
   "claims_not_established": [
@@ -361,23 +494,32 @@
     "champion_bodypart / champion_hand / champion_clothing",
     "P5 entry / D6 / D7",
     "MF-P4-10.08/09 cloud-teacher live corpus gate",
-    "MF-P8-11.07 real multi-person demonstration"
+    "MF-P8-11.07 real multi-person demonstration",
+    "MF-P1-07.09 DVC S3 push",
+    "MF-P1-09.05 live B1 restore",
+    "MF-P9-08.10 DAZ pilot / accepted packages",
+    "MF-P9-12.07 seven-day soak / MF-P9-12.09 live activation",
+    "Civitai gold promotion / paid download / extracted runtime"
   ],
   "kevin_decisions_still_required": [
     "Free C: above 75 GiB ingest floor without unauthorized destructive prune (candidates listed in proof_tier_runtime_reprobe disk_reclaim_candidates_kevin_decision)",
-    "CVAT human-anchor correction for MF-P1-08.*",
+    "CVAT human-anchor correction for MF-P1-08.* (SOP-1 jobs 21–25)",
+    "Authorize AWS credentials + first eligible package for MF-P1-07.09 DVC S3 push",
+    "Supply corrected human-anchor seed package for MF-P1-09.05 B1 restore drill",
     "Main project (KevinSGarrett/Comfy_UI_Main) real adapter/adoption artifacts for AWAITING_MAIN items",
     "Authorize paid cloud-teacher evaluation corpus (≥200 human-anchor) for MF-P4-10.08/09 when ready",
     "Supply multi-person demo sources for MF-P8-11.07 when ready",
     "WSL Ubuntu-22.04 root ext4 repair (elevated Repair-MaskFactoryWslVhd.ps1) for MF-P0-17.04 live CUDA smoke"
   ],
   "host_snapshot_at_authoring": {
-    "disk_free_gib_c": 30.84,
+    "disk_free_gib_c": 30.08,
     "disk_ingest_floor_gib": 75,
     "doctor_all_green": false,
     "champions": 0,
     "certified_training_package_count": 0,
-    "daz_storage_new_work_allowed": false
+    "daz_storage_new_work_allowed": false,
+    "aws_credentials_present": false,
+    "b1_mirror_present": false
   },
-  "self_sha256": "2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349"
+  "self_sha256": "66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e"
 }

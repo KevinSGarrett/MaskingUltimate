@@ -9819,3 +9819,81 @@ Remaining open next-queue items are mostly Kevin/Main/disk blocked: P1-08 CVAT h
 - No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
 
 **Commands:** pytest focused; tracker.py set/validate/report; seal evidence; git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"/push
+
+## 2026-07-20 00:09 UTC - Milestone proof-tier refresh (post Civitai / ops-bootstrap / DAZ validation-ops STATIC)
+
+**Lane:** Durable milestone report only (no tier inflation; no status promotions)
+**Artifact:** qa/live_verification/milestone_proof_tiers_20260719.json revision post_civitai_ops_bootstrap_daz_val_ops_static
+**self_sha256:** 66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e
+**Supersedes:** 2c74a23bdc99f8629df95780a847155ba1729b4dd48d901436b39e28859e6349
+**project_head_at_authoring:** 6b54398abf03a99a65a61643e8afa769439e3ee3
+**DASHBOARD authority:** generated 2026-07-20T00:01:17+00:00; portfolio still 565/798 (70.8%); core_autonomous_runtime blocked
+
+### Profile (unchanged ceilings)
+| Profile | Status | Highest tier claimed |
+|---|---|---|
+| core_autonomous_runtime | blocked | STATIC_PASS (profile); live surfaces up to RUNTIME_PASS_BOUNDED only |
+| Production / Main close | not claimed | PRODUCTION_EVIDENCE_PASS absent |
+
+### New STATIC surfaces inventoried (STATIC_PASS only)
+| Surface | Evidence file_sha256 | seal_sha256 | Exact residual blockers |
+|---|---|---|---|
+| civitai_workflow_intake_static | f4f60c30a41832ec3f3765ddfbd70cf714532dcedb35483bb3b9dd613b524da9 | 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17 | no gold / paid download / Kevin credentials / extracted runtime |
+| ops_bootstrap_static | b91befb85f6c597f90cafb3abf8a8d5e14a0a21477bbbfd1bf375bc94e8f9106 | 955bca97ae3286fcb47f998cbdb4246d800737c89251265edaaf1e1097071750 | KEVIN: MF-P1-07.09 DVC S3 push; MF-P1-09.05 B1 restore |
+| daz_validation_static_contracts | 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 | 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 | no live Studio validation / accepted packages / MF-P9-08.10 pilot |
+| daz_ops_static_contracts | b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c | 935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e | no soak/activation; soft_floor 150 GiB; live_daz_execution=false |
+
+### Exact blocker classes (honest; not closed by STATIC)
+| Class | Exact blockers |
+|---|---|
+| Kevin | C: reclaim above 75 GiB ingest (~30.08 GiB free now); MF-P1-08 CVAT SOP-1; MF-P1-07.09 DVC S3; MF-P1-09.05 B1 restore; MF-P0-17.04 WSL VHD repair; MF-P4-10.08/09 corpus auth; MF-P8-11.07 multi-person sources |
+| Main | AWAITING_MAIN MF-P6-11.01..11.08 and MF-P6-12.02..12.06; HARD MF-P6-11.02 / 11.07 / 12.05; no PRODUCTION_EVIDENCE_PASS |
+| Disk | doctor RUNTIME_BLOCKED (<75 GiB); refine timeout under pressure; DAZ storage new-work paused (<150 GiB soft floor) |
+| Champion | champions=0; certified_training_package_count=0; Mode B /predict HTTP 503; no D6/D7 |
+
+### Key surfaces retained (unchanged ceilings)
+| Surface | Highest tier |
+|---|---|
+| doctor_all_green | RUNTIME_BLOCKED |
+| CVAT / Nuclio / Ollama smokes | RUNTIME_PASS_BOUNDED |
+| Mode B /health+/models | RUNTIME_PASS_BOUNDED (champions=0) |
+| Mode B /predict+/refine | AWAITING_RUNTIME |
+| Bridge P6-11/12 (except 12.01) | STATIC_PASS / AWAITING_MAIN |
+| Package visual QA | VISUAL_QA_REVIEWED_WITH_DEFECTS |
+
+### Honest non-claims
+- No core_autonomous_runtime complete / doctor-green / VISUAL_QA_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS
+- STATIC Civitai / ops-bootstrap / DAZ validation-ops binders do not advance AWAITING_MAIN or invent champions
+- No live DAZ Studio / DVC S3 push / B1 restore / Civitai gold
+
+**Commands:** author milestone JSON from DASHBOARD + OPS_LOG + live_verification seals; OPS_LOG append; commit milestone + OPS_LOG only (preserve other WIP)
+
+## 2026-07-20 00:10 UTC - STATIC MF-P9-10 coverage planner (pilot/ablation/calibration/minima)
+
+**Lane:** Proof-tier STATIC portfolio climb (host-side code/tests/schemas/evidence only)
+**Items:** MF-P9-10.01..06 (88% partial); MF-P9-10.07 (62%); MF-P9-10.08 (60%); MF-P9-10.09 (58%); MF-P9-10.10 (60%)
+**Result:** STATIC_PASS only - never live DAZ render/accept; never 1k/10k accepted corpora; never doctor-green/gold/Main-complete/PRODUCTION_EVIDENCE_PASS
+
+### What landed
+- src/maskfactory/daz/coverage_planner_static.py: offline D9 chain re-verify (vocab/deficit/candidate/utility/concentration/feedback); deterministic planned 1,000-scene pilot card + acceptance/cost honesty (accepted=0/rendered=0); synthetic capacity calibration (measured_from_live_pilot=false; reservation=p95*1.25; soft_floor=150 GiB); immutable 10,000-scene ablation *plan* card (corpus_materialized_on_disk=false); planned-vs-accepted coverage minima evaluator with overclaim refuse
+- Schema daz_coverage_planner_static_report registered in validation.SCHEMA_NAMES
+- CLI: maskfactory daz recipes seal-coverage-planner-static
+- Schema-enforced honesty: mf_p9_10_07_pilot_complete=false, mf_p9_10_08_live_calibration_complete=false, mf_p9_10_09_ablation_corpus_complete=false, mf_p9_10_10_accepted_coverage_complete=false, live_daz_render/accept=false, accepted_scene_count=0
+
+### Evidence
+- qa/live_verification/daz_coverage_planner_static_20260719.json file_sha256 3a8db25d039c2240d3e789192f046b40f9261ca8a76c6d1bee07343ac31d8f50 seal_sha256 4852f9b23acaba5bcf7828bc1fe4d526160814bbb69d26b30b97fda115af4f81 report_id dcp_4852f9b23acaba5bcf7828bc
+
+### Focused tests
+pytest tests/test_daz_coverage_planner_static.py: 3 passed. Ruff clean on touched files.
+
+### Residual blockers (honest)
+Live D8/D9 accept path still required for MF-P9-10.07..10 completion. Remaining open next-queue items remain mostly Kevin/Main/disk blocked: P1-08 CVAT human-anchor, P6-11/12 AWAITING_MAIN, doctor/model WSL+disk, MF-P9-13.04 ~57k split-dedup, MF-P9-14.06 18k retrieval under 150 GiB floor, live DAZ Studio smoke/soak/activation.
+
+### Honest non-claims
+- No MF-P9-10.07 live 1,000-scene accepted pilot
+- No MF-P9-10.08 live-measured storage/retry/timeout calibration from accepted scenes
+- No MF-P9-10.09 materialized 10,000-scene ablation corpus
+- No MF-P9-10.10 accepted coverage minima / gold
+- No doctor-green / gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS
+
+**Commands:** pytest focused; tracker.py set/validate/report; daz recipes seal-coverage-planner-static; evidence seal; git commit/push

@@ -10429,3 +10429,32 @@ Honest state unchanged: champions=0, approved/autonomous gold=0, 0 autonomy life
 runs/, audit-queue population_count=0, Mode B /predict = AWAITING_RUNTIME. Evidence:
 qa/live_verification/measured_path_autonomous_gold_wiring_20260720T0745.json
 (self_sha256 8e98ec20...).
+
+## 2026-07-20 08:03 UTC - Mode B serve runtime probe (post restore-B, host path, honest)
+**Item:** Mode B serve/health/models/predict live probe + stale gpu_lock hygiene
+**Commands:** docker ps; .venv maskfactory serve --port 8765; curl /health /models /predict
+**Result:** Serve boots on HOST; health/models 200; predict honest 503; champions=0.
+
+Docker engine RECOVERED (restore B): docker ps enumerates 39 containers Up ~4 min - production
+CVAT v2.24 (cvat_ui/db/utils/workers + traefik v3.6.1), nuclio + nuclio-nuclio-pth-sam2 (healthy),
+and the isolated cvat269 rehearsal stack. `docker info` still slow/hangs >30-90s post-recovery
+(client CLI timeouts), but container ops via docker ps work. Cleared 14 orphaned docker.exe CLI
+processes left by prior agents (root cause of the initial info hang). Ollama host UP (0.32.1).
+CVAT /api/server/about probe returned empty this wave (auth/slow); not independently confirmed,
+though cvat/server:v2.24.0 image is running.
+
+Mode B serve (host .venv: python 3.13.11, fastapi 0.139.0, uvicorn 0.51.0), port 8765:
+- GET /health -> 200 ok (pipeline 0.0.1, mode_b_api 1.0.0, ontology body_parts_v1, RTX 5060 8151 MiB).
+- GET /models -> 200, 17 verified foundation models, 0 champion keys.
+- POST /predict -> 503 "champion prediction provider is not configured" = AWAITING_RUNTIME.
+- create_production_runtime: predictor NOT configured (champions=0), SAM2 refiner configured.
+serve:cu128 image NOT built (C: free 31 GiB < 60 GiB gate; siblings own heavy builds). No Docker
+build attempted; Docker engine untouched by the host serve.
+
+Champions=0 (champion_bodypart/hand/clothing absent; promotion history len 0). GPU lock: absent at
+start; forcibly killing the live uvicorn server left a stale lock (owner pid 56616 dead, purpose
+serve_mode_b, age ~80s); confirmed dead + no serve process, cleared safely -> absent. No volume
+wipe, no prune, no destructive ops.
+
+HEAD 92a463ce; evidence qa/live_verification/mode_b_serve_runtime_probe_20260720T0300.json
+(self_sha256 c4439dda...).

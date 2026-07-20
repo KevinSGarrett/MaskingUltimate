@@ -35,8 +35,15 @@ def run_autonomous_correction_loop(
     config: dict,
     correction_generator: CorrectionRoundGenerator,
     certificate: dict | None = None,
+    allow_autonomous_profile: bool = False,
 ) -> AutonomousLoopResult:
-    """Generate and retest isolated candidates until selection or a strict bound is reached."""
+    """Generate and retest isolated candidates until selection or a strict bound is reached.
+
+    ``allow_autonomous_profile`` (default OFF) is forwarded verbatim to every
+    tournament round so a governed autonomous-certified-gold certificate can be
+    honored on the measured path. It never weakens the certificate math; it only
+    opts an already hash-verified autonomous-authority certificate into scope.
+    """
     maximum_rounds = int(config["tournament"]["maximum_rounds"])
     maximum_candidates = int(config["tournament"]["maximum_candidates_per_label"])
     candidates = list(initial_candidates)
@@ -50,6 +57,7 @@ def run_autonomous_correction_loop(
             pipeline_fingerprint=pipeline_fingerprint,
             config=config,
             certificate=certificate,
+            allow_autonomous_profile=allow_autonomous_profile,
         )
         if decision.status != "residual_human_queue":
             return AutonomousLoopResult(

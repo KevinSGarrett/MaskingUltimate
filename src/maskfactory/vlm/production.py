@@ -97,6 +97,7 @@ def run_s11_production(
     autonomy_context: str = "solo",
     autonomy_certificate_root: Path = Path("qa/autonomy/certificates"),
     autonomy_revocations_root: Path = Path("qa/autonomy/revocations"),
+    autonomy_allow_autonomous_profile: bool = False,
     map_qa_validator: MapQaValidator | None = None,
     auxiliary_dir: Path | None = None,
     repair_hints_path: Path | None = None,
@@ -1199,6 +1200,7 @@ def run_s11_production(
                 pipeline_fingerprint=autonomy_pipeline_fingerprint,
                 config=autonomy_config,
                 certificate=certificate,
+                allow_autonomous_profile=autonomy_allow_autonomous_profile,
             )
             lifecycle = write_lifecycle_sidecar(
                 output_dir / "autonomy" / f"{label}.json",

@@ -46,6 +46,10 @@ from maskfactory.bridge.failure_control import (
     simulate_fault_injection,
     validate_failure_control_evidence,
 )
+from maskfactory.bridge.final_release_handoff import (
+    evaluate_final_release_handoff,
+    validate_final_release_handoff_evidence,
+)
 from maskfactory.bridge.journal import (
     append_bridge_journal_event,
     checkpoint_bridge_journal,
@@ -55,11 +59,19 @@ from maskfactory.bridge.main_consumer_conformance import (
     run_main_consumer_conformance_harness,
     validate_main_consumer_conformance_evidence,
 )
+from maskfactory.bridge.mode_a_package_read import (
+    evaluate_mode_a_package_read,
+    validate_mode_a_package_read_evidence,
+)
+from maskfactory.bridge.mode_a_vertical_slice import build_fixture_adopted_package
 from maskfactory.validation import canonical_document_sha256
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INBOX = REPO_ROOT / "runtime_artifacts" / "main_consumer_conformance" / "inbox"
 DECIDED_AT = "2026-07-20T05:00:00Z"
+# The Mode A adopted-package fixture pins its active wrapper to a valid_until of
+# 2026-07-20T00:00:00Z, so the immutable-read matrix must decide before that.
+MODE_A_DECIDED_AT = "2026-07-19T14:00:00Z"
 
 # HARD blockers that genuinely require the real Comfy_UI_Main runtime and cannot
 # be closed by a producer-shipped isolated consumer.
@@ -213,10 +225,16 @@ def run_failure_control() -> dict[str, Any]:
         "selected_device": "cuda",
         "signed_cpu_route_permitted": False,
     }
+    # A three-pass DAG lets us prove that only *dependent* work is blocked: a
+    # fault at pass_predict must block pass_refine (depends on it) but never
+    # pass_unrelated.
     dag = [
         {"pass_id": "pass_predict", "depends_on": []},
         {"pass_id": "pass_refine", "depends_on": ["pass_predict"]},
+        {"pass_id": "pass_unrelated", "depends_on": []},
     ]
+    expected_blocked = ["pass_predict", "pass_refine"]
+    expected_continuing = ["pass_unrelated"]
     results = []
     for fault in ("outage", "timeout", "oom", "incompatible_authority"):
         evidence = simulate_fault_injection(
@@ -228,22 +246,263 @@ def run_failure_control() -> dict[str, Any]:
         )
         issues = validate_failure_control_evidence(evidence)
         no_fallback = evidence.get("no_silent_fallback") or {}
-        results.append(
+        admission = evidence.get("admission") or {}
+        scoped = evidence.get("scoped_dag") or {}
+        row = {
+            "fault": fault,
+            "status": evidence.get("status"),
+            "provider_invocation_permitted": admission.get("provider_invocation_permitted"),
+            "scope_exact": scoped.get("scope_exact"),
+            "blocked_pass_ids": scoped.get("blocked_pass_ids"),
+            "continuing_pass_ids": scoped.get("continuing_pass_ids"),
+            "no_silent_fallback_enforced": no_fallback.get("enforced") is True,
+            "fallback_artifact_present": no_fallback.get("fallback_artifact_present"),
+            "valid": issues == (),
+        }
+        # A fault must never admit provider invocation, must scope-block exactly
+        # the dependent passes, and must never smuggle a fallback artifact.
+        row["passed"] = bool(
+            evidence.get("status") == "accepted"
+            and admission.get("provider_invocation_permitted") is False
+            and scoped.get("scope_exact") is True
+            and scoped.get("blocked_pass_ids") == expected_blocked
+            and scoped.get("continuing_pass_ids") == expected_continuing
+            and no_fallback.get("enforced") is True
+            and no_fallback.get("fallback_artifact_present") is False
+            and issues == ()
+        )
+        results.append(row)
+
+    # Deadline enforcement: a request evaluated after its deadline must refuse
+    # provider invocation regardless of the fault classification.
+    deadline_ev = simulate_fault_injection(
+        fault_kind="timeout",
+        request=request,
+        route_requirements=route,
+        dag_passes=dag,
+        decided_at=DECIDED_AT,
+        at_time="2026-07-20T07:00:00Z",
+    )
+    deadline_enforced = (
+        (deadline_ev.get("admission") or {}).get("deadline_met") is False
+        and (deadline_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and validate_failure_control_evidence(deadline_ev) == ()
+    )
+
+    # Resource enforcement: an infeasible resource envelope must refuse admission.
+    infeasible_route = dict(route)
+    infeasible_route["required_vram_mb"] = 999_999_999
+    resource_ev = simulate_fault_injection(
+        fault_kind="timeout",
+        request=request,
+        route_requirements=infeasible_route,
+        dag_passes=dag,
+        decided_at=DECIDED_AT,
+    )
+    resource_enforced = (
+        (resource_ev.get("admission") or {}).get("resource_feasible") is False
+        and (resource_ev.get("admission") or {}).get("provider_invocation_permitted") is False
+        and validate_failure_control_evidence(resource_ev) == ()
+    )
+
+    # Bounded retries: an exhausted retry budget (attempt == maximum) must never
+    # authorize another retry, even for a transient fault.
+    exhausted_request = dict(request)
+    exhausted_request["attempt_number"] = 3
+    budget_ev = simulate_fault_injection(
+        fault_kind="outage",
+        request=exhausted_request,
+        route_requirements=route,
+        dag_passes=dag,
+        decided_at=DECIDED_AT,
+    )
+    retry_budget_enforced = (budget_ev.get("retry") or {}).get(
+        "retry_permitted"
+    ) is False and validate_failure_control_evidence(budget_ev) == ()
+
+    passed = (
+        all(row["passed"] for row in results)
+        and deadline_enforced
+        and resource_enforced
+        and retry_budget_enforced
+    )
+    return {
+        "check": "isolated_failure_control_circuit",
+        "passed": passed,
+        "faults": results,
+        "deadline_enforced": deadline_enforced,
+        "resource_envelope_enforced": resource_enforced,
+        "bounded_retry_budget_enforced": retry_budget_enforced,
+    }
+
+
+def run_mode_a_package_read_matrix() -> dict[str, Any]:
+    """Real adversarial matrix over the immutable Mode A package reader (MF-P6-11.02).
+
+    Executes ``evaluate_mode_a_package_read`` against a valid adopted package and
+    a battery of tampered inputs. A certified read must accept; each adversarial
+    mutation must fail closed with the exact typed reason and never expose a
+    write path or production authority.
+    """
+    import copy
+
+    cases: list[dict[str, Any]] = []
+
+    def _evaluate(
+        name: str,
+        request: dict[str, Any],
+        evidence: dict[str, Any],
+        *,
+        expect_accepted: bool,
+        expect_reason: str | None = None,
+    ) -> None:
+        result = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
+        issues = validate_mode_a_package_read_evidence(result)
+        reasons = result.get("rejection_reasons") or []
+        accepted = result.get("status") == "accepted"
+        reason_ok = expect_reason is None or expect_reason in reasons
+        # Any refusal must also deny production eligibility and never expose writes.
+        authority_ok = accepted or (
+            result.get("production_eligible") is False
+            and result.get("authority_ceiling") != "certified"
+        )
+        passed = (
+            accepted == expect_accepted
+            and reason_ok
+            and issues == ()
+            and result.get("write_methods_exposed") is False
+            and authority_ok
+        )
+        cases.append(
             {
-                "fault": fault,
-                "status": evidence.get("status"),
-                "no_silent_fallback_enforced": no_fallback.get("enforced") is True,
-                "fallback_artifact_present": no_fallback.get("fallback_artifact_present"),
+                "case": name,
+                "status": result.get("status"),
+                "authority_ceiling": result.get("authority_ceiling"),
+                "production_eligible": result.get("production_eligible"),
+                "rejection_reasons": reasons,
                 "valid": issues == (),
+                "passed": passed,
             }
         )
-    passed = all(
-        row["status"] in {"accepted", "rejected"}
-        and row["no_silent_fallback_enforced"]
-        and row["valid"]
-        for row in results
+
+    # 1. Valid wrapper-certified read accepts at certified authority.
+    request, evidence = build_fixture_adopted_package()
+    _evaluate("valid_wrapper_certified", request, evidence, expect_accepted=True)
+    baseline = evaluate_mode_a_package_read(request, evidence, decided_at=MODE_A_DECIDED_AT)
+    baseline_certified = (
+        baseline.get("authority_ceiling") == "certified"
+        and baseline.get("production_eligible") is True
     )
-    return {"check": "isolated_failure_control_circuit", "passed": passed, "faults": results}
+
+    # 2. Raw-status escalation attempt.
+    request, evidence = build_fixture_adopted_package()
+    request["escalate_raw_status"] = True
+    _evaluate(
+        "raw_status_escalation",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="raw_status_escalation",
+    )
+
+    # 3. Path escape in a package-relative path.
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["relative_paths"]["mask"] = "../../escape/secrets.png"
+    _evaluate("path_escape", request, evidence, expect_accepted=False, expect_reason="path_escape")
+
+    # 4. Same-size binary mask drift (raw bytes must be authority-bound).
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["bytes"]["mask_encoded"] = b"tampered-mask-encoded!!"
+    _evaluate(
+        "mask_hash_drift", request, evidence, expect_accepted=False, expect_reason="mask_hash_drift"
+    )
+
+    # 5. Stale (expired) exact operational wrapper.
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["wrapper"]["status"] = "expired"
+    _evaluate(
+        "stale_wrapper", request, evidence, expect_accepted=False, expect_reason="wrapper_stale"
+    )
+
+    # 6. Out-of-scope wrapper (permitted scope does not cover the request).
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["wrapper"]["permitted_use_scopes"] = ["thumbnail_preview"]
+    _evaluate(
+        "wrapper_out_of_scope",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="wrapper_out_of_scope",
+    )
+
+    # 7. Wrong owner subject.
+    request, evidence = build_fixture_adopted_package()
+    request = copy.deepcopy(request)
+    request["subject"]["canonical_person_id"] = "attacker-person"
+    _evaluate("wrong_owner", request, evidence, expect_accepted=False, expect_reason="wrong_owner")
+
+    # 8. Mutation / write attempt against an immutable read.
+    request, evidence = build_fixture_adopted_package()
+    evidence = copy.deepcopy(evidence)
+    evidence["write_requested"] = True
+    _evaluate(
+        "mutation_attempt",
+        request,
+        evidence,
+        expect_accepted=False,
+        expect_reason="mutation_attempt",
+    )
+
+    passed = baseline_certified and all(case["passed"] for case in cases)
+    return {
+        "check": "isolated_mode_a_package_read_matrix",
+        "passed": passed,
+        "baseline_certified": baseline_certified,
+        "cases": cases,
+    }
+
+
+def run_final_release_handoff_firewall() -> dict[str, Any]:
+    """Prove the producer core-close firewall refuses without real Main adoption (MF-P6-12.06).
+
+    With no Main adoption/qualification receipts the oracle must report
+    ``incomplete_core`` and refuse ``core_autonomous_runtime`` close; a fabricated
+    core-complete claim must be rejected outright. This is genuine producer
+    evidence that the honest firewall holds — it does NOT close the profile.
+    """
+    honest = evaluate_final_release_handoff(decided_at=DECIDED_AT)
+    honest_issues = validate_final_release_handoff_evidence(honest)
+    honest_ok = (
+        honest.get("status") == "incomplete_core"
+        and honest.get("core_autonomous_runtime_close_authorized") is False
+        and "core_close_refused_without_exact_gates" in (honest.get("rejection_reasons") or [])
+        and (honest.get("claim_boundary") or {}).get("core_closed") is False
+        and honest_issues == ()
+    )
+
+    fabricated = evaluate_final_release_handoff(
+        decided_at=DECIDED_AT, fabricated_core_complete_claim=True
+    )
+    fabricated_issues = validate_final_release_handoff_evidence(fabricated)
+    fabricated_rejected = (
+        fabricated.get("status") == "rejected"
+        and fabricated.get("core_autonomous_runtime_close_authorized") is False
+        and "fabricated_core_complete_claim" in (fabricated.get("rejection_reasons") or [])
+        and fabricated_issues == ()
+    )
+
+    return {
+        "check": "isolated_final_release_handoff_firewall",
+        "passed": bool(honest_ok and fabricated_rejected),
+        "honest_incomplete_core": honest_ok,
+        "fabricated_claim_rejected": fabricated_rejected,
+        "honest_decision_sha256": honest.get("decision_sha256"),
+        "fabricated_decision_sha256": fabricated.get("decision_sha256"),
+    }
 
 
 def _check(name: str, passed: bool, **extra: Any) -> dict[str, Any]:
@@ -344,6 +603,19 @@ def main() -> int:
     except Exception as exc:  # pragma: no cover
         checks.append(_check("isolated_cross_project_producer_partial", False, error=repr(exc)))
 
+    # 7. Real Mode A immutable package-read adversarial matrix (MF-P6-11.02).
+    try:
+        checks.append(run_mode_a_package_read_matrix())
+    except Exception as exc:  # pragma: no cover
+        checks.append(_check("isolated_mode_a_package_read_matrix", False, error=repr(exc)))
+
+    # 8. Real producer core-close firewall on the final-release handoff oracle
+    #    (MF-P6-12.06): honest incomplete-core + fabricated-claim refusal.
+    try:
+        checks.append(run_final_release_handoff_firewall())
+    except Exception as exc:  # pragma: no cover
+        checks.append(_check("isolated_final_release_handoff_firewall", False, error=repr(exc)))
+
     evidence: dict[str, Any] = {
         "artifact_type": "isolated_main_consumer_run",
         "schema_version": "1.0.0",
@@ -359,8 +631,19 @@ def main() -> int:
             "isolated_consumer_is_not_real_comfyui_main": True,
             "main_adoption_complete": False,
             "establishes_production_qualification": False,
-            "advances": ["MF-P6-11 (consumer-side adapter/journal/circuit real execution)"],
+            "advances": [
+                "MF-P6-11.02 (immutable Mode A package-read adversarial matrix: "
+                "certified accept + path-escape/hash-drift/stale-wrapper/out-of-scope/"
+                "wrong-owner/raw-escalation/mutation refusals, real bytes)",
+                "MF-P6-11.07 (fault-injection provider refusal, exact scoped-DAG blocking, "
+                "deadline + resource-envelope enforcement, bounded-retry-budget, no-silent-fallback)",
+                "MF-P6-12.05 (producer_partial cross-project qualification matrix real execution)",
+                "MF-P6-12.06 (producer core-close firewall: honest incomplete_core + "
+                "fabricated-claim refusal, no profile close)",
+            ],
             "hard_blockers_still_open": list(HARD_BLOCKERS_REQUIRING_REAL_MAIN),
+            "advances_are_producer_isolated_only": True,
+            "does_not_close_any_hard_blocker": True,
             "next_agent_step": (
                 "Real receipts require a dedicated Comfy_UI_Main-side integration on an "
                 "isolated clean maskfactory branch that consumes the producer adapter package "

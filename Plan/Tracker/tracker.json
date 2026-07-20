@@ -20976,7 +20976,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 84,
+      "percent_complete": 86,
       "notes": [
         {
           "ts": "2026-07-19T01:20:44+00:00",
@@ -21017,12 +21017,17 @@
           "ts": "2026-07-20T04:29:02+00:00",
           "actor": "ai_agent",
           "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
+        },
+        {
+          "ts": "2026-07-20T07:35:45+00:00",
+          "actor": "ai_agent",
+          "text": " 2026-07-20 isolated-consumer producer climb: added a REAL adversarial immutable Mode A package-read matrix (tools/run_isolated_main_consumer.py -> evaluate_mode_a_package_read). Valid wrapper-certified read accepts at certified authority; raw-status escalation, path escape, same-size mask hash drift, stale wrapper, out-of-scope wrapper, wrong owner, and mutation/write attempts all fail closed with typed reasons and production_eligible=false, no write path. STATIC_PASS producer real-execution only; HARD blocker stays OPEN (no real Comfy_UI_Main adopted-package/exact-wrapper authority; NOT fabricated). Receipt: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T023043.json; seal qa/live_verification/p6_11_12_isolated_consumer_climb_20260720T0231.json self_sha256=6a777715a169acfeeacb8007aa30ef9ac42d9d3632db20e0916bbded9e667c5c. Credited 84 -> 86."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_mode_a_package_read.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode A immutable package-read evidence is fixture-verified (STATIC_PASS). No accepted production adopted-package/exact operational-wrapper authority (not fabricated).",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T04:29:02+00:00",
+      "updated_at": "2026-07-20T07:35:45+00:00",
       "orphaned": false
     },
     "MF-P6-11.03": {
@@ -21256,7 +21261,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 80,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-19T02:09:12+00:00",
@@ -21307,12 +21312,17 @@
           "ts": "2026-07-20T04:29:03+00:00",
           "actor": "ai_agent",
           "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
+        },
+        {
+          "ts": "2026-07-20T07:36:17+00:00",
+          "actor": "ai_agent",
+          "text": " 2026-07-20 isolated-consumer producer climb: strengthened the failure-control fault-injection check (tools/run_isolated_main_consumer.py -> simulate_fault_injection/build_failure_control_evidence). For outage/timeout/oom/incompatible_authority: provider invocation refused, EXACT scoped-DAG blocking (pass_predict+pass_refine blocked, pass_unrelated continues), no silent fallback. Added real deadline-expiry refusal, resource-envelope infeasibility refusal, and bounded retry-budget exhaustion (attempt==maximum -> no retry). STATIC_PASS producer real-execution only; HARD blocker stays OPEN (awaiting Main live circuit-breaker/DAG/retry signed evidence; NOT fabricated). Receipt: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T023043.json; seal self_sha256=6a777715a169acfeeacb8007aa30ef9ac42d9d3632db20e0916bbded9e667c5c. Credited 80 -> 82."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_failure_control.py + fixture_main. Not RUNTIME_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS HARD BLOCKER: MF-P6-11.03 and MF-P6-11.06 incomplete. Additive producer admission/fault-injection conformance fixture-verified (STATIC_PASS). Awaiting Main live circuit-breaker/DAG/retry signed evidence.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T04:29:03+00:00",
+      "updated_at": "2026-07-20T07:36:17+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {
@@ -21629,12 +21639,17 @@
           "ts": "2026-07-20T04:29:03+00:00",
           "actor": "ai_agent",
           "text": "2026-07-20 autonomous re-verify at HEAD c378499b: producer bridge + cross-project suite PASS (15 test modules); run_cross_project_qualification -> status=producer_partial, mf_p6_12_05_complete=false, establishes_production_qualification=false. Main repo C:/Comfy_UI_Main HEAD b36001b9 is a SEPARATE unrelated active project (Wave64) with dirty tree and NO MaskFactory consumer surface. Real receipts require an isolated Main-side consumer build (adoption/journal/circuit/execution/qualification); NOT fabricated, Main dirty branch NOT disturbed. Evidence: qa/live_verification/autonomy_reverify_20260720T0430.json"
+        },
+        {
+          "ts": "2026-07-20T07:36:58+00:00",
+          "actor": "ai_agent",
+          "text": " 2026-07-20 isolated-consumer producer climb: re-executed the full cross-project qualification matrix via the isolated consumer (run_cross_project_qualification, bind_fixture_main=false) -> status=producer_partial, all matrix rows pass, validation issues=none, mf_p6_12_05_complete=false, establishes_production_qualification=false. Confirms producer ceiling holds; HARD blocker stays OPEN (no pinned Main runtime commit / adoption receipt / signed qualification bundle / adapter-execution / ComfyUI result-history; NOT fabricated). Hold 82%. Receipt: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T023043.json (isolated_cross_project_producer_partial decision_sha256=f99eba954093b72066de21882098bdb5f7dde51f07f0b39bfb01f59bfce32c78); seal self_sha256=6a777715a169acfeeacb8007aa30ef9ac42d9d3632db20e0916bbded9e667c5c."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_cross_project_qualification.py producer_partial. No trusted signed production qualification bundle.",
       "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.02 through MF-P6-12.04 incomplete; Main-runtime commit/adoption/qualification bindings absent. Producer matrix producer_partial only; claim_boundary.mf_p6_12_05_complete=false.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T04:29:03+00:00",
+      "updated_at": "2026-07-20T07:36:58+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {
@@ -21650,7 +21665,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 76,
+      "percent_complete": 78,
       "notes": [
         {
           "ts": "2026-07-19T03:36:27+00:00",
@@ -21691,12 +21706,17 @@
           "ts": "2026-07-20T01:54:18+00:00",
           "actor": "autonomous_session_handoff",
           "text": "HANDOFF 2026-07-19/20: core_autonomous_runtime remains blocked. Profile highest=STATIC_PASS; live ceiling RUNTIME_PASS_BOUNDED. P6-11/12 AWAITING_MAIN (HARD MF-P6-11.02/11.07/12.05). No PRODUCTION_EVIDENCE_PASS / core close. Handoff: Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md; milestone revision post_ephemeral_reclaim self_sha256=7986f63423c5d3a0477a2ea98777cc76665c5f369240931ea60341e4ee5829dc."
+        },
+        {
+          "ts": "2026-07-20T07:38:57+00:00",
+          "actor": "ai_agent",
+          "text": " 2026-07-20 isolated-consumer producer climb: added a REAL producer core-close firewall check (tools/run_isolated_main_consumer.py -> evaluate_final_release_handoff). With no Main adoption the oracle returns status=incomplete_core, core_autonomous_runtime_close_authorized=false, reason core_close_refused_without_exact_gates, validation issues=none; a fabricated core-complete claim is REJECTED. Proves the honest firewall holds and no profile is closed. STATIC_PASS producer real-execution only; HARD blocker stays OPEN (MF-P6-12.05 unresolved; no final producer runtime release, Main adoption receipt, or met core gates; NOT fabricated). honest_decision_sha256=323bffebb62fe55218fc57fc1b18973f6df825c0b866366525c4d8e107fac272. Receipt: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T023043.json; seal self_sha256=6a777715a169acfeeacb8007aa30ef9ac42d9d3632db20e0916bbded9e667c5c. Credited 76 -> 78."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_final_release_handoff.py. production_core_close_authorized=false.",
       "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.05 unresolved. Final-release handoff fixtures only; no final producer runtime release, Main adoption receipt, or met core_autonomous_runtime.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T01:54:18+00:00",
+      "updated_at": "2026-07-20T07:38:57+00:00",
       "orphaned": false
     }
   }

@@ -10292,3 +10292,56 @@ second_restart_performed=false
 
 </details>
 
+## 2026-07-20 07:20 UTC - Disk-safe ephemeral reclaim + Docker engine RUNTIME_BLOCKED + host-path climb
+**Item:** runtime / disk / MF-P6-11 (isolated) / autonomous-gold admission
+**Command:** ephemeral cache reclaim (pip/uv/npm/torch/Temp); `Start Docker Desktop` + bounded `docker version`/`docker ps`; `wsl --shutdown` clean restart; `python tools/run_isolated_main_consumer.py`; `python tools/build_autonomous_gold_admission.py`; focused pytest (52)
+**Result:** MIXED (honest). Ephemeral reclaim **+11.11 GiB** (C: 17.18 -> 28.29 GiB; no governed wipe, HF weights/models/volumes untouched). Docker engine **RUNTIME_BLOCKED**: on relaunch `docker` CLI timed out >40s; after a clean `wsl --shutdown` restart the daemon returned **500 Internal Server Error** on `/containers/json`, then the named pipe vanished (engine crashed during recovery of the 68.11 GiB `docker_data.vhdx` under ~29 GiB free C:). Did **not** keep restarting (protect engine per mandate) and did **not** run `docker builder prune`, prune, or any volume wipe. Ollama 0.32.1 (host) stayed UP; CVAT down while engine unhealthy. Serve `maskfactory/serve:cu128` **NOT built** (aborted to avoid another OOM/recovery crash). Host-path progress: isolated Main consumer **6/6 checks PASS** (real isolated-consumer-signed receipt/journal/failure-control/conformance/producer_partial; `main_adoption_complete=false`; HARD MF-P6-11.02/11.07/12.05/12.06 still OPEN). Autonomous-gold admission sealed honest **insufficient_autonomous_verified_samples** (0 machine_verified_candidate). 52 focused bridge/gold/consumer tests PASS at HEAD `447b0f9b`. champions=0.
+
+<details>
+<summary>Evidence</summary>
+
+```
+qa/live_verification/runtime_climb_disk_safe_20260720T0720.json (self_sha256 a79b2051…)
+qa/live_verification/autonomous_gold_admission_20260720T021922.json
+runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T021815.json
+docker_data.vhdx = 68.11 GiB on C:; C_free 17.18 -> 28.29 -> 29.15 GiB; F_free 249.42 GiB
+docker symptom: version/ps timeout -> 500 /containers/json -> pipe vanished (recovery crash)
+repair next: free C: to >=75 GiB OR relocate Docker disk image to F: (GUI migration) OR elevated Optimize-VHD/e2fsck of docker_data.vhdx
+```
+
+</details>
+
+
+## 2026-07-20 07:2X UTC - Tracker/evidence-hygiene sweep (multi-agent parallel execution)
+**Item:** tracker + evidence hygiene only (no feature work)
+**Command:** `tracker.py list` (unresolved scan); grep qa/live_verification per open item; cross-check `residual_blocker_inventory_20260719.json`; `tracker.py validate`; `tracker.py report`; seal sweep + refresh `needs_agent_actions`
+**Result:** **0 honest status transitions.** Scanned 233 unresolved items (135 open/in_progress/partially_complete/failed + 98 blocked). Every remaining unfinished item is gated on live/GPU/WSL/human-CVAT/Main-adoption/DAZ-Studio/gold evidence NOT on disk. All 291 sealed STATIC_PASS/RUNTIME_PASS_BOUNDED artifacts were already reflected by prior parallel waves; per-open-item grep found no un-applied sealed evidence; `residual_blocker_inventory` asserts `any_item_completed_by_this_inventory=false`. No tier inflation; core stays **blocked** (champions=0; P6-11/12 AWAITING_MAIN; HARD MF-P6-11.02/11.07/12.05). Portfolio unchanged **565/798 (70.8%)**. validate PASS (798 items, 0 structural problems, 19 hard-blockers unresolved). report regenerated (DASHBOARD + phases resynced to sibling tracker.json notes). Sibling in-flight source edits (docker/, tools/) left unstaged/untouched.
+
+<details>
+<summary>Evidence</summary>
+
+```
+qa/live_verification/tracker_evidence_hygiene_sweep_20260720.json (self_sha256 a952582e…)
+qa/live_verification/needs_agent_actions_20260719.json (parallel_execution_reconcile; self_sha256 bce2fcde…)
+branch codex/maskfactory-runtime-implementation @ 447b0f9b
+status_transitions_applied=0 (honest; no complete/not_applicable on weak proof)
+```
+
+</details>
+
+## 2026-07-20 07:30 UTC - Autonomous-gold stream: source readiness quantified + honest admission re-seal (gold=0)
+**Item:** autonomous-gold candidate population + `build_autonomous_gold_admission` certification path (NOT docker image builds — sibling owns disk/serve/train build)
+**Command:** live runtime probe (`docker info`/`version`, CVAT `:8080/api/server/about`, Ollama `:11434/api/version`, `wsl --list --running`, host `torch.cuda.is_available()`); `tools/daz_status.py`; `tools/reference_library_status.py`; MaskedWarehouse inventory read; `tools/build_autonomous_gold_admission.py --label torso --context solo`; seal stream evidence
+**Result:** HONEST — **gold count 0**, admission **insufficient_autonomous_verified_samples** (exit 1) at HEAD `447b0f9b`. **No tier inflation, no fabricated samples, no force-registered champions.** Corpus SOURCE side is abundantly ready: MaskedWarehouse ~57,333 image / ~410,089 mask files across 5 datasets; reference library **69,398** indexed representatives (100% classified); DAZ foundation healthy (root/exe/queue/capacity-guard verified, 249 GiB free). SINGLE remaining blocker = the multi-provider **segmentation runtime**: Docker engine DOWN (`com.docker.service` Stopped; `docker info` hangs; Desktop relaunch did not bring engine up; no WSL distros running), CVAT `:8080` DOWN (nuclio SAM2 unavailable), WSL DOWN, host torch **2.12.1+cpu** (CUDA False); only **Ollama 0.32.1** up (VLM critic only — not one of the ≥3 required independent families). Producing `machine_verified_candidate` sidecars needs ≥3 independent segmentation families + ~≥270 zero-defect samples for the 0.01 Wilson bound — infeasible without the GPU-container tournament (sibling's build lane; not touched). tracker.json NOT modified (no honest transition; sibling mid-edit); committed only this stream's files via pathspec.
+
+<details>
+<summary>Evidence</summary>
+
+```
+qa/live_verification/autonomous_gold_stream_readiness_20260720T0230.json (self_sha256 d6e59032…)
+qa/live_verification/autonomous_gold_admission_20260720T022935.json (self_sha256 b76f1564…; machine_verified_candidate_count=0)
+runtime_artifacts/_seal_autonomous_gold_stream_20260720.py
+branch codex/maskfactory-runtime-implementation @ 447b0f9b
+```
+
+</details>

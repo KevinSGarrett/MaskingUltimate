@@ -10915,3 +10915,10 @@ Evidence: `qa/live_verification/families_online_tournament_sibling_20260720T1703
 **Result:** DONE. Pre-emit pool **MVC=36** (envelopes_seen=36, repair already_ok=36/failed=0). Batch emit wrote 14 glue-proof MVC sidecars + envelopes under `runs/` (prove-emit×8, tournament --emit×6) → **MVC=50**. Post-emit repair already_ok=50; final CLI prove-emit → **MVC=51**, envelopes_seen=51, all resolvable under production `runs/`. Glue proof only; no Wilson fabrication; certificate_minted=false; not human gold.
 
 Evidence: `qa/live_verification/lifecycle_pool_scan_20260720T120353.json`; `corpus_envelope_repair_20260720T120353.json`; `autonomy_batch_emit_more_images_20260720T170706Z.json` (self_sha256 b1b8a3c8…); `lifecycle_pool_scan_after_prove_20260720T120720.json`; `runtime_artifacts/_batch_emit_mvc_more_images_20260720.py`.
+
+## 2026-07-20 17:12 UTC - GOLD FACTORY Ollama qwen2.5vl:7b critic/router on tournament MVC
+
+**Item:** Wire/run governed Ollama ``qwen2.5vl:7b`` as critic/router on tournament candidates
+**Command:** `python tools/gpu_sequencer.py sequence --consumer ollama-vlm`; `python tools/run_tournament_ollama_critic_router.py` (cbackup + remaining MVC roots)
+**Result:** RUNTIME_PASS_BOUNDED. **critic_runs=25** (advisory scores only). GPU-seq `ollama-vlm` `run_now` (~7799 MiB). Governance: role=qa_router_only, may_author_masks=false, may_approve_gold=false. **multi_family_agreement_replaced=false**; lifecycle_mutations=0; MVC status preserved. Outcomes: {'CRITIC_SCORED_ADVISORY': 25, 'ABSTAIN_BOUNDED': 8}. Tool: `tools/run_tournament_ollama_critic_router.py`. Evidence: `qa/live_verification/tournament_ollama_critic_router_wave_20260720T1212.json` (self_sha256 6aa639a74c21…).
+

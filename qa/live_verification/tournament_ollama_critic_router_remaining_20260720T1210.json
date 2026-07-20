@@ -1,0 +1,273 @@
+{
+  "artifact_type": "tournament_ollama_critic_router",
+  "authority": [
+    "configs/vlm.yaml governance (role=qa_router_only, may_author_masks=false, may_approve_gold=false)",
+    "src/maskfactory/vlm/router.py RoutingDecision (may_approve_gold hardcoded false)",
+    "tools/gpu_sequencer.py ollama-vlm consumer"
+  ],
+  "autonomous_certified_gold": 0,
+  "blocker": null,
+  "critic_runs": 2,
+  "critic_scored_advisory": 2,
+  "governance": {
+    "may_approve_gold": false,
+    "may_author_masks": false,
+    "may_clear_blocks": false,
+    "role": "qa_router_only"
+  },
+  "honesty_rules": [
+    "VLM is advisory critic/router only",
+    "Never authors masks",
+    "Never approves gold",
+    "Never replaces multi-family agreement / never mutates MVC lifecycle status",
+    "Source/DAZ/warehouse masks are never gold"
+  ],
+  "lane": "GOLD_FACTORY_ollama_critic_router_tournament_mvc",
+  "lifecycle_mutations": 0,
+  "machine_roots": [
+    "runs/autonomous_gold_tournament_batch_b_20260720",
+    "runs/autonomous_gold_tournament_emit_20260720T170621Z",
+    "runs/autonomous_gold_tournament_smoke2"
+  ],
+  "multi_family_agreement_replaced": false,
+  "mvc_discovered": 10,
+  "mvc_scored_attempted": 10,
+  "outcomes": {
+    "ABSTAIN_BOUNDED": 8,
+    "CRITIC_SCORED_ADVISORY": 2
+  },
+  "recorded_at": "2026-07-20T17:12:51.689582Z",
+  "rows": [
+    {
+      "blocker": "source_mask_dimension_mismatch",
+      "critic_run": false,
+      "image_id": "img_218b1dcf388a",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_batch_b_20260720/img_218b1dcf388a/autonomy/torso.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\benchmark_reference\\clothed__none\\218b1dcf388a3703__DSC00859.jpg"
+    },
+    {
+      "blocker": "source_mask_dimension_mismatch",
+      "critic_run": false,
+      "image_id": "img_2a23ee4bcbc4",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_batch_b_20260720/img_2a23ee4bcbc4/autonomy/torso.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\benchmark_reference\\clothed__none\\2a23ee4bcbc43b40__DSC02992.jpg"
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_2f27539bb94a",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_2f27539bb94a/autonomy/torso.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_42f924cf3a50",
+      "label": "hair",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_42f924cf3a50/autonomy/hair.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_722173c4da61",
+      "label": "face",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_722173c4da61/autonomy/face.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_780cab966ecc",
+      "label": "left_foot",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_780cab966ecc/autonomy/left_foot.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_b110b4007718",
+      "label": "right_hand",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_b110b4007718/autonomy/right_hand.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "blocker": "source_image_unresolved",
+      "critic_run": false,
+      "image_id": "img_d69600be88dc",
+      "label": "left_hand",
+      "lifecycle_path": "runs/autonomous_gold_tournament_emit_20260720T170621Z/img_d69600be88dc/autonomy/left_hand.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "outcome": "ABSTAIN_BOUNDED",
+      "prior_status": "machine_verified_candidate",
+      "source_path_readonly": null
+    },
+    {
+      "advisory_critic_pass_weight": 1.0,
+      "critic_run": true,
+      "critic_sidecar": "runs/autonomous_gold_tournament_smoke2/img_18b35dd98b31/autonomy/torso.ollama_critic_router.json",
+      "image_id": "img_18b35dd98b31",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_smoke2/img_18b35dd98b31/autonomy/torso.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "note": "Advisory critic/router score only; multi-family agreement lifecycle status remains 'machine_verified_candidate'; VLM cannot replace agreement or mint gold.",
+      "outcome": "CRITIC_SCORED_ADVISORY",
+      "panel_path": "runs/autonomous_gold_tournament_smoke2/img_18b35dd98b31/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "ed39f8ad395dde171ac1388bcb1e480a48bf2b5defa0a0196adcbfda6f3c5661",
+      "prior_status": "machine_verified_candidate",
+      "routing_decision": {
+        "correction_hint": null,
+        "may_approve_gold": false,
+        "may_clear_block": false,
+        "may_edit_mask": false,
+        "pin_disagreement_heatmap": false,
+        "priority": "normal",
+        "queue": "careful"
+      },
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\1.jpg",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 62,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 15.133,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further adjustments needed. The mask is precise and clear.",
+        "evidence": "The mask accurately outlines the torso silhouette without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    },
+    {
+      "advisory_critic_pass_weight": 1.0,
+      "critic_run": true,
+      "critic_sidecar": "runs/autonomous_gold_tournament_smoke2/img_92583489fae8/autonomy/torso.ollama_critic_router.json",
+      "image_id": "img_92583489fae8",
+      "label": "torso",
+      "lifecycle_path": "runs/autonomous_gold_tournament_smoke2/img_92583489fae8/autonomy/torso.json",
+      "lifecycle_status_unchanged": true,
+      "may_approve_gold": false,
+      "may_author_masks": false,
+      "multi_family_agreement_preserved": true,
+      "note": "Advisory critic/router score only; multi-family agreement lifecycle status remains 'machine_verified_candidate'; VLM cannot replace agreement or mint gold.",
+      "outcome": "CRITIC_SCORED_ADVISORY",
+      "panel_path": "runs/autonomous_gold_tournament_smoke2/img_92583489fae8/qa_panels/torso_boundary_panel.png",
+      "panel_sha256": "b315026725240918f0a7eea8a92bb2ff463fe3d7c9c7fde8dd7aff264dacf860",
+      "prior_status": "machine_verified_candidate",
+      "routing_decision": {
+        "correction_hint": null,
+        "may_approve_gold": false,
+        "may_clear_block": false,
+        "may_edit_mask": false,
+        "pin_disagreement_heatmap": false,
+        "priority": "normal",
+        "queue": "careful"
+      },
+      "source_path_readonly": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\0.jpg",
+      "vlm_attempts": [
+        {
+          "attempt": 1,
+          "checks": {
+            "confidence_number_0_1": true,
+            "correction_instruction_string_30_words": true,
+            "evidence_string_25_words": true,
+            "exact_required_keys": true,
+            "problems_list_allowed": true,
+            "verdict_allowed": true
+          },
+          "eval_count": 62,
+          "model": "qwen2.5vl:7b",
+          "parsed": true
+        }
+      ],
+      "vlm_governance": {
+        "may_approve_gold": false,
+        "may_author_masks": false,
+        "may_clear_blocks": false,
+        "model": "qwen2.5vl:7b",
+        "role": "qa_router_only"
+      },
+      "vlm_latency_seconds": 4.918,
+      "vlm_response": {
+        "confidence": 1,
+        "correction_instruction": "No further action required. The segmentation is precise and clear.",
+        "evidence": "The mask accurately segments the torso silhouette without including clothing or background.",
+        "problems": [],
+        "verdict": "pass"
+      }
+    }
+  ],
+  "schema_version": "1.0.0",
+  "self_sha256": "479916d9d507f76240151b3cbdd907230b00777ac9c9ca62918e04416bd19ff4",
+  "vlm_model": "qwen2.5vl:7b"
+}

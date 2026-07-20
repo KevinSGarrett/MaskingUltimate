@@ -1,0 +1,42 @@
+{
+  "artifact_type": "tournament_ollama_critic_router_wave",
+  "autonomous_certified_gold": 0,
+  "blocker": null,
+  "critic_runs": 25,
+  "critic_scored_advisory": 25,
+  "evidence_parts": [
+    "qa/live_verification/tournament_ollama_critic_router_20260720T1153.json",
+    "qa/live_verification/tournament_ollama_critic_router_remaining_20260720T1210.json"
+  ],
+  "governance": {
+    "may_approve_gold": false,
+    "may_author_masks": false,
+    "may_clear_blocks": false,
+    "role": "qa_router_only"
+  },
+  "gpu_sequence": {
+    "consumer": "ollama-vlm",
+    "decision": "run_now",
+    "free_mib": 7799,
+    "report": "qa/live_verification/gpu_sequence_ollama_critic_router_20260720.json"
+  },
+  "honesty_rules": [
+    "VLM is advisory critic/router only",
+    "Never authors masks",
+    "Never approves gold",
+    "Never replaces multi-family agreement / never mutates MVC lifecycle status"
+  ],
+  "lane": "GOLD_FACTORY_ollama_critic_router",
+  "lifecycle_mutations": 0,
+  "model": "qwen2.5vl:7b",
+  "multi_family_agreement_replaced": false,
+  "mvc_attempted": 33,
+  "outcomes": {
+    "ABSTAIN_BOUNDED": 8,
+    "CRITIC_SCORED_ADVISORY": 25
+  },
+  "recorded_at": "2026-07-20T17:13:46.964345Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "6aa639a74c217bc968254d62aa70d3a38e1399e3d1ebc11d222eb14572f4c555",
+  "tool": "tools/run_tournament_ollama_critic_router.py"
+}

@@ -20930,7 +20930,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 86,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-19T01:16:07+00:00",
@@ -20971,12 +20971,17 @@
           "ts": "2026-07-20T05:54:23+00:00",
           "actor": "ai_agent",
           "text": "Isolated Main-side consumer (tools/run_isolated_main_consumer.py) executes the real adapter boundary/journal/circuit and emits an adoption receipt signed by an isolated-consumer key (authority_kind=isolated_main_consumer, NOT fixture_authority, NOT real Comfy_UI_Main). Producer+isolated-consumer evidence only; HARD 11.02/11.07/12.05/12.06 remain OPEN pending real Main. Evidence: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_*.json"
+        },
+        {
+          "ts": "2026-07-20T15:09:31+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated SIBLING Main consumer (repo C:/Comfy_UI_Main_MaskFactory_Consumer HEAD 5ecb9bd) imports maskfactory.contracts; producer conformance verifier ACCEPTS its contracts-only external adapter boundary (AST-verified imports, real sdist package_sha256 + git identity). isolated_main_consumer, is_real_comfyui_main=false; no HARD close. Evidence: qa/live_verification/isolated_sibling_consumer_climb_20260720T1451.json (self_sha256 b759ece0)."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_external_adapter_conformance.py + fixture_main harness (main_adoption_complete=false). Not PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: Producer adapter conformance remains fixture-complete only. No Main-supplied production MaskFactoryAdapter. 2026-07-19 STATIC wave did not advance this item.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: external sibling consumer proves contracts-only boundary from outside the producer tree; no real Comfy_UI_Main-signed adapter execution.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T05:54:23+00:00",
+      "updated_at": "2026-07-20T15:09:31+00:00",
       "orphaned": false
     },
     "MF-P6-11.02": {
@@ -21059,7 +21064,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 78,
+      "percent_complete": 79,
       "notes": [
         {
           "ts": "2026-07-19T01:30:01+00:00",
@@ -21100,12 +21105,17 @@
           "ts": "2026-07-19T22:00:38+00:00",
           "actor": "proof_tier_runtime_climb",
           "text": "PROOF-TIER 2026-07-19: Confirmed no draft-only Mode B predict provider path for client live smoke. Localhost /predict remains AWAITING_RUNTIME until measured champion_* promotion (not challenger/incumbent substitution). Draft authority floor (promotion_eligible=false) applies to champion-backed draft responses only. Hold 78%. Evidence: qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json"
+        },
+        {
+          "ts": "2026-07-20T15:09:32+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated SIBLING Main consumer adapter returns typed MaskFactoryAdapterError on predict/refine with no live Mode B endpoint (draft-only, no silent fallback). isolated_main_consumer STATIC_PASS. Evidence: qa/live_verification/isolated_sibling_consumer_climb_20260720T1451.json."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_mode_b_localhost_client.py + fixture_main. Not RUNTIME_PASS_BOUNDED live predict / PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive Mode B localhost client fixture-verified (STATIC_PASS). No champion-backed live predict proof or production cross-boundary adoption.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS: external adapter proves draft-only + typed service-unavailable errors; no live Mode B transaction from real Main.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T22:00:38+00:00",
+      "updated_at": "2026-07-20T15:09:32+00:00",
       "orphaned": false
     },
     "MF-P6-11.04": {
@@ -21256,12 +21266,17 @@
           "ts": "2026-07-19T20:59:33+00:00",
           "actor": "proof_tier_correction",
           "text": "PROOF-TIER CORRECTION 2026-07-19: Concurrent fixture_main wave incorrectly marked this item complete. Fixture Main / producer_partial / pytest = STATIC_PASS only. Does NOT satisfy RUNTIME_PASS_BOUNDED, VISUAL_QA_PASS_BOUNDED, PRODUCTION_EVIDENCE_PASS, Main adoption, gold, or doctor-green. Restored honest blocked status with prior producer STATIC credit. AWAITING_MAIN for real KevinSGarrett/Comfy_UI_Main artifacts."
+        },
+        {
+          "ts": "2026-07-20T15:09:32+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated SIBLING Main consumer (HEAD 5ecb9bd) ran real signed append-only journal + signed checkpoint + closed history validation with same-key/same-body replay idempotency from outside the producer tree. isolated_main_consumer STATIC_PASS. Evidence: qa/live_verification/isolated_sibling_consumer_climb_20260720T1451.json."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_journal.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.01 incomplete. Additive signed producer journal fixture-verified (STATIC_PASS). Awaiting Main durable journal store/idempotency/key lifecycle evidence.",
+      "blocked_reason": "DEPENDENCY/STATIC_PASS: awaiting real Main durable journal store; isolated sibling consumer adds external replay-idempotency + signed-checkpoint coverage.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:33+00:00",
+      "updated_at": "2026-07-20T15:09:32+00:00",
       "orphaned": false
     },
     "MF-P6-11.07": {
@@ -21277,7 +21292,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 82,
+      "percent_complete": 83,
       "notes": [
         {
           "ts": "2026-07-19T02:09:12+00:00",
@@ -21333,12 +21348,17 @@
           "ts": "2026-07-20T07:36:17+00:00",
           "actor": "ai_agent",
           "text": " 2026-07-20 isolated-consumer producer climb: strengthened the failure-control fault-injection check (tools/run_isolated_main_consumer.py -> simulate_fault_injection/build_failure_control_evidence). For outage/timeout/oom/incompatible_authority: provider invocation refused, EXACT scoped-DAG blocking (pass_predict+pass_refine blocked, pass_unrelated continues), no silent fallback. Added real deadline-expiry refusal, resource-envelope infeasibility refusal, and bounded retry-budget exhaustion (attempt==maximum -> no retry). STATIC_PASS producer real-execution only; HARD blocker stays OPEN (awaiting Main live circuit-breaker/DAG/retry signed evidence; NOT fabricated). Receipt: runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T023043.json; seal self_sha256=6a777715a169acfeeacb8007aa30ef9ac42d9d3632db20e0916bbded9e667c5c. Credited 80 -> 82."
+        },
+        {
+          "ts": "2026-07-20T15:09:33+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated SIBLING Main consumer (HEAD 5ecb9bd) ran real simulate_fault_injection: outage/timeout/oom/incompatible-authority refuse provider invocation, exact scoped-DAG blocking, no-silent-fallback, exhausted-retry refusal. isolated_main_consumer STATIC_PASS; HARD remains OPEN. Evidence: qa/live_verification/isolated_sibling_consumer_climb_20260720T1451.json."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_failure_control.py + fixture_main. Not RUNTIME_PASS_BOUNDED / PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS HARD BLOCKER: MF-P6-11.03 and MF-P6-11.06 incomplete. Additive producer admission/fault-injection conformance fixture-verified (STATIC_PASS). Awaiting Main live circuit-breaker/DAG/retry signed evidence.",
+      "blocked_reason": "HARD BLOCKER/AWAITING_MAIN: failure-control circuit exercised by external isolated consumer; real Main outage/OOM/timeout recovery receipts still required.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T07:36:17+00:00",
+      "updated_at": "2026-07-20T15:09:33+00:00",
       "orphaned": false
     },
     "MF-P6-11.08": {
@@ -21619,7 +21639,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "blocked",
-      "percent_complete": 82,
+      "percent_complete": 83,
       "notes": [
         {
           "ts": "2026-07-19T03:32:21+00:00",
@@ -21670,12 +21690,17 @@
           "ts": "2026-07-20T14:51:01+00:00",
           "actor": "ai_agent",
           "text": "2026-07-20 isolated-consumer qualification DEPTH: deepened the producer matrix with a real adversarial battery over build/validate_cross_project_qualification_evidence (tools/run_isolated_main_consumer_qual_firewall.py): honest producer_partial baseline (all rows pass, no overclaim, decision_sha256=873b8c116fb91ff629da7cc6b704ac88ee52a1a7163fde5c54609adb2c237dc7), fabricated-Main-receipt -> rejected, fixture-claimed-as-production -> rejected, currency-relabel -> rejected, and the validator detects decision-hash-drift / completion-overclaim / matrix-row-set-drift; a pinned Main commit ALONE is proven insufficient (still producer_partial, consumer_binding.complete=false). HARD blocker stays OPEN (no pinned Main runtime commit + adoption receipt + signed qualification bundle + adapter-execution + ComfyUI result-history; NOT fabricated). Hold 82%. Seal: qa/live_verification/isolated_consumer_qual_firewall_climb_20260720.json self_sha256=8fac63201120652d165e8db9e45e4086b054610a15f52070380465a18b7ba19c."
+        },
+        {
+          "ts": "2026-07-20T15:09:33+00:00",
+          "actor": "ai_agent",
+          "text": "Isolated SIBLING Main consumer (HEAD 5ecb9bd) ran real build_cross_project_qualification_evidence(bind_fixture_main=false) -> producer_partial (mf_p6_12_05_complete=false). isolated_main_consumer STATIC_PASS; HARD remains OPEN. Evidence: qa/live_verification/isolated_sibling_consumer_climb_20260720T1451.json."
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_cross_project_qualification.py producer_partial. No trusted signed production qualification bundle.",
-      "blocked_reason": "HARD BLOCKER/STATIC_PASS: MF-P6-12.02 through MF-P6-12.04 incomplete; Main-runtime commit/adoption/qualification bindings absent. Producer matrix producer_partial only; claim_boundary.mf_p6_12_05_complete=false.",
+      "blocked_reason": "HARD BLOCKER/AWAITING_MAIN: cross-project qualification run by external isolated consumer yields honest producer_partial; real Main-signed qualification bundle still required.",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-20T14:51:01+00:00",
+      "updated_at": "2026-07-20T15:09:33+00:00",
       "orphaned": false
     },
     "MF-P6-12.06": {

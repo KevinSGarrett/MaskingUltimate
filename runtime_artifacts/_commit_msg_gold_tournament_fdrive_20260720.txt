@@ -1,0 +1,19 @@
+gold: drive autonomous-gold tournament with F: USB gold-volume sources (read-only, honest)
+
+F: USB online this wave. Staged a bounded, frozen, image-disjoint gold-volume
+SOURCE corpus (41 images / 8 collections) from F:\Reference_Images + F:\Characters
+READ-ONLY (sha256-referenced; no bytes copied into repo; no F: junction created;
+no runtime data written to F:). MaskedWarehouse absent on F: -> honest fallback.
+
+Honest admission state unchanged: build_autonomous_gold_admission.py (default) ->
+insufficient_autonomous_verified_samples (runs/ pool = 0). gold=0, champions=0.
+Remaining runtime blocker is unchanged and documented: only 1 live independent
+mask family (nuclio SAM2); a >=3-independent-family tournament cannot be assembled
+without fabrication, so no machine_verified_candidate sidecar can yet be emitted on
+the F: sources. Next: bring >=3 live families online (Docker GPU train/serve images
+or elevated WSL ext4 e2fsck) then run the tournament over this staged F: corpus.
+
+No tier inflation, no fabricated Wilson samples, no minted certificate, no
+force-registered champion, no prune/volume wipe, Wilson/zero-failure math unchanged.
+Only this stream's own sealed evidence + driver committed; sibling in-flight edits
+left untouched.

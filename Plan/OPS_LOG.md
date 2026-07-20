@@ -10845,3 +10845,18 @@ Evidence: `qa/live_verification/families_online_tournament_sibling_20260720T1514
 
 Glue: production_audit + corpus envelopes + mark-benchmarked + orchestrator. Contested CLI/S11 patches best-effort.
 Evidence: qa/live_verification/measured_champions_path_production_20260720T1530.json
+
+## 2026-07-20 15:40 UTC - Independent mask-family availability matrix (Comfy CUDA; >=3 live)
+**Item:** autonomous gold / multi-provider family gate (BiRefNet + SCHP + faceparse)
+**Command:** ComfyUI cu128 smokes (faceparse registered runner; BiRefNet local CUDA copy-not-symlink; smoke_schp_wsl.py ATR on Windows paths); `python runtime_artifacts/_seal_family_availability_matrix_20260720T1525.py`; `python tools/build_autonomous_gold_admission.py --label torso --context solo --pipeline-fingerprint multiprovider-local-cuda-tournament-20260720-v1 --machine-root runs/autonomous_gold_tournament_20260720_cbackup --output qa/live_verification/autonomous_gold_admission_families_live_20260720T1535.json`
+**Result:** RUNTIME_PASS_BOUNDED. Live independent mask families = **3**: birefnet_general, schp_atr, faceparse_bisenet (ComfyUI torch 2.11.0+cu128 / RTX 5060). WSL Ubuntu VHD sharing-violation + Docker engine pipe down -> nuclio SAM2 not counted. Tournament pool mvc=23 under runs/autonomous_gold_tournament_20260720_cbackup; admission insufficient_autonomous_verified_samples; champions=0; no fabricated gold. Matrix self_sha256 d553ecffa9e8ce7a8551c3f23fe6c992d2734ec8d8067d25f0c296ec1783e77d.
+
+Evidence: qa/live_verification/family_availability_matrix_20260720T1525.json; _smoke_birefnet_comfy_20260720T1516.json; _smoke_schp_atr_comfy_20260720T1518.json; _smoke_faceparse_comfy_20260720T1512.json; autonomous_gold_admission_families_live_20260720T1535.json.
+
+
+## 2026-07-20 15:14 UTC - DAZ read-when-present STATIC seal+commit (unique binder paths)
+**Item:** MF-P9-08 / 10 / 12 STATIC (F:\\DAZ read-when-present, 26 entries)
+**Command:** python runtime_artifacts/_seal_and_commit_daz_read_when_present_20260720.py
+**Result:** STATIC_PASS. Unique timestamped binder paths bound into seal (parallel-safe). F:\\DAZ present (26); gold_volume daz present/readable; soft_capacity_only=True free_gib=127.629; binders {'coverage_planner_static': 'dcp_d3831a4b1dd196a31a5fb3fe', 'ops_static_contracts': 'dos_8aecc93e1805d180c2da2005', 'validation_static_contracts': 'dvs_37b5f14e7d46d6aa2e0d57c9'}; pytest=0. No live Studio/gold/pilot/soak.
+
+Evidence: qa/live_verification/daz_stream_read_when_present_20260720T1449Z.json (self_sha256 48b969bc1c968172d14f911eb2d67dab986406259736b310ac4fe41457d03a3b).

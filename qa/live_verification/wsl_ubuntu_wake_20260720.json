@@ -1,0 +1,65 @@
+{
+  "artifact_type": "wsl_ubuntu_wake_wave",
+  "authority": "autonomous_wsl_wake_non_destructive",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_established_this_wave": [
+    "wsl_ubuntu_2204_wake_confirmed (Running, responsive after wsl --shutdown)",
+    "wsl_gpu_passthrough_live (nvidia-smi PASS: RTX 5060, driver 592.01, 8151 MiB)"
+  ],
+  "claims_not_established": [
+    "wsl_ext4_corruption_repaired (no e2fsck run; root cause unaddressed)",
+    "wsl_torch_cuda_available (torch not installed in-distro)",
+    "live_sam31_cuda_wsl_smoke",
+    "doctor_all_green",
+    "autonomous_certified_gold"
+  ],
+  "gpu_probe": {
+    "command": "wsl -d Ubuntu-22.04 -- nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader",
+    "driver_version": "592.01",
+    "gpu_name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "memory_total": "8151 MiB",
+    "result": "pass"
+  },
+  "honesty": [
+    "The wake is a live-probed fact (Running + nvidia-smi PASS this wave), not inferred.",
+    "The prior on-disk ext4 corruption is NOT claimed repaired; no e2fsck ran. This could recur.",
+    "torch missing is reported plainly; no CUDA-in-WSL training/serve smoke is claimed from this seal.",
+    "No tier inflation: no doctor-all-green, no autonomous_certified_gold, no champions change from this wave."
+  ],
+  "next_agent_step": "Set up a torch env in the WSL distro (venv + pip install torch matching the RTX 5060 / driver 592.01 CUDA capability), then re-probe `python3 -c \"import torch; print(torch.cuda.is_available())\"` before attempting the live SAM 3.1 CUDA WSL smoke (MF-P2-11.07).",
+  "no_open_human_stop_states": true,
+  "non_destructive_guarantees": [
+    "No e2fsck / no VHDX edits / no `wsl --unregister`.",
+    "No Docker Desktop factory reset; no compose pin edits.",
+    "No pip/apt installs performed in this seal (probe-only); torch env setup deferred to the next explicit step."
+  ],
+  "project_head": "c14d1ea1c1c6e942ccfe8a014e5606e635943177",
+  "recorded_at": "2026-07-20T14:45:24.191803Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "1ced6b7862bb6080303dc72af8431ac8c0a8fd422e01ab0825bd4c5d526c4c9d",
+  "torch_probe": {
+    "command": "wsl -d Ubuntu-22.04 -- python3 -c \"import torch\"",
+    "error": "ModuleNotFoundError: No module named 'torch'",
+    "interpretation": "System python in the WSL distro has no torch installed. This is an un-configured environment, not a hardware/driver gap (GPU probe above passed). Next agent step: create a project-local venv (or pip --user) in the distro and install a CUDA-matched torch build, then re-probe `torch.cuda.is_available()`.",
+    "python_binary": "/usr/bin/python3",
+    "python_version": "3.10.12",
+    "result": "fail"
+  },
+  "trigger": "Ubuntu-22.04 was in a bad state consistent with the previously-documented on-disk ext4 corruption (Error code 6 / E_FAIL, non-elevated shell cannot run the scripted e2fsck). `wsl --shutdown` was run to fully restart the WSL2 VM, then the distro was re-probed.",
+  "wake_sequence": [
+    "Probe: `wsl -d Ubuntu-22.04 -- <cmd>` failed with Error code 6 (E_FAIL), matching the prior documented ext4 corruption symptom (no e2fsck run; non-admin shell).",
+    "Ran `wsl --shutdown` (full WSL2 VM restart; non-destructive, no VHDX edit, no volume/prune).",
+    "Re-probed: `wsl -l -v` -> Ubuntu-22.04 state 'Running'; a fresh exec returned 'ok' (no Error code 6 this time).",
+    "Live GPU probe inside the distro: `wsl -d Ubuntu-22.04 -- nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader` -> 'NVIDIA GeForce RTX 5060 Laptop GPU, 592.01, 8151 MiB' (PASS).",
+    "Live torch probe inside the distro: `wsl -d Ubuntu-22.04 -- python3 -c \"import torch\"` -> ModuleNotFoundError (system /usr/bin/python3 3.10.12 has no torch install).",
+    "docker-desktop WSL distro (also restarted by `wsl --shutdown`) re-probed UP in parallel by the sibling docker_cvat_restore_after_wsl_wake_20260720T0816 wave; not independently re-verified in this seal."
+  ],
+  "wsl_status": {
+    "distro": "Ubuntu-22.04",
+    "elevation_still_unavailable": true,
+    "recovery_action": "wsl --shutdown (full VM restart), non-destructive",
+    "root_cause_note": "Same underlying on-disk ext4 corruption documented in qa/live_verification/wsl_external_vhd_storage_incident_20260715.json / wsl_ubuntu_io_error_20260720.json is NOT proven repaired by a shutdown alone (no e2fsck run); this is reported as a self-clearing wake, consistent with the prior pattern of transient self-clears after a Docker Desktop / WSL2 VM restart, not a durable fsck-verified fix.",
+    "state_after": "Running (responsive; 'ok' on exec)",
+    "state_before": "unresponsive / Error code 6 (E_FAIL) on exec"
+  }
+}

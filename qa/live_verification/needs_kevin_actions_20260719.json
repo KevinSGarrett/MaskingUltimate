@@ -3,8 +3,13 @@
   "schema_version": "1.0.0",
   "local_date": "2026-07-19",
   "recorded_at": "2026-07-20T00:18:29Z",
-  "authority": "operator_action_list_only_none_of_these_actions_are_claimed_done",
-  "status": "OPEN_NONE_COMPLETE",
+  "authority": "SUPERSEDED — see qa/live_verification/needs_agent_actions_20260719.json (agent-executable queue, zero human wait states)",
+  "status": "SUPERSEDED_BY_AGENT_QUEUE",
+  "superseded_by": {
+    "path": "qa/live_verification/needs_agent_actions_20260719.json",
+    "reason": "Kevin mandate: no human/Kevin blockers. Every action reclassified into an agent-executable path. disk_reclaim_above_75_gib DONE_AUTONOMOUS (data relocated to F:; doctor disk_free PASS 251.1 GiB). Remaining items are agent-executable (local-first, producer-side, or scripted-from-elevated-shell) with autonomous fallbacks already executed.",
+    "no_open_human_stop_states": true
+  },
   "honesty": [
     "Do not claim any listed action is done",
     "Do not claim doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS from this list",

@@ -1,0 +1,154 @@
+"""Seal autonomous disk-relocation + doctor-climb evidence (proof-tier honesty).
+
+Records the non-destructive, reversible relocation of data/ to F: (governed drive)
+which flips doctor.check_disk_free FAIL->PASS via the doctor's own remediation,
+plus the full doctor run-to-completion climb (was RUNTIME_BLOCKED), the autonomous
+Docker GPU CUDA container proof, and the honest remaining WSL-VHD elevation gate.
+
+Does NOT claim doctor-green, gold, champions, Main-complete, or PRODUCTION_EVIDENCE_PASS.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import shutil
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "qa" / "live_verification" / "disk_relocation_doctor_climb_20260719T2210.json"
+
+HEAD = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+BRANCH = subprocess.check_output(["git", "branch", "--show-current"], cwd=ROOT, text=True).strip()
+recorded_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+data_free_gib = round(shutil.disk_usage(ROOT / "data").free / (1024**3), 2)
+c_free_gib = round(shutil.disk_usage("C:/").free / (1024**3), 2)
+
+doc = {
+    "artifact_type": "disk_relocation_doctor_climb",
+    "schema_version": "1.0.0",
+    "recorded_at": recorded_at,
+    "local_date": "2026-07-19",
+    "branch": BRANCH,
+    "project_head_at_authoring": HEAD,
+    "authority": [
+        "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md",
+        "src/maskfactory/doctor.py check_disk_free (remediation: move data to a larger governed drive)",
+        "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md proof-tier vocabulary",
+    ],
+    "honesty_rules": [
+        "disk_free PASS via governed-drive relocation is a real ingest-headroom fix, not tier inflation",
+        "doctor is NOT all-green; 3 FAIL rooted in WSL Ubuntu ext4 VHD corruption (elevation-gated e2fsck)",
+        "nuclio + ollama each RUNTIME_PASS_BOUNDED via dedicated smokes; not simultaneously green under 8GB GPU VRAM contention",
+        "champions=0; force-register forbidden; no invented champion win",
+        "No gold / VISUAL_QA_PASS_BOUNDED / Main-complete / PRODUCTION_EVIDENCE_PASS",
+    ],
+    "disk_relocation": {
+        "action": "non_destructive_reversible_relocation_of_data_to_governed_F_drive",
+        "method": "robocopy /E C:\\Comfy_UI_Main_Masking\\data -> F:\\MaskFactory_DataRelocated; rename original to data_c_backup_relocated; mklink /J data F:\\MaskFactory_DataRelocated",
+        "robocopy_result": {
+            "dirs": 624,
+            "files": 3395,
+            "bytes_gib": 2.976,
+            "failed": 0,
+            "exit_code": 1,
+        },
+        "reversible": True,
+        "c_backup_retained": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+        "junction_target": "F:\\MaskFactory_DataRelocated",
+        "data_free_gib_after": data_free_gib,
+        "c_free_gib_after": c_free_gib,
+        "doctor_disk_free_before": {
+            "status": "FAIL",
+            "detail_band": "~4.07-17.6 GiB across recent waves (<75 ingest floor)",
+        },
+        "doctor_disk_free_after": {"status": "PASS", "detail": f"{data_free_gib} GiB free"},
+        "cvat_still_healthy_after": "http://localhost:8080/api/server/about -> 2.24.0 (undisturbed; CVAT DB lives in Docker volumes not data/)",
+        "rationale": "data/ is only ~2.98 GiB; the 75 GiB gate is an ingest floor. Hosting data/ on F: (>250 GiB free) gives genuine ingest headroom, which is doctor's own documented remediation.",
+    },
+    "doctor_climb": {
+        "before_this_session": "RUNTIME_BLOCKED / not-run-to-completion under unsafe C: headroom (prior host-only subset PASS=5 FAIL=4)",
+        "after_this_session": "runs to completion; PASS=8 FAIL=4",
+        "pass_checks": [
+            "cvat_api (2.24.0)",
+            "cvat_project (project_count=2)",
+            "disk_free (251.1 GiB free)",
+            "wsl_backing_store (VHD readable)",
+            "png_strict",
+            "sqlite_writable",
+            "gpu_lock (stale lock cleared; no gpu.lock present)",
+            "nuclio_interactor (foreground=21491) OR ollama_image (strict image JSON) — each PASS individually",
+        ],
+        "fail_checks": {
+            "torch_cuda": "wsl -d Ubuntu-22.04 -- true timed out (ext4 VHD read-only fallback / I/O error)",
+            "registered_models": "shared WSL preflight failed (same ext4 VHD root cause)",
+            "wsl_roundtrip": "wsl -d Ubuntu-22.04 -- true timed out (same ext4 VHD root cause)",
+            "one_of_nuclio_or_ollama": "8GB GPU VRAM contention: whichever model is cold times out within doctor's 45s bound; both RUNTIME_PASS_BOUNDED via dedicated smokes",
+        },
+        "wsl_vhd_root_cause": "Single root cause for 3/4 FAILs: Ubuntu-22.04 ext4.vhdx mounted read-only as fallback (aka.ms/wsldiskmountrecovery); /bin/true -> Input/output error (exit 126). Non-elevated `wsl --terminate Ubuntu-22.04` + restart did NOT clear it (on-disk ext4 corruption). Requires elevated offline e2fsck (tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair).",
+    },
+    "gpu_lock_cleared": {
+        "prior_lock": {
+            "pid": 467,
+            "purpose": "serve_mode_b",
+            "acquired_at": "2026-07-19T21:37:41Z",
+        },
+        "reason_stale": "serve_mode_b holder pid=467 (Linux/WSL pid) dead; Mode B /health on 127.0.0.1:8765 connection-refused; age 20225s > 7200s stale threshold",
+        "action": "backed up to runs/gpu.lock.stale_bak_20260719; removed per doctor remediation",
+        "result": "doctor gpu_lock FAIL->PASS",
+    },
+    "autonomous_gpu_proof": {
+        "command": "docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi",
+        "result": "NVIDIA GeForce RTX 5060 Laptop GPU; driver 592.01; 8151 MiB total",
+        "meaning": "Autonomous container GPU/CUDA capability proof independent of the corrupt WSL Ubuntu distro; replaces 'needs elevated Kevin' framing for GPU verification.",
+        "tier": "RUNTIME_PASS_BOUNDED",
+    },
+    "runtime_smokes": {
+        "smoke_cvat_sam2": {
+            "result": "pass",
+            "task_id": 1,
+            "latency_seconds": 17.898,
+            "foreground_pixels": 21491,
+            "tier": "RUNTIME_PASS_BOUNDED",
+        },
+        "smoke_ollama_vlm": {
+            "result": "pass",
+            "model": "qwen2.5vl:7b",
+            "latency_seconds": 42.861,
+            "verdict": "pass",
+            "tier": "RUNTIME_PASS_BOUNDED",
+        },
+    },
+    "champion_path_honest": {
+        "champions": 0,
+        "predict_http_status": 503,
+        "force_register": "FORBIDDEN (policy) — not performed",
+        "legitimate_measured_path": "certified_training_package_count>0 (human_anchor + autonomous_certified_gold) -> P5 entry -> live SegFormer/Mask2Former training -> measured D6/D7 holdout win (final authority requires human_anchor holdout) -> promote champion_bodypart(+hand+clothing) -> create_production_runtime auto-configures predictor -> re-prove /predict + /refine RUNTIME_PASS_BOUNDED",
+        "current_blockers": [
+            "autonomous_certified_gold blocked by VISUAL_QA_REVIEWED_WITH_DEFECTS (not VISUAL_QA_PASS_BOUNDED)",
+            "final leaderboard authority requires human_anchor holdout (human_anchor_train_count=0)",
+            "live training infeasible now: ~1.6-2.9 GiB free VRAM on shared 8GB GPU",
+        ],
+    },
+    "claims_not_established": [
+        "doctor_all_green",
+        "VISUAL_QA_PASS_BOUNDED",
+        "champions>0",
+        "Mode B champion-backed predict/refine RUNTIME_PASS_BOUNDED",
+        "Main adoption / core_autonomous_runtime complete",
+        "PRODUCTION_EVIDENCE_PASS",
+        "live SAM 3.1 CUDA WSL smoke",
+    ],
+}
+
+body = json.dumps(doc, indent=2, ensure_ascii=False) + "\n"
+self_sha = hashlib.sha256(body.encode("utf-8")).hexdigest()
+doc["self_sha256"] = self_sha
+OUT.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+print(f"evidence={OUT.relative_to(ROOT).as_posix()}")
+print(f"self_sha256={self_sha}")
+print(f"data_free_gib={data_free_gib}")
+print(f"c_free_gib={c_free_gib}")
+print(f"head={HEAD}")

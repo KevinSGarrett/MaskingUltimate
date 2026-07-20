@@ -99,3 +99,6 @@ venv/
 *.obj
 *.tif
 *.tiff
+
+# Reversible C: backup of data/ after F: relocation (2026-07-19); do not commit
+data_c_backup_relocated/

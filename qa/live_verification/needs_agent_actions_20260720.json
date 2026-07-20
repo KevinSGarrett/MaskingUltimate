@@ -323,7 +323,7 @@
     "cuda_train_serve_path": "Docker-GPU (sole/primary); blocked until engine stable + C above 75",
     "cvat_about_http": "UNREACHABLE_ENGINE_DOWN (WinError 10061 at 15:01Z snap)",
     "data_drive": "data/ junction -> C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated (CONFIRMED on-C; USB data junction FORBIDDEN)",
-    "docker_engine": "DOWN_OR_FLAPPING (docker info timeout / docker-desktop WSL Stopped at seal; was UP 39ct @14:52Z server 29.6.1)",
+    "docker_engine": "FLAPPING_DOWN_at_mode_b_serve_seal (pipe absent)",
     "docker_ps_containers_up": 0,
     "f_drive_bus_type": "USB (Seagate BUP Slim, physically removable)",
     "f_drive_state_20260720T1435Z": "present (~181.2 GiB free); known intermittent this session",
@@ -332,8 +332,10 @@
     "fleet_status_evidence": "qa/live_verification/fleet_status_20260720T1502.json",
     "gold": 0,
     "gpu_container_passthrough": "RTX 5060 Laptop GPU, driver 592.01, 8151 MiB total / ~1247 MiB free (live via --gpus all)",
+    "mode_b_host_serve": "READY (/health+/models 200; /predict 503 champions=0)",
     "ollama_provider": "native_windows",
     "ollama_version": "0.32.1",
+    "serve_cu128_built": false,
     "wsl_ubuntu2204": "Running_at_seal (mid-wave F: vhdx SHARING_VIOLATION; docker-desktop Stopped)",
     "wsl_ubuntu_2204": "Running (woken via wsl --shutdown 20260720); nvidia-smi PASS in-distro (RTX 5060, driver 592.01); torch NOT installed in system python3 (next step)",
     "wsl_ubuntu_2204_location": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04 (relocated off C:, Running)"
@@ -361,9 +363,11 @@
     },
     {
       "action_id": "docker_gpu_serve_build_and_containerized_smoke",
+      "host_evidence": "qa/live_verification/mode_b_serve_ready_20260720T1545.json",
+      "host_path_satisfied": true,
       "rank": 3,
-      "status": "AGENT_EXECUTABLE_AFTER_ENGINE_AND_DISK",
-      "why_now": "Sole CUDA serve path; build serve:cu128 out-of-band once engine stable and C: >75 GiB."
+      "status": "BLOCKED_DOCKER_ENGINE_FLAP",
+      "why_now": "Host FastAPI Mode-B serve is READY (OR gate satisfied). Container path still desired when docker npipe is stable."
     },
     {
       "action_id": "docker_gpu_train_build_and_training_doctor",
@@ -395,13 +399,33 @@
   "migrate_docker_vhdx_status_20260720T1441": "CANCELLED_POLICY_BLOCKED_USB_REMOVABLE",
   "migrate_reprioritization_note_20260720T0955": "Cancelled migrate_docker_vhdx_c_to_f as binding policy per Kevin's explicit instruction and the sealed qa/live_verification/f_drive_usb_policy_20260720.json: F: is confirmed BusType=USB (Seagate BUP Slim) and already disconnected once the same day (docker_relocation_f_absent_blocked_20260720T1435Z.json) -- Get-Volume's 'DriveType=Fixed' reported in the superseded probe does not make it a safe permanent host for the live docker_data.vhdx. docker_data.vhdx stays on C: permanently. No mutation had been performed under the cancelled item, so no rollback is required.",
   "migrate_reprioritization_note_20260720T1441": "Added migrate_docker_vhdx_c_to_f as IN_PROGRESS/agent-executable per fresh live probe (sibling finding: live C: vhdx locked, F: has only a stale duplicate). Supersedes the 14:35Z BLOCKED_HARD_STOP_F_DRIVE_PHYSICALLY_ABSENT assessment for F: presence; the move itself is not yet completed (still gated on stopping Docker to release the file lock).",
+  "mode_b_serve_ready_20260720T1545": {
+    "at": "2026-07-20T15:13:47.638270Z",
+    "evidence": "qa/live_verification/mode_b_serve_ready_20260720T1545.json",
+    "host_serve": {
+      "auto_wire": "create_production_runtime configures sequential predictor when all three champion roles exist",
+      "fastapi": "0.139.0",
+      "health": 200,
+      "models": 200,
+      "predict": "503 AWAITING_RUNTIME (champions=0)",
+      "python_multipart": "0.0.32",
+      "uvicorn": "0.51.0"
+    },
+    "mode_b_predict": "AWAITING_RUNTIME until champions>0; host serve path ready now",
+    "self_sha256": "28da5c472f6110ba4a781526053f7d85fec7e1eefd378cca27e3d2b0fbdf893f",
+    "serve_cu128": {
+      "built": false,
+      "reason": "Docker engine flapping (npipe absent after orphan-CLI clear); build deferred to protect engine"
+    },
+    "verdict": "HOST_SERVE_READY_PREDICT_AWAITING_CHAMPIONS"
+  },
   "no_open_human_stop_states": true,
-  "project_head_at_authoring": "7bf4fc04",
-  "recorded_at": "2026-07-20T15:13:40.797407Z",
+  "project_head_at_authoring": "96cce46c",
+  "recorded_at": "2026-07-20T15:13:47.638270Z",
   "recovery_note": "This file was found ZERO-CORRUPTED on disk (20865 bytes, all null bytes; nonzero=0) at authoring time -> recovered from the committed needs_agent_actions_20260719.json and re-prioritized against the live coordinator-helper re-probe. No sibling source edits were staged.",
   "reprioritization_note_20260720T0931": "Disk repair confirmed DONE (C: 91.71 GiB free > 75 GiB floor; Docker UP, 32 containers). Live wave re-ranked to serve (1) -> train (2) -> tournament (3) per explicit instruction; main-adoption (4) and the WSL VHD repair substitute (5) unchanged and still agent-executable, no human wait.",
   "schema_version": "1.0.0",
-  "self_sha256": "3c522726efd1ee26e783bf3435498764b012bd5add6e473bf25f63102f3e64b3",
+  "self_sha256": "af779fc3b331d0423e2a7f05f61f3348451ea3a0d971ed848f356e39ac0bb569",
   "supersedes": {
     "path": "qa/live_verification/needs_agent_actions_20260720.json (prior self)",
     "prior_self_sha256": "368b8eaec5b486390514f3d33d57f4343d4cfb159dfdb2ab31512bfde341f07e",

@@ -10702,3 +10702,49 @@ when the engine is stable.
 Champions=0; Mode B /predict usable only after promoted champion roles exist. Evidence:
 qa/live_verification/mode_b_serve_ready_20260720T1545.json
 (self_sha256 28da5c472f6110ba4a781526053f7d85fec7e1eefd378cca27e3d2b0fbdf893f).
+
+## 2026-07-20 15:02 UTC - DAZ validation/ops/coverage RUNTIME_PASS_BOUNDED on live USB F:\DAZ
+**Item:** MF-P9-08.* / MF-P9-10.01 / MF-P9-12.01-12.03,12.05 / MF-P9-03.09
+**Command:** `python tools/daz_status.py`; `maskfactory daz state integrity`; `maskfactory daz control status`; `maskfactory daz monitor snapshot`; `maskfactory daz recovery matrix` (no --apply); `maskfactory daz recipes seal-{validation,ops,coverage}`; `python -m pytest` (12 focused DAZ modules); `python runtime_artifacts/_seal_daz_runtime_bounded_f_ops_20260720T1452.py`
+**Result:** RUNTIME_PASS_BOUNDED (live F:\DAZ read-only ops + STATIC binders). No DAZ Studio launch.
+
+Live read-only ops on F:\DAZ (USB Seagate BUP Slim BK, BusType=USB):
+- state integrity PASS (queue.sqlite schema v4, quick_check=ok, WAL)
+- control status fail-closed (enabled=false, paused=true, drain=true)
+- monitor snapshot PASS (database_integrity=ok, alerts=0, accepted_synthetic_scenes=0)
+- recovery matrix dry-run PASS (matrix_sha256 3bc18cbe…, recoverable=true, published=false)
+- Tier-A backup verify of live_v4_bound NOT completed this wave (prior 2026-07-19 verify remains)
+
+STATIC reseals: validation dvs_37d2b953…, ops dos_8a036566…, coverage dcp_3729be58…. Procedural primitive API validate OK (canonical 7c6483dd…). Expanded focused pytest 78 passed exit 0.
+
+Foundation doctor NOT all-green: soft-floor capacity hold (free_gib=127.629, storage_level=soft, new_work_allowed=false); hard floor not breached. data/ junction remains C:\Comfy_UI_Main_Masking\data_c_backup_relocated — NOT re-junctioned to F:. Offload path F:\MaskFactory_Offload_20260714 readable. No activation/soak/pilot/accepted-package/gold/doctor-green/PRODUCTION_EVIDENCE_PASS. Tracker: notes only, 0 status transitions.
+
+Evidence: qa/live_verification/daz_validation_ops_coverage_runtime_bounded_20260720T1452.json (self_sha256 64f9f87d76583505e7db826552d1f05f70eace593d304377c53cdfbee536af64).
+
+
+## 2026-07-20 15:04 UTC - Force data/ junction onto C: backup (forbid USB F: auto-repoint)
+**Item:** data_junction_forced_c_backup / usb_data_junction=FORBIDDEN / auto_repoint_to_f=FORBIDDEN
+**Command:** fsutil reparsepoint query data; Get-Item data; compare C vs F packages; maskfactory reindex --dry-run; python runtime_artifacts/_seal_data_junction_forced_c_backup_20260720.py; python runtime_artifacts/_patch_needs_forced_c_backup_20260720.py
+**Result:** PASS. data/ -> C:\Comfy_UI_Main_Masking\data_c_backup_relocated (already on C; mutation=false). Packages **8** readable via junction. C/F package name sets equal. maskfactory reindex --dry-run exit 0. Auto-repoint to F: FORBIDDEN in needs_agent_actions.
+
+Evidence: qa/live_verification/data_junction_forced_c_backup_20260720T1504Z.json (self_sha256 9cbf1860...); script runtime_artifacts/_seal_data_junction_forced_c_backup_20260720.py.
+
+## 2026-07-20 15:10 UTC - serve:cu128 build ABORTED (Docker daemon death; protect engine)
+**Item:** maskfactory/serve:cu128 build + tools/smoke_docker_gpu_serve.py (FULL AUTONOMY; abort-if-daemon-dies mandate)
+**Command:** live docker/CVAT/Ollama/disk probe; Docker Desktop wake; observed short engine-up window with cvat v2.24 containers; bootstrap_cvat.py (failed on dead pipe); careful wsl --shutdown + Desktop relaunch x2 (no prune/wipe); abort further thrash; seal RUNTIME_BLOCKED.
+**Result:** ABORTED / RUNTIME_BLOCKED (honest). `maskfactory/serve:cu128` **NOT built**; smoke **NOT run**. Docker named pipe `dockerDesktopLinuxEngine` absent at abort. Prior sibling build log (`runtime_artifacts/_serve_cu128_build_20260720.log`) reached torch cu128 `nvidia-cudnn-cu12` (~657.9 MB) then `rpc error: Unavailable ... EOF` (daemon died mid-layer). Brief engine-up window showed production `cvat/server:v2.24.0` containers recovering, then daemon died again before `/api/server/about` could be restored. CVAT restore incomplete (bootstrap failed; about timeout at abort). Ollama host remained UP at 0.32.1. C: free collapsed ~75.21 -> ~30.76 GiB during failed wake cycles (`docker_data.vhdx` still 68.11 GiB on C:); further restarts/builds aborted to protect the engine and disk. No `docker system prune`, no volume wipe, no factory reset.
+
+Evidence: qa/live_verification/serve_cu128_daemon_abort_20260720T1510.json; script runtime_artifacts/_seal_serve_cu128_daemon_abort_20260720T1510.py.
+
+## 2026-07-20 15:13 UTC - Isolated-consumer climb4 (MF-P6-11.02 / 11.07 STATIC_PASS depth)
+
+**Item:** MF-P6-11.02, MF-P6-11.07 (HARD remain OPEN)
+**Command:** `python tools/run_isolated_main_consumer_climb4.py --output runtime_artifacts/main_consumer/isolated_consumer_climb4_run_evidence_20260720T1504.json`; sibling `C:/Comfy_UI_Main_MaskFactory_Consumer` `python run_consumer.py`; `python runtime_artifacts/_seal_isolated_consumer_climb4_20260720.py`; tracker set 11.02 86->88 / 11.07 82->84 (blocked)
+
+**Result:** STATIC_PASS deepened. New durable runner `tools/run_isolated_main_consumer_climb4.py` (standalone under multi-agent churn): Mode A matrix **30/30 PASS** (prior climb3 claimed 23); failure-control flags all true (healthy-admit, open/half-open, silent-fallback refuse, scoped-DAG over/under, incoherent-retry reject, deadline/resource/retry-budget). Sibling consumer HEAD `9b61c866` adds Mode A pillar + deepened circuit -> **6/6 pillars PASS** (`self_sha256` b5c03c1d…). Seal `qa/live_verification/isolated_consumer_climb4_20260720T1506.json` (`self_sha256` e5be2eb2213c2a6419730ff0705fe89f316084d208533a43ca21f38467bda141). Honest scope: producer + isolated-consumer only; `is_real_comfyui_main=false`; HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN (AWAITING_MAIN). Dirty Wave64 `C:/Comfy_UI_Main` untouched. champions=0; no core close.
+
+Evidence:
+- runtime_artifacts/main_consumer/isolated_consumer_climb4_run_evidence_20260720T1504.json
+- runtime_artifacts/main_consumer/isolated_sibling_consumer_run_evidence_20260720T1506.json
+- qa/live_verification/isolated_consumer_climb4_20260720T1506.json
+

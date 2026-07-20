@@ -10908,3 +10908,10 @@ Evidence: qa/live_verification/sam2_family_gold_advance_20260720T1153.json (self
 **Result:** RUNTIME_PASS_BOUNDED. Fresh DensePose R50-FPN CUDA smoke PASS (5 instances, fine charts 1..24, SHA `70567801…` matches registry). Live independent families = **5**: `faceparse_bisenet`, `birefnet_general`, `schp_atr`, `nuclio_pth_sam2`, `densepose_rcnn_r50_fpn_s1x`. Host-SAM2 skipped (correlated with `nuclio_pth_sam2`). No multi-GB Docker image build. No gold minted; champions=0.
 
 Evidence: `qa/live_verification/families_online_tournament_sibling_20260720T1703.json` (self_sha256 `866ca057038ede5b45a8ddcc28eee81c6047711c69a7a0228b79b3954f997ae5`).
+
+## 2026-07-20 17:07 UTC - Scan/repair + emit more MVC (36→51)
+**Item:** GOLD FACTORY emit path / machine_verified_candidate admission pool
+**Command:** `maskfactory autonomy scan-lifecycle-pool`; `repair-corpus-envelopes`; batch prove-emit (8) + `tournament --emit` (6); CLI `prove-emit` (+1)
+**Result:** DONE. Pre-emit pool **MVC=36** (envelopes_seen=36, repair already_ok=36/failed=0). Batch emit wrote 14 glue-proof MVC sidecars + envelopes under `runs/` (prove-emit×8, tournament --emit×6) → **MVC=50**. Post-emit repair already_ok=50; final CLI prove-emit → **MVC=51**, envelopes_seen=51, all resolvable under production `runs/`. Glue proof only; no Wilson fabrication; certificate_minted=false; not human gold.
+
+Evidence: `qa/live_verification/lifecycle_pool_scan_20260720T120353.json`; `corpus_envelope_repair_20260720T120353.json`; `autonomy_batch_emit_more_images_20260720T170706Z.json` (self_sha256 b1b8a3c8…); `lifecycle_pool_scan_after_prove_20260720T120720.json`; `runtime_artifacts/_batch_emit_mvc_more_images_20260720.py`.

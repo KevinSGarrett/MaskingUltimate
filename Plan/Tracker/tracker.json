@@ -15678,12 +15678,17 @@
           "ts": "2026-07-20T04:10:48+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 (late): multi-person STATIC contracts re-verified PASS (exclusivity/bleed/identity/contact gates + residual routing). Seal multi_person_static_contracts_20260719T2245.json. Real 10-20 image demo still NOT claimed."
+        },
+        {
+          "ts": "2026-07-20T08:21:45+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-20: RUNTIME_PASS_BOUNDED local LV-MHP-v1 duo gate run (qa/live_verification/local_multi_person_source_runtime_20260720.json) upgrades the underlying gate proof from STATIC/fixture to real pixels, but explicitly uses external-supervision sources, NOT Kevin-governed 2-4-person demo images (kevin_governed_multi_person_sources_used=false, mf_p8_11_07_demo_complete=false). Does NOT satisfy this item's real 10-20 Kevin-governed image demo, certificate-covered routing, blinded audit, or D11/G9 measurement. Remains blocked, NEEDS KEVIN, 0%."
         }
       ],
       "evidence": null,
       "blocked_reason": "NEEDS KEVIN: sufficient governed 2-4-person sources and the preselected blinded human-anchor audit are required; certificate-covered instances otherwise route automatically.",
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-20T04:10:48+00:00",
+      "updated_at": "2026-07-20T08:21:45+00:00",
       "orphaned": false
     },
     "MF-P8-11.08": {
@@ -21150,9 +21155,9 @@
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_receipt_arbitration_conformance.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.02 and MF-P6-11.03 incomplete. Producer-side exact-scope normalizer/conformance oracle fixture-verified (STATIC_PASS). Awaiting Main-signed arbitration decision.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS (unchanged): 2026-07-20 isolated-consumer DoD-climb wave #2 added a real-machinery receipt-arbitration DoD matrix (normalize_and_arbitrate_receipts + build_receipt_arbitration_conformance_evidence + validator): wrapper-certified Mode A dominates uncertified Mode B draft, close-alternatives branch, three-way abstain, Main silent-weakening refusal, high-risk/authority-floor abstain. Producer+isolated-consumer only; MF-P6-11.02/11.03 still incomplete; no Main-signed arbitration decision. Evidence: qa/live_verification/isolated_consumer_dod_climb2_20260720.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:32+00:00",
+      "updated_at": "2026-07-20T14:29:52+00:00",
       "orphaned": false
     },
     "MF-P6-11.05": {
@@ -21383,9 +21388,9 @@
         }
       ],
       "evidence": "STATIC_PASS only: tests/test_bridge_recovery.py + fixture_main. Not PRODUCTION_EVIDENCE_PASS.",
-      "blocked_reason": "DEPENDENCY/CROSS-PROJECT/STATIC_PASS: MF-P6-11.06 and MF-P6-11.07 incomplete. Additive receipt-last recovery drills fixture-verified (STATIC_PASS). Awaiting Main restart store + live unknown-outcome reconciler.",
+      "blocked_reason": "AWAITING_MAIN/STATIC_PASS (unchanged): 2026-07-20 isolated-consumer DoD-climb wave #2 added a real-machinery receipt-last recovery DoD matrix (build_recovery_evidence / simulate_kill_at_boundary + validator): full-chain commit-ready, kill at all 15 durable boundaries fail-closed without drift, receipt-before-artifacts / unresolved-digest / orphan-promotion+authority-drift / foreign-lease-cleanup / duplicate-resubmit refusals. Producer+isolated-consumer only; MF-P6-11.06/11.07 still incomplete; awaiting Main restart store + live unknown-outcome reconciler. Evidence: qa/live_verification/isolated_consumer_dod_climb2_20260720.json",
       "created_at": "2026-07-17T11:28:28+00:00",
-      "updated_at": "2026-07-19T20:59:34+00:00",
+      "updated_at": "2026-07-20T14:30:04+00:00",
       "orphaned": false
     },
     "MF-P6-12.01": {

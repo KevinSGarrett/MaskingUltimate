@@ -10458,3 +10458,26 @@ wipe, no prune, no destructive ops.
 
 HEAD 92a463ce; evidence qa/live_verification/mode_b_serve_runtime_probe_20260720T0300.json
 (self_sha256 c4439dda...).
+
+## 2026-07-20 09:30 UTC — Isolated Main-consumer DoD-climb wave #2 (MF-P6-11.04 / 11.08)
+**Item:** MF-P6-11.04, MF-P6-11.08
+**Command:** `python tools/run_isolated_main_consumer_dod2.py --output runtime_artifacts/main_consumer/isolated_consumer_dod2_run_evidence_20260720T0928.json`
+**Result:** PASS (producer + isolated-consumer STATIC_PASS only; NOT real Comfy_UI_Main; 0 honest tracker transitions)
+
+Extended DoD coverage via the isolated Main consumer ONLY (dirty Wave64 C:/Comfy_UI_Main untouched).
+New standalone runner `tools/run_isolated_main_consumer_dod2.py` adds two real-machinery matrices:
+- `isolated_receipt_arbitration_dod_matrix` (MF-P6-11.04): normalize_and_arbitrate_receipts +
+  build_receipt_arbitration_conformance_evidence + validator — wrapper-certified Mode A dominates
+  uncertified Mode B draft, close-alternatives branch, three-way abstain, Main silent-weakening
+  refusal, high-risk/authority-floor abstain.
+- `isolated_recovery_dod_matrix` (MF-P6-11.08): build_recovery_evidence / simulate_kill_at_boundary +
+  validator — full-chain commit-ready, kill at all 15 durable boundaries fail-closed, and
+  receipt-before-artifacts / unresolved-digest / orphan-promotion+authority-drift /
+  foreign-lease-cleanup / duplicate-resubmit refusals.
+
+Both existing runners re-run green at HEAD (run: 8/8 checks; dod: 3/3 checks). Backing pytest:
+41 passed (tests/test_bridge_recovery.py + tests/test_receipt_arbitration_conformance.py).
+Sealed: qa/live_verification/isolated_consumer_dod_climb2_20260720.json
+(self_sha256 a450273eea23309bfe84096dc9a9ea280528d01fe8fac41cef78bd17769bd3f1).
+Tracker: MF-P6-11.04 / MF-P6-11.08 blocked -> blocked (evidence notes only; portfolio 565/798 = 70.8%
+unchanged). HARD MF-P6-11.02/11.07/12.05/12.06 remain OPEN (AWAITING_MAIN). champions=0; no core close.

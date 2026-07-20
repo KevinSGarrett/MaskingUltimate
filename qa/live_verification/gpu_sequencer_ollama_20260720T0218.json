@@ -1,0 +1,49 @@
+{
+  "decision": {
+    "consumer": "ollama-vlm",
+    "decision": "sequence_after_foreign",
+    "foreign_holders": [
+      {
+        "foreign": true,
+        "pid": 37000,
+        "process_name": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe :: \"C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" main.py --listen 127.0.0.1 --port 8188 --disable-auto-launch --disable-async-offload --disab",
+        "used_mib": null
+      }
+    ],
+    "free_mib": 1914,
+    "lock_state": "absent",
+    "reasons": [
+      "free=1914 MiB, required=7168 MiB, safety=512 MiB -> insufficient",
+      "insufficient VRAM and foreign holder(s) present [C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe :: \"C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" main.py --listen 127.0.0.1 --port 8188 --disable-auto-launch --disable-async-offload --disab#37000]; do NOT evict, wait for release or run consumer after they finish"
+    ],
+    "required_mib": 7168,
+    "safety_mib": 512
+  },
+  "snapshot": {
+    "compute_apps": [
+      {
+        "foreign": false,
+        "pid": 44008,
+        "process_name": "C:\\Users\\kevin\\AppData\\Local\\Programs\\cursor\\Cursor.exe",
+        "used_mib": null
+      },
+      {
+        "foreign": true,
+        "pid": 37000,
+        "process_name": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe :: \"C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" main.py --listen 127.0.0.1 --port 8188 --disable-auto-launch --disable-async-offload --disab",
+        "used_mib": null
+      }
+    ],
+    "gpus": [
+      {
+        "free_mib": 1914,
+        "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "total_mib": 8151,
+        "used_mib": 5986,
+        "util_pct": 64
+      }
+    ],
+    "nvidia_smi_available": true,
+    "probed_at": "2026-07-20T07:47:57.107520Z"
+  }
+}

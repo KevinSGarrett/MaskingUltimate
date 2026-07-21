@@ -325,7 +325,7 @@ def ingest_one(
     min_side: int = 512,
     now: Callable[[], datetime] | None = None,
 ) -> IntakeResult:
-    """Run governed S00 intake with content-neutral admission."""
+    """Run governed S00 intake with uniform admission."""
     source = Path(source)
     incoming_root = Path(incoming_root)
     images_root = Path(images_root)

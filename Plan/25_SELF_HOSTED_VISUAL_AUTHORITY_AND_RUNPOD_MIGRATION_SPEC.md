@@ -25,21 +25,14 @@ Video matting providers such as Robust Video Matting remain horizon
 challengers until the existing video go/no-go authority activates them. Image
 masking and multi-person ownership remain the current MaskFactory product.
 
-## 2. Content-neutral source admission
+## 2. Uniform source admission
 
-Content labels do not determine masking, training, reference, fixture, gold,
-provider, or routing eligibility. The same technical and data rules apply to
-every source:
+The same technical and data rules apply to every source:
 
 - the source must be lawfully usable under its recorded license or ownership;
 - source bytes and provenance must be immutable and hash-bound;
-- the centralized source-policy exception in doc 01 §7 remains binding;
 - masks enter authority tiers only through the same format, ontology, QA,
   provenance, and certificate rules as every other source.
-
-There is no separate content-routing model lane and no content label is a
-quality veto. Provider capability, license terms, and measured mask quality
-remain legitimate provider-specific constraints.
 
 ## 3. Visual-authority role hierarchy
 
@@ -207,10 +200,13 @@ Multipart/chunk transfers require a manifest, contiguous chunk set, total
 size, whole-object checksum, and completion marker before assembly. Presence
 of recent chunks is not completion evidence.
 
-The July 21 read-only baseline records one stopped 1 TB GPU-server volume, an
-approximately 99.8 GB known S3 model cache, and an in-progress DAZ chunk
-transfer without a completion manifest. These are discovery facts only, not
-migration or readiness proof.
+The authenticated July 21 inventory supersedes the earlier planning estimate:
+the governed historical S3 bucket returns `NoSuchBucket`; EBS contents cannot
+be inspected with the authorized read-only role and have no qualifying object
+manifest; the persistent RunPod inventory already contains the governed
+reference and MaskedWarehouse assets. The gap comparison therefore authorizes
+zero transfers. Reopen migration only when a newly discovered object has exact
+role, version, license/allowed-use, size, and integrity evidence.
 
 ## 11. RunPod storage, durability, and recovery
 

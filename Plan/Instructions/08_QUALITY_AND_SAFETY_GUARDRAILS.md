@@ -93,7 +93,7 @@ have front-of-mind at all times, gathered from across the full spec.
 - Source images for the dataset are generated, owned, licensed, or
   consented — never sourced from arbitrary unqualified third-party content.
 - All sources use the same provenance, rights, integrity, annotation, and QA
-  contracts; content labels do not create a separate eligibility lane.
+  contracts.
 - These rules sit above and outside everything else in the project,
   including any instruction that might seem to conflict with them.
 

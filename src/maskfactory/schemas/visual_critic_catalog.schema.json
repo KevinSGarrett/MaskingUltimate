@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/visual_critic_catalog.schema.json",
+  "title": "MaskFactory self-hosted visual critic catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "catalog_id",
+    "recorded_at",
+    "current_hardware",
+    "roles",
+    "models",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "catalog_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{2,127}$"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "current_hardware": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier_id", "gpu_name", "gpu_count", "vram_bytes_per_gpu"],
+      "properties": {
+        "tier_id": {"const": "runpod_single_gpu_48gb"},
+        "gpu_name": {"const": "NVIDIA RTX 6000 Ada Generation"},
+        "gpu_count": {"const": 1},
+        "vram_bytes_per_gpu": {"type": "integer", "minimum": 48000000000}
+      }
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role_id",
+          "model_assignable",
+          "requires_positive_and_negative_calibration",
+          "deterministic_veto_precedes_role",
+          "may_author_pixels",
+          "may_clear_hard_veto"
+        ],
+        "properties": {
+          "role_id": {
+            "enum": [
+              "fast_screener",
+              "primary_visual_critic",
+              "independent_juror",
+              "senior_arbiter",
+              "deterministic_authority"
+            ]
+          },
+          "model_assignable": {"type": "boolean"},
+          "requires_positive_and_negative_calibration": {"type": "boolean"},
+          "deterministic_veto_precedes_role": {"const": true},
+          "may_author_pixels": {"const": false},
+          "may_clear_hard_veto": {"const": false}
+        }
+      }
+    },
+    "models": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model_id",
+          "family_id",
+          "repository",
+          "revision",
+          "license",
+          "quantization",
+          "pipeline_tag",
+          "file_count",
+          "total_repository_bytes",
+          "weight_bytes",
+          "runtime",
+          "hardware",
+          "candidate_roles",
+          "assigned_roles",
+          "lifecycle",
+          "artifact_sha256",
+          "calibration",
+          "private_endpoint"
+        ],
+        "properties": {
+          "model_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{2,127}$"},
+          "family_id": {"enum": ["qwen", "internvl"]},
+          "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+          "revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+          "license": {"const": "apache-2.0"},
+          "quantization": {"enum": ["fp8", "bf16"]},
+          "pipeline_tag": {"const": "image-text-to-text"},
+          "file_count": {"type": "integer", "minimum": 1},
+          "total_repository_bytes": {"type": "integer", "minimum": 1},
+          "weight_bytes": {"type": "integer", "minimum": 1},
+          "runtime": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["engine", "version_constraint", "status"],
+            "properties": {
+              "engine": {"enum": ["vllm", "transformers"]},
+              "version_constraint": {"type": "string", "minLength": 3},
+              "status": {"enum": ["planned", "installed", "smoked", "qualified"]}
+            }
+          },
+          "hardware": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tier",
+              "single_gpu_48gb_feasible",
+              "minimum_gpu_count_by_weight_bytes",
+              "live_measurement_required"
+            ],
+            "properties": {
+              "tier": {"enum": ["single_gpu_candidate", "multi_gpu_required"]},
+              "single_gpu_48gb_feasible": {"type": "boolean"},
+              "minimum_gpu_count_by_weight_bytes": {"type": "integer", "minimum": 1},
+              "live_measurement_required": {"const": true}
+            }
+          },
+          "candidate_roles": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "fast_screener",
+                "primary_visual_critic",
+                "independent_juror",
+                "senior_arbiter"
+              ]
+            }
+          },
+          "assigned_roles": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "fast_screener",
+                "primary_visual_critic",
+                "independent_juror",
+                "senior_arbiter"
+              ]
+            }
+          },
+          "lifecycle": {
+            "enum": ["planned", "downloaded", "smoked", "calibrated", "promoted", "unavailable"]
+          },
+          "artifact_sha256": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            ]
+          },
+          "calibration": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["status", "report_sha256"],
+                "properties": {
+                  "status": {"enum": ["pass", "fail"]},
+                  "report_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+                }
+              }
+            ]
+          },
+          "private_endpoint": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "string", "pattern": "^http://127\\.0\\.0\\.1:[0-9]{2,5}$"}
+            ]
+          }
+        }
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

@@ -1,0 +1,151 @@
+schema_version: 1.0.0
+catalog_id: maskfactory_visual_critic_catalog_v1
+recorded_at: '2026-07-21T22:15:00Z'
+current_hardware:
+  tier_id: runpod_single_gpu_48gb
+  gpu_name: NVIDIA RTX 6000 Ada Generation
+  gpu_count: 1
+  vram_bytes_per_gpu: 51527024640
+roles:
+  - role_id: fast_screener
+    model_assignable: true
+    requires_positive_and_negative_calibration: true
+    deterministic_veto_precedes_role: true
+    may_author_pixels: false
+    may_clear_hard_veto: false
+  - role_id: primary_visual_critic
+    model_assignable: true
+    requires_positive_and_negative_calibration: true
+    deterministic_veto_precedes_role: true
+    may_author_pixels: false
+    may_clear_hard_veto: false
+  - role_id: independent_juror
+    model_assignable: true
+    requires_positive_and_negative_calibration: true
+    deterministic_veto_precedes_role: true
+    may_author_pixels: false
+    may_clear_hard_veto: false
+  - role_id: senior_arbiter
+    model_assignable: true
+    requires_positive_and_negative_calibration: true
+    deterministic_veto_precedes_role: true
+    may_author_pixels: false
+    may_clear_hard_veto: false
+  - role_id: deterministic_authority
+    model_assignable: false
+    requires_positive_and_negative_calibration: false
+    deterministic_veto_precedes_role: true
+    may_author_pixels: false
+    may_clear_hard_veto: false
+models:
+  - model_id: qwen3_6_35b_a3b_fp8
+    family_id: qwen
+    repository: Qwen/Qwen3.6-35B-A3B-FP8
+    revision: 95a723d08a9490559dae23d0cff1d9466213d989
+    license: apache-2.0
+    quantization: fp8
+    pipeline_tag: image-text-to-text
+    file_count: 56
+    total_repository_bytes: 37493015668
+    weight_bytes: 37463662160
+    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [fast_screener, primary_visual_critic]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    calibration: null
+    private_endpoint: null
+  - model_id: qwen3_5_122b_a10b_fp8
+    family_id: qwen
+    repository: Qwen/Qwen3.5-122B-A10B-FP8
+    revision: a099dee70ccfcd8d5dda56aaa0b60cb8ecadabc9
+    license: apache-2.0
+    quantization: fp8
+    pipeline_tag: image-text-to-text
+    file_count: 53
+    total_repository_bytes: 127195718583
+    weight_bytes: 127163011832
+    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
+    hardware:
+      tier: multi_gpu_required
+      single_gpu_48gb_feasible: false
+      minimum_gpu_count_by_weight_bytes: 3
+      live_measurement_required: true
+    candidate_roles: [senior_arbiter]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    calibration: null
+    private_endpoint: null
+  - model_id: qwen3_5_397b_a17b_fp8
+    family_id: qwen
+    repository: Qwen/Qwen3.5-397B-A17B-FP8
+    revision: ea5b4f81096f3901c91dea97f81324302495781d
+    license: apache-2.0
+    quantization: fp8
+    pipeline_tag: image-text-to-text
+    file_count: 107
+    total_repository_bytes: 406198638888
+    weight_bytes: 406151669464
+    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
+    hardware:
+      tier: multi_gpu_required
+      single_gpu_48gb_feasible: false
+      minimum_gpu_count_by_weight_bytes: 8
+      live_measurement_required: true
+    candidate_roles: [senior_arbiter]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    calibration: null
+    private_endpoint: null
+  - model_id: internvl3_5_8b_bf16
+    family_id: internvl
+    repository: OpenGVLab/InternVL3_5-8B
+    revision: 9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79
+    license: apache-2.0
+    quantization: bf16
+    pipeline_tag: image-text-to-text
+    file_count: 24
+    total_repository_bytes: 17072800269
+    weight_bytes: 17056729432
+    runtime: {engine: transformers, version_constraint: '>=4.52.1', status: planned}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [independent_juror]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    calibration: null
+    private_endpoint: null
+  - model_id: internvl3_5_241b_a28b_bf16
+    family_id: internvl
+    repository: OpenGVLab/InternVL3_5-241B-A28B
+    revision: 8e5cfda1dabab9bdc76a3931bf77ecae150a33c8
+    license: apache-2.0
+    quantization: bf16
+    pipeline_tag: image-text-to-text
+    file_count: 141
+    total_repository_bytes: 481433952804
+    weight_bytes: 481403975520
+    runtime: {engine: transformers, version_constraint: '>=4.52.1', status: planned}
+    hardware:
+      tier: multi_gpu_required
+      single_gpu_48gb_feasible: false
+      minimum_gpu_count_by_weight_bytes: 10
+      live_measurement_required: true
+    candidate_roles: [independent_juror]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    calibration: null
+    private_endpoint: null
+sha256: b42f510b462374cba21a4ebe7aa1ef542436dd833d9f7049153cd07803b48ee4

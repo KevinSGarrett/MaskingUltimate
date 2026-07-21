@@ -29,6 +29,7 @@ SCHEMA_NAMES = frozenset(
         "manifest_synthetic_v2",
         "qa_report",
         "model_registry",
+        "visual_critic_catalog",
         "acquisition_plan",
         "failure_queue",
         "failure_mining_static_report",

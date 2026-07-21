@@ -20,7 +20,7 @@ Use this playbook when turning existing datasets, models, or Civitai workflows i
 - Map labels through explicit config tables; do not infer class names in code.
 - Use Civitai workflows to learn graph wiring, not to replace MaskFactory stages.
 - Evaluate every asset by masking/segmentation/detector/pose/control/workflow utility, provenance, license, allowed use, and measured technical quality.
-- Apply one content-neutral intake path. Any eligible asset may be a detector candidate, pose/control stress fixture, ComfyUI wiring reference, QA probe, training input, or seed for reviewed gold after the normal source, annotation, QA, and authority gates pass.
+- Apply one intake path. Any governed asset may be a detector candidate, pose/control stress fixture, ComfyUI wiring reference, QA probe, training input, or seed for reviewed gold after the normal source, annotation, QA, and authority gates pass.
 - Use Dataset Ninja and similar platforms to discover datasets, inspect label taxonomies, and compare coverage. Download from official dataset sources whenever possible.
 - Store model weights outside `Plan\`, normally under model cache or runtime model directories.
 - Store documentation, manifests, small workflow JSONs, and dataset registry records inside `Plan\`.

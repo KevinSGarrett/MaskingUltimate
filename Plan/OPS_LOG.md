@@ -11196,3 +11196,22 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   Evidence: `qa/live_verification/aws_runpod_transfer_contract_20260721.json`
   SHA-256
   `288374d306643a650e9a739ced4d816927cd60fd11ffd191a7ab720235462d14`.
+
+## 2026-07-21 — Self-hosted visual-critic catalog and hardware separation
+
+- `MF-P0-17.15`, `.20`, `.21`, and `.22` reached `STATIC_PASS` with a
+  versioned schema, canonical catalog seal, loader, and fail-closed selector.
+  No model is assigned or promoted from its name, size, or catalog presence.
+- Exact upstream revisions, licenses, pipeline tags, file counts, and byte
+  sizes are bound for Qwen3.6-35B-A3B-FP8, Qwen3.5-122B-A10B-FP8,
+  Qwen3.5-397B-A17B-FP8, InternVL3.5-8B, and InternVL3.5-241B-A28B.
+- The current RTX 6000 Ada tier admits only the 35B-A3B and InternVL 8B
+  checkpoints as live-measurement candidates. The larger checkpoints remain
+  multi-GPU-only; their weight-byte lower bounds are 3, 8, and 10 current-tier
+  GPUs respectively, before runtime overhead.
+- Eleven focused tests pass and reject unknown roles, name-only selection,
+  premature assignment, uncalibrated promotion, hardware-tier confusion, and
+  same-family vote inflation. Ruff, Black, schema validation, and tracker
+  validation pass.
+- Evidence: `qa/live_verification/visual_critic_catalog_20260721.json` SHA-256
+  `9bb830a9952b50f304fe840e9873239be67101c7b4924b8dc2bd550cfd106f91`.

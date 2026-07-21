@@ -30,7 +30,7 @@
       "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "aa5bae8c9f522e4bcf83e36ecf41e9cf56929e161873a928e4e8dc56101f2c14"},
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "9d4a93f622a216389f419bd9e81a52dec4d948d97e4c8c5a9683721e7ac506e9"},
         {"kind": "evidence", "path": "qa/live_verification/sam31_checkpoint_install_20260717.json", "sha256": "e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8"}
       ]
     },
@@ -42,7 +42,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam3_litetext_s0_runtime.lock.json", "sha256": "df9a329106032f7b3e7e3fd732bd5aa372c575e9985c329dbc54812b9e4a71c8"},
+        {"kind": "lock", "path": "env/sam3_litetext_s0_runtime.lock.json", "sha256": "840dba5ca76516b97f988e28b0f0058d61f3f801fe6c2c8634ab2083d93baa1b"},
         {"kind": "evidence", "path": "qa/live_verification/sam3_litetext_s0_runtime_20260715.json", "sha256": "f3711cac810781ad02b2cd8ec4ec538d82f580b129c9999ed6dcb2b2717cae12"}
       ]
     },
@@ -54,7 +54,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/qwen3_vl_ollama.lock.json", "sha256": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059"},
+        {"kind": "lock", "path": "env/qwen3_vl_ollama.lock.json", "sha256": "fed13b69dd13ad3089fe5e6e0e3a41d6c14125b8d95c9c20960fc85cbf678fdc"},
         {"kind": "evidence", "path": "qa/live_verification/qwen3_vl_ollama_runtime_20260714.json", "sha256": "c9f38ddd253b1b8ef070af409be0d12118f11b2d9779799e8cfa38d562c7e20a"}
       ]
     },
@@ -66,7 +66,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/rfdetr_runtime.lock.json", "sha256": "5ab1da8e03134bb26fbbaabbabe11c52470c91be785b1628505bf47cfd0c6887"},
+        {"kind": "lock", "path": "env/rfdetr_runtime.lock.json", "sha256": "3c4c43ae374e8da861e2d65a68b9ce81d28e5a1ccc4a06aaf2bfe556dc54af54"},
         {"kind": "evidence", "path": "qa/live_verification/rfdetr_medium_runtime_20260714.json", "sha256": "f2f8cfaf9cc12120de35872a61ce03a0814c175427b43de678c206641daccb4b"}
       ]
     },
@@ -102,10 +102,10 @@
       "smoke_status": "not_run_wsl_filesystem_io_error",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "2c29e1f1d74fc2b0547f709134ee930700f3c04a3884548723963dba8375e075"},
+        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "5a68c555fe3fdc184d07551591f1a55fb921c206246f52ef3861cfdad36c3c39"},
         {"kind": "evidence", "path": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json", "sha256": "c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f"}
       ]
     }
   ],
-  "manifest_sha256": "af884dd08b1fd6fe1cf76e97497354347f7f5d6e63d9a793c56053b7f90f21a2"
+  "manifest_sha256": "9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a"
 }

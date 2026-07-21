@@ -35,7 +35,7 @@ def test_sam3_litetext_runtime_is_exact_installed_and_shadow_only() -> None:
 
     assert result == {
         "status": "pass_installed_shadow_smoke_official_comparison_pending",
-        "manifest_sha256": ("f449bf80c44d44b96d198f07540c555276ee92eaadcd5860b9324080c4f53b01"),
+        "manifest_sha256": ("7eb821918941956ff89e21271ebc12eaf7425ead1f3111144efe313c796d0267"),
         "source_commit": "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a",
         "checkpoint_sha256": ("69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906"),
         "runtime_source": ("transformers==5.13.1@4626421dc6b741a329300682a6408246ee465490"),

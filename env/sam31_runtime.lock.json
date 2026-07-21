@@ -33,10 +33,6 @@
     "snapshot_sha256": "67f67e15efa517e0f67f59ff2d2f603a624da5d2f5458b0c5b366ccd66bb3eea",
     "reviewed_at": "2026-07-14T18:58:17Z",
     "use_profile": "private_personal_noncommercial",
-    "content_compatibility": {
-      "adult_nonexplicit": "allowed",
-      "consensual_explicit_adult": "allowed"
-    },
     "checkpoint_terms_status": "accepted_access_verified"
   },
   "runtime": {

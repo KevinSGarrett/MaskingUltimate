@@ -10,9 +10,7 @@
     "spdx": "Apache-2.0",
     "source": "https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct-GGUF",
     "ollama_license_layer_sha256": "7339fa418c9ad3e8e12e74ad0fd26a9cc4be8703f9c110728a992b193be85cb2",
-    "reviewed_at": "2026-07-14T20:33:00Z",
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed"
+    "reviewed_at": "2026-07-14T20:33:00Z"
   },
   "runtime": {
     "kind": "native_ollama",

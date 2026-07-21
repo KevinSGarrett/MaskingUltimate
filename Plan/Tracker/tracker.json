@@ -9422,11 +9422,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Uniform source admission and authority contracts remain verified after live tracker reconciliation.",
+      "notes": [
+        {
+          "ts": "2026-07-21T23:52:54+00:00",
+          "actor": "codex",
+          "text": "Extended the completed reconciliation to active runtime locks; retired special content-policy fields were removed without changing provider artifacts, licensing identity, or runtime truth."
+        }
+      ],
+      "evidence": "qa/live_verification/plan_items_tracker_reconciliation_20260721.json plus qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json; active Plan/Items/Instructions and five provider runtime locks use one uniform provenance/license/allowed-use/integrity/annotation/QA/authority path; dependent seals and runtime matrix 9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a verified; 23 tests PASS",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-21T20:02:22+00:00",
+      "updated_at": "2026-07-21T23:52:54+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {

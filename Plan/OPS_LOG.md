@@ -11478,3 +11478,17 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   Black pass. The suite is deterministic synthetic structural truth and does
   not claim real-image generalization or live critic authority. Evidence:
   `qa/live_verification/frozen_visual_regression_suite_20260721.json`.
+
+## 2026-07-21 - Uniform admission extended through runtime locks
+
+- `MF-P0-14.04` was re-audited beyond Plan/Items/Instructions. Five active
+  provider runtime locks still carried retired special content-policy fields;
+  those fields were removed while exact source, license, allowed-use,
+  checkpoint, runtime, provenance, and authority bindings were preserved.
+- The dependent SAM3-LiteText self-seal, provider artifact hashes, aggregate
+  runtime matrix, and locked verifier constants were resealed. The matrix is
+  canonical at
+  `9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a`.
+- Twenty-three focused runtime-lock and matrix tests pass; Ruff and JSON
+  validation pass. Immutable historical evidence is not rewritten. Evidence:
+  `qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json`.

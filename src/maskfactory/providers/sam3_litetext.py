@@ -11,7 +11,7 @@ import yaml
 
 DEFAULT_REGISTRY = Path("configs/external_sources.yaml")
 DEFAULT_LOCK = Path("env/sam3_litetext_s0_runtime.lock.json")
-LOCKED_MANIFEST_SHA256 = "f449bf80c44d44b96d198f07540c555276ee92eaadcd5860b9324080c4f53b01"
+LOCKED_MANIFEST_SHA256 = "7eb821918941956ff89e21271ebc12eaf7425ead1f3111144efe313c796d0267"
 
 
 class Sam3LiteTextLockError(ValueError):

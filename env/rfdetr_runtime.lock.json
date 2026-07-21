@@ -14,9 +14,7 @@
     "source": "https://github.com/roboflow/rf-detr/blob/6e1620e751f3c814ead8648cada51ceff9029e5c/LICENSE",
     "sha256": "44c30d89285a2a173b72470a2bdbadb031b03624d2fc1a8a366f962de9744020",
     "reviewed_at": "2026-07-14T20:11:02Z",
-    "plus_variants_excluded": true,
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed"
+    "plus_variants_excluded": true
   },
   "checkpoint": {
     "variant": "medium",

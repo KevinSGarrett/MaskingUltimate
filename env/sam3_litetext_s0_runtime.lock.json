@@ -24,11 +24,7 @@
     "repository_source_url": "https://raw.githubusercontent.com/huggingface/transformers/4626421dc6b741a329300682a6408246ee465490/LICENSE",
     "repository_snapshot_sha256": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049",
     "evidence_bundle_sha256": "5c690e11a9dce2d355bc7dbfb3dd48e6a8d38776aaf290275afb1e8b1a37fb58",
-    "reviewed_at": "2026-07-15T04:30:00Z",
-    "content_compatibility": {
-      "adult_nonexplicit": "allowed",
-      "consensual_explicit_adult": "allowed"
-    }
+    "reviewed_at": "2026-07-15T04:30:00Z"
   },
   "runtime_candidate": {
     "package": "transformers",
@@ -80,5 +76,5 @@
       "semantic_authority"
     ]
   },
-  "manifest_sha256": "f449bf80c44d44b96d198f07540c555276ee92eaadcd5860b9324080c4f53b01"
+  "manifest_sha256": "7eb821918941956ff89e21271ebc12eaf7425ead1f3111144efe313c796d0267"
 }

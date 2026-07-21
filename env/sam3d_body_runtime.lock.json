@@ -43,12 +43,7 @@
     "license": "SAM License, last updated 2025-11-19",
     "license_snapshot_sha256": "b3a5a0e2d973ab80e6610ccf1cffc40756050d0ace3cd4fec879b3ec290b2e9b",
     "checkpoint_terms_status": "accepted_access_verified",
-    "project_profile": "private-personal-noncommercial",
-    "content_compatibility": {
-      "minor_content": "forbidden",
-      "adult_nonexplicit": "allowed",
-      "consensual_explicit_adult": "allowed"
-    }
+    "project_profile": "private-personal-noncommercial"
   },
   "runtime": {
     "platform": "planned isolated WSL Ubuntu-22.04 linux-64",

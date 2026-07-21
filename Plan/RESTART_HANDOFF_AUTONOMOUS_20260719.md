@@ -1,5 +1,7 @@
 # Autonomous Session Handoff — 2026-07-19 (rev: disk relocation + doctor climb)
 
+> **Binding standing orders (canonical):** [`Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md`](STANDING_ORDERS_AUTONOMOUS_BUILD.md) — read before continuing. This handoff is situational state only; standing orders win on conflict.
+
 Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin action" is
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
 **Do not claim project complete. Preserve all work. No governed wipe. No tier inflation.**

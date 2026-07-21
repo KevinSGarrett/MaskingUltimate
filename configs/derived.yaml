@@ -1,0 +1,42 @@
+config_version: 1.0.0
+formulas:
+  both_breasts: part:left_breast | part:right_breast
+  breast_skin: (part:left_breast | part:right_breast) & material:skin
+  left_breast_skin: part:left_breast & material:skin
+  right_breast_skin: part:right_breast & material:skin
+  left_hand: part:left_hand_base | part:left_thumb | part:left_index_finger | part:left_middle_finger | part:left_ring_finger | part:left_pinky
+  right_hand: part:right_hand_base | part:right_thumb | part:right_index_finger | part:right_middle_finger | part:right_ring_finger | part:right_pinky
+  both_hands: derived:left_hand | derived:right_hand
+  all_fingers: part_ids:24-33
+  all_thumbs: part:left_thumb | part:right_thumb
+  all_index_fingers: part:left_index_finger | part:right_index_finger
+  all_middle_fingers: part:left_middle_finger | part:right_middle_finger
+  all_ring_fingers: part:left_ring_finger | part:right_ring_finger
+  all_pinkies: part:left_pinky | part:right_pinky
+  left_foot: part:left_foot_base | part:left_toes
+  right_foot: part:right_foot_base | part:right_toes
+  both_feet: derived:left_foot | derived:right_foot
+  all_toes: part:left_toes | part:right_toes
+  both_arms: part_ids:12-33
+  both_upper_arms: part:left_upper_arm | part:right_upper_arm
+  both_forearms: part:left_forearm | part:right_forearm
+  both_glutes: part:left_glute | part:right_glute
+  both_thighs: part:left_thigh | part:right_thigh
+  both_knees: part:left_knee | part:right_knee
+  both_calves: part:left_calf | part:right_calf
+  full_torso: part_ids:4-11 | part_ids:48-49
+  full_arms: part_ids:12-33
+  full_legs: part_ids:34-47
+  abdomen_full: part:abdomen_stomach | part:belly_button
+  full_body_parts_visible: part_ids:1-49
+  person_full_visible: silhouette:person_full_visible
+  visible_body_skin: (part_ids:1-49 & material:skin) - part:hair
+  clothing_visible: material_ids:3-8,10-12,15
+  bra_visible: material:bra
+  panty_visible: material:underwear_bottom
+  bra_left_cup: material:bra & part:left_breast
+  bra_right_cup: material:bra & part:right_breast
+  bra_straps: material:strap & (part:chest_upper_torso | part:left_shoulder | part:right_shoulder)
+  clothing_boundary_chest: edge(material_ids:3,4,6 within part_ids:4-6)
+  clothing_skin_boundary: edge(material:skin, material_ids:3-8,10-12,15, width=4px@1024)
+  clothing_bodypart_occlusion: clothing_visible & projected:amodal_body_estimates

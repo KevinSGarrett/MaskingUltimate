@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at_utc": "2026-07-15T02:53:12.2408512Z",
+  "result": "pass",
+  "incident": {
+    "reported_error": "DockerDesktop/Wsl/ExecError: execvpe(/mnt/wsl/docker-desktop/docker-desktop-user-distro) failed: Permission denied",
+    "affected_distro": "Ubuntu-22.04",
+    "docker_desktop_version": "4.74.0",
+    "docker_engine_version": "29.4.3"
+  },
+  "diagnosis": {
+    "docker_helper_after_recovery": {
+      "path": "/mnt/wsl/docker-desktop/docker-desktop-user-distro",
+      "mode": "0755",
+      "owner": "root:root",
+      "filesystem": "ext4",
+      "mount_exec_enabled": true
+    },
+    "host_fault": "WslService and the Host Compute Service entered a stale VM-control state after the original integration failure; WSL commands timed out with HCS_E_CONNECTION_TIMEOUT until both services were replaced.",
+    "distro_boot_fault": "The enabled but unregistered landscape-client.service blocked multi-user.target while landscape-config --is-registered ran. This pushed distro readiness beyond WSL and Docker integration deadlines.",
+    "pre_fix_observations": {
+      "landscape_exec_condition_seconds": 28,
+      "systemd_state": "starting",
+      "docker_wsl_list_timeout_seconds": 60,
+      "wsl_boot_error": "/sbin/init failed to start within 10000ms"
+    }
+  },
+  "repair": {
+    "host_services_restarted": [
+      "WslService",
+      "vmcompute"
+    ],
+    "disabled_service": "landscape-client.service",
+    "disabled_service_reason": "Landscape is unregistered, unrelated to MaskFactory, and its boot-time registration condition delayed WSL readiness.",
+    "stale_process_cleared": "One timed-out BiRefNet doctor smoke remained in uninterruptible sleep and was cleared by terminating only Ubuntu-22.04 after stopping the doctor process tree.",
+    "data_destructive_actions": [],
+    "explicitly_not_used": [
+      "Docker factory reset",
+      "wsl --unregister",
+      "distro re-import",
+      "volume deletion",
+      "checkpoint deletion"
+    ]
+  },
+  "post_fix_verification": {
+    "systemd": {
+      "state": "running",
+      "failed_units": 0,
+      "userspace_startup_seconds": 3.01,
+      "graphical_target_seconds": 2.975
+    },
+    "ubuntu_cold_boot_milliseconds": 6526,
+    "ubuntu_second_clean_boot_milliseconds": 8603,
+    "pytorch_cuda_probe": {
+      "exit_code": 0,
+      "elapsed_milliseconds": 3897,
+      "torch": "2.11.0+cu128",
+      "cuda": "12.8",
+      "available": true,
+      "capability": [
+        12,
+        0
+      ]
+    },
+    "docker_desktop_status": "running",
+    "ubuntu_docker_server_version": "29.4.3",
+    "production_cvat": "running",
+    "parallel_cvat_269": "running",
+    "sam2_nuclio": "healthy",
+    "nuclio_storage_reader": "running",
+    "maskfactory_doctor": {
+      "pass": 11,
+      "warn": 0,
+      "skip": 0,
+      "fail": 0,
+      "registered_model_smokes": 14,
+      "cvat_version": "2.24.0",
+      "cvat_project_count": 2,
+      "sam2_foreground_pixels": 21491,
+      "disk_free_gib": 217.0
+    }
+  },
+  "prevention": {
+    "landscape_client_enabled": false,
+    "expected_cold_boot_budget_seconds": 10,
+    "recovery_order": [
+      "Stop Docker Desktop",
+      "Restart WslService and vmcompute if WSL control calls time out",
+      "Start and health-check Ubuntu-22.04",
+      "Start Docker Desktop",
+      "Run maskfactory doctor"
+    ]
+  },
+  "git_context": {
+    "branch": "codex/autonomous-gold-modernization",
+    "base_commit": "33583512ff877dcc6402265bf63b87f81d67ede5"
+  }
+}

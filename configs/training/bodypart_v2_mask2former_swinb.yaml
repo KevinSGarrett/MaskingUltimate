@@ -1,0 +1,130 @@
+schema_version: 1.0.0
+activation_status: approved_design_not_active
+ontology_version: body_parts_v2
+task: bodypart_semantic_segmentation
+model:
+  architecture: mask2former_swin_b
+  pretrained: imagenet_22k
+  num_classes: 65
+  classes:
+    - background
+    - hair
+    - head_face
+    - neck
+    - chest_upper_torso
+    - left_breast
+    - right_breast
+    - abdomen_stomach
+    - belly_button
+    - pelvic_region
+    - left_hip
+    - right_hip
+    - left_shoulder
+    - right_shoulder
+    - left_upper_arm
+    - right_upper_arm
+    - left_elbow
+    - right_elbow
+    - left_forearm
+    - right_forearm
+    - left_wrist
+    - right_wrist
+    - left_hand_base
+    - right_hand_base
+    - left_thumb
+    - right_thumb
+    - left_index_finger
+    - right_index_finger
+    - left_middle_finger
+    - right_middle_finger
+    - left_ring_finger
+    - right_ring_finger
+    - left_pinky
+    - right_pinky
+    - left_glute
+    - right_glute
+    - left_thigh
+    - right_thigh
+    - left_knee
+    - right_knee
+    - left_calf
+    - right_calf
+    - left_ankle
+    - right_ankle
+    - left_foot_base
+    - right_foot_base
+    - left_toes
+    - right_toes
+    - back_upper_torso
+    - back_lower_torso
+    - other_person
+    - occluding_object
+    - support_surface
+    - accessory_or_prop
+    - left_ear
+    - right_ear
+    - left_areola
+    - right_areola
+    - left_nipple
+    - right_nipple
+    - vulva
+    - penis_shaft
+    - glans_penis
+    - left_scrotal_region
+    - right_scrotal_region
+  backbone:
+    type: swin_base
+    activation_checkpointing: true
+    drop_path_rate: 0.3
+data:
+  dataset: maskfactory_bodyparts_v2
+  crop_size: [512, 512]
+  ignore_index: 255
+  seed: 1337
+  supervision:
+    v1: v1_pretraining_only
+    v2: fully_reviewed_65_class_only
+  sampler:
+    anatomy_ids: [56, 57, 58, 59, 60, 61, 62, 63, 64]
+    anatomy_crop_min_fraction: 0.5
+    whole_body_min_fraction: 0.25
+    fabricate_hidden_positive: false
+augmentations:
+  - {type: random_resized_crop, output_size: 512, scale: [0.5, 2.0], rare_force_probability: 0.5}
+  - {type: horizontal_flip, probability: 0.5, swap_partner_remap: true}
+  - {type: photometric_jitter, brightness: 0.25, contrast: 0.25, saturation: 0.25, hue: 0.05}
+  - {type: rotate, degrees: 15, label_interpolation: nearest, border_label: 255}
+optimizer:
+  type: AdamW
+  learning_rate: 0.00006
+  weight_decay: 0.05
+  schedule: {type: poly, power: 1.0, warmup_iters: 1500}
+training:
+  iterations: 40000
+  iterations_at_500_gold: 80000
+  batch_per_gpu: 2
+  gradient_accumulation: 8
+  amp: bf16
+  activation_checkpointing: true
+  loss:
+    type: native_mask2former_matcher
+    components: [classification_cross_entropy, mask_binary_cross_entropy, dice]
+  class_weights: {formula: inverse_sqrt_pixel_frequency, cap_multiplier: 8.0}
+evaluation:
+  interval_iters: 4000
+  metrics: [per_class_iou, boundary_f_2px, positive_recall, clothed_false_positive_rate, left_right_swap_rate]
+  final_splits: [positive_holdout, clothed_negative_holdout, hard_case_holdout]
+promotion_gate:
+  clear_positive_instances_per_new_class_min: 50
+  require_identity_phash_separation: true
+  require_every_new_class_measured: true
+  max_clothed_false_positive_image_rate_until_calibrated: 0.0
+  aggregate_miou_only_can_pass: false
+execution:
+  swin_b: local
+  swin_l: aws_burst_only
+  aws_item: MF-P5-08.03
+thermal:
+  poll_interval_minutes: 30
+  max_celsius: 87
+  cooldown_seconds: 60

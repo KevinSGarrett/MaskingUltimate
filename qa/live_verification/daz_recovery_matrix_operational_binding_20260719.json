@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_recovery_matrix_operational_binding",
+  "captured_at": "2026-07-19T05:14:39.9731485Z",
+  "project_head_before_commit": "3c57c3ac76fc2e3985053c0735cfc75aa465d556",
+  "tracker_item": "MF-P9-12.05",
+  "supersedes_evidence": "qa/live_verification/daz_recovery_matrix_foundation_20260719.json",
+  "status": "OPERATIONAL_MATRIX_AND_BACKUP_HASH_BINDING_PASS_LIVE_STATE_SCHEMA_MIGRATION_OPEN",
+  "percent_supported": 80,
+  "implemented": [
+    "Read-only state generation verifies every active retention artifact path, size, and SHA-256 before mapping R0/R1-R2/R3-R7 to recovery Tier A/B/C.",
+    "Package-export payloads become canonical Tier-A package-metadata records and dataset membership binds their referenced status.",
+    "Recovery matrix CLI is dry-run by default, publishes only with --apply, is immutable and idempotent, and returns stable exit 77 for blockers.",
+    "Published matrices are self-verified and must be passing before backup use.",
+    "Tier-A backup create embeds the exact recovery matrix SHA-256; verify and restore-test can require that exact binding and reject mismatch.",
+    "State schema preflight is read-only and reports the required migration explicitly before querying unavailable tables."
+  ],
+  "validation": {
+    "integrated_command": "python -m pytest -q tests/test_daz_recovery.py tests/test_daz_backup.py tests/test_daz_monitoring.py tests/test_daz_storage.py tests/test_daz_scheduler.py tests/test_daz_control_plane.py tests/test_daz_runtime_worker.py",
+    "tests_passed": 70,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "diff_check": "PASS"
+  },
+  "live_read_only_observation": {
+    "command": "python -m maskfactory.cli daz state integrity --config-root configs/daz",
+    "database": "F:/DAZ/10_queue/queue.sqlite",
+    "quick_check": "ok",
+    "journal_mode": "wal",
+    "schema_version": 2,
+    "required_schema_version": 4,
+    "missing_migration_tables": [
+      "ingest_records",
+      "lineage_edges",
+      "lineage_entities",
+      "retention_artifacts",
+      "retention_plan_items",
+      "retention_plans",
+      "revocation_impacts",
+      "revocations",
+      "storage_reservations"
+    ],
+    "recovery_matrix_result": "FAIL_CLOSED_STATE_MIGRATION_REQUIRED",
+    "database_mutated": false
+  },
+  "live_preservation": {
+    "runtime_control": {"enabled": false, "paused": true, "drain": true, "stop_requested": false, "revision": 1},
+    "scheduled_tasks": {
+      "MaskFactory_NightlyBackupIntegrity": "Disabled",
+      "MaskFactory_NightlyManifestLint": "Disabled",
+      "MaskFactory_WeeklyColdCopyReminder": "Disabled",
+      "MaskFactory_WeeklyQaMining": "Disabled"
+    },
+    "state_migration_applied": false,
+    "matrix_published_to_live_root": false,
+    "backup_or_restore_run": false,
+    "DAZ_or_WSL_launched": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Complete a governed live Tier-A backup before mutating the live queue database.",
+    "Migrate the live queue database from schema v2 through v3 and v4, then rerun integrity and the read-only recovery matrix.",
+    "Publish and bind the passing live matrix to the separate-destination backup/restore drill.",
+    "Exercise actual backup, rebuild, and optional omission routes on the clean restored root."
+  ],
+  "source_hashes": {
+    "src/maskfactory/daz/recovery.py": "56477388cff9628faece881030d938047563e6b533981624be2c4fc2ce755a59",
+    "src/maskfactory/daz/backup.py": "70676d0c7718391a0e0d918ffe6881d5ceac86e2bcc4c257856352e85c607f59",
+    "src/maskfactory/daz/__init__.py": "db92fdf3fd69ac33e13ce53a7bf1f8fc83433cc438dcbf2b3ce94b09a79a2d72",
+    "src/maskfactory/cli.py": "46203bcc4c787a5cd9d4f3964ce3c5a88e565b94f11f8cffb2794a6ea4abd9dd",
+    "tests/test_daz_recovery.py": "1ee0f1b06f0b1a669d3c0dc089e35c033af863818c63d9b8e2a04dab1cce7f85",
+    "tests/test_daz_backup.py": "6820dfb37cb23e045b49dfa76327e54acba117f249434e3a03f936428af4cfc6"
+  },
+  "claim_boundary": "This proves operational record derivation, immutable matrix publication, and exact backup-matrix binding in fixtures. The live DB is healthy at schema v2 but not migrated to v4, so no passing live matrix, live publication, backup/restore route, or MF-P9-12.05 completion is claimed."
+}

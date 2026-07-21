@@ -1,0 +1,55 @@
+# env/source_builds.lock — pinned commits for packages BUILT FROM SOURCE on cu128
+# (doc 06 §8 pitfall 2). PyPI wheels are pinned in requirements.lock.txt; this
+# file pins anything compiled locally so the environment stays byte-reproducible
+# for D9. Append one block per source build, at the moment the build succeeds.
+#
+# Format (one block per package):
+#   [<package>]
+#   repo       = <git url>
+#   commit     = <full 40-char SHA checked out at build time>
+#   ref        = <tag/branch the commit came from, if any>
+#   build_env  = TORCH_CUDA_ARCH_LIST=12.0 ; <other build-time env vars>
+#   built_with = torch 2.11.0+cu128 ; python 3.11.15 ; cuda-runtime 12.8
+#   date       = <YYYY-MM-DD>
+#   notes      = <ninja flags, patches applied, gotchas>
+#
+# ---------------------------------------------------------------------------
+# PENDING source builds (populate when the build in P0-06 actually runs):
+#   [mmcv]       -> only if a source build proves necessary on cu128 (else wheel)
+# ---------------------------------------------------------------------------
+
+[detectron2]
+repo       = https://github.com/facebookresearch/detectron2.git
+commit     = 02b5c4e295e990042a714712c21dc79b731e8833
+ref        = main (detached at pinned commit)
+build_env  = CUDA_HOME=$CONDA_PREFIX ; TORCH_CUDA_ARCH_LIST=12.0 ; FORCE_CUDA=1 ; MAX_JOBS=4 ; ninja
+built_with = torch 2.11.0+cu128 ; python 3.11.15 ; CUDA compiler/development libraries 12.8
+date       = 2026-07-10
+notes      = Built on WSL ext4; env/patches/detectron2-iopath-0.1.10.patch widens metadata compatibility for SAM2's iopath 0.1.10; cuobjdump confirms sm_120 cubins; CUDA nms_rotated smoke passed on RTX 5060 Laptop GPU
+
+[densepose]
+repo       = https://github.com/facebookresearch/detectron2.git
+commit     = 02b5c4e295e990042a714712c21dc79b731e8833
+ref        = projects/DensePose at the pinned detectron2 commit
+build_env  = --no-build-isolation ; shared detectron2 CUDA extension built with TORCH_CUDA_ARCH_LIST=12.0
+built_with = detectron2 0.6 ; torch 2.11.0+cu128 ; python 3.11.15 ; CUDA runtime 12.8
+date       = 2026-07-10
+notes      = Pure-Python DensePose project wheel; env/patches/densepose-opencv-contrib.patch reuses the governed OpenCV contrib distribution; real R50-FPN CUDA surface inference passed
+
+[sam2]
+repo       = https://github.com/facebookresearch/sam2.git
+commit     = 2b90b9f5ceec907a1c18123530e92e794ad901a4
+ref        = detached commit used by CVAT SAM2 deployment
+build_env  = --no-build-isolation ; optional CUDA extension not required for image predictor correctness
+built_with = torch 2.11.0+cu128 ; python 3.11.15 ; cuda-runtime 12.8
+date       = 2026-07-11
+notes      = SAM-2 1.0 pure Python wheel; same source commit as cvat.pth.sam2 Nuclio function
+
+[groundingdino]
+repo       = https://github.com/IDEA-Research/GroundingDINO.git
+commit     = 856dde20aee659246248e20734ef9ba5214f5e44
+ref        = main (pinned after v0.1.0-alpha; alpha tag itself predates Python packaging)
+build_env  = CUDA_HOME unset ; --no-build-isolation ; pure PyTorch CPU deformable-attention fallback
+built_with = torch 2.11.0+cu128 ; python 3.11.15
+date       = 2026-07-11
+notes      = nvcc unavailable; installed source package without custom C++/CUDA ops, using its supported CPU fallback for boxes

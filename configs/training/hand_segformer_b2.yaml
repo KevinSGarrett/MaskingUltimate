@@ -1,0 +1,50 @@
+schema_version: 1.0.0
+task: hand_crop_semantic_segmentation
+model:
+  architecture: segformer_b2
+  pretrained: imagenet
+  num_classes: 14
+  classes:
+    - background
+    - left_hand_base
+    - right_hand_base
+    - left_thumb
+    - right_thumb
+    - left_index_finger
+    - right_index_finger
+    - left_middle_finger
+    - right_middle_finger
+    - left_ring_finger
+    - right_ring_finger
+    - left_pinky
+    - right_pinky
+    - finger_occlusion_boundary
+data:
+  dataset: maskfactory_hand_crops
+  source_crop_size: 1024
+  crop_size: [768, 768]
+  multi_scale: [0.75, 1.25]
+  ignore_index: 255
+  seed: 1337
+  require_finger_pixel: true
+  horizontal_flip_swap_partner: true
+augmentations:
+  - {type: random_resized_crop, output_size: 768, scale: [0.75, 1.25], rare_force_probability: 1.0}
+  - {type: horizontal_flip, probability: 0.5, swap_partner_remap: true}
+  - {type: photometric_jitter, brightness: 0.25, contrast: 0.25, saturation: 0.25, hue: 0.05}
+  - {type: rotate, degrees: 15, label_interpolation: nearest, border_label: 255}
+optimizer:
+  type: AdamW
+  learning_rate: 0.00006
+  schedule: {type: poly, power: 1.0, warmup_iters: 1500}
+training:
+  iterations: 25000
+  batch_per_gpu: 2
+  gradient_accumulation: 8
+  amp: bf16
+evaluation:
+  metrics: [finger_mean_iou, merged_finger_false_split_rate, paste_back_iou]
+promotion_gate:
+  finger_mean_iou_min: 0.70
+  merged_finger_false_split_rate_max: 0.02
+  paste_back_iou_min: 0.995

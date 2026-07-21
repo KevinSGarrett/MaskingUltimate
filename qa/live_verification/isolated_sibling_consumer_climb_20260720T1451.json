@@ -1,0 +1,92 @@
+{
+  "artifact_type": "isolated_sibling_main_consumer_climb_wave",
+  "authority": "autonomous_isolated_sibling_main_consumer_zero_human_wait",
+  "authority_kind": "isolated_main_consumer",
+  "champions": 0,
+  "claims_not_established": [
+    "real_comfyui_main_adoption",
+    "main_adoption_complete / MF-P6-12.06 core close",
+    "champions>0",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "consumer_git_head": "5ecb9bd0a39c0cc4ae91bf3d31ea80594c084171",
+  "consumer_is_separate_repo": true,
+  "consumer_repo": "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+  "hard_blockers_still_open": [
+    "MF-P6-11.02",
+    "MF-P6-11.07",
+    "MF-P6-12.05",
+    "MF-P6-12.06"
+  ],
+  "is_real_comfyui_main": false,
+  "main_adoption_complete": false,
+  "next_agent_step": "Real HARD-close receipts require the actual Comfy_UI_Main runtime to consume this sibling adapter package and emit comfy-main-* trust-key-signed adoption/qualification/adapter-execution/result-history artifacts pinned back here. Comfy_UI_Main is a dirty Wave64 tree and was NOT touched.",
+  "pillars_this_wave": {
+    "isolated_adapter_conformance": {
+      "covers": [
+        "external MaskFactoryAdapter boundary living OUTSIDE the producer tree",
+        "adapter imports verified by AST to be contracts-only (maskfactory.contracts)",
+        "real sdist package_sha256 + real git commit/tree identity",
+        "producer conformance verifier ACCEPTS (no node-id/mutable-path/internal coupling)"
+      ],
+      "item": "MF-P6-11.01",
+      "passed": true
+    },
+    "isolated_adoption_attestation_signed": {
+      "covers": [
+        "real Ed25519 signature over a canonical-json-sealed attestation",
+        "key_id 'isolated-main-consumer-adoption' (deliberately NOT comfy-main-*)",
+        "verified cryptographically in-process"
+      ],
+      "item": "MF-P6-11/12 adoption",
+      "passed": true
+    },
+    "isolated_cross_project_producer_partial": {
+      "covers": [
+        "real cross-project qualification matrix execution",
+        "honest producer_partial ceiling",
+        "mf_p6_12_05_complete=false, establishes_production_qualification=false"
+      ],
+      "item": "MF-P6-12.05",
+      "passed": true
+    },
+    "isolated_failure_control_circuit": {
+      "covers": [
+        "outage/timeout/oom/incompatible-authority all refuse provider invocation",
+        "exact scoped-DAG blocking (dependent passes only)",
+        "no-silent-fallback enforced; no fallback artifact",
+        "exhausted retry budget refuses another retry"
+      ],
+      "item": "MF-P6-11.07",
+      "passed": true
+    },
+    "isolated_signed_journal": {
+      "covers": [
+        "trusted-signed append-only journal + signed checkpoint",
+        "closed history validation returns no issues",
+        "same-key/same-body replay is idempotent (no new entry)"
+      ],
+      "item": "MF-P6-11.06",
+      "passed": true
+    }
+  },
+  "producer_branch": "codex/maskfactory-runtime-implementation",
+  "producer_git_commit": "f7f2ff8c7be854d326c48648c08e1be1da6f2ff2",
+  "run_evidence": {
+    "all_pass": true,
+    "checks_passed": 5,
+    "checks_total": 5,
+    "path": "runtime_artifacts/main_consumer/isolated_sibling_consumer_run_evidence_20260720T1451.json",
+    "self_sha256": "66553da16c70667be68dc8b63b5b033f401c24e9f9ac2de00594db559a251d7e",
+    "summary": {
+      "isolated_adapter_conformance": true,
+      "isolated_adoption_attestation_signed": true,
+      "isolated_cross_project_producer_partial": true,
+      "isolated_failure_control_circuit": true,
+      "isolated_signed_journal": true
+    }
+  },
+  "runner": "run_consumer.py (mf_main_consumer.runner) in the sibling consumer repo",
+  "self_sha256": "b759ece010daba4a8ac5fe5143128e188f4b03a6eb87768374cc1c7145cca56e",
+  "tier_note": "STATIC_PASS isolated-consumer evidence produced by a SEPARATE sibling repo. It deepens the real-machinery DoD surface for the Main-side consumer boundary from outside the producer tree; it does NOT advance AWAITING_MAIN to real Main adoption, does NOT close any HARD blocker, and mints no certificate. is_real_comfyui_main=false."
+}

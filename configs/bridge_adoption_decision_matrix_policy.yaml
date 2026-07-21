@@ -1,0 +1,37 @@
+schema_version: 1.0.0
+policy_id: maskfactory-bridge-adoption-receipt-matrix-v1
+policy_version: 1.0.0
+required_compatibility_checks:
+- api_contract
+- artifact_security
+- authority_policy
+- canonicalization
+- capabilities
+- contract_tests
+- media_scope
+- node_pack
+- ontology
+- package_format
+- release_hash
+- revocation_freshness
+- signature
+- signed_journal
+- trust_anchor
+- wire_schemas
+reason_codes:
+- eligible
+- receipt_authentication_missing_or_malformed
+- decision_time_validity_failed
+- compatibility_checks_missing_or_unknown
+- compatibility_checks_duplicate
+- compatibility_check_failed
+- required_executed_test_hashes_missing
+- required_executed_test_hashes_duplicate
+- capability_decisions_duplicate
+- required_capability_coverage_partial
+- optional_only_blocker
+- file_presence_only_claim
+- external_main_qualification_bundle_required
+- external_main_prerequisite_unmet
+- receipt_decision_matrix_disagrees
+policy_sha256: b3c9193ae6381f6ae8789b33f33ac8a844ecd774cb8986e20b0efee6a266b132

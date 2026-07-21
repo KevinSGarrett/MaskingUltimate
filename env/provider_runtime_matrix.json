@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "policy": {
+    "core_torch": "2.11.0+cu128",
+    "core_cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "qualified_status": "live_smoke_passed",
+    "gated_status": "source_only_human_gate"
+  },
+  "runtimes": [
+    {
+      "provider": "maskfactory_core",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "project_core_wsl_and_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/maskfactory_env.yml", "sha256": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5"},
+        {"kind": "lock", "path": "env/requirements.lock.txt", "sha256": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01"},
+        {"kind": "lock", "path": "env/source_builds.lock", "sha256": "2ac1032a2d40f0adaf028d26ae3a32833cc63e28fb5903f0e5aa301e9c50893c"},
+        {"kind": "evidence", "path": "qa/live_verification/sam2_incumbent_rollback_20260715.json", "sha256": "c5561d9deef4bd43334c1af8d988c3dfb8110f3e7d0af2be4b1443d6fdd7cda1"}
+      ]
+    },
+    {
+      "provider": "sam3_1",
+      "status": "checkpoint_installed_smoke_pending",
+      "isolation_boundary": "wsl_venv_sam31_5dd401d1",
+      "checkpoint_status": "installed",
+      "smoke_status": "not_run_wsl_filesystem_io_error",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "aa5bae8c9f522e4bcf83e36ecf41e9cf56929e161873a928e4e8dc56101f2c14"},
+        {"kind": "evidence", "path": "qa/live_verification/sam31_checkpoint_install_20260717.json", "sha256": "e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8"}
+      ]
+    },
+    {
+      "provider": "sam3_litetext_s0",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "wsl_venv_sam3_litetext_b09766e5",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam3_litetext_s0_runtime.lock.json", "sha256": "df9a329106032f7b3e7e3fd732bd5aa372c575e9985c329dbc54812b9e4a71c8"},
+        {"kind": "evidence", "path": "qa/live_verification/sam3_litetext_s0_runtime_20260715.json", "sha256": "f3711cac810781ad02b2cd8ec4ec538d82f580b129c9999ed6dcb2b2717cae12"}
+      ]
+    },
+    {
+      "provider": "qwen3_vl",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "native_ollama_service",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/qwen3_vl_ollama.lock.json", "sha256": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059"},
+        {"kind": "evidence", "path": "qa/live_verification/qwen3_vl_ollama_runtime_20260714.json", "sha256": "c9f38ddd253b1b8ef070af409be0d12118f11b2d9779799e8cfa38d562c7e20a"}
+      ]
+    },
+    {
+      "provider": "rfdetr",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "wsl_venv_rfdetr_1_7_1",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/rfdetr_runtime.lock.json", "sha256": "5ab1da8e03134bb26fbbaabbabe11c52470c91be785b1628505bf47cfd0c6887"},
+        {"kind": "evidence", "path": "qa/live_verification/rfdetr_medium_runtime_20260714.json", "sha256": "f2f8cfaf9cc12120de35872a61ce03a0814c175427b43de678c206641daccb4b"}
+      ]
+    },
+    {
+      "provider": "eomt_dinov3",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "external_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "660d0eb3f6bd00a1722f2fb5dfa2a2f1700e61480c484c96e351ebd62e985a17"},
+        {"kind": "evidence", "path": "qa/live_verification/eomt_dinov3_runtime_20260715.json", "sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"}
+      ]
+    },
+    {
+      "provider": "rtm_pose",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "isolated_target_layer_over_comfy_cuda_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/rtm_pose.lock.json", "sha256": "f9f1edae8ab4159ac0226a137151da4da775d9f6a72ce188405ad07fb81b5e12"},
+        {"kind": "evidence", "path": "qa/live_verification/rtm_pose_runtime_20260714.json", "sha256": "e94c81a4cc28772fdf5a6449a637e61feab5d898b3cac92d1de76e307690483e"}
+      ]
+    },
+    {
+      "provider": "sam3d_body",
+      "status": "checkpoint_installed_runtime_pending",
+      "isolation_boundary": "planned_isolated_wsl_runtime",
+      "checkpoint_status": "installed",
+      "smoke_status": "not_run_wsl_filesystem_io_error",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "2c29e1f1d74fc2b0547f709134ee930700f3c04a3884548723963dba8375e075"},
+        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json", "sha256": "c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f"}
+      ]
+    }
+  ],
+  "manifest_sha256": "4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d"
+}

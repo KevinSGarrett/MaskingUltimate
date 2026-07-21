@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_docker_data_relocation_readiness",
+  "recorded_at": "2026-07-18T21:12:21.8444318Z",
+  "project_head": "1871d8244b30acc00a182d2c0828225c54bd0631",
+  "status": "NOT_READY_QUIESCENCE_REQUIRED",
+  "completion_credit": false,
+  "mutation_performed": false,
+  "reason": "Docker is live and its independent container counters disagree. A supported Docker Desktop relocation can recover enough C: capacity, but only after an explicit maintenance window, zero-running-container proof, a stopped/unlocked backend, and a verified full backup.",
+  "capacity": {
+    "required_c_free_floor_bytes": 80530636800,
+    "required_c_free_floor_gib": 75.0,
+    "observed_c_free_bytes": 13057691648,
+    "observed_c_free_gib": 12.161,
+    "observed_f_free_bytes": 205190098944,
+    "observed_f_free_gib": 191.098,
+    "c_shortfall_bytes": 67472945152,
+    "c_shortfall_gib": 62.839,
+    "projected_c_free_after_supported_vhd_relocation_bytes": 86189576192,
+    "projected_c_free_after_supported_vhd_relocation_gib": 80.271,
+    "projected_floor_margin_bytes": 5658939392,
+    "projected_floor_margin_gib": 5.271,
+    "projection_caveat": "Projection adds the fully allocated source VHD length to point-in-time free space. Completion requires an observed post-migration free-space measurement and proof that Docker Desktop released or removed the old source only after the verified backup exists."
+  },
+  "docker_desktop": {
+    "version": "4.74.0",
+    "docker_client_version": "29.4.3",
+    "docker_server_version": "29.4.3",
+    "storage_driver": "overlayfs",
+    "settings_path": "C:\\Users\\kevin\\AppData\\Roaming\\Docker\\settings-store.json",
+    "settings_sha256": "b0521be3fca0ad685317897189ac2cb706616fc2378ad76d4b9870698eabf031",
+    "custom_disk_location_key_observed": false,
+    "source_vhd": {
+      "path": "C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+      "bytes": 73131884544,
+      "gib": 68.109,
+      "last_write_time_local": "2026-07-18T16:12:22.0166332-05:00",
+      "sparse": false,
+      "allocated_ranges": [
+        {
+          "offset_hex": "0x0",
+          "length_hex": "0x1107000000",
+          "bytes": 73131884544
+        }
+      ],
+      "fully_allocated": true
+    },
+    "proposed_destination_root": "F:\\MaskFactory_Offload_20260714\\DockerDesktop",
+    "proposed_backup_path": "F:\\MaskFactory_Offload_20260714\\DockerDesktop_Backup\\docker_data.pre_relocation_20260718.vhdx"
+  },
+  "live_inventory": {
+    "docker_ps_all": 39,
+    "docker_ps_running": 37,
+    "docker_ps_exited": 2,
+    "docker_info_reported_total": 39,
+    "docker_info_reported_running": 39,
+    "docker_info_reported_stopped": 0,
+    "counter_consistency": false,
+    "container_inventory_sha256": "357d10a528e0328a49611bcc16541a0e632f9c79b687bf78a7c7bf0a6d82282c",
+    "compose_projects": [
+      {
+        "name": "cvat",
+        "status": "running(19)",
+        "config_files": [
+          "C:\\Comfy_UI_Main_Masking\\cvat\\docker-compose.yml",
+          "C:\\Comfy_UI_Main_Masking\\cvat\\components\\serverless\\docker-compose.serverless.yml",
+          "C:\\Comfy_UI_Main_Masking\\configs\\cvat-compose.maskfactory.yml"
+        ]
+      },
+      {
+        "name": "cvat269",
+        "status": "exited(2), running(16)",
+        "config_files": [
+          "F:\\MaskFactory_Offload_20260714\\CVAT\\cvat-v2.69.0\\docker-compose.yml",
+          "C:\\Comfy_UI_Main_Masking\\configs\\cvat-compose.parallel-v269.yml"
+        ]
+      }
+    ],
+    "non_compose_containers": [
+      {
+        "name": "nuclio-local-storage-reader",
+        "status": "running",
+        "restart_policy": "no",
+        "image": "gcr.io/iguazio/alpine:3.17"
+      },
+      {
+        "name": "nuclio-nuclio-pth-sam2",
+        "status": "running",
+        "restart_policy": "always",
+        "image": "cvat.pth.sam2:latest"
+      }
+    ],
+    "inventory_hashes": {
+      "images": {
+        "rows": 27,
+        "sha256": "4d80726ca35d4b81b0d3f3ed9e620ec3dc38e5bdb292173376ecedadd8ef041c"
+      },
+      "volumes": {
+        "rows": 21,
+        "sha256": "da718ec768da15ad745a4ba0f52c87406cd0d32d8b0dd9b42b84251d85127860"
+      },
+      "networks": {
+        "rows": 5,
+        "sha256": "f072dea404539df02b2dd12efa480036782959fc069383d6ae90e53ffcb37f1d"
+      },
+      "mounts": {
+        "rows": 88,
+        "bind": 20,
+        "volume": 67,
+        "other": 1,
+        "sha256": "955fcf5e2489bd6e5b10b44356664b9b28b232b5557ab0fe3da1af2c5dbce5aa"
+      }
+    },
+    "storage_summary": {
+      "images_total": 25,
+      "images_active": 19,
+      "images_size": "18.21GB",
+      "images_reclaimable": "921.5MB",
+      "containers_total": 39,
+      "containers_active": 37,
+      "containers_size": "149.4MB",
+      "local_volumes_total": 21,
+      "local_volumes_active": 19,
+      "local_volumes_size": "2.34GB",
+      "build_cache_size": "32.62MB",
+      "pruning_can_close_capacity_gap": false
+    }
+  },
+  "official_guidance": [
+    {
+      "title": "Docker Desktop WSL 2 backend",
+      "url": "https://docs.docker.com/desktop/features/wsl/",
+      "applied_rule": "Change the WSL data location through Docker Desktop Settings, Resources, Advanced; do not raw-move a live Docker VHD."
+    },
+    {
+      "title": "Docker Desktop settings",
+      "url": "https://docs.docker.com/desktop/settings-and-maintenance/settings/",
+      "applied_rule": "Use the supported Disk image location control and Apply workflow."
+    },
+    {
+      "title": "Docker Desktop backup and restore",
+      "url": "https://docs.docker.com/desktop/settings-and-maintenance/backup-and-restore/",
+      "applied_rule": "Back up Docker Desktop data only with Docker Desktop fully stopped; retain rollback bytes until post-migration validation passes."
+    }
+  ],
+  "local_ui_inspection": {
+    "status": "STOPPED_WINDOW_CAPTURE_MISMATCH",
+    "completion_credit": false,
+    "input_performed": false,
+    "target_metadata": {
+      "app": "Docker.DockerForWindows.Settings",
+      "window_id": 265614,
+      "title": "Containers - Docker Desktop"
+    },
+    "observation": "The bounded screenshot returned for the Docker Desktop target showed unrelated Chrome, Notepad, and Edge content rather than a trustworthy Docker Desktop surface. Accessibility exposed only generic regions. The session was stopped before any click, keypress, text entry, setting change, container action, or Apply operation.",
+    "required_next_step": "Re-establish a trustworthy exact-window capture in a later maintenance window, or use another supported Docker Desktop control surface with equivalent binding and rollback evidence. Do not infer that the installed UI control is locally verified from this failed capture."
+  },
+  "required_preconditions": [
+    "No active MaskFactory, worker-control, CVAT-review, Nuclio, or training operation depends on the running containers during the maintenance window.",
+    "Record the final normalized container, image, volume, network, and mount inventories and their hashes immediately before shutdown.",
+    "Stop both Compose projects with their exact recorded configuration files and stop both explicitly managed non-Compose containers.",
+    "Require docker ps to report zero running containers and reconcile docker info, docker ps, and docker system df counters before stopping Docker Desktop.",
+    "Stop Docker Desktop through its supported control and verify Docker Desktop/backend processes are absent and the VHD is unlocked.",
+    "Copy the full VHD to the separate F: backup path, then verify exact byte length and full SHA-256 before changing the disk image location.",
+    "Ensure the proposed destination and backup are distinct and that F: has enough measured free space for both during the transaction.",
+    "Use Docker Desktop Settings, Resources, Advanced, Disk image location to set the proposed destination; do not manipulate the live VHD directly.",
+    "If the UI presents deletion, replacement, reset, data-loss, or privilege-elevation language, stop for action-time user confirmation; never automate a UAC or security prompt."
+  ],
+  "post_migration_acceptance": [
+    "Docker Desktop reports the intended F: disk image location and no active Docker data VHD remains on C: outside the retained verified backup policy.",
+    "C: free space is at least 80530636800 bytes and F: free space remains sufficient for rollback.",
+    "All normalized inventory hashes and required mount bindings match the pre-shutdown records, or every difference has explicit expected-change evidence.",
+    "Both Compose projects and the two non-Compose containers restart with their original intent; nuclio-local-storage-reader is started explicitly because its restart policy is no.",
+    "CVAT API, SAM2 Nuclio interactor, Docker, WSL, CUDA, model-smoke, and MaskFactory doctor checks pass at their applicable current-state gates.",
+    "Only after all acceptance checks pass may the old C: Docker data be released by the supported Docker Desktop workflow; the verified F: backup remains until a later governed retention decision."
+  ],
+  "rollback": {
+    "trigger": "Any location, inventory, mount, container-health, CVAT, Nuclio, Docker, WSL, or MaskFactory acceptance check fails.",
+    "procedure": [
+      "Stop Docker Desktop and prove the backend and destination VHD are inactive.",
+      "Retain the failed destination for diagnosis; do not overwrite the verified backup.",
+      "Restore the verified backup through a supported Docker Desktop recovery/location workflow.",
+      "Reverify backup hash/length, inventory hashes, container health, CVAT, Nuclio, and MaskFactory doctor state before declaring rollback complete."
+    ]
+  },
+  "worker_queue_preservation": {
+    "launch_manifest": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\launch_batches\\eight_project_worker_backlog_20260718.json",
+    "launch_manifest_sha256": "02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a",
+    "maskfactory_base_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+    "status": "HELD_RUNTIME_PREFLIGHT_REQUIRED",
+    "wake_authorized": false,
+    "provider_calls_authorized": 0,
+    "mutate_final_attempt_records": false,
+    "duplicate_worker_implementation_in_codex": false
+  }
+}

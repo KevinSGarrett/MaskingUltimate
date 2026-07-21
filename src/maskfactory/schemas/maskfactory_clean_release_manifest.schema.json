@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/maskfactory_clean_release_manifest.schema.json",
+  "title": "MaskFactory clean release install manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "release_id",
+    "release_payload_sha256",
+    "publication_payload_sha256",
+    "install_mode",
+    "package",
+    "activation",
+    "stale_detection",
+    "proof_hooks",
+    "source_authority",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "maskfactory_clean_release_manifest" },
+    "release_id": { "type": "string", "pattern": "^mfr_[0-9]{8}_[0-9a-f]{12}$" },
+    "release_payload_sha256": { "$ref": "#/$defs/sha256" },
+    "publication_payload_sha256": { "$ref": "#/$defs/sha256" },
+    "install_mode": { "const": "wheel" },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "sha256", "size_bytes"],
+      "properties": {
+        "relative_path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "size_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "active_pointer_path"],
+      "properties": {
+        "strategy": { "const": "atomic_pointer_switch" },
+        "active_pointer_path": { "$ref": "#/$defs/relativePath" }
+      }
+    },
+    "stale_detection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "expected_runtime_files"],
+      "properties": {
+        "policy": { "const": "fail_on_detected" },
+        "expected_runtime_files": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/relativePath" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "proof_hooks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recovery_hook_id", "rollback_hook_id"],
+      "properties": {
+        "recovery_hook_id": { "type": "string", "minLength": 1 },
+        "rollback_hook_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "source_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_clean", "allow_dirty_source"],
+      "properties": {
+        "repository_clean": { "const": true },
+        "allow_dirty_source": { "const": false }
+      }
+    },
+    "rollback_target_release_id": {
+      "type": ["string", "null"],
+      "pattern": "^mfr_[0-9]{8}_[0-9a-f]{12}$"
+    },
+    "manifest_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^(?![A-Za-z]:|/|.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+    }
+  }
+}

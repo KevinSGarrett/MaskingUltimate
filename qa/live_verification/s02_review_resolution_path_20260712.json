@@ -1,0 +1,54 @@
+{
+  "audit_date": "2026-07-12",
+  "result": "PASS_IMPLEMENTATION_READY",
+  "scope": "governed return path for queued S02 semantic review terminals",
+  "problem_closed": "review_queue.jsonl previously had no consumer capable of returning a pre-package S02 review to the pipeline",
+  "operator_command": "maskfactory review resolve-s02 <image_id> <pN> --mask <png> --reviewer <name> --decision confirmed_valid|corrected --note <reason>",
+  "authority_contract": {
+    "model_threshold_changed": false,
+    "model_qc_preserved": "the original model ratio and model_qc_passed=false remain in silhouette_metrics.json",
+    "pipeline_return_authority": "human_semantic_review",
+    "confirmed_valid": "requires the byte-identical queued model mask",
+    "corrected": "requires a pixel-different native strict binary mask",
+    "required_identity": [
+      "image_id",
+      "instance_id",
+      "S02 stage",
+      "config_hash",
+      "queue timestamp",
+      "base model mask SHA-256"
+    ]
+  },
+  "fail_closed_checks": [
+    "exactly one queued S02 needs_review record",
+    "native-size mode-L PNG with only 0/255 pixels",
+    "nonempty mask wholly inside the S01 context crop",
+    "immutable one-resolution directory",
+    "fresh BiRefNet rerun reproduces the reviewed base mask SHA-256",
+    "resolution config hash matches the fresh stage config",
+    "stored reviewed mask hash remains unchanged",
+    "conflicting reviewer evidence is refused"
+  ],
+  "cache_lifecycle": "a sealed resolution forces cached S02 exactly until the matching resolution is reflected in the atomic stage output",
+  "operator_handoff": {
+    "command": "maskfactory review prepare-s02",
+    "live_index": "qa/review_handoffs/s02/index.json",
+    "queued_cases": 2,
+    "awaiting_human_review": 2,
+    "panels": "two local source-versus-red-overlay PNGs visually inspected for correct person alignment",
+    "publication_policy": "source-containing panel PNGs are git-ignored; only the JSON index, immutable hashes, paths, and command hints are published"
+  },
+  "verification": {
+    "focused_tests": 71,
+    "full_suite_split": [287, 376],
+    "split_note": "the second split's sole raw-writer-policy failure was corrected and rerun successfully; every collected test has a passing result",
+    "full_test_total": 663,
+    "ruff": "pass",
+    "format": "231 files clean"
+  },
+  "live_status": {
+    "sealed_resolutions": 0,
+    "queued_cases": 2,
+    "interpretation": "the return path is ready, but neither live mask is approved or corrected because that semantic review belongs to Kevin"
+  }
+}

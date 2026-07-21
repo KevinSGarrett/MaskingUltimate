@@ -1,0 +1,53 @@
+schema_version: 1.0.0
+policy_id: maskfactory-bridge-mode-a-package-read-v1
+policy_version: 1.0.0
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+  - policy_sha256
+raw_authority_ceiling: qa_passed_noncertified
+production_use_scopes:
+- production_conditioning
+- downstream_promotion_support
+non_production_use_scopes:
+- repair_seed
+- qa
+- diagnostic
+require_active_exact_wrapper_for_production: true
+allow_write_methods: false
+rejected_part_statuses:
+- rejected_needs_fix
+- rejected
+- withdrawn
+derived_kinds_requiring_own_wrapper:
+- derived_union
+- projection
+- inpaint_derivative
+- refinement
+reason_codes:
+- catalog_not_adopted
+- character_revision_mismatch
+- derived_authority_escalation
+- eligible
+- instance_mismatch
+- manifest_hash_drift
+- mask_hash_drift
+- mutation_attempt
+- ontology_mismatch
+- package_hash_drift
+- path_escape
+- person_mismatch
+- raw_status_escalation
+- rejected_part_status
+- release_capability_drift
+- revocation_not_current
+- source_hash_drift
+- transform_drift
+- transform_not_validated
+- wrapper_missing
+- wrapper_out_of_scope
+- wrapper_revoked
+- wrapper_stale
+- wrong_owner
+- write_path_forbidden
+policy_sha256: 2b6bf03ff91d1f376232806e19d15613e57bff85a7f8a0bf1dc0dbd0758be27a

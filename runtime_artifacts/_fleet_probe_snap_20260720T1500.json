@@ -1,0 +1,22 @@
+{
+  "probed_at": "2026-07-20T15:01:49Z",
+  "c_free_gib": 89.83,
+  "f_free_gib": 127.63,
+  "f_data": true,
+  "f_wsl_vhdx": true,
+  "c_docker_vhdx": true,
+  "docker_info_rc": 99,
+  "docker_server": "Command '['docker', 'info', '--format', '{{.ServerVersion}}']' timed out after 15 seconds",
+  "docker_ps_rc": 1,
+  "running_containers": 0,
+  "docker_stats_rc": 1,
+  "docker_stats_lines": 0,
+  "cvat_http": null,
+  "cvat_error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>",
+  "ollama": {
+    "version": "0.32.1"
+  },
+  "wsl_lv": "  NAME                 STATE           VERSION\n\n* Ubuntu-22.04         Running         2\n\n  docker-desktop       Stopped         2\n\n  Cursor-Agent-WSL1    Stopped         1\n\n",
+  "f_disk": "{\"FriendlyName\":\"Seagate BUP Slim BK\",\"BusType\":\"USB\",\"OperationalStatus\":\"Online\"}",
+  "head": "8a99f637"
+}

@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T04:03:59Z",
+  "scope": "D2 named runtime and worker safeguards before any live DAZ launch",
+  "live_daz_process_started": false,
+  "render_started": false,
+  "storage": {
+    "free_gib": 138.935,
+    "level": "soft",
+    "new_generation_permitted": false
+  },
+  "runtime_profile": {
+    "instance_name": "MaskFactoryDAZ",
+    "execution_mode": "hidden_gui",
+    "process_lifetime": "process_per_job",
+    "command_contract": [
+      "-instanceName",
+      "MaskFactoryDAZ",
+      "-noDefaultScene",
+      "-noPrompt",
+      "-logSize",
+      "100m"
+    ],
+    "exported_profile": "F:\\DAZ\\04_runtime\\app_profiles\\MaskFactoryDAZ\\profile.json",
+    "exported_profile_sha256": "397b8f92b0314a3c30f6e219c2201cef4efc998339aad35f8c6f0dd97a76dacb",
+    "live_probe_pending": true,
+    "probe_refusal": "existing unmanaged/default DAZStudio.exe PID 50884; no second process launched and existing process not disturbed"
+  },
+  "content_directories": [
+    "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "F:\\DAZ\\03_content\\libraries\\MaskFactory_User_Library"
+  ],
+  "script_bundle": {
+    "version": "1.0.0",
+    "path": "F:\\DAZ\\04_runtime\\scripts\\versions\\1.0.0",
+    "manifest_sha256": "0ddd669a14ce5c624cc6b2d511cfb8389a29092a35831b1b2b571e172b35de3e",
+    "active_pointer": "F:\\DAZ\\04_runtime\\scripts\\active\\active_bundle.json",
+    "active_pointer_sha256": "34b9637def3251f0ae8ddbbe1b6e2bc1ddb245ca330e2749b26572ee2f264d30"
+  },
+  "safeguards": {
+    "atomic_recipe_publish": true,
+    "terminal_result_written_last": true,
+    "partial_result_never_accepted": true,
+    "artifact_hash_validation": true,
+    "shell_launch": false,
+    "hidden_process": true,
+    "dialog_clicks": false,
+    "dialog_quarantine": true,
+    "timeout_process_tree_termination": true,
+    "machine_gpu_lease": "C:\\Comfy_UI_Main_Masking\\runs\\gpu.lock",
+    "persistent_worker": false
+  },
+  "verification": {
+    "focused_tests": {
+      "command": "python -m pytest tests/test_daz_runtime_worker.py tests/test_daz_control_plane.py tests/test_daz_foundation.py tests/test_gpu.py -q",
+      "passed": 32,
+      "failed": 0
+    },
+    "full_repository_tests": {
+      "command": "python -m pytest -q",
+      "collected": 1710,
+      "result": "pass"
+    },
+    "ruff": "pass",
+    "format": "pass",
+    "failure_injections": [
+      "immutable bundle drift refusal",
+      "recorded bundle-manifest tamper refusal",
+      "unpinned DAZ executable and entrypoint refusal",
+      "partial result refusal",
+      "runtime content-path drift and empty-render success refusal",
+      "artifact hash mismatch refusal",
+      "unsafe job path refusal",
+      "GPU lease contention before process launch",
+      "unmanaged DAZ process refusal before probe launch",
+      "disabled control-state refusal before render launch",
+      "dialog quarantine without UI input",
+      "timeout process-tree termination"
+    ]
+  },
+  "remaining_live_evidence": [
+    "run the no-render runtime_probe only when the workstation gate permits",
+    "verify the named DAZ instance reports exact content paths and an empty startup scene",
+    "retain D2-02 through D2-04 as partial until that probe is captured"
+  ]
+}

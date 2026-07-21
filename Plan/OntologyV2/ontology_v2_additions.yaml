@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+status: approved_design_not_active
+base_ontology: body_parts_v1
+target_ontology: body_parts_v2
+id_policy: append_only
+part_id_range: [0, 64]
+num_part_classes_including_background: 65
+ignore_index: 255
+
+visibility_states_added:
+  - occluded_by_clothing
+  - not_applicable
+  - unreviewed_for_v2
+
+labels:
+  - {id: 56, name: left_areola, mask_type: atomic_exclusive, map: part, side: left, swap_partner: right_areola, parent_union: both_areolae, expected_area_pct_range: [0.005, 1.5], max_components: 2, boundary_rule: areola_ring_excludes_nipple}
+  - {id: 57, name: right_areola, mask_type: atomic_exclusive, map: part, side: right, swap_partner: left_areola, parent_union: both_areolae, expected_area_pct_range: [0.005, 1.5], max_components: 2, boundary_rule: areola_ring_excludes_nipple}
+  - {id: 58, name: left_nipple, mask_type: atomic_exclusive, map: part, side: left, swap_partner: right_nipple, parent_union: both_nipples, expected_area_pct_range: [0.001, 0.25], max_components: 1, boundary_rule: visible_nipple_carveout}
+  - {id: 59, name: right_nipple, mask_type: atomic_exclusive, map: part, side: right, swap_partner: left_nipple, parent_union: both_nipples, expected_area_pct_range: [0.001, 0.25], max_components: 1, boundary_rule: visible_nipple_carveout}
+  - {id: 60, name: vulva, mask_type: atomic_exclusive, map: part, side: center, swap_partner: null, parent_union: external_genitalia_visible, expected_area_pct_range: [0.005, 2.0], max_components: 2, boundary_rule: external_vulva_visible_only}
+  - {id: 61, name: penis_shaft, mask_type: atomic_exclusive, map: part, side: center, swap_partner: null, parent_union: penis_visible, expected_area_pct_range: [0.005, 4.0], max_components: 2, boundary_rule: visible_shaft_excludes_glans}
+  - {id: 62, name: glans_penis, mask_type: atomic_exclusive, map: part, side: center, swap_partner: null, parent_union: penis_visible, expected_area_pct_range: [0.002, 1.5], max_components: 1, boundary_rule: visible_glans_only}
+  - {id: 63, name: left_scrotal_region, mask_type: atomic_exclusive, map: part, side: left, swap_partner: right_scrotal_region, parent_union: scrotum_visible, expected_area_pct_range: [0.005, 2.0], max_components: 2, boundary_rule: visible_scrotal_midline}
+  - {id: 64, name: right_scrotal_region, mask_type: atomic_exclusive, map: part, side: right, swap_partner: left_scrotal_region, parent_union: scrotum_visible, expected_area_pct_range: [0.005, 2.0], max_components: 2, boundary_rule: visible_scrotal_midline}
+
+aliases:
+  vagina: {canonical: vulva, warning: external_visible_anatomy_only}
+  penis head: {canonical: glans_penis}
+  penis_head: {canonical: glans_penis}
+  penis: {canonical: penis_visible, kind: derived_union}
+  testicles: {canonical: scrotum_visible, kind: derived_union, warning: external_scrotal_surface_not_internal_organs}
+  left_testicle: {canonical: left_scrotal_region, warning: external_scrotal_surface_not_internal_organ}
+  right_testicle: {canonical: right_scrotal_region, warning: external_scrotal_surface_not_internal_organ}
+  areolas: {canonical: both_areolae, kind: derived_union}
+  nipples: {canonical: both_nipples, kind: derived_union}
+
+derived_formulas:
+  both_areolae: "part:left_areola | part:right_areola"
+  both_nipples: "part:left_nipple | part:right_nipple"
+  left_nipple_areola_complex: "part:left_areola | part:left_nipple"
+  right_nipple_areola_complex: "part:right_areola | part:right_nipple"
+  both_nipple_areola_complexes: "derived:left_nipple_areola_complex | derived:right_nipple_areola_complex"
+  left_breast_full: "part:left_breast | part:left_areola | part:left_nipple"
+  right_breast_full: "part:right_breast | part:right_areola | part:right_nipple"
+  both_breasts_full: "derived:left_breast_full | derived:right_breast_full"
+  penis_visible: "part:penis_shaft | part:glans_penis"
+  scrotum_visible: "part:left_scrotal_region | part:right_scrotal_region"
+  external_genitalia_visible: "part:vulva | derived:penis_visible | derived:scrotum_visible"
+  pelvic_anatomy_visible: "part:pelvic_region | derived:external_genitalia_visible"
+
+governance:
+  confirmed_adult_required: true
+  permitted_origins: [generated, owned_photo, licensed, consented_subject]
+  hidden_anatomy_may_be_visible_gold: false
+  clothing_contour_is_anatomy_evidence: false
+  projected_amodal_is_training_or_gold_authority: false
+  unreviewed_is_negative: false

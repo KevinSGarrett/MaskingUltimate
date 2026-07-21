@@ -1,0 +1,275 @@
+{
+  "activation_status": "approved_design_not_active",
+  "active_runtime_ontology": "body_parts_v1",
+  "images": [
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_areola"
+      ],
+      "image_id": "fixture_pilot_probe_00",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_areola"
+      ],
+      "image_id": "fixture_pilot_probe_01",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "partially_visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_02",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_03",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded_by_clothing"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "vulva"
+      ],
+      "image_id": "fixture_pilot_probe_04",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "cropped_out"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "penis_shaft"
+      ],
+      "image_id": "fixture_pilot_probe_05",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "not_visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "glans_penis"
+      ],
+      "image_id": "fixture_pilot_probe_06",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "not_applicable"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_scrotal_region"
+      ],
+      "image_id": "fixture_pilot_probe_07",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "unreviewed_for_v2"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_scrotal_region"
+      ],
+      "image_id": "fixture_pilot_probe_08",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "ambiguous_do_not_use"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_areola"
+      ],
+      "image_id": "fixture_pilot_probe_09",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_areola"
+      ],
+      "image_id": "fixture_pilot_probe_10",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "partially_visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_11",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_12",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded_by_clothing"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "vulva"
+      ],
+      "image_id": "fixture_pilot_probe_13",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "cropped_out"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "penis_shaft"
+      ],
+      "image_id": "fixture_pilot_probe_14",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "not_visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "glans_penis"
+      ],
+      "image_id": "fixture_pilot_probe_15",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "not_applicable"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_scrotal_region"
+      ],
+      "image_id": "fixture_pilot_probe_16",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "unreviewed_for_v2"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_scrotal_region"
+      ],
+      "image_id": "fixture_pilot_probe_17",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "ambiguous_do_not_use"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_areola"
+      ],
+      "image_id": "fixture_pilot_probe_18",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_areola"
+      ],
+      "image_id": "fixture_pilot_probe_19",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "partially_visible"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "left_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_20",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "right_nipple"
+      ],
+      "image_id": "fixture_pilot_probe_21",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "occluded_by_clothing"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "vulva"
+      ],
+      "image_id": "fixture_pilot_probe_22",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "cropped_out"
+      ]
+    },
+    {
+      "alias_exported_as_canonical": false,
+      "appended_classes_covered": [
+        "penis_shaft"
+      ],
+      "image_id": "fixture_pilot_probe_23",
+      "source_kind": "fixture_matrix_probe",
+      "states_covered": [
+        "not_visible"
+      ]
+    }
+  ],
+  "kevin_pilot_sources_authorized": false,
+  "mapping_authority": false,
+  "ontology_version": "body_parts_v2",
+  "pilot_complete": false,
+  "production_activation_performed": false
+}

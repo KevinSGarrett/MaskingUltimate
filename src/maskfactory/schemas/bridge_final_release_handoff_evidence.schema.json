@@ -1,0 +1,368 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_final_release_handoff_evidence.schema.json",
+  "title": "Producer final release and Main adoption/handoff validation evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "status",
+    "rejection_reasons",
+    "core_autonomous_runtime_close_authorized",
+    "exact_core_close_gates",
+    "release_validation",
+    "adoption_validation",
+    "reciprocal_acknowledgement",
+    "commit_pins",
+    "qualification_binding",
+    "profile_status_inputs",
+    "external_main_prerequisites",
+    "claim_boundary",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "bridge_final_release_handoff_evidence" },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "policy_id": { "const": "maskfactory-bridge-final-release-handoff-v1" },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "status": {
+      "enum": ["accepted", "incomplete_core", "rejected"]
+    },
+    "rejection_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "core_autonomous_runtime_close_authorized": { "type": "boolean" },
+    "exact_core_close_gates": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate_id", "status", "detail"],
+        "properties": {
+          "gate_id": {
+            "enum": [
+              "final_producer_release_published",
+              "main_adoption_receipt_present",
+              "adoption_release_hash_pin",
+              "reciprocal_producer_acknowledgement",
+              "producer_consumer_commit_pin_match",
+              "qualification_bundle_bound",
+              "core_profile_dependency_closure_complete",
+              "optional_profiles_remain_independent",
+              "claim_firewall_intact"
+            ]
+          },
+          "status": { "enum": ["met", "missing", "failed"] },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "release_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "release_id",
+        "release_payload_sha256",
+        "release_status",
+        "fixture_only",
+        "publication_issue_count",
+        "producer_git_commit"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "release_id": { "type": ["string", "null"], "minLength": 1 },
+        "release_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "release_status": {
+          "type": ["string", "null"],
+          "enum": [null, "draft", "published", "superseded", "revoked"]
+        },
+        "fixture_only": { "type": ["boolean", "null"] },
+        "publication_issue_count": { "type": "integer", "minimum": 0 },
+        "producer_git_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "adoption_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "adoption_id",
+        "adoption_payload_sha256",
+        "adoption_scope",
+        "decision",
+        "production_use_authorized",
+        "fixture_only",
+        "consumer_git_commit",
+        "matrix_status"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "adoption_id": { "type": ["string", "null"], "minLength": 1 },
+        "adoption_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "adoption_scope": {
+          "type": ["string", "null"],
+          "enum": [null, "conformance_validation", "production_authority"]
+        },
+        "decision": {
+          "type": ["string", "null"],
+          "enum": [null, "conformance_only", "adopted", "partially_adopted", "rejected"]
+        },
+        "production_use_authorized": { "type": ["boolean", "null"] },
+        "fixture_only": { "type": ["boolean", "null"] },
+        "consumer_git_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "matrix_status": {
+          "type": ["string", "null"],
+          "enum": [null, "accepted", "rejected", "not_evaluated"]
+        }
+      }
+    },
+    "reciprocal_acknowledgement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "acknowledgement_id",
+        "adoption_id",
+        "adoption_payload_sha256",
+        "invalidation_head_sha256",
+        "rollback_target_sha256",
+        "binding_ok"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "acknowledgement_id": { "type": ["string", "null"], "minLength": 1 },
+        "adoption_id": { "type": ["string", "null"], "minLength": 1 },
+        "adoption_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "invalidation_head_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rollback_target_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "binding_ok": { "type": "boolean" }
+      }
+    },
+    "commit_pins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_git_commit",
+        "consumer_git_commit",
+        "producer_pin_matches_release",
+        "consumer_pin_matches_adoption",
+        "both_projects_pinned"
+      ],
+      "properties": {
+        "producer_git_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "consumer_git_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "producer_pin_matches_release": { "type": "boolean" },
+        "consumer_pin_matches_adoption": { "type": "boolean" },
+        "both_projects_pinned": { "type": "boolean" }
+      }
+    },
+    "qualification_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "qualification_id",
+        "qualification_payload_sha256",
+        "bound_to_adoption",
+        "fixture_only"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "qualification_id": { "type": ["string", "null"], "minLength": 1 },
+        "qualification_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bound_to_adoption": { "type": "boolean" },
+        "fixture_only": { "type": ["boolean", "null"] }
+      }
+    },
+    "profile_status_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracker_items_sha256",
+        "profiles",
+        "independence_proof",
+        "core_close_refused"
+      ],
+      "properties": {
+        "tracker_items_sha256": { "$ref": "#/$defs/sha256" },
+        "profiles": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "core_autonomous_runtime",
+            "independent_real_accuracy",
+            "scale_daz_maturity"
+          ],
+          "properties": {
+            "core_autonomous_runtime": { "$ref": "#/$defs/profileStatus" },
+            "independent_real_accuracy": { "$ref": "#/$defs/profileStatus" },
+            "scale_daz_maturity": { "$ref": "#/$defs/profileStatus" }
+          }
+        },
+        "independence_proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "optional_failure_cannot_revoke_core",
+            "core_close_requires_exact_gates",
+            "optional_statuses_computed_independently"
+          ],
+          "properties": {
+            "optional_failure_cannot_revoke_core": { "const": true },
+            "core_close_requires_exact_gates": { "const": true },
+            "optional_statuses_computed_independently": { "const": true }
+          }
+        },
+        "core_close_refused": { "type": "boolean" }
+      }
+    },
+    "external_main_prerequisites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["prerequisite", "status", "detail"],
+        "properties": {
+          "prerequisite": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["met", "missing_external_main_evidence", "failed"] },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "establishes_handoff_validation_only",
+        "may_close_core_without_exact_gates",
+        "may_impersonate_main_adoption",
+        "may_mutate_optional_profiles",
+        "core_closed",
+        "optional_profile_status_changed",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
+      ],
+      "properties": {
+        "establishes_handoff_validation_only": { "const": true },
+        "may_close_core_without_exact_gates": { "const": false },
+        "may_impersonate_main_adoption": { "const": false },
+        "may_mutate_optional_profiles": { "const": false },
+        "core_closed": { "type": "boolean" },
+        "optional_profile_status_changed": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false }
+      }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "profileStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "classification",
+        "status",
+        "open_driving_item_count",
+        "open_driving_item_ids",
+        "close_authorized"
+      ],
+      "properties": {
+        "profile_id": {
+          "enum": [
+            "core_autonomous_runtime",
+            "independent_real_accuracy",
+            "scale_daz_maturity"
+          ]
+        },
+        "classification": {
+          "enum": ["required", "optional", "post_core"]
+        },
+        "status": { "type": "string", "minLength": 1 },
+        "open_driving_item_count": { "type": "integer", "minimum": 0 },
+        "open_driving_item_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "close_authorized": { "type": "boolean" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "core_autonomous_runtime_close_authorized": { "const": true } },
+        "required": ["core_autonomous_runtime_close_authorized"]
+      },
+      "then": {
+        "properties": {
+          "status": { "const": "accepted" },
+          "rejection_reasons": {
+            "const": ["eligible"]
+          },
+          "claim_boundary": {
+            "properties": { "core_closed": { "const": false } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "incomplete_core" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "core_autonomous_runtime_close_authorized": { "const": false },
+          "claim_boundary": {
+            "properties": { "core_closed": { "const": false } }
+          }
+        }
+      }
+    }
+  ]
+}

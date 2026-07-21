@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T14:55:45Z",
+  "items": ["MF-P9-04.03", "MF-P9-04.04"],
+  "status": "partial_live_reconciliation",
+  "authority_boundary": {
+    "dim_package_count_is_total_asset_count": false,
+    "sources_kept_independent": [
+      "DIM install manifests",
+      "autonomous acquisition manifests",
+      "local CMS metadata",
+      "registered-root filesystem observations"
+    ],
+    "assets_moved": false,
+    "assets_deleted": false,
+    "assets_redownloaded": false,
+    "duplicates_resolved_before_hash_reconciliation": false
+  },
+  "cms_online": {
+    "snapshot_id": "cms_e94a27f9cabb4d19fd8423f0",
+    "snapshot_file_sha256": "b7bb2d36bd6f574101c25bb944d7bdaa79449038d78ef10549124af688db5a5c",
+    "snapshot_bytes": 2454715,
+    "installed_product_count": 17,
+    "installed_content_count": 4677,
+    "query_mode": "local_127_0_0_1_forced_read_only",
+    "credentials_stored": false,
+    "network_scope": "local CMS only"
+  },
+  "cms_offline_fallback": {
+    "snapshot_id": "cms_offline_b58d776345e759643d279621",
+    "snapshot_file_sha256": "2db8ca03a9ee8352cea3fd2e51ce6b80913f1c1256d0258a5cea4c2851aa32db",
+    "snapshot_bytes": 1396,
+    "cms_used": false,
+    "metadata_gaps_declared": true,
+    "filesystem_inventory_complete": false
+  },
+  "autonomous_acquisition": {
+    "source_directory_manifest_count": 638,
+    "captured_source_manifest_count_in_index_queue": 495,
+    "indexed_manifest_count": 489,
+    "pending_manifest_count": 6,
+    "not_yet_discovered_by_bounded_index_count": 143,
+    "failed_manifest_count": 0,
+    "archived_immutable_revision_count": 489,
+    "revision_archive_root": "F:\\DAZ\\01_source_records\\install_manifests\\autonomous",
+    "index_path": "F:\\DAZ\\05_registry\\live\\autonomous_acquisition.sqlite",
+    "resumable": true,
+    "bounded_manifests_per_invocation": true,
+    "new_sources_are_appended_to_pending_queue": true,
+    "changed_sources_are_archived_by_sha256_and_requeued": true,
+    "non_content_and_unregistered_source_roots_preserved": true,
+    "source_fingerprint": null,
+    "stored_fingerprint_while_incomplete": null,
+    "fingerprint_invalidation_rule": "Any newly discovered, changed, pending, or failed source immediately removes the last complete fingerprint before bounded indexing continues.",
+    "declared_registered_root_distribution": {
+      "content_primary_file_occurrences": 107124,
+      "content_primary_declared_bytes": 87742248763,
+      "scene_package_file_occurrences": 5,
+      "scene_package_declared_bytes": 2904216
+    }
+  },
+  "filesystem_inventory": {
+    "state_path": "F:\\DAZ\\05_registry\\rebuild_evidence\\filesystem_inventory.sqlite",
+    "state_schema_version": 2,
+    "completed_directory_count": 7794,
+    "pending_directory_count": 68,
+    "failed_directory_count": 0,
+    "observed_file_count": 41094,
+    "observed_bytes": 38792501179,
+    "observed_user_facing_file_count": 26874,
+    "skipped_reparse_point_count": 0,
+    "reparse_points_followed": false,
+    "directory_drift_requeued": true,
+    "disappeared_children_reconciled": true,
+    "complete": false,
+    "portable_snapshot_published": false
+  },
+  "live_acquisition_boundary": {
+    "supervised_worker_count": 0,
+    "worker_version": "0.3.7",
+    "capacity_guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
+    "free_gib_observed": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "pool_pid_file_exists": false,
+    "queue_state_counts": {"complete": 635, "queued": 514, "paused": 211},
+    "workers_stopped_by_inventory_task": false,
+    "effect": "The autonomous acquisition system and its completed assets remain intact, but capacity policy currently refuses new downloads. Pending manifest/directory counts may rise only after a future guarded resume; no stable final inventory can be claimed yet."
+  },
+  "root_reconciliation": {
+    "governed_autonomous_content_root": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_content_root": "C:\\Users\\Public\\Documents\\My DAZ 3D Library",
+    "legacy_dim_download_root": "C:\\Users\\Public\\Documents\\DAZ 3D\\InstallManager\\Downloads",
+    "future_dim_download_root": "F:\\DAZ\\02_installers\\dim_downloads",
+    "future_dim_content_root": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_package_manifests": 23,
+    "legacy_dim_download_files": 46,
+    "legacy_dim_download_bytes": 6918818900,
+    "future_dim_download_files": 0,
+    "filesystem_registered_roots": ["content_primary", "content_user", "legacy_dim"],
+    "filesystem_scan_root_states": {
+      "content_primary_complete_directories": 7794,
+      "content_primary_pending_directories": 66,
+      "content_user_pending_directories": 1,
+      "legacy_dim_pending_directories": 1
+    },
+    "runtime_generation_content_roots": ["content_primary", "content_user"],
+    "legacy_runtime_promotion": "not_performed",
+    "reason": "The autonomous downloader already writes to the governed F-drive primary library. The original DIM library and retained DIM archives remain separate legacy observations; they are registered for inventory but are not silently moved, duplicated, or promoted into the closed generation runtime."
+  },
+  "cross_source_comparison": {
+    "authoritative": false,
+    "reason": "The autonomous manifest index and filesystem inventory are both incomplete while acquisition workers continue to add sources and files. Missing/unmanifested counts are withheld until both observations stabilize."
+  },
+  "verification": {
+    "focused_tests_passed": 37,
+    "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
+    "full_repository_tests_failed": 0,
+    "ruff": "pass",
+    "schema_validation": "pass",
+    "covered_failures": [
+      "unsafe/traversal logical path",
+      "case-folded path collision",
+      "junction/symlink traversal",
+      "root-set drift",
+      "directory mutation during scan",
+      "disappeared child reconciliation",
+      "changed/removed published acquisition manifest",
+      "content-addressed acquisition-manifest revision archival and reindex",
+      "stale complete-fingerprint invalidation on newly pending source",
+      "unknown acquisition source root preservation",
+      "CMS connection/schema failure",
+      "CMS credential environment stripping",
+      "offline metadata-gap declaration",
+      "immutable snapshot conflict"
+    ]
+  },
+  "not_claimed": [
+    "complete autonomous-acquisition manifest index",
+    "complete deterministic filesystem snapshot",
+    "authoritative missing-file or unmanifested-file counts",
+    "hash-based duplicate or shadow resolution",
+    "asset qualification, promotion, production authority, or gold authority"
+  ]
+}

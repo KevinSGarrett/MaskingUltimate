@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-15T18:11:21.7847368Z",
+  "item_id": "MF-P6-06.08",
+  "result": "execution_preflight_implemented_and_verified_live_workflow_run_pending",
+  "parent_policy": {
+    "path": "qa/governance/serving_workflow_performance_v1.json",
+    "canonical_sha256": "0bd10772a72672f0f55df7a9148892f4ae8437dbb80740d8dd4436b3a46468c9",
+    "unchanged": true
+  },
+  "implemented_controls": [
+    "schema_valid_hash_sealed_execution_input",
+    "loopback_http_api_only_without_credentials_query_fragment_or_non_root_path",
+    "exact_single_then_multi_governed_unseen_image_disjoint_source_scope",
+    "source_raster_and_governance_file_identity_and_semantic_binding",
+    "adult_and_nsfw_content_lanes_remain_eligible_when_governed",
+    "human_anchor_or_autonomous_certified_package_truth_tier_only",
+    "complete_package_tree_identity_before_execution",
+    "workflow_output_outside_truth_storage_and_source_package",
+    "exact_champion_and_interactive_role_order",
+    "promoted_active_and_distinct_benchmarked_or_promoted_rollback_provider",
+    "active_checkpoint_and_runtime_file_registry_identity",
+    "passing_role_bound_benchmark_certificate_file_and_internal_identity",
+    "rollback_checkpoint_file_registry_identity",
+    "governed_one_command_rollback_declaration",
+    "authoritative_provider_selection_cross_check",
+    "schema_valid_hash_sealed_ready_or_not_ready_report",
+    "exclusive_cli_evidence_write_without_overwrite"
+  ],
+  "command": "maskfactory preflight-serving-workflows INPUT_DOCUMENT --output REPORT",
+  "artifact_hashes": {
+    "implementation": "08efc4c3a751d328f06bd74aedc0ef57f4e81213759121b5307c4e7e6dec54ca",
+    "input_schema": "26cfdd2c32ad5a50f825a9a0f4b9afbf6d518b5164549acec2843d369c151115",
+    "report_schema": "ae687615670936f2c03d6a40a844ec3cde7de255964aa0e3d4167b4abb1023ae",
+    "regression_tests": "6df75e76232f6ce5bd870e98247e9f9b8e3e3b4d5010f588ebd8de2bc073878d",
+    "cli": "832728e0dca440e60dccc8aa1d9a4301bed20caebaa20ebf0d4466ed7a352639",
+    "schema_registry": "3a5262fd99d1f0b0d64f3ec4e8d27d8ac2d15d91348529b795a7ae9b84c00bec"
+  },
+  "verification": {
+    "focused_preflight_tests_passed": 7,
+    "affected_serving_comfy_provider_governance_currency_tests_passed": 120,
+    "full_repository_tests_passed": 1623,
+    "full_repository_failures": 0,
+    "ruff": "pass",
+    "black": "pass",
+    "json_schemas": "parse_and_runtime_validation_pass"
+  },
+  "current_live_readiness": {
+    "ready": false,
+    "reason": "promoted champion_bodypart champion_hand and champion_clothing roles with distinct tested rollback providers do not yet exist",
+    "official_sam31_checkpoint": "terms_authorization_token_absent",
+    "live_six_case_execution": "not_claimed",
+    "live_four_role_rollback_rehearsal": "not_claimed"
+  },
+  "claims_not_made": [
+    "a real Mode A or Mode B workflow benchmark passed",
+    "a trained serving champion is available",
+    "a distinct role rollback provider is eligible",
+    "MF-P6-06.08 is complete",
+    "D8 or P6 exit is complete"
+  ],
+  "authority_boundary": "Pre-execution readiness evidence only. It cannot launch serving, mutate model selection, mutate packages, establish mask truth or gold, promote a provider, clear a blocker, satisfy D8, close P6, or complete the project."
+}

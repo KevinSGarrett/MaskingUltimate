@@ -1,0 +1,115 @@
+{
+  "outcome": "promoted",
+  "persons": [
+    {
+      "area_px": 102921,
+      "bbox_xyxy": [
+        48,
+        399,
+        251,
+        906
+      ],
+      "centeredness": 0.5864131933448169,
+      "confidence": 0.9162590503692627,
+      "context_bbox_xyxy": [
+        22,
+        335,
+        277,
+        970
+      ],
+      "detection_index": 0,
+      "frame_area_fraction": 0.11765089163237312,
+      "person_index": 0,
+      "promoted": true,
+      "protected_as_part_50": false,
+      "score": 60354.2322722419
+    },
+    {
+      "area_px": 56750,
+      "bbox_xyxy": [
+        221,
+        406,
+        346,
+        860
+      ],
+      "centeredness": 0.7733224403488896,
+      "confidence": 0.893501341342926,
+      "context_bbox_xyxy": [
+        205,
+        349,
+        362,
+        917
+      ],
+      "detection_index": 2,
+      "frame_area_fraction": 0.06487197073616827,
+      "person_index": 1,
+      "promoted": true,
+      "protected_as_part_50": false,
+      "score": 43886.04848979949
+    },
+    {
+      "area_px": 69090,
+      "bbox_xyxy": [
+        669,
+        391,
+        810,
+        881
+      ],
+      "centeredness": 0.4844396551946587,
+      "confidence": 0.9072402119636536,
+      "context_bbox_xyxy": [
+        651,
+        329,
+        810,
+        943
+      ],
+      "detection_index": 1,
+      "frame_area_fraction": 0.07897805212620028,
+      "person_index": 2,
+      "promoted": true,
+      "protected_as_part_50": false,
+      "score": 33469.93577739897
+    }
+  ],
+  "raw_detection_count": 4,
+  "raw_detections": [
+    {
+      "bbox_xyxy": [
+        48.49484634399414,
+        399.497314453125,
+        250.03138732910156,
+        905.408203125
+      ],
+      "confidence": 0.9162590503692627
+    },
+    {
+      "bbox_xyxy": [
+        669.12451171875,
+        391.4651794433594,
+        809.6527709960938,
+        880.5968017578125
+      ],
+      "confidence": 0.9072402119636536
+    },
+    {
+      "bbox_xyxy": [
+        221.6834716796875,
+        406.85760498046875,
+        345.64910888671875,
+        859.9786376953125
+      ],
+      "confidence": 0.893501341342926
+    },
+    {
+      "bbox_xyxy": [
+        0.2041783332824707,
+        550.9961547851562,
+        78.65169525146484,
+        870.168701171875
+      ],
+      "confidence": 0.7868954539299011
+    }
+  ],
+  "reason": null,
+  "schema_version": "1.0.0"
+}

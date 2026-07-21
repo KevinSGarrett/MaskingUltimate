@@ -1,0 +1,2690 @@
+{
+  "files": {
+    "annotations/draft_baseline/baseline_manifest.json": "22c9cbbe96db5636b8a951e1d0d7bfa41bac5ea1e2658090752e24a2ae1f28d3",
+    "annotations/draft_baseline/label_map_material.png": "36912b5a422459811d42b4cb876b8b0b8a42d5cfd7cb2040c803b7fc79770d03",
+    "annotations/draft_baseline/label_map_part.png": "3e18f1f7fb4d747907358a577af064bb5e371c467c650381d9253b71466d84c2",
+    "label_map_material.png": "36912b5a422459811d42b4cb876b8b0b8a42d5cfd7cb2040c803b7fc79770d03",
+    "label_map_part.png": "3e18f1f7fb4d747907358a577af064bb5e371c467c650381d9253b71466d84c2",
+    "masks/abdomen_stomach.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/back_lower_torso.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/back_upper_torso.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/belly_button.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/chest_upper_torso.png": "d20358ca7fe76f0435f4b024c18fa5b75155e16ec09315005016a66804a38495",
+    "masks/hair.png": "7a3488bfaa42adf1634ce6e6f21c84e3001ff98f0d700459ccf7afb613cb95d3",
+    "masks/head_face.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_ankle.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_breast.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_calf.png": "15007a4efc4238c3e7f9fd056b380c6a0b1956e36cc58d921d4e932130a311d1",
+    "masks/left_elbow.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_foot_base.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_forearm.png": "e0d0db3439e641ac37dbeedaa3807ae39da6d13f18d1405267dff7b1bdb39b33",
+    "masks/left_glute.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_hand_base.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_hip.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_index_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_knee.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_middle_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_pinky.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_ring_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_shoulder.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_thigh.png": "9318e93c3e5fbbd75b0632f491aa04a02d3e47c32a91e84ec8eddfdba0722c5b",
+    "masks/left_thumb.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_toes.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_upper_arm.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/left_wrist.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/neck.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/pelvic_region.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_ankle.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_breast.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_calf.png": "811df77449e314132ff1285bb72dbb6a48a1cff71184939ef54341388881eec6",
+    "masks/right_elbow.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_foot_base.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_forearm.png": "c4e2530ec52aea8d87c02f0af41e5067c10a3e953288989f5e6457d4a1707ed4",
+    "masks/right_glute.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_hand_base.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_hip.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_index_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_knee.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_middle_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_pinky.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_ring_finger.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_shoulder.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_thigh.png": "1f3d61fa87941500a3343cb4c835166735cfc3ad4d4a77307939ce5cad337bf6",
+    "masks/right_thumb.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_toes.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_upper_arm.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks/right_wrist.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/abdomen_full.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_fingers.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_index_fingers.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_middle_fingers.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_pinkies.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_ring_fingers.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_thumbs.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/all_toes.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_arms.png": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+    "masks_derived/both_breasts.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_calves.png": "d752a7d7eab79259ea35926fa672cc826a606e0a01c1f869fd31c00bfced233d",
+    "masks_derived/both_feet.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_forearms.png": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+    "masks_derived/both_glutes.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_hands.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_knees.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/both_thighs.png": "d11c53b6a1b2d73391b1250f8a308f3c688091603037f8cef258a923c96f5ddf",
+    "masks_derived/both_upper_arms.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/bra_left_cup.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/bra_right_cup.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/bra_straps.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/bra_visible.png": "1ea079ffa6d6c225f086a396bf4988442a665cc32ecd99b6895696ec9ccba96a",
+    "masks_derived/breast_skin.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/clothing_bodypart_occlusion.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/clothing_boundary_chest.png": "dba95e9016ef348b426b2046911be247b6132539a9ee2cb1b6b55b3fb0ab655e",
+    "masks_derived/clothing_skin_boundary.png": "d87e53f2613c168cde39726bca05c8169680a615fc5463a858df84018faf92c2",
+    "masks_derived/clothing_visible.png": "106094c1f69e9f656736b0da0836dd140ae541578e59d5b2109c35cc4a203c20",
+    "masks_derived/full_arms.png": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+    "masks_derived/full_body_parts_visible.png": "4bf5a02adce935dac93f4e159868506cd6c5cff5d076525f1c637bf2cd1b3c16",
+    "masks_derived/full_legs.png": "715c3e2db7a76599765a942058fd32cf148f642337a54c8db69baeb563e87449",
+    "masks_derived/full_torso.png": "d20358ca7fe76f0435f4b024c18fa5b75155e16ec09315005016a66804a38495",
+    "masks_derived/left_breast_skin.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/left_foot.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/left_hand.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/panty_visible.png": "ef9ef5e5286691abe36aa70d87fe4eb40d922f361de54dd81d1efedfeb59d6bc",
+    "masks_derived/person_full_visible.png": "4bf5a02adce935dac93f4e159868506cd6c5cff5d076525f1c637bf2cd1b3c16",
+    "masks_derived/right_breast_skin.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/right_foot.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/right_hand.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_derived/visible_body_skin.png": "893aed69a10b5b7a8b682e2b3e23097b144e2f0251e81cda0d0a4bddea0fc290",
+    "masks_material/accessory.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/bottom_garment.png": "9393f496b77e1ae4ff763ec566e169fdcfe6e25807060cc5b6ac902a0ea628c2",
+    "masks_material/bra.png": "1ea079ffa6d6c225f086a396bf4988442a665cc32ecd99b6895696ec9ccba96a",
+    "masks_material/clothing_generic.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/footwear.png": "9fb431d8932d88c47f3b0eebd21a063b3dc5880e5984831814cd99654faf6138",
+    "masks_material/glove_or_sock.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/hair_material.png": "cf890d73da5175d5b43118804764b196b0974b250df20142ab5b81fbebfcf861",
+    "masks_material/lace_or_sheer.png": "736cc526499ee6bd549c63d3acf4dd441238dadd3652c724b2f6f744e02ca005",
+    "masks_material/none_background.png": "1709ba15739313b7b7c4abb2b3396597973db3acc536d5757c8d257c8662247a",
+    "masks_material/object_material.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/other_person_material.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/skin.png": "b1fdb50135fba6a151b1b67f28e314136caab527ab1965ac56124e830fe3aabc",
+    "masks_material/strap.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_material/top_garment.png": "516ce2ca9608c9d38d395796ca3f2f29fe0d4728a2f5e599a77ebb7fe1ed987b",
+    "masks_material/underwear_bottom.png": "ef9ef5e5286691abe36aa70d87fe4eb40d922f361de54dd81d1efedfeb59d6bc",
+    "masks_material/waistband.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "masks_regions/overlap_occlusion_boundary.png": "1e45188f6fcd33b4d6e3828448ef9769ba0876ffcaf67f074591f825ba3aab7d",
+    "masks_regions/waist.png": "ca534778d1332c9bc46a8dc81b9b64104876cba57e1f11c997436abff6eba7c9",
+    "overlays/all_parts.png": "13ef373d5afd831bb0cb85737a97699ee35a637d05b1518cf257a4efa7896ccb",
+    "overlays/disagreement_heatmap.png": "5ab19b9475c452f6198f6b544f13ca3610a82a2c44ef08259fddfc141ce9c66b",
+    "protected/accessory_or_prop.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "protected/background.png": "1709ba15739313b7b7c4abb2b3396597973db3acc536d5757c8d257c8662247a",
+    "protected/occluding_object.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "protected/other_person.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "protected/support_surface.png": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+    "qa_panels/all_parts.png": "13ef373d5afd831bb0cb85737a97699ee35a637d05b1518cf257a4efa7896ccb",
+    "qa_panels/chest_upper_torso.png": "5ecc220a8c29db033370aa5a5b74bbd47faf62f62890016eb6bc081d4e55a170",
+    "qa_panels/hair.png": "dc610291fca8abd6ed9f34ea7f1f7dcc85c23a541db7f76a1b555cea34ff592a",
+    "qa_panels/left_calf.png": "b518bc80728e76e2656bfa65298afb2d5a73847b7d5c2e382d630382d3e6e69b",
+    "qa_panels/left_forearm.png": "5e8e2a8622d618b1acbfff2d77db71d20224f59ef5c3333aca9ff2d801858dd7",
+    "qa_panels/left_thigh.png": "3b14e00cb518ef63245c88790a616531f96c016961edc8d31c88edaf668f3ec0",
+    "qa_panels/right_calf.png": "b21374690289e720b00981f2bd33412a0b52506d556f2c1994665ad7ca3ad2ac",
+    "qa_panels/right_forearm.png": "4c7312329d464ee224683e9623b710efc627f92005986648a6045f4d77a24a2e",
+    "qa_panels/right_thigh.png": "7a8db89323662eb36dd7ba0c9b882ad5476cbcedf7d2e807e53fb94c162ab588",
+    "qa_report.json": "4682a27bb5dd50506f5aebdd4f2009154a417652c6ac4e43d3cac79f0d74564d",
+    "source.png": "54347da645bcaf43b14fd9b762b79303ee409f1a4053fb5d63d5f1c6d0dee6b3"
+  },
+  "image_id": "img_7b7a3c7d5dd3",
+  "inpaint_derivatives": [],
+  "interperson": [],
+  "left_right_convention": "character_perspective",
+  "mask_ontology_version": "body_parts_v1",
+  "parts": {
+    "abdomen_full": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/abdomen_full.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "abdomen_stomach": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "accessory_or_prop": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "all_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_fingers.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_index_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_index_fingers.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_middle_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_middle_fingers.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_pinkies": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_pinkies.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_ring_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_ring_fingers.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_thumbs": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_thumbs.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_toes": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_toes.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "back_lower_torso": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "back_upper_torso": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "background": {
+      "annotated_on": "full",
+      "components": 6,
+      "mask_area_px": 281869,
+      "mask_bbox": [
+        0,
+        0,
+        366,
+        1378
+      ],
+      "mask_file": "protected/background.png",
+      "mask_sha256": "1709ba15739313b7b7c4abb2b3396597973db3acc536d5757c8d257c8662247a",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "belly_button": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "both_arms": {
+      "annotated_on": "full",
+      "components": 331,
+      "mask_area_px": 37787,
+      "mask_bbox": [
+        37,
+        284,
+        329,
+        1247
+      ],
+      "mask_file": "masks_derived/both_arms.png",
+      "mask_sha256": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_breasts": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_breasts.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_calves": {
+      "annotated_on": "full",
+      "components": 66,
+      "mask_area_px": 34212,
+      "mask_bbox": [
+        82,
+        303,
+        282,
+        1295
+      ],
+      "mask_file": "masks_derived/both_calves.png",
+      "mask_sha256": "d752a7d7eab79259ea35926fa672cc826a606e0a01c1f869fd31c00bfced233d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_feet": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_feet.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_forearms": {
+      "annotated_on": "full",
+      "components": 331,
+      "mask_area_px": 37787,
+      "mask_bbox": [
+        37,
+        284,
+        329,
+        1247
+      ],
+      "mask_file": "masks_derived/both_forearms.png",
+      "mask_sha256": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_glutes": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_glutes.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_hands": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_hands.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_knees": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_knees.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_thighs": {
+      "annotated_on": "full",
+      "components": 1839,
+      "mask_area_px": 78385,
+      "mask_bbox": [
+        81,
+        233,
+        297,
+        1291
+      ],
+      "mask_file": "masks_derived/both_thighs.png",
+      "mask_sha256": "d11c53b6a1b2d73391b1250f8a308f3c688091603037f8cef258a923c96f5ddf",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_upper_arms": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_upper_arms.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_left_cup": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_left_cup.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_right_cup": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_right_cup.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_straps": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_straps.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_visible": {
+      "annotated_on": "full",
+      "components": 16,
+      "mask_area_px": 16,
+      "mask_bbox": [
+        133,
+        595,
+        286,
+        702
+      ],
+      "mask_file": "masks_derived/bra_visible.png",
+      "mask_sha256": "1ea079ffa6d6c225f086a396bf4988442a665cc32ecd99b6895696ec9ccba96a",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/breast_skin.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "chest_upper_torso": {
+      "annotated_on": "full",
+      "components": 799,
+      "mask_area_px": 43131,
+      "mask_bbox": [
+        41,
+        166,
+        329,
+        1291
+      ],
+      "mask_file": "masks/chest_upper_torso.png",
+      "mask_sha256": "d20358ca7fe76f0435f4b024c18fa5b75155e16ec09315005016a66804a38495",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "chest_upper_torso"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "clothing_bodypart_occlusion": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/clothing_bodypart_occlusion.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "clothing_boundary_chest": {
+      "annotated_on": "full",
+      "components": 250,
+      "mask_area_px": 564,
+      "mask_bbox": [
+        92,
+        305,
+        281,
+        613
+      ],
+      "mask_file": "masks_derived/clothing_boundary_chest.png",
+      "mask_sha256": "dba95e9016ef348b426b2046911be247b6132539a9ee2cb1b6b55b3fb0ab655e",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "clothing_skin_boundary": {
+      "annotated_on": "full",
+      "components": 16,
+      "mask_area_px": 16856,
+      "mask_bbox": [
+        68,
+        197,
+        325,
+        831
+      ],
+      "mask_file": "masks_derived/clothing_skin_boundary.png",
+      "mask_sha256": "d87e53f2613c168cde39726bca05c8169680a615fc5463a858df84018faf92c2",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "clothing_visible": {
+      "annotated_on": "full",
+      "components": 17,
+      "mask_area_px": 152069,
+      "mask_bbox": [
+        70,
+        202,
+        329,
+        1295
+      ],
+      "mask_file": "masks_derived/clothing_visible.png",
+      "mask_sha256": "106094c1f69e9f656736b0da0836dd140ae541578e59d5b2109c35cc4a203c20",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_arms": {
+      "annotated_on": "full",
+      "components": 331,
+      "mask_area_px": 37787,
+      "mask_bbox": [
+        37,
+        284,
+        329,
+        1247
+      ],
+      "mask_file": "masks_derived/full_arms.png",
+      "mask_sha256": "d49fd4a7cbef77ff1c4bf6ec3549a5a630a221e5ff7bef22efb154c79fc97d05",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_body_parts_visible": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 222479,
+      "mask_bbox": [
+        37,
+        77,
+        329,
+        1295
+      ],
+      "mask_file": "masks_derived/full_body_parts_visible.png",
+      "mask_sha256": "4bf5a02adce935dac93f4e159868506cd6c5cff5d076525f1c637bf2cd1b3c16",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_legs": {
+      "annotated_on": "full",
+      "components": 1797,
+      "mask_area_px": 112597,
+      "mask_bbox": [
+        81,
+        233,
+        297,
+        1295
+      ],
+      "mask_file": "masks_derived/full_legs.png",
+      "mask_sha256": "715c3e2db7a76599765a942058fd32cf148f642337a54c8db69baeb563e87449",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_torso": {
+      "annotated_on": "full",
+      "components": 799,
+      "mask_area_px": 43131,
+      "mask_bbox": [
+        41,
+        166,
+        329,
+        1291
+      ],
+      "mask_file": "masks_derived/full_torso.png",
+      "mask_sha256": "d20358ca7fe76f0435f4b024c18fa5b75155e16ec09315005016a66804a38495",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "hair": {
+      "annotated_on": "full",
+      "components": 49,
+      "mask_area_px": 28964,
+      "mask_bbox": [
+        70,
+        77,
+        282,
+        1295
+      ],
+      "mask_file": "masks/hair.png",
+      "mask_sha256": "7a3488bfaa42adf1634ce6e6f21c84e3001ff98f0d700459ccf7afb613cb95d3",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "hair"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "head_face": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "interperson_contact_boundary": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_ankle": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_breast": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_breast_projected_region": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "left_breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/left_breast_skin.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "left_calf": {
+      "annotated_on": "full",
+      "components": 60,
+      "mask_area_px": 17747,
+      "mask_bbox": [
+        171,
+        939,
+        282,
+        1291
+      ],
+      "mask_file": "masks/left_calf.png",
+      "mask_sha256": "15007a4efc4238c3e7f9fd056b380c6a0b1956e36cc58d921d4e932130a311d1",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_calf"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "left_chest_clothing_over_breast": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "left_elbow": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_foot": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/left_foot.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "left_foot_base": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_forearm": {
+      "annotated_on": "full",
+      "components": 163,
+      "mask_area_px": 12428,
+      "mask_bbox": [
+        247,
+        302,
+        329,
+        805
+      ],
+      "mask_file": "masks/left_forearm.png",
+      "mask_sha256": "e0d0db3439e641ac37dbeedaa3807ae39da6d13f18d1405267dff7b1bdb39b33",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_forearm"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "left_glute": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_hand": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/left_hand.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "left_hand_base": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_hip": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_index_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_knee": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_middle_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_pinky": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_ring_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_scapula_back": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_shoulder": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_thigh": {
+      "annotated_on": "full",
+      "components": 53,
+      "mask_area_px": 32318,
+      "mask_bbox": [
+        180,
+        594,
+        297,
+        1291
+      ],
+      "mask_file": "masks/left_thigh.png",
+      "mask_sha256": "9318e93c3e5fbbd75b0632f491aa04a02d3e47c32a91e84ec8eddfdba0722c5b",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_thigh"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "left_thumb": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_toes": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_upper_arm": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_wrist": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "neck": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "occluding_object": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "other_person": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "overlap_occlusion_boundary": {
+      "annotated_on": "full",
+      "components": 5,
+      "mask_area_px": 7891,
+      "mask_bbox": [
+        79,
+        609,
+        306,
+        997
+      ],
+      "mask_file": "masks_regions/overlap_occlusion_boundary.png",
+      "mask_sha256": "1e45188f6fcd33b4d6e3828448ef9769ba0876ffcaf67f074591f825ba3aab7d",
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "panty_visible": {
+      "annotated_on": "full",
+      "components": 11,
+      "mask_area_px": 31558,
+      "mask_bbox": [
+        70,
+        243,
+        290,
+        708
+      ],
+      "mask_file": "masks_derived/panty_visible.png",
+      "mask_sha256": "ef9ef5e5286691abe36aa70d87fe4eb40d922f361de54dd81d1efedfeb59d6bc",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "pelvic_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "person_full_visible": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 222479,
+      "mask_bbox": [
+        37,
+        77,
+        329,
+        1295
+      ],
+      "mask_file": "masks_derived/person_full_visible.png",
+      "mask_sha256": "4bf5a02adce935dac93f4e159868506cd6c5cff5d076525f1c637bf2cd1b3c16",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_ankle": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_breast": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_breast_projected_region": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "right_breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/right_breast_skin.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "right_calf": {
+      "annotated_on": "full",
+      "components": 30,
+      "mask_area_px": 16465,
+      "mask_bbox": [
+        82,
+        303,
+        282,
+        1295
+      ],
+      "mask_file": "masks/right_calf.png",
+      "mask_sha256": "811df77449e314132ff1285bb72dbb6a48a1cff71184939ef54341388881eec6",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_calf"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_chest_clothing_over_breast": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "right_elbow": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_foot": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/right_foot.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "right_foot_base": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_forearm": {
+      "annotated_on": "full",
+      "components": 168,
+      "mask_area_px": 25359,
+      "mask_bbox": [
+        37,
+        284,
+        164,
+        1247
+      ],
+      "mask_file": "masks/right_forearm.png",
+      "mask_sha256": "c4e2530ec52aea8d87c02f0af41e5067c10a3e953288989f5e6457d4a1707ed4",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_forearm"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_glute": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_hand": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/right_hand.png",
+      "mask_sha256": "f5ea89a30aef0a50ef08fbe425b2a390301881821b64d8c678608c3864bba7ce",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "right_hand_base": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_hip": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_index_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_knee": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_middle_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_pinky": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_ring_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_scapula_back": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_shoulder": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_thigh": {
+      "annotated_on": "full",
+      "components": 1803,
+      "mask_area_px": 46067,
+      "mask_bbox": [
+        81,
+        233,
+        264,
+        1272
+      ],
+      "mask_file": "masks/right_thigh.png",
+      "mask_sha256": "1f3d61fa87941500a3343cb4c835166735cfc3ad4d4a77307939ce5cad337bf6",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_thigh"
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_thumb": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_toes": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_upper_arm": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_wrist": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "spine_back_center": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "support_surface": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "visible_body_skin": {
+      "annotated_on": "full",
+      "components": 18,
+      "mask_area_px": 45119,
+      "mask_bbox": [
+        37,
+        166,
+        324,
+        827
+      ],
+      "mask_file": "masks_derived/visible_body_skin.png",
+      "mask_sha256": "893aed69a10b5b7a8b682e2b3e23097b144e2f0251e81cda0d0a4bddea0fc290",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "waist": {
+      "annotated_on": "full",
+      "components": 2,
+      "mask_area_px": 10232,
+      "mask_bbox": [
+        45,
+        607,
+        315,
+        646
+      ],
+      "mask_file": "masks_regions/waist.png",
+      "mask_sha256": "ca534778d1332c9bc46a8dc81b9b64104876cba57e1f11c997436abff6eba7c9",
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    }
+  },
+  "person": {
+    "estimated_person_height_px": 1229,
+    "person_count": 3,
+    "pose_tags": [
+      "arms_down"
+    ],
+    "primary_person_bbox": [
+      37,
+      73,
+      329,
+      1302
+    ],
+    "view": "front"
+  },
+  "qa": {
+    "qa_overall": "needs_human",
+    "qa_report_file": "qa_report.json",
+    "qa_score": 0.9628388102306239
+  },
+  "review": {
+    "approved_at": null,
+    "review_time_sec": null,
+    "reviewer": null,
+    "second_review": {
+      "at": null,
+      "required": false,
+      "result": "not_required",
+      "reviewer": null
+    }
+  },
+  "schema_version": "1.0.0",
+  "source": {
+    "exif_stripped": true,
+    "ingested_at": "2026-07-11T20:11:18.634147+00:00",
+    "origin_note": "governed instance crop of c0d5bd4a7a0400be60098bf531703d98.jpg",
+    "parent_source_sha256": "7b7a3c7d5dd3d4b629fbe938bac50c883a02258de8aa02d8eb1545712f0717aa",
+    "phash64": "bb3ad1d6c4c885a5",
+    "source_file": "source.png",
+    "source_height": 1378,
+    "source_origin": "generated",
+    "source_sha256": "54347da645bcaf43b14fd9b762b79303ee409f1a4053fb5d63d5f1c6d0dee6b3",
+    "source_width": 366
+  },
+  "tooling": {
+    "annotation_tool": "cvat",
+    "annotation_tool_version": "2.24.0",
+    "config_hashes": {
+      "ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+      "pipeline.yaml": "61e951225a8d66473ebfa2ee85360f1cac8a41058a0cea641b640125d4456a08",
+      "prompting.yaml": "b52512816acea63c004942777c874e3c33a4dc004b88f7d69ad3b3503f2d6deb",
+      "qa.yaml": "98d5f5a5a0146d44d90488b380d5152260c39613f64e86b3b35d514ff5729ac4",
+      "vlm.yaml": "88ebe0876ce36b92ad6f8c1f734d986d0a8819b352f8a9fffe63cd88375b3c55"
+    },
+    "model_versions_used": {
+      "densepose": "R_50_FPN_s1x",
+      "sam2": "2.1_hiera_large_or_base_plus"
+    },
+    "pipeline_version": "maskfactory 0.0.1"
+  },
+  "workflow_status": "in_review",
+  "workflow_updated_at": "2026-07-12T14:56:56.143490+00:00"
+}

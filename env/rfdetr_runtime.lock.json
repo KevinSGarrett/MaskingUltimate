@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "rfdetr",
+  "captured_at": "2026-07-14T20:11:02Z",
+  "source": {
+    "repo": "https://github.com/roboflow/rf-detr",
+    "release": "1.7.1",
+    "revision": "6e1620e751f3c814ead8648cada51ceff9029e5c",
+    "tree": "71babdc6e97fb6785403d7b69b50cc278897c333",
+    "pyproject_sha256": "d070ae4ba463f1b6816a2096f380f5989c74b6b35d9e77e9a2ce2222a897a911"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "source": "https://github.com/roboflow/rf-detr/blob/6e1620e751f3c814ead8648cada51ceff9029e5c/LICENSE",
+    "sha256": "44c30d89285a2a173b72470a2bdbadb031b03624d2fc1a8a366f962de9744020",
+    "reviewed_at": "2026-07-14T20:11:02Z",
+    "plus_variants_excluded": true,
+    "adult_nonexplicit": "allowed",
+    "consensual_explicit_adult": "allowed"
+  },
+  "checkpoint": {
+    "variant": "medium",
+    "filename": "rf-detr-medium.pth",
+    "source": "https://storage.googleapis.com/rfdetr/medium_coco/checkpoint_best_regular.pth",
+    "bytes": 404992918,
+    "md5": "7223f764a87b863f02eb8d52bf0ce2ee",
+    "sha256": "749ff6071828aaffac63e204c4f4135ed3d6cdae4d702e086c360edc3b5768c8"
+  },
+  "runtime": {
+    "kind": "wsl_venv",
+    "distro": "Ubuntu-22.04",
+    "path": "/home/kevin/mfenvs/rfdetr-1.7.1",
+    "python": "3.12.13",
+    "rfdetr": "1.7.1",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "transformers": "5.13.1",
+    "cuda_runtime": "12.8",
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "compute_capability": [12, 0],
+    "pip_check": "pass"
+  },
+  "reproduction": {
+    "setup_script": "tools/setup_rfdetr_runtime.sh",
+    "setup_script_sha256": "7f72f471f1d4127c93b912b823881dcf80eca0390443b2cb2539766839189910",
+    "requirements": "env/rfdetr_runtime.requirements.lock.txt",
+    "requirements_sha256": "017197d9e8258d185583a971c3209bad683031eaa0275abcece035ee65e67f1a",
+    "smoke_script": "tools/smoke_rfdetr_wsl.py",
+    "smoke_script_sha256": "e44ec1d17fc5c371ba8813d817ed0f63ed3d70adafe9cd9088ff5875b7595057"
+  },
+  "smoke": {
+    "evidence": "qa/live_verification/rfdetr_medium_runtime_20260714.json",
+    "fixture_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "optimized_dtype": "float16",
+    "output_sha256": "79e07b7fbe97c4eee994f42262be4a2d0b761ee8f894f96bcef673e8d9eed287",
+    "cross_process_deterministic": true,
+    "person_count": 4,
+    "peak_reserved_bytes": 308281344,
+    "warm_latency_seconds_max": 0.041308,
+    "missing_input_exit": 1
+  },
+  "activation": {
+    "lifecycle_state": "installed",
+    "shadow_only": true,
+    "incumbent": "yolo11",
+    "benchmark_required_for_promotion": true
+  }
+}

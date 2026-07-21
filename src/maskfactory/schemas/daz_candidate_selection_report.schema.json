@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_candidate_selection_report.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "selection_id", "selection_sha256", "ranker_version", "policy_sha256", "candidate_batch", "qualification_snapshot", "rows", "selected_candidate_id", "satisfied", "summary", "authority", "publication"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "selection_id": {"type": "string", "pattern": "^dcsr_[0-9a-f]{24}$"},
+    "selection_sha256": {"$ref": "#/$defs/sha"},
+    "ranker_version": {"const": "1.0.0"},
+    "policy_sha256": {"const": "ecd14f52d077d8c4d45c4e45d4a107f43567fb2cd3354d517290933fb9e2ea1b"},
+    "candidate_batch": {"type": "object", "additionalProperties": false, "required": ["batch_id", "batch_sha256", "demand_id"], "properties": {"batch_id": {"type": "string", "pattern": "^dcb_[0-9a-f]{24}$"}, "batch_sha256": {"$ref": "#/$defs/sha"}, "demand_id": {"type": "string", "pattern": "^drd_[0-9a-f]{24}$"}}},
+    "qualification_snapshot": {"type": "object", "additionalProperties": false, "required": ["snapshot_id", "snapshot_sha256", "source"], "properties": {"snapshot_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"}, "snapshot_sha256": {"$ref": "#/$defs/sha"}, "source": {"enum": ["versioned_d3_d5_feasibility_observations", "versioned_d3_d5_d7_adaptive_observations"]}}},
+    "rows": {"type": "array", "minItems": 10, "maxItems": 100, "items": {"$ref": "#/$defs/row"}},
+    "selected_candidate_id": {"type": ["string", "null"], "pattern": "^dc_[0-9a-f]{24}$"},
+    "satisfied": {"type": "boolean"},
+    "summary": {"type": "object", "additionalProperties": false, "required": ["candidate_count", "feasible_count", "infeasible_count", "scored_count", "selected_count", "hard_failure_counts", "maximum_utility"], "properties": {"candidate_count": {"type": "integer", "minimum": 10, "maximum": 100}, "feasible_count": {"type": "integer", "minimum": 0}, "infeasible_count": {"type": "integer", "minimum": 0}, "scored_count": {"type": "integer", "minimum": 0}, "selected_count": {"type": "integer", "minimum": 0, "maximum": 1}, "hard_failure_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}}, "maximum_utility": {"type": ["number", "null"]}}},
+    "authority": {"type": "object", "additionalProperties": false, "required": ["stage", "selection_is_recipe", "selection_is_render_authority", "selection_creates_gold", "synthetic_counts_close_real_deficits"], "properties": {"stage": {"const": "technical_candidate_selection"}, "selection_is_recipe": {"const": false}, "selection_is_render_authority": {"const": false}, "selection_creates_gold": {"const": false}, "synthetic_counts_close_real_deficits": {"const": false}}},
+    "publication": {"type": "object", "additionalProperties": false, "required": ["immutable", "atomic"], "properties": {"immutable": {"const": true}, "atomic": {"const": true}}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "features": {"type": "object", "additionalProperties": false, "required": ["canonical_coverage_deficit_gain", "high_risk_intersection_gain", "label_visibility_gain", "asset_diversity_gain", "failure_mining_priority", "domain_randomization_gain", "multi_person_identity_gain", "recency_need"], "properties": {"canonical_coverage_deficit_gain": {"$ref": "#/$defs/unit"}, "high_risk_intersection_gain": {"$ref": "#/$defs/unit"}, "label_visibility_gain": {"$ref": "#/$defs/unit"}, "asset_diversity_gain": {"$ref": "#/$defs/unit"}, "failure_mining_priority": {"$ref": "#/$defs/unit"}, "domain_randomization_gain": {"$ref": "#/$defs/unit"}, "multi_person_identity_gain": {"$ref": "#/$defs/unit"}, "recency_need": {"$ref": "#/$defs/unit"}}},
+    "penalties": {"type": "object", "additionalProperties": false, "required": ["incompatibility_penalty", "dominance_penalty", "recent_repetition_penalty", "predicted_rejection_cost"], "properties": {"incompatibility_penalty": {"$ref": "#/$defs/unit"}, "dominance_penalty": {"$ref": "#/$defs/unit"}, "recent_repetition_penalty": {"$ref": "#/$defs/unit"}, "predicted_rejection_cost": {"$ref": "#/$defs/unit"}}},
+    "gates": {"type": "object", "additionalProperties": false, "required": ["registry_complete", "mapping_eligible", "compatibility_eligible", "capacity_eligible", "ontology_eligible"], "properties": {"registry_complete": {"type": "boolean"}, "mapping_eligible": {"type": "boolean"}, "compatibility_eligible": {"type": "boolean"}, "capacity_eligible": {"type": "boolean"}, "ontology_eligible": {"type": "boolean"}}},
+    "unit": {"type": "number", "minimum": 0, "maximum": 1},
+    "row": {"type": "object", "additionalProperties": false, "required": ["candidate_id", "features", "penalties", "hard_constraints", "hard_failures", "feasible", "positive_utility", "penalty_total", "utility", "rank", "selected"], "properties": {"candidate_id": {"type": "string", "pattern": "^dc_[0-9a-f]{24}$"}, "features": {"$ref": "#/$defs/features"}, "penalties": {"$ref": "#/$defs/penalties"}, "hard_constraints": {"$ref": "#/$defs/gates"}, "hard_failures": {"type": "array", "maxItems": 5, "uniqueItems": true, "items": {"enum": ["registry_complete", "mapping_eligible", "compatibility_eligible", "capacity_eligible", "ontology_eligible"]}}, "feasible": {"type": "boolean"}, "positive_utility": {"type": ["number", "null"]}, "penalty_total": {"type": ["number", "null"]}, "utility": {"type": ["number", "null"]}, "rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 100}, "selected": {"type": "boolean"}}}
+  }
+}

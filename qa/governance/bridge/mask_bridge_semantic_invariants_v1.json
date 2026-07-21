@@ -1,0 +1,480 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "mask_bridge_semantic_invariant_profile",
+  "profile_id": "maskfactory-comfyui-bridge-semantics",
+  "profile_version": "1.0.0",
+  "status": "active",
+  "canonicalization": {
+    "algorithm": "maskfactory-canonical-json-v1",
+    "excluded_top_level_fields": [
+      "profile_sha256"
+    ]
+  },
+  "canonicalization_spec_sha256": "2a647a33b113ca133f1200953414a2cf2071a1ee54223293874e87358687c26e",
+  "required_validation_layers": [
+    "json_schema",
+    "semantic_invariants",
+    "cryptographic_bindings",
+    "cross_record_bindings"
+  ],
+  "authority_rank": {
+    "invalid": 0,
+    "hypothesis": 1,
+    "draft": 2,
+    "qa_passed_noncertified": 3,
+    "certified": 4
+  },
+  "certificate_kind_crosswalk": {
+    "exact_serving_route_output": {
+      "record_types": [
+        "operational_autonomy_certificate",
+        "mask_acquisition_receipt"
+      ],
+      "maximum_authority_state": "certified",
+      "issuer_kinds": [
+        "maskfactory_autonomous"
+      ]
+    },
+    "autonomous_package": {
+      "record_types": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt"
+      ],
+      "maximum_authority_state": "certified",
+      "issuer_kinds": [
+        "maskfactory_autonomous"
+      ]
+    },
+    "human_anchor_optional": {
+      "record_types": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt"
+      ],
+      "maximum_authority_state": "certified",
+      "issuer_kinds": [
+        "human_anchor_optional"
+      ]
+    },
+    "none": {
+      "record_types": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt"
+      ],
+      "maximum_authority_state": "qa_passed_noncertified",
+      "issuer_kinds": [
+        "maskfactory_autonomous",
+        "none"
+      ]
+    }
+  },
+  "invariants": [
+    {
+      "invariant_id": "MF-BRIDGE-INV-001",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:access_mode_lineage",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Access mode, mode-specific payload, and lineage operation must agree exactly."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-002",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate",
+        "maskfactory_release_snapshot",
+        "mask_bridge_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:canonical_payload_hash",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Canonical payload hashes must recompute exactly after excluding only declared envelope fields."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-003",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:region_ownership",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Target and protected artifacts are disjoint, hash-bound, coordinate-bound, and owned by the exact scene instance and person."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-004",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:mode_a_package_binding",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Mode A reads only an exact package revision, manifest, artifact selector, and active exact-scope package certificate."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-005",
+      "applies_to": [
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:mode_b_original_prediction",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Mode B prediction is original_prediction with no fabricated package or artifact parent."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-006",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:certified_refinement",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "A certified refinement has one or more exact active certified parents and cannot exceed any parent authority."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-007",
+      "applies_to": [
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:authority_truth_crosswalk",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Authority state, truth tier, issuer, certificate kind, QA, roundtrip, and policy-scoped eligibility remain closed-world and mutually consistent."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-008",
+      "applies_to": [
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:exact_output_scope",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Certified output scope is a strict subset of the qualified route and exactly equals all bound output artifacts."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-009",
+      "applies_to": [
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:ontology_pipeline_policy",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Every certificate binds ontology, prompt, policy, controller, randomness, sampler, model, workflow, runtime, and execution fingerprint."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-010",
+      "applies_to": [
+        "operational_autonomy_certificate",
+        "maskfactory_release_snapshot",
+        "maskfactory_adoption_receipt",
+        "mask_authority_invalidation_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:ed25519_signature",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Signed records verify as Ed25519 signatures over canonical SHA-256 digest bytes with ordered validity and revocation state."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-011",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:cross_record_bindings",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Request, receipt, and certificate IDs, hashes, release, capability, ontology, source, subject, intent, target, protected, package, and parent bindings agree exactly."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-012",
+      "applies_to": [
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:idempotency",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "An idempotency key cannot map to more than one request or receipt body."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-013",
+      "applies_to": [
+        "mask_bridge_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:event_chain",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Event streams start at one, remain contiguous, recompute canonical hashes, and bind each previous event hash."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-014",
+      "applies_to": [
+        "mask_authority_invalidation_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:invalidation_rank",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Authority invalidation is signed, explicitly scoped, and always lowers authority rank."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-015",
+      "applies_to": [
+        "maskfactory_adoption_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:adoption_capabilities",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Adoption binds exact producer and consumer evidence and maps every accepted or rejected capability without allowing rejection of a required capability during partial adoption."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-016",
+      "applies_to": [
+        "maskfactory_release_snapshot",
+        "maskfactory_consumer_requirements",
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "maskfactory_adoption_receipt",
+        "mask_authority_invalidation_event",
+        "mask_repair_feedback",
+        "mask_bridge_event",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:trusted_role_signature",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Every signed record verifies against an independently adopted active role-authorized key, key-set hash, validity interval, rotation policy and revocation policy; embedded self-signed key substitution fails."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-017",
+      "applies_to": [
+        "maskfactory_capability_snapshot",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:runtime_neutrality",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Native virtual-environment routes bind interpreter, environment lock and venv manifest with null container; container routes bind image digest with null native fingerprints."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-018",
+      "applies_to": [
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:certificate_time_at_use",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Certificate issuance precedes receipt decision, receipt decision precedes expiry, and revocation evidence is fresh at or after the decision; active-but-expired and future-issued certificates fail."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-019",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:intent_output_bijection",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Every unique mask intent yields exactly one output matching label, artifact kind, coordinate space and canonical subject owner; inputs and Mode B outputs retain separate identities."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-020",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:protected_owner_roster",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Targets belong to the exact canonical subject; protected regions may belong to self, another character, a prop or environment only through an explicit hashed authorization roster."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-021",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:executable_transform_replay",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Typed crop, resize, pad, flip and projection steps are contiguous, dimensionally executable, hash-bound, invertible where required, replayed in order and roundtrip-verified."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-022",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:execution_observation",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Project/run/job/pass/attempt/hypothesis identities, timestamps, queue/runtime/total durations, worker lease, resources, route alternatives, deadline and retry materiality are exact and bounded."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-023",
+      "applies_to": [
+        "mask_bridge_event",
+        "maskfactory_release_snapshot",
+        "maskfactory_adoption_receipt",
+        "mask_authority_invalidation_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:signed_lifecycle_journal",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "The signed same-stream journal is contiguous and causal from genesis to independently pinned head, enforces legal submitted/unknown/reconcile/receipt-last/cache-tombstone/recovery transitions, and reconstructs fresh revocation state."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-024",
+      "applies_to": [
+        "mask_bridge_error",
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:error_policy_matrix",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Each closed error code deterministically fixes category, retryability, impact, remediation, retry delay and reroute requirement; unknown submission never resubmits."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-025",
+      "applies_to": [
+        "maskfactory_release_snapshot",
+        "maskfactory_capability_snapshot",
+        "maskfactory_adoption_receipt",
+        "operational_autonomy_certificate",
+        "mask_bridge_event"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:evidence_context_firewall",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Conformance fixtures cannot close production gates; runtime releases, capabilities, adoptions, events and certificates bind live evidence and partial libraries remain valid without invented routes."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-026",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:source_and_media_identity",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Encoded source bytes and canonical decoded pixels bind decoder, orientation, channels, alpha, dtype, color/ICC transform and exact still/frame/span identity including video hash, frame hash, index, PTS/timebase and neighbors."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-027",
+      "applies_to": [
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:mask_artifact_identity",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Every mask artifact identity binds encoded and decoded mask hashes, format, dimensions, dtype/value semantics, mask/visibility/empty semantics, content bounds/area, source pixels, owner and transform."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-028",
+      "applies_to": [
+        "maskfactory_release_snapshot",
+        "maskfactory_adoption_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:release_bundle_content",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Release/adoption recompute raw bytes, schema IDs, versions and record identities while rejecting drive/UNC/traversal, symlink/hardlink/reparse, case collision, unmanifested content and archive bombs."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-029",
+      "applies_to": [
+        "mask_repair_feedback",
+        "mask_acquisition_request",
+        "mask_acquisition_receipt",
+        "operational_autonomy_certificate"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:bounded_repair_feedback",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "Repair feedback binds exact parent receipt/release/capability/policy/certificate/source/media/subject/provider/output/protected/transform/QA/authority evidence, preserves immutable parents, changes hypothesis materially and abstains when budgets expire."
+    },
+    {
+      "invariant_id": "MF-BRIDGE-INV-030",
+      "applies_to": [
+        "operational_autonomy_certificate",
+        "mask_acquisition_receipt"
+      ],
+      "severity": "blocking",
+      "verifier_id": "maskfactory.validation:operational_qa_and_truth_firewall",
+      "verifier_version": "1.0.0",
+      "verifier_sha256": "e49a96174797f24e3e74c1f668e5d510bb04fa024d7c172e3d591d849c807f23",
+      "description": "All 19 deterministic, critic, ownership, protection, transform, perturbation, metamorphic, stability, repair, abstention and temporal gates pass exactly once; operational certification never counts as autonomous/human training gold or independent accuracy truth."
+    }
+  ],
+  "conformance_fixture_index": {
+    "fixture_set_id": "maskfactory-bridge-conformance",
+    "fixture_set_version": "1.0.0",
+    "relative_path": "tests/fixtures/mask_bridge_contracts",
+    "included_fixtures": [
+      {
+        "relative_path": "negative_contract_mutations_v1.json",
+        "role": "negative",
+        "sha256": "bbed73a545d415911062a3aed020d86daf639d3028f2afbe000aec8d05e0963b"
+      },
+      {
+        "relative_path": "negative_raw_mode_b_self_promotion_v1.json",
+        "role": "negative",
+        "sha256": "20b0cacbbe1f295e214aca385290b85b3c508497377f1f50acb2b9625985153f"
+      },
+      {
+        "relative_path": "positive_mode_b_predict_request_v1.json",
+        "role": "positive",
+        "sha256": "60c873c97b7bcf74e7a355919ba53cb8dc57c97574c470b42a8cde1a6eab040b"
+      }
+    ],
+    "sha256": "15d7327d7412cef1170dc8e803bb70ec988a9785911be29e75e3128a07303b80",
+    "positive_count": 1,
+    "negative_count": 2
+  },
+  "profile_sha256": "a3db5315315dbae51e718365d25bce433c4ab511df61110bddd5ec76cd8d8a83"
+}

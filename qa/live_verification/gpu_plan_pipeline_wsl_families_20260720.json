@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "consumer": "pipeline",
+    "decision": "run_now",
+    "foreign_holders": [],
+    "free_mib": 7635,
+    "lock_state": "active",
+    "reasons": [
+      "free=7635 MiB, required=6144 MiB, safety=512 MiB -> fits",
+      "gpu.lock already held for 'pipeline' (pid=47184)"
+    ],
+    "required_mib": 6144,
+    "safety_mib": 512
+  },
+  "snapshot": {
+    "compute_apps": [
+      {
+        "foreign": false,
+        "pid": 23244,
+        "process_name": "C:\\Users\\kevin\\AppData\\Local\\Programs\\cursor\\Cursor.exe",
+        "used_mib": null
+      },
+      {
+        "foreign": false,
+        "pid": 2280,
+        "process_name": "[Insufficient Permissions]",
+        "used_mib": null
+      },
+      {
+        "foreign": false,
+        "pid": 4,
+        "process_name": "[Insufficient Permissions]",
+        "used_mib": null
+      }
+    ],
+    "gpus": [
+      {
+        "free_mib": 7635,
+        "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "total_mib": 8151,
+        "used_mib": 265,
+        "util_pct": 26
+      }
+    ],
+    "nvidia_smi_available": true,
+    "probed_at": "2026-07-20T14:52:40.278395Z"
+  }
+}

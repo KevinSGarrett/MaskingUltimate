@@ -1,0 +1,32 @@
+schema_version: 1.0.0
+feedback_version: 1.0.0
+minimum_observations_for_adaptation: 2
+smoothing: {prior_attempts: 2, prior_failures: 1}
+predicted_rejection_cost:
+  failure_rate_weight: 0.75
+  normalized_gpu_cost_weight: 0.25
+  gpu_seconds_normalizer: 600.0
+  maximum: 1.0
+visibility:
+  useful_actual_cannot_exceed_predicted: true
+  empirical_ratio_replaces_base_after_minimum: true
+failure_mining:
+  demand_failure_rate_raises_priority: true
+  never_lowers_base_priority: true
+restrictions:
+  minimum_independent_failed_reports: 3
+  minimum_failure_rate: 0.75
+  eligible_reason_codes: [ASSET_HASH_MISMATCH, ASSET_DEPENDENCY_MISSING, ASSET_CERTIFICATE_INVALID, ID_UNKNOWN_VALUE, SEMANTIC_MAPPING_INVALID]
+  only_explicit_affected_asset_ids: true
+  effect: compatibility_eligible_false
+history:
+  historical_recipes_immutable: true
+  historical_outcomes_immutable: true
+  accepted_counts_require_certificate_reference: true
+authority:
+  stage: technical_planner_feedback
+  feedback_creates_recipe: false
+  feedback_creates_render_authority: false
+  feedback_creates_gold: false
+  synthetic_counts_close_real_deficits: false
+publication: {immutable: true, atomic: true}

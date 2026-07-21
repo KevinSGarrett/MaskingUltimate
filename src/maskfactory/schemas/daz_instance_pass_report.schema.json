@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_instance_pass_report.schema.json",
+  "title": "MaskFactory exact DAZ person-instance pass report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "report_id", "report_sha256", "scene_id", "contract_id",
+    "contract_sha256", "plan_id", "plan_sha256", "scene_state_sha256",
+    "execution_sha256", "file_sha256", "bytes", "codec", "observed_ids",
+    "owner_measurements", "findings", "summary"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "report_id": {"type": "string", "pattern": "^dipr_[0-9a-f]{24}$"},
+    "report_sha256": {"$ref": "#/$defs/sha256"},
+    "scene_id": {"type": "string"}, "contract_id": {"type": "string"},
+    "contract_sha256": {"$ref": "#/$defs/sha256"}, "plan_id": {"type": "string"},
+    "plan_sha256": {"$ref": "#/$defs/sha256"}, "scene_state_sha256": {"$ref": "#/$defs/sha256"},
+    "execution_sha256": {"$ref": "#/$defs/sha256"}, "file_sha256": {"$ref": "#/$defs/sha256"},
+    "bytes": {"type": "integer", "minimum": 1},
+    "codec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["format", "source_mode", "dtype", "resolution", "minimum", "maximum", "metadata_keys"],
+      "properties": {
+        "format": {"const": "PNG"}, "source_mode": {"type": "string"}, "dtype": {"const": "uint16"},
+        "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+        "minimum": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "maximum": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "metadata_keys": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "observed_ids": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 65535}},
+    "owner_measurements": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["p_index", "instance_id", "pixel_count", "visible_area_fraction"],
+        "properties": {
+          "p_index": {"type": "string"}, "instance_id": {"type": "integer"},
+          "pixel_count": {"type": "integer", "minimum": 0},
+          "visible_area_fraction": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["code", "path", "detail"],
+        "properties": {
+          "code": {"type": "string", "pattern": "^INSTANCE_[A-Z0-9_]+$"},
+          "path": {"type": "string", "pattern": "^/"}, "detail": {"type": "string"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "finding_count", "failure_codes", "owner_count", "scene_state_unchanged", "semantic_replay_identical"],
+      "properties": {
+        "passed": {"type": "boolean"}, "finding_count": {"type": "integer", "minimum": 0},
+        "failure_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "owner_count": {"type": "integer", "minimum": 1, "maximum": 4},
+        "scene_state_unchanged": {"type": "boolean"}, "semantic_replay_identical": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

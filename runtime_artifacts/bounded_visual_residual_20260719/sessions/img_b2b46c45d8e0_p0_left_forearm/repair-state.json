@@ -1,0 +1,21 @@
+{
+  "accepted_map_path": "C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\bounded_visual_residual_20260719\\sessions\\img_b2b46c45d8e0_p0_left_forearm\\repair-output\\accepted_001_remove_small_components_max_ontology.png",
+  "accepted_map_sha256": "4eaaa08a88e71aae56012212d2ba0bd6b7f21fcaddf2d7d0462b9a5dc14b076f",
+  "accepted_parent_id": "img_b2b46c45d8e0-p0-left_forearm-residual-v1",
+  "attempts": [
+    {
+      "accepted_parent_id": "img_b2b46c45d8e0-p0-left_forearm-residual-v1",
+      "accepted_parent_map_sha256": "ae024d3ec74b17345aa50eddb1d71b5b7f43654c81ac8b7de3eb808fa284fcf4",
+      "candidate_complete_map_sha256": "4eaaa08a88e71aae56012212d2ba0bd6b7f21fcaddf2d7d0462b9a5dc14b076f",
+      "candidate_mask_sha256": "17378f29291fff8461971f539a38190e76b66b1cc86dfc03c6495edec68549d6",
+      "elapsed_seconds": 1.0,
+      "hypothesis_id": "remove_small_components_max_ontology",
+      "outcome": "accepted_reversible_repair",
+      "reason": "complete_map_qa_improved",
+      "resource_units": 1.0,
+      "score_ppm": 262532
+    }
+  ],
+  "schema_version": "1.0.0",
+  "terminal_outcome": null
+}

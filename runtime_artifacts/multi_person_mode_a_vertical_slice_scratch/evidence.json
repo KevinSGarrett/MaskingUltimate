@@ -1,0 +1,146 @@
+{
+  "ambiguity_verdict": {
+    "cross_instance_bleed_absent": true,
+    "protected_region_violation_absent": true,
+    "reciprocal_contact_present": true,
+    "verdict_sha256": "e17469a3ea90b07ca2c10a66d9589fac9db1bc25af3077cf44243be135a76260",
+    "zero_ownership_ambiguity": true
+  },
+  "claim_boundary": {
+    "fixture_main_bound": true,
+    "independent_real_accuracy_claim": false,
+    "main_adapter_execution_complete": false,
+    "mf_p6_12_02_prerequisite_complete": false,
+    "mf_p6_12_03_complete": false,
+    "notes": "Producer fixture covers overlapping/contact duo Mode A reads, ownership/skeleton/protected/transform evidence, multi-person gate pass, seeded wrong-person/cross-instance rejection, and zero ownership-ambiguity verdict. Fixture Main may bind synthetic duo adapter/ComfyUI receipts without claiming production adoption or independent_real_accuracy.",
+    "producer_fixture_slice_complete": true
+  },
+  "decided_at": "2026-07-19T14:00:00Z",
+  "decision_sha256": "5c2efbf531db54680a99ca72ab9faaca5324bf60ce829b747534f280efc87e5f",
+  "external_probe": {
+    "adopted_package_transaction": true,
+    "authority_kind": "fixture_authority",
+    "detail": "Fixture Main duo adapter/ComfyUI receipts bound under fixture_authority.",
+    "downstream_comfyui_result_history": true,
+    "main_adapter_execution": true
+  },
+  "fixture_truth_tier": "synthetic_contract_fixture",
+  "multi_person_gate": {
+    "blockers": [],
+    "gate_sha256": "4113c239677aad13e9131ee05051bce558a63e551b531a270443fb28b527519a",
+    "instance_context": "duo",
+    "passed": true,
+    "promoted_instances": [
+      "p0",
+      "p1"
+    ]
+  },
+  "ownership_evidence": {
+    "ownership_mask_sha256s": {
+      "p0": "dc5d7f755edf9d467405885d7830176678512ef568d9bfffdb28756494835170",
+      "p1": "f148d18d2fe075e397169e851daa61c5c9617d849f8a16d571e07349546ae6b6"
+    },
+    "ownership_masks_bound": true,
+    "protected_region_count": 2,
+    "protected_regions_bound": true,
+    "skeleton_catalog_bound": true,
+    "skeleton_sha256s": {
+      "p0": "08c297602224140746c79b4b7c3050621b8781cd94d9a04b804022a76738a164",
+      "p1": "aab9833a11d4d8e43a42090041745b5e08fbd3c2b8ce4f55b7713aa3fec93741"
+    },
+    "transform_chain_sha256s": {
+      "p0": "18ea76d6d9d7f6945eb8520faab3427b5f29db46c160f11b1e91e5d3c36b5a08",
+      "p1": "4a3ebb1469ae9d738539f7555f1eea97fcae07434e62f6d5c84cf57fbe45b11b"
+    },
+    "transform_chains_bound": true
+  },
+  "package_fixture": {
+    "catalog_sha256": "22a0db2fbf5eed67f84062be79b46b69ec1d4bfa1bbd9cb4e9c5ccac6f5a2399",
+    "distinct_character_instances": true,
+    "image_id": "img_duo_contact_overlap_v1",
+    "instance_context": "duo",
+    "persons": [
+      {
+        "character_instance_id": "char-inst-char-rev-alice-v1",
+        "character_revision": "char-rev-alice-v1",
+        "instance_id": "p0",
+        "label": "torso",
+        "owner_id": "person-0",
+        "ownership_mask_sha256": "dc5d7f755edf9d467405885d7830176678512ef568d9bfffdb28756494835170",
+        "package_id": "pkg-duo-contact-p0",
+        "person_index": 0,
+        "protected_region_id": "prot-p0-face",
+        "scene_instance_id": "scene-duo-p0",
+        "skeleton_sha256": "08c297602224140746c79b4b7c3050621b8781cd94d9a04b804022a76738a164",
+        "transform_chain_sha256": "18ea76d6d9d7f6945eb8520faab3427b5f29db46c160f11b1e91e5d3c36b5a08"
+      },
+      {
+        "character_instance_id": "char-inst-char-rev-bob-v1",
+        "character_revision": "char-rev-bob-v1",
+        "instance_id": "p1",
+        "label": "torso",
+        "owner_id": "person-1",
+        "ownership_mask_sha256": "f148d18d2fe075e397169e851daa61c5c9617d849f8a16d571e07349546ae6b6",
+        "package_id": "pkg-duo-contact-p1",
+        "person_index": 1,
+        "protected_region_id": "prot-p1-face",
+        "scene_instance_id": "scene-duo-p1",
+        "skeleton_sha256": "aab9833a11d4d8e43a42090041745b5e08fbd3c2b8ce4f55b7713aa3fec93741",
+        "transform_chain_sha256": "4a3ebb1469ae9d738539f7555f1eea97fcae07434e62f6d5c84cf57fbe45b11b"
+      }
+    ],
+    "relationship_kind": "contact",
+    "source_decoded_pixel_sha256": "e20a2a5591470866229510c2f3f7a78c74436c466f45bfdab316f178340c57b7",
+    "source_encoded_sha256": "1f693fc6dde8034815184bec200bf4bf39a363d4eb1c36d317dc230949bbf300"
+  },
+  "person_reads": {
+    "both_accepted": true,
+    "distinct_package_ids": true,
+    "p0": {
+      "character_revision": "char-rev-alice-v1",
+      "decision_sha256": "afb776a05f62d18dc0f6eca44e082b21d5087b54abdd4b9d561a6ccc2a7ac977",
+      "owner_id": "person-0",
+      "package_id": "pkg-duo-contact-p0",
+      "person_index": 0,
+      "scene_instance_id": "scene-duo-p0",
+      "status": "accepted",
+      "transform_roundtrip_passed": true
+    },
+    "p1": {
+      "character_revision": "char-rev-bob-v1",
+      "decision_sha256": "f46fcb1a0c5c924da24d3db7bcee16495385ec73817031b00f4c08ddce46eec9",
+      "owner_id": "person-1",
+      "package_id": "pkg-duo-contact-p1",
+      "person_index": 1,
+      "scene_instance_id": "scene-duo-p1",
+      "status": "accepted",
+      "transform_roundtrip_passed": true
+    }
+  },
+  "policy_id": "maskfactory-bridge-multi-person-mode-a-vertical-slice-v1",
+  "policy_sha256": "a551cc6a31ea21082092a0f5228c3625a65d8ef89bb7432b3999ae330a551e47",
+  "record_type": "multi_person_mode_a_vertical_slice_evidence",
+  "rejection_reasons": [
+    "eligible"
+  ],
+  "schema_version": "1.0.0",
+  "seeded_faults": {
+    "cross_instance": {
+      "blocking_reason_codes": [
+        "instance_mismatch"
+      ],
+      "decision_sha256": "68d18258b2a9b589f28855f1d21929dd1a00d73f1c6ce6aec2ecce754a1daca9",
+      "injected": true,
+      "rejected": true
+    },
+    "wrong_person": {
+      "blocking_reason_codes": [
+        "wrong_owner"
+      ],
+      "decision_sha256": "e5ff54de76cef2e4d800fb84fee939fd434e8f0285cd8ae48dff21d94c066655",
+      "injected": true,
+      "rejected": true
+    }
+  },
+  "status": "accepted"
+}

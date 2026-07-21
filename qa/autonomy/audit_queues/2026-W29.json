@@ -1,0 +1,12 @@
+{
+  "outcomes_status": "empty",
+  "period_id": "2026-W29",
+  "population_count": 0,
+  "random_selected_count": 0,
+  "records": [],
+  "risk_selected_count": 0,
+  "schema_version": "1.0.0",
+  "selected_count": 0,
+  "selection_fraction": 0.0,
+  "selection_method": "preoutcome_random_plus_risk_bucket_oversample"
+}

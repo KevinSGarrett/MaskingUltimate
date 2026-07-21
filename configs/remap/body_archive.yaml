@@ -1,0 +1,15 @@
+schema_version: "1.0.0"
+source: body_archive
+source_root: C:/Comfy_UI_Main/MaskedWarehouse/Body/archive
+source_encoding: RGB color maps paired by stem; 680 values observed across 175 masks due off-palette edge pixels
+status: blocked_label_semantics_and_palette_normalization
+source_authority: external_source_maps_never_gold
+license: unknown; workbook and upstream provenance require review
+training_allowed: false
+group_folders: [Men I, Men II, Men Neuro, Women I, Women II, Women III, Women IV]
+normalization:
+  action: ambiguous_do_not_use
+  requirement: derive canonical palette from source workbook, then define tested exact or bounded nearest-color normalization
+  forbid: silently treating anti-aliased/off-palette pixels as semantic classes
+unresolved_reason: Human Segmentation 7 Types.xlsx requires the mandated spreadsheet runtime, unavailable in this session
+mapping_default: {action: ambiguous_do_not_use, part: [], material: []}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "review_date": "2026-07-12",
+  "window_days": 30,
+  "required_distinct_failures": 10,
+  "failure_queue_path": "qa/failure_queue.jsonl",
+  "failure_queue_present": true,
+  "failure_queue_records": 19,
+  "failure_queue_sha256": "05d7817e65b876a6bb607dcea61d344abadcef5ce8015e1accf70f105f86ef39",
+  "candidates": {
+    "per_toe_splits": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "inner_outer_thigh": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "shin_front": {"distinct_qualifying_failures": 0, "decision": "no_go"},
+    "enable_ears_54_55": {"distinct_qualifying_failures": 0, "decision": "no_go"}
+  },
+  "overall_decision": "no_go_keep_body_parts_v1",
+  "reason": "The queue contains 19 current records (18 QC-014 and one QC-035); none is attributable to a proposed v2 boundary, so no candidate reaches the mandatory 10-distinct-failures-in-30-days growth bar.",
+  "changes_authorized": []
+}

@@ -1,0 +1,145 @@
+{
+  "artifact_type": "mode_b_predict_draft_provider_policy_blocker",
+  "captured_at": "2026-07-19T22:00:20.084398Z",
+  "claim_boundary": {
+    "draft_challenger_serving_path": "STATIC_PASS_POLICY_REFUSAL",
+    "invented_champion_win": false,
+    "mf_p6_12_04_complete": false,
+    "mode_b_health_models": "RUNTIME_PASS_BOUNDED",
+    "mode_b_predict_draft": "AWAITING_RUNTIME",
+    "production_evidence": "NOT_CLAIMED",
+    "promotion_eligible_smoke_without_champion": false,
+    "visual_qa": "NOT_CLAIMED"
+  },
+  "disposition": {
+    "force_register_draft_challenger_as_champion": false,
+    "reason": "Governed registry and serving stack have no draft prediction role or incumbent smoke serving path for Mode B /predict. Force-registering would invent a training champion win and violate champion_* + complete-set gates.",
+    "unblock_path": "Measured P5 promotion creating verified champion_bodypart (+ hand/clothing as required by sequential residency) then create_production_runtime auto-configures predictor; then re-prove RUNTIME_PASS_BOUNDED predict+refine with promotion_eligible=false",
+    "wire_temporary_predict_provider": false
+  },
+  "draft_authority_clarification": {
+    "incumbent_serving_role_for_local_smoke_exists": false,
+    "meaning_of_draft_in_mode_b": "Draft refers to response authority floor (status draft_model_generated; promotion_eligible=false), NOT permission to serve non-champion/challenger checkpoints on /predict",
+    "temporary_draft_serving_role_exists": false
+  },
+  "investigation_question": "Can a governed draft-only challenger/incumbent be registered as a temporary Mode B predict provider without inventing a training champion win?",
+  "live_reprobe": {
+    "champion_count": 0,
+    "configured_models": [],
+    "governed_model_count": 17,
+    "governed_roles": [
+      "boundary_refiner_oom_fallback",
+      "dense_human_surface_prior",
+      "dwpose_person_detector",
+      "fallback_human_parsing_atr_18_class",
+      "fallback_human_parsing_lip_20_class",
+      "hair_and_face_detail_fallback",
+      "hand_21_landmarks_and_handedness",
+      "local_vlm",
+      "manifest_linter",
+      "open_vocabulary_boxes_only",
+      "person_detector",
+      "primary_boundary_refiner",
+      "primary_human_parsing_28_class_goliath",
+      "primary_person_silhouette",
+      "trimap_seeded_hair_and_material_alpha_matte",
+      "wholebody_pose_133_keypoints"
+    ],
+    "health_body_sha256": "14b88ca2dd01ebd24688a6c93f5d3fdfe3324822bf5eab5bd87e6f91151f991e",
+    "health_http_status": 200,
+    "health_status": "ok",
+    "loaded_models": [],
+    "models_body_sha256": "4a3a89dd954fc031c5ff68bc25bb09f778b4e7251c72b08085f97f6e78a31f90",
+    "models_http_status": 200,
+    "predict_body": "{\"detail\":\"champion prediction provider is not configured\"}",
+    "predict_exact_blocker": "champion prediction provider is not configured (HTTP 503); champions=0; configured_models=[]",
+    "predict_http_status": 503
+  },
+  "policy_gates": [
+    {
+      "file": "src/maskfactory/serve/api.py",
+      "id": "serving_predictor_champion_roles_only",
+      "line": 179,
+      "rule": "configure_champion_predictor raises ServingError unless every role startswith champion_",
+      "static_probe": {
+        "error": "serving predictor may load champion_* roles only",
+        "roles": [
+          "primary_human_parsing_28_class_goliath"
+        ]
+      },
+      "static_probe_challenger_role": {
+        "error": "serving predictor may load champion_* roles only",
+        "roles": [
+          "challenger_bodypart"
+        ]
+      },
+      "tier": "STATIC_PASS"
+    },
+    {
+      "file": "src/maskfactory/serve/api.py",
+      "id": "predict_requires_configured_champion_predictor",
+      "line": 326,
+      "live_probe": {
+        "detail": "champion prediction provider is not configured",
+        "http_status": 503
+      },
+      "rule": "InferenceRuntime.predict refuses when predictor is None with exact message champion prediction provider is not configured",
+      "tier": "RUNTIME_PASS_BOUNDED"
+    },
+    {
+      "file": "src/maskfactory/serve/api.py",
+      "id": "create_production_runtime_complete_champion_set_only",
+      "line": 462,
+      "observed": {
+        "predictor_configured": false,
+        "present_champions": 0
+      },
+      "rule": "create_production_runtime configures sequential champions only when required champion roles are a subset of present champions; otherwise predictor stays None (health/models still serve)",
+      "tier": "STATIC_PASS"
+    },
+    {
+      "file": "src/maskfactory/models/registry.py",
+      "id": "training_candidate_registers_challenger_only",
+      "line": 885,
+      "rule": "register_training_candidate refuses champion_* and any role other than challenger_bodypart",
+      "static_probe": {
+        "candidate_key": "probe-fake-candidate",
+        "candidate_role": "champion_bodypart",
+        "error": "completed body-part runs register only as challenger_bodypart",
+        "note": "Role gate fires after key validation when key is valid; champion_* refused before any file copy"
+      },
+      "tier": "STATIC_PASS"
+    },
+    {
+      "file": "src/maskfactory/models/registry.py",
+      "id": "promotion_requires_measured_transaction",
+      "related_item": "MF-P5-10.11",
+      "rule": "promote_model_role / promote_custom_segmenter_role require verified matrix/smoke evidence; inventing a champion pointer without measured win is forbidden",
+      "tier": "STATIC_PASS"
+    }
+  ],
+  "prior_evidence": "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json",
+  "related_tracker_items": [
+    "MF-P6-12.04",
+    "MF-P6-11.03",
+    "MF-P6-02.03",
+    "MF-P5-10.11"
+  ],
+  "schema_version": "1.0.0",
+  "self_sha256": "edc2b4cd641f2b0e1d02a01c31d0188f00300b33b6a8f92c5c2b33b2278dcdf3",
+  "source_hashes": {
+    "api_py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
+    "prior_health_evidence": "d94e5bbbcb136db0901555a444a490b5ffee43968fb83acd24d190197267c805",
+    "registry_py": "8ee3c3272ead50e9dd1d30e8d3c50fa3e41f72e827bf8675061a016bee033f34",
+    "test_serve_api_py": "9507b18b3722f058a9384e3a5b52751b2a1615c86edf52b24769076d45a7cad7"
+  },
+  "tiers": {
+    "draft_provider_registration_for_predict": "STATIC_BLOCKED_BY_POLICY",
+    "mf_p6_12_04_item_complete": false,
+    "mode_b_champion_backed_prediction": "AWAITING_RUNTIME",
+    "mode_b_predict_draft": "AWAITING_RUNTIME",
+    "mode_b_refine_draft": "AWAITING_RUNTIME",
+    "mode_b_windows_loopback_health_models": "RUNTIME_PASS_BOUNDED"
+  },
+  "verdict": "NO \u2014 policy forbids. Do not force-register."
+}

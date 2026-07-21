@@ -1,0 +1,47 @@
+{
+  "active_ontology_preserved": "body_parts_v1",
+  "artifacts": {
+    "models/model_registry.json": {
+      "expected_v1_sha256": "1ed34662264abe9417f18abee5330c5058835de6a1ad5e15a903e878df306dd0",
+      "restored_exactly": true,
+      "restored_v1_sha256": "1ed34662264abe9417f18abee5330c5058835de6a1ad5e15a903e878df306dd0",
+      "simulated_v2_drift_sha256": "6fad39e3e0ebbf7ec2a591ebf1d599fac412d12169116b58b684e419351e4ee4"
+    },
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_bodypart_conditioned.json": {
+      "expected_v1_sha256": "8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1",
+      "restored_exactly": true,
+      "restored_v1_sha256": "8237e3d43bbdb6618b66b8397380ac7f3e395c5d0ef92c57c8943b8c72839af1",
+      "simulated_v2_drift_sha256": "fea5e84a9a00163b14189113f9a832aa2c476f48226da9a883cc95e0c9a89a4a"
+    },
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_inpaint_gold_hand.json": {
+      "expected_v1_sha256": "81c2a3b809835bfa821f5775bd266644022b1f249ef3c3dac3a4563d52498cc1",
+      "restored_exactly": true,
+      "restored_v1_sha256": "81c2a3b809835bfa821f5775bd266644022b1f249ef3c3dac3a4563d52498cc1",
+      "simulated_v2_drift_sha256": "23e33749f6c5501f183a9ebfbd3a04a202be6d972d08ba340b67ef0cb8f8de01"
+    },
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_live_predict_inpaint.json": {
+      "expected_v1_sha256": "8202244036cdc2d90ba744ebe1a8130a194224f995f6b0173724fa7ee87646cc",
+      "restored_exactly": true,
+      "restored_v1_sha256": "8202244036cdc2d90ba744ebe1a8130a194224f995f6b0173724fa7ee87646cc",
+      "simulated_v2_drift_sha256": "71cc3ff3fd7310819c13878de772f212a2c4f33f83710b22699f20a302f69036"
+    },
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_multi_instance_p1.json": {
+      "expected_v1_sha256": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418",
+      "restored_exactly": true,
+      "restored_v1_sha256": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418",
+      "simulated_v2_drift_sha256": "6c773be8e4e3e79f23c37b2f689254ba7dd8368334dc726799a176c0d8b5aec7"
+    },
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_person_index_default_p0.json": {
+      "expected_v1_sha256": "698bf22e65760ffa0cba32b3d18300dd49ab7221bc0633de988817e0114af31e",
+      "restored_exactly": true,
+      "restored_v1_sha256": "698bf22e65760ffa0cba32b3d18300dd49ab7221bc0633de988817e0114af31e",
+      "simulated_v2_drift_sha256": "b0f36a8c8121ac8139d2953334471da1b32f4dc80c576d937d8154c8f7e2d18f"
+    }
+  },
+  "champion_pointers_restored": [],
+  "mode": "isolated_copy_no_production_mutation",
+  "result": "pass",
+  "schema_version": "1.0.0",
+  "source_unchanged": true,
+  "v2_activation_performed": false
+}

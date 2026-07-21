@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T08:55:24Z",
+  "item": "MF-P9-10.06",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_validation_feedback_complete": true,
+    "adaptive_simulation_verify_clause_passed": true,
+    "qualified_live_d7_outcome_snapshot_available": false
+  },
+  "outcome_contract": {
+    "source": "versioned_d7_validation_outcomes",
+    "full_v0_v8_validation_reports_embedded_and_semantically_rebuilt": true,
+    "outcome_snapshot_semantic_sha256_required": true,
+    "observation_ids_content_addressed": true,
+    "accepted_counts_require_certificate_id_and_sha256_reference": true,
+    "passing_validation_without_certificate_does_not_count_as_accepted": true,
+    "targets_bind_required_and_current_accepted_counts": true
+  },
+  "feedback_statistics": {
+    "failure_rate_by_demand": true,
+    "failure_rate_by_scene_family_combination": true,
+    "failure_rate_by_asset": true,
+    "acceptance_yield_by_demand_family_and_asset": true,
+    "gpu_seconds_and_cost_per_accept": true,
+    "actual_useful_label_visibility_achievement": true,
+    "underfilled_target_cells": true,
+    "assembly_geometry_render_camera_failure_regions": true,
+    "reason_counts": true
+  },
+  "adaptation_policy": {
+    "minimum_observations": 2,
+    "failure_smoothing": {
+      "prior_attempts": 2,
+      "prior_failures": 1
+    },
+    "predicted_rejection_cost": {
+      "failure_rate_weight": 0.75,
+      "normalized_gpu_cost_weight": 0.25,
+      "gpu_seconds_normalizer": 600.0,
+      "maximum": 1.0
+    },
+    "label_visibility_gain_uses_empirical_useful_over_predicted_ratio": true,
+    "demand_failure_rate_can_raise_but_never_lower_failure_mining_priority": true,
+    "base_d3_d5_values_preserved_without_minimum_feedback": true
+  },
+  "evidence_backed_restrictions": {
+    "minimum_independent_failed_reports": 3,
+    "minimum_asset_failure_rate": 0.75,
+    "only_explicit_affected_asset_ids": true,
+    "eligible_reasons": [
+      "ASSET_HASH_MISMATCH",
+      "ASSET_DEPENDENCY_MISSING",
+      "ASSET_CERTIFICATE_INVALID",
+      "ID_UNKNOWN_VALUE",
+      "SEMANTIC_MAPPING_INVALID"
+    ],
+    "effect": "compatibility_eligible_false",
+    "arbitrary_failure_flags_or_unaffected_assets_cannot_create_restriction": true
+  },
+  "adaptive_simulation": {
+    "baseline_selection_bound": true,
+    "two_independent_geometry_failures_injected_for_original_rank_one_family": true,
+    "original_rank_one_predicted_rejection_cost_after": "greater_than_0.8",
+    "original_rank_one_empirical_label_visibility_after": 0.0,
+    "d9_04_reexecuted_with_adapted_snapshot": true,
+    "selected_candidate_changed": true,
+    "original_selection_byte_unchanged": true,
+    "original_outcome_snapshot_byte_unchanged": true,
+    "three_independent_asset_failures_create_explicit_compatibility_gate": true
+  },
+  "publication_and_cli": {
+    "closed_json_schema": true,
+    "schema_registered": true,
+    "policy_semantic_sha256": "d6e7da0e695d2a2aee64ec08a006dc0070d94a786620f90c31c6ce08e317abad",
+    "base_and_adapted_qualification_sources_are_explicitly_distinct": true,
+    "feedback_report_semantically_recomputed": true,
+    "adapted_snapshot_semantic_sha256_recomputed": true,
+    "report_atomic_immutable_idempotent_publication": true,
+    "direct_qualification_atomic_immutable_idempotent_publication": true,
+    "cli": "maskfactory daz coverage apply-feedback",
+    "cli_fixture_replay": "pass"
+  },
+  "history_and_authority_boundary": {
+    "historical_recipes_immutable": true,
+    "historical_outcomes_immutable": true,
+    "feedback_applies_only_to_future_qualification": true,
+    "feedback_creates_recipe": false,
+    "feedback_creates_render_authority": false,
+    "feedback_creates_gold": false,
+    "synthetic_counts_close_real_deficits": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "separate_autonomy_bridge_worktree_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "future_selection_may_consume_explicit_adaptive_snapshot": true,
+    "downstream_consumers_may_not_infer_render_or_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_file_sha256": "c9e59d08f99c1a12d83da7b9a357659d1f367491da14f6e49acda6ff53305fbc",
+    "feedback_schema_sha256": "a972eeebef9e5dd54692d4bce637f54e5c0d12b4436908a43a3787eabcfb0f1f",
+    "selection_schema_sha256": "2cb75a3cd4a61ecdd8fb0f960c580616d5550609985fb7ebf38ae5d093003940",
+    "implementation_sha256": "5015216d2fa94f38cc089da664198f2ba0786f8006cd85feca79a5561f9b4c7c",
+    "selection_implementation_sha256": "057ba6f3b9bcf2987a051426a6dc48f79b810b8a766d7b806039bed8ab3744ad",
+    "package_init_sha256": "95ad16ccdc5a0f04d14cdc7c50b7dddfe96de536c0a5c2f60e990dc089137fbd",
+    "cli_sha256": "7aa53ebf4da8bdd4d0150d1f4f94095742d72d5ad19dcf1bbb71ff3a9e178a69",
+    "validation_registry_sha256": "55326b607d1322250c63d586635fa5a70baa10f2edce37174bc5f727ddd54a38",
+    "tests_sha256": "5177bbc8f368a78b1c4c55d854cb7a8230e12362d68452cedb1e23b4bef14dce"
+  },
+  "verification": {
+    "focused_feedback_tests_collected": 11,
+    "focused_feedback_tests_passed": 11,
+    "candidate_selection_tests_collected": 10,
+    "candidate_selection_tests_passed": 10,
+    "concentration_tests_collected": 13,
+    "concentration_tests_passed": 13,
+    "validation_registry_tests_collected": 72,
+    "validation_registry_tests_passed": 72,
+    "core_validation_tests_collected": 13,
+    "core_validation_tests_passed": 13,
+    "candidate_generation_tests_collected": 10,
+    "candidate_generation_tests_passed": 10,
+    "deficit_adapter_tests_collected": 9,
+    "deficit_adapter_tests_passed": 9,
+    "coverage_vocabulary_tests_collected": 14,
+    "coverage_vocabulary_tests_passed": 14,
+    "directly_relevant_tests_collected": 152,
+    "directly_relevant_tests_passed": 152,
+    "current_daz_wide_pass_claimed": false,
+    "current_full_repository_pass_claimed": false,
+    "ruff_changed_surface_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "json_schema_meta_validation": "pass",
+    "maskfactory_json_schemas_parsed": 135,
+    "daz_yaml_documents_parsed": 42,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "autonomy_bridge_worktree_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_adaptive_simulation_verify_clause_complete": true,
+    "qualified_live_d7_validation_outcomes_available": false,
+    "qualified_live_d3_d5_candidate_batch_and_base_qualification_available": false,
+    "live_adaptive_feedback_report_available": false,
+    "reason": "The structured V0-V8 outcome adapter, acceptance-aware aggregates, empirical rejection/visibility feedback, evidence-backed restrictions, adaptive D9-04 reranking, immutable histories, schemas, CLI, publication, and simulation pass. Qualified live D7 outcomes and live D3/D5 candidate qualifications are not available for a live feedback cycle."
+  },
+  "not_claimed": [
+    "live D7 outcome feedback cycle",
+    "live adaptive selection",
+    "resolved scene recipe",
+    "render authorization",
+    "generated or accepted synthetic scene",
+    "real deficit closure",
+    "human or autonomous-certified gold",
+    "current DAZ-wide or full-repository pass"
+  ]
+}

@@ -1,0 +1,15 @@
+schema_version: 1.0.0
+policy_id: candidate_stability_v1
+required_perturbations: [resize, crop, color, prompt, horizontal_flip]
+boundary_tolerance_px: 2
+
+risk_bucket_thresholds:
+  large_parts: {certifiable: true, minimum_iou: 0.98, minimum_boundary_f: 0.95, maximum_area_delta: 0.02}
+  small_parts: {certifiable: true, minimum_iou: 0.94, minimum_boundary_f: 0.90, maximum_area_delta: 0.05}
+  hands_feet: {certifiable: true, minimum_iou: 0.93, minimum_boundary_f: 0.88, maximum_area_delta: 0.05}
+  hair_boundaries: {certifiable: true, minimum_iou: 0.92, minimum_boundary_f: 0.85, maximum_area_delta: 0.06}
+  clothing_materials: {certifiable: true, minimum_iou: 0.95, minimum_boundary_f: 0.90, maximum_area_delta: 0.04}
+  sensitive_anatomy: {certifiable: true, minimum_iou: 0.97, minimum_boundary_f: 0.93, maximum_area_delta: 0.03}
+  occlusion_contact: {certifiable: true, minimum_iou: 0.92, minimum_boundary_f: 0.85, maximum_area_delta: 0.06}
+  multi_person_overlap: {certifiable: true, minimum_iou: 0.94, minimum_boundary_f: 0.88, maximum_area_delta: 0.05}
+  out_of_distribution: {certifiable: false, minimum_iou: 1.00, minimum_boundary_f: 1.00, maximum_area_delta: 0.00}

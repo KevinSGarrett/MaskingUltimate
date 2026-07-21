@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "core_autonomous_runtime",
+  "profile_version": "1.0.0",
+  "profile_class": "core_autonomous_runtime",
+  "status": "active",
+  "required_for_core_runtime": true,
+  "purpose": "Certify an autonomous MaskFactory runtime and its ComfyUI bridge for an exact, versioned, evidence-bound operating scope.",
+  "claim_scope": {
+    "ceiling": "operational_policy_conformance",
+    "allowed_claims": [
+      "The exact bound artifacts passed the declared deterministic, critic, ownership, transform, recovery, and integration gates.",
+      "The pinned producer release and adopted consumer contract completed the certified end-to-end operating slice."
+    ],
+    "forbidden_claims": [
+      "General population accuracy beyond the exact evidence-bound scope.",
+      "Unbounded quality guarantees for unseen distributions.",
+      "Authority for artifacts, labels, contexts, providers, or versions absent from the certificate.",
+      "Treating operationally certified artifacts as training gold, accuracy truth, or contributions to independent-real-accuracy and corpus-volume gates without a separate signed promotion transaction."
+    ]
+  },
+  "dependency_policy": {
+    "external_labeling": "not_required",
+    "minimum_corpus_volume": "not_required",
+    "asset_ecosystem_expansion": "not_required",
+    "long_duration_soak": "not_required"
+  },
+  "required_gates": [
+    {
+      "gate_id": "CORE-CONTRACTS",
+      "category": "contract",
+      "blocking": true,
+      "evidence_types": [
+        "strict_schema_validation",
+        "positive_negative_contract_fixtures",
+        "wire_schema_hash_manifest",
+        "canonical_json_golden_vectors",
+        "authenticated_consumer_and_producer_envelopes"
+      ],
+      "acceptance": "Every producer and consumer bridge document validates against its pinned schema and portable canonicalization vectors; authenticated envelopes bind nonce, role, trust set, and exact payload; every negative invariant fixture fails closed."
+    },
+    {
+      "gate_id": "CORE-RELEASE-INTEGRITY",
+      "category": "integration",
+      "blocking": true,
+      "evidence_types": [
+        "clean_git_snapshot",
+        "artifact_hashes",
+        "trusted_role_key_registry",
+        "release_signature",
+        "signed_event_journal_checkpoint",
+        "revocation_state_checkpoint",
+        "consumer_adoption_receipt"
+      ],
+      "acceptance": "The consumer pins and adopts one immutable producer snapshot with out-of-band trusted role keys, verified signatures and raw-byte hashes, a complete signed journal genesis-to-head checkpoint, fresh revocation state, compatibility, and contract-test evidence."
+    },
+    {
+      "gate_id": "CORE-AUTONOMOUS-AUTHORITY",
+      "category": "autonomy",
+      "blocking": true,
+      "evidence_types": [
+        "operational_autonomy_certificate",
+        "authority_crosswalk",
+        "revocation_check_at_use",
+        "abstention_evidence",
+        "operational_truth_tier_firewall",
+        "separate_training_gold_promotion_transaction"
+      ],
+      "acceptance": "Access mode never determines authority; Mode A and Mode B are noncertified unless wrapped by an active, unrevoked, exact-route/output operational certificate with scope, QA, roundtrip, lineage, and at-use revocation gates passing; the operational tier cannot count as training or accuracy gold and the controller cannot self-escalate authority."
+    },
+    {
+      "gate_id": "CORE-EXACT-OUTPUT-QA",
+      "category": "quality",
+      "blocking": true,
+      "evidence_types": [
+        "deterministic_qa",
+        "critic_qa",
+        "encoded_and_decoded_pixel_identity",
+        "decoded_mask_identity",
+        "multi_instance_ownership",
+        "protected_owner_roster",
+        "executable_transform_replay",
+        "transform_roundtrip",
+        "protected_region_qa",
+        "temporal_consistency_when_video_scoped"
+      ],
+      "acceptance": "All blocking gates bind encoded and canonical decoded pixels, exact mask identity, canonical subject/provider assignment, explicit target/protected owner roster, executable typed transform steps and roundtrip, and video temporal consistency where supported; otherwise the runtime abstains and quarantines the affected artifact."
+    },
+    {
+      "gate_id": "CORE-RECOVERY",
+      "category": "recovery",
+      "blocking": true,
+      "evidence_types": [
+        "idempotent_replay",
+        "signed_lifecycle_event_journal",
+        "submitted_unknown_reconciliation",
+        "receipt_last_atomic_commit",
+        "typed_error_matrix",
+        "circuit_breaker",
+        "restart_resume",
+        "cache_tombstone_recovery",
+        "invalidation_replay"
+      ],
+      "acceptance": "Retries are bounded and materially changed, transport replay is idempotent, submitted-but-unknown work is reconciled without duplicate or unreconciled resubmission, exactly one new submission is permitted only after a signed verified remote not-found result, the receipt is the last atomic commit, signed invalidations tombstone eligibility and cache state, and failures block only dependent passes."
+    },
+    {
+      "gate_id": "CORE-END-TO-END",
+      "category": "runtime",
+      "blocking": true,
+      "evidence_types": [
+        "single_instance_vertical_slice",
+        "multi_instance_vertical_slice",
+        "mode_a_package_read",
+        "mode_b_draft_path",
+        "still_image_scope",
+        "exact_video_frame_scope_when_supported",
+        "exact_frame_span_scope_when_supported"
+      ],
+      "acceptance": "The pinned controller completes single- and multi-instance still-image flows and, for every advertised video-capable route, exact frame and frame-span flows with source video hash, decoded frame hash, frame index, PTS/timebase, neighbor/span manifest, lineage, ownership, coordinate, authority, and promotion behavior preserved end to end."
+    }
+  ],
+  "independent_profiles": [
+    "independent_real_accuracy",
+    "scale_daz_maturity"
+  ],
+  "policy_sha256": "b6dfba7ab3020697f53a075cf9a164028431dbce9b9c9b07e5056c7d55446e80"
+}

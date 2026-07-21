@@ -1,0 +1,447 @@
+{
+  "artifact_type": "needs_kevin_actions",
+  "schema_version": "1.0.0",
+  "local_date": "2026-07-19",
+  "recorded_at": "2026-07-20T00:18:29Z",
+  "authority": "SUPERSEDED — see qa/live_verification/needs_agent_actions_20260719.json (agent-executable queue, zero human wait states)",
+  "status": "SUPERSEDED_BY_AGENT_QUEUE",
+  "superseded_by": {
+    "path": "qa/live_verification/needs_agent_actions_20260719.json",
+    "reason": "Kevin mandate: no human/Kevin blockers. Every action reclassified into an agent-executable path. disk_reclaim_above_75_gib DONE_AUTONOMOUS (data relocated to F:; doctor disk_free PASS 251.1 GiB). Remaining items are agent-executable (local-first, producer-side, or scripted-from-elevated-shell) with autonomous fallbacks already executed.",
+    "no_open_human_stop_states": true
+  },
+  "honesty": [
+    "Do not claim any listed action is done",
+    "Do not claim doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS from this list",
+    "STATIC residual inventory and milestone proof tiers are inventories only; they do not clear Kevin gates",
+    "Agents must not fabricate CVAT clicks, AWS pushes, Main adoption receipts, Meta terms acceptance, paid cloud calls, or multi-person source authority"
+  ],
+  "sources": {
+    "residual_blocker_inventory": {
+      "path": "qa/live_verification/residual_blocker_inventory_20260719.json",
+      "seal_sha256": "256567020d952a1608d537872eadd988a5c5ff51b7a77d0dec8cb24f7255898b",
+      "report_id": "rbi_256567020d952a1608d53787",
+      "unfinished_item_count": 229
+    },
+    "milestone_proof_tiers": {
+      "path": "qa/live_verification/milestone_proof_tiers_20260719.json",
+      "self_sha256": "66c94f5804138b7dc229b51680058805847c1ab8f1ee8d7519788d58e95bfe6e",
+      "kevin_decisions_still_required": 8
+    },
+    "supporting_evidence": [
+      "qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json",
+      "qa/live_verification/ops_bootstrap_static_20260719.json",
+      "qa/live_verification/cloud_teacher_static_20260719.json",
+      "qa/live_verification/multi_person_static_contracts_20260719.json",
+      "qa/live_verification/five_single_person_cvat_handoffs_20260713.json",
+      "qa/live_verification/sam31_post_restart_readiness_20260718.json",
+      "qa/live_verification/meta_checkpoint_access_ready_20260717.json",
+      "qa/live_verification/bridge_p6_11_residual_gap_reevaluation_20260719.json"
+    ]
+  },
+  "host_snapshot": {
+    "disk_free_gib_c": 30.08,
+    "disk_ingest_floor_gib": 75,
+    "aws_credentials_present": false,
+    "b1_mirror_present": false,
+    "human_anchor_train_count": 0,
+    "champions": 0
+  },
+  "groups": [
+    {
+      "group_id": "disk_reclaim",
+      "title": "Disk reclaim (C: above 75 GiB ingest floor)",
+      "priority": 1,
+      "actions": [
+        {
+          "action_id": "disk_reclaim_above_75_gib",
+          "status": "NEEDS_KEVIN",
+          "summary": "Free C: above the 75 GiB BLOCK-ingest floor without unauthorized destructive prune of governed data.",
+          "do_not_touch": [
+            "MaskedWarehouse",
+            "models/",
+            "packages / draft gold",
+            "Docker volumes / docker_data.vhdx without explicit Kevin prune authorization",
+            "C:\\Users\\kevin\\.ollama (~26 GiB managed models)"
+          ],
+          "ephemeral_candidates_approx_gib": {
+            "LocalAppData/Temp": 6.0,
+            "LocalAppData/pip/Cache": 6.0,
+            "LocalAppData/uv/cache": 11.3,
+            "UserProfile/.cache/huggingface": 3.3,
+            "Docker_image_reclaimable_only_via_prune_MB": 921.5
+          },
+          "exact_commands": [
+            "Get-PSDrive C | Format-List Name,Used,Free",
+            "# Kevin-authorized ephemeral reclaim only (examples; choose deliberately):",
+            "# Remove-Item -Recurse -Force \"$env:LOCALAPPDATA\\Temp\\*\"  # only if Kevin approves",
+            "# pip cache purge",
+            "# uv cache prune",
+            "# docker image prune  # NEVER volume/system prune without explicit Kevin authorization",
+            "maskfactory doctor"
+          ],
+          "expected_artifact_or_proof": [
+            "C: free >= 75 GiB (Get-PSDrive C / doctor disk_free)",
+            "qa/live_verification/proof_tier_runtime_reprobe_<timestamp>.json with disk_ingest_gate not RUNTIME_BLOCKED",
+            "doctor_all_green no longer blocked solely by disk_free < 75 GiB"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P0-EXIT",
+            "MF-P0-17.04",
+            "MF-P0-17.13",
+            "MF-P6-12.04",
+            "MF-P9-13.04",
+            "MF-P9-14.06"
+          ],
+          "also_unblocks_surfaces": [
+            "doctor_all_green (disk component)",
+            "mode_b_refine retry under pressure",
+            "DAZ storage new-work soft floor path (still needs ~150 GiB for full DAZ volume work)"
+          ],
+          "source_blocker_refs": [
+            "milestone.core_autonomous_runtime.exact_blockers[disk]",
+            "proof_tier_runtime_reprobe.disk_reclaim_candidates_kevin_decision"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "wsl_vhd_repair",
+      "title": "WSL Ubuntu-22.04 root ext4 VHD repair",
+      "priority": 2,
+      "actions": [
+        {
+          "action_id": "repair_ubuntu_2204_ext4_vhd",
+          "status": "NEEDS_KEVIN",
+          "summary": "Run elevated offline VHD repair; Ubuntu rootfs remains non-executable for live CUDA SAM 3.1 smoke.",
+          "exact_commands": [
+            "# From an already-elevated PowerShell (do not trigger UAC from agent session):",
+            "cd C:\\Comfy_UI_Main_Masking",
+            "powershell -ExecutionPolicy Bypass -File .\\tools\\Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair",
+            "# Defaults: -Distribution Ubuntu-22.04 -VhdPath F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04\\ext4.vhdx",
+            "wsl -d Ubuntu-22.04 -- /bin/true",
+            "wsl -d Ubuntu-22.04 -u root -- /bin/df -h /"
+          ],
+          "expected_artifact_or_proof": [
+            "qa/live_verification/wsl_vhd_repair_<timestamp>.json (or equivalent repair receipt)",
+            "wsl -d Ubuntu-22.04 -- /bin/true exits 0 with no timeout",
+            "Subsequent live CUDA smoke evidence under qa/live_verification/sam31_* after repair"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P0-17.04",
+            "MF-P0-17.13",
+            "MF-P0-EXIT",
+            "MF-P2-11.07"
+          ],
+          "source_blocker_refs": [
+            "residual MF-P0-17.04 blocked_reason",
+            "sam31_post_restart_readiness_20260718.required_recovery",
+            "host_side_shadow_tournament_registration.sam31_shadow_wiring.live_wsl_gpu_smoke=needs_kevin_ubuntu_ext4_repair"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "cvat_human_anchor_sop",
+      "title": "CVAT human-anchor SOP-1 correction",
+      "priority": 3,
+      "actions": [
+        {
+          "action_id": "sop1_jobs_21_to_25",
+          "status": "NEEDS_KEVIN",
+          "summary": "Complete SOP-1 human correction/annotation on staged CVAT jobs 21–25; record real review minutes. human_anchor_train_count remains 0 until this lands.",
+          "exact_commands": [
+            "# UI (production CVAT v2.24 only):",
+            "# http://localhost:8080/tasks/21  (job 21 / img_2ca794d19be9)",
+            "# http://localhost:8080/tasks/22  (job 22 / img_b2b46c45d8e0)",
+            "# http://localhost:8080/tasks/23  (job 23 / img_cdab0311dc96)",
+            "# http://localhost:8080/tasks/24  (job 24 / img_51945db358cb)",
+            "# http://localhost:8080/tasks/25  (job 25 / img_e5163e08baac)",
+            "# Annotate per SOP-1 (all visible atomics, bands, materials, visibility attrs, honest ambiguity)",
+            "maskfactory package --help",
+            "maskfactory verify-package --root data\\packages",
+            "# Append real minutes/image baseline to Plan/OPS_LOG.md (MF-P1-08.05; do not fabricate)"
+          ],
+          "expected_artifact_or_proof": [
+            "CVAT jobs 21–25 completed/annotated by Kevin",
+            "human_approved_gold packages under data/packages (human_anchor_train_count > 0)",
+            "qa/live_verification/five_single_person_cvat_handoffs_* refreshed with human_approved=true",
+            "Plan/OPS_LOG.md G1 baseline minutes/image entry from real review_tasks"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P1-08.02",
+            "MF-P1-08.03",
+            "MF-P1-08.04",
+            "MF-P1-08.05",
+            "MF-P1-EXIT",
+            "MF-P1-09.05",
+            "MF-P1-12.09",
+            "MF-P1-12.10",
+            "MF-P2-08.02",
+            "MF-P2-08.03",
+            "MF-P2-EXIT",
+            "MF-P3-07.01",
+            "MF-P3-07.03",
+            "MF-P4-05.01",
+            "MF-P4-05.04",
+            "MF-P4-07.04",
+            "MF-P4-08.08"
+          ],
+          "source_blocker_refs": [
+            "residual NEEDS_KEVIN_CVAT MF-P1-08.02..08.05",
+            "milestone.kevin_decisions_still_required CVAT human-anchor",
+            "five_single_person_cvat_handoffs_20260713.json"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "dvc_aws",
+      "title": "DVC AWS credentials + first governed S3 push (+ B1 restore seed)",
+      "priority": 4,
+      "actions": [
+        {
+          "action_id": "dvc_s3_push_first_package",
+          "status": "NEEDS_KEVIN",
+          "summary": "Authorize AWS creds for dev acct 548846591581 and complete first governed dvc push to s3://maskfactory-dvc-dev. Wiring is STATIC-proven; push not attempted.",
+          "exact_commands": [
+            "# Kevin-authorized env only (never commit secrets):",
+            "$env:AWS_ACCESS_KEY_ID = '<kevin-dev-acct-key>'",
+            "$env:AWS_SECRET_ACCESS_KEY = '<kevin-dev-acct-secret>'",
+            "$env:AWS_DEFAULT_REGION = 'us-east-1'",
+            "cd C:\\Comfy_UI_Main_Masking",
+            ".\\.tools\\dvc-venv\\Scripts\\dvc.exe remote list",
+            ".\\.tools\\dvc-venv\\Scripts\\dvc.exe add data\\packages",
+            ".\\.tools\\dvc-venv\\Scripts\\dvc.exe push -r maskfactory-dvc-dev"
+          ],
+          "expected_artifact_or_proof": [
+            "dvc push succeeds for first eligible human-anchor or autonomous-certified package",
+            "qa/live_verification/dvc_s3_push_<timestamp>.json with dvc_s3_push_succeeded=true",
+            "ops_bootstrap honesty flip: mf_p1_07_09_complete aspirational only after live proof (agents must not set true without push)"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P1-07.09"
+          ],
+          "hard_blocker": true,
+          "source_blocker_refs": [
+            "residual MF-P1-07.09",
+            "ops_bootstrap_static_20260719.json kevin_dvc_s3_push_required=true aws_credentials_present=false"
+          ]
+        },
+        {
+          "action_id": "b1_restore_drill_one_package",
+          "status": "NEEDS_KEVIN",
+          "summary": "After one corrected human-anchor seed package exists, dry-run B1 restore: pull 1 package from B1 mirror to temp and verify-package.",
+          "exact_commands": [
+            "# Prerequisite: MF-P1-08 human-anchor package + B1 mirror at D:\\MaskFactoryBackup\\",
+            "# Example restore drill (adjust package id after gold lands):",
+            "New-Item -ItemType Directory -Force C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\b1_restore_drill | Out-Null",
+            "robocopy D:\\MaskFactoryBackup\\packages\\<package_id> C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\b1_restore_drill\\<package_id> /E",
+            "maskfactory verify-package --root C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\b1_restore_drill"
+          ],
+          "expected_artifact_or_proof": [
+            "B1 mirror present (D:\\MaskFactoryBackup\\ packages tree)",
+            "qa/live_verification/b1_restore_drill_<timestamp>.json with verify-package pass",
+            "human_anchor_package_present=true in subsequent ops evidence"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P1-09.05"
+          ],
+          "depends_on": [
+            "sop1_jobs_21_to_25"
+          ],
+          "source_blocker_refs": [
+            "residual MF-P1-09.05",
+            "ops_bootstrap_static_20260719.json kevin_b1_restore_required=true b1_mirror_present=false"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "main_adoption_artifacts",
+      "title": "Main project adoption / adapter artifacts (AWAITING_MAIN)",
+      "priority": 5,
+      "actions": [
+        {
+          "action_id": "main_supply_adapter_adoption_qualification",
+          "status": "NEEDS_KEVIN_VIA_MAIN",
+          "summary": "From KevinSGarrett/Comfy_UI_Main, supply real production adapter/adoption/qualification artifacts. Producer STATIC/fixture credit is retained only; do not fabricate Main runtime.",
+          "exact_commands": [
+            "# Work in Main repo (KevinSGarrett/Comfy_UI_Main), then pin hashes back here:",
+            "# 1) Publish production MaskFactoryAdapter package + signed conformance observation",
+            "# 2) Emit adopted-package + exact operational-wrapper authority (Mode A production use)",
+            "# 3) Main durable journal store / idempotency / key lifecycle evidence",
+            "# 4) Main live circuit-breaker / DAG / retry signed evidence (HARD MF-P6-11.07)",
+            "# 5) ComfyUI/Main execution receipts + qualification bindings (HARD MF-P6-12.05)",
+            "# 6) Reciprocal commit pin + final adoption/handoff receipt (MF-P6-12.06)"
+          ],
+          "expected_artifact_or_proof": [
+            "Main-pinned production MaskFactoryAdapter package + conformance receipt (path decided by Main; copy/bind under qa/live_verification/bridge_* or cross_project_*)",
+            "Production adopted-package + exact operational-wrapper authority artifact",
+            "Main-signed bridge journal / circuit evidence",
+            "ComfyUI execution receipts + qualification matrix binding both commits",
+            "Final adoption/handoff receipt unlocking MF-P6-12.06 / core_autonomous_runtime close"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P6-11.01",
+            "MF-P6-11.02",
+            "MF-P6-11.03",
+            "MF-P6-11.04",
+            "MF-P6-11.05",
+            "MF-P6-11.06",
+            "MF-P6-11.07",
+            "MF-P6-11.08",
+            "MF-P6-12.02",
+            "MF-P6-12.03",
+            "MF-P6-12.04",
+            "MF-P6-12.05",
+            "MF-P6-12.06",
+            "MF-P6-EXIT"
+          ],
+          "hard_blockers_named": [
+            "MF-P6-11.02",
+            "MF-P6-11.07",
+            "MF-P6-12.05"
+          ],
+          "source_blocker_refs": [
+            "residual AWAITING_MAIN MF-P6-11.* / MF-P6-12.*",
+            "milestone.core_autonomous_runtime.open_hard_blockers_named",
+            "bridge_p6_11_residual_gap_reevaluation_20260719.json"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "sam31_meta_terms",
+      "title": "SAM 3.1 / Meta Hugging Face terms + live CUDA smoke gate",
+      "priority": 6,
+      "actions": [
+        {
+          "action_id": "confirm_meta_hf_terms_and_live_sam31_smoke",
+          "status": "NEEDS_KEVIN",
+          "summary": "Keep Meta/HF terms accepted for facebook/sam3.1 and facebook/sam-3d-body-dinov3; after WSL VHD repair, run official SAM 3.1 live CUDA smoke. Checkpoint bytes already on disk are not live smoke credit.",
+          "exact_commands": [
+            "# Confirm / re-accept terms in browser (Kevin identity):",
+            "# https://huggingface.co/facebook/sam3.1",
+            "# https://huggingface.co/facebook/sam-3d-body-dinov3",
+            "cd C:\\Comfy_UI_Main_Masking",
+            "python tools\\probe_meta_checkpoint_access.py",
+            "# After wsl_vhd_repair succeeds:",
+            "python tools\\smoke_sam31_multiplex_wsl.py",
+            "# Or: python tools\\run_sam31_runtime.py  (official multiplex path in /home/kevin/mfenvs/sam31-5dd401d1)"
+          ],
+          "expected_artifact_or_proof": [
+            "qa/live_verification/meta_checkpoint_access_*.json with result access_ready / accepted_access_verified (current ready probe is historical; re-probe after any token/terms change)",
+            "Checkpoint remains hash-bound at models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt (sha256 0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6)",
+            "qa/live_verification/sam31_live_cuda_smoke_<timestamp>.json with peak VRAM, cold/warm latency, deterministic output hash, typed failure/OOM"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P0-17.04",
+            "MF-P2-11.07"
+          ],
+          "depends_on": [
+            "repair_ubuntu_2204_ext4_vhd"
+          ],
+          "source_blocker_refs": [
+            "residual MF-P0-17.04",
+            "sam31_post_restart_readiness_20260718.json",
+            "meta_checkpoint_access_ready_20260717.json / meta_checkpoint_access_requests_pending_20260716.json"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "cloud_teacher_budget",
+      "title": "Cloud-teacher ≥200 human-anchor corpus + billable budget auth",
+      "priority": 7,
+      "actions": [
+        {
+          "action_id": "authorize_cloud_teacher_corpus_and_budget",
+          "status": "NEEDS_KEVIN",
+          "summary": "Authorize billable shadow cloud-teacher evaluation and supply frozen image-disjoint ≥200-case human-anchor incremental-value corpus. STATIC binder proves circuit breaker only; paid_cloud_calls_executed=false.",
+          "exact_commands": [
+            "# 1) Approve spend within configured envelope (do not exceed without new Kevin auth):",
+            "#    hard_limit_usd=15.000000  operational_limit_usd=14.5  reservation_usd=1.0  maximum_calls_per_image=3",
+            "# 2) Place/freeze ≥200 image-disjoint human-anchor packages covering required themes",
+            "#    (serious_anatomy_swap, missing_part, neighbor_person_contamination, clothing_skin_boundary,",
+            "#     hair, hands_fingers, feet_toes, occlusion, multi_person_contact, good_mask)",
+            "# 3) Run live cloud-teacher evaluation under Kevin auth (exact CLI when corpus ready):",
+            "maskfactory --help",
+            "# Expected live seal path after authorization (name may vary; must prove paid path):",
+            "# python -m maskfactory ...  → qa/live_verification/cloud_teacher_live_<timestamp>.json"
+          ],
+          "expected_artifact_or_proof": [
+            "Frozen ≥200-case incremental-value corpus audit (no leakage/duplication/coverage gaps)",
+            "qa/live_verification/cloud_teacher_live_<timestamp>.json with human_anchor_ge_200_corpus=true",
+            "Paid-call ledger under budget envelope; mf_p4_10_08 / mf_p4_10_09 live gates addressable"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P4-10.08",
+            "MF-P4-10.09"
+          ],
+          "depends_on": [
+            "sop1_jobs_21_to_25"
+          ],
+          "budget_envelope": {
+            "hard_limit_usd": "15.000000",
+            "operational_limit_usd": 14.5,
+            "reservation_usd": 1.0,
+            "maximum_calls_per_image": 3,
+            "mode": "shadow_only",
+            "minimum_incremental_cases": 200
+          },
+          "source_blocker_refs": [
+            "residual MF-P4-10.08 / MF-P4-10.09",
+            "cloud_teacher_static_20260719.json"
+          ]
+        }
+      ]
+    },
+    {
+      "group_id": "multi_person_sources",
+      "title": "Multi-person demo sources (2–4 person)",
+      "priority": 8,
+      "actions": [
+        {
+          "action_id": "supply_governed_multiperson_demo_sources",
+          "status": "NEEDS_KEVIN",
+          "summary": "Supply governed real 2–4-person sources for the 10–20 image demonstration. STATIC exclusivity/contact gates are fixture-only; kevin_multi_person_sources_required=true.",
+          "exact_commands": [
+            "# Place Kevin-authorized governed multi-person sources (exact intake path Kevin chooses), then:",
+            "maskfactory autonomy verify-multi-person-static-contracts",
+            "# After sources + CVAT/audit path:",
+            "# run real 10–20 image duo/small_group demo → D11/G9 evidence seal"
+          ],
+          "expected_artifact_or_proof": [
+            "Governed 2–4-person source set (10–20 images) under data/ or MaskedWarehouse intake with provenance",
+            "qa/live_verification/multi_person_demo_<timestamp>.json with mf_p8_11_07_demo_complete aspirational only after real demo",
+            "D11/G9 evidence binding every source/instance/mask/certificate; zero measured cross-instance bleed"
+          ],
+          "unblocks_tracker_items": [
+            "MF-P8-11.07",
+            "MF-P8-11.08",
+            "MF-P8-EXIT"
+          ],
+          "source_blocker_refs": [
+            "residual MF-P8-11.07",
+            "multi_person_static_contracts_20260719.json kevin_multi_person_sources_required=true"
+          ]
+        }
+      ]
+    }
+  ],
+  "claims_not_established": [
+    "any action in this list complete",
+    "doctor_all_green",
+    "human_approved_gold",
+    "dvc_s3_push_succeeded",
+    "b1_restore_drill_passed",
+    "Main-complete",
+    "PRODUCTION_EVIDENCE_PASS",
+    "sam31_live_cuda_smoke",
+    "mf_p4_10_08_complete",
+    "mf_p4_10_09_complete",
+    "mf_p8_11_07_demo_complete",
+    "core_autonomous_runtime complete"
+  ]
+}

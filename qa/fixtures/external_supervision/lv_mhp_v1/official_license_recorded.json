@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_license_evidence","fixture":true,"gate":"official_license_recorded","schema_version":"1.0.0","seal_sha256":"fcec5d58c434b94b029f289916f90717d0efd214e2f61cbe782cbe9ed916a168","source":"lv_mhp_v1","source_masks_are_gold":false,"status":"PASS"}

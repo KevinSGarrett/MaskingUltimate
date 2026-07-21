@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_p6_11_post_p10_reevaluation",
+  "recorded_at": "2026-07-19T20:35:00Z",
+  "lane": "governance_and_residual_gap",
+  "trigger": "MF-P6-08.*, MF-P6-09.*, and MF-P6-10.01–10.07 tracker-complete",
+  "scope": [
+    "MF-P6-11.01",
+    "MF-P6-11.02",
+    "MF-P6-11.03",
+    "MF-P6-11.04",
+    "MF-P6-11.05",
+    "MF-P6-11.06",
+    "MF-P6-11.07",
+    "MF-P6-11.08"
+  ],
+  "claim_boundary": {
+    "fabricated_main_runtime": false,
+    "production_main_adapter_package": false,
+    "champion_backed_live_predict": false,
+    "main_signed_arbitration_decision": false,
+    "main_durable_journal_store": false,
+    "main_circuit_dag_execution": false,
+    "main_restart_store": false,
+    "mf_p6_11_any_complete": false
+  },
+  "cleared_upstream": {
+    "MF-P6-10.05": "complete",
+    "MF-P6-10.06": "complete",
+    "MF-P6-10.07": "complete",
+    "MF-P6-09.05": "complete",
+    "MF-P6-09.06": "complete",
+    "MF-P6-08.06": "complete"
+  },
+  "focused_validation": {
+    "command": "uv run pytest tests/test_bridge_journal.py tests/test_external_adapter_conformance.py tests/test_mode_a_package_read.py tests/test_mode_b_localhost_client.py tests/test_receipt_arbitration_conformance.py tests/test_bridge_feedback_intake.py tests/test_bridge_failure_control.py tests/test_bridge_recovery.py tests/test_bridge_autonomy_registration.py -q",
+    "result": "PASS",
+    "tests_passed": 93
+  },
+  "producer_gap_closure": {
+    "additive_code_changes_this_pass": false,
+    "reason": "All eight items already have fixture-complete producer verify surfaces from prior residual-gap work; no residual additive producer gap required for verify clauses."
+  },
+  "per_item": {
+    "MF-P6-11.01": {
+      "prior_status": "blocked",
+      "prior_percent": 78,
+      "status": "blocked",
+      "percent_complete": 86,
+      "producer_verify": "fixture_complete",
+      "declared_blocker_MF-P6-10.05": "cleared",
+      "completion_decision": "hold",
+      "residual_main_owned": "pinned production MaskFactoryAdapter package + signed conformance observation against adopted release; MaskFactory must not implement Main orchestration"
+    },
+    "MF-P6-11.02": {
+      "prior_status": "blocked",
+      "prior_percent": 84,
+      "status": "blocked",
+      "percent_complete": 84,
+      "producer_verify": "fixture_complete",
+      "completion_decision": "hold",
+      "residual": "MF-P6-11.01 incomplete; production adopted-package + exact operational-wrapper authority (not fabricated)"
+    },
+    "MF-P6-11.03": {
+      "prior_status": "blocked",
+      "prior_percent": 78,
+      "status": "blocked",
+      "percent_complete": 78,
+      "producer_verify": "fixture_complete",
+      "completion_decision": "hold",
+      "residual": "MF-P6-11.01 incomplete; Main champion-backed live predict / production cross-boundary adoption (not fabricated)"
+    },
+    "MF-P6-11.04": {
+      "prior_status": "blocked",
+      "prior_percent": 80,
+      "status": "blocked",
+      "percent_complete": 80,
+      "producer_verify": "oracle_fixture_complete",
+      "completion_decision": "hold",
+      "residual": "MF-P6-11.02/11.03 incomplete; Main-signed choice/branch/abstention (MaskFactory must not impersonate Main routing)"
+    },
+    "MF-P6-11.05": {
+      "prior_status": "blocked",
+      "prior_percent": 84,
+      "status": "blocked",
+      "percent_complete": 88,
+      "producer_verify": "fixture_complete",
+      "declared_blocker_MF-P6-10.06": "cleared_from_blocked_reason",
+      "completion_decision": "hold",
+      "residual": "MF-P6-11.01 incomplete; production Main feedback authority not fabricated"
+    },
+    "MF-P6-11.06": {
+      "prior_status": "blocked",
+      "prior_percent": 86,
+      "status": "blocked",
+      "percent_complete": 90,
+      "producer_verify": "closed_state_machine_and_interruption_reconstruct_fixture_complete",
+      "declared_blocker_MF-P6-10.06": "cleared",
+      "completion_decision": "hold",
+      "residual_main_owned": "MF-P6-11.01 incomplete; Main durable atomic append+side-effect persistence, retention, idempotency namespace, trusted journal key lifecycle"
+    },
+    "MF-P6-11.07": {
+      "prior_status": "blocked",
+      "prior_percent": 80,
+      "status": "blocked",
+      "percent_complete": 80,
+      "producer_verify": "fault_injection_fixture_complete",
+      "completion_decision": "hold",
+      "residual_main_owned": "MF-P6-11.03/11.06 incomplete; Main live circuit-breaker, scoped DAG blocking, retry-attempt accounting, signed failure evidence"
+    },
+    "MF-P6-11.08": {
+      "prior_status": "blocked",
+      "prior_percent": 80,
+      "status": "blocked",
+      "percent_complete": 86,
+      "producer_verify": "kill_reconcile_fixture_complete",
+      "declared_blocker_MF-P6-10.07": "cleared",
+      "completion_decision": "hold",
+      "residual_main_owned": "MF-P6-11.06/11.07 incomplete; Main restart store + live unknown-outcome reconciler (not fabricated)"
+    }
+  }
+}

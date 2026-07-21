@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mask_bridge_error.schema.json",
+  "title": "Typed MaskFactory bridge error",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_type", "error_id", "request_id", "observed_at", "code", "category", "retryable", "impact_scope", "affected_scope", "remediation", "no_silent_fallback", "message", "details_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "mask_bridge_error"},
+    "error_id": {"type": "string", "pattern": "^mferr_[0-9a-f]{24}$"},
+    "request_id": {"type": ["string", "null"], "pattern": "^mfareq_[0-9a-f]{24}$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "code": {
+      "enum": [
+        "SERVICE_UNAVAILABLE", "TIMEOUT", "RATE_LIMITED", "RESOURCE_LIMIT_EXCEEDED",
+        "OUT_OF_MEMORY", "CIRCUIT_OPEN", "RELEASE_NOT_ADOPTED", "RELEASE_REVOKED",
+        "API_VERSION_MISMATCH", "WIRE_SCHEMA_MISMATCH", "CONTRACT_VERSION_MISMATCH", "PACKAGE_FORMAT_MISMATCH",
+        "ONTOLOGY_MISMATCH", "SOURCE_HASH_MISMATCH", "SOURCE_DIMENSION_MISMATCH",
+        "PERSON_INDEX_AMBIGUOUS", "OWNERSHIP_AMBIGUOUS", "TRANSFORM_MISMATCH",
+        "TRANSFORM_ROUNDTRIP_FAILED", "LABEL_UNSUPPORTED", "ARTIFACT_HASH_MISMATCH",
+        "CERTIFICATE_MISSING", "CERTIFICATE_EXPIRED", "CERTIFICATE_REVOKED",
+        "CERTIFICATE_OUT_OF_SCOPE", "AUTHORITY_INSUFFICIENT", "PROVIDER_UNAVAILABLE",
+        "NO_ELIGIBLE_ROUTE", "QA_GATE_FAILED", "PATH_ESCAPE_REJECTED", "STALE_CACHE",
+        "MALFORMED_RESPONSE", "UNKNOWN_SUBMISSION", "INVARIANT_VIOLATION",
+        "IDEMPOTENCY_CONFLICT", "INVALID_REQUEST", "INTERNAL_ERROR"
+      ]
+    },
+    "category": {"enum": ["availability", "compatibility", "identity", "geometry", "authority", "quality", "resource", "security", "request", "internal"]},
+    "retryable": {"type": "boolean"},
+    "impact_scope": {"enum": ["request_only", "dependent_pass", "run", "release", "consumer_adoption"]},
+    "affected_scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["correlation_ids", "pass_ids", "release_ids", "capability_ids", "artifact_sha256s"],
+      "properties": {
+        "correlation_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "pass_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "release_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "capability_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "artifact_sha256s": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+      }
+    },
+    "remediation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["action", "retry_after_ms", "runbook_id", "runbook_sha256", "replacement_route_required"],
+      "properties": {
+        "action": {"enum": ["retry", "wait_for_circuit", "reconcile_submission", "refresh_release", "refresh_capabilities", "invalidate_cache", "reroute", "reduce_resource_envelope", "repair_request", "quarantine", "operator_authorization_required", "none"]},
+        "retry_after_ms": {"type": ["integer", "null"], "minimum": 0},
+        "runbook_id": {"type": ["string", "null"], "minLength": 1},
+        "runbook_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "replacement_route_required": {"type": "boolean"}
+      }
+    },
+    "no_silent_fallback": {"const": true},
+    "message": {"type": "string", "minLength": 1},
+    "details_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

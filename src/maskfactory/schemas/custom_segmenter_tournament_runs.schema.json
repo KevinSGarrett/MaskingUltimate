@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/custom_segmenter_tournament_runs.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "tournament_id", "results_opened_at", "policy_sha256", "shared_identity", "runs", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "tournament_id": {"type": "string", "minLength": 1},
+    "results_opened_at": {"type": "string", "format": "date-time"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "shared_identity": {"$ref": "#/$defs/sharedIdentity"},
+    "runs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["segformer_b3", "mask2former_swin_b", "eomt_dinov3_small_640"],
+      "properties": {
+        "segformer_b3": {"$ref": "#/$defs/runEvidence"},
+        "mask2former_swin_b": {"$ref": "#/$defs/runEvidence"},
+        "eomt_dinov3_small_640": {"$ref": "#/$defs/runEvidence"}
+      }
+    },
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sharedIdentity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["certified_training_package_count", "training_dataset_manifest_sha256", "training_dataset_dvc_md5", "training_partition", "evaluation_truth_tier", "evaluation_partition", "evaluation_holdout_manifest_sha256", "train_holdout_overlap", "ontology_sha256", "qa_sha256", "measurement_bundle_sha256", "hardware_fingerprint_sha256"],
+      "properties": {
+        "certified_training_package_count": {"type": "integer", "minimum": 0},
+        "training_dataset_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "training_dataset_dvc_md5": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+        "training_partition": {"type": "string"},
+        "evaluation_truth_tier": {"type": "string"},
+        "evaluation_partition": {"type": "string"},
+        "evaluation_holdout_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "train_holdout_overlap": {"type": "boolean"},
+        "ontology_sha256": {"$ref": "#/$defs/sha256"},
+        "qa_sha256": {"$ref": "#/$defs/sha256"},
+        "measurement_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "hardware_fingerprint_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "metricObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "truth_pixels", "predicted_pixels", "intersection_pixels", "union_pixels", "boundary_tp", "boundary_fp", "boundary_fn", "small_part_eligible_count", "small_part_hit_count", "correction_pixels", "evaluated_pixels"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "truth_pixels": {"type": "integer", "minimum": 1},
+        "predicted_pixels": {"type": "integer", "minimum": 0},
+        "intersection_pixels": {"type": "integer", "minimum": 0},
+        "union_pixels": {"type": "integer", "minimum": 1},
+        "boundary_tp": {"type": "integer", "minimum": 0},
+        "boundary_fp": {"type": "integer", "minimum": 0},
+        "boundary_fn": {"type": "integer", "minimum": 0},
+        "small_part_eligible_count": {"type": "integer", "minimum": 0},
+        "small_part_hit_count": {"type": "integer", "minimum": 0},
+        "correction_pixels": {"type": "integer", "minimum": 0},
+        "evaluated_pixels": {"type": "integer", "minimum": 1}
+      }
+    },
+    "errorObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "eligible_count", "error_count"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "eligible_count": {"type": "integer", "minimum": 0},
+        "error_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cold_latency_ms", "warm_latency_ms", "peak_vram_bytes", "oom_count", "crash_count", "repeat_count", "deterministic_output_sha256"],
+      "properties": {
+        "cold_latency_ms": {"type": "number", "minimum": 0},
+        "warm_latency_ms": {"type": "number", "minimum": 0},
+        "peak_vram_bytes": {"type": "integer", "minimum": 0},
+        "oom_count": {"type": "integer", "minimum": 0},
+        "crash_count": {"type": "integer", "minimum": 0},
+        "repeat_count": {"type": "integer", "minimum": 1},
+        "deterministic_output_sha256": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sha256"}}
+      }
+    },
+    "runEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["run_manifest", "run_manifest_sha256", "label_observations", "context_observations", "error_observations", "runtime_metrics"],
+      "properties": {
+        "run_manifest": {"type": "object"},
+        "run_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "label_observations": {"type": "array", "minItems": 65, "maxItems": 65, "items": {"$ref": "#/$defs/metricObservation"}},
+        "context_observations": {"type": "array", "minItems": 17, "maxItems": 17, "items": {"$ref": "#/$defs/metricObservation"}},
+        "error_observations": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/errorObservation"}},
+        "runtime_metrics": {"$ref": "#/$defs/runtime"}
+      }
+    }
+  }
+}

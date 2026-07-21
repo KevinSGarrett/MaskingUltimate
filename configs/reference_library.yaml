@@ -1,0 +1,36 @@
+schema_version: 1.0.0
+library_id: maskfactory_reference_library_v2
+source_root: 'F:\Reference_Images'
+output_root: 'F:\Reference_Images\Ultimate_Masking_Reference_Images'
+working_database: 'C:\Temp\MaskFactory_Reference_Library\reference_working.sqlite'
+output_database: 'F:\Reference_Images\Ultimate_Masking_Reference_Images\manifests\reference_library.sqlite'
+source_role: unlabeled_reference_corpus
+truth_authority: none
+originals_are_immutable: true
+content_policy:
+  adult_content_is_eligible: true
+  nsfw_tag_is_organizational_not_an_exclusion: true
+  known_or_suspected_minor_is_prohibited: true
+  require_governed_source_rights: true
+tiers:
+  benchmark_reference:
+    target_count: 2500
+    training_eligible: false
+    retrieval_eligible: false
+    truth_authority: none
+  retrieval_reference:
+    target_count: 18000
+    training_eligible: false
+    retrieval_eligible: true
+    truth_authority: none
+isolation:
+  exact_sha256_overlap_between_tiers: 0
+  relative_path_overlap_between_tiers: 0
+  benchmark_overlap_with_train_calibration_holdout: 0
+  benchmark_near_duplicate_overlap_with_train_calibration_holdout: 0
+versioning:
+  immutable_versions_directory: manifests/benchmark_versions
+  drift_reports_directory: manifests/benchmark_drift_reports
+  drift_report_interval_days: 7
+  active_benchmark_manifest: 'F:\Reference_Images\Ultimate_Masking_Reference_Images\manifests\benchmark_versions\benchmark_reference_v1_7b36cdbe3b8795a8dfe38d1c\benchmark_manifest.json'
+promotion_rule: An unlabeled reference image acquires truth only through an independent MaskFactory human-anchor or autonomous-certification workflow; selection alone never changes authority.

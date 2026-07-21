@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_p_index_assignment.schema.json",
+  "title": "MaskFactory final-camera prominence and p-index assignment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "assignment_id", "assignment_sha256", "scene_id", "lineage", "policy_version", "policy_sha256", "final_frame", "ranking", "promotion", "persons", "mapping", "summary"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "assignment_id": {"type": "string", "pattern": "^dpia_[0-9a-f]{24}$"},
+    "assignment_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string", "pattern": "^daz_scene_[A-Za-z0-9_-]+$"},
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["duo_selection_id", "duo_selection_sha256", "resolved_state_id", "resolved_state_sha256", "scene_state_sha256"],
+      "properties": {
+        "duo_selection_id": {"type": "string", "pattern": "^dcds_[0-9a-f]{24}$"},
+        "duo_selection_sha256": {"$ref": "#/$defs/sha"},
+        "resolved_state_id": {"type": "string", "pattern": "^dcrs_[A-Za-z0-9_-]+$"},
+        "resolved_state_sha256": {"$ref": "#/$defs/sha"},
+        "scene_state_sha256": {"$ref": "#/$defs/sha"}
+      }
+    },
+    "policy_version": {"const": "1.0.0"},
+    "policy_sha256": {"$ref": "#/$defs/sha"},
+    "final_frame": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resolution", "crop", "frame_pixels", "expected_camera_sha256", "observed_camera_sha256", "camera_readback_matches", "construction_map_sha256", "construction_map_bytes", "construction_map_encoding", "observed_source_instance_ids"],
+      "properties": {
+        "resolution": {"$ref": "#/$defs/resolution"},
+        "crop": {"$ref": "#/$defs/crop"},
+        "frame_pixels": {"type": "integer", "minimum": 1},
+        "expected_camera_sha256": {"$ref": "#/$defs/sha"},
+        "observed_camera_sha256": {"$ref": "#/$defs/sha"},
+        "camera_readback_matches": {"const": true},
+        "construction_map_sha256": {"$ref": "#/$defs/sha"},
+        "construction_map_bytes": {"type": "integer", "minimum": 1},
+        "construction_map_encoding": {"const": "uint16_png"},
+        "observed_source_instance_ids": {"type": "array", "maxItems": 4, "uniqueItems": true, "items": {"type": "integer", "minimum": 1, "maximum": 65535}}
+      }
+    },
+    "ranking": {
+      "type": "object", "additionalProperties": false,
+      "required": ["prominence_formula", "deterministic_tie_break", "minimum_visible_area_fraction", "construction_order_is_not_p_index"],
+      "properties": {
+        "prominence_formula": {"const": "visible_pixels_divided_by_final_output_pixels"},
+        "deterministic_tie_break": {"const": ["prominence_desc", "visible_area_desc", "construction_id_asc"]},
+        "minimum_visible_area_fraction": {"const": 0.04},
+        "construction_order_is_not_p_index": {"const": true}
+      }
+    },
+    "promotion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required", "framing_retry_attempt", "maximum_framing_retries", "disposition", "below_minimum_construction_ids", "partial_mapping_forbidden"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "framing_retry_attempt": {"type": "integer", "minimum": 0},
+        "maximum_framing_retries": {"const": 2},
+        "disposition": {"enum": ["accepted", "retry_framing", "reject_resample"]},
+        "below_minimum_construction_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^c[0-9]+$"}},
+        "partial_mapping_forbidden": {"const": true}
+      }
+    },
+    "persons": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"$ref": "#/$defs/person"}},
+    "mapping": {"type": "array", "maxItems": 4, "items": {"$ref": "#/$defs/mapping"}},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["accepted", "person_count", "mapping_count", "all_declared_people_retained"],
+      "properties": {
+        "accepted": {"type": "boolean"},
+        "person_count": {"type": "integer", "minimum": 1, "maximum": 4},
+        "mapping_count": {"type": "integer", "minimum": 0, "maximum": 4},
+        "all_declared_people_retained": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+    "crop": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}},
+    "bbox": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}},
+    "person": {
+      "type": "object", "additionalProperties": false,
+      "required": ["slot_id", "construction_id", "source_instance_id", "bbox_xywh", "bbox_area_pixels", "visible_pixels", "visible_area_fraction", "prominence_score", "meets_minimum", "p_index", "instance_id"],
+      "properties": {
+        "slot_id": {"enum": ["a", "b"]},
+        "construction_id": {"type": "string", "pattern": "^c[0-9]+$"},
+        "source_instance_id": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "bbox_xywh": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/bbox"}]},
+        "bbox_area_pixels": {"type": "integer", "minimum": 0},
+        "visible_pixels": {"type": "integer", "minimum": 0},
+        "visible_area_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "prominence_score": {"type": "number", "minimum": 0, "maximum": 1},
+        "meets_minimum": {"type": "boolean"},
+        "p_index": {"type": ["string", "null"], "pattern": "^p[0-3]$"},
+        "instance_id": {"type": ["integer", "null"], "minimum": 1, "maximum": 4}
+      }
+    },
+    "mapping": {
+      "type": "object", "additionalProperties": false,
+      "required": ["slot_id", "construction_id", "p_index", "instance_id"],
+      "properties": {
+        "slot_id": {"enum": ["a", "b"]},
+        "construction_id": {"type": "string", "pattern": "^c[0-9]+$"},
+        "p_index": {"type": "string", "pattern": "^p[0-3]$"},
+        "instance_id": {"type": "integer", "minimum": 1, "maximum": 4}
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_worker_launch_batch_hold_checkpoint",
+  "recorded_at": "2026-07-18T21:02:00Z",
+  "project_head": "a54dfcb8e79297153cabb5b97d2ad873edaac9af",
+  "status": "HELD_RUNTIME_PREFLIGHT_REQUIRED",
+  "completion_credit": false,
+  "wake_authorized": false,
+  "provider_calls_authorized": 0,
+  "launch_manifest": {
+    "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\launch_batches\\eight_project_worker_backlog_20260718.json",
+    "sha256": "02f993cd1f28ad0811c0003dc1b83cc4966b15315405719d4f73f32ef16d9c7a",
+    "bytes": 6483,
+    "status": "HELD_RUNTIME_PREFLIGHT_REQUIRED"
+  },
+  "maskfactory_base_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "maskfactory_work_units": [
+    {
+      "tracker_item": "MF-P6-08.05",
+      "kind": "deferred_intent",
+      "id": "intent_20260718T204939214Z_mask_operational_certificate_precedence_correction_aa7101df",
+      "collision_group": "mask_certificate_precedence"
+    },
+    {
+      "tracker_item": "MF-P6-08.06",
+      "kind": "deferred_intent",
+      "id": "intent_20260718T204940191Z_mask_bounded_autonomous_repair_completion_1de087de",
+      "collision_group": "mask_bounded_repair"
+    },
+    {
+      "tracker_item": "MF-P6-08.07",
+      "kind": "queued_request_final_attempt",
+      "id": "p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970",
+      "collision_group": "mask_operational_invalidation"
+    },
+    {
+      "tracker_item": "MF-P6-09.01",
+      "kind": "queued_request_final_attempt",
+      "id": "p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553",
+      "collision_group": "mask_bridge_identity"
+    }
+  ],
+  "scope_state": "SIGNED_PAIRWISE_DISJOINT_VALID",
+  "unmet_preconditions": [
+    "docker_desktop_wsl_clients_absent",
+    "cursor_distro_bin_true_pass",
+    "exact_cursor_shim_version_two_passes",
+    "git_lfs_version_two_passes",
+    "credential_probe_pass",
+    "task_registry_and_scope_signatures_pass"
+  ],
+  "preservation": {
+    "mutate_final_attempt_records": false,
+    "duplicate_implementation_in_codex": false,
+    "wake_before_preflight": false,
+    "rewrite_base_snapshot": false
+  }
+}

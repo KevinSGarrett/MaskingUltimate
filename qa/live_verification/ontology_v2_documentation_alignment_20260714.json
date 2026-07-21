@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T03:35:04.3324376Z",
+  "outcome": "pass",
+  "checklist_item": "Plan/OntologyV2/IMPLEMENTATION_CHECKLIST.md I.4",
+  "ontology_version": "body_parts_v2",
+  "activation_status": "approved_design_not_active",
+  "production_activation_granted": false,
+  "documentation_audit": {
+    "numbered_core_documents_scanned": 18,
+    "range": "00-17",
+    "version_sensitive_documents_aligned": [
+      "00_MASTER_INDEX.md",
+      "01_PROJECT_CHARTER_AND_SCOPE.md",
+      "02_MASK_ONTOLOGY_SPEC.md",
+      "04_DATA_SCHEMAS_AND_MANIFESTS.md",
+      "11_HUMAN_REVIEW_WORKFLOW.md",
+      "12_DATASET_TRAINING_ACTIVE_LEARNING.md",
+      "17_MULTI_PERSON_MULTI_CHARACTER_MASKING_SPEC.md"
+    ],
+    "unqualified_57_class_conflicts": 0,
+    "v1_runtime_default_preserved": true,
+    "v2_activation_language_is_conditional": true
+  },
+  "contracts": {
+    "sop": "Document 11 now names the separate v2 pilot project, non-transferable review authority, all-65-state completion gate, and doc-18 visible-anatomy addendum.",
+    "schemas": "Document 04 records manifest/manifest_v2 dispatch, reviewed_ontology_version, per-label authority, ambiguity hashes, and QA requirements; generated v2 schema drift check passes.",
+    "dataset_dvc": "Document 12 matches ontology-specific package selection and immutable preflight -> DVC add -> DVC push -> tag -> exported-state order.",
+    "multi_person": "Document 17 applies one complete 56- or 65-PART ontology per instance and forbids version mixing within an image.",
+    "definition_of_done": "D1 is version-aware in doc 00, the P2 item, tracker source, dashboard, and generated phase view: 56 active v1; 65 only after gated v2 activation.",
+    "cli_help": [
+      "root help declares active v1 and gated v2",
+      "draft help declares 56/65 authority",
+      "dataset build exposes an exact v1/v2 choice",
+      "verify-package declares manifest-ontology dispatch"
+    ]
+  },
+  "generated_reference": {
+    "path": "Plan/OntologyV2/VERSIONED_REFERENCE.md",
+    "generator": "tools/generate_ontology_version_reference.py",
+    "drift_check": "ontology version reference current",
+    "v1_part_ids": "0..55",
+    "v1_logits": 56,
+    "v2_part_ids": "0..64",
+    "v2_logits": 65,
+    "append_only_prefix_verified": true
+  },
+  "tracker": {
+    "parsed_items": 414,
+    "new_items": 0,
+    "kept_items": 414,
+    "orphaned_items": 0,
+    "hard_blockers_unresolved": 5,
+    "structural_validation": "clean",
+    "phase_files": 9,
+    "item_master_counts_match": true
+  },
+  "verification": {
+    "focused_docs_schemas_cli": "47 passed in 12.67s",
+    "full_repository": "865 passed in 130.47s",
+    "ontology_v2_generator": "current (inactive)",
+    "manifest_v2_schema_generator": "current (inactive)",
+    "ruff": "All checks passed",
+    "black": "changed-file check passed"
+  },
+  "authority_boundary": {
+    "active_ontology": "body_parts_v1",
+    "v2_gold_claimed": false,
+    "v2_champion_claimed": false,
+    "human_pilot_claimed": false,
+    "activation_claimed": false
+  }
+}

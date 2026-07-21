@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_engineering_fixture_set.schema.json",
+  "title": "DAZ solo engineering fixture-set contract (STATIC unrendered)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "fixture_count",
+    "master_seed",
+    "person_count",
+    "curriculum_stage",
+    "rendered",
+    "accepted",
+    "training_eligible",
+    "mapping_authority",
+    "live_daz_execution",
+    "live_qualified_assets",
+    "stream_contract",
+    "coverage_dimensions",
+    "coverage_summary",
+    "fixtures",
+    "set_id",
+    "canonical_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.1.0" },
+    "artifact_type": { "const": "daz_engineering_fixture_set" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_engineering_fixture_set_static_only_unrendered"
+    },
+    "fixture_count": {
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 100
+    },
+    "master_seed": {
+      "type": "integer",
+      "minimum": 0,
+      "exclusiveMaximum": 9223372036854775808
+    },
+    "person_count": { "const": 1 },
+    "curriculum_stage": { "const": "engineering" },
+    "rendered": { "const": false },
+    "accepted": { "const": false },
+    "training_eligible": { "const": false },
+    "mapping_authority": { "const": false },
+    "live_daz_execution": { "const": false },
+    "live_qualified_assets": { "const": false },
+    "stream_contract": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "characters",
+          "poses",
+          "placement",
+          "camera",
+          "lighting",
+          "environment",
+          "render",
+          "degrade"
+        ]
+      }
+    },
+    "coverage_dimensions": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "pose_family",
+          "framing_profile",
+          "wardrobe_state",
+          "lighting_profile",
+          "anatomy_configuration",
+          "prop_mode"
+        ]
+      }
+    },
+    "coverage_summary": { "$ref": "#/$defs/coverage_summary" },
+    "fixtures": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/fixture" }
+    },
+    "set_id": {
+      "type": "string",
+      "pattern": "^daz_engineering_fixture_set_[0-9a-f]{24}$"
+    },
+    "canonical_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "named_random_streams": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "characters",
+        "poses",
+        "placement",
+        "camera",
+        "lighting",
+        "environment",
+        "render",
+        "degrade"
+      ],
+      "properties": {
+        "characters": { "$ref": "#/$defs/seed" },
+        "poses": { "$ref": "#/$defs/seed" },
+        "placement": { "$ref": "#/$defs/seed" },
+        "camera": { "$ref": "#/$defs/seed" },
+        "lighting": { "$ref": "#/$defs/seed" },
+        "environment": { "$ref": "#/$defs/seed" },
+        "render": { "$ref": "#/$defs/seed" },
+        "degrade": { "$ref": "#/$defs/seed" }
+      }
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pose_family",
+        "framing_profile",
+        "wardrobe_state",
+        "lighting_profile",
+        "anatomy_configuration",
+        "prop_mode"
+      ],
+      "properties": {
+        "pose_family": {
+          "type": "string",
+          "enum": [
+            "neutral_calibration",
+            "locomotion",
+            "seated",
+            "crouching_kneeling",
+            "lying_reclining",
+            "athletic_dance_flexibility"
+          ]
+        },
+        "framing_profile": {
+          "type": "string",
+          "enum": [
+            "full_body_margin",
+            "three_quarter_body",
+            "waist_up",
+            "head_shoulders"
+          ]
+        },
+        "wardrobe_state": {
+          "type": "string",
+          "enum": [
+            "unclothed",
+            "underwear_only",
+            "standard_casual",
+            "layered_clothing"
+          ]
+        },
+        "lighting_profile": {
+          "type": "string",
+          "enum": [
+            "front_soft",
+            "backlight_rim",
+            "overcast_diffuse",
+            "indoor_practical_warm"
+          ]
+        },
+        "anatomy_configuration": {
+          "type": "string",
+          "enum": ["adult_female_anatomy", "adult_male_anatomy"]
+        },
+        "prop_mode": {
+          "type": "string",
+          "enum": ["none", "support_surface", "handheld_worn", "occluder"]
+        }
+      }
+    },
+    "coverage_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimensions",
+        "value_sets",
+        "observed_values",
+        "full_marginal_coverage"
+      ],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "type": "string" }
+        },
+        "value_sets": { "type": "object" },
+        "observed_values": { "type": "object" },
+        "full_marginal_coverage": { "const": true }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scene_id",
+        "fixture_index",
+        "person_count",
+        "status",
+        "curriculum_stage",
+        "rendered",
+        "accepted",
+        "training_eligible",
+        "live_qualified_assets",
+        "coverage",
+        "recipe_stub",
+        "recipe_sha256",
+        "resolved_recipe",
+        "resolved_recipe_sha256"
+      ],
+      "properties": {
+        "scene_id": {
+          "type": "string",
+          "pattern": "^daz_scene_eng_[0-9]{3}$"
+        },
+        "fixture_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "person_count": { "const": 1 },
+        "status": { "const": "engineering_unrendered" },
+        "curriculum_stage": { "const": "engineering" },
+        "rendered": { "const": false },
+        "accepted": { "const": false },
+        "training_eligible": { "const": false },
+        "live_qualified_assets": { "const": false },
+        "coverage": { "$ref": "#/$defs/coverage" },
+        "recipe_stub": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scene_id",
+            "master_seed",
+            "person_count",
+            "curriculum_stage",
+            "coverage",
+            "named_random_streams",
+            "live_qualified_assets"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string",
+              "pattern": "^daz_scene_eng_[0-9]{3}$"
+            },
+            "master_seed": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMaximum": 9223372036854775808
+            },
+            "person_count": { "const": 1 },
+            "curriculum_stage": { "const": "engineering" },
+            "coverage": { "$ref": "#/$defs/coverage" },
+            "named_random_streams": { "$ref": "#/$defs/named_random_streams" },
+            "live_qualified_assets": { "const": false }
+          }
+        },
+        "recipe_sha256": { "$ref": "#/$defs/sha256" },
+        "resolved_recipe": { "type": "object" },
+        "resolved_recipe_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

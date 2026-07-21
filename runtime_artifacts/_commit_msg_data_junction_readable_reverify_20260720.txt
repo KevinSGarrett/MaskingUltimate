@@ -1,0 +1,15 @@
+evidence(data-junction): reverify data/ readable after F: outage+return; flap-robust seal
+
+- F: (removable drive) vanished, was repointed to on-C: backup data_c_backup_relocated,
+  then F: REAPPEARED; junction target observed flapping C:-backup <-> F: as the drive's
+  presence changed and concurrent sibling sessions repointed it.
+- Independent read-only re-verification: maskfactory reads all packages on the restored
+  path. `maskfactory reindex --dry-run` => 0 missing_in_db, 0 extra_in_db (only a benign
+  sub-second updated_at drift). SQLite index opens (24 images). 8 packages, sample package
+  372/372 files stat-read OK.
+- Flap-robust: BOTH candidate junction targets checked directly and each holds all 8
+  packages (c_backup_packages=8, f_target_packages=8), so readability held throughout.
+- No mutation, no wipe, no prune, VHDX untouched. C: backup retained as reversible rollback.
+- Honest: F: is REMOVABLE and already proved it can vanish; durable off-C: storage still
+  needs a PERMANENT fixed second disk (Kevin action).
+- Evidence: qa/live_verification/data_junction_readable_reverify_20260720T1432Z.json

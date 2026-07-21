@@ -1,0 +1,33 @@
+# Pre-commit hooks (MF-P0-08.05): ruff + black + EOF/whitespace.
+minimum_pre_commit_version: "3.5.0"
+# Keep hooks off the planning layer, the pinned env lockfiles, and the external
+# CVAT clone — those are not this repo's formatted source.
+exclude: '^(Plan/|env/|cvat/|KICKOFF_PROMPT\.md$)'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+        # Docker Compose validates this file; PyYAML does not know Compose's
+        # merge-control !override tag.
+        exclude: '^configs/cvat-compose\.(maskfactory|parallel-v269)\.yml$'
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.21
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+  - repo: local
+    hooks:
+      - id: prohibit-daz-source-assets
+        name: prohibit DAZ source assets in Git
+        entry: python tools/check_no_daz_source_assets.py
+        language: system
+        pass_filenames: true

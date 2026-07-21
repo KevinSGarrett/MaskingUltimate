@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T09:25:40.3979785Z",
+  "result": "PASS_WITH_EXPLICIT_PENDING_RUNTIMES",
+  "matrix": {
+    "path": "env/provider_runtime_matrix.json",
+    "manifest_sha256": "bc6d6f9a3211d3dd35fc1635d9f874ff59527b6a7cac95074fdb3100f8b43650",
+    "provider_count": 8,
+    "qualified_runtime_count": 6,
+    "human_gated_runtime_count": 0,
+    "pending_runtime_count": 2,
+    "artifact_count": 18,
+    "core_torch": "2.11.0+cu128"
+  },
+  "pending_runtimes": {
+    "sam3_1": {
+      "checkpoint_status": "installed",
+      "smoke_status": "not_run_wsl_filesystem_io_error"
+    },
+    "sam3d_body": {
+      "checkpoint_status": "installed",
+      "asset_count": 3,
+      "total_size_bytes": 2805241082,
+      "smoke_status": "not_run_wsl_filesystem_io_error"
+    }
+  },
+  "wsl_probe": {
+    "shell": "pass",
+    "python": "Python 3.10.12",
+    "df": "input/output error",
+    "runtime_build_attempted": false,
+    "wsl_terminated_or_restarted": false,
+    "docker_or_comfyui_terminated": false
+  },
+  "verification": {
+    "focused_pytest": "26 passed",
+    "broader_related_pytest": "116 passed",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "authority": {
+    "densepose_remains_active": true,
+    "production_route_changed": false,
+    "provider_promoted": false,
+    "may_author_gold": false
+  }
+}

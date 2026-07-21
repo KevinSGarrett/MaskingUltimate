@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/completion_bundle_policy.schema.json",
+  "title": "MaskFactory legacy portfolio/research evidence policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "authority", "blocking_for_core_completion", "completion_scope", "core_completion_authority", "required_domains", "tracker_requirements", "governing_source_hashes", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "modernization_completion_v1"},
+    "authority": {"const": "pre_result_completion_index_only_no_primary_evidence_or_completion_authority"},
+    "blocking_for_core_completion": {"const": false},
+    "completion_scope": {"const": "legacy_portfolio_research_evidence"},
+    "core_completion_authority": {"const": "none"},
+    "required_domains": {
+      "type": "object", "minProperties": 15,
+      "additionalProperties": {"$ref": "#/$defs/domain"}
+    },
+    "tracker_requirements": {"type": "object"},
+    "governing_source_hashes": {
+      "type": "object", "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "domain": {
+      "type": "object", "additionalProperties": false,
+      "required": ["verifier_id", "maximum_age_hours", "minimum_source_artifacts", "measurement_rules"],
+      "properties": {
+        "verifier_id": {"type": "string", "minLength": 1},
+        "maximum_age_hours": {"type": "integer", "minimum": 1},
+        "minimum_source_artifacts": {"type": "integer", "minimum": 1},
+        "measurement_rules": {
+          "type": "object", "minProperties": 1,
+          "additionalProperties": {
+            "type": "object", "additionalProperties": false,
+            "required": ["operator", "value"],
+            "properties": {"operator": {"enum": ["eq", "ge", "le"]}, "value": {}}
+          }
+        }
+      }
+    }
+  }
+}

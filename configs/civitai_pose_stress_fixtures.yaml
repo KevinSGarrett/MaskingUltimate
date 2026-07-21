@@ -1,0 +1,245 @@
+# configs/civitai_pose_stress_fixtures.yaml
+#
+# MF-P0-14.03 registry for adult/NSFW and adjacent Civitai pose/control stress
+# fixtures. In addition to stress QA and provider disagreement, eligible adult
+# source/control pairs may be promoted into training examples or seed
+# human-reviewed gold after provenance, license, adult-age/consent, allowed-use,
+# intake, annotation, and QA gates pass.
+schema_version: 1.0.0
+classification_file: Plan/Civitai/adult_body_resource_classification.yaml
+manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
+registered_at_utc: "2026-07-10T22:05:00Z"
+policy:
+  role_required: stress_fixture
+  fixtures_may_be_training_data_when_governed: true
+  fixtures_may_seed_human_reviewed_gold_when_governed: true
+  image_preview_not_required_for_registry: true
+required_coverage:
+  - contact
+  - occlusion
+  - hands_on_body
+  - rear_body
+  - from_below
+  - difficult_body_visibility
+  - multi_person
+fixtures:
+  - key: openpose_nsfw_525_pose_pack
+    civitai_id: 297881
+    name: OpenPose NSFW pose package total 525 poses
+    version: Final
+    archive_path: Plan/Civitai/archives/openposeNSFWPosePackage_final.zip
+    archive_sha256: 814ef6e3dff2b3437607d859428da274ac92be85e4410fae100398e786974fb4
+    extracted_path: Plan/Civitai/extracted/openposeNSFWPosePackage_final
+    file_counts: {total: 1753, json: 472, png: 1279}
+    content: openpose_json_png_depth_pose_mix
+    coverage: [contact, occlusion, hands_on_body, from_below, difficult_body_visibility]
+  - key: openpose_depth_nsfw_v2
+    civitai_id: 264843
+    name: OpenPose + Depth NSFW
+    version: v2
+    archive_path: Plan/Civitai/archives/264843_OpenPose_Depth_NSFW_v925704_OpenposeDepthNSFW_v2.zip
+    archive_sha256: e9791699710c9f6330fe26385ddd9c9eb4b291885bbec0320303130087a35f32
+    extracted_path: Plan/Civitai/extracted/264843_OpenPose_Depth_NSFW_v925704_OpenposeDepthNSFW_v2
+    file_counts: {total: 820, jpg: 64, png: 756}
+    content: openpose_depth_png_assets
+    coverage: [contact, occlusion, from_below, difficult_body_visibility]
+  - key: covering_breasts_crotch
+    civitai_id: 145560
+    name: OpenPose Covering breasts/crotch
+    version: Covering v1.0
+    archive_path: Plan/Civitai/archives/145560_OpenPose_Covering_breasts_crotch_v161945_OpenposeCovering_coveringV10.zip
+    archive_sha256: e74087073e4125a784a15c3eef3321d8bc8be51578a36868493c9dc66d614da3
+    extracted_path: Plan/Civitai/extracted/145560_OpenPose_Covering_breasts_crotch_v161945_OpenposeCovering_coveringV10
+    file_counts: {total: 30, json: 10, png: 20}
+    content: openpose_json_png
+    coverage: [occlusion, hands_on_body, difficult_body_visibility]
+  - key: grabbing_anothers_breast_pov_hands
+    civitai_id: 138867
+    name: OpenPose grabbing another's breast pov hands
+    version: v1.0
+    archive_path: Plan/Civitai/archives/138867_OpenPose_grabbing_another_s_breast_pov_hands_v153492_openposeGrabbingAnothers_v10.zip
+    archive_sha256: 8c8599bcc9195293ccc40311edc38cb294fd7221710878d98cd12b31d382be25
+    extracted_path: Plan/Civitai/extracted/138867_OpenPose_grabbing_another_s_breast_pov_hands_v153492_openposeGrabbingAnothers_v10
+    file_counts: {total: 11, png: 8}
+    content: openpose_png_assets
+    coverage: [contact, occlusion, hands_on_body, difficult_body_visibility]
+  - key: hands_on_own_chest
+    civitai_id: 119620
+    name: OpenPose hands on own chest
+    version: v1.2
+    archive_path: Plan/Civitai/archives/119620_OpenPose_hands_on_own_chest_v149205_openposeHandsOnOwn_v12.zip
+    archive_sha256: 3184368f0067f243c621222cb8c304802f0fb202f98785be22cd8e99ed691422
+    extracted_path: Plan/Civitai/extracted/119620_OpenPose_hands_on_own_chest_v149205_openposeHandsOnOwn_v12
+    file_counts: {total: 39, png: 36}
+    content: openpose_png_assets
+    coverage: [occlusion, hands_on_body, difficult_body_visibility]
+  - key: pantyshot_leaning_forward_arms_behind
+    civitai_id: 122442
+    name: OpenPose leaning forward arms behind back looking down
+    version: v1.1
+    archive_path: Plan/Civitai/archives/122442_OpenPose_pantyshot_leaning_forward_arms_behind_back_looking_down_v149166_openposePantyshotLeaning_v11.zip
+    archive_sha256: 5f495342546d51e9b109089118deb883160f3a4692a906e50b3be0c512b510f6
+    extracted_path: Plan/Civitai/extracted/x_122442_149166
+    file_counts: {total: 4, png: 4}
+    content: openpose_png_assets
+    coverage: [occlusion, difficult_body_visibility]
+  - key: jumping_full_body_from_below
+    civitai_id: 121090
+    name: OpenPose jumping full body from below
+    version: v1.1
+    archive_path: Plan/Civitai/archives/121090_OpenPose_jumping_full_body_from_below_pantyshot_v149169_openposeJumpingFullBody_v11.zip
+    archive_sha256: 09dae67575b989a6cb71b48425c2eeb0ba89a59a34b565ef0db49fb0c3cffb84
+    extracted_path: Plan/Civitai/extracted/121090_OpenPose_jumping_full_body_from_below_pantyshot_v149169_openposeJumpingFullBody_v11
+    file_counts: {total: 9, png: 8}
+    content: openpose_png_assets
+    coverage: [from_below, difficult_body_visibility]
+  - key: feet_focused_pose_depth
+    civitai_id: 2368231
+    name: Feet-Focused Pose & Depth Assets for ControlNet
+    version: v1.0
+    archive_path: Plan/Civitai/archives/feetFocusedPoseDepth_v10.zip
+    archive_sha256: 01670fa696ad14f4038fc42f697dd8d5123b83d5daeb705aa6123b061be2bcab
+    extracted_path: Plan/Civitai/extracted/feetFocusedPoseDepth_v10
+    file_counts: {total: 67, png: 67}
+    content: pose_depth_png_assets
+    coverage: [occlusion, difficult_body_visibility]
+  - key: two_girls_breast_press
+    civitai_id: 120408
+    name: OpenPose 2girls breast press
+    version: v1.1
+    archive_path: Plan/Civitai/archives/120408_OpenPose_2girls_breast_press_v149173_openpose2girlsBreast_v11.zip
+    archive_sha256: 6d2d99b98100d29fe8b1d2583838bfa57cf8b2d913212a940daa9b43029c3e93
+    extracted_path: Plan/Civitai/extracted/120408_OpenPose_2girls_breast_press_v149173_openpose2girlsBreast_v11
+    file_counts: {total: 9, png: 6}
+    content: openpose_png_assets
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
+  - key: two_girls_portrait_side_breast_press
+    civitai_id: 180134
+    name: OpenPose 2girls portrait side-by-side symmetrical docking breast press
+    version: v1.0
+    archive_path: Plan/Civitai/archives/180134_OpenPose_2girls_portrait_side-by-side_symmetrical_docking_breast_press_v202170_openpose2girlsPortraitSide_v1.zip
+    archive_sha256: d34931481288b0fcbb45a199c02092630a9226ac190722e4f96de4eea69c972b
+    extracted_path: Plan/Civitai/extracted/x_180134_202170
+    file_counts: {total: 16, png: 15}
+    content: openpose_png_assets
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
+  - key: ass_support
+    civitai_id: 147261
+    name: OpenPose Ass support
+    version: Ass support v1.0
+    archive_path: Plan/Civitai/archives/OpenposeAssSupport_assSupportV10.zip
+    archive_sha256: 1abbc87933e0596d86b7cfefe9157c54f4e1ef0ca5ddd7d3dfb450d5b567c709
+    extracted_path: Plan/Civitai/extracted/OpenposeAssSupport_assSupportV10
+    file_counts: {total: 18, json: 6, png: 12}
+    content: openpose_json_png
+    coverage: [contact, rear_body, difficult_body_visibility]
+  - key: cover_multiple_characters
+    civitai_id: 167364
+    name: OpenPose Cover multiple characters
+    version: v1.0
+    archive_path: Plan/Civitai/archives/167364_OpenPose_Cover_multiple_characters_v188255_OpenposeCoverMultiple_v10.zip
+    archive_sha256: d5684ba80bb4c4b95f840a7cbe01c9867c63231b9e59e7dba7727b3b8b3c1312
+    extracted_path: Plan/Civitai/extracted/167364_OpenPose_Cover_multiple_characters_v188255_OpenposeCoverMultiple_v10
+    file_counts: {total: 42, json: 14, png: 28}
+    content: openpose_json_png
+    coverage: [occlusion, hands_on_body, difficult_body_visibility, multi_person]
+  - key: carrying_person
+    civitai_id: 140628
+    name: OpenPose Carrying person
+    version: Carrying person v1.0
+    archive_path: Plan/Civitai/archives/140628_OpenPose_Carrying_person_v155860_OpenposeCarrying_carryingPersonV10.zip
+    archive_sha256: b9a9781abbfc5bed8cbe68312a09a590069cb598809a117020b65076684a4164
+    extracted_path: Plan/Civitai/extracted/140628_OpenPose_Carrying_person_v155860_OpenposeCarrying_carryingPersonV10
+    file_counts: {total: 24, json: 8, png: 16}
+    content: openpose_json_png
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
+  - key: hug
+    civitai_id: 136853
+    name: OpenPose Hug
+    version: Hug v1.0
+    archive_path: Plan/Civitai/archives/136853_OpenPose_Hug_v150996_OpenposeHug_hugV10.zip
+    archive_sha256: cc521f2252e192cf780ce5bed7e44d7b8cfdc6d91ec4bb52539103448ec130dc
+    extracted_path: Plan/Civitai/extracted/136853_OpenPose_Hug_v150996_OpenposeHug_hugV10
+    file_counts: {total: 54, json: 18, png: 36}
+    content: openpose_json_png
+    coverage: [contact, occlusion, difficult_body_visibility, multi_person]
+  - key: three_girls_from_below_arms_behind
+    civitai_id: 149843
+    name: OpenPose 3girls from below arms behind back
+    version: v1.0
+    archive_path: Plan/Civitai/archives/149843_OpenPose_3girls_from_below_arms_behind_back_pantyshot_v167416_openpose3girlsFromBelow_v10.zip
+    archive_sha256: 1c5b428e62b3ef8e48c22d35aafcda955ce872753bb62b2509b9453f4bc52ca7
+    extracted_path: Plan/Civitai/extracted/x_149843_167416
+    file_counts: {total: 13, png: 11}
+    content: openpose_png_assets
+    coverage: [occlusion, from_below, difficult_body_visibility, multi_person]
+  - key: two_girls_from_behind_from_below
+    civitai_id: 148751
+    name: OpenPose 2girls from behind from below
+    version: v1.0
+    archive_path: Plan/Civitai/archives/148751_OpenPose_2girls_from_behind_from_below_v166017_openpose2girlsFrom_v10.zip
+    archive_sha256: c8ee3500cba16c0cd11769f759d5306b53c9960e96c45519d02d20532121e490
+    extracted_path: Plan/Civitai/extracted/148751_OpenPose_2girls_from_behind_from_below_v166017_openpose2girlsFrom_v10
+    file_counts: {total: 27, png: 16}
+    content: openpose_png_assets
+    coverage: [rear_body, from_below, occlusion, difficult_body_visibility, multi_person]
+  - key: two_girls_all_fours
+    civitai_id: 128689
+    name: OpenPose 2girls all fours
+    version: v1.1
+    archive_path: Plan/Civitai/archives/128689_OpenPose_2girls_all_fours_v149155_openpose2girlsAll_v11.zip
+    archive_sha256: aec1c0d39629ee7e20162ab90c303fdaf6980d2c3b7e445f729475f6f015e79a
+    extracted_path: Plan/Civitai/extracted/128689_OpenPose_2girls_all_fours_v149155_openpose2girlsAll_v11
+    file_counts: {total: 14, png: 8}
+    content: openpose_png_assets
+    coverage: [occlusion, difficult_body_visibility, multi_person]
+  - key: two_girls_from_above_sitting
+    civitai_id: 118999
+    name: OpenPose 2girls from above sitting
+    version: v1.1
+    archive_path: Plan/Civitai/archives/118999_OpenPose_2girls_from_above_sitting_v149180_openpose2girlsFrom_v11.zip
+    archive_sha256: 809a4d3813cc75b08f5d752b8e2e74a0c613877ddae3f96724fd49ed3160ea5a
+    extracted_path: Plan/Civitai/extracted/118999_OpenPose_2girls_from_above_sitting_v149180_openpose2girlsFrom_v11
+    file_counts: {total: 16, png: 10}
+    content: openpose_png_assets
+    coverage: [occlusion, difficult_body_visibility, multi_person]
+  - key: strangling_pov_hands_neck
+    civitai_id: 138964
+    name: OpenPose strangling pov hands hands on another's neck
+    version: v1.0
+    archive_path: Plan/Civitai/archives/138964_OpenPose_strangling_pov_hands_hands_on_another_s_neck_v153605_openposeStranglingPov_v10.zip
+    archive_sha256: 85b486733d353407ffc343484c09696c9f88199f24576354a8bed6398a15c2d7
+    extracted_path: Plan/Civitai/extracted/x_138964_153605
+    file_counts: {total: 6, png: 6}
+    content: openpose_png_assets
+    coverage: [contact, occlusion, hands_on_body, difficult_body_visibility]
+  - key: adjusting_hair_hand_in_hair
+    civitai_id: 203686
+    name: OpenPose Adjusting hair Hand in own hair
+    version: v1.0
+    archive_path: Plan/Civitai/archives/203686_OpenPose_Adjusting_hair_Hand_in_own_hair_v229310_OpenposeAdjustingHair_v10.zip
+    archive_sha256: 44deec6a820614d4dc6863b5b413229fd8eeef42273f21f122ee59bb12cab683
+    extracted_path: Plan/Civitai/extracted/203686_OpenPose_Adjusting_hair_Hand_in_own_hair_v229310_OpenposeAdjustingHair_v10
+    file_counts: {total: 24, json: 8, png: 16}
+    content: openpose_json_png
+    coverage: [occlusion, hands_on_body, difficult_body_visibility]
+  - key: from_above_on_back
+    civitai_id: 129435
+    name: OpenPose From above
+    version: On back v1.0
+    archive_path: Plan/Civitai/archives/129435_OpenPose_From_above_v141869_OpenposeFromAbove_onBackV10.zip
+    archive_sha256: 65b2cf8d976f69f54217ccab65a4060333997f154e655e6bf1a50f47cb52d85e
+    extracted_path: Plan/Civitai/extracted/129435_OpenPose_From_above_v141869_OpenposeFromAbove_onBackV10
+    file_counts: {total: 63, json: 21, png: 42}
+    content: openpose_json_png
+    coverage: [occlusion, difficult_body_visibility]
+  - key: from_below_standing
+    civitai_id: 130644
+    name: OpenPose From below
+    version: Standing v1.0
+    archive_path: Plan/Civitai/archives/130644_OpenPose_From_below_v143347_OpenposeFromBelow_standingV10.zip
+    archive_sha256: 5c6ab58ff8a636264521d924037509cad96e282a43a6556c140c077e68bbc26b
+    extracted_path: Plan/Civitai/extracted/130644_OpenPose_From_below_v143347_OpenposeFromBelow_standingV10
+    file_counts: {total: 54, json: 18, png: 36}
+    content: openpose_json_png
+    coverage: [from_below, difficult_body_visibility]

@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_resolved_scene_recipe.schema.json",
+  "title": "Canonical fully resolved DAZ scene recipe",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scene_id", "scene_family_id", "scene_variant_id", "master_seed", "named_random_streams", "registry_snapshot_id", "runtime_snapshot_id", "script_bundle_sha256", "ontology", "render_profile_id", "coverage_demand_ids", "characters", "relationship_template", "camera", "lighting", "environment", "props", "recipe_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "scene_id": {"type": "string", "pattern": "^daz_scene_[A-Za-z0-9_.-]+$"},
+    "scene_family_id": {"type": "string", "pattern": "^daz_family_[A-Za-z0-9_.-]+$"},
+    "scene_variant_id": {"type": "string", "pattern": "^daz_variant_[A-Za-z0-9_.-]+$"},
+    "master_seed": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807},
+    "named_random_streams": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["characters", "poses", "placement", "camera", "lighting", "environment", "render", "degrade"],
+      "properties": {
+        "characters": {"$ref": "#/$defs/seed"},
+        "poses": {"$ref": "#/$defs/seed"},
+        "placement": {"$ref": "#/$defs/seed"},
+        "camera": {"$ref": "#/$defs/seed"},
+        "lighting": {"$ref": "#/$defs/seed"},
+        "environment": {"$ref": "#/$defs/seed"},
+        "render": {"$ref": "#/$defs/seed"},
+        "degrade": {"$ref": "#/$defs/seed"}
+      }
+    },
+    "registry_snapshot_id": {"type": "string", "pattern": "^daz_registry_[A-Za-z0-9_.-]+$"},
+    "runtime_snapshot_id": {"type": "string", "pattern": "^daz_runtime_[A-Za-z0-9_.-]+$"},
+    "script_bundle_sha256": {"$ref": "#/$defs/sha256"},
+    "ontology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "snapshot_sha256"],
+      "properties": {
+        "name": {"enum": ["body_parts_v1", "body_parts_v2"]},
+        "snapshot_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "render_profile_id": {"type": "string", "minLength": 1},
+    "coverage_demand_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "characters": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"$ref": "#/$defs/character"}},
+    "relationship_template": {"type": ["object", "null"]},
+    "camera": {"$ref": "#/$defs/camera"},
+    "lighting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "parameter_seed"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1},
+        "parameter_seed": {"$ref": "#/$defs/seed"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "background_profile"],
+      "properties": {
+        "asset_id": {"oneOf": [{"$ref": "#/$defs/asset_id"}, {"type": "null"}]},
+        "background_profile": {"type": "string", "minLength": 1}
+      }
+    },
+    "props": {"type": "array", "items": {"type": "object"}},
+    "recipe_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seed": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+    "asset_id": {"type": "string", "pattern": "^(daz_asset_[A-Za-z0-9_.-]+|ast_[0-9a-f]{24})$"},
+    "mapping_id": {"type": "string", "pattern": "^(map_|daz_map_)[A-Za-z0-9_.-]+$"},
+    "vector3": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+    "character": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["construction_id", "requested_promoted_id", "figure_asset_id", "character_preset_asset_id", "body_profile_id", "face_profile_id", "age_appearance_category", "anatomy_configuration", "anatomy_asset_ids", "skin_material_asset_id", "hair_asset_id", "wardrobe_asset_ids", "morph_values", "pose_asset_id", "pose_adjustments", "mapping_bundle_ids", "world_transform"],
+      "properties": {
+        "construction_id": {"type": "string", "pattern": "^c[0-3]$"},
+        "requested_promoted_id": {"oneOf": [{"type": "string", "pattern": "^p[0-3]$"}, {"type": "null"}]},
+        "figure_asset_id": {"$ref": "#/$defs/asset_id"},
+        "character_preset_asset_id": {"oneOf": [{"$ref": "#/$defs/asset_id"}, {"type": "null"}]},
+        "body_profile_id": {"type": "string", "minLength": 1},
+        "face_profile_id": {"type": "string", "minLength": 1},
+        "age_appearance_category": {"type": "string", "pattern": "^adult_[A-Za-z0-9_]+$"},
+        "anatomy_configuration": {"enum": ["adult_male", "adult_female", "adult_male_anatomy", "adult_female_anatomy"]},
+        "anatomy_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+        "skin_material_asset_id": {"$ref": "#/$defs/asset_id"},
+        "hair_asset_id": {"oneOf": [{"$ref": "#/$defs/asset_id"}, {"type": "null"}]},
+        "wardrobe_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asset_id"}},
+        "morph_values": {"type": "object", "additionalProperties": {"type": "number"}},
+        "pose_asset_id": {"$ref": "#/$defs/asset_id"},
+        "pose_adjustments": {"type": "object"},
+        "mapping_bundle_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/mapping_id"}},
+        "world_transform": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["translation_cm", "rotation_deg", "scale"],
+          "properties": {
+            "translation_cm": {"$ref": "#/$defs/vector3"},
+            "rotation_deg": {"$ref": "#/$defs/vector3"},
+            "scale": {"type": "number", "exclusiveMinimum": 0}
+          }
+        }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection", "focal_length_mm", "position_cm", "target_cm", "roll_deg", "resolution", "crop"],
+      "properties": {
+        "projection": {"enum": ["perspective", "orthographic"]},
+        "focal_length_mm": {"oneOf": [{"type": "number", "exclusiveMinimum": 0}, {"type": "null"}]},
+        "position_cm": {"$ref": "#/$defs/vector3"},
+        "target_cm": {"$ref": "#/$defs/vector3"},
+        "roll_deg": {"type": "number", "minimum": -180, "maximum": 180},
+        "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+        "crop": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}}
+      }
+    }
+  }
+}

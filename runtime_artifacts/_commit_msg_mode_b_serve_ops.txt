@@ -1,0 +1,1 @@
+docs(ops): seal Mode B host serve readiness in OPS_LOG + needs_agent

@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T14:35:15Z",
+  "item_id": "MF-P8-11.03",
+  "result": "implementation_pass_live_sam31_and_real_multi_person_tournaments_pending",
+  "contract": {
+    "execution_source_recomputed_before_routing": "pass",
+    "exact_person_instance_label_target_coverage": "pass",
+    "lifecycle_identity_and_decision_projection": "pass",
+    "winner_artifact_and_ranking_hash_binding": "pass",
+    "certificate_document_and_claimed_seal_binding": "pass",
+    "revocation_snapshot_hash_binding": "pass",
+    "certified_route_without_routine_review": "pass",
+    "preselected_audit_whole_image_withholding": "pass",
+    "revoked_stratum_residual_routing": "pass",
+    "one_truth_partition_for_every_promoted_instance": "pass",
+    "measurement_receipt_identity_without_performance_claim": "pass",
+    "canonical_report_seal_and_exact_recomputation": "pass",
+    "forged_resealed_execution_rejected": "pass",
+    "missing_or_rebound_lifecycle_rejected": "pass",
+    "tampered_or_resealed_route_report_rejected": "pass",
+    "contract_grants_serving_publication_training_audit_gold_or_completion_authority": false
+  },
+  "fixture_correction": {
+    "prior_semantic_context": "contact",
+    "corrected_semantic_context": "duo",
+    "risk_bucket_remains": "contact",
+    "reason": "autonomy lifecycle schema permits solo, duo, or small_group context; contact is an independent multi-person risk bucket"
+  },
+  "artifact_hashes": {
+    "execution_verifier": "5215ee0abf0ae751446cfde8fd47faed7c9cc4dd4a35cfe3ccf254f434798637",
+    "lifecycle_route_bridge": "95042d2114f128073d60877f861b7a27546634bbfa735afddb776df5a822b100",
+    "lifecycle_route_schema": "c7cd9f258f5ee04f8a8951c6f5ce4ba0eb988b911cbacfebdbb4fe02cefdfe2d",
+    "schema_registry": "e7d123cb79ca39842b20f5e1328a17d7385ff65bc368230593b345d2c5bc77ab",
+    "tests": "790d9e6cfd740193553c14a2183d67aa5729659ba5e157fc389e42652aa7732c",
+    "ci_workflow": "99ac1e4674186e7e907c2974d1eafe4e46500e003a6ad3a90e7a1408233176a7"
+  },
+  "verification": {
+    "dedicated_execution_and_bridge_tests_passed": 15,
+    "focused_multi_person_tests_passed": 59,
+    "full_repository_tests_passed": 1590,
+    "full_repository_exit_code": 0,
+    "precommit_end_of_files": "pass",
+    "precommit_trailing_whitespace": "pass",
+    "precommit_yaml": "pass",
+    "precommit_large_files": "pass",
+    "precommit_ruff": "pass",
+    "precommit_black": "pass",
+    "git_diff_check": "pass",
+    "wsl_docker_cvat_f_drive_external_vhd_or_external_storage_accessed": false,
+    "elevation_uac_restart_or_machine_service_action_performed": false
+  },
+  "remaining_real_evidence": [
+    "official SAM 3.1 checkpoint access and live runtime qualification",
+    "governed real multi-person provider candidate generation",
+    "real per-target tournaments and lifecycle route receipts",
+    "real certificate-covered, residual, and preselected blinded audit observations",
+    "D11/G9 multi-person headline measurement and rollback evidence"
+  ],
+  "authority_boundary": "Synthetic fixtures prove fail-closed execution-to-lifecycle-to-route enforcement only. They are not real source inference, certificate calibration, serving, publication, training data, mask authority, gold authority, audit outcome, headline performance, rollback, or tracker completion evidence."
+}

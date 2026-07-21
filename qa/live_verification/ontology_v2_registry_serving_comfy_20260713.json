@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T00:58:08.7914486Z",
+  "outcome": "pass",
+  "scope": "inactive body_parts_v2 registry, serving, and ComfyUI compatibility contracts",
+  "registry_contract": {
+    "ontology_version_required": "body_parts_v2",
+    "class_count": 65,
+    "class_order": "exact canonical ID order 0-64",
+    "class_names_sha256_required": true,
+    "checkpoint_sha256_required": true,
+    "inference_config_sha256_required": true,
+    "artifact_hashes_required": true
+  },
+  "serving_contract": {
+    "v1_champion_rejects_v2_only_labels": true,
+    "v2_champion_requires_exact_v2_vocabulary": true,
+    "derived_unions_rejected_as_direct_model_classes": true,
+    "health_exposes_ontology_version": true,
+    "models_exposes_ontology_version_and_vocabulary_hash": true,
+    "predict_exposes_requested_and_canonical_labels": true,
+    "predict_exposes_per_selector_provenance": true,
+    "alias_fixture": {
+      "requested": "penis head",
+      "canonical": "glans_penis",
+      "class_id": 62
+    }
+  },
+  "comfyui_contract": {
+    "supported_package_majors": [1, 2],
+    "package_browser_ontology_filter": true,
+    "canonical_atomic_and_derived_union_selectors": true,
+    "alias_provenance_node": "MFV2CanonicalSelector",
+    "manifest_relative_mask_paths_supported": true,
+    "manifest_path_containment_enforced": true,
+    "read_only_runtime_preserved": true,
+    "workflow_fixtures": [
+      "wf_v2_anatomy_selector.json",
+      "wf_v2_clothed_negative_guard.json"
+    ]
+  },
+  "verification": {
+    "focused_tests_passed": 50,
+    "full_tests_collected": 837,
+    "full_tests_passed": 837,
+    "clean_publish_tests_collected": 821,
+    "clean_publish_tests_passed": 818,
+    "clean_publish_tests_skipped_runtime_artifacts": 3,
+    "ruff": "pass",
+    "black_version": "26.5.1",
+    "black": "pass"
+  },
+  "source_sha256": {
+    "src/maskfactory/models/ontology_contract.py": "bc1361f161720908d3cb321d3132318c11edbe78c5c5f6c8da3a7683286f60e5",
+    "src/maskfactory/models/registry.py": "a0ba3a0702b54268b35ebe80e28ef4dbe475942e306d8ec83f285f9bb1d00328",
+    "src/maskfactory/training/launch.py": "179c17ff9be2c2af4af45ead9a6820adbc17a55740726178b811bde9597fc214",
+    "src/maskfactory/serve/api.py": "ab34452ea0a1460b696ed723c2032ff4c46330cb1f1db993d97b5190a723c7e2",
+    "src/maskfactory/serve/providers.py": "b9f172eb27b38e7a4c9eb9f680df19270f2024cd2d3caeef9fb2b577e3ba7d56",
+    "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
+    "src/maskfactory/serve/comfy_install.py": "803b83ca16250e468f8ed5c61d7c6ae14d5be9c152455690eb418c9866804b4b",
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_v2_anatomy_selector.json": "fd8b665a0ef06cc6b136044ec53b765fd2be00da2a267d2da35a5f134e219e41",
+    "src/maskfactory/serve/maskfactory_nodes/workflows/wf_v2_clothed_negative_guard.json": "8b012479ab4e7e9d56cc4eb1208097ffcedd0aa41ad83c3a1b83d6533933688a",
+    "tests/test_ontology_v2_registry_serving_comfy.py": "c3d7d1dcf22d4423a8eb53776777e1fdea07c8d34d89f6d618f32c0909d26863"
+  },
+  "open_gate": "No body_parts_v2 champion exists yet, so real v2 Mode A/Mode B latency, residency, and end-to-end tests remain open; production stays body_parts_v1.",
+  "production_activation_granted": false
+}

@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/horizon_go_no_go_static_report.schema.json",
+  "title": "MaskFactory horizon multi-person/video go/no-go STATIC report (MF-P7-05.01/05.02)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "memo_bindings",
+    "multi_person",
+    "video",
+    "checks",
+    "multi_person_negative_go_fixture_blocked",
+    "video_production_negative_go_fixture_blocked",
+    "video_independent_negative_go_fixture_blocked",
+    "multi_person_independent_real_accuracy_decision",
+    "multi_person_production_promotion_decision",
+    "video_production_use_decision",
+    "video_independent_real_accuracy_decision",
+    "multi_person_independent_real_accuracy_go_claimed",
+    "multi_person_production_go_claimed",
+    "video_production_use_go_claimed",
+    "video_independent_real_accuracy_go_claimed",
+    "mf_p8_exit_complete",
+    "mf_p7_exit_complete",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "horizon_go_no_go_static_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {
+      "const": "horizon_go_no_go_static_only_no_production_or_independent_real_go"
+    },
+    "checked_at": {"type": "string", "minLength": 1},
+    "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["MF-P7-05.01", "MF-P7-05.02"]
+      }
+    },
+    "memo_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["multi_person", "video"],
+      "properties": {
+        "multi_person": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "bytes"],
+          "properties": {
+            "path": {"const": "Plan/HORIZON_MULTI_PERSON_GO_NO_GO.md"},
+            "sha256": {"$ref": "#/$defs/sha256"},
+            "bytes": {"type": "integer", "minimum": 64}
+          }
+        },
+        "video": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "bytes"],
+          "properties": {
+            "path": {"const": "Plan/HORIZON_VIDEO_GO_NO_GO.md"},
+            "sha256": {"$ref": "#/$defs/sha256"},
+            "bytes": {"type": "integer", "minimum": 64}
+          }
+        }
+      }
+    },
+    "multi_person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "architecture_into_p8",
+        "independent_real_accuracy_decision",
+        "production_promotion_decision",
+        "required_evidence_keys",
+        "missing_evidence_keys",
+        "evidence_complete"
+      ],
+      "properties": {
+        "architecture_into_p8": {"const": true},
+        "independent_real_accuracy_decision": {"const": "NO_GO"},
+        "production_promotion_decision": {"const": "NO_GO"},
+        "required_evidence_keys": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "governed_real_2_to_4_person_images_ge_10",
+              "kevin_sop_1_through_6_complete",
+              "d11_demonstration_recorded",
+              "g9_cross_instance_bleed_rate_zero",
+              "mf_p8_10_01_through_06_complete",
+              "mf_p8_exit_complete"
+            ]
+          }
+        },
+        "missing_evidence_keys": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "evidence_complete": {"const": false}
+      }
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core_contract_implementation_authorized",
+        "production_use_decision",
+        "independent_real_accuracy_decision",
+        "production_required_evidence_keys",
+        "independent_required_evidence_keys",
+        "production_missing_evidence_keys",
+        "independent_missing_evidence_keys",
+        "production_evidence_complete",
+        "independent_evidence_complete"
+      ],
+      "properties": {
+        "core_contract_implementation_authorized": {"const": true},
+        "production_use_decision": {"const": "NO_GO"},
+        "independent_real_accuracy_decision": {"const": "NO_GO"},
+        "production_required_evidence_keys": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "temporal_package_schema_qualified",
+              "track_identity_ownership_authority",
+              "temporal_hard_qa_clean",
+              "zero_identity_switch_gate",
+              "autonomous_temporal_certificate",
+              "bridge_gates_pass"
+            ]
+          }
+        },
+        "independent_required_evidence_keys": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "production_missing_evidence_keys": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "independent_missing_evidence_keys": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "production_evidence_complete": {"const": false},
+        "independent_evidence_complete": {"const": false}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "multi_person_memo_bound",
+        "video_memo_bound",
+        "multi_person_go_refused_without_evidence",
+        "video_production_go_refused_without_evidence",
+        "video_independent_go_refused_without_evidence"
+      ],
+      "properties": {
+        "multi_person_memo_bound": {"const": "pass"},
+        "video_memo_bound": {"const": "pass"},
+        "multi_person_go_refused_without_evidence": {"const": "pass"},
+        "video_production_go_refused_without_evidence": {"const": "pass"},
+        "video_independent_go_refused_without_evidence": {"const": "pass"}
+      }
+    },
+    "multi_person_negative_go_fixture_blocked": {"const": true},
+    "video_production_negative_go_fixture_blocked": {"const": true},
+    "video_independent_negative_go_fixture_blocked": {"const": true},
+    "multi_person_independent_real_accuracy_decision": {"const": "NO_GO"},
+    "multi_person_production_promotion_decision": {"const": "NO_GO"},
+    "video_production_use_decision": {"const": "NO_GO"},
+    "video_independent_real_accuracy_decision": {"const": "NO_GO"},
+    "multi_person_independent_real_accuracy_go_claimed": {"const": false},
+    "multi_person_production_go_claimed": {"const": false},
+    "video_production_use_go_claimed": {"const": false},
+    "video_independent_real_accuracy_go_claimed": {"const": false},
+    "mf_p8_exit_complete": {"const": false},
+    "mf_p7_exit_complete": {"const": false},
+    "doctor_green_claimed": {"const": false},
+    "gold_claimed": {"const": false},
+    "visual_qa_pass_claimed": {"const": false},
+    "main_complete_claimed": {"const": false},
+    "production_evidence_pass_claimed": {"const": false},
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "report_id": {"type": "string", "pattern": "^hgn_[a-f0-9]{24}$"},
+    "seal_sha256": {"$ref": "#/$defs/sha256"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

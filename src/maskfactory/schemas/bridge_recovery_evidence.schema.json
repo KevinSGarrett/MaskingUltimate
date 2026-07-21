@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_recovery_evidence.schema.json",
+  "title": "Additive bridge recovery and receipt-last atomicity evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "request_id",
+    "kill_boundary",
+    "transaction",
+    "reconciliation",
+    "decision_snapshot",
+    "gpu_lease",
+    "cache",
+    "integrity",
+    "external_main_prerequisites",
+    "status",
+    "rejection_reasons",
+    "refusal_reasons",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "bridge_recovery_evidence" },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "kill_boundary": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "reservation",
+        "admission",
+        "lease_acquired",
+        "submitted_known",
+        "submitted_unknown",
+        "provider_result",
+        "artifacts_staged",
+        "artifacts_published",
+        "receipt_signed",
+        "receipt_written",
+        "receipt_committed_event",
+        "checkpoint_advanced",
+        "cache_published",
+        "install_switch",
+        "rollback"
+      ]
+    },
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_phase",
+        "completed_phases",
+        "receipt_last_order_ok",
+        "commit_complete",
+        "commit_ready",
+        "submission_state",
+        "detail"
+      ],
+      "properties": {
+        "current_phase": {
+          "enum": [
+            "reservation",
+            "admission",
+            "lease_acquired",
+            "submitted",
+            "provider_result",
+            "artifacts_staged",
+            "artifacts_published",
+            "receipt_signed",
+            "receipt_written",
+            "receipt_committed_event",
+            "checkpoint_advanced",
+            "cache_published"
+          ]
+        },
+        "completed_phases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "reservation",
+              "admission",
+              "lease_acquired",
+              "submitted",
+              "provider_result",
+              "artifacts_staged",
+              "artifacts_published",
+              "receipt_signed",
+              "receipt_written",
+              "receipt_committed_event",
+              "checkpoint_advanced",
+              "cache_published"
+            ]
+          }
+        },
+        "receipt_last_order_ok": { "type": "boolean" },
+        "commit_complete": { "type": "boolean" },
+        "commit_ready": { "type": "boolean" },
+        "submission_state": {
+          "enum": ["none", "submitted", "outcome_unknown", "reconciled"]
+        },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "outcome",
+        "resubmission_authorized",
+        "evidence_valid",
+        "detail"
+      ],
+      "properties": {
+        "required": { "type": "boolean" },
+        "outcome": {
+          "type": ["string", "null"],
+          "enum": [
+            null,
+            "found_running",
+            "found_completed_pending_receipt",
+            "found_failed",
+            "not_found"
+          ]
+        },
+        "resubmission_authorized": { "type": "boolean" },
+        "evidence_valid": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "decision_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "complete",
+        "health_ok",
+        "capability_unchanged",
+        "revocation_fresh",
+        "release_bound",
+        "service_bound",
+        "node_pack_exact",
+        "detail"
+      ],
+      "properties": {
+        "complete": { "type": "boolean" },
+        "health_ok": { "type": "boolean" },
+        "capability_unchanged": { "type": "boolean" },
+        "revocation_fresh": { "type": "boolean" },
+        "release_bound": { "type": "boolean" },
+        "service_bound": { "type": "boolean" },
+        "node_pack_exact": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "gpu_lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "held",
+        "foreign_token_cleanup_refused",
+        "detail"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "held",
+            "contended",
+            "stale_owner",
+            "lost",
+            "absent",
+            "released"
+          ]
+        },
+        "held": { "type": "boolean" },
+        "foreign_token_cleanup_refused": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fresh", "bound", "detail"],
+      "properties": {
+        "fresh": { "type": "boolean" },
+        "bound": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "no_duplicate_execution",
+        "no_orphan_promotion",
+        "no_authority_drift",
+        "kill_boundary_fail_closed",
+        "rollback_clean",
+        "detail"
+      ],
+      "properties": {
+        "no_duplicate_execution": { "type": "boolean" },
+        "no_orphan_promotion": { "type": "boolean" },
+        "no_authority_drift": { "type": "boolean" },
+        "kill_boundary_fail_closed": { "type": "boolean" },
+        "rollback_clean": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "external_main_prerequisites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["prerequisite", "status", "detail"],
+        "properties": {
+          "prerequisite": { "type": "string", "minLength": 1 },
+          "status": {
+            "enum": ["met", "failed", "missing_external_main_evidence"]
+          },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "status": { "enum": ["accepted", "rejected"] },
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "refusal_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

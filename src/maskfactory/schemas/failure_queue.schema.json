@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/failure_queue.schema.json",
+  "title": "MaskFactory failure queue record",
+  "description": "One append-only JSONL record (doc 04 §4).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ts",
+    "image_id",
+    "failed_body_part",
+    "failure_reason",
+    "pose_angle",
+    "model_that_failed",
+    "correction_needed",
+    "priority",
+    "resolved",
+    "resolution_pkg_version"
+  ],
+  "properties": {
+    "ts": { "type": "string", "format": "date-time" },
+    "image_id": { "type": "string", "pattern": "^img_[a-f0-9]{12}$" },
+    "failed_body_part": { "$ref": "#/$defs/name" },
+    "failure_reason": {
+      "enum": [
+        "finger_merge",
+        "lr_swap",
+        "boundary_bleed_clothing",
+        "hair_edge",
+        "occlusion_confusion",
+        "area_anomaly",
+        "topology",
+        "qc_fail",
+        "second_review_fail",
+        "vlm_autoqa_disagreement",
+        "human_edit_delta",
+        "v2_boundary_loose",
+        "v2_boundary_tight",
+        "v2_areola_nipple_boundary",
+        "v2_shaft_glans_boundary",
+        "v2_lr_swap",
+        "v2_scrotal_side_ambiguous",
+        "v2_clothing_false_positive",
+        "v2_clothing_authority_conflict",
+        "v2_hidden_anatomy_leak",
+        "other"
+      ]
+    },
+    "pose_angle": {
+      "enum": [
+        "front",
+        "back",
+        "left_profile",
+        "right_profile",
+        "left_3_4",
+        "right_3_4"
+      ]
+    },
+    "model_that_failed": { "type": "string", "minLength": 1 },
+    "correction_needed": { "$ref": "#/$defs/name" },
+    "priority": { "type": "number", "minimum": 0, "maximum": 1 },
+    "resolved": { "type": "boolean" },
+    "resolution_pkg_version": { "type": ["string", "null"], "minLength": 1 }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+    }
+  }
+}

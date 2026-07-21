@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_capability_snapshot_gap_revalidation",
+  "recorded_at": "2026-07-19T03:01:56.2042886Z",
+  "project_head": "4ff423fa0910760001cdb24b75e3d53357125f27",
+  "tracker_item": "MF-P6-10.02",
+  "audit_status": "STRICT_CAPABILITY_DECLARATION_PRESENT_QUALIFICATION_AUTHORITY_ABSENT",
+  "completion_credit_percent": 50,
+  "governing_requirement": "Publish only actually installed and independently qualified routes with exact artifact, runtime, hardware, benchmark, certificate, lifecycle, freshness, champion/challenger and rollback authority while keeping partial libraries honest and preventing self-promotion.",
+  "dependency_state": {
+    "MF-P6-10.01": "blocked_60_percent",
+    "disposition": "MF-P6-10.02 remains dependency and implementation blocked. Its strict frozen declaration and semantic guards receive partial credit, but no authoritative qualification/publication decision exists."
+  },
+  "prior_evidence": {
+    "path": "qa/live_verification/bridge_capability_snapshot_gap_audit_20260718.json",
+    "sha256": "4e9de3de2ecf3845f2b011521216394859b80da50925d53f503073fc78f6f1e6",
+    "disposition": "Accepted for requirement mapping and additive implementation packet. Fresh probes reproduced every trusted gap, and all governing source hashes remain exact."
+  },
+  "verified_foundations": [
+    "The frozen capability snapshot is strict and canonically top-level hashed with a fixture/runtime evidence firewall, typed access modes/endpoints, labels, artifacts, transforms, limits and conditional native_venv/container runtime shape.",
+    "Provider declarations carry model, workflow, runtime, hardware, route, performance, champion, qualification, lifecycle and certificate identities.",
+    "Validation enforces unique stack/hash/route IDs, promoted-route certificate presence and declared expiry, inactive-certificate removal, mode eligibility, route/lifecycle/health consistency, availability freshness and live endpoint advertisement.",
+    "A partial provider list remains structurally valid, so absent downloads need not be fabricated as eligible placeholders.",
+    "Three focused positive/adoption/fixture-firewall tests pass and Ruff reports no issues."
+  ],
+  "focused_validation": {
+    "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_all_positive_documents_are_structurally_and_semantically_clean tests/test_mask_bridge_contracts_v1.py::test_adoption_derives_required_capability_from_promoted_qualified_route tests/test_mask_bridge_contracts_v1.py::test_fixture_adoption_replay_and_missing_production_evidence_fail_closed",
+    "tests_passed": 3,
+    "tests_failed": 0,
+    "ruff": "pass"
+  },
+  "direct_probes": [
+    {
+      "probe": "changed_model_artifact_with_stale_stack_hash",
+      "mutation": "Change the model artifact SHA-256, retain stack_sha256, and recompute only snapshot_sha256.",
+      "observed_validators": [],
+      "result": "accepted"
+    },
+    {
+      "probe": "invented_certificate_identity",
+      "mutation": "Replace certificate_ids with an invented nonempty ID and recompute snapshot_sha256.",
+      "observed_validators": [],
+      "result": "accepted"
+    },
+    {
+      "probe": "stale_performance_observation",
+      "mutation": "Change performance_profile.observed_at to 2000-01-01 and recompute snapshot_sha256.",
+      "observed_validators": [],
+      "result": "accepted"
+    },
+    {
+      "probe": "invented_champion_identity",
+      "mutation": "Replace champion ID/hash with invented values and recompute snapshot_sha256.",
+      "observed_validators": [],
+      "result": "accepted"
+    }
+  ],
+  "confirmed_gaps": [
+    "No resolver proves model/workflow/runtime/hardware/route identities against installed cataloged bytes or recomputes stack_sha256.",
+    "Benchmark certificate IDs/hashes are not resolved to trusted signed, current, unrevoked, exact-route/label/context/artifact/person/dimension evidence.",
+    "Performance observations lack a freshness ceiling, independent source/correlation identity and append-only contextual ledger head.",
+    "Champion identity is declarative; no unique-route arbitration, prior champion, atomic promotion transaction or tested rollback binding is resolved.",
+    "No executable lifecycle rule forces newly installed/self-reported providers to enter only as draft/challenger and prevents direct promotion.",
+    "No additive publication decision derives availability and eligibility from actual bytes, certificates, current health, ledger evidence and closed reason codes."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-10.02-CAPABILITY-QUALIFICATION-DECISION",
+    "state": "PREPARED_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "allowed_paths": [
+      "configs/bridge_capability_snapshot_policy.yaml",
+      "src/maskfactory/bridge/capability_snapshot.py",
+      "src/maskfactory/schemas/maskfactory_capability_decision.schema.json",
+      "tools/publish_maskfactory_capabilities.py",
+      "tests/test_bridge_capability_snapshot.py"
+    ],
+    "path_state": "All five additive paths remain absent and clean. Frozen v1 and candidate files are read-only; validation.py remains in the preserved MF-P6-08.05 dirty scope.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "acceptance_source": "qa/live_verification/bridge_capability_snapshot_gap_audit_20260718.json implementation_packet",
+    "model_library_boundary": "Do not ingest or activate the deferred 7,282-record model library until Kevin explicitly confirms downloads are complete. A partial installed library remains an honest valid input.",
+    "next_action": "Hold until MF-P6-10.01 is implemented/adopted and exact-project worker routing is qualified; do not dispatch or duplicate while worker lanes remain disabled."
+  },
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json": "68244dc62eae41b1ed6f045d43ac4f26e5c9b3beff2a65b3981dcd3afee9dc58",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json": "0292d3714a2ddfe74ef59dceee98630b48f9400f50ef2b07dcbbe123d36d3a67"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "worker_paths_modified_or_dispatched": false,
+    "scheduled_maintenance_reenabled": false,
+    "runtime_or_external_system_mutated": false
+  },
+  "claim_boundary": "This audit credits the strict declaration shape, structural lifecycle/health checks and honest partial-library representation only. It does not qualify or promote any provider, resolve installed bytes or certificates, publish a release/capability decision, activate deferred downloads, or complete MF-P6-10.02."
+}

@@ -1,0 +1,12 @@
+schema_version: 1.0.0
+enabled: false
+default_disabled: true
+launch_mode: process_per_job
+window_visibility: hidden
+maximum_workers: 1
+atomic_file_protocol: true
+job_private_partial_directory: true
+worker_result_written_last: true
+gpu_lease_required_for_render: true
+automatic_purchase: false
+automatic_account_login: false

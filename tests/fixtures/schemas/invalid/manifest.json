@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "image_id": "unsafe-id",
+  "mask_ontology_version": "body_parts_v1",
+  "left_right_convention": "character_perspective",
+  "source": {
+    "source_file": "source.png",
+    "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "parent_source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source_width": 512,
+    "source_height": 512,
+    "source_origin": "generated",
+    "origin_note": "invalid fixture",
+    "ingested_at": "2026-07-11T00:25:00Z",
+    "exif_stripped": true
+  },
+  "person": {
+    "primary_person_bbox": [0, 0, 512, 512],
+    "person_count": 1,
+    "view": "front",
+    "pose_tags": [],
+    "estimated_person_height_px": 500
+  },
+  "interperson": [],
+  "parts": {
+    "head_face": {
+      "mask_type": "atomic_exclusive",
+      "visibility": "cropped_out",
+      "mask_file": null,
+      "status": "n/a"
+    }
+  },
+  "inpaint_derivatives": [],
+  "tooling": {
+    "annotation_tool": "cvat",
+    "annotation_tool_version": "2.24.0",
+    "pipeline_version": "fixture",
+    "model_versions_used": {},
+    "config_hashes": {
+      "ontology.yaml": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "review": {
+    "reviewer": null,
+    "approved_at": null,
+    "second_review": {
+      "required": false,
+      "reviewer": null,
+      "result": "not_required",
+      "at": null
+    },
+    "review_time_sec": null
+  },
+  "qa": {
+    "qa_report_file": "qa_report.json",
+    "qa_overall": "pending",
+    "qa_score": null
+  },
+  "files": {}
+}

@@ -1,0 +1,299 @@
+{
+  "cases": [
+    {
+      "case_id": "good_00",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_00.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_01",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_01.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_02",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_02.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_03",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_03.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_04",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_04.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_05",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_05.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_06",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_06.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_07",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_07.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_08",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_08.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_09",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_09.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_10",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_10.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_11",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_11.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_12",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_12.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_13",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_13.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_14",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_14.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_15",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_15.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_16",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_16.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_17",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_17.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_18",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_18.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "good_19",
+      "expected_defect": false,
+      "label": "left_forearm",
+      "panel_file": "panels/good_19.png",
+      "seeded_problem": null
+    },
+    {
+      "case_id": "defect_00",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_00_wrong_side.png",
+      "seeded_problem": "wrong_side"
+    },
+    {
+      "case_id": "defect_01",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_01_boundary_too_loose.png",
+      "seeded_problem": "boundary_too_loose"
+    },
+    {
+      "case_id": "defect_02",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_02_boundary_too_tight.png",
+      "seeded_problem": "boundary_too_tight"
+    },
+    {
+      "case_id": "defect_03",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_03_includes_clothing_as_skin.png",
+      "seeded_problem": "includes_clothing_as_skin"
+    },
+    {
+      "case_id": "defect_04",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_04_includes_neighbor_part.png",
+      "seeded_problem": "includes_neighbor_part"
+    },
+    {
+      "case_id": "defect_05",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_05_missing_visible_area.png",
+      "seeded_problem": "missing_visible_area"
+    },
+    {
+      "case_id": "defect_06",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_06_mask_on_hidden_area.png",
+      "seeded_problem": "mask_on_hidden_area"
+    },
+    {
+      "case_id": "defect_07",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_07_finger_merge.png",
+      "seeded_problem": "finger_merge"
+    },
+    {
+      "case_id": "defect_08",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_08_hair_edge_bad.png",
+      "seeded_problem": "hair_edge_bad"
+    },
+    {
+      "case_id": "defect_09",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_09_occlusion_error.png",
+      "seeded_problem": "occlusion_error"
+    },
+    {
+      "case_id": "defect_10",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_10_wrong_side.png",
+      "seeded_problem": "wrong_side"
+    },
+    {
+      "case_id": "defect_11",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_11_boundary_too_loose.png",
+      "seeded_problem": "boundary_too_loose"
+    },
+    {
+      "case_id": "defect_12",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_12_boundary_too_tight.png",
+      "seeded_problem": "boundary_too_tight"
+    },
+    {
+      "case_id": "defect_13",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_13_includes_clothing_as_skin.png",
+      "seeded_problem": "includes_clothing_as_skin"
+    },
+    {
+      "case_id": "defect_14",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_14_includes_neighbor_part.png",
+      "seeded_problem": "includes_neighbor_part"
+    },
+    {
+      "case_id": "defect_15",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_15_missing_visible_area.png",
+      "seeded_problem": "missing_visible_area"
+    },
+    {
+      "case_id": "defect_16",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_16_mask_on_hidden_area.png",
+      "seeded_problem": "mask_on_hidden_area"
+    },
+    {
+      "case_id": "defect_17",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_17_finger_merge.png",
+      "seeded_problem": "finger_merge"
+    },
+    {
+      "case_id": "defect_18",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_18_hair_edge_bad.png",
+      "seeded_problem": "hair_edge_bad"
+    },
+    {
+      "case_id": "defect_19",
+      "expected_defect": true,
+      "label": "left_forearm",
+      "panel_file": "panels/defect_19_occlusion_error.png",
+      "seeded_problem": "occlusion_error"
+    }
+  ],
+  "defect_count": 20,
+  "good_count": 20,
+  "schema_version": "1.0.0",
+  "taxonomy": [
+    "wrong_side",
+    "boundary_too_loose",
+    "boundary_too_tight",
+    "includes_clothing_as_skin",
+    "includes_neighbor_part",
+    "missing_visible_area",
+    "mask_on_hidden_area",
+    "finger_merge",
+    "hair_edge_bad",
+    "occlusion_error"
+  ]
+}

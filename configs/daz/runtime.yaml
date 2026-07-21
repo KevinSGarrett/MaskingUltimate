@@ -1,0 +1,54 @@
+schema_version: 1.0.0
+profile_id: maskfactory_daz_hidden_v1
+instance_name: MaskFactoryDAZ
+execution_mode: hidden_gui
+process_lifetime: process_per_job
+bundle_version: 1.0.0
+startup:
+  no_default_scene: true
+  no_prompt: true
+  no_startup_actions: true
+  log_size: 100m
+content_directories:
+  - 'F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library'
+  - 'F:\DAZ\03_content\libraries\MaskFactory_User_Library'
+runtime_paths:
+  app_profile: 'F:\DAZ\04_runtime\app_profiles\MaskFactoryDAZ'
+  bundle_versions: 'F:\DAZ\04_runtime\scripts\versions'
+  active_bundle: 'F:\DAZ\04_runtime\scripts\active'
+  job_partial_root: 'F:\DAZ\11_scene_state\partial'
+  job_result_root: 'F:\DAZ\10_queue\complete'
+  worker_log_root: 'F:\DAZ\17_logs\workers'
+  control_state: 'F:\DAZ\00_control\runtime_state.json'
+timeouts_seconds:
+  startup: 180
+  asset_load: 120
+  assembly: 600
+  simulation: 1800
+  smoke_render: 300
+  rgb_render: 1800
+  id_render: 600
+  finalize: 120
+watchdog:
+  poll_interval_seconds: 0.5
+  quarantine_on_dialog: true
+  terminate_process_tree: true
+  dialog_title_patterns:
+    - error
+    - warning
+    - missing
+    - login
+    - update
+    - license
+    - install
+gpu_lease:
+  required_for_render: true
+  path: 'C:\Comfy_UI_Main_Masking\runs\gpu.lock'
+  purpose: daz_render
+safety:
+  automatic_asset_install: false
+  automatic_asset_purchase: false
+  automatic_account_login: false
+  click_dialogs: false
+  persistent_worker: false
+  minimum_render_free_gib: 150

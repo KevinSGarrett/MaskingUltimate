@@ -1,0 +1,47 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.93,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No correction is justified; the visible toe mask and boundary are anatomically and pixel-wise consistent.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate is the semantically correct right foot and its mask covers the complete visible distal toe region up to a plausible foot-MTP split, without contamination or hidden-area filling.",
+      "latency_ms": 9438,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour follows the dorsal and plantar outer boundaries and the scalloped toe tips plausibly; it does not visibly omit a toe.",
+        "full_context": "The visible foreground foot is the character's right foot according to the semantic pose-chain evidence; the target is the distal toe region at the front of that foot.",
+        "mask": "The binary mask covers the visible toe cluster as one connected component and stops near the metatarsophalangeal boundary rather than extending over the ankle or rear foot.",
+        "neighbor_overlap": "No meaningful overlap with the opposite foot, ankle, background, or non-target neighboring part is visible.",
+        "overlay": "The overlay aligns with the visible toe skin and distal silhouette, with no apparent clothing or background inclusion.",
+        "source_crop": "High-resolution crop clearly shows all visible right toes, including their distal tips and individual toe separations, against the gray background."
+      },
+      "provider": "openai",
+      "response_sha256": "4709759e2e8ca6e513cfbc14db9535e3f47fa157cbcbd6093169d556ba360ee4",
+      "usage": {
+        "cost_usd": 0.012992,
+        "input_tokens": 9872,
+        "output_tokens": 520
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_toes",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "uncertain",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "1ebc40f3a162b50914b62b01c3394681caf508556ae41dd0b585a2c486c64ab3",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

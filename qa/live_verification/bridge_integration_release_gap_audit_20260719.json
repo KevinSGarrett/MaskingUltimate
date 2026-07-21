@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_integration_release_gap_audit",
+  "recorded_at": "2026-07-19T03:14:15.1298862Z",
+  "project_head": "6469734b4301feed0252bd79d6bd41d83e2aaad8",
+  "tracker_item": "MF-P6-12.01",
+  "audit_status": "DEPENDENCY_LIGHT_NODE_COPY_EXACT_INTEGRATION_RELEASE_UNPUBLISHED",
+  "completion_credit_percent": 15,
+  "governing_requirement": "Publish and clean-install one versioned MaskFactory integration release whose source and installed node, workflow, schema, API/OpenAPI and hash inventories match exactly, reject stale node-pack bytes and consume no dirty source authority.",
+  "dependency_state": {
+    "MF-P6-10.04": "blocked_20_percent",
+    "MF-P6-11.08": "blocked_45_percent",
+    "disposition": "MF-P6-12.01 remains dependency and implementation blocked. Exact developer node/workflow copy receives limited credit; no integration release may be published from the dirty development tree."
+  },
+  "upstream_evidence": [
+    {
+      "path": "qa/live_verification/bridge_release_installation_gap_revalidation_20260719.json",
+      "sha256": "d33ae3af224c31af7a681de4f943a58cf48f5a086145f387e1ef9db000eb2601"
+    },
+    {
+      "path": "qa/live_verification/bridge_recovery_atomicity_gap_audit_20260719.json",
+      "sha256": "c63e1968d93c0b727ad505299649b24abf02e93f1a9fc814f42c0881c17a4507"
+    }
+  ],
+  "verified_foundations": [
+    "A temporary isolated install copies exactly eight source node/workflow files with identical relative paths and SHA-256 values, excluding the generated local config.",
+    "The node installer enforces the loopback API URL and writes a deterministic local configuration.",
+    "Existing release-bundle validation rejects unmanifested files inside a supplied byte-closed release root.",
+    "Two focused installer/release-byte-closure tests pass and Ruff reports no issues on governing installer and bridge test files."
+  ],
+  "focused_validation": {
+    "command": "python -m pytest -q tests/test_comfy_export.py::test_installer_copies_standalone_pack_workflows_and_config tests/test_mask_bridge_contracts_v1.py::test_release_bundle_is_exact_byte_closed_and_rejects_unmanifested_files",
+    "tests_passed": 2,
+    "tests_failed": 0,
+    "ruff": "pass"
+  },
+  "direct_probes": [
+    {
+      "probe": "isolated_node_workflow_copy",
+      "source_inventory_count": 8,
+      "installed_inventory_count_excluding_generated_config": 8,
+      "exact_relative_path_and_sha256_equality": true
+    },
+    {
+      "probe": "installed_release_inventory",
+      "install_manifest_present": false,
+      "installed_schema_files": 0,
+      "installed_openapi_artifacts": 0,
+      "result": "incomplete"
+    },
+    {
+      "probe": "stale_node_pack_negative",
+      "procedure": "Seed stale_unpublished_node.py in the temporary target, then reinstall.",
+      "stale_file_survived": true,
+      "stale_install_rejected": false,
+      "result": "required_negative_test_failed"
+    },
+    {
+      "probe": "production_release_source_authority",
+      "current_worktree_clean": false,
+      "dirty_scope_disposition": "Preserved MF-P6-08.05 changes are valid quarantine material but cannot serve as production release bytes.",
+      "publisher_present": false
+    }
+  ],
+  "confirmed_gaps": [
+    "No versioned integration release artifact binds exact source Git/tree, wheel, node pack, workflows, schemas, generated API/OpenAPI, policies, inventories and hashes.",
+    "No clean-build publisher consumes the accepted MF-P6-10.01 publication decision, MF-P6-10.02 capability decision and MF-P6-10.04 installation transaction.",
+    "The developer installer consumes imported working-tree bytes and cannot exclude preserved uncommitted changes as production authority.",
+    "No installed manifest closes the node/workflow/schema/OpenAPI inventory or compares it to the source release catalog.",
+    "Merge-in-place installation preserves stale files, so the required stale-node-pack negative test fails.",
+    "No installed release receipt binds exact service/API/OpenAPI identity, node inventory, active pointer, previous release, rollback evidence and verification time.",
+    "MF-P6-11.08 has no exact installed node-pack drift detector or atomic receipt-last recovery transaction."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-12.01-INTEGRATION-RELEASE-ACCEPTANCE",
+    "objective": "Implement additive integration-release assembly and clean-install acceptance over adopted 10.01/10.02/10.04 and 11.08 evidence without changing frozen v1 contracts or consuming mutable source paths.",
+    "state": "PREPARED_PREREQUISITES_HELD_NOT_DISPATCHED",
+    "allowed_paths": [
+      "configs/integration_release_acceptance_policy.yaml",
+      "src/maskfactory/bridge/integration_release.py",
+      "src/maskfactory/schemas/maskfactory_integration_release_evidence.schema.json",
+      "tools/publish_maskfactory_integration_release.py",
+      "tests/test_integration_release.py"
+    ],
+    "path_state": "All five additive paths are absent and clean. They are disjoint from frozen v1 contracts, prepared MF-P6-10.04 paths and preserved MF-P6-08.05 changes.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "acceptance_criteria": [
+      "Consume only exact adopted upstream publication, capability, installation and recovery evidence; any missing, stale or mismatched prerequisite denies publication.",
+      "Assemble from clean immutable release bytes and bind Git/tree, wheel, node, workflow, schema, API/OpenAPI, policy, inventory and rollback hashes in a strict signed evidence record.",
+      "Install into a new contained target, verify exact byte closure, atomically activate receipt-last, and prove source/installed inventories are exactly equal.",
+      "Reject every extra, missing, changed, stale, case-colliding, link-like or path-escaping installed file before adoption.",
+      "Negative tests prove dirty/editable source refusal, stale node rejection, OpenAPI/schema drift rejection and exact rollback to the prior verified release."
+    ],
+    "next_action": "Hold until MF-P6-10.04 and MF-P6-11.08 are implemented/adopted and exact-project worker routing is qualified; do not dispatch or duplicate while worker lanes remain disabled."
+  },
+  "source_hashes": {
+    "Plan/13_COMFYUI_INTEGRATION.md": "1e6b93f8fbdaa8777fd2803a935f2061b8bcbd2800e854e2665ffd6e860f91d5",
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/serve/comfy_install.py": "803b83ca16250e468f8ed5c61d7c6ae14d5be9c152455690eb418c9866804b4b",
+    "tests/test_comfy_export.py": "a05709635b8a6a28a6e0a681b45c278752abe00640a2fb788cbb4442714f2e06",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b"
+  },
+  "preservation": {
+    "temporary_probe_directories_removed": true,
+    "live_comfyui_install_mutated": false,
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "worker_paths_modified_or_dispatched": false,
+    "scheduled_maintenance_reenabled": false,
+    "runtime_or_external_system_mutated": false
+  },
+  "claim_boundary": "This audit credits only exact isolated copying of the eight dependency-light node/workflow files. It does not publish or clean-install a versioned integration release, prove schema/API/OpenAPI parity, reject stale nodes, consume immutable clean source, complete either prerequisite, or complete MF-P6-12.01."
+}

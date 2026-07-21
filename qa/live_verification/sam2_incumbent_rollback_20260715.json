@@ -1,0 +1,56 @@
+{
+  "authority": "incumbent_continuity_only_no_sam31_promotion_authority",
+  "captured_at": "2026-07-15T00:52:24.762227Z",
+  "checkpoints": {
+    "sam2_1_base_plus": {
+      "lifecycle_state": "installed",
+      "path": "models/sam2/sam2.1_hiera_base_plus.pt",
+      "recorded_smoke_output_sha256": "51b5e27fab46df194cd30263c1c8464c6df9065b775f64baf0dfce8a3e4e263e",
+      "registry_key": "sam2_1_hiera_base_plus",
+      "runtime": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "sha256": "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5"
+    },
+    "sam2_1_large": {
+      "lifecycle_state": "promoted",
+      "path": "models/sam2/sam2.1_hiera_large.pt",
+      "recorded_smoke_output_sha256": "1ac5750f294ff511e0b22fc03f6d997a498f123f9be6fced16cbd3202d9835a0",
+      "registry_key": "sam2_1_hiera_large",
+      "runtime": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318"
+    }
+  },
+  "external_registry_sha256": "f845479ebff3973cff4b766f51b544eae7fe9fe102f1b02c92b2f0ecbe7dde06",
+  "fail_closed_switch_probe": {
+    "attempted_active": "sam3_1",
+    "production_pipeline_unchanged": true,
+    "reason": "interactive_segmenter.active provider 'sam3_1' lifecycle_state='planned'; active roles require promoted",
+    "rejected": true,
+    "selection_restored_exactly": true
+  },
+  "full_displaced_incumbent_rollback_claimed": false,
+  "interactive_selection": {
+    "active": "sam2_1_large",
+    "active_lifecycle": "promoted",
+    "challenger": "sam3_1",
+    "challenger_lifecycle": "planned",
+    "oom_fallback": "sam2_1_base_plus",
+    "oom_fallback_lifecycle": "installed",
+    "rollback": "sam2_1_large"
+  },
+  "live_cvat_sam2": {
+    "detail": "pth-sam2 answered; foreground=21491",
+    "hint": "",
+    "name": "nuclio_interactor",
+    "status": "PASS"
+  },
+  "model_registry_sha256": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+  "pipeline_sha256": "769eafb462a6fd30a0e1e9122e2dcfa83a8fa59e37637c6844a7b474b155eed5",
+  "remaining_promotion_gate": {
+    "reason": "SAM3.1 lacks the required current frozen role benchmark and promotion certificate",
+    "satisfied": false,
+    "tracker_item": "MF-P2-11.15"
+  },
+  "result": "pass",
+  "schema_version": "1.0.0",
+  "sha256": "3345da60d302649f5753b231dea85f25a5024f3e1d3f61a16ac3a2ac384ebb35"
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "authority": "implementation_and_non_gold_live_probe_evidence",
+  "approved_gold_count": 0,
+  "auxiliary_registry_sha256": "9aabeb56ee9cac2d0720dfc748391f357200357c9a88ccdfb53780978255dd44",
+  "auxiliary_runtime_sha256": "6f7feda1fd0358f26d723aa3a3457fe8336a606873d817fef99b2cc8b83907e9",
+  "registered_detector_count": 24,
+  "live_probe": {
+    "image_id": "img_2ca794d19be9",
+    "selected_detectors": 14,
+    "successful_detectors": 14,
+    "failed_detectors": 0,
+    "detections": 11,
+    "auxiliary_runtime_seconds": 13.3,
+    "assisted_sam2_runtime_seconds": 41.7,
+    "assisted_sam2_predicted_iou": {
+      "left_hand_base": 0.916,
+      "right_hand_base": 0.8755,
+      "left_foot_base": 0.84375,
+      "right_foot_base": 0.9077
+    },
+    "demoted_after_visual_probe": [
+      "sock material candidate: bare-leg false positive",
+      "headwear material candidate: hair false positive",
+      "unvalidated clothes-top material candidate"
+    ]
+  },
+  "stress_plan": {
+    "path": "qa/fixtures/civitai_pose/stress_plan.json",
+    "sha256": "fb55715c115989c7ab67af47945f5746f66cd2d90d0c56c9db0e89ff1b03bea3",
+    "fixture_count": 22,
+    "representative_asset_count": 88,
+    "coverage": [
+      "contact",
+      "difficult_body_visibility",
+      "from_below",
+      "hands_on_body",
+      "multi_person",
+      "occlusion",
+      "rear_body"
+    ]
+  },
+  "review_and_correction": {
+    "specialist_overlay_packaged": true,
+    "normalized_proposal_evidence_packaged": true,
+    "mask_delta_requires_explicit_subtract_replacement": true,
+    "mask_delta_refuses_frozen_gold": true,
+    "mask_delta_reruns_qc_001_through_010": true,
+    "human_approval_still_required": true
+  },
+  "verification": {
+    "focused_runtime_tests_passed": 28,
+    "pose_registry_and_governance_tests_passed": 9,
+    "full_suite_tests_passed": 774,
+    "ruff_changed_surface": "pass",
+    "tracker_validate": "pass"
+  },
+  "promotion_status": "blocked_until_at_least_30_human_approved_gold_instances"
+}

@@ -1,0 +1,56 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-mode-b-vertical-slice-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+draft_authority_floor:
+  operational_authority_state: draft
+  promotion_eligible: false
+  reason: raw_mode_b_outputs_are_draft_only
+required_draft_actions:
+  - health
+  - capability
+  - predict
+  - refine
+service_down_client_error_codes:
+  - SERVICE_UNAVAILABLE
+  - TIMEOUT
+  - DEADLINE_EXPIRED
+failure_control_fault_kind_for_service_down: outage
+certification_transaction:
+  kind: independent_operational_certification
+  allow_self_promotion_from_draft: false
+  require_exact_original_prediction_binding: true
+  refinement_may_inflate_parent_authority: false
+  descendant_requires_own_wrapper: true
+allowed_branch_outcomes:
+  - draft_only
+  - service_down_typed
+  - self_promotion_rejected
+  - certified
+  - abstained
+  - descendant_authority_capped
+claim_boundary:
+  fixture_truth_tier: synthetic_contract_fixture
+  live_gpu_champion_required_for_completion: true
+  windows_loopback_required_for_live_completion: true
+reason_codes:
+  - draft_actions_incomplete
+  - draft_authority_floor_violation
+  - draft_promotion_eligible
+  - service_down_not_typed
+  - failure_control_outage_rejected
+  - self_promotion_attempted
+  - exact_prediction_binding_missing
+  - exact_prediction_binding_mismatch
+  - certification_transaction_not_independent
+  - descendant_authority_inflation
+  - certified_branch_incomplete
+  - abstained_branch_incomplete
+  - live_loopback_unavailable
+  - champion_backed_prediction_absent
+  - fixture_main_binding_invalid
+  - eligible
+policy_sha256: ad11497a98aca41e7bdef1d059e21de70d1f550364bee434599c408578f77e13

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "custom_segmenter_noninferiority_v1",
+  "frozen_at": "2026-07-15T04:54:00Z",
+  "authority": "predeclared_thresholds_only_no_result_or_promotion_authority",
+  "results_state": "sealed_before_results",
+  "delta_convention": "positive_is_challenger_improvement",
+  "source_hashes": {
+    "configs/anatomy_v2_qa.yaml": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
+    "configs/autonomy_multi_person_risk_buckets.yaml": "981fdfd8a436a3563ecc51fc8cd6bd4ff03b6113338eb6ea995e9cfbd46eabf1",
+    "configs/autonomy_risk_buckets.yaml": "7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a",
+    "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d"
+  },
+  "role": {
+    "target_provider_role": "custom_segmenter",
+    "primary_objective": {
+      "metric": "macro_mean_iou",
+      "minimum_improvement": 0.005
+    },
+    "labor_objective": {
+      "metric": "correction_pixels_per_100k",
+      "minimum_improvement": 0.05
+    },
+    "hard_labels": [
+      "belly_button",
+      "chest_upper_torso",
+      "glans_penis",
+      "hair",
+      "left_areola",
+      "left_breast",
+      "left_index_finger",
+      "left_middle_finger",
+      "left_nipple",
+      "left_pinky",
+      "left_ring_finger",
+      "left_scrotal_region",
+      "left_thumb",
+      "left_toes",
+      "penis_shaft",
+      "right_areola",
+      "right_breast",
+      "right_index_finger",
+      "right_middle_finger",
+      "right_nipple",
+      "right_pinky",
+      "right_ring_finger",
+      "right_scrotal_region",
+      "right_thumb",
+      "right_toes",
+      "vulva"
+    ],
+    "high_risk_contexts": [
+      "clothing_materials",
+      "contact",
+      "crowding",
+      "duo_baseline",
+      "duo_overlap",
+      "hair_boundaries",
+      "hands_feet",
+      "identity_ambiguity",
+      "multi_person_overlap",
+      "occlusion",
+      "occlusion_contact",
+      "scale_disparity",
+      "sensitive_anatomy",
+      "small_group_baseline",
+      "small_group_overlap",
+      "small_parts",
+      "truncation"
+    ],
+    "label_margins": {
+      "boundary_f_2px": 0.01,
+      "mean_iou": 0.005,
+      "small_part_recall": 0.01
+    },
+    "context_margins": {
+      "boundary_f_2px": 0.01,
+      "instance_recall": 0.01,
+      "mean_iou": 0.005,
+      "small_part_recall": 0.01
+    },
+    "zero_regression_metrics": [
+      "anatomy_clothing_confusion_rate",
+      "crash_rate",
+      "cross_person_bleed_rate",
+      "determinism_failure_rate",
+      "front_back_error_rate",
+      "hallucinated_part_rate",
+      "hard_qa_failure_rate",
+      "instance_identity_error_rate",
+      "left_right_error_rate",
+      "oom_rate",
+      "protected_region_failure_rate",
+      "rollback_failure_rate"
+    ]
+  },
+  "sha256": "04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be"
+}

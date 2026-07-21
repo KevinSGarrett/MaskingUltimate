@@ -1,0 +1,117 @@
+{
+  "authority": {
+    "incumbent": "birefnet_general",
+    "lifecycle_state": "installed",
+    "promotion_claimed": false,
+    "shadow_only": true
+  },
+  "captured_at": "2026-07-14T21:04:31.953281+00:00",
+  "fixture": {
+    "crop_pixel_sha256": "534202208f71e4f7e57bd995a141b595a7fdc44322709d2438cf3d8acfd43154",
+    "crop_size": [
+      248,
+      635
+    ],
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "person_context_bbox_xyxy": [
+      25,
+      334,
+      273,
+      969
+    ],
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+  },
+  "result": "pass",
+  "runtime": {
+    "capability": [
+      12,
+      0
+    ],
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "python": "C:\\Comfy_UI_Main\\ComfyUI\\.venv\\Lib\\site-packages",
+    "torch": "2.11.0+cu128"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "0afcd72aa5dce7fb3428f0190d8c59775d2182995e462366b89d697643efcdca",
+  "variants": {
+    "birefnet_dynamic": {
+      "binary_sha256": "ac273d6ebe0056ae5c1c7a4258be239c848e06b019272158d4c2bd4219ed6327",
+      "checkpoint_sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d",
+      "confidence_max": 1.0,
+      "confidence_min": 1.1920928955078125e-07,
+      "confidence_sha256": "85f5504dbc4bc27d06cb89b1ee0f381ba0a78c504cf5cffc8e164c0f16e37c68",
+      "deterministic": true,
+      "effective_resolution": "native_divisible_by_32",
+      "foreground_fraction": 0.3079311658623317,
+      "fractional_alpha_fraction": 0.1098996697993396,
+      "inference_seconds": [
+        1.626226,
+        0.101414
+      ],
+      "load_seconds": 3.213033,
+      "oom_fallback": false,
+      "output_contract": "silhouette_and_soft_matte",
+      "peak_allocated_bytes": 845694464,
+      "peak_reserved_bytes": 1046478848,
+      "repo_revision": "280306042f57b7a33854319da62fd86aaa89ec4c",
+      "requested_resolution": "native_divisible_by_32",
+      "shape": [
+        635,
+        248
+      ]
+    },
+    "birefnet_hr": {
+      "binary_sha256": "415d6401203c483a98f364014a7d32d119b593c734ca8d8d36b5a13a5e4d8090",
+      "checkpoint_sha256": "9d678bafec0b0019fbb073b7fd02f05ede25dc4b15254f23b2fb0be333200c0d",
+      "confidence_max": 1.0,
+      "confidence_min": 0.0,
+      "confidence_sha256": "0a64107fe0f1d9ad7b3408cd20d452270587b8c9b51c1b288cbf7eb4c2f8f100",
+      "deterministic": true,
+      "effective_resolution": 2048,
+      "foreground_fraction": 0.3056007112014224,
+      "fractional_alpha_fraction": 0.06626873253746507,
+      "inference_seconds": [
+        14.282836,
+        2.858621
+      ],
+      "load_seconds": 0.736098,
+      "oom_fallback": false,
+      "output_contract": "silhouette",
+      "peak_allocated_bytes": 10133235200,
+      "peak_reserved_bytes": 15334375424,
+      "repo_revision": "a7a562f6fd16021180f2f4348f4de003a2d3d1e1",
+      "requested_resolution": 2048,
+      "shape": [
+        635,
+        248
+      ]
+    },
+    "birefnet_hr_matting": {
+      "binary_sha256": "c4c968091400d8a24aaa54b32349597d3ab5473c62a702b2ad3050192fc7c01f",
+      "checkpoint_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55",
+      "confidence_max": 1.0,
+      "confidence_min": 1.1920928955078125e-07,
+      "confidence_sha256": "f4866199f24360f4ff24a7ab9bdf7b010db38dce6512d2a4e75ecf774e5ad7da",
+      "deterministic": true,
+      "effective_resolution": 2048,
+      "foreground_fraction": 0.3076708153416307,
+      "fractional_alpha_fraction": 0.0670243840487681,
+      "inference_seconds": [
+        3.676691,
+        2.887739
+      ],
+      "load_seconds": 1.139936,
+      "oom_fallback": false,
+      "output_contract": "soft_alpha_and_thresholded_silhouette",
+      "peak_allocated_bytes": 10133235200,
+      "peak_reserved_bytes": 15334375424,
+      "repo_revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+      "requested_resolution": 2048,
+      "shape": [
+        635,
+        248
+      ]
+    }
+  }
+}

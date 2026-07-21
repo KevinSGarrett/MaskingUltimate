@@ -1,0 +1,258 @@
+# configs/civitai_auxiliary_detectors.yaml
+#
+# MF-P0-14.02 registry for usable Civitai auxiliary detector/provider-vote
+# models. Their predictions can become training labels or seed human-reviewed
+# gold when paired with eligible adult source imagery and passed through the
+# normal consensus, QA, rights, and human-review gates.
+schema_version: 1.0.0
+classification_file: Plan/Civitai/adult_body_resource_classification.yaml
+manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
+registered_at_utc: "2026-07-10T21:35:00Z"
+policy:
+  role_required: provider_vote
+  usable_requires_local_artifact: true
+  usable_requires_sha256: true
+  detector_outputs_may_be_training_labels_when_governed: true
+  detector_outputs_may_seed_human_reviewed_gold_when_governed: true
+  install_targets_are_planning_paths: true
+detectors:
+  - key: hand_detailer_v2_v9c
+    civitai_id: 329458
+    name: Hand Detailer/Segmentation - ADetailer
+    version: v2-v9c
+    coverage: [hands]
+    artifact_path: Plan/Civitai/archives/handDetailer_v2V9c.zip
+    artifact_sha256: 09e97f94d22ab6d997d02333f6304334b7d544cb3b3daccab67b3a144a81b952
+    payload_path: Plan/Civitai/extracted/handDetailer_v2V9c/PitHandDetailer-v2-Test-v9c.pt
+    payload_sha256: 575e08e50d1493afb1d3b392d88afdee439e32dddf282bb33c0661302275f6d1
+    install_target: ComfyUI/models/ultralytics/segm/PitHandDetailer-v2-Test-v9c.pt
+  - key: eye_detailer_v2
+    civitai_id: 334668
+    name: Eye Detailer/Segmentation - ADetailer
+    version: v2
+    coverage: [face_bands, eyes]
+    artifact_path: Plan/Civitai/archives/eyeDetailerSegmentation_v2.zip
+    artifact_sha256: a9cc4c1c813a81c8ebcd3971db29734ac599ace1f7354b1e55b0bf48bbd26a03
+    payload_path: Plan/Civitai/extracted/eyeDetailerSegmentation_v2/PitEyeDetailer-v2-seg.pt
+    payload_sha256: 0485d0a88983fd81ec0635a0f70665da226254bac238ba32557daf873ed41675
+    install_target: ComfyUI/models/ultralytics/segm/PitEyeDetailer-v2-seg.pt
+  - key: face_band_mask_detailer_v1_v8_seg
+    civitai_id: 1222100
+    name: Mask aDetailer - Face detailer for Eyes, Eyebrows, and Nose
+    version: v1-v8-seg
+    coverage: [face_bands, eyes, eyebrows, nose]
+    artifact_path: Plan/Civitai/archives/maskAdetailerFaceDetailer_v1V8Seg.zip
+    artifact_sha256: e4911aa22072caa7d596b25d9798d68355d8e87b1b7bde4d2fdb6358c7d5b5b0
+    payload_path: Plan/Civitai/extracted/maskAdetailerFaceDetailer_v1V8Seg/maskdetailer-seg.pt
+    payload_sha256: 58eec89289e7898bf94871d6197ac9f3e286b0db85c3367f4cfadbe0d5945a1e
+    install_target: ComfyUI/models/ultralytics/segm/maskdetailer-seg.pt
+  - key: mouth_2d_yolo_seg_v1
+    civitai_id: 1306938
+    name: ADetailer 2d mouth detection [yolo/segmentation]
+    version: v1.0
+    coverage: [mouth, lips, face_bands]
+    artifact_path: Plan/Civitai/detectors_and_models/adetailer2dMouth_v10.pt
+    artifact_sha256: f5b6dfff33419f5a7719a66bd42255ed84a55bf190cdd2878baed96006649d72
+    payload_path: Plan/Civitai/detectors_and_models/adetailer2dMouth_v10.pt
+    payload_sha256: f5b6dfff33419f5a7719a66bd42255ed84a55bf190cdd2878baed96006649d72
+    install_target: ComfyUI/models/ultralytics/segm/adetailer2dMouth_v10.pt
+  - key: armpit_2d_yolov8_seg_v1
+    civitai_id: 948634
+    name: ADetailer 2d armpit yolov8 [bbox + segmentation]
+    version: v1.0 segmentation
+    coverage: [armpits, body_boundary]
+    artifact_path: Plan/Civitai/archives/adetailer2dArmpitYolov8_v10Segmentation.zip
+    artifact_sha256: a7d8b6faacc74333f1eb1ed19ed1ee796484f7cff467c5cbd486c576c638661d
+    payload_path: Plan/Civitai/extracted/adetailer2dArmpitYolov8_v10Segmentation/armpit_seg_v1.1.pt
+    payload_sha256: 8adca1aaf91bc179a3b883bcedfc3fafed89406aacddbabf212d000ae2aeb4c6
+    install_target: ComfyUI/models/ultralytics/segm/armpit_seg_v1.1.pt
+  - key: nails_seg_yolov8_v1
+    civitai_id: 311886
+    name: Nails Segmentation - ADetailer - nails_seg_s_yolov8
+    version: v1.0
+    coverage: [nails, hands]
+    artifact_path: Plan/Civitai/archives/nailsSegmentationAdetailer_v10.zip
+    artifact_sha256: e2130d2b478c1252d8d0b6a3d69d46c878d5ba05ffa549f396addad020905cae
+    payload_path: Plan/Civitai/extracted/nailsSegmentationAdetailer_v10/nails_seg_s_yolov8_v1.pt
+    payload_sha256: 99b7d1c6ceb4bde32d80fe7ae8c8eb809c27d99b55cf9db54b6692afe68f4070
+    install_target: ComfyUI/models/ultralytics/segm/nails_seg_s_yolov8_v1.pt
+  - key: rear_pelvis_assdetailer_v2_seg
+    civitai_id: 1156687
+    name: assDetailer, aDetailer model for butts, rears, pants, and panties
+    version: v2-segm
+    coverage: [rear_body, pelvis, clothing_boundary]
+    artifact_path: Plan/Civitai/archives/assdetailerAdetailerModelFor_v2Segm.zip
+    artifact_sha256: 162960c0143f0321b5fc1794c72f7c8389c979e38f013b2ffdcd1b697c49250c
+    payload_path: Plan/Civitai/extracted/assdetailerAdetailerModelFor_v2Segm/assdetailer-seg.pt
+    payload_sha256: 473e2be63bb6ea49128e123211b32f13181c49fb12c1468bf2c84100e382fd29
+    install_target: ComfyUI/models/ultralytics/segm/assdetailer-seg.pt
+  - key: foot_shoe_detailer_v04_seg
+    civitai_id: 2511165
+    name: Foot/Shoe Detailer/Segmentation - ADetailer
+    version: v0.4-seg
+    coverage: [feet, shoes_footwear]
+    artifact_path: Plan/Civitai/detectors_and_models/footShoeDetailer_v04Seg.pt
+    artifact_sha256: fb8d3fe3047b257d65cdf318c8323a23d425d32a5e7bb8bd8da495ec5eeb9e4f
+    payload_path: Plan/Civitai/detectors_and_models/footShoeDetailer_v04Seg.pt
+    payload_sha256: fb8d3fe3047b257d65cdf318c8323a23d425d32a5e7bb8bd8da495ec5eeb9e4f
+    install_target: ComfyUI/models/ultralytics/segm/footShoeDetailer_v04Seg.pt
+  - key: shoes_footwear_yolov8_v2
+    civitai_id: 1489876
+    name: ADetailer shoes/footwear yolov8
+    version: v2.0
+    coverage: [shoes_footwear]
+    artifact_path: Plan/Civitai/detectors_and_models/1489876_ADetailer_shoes_footwear_yolov8_v1686613_adetailerShoes_v20.pt
+    artifact_sha256: 24e0180b642fd2ac424724dd221696d5fdbf16802b94de298600f991687c144d
+    payload_path: Plan/Civitai/detectors_and_models/1489876_ADetailer_shoes_footwear_yolov8_v1686613_adetailerShoes_v20.pt
+    payload_sha256: 24e0180b642fd2ac424724dd221696d5fdbf16802b94de298600f991687c144d
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerShoes_v20.pt
+  - key: foot_after_detailer_v1
+    civitai_id: 1940545
+    name: ADetailer (After Detailer) Foot Model
+    version: v1.0
+    coverage: [feet]
+    artifact_path: Plan/Civitai/detectors_and_models/1940545_ADetailer_After_Detailer_Foot_Model_v2196291_adetailerAfterDetailer_v10.pt
+    artifact_sha256: c211f270945f1d7decaa89d54478acbe500db6753b47c217d3579c27fc0dba50
+    payload_path: Plan/Civitai/detectors_and_models/1940545_ADetailer_After_Detailer_Foot_Model_v2196291_adetailerAfterDetailer_v10.pt
+    payload_sha256: c211f270945f1d7decaa89d54478acbe500db6753b47c217d3579c27fc0dba50
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerAfterDetailer_foot_v10.pt
+  - key: hair_after_detailer_v1
+    civitai_id: 2209315
+    name: ADetailer (After Detailer) Hair Model
+    version: v1.0
+    coverage: [hair]
+    artifact_path: Plan/Civitai/detectors_and_models/2209315_ADetailer_After_Detailer_Hair_Model_v2487429_adetailerAfterDetailer_v10.pt
+    artifact_sha256: 2b9dfa0f7c41e8028cba9995fcb70100615b903a7f57d052d4ed6751968b810b
+    payload_path: Plan/Civitai/detectors_and_models/2209315_ADetailer_After_Detailer_Hair_Model_v2487429_adetailerAfterDetailer_v10.pt
+    payload_sha256: 2b9dfa0f7c41e8028cba9995fcb70100615b903a7f57d052d4ed6751968b810b
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerAfterDetailer_hair_v10.pt
+  - key: teeth_seg_v1
+    civitai_id: 1019230
+    name: ADetailer Teeth Segmentation
+    version: v1.0
+    coverage: [mouth, teeth, face_bands]
+    artifact_path: Plan/Civitai/archives/adetailerTeeth_v10.zip
+    artifact_sha256: 35d308f927fd2bfa080a0fb71d4ce6f091512e44a06ec927c722f800bca92adf
+    payload_path: Plan/Civitai/extracted/adetailerTeeth_v10/JTeethSeg.pt
+    payload_sha256: 142f63ced1e1f72ccdc9209ab37bf2c7a930a022cedfa2e7877396052aed2321
+    install_target: ComfyUI/models/ultralytics/segm/JTeethSeg.pt
+  - key: lips_after_detailer_v1
+    civitai_id: 142240
+    name: ADetailer (After Detailer) Lips Model
+    version: v1.0
+    coverage: [lips, mouth, face_bands]
+    artifact_path: Plan/Civitai/archives/142240_ADetailer_After_Detailer_Lips_Model_v157700_adetailerAfterDetailer_v10.zip
+    artifact_sha256: dc37038e1fc655f49946dcd31aede2c32eb0ce1a356ff2d7908cc939f4780592
+    payload_path: Plan/Civitai/extracted/142240_ADetailer_After_Detailer_Lips_Model_v157700_adetailerAfterDetailer_v10/lips_v1.pt
+    payload_sha256: ce9fe145352af12c072ee11536a3d0de9425280096c4367e7a08636f57c7fe99
+    install_target: ComfyUI/models/ultralytics/segm/lips_v1.pt
+  - key: socks_seg_yolov8_v1
+    civitai_id: 311874
+    name: Socks Segmentation - ADetailer - socks_seg_s_yolov8
+    version: v1.0
+    coverage: [socks, feet]
+    artifact_path: Plan/Civitai/archives/311874_Socks_Segmentation_-_ADetailer_-_socks_seg_s_yolov8_v350008_socksSegmentationAdetailer_v10.zip
+    artifact_sha256: 7903f76a21581d454a0587d63987c0b6bf1c702073c2e0deb77c0cb4b425af2b
+    payload_path: Plan/Civitai/extracted/311874_Socks_Segmentation_-_ADetailer_-_socks_seg_s_yolov8_v350008_socksSegmentationAdetailer_v10/socks_seg_s_yolov8.pt
+    payload_sha256: 3df21bcaf574d35f2fc07aa62f9bd05cf946f02ead52d6c66ac30aacafe3c380
+    install_target: ComfyUI/models/ultralytics/segm/socks_seg_s_yolov8.pt
+  - key: glasses_detailer_v1_seg
+    civitai_id: 372523
+    name: Spectacular Detailer Glasses/Sunglasses - BBOX/Segmentation - ADetailer
+    version: v1-seg
+    coverage: [accessories, face_bands, glasses]
+    artifact_path: Plan/Civitai/archives/spectacularDetailerGlasses_v1Seg.zip
+    artifact_sha256: 908675717eb22f20b8442c07105a0340b34db44540474f0f49abf6511fbca177
+    payload_path: Plan/Civitai/extracted/spectacularDetailerGlasses_v1Seg/PitGlassesDetailer-v1-seg.pt
+    payload_sha256: 247354e884a4b4f7ad31806979e1e455df5e94e7165ceb7240f77f3343c7fe3a
+    install_target: ComfyUI/models/ultralytics/segm/PitGlassesDetailer-v1-seg.pt
+  - key: jewelry_v1
+    civitai_id: 1177325
+    name: ADetailer Jewelry model
+    version: v1.0
+    coverage: [accessories, jewelry]
+    artifact_path: Plan/Civitai/detectors_and_models/adetailerJewelry_v10.pt
+    artifact_sha256: c1191a4a6ecbb9ac9666795765934d3b758c083399fc3fb8b02e1b298d2a84c0
+    payload_path: Plan/Civitai/detectors_and_models/adetailerJewelry_v10.pt
+    payload_sha256: c1191a4a6ecbb9ac9666795765934d3b758c083399fc3fb8b02e1b298d2a84c0
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerJewelry_v10.pt
+  - key: rings_v1
+    civitai_id: 1181639
+    name: ADetailer Rings model
+    version: v1.0
+    coverage: [accessories, rings, hands]
+    artifact_path: Plan/Civitai/detectors_and_models/adetailerRingsModel_v10.pt
+    artifact_sha256: af127a67691bdf3fa0156f3f3d09712b63bf932d1b3275d0e8eb5c22fdaa28f5
+    payload_path: Plan/Civitai/detectors_and_models/adetailerRingsModel_v10.pt
+    payload_sha256: af127a67691bdf3fa0156f3f3d09712b63bf932d1b3275d0e8eb5c22fdaa28f5
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerRingsModel_v10.pt
+  - key: tattoo_yolov8_v1
+    civitai_id: 436115
+    name: Tattoo Detection - Yolov8
+    version: v1
+    coverage: [body_boundary, tattoos]
+    artifact_path: Plan/Civitai/archives/tattooDetectionYolov8_v1.zip
+    artifact_sha256: 9388522c1df7731b1d925869c0436fa41f0f346b25fc9c63a66afcaadec42a07
+    payload_path: Plan/Civitai/extracted/tattooDetectionYolov8_v1/tattoo_s_yolov8.pt
+    payload_sha256: f0c54fb2fde56fff5bf708669b4b27267f0126d06bb10c3a3c0cf5586aad9dad
+    install_target: ComfyUI/models/ultralytics/bbox/tattoo_s_yolov8.pt
+  - key: head_accessory_v1_seg
+    civitai_id: 1089176
+    name: ADetailer Head Accessory Segmentation
+    version: "1.0"
+    coverage: [accessories, hair, head_accessory]
+    artifact_path: Plan/Civitai/archives/adetailerHeadAccessory_10.zip
+    artifact_sha256: b91ab762121484563be824c3323bc9da329f7a2bd0dddfebd39510497c96229a
+    payload_path: Plan/Civitai/extracted/adetailerHeadAccessory_10/99coins_headWear_v20_seg.pt
+    payload_sha256: 3b674cc099a63a32355560ee0f12c3e9d20c21888b130fbcf953280a37755c61
+    install_target: ComfyUI/models/ultralytics/segm/99coins_headWear_v20_seg.pt
+  - key: foot_yolov8x_v2
+    civitai_id: 257904
+    name: ADetailer foot_yolov8x.pt
+    version: v2.0
+    coverage: [feet]
+    artifact_path: Plan/Civitai/detectors_and_models/257904_ADetailer_foot_yolov8x_v341846_adetailerFootYolov8x_v20.pt
+    artifact_sha256: 9f39f32ab83b43002ca466605603b6c6dcff124ecfb23dab1c74c36ecb95cb4b
+    payload_path: Plan/Civitai/detectors_and_models/257904_ADetailer_foot_yolov8x_v341846_adetailerFootYolov8x_v20.pt
+    payload_sha256: 9f39f32ab83b43002ca466605603b6c6dcff124ecfb23dab1c74c36ecb95cb4b
+    install_target: ComfyUI/models/ultralytics/bbox/adetailerFootYolov8x_v20.pt
+  - key: foot_anime_yolo11m_v3
+    civitai_id: 2697949
+    name: Foot Anime Yolo11m
+    version: v3
+    coverage: [feet]
+    artifact_path: Plan/Civitai/detectors_and_models/footAnimeYolo11m_v3.pt
+    artifact_sha256: f43d21e5be2c859d7ac3185b2e5711571a8964b7bbba0bd8ed497b0be6fee19d
+    payload_path: Plan/Civitai/detectors_and_models/footAnimeYolo11m_v3.pt
+    payload_sha256: f43d21e5be2c859d7ac3185b2e5711571a8964b7bbba0bd8ed497b0be6fee19d
+    install_target: ComfyUI/models/ultralytics/bbox/footAnimeYolo11m_v3.pt
+  - key: person_female_v1
+    civitai_id: 2201851
+    name: Person_female_detection
+    version: v1.0
+    coverage: [body_boundary, person]
+    artifact_path: Plan/Civitai/detectors_and_models/personFemale_v10.pt
+    artifact_sha256: 142dcd4e69f4d3b4c2a94f8b9a598b1f85ff13cb16af6a11a49e8e0b7d3a8ad9
+    payload_path: Plan/Civitai/detectors_and_models/personFemale_v10.pt
+    payload_sha256: 142dcd4e69f4d3b4c2a94f8b9a598b1f85ff13cb16af6a11a49e8e0b7d3a8ad9
+    install_target: ComfyUI/models/ultralytics/bbox/personFemale_v10.pt
+  - key: clothes_detection_tops
+    civitai_id: 1438127
+    name: clothes detection
+    version: tops
+    coverage: [clothing_boundary, tops]
+    artifact_path: Plan/Civitai/archives/clothesDetection_tops.zip
+    artifact_sha256: 7c4dc8cfe64d2a7b910ae8abf9c615ef6fd99412498b8631c8051b6d47a7ea94
+    payload_path: Plan/Civitai/extracted/clothesDetection_tops/female_clothes_top_seg.pt
+    payload_sha256: 1bc2ee1dd5aaae251b4842c57ca5981e5fed0d98a46b886a355c106d754b2a23
+    install_target: ComfyUI/models/ultralytics/segm/female_clothes_top_seg.pt
+  - key: anime_hair_v1
+    civitai_id: 1959394
+    name: Anime girl hair detect - Adetailer
+    version: v1.0
+    coverage: [hair]
+    artifact_path: Plan/Civitai/detectors_and_models/AdetailerAnimeGirlHair_v10.pt
+    artifact_sha256: 23115c75f64b79d156d0b498e2f3315125829b970bc74141b537ed6b9cb0750b
+    payload_path: Plan/Civitai/detectors_and_models/AdetailerAnimeGirlHair_v10.pt
+    payload_sha256: 23115c75f64b79d156d0b498e2f3315125829b970bc74141b537ed6b9cb0750b
+    install_target: ComfyUI/models/ultralytics/bbox/AdetailerAnimeGirlHair_v10.pt

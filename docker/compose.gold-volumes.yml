@@ -1,0 +1,30 @@
+# Gold-volume tournament input mounts (read-only overlay).
+#
+# Use with the GPU runtime overlay:
+#   docker compose -f docker/compose.gpu.yml -f docker/compose.gold-volumes.yml run --rm maskfactory-train
+#
+# Roots come from configs/gold_volume_tournament_inputs.yaml. Never write into
+# /gold/* — tournament outputs stay under runs/ / runtime_artifacts/ / data/packages.
+
+services:
+  maskfactory-serve:
+    volumes:
+      - C:/Comfy_UI_Main/MaskedWarehouse:/gold/maskedwarehouse:ro
+      - F:/Reference_Images:/gold/reference:ro
+      - F:/DAZ:/gold/daz:ro
+    environment:
+      MASKFACTORY_GOLD_VOLUME_MAP: /opt/maskfactory/configs/gold_volume_tournament_inputs.yaml
+      MASKFACTORY_GOLD_MASKEDWAREHOUSE: /gold/maskedwarehouse
+      MASKFACTORY_GOLD_REFERENCE: /gold/reference
+      MASKFACTORY_GOLD_DAZ: /gold/daz
+
+  maskfactory-train:
+    volumes:
+      - C:/Comfy_UI_Main/MaskedWarehouse:/gold/maskedwarehouse:ro
+      - F:/Reference_Images:/gold/reference:ro
+      - F:/DAZ:/gold/daz:ro
+    environment:
+      MASKFACTORY_GOLD_VOLUME_MAP: /opt/maskfactory/configs/gold_volume_tournament_inputs.yaml
+      MASKFACTORY_GOLD_MASKEDWAREHOUSE: /gold/maskedwarehouse
+      MASKFACTORY_GOLD_REFERENCE: /gold/reference
+      MASKFACTORY_GOLD_DAZ: /gold/daz

@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_main_bridge_crosswalk_gap_audit",
+  "recorded_at": "2026-07-18T23:59:45Z",
+  "project_head": "464fa9f",
+  "tracker_item": "MF-P6-09.07",
+  "audit_status": "PREREQUISITES_OPEN_ADDITIVE_IMPLEMENTATION_READY",
+  "completion_credit": false,
+  "runtime_dependency": false,
+  "governing_requirement": "Publish an executable, versioned MaskFactory-to-Main field, enum and version crosswalk with exact conversions and required/drop/default/reject/producer-observation behavior; incompatible, unknown, unmapped or order-sensitive drift fails closed while explicitly permitted minor additions remain explicit.",
+  "prerequisites": [
+    "MF-P6-09.01 through MF-P6-09.06 remain open or dependency-held; the crosswalk must bind their adopted decision schemas and policies rather than invent parallel semantics."
+  ],
+  "existing_enforcement": [
+    "Twelve frozen v1 bridge schemas are strict additionalProperties=false contracts with exact schema IDs and versions.",
+    "Release publication and consumer requirements require the exact closed 12-schema set and bind schema names, paths, versions and hashes.",
+    "Qualification/adoption validation binds actual schema bytes, required compatibility checks, release/capability/requirements identities and completion profiles.",
+    "The semantic invariant profile and canonical JSON policy define closed trust, authority, identity, geometry, lifecycle and byte-verification behavior.",
+    "Unknown request fields fail additionalProperties; schema_version 1.1.0 and 2.0.0 both fail the frozen 1.0.0 const."
+  ],
+  "confirmed_gaps": [
+    {
+      "gap": "no_executable_crosswalk_artifact",
+      "observed": "No local file contains source and target JSON pointers, conversion rules, enum mappings, required/drop/default/reject behavior or producer-observation handling."
+    },
+    {
+      "gap": "no_field_coverage_or_path_resolution",
+      "observed": "Schemas prove producer shape but no verifier proves every required producer field maps exactly once to a declared Main adapter field or an explicit reject/drop rule."
+    },
+    {
+      "gap": "no_explicit_minor_version_policy",
+      "probe": "Change mask_acquisition_request.schema_version to 1.1.0.",
+      "observed_validators": ["const"],
+      "interpretation": "Current v1 correctly rejects all minor drift; no artifact can explicitly permit a future optional minor addition without a new versioned mapping."
+    },
+    {
+      "gap": "no_enum_conversion_or_exhaustiveness_proof",
+      "observed": "Closed producer enums exist, but there is no executable proof that Main maps every value exactly once and rejects unknown or removed values."
+    },
+    {
+      "gap": "no_producer_observation_handling",
+      "observed": "No crosswalk rule requires Main to preserve use_eligibility as producer evidence, discard it as decision authority, independently recompute, and derive any compatibility alias only from Main's decision."
+    },
+    {
+      "gap": "no_cross_project_exact_test_binding",
+      "observed": "MaskFactory has no artifact binding a crosswalk version/hash and fixture results to the exact pinned Main adapter contract and consumer commit."
+    }
+  ],
+  "ordering_interpretation": {
+    "json_object_key_order": "non_semantic_by_frozen_canonicalization",
+    "probe": "Reverse every top-level request object key while preserving values.",
+    "observed_validators": [],
+    "required_behavior": "Do not falsely treat JSON object key order as identity. Reject reordering only where the crosswalk declares ordered arrays, transform steps, gate vectors, schema catalogs, rule precedence or mapping sequence semantically order-sensitive."
+  },
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-09.07-EXECUTABLE-CROSSWALK",
+    "objective": "Implement a producer-published executable MaskFactory-to-Main crosswalk and compatibility decision over the adopted 09.01-09.06 contracts without changing frozen v1 wire schemas.",
+    "state": "PREPARED_PREREQUISITES_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+      "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json",
+      "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+      "src/maskfactory/schemas/maskfactory_consumer_requirements.schema.json",
+      "src/maskfactory/schemas/maskfactory_adoption_receipt.schema.json",
+      "src/maskfactory/validation.py",
+      "tests/test_mask_bridge_contracts_v1.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_crosswalk_policy.yaml",
+      "qa/governance/bridge/maskfactory_main_crosswalk_v1.json",
+      "src/maskfactory/bridge/crosswalk.py",
+      "src/maskfactory/schemas/bridge_crosswalk.schema.json",
+      "tests/test_bridge_crosswalk.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. Candidate paths are read-only. Allowed paths are disjoint from frozen/queued worker scopes and prepared 09.02, 09.04, 09.05 and 09.06 paths.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_crosswalk.py tests/test_mask_bridge_contracts_v1.py",
+      "python -m ruff check src/maskfactory/bridge/crosswalk.py tests/test_bridge_crosswalk.py",
+      "python -m black --check src/maskfactory/bridge/crosswalk.py tests/test_bridge_crosswalk.py",
+      "python -m json.tool src/maskfactory/schemas/bridge_crosswalk.schema.json",
+      "python -m json.tool qa/governance/bridge/maskfactory_main_crosswalk_v1.json"
+    ],
+    "acceptance_criteria": [
+      "Publish one strict versioned self-hashed crosswalk binding the exact 12 producer schema IDs/versions/hashes, adopted 09.01-09.06 decision schema/policy identities, producer release identity and explicit Main adapter contract identity/minimum version.",
+      "Each mapping row names producer contract and JSON pointer, target contract and pointer, direction, type, requiredness, conversion, enum mapping, nullability, default, drop/reject rule, order sensitivity and producer-observation handling.",
+      "Resolve every producer and target pointer against supplied schemas/contracts and reject nonexistent, duplicate, overlapping, ambiguous or uncovered required paths.",
+      "Prove every closed producer enum value maps exactly once; unknown, removed, reordered order-sensitive or incompatible values fail closed.",
+      "Major versions require an explicit new crosswalk; minor additions remain rejected unless a new signed crosswalk version explicitly names the optional field and its preserve/default/drop behavior.",
+      "No required or authority-bearing field may default or drop. Droppable optional observations remain preserved in evidence when policy requires it.",
+      "use_eligibility is preserved as producer observation, excluded from Main decision inputs, independently recomputed by Main, and any compatibility alias is marked derived-only from Main's complete decision.",
+      "Conversion is executable and deterministic over positive/negative fixtures; result binds crosswalk ID/hash, input/output contract hashes, normalized output, compatibility decision, ordered reasons and canonical decision hash.",
+      "Golden tests cover unknown/unmapped/removed fields, enum additions/removals, wrong pointer/type/default/drop, order-sensitive drift, incompatible major, rejected unlisted minor and explicitly permitted listed minor additions.",
+      "Main must return exact consumer-side tests pinned to this crosswalk and producer commit before MF-P6-09.07 completes; MaskFactory cannot fabricate consumer adoption evidence.",
+      "Frozen v1 schemas, catalog, semantic profile, fixtures, validation.py and all held worker paths remain byte-identical."
+    ],
+    "consumer_acceptance_dependency": {
+      "project": "Comfy_UI_Main",
+      "preserved_planning_head": "a54a7ed2bad472f77168e190b9881b4f7e7cc589",
+      "required_return": "Exact Main adapter contract/version plus crosswalk hash, executable consumer mapping tests and incompatible-version/unknown-field/producer-observation disagreement evidence."
+    }
+  },
+  "observed_verification": [
+    {
+      "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py -k 'schema_registry_meta or production_qualification_and_adoption or release_bundle_is_exact'",
+      "result": "PASS",
+      "tests_passed": 3
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/validation.py tests/test_mask_bridge_contracts_v1.py",
+      "result": "PASS"
+    }
+  ],
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+    "src/maskfactory/schemas/maskfactory_consumer_requirements.schema.json": "8d16b7d3829d810ad904b9427a3011bdc217d6030750bc978f62f53b41a6d3e8",
+    "src/maskfactory/schemas/maskfactory_adoption_receipt.schema.json": "9edaf568c39b8bcf69e064d260425a411b8ac2addf19ae06b3b5a4269c56d5cc",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json": "0292d3714a2ddfe74ef59dceee98630b48f9400f50ef2b07dcbbe123d36d3a67"
+  },
+  "preservation": {
+    "completion_status_changed": false,
+    "completion_credit_awarded": false,
+    "frozen_v1_contracts_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "docker_or_wsl_actions_performed": false,
+    "runtime_or_provider_actions_performed": false
+  },
+  "claim_boundary": "This audit proves that strict producer schemas/catalogs exist but an executable cross-project mapping does not. It does not implement or adopt the crosswalk, complete MF-P6-09.07, or claim Main consumer runtime, release, compatibility or end-to-end execution."
+}

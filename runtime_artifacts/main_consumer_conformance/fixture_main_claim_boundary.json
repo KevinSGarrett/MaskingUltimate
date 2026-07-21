@@ -1,0 +1,12 @@
+{
+  "authority_kind": "fixture_authority",
+  "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+  "consumer_kind": "synthetic_main_consumer",
+  "fixture_authority": true,
+  "main_adoption_complete": false,
+  "pack": "fixture_main_v1",
+  "production_main_adoption_complete": false,
+  "synthetic_main_consumer": true,
+  "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+  "trusted_keys_usage_scope": "conformance_only"
+}

@@ -1,0 +1,558 @@
+{
+  "schema_version": "1.0.0",
+  "purpose": "source-mask alignment QA only; external masks are never gold",
+  "face_panel_count": 10,
+  "body_panel_count": 10,
+  "all_dimensions_match": true,
+  "visual_review_required": true,
+  "contact_sheets": {
+    "face": {
+      "path": "work\\p2_truth_candidates\\face_contact_sheet.jpg",
+      "sha256": "e1123d3ae19ac8af9cba3fc7b893c1fc662d1aa46677611616a02f2f1954434d",
+      "rows": 10
+    },
+    "body": {
+      "path": "work\\p2_truth_candidates\\body_contact_sheet.jpg",
+      "sha256": "1e85aac32c222a92b5570afd58ebb4f191212ae3255ac07658a6dcb5cb392cb1",
+      "rows": 10
+    }
+  },
+  "records": [
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10001868414_0.jpg",
+      "source_sha256": "962c6209c4e9dc910e9d9018b8638d10c024d7cfa06ec1e1618280cb34e30da0",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10001868414_0.png",
+      "mask_sha256": "93478742689e2c670d6d954d4684af0be9098c948fb87c98fb836c75954aef55",
+      "dimensions": [
+        2184,
+        2364
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\01_10001868414_0.jpg",
+      "panel_sha256": "fa50282f35ffaaca2452d3c7eb2f8527d5f80eceb087203377d36cca8f763359",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10009865324_0.jpg",
+      "source_sha256": "6d1e298b04c6a57bb131b082757e0f98cb98ca424615320ef1296768aec1aba7",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10009865324_0.png",
+      "mask_sha256": "89629a474fb0909f52e0bf05ed7709626e348bc7105e659c82f4359dd0c5148c",
+      "dimensions": [
+        652,
+        618
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\02_10009865324_0.jpg",
+      "panel_sha256": "8f187f0fbfb5ca89db0244490dee90f7a2d939c8c2cd3a4dbb3094b06f24c3e7",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10012551673_5.jpg",
+      "source_sha256": "583822465f6f7f6813ba2604d05d0ac0f6971ca0e50d14c17b9b06fd661b6221",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10012551673_5.png",
+      "mask_sha256": "741f300bfcf38a5463e07b2d1618fe7a6d890c074c88c0a587236c54e38a6c9d",
+      "dimensions": [
+        442,
+        442
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\03_10012551673_5.jpg",
+      "panel_sha256": "4fa146e6fab61f40cdb17d48e0dba9f76af1722e7bb0eea798237c2f5beeb916",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10012551673_8.jpg",
+      "source_sha256": "264645f6848e03d2a2ac24c99cbc2395fb5aad9896a4511b1956024a4a1abe5f",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10012551673_8.png",
+      "mask_sha256": "90f00d015a4d76574c791065a2cb36d5853c8e27a231445bb49c27c5d3b8b287",
+      "dimensions": [
+        470,
+        458
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\04_10012551673_8.jpg",
+      "panel_sha256": "2394ce6d09800e1d5c21604f73cd696f858d0466d3a075011a07f5c1ee1d6fd7",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10014368575_1.jpg",
+      "source_sha256": "66b4fd120a54ba341f40fcb9fd4dbefd3aabfeccf01711e4fc48dbfa1c63bac6",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10014368575_1.png",
+      "mask_sha256": "33608b137706593d25d23ec29e26fd884f785b3051b02ae37a3c8ae90d3cc5d1",
+      "dimensions": [
+        692,
+        660
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\05_10014368575_1.jpg",
+      "panel_sha256": "b1ef48135b0eea79ef6585bccdd26d176d8cdfc22c4587c6aa8bc9be0490a8da",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10014368575_2.jpg",
+      "source_sha256": "490e512c502d190584ff2e6993b8b1b9c31f672b50b15ad0296c966190c8378b",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10014368575_2.png",
+      "mask_sha256": "1d6a7bf56dff4a85a60d9e859b2f9c91bef9e5c78c5e1b16a26274ceaebd5b5f",
+      "dimensions": [
+        790,
+        890
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\06_10014368575_2.jpg",
+      "panel_sha256": "ac66e503352a1b5f9275981768db0e86474ede74fa9ba07db54628e7aefd0bec",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10014990385_0.jpg",
+      "source_sha256": "3cbac4b658d7082605f4ec02c864b16d67ba2a751d86ce5e79359bdf18f83675",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10014990385_0.png",
+      "mask_sha256": "0cf793e4041084e84b2f72d639857ff855eac4043a2fc796b01919a4b68512b2",
+      "dimensions": [
+        426,
+        428
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\07_10014990385_0.jpg",
+      "panel_sha256": "630b010212864b5906deb15d6571996aa6270f802614d5c4710c851a4f076e0e",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10014990385_1.jpg",
+      "source_sha256": "2977b334647ff261093f20528f4db5cea8380619b661f5697f916720a55da6af",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10014990385_1.png",
+      "mask_sha256": "db2f72320c959a485909c75a232388943cf6a0654e6945fc7bc9e33f562ca2b6",
+      "dimensions": [
+        460,
+        460
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        3,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\08_10014990385_1.jpg",
+      "panel_sha256": "7fc29c69f4622f679b94160755ce8fa33ef881c433d40537c914c4d40d5df647",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10020518914_0.jpg",
+      "source_sha256": "89af496b0fcd56207e19aaab2e56a07b568b4ac188f9b20f21f058f26cc2c3d9",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10020518914_0.png",
+      "mask_sha256": "613d64e694def489f18352f433d03a4b90098d19f60de8ac055020fd3e59d5a0",
+      "dimensions": [
+        536,
+        558
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\09_10020518914_0.jpg",
+      "panel_sha256": "0a8cbc469d8509914391ec9af15357ae169763454cfd0b87b4d1ca3a4a1bceb3",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\images\\10022989606_0.jpg",
+      "source_sha256": "63f4ab3e1603ffde3b1bd42fb5bb047df265c86a300c4516c7a2a8b0f594aac9",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\test\\labels\\10022989606_0.png",
+      "mask_sha256": "237e7b2156680f49a10bc37339f9962e0ea2d31c6d769be6ddf28d003e269488",
+      "dimensions": [
+        564,
+        578
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "panel_path": "work\\p2_truth_candidates\\face\\10_10022989606_0.jpg",
+      "panel_sha256": "022cbc08243edb26641924371b9b83bb144dcab086ae85315e2e9b619ac1aa75",
+      "source": "face_lapa",
+      "category": "face"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0001.jpg",
+      "source_sha256": "adef946e161ab60130e63558d34b23ae77fdb7883e29e7563efb9df2b1e1ddb8",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0001_02_01.png",
+      "mask_sha256": "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+      "dimensions": [
+        600,
+        900
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        7,
+        11,
+        14,
+        15,
+        16
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\01_0001.jpg",
+      "panel_sha256": "432cf62bc8ffaff135ca46a4f057fa03da0cfd1f4f0c8f0e867de01ae5e97146",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0002.jpg",
+      "source_sha256": "55393142348bf90d2e64ce2814dd9117994875b3798d8c902c14b6f072e610b6",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0002_02_01.png",
+      "mask_sha256": "e4b90b350e848d39efe73122eb16f25eb86d0908f63d7473c6e73680935d0ca5",
+      "dimensions": [
+        447,
+        672
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        6,
+        7,
+        9,
+        10,
+        11,
+        14,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\02_0002.jpg",
+      "panel_sha256": "f1fd784dae2ae8ff068350265ab5d19d1c8af10e0faeb4f70e0334927249e70d",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0003.jpg",
+      "source_sha256": "f3a1623466bff1c9dc72815fd94b9f7ecfc082e23bf4cb877b0f7d97836b0930",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0003_03_01.png",
+      "mask_sha256": "2a12233b2985d4bae93110ac9cd8bd80c66535576c942c70cd15668960b27823",
+      "dimensions": [
+        373,
+        525
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\03_0003.jpg",
+      "panel_sha256": "469102467ff50eebe2d3cd530981da497d9ce0813562f9aeeb82c26e9cae933d",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0004.jpg",
+      "source_sha256": "dff8dd2b46913dd8bd499623c9da30c2bf70b5d2a4731ae03e7b3d88cb5866b6",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0004_02_01.png",
+      "mask_sha256": "fc094b77cd25a9e99addae5a73f6151f96f237d597e627e0e7e8ba8273a0c9f9",
+      "dimensions": [
+        400,
+        640
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        1,
+        2,
+        4,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\04_0004.jpg",
+      "panel_sha256": "2136a07c7df8db58bdb3af8b76fed2531eb2b7818ee4b898e9823af24d5418a7",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0005.jpg",
+      "source_sha256": "cd372a28126bc98ff7283a836877a23f2b89bd72a65c83a79c4ff35418b209d2",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0005_02_01.png",
+      "mask_sha256": "c869bd5a57cceac7b2f86702c746171d5f03872d1222cbbe8ff9b0fd8ee56011",
+      "dimensions": [
+        630,
+        355
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\05_0005.jpg",
+      "panel_sha256": "a96a3105b67f8bd1ff878bf52cfe05f768c0dd7f9482903333d311b9130034b0",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0006.jpg",
+      "source_sha256": "cdd7b8771551c01ca7039eea2086cbd2e9090e03f47151533d16be66284b01e2",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0006_10_01.png",
+      "mask_sha256": "5f60f9c597eb609146f3135bdb5acafff6228faaaf76a90cef6367483ffbb030",
+      "dimensions": [
+        800,
+        461
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        4,
+        6,
+        11,
+        14,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\06_0006.jpg",
+      "panel_sha256": "44c139d3ce43b2fec8dd43c6cd65f0e70104c07bef8f23a2329bafb263293ae5",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0007.jpg",
+      "source_sha256": "4855f16817aa5ec1b3e255fbbe6e8848ac69873f1aef9d71c863e6095b2b6706",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0007_02_01.png",
+      "mask_sha256": "ef6dbf7a3fefe67d902c61c85b53f8160f5b323ce1d8c2a8e873bfb2b335f606",
+      "dimensions": [
+        800,
+        533
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        7,
+        10,
+        11,
+        12,
+        13,
+        15,
+        18
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\07_0007.jpg",
+      "panel_sha256": "24b4ddace90f925b0296cdfdb1e7b7d9a28fedcf32c490ca0b05278505e386e2",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0008.jpg",
+      "source_sha256": "0ced586a2785e316f8be79006687b72ee4148685f4615f634de78452810ff4ce",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0008_02_01.png",
+      "mask_sha256": "357846971398541d586f9910ab0380b3309d9e12101093c4a9ed197706cec5d0",
+      "dimensions": [
+        2000,
+        1493
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        10,
+        11,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\08_0008.jpg",
+      "panel_sha256": "9d6ed2d3d94d16d0037f74bc3d302d12195f48f99f92441514337ea414af2d1d",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0009.jpg",
+      "source_sha256": "deaa7770bb11c7a55b128a6a466fa462a6716d18113f17ecd2b2b54816cf85db",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0009_02_01.png",
+      "mask_sha256": "d6aa1ff84a1a99689e3be6d2bec9798718862a73dd4ab598fca3f679dc5553b6",
+      "dimensions": [
+        600,
+        431
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        10,
+        11,
+        14,
+        15,
+        16
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\09_0009.jpg",
+      "panel_sha256": "78aa5eab561a742d30fed25ae35b2e6a82c546595a1130a3dcf4791172de737a",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    },
+    {
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0010.jpg",
+      "source_sha256": "42550ab2025a917a98c8321725b2cc0c4a2a97b84454775979e3c0816729eb99",
+      "mask_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0010_03_01.png",
+      "mask_sha256": "851a8228404132db3542bb79f17100e2201c4c624f5594750edd55f7e23d9fcb",
+      "dimensions": [
+        380,
+        500
+      ],
+      "dimension_match": true,
+      "observed_label_ids": [
+        0,
+        2,
+        7,
+        11,
+        14,
+        15
+      ],
+      "panel_path": "work\\p2_truth_candidates\\body\\10_0010.jpg",
+      "panel_sha256": "331eeedcb11626fe5184e3bc653080d9e45115fc53c099ba171a8f965defb00e",
+      "source": "body_lv_mhp_v1",
+      "category": "body"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_journal_reconstruction_evidence.schema.json",
+  "title": "Additive bridge journal interruption reconstruction evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "journal_id",
+    "status",
+    "rejection_reasons",
+    "external_main_prerequisites",
+    "closed_state_machine",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "bridge_journal_reconstruction_evidence" },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "journal_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["reconstructed", "rejected"] },
+    "rejection_reasons": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "head_state": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "admit",
+        "route",
+        "lease",
+        "submit",
+        "submit_known",
+        "submit_unknown",
+        "reconcile",
+        "result",
+        "validate",
+        "cache",
+        "decision",
+        "feedback",
+        "adoption",
+        "invalidation",
+        "retry",
+        "repair",
+        "recovery",
+        "rollback"
+      ]
+    },
+    "head_sequence": { "type": ["integer", "null"], "minimum": -1 },
+    "head_entry_sha256": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }]
+    },
+    "entry_count": { "type": "integer", "minimum": 0 },
+    "journal_chain_sha256": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }]
+    },
+    "latest_checkpoint_sha256": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }]
+    },
+    "latest_checkpoint_head_sequence": {
+      "type": ["integer", "null"],
+      "minimum": -1
+    },
+    "idempotency_index": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/sha256" }
+    },
+    "closed_state_machine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_state",
+        "terminal",
+        "allowed_next_states",
+        "covered_states"
+      ],
+      "properties": {
+        "current_state": {
+          "type": ["string", "null"]
+        },
+        "terminal": { "type": "boolean" },
+        "allowed_next_states": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "covered_states": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "external_main_prerequisites": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "satisfied", "unmet"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "satisfied": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "unmet": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

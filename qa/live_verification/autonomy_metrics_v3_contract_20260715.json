@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T08:27:00Z",
+  "item_id": "MF-P7-07.05",
+  "result": "implementation_pass_live_autonomous_cohort_pending",
+  "contract": {
+    "input_schema_version": "1.0.0",
+    "report_schema_version": "3.0.0",
+    "cohort_binding": [
+      "cohort_id",
+      "observed_at",
+      "input_manifest_sha256",
+      "pipeline_fingerprint_sha256"
+    ],
+    "truth_tier_fields": [
+      "human_anchor_gold_packages",
+      "autonomous_certified_gold_packages",
+      "machine_candidate_packages",
+      "weighted_pseudo_label_packages"
+    ],
+    "confidence_level": 0.95,
+    "false_accept_bound_method": "one_sided_wilson",
+    "serious_false_accept_bound_method": "one_sided_clopper_pearson"
+  },
+  "enforcement": {
+    "source_inputs_canonical_hash_bound": "pass",
+    "report_canonical_hash_bound": "pass",
+    "cohort_and_pipeline_identity_required": "pass",
+    "truth_tier_counts_reconcile_to_eligible_cohort": "pass",
+    "zero_touch_plus_routine_touch_reconciles": "pass",
+    "residual_review_is_routine_touch_subset": "pass",
+    "workload_and_statistical_audit_denominators_match": "pass",
+    "human_touches_per_100_recomputed": "pass",
+    "audited_and_residual_fractions_recomputed": "pass",
+    "manual_changed_pixels_per_100k_recomputed": "pass",
+    "blinded_quality_means_recomputed_from_sums": "pass",
+    "observed_failure_rates_recomputed": "pass",
+    "both_failure_upper_bounds_recomputed": "pass",
+    "positive_serious_failures_receive_exact_bound": "pass",
+    "missing_denominators_rejected": "pass",
+    "zero_touch_accuracy_quality_confidence_conflation_rejected": "pass",
+    "one_command_atomic_build_and_verify": "pass",
+    "dashboard_prints_exact_numerators_and_denominators": "pass",
+    "ci_named_gate": "enabled"
+  },
+  "artifact_hashes": {
+    "implementation": "fda48d747ba1f11b664f7b9dcd6c109f2ac2d471848e81fca22e9c28e871d00e",
+    "calibration_config_validator": "946ffca6e323c1ef95eec5aa323f08ba6dea7bd8b8e8b577ada85f73d8beec5e",
+    "input_schema": "4efda480f096db84ff7a2db5c3be00f9638677759e2db9c4b1c96a61d7330fb7",
+    "report_schema": "6305e75e2eb9759db66c4706d356239e76b27a97ee36fc6a93c2c415ffdaf80e",
+    "schema_registry": "e341455668f650a00c0ca98a7722df31811a22a253ec9e25ed0f073508b496be",
+    "tool": "347f3eafdbd38482b11e04b7942522dcaa9208ef1ae4d60d337517751876a9b6",
+    "tests": "77e6fb8663bfb897b3083b20f8140c98f18d6111582681936ef7308a77e601da",
+    "ci_workflow": "46331d4da5a50492020a795f78df4eec30f5cd09f95ff57106316e4ad836a9d4",
+    "autonomy_config": "e71241b6c640c30550ce29b58872fb42da4b220678f40b66cb7434292751b482",
+    "decision_log": "c081e84efab8e046b4473d3308597790fec95d43c426069fbfa4d4cd5c0e0fb3"
+  },
+  "signed_governance": {
+    "review_id": "f819a91ee85d7e0bee6ecf6c",
+    "review_sha256": "9c3c7f66d6d215a3532d8945e845adb620f9bb52f0363fa72a7db9a7286d70c8",
+    "previous_review_sha256": "2ac2a85726cdad5d7405ffda26e403c8cdbc249ac3473e62005ecf63f0a0d0a3",
+    "signature_and_current_input_verification": "pass",
+    "status": "fail",
+    "status_reason": "Pre-existing active-role benchmark certificates, distinct rollback providers, and passing rollback drills remain absent."
+  },
+  "verification": {
+    "dedicated_tests_passed": 40,
+    "focused_currency_and_metrics_tests_passed": 73,
+    "focused_autonomy_tests_passed": 134,
+    "full_repository_tests_passed": 1335,
+    "full_repository_exit_code": 0,
+    "ruff_repository": "pass",
+    "ruff_format_changed_files": "pass",
+    "ci_yaml_parse": "pass",
+    "wsl_docker_external_vhd_accessed": false
+  },
+  "authority_boundary": "Synthetic fixtures prove report structure, population reconciliation, denominator recomputation, hash binding, and semantic separation only. They are not project performance. MF-P7-07.05 remains partially complete until a genuine autonomous cohort and blinded human-anchor audit supply real numerators, denominators, quality, and failure observations."
+}

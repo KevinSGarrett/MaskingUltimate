@@ -1,0 +1,19 @@
+{
+  "source_role": "unlabeled_reference_corpus",
+  "truth_authority": "none",
+  "training_eligible": false,
+  "selection_or_retrieval_creates_truth": false,
+  "authority": {
+    "source_role": "unlabeled_reference_corpus",
+    "truth_authority": "none",
+    "training_eligible": false,
+    "selection_or_retrieval_creates_truth": false
+  },
+  "candidates": [
+    {
+      "relative_path": "fixture/matching.jpg",
+      "truth_authority": "none",
+      "training_eligible": false
+    }
+  ]
+}

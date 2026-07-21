@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_artifact_binding_decision.schema.json",
+  "title": "Additive bridge artifact consumption decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "policy_id",
+    "policy_sha256",
+    "cache_key_sha256",
+    "cache_reused",
+    "status",
+    "rejection_reasons",
+    "consumed_context",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "bridge_artifact_binding_decision"},
+    "policy_id": {"type": "string", "minLength": 1},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "cache_key_sha256": {"$ref": "#/$defs/sha256"},
+    "cache_reused": {"type": "boolean"},
+    "status": {"enum": ["accepted", "rejected"]},
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "consumed_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_payload_sha256",
+        "receipt_payload_sha256",
+        "release",
+        "media_scope",
+        "source",
+        "decoder_color_orientation",
+        "subject",
+        "ontology",
+        "ontology_version",
+        "protected_inputs",
+        "protected_owner_roster",
+        "artifacts",
+        "transform",
+        "provider_stack_sha256",
+        "execution_fingerprint_sha256",
+        "qa_report_sha256",
+        "selection_evidence_sha256",
+        "authority",
+        "lineage",
+        "revocation_identity_sha256"
+      ],
+      "properties": {
+        "request_payload_sha256": {"type": ["string", "null"]},
+        "receipt_payload_sha256": {"type": ["string", "null"]},
+        "release": {"type": ["object", "null"]},
+        "media_scope": {"type": ["object", "null"]},
+        "source": {"type": "object"},
+        "decoder_color_orientation": {"type": "object"},
+        "subject": {"type": ["object", "null"]},
+        "ontology": {"type": ["string", "null"]},
+        "ontology_version": {"type": ["string", "null"]},
+        "protected_inputs": {"type": ["array", "null"]},
+        "protected_owner_roster": {"type": ["array", "null"]},
+        "artifacts": {"type": "array"},
+        "transform": {"type": ["object", "null"]},
+        "provider_stack_sha256": {"type": ["string", "null"]},
+        "execution_fingerprint_sha256": {"type": ["string", "null"]},
+        "qa_report_sha256": {"type": ["string", "null"]},
+        "selection_evidence_sha256": {"type": ["string", "null"]},
+        "authority": {"type": ["object", "null"]},
+        "lineage": {"type": ["object", "null"]},
+        "revocation_identity_sha256": {"type": ["string", "null"]}
+      }
+    },
+    "decision_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

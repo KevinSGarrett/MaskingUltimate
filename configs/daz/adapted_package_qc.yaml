@@ -1,0 +1,17 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+active_ontology: body_parts_v1
+existing_qc:
+  required: [QC-001, QC-002, QC-003, QC-004, QC-005, QC-006, QC-007, QC-009, QC-011, QC-012, QC-013, QC-035, QC-036, QC-038]
+  not_applicable:
+    QC-008: synthetic packages use exact indexed visibility truth, not review-state rows
+    QC-010: accepted DAZ packages are full-frame and contain no crop transforms
+    QC-037: relationship reciprocity is certified upstream by DAZ V7 and no contact claim is emitted by this package boundary
+daz_qc:
+  required: [DAZ-QC-001, DAZ-QC-002, DAZ-QC-003, DAZ-QC-004, DAZ-QC-005, DAZ-QC-006, DAZ-QC-007]
+allowed_protected_ids: [0, 50]
+publication:
+  immutable: true
+  atomic: true
+  source_read_only: true
+  failure_blocks_freeze: true

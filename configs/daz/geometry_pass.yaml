@@ -1,0 +1,60 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+eligible_profiles: [training_standard, training_relationship, diagnostic_full]
+exr:
+  magic_hex: '762f3101'
+  version: 2
+  compression: zip_scanline_16
+  compression_code: 3
+  pixel_type: float32
+  pixel_type_code: 2
+  sampling: [1, 1]
+  data_window_origin: [0, 0]
+  display_window_matches_data_window: true
+  line_order: increasing_y
+  line_order_code: 0
+  pixel_aspect_ratio: 1.0
+  multipart_deep_tiled_forbidden: true
+depth:
+  encoding: float32_exr
+  channel: Y
+  quantity: camera_view_axis_z
+  unit: meter
+  positive_direction: forward
+  nonlinear_device_depth_forbidden: true
+  background_sentinel: positive_infinity
+  train_eligible: false
+normals:
+  encoding: float32_rgb_exr
+  file_channels: {R: x, G: y, B: z}
+  coordinate_space: camera
+  handedness: right_handed
+  axes: {x: right, y: down, z: forward}
+  vector_kind: geometric_surface_normal_after_deformation_subdivision
+  unit_length_tolerance: 0.00001
+  background_sentinel: [0.0, 0.0, 0.0]
+  train_eligible: false
+coordinates:
+  matrix_layout: row_major
+  vector_convention: column_vector
+  image_origin: top_left
+  pixel_center: half_integer
+  ndc_x_range: [-1.0, 1.0]
+  ndc_y_range: [-1.0, 1.0]
+  ndc_z_range: [0.0, 1.0]
+  matrix_inverse_tolerance: 0.000001
+  rotation_orthonormal_tolerance: 0.000001
+  rotation_determinant: 1.0
+  perspective_last_row: [0.0, 0.0, 1.0, 0.0]
+  orthographic_last_row: [0.0, 0.0, 0.0, 1.0]
+visibility:
+  authority: coverage_alpha
+  minimum_nonzero_u16: 257
+  finite_depth_and_unit_normal_required_at_visible_pixels: true
+  exact_sentinels_required_at_background_pixels: true
+freeze:
+  exact_scene_state_before_sidecar_after_restore_terminal: true
+  exact_plan_contract_coordinate_sidecars: true
+  exact_coverage_alpha_authority_hash: true
+  repeated_depth_and_normal_hashes_required: true
+forbidden_effects: [jpeg, palette_quantization, color_management, tone_mapping, denoising, bloom, motion_blur, depth_of_field, lossy_resize, nonlinear_depth_encoding, normal_remap_to_0_1]

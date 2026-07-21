@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/qwen_challenger_benchmark_report.schema.json",
+  "title": "Recomputed Qwen challenger benchmark report",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "benchmark_id", "evaluated_at", "policy_sha256", "source_cases_sha256", "dataset_manifest_hashes", "comparisons", "winner", "result", "authority", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"}, "benchmark_id": {"type": "string", "minLength": 1},
+    "evaluated_at": {"type": "string", "format": "date-time"}, "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "source_cases_sha256": {"$ref": "#/$defs/sha256"},
+    "dataset_manifest_hashes": {
+      "type": "object", "additionalProperties": false,
+      "required": ["teacher_holdout", "local_40_panel", "incremental_200"],
+      "properties": {
+        "teacher_holdout": {"$ref": "#/$defs/sha256"}, "local_40_panel": {"$ref": "#/$defs/sha256"},
+        "incremental_200": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "comparisons": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object"}},
+    "winner": {"type": ["string", "null"], "enum": ["qwen3_vl_4b", "qwen3_vl_8b_quantized", null]},
+    "result": {"enum": ["pass", "fail"]},
+    "authority": {"const": "qwen_reviewer_role_benchmark_only_no_mask_gold_or_block_clearance_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

@@ -10933,7 +10933,7 @@ Evidence: `qa/live_verification/gold_factory_tournament_emit_mvc_climb_20260720T
 
 ## 2026-07-20 17:18 UTC - GOLD FACTORY CRITICAL status + remaining-feed emit queue
 **Item:** GOLD FACTORY CRITICAL — grow real MVC on remaining 128-feed / warehouse under GPU-seq
-**Command:** python tools/gpu_sequencer.py probe; live batch_b multiprovider tournament emit (holder); _run_tournament_remaining_locked_20260720.py + full-sibling-feed waiters queued (no lock steal); 
+**Command:** python tools/gpu_sequencer.py probe; live batch_b multiprovider tournament emit (holder); _run_tournament_remaining_locked_20260720.py + full-sibling-feed waiters queued (no lock steal);
 untime_artifacts/_seal_gold_factory_status_20260720T1717.py
 **Result:** RUNTIME_PASS_BOUNDED status seal. **live_families=5** (faceparse_bisenet, birefnet_general, schp_atr, nuclio_pth_sam2, densepose_rcnn_r50_fpn_s1x). **MVC peak=51**, post-hard-QA live ~**43**; authoritative real multiprovider FP unique=**25**; base **128-feed covered_real=22 / remaining=106** (sibling pointer also expanded to 256). **gold=0**, **champions=0**. Blocker: no `autonomous_certified_gold`; GPU-seq tournament emit in flight (batch_b) with remaining/full-feed waiters queued. Glue prove-emit/tournament-emit sidecars inflate pool counts and are not counted as real feed coverage.
 
@@ -10963,3 +10963,161 @@ Evidence: `qa/live_verification/wilson_gap_mvc43_51_20260720T172025Z.json` (self
 **Result:** HONEST ADVANCE. Primary visual seal retained **VISUAL_HARD_QA_PASS_BOUNDED=25** / demoted=8 on 33 reviewed. Live **MVC≈104**, **visual_hard_qa_pass_bounded=25**, **autonomous_certified_gold=0**. Corpus n=31 → admission fail-closed Wilson FA UB≈0.080 (need ~≥270 zero-defect). Tooling: broader source index, no demote on source-index gap, Ollama transport retries, skip existing pass sidecars. No draft-corpus theater.
 **Evidence:** `qa/live_verification/tournament_mvc_visual_hard_qa_20260720T1153.json`; `qa/live_verification/gold_factory_visual_hard_qa_lane_20260720T1222.json` (self_sha256 3ba36653…); `qa/autonomy/corpora/autonomous_verification_20260720T122023.json`; `qa/live_verification/autonomous_gold_admission_after_visual_20260720T122023.json`
 
+## 2026-07-20 17:25 UTC - GOLD FACTORY CAA/audit path advance from MVC (cursor-grok-4.5-high-fast)
+
+**Item:** Advance calibrated_auto_accepted / audit path toward autonomous_certified_gold under autonomy profile without weakening Wilson; report stage counts; commit+push
+**Command:** maskfactory autonomy scan-lifecycle-pool + repair-corpus-envelopes; tools/assemble_autonomous_verification_corpus.py (torso + solo/all-labels under canonical FP); tools/build_autonomous_gold_admission.py --corpus; tools/run_measured_champions_path.py --execute-e2e-when-ready; maskfactory autonomy build-audit-queue; runtime_artifacts/_seal_caa_audit_path_advance_20260720.py
+**Result:** HONEST ADVANCE (CAA not yet raised). Stage counts at seal: **MVC=565**, **CAA=0**, **autonomous_certified_gold=0**, envelopes=518, champions=0. Canonical-FP corpus (solo/all-labels) **sample_count=31** -> admission **fail_closed** (insufficient_autonomous_verified_samples + Wilson/exact UB exceeded). Wilson floors unchanged: binding=exact_zero_failure_serious **n=598**, n_wilson=268; **gap_mvc_to_binding=33**, **gap_cert_samples_to_binding=567**. Audit queue population=0 (empty until CAA). Fingerprint fragmentation: glue prove-emit/tournament-emit batch FPs dominate pool; did **not** rebind glue fingerprints to canonical. Measured path status e2e_ready_partial. Next: grow genuine multiprovider envelopes under multiprovider-local-cuda-tournament-20260720-v1 to cert samples>=598, then S11 CAA raise.
+
+Evidence: qa/live_verification/caa_audit_path_advance_20260720T172218Z.json (self_sha256 17e7e38c...); caa_audit_path_advance_latest.json; measured_champions_path_caa_seal_20260720T172218Z.json; autonomous_gold_admission_caa_seal_20260720T172218Z.json; qa/autonomy/corpora/autonomous_verification_caa_solo_20260720T172218Z.json; mvc_envelope_caa_analysis_20260720T171638Z.json.
+
+
+## 2026-07-20 17:32 UTC - Gold-volume feed 128→512 + MVC maximize
+**Item:** GOLD FACTORY / tournament sibling feed beyond-128 + MVC pool maximize
+**Command:** `python runtime_artifacts/_expand_gold_volume_corpus_20260720.py --ts 20260720T1715 --max-total 256`; feed-bound batch prove-emit/tournament --emit; `python runtime_artifacts/_seal_feed256_mvc_maximize_20260720.py`
+**Result:** RUNTIME_PASS_BOUNDED. Frozen feed **512** (preserved 128 + MW/ref top-up; counts={'characters': 7, 'daz': 3, 'maskedwarehouse': 432, 'reference_library': 30, 'ultimate_masking_reference_images': 40}). Pool **MVC=714** (envelopes=667); feed_covered_any=209/512 (40.82%); real multiprovider FP unique=31. Glue-proof emits included; no Wilson fabrication; certificate_minted=false; external labels not gold.
+
+Evidence: `qa/live_verification/gold_factory_feed256_mvc_maximize_20260720T173136Z.json` (self_sha256 dca228c0c56782b1…); `qa/live_verification/tournament_sample_set_gold_volume_20260720T1730.json`; `qa/live_verification/tournament_sample_set_sibling_feed_latest.json`.
+
+
+## 2026-07-21 06:15 UTC — Standing orders hardwired (canonical Plan file)
+
+**Item:** governed session/state (autonomous build operating rules)
+**Command:** write `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md` + short pointers (CLAUDE.md, AGENTS.md, `.cursor/rules/maskfactory-standing-orders.mdc`, Instructions/START_HERE + SESSION_PLAYBOOK, RESTART_HANDOFF pointer); append DECISIONS_LOG
+**Result:** PASS — binding standing orders persisted for all future agents/sessions; full text only in Plan canonical file; RunPod runtime notes merged (NEVER EC2); no tracker rewrite; no git commit requested
+
+<details>
+<summary>Paths</summary>
+
+```
+Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md  (canonical; also .wt_climb4/Plan/)
+CLAUDE.md
+AGENTS.md
+.cursor/rules/maskfactory-standing-orders.mdc
+Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md  (pointer only)
+.wt_climb4/Plan/Instructions/00_START_HERE.md
+.wt_climb4/Plan/Instructions/03_SESSION_PLAYBOOK.md
+.wt_climb4/Plan/DECISIONS_LOG.md
+```
+
+</details>
+
+## 2026-07-21 09:02 UTC - Mode B champions wave: CAA gold mapping sealed (RunPod)
+
+**Result:** RUNTIME_PASS_BOUNDED evidence for intentional CAA status vs truth_tier gold mapping; Mode B /predict still AWAITING champions=0. NEVER EC2. Thresholds not lowered. Force-register not used.
+
+**Gold / status clarification (governed, intentional):**
+- `configs/autonomous_masks.yaml`: `calibrated_status=calibrated_auto_accepted`, `calibrated_truth_tier=autonomous_certified_gold`, `calibrated_status_is_human_gold=false`
+- `lifecycle.serve_eligible` := `truth_tier == autonomous_certified_gold`
+- Observed: caa_status=641, truth_tier_gold=641, serve_eligible=641, status-field gold=0
+- Do **not** rewrite lifecycle status to inflate status-gold counts; truth_tier is the gold authority for CAA
+
+**Mode B:**
+- champions_count=0 (`maskfactory models champions` => {})
+- TestClient `/health` 200, `/models` 200 champions={}, `/predict` 503 `champion prediction provider is not configured`
+- Training-doctor not ready (mmseg/mmcv missing; DinD unavailable); CAA stages are torso lifecycle only — `data/packages` empty so tracker `autonomous_certified_gold_count` stays 0 until S13 package freeze
+
+**Evidence:**
+- `qa/live_verification/mode_b_champions_caa_mapping_20260721T090135Z.json` (self_sha256=08e689ba50415fc16cdca9a3dfec2c2e8606dbfecbf19d2e517dadc0b64104f0)
+- `qa/live_verification/caa_truth_tier_gold_mapping_20260721T090135Z.json`
+
+**Tracker:** MF-P9-15.08 -> 94% partially_complete; MF-P6-02.01/02.03/MF-P5-06.03 blocked reasons cleared of false NEEDS KEVIN
+
+**Next product wave:** materialize full packages from CAA/serve_eligible winners -> install OpenMMLab cu128 train stack (or docker train when DinD available) -> train/register/promote champion_* -> re-smoke Mode B /predict
+
+
+## 2026-07-21 15:08 UTC - Hand CAA climb accelerate (RunPod parallel delta)
+
+**Item:** MF-P9-15.08 / hand first-role CAA path
+**Command:** nohup parallel `MF_HAND_DELTA_ONLY=1` hand tournament + CAA mint waiter; restore `maskfactory` after WINPATH rename; seal
+**Result:** RUNTIME_PASS_BOUNDED climb continuing. NEVER EC2. Floors unchanged (binding_n=598).
+
+- Hand wave1 PID **820172** ~174/315 alive
+- Parallel delta PID **849146** ~96/193 (new ultimate/MW/proko families only; no race with wave1)
+- Clothing waiter **821033**; wave2 waiter **841397**; CAA mint waiter **855950** (fires at MVC>=598)
+- **MVC 62 → 161** (corpus=161, caa=0, wilson_gap=437)
+- Peak VRAM ~29GB / 49GB (parallel safe; no OOM)
+- Path incident: `/workspace/maskfactory` briefly renamed to `maskfactory_BROKEN_WINPATH_*` (~15:03); restored without killing jobs; models/data moved back from stub stash
+- champions=0; /predict 503; signed 10-role matrix still required for first_role_install execute
+- Evidence: `qa/live_verification/hand_clothing_mode_b_climb_wave_20260721T150845Z.json`
+
+
+## 2026-07-21 15:37 UTC - Hand MVC climb continue →312; wave3 rearmed (RunPod)
+
+**Item:** MF-P9-15.08 / hand first-role CAA path — continue Auto climb to ≥598
+**Command:** SSH verify PIDs; wait wave1/delta complete; wave3 VRAM-safe rearm; CAA mint waiter armed; seal
+**Result:** RUNTIME_PASS_BOUNDED climb continuing. NEVER EC2. Floors unchanged (binding_n=598). CAA not yet attempted.
+
+- Verified wave1 **820172** + delta **849146** completed (315/315, 193/193) and exited
+- CAA mint waiter **855950** alive (fires at MVC≥598); clothing waiter **909850** holding; path_guard **909832**; `/workspace/maskfactory` intact
+- Wave3 rearm fired at free=24769 MiB / n=1 workers → **967571** (`hand_tournament_wave3_rearm_20260721T153401Z`); bridge_accel **967420** also live (~218/1052)
+- **MVC ~249–251 → 311–319** (Δ≈+62…+70; gap≈279–287); caa=0; residual≈7–8
+- VRAM with 2 accel workers ~41–43GiB used / ~5–7GiB free — no third accel (safe gate free>15GiB && n<2)
+- Wave3 rearm waiter restarted **987033** (LF-fixed script; prior exit after launch; CRLF scp defect fixed)
+- Clothing still holds until MVC≥598
+- Evidence: `qa/live_verification/hand_clothing_mode_b_climb_wave_20260721T153723Z.json` (self_sha256=00665d67893b7c65923e7f8b1d6f16bfc968aa538a891d14944928ca783873dc)
+
+
+## 2026-07-21 15:55 UTC - Hand MVC climb babysit →364; mint still armed (RunPod)
+
+**Item:** MF-P9-15.08 / hand first-role CAA path — continue Auto climb to ≥598
+**Command:** SSH probe + 12m babysit; seal `_pod_seal_hand_climb_now.py`; no kill; no third worker
+**Result:** RUNTIME_PASS_BOUNDED climb continuing. NEVER EC2. Floors unchanged (binding_n=598). CAA not yet attempted.
+
+- Handoff MVC ~319 → sealed **MVC 364** (gap **234**; residual=10; caa=0)
+- Climb rate ~3–3.5 MVC/min with 2 workers; ETA ~60–75m to binding if rate holds
+- Durable: wave3 **967571** + bridge **967420** ~310/1052 alive; CAA mint **855950** armed; clothing **909850** holding; path_guard **909832**; rearm **987033** (n=2 so idle)
+- VRAM ~27–29GiB used / ~19–21GiB free — hold at 2 workers (no third)
+- Path `/workspace/maskfactory` intact; no rename
+- Evidence: `qa/live_verification/hand_clothing_mode_b_climb_wave_20260721T155509Z.json` (self_sha256=2ba57551b23a57f1de8d4052dc832cfad7305d2b6228b325f2df565ca979150a)
+
+
+## 2026-07-21 16:27 UTC — SELF-HOSTED STRICT VLM GATE implemented + live confirmed (RunPod)
+**Item:** MF-P9-15.08 (note), MF-P4 visual/CAA acceptance amendment, autonomy gold profile
+**Command:** `python tools/smoke_strict_vlm_gate.py`; unit `pytest tests/test_strict_vlm_gate.py tests/test_vlm_config.py`; audit seal `runtime_artifacts/_seal_strict_vlm_gate_audit.py`
+**Result:** PASS / CONFIRMED. Audit verdict `GAPS_CLOSED_AND_LIVE_CONFIRMED`. Live smoke: force-disable + skip-vlm → `VISUAL_CRITIC_BLOCKED`; known-bad empty + flooded panels → `ABSTAIN_BOUNDED` / verdict fail via high-end `llava:13b` + `qwen2.5vl:7b` ensemble (temperature=0, seed=1337). Hand climb relaunched after brief VRAM serialize; MVC still climbing (n≈427, mvc≈417, caa=0). NEVER EC2. No cloud VLM.
+
+<details>
+<summary>Evidence paths</summary>
+
+- `qa/live_verification/strict_vlm_gate_audit_latest.json`
+- `qa/live_verification/strict_vlm_gate_confirmed_latest.json`
+- `configs/vlm.yaml#strict_visual_gate`
+- `src/maskfactory/vlm/strict_gate.py`
+- `tools/run_tournament_ollama_critic_router.py`
+- `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md` § SELF-HOSTED STRICT VLM GATE
+- `Plan/Instructions/13_SELF_HOSTED_STRICT_VLM_GATE.md`
+
+</details>
+
+
+## 2026-07-21 17:10 UTC — Binding CONTINUOUS UNTIL E2E COMPLETE (NO STOP) implemented into rules
+**Item:** (standing orders / Instructions — all autonomous sessions)
+**Command:** Update `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md` § CONTINUOUS UNTIL E2E COMPLETE (NO STOP); `.cursor/rules/maskfactory-standing-orders.mdc`; Instructions `00`/`02`/`03`; mirror `.wt_climb4`; CLAUDE.md / AGENTS.md pointers; DECISIONS_LOG
+**Result:** IMPLEMENTED. Agents MUST NOT stop until MaskFactory E2E complete. Forbidden: idle Kevin-chat waits, “no further action,” parking after seals, waiting on subagents without chaining, treating usage-limit/agent-death as project pause without durable nohup + relaunch. Required: immediate next-wave chaining; durable nohup so Cursor agent death ≠ climb death; stop only for true NEEDS KEVIN then switch all other unblocked lanes. STRICT VLM gate and proof tiers unchanged. NEVER EC2. Pod Plan sync attempted; SSH to last-known `root@195.26.233.100:52077` timed out / RunPod API 403 — local+worktree mirrors sealed; re-sync when pod SSH reachable.
+
+<details>
+<summary>Paths updated</summary>
+
+- `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md`
+- `.cursor/rules/maskfactory-standing-orders.mdc`
+- `Plan/Instructions/00_START_HERE.md`
+- `Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md`
+- `Plan/Instructions/03_SESSION_PLAYBOOK.md`
+- `Plan/DECISIONS_LOG.md`
+- `AGENTS.md` / `CLAUDE.md`
+- `.wt_climb4/Plan/*` twins (same set)
+
+</details>
+
+
+## 2026-07-21 17:12 UTC — Pod Plan sync for NO-STOP mandate
+**Item:** (standing orders mirror)
+**Command:** `scp` key Plan/Instructions/AGENTS/CLAUDE → `root@195.26.233.100:52077:/workspace/maskfactory/`
+**Result:** PASS. Confirmed `CONTINUOUS UNTIL E2E COMPLETE (NO STOP)` present on pod Standing Orders + Instructions 00/02; AGENTS/CLAUDE pointers synced. STRICT VLM unchanged. NEVER EC2.
+
+## 2026-07-21T1810Z — hand STRICT VLM zero-pass climb (v4)
+
+- Root causes: (1) v1 full-body scope false-fail; (2) llava truncated JSON → synthesized fail demotes; (3) OOM/SIGKILL on concurrent BiRefNet+llava.
+- Deployed `strict-visual-gate-v4-20260721-no-trunc-fail`: truncated primary → VISUAL_CRITIC_BLOCKED (no demote), hand zoom 1.35, num_predict 1280, babysit free>=22GiB/util<=40.
+- Live: babysit + STRICT waiter + hand tournament + CAA mint + in-flight STRICT burst; visual_qualified still 0; CAA fail-closed until STRICT pass. NEVER EC2.

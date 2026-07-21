@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T05:04:00Z",
+  "items": [
+    "MF-P5-10.08",
+    "MF-P5-10.09",
+    "MF-P5-10.10"
+  ],
+  "margin_manifest": {
+    "path": "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json",
+    "manifest_id": "custom_segmenter_noninferiority_v1",
+    "frozen_at": "2026-07-15T04:54:00Z",
+    "sha256": "04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be",
+    "results_state": "sealed_before_results",
+    "hard_label_count": 26,
+    "high_risk_context_count": 17,
+    "expanded_bucket_count": 158,
+    "primary_objective": {
+      "metric": "macro_mean_iou",
+      "minimum_improvement": 0.005
+    },
+    "labor_objective": {
+      "metric": "correction_pixels_per_100k",
+      "minimum_improvement": 0.05
+    },
+    "source_hash_count": 6
+  },
+  "noninferiority": {
+    "delta_convention": "positive_is_challenger_improvement",
+    "label_margins": {
+      "boundary_f_2px": 0.01,
+      "mean_iou": 0.005,
+      "small_part_recall": 0.01
+    },
+    "context_margins": {
+      "boundary_f_2px": 0.01,
+      "instance_recall": 0.01,
+      "mean_iou": 0.005,
+      "small_part_recall": 0.01
+    },
+    "zero_regression_metric_count": 12,
+    "average_win_can_override_failed_bucket": false
+  },
+  "certificate_gate": {
+    "required_lifecycle_state": "benchmarked",
+    "required_identity_hash_count": 12,
+    "hashes": [
+      "benchmark_results_sha256",
+      "checkpoint_sha256",
+      "content_decision_sha256",
+      "dataset_manifest_sha256",
+      "evaluation_set_sha256",
+      "hardware_profile_sha256",
+      "license_evidence_sha256",
+      "measurement_code_sha256",
+      "prompt_manifest_sha256",
+      "qa_config_sha256",
+      "runtime_lock_sha256",
+      "source_tree_sha256"
+    ],
+    "both_content_lanes_must_be_allowed": true,
+    "checkpoint_license_must_be_allowed": true,
+    "one_command_rollback_and_restore_must_be_observed": true,
+    "missing_identity_cases_tested": 12,
+    "stale_identity_cases_tested": 12,
+    "role_mutation_performed": false
+  },
+  "verification": {
+    "dedicated_policy_tests": 40,
+    "focused_policy_schema_training_tracker_tests": 92,
+    "full_repository_tests": 1186,
+    "pytest": "pass",
+    "ruff": "pass",
+    "ci_named_gate_added": true
+  },
+  "not_claimed": [
+    "human-anchor evaluation set is populated",
+    "any benchmark result exists",
+    "any candidate won",
+    "any provider lifecycle or role changed",
+    "any serving or gold authority was granted"
+  ],
+  "authority": "frozen_policy_and_gate_verification_only_no_benchmark_promotion_serving_or_gold_authority"
+}

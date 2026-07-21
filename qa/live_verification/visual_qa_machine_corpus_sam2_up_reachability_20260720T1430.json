@@ -1,0 +1,423 @@
+{
+  "artifact_type": "visual_qa_machine_corpus_sam2_up_reachability",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-20T14:34:41.573378+00:00",
+  "local_date": "2026-07-20",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "project_head_at_authoring": "0e35427728611bbbbaa22fd97e55f6dc01ba07e7",
+  "lane": "Autonomous re-seg/repair reachability recheck with SAM2 (nuclio via CVAT) verified UP this wave. No package mutated. No human CVAT. No fabricated pass.",
+  "honesty_rules": [
+    "VISUAL_QA_REVIEWED_WITH_DEFECTS (machine corpus) is NOT VISUAL_QA_PASS_BOUNDED",
+    "Bounded morphology ABSTAINS on structural AND unknown (fail-closed) defect classes",
+    "Nuclio SAM2 is verified live but is NOT wired to any automated package re-segmentation repair pipeline",
+    "The pipeline's automated SAM2 re-seg runtime is WSL SAM2 (WslSam2Provider) + WSL parser (S03), both UNAVAILABLE this wave",
+    "No fabricated VISUAL_QA_PASS_BOUNDED; 0/14 honestly promotable this wave"
+  ],
+  "runtime_probe": {
+    "probed_at": "2026-07-20T14:34:41.811007+00:00",
+    "docker_engine": "UP 29.6.1; 39 containers running (production CVAT v2.24 + cvat269 rehearsal + nuclio pth-sam2 healthy)",
+    "cvat_api_localhost_8080": "UP 2.24.0 (JSON /api/server/about after a cold-start cvat_server exit(255) flap that auto-recovered)",
+    "nuclio_pth_sam2": "HEALTHY; end-to-end SAM2 smoke PASS this wave",
+    "cvat_sam2_smoke": {
+      "result": "PASS",
+      "task_id": 1,
+      "latency_seconds": 19.437,
+      "foreground_pixels": 21491,
+      "function_version": 2,
+      "measured_at": "2026-07-20T14:33:06.362037+00:00"
+    },
+    "ollama_127_0_0_1_11434": "UP 0.32.1 (advisory VLM only; not a mask producer)",
+    "wsl_ubuntu_2204": "UNAVAILABLE: ext4.vhdx path F:/MaskFactory_Offload_20260714/WSL/Ubuntu-22.04/ext4.vhdx not found (Wsl/.../MountDisk/HCS/ERROR_PATH_NOT_FOUND)",
+    "host_torch": "2.12.1+cpu (CUDA False) -> no host SAM re-segmentation runtime",
+    "disk_free_c_gib_approx": 81.6,
+    "sam2_nuclio_available": true,
+    "automated_reseg_repair_runtime_available": false
+  },
+  "machine_draft_corpus": {
+    "root": "data/packages",
+    "instances_discovered": 14,
+    "hard_qa_tier": "HARD_QA_PASS_BOUNDED",
+    "prior_full_rereview": "qa/live_verification/visual_qa_machine_corpus_full_rereview_20260720T0810.json",
+    "prior_full_rereview_self_sha256": "6f7b103331ad7b0a21f9104c57bc7d5bcd7fea64113e5ae559440f0c742a8484"
+  },
+  "panel_integrity": {
+    "panels_matched_prior_sealed_hash": 14,
+    "panels_changed_since_sealed_review": 0,
+    "note": "All matched -> the sealed DEFECTS_CONFIRMED pixel-review verdicts remain current; packages were NOT mutated by any agent since 08:12 UTC."
+  },
+  "instances": [
+    {
+      "target": "img_2ca794d19be9/p0",
+      "category": "body_frontal",
+      "panel": "data/packages/img_2ca794d19be9/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "15decbb84b3d249921c0eddf7d159c46b3426def56031125ec6a4b63cff89831",
+      "panel_sha256_now": "15decbb84b3d249921c0eddf7d159c46b3426def56031125ec6a4b63cff89831",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "garment_bias",
+        "fragmentation",
+        "underfill"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "garment_bias",
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_51945db358cb/p0",
+      "category": "body_frontal",
+      "panel": "data/packages/img_51945db358cb/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "80bbb3d6af22f993ec7fabe619608bc3b6185dbcf1c032413c2d09709992201c",
+      "panel_sha256_now": "80bbb3d6af22f993ec7fabe619608bc3b6185dbcf1c032413c2d09709992201c",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "garment_bias",
+        "fragmentation",
+        "underfill"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "garment_bias",
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_6d6bb33f01a1/p0",
+      "category": "body_three_quarter",
+      "panel": "data/packages/img_6d6bb33f01a1/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "4533bbb8ac2a7f9994e5f725f4363a8b4df2ba47929b236156522d01cd7af9b5",
+      "panel_sha256_now": "4533bbb8ac2a7f9994e5f725f4363a8b4df2ba47929b236156522d01cd7af9b5",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "underfill",
+        "fragmentation",
+        "garment_bias"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "underfill",
+        "garment_bias"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_6d6bb33f01a1/p1",
+      "category": "body_profile",
+      "panel": "data/packages/img_6d6bb33f01a1/instances/p1/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "7ca35bf2db298457d14f8cf1715e236981d78deb88273f82da96dfa1edd2d0b7",
+      "panel_sha256_now": "7ca35bf2db298457d14f8cf1715e236981d78deb88273f82da96dfa1edd2d0b7",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "noise_spray",
+        "underfill"
+      ],
+      "noise_promotable_classes": [
+        "noise_spray"
+      ],
+      "structural_abstain_classes": [
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_6d6bb33f01a1/p2",
+      "category": "body_back",
+      "panel": "data/packages/img_6d6bb33f01a1/instances/p2/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "8ec5f35b88631b0d6d363e15e2a86514430ef7ad31f25169fcce44fcd22e26d9",
+      "panel_sha256_now": "8ec5f35b88631b0d6d363e15e2a86514430ef7ad31f25169fcce44fcd22e26d9",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "noise_spray"
+      ],
+      "noise_promotable_classes": [
+        "noise_spray"
+      ],
+      "structural_abstain_classes": [],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_6d6bb33f01a1/p3",
+      "category": "body_frontal",
+      "panel": "data/packages/img_6d6bb33f01a1/instances/p3/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "8d85ae33c1dca96aff5de923fcb37bfa97341658625f01db4efea890cdf1638e",
+      "panel_sha256_now": "8d85ae33c1dca96aff5de923fcb37bfa97341658625f01db4efea890cdf1638e",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "underfill"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_7b7a3c7d5dd3/p0",
+      "category": "body_frontal",
+      "panel": "data/packages/img_7b7a3c7d5dd3/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "492067d710df872432b2e13871cab5b9b9d24f1267cd16633adca3472239ecbd",
+      "panel_sha256_now": "492067d710df872432b2e13871cab5b9b9d24f1267cd16633adca3472239ecbd",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "noise_spray",
+        "underfill",
+        "fragmentation"
+      ],
+      "noise_promotable_classes": [
+        "noise_spray"
+      ],
+      "structural_abstain_classes": [
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_7b7a3c7d5dd3/p1",
+      "category": "body_frontal",
+      "panel": "data/packages/img_7b7a3c7d5dd3/instances/p1/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "b914fc5cf7e876c17fe632ed0adbc0096a5d67bab9bd0cc1a999e4df5193ffd3",
+      "panel_sha256_now": "b914fc5cf7e876c17fe632ed0adbc0096a5d67bab9bd0cc1a999e4df5193ffd3",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "garment_bias"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "garment_bias"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_7b7a3c7d5dd3/p2",
+      "category": "body_back",
+      "panel": "data/packages/img_7b7a3c7d5dd3/instances/p2/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "c0c4b5430ad4d0a703237ac20326bd363debe8c85f997889a3ea9bcd57b64c89",
+      "panel_sha256_now": "c0c4b5430ad4d0a703237ac20326bd363debe8c85f997889a3ea9bcd57b64c89",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "noise_spray"
+      ],
+      "noise_promotable_classes": [
+        "noise_spray"
+      ],
+      "structural_abstain_classes": [],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_a3d2663ad90d/p0",
+      "category": "illustrated_multi_person",
+      "panel": "data/packages/img_a3d2663ad90d/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "5bcec838b417e30784b6bdc4f410410d0f371d11007b4e70a2b7251b82a84dd5",
+      "panel_sha256_now": "5bcec838b417e30784b6bdc4f410410d0f371d11007b4e70a2b7251b82a84dd5",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "multi_person_half_fill",
+        "exclusivity_bleed"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "multi_person_half_fill",
+        "exclusivity_bleed"
+      ],
+      "unknown_faildclosed_abstain_classes": [],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_a3d2663ad90d/p1",
+      "category": "illustrated_multi_person",
+      "panel": "data/packages/img_a3d2663ad90d/instances/p1/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "8473bba0054f1e0cbb4be9b224e0aaa0e59316da0883f9d201864b84b10627c6",
+      "panel_sha256_now": "8473bba0054f1e0cbb4be9b224e0aaa0e59316da0883f9d201864b84b10627c6",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "multi_person_half_fill",
+        "exclusivity_bleed"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "multi_person_half_fill",
+        "exclusivity_bleed"
+      ],
+      "unknown_faildclosed_abstain_classes": [],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_b2b46c45d8e0/p0",
+      "category": "body_frontal",
+      "panel": "data/packages/img_b2b46c45d8e0/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "02172fa6463c100721df6fc7b8bba9ec782c67d04a75f3127387812b242b3e23",
+      "panel_sha256_now": "02172fa6463c100721df6fc7b8bba9ec782c67d04a75f3127387812b242b3e23",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "fragmentation",
+        "noise_spray"
+      ],
+      "noise_promotable_classes": [
+        "noise_spray"
+      ],
+      "structural_abstain_classes": [],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_cdab0311dc96/p0",
+      "category": "body_three_quarter",
+      "panel": "data/packages/img_cdab0311dc96/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "24400324aec2fc88b8030d389a2cff9d19b23f597b031f6312f0dadc4e0b3477",
+      "panel_sha256_now": "24400324aec2fc88b8030d389a2cff9d19b23f597b031f6312f0dadc4e0b3477",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "underfill",
+        "fragmentation"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "underfill"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    },
+    {
+      "target": "img_e5163e08baac/p0",
+      "category": "body_three_quarter",
+      "panel": "data/packages/img_e5163e08baac/instances/p0/qa_panels/all_parts.png",
+      "panel_exists": true,
+      "panel_sha256_prior": "60a2b8ea0811ef69ba7479b1b71b3ddc8431e375d61ffa2a2a2323228e343f4e",
+      "panel_sha256_now": "60a2b8ea0811ef69ba7479b1b71b3ddc8431e375d61ffa2a2a2323228e343f4e",
+      "panel_unchanged_since_sealed_review": true,
+      "defect_classes": [
+        "underfill",
+        "fragmentation",
+        "garment_bias"
+      ],
+      "noise_promotable_classes": [],
+      "structural_abstain_classes": [
+        "underfill",
+        "garment_bias"
+      ],
+      "unknown_faildclosed_abstain_classes": [
+        "fragmentation"
+      ],
+      "policy_outcome": "ABSTAIN_BOUNDED",
+      "morphology_can_promote_to_visual_pass": false,
+      "agent_pixel_review": "DEFECTS_CONFIRMED"
+    }
+  ],
+  "repair_reachability": {
+    "bounded_morphology": "ABSTAIN on every instance: each carries >=1 structural (underfill/garment_bias/exclusivity_bleed/multi_person_half_fill) or fail-closed unknown (fragmentation) class. 0/14 morphology-promotable.",
+    "nuclio_sam2_via_cvat": "VERIFIED LIVE (smoke PASS) but produces whole-object interactive masks, not the 40-atomic-part decomposition; NOT wired to any automated package-repair pipeline. Rebuilding a part-map needs the WSL Sapiens/SCHP parser (S03) which is down.",
+    "wsl_sam2_reseg": "The pipeline's automated SAM2 re-seg path (WslSam2Provider S07 / Sam2InteractiveRefiner S11). UNAVAILABLE: WSL Ubuntu-22.04 ext4.vhdx path missing.",
+    "packages_mutated_this_wave": false
+  },
+  "defect_counts": {
+    "machine_corpus_instances_total": 14,
+    "machine_corpus_instances_clean": 0,
+    "machine_corpus_instances_with_blocking_defects": 14,
+    "morphology_promotable_instances": 0
+  },
+  "before_after_visual_tier": {
+    "machine_package_corpus": {
+      "before": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+      "after": "VISUAL_QA_REVIEWED_WITH_DEFECTS"
+    }
+  },
+  "highest_tier_achieved": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+  "visual_qa_pass_bounded_claimed": false,
+  "sam2_nuclio_runtime_tier": "RUNTIME_PASS_BOUNDED",
+  "exact_blocker": "No automated SAM2 re-segmentation repair runtime available: WSL SAM2 ext4.vhdx path not found; host torch CPU-only; nuclio SAM2 (live) is CVAT-interactive-only and not wired to package repair. Structural/fragmentation defects on all 14 cannot be honestly cleared by bounded morphology.",
+  "what_would_unblock": [
+    "Restore the WSL Ubuntu-22.04 ext4.vhdx (relocated/missing) OR provision a host CUDA torch, then run the WSL SAM2 re-seg (S07/S11) + WSL parser (S03) over the defective instances.",
+    "OR build+run a GPU-container re-segmentation provider that reproduces the S03 parse + S07 SAM2 part decomposition, then re-run verify-package + agent pixel review per instance.",
+    "OR human CVAT correction (out of scope for autonomous repair)."
+  ],
+  "claims_not_established": [
+    "VISUAL_QA_PASS_BOUNDED for the machine package corpus (data/packages)",
+    "gold / human_approved_gold / autonomous_certified_gold",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "evidence_pointers": [
+    "qa/reports/cvat_sam2_smoke.json",
+    "qa/live_verification/visual_qa_machine_corpus_full_rereview_20260720T0810.json",
+    "qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json",
+    "qa/live_verification/milestone_proof_tiers_20260719.json"
+  ],
+  "self_sha256": "dcf24e11bcf546ad40265efd91e5d611bc99e366b3f388272f9f4361309b54ca"
+}

@@ -1,0 +1,71 @@
+{
+  "claim_boundary": {
+    "main_must_independently_recompute": true,
+    "vectors_are_producer_oracles": true
+  },
+  "record_type": "main_consumer_requirements_capability_disagreement_vectors",
+  "schema_version": "1.0.0",
+  "shape_sha256": "89a92e22fa4e612fcd8aaf404ad44afb31fafe0905cb5773a062fec370a2276f",
+  "vectors": [
+    {
+      "expected_rejection_contains": [
+        "mask.package.read"
+      ],
+      "expected_status": "rejected",
+      "id": "required_capability_unavailable",
+      "mutation": "drop_required_offer",
+      "optional_unmet_remains_distinct": true
+    },
+    {
+      "expected_optional_unmet": [
+        "mask.live.predict"
+      ],
+      "expected_required_all_met": true,
+      "expected_status": "accepted",
+      "id": "optional_only_unmet_does_not_block_acceptance",
+      "mutation": "drop_optional_offer"
+    },
+    {
+      "expected_rejection_contains": [
+        "__global__.labels",
+        "labels"
+      ],
+      "expected_status": "rejected",
+      "id": "label_coverage_disagreement",
+      "mutation": "shrink_required_labels"
+    },
+    {
+      "expected_rejection_contains": [
+        "authority_state"
+      ],
+      "expected_status": "rejected",
+      "id": "authority_floor_disagreement",
+      "mutation": "lower_authority_states"
+    },
+    {
+      "expected_rejection_contains": [
+        "__global__.versions"
+      ],
+      "expected_status": "rejected",
+      "id": "version_compatibility_disagreement",
+      "mutation": "wrong_api_contract_version"
+    },
+    {
+      "expected_rejection_contains": [
+        "__global__.latency_resources"
+      ],
+      "expected_status": "rejected",
+      "id": "latency_resource_envelope_disagreement",
+      "mutation": "exceed_latency_budget"
+    },
+    {
+      "expected_issue_validators": [
+        "capability_ambiguity"
+      ],
+      "expected_status": "rejected",
+      "id": "ambiguous_duplicate_capability_offers",
+      "mutation": "duplicate_capability_offer"
+    }
+  ],
+  "vectors_id": "requirements_capability_disagreement_v1"
+}

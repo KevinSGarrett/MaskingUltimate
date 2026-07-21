@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T07:49:54.521094Z",
+  "item_id": "MF-P7-07.03",
+  "result": "partial_pass",
+  "current_review": {
+    "review_id": "02c191eb484fde917f4dcc64",
+    "review_sha256": "2ac2a85726cdad5d7405ffda26e403c8cdbc249ac3473e62005ecf63f0a0d0a3",
+    "file_sha256": "19d4946fd1e961097d831adc527f8fec5d56a05303dfd978981e36c4d7a59cab",
+    "status": "fail",
+    "active_role_count": 5,
+    "integrity_and_current_input_verification": "pass",
+    "strict_verification_exit_code": 1,
+    "strict_failure_codes": [
+      "benchmark_certificate_missing",
+      "currency_review_not_passing",
+      "rollback_evidence_missing",
+      "rollback_provider_not_distinct"
+    ],
+    "governance_decisions_sha256": "d7bc9e9a54819b43b9a7282d0d7b668f53689af5e951ceac2caa114984cb2e03"
+  },
+  "ci": {
+    "workflow": ".github/workflows/ci.yml",
+    "workflow_sha256": "4adb81551c88438e62a0388b8568d4a5022dc41ad57a78bcc1a23535213b8dd2",
+    "yaml_parse": "pass",
+    "signed_review_integrity_step": "enabled",
+    "seeded_currency_regression_step": "enabled_33_exact_gate_cases",
+    "seeded_currency_test_sha256": "4f928abe7562f9e5e06031ac845b0e6f0573620631867b12b3fbc0cbe1aae9d4",
+    "strict_review_pass_step": "withheld_until_MF-P7-07.01_passes"
+  },
+  "verification": {
+    "focused_currency_tests_passed": 33,
+    "full_repository_tests_passed": 1309,
+    "ruff": "pass"
+  },
+  "seeded_negative_coverage": {
+    "active_path": "binding, authority, lifecycle, artifact hash, runtime identity, content, license, benchmark hash/scope/primary/hard-bucket/freshness, rollback provider/authority/artifact/evidence/freshness",
+    "current_inputs": "pipeline, external registry, model registry, rollback evidence, and governance-decision dependency missing or drifted",
+    "review": "missing file, signature/payload tamper, expiry/staleness, event/input/role recomputation, and forged-pass rejection"
+  },
+  "authority_boundary": "This evidence proves CI integrity, freshness, current-input, decision-log, signature, and exhaustive seeded semantic enforcement. It does not claim that the current currency review passes or that missing benchmark and rollback evidence exists."
+}

@@ -1,0 +1,102 @@
+runtime:
+  provider: ollama
+  base_url: "http://127.0.0.1:11434"
+  container_name: ollama
+  # Mirrors configs/cloud_teacher.yaml. Exact-image transmission is still
+  # default-deny and separately hash/rights/provider authorized.
+  cloud_enabled: true
+  gpu_slot: exclusive
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 192
+
+models:
+  primary_vlm: "qwen2.5vl:7b"
+  fallback_vlm: "llava:13b"
+  text_llm: "qwen2.5:7b-instruct"
+  challengers: ["qwen3-vl:4b-instruct-q4_K_M", "qwen3-vl:8b-instruct-q4_K_M"]
+  challenger_mode: shadow_only
+  llava_retirement_requires_measured_replacement_win: true
+
+prompts:
+  p_part:
+    version: "p-part-v1-doc10"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    allowed_verdicts:
+      - pass
+      - fail
+      - uncertain
+    allowed_problems:
+      - wrong_part
+      - wrong_side
+      - boundary_too_loose
+      - boundary_too_tight
+      - includes_clothing_as_skin
+      - includes_background
+      - includes_neighbor_part
+      - missing_visible_area
+      - mask_on_hidden_area
+      - finger_merge
+      - hair_edge_bad
+      - occlusion_error
+      - other
+    required_keys:
+      - verdict
+      - confidence
+      - problems
+      - evidence
+      - correction_instruction
+  p_image:
+    version: "p-image-v2-source-overlay"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    required_keys: [missing, mislabeled, lr_suspect, impossible_claims, notes]
+  p_manifest:
+    version: "p-manifest-v1-doc10"
+    retry_on_invalid_json: 1
+    required_keys: [findings, overall]
+  p_workhorse:
+    version: "p-workhorse-v1-multimage-tools"
+    path: "src/maskfactory/vlm/prompts/p_workhorse.txt"
+    independent_image_long_side: 1024
+    retry_on_invalid_json: 1
+  p_compare:
+    version: "p-compare-v1-before-after"
+    path: "src/maskfactory/vlm/prompts/p_compare.txt"
+    retry_on_invalid_json: 1
+
+workhorse:
+  enabled: true
+  mode: "gated_candidate_generation"
+  max_iterations_per_part: 3
+  max_points_per_polarity: 12
+  min_failure_confidence: 0.7
+  max_changed_fraction: 0.75
+  max_protected_overlap_fraction: 0.02
+  specialist_disagreement_fraction: 0.03
+  authoritative_map_write: false
+  human_approval_required: false
+  certificate_covered_autoaccept: true
+  residual_human_review_required: true
+  quick_pass_enabled: true
+  think: false
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 768
+    num_ctx: 32768
+
+routing:
+  quick_pass_min_confidence: 0.7
+  uncertain_has_hints: false
+  machine_instruction_prefix: "MACHINE-GENERATED SUGGESTION: "
+  heatmap_pin_on_auto_vlm_disagreement: true
+
+governance:
+  role: "qa_router_only"
+  may_author_masks: false
+  may_approve_gold: false
+  may_clear_blocks: false
+  source_images_leave_machine: exact_hash_opt_in_only

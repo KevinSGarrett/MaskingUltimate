@@ -1,0 +1,28 @@
+# ITEMS — Phase P7 Ontology Activation, Currency Review, and Autonomous Operations (docs 18, 20, 22, SAM 3.1 handoff)
+
+> **Completion-profile scope (doc 24):** human audits, governed-source demonstrations, package-volume
+> cadence, interactive acceptance, and long-running portfolio operations below qualify optional
+> independent-accuracy or post-core scale maturity only. Their incomplete/blocked state cannot block or
+> revoke `core_autonomous_runtime`; portfolio percentages still report them separately.
+
+Goal: operate the expanded system continuously with immutable evidence, recurring review, selective audits, and honest activation gates.
+
+## MF-P7-06 — Ontology-v2 operations and activation (spec: 18 checklist I)
+- [ ] MF-P7-06.01 Add coverage targets for every v2 class/state/view/pose/occlusion context · Verify: exact-vocabulary matrix rejects stale, duplicate, incomplete, unreviewed, and target-drifted evidence · Blocked by: MF-P1-10.09
+- [ ] MF-P7-06.02 Add failure reasons and acquisition actions for v2 boundary/side/clothing errors · Verify: canonical reasons map deterministically to governed coverage targets/actions · Blocked by: MF-P4-09.01
+- [ ] MF-P7-06.03 Update backup, restore, GC, reindex, DVC, and incident drills for v1/v2 authority · Verify: copy-only migration/rollback and strict restore verification preserve exact production sources · Blocked by: MF-P1-11.07
+- [ ] MF-P7-06.04 Update docs 00–17, SOPs, schemas, CLI help, generated references, Items/tracker, and DoD for version-aware v1/v2 behavior · Verify: documentation alignment audit and tracker traceability test pass · Blocked by: none
+- [ ] MF-P7-06.05 Run full tests, drift/schema checks, seeded QA, migration/rollback, CVAT pilot, dataset/training, leaderboard, serving, and ComfyUI evidence · Verify: one activation bundle indexes every required artifact/result and all gates pass · Blocked by: MF-P1-12.09, MF-P4-09.07, MF-P5-09.10, MF-P6-05.07
+- [ ] MF-P7-06.06 Switch active ontology/champions to `body_parts_v2` only after every v2 item/evidence gate passes and record atomic activation/rollback · Verify: active registry/config/workflows agree on v2, live smoke passes, and one-command v1 rollback remains valid · Blocked by: MF-P7-06.05 · HARD BLOCKER
+
+## MF-P7-07 — Recurring currency, certificate operations, and autonomous headline evidence (spec: 20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion)
+- [ ] MF-P7-07.01 Run model, runtime, dependency, license, content-compatibility, benchmark-certificate, and rollback review every 90 days and before dataset freeze, training, promotion, or major release · Verify: current signed/hash-bound review covers every active role · Blocked by: none · HARD BLOCKER
+- [ ] MF-P7-07.02 Make newer discoveries planned challengers automatically, never replacements; preserve immutable historical evidence · Verify: discovery/import tests cannot change active role or rewrite old certificates · Blocked by: MF-P0-16.06
+- [ ] MF-P7-07.03 Fail CI on stale/missing active-path hashes, decisions, currency reviews, benchmark evidence, or rollback evidence · Verify: seeded stale/missing fixtures each fail the correct gate · Blocked by: MF-P7-07.01 · HARD BLOCKER
+- [ ] MF-P7-07.04 Register recurring mixed audit queues, process exact outcomes, revoke unsafe strata immediately, and emit governed retraining tasks · Verify: weekly scheduled run and serious-failure drill pass · Blocked by: MF-P4-11.12, MF-P4-11.13
+- [ ] MF-P7-07.05 Track human touches per 100 images, audited fraction, residual-review fraction, manually changed pixels per 100,000 predicted pixels, zero-touch fraction, quality, and failure-rate bounds separately · Verify: dashboard/report rejects missing denominators and conflation · Blocked by: live autonomous runs
+- [ ] MF-P7-07.06 Demonstrate trigger-driven retraining with new fingerprint, compatibility-scoped evidence reuse, recertification/abstention, role promotion/rejection, and rollback · Verify: immutable end-to-end operations report passes · Blocked by: certified training corpus and audit trigger
+- [ ] MF-P7-07.07 Run 20 unseen images autonomously with a preselected blinded mixed audit sample and no routine per-image correction · Verify: exact input/output/certificate/audit hashes plus labor/quality/confidence metrics pass the revised headline contract · Blocked by: NEEDS KEVIN: supply governed unseen images and perform the preselected blinded human-anchor audit
+- [ ] MF-P7-07.08 Demonstrate target zero-touch 0.95, routine human touch ≤0.05, and manual pixel edit ≤0.01 as measured operational outcomes—not completion assumptions · Verify: statistically reported run includes denominators, confidence bounds, and residual contexts · Blocked by: MF-P7-07.07
+- [ ] MF-P7-07.09 Run doctor, live provider smokes, frozen benchmarks, optional CVAT migration/rollback, statistical certificate/revocation, single-person headline, and tracker/report before declaring the legacy modernization/portfolio profile complete; this bundle has no core-completion authority · Verify: dated completion bundle links all exact evidence and names its optional profile scope · Blocked by: all upstream modernization gates
+- [ ] MF-P7-07.10 Record every blocker needing sources, anchor audits, credentials, billable compute, or interactive acceptance with `NEEDS KEVIN:` while continuing all other actionable work · Verify: tracker audit finds no vague human blocker and no technically actionable item mislabeled as Kevin-only · Blocked by: none

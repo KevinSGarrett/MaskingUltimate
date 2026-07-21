@@ -1,0 +1,40 @@
+﻿{
+    "timestamp_local":  "2026-07-20T09:40:42",
+    "verdict":  "RUNAS_ELEVATION_WORKED",
+    "is_admin_current_shell":  false,
+    "vhdx":  {
+                 "path":  "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04\\ext4.vhdx",
+                 "exists":  true,
+                 "length":  57511247872,
+                 "last_write_time":  "2026-07-20T09:40:32"
+             },
+    "paths":  {
+                  "1_IsAdmin":  {
+                                    "result":  "NOT_ADMIN",
+                                    "detail":  "KEVIN\\kevin IsAdmin=False"
+                                },
+                  "2_StartProcess_RunAs":  {
+                                               "result":  "ELEVATION_WORKED_REPAIR_FAILED",
+                                               "exit_code_first":  1,
+                                               "exit_code_logged":  1,
+                                               "note":  "Elevated process ran Repair-MaskFactoryWslVhd.ps1 (passed admin gate). Failed at line 111 Replace([char]0) MethodException before e2fsck. Log: qa/live_verification/_wsl_vhd_repair_elevated_attempt_20260720.txt"
+                                           },
+                  "3_schtasks_HIGHEST":  {
+                                             "result":  "FAILED",
+                                             "create":  "ERROR: Access is denied.",
+                                             "run":  "ERROR: The system cannot find the file specified.",
+                                             "leftover_task":  false
+                                         },
+                  "4_helpers":  {
+                                    "gsudo":  "NOT_FOUND",
+                                    "sudo":  "FOUND_BUT_DISABLED (Developer Settings)",
+                                    "wt":  "FOUND",
+                                    "wt_RunAs":  "ATTEMPTED_may_hang_UAC"
+                                }
+              },
+    "bash_probe_after":  {
+                             "root_mount":  "/dev/sdd on / type ext4 (rw,...)",
+                             "write_tmp":  "WRITE_OK",
+                             "note":  "Ubuntu-22.04 currently Running; root is rw; journal unclean-shutdown messages observed; no volume wipe performed"
+                         }
+}

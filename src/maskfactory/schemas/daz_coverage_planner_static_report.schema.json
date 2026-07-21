@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_coverage_planner_static_report.schema.json",
+  "title": "MaskFactory DAZ coverage planner STATIC report (MF-P9-10)",
+  "description": "STATIC_PASS binder for offline D9 planner chain, planned 1k pilot / 10k ablation cards, synthetic capacity calibration, and planned-vs-accepted coverage minima honesty. Never claims live DAZ render/accept, accepted corpora, or gold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "offline_chain_checks",
+    "pilot_checks",
+    "calibration_checks",
+    "ablation_checks",
+    "minima_checks",
+    "checks",
+    "mf_p9_10_07_pilot_complete",
+    "mf_p9_10_08_live_calibration_complete",
+    "mf_p9_10_09_ablation_corpus_complete",
+    "mf_p9_10_10_accepted_coverage_complete",
+    "live_daz_render_executed",
+    "live_daz_accept_executed",
+    "accepted_scene_count",
+    "rendered_scene_count",
+    "accepted_scene_count_nonzero",
+    "measured_from_live_pilot",
+    "corpus_materialized_on_disk",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "bindings",
+    "implementation",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "daz_coverage_planner_static_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_coverage_planner_static_only_no_live_pilot_ablation_accept_or_gold_authority"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "MF-P9-10.01",
+          "MF-P9-10.02",
+          "MF-P9-10.03",
+          "MF-P9-10.04",
+          "MF-P9-10.05",
+          "MF-P9-10.06",
+          "MF-P9-10.07",
+          "MF-P9-10.08",
+          "MF-P9-10.09",
+          "MF-P9-10.10"
+        ]
+      }
+    },
+    "offline_chain_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vocabulary_policy_loads",
+        "vocabulary_report_closed",
+        "deficit_adapter_policy_loads",
+        "candidate_generation_policy_loads",
+        "utility_policy_loads",
+        "concentration_policy_loads",
+        "feedback_policy_loads"
+      ],
+      "properties": {
+        "vocabulary_policy_loads": { "const": true },
+        "vocabulary_report_closed": { "const": true },
+        "deficit_adapter_policy_loads": { "const": true },
+        "candidate_generation_policy_loads": { "const": true },
+        "utility_policy_loads": { "const": true },
+        "concentration_policy_loads": { "const": true },
+        "feedback_policy_loads": { "const": true }
+      }
+    },
+    "pilot_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pilot_plan_scene_count_1000",
+        "pilot_acceptance_cost_report_honest",
+        "pilot_zero_accepted_rendered",
+        "pilot_may_train_promoted_model_false"
+      ],
+      "properties": {
+        "pilot_plan_scene_count_1000": { "const": true },
+        "pilot_acceptance_cost_report_honest": { "const": true },
+        "pilot_zero_accepted_rendered": { "const": true },
+        "pilot_may_train_promoted_model_false": { "const": true }
+      }
+    },
+    "calibration_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_profile_deterministic",
+        "calibration_not_from_live_pilot",
+        "reservation_formula_bound",
+        "soft_floor_bound"
+      ],
+      "properties": {
+        "calibration_profile_deterministic": { "const": true },
+        "calibration_not_from_live_pilot": { "const": true },
+        "reservation_formula_bound": { "const": true },
+        "soft_floor_bound": { "const": true }
+      }
+    },
+    "ablation_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ablation_plan_scene_count_10000",
+        "ablation_corpus_card_immutable_hash",
+        "ablation_not_materialized",
+        "ablation_may_train_promoted_model_false"
+      ],
+      "properties": {
+        "ablation_plan_scene_count_10000": { "const": true },
+        "ablation_corpus_card_immutable_hash": { "const": true },
+        "ablation_not_materialized": { "const": true },
+        "ablation_may_train_promoted_model_false": { "const": true }
+      }
+    },
+    "minima_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planned_view_pose_context_minima_evaluated",
+        "planned_attribute_minima_evaluated",
+        "high_risk_intersection_axes_bound",
+        "accepted_not_conflated_with_planned",
+        "overclaim_accepted_coverage_refused"
+      ],
+      "properties": {
+        "planned_view_pose_context_minima_evaluated": { "const": true },
+        "planned_attribute_minima_evaluated": { "const": true },
+        "high_risk_intersection_axes_bound": { "const": true },
+        "accepted_not_conflated_with_planned": { "const": true },
+        "overclaim_accepted_coverage_refused": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "offline_planner_chain_binder",
+        "pilot_plan_binder",
+        "calibration_profile_binder",
+        "ablation_corpus_plan_binder",
+        "coverage_minima_binder"
+      ],
+      "properties": {
+        "offline_planner_chain_binder": { "const": "pass" },
+        "pilot_plan_binder": { "const": "pass" },
+        "calibration_profile_binder": { "const": "pass" },
+        "ablation_corpus_plan_binder": { "const": "pass" },
+        "coverage_minima_binder": { "const": "pass" }
+      }
+    },
+    "mf_p9_10_07_pilot_complete": { "const": false },
+    "mf_p9_10_08_live_calibration_complete": { "const": false },
+    "mf_p9_10_09_ablation_corpus_complete": { "const": false },
+    "mf_p9_10_10_accepted_coverage_complete": { "const": false },
+    "live_daz_render_executed": { "const": false },
+    "live_daz_accept_executed": { "const": false },
+    "accepted_scene_count": { "const": 0 },
+    "rendered_scene_count": { "const": 0 },
+    "accepted_scene_count_nonzero": { "const": false },
+    "measured_from_live_pilot": { "const": false },
+    "corpus_materialized_on_disk": { "const": false },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "visual_qa_pass_claimed": { "const": false },
+    "main_complete_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vocabulary_report_id",
+        "vocabulary_report_sha256",
+        "pilot_stream_sha256",
+        "pilot_card_sha256",
+        "ablation_stream_sha256",
+        "ablation_card_sha256",
+        "calibration_profile_sha256",
+        "reservation_bytes",
+        "soft_floor_gib",
+        "planned_pilot_scenes",
+        "planned_ablation_scenes",
+        "policy_sha256",
+        "planned_cell_target_met",
+        "planned_attribute_target_met",
+        "accepted_coverage_complete"
+      ],
+      "properties": {
+        "vocabulary_report_id": { "type": "string", "minLength": 1 },
+        "vocabulary_report_sha256": { "$ref": "#/$defs/sha256" },
+        "pilot_stream_sha256": { "$ref": "#/$defs/sha256" },
+        "pilot_card_sha256": { "$ref": "#/$defs/sha256" },
+        "ablation_stream_sha256": { "$ref": "#/$defs/sha256" },
+        "ablation_card_sha256": { "$ref": "#/$defs/sha256" },
+        "calibration_profile_sha256": { "$ref": "#/$defs/sha256" },
+        "reservation_bytes": { "type": "integer", "exclusiveMinimum": 0 },
+        "soft_floor_gib": { "type": "number", "exclusiveMinimum": 0 },
+        "planned_pilot_scenes": { "const": 1000 },
+        "planned_ablation_scenes": { "const": 10000 },
+        "policy_sha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coverage_vocabulary",
+            "deficit_signal_adapter",
+            "candidate_generation",
+            "candidate_utility",
+            "concentration_limits",
+            "planner_feedback"
+          ],
+          "properties": {
+            "coverage_vocabulary": { "$ref": "#/$defs/sha256" },
+            "deficit_signal_adapter": { "$ref": "#/$defs/sha256" },
+            "candidate_generation": { "$ref": "#/$defs/sha256" },
+            "candidate_utility": { "$ref": "#/$defs/sha256" },
+            "concentration_limits": { "$ref": "#/$defs/sha256" },
+            "planner_feedback": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "planned_cell_target_met": { "type": "boolean" },
+        "planned_attribute_target_met": { "type": "boolean" },
+        "accepted_coverage_complete": { "const": false }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "configs", "tests"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "configs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "report_id": { "type": "string", "pattern": "^dcp_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

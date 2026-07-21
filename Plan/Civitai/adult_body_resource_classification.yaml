@@ -1,0 +1,268 @@
+# Plan/Civitai/adult_body_resource_classification.yaml
+#
+# MF-P0-14.01 classification for Civitai adult/NSFW-labeled and adjacent body
+# resources. Scope intentionally covers every unique Civitai ID currently present
+# in civitai_bootstrap_manifest.json, not just the explicit NSFW filenames, so no
+# adult/body/manual-download candidate is left unclassified.
+schema_version: 1.0.0
+manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
+manual_download_inventory: Plan/Civitai/manual_downloads_inventory.json
+classified_at_utc: "2026-07-10T20:55:00Z"
+manifest_record_count_at_classification: 79
+unique_civitai_id_count_at_classification: 71
+policy:
+  allowed_primary_roles:
+    - provider_vote
+    - comfyui_graph_reference
+    - stress_fixture
+    - qa_probe
+    - reject
+  adult_nsfw_label_is_not_rejection_reason: true
+  adult_nsfw_assets_may_be_training_data_when_eligible: true
+  adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible: true
+  require_provenance_license_consent_before_training_or_gold: true
+  classification_basis:
+    - Plan/16_EXTERNAL_FOUNDATION_BOOTSTRAP.md
+    - Plan/Civitai/README.md
+    - Plan/Civitai/civitai_bootstrap_manifest.json
+    - Plan/Civitai/manual_downloads_inventory.json
+role_defaults:
+  provider_vote:
+    allowed_use: Candidate detector/segmentation proposal vote only; compare against Sapiens, SCHP, DensePose, DWPose/MediaPipe, SAM2, and source overlays.
+    authority_gate: Not mask authority; cannot clear gold, BLOCK, or QA decisions.
+    training_gold_eligibility: Eligible after provenance, license, adult-age/consent status, and allowed use are explicitly recorded; any gold mask still requires the normal consensus, QA, and human-review workflow.
+  comfyui_graph_reference:
+    allowed_use: Reference wiring for controlled MaskFactory/ComfyUI adapters and debug graphs only.
+    authority_gate: Not a production stage unless rebuilt under MaskFactory controls and QA.
+    training_gold_eligibility: Graph files are not examples by themselves; eligible adult source images and masks produced through a governed graph may enter training or human-reviewed gold after the normal intake, rights, QA, and review gates.
+  stress_fixture:
+    allowed_use: Pose/depth/control stress fixture for occlusion, contact, multi-person, perspective, and body-visibility QA.
+    authority_gate: Not a mask provider and not evidence of anatomical truth.
+    training_gold_eligibility: Eligible as training examples or seeds for human-reviewed gold when the underlying adult source imagery has verified provenance, license, adult-age/consent status, and allowed use, and passes normal intake and annotation QA.
+  qa_probe:
+    allowed_use: QA visualization, disagreement probe, or non-authoritative comparison signal only.
+    authority_gate: Not mask authority and not a production decision source.
+    training_gold_eligibility: Probe outputs may become training examples or seeds for human-reviewed gold only when paired with an eligible governed source image and passed through normal annotation, QA, and review.
+  reject:
+    allowed_use: Do not use in MaskFactory pipelines except as a recorded rejected candidate.
+    authority_gate: Rejected as provider, fixture, graph reference, and QA probe.
+    training_gold_eligibility: Ineligible while rejected; reclassification requires documented evidence that resolves the rejection reason and all normal governance gates.
+role_groups:
+  provider_vote:
+    - id: 142240
+      name: ADetailer (After Detailer) Lips Model
+      rationale: Specialist lips detector vote for mouth/lip boundary QA.
+    - id: 257904
+      name: ADetailer foot_yolov8x.pt
+      rationale: Alternate foot-region detector vote for foot/toe/ankle crop QA.
+    - id: 311874
+      name: Socks Segmentation - ADetailer - (socks_seg_s_yolov8)
+      rationale: Sock/material detector vote for lower-leg and foot material separation.
+    - id: 311886
+      name: Nails Segmentation - ADetailer - (nails_seg_s_yolov8)
+      rationale: Nail/hand-detail detector vote; never full hand/finger authority.
+    - id: 329458
+      name: Hand Detailer/Segmentation - ADetailer
+      rationale: Hand-lane segmentation vote for crop experiments and disagreement panels.
+    - id: 334668
+      name: Eye Detailer/Segmentation - ADetailer
+      rationale: Eye protected-region detector vote for face QA.
+    - id: 372523
+      name: Spectacular Detailer (Glasses/Sunglasses) - BBOX/Segmentation - ADetailer
+      rationale: Glasses/sunglasses protected-object detector vote.
+    - id: 436115
+      name: Tattoo Detection - Yolov8 (Detection Model)
+      rationale: Tattoo/skin-marking detector vote for protected skin-detail QA.
+    - id: 948634
+      name: ADetailer 2d armpit yolov8 [bbox + segmentation]
+      rationale: Niche armpit/body-boundary detector vote; requires bias testing.
+    - id: 1019230
+      name: ADetailer Teeth Segmentation
+      rationale: Teeth/mouth-region detector vote for protected face detail.
+    - id: 1089176
+      name: ADetailer Head Accessory Segmentation
+      rationale: Head accessory detector vote for hair/hat/accessory boundary QA.
+    - id: 1156687
+      name: assDetailer, aDetailer model for butts, rears, pants, and panties
+      rationale: Rear/glute/pelvis and pants/panties boundary vote; never sole anatomy authority.
+    - id: 1177325
+      name: ADetailer Jewelry model
+      rationale: Jewelry/accessory detector vote for protected-object preservation.
+    - id: 1181639
+      name: ADetailer Rings model
+      rationale: Ring/accessory detector vote for hand protected-object preservation.
+    - id: 1222100
+      name: Mask aDetailer - Face detailer for Eyes, Eyebrows, and Nose
+      rationale: Face-band detector vote for eyes, brows, and nose QA.
+    - id: 1306938
+      name: ADetailer 2d mouth detection [yolo/segmentation]
+      rationale: Mouth/lip detector vote; illustration bias must be checked.
+    - id: 1438127
+      name: clothes detection
+      rationale: Tops/clothing detector vote for garment-mask and material-boundary QA.
+    - id: 1489876
+      name: ADetailer shoes/footwear yolov8
+      rationale: Shoe/footwear detector vote for lower-body material separation.
+    - id: 1940545
+      name: ADetailer (After Detailer) Foot Model
+      rationale: Foot detector fallback for foot crop and lower-body boundary QA.
+    - id: 1959394
+      name: Anime girl hair detect (Adetailer)
+      rationale: Hair detector vote for hair/face boundary QA; anime bias must be recorded.
+    - id: 2201851
+      name: Person_female_detection
+      rationale: Person/female detector candidate for person-region proposal comparison only.
+    - id: 2209315
+      name: ADetailer (After Detailer) Hair Model
+      rationale: Hair/face boundary detector vote.
+    - id: 2511165
+      name: Foot/Shoe Detailer/Segmentation - ADetailer
+      rationale: Foot/shoe segmentation vote for shoe/sock/foot separation QA.
+    - id: 2697949
+      name: Foot Anime Yolo11m
+      rationale: Anime foot detector vote; anime-domain bias must be recorded before any use.
+  comfyui_graph_reference:
+    - id: 120149
+      name: Controlnet for DensePose
+      rationale: DensePose ControlNet model reference; runtime install/probe belongs outside Plan.
+    - id: 471894
+      name: Hand Fixer | ComfyUI workflow
+      rationale: Hand-fixer graph reference for controlled MaskFactory hand-debug workflow design.
+    - id: 619138
+      name: Segment Anything Model 2 (SAM 2)
+      rationale: SAM2 ComfyUI graph reference for prompt/mask wiring.
+    - id: 621296
+      name: Segmentation - Florence2 & SAM2
+      rationale: Florence2+SAM2 prompt-to-mask graph reference.
+    - id: 746889
+      name: SAM2 - EASY COMFYUI ALPHAMATTES / ROTOSCOPE
+      rationale: SAM2 alphamatte/rotoscope graph reference.
+    - id: 781507
+      name: Clothing Swap ft. CatVTON Wrapper, LayerMask SegmentAnythingUltra V2
+      rationale: Clothing/SegmentAnything graph reference for garment-boundary experiments.
+    - id: 789497
+      name: Inpainting with Flux ControlNet with Auto Mask Florence 2 and Manually Masking
+      rationale: Auto-mask plus manual-mask graph reference; not inpainting authority.
+    - id: 1139526
+      name: Segment Mask Mask Add/Remove Workflow
+      rationale: Mask add/subtract graph reference for human correction tooling and QA.
+    - id: 1445366
+      name: Multiple character combine - mask - control
+      rationale: Multi-character mask/control graph reference for ComfyUI integration design.
+    - id: 1506572
+      name: Multi-controlled workflow CNet, Depth mask condition, IPAdapter
+      rationale: Multi-control/depth-mask graph reference for debug visualization.
+    - id: 1752899
+      name: Flux+Kontext+Dev Foot Repair (Nunchaku)
+      rationale: Foot-repair workflow reference only; useful to understand foot-focused graph wiring.
+    - id: 1787766
+      name: Clothes Swap that Really Works
+      rationale: Garment isolation/clothes-swap graph reference, not material authority.
+    - id: 1880450
+      name: Mask Selection by Prompt - Florence Segmentation
+      rationale: Prompt-based Florence segmentation graph reference.
+    - id: 1897053
+      name: Simple Image To DW Pose, Dense Pose, Animal Pose, Open Pose Workflow
+      rationale: DWPose/DensePose/OpenPose preprocessing graph reference.
+    - id: 1949622
+      name: Person cutout SAM2model pointer Green background workflow
+      rationale: SAM2 person-cutout graph reference.
+    - id: 2185193
+      name: DW Pose - Skeleton / Depth - Preprocessor ComfyUI Workflow
+      rationale: DWPose/depth preprocessing graph reference.
+    - id: 2248895
+      name: YOLO Dataset Auto-Annotate Workflow
+      rationale: Dataset bootstrap graph reference; generated labels are not gold.
+    - id: 2299851
+      name: Automatic Hand Fixer - Auto Masking One-Click Workflow for Perfect Hands
+      rationale: Hand auto-mask graph reference only; no automatic correction authority.
+    - id: 2649783
+      name: Anima Hand & Foot Detail Fixer (Manual Workflow)
+      rationale: Hand/foot detail graph reference only.
+  stress_fixture:
+    - id: 118999
+      name: OpenPose 2girls from above sitting
+      rationale: Multi-person, from-above, seated pose/control stress fixture.
+    - id: 119620
+      name: OpenPose hands on own chest
+      rationale: Hands-on-body chest occlusion stress fixture.
+    - id: 120408
+      name: OpenPose 2girls breast press
+      rationale: Multi-person torso contact and occlusion stress fixture.
+    - id: 121090
+      name: OpenPose jumping full body from below pantyshot
+      rationale: From-below full-body perspective stress fixture.
+    - id: 122442
+      name: OpenPose pantyshot leaning forward arms behind back looking down
+      rationale: Extreme perspective and arms-behind-body stress fixture.
+    - id: 128689
+      name: OpenPose 2girls all fours
+      rationale: Multi-person all-fours occlusion/body-visibility stress fixture.
+    - id: 129435
+      name: OpenPose From above
+      rationale: From-above perspective stress fixture.
+    - id: 130644
+      name: OpenPose From below
+      rationale: From-below perspective stress fixture.
+    - id: 136853
+      name: OpenPose Hug
+      rationale: Contact/embrace multi-person occlusion stress fixture.
+    - id: 138867
+      name: OpenPose grabbing another's breast, pov hands
+      rationale: Hands-on-other-body contact and occlusion stress fixture.
+    - id: 138964
+      name: OpenPose strangling pov hands hands on another's neck
+      rationale: Hands-near-neck/face occlusion and protected-person separation stress fixture.
+    - id: 140628
+      name: OpenPose Carrying person
+      rationale: Multi-person carrying/overlap stress fixture.
+    - id: 145560
+      name: OpenPose Covering breasts/crotch
+      rationale: Hands/body occlusion stress fixture.
+    - id: 147261
+      name: OpenPose Ass support
+      rationale: Rear-body/contact pose stress fixture.
+    - id: 148751
+      name: OpenPose 2girls from behind from below
+      rationale: Multi-person rear-body and from-below stress fixture.
+    - id: 149843
+      name: OpenPose 3girls from below arms behind back pantyshot
+      rationale: Three-person, from-below, arms-behind-body stress fixture.
+    - id: 167364
+      name: OpenPose Cover multiple characters
+      rationale: Multi-character occlusion and protected other-person stress fixture.
+    - id: 180134
+      name: OpenPose 2girls portrait side-by-side symmetrical docking breast press
+      rationale: Multi-person side-by-side torso contact stress fixture.
+    - id: 203686
+      name: OpenPose Adjusting hair Hand in own hair
+      rationale: Hand/hair/head occlusion stress fixture.
+    - id: 2368231
+      name: Feet-Focused Pose & Depth Assets for ControlNet
+      rationale: Feet-focused pose/depth stress fixture for lower-body visibility.
+    - id: 264843
+      name: OpenPose + Depth NSFW
+      rationale: Adult OpenPose+Depth stress fixture for occlusion, contact, and visibility.
+    - id: 297881
+      name: OpenPose NSFW pose package total 525 poses
+      rationale: Large adult pose/depth stress fixture pack; no example imagery needed for classification.
+  qa_probe:
+    - id: 429020
+      name: Auto Masking, Removing, Background, Auto Rotoscope
+      rationale: Auto-mask/rotoscope QA comparison probe.
+    - id: 586617
+      name: RotoMaker - with Rotoscope tools
+      rationale: Rotoscope/matting QA visualization probe.
+    - id: 949723
+      name: RMBG-2.0 - Fast background Remover
+      rationale: Silhouette/background-removal QA probe against BiRefNet/RMBG/SAM2 proposals.
+    - id: 1879311
+      name: SDMatte Matting (RMBG)
+      rationale: Matting/RMBG QA probe for silhouette disagreement panels.
+  reject:
+    - id: 1899226
+      name: Breast Expansion Workflow
+      rationale: Generative body alteration workflow; reject as MaskFactory provider/fixture/reference except as recorded non-authoritative candidate.
+    - id: 2731892
+      name: Clothing Extractor
+      rationale: Large generative clothing-extractor model, not a detector/pose/control resource; reject until separate rights, provenance, and non-generative mask utility are proven.

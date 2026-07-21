@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "specialist_noninferiority_v1",
+  "frozen_at": "2026-07-15T01:00:00Z",
+  "authority": "predeclared_thresholds_only_no_result_or_promotion_authority",
+  "results_state": "sealed_before_results",
+  "delta_convention": "positive_is_challenger_improvement",
+  "source_hashes": {
+    "configs/anatomy_v2_qa.yaml": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
+    "configs/autonomy_multi_person_risk_buckets.yaml": "981fdfd8a436a3563ecc51fc8cd6bd4ff03b6113338eb6ea995e9cfbd46eabf1",
+    "configs/autonomy_risk_buckets.yaml": "7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a",
+    "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d"
+  },
+  "roles": {
+    "chest_pelvic_segmentation": {
+      "target_provider_role": "interactive_segmenter",
+      "primary_objective": {"metric": "correction_pixels_per_100k", "minimum_improvement": 0.05},
+      "hard_labels": [
+        "abdomen_stomach",
+        "belly_button",
+        "chest_upper_torso",
+        "glans_penis",
+        "left_areola",
+        "left_breast",
+        "left_glute",
+        "left_hip",
+        "left_nipple",
+        "left_scrotal_region",
+        "pelvic_region",
+        "penis_shaft",
+        "right_areola",
+        "right_breast",
+        "right_glute",
+        "right_hip",
+        "right_nipple",
+        "right_scrotal_region",
+        "vulva"
+      ],
+      "high_risk_contexts": ["clothing_materials", "occlusion_contact", "sensitive_anatomy"],
+      "label_margins": {"boundary_f_2px": 0.01, "mean_iou": 0.005, "small_part_recall": 0.01},
+      "context_margins": {"boundary_f_2px": 0.01, "mean_iou": 0.005, "small_part_recall": 0.01},
+      "zero_regression_metrics": [
+        "anatomy_clothing_confusion_rate",
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hallucinated_part_rate",
+        "hard_qa_failure_rate",
+        "left_right_error_rate",
+        "oom_crash_rate",
+        "protected_region_failure_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "clothing_accessory_segmentation": {
+      "target_provider_role": "custom_segmenter",
+      "primary_objective": {"metric": "correction_pixels_per_100k", "minimum_improvement": 0.05},
+      "hard_labels": [
+        "accessory",
+        "bottom_garment",
+        "bra",
+        "clothing_generic",
+        "footwear",
+        "glove_or_sock",
+        "lace_or_sheer",
+        "strap",
+        "top_garment",
+        "underwear_bottom",
+        "waistband"
+      ],
+      "high_risk_contexts": ["clothing_materials", "multi_person_overlap", "occlusion_contact", "small_parts"],
+      "label_margins": {"boundary_f_2px": 0.015, "false_positive_rate": 0.005, "mean_iou": 0.01},
+      "context_margins": {"boundary_f_2px": 0.015, "false_positive_rate": 0.005, "mean_iou": 0.01},
+      "zero_regression_metrics": [
+        "clothing_anatomy_confusion_rate",
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "oom_crash_rate",
+        "protected_region_failure_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "foot_toe_segmentation": {
+      "target_provider_role": "interactive_segmenter",
+      "primary_objective": {"metric": "correction_pixels_per_100k", "minimum_improvement": 0.05},
+      "hard_labels": ["left_ankle", "left_foot_base", "left_toes", "right_ankle", "right_foot_base", "right_toes"],
+      "high_risk_contexts": ["hands_feet", "multi_person_overlap", "occlusion_contact", "small_parts"],
+      "label_margins": {"boundary_f_2px": 0.015, "mean_iou": 0.01, "small_part_recall": 0.01},
+      "context_margins": {"boundary_f_2px": 0.015, "mean_iou": 0.01, "small_part_recall": 0.01},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "left_right_error_rate",
+        "oom_crash_rate",
+        "rollback_failure_rate",
+        "toe_heel_boundary_error_rate"
+      ]
+    },
+    "geometry_provider": {
+      "target_provider_role": "geometry_provider",
+      "primary_objective": {"metric": "image_projection_consistency", "minimum_improvement": 0.01},
+      "hard_labels": [
+        "chest_upper_torso",
+        "left_breast",
+        "left_foot_base",
+        "left_hand_base",
+        "left_hip",
+        "pelvic_region",
+        "right_breast",
+        "right_foot_base",
+        "right_hand_base",
+        "right_hip"
+      ],
+      "high_risk_contexts": ["contact", "crowding", "identity_ambiguity", "occlusion", "rear_view", "scale_disparity", "truncation"],
+      "label_margins": {"image_projection_consistency": 0.015, "visible_surface_recall": 0.02},
+      "context_margins": {"image_projection_consistency": 0.02, "visible_surface_recall": 0.02},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "front_back_error_rate",
+        "hard_qa_failure_rate",
+        "identity_assignment_error_rate",
+        "left_right_error_rate",
+        "oom_crash_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "hair_matting": {
+      "target_provider_role": "silhouette_provider",
+      "primary_objective": {"metric": "boundary_f_2px", "minimum_improvement": 0.01},
+      "hard_labels": ["hair", "head_face"],
+      "high_risk_contexts": ["hair_boundaries", "multi_person_overlap", "occlusion_contact", "small_parts"],
+      "label_margins": {"boundary_f_2px": 0.015, "foreground_leakage_rate": 0.005, "mean_iou": 0.01},
+      "context_margins": {"boundary_f_2px": 0.015, "foreground_leakage_rate": 0.005, "mean_iou": 0.01},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "oom_crash_rate",
+        "protected_region_failure_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "hand_finger_segmentation": {
+      "target_provider_role": "interactive_segmenter",
+      "primary_objective": {"metric": "correction_pixels_per_100k", "minimum_improvement": 0.05},
+      "hard_labels": [
+        "left_hand_base",
+        "left_index_finger",
+        "left_middle_finger",
+        "left_pinky",
+        "left_ring_finger",
+        "left_thumb",
+        "left_wrist",
+        "right_hand_base",
+        "right_index_finger",
+        "right_middle_finger",
+        "right_pinky",
+        "right_ring_finger",
+        "right_thumb",
+        "right_wrist"
+      ],
+      "high_risk_contexts": ["hands_feet", "multi_person_overlap", "occlusion_contact", "small_parts"],
+      "label_margins": {"boundary_f_2px": 0.015, "mean_iou": 0.01, "small_part_recall": 0.01},
+      "context_margins": {"boundary_f_2px": 0.015, "mean_iou": 0.01, "small_part_recall": 0.01},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "left_right_error_rate",
+        "oom_crash_rate",
+        "protected_region_failure_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "pose_provider": {
+      "target_provider_role": "pose_provider",
+      "primary_objective": {"metric": "normalized_keypoint_accuracy", "minimum_improvement": 0.01},
+      "hard_labels": ["left_ankle", "left_foot", "left_hand", "left_wrist", "right_ankle", "right_foot", "right_hand", "right_wrist"],
+      "high_risk_contexts": ["contact", "crowding", "identity_ambiguity", "occlusion", "rear_view", "scale_disparity", "truncation"],
+      "label_margins": {"joint_recall": 0.01, "normalized_keypoint_accuracy": 0.02},
+      "context_margins": {"joint_recall": 0.015, "normalized_keypoint_accuracy": 0.02},
+      "zero_regression_metrics": [
+        "candidate_assignment_error_rate",
+        "determinism_failure_rate",
+        "left_right_error_rate",
+        "oom_crash_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "repeated_instance_segmentation": {
+      "target_provider_role": "concept_detector",
+      "primary_objective": {"metric": "instance_recall", "minimum_improvement": 0.01},
+      "hard_labels": ["accessory_or_prop", "hair", "left_foot_base", "left_hand_base", "other_person", "right_foot_base", "right_hand_base"],
+      "high_risk_contexts": [
+        "contact",
+        "crowding",
+        "duo_baseline",
+        "duo_overlap",
+        "identity_ambiguity",
+        "occlusion",
+        "scale_disparity",
+        "small_group_baseline",
+        "small_group_overlap",
+        "truncation"
+      ],
+      "label_margins": {"boundary_f_2px": 0.015, "instance_recall": 0.01, "mean_iou": 0.01},
+      "context_margins": {"boundary_f_2px": 0.015, "instance_recall": 0.01, "mean_iou": 0.01},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "instance_identity_error_rate",
+        "oom_crash_rate",
+        "rollback_failure_rate"
+      ]
+    },
+    "silhouette_provider": {
+      "target_provider_role": "silhouette_provider",
+      "primary_objective": {"metric": "boundary_f_2px", "minimum_improvement": 0.01},
+      "hard_labels": ["hair", "person_silhouette"],
+      "high_risk_contexts": ["hair_boundaries", "multi_person_overlap", "occlusion_contact", "truncation"],
+      "label_margins": {"boundary_f_2px": 0.015, "foreground_iou": 0.01, "foreground_leakage_rate": 0.005},
+      "context_margins": {"boundary_f_2px": 0.015, "foreground_iou": 0.01, "foreground_leakage_rate": 0.005},
+      "zero_regression_metrics": [
+        "cross_person_bleed_rate",
+        "determinism_failure_rate",
+        "hard_qa_failure_rate",
+        "oom_crash_rate",
+        "rollback_failure_rate"
+      ]
+    }
+  },
+  "sha256": "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739"
+}

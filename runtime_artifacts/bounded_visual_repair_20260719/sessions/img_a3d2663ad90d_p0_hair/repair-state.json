@@ -1,0 +1,21 @@
+{
+  "accepted_map_path": "C:\\Comfy_UI_Main_Masking\\runtime_artifacts\\bounded_visual_repair_20260719\\sessions\\img_a3d2663ad90d_p0_hair\\repair-output\\accepted_001_remove_small_components_max_ontology.png",
+  "accepted_map_sha256": "1fe906428471f4bb73bd8e24ad5a8648488b7705a11a6422b03e4fbbdd3121d3",
+  "accepted_parent_id": "img_a3d2663ad90d-p0-hair-v1",
+  "attempts": [
+    {
+      "accepted_parent_id": "img_a3d2663ad90d-p0-hair-v1",
+      "accepted_parent_map_sha256": "f79a2b07632d1d9bdc9673604ac5b71a8f10afabf35561725f7054def5e828e9",
+      "candidate_complete_map_sha256": "1fe906428471f4bb73bd8e24ad5a8648488b7705a11a6422b03e4fbbdd3121d3",
+      "candidate_mask_sha256": "4875fc86063044bef9907d14804b028fc18f90b80f6480e9eee4ed073e83a645",
+      "elapsed_seconds": 1.0,
+      "hypothesis_id": "remove_small_components_max_ontology",
+      "outcome": "accepted_reversible_repair",
+      "reason": "complete_map_qa_improved",
+      "resource_units": 1.0,
+      "score_ppm": 889047
+    }
+  ],
+  "schema_version": "1.0.0",
+  "terminal_outcome": null
+}

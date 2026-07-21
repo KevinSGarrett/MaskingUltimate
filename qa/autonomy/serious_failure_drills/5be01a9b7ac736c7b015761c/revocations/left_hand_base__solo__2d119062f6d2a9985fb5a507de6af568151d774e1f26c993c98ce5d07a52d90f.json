@@ -1,0 +1,11 @@
+{
+  "context": "solo",
+  "label": "left_hand_base",
+  "pipeline_fingerprint": "serious-failure-drill:5be01a9b7ac736c7b015761c",
+  "reasons": [
+    "serious_false_accept"
+  ],
+  "schema_version": "1.0.0",
+  "source_queue": "qa\\autonomy\\serious_failure_drills\\5be01a9b7ac736c7b015761c\\queue.json",
+  "status": "revoked_residual_only"
+}

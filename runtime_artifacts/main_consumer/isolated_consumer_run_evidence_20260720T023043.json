@@ -1,0 +1,265 @@
+{
+  "artifact_type": "isolated_main_consumer_run",
+  "authority_kind": "isolated_main_consumer",
+  "checks": [
+    {
+      "adoption_payload_sha256": "ec72fb274a13b4b2dfc685ca05d3da0d82c1759e9eebdf70bc2bfbe6357d68f8",
+      "authority_kind": "isolated_main_consumer",
+      "check": "isolated_adoption_receipt_signed",
+      "key_id": "isolated-main-consumer-adoption",
+      "passed": true
+    },
+    {
+      "check": "isolated_adapter_conformance",
+      "passed": true,
+      "rejection_reasons": [],
+      "status": "accepted"
+    },
+    {
+      "check": "isolated_signed_journal",
+      "checkpoint_sha256": "d5ad4c9e357725f6ac1a98392ffa11a031c5d10dc881e0e450d0a0da3f713429",
+      "entry_count": 3,
+      "issues": [],
+      "passed": true
+    },
+    {
+      "bounded_retry_budget_enforced": true,
+      "check": "isolated_failure_control_circuit",
+      "deadline_enforced": true,
+      "faults": [
+        {
+          "blocked_pass_ids": [
+            "pass_predict",
+            "pass_refine"
+          ],
+          "continuing_pass_ids": [
+            "pass_unrelated"
+          ],
+          "fallback_artifact_present": false,
+          "fault": "outage",
+          "no_silent_fallback_enforced": true,
+          "passed": true,
+          "provider_invocation_permitted": false,
+          "scope_exact": true,
+          "status": "accepted",
+          "valid": true
+        },
+        {
+          "blocked_pass_ids": [
+            "pass_predict",
+            "pass_refine"
+          ],
+          "continuing_pass_ids": [
+            "pass_unrelated"
+          ],
+          "fallback_artifact_present": false,
+          "fault": "timeout",
+          "no_silent_fallback_enforced": true,
+          "passed": true,
+          "provider_invocation_permitted": false,
+          "scope_exact": true,
+          "status": "accepted",
+          "valid": true
+        },
+        {
+          "blocked_pass_ids": [
+            "pass_predict",
+            "pass_refine"
+          ],
+          "continuing_pass_ids": [
+            "pass_unrelated"
+          ],
+          "fallback_artifact_present": false,
+          "fault": "oom",
+          "no_silent_fallback_enforced": true,
+          "passed": true,
+          "provider_invocation_permitted": false,
+          "scope_exact": true,
+          "status": "accepted",
+          "valid": true
+        },
+        {
+          "blocked_pass_ids": [
+            "pass_predict",
+            "pass_refine"
+          ],
+          "continuing_pass_ids": [
+            "pass_unrelated"
+          ],
+          "fallback_artifact_present": false,
+          "fault": "incompatible_authority",
+          "no_silent_fallback_enforced": true,
+          "passed": true,
+          "provider_invocation_permitted": false,
+          "scope_exact": true,
+          "status": "accepted",
+          "valid": true
+        }
+      ],
+      "passed": true,
+      "resource_envelope_enforced": true
+    },
+    {
+      "check": "isolated_consumer_conformance_harness",
+      "decision_sha256": "a57d6d826c188e7b978690dfc1ed0cc8c560786aa9776887124c56f3f8f8cb9b",
+      "main_adoption_complete": false,
+      "passed": true,
+      "status": "accepted",
+      "validation_issues": []
+    },
+    {
+      "check": "isolated_cross_project_producer_partial",
+      "decision_sha256": "f99eba954093b72066de21882098bdb5f7dde51f07f0b39bfb01f59bfce32c78",
+      "mf_p6_12_05_complete": false,
+      "passed": true,
+      "status": "producer_partial",
+      "validation_issues": []
+    },
+    {
+      "baseline_certified": true,
+      "cases": [
+        {
+          "authority_ceiling": "certified",
+          "case": "valid_wrapper_certified",
+          "passed": true,
+          "production_eligible": true,
+          "rejection_reasons": [],
+          "status": "accepted",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "raw_status_escalation",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "raw_status_escalation"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "path_escape",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "path_escape"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "mask_hash_drift",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "mask_hash_drift",
+            "package_hash_drift",
+            "raw_status_escalation",
+            "wrapper_out_of_scope"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "stale_wrapper",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "raw_status_escalation",
+            "wrapper_stale"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "wrapper_out_of_scope",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "raw_status_escalation",
+            "wrapper_out_of_scope"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "wrong_owner",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "raw_status_escalation",
+            "wrapper_out_of_scope",
+            "wrong_owner"
+          ],
+          "status": "rejected",
+          "valid": true
+        },
+        {
+          "authority_ceiling": "qa_passed_noncertified",
+          "case": "mutation_attempt",
+          "passed": true,
+          "production_eligible": false,
+          "rejection_reasons": [
+            "mutation_attempt",
+            "write_path_forbidden"
+          ],
+          "status": "rejected",
+          "valid": true
+        }
+      ],
+      "check": "isolated_mode_a_package_read_matrix",
+      "passed": true
+    },
+    {
+      "check": "isolated_final_release_handoff_firewall",
+      "fabricated_claim_rejected": true,
+      "fabricated_decision_sha256": "9e7b6c28918019bcf1fc6864ae457ba6efe95358d53a711848c7191a1859cff6",
+      "honest_decision_sha256": "323bffebb62fe55218fc57fc1b18973f6df825c0b866366525c4d8e107fac272",
+      "honest_incomplete_core": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "advances": [
+      "MF-P6-11.02 (immutable Mode A package-read adversarial matrix: certified accept + path-escape/hash-drift/stale-wrapper/out-of-scope/wrong-owner/raw-escalation/mutation refusals, real bytes)",
+      "MF-P6-11.07 (fault-injection provider refusal, exact scoped-DAG blocking, deadline + resource-envelope enforcement, bounded-retry-budget, no-silent-fallback)",
+      "MF-P6-12.05 (producer_partial cross-project qualification matrix real execution)",
+      "MF-P6-12.06 (producer core-close firewall: honest incomplete_core + fabricated-claim refusal, no profile close)"
+    ],
+    "advances_are_producer_isolated_only": true,
+    "does_not_close_any_hard_blocker": true,
+    "establishes_production_qualification": false,
+    "hard_blockers_still_open": [
+      "MF-P6-11.02",
+      "MF-P6-11.07",
+      "MF-P6-12.05",
+      "MF-P6-12.06"
+    ],
+    "isolated_consumer_is_not_fixture_authority": true,
+    "isolated_consumer_is_not_real_comfyui_main": true,
+    "main_adoption_complete": false,
+    "next_agent_step": "Real receipts require a dedicated Comfy_UI_Main-side integration on an isolated clean maskfactory branch that consumes the producer adapter package and emits Main-signed adoption/qualification/adapter-execution/result-history artifacts pinned back here."
+  },
+  "decided_at": "2026-07-20T05:00:00Z",
+  "is_real_comfyui_main": false,
+  "producer_git_commit": "447b0f9b642e568e54467d592fb3307525810489",
+  "recorded_at": "2026-07-20T07:31:53.043283Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "d3ef6dc6611508431f7efe60789feef3b421cf9bdb24fd70404e125e7de24808",
+  "summary": {
+    "isolated_adapter_conformance": true,
+    "isolated_adoption_receipt_signed": true,
+    "isolated_consumer_conformance_harness": true,
+    "isolated_cross_project_producer_partial": true,
+    "isolated_failure_control_circuit": true,
+    "isolated_final_release_handoff_firewall": true,
+    "isolated_mode_a_package_read_matrix": true,
+    "isolated_signed_journal": true
+  }
+}

@@ -1,0 +1,38 @@
+config_version: "1.0.0"
+ontology_version: "body_parts_v2"
+activation_status: "approved_design_not_active"
+governance:
+  permitted_content_lanes: [general, adult_nonexplicit, consensual_explicit_adult]
+  visible_surface_only: true
+  detector_boxes_may_be_final_masks: false
+  geometry_priors_may_be_final_masks: false
+  projected_amodal_may_enter_fusion: false
+  clothing_owns_covered_pixels: true
+  ambiguity_is_ignore_255: true
+prompts:
+  left_areola: "visible exposed left areolar ring"
+  right_areola: "visible exposed right areolar ring"
+  left_nipple: "visible exposed left nipple"
+  right_nipple: "visible exposed right nipple"
+  vulva: "visible exposed external vulvar surface"
+  penis_shaft: "visible exposed penile shaft or foreskin surface"
+  glans_penis: "visible exposed glans penis"
+  left_scrotal_region: "visible exposed character-left external scrotal surface"
+  right_scrotal_region: "visible exposed character-right external scrotal surface"
+crop_groups:
+  chest:
+    labels: [left_areola, right_areola, left_nipple, right_nipple]
+    scale: 1.35
+    lane: anatomy_v2_chest
+  pelvic:
+    labels: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]
+    scale: 1.45
+    lane: anatomy_v2_pelvic
+fusion:
+  nipple_owns_areola_overlap: true
+  glans_owns_shaft_overlap: true
+  incompatible_genital_overlap: ambiguous_do_not_use
+  unrelated_v1_overlap: ambiguous_do_not_use
+  breast_carveouts: [left_areola, right_areola, left_nipple, right_nipple]
+  pelvic_carveouts: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]
+  output_authority: non_gold_review_draft

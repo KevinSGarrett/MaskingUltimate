@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_worker_runtime_queue_checkpoint",
+  "recorded_at": "2026-07-18T20:36:00Z",
+  "project_root": "C:\\Comfy_UI_Main_Masking",
+  "project_head": "1a7da7622a1065c90319c6d6d22a1542c160dca1",
+  "origin_task_id": "019f4cfc-60c3-7500-8626-261dcf70db5d",
+  "status": "ACTION_REQUIRED",
+  "completion_credit": false,
+  "worker_runtime": {
+    "active_cursor_or_provider_process": false,
+    "cursor_agent_wsl_probe": "TIMEOUT",
+    "cursor_agent_wsl_terminate_probe": "TIMEOUT",
+    "blocker_layer": "WSL_INFRASTRUCTURE_BELOW_DISPATCHER_PROVIDER",
+    "scheduled_worker_tasks": "DISABLED",
+    "runtime_canary_required_before_queue_wake": true,
+    "source": "authorized worker-control coordination attestation plus deterministic health evidence"
+  },
+  "work_units": {
+    "MF-P6-08.05": {
+      "request_id": "p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8",
+      "state": "REJECTED",
+      "adoption_percent": 0,
+      "reason": "Focused pytest proves direct certificate integrity must precede operational policy binding, which must precede advisory critic; retained patch regresses that authority precedence.",
+      "retained_worktree": "C:\\w\\mfw\\b90c7f19654319e1",
+      "preserve": true
+    },
+    "MF-P6-08.06": {
+      "request_id": "p000_20260718T200913928Z_mf_cursor_08_06_repair_r3_e31cc1dc",
+      "state": "REJECTED_RETAINED",
+      "adoption_percent": 0,
+      "retained_worktree": "C:\\w\\mfw\\a1fed8eb1622c878",
+      "preserve": true
+    },
+    "MF-P6-08.07": {
+      "request_id": "p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970",
+      "state": "QUEUED_DORMANT",
+      "attempt": 2,
+      "wake_allowed": false,
+      "wake_condition": "worker runtime canaries pass"
+    },
+    "MF-P6-09.01": {
+      "request_id": "p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553",
+      "state": "QUEUED_DORMANT",
+      "attempt": 2,
+      "wake_allowed": false,
+      "wake_condition": "worker runtime canaries pass"
+    }
+  },
+  "authority_precedence": [
+    "direct_certificate_integrity",
+    "operational_policy_binding",
+    "advisory_critic"
+  ],
+  "hash_bound_sources": [
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\monitoring\\health_latest.json",
+      "sha256": "9674d7b30efeeca4811ece6266128cfb5116273e9c303a8aab8024aaefb1210b",
+      "bytes": 18213
+    },
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\alerts\\AI_WORKER_HEALTH_ACTION_REQUIRED.json",
+      "sha256": "9674d7b30efeeca4811ece6266128cfb5116273e9c303a8aab8024aaefb1210b",
+      "bytes": 18213
+    },
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\dead_letter\\p000_20260718T200912939Z_mf_cursor_08_05_policy_r3_e2e56cc8\\retained_failure_evidence.json",
+      "sha256": "f75cf577a9e6addcb0e89982bf99c1f7ffcd27e3814b8f357eebedc13d855965",
+      "bytes": 49061
+    },
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\dead_letter\\p000_20260718T200913928Z_mf_cursor_08_06_repair_r3_e31cc1dc\\retained_failure_evidence.json",
+      "sha256": "b1ae370e41eb69267e04e02d22d8d0060a692dc476022b98bd323312aa2c49c0",
+      "bytes": 25655
+    },
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\queue\\Cursor\\p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970.json",
+      "sha256": "878919dcd3e7908e9e822b7a5a2208b1cd640dc5b1458cbf658360f77aa7c7e8",
+      "bytes": 4609
+    },
+    {
+      "path": "C:\\Users\\kevin\\.codex\\ai_worker_dispatcher\\queue\\Cursor\\p000_20260718T201336559Z_mf_cursor_09_01_identity_r5_41be7553.json",
+      "sha256": "7bdae276a141c62e007c8ac4bf1b1e2734dd284eb2ce4dcdf95923f2ab1048c1",
+      "bytes": 5356
+    }
+  ],
+  "preservation": {
+    "delete_or_overwrite_retained_worktrees": false,
+    "wake_dormant_requests": false,
+    "reimplement_worker_patches_in_codex": false
+  }
+}

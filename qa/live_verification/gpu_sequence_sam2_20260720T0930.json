@@ -1,0 +1,41 @@
+{
+  "decision": {
+    "consumer": "nuclio-sam2",
+    "decision": "run_now",
+    "foreign_holders": [],
+    "free_mib": 7785,
+    "lock_state": "absent",
+    "reasons": [
+      "free=7785 MiB, required=4096 MiB, safety=512 MiB -> fits"
+    ],
+    "required_mib": 4096,
+    "safety_mib": 512
+  },
+  "snapshot": {
+    "compute_apps": [
+      {
+        "foreign": false,
+        "pid": 23244,
+        "process_name": "C:\\Users\\kevin\\AppData\\Local\\Programs\\cursor\\Cursor.exe",
+        "used_mib": null
+      },
+      {
+        "foreign": false,
+        "pid": 2280,
+        "process_name": "[Insufficient Permissions]",
+        "used_mib": null
+      }
+    ],
+    "gpus": [
+      {
+        "free_mib": 7785,
+        "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+        "total_mib": 8151,
+        "used_mib": 115,
+        "util_pct": 2
+      }
+    ],
+    "nvidia_smi_available": true,
+    "probed_at": "2026-07-20T14:29:42.543826Z"
+  }
+}

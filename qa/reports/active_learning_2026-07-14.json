@@ -1,0 +1,117 @@
+{
+  "acquisition_plan": "qa\\reports\\acquisition_plan_2026-07-14.md",
+  "civitai_pose_stress_plan": "qa\\reports\\civitai_pose_stress_plan_2026-07-14.json",
+  "class_error_trigger_classes": [],
+  "coverage_deficit_count": 126,
+  "human_edit_harvest": {
+    "already_harvested_count": 0,
+    "compared_package_count": 0,
+    "missing_baseline_packages": [],
+    "new_record_count": 0,
+    "unchanged_package_count": 0
+  },
+  "report_date": "2026-07-14",
+  "retrain_requested": false,
+  "retrain_task": null,
+  "retrain_triggers": {
+    "class_error_increase_two_weeks": false,
+    "new_certified_plus_50": false,
+    "ontology_changed": false
+  },
+  "schema_version": "1.0.0",
+  "text_llm_clustering_evidence": "qa\\reports\\text_llm_clustering_2026-07-14.json",
+  "top_coverage_deficits": [
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "duo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_crossed",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "small_group",
+      "normalized_deficit": 1.0,
+      "pose": "arms_crossed",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "solo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_crossed",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "duo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_down",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "small_group",
+      "normalized_deficit": 1.0,
+      "pose": "arms_down",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "solo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_down",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "duo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_raised",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "small_group",
+      "normalized_deficit": 1.0,
+      "pose": "arms_raised",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "solo",
+      "normalized_deficit": 1.0,
+      "pose": "arms_raised",
+      "target": 8,
+      "view": "back"
+    },
+    {
+      "approved_gold_count": 0,
+      "deficit": 8,
+      "instance_context": "duo",
+      "normalized_deficit": 1.0,
+      "pose": "leg_overlap",
+      "target": 8,
+      "view": "back"
+    }
+  ],
+  "unresolved_failure_count": 19,
+  "weekly_qa_summary": "qa\\reports\\weekly_qa_summary_2026-07-14.md"
+}

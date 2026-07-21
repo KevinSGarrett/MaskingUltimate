@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_authority_lattice_gap_audit",
+  "recorded_at": "2026-07-18T20:43:00Z",
+  "project_head": "61a9dcec7a2d021fe7295b0e9d49db18985148e0",
+  "tracker_item": "MF-P6-09.03",
+  "audit_status": "INCOMPLETE_IMPLEMENTATION_REQUIRED",
+  "completion_credit": false,
+  "governing_requirement": "Freeze the authority lattice for Mode A packages, operationally_certified_artifact, human/training truth, Mode B drafts, pseudo labels, machine candidates, derived/inpaint masks, and target/protected inputs; prove that operational certification cannot impersonate training/human truth, descendants and weak protected inputs cannot inflate authority, and the consumer cannot upgrade MaskFactory authority.",
+  "existing_enforcement": [
+    {
+      "capability": "operational_certificate_truth_firewall",
+      "evidence": "operational_autonomy_certificate schema fixes authority_state=certified and truth_tier=operationally_certified_artifact."
+    },
+    {
+      "capability": "receipt_authority_truth_crosswalk",
+      "evidence": "mask_acquisition_receipt schema and semantic validation map invalid/hypothesis/draft/qa_passed_noncertified/certified to closed operational truth labels and reject self-promotion into training gold."
+    },
+    {
+      "capability": "derived_parent_ceiling",
+      "evidence": "receipt semantic validation rejects refinement, derived_union, inpaint_derivative, or projection authority above any parent without an eligible exact independent promotion certificate."
+    },
+    {
+      "capability": "protected_input_floor",
+      "evidence": "input-region semantics compare required_minimum_authority_state with observed authority and fail below-floor bindings."
+    },
+    {
+      "capability": "operational_rank_profile",
+      "evidence": "the active semantic invariant profile defines invalid<hypothesis<draft<qa_passed_noncertified<certified and binds its validator identities."
+    }
+  ],
+  "missing_proof": [
+    "No single closed executable lattice enumerates every required artifact class and its authority namespace, ceiling, allowed uses, promotion authority, and protected-input behavior.",
+    "Access mode and authority tier are not evaluated as explicitly orthogonal inputs by a standalone deterministic decision API.",
+    "Human/training truth must remain a separate non-comparable namespace rather than being ranked above or below operational exact-output authority.",
+    "Pseudo labels, autonomous training gold, human anchors, derived masks, inpaint masks, target inputs, and protected inputs do not share one closed transition matrix.",
+    "No standalone decision record binds the lattice policy hash, inputs, result, reasons, and deterministic canonical hash.",
+    "No explicit consumer-actor negative fixture proves that Main or another downstream consumer cannot upgrade producer-owned authority.",
+    "No exhaustive unknown-class, namespace-confusion, descendant-inflation, weak-protected-input, or illegal-promotion fixture set proves fail-closed totality."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-09.03-AUTHORITY-LATTICE",
+    "objective": "Implement a closed, deterministic operational authority lattice and decision record without modifying the frozen v1 bridge wire contracts.",
+    "state": "PREPARED_NOT_DISPATCHED",
+    "dispatch_condition": "worker runtime canaries pass",
+    "candidate_paths": [
+      "src/maskfactory/truth_tiers.py",
+      "tests/test_truth_tiers.py",
+      "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+      "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json"
+    ],
+    "allowed_paths": [
+      "configs/operational_authority_lattice.yaml",
+      "src/maskfactory/authority/authority_lattice.py",
+      "src/maskfactory/schemas/operational_authority_decision.schema.json",
+      "tests/test_operational_authority_lattice.py"
+    ],
+    "candidate_and_allowed_paths_dirty_or_untracked": false,
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest tests/test_operational_authority_lattice.py tests/test_truth_tiers.py -q",
+      "python -m ruff check src/maskfactory/authority/authority_lattice.py tests/test_operational_authority_lattice.py",
+      "python -m black --check src/maskfactory/authority/authority_lattice.py tests/test_operational_authority_lattice.py",
+      "git diff --check"
+    ],
+    "acceptance_criteria": [
+      "Access mode is recorded separately from authority and never grants authority by itself.",
+      "Operational exact-output certification cannot become or impersonate autonomous/human training gold.",
+      "Human/training truth is a separate namespace and cannot be compared as a stronger operational rank.",
+      "Raw Mode B results remain draft or machine-candidate authority until an independent exact-output certification transaction covers the exact original output.",
+      "Pseudo, derived, refinement, projection, and inpaint descendants cannot exceed the minimum authority ceiling of all parents.",
+      "Target and protected inputs enforce declared authority floors; a weak protected input blocks rather than being silently upgraded.",
+      "Only an authorized MaskFactory producer transition may grant or revoke mask authority; consumer and LLM actors may reject but cannot upgrade.",
+      "Every unknown class, namespace, transition, actor, access mode, or authority value fails closed with a deterministic typed reason.",
+      "The decision record binds policy identity/hash, exact normalized inputs, decision, reasons, and canonical content hash.",
+      "Frozen v1 wire schema bytes and the 12-contract catalog remain unchanged."
+    ]
+  },
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/truth_tiers.py": "7b0b7a40dac46310223e3fe68cb511e0b198a7f824e17e8750560f83459240ea",
+    "tests/test_truth_tiers.py": "0d72c2cf30cde5e4ea7dd55393ef974f4389c515cf909c613670e5671835d1db",
+    "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json": "0cd46afbdf7a2fdc07f4e693bd83e47f14683bb8778e10802f054e5640253bf4",
+    "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json": "0292d3714a2ddfe74ef59dceee98630b48f9400f50ef2b07dcbbe123d36d3a67",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b"
+  },
+  "excluded_dirty_path": {
+    "path": "src/maskfactory/validation.py",
+    "reason": "The main worktree contains a separate frozen 08.05 one-line schema-registration change; it was inspected only for existing behavior and is not an allowed 09.03 path."
+  }
+}

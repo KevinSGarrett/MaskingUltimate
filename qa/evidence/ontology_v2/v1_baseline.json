@@ -1,0 +1,262 @@
+{
+  "activation_status": "v2_not_active",
+  "active_ontology": "body_parts_v1",
+  "authority_files": {
+    "configs/cvat.yaml": "d08d30c337b21c68147ed6b6200ef48f9acf2ac895a08a581cdc5c299c8673d1",
+    "configs/derived.yaml": "5413daaba3eb4c39ca72434e2316d41b7f3175db1dcd3f836b53017228a5a908",
+    "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+    "configs/viz.yaml": "c4c94265a6b6e819b0b1fd84844fadf6f2fd1005963ffd4acfdf7e48ee47e7d9",
+    "data/cvat/label_mapping.json": "5f2627dc94ba1ae87f7cf6ed7467421693e66ad8e53c4ba9e47ff9fa50b7b210",
+    "models/model_registry.json": "1ed34662264abe9417f18abee5330c5058835de6a1ad5e15a903e878df306dd0"
+  },
+  "champion_pointers": [],
+  "part_class_count_including_background": 56,
+  "part_mapping": [
+    {
+      "id": 0,
+      "name": "background"
+    },
+    {
+      "id": 1,
+      "name": "hair"
+    },
+    {
+      "id": 2,
+      "name": "head_face"
+    },
+    {
+      "id": 3,
+      "name": "neck"
+    },
+    {
+      "id": 4,
+      "name": "chest_upper_torso"
+    },
+    {
+      "id": 5,
+      "name": "left_breast"
+    },
+    {
+      "id": 6,
+      "name": "right_breast"
+    },
+    {
+      "id": 7,
+      "name": "abdomen_stomach"
+    },
+    {
+      "id": 8,
+      "name": "belly_button"
+    },
+    {
+      "id": 9,
+      "name": "pelvic_region"
+    },
+    {
+      "id": 10,
+      "name": "left_hip"
+    },
+    {
+      "id": 11,
+      "name": "right_hip"
+    },
+    {
+      "id": 12,
+      "name": "left_shoulder"
+    },
+    {
+      "id": 13,
+      "name": "right_shoulder"
+    },
+    {
+      "id": 14,
+      "name": "left_upper_arm"
+    },
+    {
+      "id": 15,
+      "name": "right_upper_arm"
+    },
+    {
+      "id": 16,
+      "name": "left_elbow"
+    },
+    {
+      "id": 17,
+      "name": "right_elbow"
+    },
+    {
+      "id": 18,
+      "name": "left_forearm"
+    },
+    {
+      "id": 19,
+      "name": "right_forearm"
+    },
+    {
+      "id": 20,
+      "name": "left_wrist"
+    },
+    {
+      "id": 21,
+      "name": "right_wrist"
+    },
+    {
+      "id": 22,
+      "name": "left_hand_base"
+    },
+    {
+      "id": 23,
+      "name": "right_hand_base"
+    },
+    {
+      "id": 24,
+      "name": "left_thumb"
+    },
+    {
+      "id": 25,
+      "name": "right_thumb"
+    },
+    {
+      "id": 26,
+      "name": "left_index_finger"
+    },
+    {
+      "id": 27,
+      "name": "right_index_finger"
+    },
+    {
+      "id": 28,
+      "name": "left_middle_finger"
+    },
+    {
+      "id": 29,
+      "name": "right_middle_finger"
+    },
+    {
+      "id": 30,
+      "name": "left_ring_finger"
+    },
+    {
+      "id": 31,
+      "name": "right_ring_finger"
+    },
+    {
+      "id": 32,
+      "name": "left_pinky"
+    },
+    {
+      "id": 33,
+      "name": "right_pinky"
+    },
+    {
+      "id": 34,
+      "name": "left_glute"
+    },
+    {
+      "id": 35,
+      "name": "right_glute"
+    },
+    {
+      "id": 36,
+      "name": "left_thigh"
+    },
+    {
+      "id": 37,
+      "name": "right_thigh"
+    },
+    {
+      "id": 38,
+      "name": "left_knee"
+    },
+    {
+      "id": 39,
+      "name": "right_knee"
+    },
+    {
+      "id": 40,
+      "name": "left_calf"
+    },
+    {
+      "id": 41,
+      "name": "right_calf"
+    },
+    {
+      "id": 42,
+      "name": "left_ankle"
+    },
+    {
+      "id": 43,
+      "name": "right_ankle"
+    },
+    {
+      "id": 44,
+      "name": "left_foot_base"
+    },
+    {
+      "id": 45,
+      "name": "right_foot_base"
+    },
+    {
+      "id": 46,
+      "name": "left_toes"
+    },
+    {
+      "id": 47,
+      "name": "right_toes"
+    },
+    {
+      "id": 48,
+      "name": "back_upper_torso"
+    },
+    {
+      "id": 49,
+      "name": "back_lower_torso"
+    },
+    {
+      "id": 50,
+      "name": "other_person"
+    },
+    {
+      "id": 51,
+      "name": "occluding_object"
+    },
+    {
+      "id": 52,
+      "name": "support_surface"
+    },
+    {
+      "id": 53,
+      "name": "accessory_or_prop"
+    },
+    {
+      "id": 54,
+      "name": "left_ear"
+    },
+    {
+      "id": 55,
+      "name": "right_ear"
+    }
+  ],
+  "purpose": "pre_body_parts_v2_compatibility_authority",
+  "representative_package": {
+    "file_count": 3,
+    "files": {
+      "data/packages/img_2ca794d19be9/instances/p0/annotations/draft_baseline/baseline_manifest.json": "bf9f9ec8c9918d7dbd2769143c3682d0c4cc1447118e1e077383d8d51def1633",
+      "data/packages/img_2ca794d19be9/instances/p0/annotations/draft_baseline/label_map_material.png": "e4bca95371d476ab819f0fa366c9c3aed713a3c7a3411673775cf4cb9b9f2b60",
+      "data/packages/img_2ca794d19be9/instances/p0/annotations/draft_baseline/label_map_part.png": "e92378b8fbd26ba952667caf203abbacf4a8980272f05c74657d7603e29bb16e"
+    },
+    "root": "data/packages/img_2ca794d19be9/instances/p0/annotations/draft_baseline",
+    "tree_sha256": "a56f8e3694580be924924b6bc17cb7606aa72a6c0ad0bc5cc05115d6424d1041"
+  },
+  "schema_files": {
+    "src/maskfactory/schemas/autonomy_lifecycle.schema.json": "5a7e62df61d3a4e415af2814d1ca3fd55d71d4532633818c4fedd3503b46ab3c",
+    "src/maskfactory/schemas/coverage_matrix.schema.json": "1d3c098f63f0bae697834c0ea9d6f753b4e7dca234809656f265955f680a03e0",
+    "src/maskfactory/schemas/crop_transform.schema.json": "06003a35f29ab9218a609933cd68fe3d636ff3ac218dd6f1604682ab7283da5f",
+    "src/maskfactory/schemas/failure_queue.schema.json": "6f5f8ed2ef250329f2f46f9da98712f56cb1d4685784daccd6c70be35d005254",
+    "src/maskfactory/schemas/leaderboard.schema.json": "0c8b613d199fc41788a3f8cd1e2b5f58a03545a6f839f925def2de9dcd661ea4",
+    "src/maskfactory/schemas/manifest.schema.json": "50d56844d5a10658e99da174bf12a8c1020d5db7389c40031a6e36b4708d2963",
+    "src/maskfactory/schemas/model_registry.schema.json": "fbd750d646fc22a0db6b7a9395ca0766225b39ee0ff50cfbad556fd206b44520",
+    "src/maskfactory/schemas/qa_report.schema.json": "b4573c81415e08c62cce5fd2bc89f4cec1c7aaad60cc988e74ba04c839ebeb55"
+  },
+  "schema_version": "1.0.0"
+}

@@ -1,0 +1,26 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+active_ontology_versions: [body_parts_v1]
+inactive_ontology_versions: [body_parts_v2]
+eligible_pass_profiles: [engineering_minimal, training_standard, training_relationship, diagnostic_full]
+codec:
+  role: part
+  encoding: uint16_png
+  background_value: 0
+  decode_filter: nearest_neighbor_exact
+  forbidden_effects: [jpeg, palette_quantization, color_management, tone_mapping, denoising, bloom, motion_blur, depth_of_field, lossy_resize]
+mapping:
+  approved_status: approved
+  exact_ontology_snapshot_binding: true
+  exact_active_id_set_required: true
+  topology_mapping_sha256_required: true
+  disabled_ids_forbidden: true
+pixel_invariants:
+  every_visible_instance_pixel_has_part: true
+  every_nonbackground_part_pixel_has_instance: true
+  expected_visible_ids_nonempty: true
+  unknown_ids_forbidden: true
+freeze:
+  exact_scene_state_before_sidecar_after_restore_terminal: true
+  exact_plan_contract_and_mapping_sidecars: true
+  repeated_semantic_hash_required: true

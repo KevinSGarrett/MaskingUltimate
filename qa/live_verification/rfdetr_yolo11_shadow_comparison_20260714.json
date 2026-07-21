@@ -1,0 +1,167 @@
+{
+  "authority": "shadow_comparison_only_no_promotion_authority",
+  "captured_at": "2026-07-14T20:22:40.935039+00:00",
+  "challenger": {
+    "checkpoint_sha256": "749ff6071828aaffac63e204c4f4135ed3d6cdae4d702e086c360edc3b5768c8",
+    "detections": [
+      {
+        "bbox_xyxy": [
+          223.125,
+          406.0,
+          345.25,
+          860.5
+        ],
+        "confidence": 0.94726562,
+        "instance_key": "rf_detr_medium:0",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          49.75,
+          398.25,
+          247.625,
+          905.5
+        ],
+        "confidence": 0.94580078,
+        "instance_key": "rf_detr_medium:1",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          669.0,
+          394.25,
+          810.0,
+          879.5
+        ],
+        "confidence": 0.9453125,
+        "instance_key": "rf_detr_medium:2",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          0.19775,
+          555.0,
+          78.3125,
+          865.0
+        ],
+        "confidence": 0.89257812,
+        "instance_key": "rf_detr_medium:3",
+        "label": "person"
+      }
+    ],
+    "device": "cuda:0",
+    "elapsed_seconds": 89.637405,
+    "output_sha256": "ef5aff22567a9d863178d243255fa702c8c2b52b9561c3f7577f3aeeccb01ea2",
+    "provider_key": "rf_detr_medium",
+    "runtime_fingerprint": "5ab1da8e03134bb26fbbaabbabe11c52470c91be785b1628505bf47cfd0c6887",
+    "source_revision": "6e1620e751f3c814ead8648cada51ceff9029e5c"
+  },
+  "comparison": {
+    "authority": "shadow_comparison_only",
+    "challenger_count": 4,
+    "challenger_recall": 1.0,
+    "incumbent_count": 4,
+    "incumbent_recall": 1.0,
+    "match_iou_threshold": 0.5,
+    "matched_count": 4,
+    "matches": [
+      {
+        "challenger_index": 2,
+        "incumbent_index": 1,
+        "iou": 0.98877138
+      },
+      {
+        "challenger_index": 0,
+        "incumbent_index": 2,
+        "iou": 0.9822073
+      },
+      {
+        "challenger_index": 1,
+        "incumbent_index": 0,
+        "iou": 0.97928686
+      },
+      {
+        "challenger_index": 3,
+        "incumbent_index": 3,
+        "iou": 0.96698493
+      }
+    ],
+    "mean_matched_iou": 0.97931262,
+    "unmatched_challenger": [],
+    "unmatched_incumbent": []
+  },
+  "fixture": {
+    "bytes": 137419,
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+  },
+  "incumbent": {
+    "checkpoint_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+    "detections": [
+      {
+        "bbox_xyxy": [
+          48.49484634399414,
+          399.497314453125,
+          250.03138732910156,
+          905.408203125
+        ],
+        "confidence": 0.9162590503692627,
+        "instance_key": "yolo11m_person:0",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          669.12451171875,
+          391.4651794433594,
+          809.6527709960938,
+          880.5968017578125
+        ],
+        "confidence": 0.9072402119636536,
+        "instance_key": "yolo11m_person:1",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          221.6834716796875,
+          406.85760498046875,
+          345.64910888671875,
+          859.9786376953125
+        ],
+        "confidence": 0.893501341342926,
+        "instance_key": "yolo11m_person:2",
+        "label": "person"
+      },
+      {
+        "bbox_xyxy": [
+          0.2041783332824707,
+          550.9961547851562,
+          78.65169525146484,
+          870.168701171875
+        ],
+        "confidence": 0.7868954539299011,
+        "instance_key": "yolo11m_person:3",
+        "label": "person"
+      }
+    ],
+    "device": "cpu",
+    "elapsed_seconds": 6.161943,
+    "output_sha256": "c646981ad0a4c629c32bba5b955c9824e22ab1d2740000e936e2e4124c115a03",
+    "provider_key": "yolo11m_person"
+  },
+  "latency_comparison_valid": false,
+  "latency_note": "YOLO11 ran on CPU and RF-DETR ran on CUDA; elapsed values are diagnostic only.",
+  "promotion_claimed": false,
+  "result": "pass",
+  "role_switch_rollback": {
+    "challenger_lifecycle": "installed",
+    "configured_active": "yolo11m_person",
+    "configured_rollback": "yolo11m_person",
+    "incumbent_replay_exact": true,
+    "incumbent_replay_output_sha256": "c646981ad0a4c629c32bba5b955c9824e22ab1d2740000e936e2e4124c115a03",
+    "rejection": "person_detector.active provider 'rf_detr_medium' lifecycle_state='installed'; active roles require promoted",
+    "selection_unchanged": true,
+    "unpromoted_switch_rejected": true
+  },
+  "schema_version": "1.0.0",
+  "sha256": "743a9a18e4c828047486a8ffc97d88c270964c88b8eb5459b1b81f63281b4a44"
+}

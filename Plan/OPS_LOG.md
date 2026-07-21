@@ -11433,3 +11433,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Both feasible models advance only to `smoked`. No critic role, calibration,
   production mask authority, or multi-GPU availability is claimed. Evidence:
   `qa/live_verification/visual_critic_runtime_qualification_20260721.json`.
+
+## 2026-07-21 - Independent visual-juror quorum
+
+- `MF-P4-11.19` reached `STATIC_PASS`. High-risk critic pass eligibility
+  requires exactly one current primary certificate and one current juror
+  certificate bound to distinct catalog `family_id` values after deterministic
+  hard-veto evaluation.
+- Same-family variants abstain; missing, stale, unpromoted, uncalibrated,
+  name-only, artifact-drifted, or catalog-drifted evidence cannot form quorum.
+  Qualified independent-family fixtures proceed with an exact quorum hash.
+- Twenty-two combined authority/qualification tests and Ruff pass. Live role
+  certificates remain unissued pending real frozen-corpus calibration.
+  Evidence: `qa/live_verification/independent_visual_juror_quorum_20260721.json`.

@@ -11273,3 +11273,33 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   deterministic process runs and passes the exact evidence validator.
 - Catalog amendment evidence:
   `qa/live_verification/visual_critic_catalog_runtime_amendment_20260721.json`.
+
+## 2026-07-21 — Visual calibration corpus contract
+
+- `MF-P4-11.17` now has a closed, canonically sealed corpus contract and
+  validator. It requires both valid and known-defect masks in each of two
+  image-disjoint partitions, full frozen defect-taxonomy coverage, exact
+  embedded target contracts, source/candidate hashes, six panel hashes, and
+  a unique panel-set binding.
+- Twenty-two focused target/corpus tests pass, including all-valid,
+  all-defect, duplicate-panel, cross-partition leakage, incomplete-target,
+  and hash-drift rejection. Ruff and Black pass.
+- The item remains partial: the governed populated panel corpus has not yet
+  been materialized, and no visual role is qualified from this static
+  contract. Evidence:
+  `qa/live_verification/visual_critic_calibration_corpus_contract_20260721.json`.
+
+## 2026-07-21 — Qwen 27B critic protocol correction
+
+- The exact 27B FP8 model downloaded and the private vLLM server completed
+  weight load and startup on the current GPU. The first client request
+  returned HTTP 200 but its content did not parse as the required closed JSON
+  object; the owned server was stopped and GPU memory returned to baseline.
+- One materially different protocol retry started in a new owned evidence
+  directory. It adds strict JSON-schema response format, `/no_think`, vLLM
+  deterministic generation configuration, and raw response evidence while
+  reusing the already-downloaded exact model. PID 2762789; script SHA-256
+  `d65fdf913fb16b62334eb3787e62ca3592da73085c0872cefe471f5281ba75c9`.
+- Runtime qualification remains partial until two distinct process runs and
+  the combined two-family evidence validator pass. Evidence:
+  `qa/live_verification/visual_critic_protocol_retry_launch_20260721.json`.

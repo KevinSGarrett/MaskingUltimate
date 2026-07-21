@@ -11368,3 +11368,18 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `011bd115d64728b90385261521d85f2c15216a420c02eb5ea91d146b8922068f`.
 - Evidence:
   `qa/live_verification/visual_critic_deterministic_retry_launch_20260721.json`.
+
+## 2026-07-21 — Bound transactional repair execution
+
+- `MF-P2-11.22` reached `STATIC_PASS`. A repair candidate now executes only
+  when its deterministic hypothesis ID and durable binding match the accepted
+  parent/map, candidate file, target contract, critic intent, disagreement
+  report, and selected operation index.
+- The existing durable executor transactionally recomposes the complete label
+  map, reruns the caller's complete-map hard QA, accepts only measurable
+  non-regression/improvement, preserves the immutable parent, and records the
+  exact repair binding in every attempt.
+- Twenty-one bound/parser/operational tests pass success, hard-fail rollback,
+  no-progress, cap, duplicate-hypothesis, and label/ROI/intent/disagreement/
+  hypothesis drift paths; Ruff and Black pass. Evidence:
+  `qa/live_verification/bound_transactional_repair_execution_20260721.json`.

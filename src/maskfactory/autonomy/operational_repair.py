@@ -47,6 +47,7 @@ class LiveRepairProposal:
     resource_units: float
     guard: RepairGuardResult
     repair_roi_xyxy: tuple[int, int, int, int]
+    repair_binding_sha256: str | None = None
     immutable_label_ids: tuple[int, ...] = ()
     maximum_displaced_labels: int = 8
 
@@ -237,6 +238,7 @@ class DurableRepairExecutor:
                 "accepted_parent_map_sha256": state["accepted_map_sha256"],
                 "hypothesis_id": proposal.hypothesis_id,
                 "candidate_mask_sha256": proposal.candidate_mask_sha256,
+                "repair_binding_sha256": proposal.repair_binding_sha256,
                 "score_ppm": proposal.score_ppm,
                 "elapsed_seconds": proposal.elapsed_seconds,
                 "resource_units": proposal.resource_units,
@@ -295,6 +297,11 @@ def _validate_proposal(proposal: LiveRepairProposal) -> None:
         raise OperationalRepairError("proposal candidate mask is unavailable")
     if sha256_file(proposal.candidate_mask_path) != proposal.candidate_mask_sha256:
         raise OperationalRepairError("proposal candidate mask hash drifted")
+    if proposal.repair_binding_sha256 is not None and (
+        len(proposal.repair_binding_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in proposal.repair_binding_sha256)
+    ):
+        raise OperationalRepairError("proposal repair binding hash is invalid")
 
 
 def _validate_state(state: object) -> None:

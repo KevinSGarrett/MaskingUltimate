@@ -11215,3 +11215,23 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   validation pass.
 - Evidence: `qa/live_verification/visual_critic_catalog_20260721.json` SHA-256
   `9bb830a9952b50f304fe840e9873239be67101c7b4924b8dc2bd550cfd106f91`.
+
+## 2026-07-21 — RunPod visual runtime launch and multi-GPU abstention
+
+- `MF-P0-17.23` live preflight found the persistent `/workspace` binding,
+  RTX 6000 Ada identity, sufficient allocated capacity, and no live GPU
+  process. The pod had no critic snapshots, vLLM/SGLang runtime, or qualifying
+  Transformers version.
+- Started one owned durable setup job at
+  `/workspace/maskfactory/runtime_artifacts/visual_critic_setup`, PID 2558903,
+  script SHA-256
+  `248f5aaffd93c700ca9154dbc85db17c5d63d13c9b8e32668ece69137fbaafc4`.
+  It downloads only the two single-GPU candidates at their pinned revisions
+  and builds isolated persistent runtimes. No oversized candidate is included.
+- `MF-P0-17.24` reached `STATIC_PASS_UNAVAILABLE_ROUTE`: the current
+  senior-arbiter route returns bounded abstention. Catalog presence, download,
+  smoke, and even a promoted multi-GPU model cannot select on the single-GPU
+  tier. Thirteen focused catalog/routing tests pass; Ruff and Black pass.
+- Evidence: `qa/live_verification/visual_critic_multigpu_route_20260721.json`
+  SHA-256
+  `4acaf55992cb517aa95361508ef8d4f3f4058e3a9c73215bf5b2c247dadeaeb0`.

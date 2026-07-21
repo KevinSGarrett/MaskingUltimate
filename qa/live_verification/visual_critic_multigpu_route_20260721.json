@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T22:24:02Z",
+  "item": "MF-P0-17.24",
+  "status": "STATIC_PASS_UNAVAILABLE_ROUTE",
+  "catalog": {
+    "path": "configs/visual_critic_catalog.yaml",
+    "canonical_sha256": "b42f510b462374cba21a4ebe7aa1ef542436dd833d9f7049153cd07803b48ee4",
+    "evidence_path": "qa/live_verification/visual_critic_catalog_20260721.json",
+    "evidence_sha256": "9bb830a9952b50f304fe840e9873239be67101c7b4924b8dc2bd550cfd106f91"
+  },
+  "current_route": {
+    "available_hardware_tier": "runpod_single_gpu_48gb",
+    "role": "senior_arbiter",
+    "status": "abstain",
+    "reason": "no_unique_promoted_feasible_model",
+    "multi_gpu_deployment_claimed": false,
+    "multi_gpu_download_claimed": false,
+    "fallback_is_bounded_abstention": true
+  },
+  "validation": {
+    "focused_tests": 13,
+    "catalog_only_rejected": true,
+    "downloaded_only_rejected": true,
+    "single_gpu_smoke_only_rejected": true,
+    "promoted_multi_gpu_model_rejected_on_single_gpu": true,
+    "unknown_role_rejected": true,
+    "exact_single_gpu_selection_hash_bound": true,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "source_hashes": {
+    "src/maskfactory/vlm/critic_routing.py": "37378c3dcc0af88638323d31da16967d67ba258fc948f7fbf91f423fc6f76382",
+    "tests/test_visual_critic_routing.py": "d0fb6338e350c0c4daab3ea92e3cea0e6494c7fefff85fae7d707613f1d4e087"
+  }
+}

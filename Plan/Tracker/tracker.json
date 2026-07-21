@@ -11449,13 +11449,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
+      "status": "in_progress",
+      "percent_complete": 15,
+      "notes": [
+        {
+          "ts": "2026-07-21T22:20:57+00:00",
+          "actor": "codex",
+          "text": "Live read-only preflight passed persistent /workspace, RTX 6000 Ada identity, capacity, paths.env, and no live GPU process. No critic snapshots or qualifying runtime are installed yet; launching isolated persistent setup for Qwen3.6-35B-A3B-FP8 and InternVL3.5-8B only."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T22:20:57+00:00",
       "orphaned": false
     },
     "MF-P0-17.24": {
@@ -11470,13 +11476,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T22:24:26+00:00",
+          "actor": "codex",
+          "text": "No governed multi-GPU deployment is available or claimed. The route is complete in its specified unavailable/fail-closed state and must be separately requalified before any future selection."
+        }
+      ],
+      "evidence": "qa/live_verification/visual_critic_multigpu_route_20260721.json SHA-256 4acaf55992cb517aa95361508ef8d4f3f4058e3a9c73215bf5b2c247dadeaeb0; current single-GPU senior-arbiter route returns bounded abstention; catalog-only, downloaded, smoked, and even multi-GPU-promoted bytes are rejected on the single-GPU tier; 13 focused tests pass; Ruff/Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T22:24:35+00:00",
       "orphaned": false
     },
     "MF-P1-10.01": {

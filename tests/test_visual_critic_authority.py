@@ -19,7 +19,7 @@ NOW = datetime(2026, 7, 21, 22, 0, tzinfo=UTC)
 def _promoted_catalog(*, same_family: bool = False) -> dict:
     catalog = deepcopy(load_catalog())
     assignments = (
-        (0, "primary_visual_critic"),
+        (5, "primary_visual_critic"),
         (2 if same_family else 3, "independent_juror"),
     )
     for index, role in assignments:
@@ -62,7 +62,7 @@ def _certificate(catalog: dict, model_index: int, role: str) -> dict:
 def test_current_exact_independent_quorum_is_eligible_and_hash_bound() -> None:
     catalog = _promoted_catalog()
     certificates = [
-        _certificate(catalog, 0, "primary_visual_critic"),
+        _certificate(catalog, 5, "primary_visual_critic"),
         _certificate(catalog, 3, "independent_juror"),
     ]
     result = evaluate_pass_quorum(certificates, catalog, now=NOW, deterministic_hard_veto=False)
@@ -84,7 +84,7 @@ def test_same_family_variants_abstain_instead_of_forming_quorum() -> None:
     catalog = _promoted_catalog(same_family=True)
     result = evaluate_pass_quorum(
         [
-            _certificate(catalog, 0, "primary_visual_critic"),
+            _certificate(catalog, 5, "primary_visual_critic"),
             _certificate(catalog, 2, "independent_juror"),
         ],
         catalog,
@@ -98,7 +98,7 @@ def test_same_family_variants_abstain_instead_of_forming_quorum() -> None:
 def test_missing_role_abstains() -> None:
     catalog = _promoted_catalog()
     result = evaluate_pass_quorum(
-        [_certificate(catalog, 0, "primary_visual_critic")],
+        [_certificate(catalog, 5, "primary_visual_critic")],
         catalog,
         now=NOW,
         deterministic_hard_veto=False,
@@ -109,7 +109,7 @@ def test_missing_role_abstains() -> None:
 
 def test_stale_certificate_is_rejected() -> None:
     catalog = _promoted_catalog()
-    certificate = _certificate(catalog, 0, "primary_visual_critic")
+    certificate = _certificate(catalog, 5, "primary_visual_critic")
     certificate["qualified_until"] = "2026-07-21T21:59:59Z"
     certificate["certificate_sha256"] = certificate_sha256(certificate)
     with pytest.raises(CriticAuthorityError, match="not currently qualified"):
@@ -127,7 +127,7 @@ def test_stale_certificate_is_rejected() -> None:
 )
 def test_name_or_evidence_drift_is_rejected(field: str, value: str, message: str) -> None:
     catalog = _promoted_catalog()
-    certificate = _certificate(catalog, 0, "primary_visual_critic")
+    certificate = _certificate(catalog, 5, "primary_visual_critic")
     certificate[field] = value
     certificate["certificate_sha256"] = certificate_sha256(certificate)
     with pytest.raises(CriticAuthorityError, match=message):
@@ -136,9 +136,9 @@ def test_name_or_evidence_drift_is_rejected(field: str, value: str, message: str
 
 def test_uncalibrated_or_unpromoted_catalog_cannot_validate_certificate() -> None:
     catalog = _promoted_catalog()
-    certificate = _certificate(catalog, 0, "primary_visual_critic")
-    catalog["models"][0]["lifecycle"] = "smoked"
-    catalog["models"][0]["assigned_roles"] = []
+    certificate = _certificate(catalog, 5, "primary_visual_critic")
+    catalog["models"][5]["lifecycle"] = "smoked"
+    catalog["models"][5]["assigned_roles"] = []
     catalog["sha256"] = canonical_sha256(
         {key: value for key, value in catalog.items() if key != "sha256"}
     )

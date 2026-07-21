@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T22:41:54Z",
+  "item": "MF-P2-11.21",
+  "status": "STATIC_PASS",
+  "contract_bindings": [
+    "source image ID, hash, width, and height",
+    "person index, character-instance ID, and owner-mask hash",
+    "target label, exact visible presence, area bounds, and allowed ROI",
+    "fixed inclusion and exclusion semantics",
+    "strict-binary candidate hash and normalized geometry",
+    "named excluded labels and exact protected-region owners/hashes",
+    "bidirectional finite 3x3 transforms with exact round-trip",
+    "canonical target-contract hash"
+  ],
+  "pre_call_authorization": {
+    "source_hash_match_required": true,
+    "candidate_hash_match_required": true,
+    "source_geometry_match_required": true,
+    "invocation_hash_emitted": true
+  },
+  "validation": {
+    "focused_tests": 15,
+    "missing_fields_rejected": true,
+    "ambiguous_label_or_presence_rejected": true,
+    "invalid_empty_or_nonempty_extent_rejected": true,
+    "escaping_roi_rejected": true,
+    "nonbinary_candidate_rejected": true,
+    "geometry_drift_rejected": true,
+    "exclusion_collision_rejected": true,
+    "protected_owner_drift_rejected": true,
+    "transform_roundtrip_drift_rejected": true,
+    "live_input_hash_drift_rejected_before_call": true,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "source_hashes": {
+    "src/maskfactory/vlm/target_contract.py": "33b077c4b4fe1dbf92ecd6c30c493c01748c909f75eb2ab688c5e581fbf2d1de",
+    "tests/test_visual_critic_target_contract.py": "33567e63c9cab7b5f6f1526980c7ef1cb8b3c00edede59183261ef4f5cad4619"
+  },
+  "critic_call_or_repair_executed": false
+}

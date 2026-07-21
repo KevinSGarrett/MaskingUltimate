@@ -68,6 +68,13 @@ def _remote() -> dict:
             "stderr": {"exists": True, "bytes": 0, "sha256": "e" * 64},
             "script": {"exists": True, "bytes": 1, "sha256": "f" * 64},
         },
+        "visual_fallback_job": {
+            "exists": True,
+            "pid": 987,
+            "pid_alive": True,
+            "state": {"stage": "download", "status": "running"},
+            "result": None,
+        },
     }
 
 
@@ -96,3 +103,15 @@ def test_result_hashes_identifiers_and_never_serializes_endpoint_or_key() -> Non
     assert "volume-secret-id" not in serialized
     assert "192.0.2.44" not in serialized
     assert "22022" not in serialized
+
+
+def test_gpu_activity_uses_observed_memory_when_host_pids_are_not_namespaced() -> None:
+    pod = {
+        "id": "pod-id",
+        "desiredStatus": "RUNNING",
+        "networkVolumeId": "volume-id",
+        "volumeMountPath": "/workspace",
+    }
+    remote = _remote()
+    remote["gpu"]["memory_used_mib"] = 24_000
+    assert not build_result(pod, remote)["checks"]["no_active_gpu_compute_apps"]

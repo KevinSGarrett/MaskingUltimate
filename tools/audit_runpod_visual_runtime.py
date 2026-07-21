@@ -56,6 +56,19 @@ def file_record(path):
     data = target.read_bytes()
     return {'exists': True, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
 
+def log_markers(path):
+    target = pathlib.Path(path)
+    text = target.read_text(encoding='utf-8', errors='replace').lower() if target.is_file() else ''
+    return {
+        'traceback': 'traceback (most recent call last)' in text,
+        'cuda_error': 'cuda error' in text,
+        'driver_error': 'driver' in text and ('too old' in text or 'insufficient' in text),
+        'out_of_memory': 'out of memory' in text or 'cuda oom' in text,
+        'loading_weights': 'loading model weights' in text or 'loading weights' in text,
+        'engine_ready': 'application startup complete' in text or 'starting vllm api server' in text,
+        'version_error': 'not supported' in text or 'requires' in text,
+    }
+
 gpu_fields = [part.strip() for part in command([
     'nvidia-smi',
     '--query-gpu=name,driver_version,memory.total,memory.used,memory.free,utilization.gpu',
@@ -141,6 +154,15 @@ try:
 except (OSError, ValueError):
     pass
 
+fallback_base = pathlib.Path('/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_fallback')
+fallback_pid = None
+fallback_pid_alive = False
+try:
+    fallback_pid = int((fallback_base / 'fallback.pid').read_text(encoding='utf-8').strip())
+    fallback_pid_alive = pathlib.Path(f'/proc/{fallback_pid}').exists()
+except (OSError, ValueError):
+    pass
+
 payload = {
     'gpu': {
         'name': gpu_fields[0],
@@ -196,6 +218,34 @@ payload = {
         'stdout': file_record(qualification_base / 'stdout.log'),
         'stderr': file_record(qualification_base / 'stderr.log'),
         'script': file_record(qualification_base / 'qualify.sh'),
+        'internvl_run1': file_record(qualification_base / 'internvl_run1.json'),
+        'internvl_run2': file_record(qualification_base / 'internvl_run2.json'),
+        'internvl_run1_result': read_json(qualification_base / 'internvl_run1.json'),
+        'internvl_run2_result': read_json(qualification_base / 'internvl_run2.json'),
+        'qwen_run1': file_record(qualification_base / 'qwen_run1.json'),
+        'qwen_run2': file_record(qualification_base / 'qwen_run2.json'),
+        'qwen_server1_log': file_record(qualification_base / 'qwen_server1.log'),
+        'qwen_server2_log': file_record(qualification_base / 'qwen_server2.log'),
+        'qwen_server1_markers': log_markers(qualification_base / 'qwen_server1.log'),
+        'qwen_server2_markers': log_markers(qualification_base / 'qwen_server2.log'),
+    },
+    'visual_fallback_job': {
+        'exists': fallback_base.is_dir(),
+        'pid': fallback_pid,
+        'pid_alive': fallback_pid_alive,
+        'state': read_json(fallback_base / 'state.json'),
+        'result': read_json(fallback_base / 'result.json'),
+        'stdout': file_record(fallback_base / 'stdout.log'),
+        'stderr': file_record(fallback_base / 'stderr.log'),
+        'script': file_record(fallback_base / 'fallback.sh'),
+        'run1': file_record(fallback_base / 'run1.json'),
+        'run2': file_record(fallback_base / 'run2.json'),
+        'run1_result': read_json(fallback_base / 'run1.json'),
+        'run2_result': read_json(fallback_base / 'run2.json'),
+        'server1': file_record(fallback_base / 'server1.log'),
+        'server2': file_record(fallback_base / 'server2.log'),
+        'server1_markers': log_markers(fallback_base / 'server1.log'),
+        'server2_markers': log_markers(fallback_base / 'server2.log'),
     },
 }
 print(json.dumps(payload, sort_keys=True))
@@ -306,9 +356,7 @@ def build_result(pod: dict[str, Any], remote: dict[str, Any]) -> dict[str, Any]:
             and int(remote["gpu"]["memory_total_mib"]) >= 48000,
             "workspace_has_model_capacity": int(remote["workspace"]["free_bytes"])
             >= 60_000_000_000,
-            "no_active_gpu_compute_apps": not any(
-                bool(app.get("pid_alive")) for app in remote["gpu"]["compute_apps"]
-            ),
+            "no_active_gpu_compute_apps": int(remote["gpu"]["memory_used_mib"]) <= 2048,
         },
         "secrets_or_endpoint_committed": False,
     }

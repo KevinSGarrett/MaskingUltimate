@@ -49,7 +49,7 @@ def test_even_promoted_multi_gpu_model_is_not_selected_on_single_gpu_tier() -> N
 
 def test_exact_promoted_calibrated_single_gpu_model_is_hash_bound() -> None:
     catalog = deepcopy(load_catalog())
-    model = catalog["models"][0]
+    model = catalog["models"][5]
     model["lifecycle"] = "promoted"
     model["artifact_sha256"] = "a" * 64
     model["calibration"] = {"status": "pass", "report_sha256": "b" * 64}
@@ -59,7 +59,7 @@ def test_exact_promoted_calibrated_single_gpu_model_is_hash_bound() -> None:
 
     result = resolve_role_route(catalog, "primary_visual_critic")
     assert result["status"] == "selected"
-    assert result["model_id"] == "qwen3_6_35b_a3b_fp8"
+    assert result["model_id"] == "qwen3_6_27b_fp8"
     assert len(result["selection_sha256"]) == 64
 
 

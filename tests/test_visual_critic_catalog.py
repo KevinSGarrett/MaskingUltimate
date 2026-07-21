@@ -31,10 +31,16 @@ def test_catalog_binds_exact_models_lifecycle_and_hardware_without_authority() -
         "qwen3_5_397b_a17b_fp8",
         "internvl3_5_8b_bf16",
         "internvl3_5_241b_a28b_bf16",
+        "qwen3_6_27b_fp8",
     }
     assert all(model["lifecycle"] == "planned" for model in models.values())
     assert all(model["assigned_roles"] == [] for model in models.values())
-    assert models["qwen3_6_35b_a3b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
+    assert not models["qwen3_6_35b_a3b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
+    assert (
+        models["qwen3_6_35b_a3b_fp8"]["infeasibility_evidence_sha256"]
+        == "4d487925cc1ae274db864e9764c8ebd1f8706b79f846bfa9325ab38cf3057c8b"
+    )
+    assert models["qwen3_6_27b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
     assert models["internvl3_5_8b_bf16"]["hardware"]["single_gpu_48gb_feasible"]
     assert not models["qwen3_5_122b_a10b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
     assert models["qwen3_5_397b_a17b_fp8"]["hardware"]["minimum_gpu_count_by_weight_bytes"] == 8

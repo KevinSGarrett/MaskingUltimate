@@ -10,7 +10,7 @@ from typing import Any
 from .critic_catalog import validate_catalog
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
-QUALIFIED_MODEL_IDS = frozenset({"qwen3_6_35b_a3b_fp8", "internvl3_5_8b_bf16"})
+QUALIFIED_MODEL_IDS = frozenset({"qwen3_6_27b_fp8", "internvl3_5_8b_bf16"})
 
 
 class RuntimeQualificationError(ValueError):

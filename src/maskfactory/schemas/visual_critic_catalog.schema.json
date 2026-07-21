@@ -86,6 +86,7 @@
           "assigned_roles",
           "lifecycle",
           "artifact_sha256",
+          "infeasibility_evidence_sha256",
           "calibration",
           "private_endpoint"
         ],
@@ -155,6 +156,12 @@
             "enum": ["planned", "downloaded", "smoked", "calibrated", "promoted", "unavailable"]
           },
           "artifact_sha256": {
+            "oneOf": [
+              {"type": "null"},
+              {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            ]
+          },
+          "infeasibility_evidence_sha256": {
             "oneOf": [
               {"type": "null"},
               {"type": "string", "pattern": "^[a-f0-9]{64}$"}

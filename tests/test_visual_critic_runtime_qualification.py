@@ -56,7 +56,7 @@ def _evidence() -> dict:
                 registered[model_id]["revision"],
                 registered[model_id]["quantization"],
             )
-            for model_id in ("qwen3_6_35b_a3b_fp8", "internvl3_5_8b_bf16")
+            for model_id in ("qwen3_6_27b_fp8", "internvl3_5_8b_bf16")
         ],
         "authority_claimed": False,
     }

@@ -11250,3 +11250,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Evidence: `qa/live_verification/visual_critic_role_authority_20260721.json`
   SHA-256
   `05ed3d49ee11e8152fd05dadcf42cd566ff456e179ec493703ae2c5a2c57f263`.
+
+## 2026-07-21 — Exact target contract and measured critic-route amendment
+
+- `MF-P2-11.21` reached `STATIC_PASS`. Criticism is authorized only after an
+  exact canonical contract binds the source and candidate hashes, owner and
+  instance, target label and presence, visible extent, minimum area, ROI,
+  exclusions, protected regions, and invertible source/candidate transforms.
+  Missing, ambiguous, drifted, or non-round-tripping inputs fail before a
+  critic call. Fifteen focused tests and Ruff pass. Evidence:
+  `qa/live_verification/visual_critic_target_contract_20260721.json` SHA-256
+  `c820d3a4c2b501da34790d0e2d420bc900ee7977b659f6289252ed4cc55bc777`.
+- The live Qwen3.6-35B-A3B-FP8 load exceeded the current 48-GB runtime after
+  weight loading began. Its exact owned processes were contained, port 18001
+  was released, and the route is now cataloged as unavailable on this tier
+  with the failure evidence hash. The same attempt will not be repeated.
+- A materially different Qwen3.6-27B-FP8 candidate is pinned at exact revision
+  `e89b16ebf1988b3d6befa7de50abc2d76f26eb09`. One owned persistent fallback
+  job started at PID 2718563 with script SHA-256
+  `9ac577084a76f50e244eec96524e86e01f043360cc370e6bd454fc3e89167876`.
+  Runtime qualification remains partial until it produces two successful,
+  deterministic process runs and passes the exact evidence validator.
+- Catalog amendment evidence:
+  `qa/live_verification/visual_critic_catalog_runtime_amendment_20260721.json`.

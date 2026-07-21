@@ -92,8 +92,17 @@ def validate_catalog(document: Mapping[str, Any]) -> None:
             raise CriticCatalogError(f"{model_id} weight-only GPU lower bound is wrong")
         feasible = model["hardware"]["single_gpu_48gb_feasible"]
         tier = model["hardware"]["tier"]
-        if feasible != (minimum_gpu_count == 1) or (tier == "single_gpu_candidate") != feasible:
+        infeasibility_evidence = model["infeasibility_evidence_sha256"]
+        if feasible and (minimum_gpu_count != 1 or tier != "single_gpu_candidate"):
             raise CriticCatalogError(f"{model_id} hardware tier contradicts exact artifact bytes")
+        if not feasible and tier != "multi_gpu_required":
+            raise CriticCatalogError(f"{model_id} unavailable hardware tier is not fail-closed")
+        if not feasible and minimum_gpu_count == 1 and not infeasibility_evidence:
+            raise CriticCatalogError(f"{model_id} runtime infeasibility lacks exact evidence")
+        if feasible and infeasibility_evidence is not None:
+            raise CriticCatalogError(
+                f"{model_id} feasible route carries contradictory failure evidence"
+            )
 
         lifecycle = model["lifecycle"]
         artifact_sha256 = model["artifact_sha256"]

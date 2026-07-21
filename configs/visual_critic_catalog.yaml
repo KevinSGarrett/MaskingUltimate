@@ -50,14 +50,15 @@ models:
     weight_bytes: 37463662160
     runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
     hardware:
-      tier: single_gpu_candidate
-      single_gpu_48gb_feasible: true
+      tier: multi_gpu_required
+      single_gpu_48gb_feasible: false
       minimum_gpu_count_by_weight_bytes: 1
       live_measurement_required: true
     candidate_roles: [fast_screener, primary_visual_critic]
     assigned_roles: []
     lifecycle: planned
     artifact_sha256: null
+    infeasibility_evidence_sha256: 4d487925cc1ae274db864e9764c8ebd1f8706b79f846bfa9325ab38cf3057c8b
     calibration: null
     private_endpoint: null
   - model_id: qwen3_5_122b_a10b_fp8
@@ -80,6 +81,7 @@ models:
     assigned_roles: []
     lifecycle: planned
     artifact_sha256: null
+    infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
   - model_id: qwen3_5_397b_a17b_fp8
@@ -102,6 +104,7 @@ models:
     assigned_roles: []
     lifecycle: planned
     artifact_sha256: null
+    infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
   - model_id: internvl3_5_8b_bf16
@@ -124,6 +127,7 @@ models:
     assigned_roles: []
     lifecycle: planned
     artifact_sha256: null
+    infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
   - model_id: internvl3_5_241b_a28b_bf16
@@ -146,6 +150,30 @@ models:
     assigned_roles: []
     lifecycle: planned
     artifact_sha256: null
+    infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
-sha256: b42f510b462374cba21a4ebe7aa1ef542436dd833d9f7049153cd07803b48ee4
+  - model_id: qwen3_6_27b_fp8
+    family_id: qwen
+    repository: Qwen/Qwen3.6-27B-FP8
+    revision: e89b16ebf1988b3d6befa7de50abc2d76f26eb09
+    license: apache-2.0
+    quantization: fp8
+    pipeline_tag: image-text-to-text
+    file_count: 80
+    total_repository_bytes: 30890040900
+    weight_bytes: 30866866928
+    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [fast_screener, primary_visual_critic]
+    assigned_roles: []
+    lifecycle: planned
+    artifact_sha256: null
+    infeasibility_evidence_sha256: null
+    calibration: null
+    private_endpoint: null
+sha256: d42ab7ab94faa6811d8acfe0bf194bc8d24472c124f41dd596e14f00b85a39b5

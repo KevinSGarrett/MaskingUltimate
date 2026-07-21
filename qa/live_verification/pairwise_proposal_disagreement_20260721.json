@@ -1,0 +1,28 @@
+{
+  "authority_claimed": false,
+  "focused_test_count": 18,
+  "focused_tests_status": "PASS",
+  "recorded_at": "2026-07-21T23:07:35.7533075Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/providers/disagreement.py": "ea40be604f982eedc50da6b1f55f10d4d9f44fc7b21d39af814c3a4fc838a6c9",
+    "tests/test_proposal_disagreement.py": "cbac043876100eba4413b6f940f60764a841c333f3b84b4fdbdd7935d2cea445"
+  },
+  "status": "STATIC_PASS",
+  "verified_maps": [
+    "pixelwise_disagreement",
+    "left_only_omission",
+    "right_only_omission",
+    "boundary_disagreement",
+    "ownership_disagreement"
+  ],
+  "verified_properties": [
+    "exact_normalized_geometry",
+    "source_identity_binding",
+    "target_contract_binding",
+    "every_candidate_mask_hash_bound",
+    "connected_region_localization",
+    "finite_overlap_metrics",
+    "three_candidate_pairwise_completeness"
+  ]
+}

@@ -11316,3 +11316,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   unpromoted/failed, empty-route, identity-drift, duplicate, and incomplete
   provenance tests pass; Ruff and Black pass. Evidence:
   `qa/live_verification/proposal_family_diversity_gate_20260721.json`.
+
+## 2026-07-21 — Pairwise proposal disagreement maps
+
+- `MF-P2-11.20` reached `STATIC_PASS`. Exact normalized boolean candidates
+  now produce pixelwise, directional omission, boundary, and ownership
+  disagreement maps plus connected-region boxes and finite overlap metrics.
+- Every pair binds source, target contract, proposal/family identity, owner,
+  exact normalized candidate bytes, and each output-map hash. Pixel/hash,
+  geometry, source, and target drift fail closed.
+- Eighteen combined diversity/disagreement tests pass for known overlap,
+  omission, boundary, ownership, all three pairs, zero-union behavior, and
+  negative provenance/geometry cases; Ruff and Black pass. Evidence:
+  `qa/live_verification/pairwise_proposal_disagreement_20260721.json`.

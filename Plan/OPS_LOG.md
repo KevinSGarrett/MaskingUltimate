@@ -11446,3 +11446,18 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Twenty-two combined authority/qualification tests and Ruff pass. Live role
   certificates remain unissued pending real frozen-corpus calibration.
   Evidence: `qa/live_verification/independent_visual_juror_quorum_20260721.json`.
+
+## 2026-07-21 - Bounded senior-arbiter routing
+
+- `MF-P4-11.20` reached `STATIC_PASS`. Arbitration can be selected only for
+  an actual verdict disagreement between current exact primary and
+  independent-juror certificates, inside the target contract's allowed ROI,
+  after deterministic hard gates, with a current exact senior certificate
+  and one unique promoted feasible private route.
+- A hard veto blocks before arbitration. Catalog-only evidence, missing or
+  infeasible arbitration, or absent disagreement abstains without invocation;
+  scope widening and certificate/hash drift are rejected.
+- Six focused and twenty-two combined routing/authority tests pass; Ruff and
+  Black pass. The current catalog still has no qualified feasible senior
+  arbiter, so live arbitration truthfully remains unavailable. Evidence:
+  `qa/live_verification/bounded_visual_arbiter_routing_20260721.json`.

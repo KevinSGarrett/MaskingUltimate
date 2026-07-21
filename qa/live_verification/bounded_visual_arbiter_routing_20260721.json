@@ -1,0 +1,32 @@
+{
+  "authority_claimed": false,
+  "current_runtime_result": "ABSTAIN_UNAVAILABLE",
+  "focused_test_count": 22,
+  "focused_tests_status": "PASS",
+  "invocation_requirements": [
+    "deterministic_hard_veto_clear",
+    "exact_target_contract",
+    "bounded_roi",
+    "current_primary_certificate",
+    "current_independent_juror_certificate",
+    "actual_verdict_disagreement",
+    "current_senior_arbiter_certificate",
+    "unique_promoted_feasible_private_route"
+  ],
+  "negative_paths": [
+    "hard_veto_blocks",
+    "catalog_only_abstains",
+    "missing_or_infeasible_arbiter_abstains",
+    "no_disagreement_abstains",
+    "scope_widening_rejected",
+    "certificate_drift_rejected"
+  ],
+  "recorded_at": "2026-07-21T23:39:19.6438156Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/critic_routing.py": "49178fd7584a421c5fd8dd03ef243c802fc215dac542d97dabfedff981db527d",
+    "tests/test_visual_critic_arbitration.py": "3de8f688a48c81e4f533961532f7be8766b8c60f915071b314f5c43234037536"
+  },
+  "status": "STATIC_PASS",
+  "truth_boundary": "bounded routing is complete; the current catalog has no qualified feasible senior arbiter, so live arbitration remains abstaining"
+}

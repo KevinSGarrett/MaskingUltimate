@@ -11329,3 +11329,17 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   omission, boundary, ownership, all three pairs, zero-union behavior, and
   negative provenance/geometry cases; Ruff and Black pass. Evidence:
   `qa/live_verification/pairwise_proposal_disagreement_20260721.json`.
+
+## 2026-07-21 — Target-aware visual panels
+
+- `MF-P4-11.21` reached `STATIC_PASS`. Deterministic source, strict mask,
+  translucent overlay, contour, full-context, uncertainty-zoom, and
+  disagreement PNG panels are rendered only after the exact target contract,
+  source/candidate file hashes, geometry, transform, crop, and ROI authorize.
+- The panel manifest also binds canonical candidate/disagreement pixel hashes,
+  every PNG hash, invocation hash, crop, geometry, and the whole panel-set
+  hash. Wrong source, candidate, target, transform, crop, or out-of-ROI pixels
+  fail before any review call.
+- Thirty-one combined panel/target/disagreement tests pass; Ruff and Black
+  pass. Evidence:
+  `qa/live_verification/target_aware_visual_panels_20260721.json`.

@@ -14445,13 +14445,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T23:10:37+00:00",
+          "actor": "codex",
+          "text": "Implemented deterministic target-aware source, strict mask, overlay, contour, full-context, uncertainty-zoom, and disagreement panels. Exact source/candidate files, target contract, transforms, geometry, crop, ROI, panel bytes, and pixel hashes are bound; mismatches fail before review."
+        }
+      ],
+      "evidence": "qa/live_verification/target_aware_visual_panels_20260721.json SHA-256 9c29ed06fd15bb1963d2489ad661495b450ca6a9a600b4db5366756259476810; 31 combined panel/target/disagreement tests pass; Ruff and Black pass; rendering claims no critic or pixel authority.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T23:10:37+00:00",
       "orphaned": false
     },
     "MF-P4-11.22": {

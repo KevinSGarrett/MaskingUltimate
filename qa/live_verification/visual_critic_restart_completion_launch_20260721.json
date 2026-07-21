@@ -1,0 +1,19 @@
+{
+  "authority_claimed": false,
+  "launch": {
+    "gpu_release_barrier_mib": 2048,
+    "job_dir": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_restart_completion",
+    "pid_at_launch": 2865696,
+    "process_scope": "run_2_only",
+    "prior_run_1_source": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_deterministic_retry/run1.json",
+    "script_sha256": "81feb5307206502973a3c75b8eeef7c38468d6784b5606c35e86a98bf989e8e1",
+    "status": "STARTED"
+  },
+  "recorded_at": "2026-07-21T23:26:50.5706587Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "tests/test_runpod_critic_restart_completion.py": "2632dbec9cbfc8c676122cb299a548e14a20875567e94d61801f0e19dc95a2e5",
+    "tools/launch_runpod_critic_restart_completion.py": "2a2d238763f96f5e3bc57041ec5c3e8df1de06d3443b816023b287e059a9174f"
+  },
+  "status": "RESTART_COMPLETION_RUNNING"
+}

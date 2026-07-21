@@ -11235,3 +11235,18 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Evidence: `qa/live_verification/visual_critic_multigpu_route_20260721.json`
   SHA-256
   `4acaf55992cb517aa95361508ef8d4f3f4058e3a9c73215bf5b2c247dadeaeb0`.
+
+## 2026-07-21 — Exact visual-critic role authority
+
+- `MF-P4-11.16` reached `STATIC_PASS`. A role certificate now binds the exact
+  current catalog, role, model, family, revision, artifact, calibration,
+  prompt, runtime, issuance window, and canonical certificate hash.
+- Pass quorum requires exactly one current primary and one current
+  independent-family juror. Same-family variants and missing roles abstain;
+  stale, name-only, unpromoted, or evidence-drifted certificates fail closed.
+  Deterministic hard QA blocks before any otherwise-valid critic quorum.
+- Twenty-three focused catalog/routing/authority tests pass; Ruff and Black
+  pass. No live role certificate is claimed before runtime and calibration.
+- Evidence: `qa/live_verification/visual_critic_role_authority_20260721.json`
+  SHA-256
+  `05ed3d49ee11e8152fd05dadcf42cd566ff456e179ec493703ae2c5a2c57f263`.

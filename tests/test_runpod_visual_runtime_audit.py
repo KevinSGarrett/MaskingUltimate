@@ -58,6 +58,16 @@ def _remote() -> dict:
             "stderr": {"exists": True, "bytes": 0, "sha256": "b" * 64},
             "script": {"exists": True, "bytes": 1, "sha256": "c" * 64},
         },
+        "visual_qualification_job": {
+            "exists": True,
+            "pid": 789,
+            "pid_alive": True,
+            "state": {"stage": "internvl", "status": "running"},
+            "result": None,
+            "stdout": {"exists": True, "bytes": 0, "sha256": "d" * 64},
+            "stderr": {"exists": True, "bytes": 0, "sha256": "e" * 64},
+            "script": {"exists": True, "bytes": 1, "sha256": "f" * 64},
+        },
     }
 
 

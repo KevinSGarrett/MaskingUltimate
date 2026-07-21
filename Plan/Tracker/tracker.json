@@ -14290,13 +14290,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T22:33:13+00:00",
+          "actor": "codex",
+          "text": "Implementing exact role-certificate validation and selection atop the completed catalog: lifecycle, calibration currency, independent-family identity, and deterministic veto precedence."
+        },
+        {
+          "ts": "2026-07-21T22:35:27+00:00",
+          "actor": "codex",
+          "text": "Role authority is implemented fail-closed. This STATIC_PASS does not fabricate a live role certificate; live models must still pass MF-P0-17.23 and frozen positive/negative calibration."
+        }
+      ],
+      "evidence": "qa/live_verification/visual_critic_role_authority_20260721.json SHA-256 05ed3d49ee11e8152fd05dadcf42cd566ff456e179ec493703ae2c5a2c57f263; exact current catalog/model/artifact/calibration/prompt/runtime certificate binding; primary plus independent-family quorum; deterministic veto precedence; 23 focused tests pass; Ruff/Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T22:35:27+00:00",
       "orphaned": false
     },
     "MF-P4-11.17": {

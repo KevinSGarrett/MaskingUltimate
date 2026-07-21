@@ -132,6 +132,15 @@ if setup_pid_alive:
     except (OSError, subprocess.CalledProcessError, ValueError):
         process_tree = []
 
+qualification_base = pathlib.Path('/workspace/maskfactory/runtime_artifacts/visual_critic_qualification')
+qualification_pid = None
+qualification_pid_alive = False
+try:
+    qualification_pid = int((qualification_base / 'qualification.pid').read_text(encoding='utf-8').strip())
+    qualification_pid_alive = pathlib.Path(f'/proc/{qualification_pid}').exists()
+except (OSError, ValueError):
+    pass
+
 payload = {
     'gpu': {
         'name': gpu_fields[0],
@@ -177,6 +186,16 @@ payload = {
         'stdout': file_record(job_base / 'stdout.log'),
         'stderr': file_record(job_base / 'stderr.log'),
         'script': file_record(job_base / 'setup.sh'),
+    },
+    'visual_qualification_job': {
+        'exists': qualification_base.is_dir(),
+        'pid': qualification_pid,
+        'pid_alive': qualification_pid_alive,
+        'state': read_json(qualification_base / 'state.json'),
+        'result': read_json(qualification_base / 'result.json'),
+        'stdout': file_record(qualification_base / 'stdout.log'),
+        'stderr': file_record(qualification_base / 'stderr.log'),
+        'script': file_record(qualification_base / 'qualify.sh'),
     },
 }
 print(json.dumps(payload, sort_keys=True))

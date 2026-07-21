@@ -107,6 +107,30 @@ try:
     setup_pid_alive = pathlib.Path(f'/proc/{setup_pid}').exists()
 except (OSError, ValueError):
     pass
+process_tree = []
+if setup_pid_alive:
+    try:
+        rows = command(['ps', '-eo', 'pid=,ppid=,comm=,etime=,%cpu=,%mem=,stat=']).splitlines()
+        parsed = []
+        for row in rows:
+            fields = row.split()
+            if len(fields) == 7:
+                parsed.append({
+                    'pid':int(fields[0]), 'ppid':int(fields[1]), 'comm':fields[2],
+                    'etime':fields[3], 'cpu_percent':float(fields[4]),
+                    'memory_percent':float(fields[5]), 'state':fields[6],
+                })
+        descendants = {setup_pid}
+        changed = True
+        while changed:
+            changed = False
+            for row in parsed:
+                if row['ppid'] in descendants and row['pid'] not in descendants:
+                    descendants.add(row['pid'])
+                    changed = True
+        process_tree = [row for row in parsed if row['pid'] in descendants]
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        process_tree = []
 
 payload = {
     'gpu': {
@@ -147,6 +171,7 @@ payload = {
         'exists': job_base.is_dir(),
         'pid': setup_pid,
         'pid_alive': setup_pid_alive,
+        'process_tree': process_tree,
         'state': read_json(job_base / 'state.json'),
         'inventory': read_json(job_base / 'inventory.json'),
         'stdout': file_record(job_base / 'stdout.log'),

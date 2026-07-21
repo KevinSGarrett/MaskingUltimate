@@ -41,6 +41,17 @@ def _remote() -> dict:
             "exists": True,
             "pid": 456,
             "pid_alive": True,
+            "process_tree": [
+                {
+                    "pid": 456,
+                    "ppid": 1,
+                    "comm": "bash",
+                    "etime": "00:10",
+                    "cpu_percent": 0.0,
+                    "memory_percent": 0.0,
+                    "state": "S",
+                }
+            ],
             "state": {"stage": "qwen_download", "status": "running"},
             "inventory": None,
             "stdout": {"exists": True, "bytes": 1, "sha256": "a" * 64},

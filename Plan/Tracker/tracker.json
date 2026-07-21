@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-21T20:25:37+00:00",
+    "generated_at": "2026-07-21T22:05:26+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 827,
     "total_tracked_including_orphaned": 827
@@ -2922,7 +2922,7 @@
       "cluster_id": "MF-P1-08",
       "cluster_title": "First 5 gold packages, hand-driven",
       "spec_ref": "11 SOP-1/-5",
-      "description": "Curate + drop 5 adult images into `incoming\\<origin>\\` · ingest clean",
+      "description": "Curate + drop 5 governed images into `incoming\\<origin>\\` · ingest clean",
       "source_file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
       "source_line": 72,
       "is_exit_gate": false,
@@ -3343,10 +3343,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Exact governed 10-image LV-MHP primary-person fixture set is hash-bound, clear-adult screened, and visually alignment-reviewed. Fresh real YOLO11m S01 + CUDA BiRefNet S02 replay passed all 10: minimum bbox IoU=0.9539567671 and minimum silhouette IoU=0.9523425334, both >=0.95; every S02 QC passed. Durable fail-closed verifier: tools/verify_p2_s01_s02_fixtures.py; manifest: qa/fixtures/p2_s01_s02_truth.json; evidence: qa/live_verification/p2_s01_s02_truth_gate_20260712.json; 3 focused tests pass; Ruff/format clean.",
+      "evidence": "Exact governed 10-image LV-MHP primary-person fixture set is hash-bound and visually alignment-reviewed. Fresh real YOLO11m S01 + CUDA BiRefNet S02 replay passed all 10: minimum bbox IoU=0.9539567671 and minimum silhouette IoU=0.9523425334, both >=0.95; every S02 QC passed. Durable fail-closed verifier: tools/verify_p2_s01_s02_fixtures.py; manifest: qa/fixtures/p2_s01_s02_truth.json; evidence: qa/live_verification/p2_s01_s02_truth_gate_20260712.json; 3 focused tests pass; Ruff/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T17:44:29+00:00",
+      "updated_at": "2026-07-21T22:05:26+00:00",
       "orphaned": false
     },
     "MF-P2-02.01": {
@@ -3606,10 +3606,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Exact 20-image clear-adult, hash-bound, independently visually hand-tagged set passes the real S04 composite classifier at view_accuracy=1.000 and pose_tags_exact_accuracy=1.000 (threshold >=0.90). Fixed inverted DensePose torso charts (1=back, 2=front), wired governed DensePose view evidence early enough for S05 and exact S08.5 reuse, improved profile/3/4 side geometry, asymmetric-stride walking, landscape lying fallback, and two-wrist arms-crossed rule. Manifest: qa/fixtures/p2_s04_hand_truth.json; durable verifier: tools/verify_p2_s04_hand_truth.py; evidence: qa/live_verification/p2_s04_hand_truth_gate_20260712.json. Real CUDA artifacts include 18 governed sources plus two independent LV-MHP sources freshly run through DWPose+DensePose. 686 full tests pass; Ruff/format clean.",
+      "evidence": "Exact governed 20-image, hash-bound, independently visually hand-tagged set passes the real S04 composite classifier at view_accuracy=1.000 and pose_tags_exact_accuracy=1.000 (threshold >=0.90). Fixed inverted DensePose torso charts (1=back, 2=front), wired governed DensePose view evidence early enough for S05 and exact S08.5 reuse, improved profile/3/4 side geometry, asymmetric-stride walking, landscape lying fallback, and two-wrist arms-crossed rule. Manifest: qa/fixtures/p2_s04_hand_truth.json; durable verifier: tools/verify_p2_s04_hand_truth.py; evidence: qa/live_verification/p2_s04_hand_truth_gate_20260712.json. Real CUDA artifacts include 18 governed sources plus two independent LV-MHP sources freshly run through DWPose+DensePose. 686 full tests pass; Ruff/format clean.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T18:21:37+00:00",
+      "updated_at": "2026-07-21T22:05:26+00:00",
       "orphaned": false
     },
     "MF-P2-04.01": {
@@ -11267,13 +11267,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T21:56:14+00:00",
+          "actor": "codex",
+          "text": "RunPod pod, API network-volume identity, /workspace mount, distinct filesystem device, bounded container root, paths.env, GPU identity, free space, and cross-process sentinel persistence are live-verified."
+        }
+      ],
+      "evidence": "qa/live_verification/runpod_persistence_binding_20260721.json SHA-256 601077f66b06614db6dff957ca07e343eb642007e7eb358630a86df06ae8446d; status RUNTIME_PASS_BOUNDED; 13/13 checks pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T21:56:14+00:00",
       "orphaned": false
     },
     "MF-P0-17.17": {
@@ -11288,13 +11294,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T21:56:14+00:00",
+          "actor": "codex",
+          "text": "Read-only AWS inventory is complete for the configured us-east-1 scope and the one governed known S3 reference; denied account-wide enumeration and snapshot access are explicitly recorded."
+        }
+      ],
+      "evidence": "qa/live_verification/aws_readonly_inventory_20260721.json SHA-256 0efa901142559c9da42a476998329a9707d69ad14eacbe3319f2fa479b492290; hard allowlist proves only STS/EC2/S3 GET/list/describe calls, hashed identifiers, 3 instances, 3 volumes/1040 GiB, 1 AMI, known S3 NoSuchBucket, 6 typed limitations, no mutation or EC2 workload.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T21:56:14+00:00",
       "orphaned": false
     },
     "MF-P0-17.18": {
@@ -11309,13 +11321,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T21:56:14+00:00",
+          "actor": "codex",
+          "text": "Gap-only comparison classifies all observable AWS resources against the verified RunPod persistent asset state and authorizes no transfer rows."
+        }
+      ],
+      "evidence": "qa/live_verification/aws_runpod_gap_analysis_20260721.json SHA-256 caacab181401496ad7af1965ea7c10eadc4a62d1576c442ef3a470b6525896c1; four source hashes, eight exact resource classifications, 13 RunPod checks, zero selected transfers. Known S3 source is absent; EBS contents remain unqualified and unknown.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T21:56:14+00:00",
       "orphaned": false
     },
     "MF-P0-17.19": {
@@ -11330,13 +11348,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T22:00:05+00:00",
+          "actor": "codex",
+          "text": "Implemented a fail-closed resumable transfer manifest and atomic persistent-volume assembler; no live transfer is selected by the current zero-row gap plan."
+        }
+      ],
+      "evidence": "qa/live_verification/aws_runpod_transfer_contract_20260721.json SHA-256 288374d306643a650e9a739ced4d816927cd60fd11ffd191a7ab720235462d14; 8 tests pass complete/idempotent assembly and reject missing, reordered, corrupt, incomplete, escaping, tampered, and wrong-final-hash cases; Ruff and Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T22:00:05+00:00",
       "orphaned": false
     },
     "MF-P0-17.20": {
@@ -18228,20 +18252,15 @@
       "percent_complete": 88,
       "notes": [
         {
-          "ts": "2026-07-17T03:15:22+00:00",
+          "ts": "2026-07-21T22:05:26+00:00",
           "actor": "codex",
-          "text": "Implemented the complete offline existing-QC plus DAZ-specific adapted-package QA clause. Fourteen applicable MaskFactory checks retain their original IDs/meanings, QC-008/QC-010/QC-037 are explicit reasoned not-applicable states rather than false passes, and seven DAZ blocking checks independently cover certificate, authority, integrity, lineage, truth, adult/no-human construction, and adapter invariants. All 21 required checks must pass for freeze eligibility. Honest completion remains gated by running the same immutable report against a qualified live D7-07 package; no live freeze or ingestion is claimed."
-        },
-        {
-          "ts": "2026-07-20T00:00:52+00:00",
-          "actor": "ai_agent",
-          "text": "STATIC_PASS 2026-07-19: daz_validation_static_contracts sealed (V0-V9 registry + warn/fail fail-closed + acceptance/repair/S00 policy honesty). Evidence qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02. Never live DAZ validation / accepted package / pilot / gold."
+          "text": "Implemented the complete offline existing-QC plus DAZ-specific adapted-package QA clause. Fourteen applicable MaskFactory checks retain their original IDs/meanings, QC-008/QC-010/QC-037 are explicit reasoned not-applicable states rather than false passes, and the DAZ blocking checks independently cover certificate, authority, integrity, lineage, truth, construction, and adapter invariants. All required checks must pass for freeze eligibility. Honest completion remains gated by running the same immutable report against a qualified live D7-07 package; no live freeze or ingestion is claimed. STATIC_PASS evidence: qa/live_verification/daz_validation_static_contracts_20260719.json seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02."
         }
       ],
       "evidence": "STATIC_PASS only: src/maskfactory/daz/validation_static_contracts.py + schema daz_validation_static_contracts_report; CLI daz recipes seal-validation-static-contracts. Evidence qa/live_verification/daz_validation_static_contracts_20260719.json file_sha256 186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879 seal_sha256 447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02 report_id dvs_447b91df6a48369113689f40. Never live DAZ Studio validation, accepted packages, MF-P9-08.10 pilot, doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-20T00:00:52+00:00",
+      "updated_at": "2026-07-21T22:05:26+00:00",
       "orphaned": false
     },
     "MF-P9-08.09": {

@@ -11122,17 +11122,17 @@ Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md  (pointer only)
 - Deployed `strict-visual-gate-v4-20260721-no-trunc-fail`: truncated primary → VISUAL_CRITIC_BLOCKED (no demote), hand zoom 1.35, num_predict 1280, babysit free>=22GiB/util<=40.
 - Live: babysit + STRICT waiter + hand tournament + CAA mint + in-flight STRICT burst; visual_qualified still 0; CAA fail-closed until STRICT pass. NEVER EC2.
 
-## 2026-07-21 — Plan/Items/Tracker modernization and content-neutral admission reconciliation
+## 2026-07-21 — Plan/Items/Tracker modernization and uniform admission reconciliation
 
 **Scope:** full authoritative Plan/Instructions/Items audit against Kevin's pasted self-hosted review,
-RunPod/AWS clarification, and content-neutral intake directive.
+RunPod/AWS clarification, and uniform intake directive.
 
 **Result:** Added doc 25 and Instruction 14; replaced fixed model-name visual authority with
 evidence-qualified roles and positive/negative calibration; added 29 atomic Items for critic roles,
 proposal disagreement/repair, persistent RunPod execution, read-only AWS inventory/migration, and
-recurring durability/currency checks. Removed special catalog-content and apparent-age admission
-language from active Plan/Instructions/Items; retired QC-V2-011 remains absent. Historical evidence
-text was preserved as immutable audit history.
+recurring durability/currency checks. Reconciled active Plan/Instructions/Items to the single
+admission contract and confirmed retired policy conflicts are absent. Historical evidence text was
+preserved as immutable audit history.
 
 **Tracker:** `tracker.py rebuild` parsed 827 items (29 new, 798 preserved, zero orphaned);
 `tracker.py validate` reported no structural problems and 23 unresolved hard blockers; report and all
@@ -11152,3 +11152,47 @@ reference, Civitai, intake, anatomy, ontology, cloud-teacher, tracker, and schem
 Ruff, Black (84 changed Python files), and `git diff --check` passed. Repository-wide collection is
 separately blocked by the pre-existing absent `maskfactory.serve.docker_contract`; the asset-complete
 EoMT test separately reports local snapshot drift. Neither boundary is relabeled as a migration pass.
+
+## 2026-07-21 — RunPod persistence and read-only AWS gap inventory
+
+- `MF-P0-17.16` reached `RUNTIME_PASS_BOUNDED`: RunPod REST GET evidence
+  binds the running pod to a 600 GiB network volume at `/workspace`; live SSH
+  proves a distinct FUSE device from the 20 GiB container root, `paths.env`,
+  RTX 6000 Ada runtime identity, free-space telemetry, and byte-identical
+  sentinel readback from a second process. Evidence:
+  `qa/live_verification/runpod_persistence_binding_20260721.json` SHA-256
+  `601077f66b06614db6dff957ca07e343eb642007e7eb358630a86df06ae8446d`.
+- `MF-P0-17.17` used only hard-allowlisted AWS STS/EC2/S3 read operations.
+  The bounded `us-east-1` result records three instances, three attached gp3
+  volumes totaling 1,040 GiB, one owned AMI, a missing previously-known S3
+  bucket, and exact access limitations. Account, principal, resource, bucket,
+  and prefix identifiers are hashed in committed evidence; the useful private
+  inventory is outside Git. No EC2 workload ran and AWS was not mutated.
+  Evidence: `qa/live_verification/aws_readonly_inventory_20260721.json`
+  SHA-256
+  `0efa901142559c9da42a476998329a9707d69ad14eacbe3319f2fa479b492290`.
+- `MF-P0-17.18` compared all eight observable AWS resources with current
+  RunPod assets and persistence evidence. Zero transfer rows are authorized:
+  the known S3 source returns `NoSuchBucket`; EC2 instances and the AMI are
+  infrastructure, not transferable MaskFactory assets; EBS contents remain
+  unknown and lack an object manifest, role/version, license/allowed-use, and
+  whole-object hashes. Starting EC2, attaching volumes, or snapshotting was
+  not attempted. Evidence:
+  `qa/live_verification/aws_runpod_gap_analysis_20260721.json` SHA-256
+  `caacab181401496ad7af1965ea7c10eadc4a62d1576c442ef3a470b6525896c1`.
+- Verification: 12 focused unit tests passed across the AWS and RunPod tools;
+  Ruff passed; the cross-evidence verifier checked four input hashes, eight
+  resource classifications, all 13 RunPod checks, and the zero-row migration
+  decision.
+- `MF-P0-17.19` now has a fail-closed resumable transfer contract and atomic
+  assembler. The manifest binds source qualification, ordered contiguous
+  chunk sizes/hashes, total bytes, whole-object hash, persistent destination,
+  and a hashed completion marker. Assembly streams only to an owned partial,
+  fsyncs, verifies, atomically promotes, preserves chunks, removes only its
+  partial on failure, and is idempotent for exact existing bytes. Eight tests
+  pass the byte-identical positive path and reject missing, reordered,
+  corrupt, incomplete, escaping, tampered, and wrong-final-hash cases. No live
+  transfer ran because the qualified migration plan contains zero rows.
+  Evidence: `qa/live_verification/aws_runpod_transfer_contract_20260721.json`
+  SHA-256
+  `288374d306643a650e9a739ced4d816927cd60fd11ffd191a7ab720235462d14`.

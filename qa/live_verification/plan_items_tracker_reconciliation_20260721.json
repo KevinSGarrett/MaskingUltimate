@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "recorded_at": "2026-07-21T20:10:00Z",
+  "recorded_at": "2026-07-21T22:07:24Z",
   "worktree": "C:\\w\\maskfactory-plan-modernization",
   "branch": "codex/maskfactory-plan-modernization",
   "base_commit": "83907bac5ba5e7412671c8ec09bb134ab35d830c",
@@ -31,6 +31,17 @@
     "immutable_history_rewritten": false,
     "raw_third_party_identifiers_renamed": false
   },
+  "authoritative_corpus_review": {
+    "plan_root_documents": 39,
+    "item_documents": 23,
+    "instruction_documents": 13,
+    "tracker_items": 827,
+    "tracker_orphans": 0,
+    "tracker_structural_validation": "pass",
+    "retired_policy_conflicts_in_active_authority": 0,
+    "immutable_history_rewritten": false,
+    "ordinary_anatomical_labels_or_raw_third_party_asset_identifiers_rewritten": false
+  },
   "runtime_contract_changes": [
     "provider and model registries no longer carry special compatibility fields",
     "serving provenance no longer exposes or requires special compatibility fields",
@@ -38,7 +49,7 @@
     "cloud teacher exact-image admission uses hash, rights, approval, provider, credential, and budget evidence",
     "DAZ and reference-library policy use ordinary source and rights governance",
     "DAZ S00 source records no longer carry a special construction-eligibility field",
-    "intake retains one centralized source-policy exception and otherwise uses the uniform path"
+    "intake uses the uniform source-policy path"
   ],
   "validation": [
     {

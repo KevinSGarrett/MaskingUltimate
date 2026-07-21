@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T21:54:00Z",
+  "scope": "maskfactory_aws_to_runpod_gap_only_migration_analysis",
+  "inputs": [
+    {
+      "path": "qa/live_verification/aws_readonly_inventory_20260721.json",
+      "sha256": "0efa901142559c9da42a476998329a9707d69ad14eacbe3319f2fa479b492290"
+    },
+    {
+      "path": "qa/live_verification/runpod_persistence_binding_20260721.json",
+      "sha256": "601077f66b06614db6dff957ca07e343eb642007e7eb358630a86df06ae8446d"
+    },
+    {
+      "path": "C:/Comfy_UI_Main_Masking/qa/live_verification/runpod_assets_authoritative_latest.json",
+      "sha256": "46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205"
+    },
+    {
+      "path": "C:/Comfy_UI_Main_Masking/qa/live_verification/ultimate_runpod_retrieval_mapped_latest.json",
+      "sha256": "7696996a2e9b68d90b7f3b39150c823110ef3b34e3f937429386440e38e11ea0"
+    }
+  ],
+  "runpod_destination": {
+    "network_volume_size_gib": 600,
+    "mount_path": "/workspace",
+    "persistent_binding_status": "RUNTIME_PASS_BOUNDED",
+    "maskedwarehouse": {
+      "files": 489638,
+      "bytes": 6866153864
+    },
+    "ultimate_reference_library": {
+      "files": 3711,
+      "bytes": 11539355704,
+      "indexed_images": 83422
+    },
+    "current_authoritative_asset_bytes": 18405509568,
+    "current_feed_resolution_rate": 1.0,
+    "container_root_is_destination": false
+  },
+  "aws_resources": [
+    {
+      "kind": "ec2_instance",
+      "id_sha256": "0647d9654b5b65dd445b81bcacce6acf2bb42e229ed1dab0b531dc5fe8428465",
+      "observed": {"instance_type": "t3.medium", "state": "stopped"},
+      "classification": "infrastructure_not_transferable_asset",
+      "migration_selected": false
+    },
+    {
+      "kind": "ec2_instance",
+      "id_sha256": "807cb1b06d120b530b33989d68372c183cc4ca1db717f1783fa72efd6cbbb930",
+      "observed": {"instance_type": "t3.small", "state": "running"},
+      "classification": "infrastructure_not_transferable_asset",
+      "migration_selected": false
+    },
+    {
+      "kind": "ec2_instance",
+      "id_sha256": "c9ff7c573de94a9e9fe2a9de941898c0d8ed8e6545ab6091abba96f448db5caa",
+      "observed": {"instance_type": "g5.2xlarge", "state": "stopped"},
+      "classification": "infrastructure_not_transferable_asset",
+      "migration_selected": false
+    },
+    {
+      "kind": "ebs_volume",
+      "id_sha256": "4274aeb62311bc31fa92acdf3445d815cd4383d8eda812ea9ac1b0aab5bb58c6",
+      "observed": {"size_gib": 8, "state": "in-use", "encrypted": false},
+      "classification": "unknown_contents_no_transfer_authority",
+      "migration_selected": false,
+      "missing_qualification": ["object_manifest", "role", "version", "license_allowed_use", "whole_object_hash"]
+    },
+    {
+      "kind": "ebs_volume",
+      "id_sha256": "8a261db73a1cffc02d88c07d8917aa757b1524d863ae9505176bcf83c4a2c210",
+      "observed": {"size_gib": 8, "state": "in-use", "encrypted": false},
+      "classification": "unknown_contents_no_transfer_authority",
+      "migration_selected": false,
+      "missing_qualification": ["object_manifest", "role", "version", "license_allowed_use", "whole_object_hash"]
+    },
+    {
+      "kind": "ebs_volume",
+      "id_sha256": "9bf2b0a44e65cd7b2324aa2869d3ba749388bae373ecb0dfd6c61e18b437ea3e",
+      "observed": {"size_gib": 1024, "state": "in-use", "encrypted": false},
+      "classification": "unknown_contents_no_transfer_authority",
+      "migration_selected": false,
+      "missing_qualification": ["object_manifest", "role", "version", "license_allowed_use", "whole_object_hash"],
+      "note": "Metadata identifies the previously known GPU-server volume, but read-only EC2/EBS APIs do not expose its filesystem contents. Starting the stopped instance, attaching the volume, or creating a snapshot was not attempted."
+    },
+    {
+      "kind": "ami",
+      "id_sha256": "a6e2c985ea30185e9c853c1e33aa2dfc57953c9570669f722af1c423e41d8dc7",
+      "observed": {"state": "available", "architecture": "x86_64", "root_device_type": "ebs"},
+      "classification": "compute_image_not_maskfactory_asset",
+      "migration_selected": false
+    },
+    {
+      "kind": "known_s3_bucket",
+      "id_sha256": "d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2",
+      "observed": {"location_error": "NoSuchBucket", "object_listing_error": "NoSuchBucket"},
+      "classification": "absent_not_migration_source",
+      "migration_selected": false
+    }
+  ],
+  "access_limitations": [
+    "account-wide enabled-region enumeration denied",
+    "account-wide bucket enumeration denied",
+    "owned EBS snapshot enumeration denied",
+    "EBS filesystem contents unavailable through permitted metadata-only calls"
+  ],
+  "migration_plan": {
+    "selected_count": 0,
+    "rows": [],
+    "decision": "NO_AWS_TRANSFER_AUTHORIZED",
+    "reason": "The known S3 source no longer exists; compute instances and the AMI are not transferable MaskFactory assets; all EBS contents remain unqualified and unknown. RunPod already has the governed MaskedWarehouse and Ultimate reference assets on its verified persistent volume."
+  },
+  "authority": {
+    "aws_mutated": false,
+    "ec2_workload_executed": false,
+    "runpod_is_execution_target": true,
+    "unknown_ebs_contents_treated_as_available": false,
+    "migration_or_readiness_claimed_from_metadata": false
+  },
+  "status": "STATIC_PASS"
+}

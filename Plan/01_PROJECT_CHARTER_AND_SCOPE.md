@@ -87,8 +87,8 @@ P7. **Fail loud, abstain smart** — core ambiguity becomes a typed autonomous a
 - Permitted sources: images Kevin owns or generated (ComfyUI outputs), licensed stock, or images
   collected with documented permission. `manifest.source_origin` records provenance
   for every image (`generated | owned_photo | licensed | consented_subject`).
-- One centralized safety exception prohibits and quarantines sexual material involving minors.
-  All other sources follow the same provenance, rights, integrity, annotation, and QA path.
+- Every source follows the same provenance, rights, integrity, annotation, and QA path.
+  Foundational platform safety remains external to this project-specific admission contract.
 - No processing of real identifiable people without consent; the system is built for
   owned/generated character imagery.
 - Projected/amodal regions are geometric edit regions for compositing/inpainting of owned content —

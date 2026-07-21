@@ -69,7 +69,7 @@ the required human-free `core_autonomous_runtime` profile. Parent IDs from doc 1
 - [ ] MF-P1-07.09 `dvc init` · configure remote `s3://maskfactory-dvc-dev` (dev acct 548846591581, creds via env) · first `dvc add data\packages` + `dvc push` succeeds
 
 ## MF-P1-08 — First 5 gold packages, hand-driven (spec: 11 SOP-1/-5)
-- [ ] MF-P1-08.01 Curate + drop 5 adult images into `incoming\<origin>\` · ingest clean
+- [ ] MF-P1-08.01 Curate + drop 5 governed images into `incoming\<origin>\` · ingest clean
 - [ ] MF-P1-08.02 Annotate image 1 fully in CVAT per SOP-1 (all visible atomics, bands, materials, visibility attrs, honest ambiguity)
 - [ ] MF-P1-08.03 Annotate images 2–5 the same way
 - [ ] MF-P1-08.04 `package` + `verify-package` all 5 → `human_approved_gold`

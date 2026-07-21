@@ -1,0 +1,20 @@
+{
+  "authority_claimed": false,
+  "focused_test_count": 10,
+  "focused_tests_status": "PASS",
+  "recorded_at": "2026-07-21T23:04:52.5782960Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/providers/proposal_diversity.py": "2f2c654939609bc6b9841ec2812fb2195276c4498a0d032cb9a4355471e547b6",
+    "tests/test_proposal_diversity.py": "07a7ffcba9f747f9fce7576678fe34e105795d8b658b69ae1894536227404f0b"
+  },
+  "status": "STATIC_PASS",
+  "verified_contract": {
+    "correlated_variants_count_once": true,
+    "duplicate_candidate_bytes_rejected": true,
+    "high_risk_minimum_independent_families": 3,
+    "missing_diversity_result": "typed_abstention",
+    "only_promoted_candidate_proposals_count": true,
+    "source_and_target_identity_bound": true
+  }
+}

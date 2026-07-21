@@ -13077,13 +13077,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-21T23:05:19+00:00",
+          "actor": "codex",
+          "text": "Implemented exact proposal-family diversity routing. High-risk routes require three genuinely independent promoted candidate families; correlated variants count once; missing diversity returns typed abstention. Duplicate candidate IDs/bytes, incomplete provenance, and mixed source/target identity fail closed."
+        }
+      ],
+      "evidence": "qa/live_verification/proposal_family_diversity_gate_20260721.json SHA-256 02256ec8705e6817e237f5ed984d1f3fb314f5af5f0dec608d2cb93f5d547000; exact provider/family/source/mask/target/certificate/lifecycle binding; 10 focused tests pass; Ruff and Black pass; no proposal or truth authority inferred.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T23:05:19+00:00",
       "orphaned": false
     },
     "MF-P2-11.20": {

@@ -11303,3 +11303,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Runtime qualification remains partial until two distinct process runs and
   the combined two-family evidence validator pass. Evidence:
   `qa/live_verification/visual_critic_protocol_retry_launch_20260721.json`.
+
+## 2026-07-21 — Proposal-family diversity gate
+
+- `MF-P2-11.19` reached `STATIC_PASS`. High-risk routes require at least three
+  promoted candidate families; correlated variants count once, and missing
+  diversity returns typed abstention rather than a fabricated substitute.
+- Every candidate binds provider, family, source, normalized mask, exact
+  target contract, current provider certificate, lifecycle, and status.
+  Duplicate IDs/bytes and mixed source/target identity fail closed.
+- Ten focused positive, correlated-family, missing-family, low-risk,
+  unpromoted/failed, empty-route, identity-drift, duplicate, and incomplete
+  provenance tests pass; Ruff and Black pass. Evidence:
+  `qa/live_verification/proposal_family_diversity_gate_20260721.json`.

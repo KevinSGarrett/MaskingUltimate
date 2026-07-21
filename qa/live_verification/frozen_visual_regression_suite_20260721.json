@@ -1,0 +1,40 @@
+{
+  "authority_claimed": false,
+  "case_count": 14,
+  "domain_count": 7,
+  "domains": [
+    "clothing_skin_boundary",
+    "feet",
+    "hair",
+    "hands",
+    "multi_person_ownership",
+    "occlusion_contact",
+    "visible_anatomy"
+  ],
+  "focused_test_count": 10,
+  "focused_tests_status": "PASS",
+  "manifest_file_sha256": "548852502a2aa20e88ad1b0c1f478b59b3540831c42c3a436f962c5869f672ca",
+  "panel_file_count": 98,
+  "panel_total_bytes": 64721,
+  "promotion_fingerprint_fields": [
+    "model_artifact_sha256",
+    "provider_set_sha256",
+    "prompt_sha256",
+    "runtime_sha256",
+    "renderer_sha256",
+    "target_contract_schema_sha256"
+  ],
+  "recorded_at": "2026-07-21T23:43:00Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/regression_suite.py": "6092eec64304515556a38e137afeb8f4f99518cf12b794c383867b71ad38491e",
+    "tests/test_visual_regression_suite.py": "49eac19247fed2091def43d97e85b1ad9e383fdab9a0865e426a56dc65ca8fe9",
+    "tools/build_visual_regression_suite.py": "7226f9ceb496f31530a8895e663d26c6f9c0a8ba546afd6f45196277aae1293a"
+  },
+  "status": "SUITE_AND_GATE_PASS",
+  "suite_canonical_sha256": "22001e0769d2fe7f36077e0f23affd9b975e3987b43d73fb87781c25e09b7781",
+  "truth_source": "deterministic_synthetic_exact_geometry",
+  "valid_control_count": 7,
+  "serious_defect_count": 7,
+  "truth_boundary": "frozen structural regression and promotion binding; no real-image generalization or live critic role qualification is claimed"
+}

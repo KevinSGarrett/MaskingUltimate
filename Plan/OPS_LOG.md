@@ -11461,3 +11461,20 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   Black pass. The current catalog still has no qualified feasible senior
   arbiter, so live arbitration truthfully remains unavailable. Evidence:
   `qa/live_verification/bounded_visual_arbiter_routing_20260721.json`.
+
+## 2026-07-21 - Frozen target-aware visual regression
+
+- `MF-P4-11.23` reached `STATIC_PASS`. The sealed suite contains fourteen
+  image-disjoint cases: one valid control and one serious defect for each of
+  hands, feet, hair, clothing/skin boundaries, visible anatomy,
+  occlusion/contact, and multi-person ownership. Ninety-eight actual target-
+  aware PNG panels bind sources, masks, overlays, contours, context, zooms,
+  disagreement, transforms, owners, labels, candidates, and panel sets.
+- Promotion evidence is bound to the exact model artifact, provider set,
+  prompt, runtime, renderer, target-contract schema, and suite hashes. Any
+  changed fingerprint requires a fresh run; any serious miss or deterministic
+  replay failure blocks promotion.
+- Ten focused and twenty-five combined suite/panel/corpus tests pass; Ruff and
+  Black pass. The suite is deterministic synthetic structural truth and does
+  not claim real-image generalization or live critic authority. Evidence:
+  `qa/live_verification/frozen_visual_regression_suite_20260721.json`.

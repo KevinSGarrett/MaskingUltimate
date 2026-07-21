@@ -14366,19 +14366,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 55,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-21T22:59:24+00:00",
           "actor": "codex",
           "text": "Implemented the closed canonical corpus contract and validator: two image-disjoint partitions, both valid and known-defect masks per partition, full frozen defect taxonomy, exact embedded target contracts, six panel hashes, unique panel-set and candidate bindings. Populated governed panels remain pending; no role qualification is claimed."
+        },
+        {
+          "ts": "2026-07-21T23:23:13+00:00",
+          "actor": "codex",
+          "text": "Materialized the frozen v1 calibration corpus: 12 image-disjoint cases across calibration and qualification_holdout, including 2 valid masks and all 10 frozen defect types. Seventy-two actual PNG panels cover all seven required contexts; exact files, panels, targets, partitions, outcomes, and corpus seal validate from disk. Synthetic exact geometry does not itself claim real-image generalization or critic qualification."
         }
       ],
-      "evidence": "qa/live_verification/visual_critic_calibration_corpus_contract_20260721.json SHA-256 13cbcb2f8b144867f68d5e0e9fcba5f3e65ac7bdacf594184975abaee9f3ce04; 22 focused corpus/target tests pass; Ruff and Black pass; static contract only, populated frozen corpus pending.",
+      "evidence": "qa/live_verification/visual_critic_calibration_corpus_20260721.json SHA-256 44bf04f9a9bb181fee4deb16af5ba3fb25e6f2b507d5248affee292b950618aa; corpus ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74; manifest file 9959872d1b2044c35ad33fb69b9e06b5ad9d3f193e23b13fb366bd8affcee219; 12 cases, 72 PNGs, 17 focused tests; Ruff/Black pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T22:59:24+00:00",
+      "updated_at": "2026-07-21T23:23:13+00:00",
       "orphaned": false
     },
     "MF-P4-11.18": {

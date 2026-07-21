@@ -11289,6 +11289,23 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   contract. Evidence:
   `qa/live_verification/visual_critic_calibration_corpus_contract_20260721.json`.
 
+## 2026-07-21 — Frozen visual calibration corpus materialized
+
+- `MF-P4-11.17` reached `CORPUS_PASS`. The immutable v1 corpus contains 12
+  image-disjoint cases across calibration and untouched qualification-holdout
+  partitions: two valid masks and one exact case for each of ten frozen defect
+  types.
+- Seventy-two actual deterministic PNG panels cover source, strict mask,
+  overlay, contour, full context, and uncertainty zoom. Every panel file,
+  target contract, source, candidate, partition, outcome, context, and whole
+  corpus is hash-bound and revalidated from disk.
+- The exact synthetic geometry covers small parts, hands, hair, contact,
+  occlusion, crop, and multi-person structure. It establishes the reproducible
+  structural calibration gate; it does not claim real-image generalization or
+  qualify a critic by itself.
+- Seventeen corpus/builder/panel tests pass; Ruff and Black pass. Evidence:
+  `qa/live_verification/visual_critic_calibration_corpus_20260721.json`.
+
 ## 2026-07-21 — Qwen 27B critic protocol correction
 
 - The exact 27B FP8 model downloaded and the private vLLM server completed

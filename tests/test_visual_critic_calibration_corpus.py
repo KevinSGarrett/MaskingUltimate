@@ -6,6 +6,7 @@ from copy import deepcopy
 import pytest
 
 from maskfactory.vlm.calibration_corpus import (
+    CONTEXT_TAGS,
     DEFECT_TYPES,
     CalibrationCorpusError,
     calibration_corpus_sha256,
@@ -81,6 +82,8 @@ def _case(index: int, partition: str, outcome: str, defect: str | None) -> dict:
         "defect_type": defect,
         "target_contract": contract,
         "panels": panels,
+        "panel_files": {name: f"case-{index}/{name}.png" for name in panels},
+        "context_tags": [sorted(CONTEXT_TAGS)[(index - 1) % len(CONTEXT_TAGS)]],
         "panel_set_sha256": "",
     }
     case["panel_set_sha256"] = panel_set_sha256(case)

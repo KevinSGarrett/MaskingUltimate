@@ -36,6 +36,9 @@ PANEL_KEYS = frozenset(
         "uncertainty_zoom",
     }
 )
+CONTEXT_TAGS = frozenset(
+    {"small_part", "hand", "hair", "contact", "occlusion", "crop", "multi_person"}
+)
 MANIFEST_KEYS = frozenset(
     {
         "schema_version",
@@ -55,6 +58,8 @@ CASE_KEYS = frozenset(
         "defect_type",
         "target_contract",
         "panels",
+        "panel_files",
+        "context_tags",
         "panel_set_sha256",
     }
 )
@@ -140,6 +145,26 @@ def validate_calibration_corpus(manifest: Mapping[str, Any]) -> None:
             _sha256(panel_hash, f"{case_id}.panels.{panel_name}")
         if panels["source"] != source_sha or panels["binary_mask"] != candidate_sha:
             raise CalibrationCorpusError(f"{case_id} source or candidate panel hash drifted")
+        panel_files = case["panel_files"]
+        if not isinstance(panel_files, Mapping) or set(panel_files) != PANEL_KEYS:
+            raise CalibrationCorpusError(f"{case_id} panel file set is incomplete")
+        if any(
+            not isinstance(value, str)
+            or not value.strip()
+            or value.startswith(("/", "\\"))
+            or ".." in value.replace("\\", "/").split("/")
+            for value in panel_files.values()
+        ):
+            raise CalibrationCorpusError(f"{case_id} panel file path is unsafe")
+        context_tags = case["context_tags"]
+        if (
+            not isinstance(context_tags, Sequence)
+            or isinstance(context_tags, (str, bytes))
+            or not context_tags
+            or not set(context_tags) <= CONTEXT_TAGS
+            or len(set(context_tags)) != len(context_tags)
+        ):
+            raise CalibrationCorpusError(f"{case_id} context tags are invalid")
         expected_panel_set = panel_set_sha256(case)
         if case["panel_set_sha256"] != expected_panel_set:
             raise CalibrationCorpusError(f"{case_id} panel-set hash mismatch")
@@ -171,3 +196,31 @@ def validate_calibration_corpus(manifest: Mapping[str, Any]) -> None:
         raise CalibrationCorpusError("each partition requires both valid and defect masks")
     if observed_defects != DEFECT_TYPES:
         raise CalibrationCorpusError("calibration cases do not cover the frozen defect taxonomy")
+    observed_contexts = {tag for case in cases for tag in case["context_tags"]}
+    if observed_contexts != CONTEXT_TAGS:
+        raise CalibrationCorpusError("calibration cases do not cover the frozen context taxonomy")
+
+
+def validate_calibration_corpus_files(manifest: Mapping[str, Any], root: Any) -> None:
+    """Verify every declared panel path is contained and matches its exact hash."""
+
+    import hashlib
+    from pathlib import Path
+
+    validate_calibration_corpus(manifest)
+    root_path = Path(root).resolve()
+    seen_paths: set[Path] = set()
+    for case in manifest["cases"]:
+        for panel_name, relative in case["panel_files"].items():
+            path = (root_path / relative).resolve()
+            try:
+                path.relative_to(root_path)
+            except ValueError as exc:
+                raise CalibrationCorpusError("calibration panel path escapes corpus root") from exc
+            if path in seen_paths:
+                raise CalibrationCorpusError("calibration panel files are duplicated")
+            seen_paths.add(path)
+            if not path.is_file():
+                raise CalibrationCorpusError(f"calibration panel file is missing: {relative}")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != case["panels"][panel_name]:
+                raise CalibrationCorpusError(f"calibration panel file hash drifted: {relative}")

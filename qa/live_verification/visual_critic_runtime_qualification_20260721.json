@@ -1,0 +1,46 @@
+{
+  "authority_claimed": false,
+  "catalog": {
+    "canonical_sha256": "fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead",
+    "file_sha256": "231c78f49c13a03f69cb92a557c4fa270467feeb815821554d20c0d26ec5fb8a",
+    "lifecycle": {
+      "internvl3_5_8b_bf16": "smoked",
+      "qwen3_6_27b_fp8": "smoked"
+    }
+  },
+  "evidence_validator_status": "PASS",
+  "models": {
+    "internvl3_5_8b_bf16": {
+      "artifact_tree_sha256": "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65",
+      "peak_vram_bytes": 17716740096,
+      "process_pids": [
+        2613506,
+        2618189
+      ],
+      "response_sha256": "de569d019dcbc223f21eee20e639474bfdfa88aead2a02bfcbb31b3a90e39c4c"
+    },
+    "qwen3_6_27b_fp8": {
+      "artifact_tree_sha256": "8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48",
+      "peak_vram_bytes": 50132418560,
+      "process_pids": [
+        2818860,
+        2865707
+      ],
+      "response_sha256": "e9993af5f5423855578123129b4935eb0a8fcc4c0860924bfa224680ab68a144"
+    }
+  },
+  "recorded_at": "2026-07-21T23:34:19.2147490Z",
+  "remote_job_dir": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_restart_completion",
+  "remote_state": "complete/pass",
+  "runtime_evidence_file": "qa/live_verification/visual_critic_single_gpu_runtime_20260721.json",
+  "runtime_evidence_sha256": "eb5cdd8ea9f355e5016bf5d272b70b4c11d34418e5f4ba977e2218076679855d",
+  "runtime_evidence_sha256_matches_remote": true,
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/runtime_qualification.py": "3f315c2fb3c3e26e256e241617484d98646104c75afb43d99c4164ee6548d316",
+    "tests/test_visual_critic_runtime_qualification.py": "932689dedbfc054778e6ec0fe4b62b51d7cda15addf125ddfdc763f40efdd9f6"
+  },
+  "status": "RUNTIME_PASS_BOUNDED",
+  "test_status": "31 catalog/runtime/authority/routing tests PASS; Ruff PASS",
+  "truth_boundary": "runtime smoke and lifecycle only; no critic role, calibration, or mask authority is promoted"
+}

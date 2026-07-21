@@ -1,6 +1,6 @@
 schema_version: 1.0.0
 catalog_id: maskfactory_visual_critic_catalog_v1
-recorded_at: '2026-07-21T22:15:00Z'
+recorded_at: '2026-07-21T23:32:00Z'
 current_hardware:
   tier_id: runpod_single_gpu_48gb
   gpu_name: NVIDIA RTX 6000 Ada Generation
@@ -117,7 +117,7 @@ models:
     file_count: 24
     total_repository_bytes: 17072800269
     weight_bytes: 17056729432
-    runtime: {engine: transformers, version_constraint: '>=4.52.1', status: planned}
+    runtime: {engine: transformers, version_constraint: '>=4.52.1', status: smoked}
     hardware:
       tier: single_gpu_candidate
       single_gpu_48gb_feasible: true
@@ -125,8 +125,8 @@ models:
       live_measurement_required: true
     candidate_roles: [independent_juror]
     assigned_roles: []
-    lifecycle: planned
-    artifact_sha256: null
+    lifecycle: smoked
+    artifact_sha256: e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65
     infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
@@ -163,7 +163,7 @@ models:
     file_count: 80
     total_repository_bytes: 30890040900
     weight_bytes: 30866866928
-    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: planned}
+    runtime: {engine: vllm, version_constraint: '>=0.19.0', status: smoked}
     hardware:
       tier: single_gpu_candidate
       single_gpu_48gb_feasible: true
@@ -171,9 +171,9 @@ models:
       live_measurement_required: true
     candidate_roles: [fast_screener, primary_visual_critic]
     assigned_roles: []
-    lifecycle: planned
-    artifact_sha256: null
+    lifecycle: smoked
+    artifact_sha256: 8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48
     infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
-sha256: d42ab7ab94faa6811d8acfe0bf194bc8d24472c124f41dd596e14f00b85a39b5
+sha256: fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead

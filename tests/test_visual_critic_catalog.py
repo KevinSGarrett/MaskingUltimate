@@ -33,7 +33,14 @@ def test_catalog_binds_exact_models_lifecycle_and_hardware_without_authority() -
         "internvl3_5_241b_a28b_bf16",
         "qwen3_6_27b_fp8",
     }
-    assert all(model["lifecycle"] == "planned" for model in models.values())
+    assert {model_id: model["lifecycle"] for model_id, model in models.items()} == {
+        "qwen3_6_35b_a3b_fp8": "planned",
+        "qwen3_5_122b_a10b_fp8": "planned",
+        "qwen3_5_397b_a17b_fp8": "planned",
+        "internvl3_5_8b_bf16": "smoked",
+        "internvl3_5_241b_a28b_bf16": "planned",
+        "qwen3_6_27b_fp8": "smoked",
+    }
     assert all(model["assigned_roles"] == [] for model in models.values())
     assert not models["qwen3_6_35b_a3b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
     assert (
@@ -42,6 +49,14 @@ def test_catalog_binds_exact_models_lifecycle_and_hardware_without_authority() -
     )
     assert models["qwen3_6_27b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
     assert models["internvl3_5_8b_bf16"]["hardware"]["single_gpu_48gb_feasible"]
+    assert (
+        models["qwen3_6_27b_fp8"]["artifact_sha256"]
+        == "8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48"
+    )
+    assert (
+        models["internvl3_5_8b_bf16"]["artifact_sha256"]
+        == "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65"
+    )
     assert not models["qwen3_5_122b_a10b_fp8"]["hardware"]["single_gpu_48gb_feasible"]
     assert models["qwen3_5_397b_a17b_fp8"]["hardware"]["minimum_gpu_count_by_weight_bytes"] == 8
     assert (

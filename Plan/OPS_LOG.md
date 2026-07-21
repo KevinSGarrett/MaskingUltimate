@@ -11400,3 +11400,36 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   no-progress, cap, duplicate-hypothesis, and label/ROI/intent/disagreement/
   hypothesis drift paths; Ruff and Black pass. Evidence:
   `qa/live_verification/bound_transactional_repair_execution_20260721.json`.
+
+## 2026-07-21 - Fail-closed visual-critic role qualification
+
+- `MF-P4-11.18` reached `STATIC_PASS`. The role gate measures valid-mask pass
+  rate, defect recall, precision, serious false-pass, abstention, schema and
+  context binding, deterministic replay, p95 latency, and peak VRAM against
+  role-specific thresholds frozen and hashed before evaluation.
+- Every prediction is bound to the exact corpus, target contract, panel set,
+  catalog model/revision/quantization, private hardware tier, artifact,
+  prompt, runtime, response, and context evidence. Malformed or drifted input
+  is rejected rather than scored.
+- Eleven focused tests prove correct positive/negative results pass without
+  claiming authority, while all-reject, all-abstain, hallucinated-context,
+  serious-false-pass, schema, replay, latency, VRAM, and hash-drift paths fail
+  closed. Twenty-nine combined qualification/corpus/authority tests pass;
+  Ruff and Black pass. Evidence:
+  `qa/live_verification/visual_critic_role_qualification_gate_20260721.json`.
+
+## 2026-07-21 - Single-GPU visual-critic runtime qualification
+
+- `MF-P0-17.23` passed its bounded runtime gate on the persistent RunPod
+  RTX 6000 Ada tier. Qwen3.6-27B-FP8 and InternVL3.5-8B each passed two
+  isolated process runs with distinct live PIDs, exact artifact/revision,
+  private execution, measured cold/warm latency and peak VRAM, and identical
+  response hashes across restart.
+- The locally retained result is byte-identical to the remote result at
+  SHA-256 `eb5cdd8ea9f355e5016bf5d272b70b4c11d34418e5f4ba977e2218076679855d`
+  and passes the governed runtime validator. The catalog is resealed at
+  canonical SHA-256
+  `fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead`.
+- Both feasible models advance only to `smoked`. No critic role, calibration,
+  production mask authority, or multi-GPU availability is claimed. Evidence:
+  `qa/live_verification/visual_critic_runtime_qualification_20260721.json`.

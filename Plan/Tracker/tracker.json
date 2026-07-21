@@ -11450,7 +11450,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-21T22:20:57+00:00",
@@ -11466,12 +11466,17 @@
           "ts": "2026-07-21T23:02:42+00:00",
           "actor": "codex",
           "text": "Qwen27 exact model and private vLLM server loaded successfully. The first client received HTTP 200 but failed the closed-JSON parser; owned processes were contained and GPU returned to baseline. One materially different protocol retry is running with strict JSON schema, no-think control, deterministic vLLM generation config, raw response evidence, and a new owned job directory."
+        },
+        {
+          "ts": "2026-07-21T23:15:53+00:00",
+          "actor": "codex",
+          "text": "The strict-schema 27B attempt passed two distinct processes but exact response hashes differed because the free-text summary varied; it remains an honest determinism failure. One final materially different retry is running with that summary frozen to an exact schema constant while preserving all resource/restart measurements."
         }
       ],
-      "evidence": "Prior partial evidence preserved; qa/live_verification/visual_critic_protocol_retry_launch_20260721.json SHA-256 9c5832d2a9d39cee174700c86d01606055b439cbddf895b5cc863aded57c29f7; protocol retry PID 2762789 script d65fdf913fb16b62334eb3787e62ca3592da73085c0872cefe471f5281ba75c9 running; no authority claimed.",
+      "evidence": "qa/live_verification/visual_critic_deterministic_retry_launch_20260721.json SHA-256 4483186510a18ff404d7662155a4a0339261b71474cbb454039a750fa0108631; final retry PID 2818855 script 011bd115d64728b90385261521d85f2c15216a420c02eb5ea91d146b8922068f running; prior two process passes retained as determinism fail; no authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T23:02:42+00:00",
+      "updated_at": "2026-07-21T23:15:53+00:00",
       "orphaned": false
     },
     "MF-P0-17.24": {

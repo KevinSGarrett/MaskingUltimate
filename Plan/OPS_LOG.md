@@ -11355,3 +11355,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Nineteen combined parser/panel tests pass; Ruff and Black pass. The parser
   sets critic pixel authority to false and only emits a canonical intent hash.
   Evidence: `qa/live_verification/bounded_visual_repair_intent_20260721.json`.
+
+## 2026-07-21 — Qwen 27B deterministic replay correction
+
+- The strict-schema protocol attempt passed both isolated process runs, but
+  the unconstrained summary text produced different exact response hashes.
+  That attempt is retained as a determinism failure rather than a pass.
+- One final materially different retry freezes the summary field to an exact
+  schema constant while retaining the exact model, private endpoint, two
+  fresh process runs, fixed prompt/seed, resource measurements, and raw
+  response evidence. PID 2818855; script SHA-256
+  `011bd115d64728b90385261521d85f2c15216a420c02eb5ea91d146b8922068f`.
+- Evidence:
+  `qa/live_verification/visual_critic_deterministic_retry_launch_20260721.json`.

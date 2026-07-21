@@ -11,20 +11,11 @@
     "provider": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["key", "role", "lifecycle_state", "content_compatibility", "license_eligibility", "benchmark_certificate", "rollback"],
+      "required": ["key", "role", "lifecycle_state", "license_eligibility", "benchmark_certificate", "rollback"],
       "properties": {
         "key": {"type": "string", "minLength": 1},
         "role": {"type": "string", "minLength": 1},
         "lifecycle_state": {"enum": ["planned", "installed", "benchmarked", "promoted", "reference_only", "retired", "unregistered"]},
-        "content_compatibility": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["adult_nonexplicit", "consensual_explicit_adult"],
-          "properties": {
-            "adult_nonexplicit": {"enum": ["allowed", "prohibited", "unclear"]},
-            "consensual_explicit_adult": {"enum": ["allowed", "prohibited", "unclear"]}
-          }
-        },
         "license_eligibility": {
           "type": "object",
           "additionalProperties": false,

@@ -46,7 +46,6 @@ def _build_report(tmp_path: Path) -> dict:
                     "scope": scope,
                     "people": people,
                     "rights": "owned_fixture",
-                    "content_lane": "adult_nonexplicit",
                 },
                 sort_keys=True,
             ),

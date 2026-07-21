@@ -56,9 +56,6 @@ class DazOperatingProfile:
     automatic_asset_purchase: bool
     automatic_account_login: bool
     character_scope: Mapping[str, Any]
-    adult_and_nsfw_assets_eligible: bool
-    content_tags_are_organizational_not_training_exclusions: bool
-    known_or_suspected_minor_prohibited: bool
 
 
 @dataclass(frozen=True)
@@ -155,12 +152,6 @@ def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
     for field, expected in required_profile.items():
         if profile.get(field) != expected:
             raise DazPolicyError(f"DAZ operating profile violates {field}")
-    content = profile.get("content_policy", {})
-    if content.get("adult_and_nsfw_assets_eligible") is not True:
-        raise DazPolicyError("governed adult DAZ assets were incorrectly excluded")
-    if content.get("known_or_suspected_minor_prohibited") is not True:
-        raise DazPolicyError("DAZ adult-only age gate is missing")
-
     worker = documents["worker"]
     required_worker = {
         "enabled": False,
@@ -195,7 +186,6 @@ def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
     for field, expected in required_capacity.items():
         if capacity.get(field) != expected:
             raise DazPolicyError(f"DAZ acquisition capacity violates {field}")
-    content = profile["content_policy"]
     typed_paths = DazPathsConfig(
         schema_version=paths["schema_version"],
         root=Path(paths["root"]),
@@ -217,11 +207,6 @@ def load_typed_daz_configuration(config_root: Path) -> DazConfiguration:
         automatic_asset_purchase=profile["automatic_asset_purchase"],
         automatic_account_login=profile["automatic_account_login"],
         character_scope=profile["character_scope"],
-        adult_and_nsfw_assets_eligible=content["adult_and_nsfw_assets_eligible"],
-        content_tags_are_organizational_not_training_exclusions=content[
-            "content_tags_are_organizational_not_training_exclusions"
-        ],
-        known_or_suspected_minor_prohibited=content["known_or_suspected_minor_prohibited"],
     )
     typed_worker = DazWorkerConfig(**worker)
     typed_training = DazTrainingPolicy(

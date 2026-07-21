@@ -115,7 +115,6 @@ def _good_inputs() -> AnatomyV2QaInputs:
         name: {
             "authority": "human_visible_review",
             "visible_surface_only": True,
-            "content_lane_decision": "permitted",
         }
         for name in NEW_LABELS
     }
@@ -128,7 +127,6 @@ def _good_inputs() -> AnatomyV2QaInputs:
         ambiguity_masks={},
         review_rois=rois,
         label_provenance=provenance,
-        content_lane_decision="permitted",
         midline_x=32,
         character_left_is_lower_x=True,
     )
@@ -145,7 +143,6 @@ def _clone(inputs: AnatomyV2QaInputs, **overrides) -> AnatomyV2QaInputs:
         "review_rois": {name: mask.copy() for name, mask in inputs.review_rois.items()},
         "label_provenance": copy.deepcopy(inputs.label_provenance),
         "projected_or_amodal_labels": frozenset(inputs.projected_or_amodal_labels),
-        "content_lane_decision": inputs.content_lane_decision,
         "midline_x": inputs.midline_x,
         "character_left_is_lower_x": inputs.character_left_is_lower_x,
     }
@@ -241,7 +238,6 @@ def test_config_has_exact_checks_and_qa_only_canonical_vlm_vocabulary() -> None:
         config["vlm"]["canonical_anatomy_vocabulary"]
     )
     assert "QC-V2-011" not in config["hard_checks"]
-    assert "required_adult_intake_decision" not in config["governance"]
 
 
 def test_good_seed_passes_all_active_checks_and_report_remains_non_authoritative(

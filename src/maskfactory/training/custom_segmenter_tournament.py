@@ -24,7 +24,7 @@ DEFAULT_POLICY_PATH = (
     / "benchmark_matrices"
     / "custom_segmenter_training_tournament_v1.json"
 )
-POLICY_SHA256 = "a3fe36add8f5920785df2b60a51de45873125896d76b235b0ea8acc5fb182b16"
+POLICY_SHA256 = "431843f95ba4045a00a2220e19d770eb27531ffd63bd40649a7b8698baab9927"
 PROVIDERS = ("segformer_b3", "mask2former_swin_b", "eomt_dinov3_small_640")
 CONTEXTS = (
     "clothing_materials",

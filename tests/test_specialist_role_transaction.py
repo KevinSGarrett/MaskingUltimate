@@ -23,7 +23,6 @@ from maskfactory.models.registry import (
 from maskfactory.providers import matrix_promotion
 from maskfactory.validation import validate_document
 from test_model_registry import (
-    _CONTENT_COMPATIBILITY,
     _benchmark_certificate,
     _governed_trained_entry,
     _registry_document,
@@ -48,7 +47,6 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
         "checkpoint_sha256": _sha(checkpoint.read_bytes()),
         "runtime_lock_sha256": "2" * 64,
         "license_evidence_sha256": "3" * 64,
-        "content_decision_sha256": "4" * 64,
     }
     common = {
         "version_tag": "pytest-v1",
@@ -89,7 +87,6 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
         "candidate_key": "candidate_hand",
         "target_role": "hand_finger_segmentation",
         "identity_hashes": identities,
-        "content_compatibility": dict(_CONTENT_COMPATIBILITY),
         "rollback_evidence": {"incumbent_provider": "incumbent_hand"},
         "sha256": "5" * 64,
     }

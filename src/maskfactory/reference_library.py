@@ -89,18 +89,11 @@ def validate_reference_library_policy(policy: Mapping[str, Any]) -> None:
         raise ReferenceLibraryError(
             "reference output_database escapes governed output root"
         ) from exc
-    content = policy.get("content_policy")
-    if not isinstance(content, Mapping):
-        raise ReferenceLibraryError("reference content policy is missing")
-    required_content = {
-        "adult_content_is_eligible": True,
-        "nsfw_tag_is_organizational_not_an_exclusion": True,
-        "known_or_suspected_minor_is_prohibited": True,
-        "require_governed_source_rights": True,
-    }
-    for field, expected in required_content.items():
-        if content.get(field) is not expected:
-            raise ReferenceLibraryError(f"reference content policy violates {field}")
+    source_governance = policy.get("source_governance")
+    if not isinstance(source_governance, Mapping) or source_governance != {
+        "require_governed_source_rights": True
+    }:
+        raise ReferenceLibraryError("reference source-rights governance is missing")
     tiers = policy.get("tiers")
     if not isinstance(tiers, Mapping) or set(tiers) != set(REFERENCE_TIERS):
         raise ReferenceLibraryError("reference tiers must be benchmark and retrieval")

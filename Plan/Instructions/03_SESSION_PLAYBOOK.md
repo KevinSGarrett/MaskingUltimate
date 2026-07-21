@@ -55,7 +55,7 @@ because the work is done or because context/time is running out.
 9. **STRICT VLM gate awareness (when visual/MVC/CAA/gold/champion in scope).**
    Re-read Standing Orders § SELF-HOSTED STRICT VLM GATE and
    `13_SELF_HOSTED_STRICT_VLM_GATE.md`. Confirm Ollama loopback + high-end
-   models (`llava:13b`, ensemble `qwen2.5vl:7b`). Do not promote MVC/CAA
+   evidence-qualified primary and independent-family juror from doc 25. Do not promote MVC/CAA
    without panel+STRICT-VLM evidence. On RunPod, serialize with hand climb
    VRAM; unload VLMs after critic bursts. NEVER EC2; no cloud VLM for MF QA.
 10. **NO-STOP orientation.** Re-read Standing Orders § CONTINUOUS UNTIL E2E
@@ -134,7 +134,7 @@ UNTIL E2E COMPLETE (NO STOP)).
    state.
 2. `python tracker.py validate` — confirm no missing-evidence or
    missing-blocked-reason drift crept in, and that the item count still
-   matches expectations (798, unless `Plan\Items\*.md` was deliberately
+   matches expectations (827, unless `Plan\Items\*.md` was deliberately
    edited and rebuilt).
 3. If you're stopping mid-item, leave a clean handoff:
    `python tracker.py set <id> --status in_progress --percent <N> --note

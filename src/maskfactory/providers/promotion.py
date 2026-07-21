@@ -13,8 +13,6 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Any
 
-from maskfactory.governance import CONTENT_COMPATIBILITY_KEYS
-
 from .benchmark_policy import (
     SpecialistBenchmarkPolicyError,
     load_specialist_margin_manifest,
@@ -28,7 +26,6 @@ REQUIRED_IDENTITY_HASHES = {
     "checkpoint_sha256",
     "runtime_lock_sha256",
     "license_evidence_sha256",
-    "content_decision_sha256",
 }
 
 
@@ -68,13 +65,6 @@ def _validate_identity_hashes(value: Any) -> None:
 
 
 def _validate_content_and_license(packet: Mapping[str, Any]) -> None:
-    compatibility = packet.get("content_compatibility")
-    if not isinstance(compatibility, Mapping) or set(compatibility) != set(
-        CONTENT_COMPATIBILITY_KEYS
-    ):
-        raise SpecialistPromotionError("promotion content decisions are incomplete")
-    if any(compatibility[lane] != "allowed" for lane in CONTENT_COMPATIBILITY_KEYS):
-        raise SpecialistPromotionError("promotion content decision is not allowed")
     license_gate = packet.get("license_gate")
     if not isinstance(license_gate, Mapping) or set(license_gate) != {
         "verify_license",
@@ -205,7 +195,6 @@ def validate_specialist_promotion_packet(
         "target_role",
         "lifecycle_state",
         "identity_hashes",
-        "content_compatibility",
         "license_gate",
         "benchmark_results",
         "runtime_reliability",

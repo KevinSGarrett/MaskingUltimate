@@ -110,8 +110,8 @@ one split group. Strict maps use MaskFactory writers and ambiguous pixels are 25
 | `benchmark_reference` | 2,500 | frozen coverage/reference evaluation and acquisition targets | training, retrieval, truth authority |
 | `retrieval_reference` | 18,000 | hard-case similarity, coverage deficits, acquisition context | automatic truth/training admission |
 
-Adult or NSFW content is eligible when it is governed adult material; its content tag is
-organizational, not an exclusion. Known or suspected minors remain prohibited. Originals are immutable.
+Originals are immutable. The centralized source policy in doc 01 §7 applies without adding a
+reference-library-specific admission system.
 Selection alone never creates masks or gold; an image gains truth only through an independent normal
 human-anchor or autonomous-certification workflow.
 

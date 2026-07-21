@@ -160,8 +160,8 @@ Once a person has edited a task, autonomous results must use a new task or compa
 
 ## 9. Cost, privacy, and availability
 
-Cloud transmission remains default-deny and requires exact source hash, content-lane authorization, rights
-evidence, provider approval, credential, and budget. Spend is reserved before dispatch; unknown usage is
+Cloud transmission remains default-deny and requires exact source hash, rights evidence, provider approval,
+credential, and budget. Spend is reserved before dispatch; unknown usage is
 conservatively charged. Definite pre-billing HTTP rejections (including 400/401/403/404/409/422/429)
 release their reservations; malformed or unknown post-dispatch usage remains charged at the reserved
 maximum. The daily hard limit remains $15. One shared job quota caps all diagnosis and committee calls,

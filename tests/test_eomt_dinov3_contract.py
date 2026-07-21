@@ -76,10 +76,6 @@ def test_eomt_lock_registry_and_live_evidence_are_bound() -> None:
     assert registry["verify_license"] is False
     assert registry["source_revision"] == lock["source"]["revision"]
     assert registry["checkpoint_sha256"] == lock["snapshot"]["checkpoint_sha256"]
-    assert registry["content_compatibility"] == {
-        "adult_nonexplicit": "allowed",
-        "consensual_explicit_adult": "allowed",
-    }
     for key in ("training_config", "smoke_script", "contract"):
         path = ROOT / lock["reproduction"][key]
         assert (

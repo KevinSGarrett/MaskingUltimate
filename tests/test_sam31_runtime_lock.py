@@ -71,11 +71,7 @@ def test_sam31_remains_ineligible_until_smoke_and_benchmark_are_resolved() -> No
     )
     entry = registry["providers"]["sam3_1"]
 
-    for lane in ("adult_nonexplicit", "consensual_explicit_adult"):
-        assert entry["content_compatibility"][lane] == "allowed"
-        assert provider_activation_issues(entry, content_lane=lane) == (
-            "lifecycle_state='planned' is not activatable",
-        )
+    assert provider_activation_issues(entry) == ("lifecycle_state='planned' is not activatable",)
 
 
 def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:

@@ -58,7 +58,7 @@ promoted.
 3. Create stable product and asset IDs independent of filenames.
 4. Classify asset type, content type, figure generation, compatibility bases, dependencies, vendor/PA,
    product page, install date, version, and source evidence.
-5. Add operating metadata: source/product identity, adult-lane compatibility, distribution false,
+5. Add operating metadata: source/product identity, allowed-use evidence, distribution false,
    permitted local operation, scan date, and registry version.
 6. Detect missing, duplicate, shadowed, modified, and orphan files.
 7. Require curated overrides where metadata is insufficient. An override is explicit, reviewed, and

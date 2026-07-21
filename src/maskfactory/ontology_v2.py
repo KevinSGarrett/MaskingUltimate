@@ -159,8 +159,8 @@ def _validate_proposal(document: Mapping[str, Any]) -> None:
     ]:
         raise OntologyV2Error("ontology-v2 visibility-state delta is not exact")
     governance = document.get("governance")
-    if not isinstance(governance, dict) or governance.get("confirmed_adult_required") is not True:
-        raise OntologyV2Error("ontology-v2 must require confirmed-adult governance")
+    if not isinstance(governance, dict):
+        raise OntologyV2Error("ontology-v2 governance must be a mapping")
     for false_gate in (
         "hidden_anatomy_may_be_visible_gold",
         "clothing_contour_is_anatomy_evidence",

@@ -146,8 +146,6 @@ def _seed_active_failure(paths, mutation: str) -> None:
         active.pop("sha256")
     elif mutation == "missing_runtime_identity":
         active.pop("runtime")
-    elif mutation == "unresolved_content":
-        active["content_compatibility"]["consensual_explicit_adult"] = "unclear"
     elif mutation == "unresolved_license":
         active["license_review"] = {"status": "pending"}
     elif mutation == "missing_benchmark":
@@ -307,7 +305,6 @@ def test_review_expires_at_ninety_days(tmp_path: Path):
         ("active_lifecycle_not_promoted", "active_lifecycle_not_promoted"),
         ("missing_artifact_hash", "active_artifact_hash_missing"),
         ("missing_runtime_identity", "active_runtime_identity_missing"),
-        ("unresolved_content", "content_compatibility_unresolved"),
         ("unresolved_license", "license_decision_unresolved"),
         ("missing_benchmark", "benchmark_certificate_missing"),
         ("invalid_benchmark", "benchmark_certificate_invalid"),

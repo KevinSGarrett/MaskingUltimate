@@ -198,7 +198,7 @@ def _audit_sources(
                             subject,
                             f"{key}: expected {expected_value!r}, got {governance.get(key)!r}",
                         )
-                for key in ("rights", "content_lane"):
+                for key in ("rights",):
                     if not isinstance(governance.get(key), str) or not governance[key]:
                         _finding(
                             findings,

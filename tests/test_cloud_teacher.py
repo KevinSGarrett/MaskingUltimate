@@ -227,7 +227,7 @@ def test_budget_ledger_detects_tampering_and_duplicate_request_ids(tmp_path: Pat
         ledger.snapshot()
 
 
-def test_cloud_eligibility_requires_exact_hash_content_rights_provider_and_approval(
+def test_cloud_eligibility_requires_exact_hash_rights_provider_and_approval(
     tmp_path: Path,
 ):
     source = tmp_path / "source.png"
@@ -235,8 +235,6 @@ def test_cloud_eligibility_requires_exact_hash_content_rights_provider_and_appro
     registry = tmp_path / "eligibility.yaml"
     record = {
         "source_sha256": sha256_file(source),
-        "content_lane": "consensual_explicit_adult",
-        "content_compatibility": "allowed",
         "rights_evidence": "owned by Kevin",
         "approved_by": "kevin",
         "approved_at": "2026-07-12T18:00:00Z",
@@ -322,8 +320,6 @@ def test_teacher_cascade_reserves_budget_and_stops_when_primary_agrees(tmp_path:
     config["governance"]["eligibility_registry"] = str(tmp_path / "eligibility.yaml")
     record = {
         "source_sha256": sha256_file(request.source_path),
-        "content_lane": "adult_nonexplicit",
-        "content_compatibility": "allowed",
         "rights_evidence": "owned",
         "approved_by": "kevin",
         "approved_at": "2026-07-12T18:00:00Z",
@@ -380,8 +376,6 @@ def test_teacher_committee_calls_every_enabled_provider_for_the_exact_candidate(
                 "images": {
                     request.image_id: {
                         "source_sha256": sha256_file(request.source_path),
-                        "content_lane": "general",
-                        "content_compatibility": "allowed",
                         "rights_evidence": "owned",
                         "approved_by": "kevin",
                         "approved_at": "2026-07-13T18:00:00Z",
@@ -449,8 +443,6 @@ def test_teacher_failure_conservatively_charges_full_reservation(tmp_path: Path)
                 "images": {
                     request.image_id: {
                         "source_sha256": sha256_file(request.source_path),
-                        "content_lane": "general",
-                        "content_compatibility": "allowed",
                         "rights_evidence": "owned",
                         "approved_by": "kevin",
                         "approved_at": "2026-07-12T18:00:00Z",
@@ -494,8 +486,6 @@ def test_definitely_unbilled_provider_rejection_releases_reservation(tmp_path: P
                 "images": {
                     request.image_id: {
                         "source_sha256": sha256_file(request.source_path),
-                        "content_lane": "general",
-                        "content_compatibility": "allowed",
                         "rights_evidence": "owned",
                         "approved_by": "kevin",
                         "approved_at": "2026-07-12T18:00:00Z",
@@ -970,8 +960,6 @@ def test_s11_cloud_teacher_is_shadow_only_and_writes_isolated_candidate(tmp_path
                 "images": {
                     "img_0123456789ab": {
                         "source_sha256": sha256_file(source),
-                        "content_lane": "general",
-                        "content_compatibility": "allowed",
                         "rights_evidence": "owned",
                         "approved_by": "kevin",
                         "approved_at": "2026-07-12T18:00:00Z",

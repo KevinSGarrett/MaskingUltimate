@@ -110,7 +110,6 @@ def main() -> int:
         "fixture": {
             "path": FIXTURE.relative_to(ROOT).as_posix(),
             "sha256": _sha256(FIXTURE),
-            "content_lane": "adult_nonexplicit_allowed",
         },
         "model": {
             "architecture": config["architectures"],

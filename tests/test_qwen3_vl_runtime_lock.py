@@ -26,10 +26,6 @@ def test_qwen3_vl_registry_and_runtime_lock_bind_exact_installed_variants() -> N
     assert registry["verify_license"] is False
     assert registry["source_revision"] == lock["source"]["revision"]
     assert registry["license_snapshot_sha256"] == lock["license"]["ollama_license_layer_sha256"]
-    assert registry["content_compatibility"] == {
-        "adult_nonexplicit": "allowed",
-        "consensual_explicit_adult": "allowed",
-    }
     for key, variant in lock["variants"].items():
         assert registry["variants"][key]["model"] == variant["model"]
         assert registry["variants"][key]["manifest_sha256"] == variant["ollama_manifest_sha256"]

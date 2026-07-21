@@ -89,9 +89,7 @@ def _gold_selection_fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
         (package / ".maskfactory_frozen.json").write_text("{}", encoding="utf-8")
         intake = images / image_id
         intake.mkdir(parents=True)
-        (intake / "manifest.json").write_text(
-            json.dumps({"age_safety": {"verdict": "clear_adult"}}), encoding="utf-8"
-        )
+        (intake / "manifest.json").write_text(json.dumps({}), encoding="utf-8")
         cases.append(
             {
                 "id": f"gold_{index:02d}",
@@ -153,7 +151,6 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
                 "defect_type": DEFECT_TAXONOMY[index % len(DEFECT_TAXONOMY)],
                 "governance": {
                     "source_origin": "generated",
-                    "age_safety": "clear_adult",
                     "rights_evidence": "deterministic test fixture generated in this test",
                     "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
                 },
@@ -168,7 +165,7 @@ def test_production_builder_requires_explicit_unique_good_defect_pairs(
     assert document["corpus_authority"] == "explicit_source_good_defect_pairs"
     assert document["answer_text_embedded_in_panels"] is False
     assert len(document["sources"]) == 20
-    assert {source["age_safety"] for source in document["sources"]} == {"clear_adult"}
+    assert {source["source_origin"] for source in document["sources"]} == {"generated"}
     assert load_cases(output) == cases
 
 
@@ -189,7 +186,7 @@ def test_gold_selection_builds_exact_governed_calibration_corpus(tmp_path: Path)
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["corpus_authority"] == "explicit_source_good_defect_pairs"
     assert len({source["source_sha256"] for source in manifest["sources"]}) == 20
-    assert {source["age_safety"] for source in manifest["sources"]} == {"clear_adult"}
+    assert {source["source_origin"] for source in manifest["sources"]} == {"generated"}
     assert (output / "seeds/manifest.json").is_file()
 
 
@@ -291,7 +288,6 @@ def test_production_builder_refuses_duplicate_or_ungoverned_sources(tmp_path: Pa
             "defect_type": DEFECT_TAXONOMY[index % len(DEFECT_TAXONOMY)],
             "governance": {
                 "source_origin": "owned_photo",
-                "age_safety": "clear_adult",
                 "rights_evidence": "fixture",
                 "source_sha256": digest,
             },
@@ -303,9 +299,9 @@ def test_production_builder_refuses_duplicate_or_ungoverned_sources(tmp_path: Pa
     with pytest.raises(VlmEvalError, match="20 distinct source images"):
         build_calibration_from_seed_manifest(manifest, tmp_path / "output")
 
-    seeds[0]["governance"]["age_safety"] = "uncertain"
+    seeds[0]["governance"]["source_origin"] = "invalid"
     manifest.write_text(json.dumps({"seeds": seeds}), encoding="utf-8")
-    with pytest.raises(VlmEvalError, match="not age-cleared adult"):
+    with pytest.raises(VlmEvalError, match="source origin is not governed"):
         build_calibration_from_seed_manifest(manifest, tmp_path / "output")
 
 

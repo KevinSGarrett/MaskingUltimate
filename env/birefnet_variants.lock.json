@@ -76,7 +76,7 @@
     "provider_adapter": "src/maskfactory/providers/birefnet_variants.py",
       "provider_adapter_sha256": "6916f277e99ac43dd9fcf61362dc8aeffa039cfb16d824a52c7c99a3bcdaaf83",
     "integration_script": "tools/verify_birefnet_provider.py",
-    "integration_script_sha256": "5449f5830ed2e4a2ac2824ea3f1e219dc3fc059783c969841edf28c4b25a0fe9",
+    "integration_script_sha256": "fc6affc339a90b3f99f9a1a6da876d2f21bdeba272bdd687213c35e158e6baca",
     "contract_tests": "tests/test_birefnet_variant_provider.py",
       "contract_tests_sha256": "a127d46585680dff5b01b8d798ac898a51e3c5fe0afca924f058aa0f15f7299c"
   },

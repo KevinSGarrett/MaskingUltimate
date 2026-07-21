@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T20:10:00Z",
+  "worktree": "C:\\w\\maskfactory-plan-modernization",
+  "branch": "codex/maskfactory-plan-modernization",
+  "base_commit": "83907bac5ba5e7412671c8ec09bb134ab35d830c",
+  "scope": "plan_items_tracker_runtime_uniform_admission_and_visual_authority_modernization",
+  "tracker": {
+    "item_count": 827,
+    "new_items": 29,
+    "orphaned_items": 0,
+    "structural_validation": "pass",
+    "unresolved_hard_blockers": 23,
+    "mf_p0_14_04": {
+      "status": "complete",
+      "description": "Verify one uniform admission path governed by provenance, license, allowed use, annotation, QA, and authority."
+    }
+  },
+  "active_contract": {
+    "source_admission": "uniform",
+    "provider_activation_inputs": [
+      "lifecycle",
+      "license_and_allowed_use",
+      "runtime_identity",
+      "benchmark_evidence",
+      "authority_constraints",
+      "rollback_readiness"
+    ],
+    "special_source_or_provider_routes": false,
+    "centralized_source_policy": "Plan/01_PROJECT_CHARTER_AND_SCOPE.md section 7",
+    "immutable_history_rewritten": false,
+    "raw_third_party_identifiers_renamed": false
+  },
+  "runtime_contract_changes": [
+    "provider and model registries no longer carry special compatibility fields",
+    "serving provenance no longer exposes or requires special compatibility fields",
+    "promotion packets no longer require special decision hashes or fields",
+    "cloud teacher exact-image admission uses hash, rights, approval, provider, credential, and budget evidence",
+    "DAZ and reference-library policy use ordinary source and rights governance",
+    "DAZ S00 source records no longer carry a special construction-eligibility field",
+    "intake retains one centralized source-policy exception and otherwise uses the uniform path"
+  ],
+  "validation": [
+    {
+      "command_scope": "governance_external_currency_model_registry_and_runtime_locks",
+      "status": "pass"
+    },
+    {
+      "command_scope": "specialist_and_custom_segmenter_promotion_transactions",
+      "status": "pass"
+    },
+    {
+      "command_scope": "provider_runtime_benchmark_and_metric_policies",
+      "status": "pass"
+    },
+    {
+      "command_scope": "geometry_pose_silhouette_qwen_and_training_tournament_policies",
+      "status": "pass"
+    },
+    {
+      "command_scope": "serving_static_api_preflight_and_performance_contracts",
+      "status": "pass",
+      "tests": 50
+    },
+    {
+      "command_scope": "daz_reference_civitai_intake_anatomy_and_ontology",
+      "status": "pass_with_expected_skips",
+      "skips": 3
+    },
+    {
+      "command_scope": "cloud_teacher_gold_reference_fixture_and_vlm_eval",
+      "status": "pass"
+    },
+    {
+      "command_scope": "tracker_completion_modernization_and_schema_validation",
+      "status": "pass"
+    },
+    {
+      "command_scope": "final_uniform_admission_daz_intake_civitai_tracker_regression",
+      "status": "pass_with_expected_skip",
+      "tests": 80,
+      "skips": 1
+    },
+    {
+      "command_scope": "ruff_all_source_tests_tools_and_tracker",
+      "status": "pass"
+    },
+    {
+      "command_scope": "black_changed_python_files",
+      "status": "pass",
+      "files_checked": 85
+    },
+    {
+      "command_scope": "git_diff_check",
+      "status": "pass"
+    }
+  ],
+  "known_independent_boundaries": [
+    {
+      "scope": "full_pytest_collection",
+      "status": "blocked_preexisting",
+      "evidence": "tests/test_gold_volume_tournament_inputs.py imports missing maskfactory.serve.docker_contract; the module is absent from both base commit and authoritative root"
+    },
+    {
+      "scope": "asset_complete_eomt_runtime_contract",
+      "status": "runtime_asset_drift",
+      "evidence": "EomtDinov3TrainingContract reports model.safetensors snapshot drift; policy/schema tests pass and no asset-complete runtime claim is made"
+    }
+  ],
+  "result": "STATIC_PASS"
+}

@@ -90,13 +90,10 @@ def test_qualified_runtime_makes_both_sam31_routes_available(tmp_path: Path) -> 
         lambda rows: [row.update(lifecycle_state="planned") for row in rows],
         lambda rows: [row.update(verified=False) for row in rows],
         lambda rows: [row["license_review"].update(status="pending") for row in rows],
-        lambda rows: [
-            row["content_compatibility"].update(consensual_explicit_adult="unclear") for row in rows
-        ],
         lambda rows: [row.pop("sha256", None) for row in rows],
     ],
 )
-def test_registry_lifecycle_verification_license_content_and_hash_gate_availability(
+def test_registry_lifecycle_verification_license_and_hash_gate_availability(
     tmp_path: Path, mutation
 ) -> None:
     def change(document: dict) -> None:

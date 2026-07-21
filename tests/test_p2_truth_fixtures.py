@@ -32,7 +32,7 @@ def test_iou_helpers_use_half_open_boxes_and_binary_nonzero(tmp_path: Path) -> N
     assert binary_mask_iou(tmp_path / "first.png", tmp_path / "second.png") == pytest.approx(1 / 3)
 
 
-def test_manifest_is_exactly_ten_hash_bound_clear_adult_records(tmp_path: Path) -> None:
+def test_manifest_is_exactly_ten_hash_bound_reviewed_records(tmp_path: Path) -> None:
     source = tmp_path / "images/source.jpg"
     mask = tmp_path / "annotations/mask.png"
     source.parent.mkdir()
@@ -45,7 +45,6 @@ def test_manifest_is_exactly_ten_hash_bound_clear_adult_records(tmp_path: Path) 
         "truth_mask_relpath": "annotations/mask.png",
         "truth_mask_sha256": _sha(mask),
         "truth_bbox_xyxy": [0, 0, 4, 4],
-        "age_safety": {"verdict": "clear_adult"},
         "visual_alignment_review": "pass",
     }
     records = [{"id": str(index), **record} for index in range(10)]
@@ -59,9 +58,9 @@ def test_manifest_is_exactly_ten_hash_bound_clear_adult_records(tmp_path: Path) 
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps(document), encoding="utf-8")
     assert len(load_and_validate_fixture_manifest(path, tmp_path)["records"]) == 10
-    document["records"][0]["age_safety"]["verdict"] = "uncertain"
+    document["records"][0]["visual_alignment_review"] = "fail"
     path.write_text(json.dumps(document), encoding="utf-8")
-    with pytest.raises(P2FixtureError, match="clear_adult"):
+    with pytest.raises(P2FixtureError, match="visual alignment"):
         load_and_validate_fixture_manifest(path, tmp_path)
 
 

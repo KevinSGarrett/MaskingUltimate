@@ -561,7 +561,6 @@ def _serving_provenance(role: str, contract: Mapping[str, Any]) -> dict[str, Any
             "key": contract.get("model_key"),
             "role": contract.get("role"),
             "lifecycle_state": contract.get("lifecycle_state"),
-            "content_compatibility": dict(contract.get("content_compatibility", {})),
             "license_eligibility": dict(contract.get("license_eligibility", {})),
             "benchmark_certificate": dict(contract.get("benchmark_certificate", {})),
             "rollback": dict(contract.get("rollback", {})),
@@ -602,7 +601,6 @@ def _registered_serving_contract(registry_path: Path, source: str) -> dict[str, 
         "model_key": entry.get("key"),
         "role": entry.get("role"),
         "lifecycle_state": entry.get("lifecycle_state"),
-        "content_compatibility": dict(entry.get("content_compatibility", {})),
         "license_eligibility": {
             "status": (
                 license_review.get("status") if isinstance(license_review, Mapping) else "missing"
@@ -640,10 +638,6 @@ def _unconfigured_serving_contract() -> dict[str, Any]:
         "model_key": "unconfigured_predictor",
         "role": "unconfigured_predictor",
         "lifecycle_state": "unregistered",
-        "content_compatibility": {
-            "adult_nonexplicit": "unclear",
-            "consensual_explicit_adult": "unclear",
-        },
         "license_eligibility": {"status": "missing", "eligible": False},
         "benchmark_certificate": {
             "status": "missing",

@@ -174,7 +174,6 @@ def adapt_accepted_scene(
             "scene_id": package_contract["scene_id"],
             "group_id": package_contract["scene_family_id"],
             "pristine_rgb_sha256": package_contract["source_file_sha256s"]["rgb"],
-            "adult_construction_verified": True,
             "provider_voting_bypassed": True,
             "package_verification_bypassed": False,
         }

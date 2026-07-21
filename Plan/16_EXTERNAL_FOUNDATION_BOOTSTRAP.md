@@ -59,24 +59,22 @@ source-visible geometry. Neither a model proposal nor an LLM/VLM verdict can iss
 | Socks Segmentation - ADetailer | Sock/material detector vote for lower-leg and foot lanes. |
 | assDetailer | Registered detector candidate for glute/rear/pelvis and pants/panties boundary QA; never sole anatomy authority. |
 | Teeth, lips, glasses, jewelry, rings, tattoo, head-accessory detectors | Specialist protected-region/object votes for face, hands, skin detail, and accessory preservation. |
-| Adult/NSFW OpenPose and OpenPose+Depth packs | Pose/control stress fixtures for contact, occlusion, hands-on-body, from-below perspective, and difficult body visibility. |
+| OpenPose and OpenPose+Depth packs | Pose/control stress fixtures for contact, occlusion, hands-on-body, from-below perspective, and difficult body visibility. |
 | Multi-person/contact OpenPose packs | Stress fixtures for protected `other_person`, overlapping limbs, torso/chest contact, carrying/hugging, rear views, and multi-character separation. |
 | Clothing/tops detection and clothing-swap workflows | Garment-mask references and clothing/material boundary experiments; not material authority without remap and QA. |
 | Person cutout / SAM2 workflows | Silhouette and person-mask references for cross-checking BiRefNet/RMBG/SAM2 proposals. |
 
-## 2.2 Adult/NSFW-Aware Civitai Intake
+## 2.2 Uniform Civitai intake
 
-Adult/NSFW metadata is not an exclusion criterion. MaskFactory is a body-part and full-body masking system, so useful resources may be tagged adult simply because they include nude/anatomy, underwear, contact poses, occlusion, or difficult body visibility. Rejecting those labels by default removes exactly the cases the system must handle well.
-
-Admission is utility-gated instead:
+Admission is utility-gated:
 
 - Accept detector, segmentation, workflow, pose, depth, and control assets when they improve candidate masks, stress fixtures, QA coverage, or ComfyUI wiring.
 - Record source URL, file hash, local path, version, and role in `Plan\Civitai\civitai_bootstrap_manifest.json`.
-- Treat adult/NSFW pose packs as stress fixtures by default; eligible source/control pairs may also become training examples or seed human-reviewed gold after all normal governance and review gates pass.
-- Treat adult/NSFW detector outputs as votes that must be checked against Sapiens/SCHP/DensePose/DWPose/SAM2 consensus.
-- Adult/NSFW assets are eligible for training data and may seed human-reviewed gold when provenance, license, adult-age/consent status, and allowed use have been explicitly verified and the normal intake, annotation, QA, and human-review gates pass.
+- Treat pose packs as stress fixtures by default; eligible source/control pairs may also become training examples or seed reviewed gold after the normal source, annotation, QA, and authority gates pass.
+- Treat detector outputs as votes that must be checked against Sapiens/SCHP/DensePose/DWPose/SAM2 consensus.
+- Apply the same provenance, license, allowed-use, intake, annotation, QA, and authority rules to every asset.
 
-The current adult-inclusive Civitai searches found useful rear/foot/hand/hair/sock/shoe/clothing/accessory detector candidates, person/silhouette workflow references, and several adult/multi-person pose/depth packs. They did not surface a strong dedicated vagina, penis, genital, nipple, areola, or breast segmentation detector. Those regions should therefore be handled by the primary full-body parsing stack, DensePose/pose geometry, protected-region QA, and human-reviewed gold masks rather than a single Civitai detector.
+The current Civitai searches found useful rear/foot/hand/hair/sock/shoe/clothing/accessory detector candidates, person/silhouette workflow references, and several multi-person pose/depth packs. They did not surface a strong dedicated vagina, penis, genital, nipple, areola, or breast segmentation detector. Those regions should therefore be handled by the primary full-body parsing stack, DensePose/pose geometry, protected-region QA, and reviewed gold masks rather than a single Civitai detector.
 
 ## 3. Dataset and Platform Sources
 
@@ -106,8 +104,8 @@ Useful dataset families:
 - Extracted workflow JSON for the DWPose/DensePose/OpenPose reference workflow.
 - Extracted workflow JSON for the mask add/subtract reference workflow.
 - Extracted RMBG workflow references, SAM2/Florence workflow references, YOLO auto-annotation workflow, DWPose/depth workflow, face/hand/armpit/nail/mouth detector assets, and DensePose ControlNet metadata/manual-path registration.
-- Adult-inclusive detector and fixture intake for shoes/footwear, feet, hair, lips, socks, assDetailer, foot/shoe segmentation, teeth, glasses, jewelry, rings, tattoo, head accessories, OpenPose+Depth adult poses, covering-body poses, hands-on-body poses, from-below perspective poses, breast/contact poses, multi-person poses, hand-in-hair poses, rear-body poses, and the 525-pose adult OpenPose pack.
-- Registered adult-inclusive workflow references for prompt-based Florence segmentation, RotoMaker, SDMatte, Auto Masking/Removing, hand fixing, clothes swap, person cutout, and multi-character control.
+- Detector and fixture intake for shoes/footwear, feet, hair, lips, socks, assDetailer, foot/shoe segmentation, teeth, glasses, jewelry, rings, tattoo, head accessories, OpenPose+Depth poses, covering-body poses, hands-on-body poses, from-below perspective poses, breast/contact poses, multi-person poses, hand-in-hair poses, rear-body poses, and the 525-pose OpenPose pack.
+- Registered workflow references for prompt-based Florence segmentation, RotoMaker, SDMatte, Auto Masking/Removing, hand fixing, clothes swap, person cutout, and multi-character control.
 - Registered manual downloads for anime foot YOLO, person/female detection, tops/clothing detection, anime hair detection, feet pose/depth assets, hand auto-mask workflows, SAM2 person cutout, multi-character mask/control, multi-control/depth-mask workflows, clothing SegmentAnything workflows, breast-region workflow reference, rear-body OpenPose support, and a large manual-path-only clothing extractor model.
 
 Some older alternate file variants remain metadata-only because Civitai blocked direct file download with API token authentication and they were not manually supplied. Large model binaries are intentionally not duplicated inside the plan folder.

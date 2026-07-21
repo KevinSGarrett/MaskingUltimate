@@ -85,8 +85,8 @@ def ingest(
     event_log: Path,
     config_path: Path,
 ) -> None:
-    """S00: ingest a new image (age-safety gate + registration)."""
-    from .intake import LocalAgeSafetyScreener, ingest_one
+    """S00: ingest a new image (source policy + registration)."""
+    from .intake import LocalSourceSafetyScreener, ingest_one
     from .orchestrator import load_pipeline_config
 
     config = load_pipeline_config(config_path)
@@ -99,7 +99,7 @@ def ingest(
     try:
         result = ingest_one(
             image,
-            screener=LocalAgeSafetyScreener(),
+            screener=LocalSourceSafetyScreener(),
             incoming_root=incoming_root,
             images_root=images_root,
             database=database,
@@ -164,8 +164,8 @@ def rescreen_quarantine(
     event_log: Path,
     config_path: Path,
 ) -> None:
-    """Re-screen and safely promote one existing age-safety quarantine."""
-    from .intake import IntakeError, LocalAgeSafetyScreener, rescreen_quarantined
+    """Re-screen and safely promote one existing source-policy quarantine."""
+    from .intake import IntakeError, LocalSourceSafetyScreener, rescreen_quarantined
     from .orchestrator import load_pipeline_config
 
     config = load_pipeline_config(config_path)
@@ -174,7 +174,7 @@ def rescreen_quarantine(
     try:
         result = rescreen_quarantined(
             image,
-            screener=LocalAgeSafetyScreener(),
+            screener=LocalSourceSafetyScreener(),
             incoming_root=incoming_root,
             images_root=images_root,
             database=database,
@@ -243,7 +243,7 @@ def draft(
 ) -> None:
     """D1: draft all active-v1 56 PARTs; gated v2 requires 65 after activation."""
     from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
-    from .intake import LocalAgeSafetyScreener, ingest_one
+    from .intake import LocalSourceSafetyScreener, ingest_one
     from .orchestrator import (
         SemanticStageError,
         StageConfigurationError,
@@ -262,7 +262,7 @@ def draft(
             raise StageConfigurationError("intake.min_side must be a positive integer")
         intake = ingest_one(
             image,
-            screener=LocalAgeSafetyScreener(),
+            screener=LocalSourceSafetyScreener(),
             incoming_root=incoming_root,
             images_root=images_root,
             database=database,

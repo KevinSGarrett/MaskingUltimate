@@ -45,8 +45,6 @@ def load_hand_truth(path: Path) -> dict[str, Any]:
         if not isinstance(identifier, str) or not identifier or identifier in identifiers:
             raise S04EvalError("S04 fixture ids must be non-empty and unique")
         identifiers.add(identifier)
-        if record.get("age_safety") != "clear_adult":
-            raise S04EvalError(f"{identifier}: age-safety verdict is not clear_adult")
         if record.get("visual_review") != "pass":
             raise S04EvalError(f"{identifier}: independent visual review is not passed")
         if record.get("expected_view") not in VIEWS:

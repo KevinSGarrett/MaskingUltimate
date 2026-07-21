@@ -193,13 +193,11 @@ def probe_external_sources(
     providers = []
     for name, provider_config in config.get("providers", {}).items():
         record = _provider_record(name, provider_config, root)
-        record["activation"] = {}
-        for lane in ("adult_nonexplicit", "consensual_explicit_adult"):
-            blockers = provider_activation_issues(provider_config, content_lane=lane)
-            record["activation"][lane] = {
-                "eligible": not blockers,
-                "blockers": list(blockers),
-            }
+        blockers = provider_activation_issues(provider_config)
+        record["activation"] = {
+            "eligible": not blockers,
+            "blockers": list(blockers),
+        }
         providers.append(record)
     workflow_config_sha256, workflows = _workflow_records(workflow_path)
     counts = {

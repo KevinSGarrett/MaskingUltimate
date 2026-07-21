@@ -1,10 +1,10 @@
-"""Fail-closed operating-profile and content-license governance.
+"""Fail-closed operating-profile, artifact-license, and lifecycle governance.
 
 Version-1 registries remain readable as historical evidence.  Version-2 live
-registries must declare the private, personal, noncommercial operating profile
-and content compatibility explicitly.  Sapiens2 is a hard exclusion because
-its license prohibits pornographic use; it may be named only in an exclusion
-record, never as an installable provider or registered model.
+registries must declare the private, personal, noncommercial operating profile.
+Source subject matter is not activation authority.
+Sapiens2 is excluded because its exact license cannot support MaskFactory's
+required unrestricted input scope; it may be named only in an exclusion record.
 """
 
 from __future__ import annotations
@@ -17,11 +17,6 @@ from typing import Any
 
 USE_PROFILE = "private_personal_noncommercial"
 ACTIVE_REGISTRY_SCHEMA_VERSION = "2.0.0"
-CONTENT_COMPATIBILITY_VALUES = {"allowed", "prohibited", "unclear"}
-CONTENT_COMPATIBILITY_KEYS = {
-    "adult_nonexplicit",
-    "consensual_explicit_adult",
-}
 HARD_EXCLUDED_MODEL_TOKENS = {"sapiens2", "sapiens_2"}
 PROVIDER_LIFECYCLE_STATES = {
     "planned",
@@ -72,27 +67,6 @@ def _validate_active_version(
     return False
 
 
-def _validate_content_compatibility(
-    compatibility: Any,
-    *,
-    owner: str,
-) -> None:
-    if not isinstance(compatibility, Mapping):
-        raise GovernancePolicyError(f"{owner} content_compatibility must be a mapping")
-    if set(compatibility) != CONTENT_COMPATIBILITY_KEYS:
-        raise GovernancePolicyError(
-            f"{owner} content_compatibility must declare exactly "
-            f"{sorted(CONTENT_COMPATIBILITY_KEYS)}"
-        )
-    invalid = {
-        key: value
-        for key, value in compatibility.items()
-        if value not in CONTENT_COMPATIBILITY_VALUES
-    }
-    if invalid:
-        raise GovernancePolicyError(f"{owner} has invalid content compatibility values: {invalid}")
-
-
 def _validate_policy_fields(document: Mapping[str, Any], *, registry_name: str) -> None:
     if document.get("use_profile") != USE_PROFILE:
         raise GovernancePolicyError(f"{registry_name} use_profile must be {USE_PROFILE}")
@@ -100,7 +74,6 @@ def _validate_policy_fields(document: Mapping[str, Any], *, registry_name: str) 
         raise GovernancePolicyError(f"{registry_name} distribution_allowed must be false")
     if document.get("commercial_deployment") is not False:
         raise GovernancePolicyError(f"{registry_name} commercial_deployment must be false")
-    _validate_content_compatibility(document.get("content_compatibility"), owner=registry_name)
 
 
 def _contains_hard_excluded_token(entry: Mapping[str, Any]) -> bool:
@@ -119,26 +92,17 @@ def _contains_hard_excluded_token(entry: Mapping[str, Any]) -> bool:
     return any(token in normalized for token in HARD_EXCLUDED_MODEL_TOKENS)
 
 
-def provider_activation_issues(entry: Mapping[str, Any], *, content_lane: str) -> tuple[str, ...]:
-    """Return deterministic blockers for activating one provider in one content lane.
+def provider_activation_issues(entry: Mapping[str, Any]) -> tuple[str, ...]:
+    """Return deterministic blockers for activating one provider.
 
     Catalog registration and artifact presence do not imply activation.  In
     particular, ``verify_license: true`` is an operational blocker rather than
     an informational reminder.
     """
-    if content_lane not in CONTENT_COMPATIBILITY_KEYS:
-        raise GovernancePolicyError(
-            f"unknown content lane {content_lane!r}; expected one of "
-            f"{sorted(CONTENT_COMPATIBILITY_KEYS)}"
-        )
     issues: list[str] = []
     lifecycle_state = entry.get("lifecycle_state")
     if lifecycle_state not in ACTIVATABLE_PROVIDER_STATES:
         issues.append(f"lifecycle_state={lifecycle_state!r} is not activatable")
-    compatibility = entry.get("content_compatibility")
-    decision = compatibility.get(content_lane) if isinstance(compatibility, Mapping) else None
-    if decision != "allowed":
-        issues.append(f"content_compatibility.{content_lane}={decision!r}, expected 'allowed'")
     issues.extend(_license_layer_issues(entry))
     if entry.get("verify_license") is True:
         issues.append("license verification is unresolved")
@@ -256,9 +220,6 @@ def validate_external_source_registry(
                 f"provider {name} lifecycle_state must be one of "
                 f"{sorted(PROVIDER_LIFECYCLE_STATES)}"
             )
-        _validate_content_compatibility(
-            entry.get("content_compatibility"), owner=f"provider {name}"
-        )
         if lifecycle_state in ACTIVATABLE_PROVIDER_STATES:
             layer_issues = _license_layer_issues(entry)
             if layer_issues:
@@ -276,12 +237,6 @@ def validate_external_source_registry(
         or sapiens2.get("benchmark_allowed") is not False
     ):
         raise GovernancePolicyError("Sapiens2 exclusion must forbid installation and benchmarking")
-    compatibility = sapiens2.get("content_compatibility")
-    if compatibility != {
-        "adult_nonexplicit": "unclear",
-        "consensual_explicit_adult": "prohibited",
-    }:
-        raise GovernancePolicyError("Sapiens2 exclusion must record explicit-adult prohibition")
     return {"schema_version": str(document["schema_version"]), "legacy": False}
 
 
@@ -306,10 +261,6 @@ def validate_model_registry(
             raise GovernancePolicyError(
                 f"hard-excluded Sapiens2 model is registered: {entry.get('key', '(unknown)')}"
             )
-        _validate_content_compatibility(
-            entry.get("content_compatibility"),
-            owner=f"model {entry.get('key', '(unknown)')}",
-        )
         lifecycle_state = entry.get("lifecycle_state")
         if lifecycle_state not in ACTIVATABLE_PROVIDER_STATES | {"retired"}:
             raise GovernancePolicyError(
@@ -328,12 +279,6 @@ def validate_model_registry(
                 + "; ".join(layer_issues)
             )
         if lifecycle_state == "promoted":
-            compatibility = entry["content_compatibility"]
-            if any(compatibility[key] != "allowed" for key in CONTENT_COMPATIBILITY_KEYS):
-                raise GovernancePolicyError(
-                    f"promoted model {entry.get('key', '(unknown)')} has an unresolved "
-                    "content compatibility decision"
-                )
             license_is_resolved = license_review.get("status") == "verified" or (
                 license_review.get("status") == "not_required"
                 and entry.get("license") == "MaskFactory-internal"

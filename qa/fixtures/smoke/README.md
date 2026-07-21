@@ -10,7 +10,7 @@
   apparent minors.
 - License: Ultralytics AGPL-3.0 package asset; currently registered for local QA.
   Any later training or human-reviewed-gold use requires the normal provenance,
-  license, adult-age/consent, allowed-use, intake, annotation, and QA gates.
+  license, allowed-use, intake, annotation, and QA gates.
 - SHA-256: `c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63`.
 
 ## `mediapipe_thumb_up.jpg`

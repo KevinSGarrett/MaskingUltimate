@@ -166,9 +166,11 @@ Kevin mandate: **self-hosted high-end LLM on RunPod (or local Ollama loopback) M
 - Profile: `configs/autonomy_autonomous_gold_profile.yaml` → `require_strict_visual_gate_pass: true`
 
 ### Model policy (strict)
-- **Primary (high-end):** `llava:13b` (preferred) or `llama3.2-vision:11b` (alternate).
-- **Secondary / ensemble:** `qwen2.5vl:7b` — **must not** be the sole rubber-stamp critic for MVC promotion, CAA, or gold.
-- Legacy `models.primary_vlm: qwen2.5vl:7b` remains the calibrated S11 production fingerprint until recalibrated; **autonomy STRICT gate ignores qwen-as-sole-primary.**
+- **Primary and independent juror:** use only the exact registry-selected models that pass doc 25's
+  frozen positive-and-negative calibration and role thresholds.
+- **Legacy stack:** `llava:13b`, `llama3.2-vision:11b`, and `qwen2.5vl:7b` remain
+  `VISUAL_CRITIC_BLOCKED` under current zero-positive-pass/hallucination evidence; model presence or
+  an older name-based role cannot authorize MVC promotion, CAA, or gold.
 - Determinism: `temperature=0`, `seed=1337` (required).
 
 ### Rubric & fail-closed behavior

@@ -8,9 +8,9 @@
   "source_hashes": {
     "configs/anatomy_v2_qa.yaml": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
     "configs/autonomy_multi_person_risk_buckets.yaml": "981fdfd8a436a3563ecc51fc8cd6bd4ff03b6113338eb6ea995e9cfbd46eabf1",
-    "configs/autonomy_risk_buckets.yaml": "7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a",
+    "configs/autonomy_risk_buckets.yaml": "2f2ec6e513c75dc79357d215e82bc8b7254dcb88c6eb83d7c82bd246ad00363e",
     "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
-    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/ontology_v2.yaml": "cd603d2d269f89bde370f74b02a617755c91f1e756c01d03bb2903f0fd8d8f40",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d"
   },
   "roles": {
@@ -234,5 +234,5 @@
       ]
     }
   },
-  "sha256": "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739"
+  "sha256": "485c201cf3615253eebdefacb0b1ea46e5e9f2e534e6d27dcf281af8e68dfb68"
 }

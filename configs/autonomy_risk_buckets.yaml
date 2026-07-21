@@ -36,7 +36,7 @@ buckets:
     high_risk: true
     in_distribution: true
   sensitive_anatomy:
-    description: Observable sensitive adult anatomy governed by the active ontology and content lane.
+    description: Observable sensitive anatomy governed by the active ontology.
     high_risk: true
     in_distribution: true
   occlusion_contact:

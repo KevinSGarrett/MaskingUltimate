@@ -71,13 +71,13 @@ Every checkbox requires specific evidence. Do not mark an item complete from cod
 - [x] Push migrated tasks with additions explicitly unreviewed.
 - [x] Pull exact v2 states/masks; reject aliases and unknown values.
 - [x] Block export when visible masks are absent or null-mask states contain masks.
-- [ ] Pilot 20–30 adult images covering all states and applicable classes.
+- [ ] Pilot 20–30 governed images covering all states and applicable classes.
 - [ ] Record review time/ambiguities and revise guidelines before scale annotation.
 
 ## E. Drafting and fusion
 
 - [x] Add anatomy crop proposals without asserting hidden anatomy.
-- [x] Add canonical open-vocabulary prompts with adult-only routing.
+- [x] Add canonical open-vocabulary prompts with provider-neutral routing.
 - [x] Route prompts through SAM2/fusion; detector boxes never become final masks directly.
 - [x] Add same-side chest and pelvic geometry priors.
 - [x] Enforce breast/pelvic carve-outs before PART-map write.

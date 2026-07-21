@@ -1,9 +1,8 @@
-# Plan/Civitai/adult_body_resource_classification.yaml
+# Plan/Civitai/resource_classification.yaml
 #
-# MF-P0-14.01 classification for Civitai adult/NSFW-labeled and adjacent body
-# resources. Scope intentionally covers every unique Civitai ID currently present
-# in civitai_bootstrap_manifest.json, not just the explicit NSFW filenames, so no
-# adult/body/manual-download candidate is left unclassified.
+# MF-P0-14.01 classification for Civitai body-resource candidates. Scope covers
+# every unique Civitai ID currently present in civitai_bootstrap_manifest.json so
+# no manual-download candidate is left unclassified.
 schema_version: 1.0.0
 manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
 manual_download_inventory: Plan/Civitai/manual_downloads_inventory.json
@@ -17,10 +16,7 @@ policy:
     - stress_fixture
     - qa_probe
     - reject
-  adult_nsfw_label_is_not_rejection_reason: true
-  adult_nsfw_assets_may_be_training_data_when_eligible: true
-  adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible: true
-  require_provenance_license_consent_before_training_or_gold: true
+  require_provenance_license_and_allowed_use_before_training_or_gold: true
   classification_basis:
     - Plan/16_EXTERNAL_FOUNDATION_BOOTSTRAP.md
     - Plan/Civitai/README.md
@@ -30,15 +26,15 @@ role_defaults:
   provider_vote:
     allowed_use: Candidate detector/segmentation proposal vote only; compare against Sapiens, SCHP, DensePose, DWPose/MediaPipe, SAM2, and source overlays.
     authority_gate: Not mask authority; cannot clear gold, BLOCK, or QA decisions.
-    training_gold_eligibility: Eligible after provenance, license, adult-age/consent status, and allowed use are explicitly recorded; any gold mask still requires the normal consensus, QA, and human-review workflow.
+    training_gold_eligibility: Eligible after provenance, license, and allowed use are explicitly recorded; any gold mask still requires the normal consensus and QA workflow.
   comfyui_graph_reference:
     allowed_use: Reference wiring for controlled MaskFactory/ComfyUI adapters and debug graphs only.
     authority_gate: Not a production stage unless rebuilt under MaskFactory controls and QA.
-    training_gold_eligibility: Graph files are not examples by themselves; eligible adult source images and masks produced through a governed graph may enter training or human-reviewed gold after the normal intake, rights, QA, and review gates.
+    training_gold_eligibility: Graph files are not examples by themselves; governed source images and masks produced through a graph may enter training or gold after the normal intake, rights, and QA gates.
   stress_fixture:
     allowed_use: Pose/depth/control stress fixture for occlusion, contact, multi-person, perspective, and body-visibility QA.
     authority_gate: Not a mask provider and not evidence of anatomical truth.
-    training_gold_eligibility: Eligible as training examples or seeds for human-reviewed gold when the underlying adult source imagery has verified provenance, license, adult-age/consent status, and allowed use, and passes normal intake and annotation QA.
+    training_gold_eligibility: Eligible as training examples or gold candidates when the underlying source imagery has verified provenance, license, and allowed use and passes normal intake and annotation QA.
   qa_probe:
     allowed_use: QA visualization, disagreement probe, or non-authoritative comparison signal only.
     authority_gate: Not mask authority and not a production decision source.
@@ -242,10 +238,10 @@ role_groups:
       rationale: Feet-focused pose/depth stress fixture for lower-body visibility.
     - id: 264843
       name: OpenPose + Depth NSFW
-      rationale: Adult OpenPose+Depth stress fixture for occlusion, contact, and visibility.
+      rationale: OpenPose+Depth stress fixture for occlusion, contact, and visibility.
     - id: 297881
       name: OpenPose NSFW pose package total 525 poses
-      rationale: Large adult pose/depth stress fixture pack; no example imagery needed for classification.
+      rationale: Large pose/depth stress fixture pack; no example imagery needed for classification.
   qa_probe:
     - id: 429020
       name: Auto Masking, Removing, Background, Auto Rotoscope

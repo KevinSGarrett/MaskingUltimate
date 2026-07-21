@@ -84,11 +84,11 @@ P7. **Fail loud, abstain smart** — core ambiguity becomes a typed autonomous a
 
 ## 7. Data Governance & Source Policy (Mandatory)
 
-- Permitted sources: images Kevin owns or generated (ComfyUI outputs), licensed stock, or images of
-  consenting adults collected with documented permission. `manifest.source_origin` records provenance
+- Permitted sources: images Kevin owns or generated (ComfyUI outputs), licensed stock, or images
+  collected with documented permission. `manifest.source_origin` records provenance
   for every image (`generated | owned_photo | licensed | consented_subject`).
-- **Adults only. No imagery of minors enters the system under any circumstances** — intake stage
-  rejects and logs, no exceptions, no storage.
+- One centralized safety exception prohibits and quarantines sexual material involving minors.
+  All other sources follow the same provenance, rights, integrity, annotation, and QA path.
 - No processing of real identifiable people without consent; the system is built for
   owned/generated character imagery.
 - Projected/amodal regions are geometric edit regions for compositing/inpainting of owned content —

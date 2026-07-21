@@ -16,7 +16,6 @@ from maskfactory.qa.s04_eval import (
 def _truth(index: int) -> dict:
     return {
         "id": str(index),
-        "age_safety": "clear_adult",
         "visual_review": "pass",
         "source_sha256": "a" * 64,
         "expected_view": "front",
@@ -24,14 +23,14 @@ def _truth(index: int) -> dict:
     }
 
 
-def test_hand_truth_requires_exactly_twenty_unique_clear_adult_records(tmp_path: Path) -> None:
+def test_hand_truth_requires_exactly_twenty_unique_reviewed_records(tmp_path: Path) -> None:
     document = {"schema_version": "1.0.0", "records": [_truth(i) for i in range(20)]}
     path = tmp_path / "truth.json"
     path.write_text(json.dumps(document), encoding="utf-8")
     assert len(load_hand_truth(path)["records"]) == 20
-    document["records"][0]["age_safety"] = "uncertain"
+    document["records"][0]["visual_review"] = "fail"
     path.write_text(json.dumps(document), encoding="utf-8")
-    with pytest.raises(S04EvalError, match="clear_adult"):
+    with pytest.raises(S04EvalError, match="visual review"):
         load_hand_truth(path)
 
 

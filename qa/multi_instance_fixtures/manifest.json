@@ -4,8 +4,6 @@
   "fixture_count": 2,
   "fixtures": [
     {
-      "age_evidence": "Non-configurable qwen2.5vl:7b intake screen: clear_adult, person_count=3",
-      "age_safety": "clear_adult",
       "downstream_package_count_verified": true,
       "key": "supplied_adult_triptych_3",
       "manual_visible_instance_count": 3,
@@ -103,8 +101,6 @@
       ]
     },
     {
-      "age_evidence": "Non-configurable qwen2.5vl:7b intake rescreen: clear_adult, person_count=4",
-      "age_safety": "clear_adult",
       "downstream_package_count_verified": true,
       "key": "supplied_adult_four_view_4",
       "manual_visible_instance_count": 4,

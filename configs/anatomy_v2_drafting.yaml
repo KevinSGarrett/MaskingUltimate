@@ -2,7 +2,6 @@ config_version: "1.0.0"
 ontology_version: "body_parts_v2"
 activation_status: "approved_design_not_active"
 governance:
-  permitted_content_lanes: [general, adult_nonexplicit, consensual_explicit_adult]
   visible_surface_only: true
   detector_boxes_may_be_final_masks: false
   geometry_priors_may_be_final_masks: false

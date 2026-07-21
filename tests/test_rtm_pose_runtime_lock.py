@@ -20,7 +20,7 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_rtm_registry_binds_installed_variants_and_adult_lanes() -> None:
+def test_rtm_registry_binds_installed_variants() -> None:
     lock = json.loads(LOCK_PATH.read_text(encoding="utf-8"))
     registry = yaml.safe_load(
         (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
@@ -36,10 +36,6 @@ def test_rtm_registry_binds_installed_variants_and_adult_lanes() -> None:
         assert entry["config_sha256"] == variant["config_sha256"]
         assert entry["local_path"] == variant["checkpoint_path"]
         assert entry["runtime_lock"] == "env/rtm_pose.lock.json"
-        assert entry["content_compatibility"] == {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        }
 
 
 def test_rtm_runtime_fingerprint_is_reproducible() -> None:

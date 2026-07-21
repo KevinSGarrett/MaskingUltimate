@@ -80,7 +80,6 @@ def _stage_fixture(record: dict, dataset_root: Path, images_root: Path) -> str:
         "image_id": image_id,
         "status": "ingested",
         "reason": "governed_local_non_distributable_p2_fixture",
-        "age_safety": {**record["age_safety"], "non_configurable": True},
         "source": {
             "source_file": "source.jpg",
             "source_sha256": record["source_sha256"],

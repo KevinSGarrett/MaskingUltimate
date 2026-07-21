@@ -34,7 +34,7 @@ DEFAULT_INCOMING_ROOT = ROOT / "data" / "incoming"
 DEFAULT_IMAGES_ROOT = ROOT / "data" / "images"
 DEFAULT_EVENT_LOG = ROOT / "logs" / "intake.jsonl"
 DEFAULT_YOLO_CHECKPOINT = ROOT / "models" / "detect" / "yolo11m.pt"
-AGE_SCREEN_LONG_SIDE = 1024
+SAFETY_REVIEW_LONG_SIDE = 1024
 
 
 class IntakeError(ValueError):
@@ -57,8 +57,8 @@ class InspectedImage:
 
 
 @dataclass(frozen=True)
-class SafetyVerdict:
-    """Conservative local age-screen decision."""
+class SourceSafetyVerdict:
+    """Decision for the single centralized source-policy safety exception."""
 
     verdict: str
     person_count: int
@@ -66,14 +66,14 @@ class SafetyVerdict:
     detail: str = ""
 
     def __post_init__(self) -> None:
-        if self.verdict not in {"clear_adult", "yes", "uncertain"}:
-            raise ValueError(f"invalid age-safety verdict: {self.verdict}")
+        if self.verdict not in {"allowed", "prohibited", "uncertain"}:
+            raise ValueError(f"invalid source-safety verdict: {self.verdict}")
         if self.person_count < 0:
             raise ValueError("person_count cannot be negative")
 
 
-class SafetyScreener(Protocol):
-    def screen(self, image: Path) -> SafetyVerdict: ...
+class SourceSafetyScreener(Protocol):
+    def screen(self, image: Path) -> SourceSafetyVerdict: ...
 
 
 @dataclass(frozen=True)
@@ -85,8 +85,8 @@ class IntakeResult:
     manifest_path: Path | None = None
 
 
-class LocalAgeSafetyScreener:
-    """YOLO person detection followed by a local Ollama whole-image age screen."""
+class LocalSourceSafetyScreener:
+    """Local check for the single prohibited source-policy combination."""
 
     def __init__(
         self,
@@ -103,7 +103,7 @@ class LocalAgeSafetyScreener:
         self._detector = detector
         self._request = request
 
-    def screen(self, image: Path) -> SafetyVerdict:
+    def screen(self, image: Path) -> SourceSafetyVerdict:
         try:
             person_count = (
                 self._detector(Path(image))
@@ -111,17 +111,17 @@ class LocalAgeSafetyScreener:
                 else self._detect_people(Path(image))
             )
             content = self._ask_vlm(Path(image))
-            verdict = content.get("apparent_minor")
-            if verdict not in {"yes", "no", "uncertain"}:
-                raise ValueError("VLM apparent_minor must be yes, no, or uncertain")
-            return SafetyVerdict(
-                verdict="clear_adult" if verdict == "no" else verdict,
+            verdict = content.get("decision")
+            if verdict not in {"allowed", "prohibited", "uncertain"}:
+                raise ValueError("VLM decision must be allowed, prohibited, or uncertain")
+            return SourceSafetyVerdict(
+                verdict=verdict,
                 person_count=person_count,
                 model=self.model,
                 detail=str(content.get("reason", ""))[:200],
             )
         except Exception as exc:  # noqa: BLE001 - fail closed at model/service boundary
-            return SafetyVerdict(
+            return SourceSafetyVerdict(
                 verdict="uncertain", person_count=0, model=self.model, detail=f"screen error: {exc}"
             )
 
@@ -135,12 +135,12 @@ class LocalAgeSafetyScreener:
     def _ask_vlm(self, image: Path) -> dict[str, Any]:
         import base64
 
-        review_bytes = _age_screen_review_image(image)
+        review_bytes = _source_safety_review_image(image)
         encoded = base64.b64encode(review_bytes).decode("ascii")
         prompt = (
-            "Age-safety only; do not classify nudity or sexual content. Does this image depict "
-            "a real or apparent minor? Return JSON exactly with apparent_minor as "
-            "yes|no|uncertain and reason as a short string."
+            "Source-policy safety exception only. Determine whether this image depicts sexual "
+            "material involving a person under 18. Nudity alone is not sufficient. Return JSON "
+            "exactly with decision as allowed|prohibited|uncertain and reason as a short string."
         )
         last_error: Exception | None = None
         for attempt in range(2):
@@ -177,34 +177,36 @@ class LocalAgeSafetyScreener:
                 content = json.loads(response["message"]["content"])
                 if (
                     not isinstance(content, dict)
-                    or set(content) != {"apparent_minor", "reason"}
-                    or content["apparent_minor"] not in {"yes", "no", "uncertain"}
+                    or set(content) != {"decision", "reason"}
+                    or content["decision"] not in {"allowed", "prohibited", "uncertain"}
                     or not isinstance(content["reason"], str)
                     or not content["reason"].strip()
                 ):
-                    raise ValueError("age screen response violates the exact JSON contract")
+                    raise ValueError("source-safety response violates the exact JSON contract")
                 return content
             except urllib.error.HTTPError as exc:
                 detail = exc.read().decode("utf-8", errors="replace")[:500]
-                raise RuntimeError(f"Ollama age screen HTTP {exc.code}: {detail}") from exc
+                raise RuntimeError(f"Ollama source-safety HTTP {exc.code}: {detail}") from exc
             except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
                 last_error = exc
-        raise ValueError(f"invalid age screen JSON after one retry: {last_error}")
+        raise ValueError(f"invalid source-safety JSON after one retry: {last_error}")
 
 
-def _age_screen_review_image(image: Path) -> bytes:
+def _source_safety_review_image(image: Path) -> bytes:
     """Create a small metadata-free RGB JPEG for the local safety model only."""
     try:
         with Image.open(image) as opened:
             review = opened.convert("RGB")
-            review.thumbnail((AGE_SCREEN_LONG_SIDE, AGE_SCREEN_LONG_SIDE), Image.Resampling.LANCZOS)
+            review.thumbnail(
+                (SAFETY_REVIEW_LONG_SIDE, SAFETY_REVIEW_LONG_SIDE), Image.Resampling.LANCZOS
+            )
             output = io.BytesIO()
-            review.save(  # png-strict: allow (RGB age-screen review, never mask)
+            review.save(  # png-strict: allow (RGB source-safety review, never mask)
                 output, format="JPEG", quality=90, optimize=True
             )
             return output.getvalue()
     except (OSError, UnidentifiedImageError) as exc:
-        raise DecodeRejected(f"cannot prepare age-screen review image: {image}") from exc
+        raise DecodeRejected(f"cannot prepare source-safety review image: {image}") from exc
 
 
 def source_origin(path: Path, incoming_root: Path) -> str | None:
@@ -315,7 +317,7 @@ def _strip_jpeg_metadata(data: bytes) -> bytes:
 def ingest_one(
     source: Path,
     *,
-    screener: SafetyScreener,
+    screener: SourceSafetyScreener,
     incoming_root: Path = DEFAULT_INCOMING_ROOT,
     images_root: Path = DEFAULT_IMAGES_ROOT,
     database: Path = DEFAULT_DB_PATH,
@@ -323,7 +325,7 @@ def ingest_one(
     min_side: int = 512,
     now: Callable[[], datetime] | None = None,
 ) -> IntakeResult:
-    """Run governed S00 intake. The age screen is mandatory and cannot be disabled."""
+    """Run governed S00 intake with content-neutral admission."""
     source = Path(source)
     incoming_root = Path(incoming_root)
     images_root = Path(images_root)
@@ -368,8 +370,8 @@ def ingest_one(
     quarantine_reasons = []
     if inspected.source_origin is None:
         quarantine_reasons.append("missing_or_invalid_source_origin")
-    if safety.verdict in {"yes", "uncertain"}:
-        quarantine_reasons.append(f"age_safety_{safety.verdict}")
+    if safety.verdict in {"prohibited", "uncertain"}:
+        quarantine_reasons.append(f"source_safety_{safety.verdict}")
     outcome = "quarantined" if quarantine_reasons else "ingested"
     reason = ",".join(quarantine_reasons) if quarantine_reasons else "accepted"
 
@@ -388,7 +390,7 @@ def ingest_one(
             "exif_stripped": outcome == "ingested",
             "phash64": inspected.phash64,
         },
-        "age_safety": {
+        "source_safety": {
             "verdict": safety.verdict,
             "person_count": safety.person_count,
             "model": safety.model,
@@ -442,7 +444,7 @@ def ingest_one(
 def rescreen_quarantined(
     source: Path,
     *,
-    screener: SafetyScreener,
+    screener: SourceSafetyScreener,
     incoming_root: Path = DEFAULT_INCOMING_ROOT,
     images_root: Path = DEFAULT_IMAGES_ROOT,
     database: Path = DEFAULT_DB_PATH,
@@ -450,7 +452,7 @@ def rescreen_quarantined(
     min_side: int = 512,
     now: Callable[[], datetime] | None = None,
 ) -> IntakeResult:
-    """Re-run age safety and atomically promote an existing quarantine when clear."""
+    """Re-run source safety and atomically promote an existing quarantine when allowed."""
     source = Path(source)
     images_root = Path(images_root)
     database = Path(database)
@@ -475,19 +477,19 @@ def rescreen_quarantined(
         raise IntakeError(f"quarantine source identity mismatch for {image_id}")
 
     safety = screener.screen(source)
-    manifest["age_safety"] = {
+    manifest["source_safety"] = {
         "verdict": safety.verdict,
         "person_count": safety.person_count,
         "model": safety.model,
         "detail": safety.detail,
         "non_configurable": True,
     }
-    if safety.verdict != "clear_adult" or inspected.source_origin is None:
+    if safety.verdict != "allowed" or inspected.source_origin is None:
         reasons = []
         if inspected.source_origin is None:
             reasons.append("missing_or_invalid_source_origin")
-        if safety.verdict != "clear_adult":
-            reasons.append(f"age_safety_{safety.verdict}")
+        if safety.verdict != "allowed":
+            reasons.append(f"source_safety_{safety.verdict}")
         manifest["reason"] = ",".join(reasons)
         manifest["status"] = "quarantined"
         manifest["rescreened_at"] = timestamp
@@ -497,7 +499,7 @@ def rescreen_quarantined(
             event_log,
             {
                 "at": timestamp,
-                "action": "age_safety_rescreen",
+                "action": "source_safety_rescreen",
                 "image_id": image_id,
                 "source_sha256": inspected.source_sha256,
                 "outcome": "quarantined",
@@ -515,7 +517,7 @@ def rescreen_quarantined(
     temporary.mkdir(parents=True, exist_ok=False)
     extension = ".jpg" if source.suffix.lower() in {".jpg", ".jpeg"} else ".png"
     manifest["status"] = "ingested"
-    manifest["reason"] = "accepted_after_age_safety_rescreen"
+    manifest["reason"] = "accepted_after_source_safety_rescreen"
     manifest["rescreened_at"] = timestamp
     manifest["source"]["exif_stripped"] = True
     manifest["source"]["source_file"] = f"source{extension}"
@@ -533,18 +535,18 @@ def rescreen_quarantined(
         event_log,
         {
             "at": timestamp,
-            "action": "age_safety_rescreen",
+            "action": "source_safety_rescreen",
             "image_id": image_id,
             "source_sha256": inspected.source_sha256,
             "outcome": "ingested",
-            "reason": "accepted_after_age_safety_rescreen",
+            "reason": "accepted_after_source_safety_rescreen",
             "phash64": inspected.phash64,
         },
     )
     return IntakeResult(
         image_id,
         "ingested",
-        "accepted_after_age_safety_rescreen",
+        "accepted_after_source_safety_rescreen",
         manifest_path=image_directory / "manifest.json",
     )
 

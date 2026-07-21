@@ -45,7 +45,7 @@ a glance, for both you and for Kevin himself when he checks in.
 
 ## Batching, Not Spamming
 
-You don't need to call `report` after every single one of 798 items —
+You don't need to call `report` after every single one of 827 items —
 that's wasted work. Call it after finishing a cluster, or when you're about
 to stop for the session, or when you specifically want to hand off a fresh
 `DASHBOARD.md` for Kevin to glance at. Do call `set` for every item the

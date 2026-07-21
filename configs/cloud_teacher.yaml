@@ -41,7 +41,6 @@ selection:
 governance:
   eligibility_registry: configs/cloud_eligibility.yaml
   require_explicit_image_opt_in: true
-  require_content_lane_decision: true
   require_rights_evidence: true
   require_source_sha256_match: true
   may_approve_gold: false

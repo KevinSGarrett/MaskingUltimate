@@ -1,12 +1,12 @@
 # configs/civitai_pose_stress_fixtures.yaml
 #
-# MF-P0-14.03 registry for adult/NSFW and adjacent Civitai pose/control stress
-# fixtures. In addition to stress QA and provider disagreement, eligible adult
-# source/control pairs may be promoted into training examples or seed
-# human-reviewed gold after provenance, license, adult-age/consent, allowed-use,
+# MF-P0-14.03 registry for Civitai pose/control stress fixtures. In addition to
+# stress QA and provider disagreement, governed source/control pairs may be
+# promoted into training examples or seed reviewed gold after provenance,
+# license, allowed-use,
 # intake, annotation, and QA gates pass.
 schema_version: 1.0.0
-classification_file: Plan/Civitai/adult_body_resource_classification.yaml
+classification_file: Plan/Civitai/resource_classification.yaml
 manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
 registered_at_utc: "2026-07-10T22:05:00Z"
 policy:
@@ -23,9 +23,9 @@ required_coverage:
   - difficult_body_visibility
   - multi_person
 fixtures:
-  - key: openpose_nsfw_525_pose_pack
+  - key: openpose_pose_pack_525
     civitai_id: 297881
-    name: OpenPose NSFW pose package total 525 poses
+    name: OpenPose pose package total 525 poses
     version: Final
     archive_path: Plan/Civitai/archives/openposeNSFWPosePackage_final.zip
     archive_sha256: 814ef6e3dff2b3437607d859428da274ac92be85e4410fae100398e786974fb4
@@ -33,9 +33,9 @@ fixtures:
     file_counts: {total: 1753, json: 472, png: 1279}
     content: openpose_json_png_depth_pose_mix
     coverage: [contact, occlusion, hands_on_body, from_below, difficult_body_visibility]
-  - key: openpose_depth_nsfw_v2
+  - key: openpose_depth_v2
     civitai_id: 264843
-    name: OpenPose + Depth NSFW
+    name: OpenPose + Depth v2
     version: v2
     archive_path: Plan/Civitai/archives/264843_OpenPose_Depth_NSFW_v925704_OpenposeDepthNSFW_v2.zip
     archive_sha256: e9791699710c9f6330fe26385ddd9c9eb4b291885bbec0320303130087a35f32

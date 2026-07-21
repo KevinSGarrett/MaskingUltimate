@@ -30,8 +30,8 @@ tool against it.
   "schema_version": "1.0.0",
   "generated_at": "2026-07-10T01:55:22+00:00",   // last `rebuild` timestamp
   "generator": "tracker.py rebuild",
-  "total_items": 798,                             // parsed from Items/*.md at last rebuild
-  "total_tracked_including_orphaned": 798          // includes any orphaned ids
+  "total_items": 827,                             // parsed from Items/*.md at last rebuild
+  "total_tracked_including_orphaned": 827          // includes any orphaned ids
 }
 ```
 

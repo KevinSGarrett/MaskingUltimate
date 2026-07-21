@@ -688,10 +688,6 @@ def test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract(tmp_path: 
         "key": "champion",
         "role": "champion_bodypart",
         "lifecycle_state": "promoted",
-        "content_compatibility": {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        },
         "license_eligibility": {"status": "verified", "eligible": True},
         "benchmark_certificate": {
             "status": "missing",

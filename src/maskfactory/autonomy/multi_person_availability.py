@@ -107,14 +107,11 @@ def _registry_clause(
         if model is None:
             evidence.append({"key": key, "status": "missing", "identity_sha256": None})
             continue
-        content = model.get("content_compatibility", {})
         license_review = model.get("license_review", {})
         qualified = (
             model.get("lifecycle_state") in eligible_lifecycles
             and model.get("verified") is True
             and license_review.get("status") == "verified"
-            and content.get("adult_nonexplicit") == "allowed"
-            and content.get("consensual_explicit_adult") == "allowed"
             and isinstance(model.get("sha256") or model.get("digest"), str)
         )
         evidence.append(

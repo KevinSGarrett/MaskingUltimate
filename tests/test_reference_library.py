@@ -90,12 +90,10 @@ def _small_policy_at(output_root: Path) -> dict:
     return policy
 
 
-def test_reference_policy_has_no_truth_and_explicitly_keeps_governed_adult_material():
+def test_reference_policy_has_no_truth_and_requires_governed_source_rights():
     policy = load_reference_library_policy(POLICY)
     assert policy["truth_authority"] == "none"
-    assert policy["content_policy"]["adult_content_is_eligible"] is True
-    assert policy["content_policy"]["nsfw_tag_is_organizational_not_an_exclusion"] is True
-    assert policy["content_policy"]["known_or_suspected_minor_is_prohibited"] is True
+    assert policy["source_governance"]["require_governed_source_rights"] is True
 
 
 def test_reference_policy_rejects_any_training_authority():

@@ -15,14 +15,21 @@ models are unavailable.
 
 ---
 
-## 2. Models & determinism
+## 2. Evidence-qualified roles and determinism
 
-| Role | Model | Notes |
-|------|-------|-------|
-| STRICT primary | `llava:13b` | Preferred high-end critic |
-| STRICT alternate high-end | `llama3.2-vision:11b` | Allowed primary substitute when llava unavailable |
-| Ensemble secondary | `qwen2.5vl:7b` | Must agree for pass; **never sole rubber stamp** |
-| S11 calibrated (legacy) | `qwen2.5vl:7b` via `models.primary_vlm` | Production S11 fingerprint until recalibrated — **not** autonomy sole critic |
+| Role | Authority requirement | Initial challenger families |
+|------|-----------------------|-----------------------------|
+| Fast screener | Frozen positive/negative calibration; cannot be sole pass authority | feasible Qwen3.6/Qwen3.5 deployment |
+| STRICT primary | Complete target/panel review and role thresholds | qualified Qwen3.6/Qwen3.5 deployment |
+| Independent juror | Independently trained family and the same exact candidate | qualified InternVL3.5 deployment |
+| Senior arbiter | Resolves disagreement only after deterministic gates | qualified Qwen3.5 122B/397B deployment |
+| Deterministic authority | Exact pixels, topology, ownership, transforms, formats, and provenance | MaskFactory QA code |
+
+Model names in this table are challengers, not authority. `llava:13b`,
+`llama3.2-vision:11b`, and `qwen2.5vl:7b` are legacy challengers capped at
+`VISUAL_CRITIC_BLOCKED` by their current zero-positive-pass/hallucination
+evidence. A new frozen positive-and-negative calibration is required before
+any can regain a role.
 
 - `temperature=0`, `seed=1337`, structured JSON only.
 - Config: `configs/vlm.yaml` → `strict_visual_gate`.
@@ -61,7 +68,8 @@ Any dimension `fail` ⇒ overall fail ⇒ abstain/reject/repair — **not gold**
 
 ## 5. Operating procedure (every visual wave)
 
-1. Live-probe Ollama: `curl -s http://127.0.0.1:11434/api/tags` — confirm `llava:13b` and `qwen2.5vl:7b`.
+1. Live-probe the governed self-hosted endpoint and confirm the exact registry-selected role models,
+   artifact hashes, runtime, and lifecycle state. Model presence alone is not qualification.
 2. Check GPU: `nvidia-smi`. If hand/clothing tournament workers own VRAM, **wait or serialize** — do not kill healthy hand PIDs unless brief serialize is required; then resume.
 3. Render panels (source/mask/overlay). Do not claim visual QA from mask PNG decode alone.
 4. Run STRICT critic burst; seal evidence under `qa/live_verification/` with model id, prompt hash, response, panel hashes.
@@ -91,7 +99,8 @@ python tools/run_tournament_mvc_visual_hard_qa.py \
 - Hard QC BLOCK is absolute; VLM cannot clear it.
 - STRICT pass retains `machine_verified_candidate` toward CAA — **not gold by itself**.
 - CAA / `autonomous_certified_gold` still requires Wilson / serious bounds + STRICT visual coverage.
-- Prior qwen-only 24/24 Hard-QA seals are **insufficient** under this mandate until re-run on high-end primary + ensemble.
+- Prior single-model or negative-only seals are **insufficient** until the exact role stack passes
+  the frozen positive-and-negative calibration contract.
 - Hand MVC emitted without `*.visual_hard_qa.json` / `*.strict_vlm_gate.json` sidecars are **not** CAA-ready.
 
 ---

@@ -7,10 +7,7 @@ output_database: 'F:\Reference_Images\Ultimate_Masking_Reference_Images\manifest
 source_role: unlabeled_reference_corpus
 truth_authority: none
 originals_are_immutable: true
-content_policy:
-  adult_content_is_eligible: true
-  nsfw_tag_is_organizational_not_an_exclusion: true
-  known_or_suspected_minor_is_prohibited: true
+source_governance:
   require_governed_source_rights: true
 tiers:
   benchmark_reference:

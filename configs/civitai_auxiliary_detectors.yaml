@@ -2,10 +2,10 @@
 #
 # MF-P0-14.02 registry for usable Civitai auxiliary detector/provider-vote
 # models. Their predictions can become training labels or seed human-reviewed
-# gold when paired with eligible adult source imagery and passed through the
+# gold when paired with governed source imagery and passed through the
 # normal consensus, QA, rights, and human-review gates.
 schema_version: 1.0.0
-classification_file: Plan/Civitai/adult_body_resource_classification.yaml
+classification_file: Plan/Civitai/resource_classification.yaml
 manifest_file: Plan/Civitai/civitai_bootstrap_manifest.json
 registered_at_utc: "2026-07-10T21:35:00Z"
 policy:

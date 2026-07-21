@@ -464,7 +464,7 @@ def _action(record: FailureRecord) -> str:
             f"{governed['action']}; target states "
             f"{','.join(governed['required_review_states'])}; views "
             f"{','.join(governed['required_views'])}; occlusion contexts "
-            f"{','.join(governed['required_occlusion_contexts'])}; route governed clear-adult "
+            f"{','.join(governed['required_occlusion_contexts'])}; route governed "
             "human-reviewed evidence to hard_case_holdout; never fabricate hidden positives"
         )
     if record.failure_reason in {"finger_merge", "hair_edge", "occlusion_confusion"}:

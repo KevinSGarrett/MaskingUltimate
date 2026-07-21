@@ -40,10 +40,6 @@ def _policy() -> dict[str, object]:
         "use_profile": "private_personal_noncommercial",
         "distribution_allowed": False,
         "commercial_deployment": False,
-        "content_compatibility": {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        },
     }
 
 
@@ -125,14 +121,7 @@ def test_active_registry_rejects_legacy_or_missing_schema_version() -> None:
         validate_model_registry({"models": []})
 
 
-def test_provider_requires_its_own_lifecycle_and_content_decision() -> None:
-    external = yaml.safe_load(
-        (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
-    )
-    del external["providers"]["sam2"]["content_compatibility"]
-    with pytest.raises(GovernancePolicyError, match="provider sam2 content_compatibility"):
-        validate_external_source_registry(external)
-
+def test_provider_requires_its_own_lifecycle_decision() -> None:
     external = yaml.safe_load(
         (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
     )
@@ -145,22 +134,14 @@ def test_unresolved_license_or_nonactive_lifecycle_blocks_activation() -> None:
     entry = {
         "lifecycle_state": "installed",
         "verify_license": True,
-        "content_compatibility": {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        },
     }
-    assert provider_activation_issues(entry, content_lane="adult_nonexplicit") == (
-        "license verification is unresolved",
-    )
+    assert provider_activation_issues(entry) == ("license verification is unresolved",)
     entry["verify_license"] = False
     entry["lifecycle_state"] = "planned"
     entry["license_source"] = "https://example.invalid/license"
     entry["license_snapshot_sha256"] = "a" * 64
     entry["license_reviewed_at"] = "2026-07-14T00:00:00Z"
-    assert provider_activation_issues(entry, content_lane="adult_nonexplicit") == (
-        "lifecycle_state='planned' is not activatable",
-    )
+    assert provider_activation_issues(entry) == ("lifecycle_state='planned' is not activatable",)
 
 
 def test_checkpoint_license_overrides_permissive_repository_with_immutable_evidence() -> None:

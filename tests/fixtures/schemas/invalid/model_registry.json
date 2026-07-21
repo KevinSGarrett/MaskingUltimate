@@ -3,19 +3,11 @@
   "use_profile": "private_personal_noncommercial",
   "distribution_allowed": false,
   "commercial_deployment": false,
-  "content_compatibility": {
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed"
-  },
   "models": [
     {
       "key": "ollama_fixture",
       "role": "local_vlm",
       "lifecycle_state": "installed",
-      "content_compatibility": {
-        "adult_nonexplicit": "unclear",
-        "consensual_explicit_adult": "unclear"
-      },
       "license_review": { "status": "pending" },
       "managed": true,
       "manager": "ollama",

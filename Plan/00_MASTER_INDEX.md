@@ -4,7 +4,7 @@
 **Project codename:** MaskFactory
 **Project root:** `C:\Comfy_UI_Main_Masking\`
 **Plan pack location:** `C:\Comfy_UI_Main_Masking\Plan\`
-**Blueprint version:** 1.1.0
+**Blueprint version:** 1.2.0
 **Ontology versions:** active `body_parts_v1` (56 PART IDs `0..55`); approved but inactive `body_parts_v2` (65 PART IDs `0..64`, doc 18)
 **Date:** 2026-07-09
 **Owner:** Kevin (Scentiment / solo dev)
@@ -22,7 +22,7 @@ boundaries, hair, feet/toes, occlusion, and clothing — and which ultimately tr
 custom fine-tuned segmentation models and integrates directly into ComfyUI.
 
 Every decision has been made. There are no open questions. A developer (or AI coding agent)
-can build the entire system from these 25 documents without asking a single design question.
+can build the entire system from these 26 documents without asking a single design question.
 
 ---
 
@@ -55,6 +55,7 @@ can build the entire system from these 25 documents without asking a single desi
 | 22 | 22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md | Active-registry governance, provider/model lifecycle states, license/content activation, non-collapsing truth metrics, certification statistics, challenger non-inferiority, and currency review |
 | 23 | 23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md | Qualified external-label supervision, the disjoint 83k benchmark/retrieval corpus, exact DAZ synthetic truth, near-perfect selective-autonomy targets, and binary owner decisions |
 | 24 | 24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md | Required human-free completion profile, exact-output operational authority, MaskFactory↔ComfyUI runtime/release bridge, optional claim profiles, and recovery qualification |
+| 25 | 25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md | Evidence-qualified visual critics, multi-proposal disagreement/repair, positive-control calibration, persistent RunPod execution, and read-only AWS-to-RunPod asset reconciliation |
 
 ---
 
@@ -109,3 +110,4 @@ The legacy portfolio/research profile is complete when all of the following are 
 - **Multi-person / multi-character images:** doc 17 (full spec) → items `Plan\Items\10_ITEMS_P8_MULTI_PERSON_MASKING.md` (Phase P8, builds after the single-person system is proven).
 - **Adding a new label later:** doc 02 §9 (ontology change procedure). Never edit labels ad hoc.
 - **Adult-anatomy ontology v2:** doc 18 plus `Plan\OntologyV2\IMPLEMENTATION_CHECKLIST.md`; the active v1 map must not change until the migration gate passes.
+- **Self-hosted visual authority and RunPod asset migration:** doc 25 plus Instructions 13–14; model names never outrank measured positive-and-negative calibration evidence, and AWS remains read-only inventory rather than a compute target.

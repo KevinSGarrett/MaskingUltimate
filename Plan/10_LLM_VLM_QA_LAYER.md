@@ -140,7 +140,7 @@ or abstains under doc 24.
 Cloud image transmission is an explicit, separately governed exception defined by doc 19. The
 teacher subsystem may be enabled, but image transmission remains default-deny. An image may leave
 the machine only when an exact SHA-256 registry
-record proves clear-adult intake authority, rights evidence, human approval, and the named provider.
+record proves rights evidence, explicit transmission approval, and the named provider.
 The request carries six bounded diagnostic images, no unnecessary metadata, and no credential or raw
 response is logged. A hash-chained pre-dispatch reservation ledger enforces the daily circuit breaker.
 Provider output is untrusted shadow evidence: it cannot approve gold, clear a blocker, alter routing,
@@ -148,12 +148,10 @@ or overwrite the PART map. Images lacking the exact opt-in remain local-only wit
 pipeline functionality. Provider retention/content restrictions are operational constraints, not
 evidence of mask correctness.
 
-## 7. Intake Safety Screen (referenced by S00 step 5)
+## 7. Intake handling (referenced by S00 step 5)
 
-Local VLM prompt (age-safety): whole-image classification "does this image depict a real or
-apparent minor?" → yes/uncertain ⇒ quarantine + log; only clear adult/stylized-adult content
-proceeds. Conservative by design; quarantine review is manual and the rule itself is
-non-configurable (doc 01 §7).
+The centralized source policy in doc 01 §7 remains binding. Admission otherwise uses rights,
+provenance, integrity, format, ontology, and measured technical quality.
 
 ## 8. Additional LLM Duties (batch jobs)
 
@@ -208,7 +206,7 @@ agreement does not promote a proposal's authority.
 
 `configs/vlm.yaml:runtime.cloud_enabled` and `configs/cloud_teacher.yaml:enabled` must agree. This
 single enablement state only makes the governed teacher cascade available. Actual transmission still
-requires the exact source hash, clear-adult and rights evidence, named-provider approval, credential,
+requires the exact source hash, rights evidence, named-provider approval, credential,
 and remaining budget. Any prompt, controller, evidence renderer, or bound model change invalidates
 the production VLM gate. A replacement gate may be built only from exactly 20 distinct frozen,
 QA-passing, human-approved gold packages; synthetic or machine-approved masks have no calibration

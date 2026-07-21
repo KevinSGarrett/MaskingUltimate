@@ -6,7 +6,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "configs" / "civitai_pose_stress_fixtures.yaml"
-CLASSIFICATION = ROOT / "Plan" / "Civitai" / "adult_body_resource_classification.yaml"
+CLASSIFICATION = ROOT / "Plan" / "Civitai" / "resource_classification.yaml"
 
 
 def _load_yaml(path: Path) -> dict:

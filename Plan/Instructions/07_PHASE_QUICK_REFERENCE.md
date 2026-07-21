@@ -33,8 +33,7 @@ format QA structurally enforced; ontology-v2 and four explicit truth tiers are
 schema-valid while active v1 remains unchanged until activation.
 **Key gotchas:** Binary masks are always regenerated from the two label
 maps (`label_map_part.png`, `label_map_material.png`) — never hand-edit a
-binary PNG directly (QC-030). Source provenance and content-lane decisions
-remain explicit; no age-eligibility gate is added. `ontology.yaml` is generated from spec tables, never
+binary PNG directly (QC-030). Source provenance remains explicit. `ontology.yaml` is generated from spec tables, never
 hand-written (`MF-P1-03`, a hard blocker).
 **Exit:** `MF-P1-EXIT` for the optional human-truth portfolio lane; this is not the required core exit.
 

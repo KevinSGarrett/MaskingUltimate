@@ -34,10 +34,6 @@ def _draft_provenance() -> dict:
             "key": "fixture_champion_bodypart",
             "role": "champion_bodypart",
             "lifecycle_state": "promoted",
-            "content_compatibility": {
-                "adult_nonexplicit": "allowed",
-                "consensual_explicit_adult": "allowed",
-            },
             "license_eligibility": {"status": "eligible", "eligible": True},
             "benchmark_certificate": {
                 "status": "missing",

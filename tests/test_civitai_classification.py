@@ -5,7 +5,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "Plan" / "Civitai" / "civitai_bootstrap_manifest.json"
-CLASSIFICATION = ROOT / "Plan" / "Civitai" / "adult_body_resource_classification.yaml"
+CLASSIFICATION = ROOT / "Plan" / "Civitai" / "resource_classification.yaml"
 
 
 def _load_yaml(path: Path) -> dict:
@@ -52,21 +52,18 @@ def test_classification_roles_are_allowed_and_define_training_eligibility():
         assert defaults["training_gold_eligibility"]
 
 
-def test_adult_nsfw_assets_are_explicitly_eligible_for_training_and_reviewed_gold():
+def test_sources_use_one_governed_training_and_gold_path():
     classification = _load_yaml(CLASSIFICATION)
 
-    assert classification["policy"]["adult_nsfw_assets_may_be_training_data_when_eligible"] is True
     assert (
-        classification["policy"]["adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible"]
-        is True
-    )
-    assert (
-        classification["policy"]["require_provenance_license_consent_before_training_or_gold"]
+        classification["policy"][
+            "require_provenance_license_and_allowed_use_before_training_or_gold"
+        ]
         is True
     )
 
 
-def test_explicit_nsfw_pose_resources_are_registered_for_stress_and_training_eligibility():
+def test_pose_resources_are_registered_for_stress_and_training_eligibility():
     classification = _load_yaml(CLASSIFICATION)
     stress_ids = {int(entry["id"]) for entry in classification["role_groups"]["stress_fixture"]}
 

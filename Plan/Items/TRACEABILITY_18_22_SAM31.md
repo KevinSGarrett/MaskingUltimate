@@ -1,9 +1,9 @@
 # Requirements Traceability — Docs 18–22 and SAM 3.1 Handoff
 
 **Status:** authoritative tracker-import map
-**Generated scope:** 798 total Items records = 609 prior records + 146 document-23/DAZ records +
-43 document-24 autonomous-core/cross-project-bridge records
-**Sources:** docs 18–23, `OntologyV2/IMPLEMENTATION_CHECKLIST.md`, `SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md`, and `Plan/Daz/00–32`
+**Generated scope:** 827 total Items records = 609 prior records + 146 document-23/DAZ records +
+43 document-24 autonomous-core/cross-project-bridge records + 29 document-25 visual-authority/RunPod records
+**Sources:** docs 18–25, `OntologyV2/IMPLEMENTATION_CHECKLIST.md`, `SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md`, and `Plan/Daz/00–32`
 
 This matrix prevents later specifications from living outside the live tracker. A range means every numbered step, bullet, table rule, and acceptance condition in the named source section is decomposed by the referenced atomic Items. Existing IDs are reused where they already carry the same verification contract; the delta files add only missing scope.
 
@@ -17,7 +17,9 @@ This remains one tracker; DAZ readiness checklists are evidence sources, not sha
 
 ## Owner override applied during import
 
-Kevin explicitly rejected adding an age-eligibility/unknown-age fail-closed tracker gate. That source requirement is superseded and is **not** active tracker authority. The import instead tracks permitted content lanes, provider/artifact-specific compatibility, rights/license decisions, and the removal/non-reintroduction of QC-V2-011 age eligibility through `MF-P2-10.02`, `MF-P4-09.01`, and `MF-P4-10.03`. This override does not prohibit adult/NSFW training data.
+The import tracks provider/artifact compatibility, rights/license decisions, and
+the exact active QA registry through `MF-P2-10.02`, `MF-P4-09.01`, and `MF-P4-10.03`. Reserved
+retired check `QC-V2-011` remains absent.
 
 ## Doc 18 executable checklist — exact one-to-one import (70 entries)
 
@@ -89,10 +91,10 @@ Completed/open state is migrated from the checklist only when its evidence satis
 
 | Source requirement | Tracker coverage |
 |---|---|
-| §1 operating profile/content lanes | `MF-P0-16.01`, `.07`–`.10` |
+| §1 operating profile/provider evidence | `MF-P0-16.01`, `.07`–`.10` |
 | §2 exact v2 registry, legacy isolation, unified validation, duplicate keys, atomic writes | `MF-P0-16.02`–`.05`, `.12` |
 | §3 lifecycle meanings, no planned installed artifacts, transactional promotion/rollback | `MF-P0-16.06`, `.11`; `MF-P2-11.12`, `.15` |
-| §4 license/content activation prerequisites and probe separation | `MF-P0-16.07`–`.10` |
+| §4 license/allowed-use activation prerequisites and probe separation | `MF-P0-16.07`–`.10` |
 | §5 truth tiers, partitions, separate counts, certified/effective formulas | `MF-P1-13.01`–`.06`; `MF-P5-10.01`–`.05` |
 | §6 distinct throughput/quality/confidence, buckets, power/floors/bounds, selective prediction, mixed audits, revocation | `MF-P4-11.01`, `.08`–`.13`; `MF-P7-07.04`–`.05` |
 | §7 frozen role benchmark, primary win, hard-bucket non-inferiority, regression families, hashes, rollback | `MF-P2-11.13`–`.15`; `MF-P3-08.08`–`.10`; `MF-P5-10.07`–`.12` |
@@ -121,6 +123,19 @@ Completed/open state is migrated from the checklist only when its evidence satis
 | Safe execution order and completion evidence | dependency clauses on every new item; `MF-P7-07.09`–`.10` |
 | Autonomous multi-person acceptance/audit | `MF-P8-11.01`–`.08` |
 
+## Doc 25 — Self-hosted visual authority and RunPod migration
+
+| Source requirement | Tracker coverage |
+|---|---|
+| §2 content-neutral source admission | `MF-P0-14.01`–`.04`; `MF-P0-16.01`, `.07`; `MF-P2-10.02`; `MF-P4-10.03` |
+| §§3–4 role hierarchy and hardware-qualified deployment | `MF-P0-17.15`, `.20`–`.24`; `MF-P4-11.16`, `.19`–`.20` |
+| §5 proposal/refinement stack | `MF-P2-11.16`–`.19` |
+| §6 target contracts and disagreement evidence | `MF-P2-11.20`–`.21`; `MF-P4-11.21` |
+| §7 positive-and-negative qualification | `MF-P4-11.17`–`.20`; `MF-P7-07.11` |
+| §8 bounded correction and pixel-authority boundary | `MF-P2-11.22`; `MF-P4-11.22` |
+| §9 regression and release evidence | `MF-P4-11.23`; `MF-P7-07.11`, `.14` |
+| §§10–11 AWS read-only inventory and persistent RunPod migration | `MF-P0-17.16`–`.19`; `MF-P7-07.12`–`.14` |
+
 ## Deliberate reuse rather than duplication
 
 - Existing `MF-P2-09.*` remains the governed auxiliary-specialist implementation; `MF-P2-11.*` adds provider-neutral modern challengers and the new benchmark matrix.
@@ -131,4 +146,4 @@ Completed/open state is migrated from the checklist only when its evidence satis
 
 ## Coverage audit rule
 
-CI must parse all Items files, assert exactly 70 ontology-v2 imported IDs, assert every doc 18–22 and handoff section above has at least one valid non-orphaned tracker ID, reject duplicate IDs, reject stale item totals, and reject reintroduction of the owner-excluded age-eligibility gate in the imported tracker files.
+CI must parse all Items files, assert exactly 70 ontology-v2 imported IDs, assert every doc 18–25 and handoff section above has at least one valid non-orphaned tracker ID, reject duplicate IDs, reject stale item totals, and reject undeclared QA gates in the imported tracker files.

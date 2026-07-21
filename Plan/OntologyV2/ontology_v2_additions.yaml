@@ -49,7 +49,6 @@ derived_formulas:
   pelvic_anatomy_visible: "part:pelvic_region | derived:external_genitalia_visible"
 
 governance:
-  confirmed_adult_required: true
   permitted_origins: [generated, owned_photo, licensed, consented_subject]
   hidden_anatomy_may_be_visible_gold: false
   clothing_contour_is_anatomy_evidence: false

@@ -1284,6 +1284,34 @@ dependency/claim boundaries.
 **Why:** Kevin hard mandate 2026-07-21: self-hosted high-end LLM on RunPod must STRICT visual review/QA for MF autonomy — no blind approvals; no cloud LLMs; NEVER EC2.
 **Approved by:** Kevin (explicit CRITICAL MANDATE) | AI-autonomous implementation
 
+## 2026-07-21 — Content-neutral source admission replaces special content and apparent-age lanes
+
+**Item(s) affected:** MF-P0-14.01–.04, MF-P0-16.01/.07/.12, MF-P0-17.01,
+MF-P2-10.02, MF-P4-09.01, MF-P4-10.03, MF-P8-10.01, MF-P9-14.01; docs
+01, 07, 10, 16, 18, 19, 22, 23, 25; Instructions 07 and 09
+
+**Previous value:** Active specifications repeated a special catalog-content intake lane and some
+runtime/planning surfaces still required a `clear_adult` or apparent-age result despite the earlier
+retirement of QC-V2-011.
+
+**New value:** Content tags and apparent-age classifications do not determine local source,
+training, masking, QA, gold, provider, or routing eligibility. MaskFactory uses one content-neutral
+admission path based on lawful ownership/license, provenance, integrity, ontology, measured quality,
+and authority tier. Provider service policies remain transport constraints only. The single safety
+exception is centralized in doc 01 §7 and is not expanded into a general age classifier or repeated
+special lane.
+
+**Downstream impact:** Remove tag-specific and apparent-age predicates from active runtime schemas,
+registries, intake, cloud-teacher admission, calibration fixtures, and tests while preserving
+historical evidence records as immutable history. Sapiens2 remains excluded because its exact
+license cannot support the required unrestricted input scope, not because MaskFactory maintains a
+special content lane.
+
+**Why:** Kevin explicitly rejected the repeated eligibility language and any blanket exclusion or
+special routing that prevents required training coverage.
+
+**Approved by:** Kevin, explicit owner directive on 2026-07-21
+
 
 ## 2026-07-21 — Binding CONTINUOUS UNTIL E2E COMPLETE (NO STOP)
 **Item(s) affected:** all autonomous-build sessions (operating rules); no weakening of STRICT VLM / proof tiers

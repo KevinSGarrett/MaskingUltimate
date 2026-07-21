@@ -44,8 +44,6 @@ def _fixture(tmp_path: Path) -> Path:
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                 "source_origin": "generated",
                 "rights_evidence": "test generated",
-                "age_safety": "clear_adult",
-                "age_evidence": "test fixture",
                 "manual_visible_instance_count": visible_count,
                 "reviewer": "fixture reviewer",
                 "reviewed_at": "2026-07-11T00:00:00Z",

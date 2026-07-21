@@ -32,21 +32,21 @@ validation:
 use_profile: private_personal_noncommercial
 distribution_allowed: false
 commercial_deployment: false
-content_compatibility:
-  adult_nonexplicit: allowed | prohibited | unclear
-  consensual_explicit_adult: allowed | prohibited | unclear
+source_governance:
+  provenance: verified | pending | rejected
+  license_and_allowed_use: verified | pending | rejected
 ```
 
 Noncommercial licenses are not blockers under this operating profile when their other terms permit
-the intended local use. Exact license text, source, version, and content restrictions must still be
-recorded. Do not infer that "noncommercial" also means adult-content compatible.
+the intended local use. Exact license text, source, version, and allowed-use restrictions must still
+be recorded.
 
-## Content and model decisions
+## Model decisions
 
 ### Hard exclusion
 
-- **Do not install, register, benchmark, or use Sapiens2 in an adult/explicit MaskFactory path.** Its
-  license prohibits pornographic use regardless of whether the use is commercial. Official source:
+- **Do not install, register, benchmark, or use Sapiens2 in the unrestricted MaskFactory path.** Its
+  exact license does not cover the project's full intended input scope. Official source:
   <https://github.com/facebookresearch/sapiens2/blob/main/LICENSE.md>.
 
 ### Retained and newly required providers

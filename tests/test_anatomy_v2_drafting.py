@@ -8,7 +8,6 @@ from maskfactory.anatomy_v2_drafting import (
     NEW_LABELS,
     AnatomyBoxProposal,
     AnatomyDraftCandidate,
-    AnatomyV2DraftError,
     build_anatomy_crop_proposals,
     canonical_open_vocab_requests,
     fuse_anatomy_v2_candidates,
@@ -63,7 +62,6 @@ def _candidate(
         ),
         f"review {label}",
         {
-            "content_lane_decision": "consensual_explicit_adult",
             "sam2_required": True,
             "detector_box_used_as_mask": False,
             "geometry_prior_used_as_mask": False,
@@ -71,16 +69,11 @@ def _candidate(
     )
 
 
-def test_inactive_config_is_canonical_visible_only_and_content_lane_gated() -> None:
+def test_inactive_config_is_canonical_visible_only_and_content_neutral() -> None:
     config = load_anatomy_v2_config()
     assert config["activation_status"] == "approved_design_not_active"
     assert tuple(config["prompts"]) == NEW_LABELS
     assert all(prompt.startswith("visible exposed") for prompt in config["prompts"].values())
-    assert set(config["governance"]["permitted_content_lanes"]) == {
-        "general",
-        "adult_nonexplicit",
-        "consensual_explicit_adult",
-    }
     assert config["governance"]["detector_boxes_may_be_final_masks"] is False
     assert config["governance"]["geometry_priors_may_be_final_masks"] is False
 
@@ -93,22 +86,17 @@ def test_review_crops_and_prompts_assert_no_positive_or_hidden_anatomy() -> None
         chest_bbox_xyxy=(-10, 5, 80, 60),
         pelvic_bbox_xyxy=(20, 55, 110, 130),
         visibility_states=states,
-        content_lane_decision="consensual_explicit_adult",
     )
     assert len(crops) == 9
     assert all(crop.authority == "review_crop_only" for crop in crops)
     assert all(crop.asserts_positive_anatomy is False for crop in crops)
     assert all(0 <= crop.bbox_xyxy[0] < crop.bbox_xyxy[2] <= 100 for crop in crops)
     assert all(0 <= crop.bbox_xyxy[1] < crop.bbox_xyxy[3] <= 120 for crop in crops)
-    requests = canonical_open_vocab_requests(
-        crops, content_lane_decision="consensual_explicit_adult"
-    )
+    requests = canonical_open_vocab_requests(crops)
     assert len(requests) == 8
     assert "penis_shaft" not in {request.label for request in requests}
     assert all(request.authority == "proposal_box_only" for request in requests)
     assert all(request.may_write_final_mask is False for request in requests)
-    with pytest.raises(AnatomyV2DraftError, match="permitted content lane"):
-        canonical_open_vocab_requests(crops, content_lane_decision="unsupported")
 
 
 def test_same_side_priors_clip_clothing_hair_ambiguity_and_profile_hidden_side() -> None:
@@ -156,7 +144,6 @@ def test_detector_box_must_route_through_sam2_and_low_confidence_never_uses_prio
         (20, 20, 58, 56),
         0.92,
         0.88,
-        "consensual_explicit_adult",
     )
     plan = proposal_to_sam2_plan(proposal, prior, silhouette=silhouette)
     assert plan.label == "left_areola" and plan.multimask_output is True
@@ -203,23 +190,6 @@ def test_detector_box_must_route_through_sam2_and_low_confidence_never_uses_prio
         model="sam2.1_hiera_large",
     )
     assert covered.mask is None and covered.provenance["reason"] == "occluded_by_clothing"
-    with pytest.raises(AnatomyV2DraftError, match="permitted content lane"):
-        refine_anatomy_with_sam2(
-            FakeSam2(sam_mask),
-            object(),
-            AnatomyBoxProposal(
-                proposal.label,
-                proposal.prompt,
-                proposal.bbox_xyxy,
-                proposal.box_score,
-                proposal.text_score,
-                "unsupported",
-            ),
-            prior,
-            silhouette=silhouette,
-            visibility_state="occluded_by_clothing",
-            model="sam2.1_hiera_large",
-        )
 
 
 def test_fusion_carves_breast_pelvic_parents_and_routes_conflicts_to_ignore() -> None:
@@ -371,13 +341,10 @@ def test_required_drafting_fixture_conditions(
         chest_bbox_xyxy=box,
         pelvic_bbox_xyxy=(size // 4, size // 2, size + 10, size + 20),
         visibility_states={name: state for name in NEW_LABELS},
-        content_lane_decision="consensual_explicit_adult",
     )
     assert len(crops) == 9
     assert all(0 <= value <= size for crop in crops for value in crop.bbox_xyxy)
-    requests = canonical_open_vocab_requests(
-        crops, content_lane_decision="consensual_explicit_adult"
-    )
+    requests = canonical_open_vocab_requests(crops)
     if state in {"occluded_by_clothing", "cropped_out"}:
         assert requests == ()
     else:

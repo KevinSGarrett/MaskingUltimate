@@ -227,8 +227,6 @@ def verify_cloud_eligibility(
     record = registry.get("images", {}).get(image_id)
     required = {
         "source_sha256",
-        "content_lane",
-        "content_compatibility",
         "rights_evidence",
         "approved_by",
         "approved_at",
@@ -236,16 +234,6 @@ def verify_cloud_eligibility(
     }
     if not isinstance(record, dict) or set(record) != required:
         raise CloudTeacherError(f"image is not explicitly cloud eligible: {image_id}")
-    if (
-        record["content_lane"]
-        not in {
-            "general",
-            "adult_nonexplicit",
-            "consensual_explicit_adult",
-        }
-        or record["content_compatibility"] != "allowed"
-    ):
-        raise CloudTeacherError("cloud transmission lacks an allowed content-lane decision")
     if not all(
         str(record[key]).strip() for key in ("rights_evidence", "approved_by", "approved_at")
     ):

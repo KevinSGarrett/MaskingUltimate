@@ -103,7 +103,6 @@ failure_acquisition:
 acquisition_invariants:
   destination: hard_case_holdout
   human_review_required: true
-  clear_adult_required: true
   governed_source_required: true
   fabricated_positive_allowed: false
   aliases_allowed_in_failure_queue: false

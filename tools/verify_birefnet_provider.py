@@ -89,7 +89,6 @@ def main() -> int:
             "path": FIXTURE.relative_to(ROOT).as_posix(),
             "sha256": _sha256(FIXTURE),
             "person_box_xyxy": list(person_box.bbox_xyxy),
-            "adult_lane": "adult_nonexplicit_allowed",
         },
         "variants": records,
         "fallback_selection": {

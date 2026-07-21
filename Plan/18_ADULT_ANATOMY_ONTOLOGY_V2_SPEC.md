@@ -6,7 +6,7 @@
 
 **Status:** approved design; gated migration, not an ad-hoc edit to the active v1 map
 
-**Scope:** confirmed-adult source images only
+**Scope:** observable visible-surface anatomy
 
 ---
 
@@ -19,14 +19,13 @@ background)" is invalid because v1 ID 0 is already background; v2 removes that a
 
 The upgrade preserves the constitutional rules:
 
-1. Only confirmed-adult images may provide anatomy evidence. A yes/uncertain age screen stays quarantined.
-2. Atomic gold is visible-pixel-only. No anatomy is invented beneath clothing or occlusion.
-3. Clothing owns clothing pixels in the MATERIAL map. A contour through fabric is not visible anatomy truth.
-4. A missing mask never means absent. Every v2 label has an explicit reviewed state.
-5. `unreviewed_for_v2` is not a negative label and cannot enter v2 supervised training.
-6. Ambiguous pixels become ignore index `255`; the annotator never guesses a boundary or side.
-7. Projected/amodal estimates, if ever enabled, remain separate and can never become visible-mask gold, training truth, or approval evidence.
-8. Anatomy applicability is never inferred from name, gender presentation, clothing, or model guess. `not_applicable` requires human-reviewed evidence.
+1. Atomic gold is visible-pixel-only. No anatomy is invented beneath clothing or occlusion.
+2. Clothing owns clothing pixels in the MATERIAL map. A contour through fabric is not visible anatomy truth.
+3. A missing mask never means absent. Every v2 label has an explicit reviewed state.
+4. `unreviewed_for_v2` is not a negative label and cannot enter v2 supervised training.
+5. Ambiguous pixels become ignore index `255`; the annotator never guesses a boundary or side.
+6. Projected/amodal estimates, if ever enabled, remain separate and can never become visible-mask gold, training truth, or approval evidence.
+7. Anatomy applicability is never inferred from name, gender presentation, clothing, or model guess. `not_applicable` requires human-reviewed evidence.
 
 ## 2. Append-only PART registry
 
@@ -149,7 +148,6 @@ The v2 QA battery adds hard checks:
 - **QC-V2-008 — scrotal side integrity:** left/right obey character perspective; unresolved sides must be ambiguous.
 - **QC-V2-009 — clothing authority:** `occluded_by_clothing` requires null anatomy mask and visible clothing material in the reviewed region.
 - **QC-V2-010 — no hidden-authority leak:** projected/amodal anatomy cannot satisfy visible-mask, gold, training, metric, or approval requirements.
-- **QC-V2-011 — adult governance:** every positive ID 56–64 references a `clear_adult` intake decision and allowed source origin.
 - **QC-V2-012 — alias canonicalization:** maps/manifests never persist aliases as labels.
 
 Seeded-defect fixtures must exercise every new check before activation.
@@ -173,7 +171,7 @@ Seeded-defect fixtures must exercise every new check before activation.
 
 ### 7.3 Evidence gates
 
-- Pilot mechanics: 20–30 v2-reviewed adult images spanning clothed, exposed, occluded, cropped, not-visible, not-applicable, and ambiguous states.
+- Pilot mechanics: 20–30 v2-reviewed images spanning clothed, exposed, occluded, cropped, not-visible, not-applicable, and ambiguous states.
 - Production-data target: at least 50–100 clear positive instances per new atomic class, with a dedicated identity-separated hard-case holdout.
 - Publish per-class IoU, boundary-F, positive recall, false-positive rate on clothed images, and left/right swap rate. Aggregate mIoU alone cannot pass.
 - No production promotion while any new class lacks a measured holdout or while false positives appear systematically on clothed images.

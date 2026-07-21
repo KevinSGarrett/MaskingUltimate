@@ -120,7 +120,6 @@ def load_v2_operations_policy(path: Path | str = DEFAULT_POLICY) -> dict[str, An
     expected_invariants = {
         "destination": "hard_case_holdout",
         "human_review_required": True,
-        "clear_adult_required": True,
         "governed_source_required": True,
         "fabricated_positive_allowed": False,
         "aliases_allowed_in_failure_queue": False,

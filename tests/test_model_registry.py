@@ -31,19 +31,12 @@ def _digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-_CONTENT_COMPATIBILITY = {
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed",
-}
-
-
 def _registry_document(models: list[dict]) -> dict:
     return {
         "schema_version": "2.0.0",
         "use_profile": "private_personal_noncommercial",
         "distribution_allowed": False,
         "commercial_deployment": False,
-        "content_compatibility": dict(_CONTENT_COMPATIBILITY),
         "models": models,
     }
 
@@ -51,7 +44,6 @@ def _registry_document(models: list[dict]) -> dict:
 def _governed_trained_entry(**values) -> dict:
     return {
         "lifecycle_state": "installed",
-        "content_compatibility": dict(_CONTENT_COMPATIBILITY),
         "license_review": {"status": "not_required"},
         "runtime": "pytest",
         "license": "MaskFactory-internal",

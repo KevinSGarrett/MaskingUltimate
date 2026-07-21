@@ -198,14 +198,10 @@ def _provider_lifecycle_inventory(
         state = str(entry["lifecycle_state"])
         inventory[state].append(str(name))
         if state == "promoted":
-            issues = {
-                lane: provider_activation_issues(entry, content_lane=lane)
-                for lane in ("adult_nonexplicit", "consensual_explicit_adult")
-            }
-            flattened = [f"{lane}: {issue}" for lane, values in issues.items() for issue in values]
-            if flattened:
+            issues = provider_activation_issues(entry)
+            if issues:
                 raise RuntimeError(
-                    f"promoted provider {name} is not activation-ready: " + "; ".join(flattened)
+                    f"promoted provider {name} is not activation-ready: " + "; ".join(issues)
                 )
     return {state: tuple(sorted(names)) for state, names in inventory.items()}
 

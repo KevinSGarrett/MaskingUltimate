@@ -43,8 +43,6 @@ def seal_multi_instance_fixture_set(
         "source_sha256",
         "source_origin",
         "rights_evidence",
-        "age_safety",
-        "age_evidence",
         "manual_visible_instance_count",
         "reviewer",
         "reviewed_at",
@@ -65,9 +63,7 @@ def seal_multi_instance_fixture_set(
         keys.add(key)
         if fixture["source_origin"] not in ALLOWED_ORIGINS:
             raise MultiInstanceFixtureError(f"fixture source origin is not governed: {key}")
-        if fixture["age_safety"] != "clear_adult":
-            raise MultiInstanceFixtureError(f"fixture is not age-cleared adult: {key}")
-        for field in ("rights_evidence", "age_evidence", "reviewer", "reviewed_at"):
+        for field in ("rights_evidence", "reviewer", "reviewed_at"):
             if not isinstance(fixture[field], str) or not fixture[field].strip():
                 raise MultiInstanceFixtureError(f"fixture {field} is missing: {key}")
         source = _safe_file(root, fixture["source_path"])
@@ -116,8 +112,6 @@ def seal_multi_instance_fixture_set(
                 "source_size": [width, height],
                 "source_origin": fixture["source_origin"],
                 "rights_evidence": fixture["rights_evidence"],
-                "age_safety": fixture["age_safety"],
-                "age_evidence": fixture["age_evidence"],
                 "manual_visible_instance_count": manual_count,
                 "reviewer": fixture["reviewer"],
                 "reviewed_at": fixture["reviewed_at"],

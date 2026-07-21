@@ -184,9 +184,9 @@
   },
   "source_hashes": {
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
-    "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
-    "configs/external_sources.yaml": "efe024579ec499444ced7edbb0631c455d2b7c8491a7ff92cbb9044aee20fd28",
-    "src/maskfactory/serve/api.py": "394e9a4f159601032cb0e8de7728f065c896b1f0c87ce011371b89345d585946",
+    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
+    "configs/external_sources.yaml": "b4ad38e516fa0da301b5d3d9acc0c3ba5f55e61cecdf2ddbf678b6a6404d460b",
+    "src/maskfactory/serve/api.py": "68d423add7c5bc1184efb82a7aa4bd0b95a2e39b9c4f47acea8d0dff4ecabce0",
     "src/maskfactory/serve/providers.py": "7d8fabe68d3b1eaea3b27df1777ef221bef99299da9cffa2cf644fb59d8764cd",
     "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
     "src/maskfactory/packager.py": "5ba72189f3d0b08777033da965caa77c1a38dca85809d16b04a2f03a245f11b4",
@@ -195,5 +195,5 @@
     "src/maskfactory/serve/maskfactory_nodes/workflows/wf_multi_instance_p1.json": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418"
   },
   "authority": "pre_result_measurement_policy_only_no_serving_training_mask_truth_gold_promotion_or_completion_authority",
-  "sha256": "d48666d930c4deb8eed214ba00434a66e8601930e723ae56a887aa88905a6666"
+  "sha256": "1ece5c1645b083bacf0f604274cf69848ba36abaf6ede892405957ad12452500"
 }

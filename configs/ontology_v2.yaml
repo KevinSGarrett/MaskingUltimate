@@ -2343,7 +2343,6 @@ aliases:
     canonical: both_nipples
     kind: derived_union
 governance:
-  confirmed_adult_required: true
   permitted_origins:
   - generated
   - owned_photo

@@ -20,7 +20,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 
 from ..governance import (
-    CONTENT_COMPATIBILITY_KEYS,
     GovernancePolicyError,
     provider_activation_issues,
     validate_external_source_registry,
@@ -139,17 +138,8 @@ def _runtime_identity(entry: Mapping[str, Any]) -> str | None:
 
 
 def _license_status(entry: Mapping[str, Any], *, registry: str, findings: list[str]) -> str:
-    compatibility = entry.get("content_compatibility")
-    if not isinstance(compatibility, Mapping) or any(
-        compatibility.get(lane) != "allowed" for lane in CONTENT_COMPATIBILITY_KEYS
-    ):
-        findings.append("content_compatibility_unresolved")
     if registry == "external_sources":
-        issues = {
-            issue
-            for lane in CONTENT_COMPATIBILITY_KEYS
-            for issue in provider_activation_issues(entry, content_lane=lane)
-        }
+        issues = set(provider_activation_issues(entry))
         if issues:
             findings.append("license_decision_unresolved")
             return "unresolved"
@@ -325,8 +315,6 @@ def _inspect_active_roles(
         runtime = _runtime_identity(authority)
         if runtime is None:
             findings.append("active_runtime_identity_missing")
-        compatibility = authority.get("content_compatibility")
-        compatibility_output = dict(compatibility) if isinstance(compatibility, Mapping) else None
         license_status = _license_status(authority, registry=str(registry), findings=findings)
         benchmark_sha, benchmark_issued = _benchmark_status(
             authority.get("benchmark_certificate"),
@@ -380,7 +368,6 @@ def _inspect_active_roles(
                 "lifecycle_state": str(lifecycle) if lifecycle is not None else None,
                 "artifact_sha256": artifact_sha256,
                 "runtime_identity": runtime,
-                "content_compatibility": compatibility_output,
                 "license_status": license_status,
                 "benchmark_certificate_sha256": benchmark_sha,
                 "benchmark_issued_at": benchmark_issued,
@@ -507,12 +494,12 @@ def build_currency_review(
 def verify_currency_review_signature(
     review: Mapping[str, Any], *, public_key_path: Path
 ) -> dict[str, str]:
-    """Verify an immutable current or historical review without recomputing live inputs."""
+    """Verify an immutable review signature without applying the current schema.
+
+    Historical packets remain cryptographically verifiable after the active schema evolves;
+    current packets are schema-validated when they are built and during live verification.
+    """
     findings: list[str] = []
-    try:
-        require_valid_document(dict(review), "currency_review")
-    except ArtifactValidationError:
-        raise CurrencyReviewError(["currency_review_schema_invalid"]) from None
     if review.get("review_sha256") != _canonical_sha256(
         {key: value for key, value in review.items() if key != "review_sha256"}
     ):

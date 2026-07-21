@@ -1,9 +1,9 @@
-"""Inactive adult-anatomy v2 drafting, SAM2 routing, and carve-out fusion.
+"""Inactive anatomy-v2 drafting, SAM2 routing, and carve-out fusion.
 
 This module is review-draft machinery only.  It never changes the active v1
 pipeline, never treats detector boxes or geometry priors as masks, and never
-approves gold. Its outputs become eligible for review only after content-lane
-compatibility and visible-pixel gates below pass.
+approves gold. Its outputs become eligible for review only after source-policy
+and visible-pixel gates below pass.
 """
 
 from __future__ import annotations
@@ -41,7 +41,6 @@ NEW_LABELS = (
     "left_scrotal_region",
     "right_scrotal_region",
 )
-PERMITTED_CONTENT_LANES = frozenset({"general", "adult_nonexplicit", "consensual_explicit_adult"})
 CHEST_LABELS = NEW_LABELS[:4]
 PELVIC_LABELS = NEW_LABELS[4:]
 EXPLICIT_NON_CANDIDATE_STATES = frozenset(
@@ -70,7 +69,6 @@ class AnatomyOpenVocabRequest:
     prompt: str
     roi_bbox_xyxy: tuple[int, int, int, int]
     visibility_state: str
-    content_lane_decision: str
     authority: str = "proposal_box_only"
     may_write_final_mask: bool = False
     visible_surface_only: bool = True
@@ -83,7 +81,6 @@ class AnatomyBoxProposal:
     bbox_xyxy: tuple[int, int, int, int]
     box_score: float
     text_score: float
-    content_lane_decision: str
     authority: str = "proposal_box_only"
 
 
@@ -133,10 +130,8 @@ def load_anatomy_v2_config(path: Path | str = DEFAULT_CONFIG) -> dict[str, Any]:
         if document.get(key) != expected:
             raise AnatomyV2DraftError(f"anatomy-v2 config {key} must equal {expected!r}")
     governance = document.get("governance")
-    if not isinstance(governance, dict) or set(
-        governance.get("permitted_content_lanes", ())
-    ) != set(PERMITTED_CONTENT_LANES):
-        raise AnatomyV2DraftError("anatomy-v2 drafting must declare the permitted content lanes")
+    if not isinstance(governance, dict):
+        raise AnatomyV2DraftError("anatomy-v2 governance must be a mapping")
     for required_true in (
         "visible_surface_only",
         "clothing_owns_covered_pixels",
@@ -191,25 +186,15 @@ def load_anatomy_v2_config(path: Path | str = DEFAULT_CONFIG) -> dict[str, Any]:
     return document
 
 
-def require_permitted_content_lane(content_lane_decision: str) -> None:
-    if content_lane_decision not in PERMITTED_CONTENT_LANES:
-        raise AnatomyV2DraftError(
-            "anatomy-v2 drafting requires a permitted content lane, "
-            f"got {content_lane_decision!r}"
-        )
-
-
 def build_anatomy_crop_proposals(
     *,
     image_size: tuple[int, int],
     chest_bbox_xyxy: tuple[int, int, int, int],
     pelvic_bbox_xyxy: tuple[int, int, int, int],
     visibility_states: Mapping[str, str],
-    content_lane_decision: str,
     config_path: Path | str = DEFAULT_CONFIG,
 ) -> tuple[AnatomyCropProposal, ...]:
     """Create review crops only; a crop never asserts that anatomy is present."""
-    require_permitted_content_lane(content_lane_decision)
     config = load_anatomy_v2_config(config_path)
     width, height = image_size
     if width < 1 or height < 1:
@@ -238,11 +223,9 @@ def build_anatomy_crop_proposals(
 def canonical_open_vocab_requests(
     crops: tuple[AnatomyCropProposal, ...],
     *,
-    content_lane_decision: str,
     config_path: Path | str = DEFAULT_CONFIG,
 ) -> tuple[AnatomyOpenVocabRequest, ...]:
     """Route only canonical visible-surface prompts through proposal-box authority."""
-    require_permitted_content_lane(content_lane_decision)
     config = load_anatomy_v2_config(config_path)
     seen = set()
     requests = []
@@ -258,7 +241,6 @@ def canonical_open_vocab_requests(
                 str(config["prompts"][crop.label]),
                 crop.bbox_xyxy,
                 crop.visibility_state,
-                content_lane_decision,
             )
         )
     return tuple(requests)
@@ -351,7 +333,6 @@ def proposal_to_sam2_plan(
     neighbor_priors: tuple[np.ndarray, ...] = (),
 ) -> PromptPlan:
     """Intersect proposal box and geometry gate, then build a SAM2 prompt plan."""
-    require_permitted_content_lane(proposal.content_lane_decision)
     if proposal.authority != "proposal_box_only" or proposal.label != spatial_prior.label:
         raise AnatomyV2DraftError("anatomy-v2 proposal/prior authority mismatch")
     if (
@@ -391,7 +372,6 @@ def refine_anatomy_with_sam2(
     ambiguity: np.ndarray | None = None,
 ) -> AnatomyDraftCandidate:
     """Require SAM2 multimask output; low confidence never falls back to a prior mask."""
-    require_permitted_content_lane(proposal.content_lane_decision)
     if proposal.label not in NEW_LABELS or proposal.label != spatial_prior.label:
         raise AnatomyV2DraftError("anatomy-v2 proposal/prior label mismatch")
     state = _state(visibility_state)
@@ -410,7 +390,6 @@ def refine_anatomy_with_sam2(
                 "detector_box_used_as_mask": False,
                 "geometry_prior_used_as_mask": False,
                 "sam2_required": True,
-                "content_lane_decision": proposal.content_lane_decision,
             },
         )
     plan = proposal_to_sam2_plan(proposal, spatial_prior, silhouette=silhouette)
@@ -438,7 +417,6 @@ def refine_anatomy_with_sam2(
                 "sam2_required": True,
                 "detector_box_used_as_mask": False,
                 "geometry_prior_used_as_mask": False,
-                "content_lane_decision": proposal.content_lane_decision,
             },
         )
     visible = _matching_mask(silhouette, spatial_prior.roi, "silhouette")
@@ -464,7 +442,6 @@ def refine_anatomy_with_sam2(
                 "sam2_required": True,
                 "detector_box_used_as_mask": False,
                 "geometry_prior_used_as_mask": False,
-                "content_lane_decision": proposal.content_lane_decision,
             },
         )
     return AnatomyDraftCandidate(
@@ -484,7 +461,6 @@ def refine_anatomy_with_sam2(
             "spatial_prior_authority": spatial_prior.authority,
             "geometry_prior_used_as_mask": False,
             "sam2_required": True,
-            "content_lane_decision": proposal.content_lane_decision,
             "interactive_segmenter_provider": "sam2",
             "sam2_model": model,
             "sam2_predicted_iou": refined.predicted_iou,
@@ -557,14 +533,13 @@ def fuse_anatomy_v2_candidates(
         if not math.isfinite(candidate.confidence) or not 0 <= candidate.confidence <= 1:
             raise AnatomyV2DraftError(f"anatomy-v2 candidate confidence is invalid: {name}")
         if (
-            candidate.provenance.get("content_lane_decision") not in PERMITTED_CONTENT_LANES
-            or candidate.provenance.get("sam2_required") is not True
+            candidate.provenance.get("sam2_required") is not True
             or candidate.provenance.get("detector_box_used_as_mask") is not False
             or candidate.provenance.get("geometry_prior_used_as_mask") is not False
         ):
             raise AnatomyV2DraftError(
-                "anatomy-v2 fusion refuses incompatible content-lane or unproven "
-                f"interactive-segmenter candidate provenance: {name}"
+                "anatomy-v2 fusion refuses unproven interactive-segmenter candidate "
+                f"provenance: {name}"
             )
         mask = _matching_mask(candidate.mask, visible, name) & visible & ~blocked & ~ignore
         new[name] = mask

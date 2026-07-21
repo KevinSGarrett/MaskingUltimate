@@ -133,10 +133,6 @@ def import_planned_challenger(
         "local_path": "(not installed; planned discovery challenger)",
         "output_type": discovery["output_type"],
         "role": f"planned challenger for {discovery['target_role']}; never active on import",
-        "content_compatibility": {
-            "adult_nonexplicit": "unclear",
-            "consensual_explicit_adult": "unclear",
-        },
         "authority_level": "evaluation-only candidate after governed installation",
         "discovery_evidence_sha256": discovery["evidence_sha256"],
     }

@@ -365,12 +365,12 @@
     "require_fallback_to": "dwpose_133"
   },
   "source_hashes": {
-    "env/rtm_pose.lock.json": "f9f1edae8ab4159ac0226a137151da4da775d9f6a72ce188405ad07fb81b5e12",
-    "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
-    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "6c61c3cf46abfbebf7d2c3a231e2e5e09cdb10cd42c11bf1af21f95329e4ba36",
+    "env/rtm_pose.lock.json": "efc3af77b9a5b717984b475ea5303aa4d9a6581b75eb8b5b936f63544e774bce",
+    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
+    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "a4c1d93af92142d2ed7cdd57efa55157b0ba0c14f21440a9099c0072c9e56cd0",
     "src/maskfactory/providers/rtm_pose.py": "4a59e14dd783d2d43a53675edf5fbf9b3c600473ebd64d073778774c312f9007",
     "src/maskfactory/stages/s04_pose.py": "a8542aaceb508917874fb03640b3a8fe72a71570b5b94fa140b5dbf9a60e93de"
   },
   "authority_boundary": "Pre-result structural and non-inferiority policy only. Synthetic fixtures prove enforcement but grant no measured performance, promotion, serving, certificate, production-mask, or gold authority; completion requires an image-disjoint human-anchor holdout benchmark.",
-  "sha256": "3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517"
+  "sha256": "5bf1e5b67c61db9192d5af1d336fddaa98c73af9ff00fee06365652f13fd4e59"
 }

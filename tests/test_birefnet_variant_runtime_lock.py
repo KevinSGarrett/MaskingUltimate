@@ -14,7 +14,7 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_birefnet_registry_binds_installed_variants_and_adult_lanes() -> None:
+def test_birefnet_registry_binds_installed_variants() -> None:
     lock = json.loads(LOCK_PATH.read_text(encoding="utf-8"))
     registry = yaml.safe_load(
         (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
@@ -28,10 +28,6 @@ def test_birefnet_registry_binds_installed_variants_and_adult_lanes() -> None:
         assert entry["checkpoint_sha256"] == variant["checkpoint_sha256"]
         assert entry["local_path"] == variant["local_path"]
         assert entry["runtime_lock"] == "env/birefnet_variants.lock.json"
-        assert entry["content_compatibility"] == {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        }
 
 
 def test_birefnet_lock_hash_binds_reproduction_and_evidence() -> None:

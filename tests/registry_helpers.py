@@ -4,14 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-ALLOWED_CONTENT = {
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed",
-}
-UNCLEAR_CONTENT = {
-    "adult_nonexplicit": "unclear",
-    "consensual_explicit_adult": "unclear",
-}
 FIXTURE_LICENSE_REVIEW = {
     "status": "verified",
     "source_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
@@ -27,7 +19,6 @@ def governed_registry(models: list[dict[str, Any]]) -> dict[str, Any]:
         "use_profile": "private_personal_noncommercial",
         "distribution_allowed": False,
         "commercial_deployment": False,
-        "content_compatibility": dict(ALLOWED_CONTENT),
         "models": models,
     }
 
@@ -48,7 +39,6 @@ def governed_file_model(
         "key": key,
         "role": role,
         "lifecycle_state": "promoted",
-        "content_compatibility": dict(ALLOWED_CONTENT),
         "license_review": dict(FIXTURE_LICENSE_REVIEW),
         "source_url": f"https://example.invalid/maskfactory-fixtures/{key}",
         "file": relative,
@@ -81,7 +71,6 @@ def governed_ollama_model(
         "key": key,
         "role": role,
         "lifecycle_state": "installed",
-        "content_compatibility": dict(UNCLEAR_CONTENT),
         "license_review": {"status": "pending"},
         "managed": True,
         "manager": "ollama",

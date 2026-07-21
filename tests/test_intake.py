@@ -12,8 +12,8 @@ from PIL import Image, PngImagePlugin
 from maskfactory.cli import main
 from maskfactory.intake import (
     DecodeRejected,
-    LocalAgeSafetyScreener,
-    SafetyVerdict,
+    LocalSourceSafetyScreener,
+    SourceSafetyVerdict,
     ingest_one,
     inspect_image,
     perceptual_hash64,
@@ -110,9 +110,9 @@ def test_jpeg_metadata_removed_while_scan_data_remains_identical(tmp_path: Path)
 
 
 class NamedSafetyScreener:
-    def screen(self, image: Path) -> SafetyVerdict:
-        verdict = "yes" if "minor" in image.name else "clear_adult"
-        return SafetyVerdict(verdict, 1, "detector+fixture-vlm", "fixture decision")
+    def screen(self, image: Path) -> SourceSafetyVerdict:
+        verdict = "prohibited" if "prohibited" in image.name else "allowed"
+        return SourceSafetyVerdict(verdict, 1, "detector+fixture-vlm", "fixture decision")
 
 
 def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> None:
@@ -137,12 +137,12 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     corrupt.write_bytes(b"broken")
     root_drop = incoming / "root_drop.png"
     _pattern().save(root_drop)
-    minor = owned / "apparent_minor.png"
+    prohibited = owned / "prohibited_source.png"
     modified = np.asarray(_pattern()).copy()
     modified[20:40, 20:40] = 127
-    Image.fromarray(modified).save(minor)
+    Image.fromarray(modified).save(prohibited)
 
-    ordered = [*sources, duplicate, undersize, corrupt, root_drop, minor]
+    ordered = [*sources, duplicate, undersize, corrupt, root_drop, prohibited]
     results = [
         ingest_one(
             path,
@@ -168,12 +168,12 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     ]
     assert results[5].duplicate is True
     assert "missing_or_invalid_source_origin" in results[8].reason
-    assert results[9].reason == "age_safety_yes"
+    assert results[9].reason == "source_safety_prohibited"
     assert not (images / results[9].image_id).exists()
     accepted_manifest = json.loads(results[0].manifest_path.read_text(encoding="utf-8"))
     assert len(accepted_manifest["source"]["phash64"]) == 16
     assert accepted_manifest["source"]["exif_stripped"] is True
-    assert accepted_manifest["age_safety"]["non_configurable"] is True
+    assert accepted_manifest["source_safety"]["non_configurable"] is True
     with sqlite3.connect(database) as connection:
         counts = dict(connection.execute("SELECT status, count(*) FROM images GROUP BY status"))
     assert counts == {"ingested": 5, "quarantined": 2, "rejected": 2}
@@ -182,43 +182,39 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     assert sum(event["outcome"] == "duplicate_skipped" for event in events) == 1
 
 
-def test_local_age_screen_is_fail_closed_and_parses_clear_adult(tmp_path: Path) -> None:
-    image = tmp_path / "adult.png"
+def test_local_source_safety_is_fail_closed_and_parses_allowed(tmp_path: Path) -> None:
+    image = tmp_path / "source.png"
     _pattern().save(image)
 
     def clear_request(_request, _timeout):
         return json.dumps(
-            {"message": {"content": json.dumps({"apparent_minor": "no", "reason": "adult"})}}
+            {"message": {"content": json.dumps({"decision": "allowed", "reason": "allowed"})}}
         ).encode()
 
-    clear = LocalAgeSafetyScreener(detector=lambda _path: 2, request=clear_request).screen(image)
-    assert clear == SafetyVerdict("clear_adult", 2, "qwen2.5vl:7b", "adult")
-    failed = LocalAgeSafetyScreener(
+    clear = LocalSourceSafetyScreener(detector=lambda _path: 2, request=clear_request).screen(image)
+    assert clear == SourceSafetyVerdict("allowed", 2, "qwen2.5vl:7b", "allowed")
+    failed = LocalSourceSafetyScreener(
         detector=lambda _path: (_ for _ in ()).throw(RuntimeError("detector unavailable"))
     ).screen(image)
     assert failed.verdict == "uncertain"
     assert "detector unavailable" in failed.detail
 
 
-def test_age_screen_downscales_locally_and_retries_strict_json(tmp_path: Path) -> None:
+def test_source_safety_downscales_locally_and_retries_strict_json(tmp_path: Path) -> None:
     image = tmp_path / "large.png"
     _pattern((2400, 1600)).save(image)
     payloads = []
     responses = [
         {"message": {"content": "not json"}},
-        {
-            "message": {
-                "content": json.dumps({"apparent_minor": "no", "reason": "clearly adult subjects"})
-            }
-        },
+        {"message": {"content": json.dumps({"decision": "allowed", "reason": "allowed source"})}},
     ]
 
     def request(request, _timeout):
         payloads.append(json.loads(request.data))
         return json.dumps(responses.pop(0)).encode()
 
-    result = LocalAgeSafetyScreener(detector=lambda _path: 2, request=request).screen(image)
-    assert result.verdict == "clear_adult" and result.person_count == 2
+    result = LocalSourceSafetyScreener(detector=lambda _path: 2, request=request).screen(image)
+    assert result.verdict == "allowed" and result.person_count == 2
     assert len(payloads) == 2
     for payload in payloads:
         assert payload["options"] == {"temperature": 0, "seed": 1337, "num_predict": 128}
@@ -230,21 +226,21 @@ def test_age_screen_downscales_locally_and_retries_strict_json(tmp_path: Path) -
     assert "prior response was invalid" in payloads[1]["messages"][0]["content"]
 
 
-def test_age_screen_rejects_extra_or_empty_response_fields(tmp_path: Path) -> None:
-    image = tmp_path / "adult.png"
+def test_source_safety_rejects_extra_or_empty_response_fields(tmp_path: Path) -> None:
+    image = tmp_path / "source.png"
     _pattern().save(image)
     invalid = json.dumps(
-        {"message": {"content": json.dumps({"apparent_minor": "no", "reason": ""})}}
+        {"message": {"content": json.dumps({"decision": "allowed", "reason": ""})}}
     ).encode()
-    screener = LocalAgeSafetyScreener(detector=lambda _path: 1, request=lambda *_args: invalid)
+    screener = LocalSourceSafetyScreener(detector=lambda _path: 1, request=lambda *_args: invalid)
     result = screener.screen(image)
     assert result.verdict == "uncertain"
     assert "after one retry" in result.detail
 
 
-def test_quarantine_rescreen_promotes_only_matching_clear_adult_source(tmp_path: Path) -> None:
+def test_quarantine_rescreen_promotes_only_matching_allowed_source(tmp_path: Path) -> None:
     incoming = tmp_path / "incoming"
-    source = incoming / "generated" / "adult.png"
+    source = incoming / "generated" / "source.png"
     source.parent.mkdir(parents=True)
     _pattern().save(source)
     images = tmp_path / "images"
@@ -253,7 +249,7 @@ def test_quarantine_rescreen_promotes_only_matching_clear_adult_source(tmp_path:
 
     class Uncertain:
         def screen(self, _image):
-            return SafetyVerdict("uncertain", 1, "fixture", "first pass unavailable")
+            return SourceSafetyVerdict("uncertain", 1, "fixture", "first pass unavailable")
 
     initial = ingest_one(
         source,
@@ -265,13 +261,13 @@ def test_quarantine_rescreen_promotes_only_matching_clear_adult_source(tmp_path:
     )
     assert initial.outcome == "quarantined"
 
-    class Adult:
+    class Allowed:
         def screen(self, _image):
-            return SafetyVerdict("clear_adult", 1, "fixture", "adult")
+            return SourceSafetyVerdict("allowed", 1, "fixture", "allowed")
 
     promoted = rescreen_quarantined(
         source,
-        screener=Adult(),
+        screener=Allowed(),
         incoming_root=incoming,
         images_root=images,
         database=database,
@@ -280,14 +276,14 @@ def test_quarantine_rescreen_promotes_only_matching_clear_adult_source(tmp_path:
     assert promoted.outcome == "ingested"
     assert not initial.manifest_path.exists()
     manifest = json.loads(promoted.manifest_path.read_text())
-    assert manifest["reason"] == "accepted_after_age_safety_rescreen"
-    assert manifest["age_safety"]["verdict"] == "clear_adult"
+    assert manifest["reason"] == "accepted_after_source_safety_rescreen"
+    assert manifest["source_safety"]["verdict"] == "allowed"
     assert manifest["source"]["exif_stripped"] is True
     with sqlite3.connect(database) as connection:
         assert connection.execute(
             "SELECT status FROM images WHERE image_id = ?", (promoted.image_id,)
         ).fetchone() == ("ingested",)
-    assert json.loads(events.read_text().splitlines()[-1])["action"] == "age_safety_rescreen"
+    assert json.loads(events.read_text().splitlines()[-1])["action"] == "source_safety_rescreen"
 
 
 def test_quarantine_rescreen_stays_closed_and_refuses_wrong_source(tmp_path: Path) -> None:
@@ -301,7 +297,7 @@ def test_quarantine_rescreen_stays_closed_and_refuses_wrong_source(tmp_path: Pat
 
     class Uncertain:
         def screen(self, _image):
-            return SafetyVerdict("uncertain", 1, "fixture", "uncertain")
+            return SourceSafetyVerdict("uncertain", 1, "fixture", "uncertain")
 
     initial = ingest_one(
         source,
@@ -334,25 +330,25 @@ def test_quarantine_rescreen_stays_closed_and_refuses_wrong_source(tmp_path: Pat
         )
 
 
-def test_cli_uses_configured_min_side_but_cannot_disable_age_gate(
+def test_cli_uses_configured_min_side_but_cannot_disable_source_safety(
     tmp_path: Path, monkeypatch
 ) -> None:
     incoming = tmp_path / "incoming"
     owned = incoming / "owned"
     owned.mkdir(parents=True)
-    source = owned / "minor.png"
+    source = owned / "prohibited.png"
     _pattern((400, 400)).save(source)
     config = tmp_path / "pipeline.yaml"
     config.write_text(
-        "intake:\n  min_side: 256\n  age_safety_enabled: false\nstages: {}\n",
+        "intake:\n  min_side: 256\n  source_safety_enabled: false\nstages: {}\n",
         encoding="utf-8",
     )
 
-    class MinorScreener:
-        def screen(self, _image: Path) -> SafetyVerdict:
-            return SafetyVerdict("yes", 1, "fixture")
+    class ProhibitedScreener:
+        def screen(self, _image: Path) -> SourceSafetyVerdict:
+            return SourceSafetyVerdict("prohibited", 1, "fixture")
 
-    monkeypatch.setattr("maskfactory.intake.LocalAgeSafetyScreener", MinorScreener)
+    monkeypatch.setattr("maskfactory.intake.LocalSourceSafetyScreener", ProhibitedScreener)
     result = CliRunner().invoke(
         main,
         [

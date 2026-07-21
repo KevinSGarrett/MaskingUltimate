@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-CLASSIFICATION = ROOT / "Plan" / "Civitai" / "adult_body_resource_classification.yaml"
+CLASSIFICATION = ROOT / "Plan" / "Civitai" / "resource_classification.yaml"
 DETECTORS = ROOT / "configs" / "civitai_auxiliary_detectors.yaml"
 FIXTURES = ROOT / "configs" / "civitai_pose_stress_fixtures.yaml"
 
@@ -12,16 +12,13 @@ def _load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
-def test_classification_allows_governed_training_and_human_reviewed_gold():
+def test_classification_requires_normal_governance_before_training_or_gold():
     classification = _load_yaml(CLASSIFICATION)
 
-    assert classification["policy"]["adult_nsfw_assets_may_be_training_data_when_eligible"] is True
     assert (
-        classification["policy"]["adult_nsfw_assets_may_seed_human_reviewed_gold_when_eligible"]
-        is True
-    )
-    assert (
-        classification["policy"]["require_provenance_license_consent_before_training_or_gold"]
+        classification["policy"][
+            "require_provenance_license_and_allowed_use_before_training_or_gold"
+        ]
         is True
     )
 
@@ -29,7 +26,7 @@ def test_classification_allows_governed_training_and_human_reviewed_gold():
         assert defaults["training_gold_eligibility"]
 
 
-def test_detector_outputs_are_eligible_for_governed_training_and_reviewed_gold():
+def test_detector_outputs_are_eligible_for_governed_training_and_gold():
     detectors = _load_yaml(DETECTORS)
 
     assert detectors["policy"]["role_required"] == "provider_vote"
@@ -44,7 +41,7 @@ def test_detector_outputs_are_eligible_for_governed_training_and_reviewed_gold()
         assert detector["install_target"].startswith("ComfyUI/models/ultralytics/")
 
 
-def test_pose_fixtures_are_eligible_for_governed_training_and_reviewed_gold():
+def test_pose_fixtures_are_eligible_for_governed_training_and_gold():
     fixtures = _load_yaml(FIXTURES)
 
     assert fixtures["policy"]["role_required"] == "stress_fixture"

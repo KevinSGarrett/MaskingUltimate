@@ -23,8 +23,7 @@ Contract format per stage: **In** (files/state) → **Out** (files/state) → **
 4. Record `source_origin` from drop subfolder (`incoming\generated\`, `incoming\owned\`,
    `incoming\licensed\`, `incoming\consented\`) — files in `incoming\` root are quarantined until
    sorted (governance, doc 01 §7).
-5. Age-safety gate: images flagged by the safety screen (person detector + doc 10 §7 VLM screen
-   for apparent-minor content) → `quarantined`, excluded, logged. Hard rule, not configurable.
+5. Apply the centralized source policy from doc 01 §7.
 **Fail:** decode error → `rejected`.
 
 ## S01 — Person Detection & Context Crops

@@ -56,7 +56,6 @@ class AnatomyV2QaInputs:
     review_rois: Mapping[str, np.ndarray] = field(default_factory=dict)
     label_provenance: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
     projected_or_amodal_labels: frozenset[str] = frozenset()
-    content_lane_decision: str = "permitted"
     midline_x: int = 0
     character_left_is_lower_x: bool = True
 

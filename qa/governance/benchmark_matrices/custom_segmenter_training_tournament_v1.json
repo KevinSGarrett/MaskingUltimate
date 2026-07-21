@@ -109,16 +109,16 @@
     "rollback_failure_rate"
   ],
   "source_hashes": {
-    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/ontology_v2.yaml": "cd603d2d269f89bde370f74b02a617755c91f1e756c01d03bb2903f0fd8d8f40",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
     "configs/training/bodypart_v2_mask2former_swinb.yaml": "55022d26a2e11c4e3c160e91c1d745525eb67a2db730bc64e3e8203dd8c8cc10",
     "configs/training/bodypart_v2_segformer_b3.yaml": "cd36c8d23fb1b27ed17a9b943ebb29bed9eb88226fa26c4b3f62c64c18c1673f",
     "configs/training/eomt_dinov3_small_v2.yaml": "6ac527c41e165a58d77bf163ae2be5ad9346353f114b7a9839990bd72de69a8c",
-    "env/eomt_dinov3_runtime.lock.json": "660d0eb3f6bd00a1722f2fb5dfa2a2f1700e61480c484c96e351ebd62e985a17",
-    "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json": "492759d767d44fcf8f1d5eb4b6fe00972ae31b2a3a2829901db5f11374ccd190",
+    "env/eomt_dinov3_runtime.lock.json": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8",
+    "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json": "2d12da9ca70a0a36dc4c060aa5947ceaf9f4eb136d240c24f6511caaf259e6e6",
     "src/maskfactory/training/bodypart/v2_contract.py": "1333350547156d2d954e37b12c23923fca099248bdf272d1a50e8e43fcb9e8ca",
     "src/maskfactory/training/mmseg_metric.py": "d5f25c481fae72dfaec5d752d5d2ef87eef3023035dd8b404c6f9e89611f1384",
     "src/maskfactory/training/run.py": "96b56d03859ea3582f326687e49d40a666076e997a1297c64703510333b09580"
   },
-  "sha256": "a3fe36add8f5920785df2b60a51de45873125896d76b235b0ea8acc5fb182b16"
+  "sha256": "431843f95ba4045a00a2220e19d770eb27531ffd63bd40649a7b8698baab9927"
 }

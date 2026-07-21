@@ -71,7 +71,6 @@ def _fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict:
                     "scope": scope,
                     "people": people,
                     "rights": "owned_fixture",
-                    "content_lane": "adult_explicit_governed_fixture",
                 },
                 sort_keys=True,
             ),

@@ -30,9 +30,9 @@
   "source_hashes": {
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
-    "models/model_registry.json": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
     "src/maskfactory/lanes/hand.py": "10b2a2e62784f617ebb2cba42aa5da698f06ca3579b669b19dd83e6154aff475"
   },
   "authority_boundary": "Pre-result policy only. Fixture reports prove enforcement but grant no performance, promotion, serving, certificate, or gold authority; completion requires an image-disjoint human-anchor holdout hand set.",
-  "sha256": "ebc61d39aeadd14a3cb8f7add01c814dc986d699be712d2c86eaa84c72442f67"
+  "sha256": "240a8baf54d146a45f35502570c9a9802456a82f2a0eacf45c7baa43b7ff60b7"
 }

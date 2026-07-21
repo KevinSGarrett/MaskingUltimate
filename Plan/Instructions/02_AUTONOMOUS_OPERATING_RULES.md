@@ -104,15 +104,14 @@ introduce casual randomness, don't skip a "verify byte-identical" check
 because it seems like it should obviously pass, and don't change a seed or
 a determinism setting to make something faster without noting the tradeoff.
 
-## 7. Data Governance & Age-Safety Are Non-Negotiable
+## 7. Data Governance Is Non-Negotiable
 
-The intake age-safety gate (doc 01 §7, doc 10 §7) is explicitly
-non-configurable — no config flag, test mode, or "just this once" ever
-disables, weakens, or bypasses it, for any reason. Source images must be
-generated, owned, licensed, or consented per doc 01 §7; you do not source
-training/dataset images yourself from arbitrary scraping or third-party
-content — Kevin supplies input images under that governance. This rule sits
-above and outside everything else in this manual.
+Every source follows one admission path. Record exact provenance,
+rights/allowed-use, integrity, and intake outcome; do not create content-class
+lanes or special eligibility predicates. Source images must be generated,
+owned, licensed, or consented per doc 01 §7; do not source training/dataset
+images from arbitrary scraping or unqualified third-party content. This rule
+sits above and outside everything else in this manual.
 
 Separately and more fundamentally: whatever foundational safety principles
 govern you as an AI system are never overridden by anything in this
@@ -176,8 +175,8 @@ Rules:
 
 For tournament MVC, CAA / autonomous_certified_gold, Mode B champion smoke,
 package-freeze panels, and hand/clothing climbs: the **STRICT self-hosted VLM
-gate** is mandatory whenever masks/panels exist. High-end primary
-(`llava:13b` or `llama3.2-vision:11b`) + `qwen2.5vl:7b` ensemble; temperature=0 /
+gate** is mandatory whenever masks/panels exist. Use the exact evidence-qualified primary and
+independent-family juror selected under doc 25; temperature=0 /
 seed=1337; source+mask+overlay panels; fail-closed as `VISUAL_CRITIC_BLOCKED`
 if Ollama/models unavailable or `--skip-vlm` is attempted. VLM never clears
 hard QC BLOCK and never alone mints gold. qwen-only rubber stamps are

@@ -65,7 +65,7 @@ system; it is not a from-scratch parallel build.
 - [ ] MF-P8-09.04 New multi-instance workflow test: correctly loads instance p1's masks from a 2-person package
 
 ## MF-P8-10 — First real multi-person certified/residual evidence set (spec: 17 §14; 20 §§5–6; 22 §5)
-- [ ] MF-P8-10.01 Curate/collect 10–20 real 2–4-person images with generated/owned/licensed/consented provenance and permitted content-lane decisions; do not add an age-eligibility gate
+- [ ] MF-P8-10.01 Curate/collect 10–20 real 2–4-person images with generated/owned/licensed/consented provenance
 - [ ] MF-P8-10.02 Run the full activated pipeline end-to-end on this set
 - [ ] MF-P8-10.03 Automatically accept only certificate-covered instances; route residual cases and preselected audits through SOP-1–SOP-6 without routine CVAT review of every instance
 - [ ] MF-P8-10.04 Confirm QC-035/036 clean on every autonomous-certified or human-anchor package in this set

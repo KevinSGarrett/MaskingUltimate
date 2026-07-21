@@ -18,7 +18,7 @@ DEFAULT_SPECIALIST_MARGIN_MANIFEST = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "specialist_margins_v1.json"
 )
 SPECIALIST_MARGIN_MANIFEST_SHA256 = (
-    "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739"
+    "485c201cf3615253eebdefacb0b1ea46e5e9f2e534e6d27dcf281af8e68dfb68"
 )
 SPECIALIST_ROLES = frozenset(
     {

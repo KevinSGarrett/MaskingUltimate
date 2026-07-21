@@ -44,7 +44,7 @@ def test_doc24_addendum_contributes_exactly_forty_three_unique_p6_rows() -> None
         for item in items.values()
         if item["source_file"] == "21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md"
     ]
-    assert len(items) == 798
+    assert len(items) == 827
     assert len(addendum) == 43
     assert {item["cluster_id"] for item in addendum} == {
         "MF-P6-07",
@@ -727,14 +727,16 @@ def test_runtime_implementation_handoff_adopts_exact_validated_bridge_state() ->
     assert boundary["human_anchor_or_cvat_required_for_core"] is False
 
 
-def test_latest_decision_supersedes_historical_human_and_scale_core_gates() -> None:
+def test_autonomous_core_decision_remains_authoritative_after_additive_decisions() -> None:
     decisions = (ROOT / "Plan" / "DECISIONS_LOG.md").read_text(encoding="utf-8")
     latest_heading = (
         "## 2026-07-17 — Separate autonomous core completion from human research and scale claims"
     )
-    assert decisions.rfind("\n## ") == decisions.rfind(f"\n{latest_heading}")
-    latest = decisions[decisions.rfind(latest_heading) :]
-    normalized = " ".join(latest.split())
+    start = decisions.rfind(latest_heading)
+    assert start >= 0
+    end = decisions.find("\n## ", start)
+    section = decisions[start : end if end >= 0 else None]
+    normalized = " ".join(section.split())
     assert "`core_autonomous_runtime` as the sole required finish line" in normalized
     assert "`operationally_certified_artifact` cannot be counted as or relabeled" in normalized
     assert "Earlier conflicting log/horizon text is historical evidence" in normalized

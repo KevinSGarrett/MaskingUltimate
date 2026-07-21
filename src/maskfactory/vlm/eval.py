@@ -148,15 +148,12 @@ def build_calibration_from_seed_manifest(
         governance = seed["governance"]
         if not isinstance(governance, dict) or set(governance) != {
             "source_origin",
-            "age_safety",
             "rights_evidence",
             "source_sha256",
         }:
             raise VlmEvalError(f"calibration governance invalid: {seed['id']}")
         if governance["source_origin"] not in CALIBRATION_ORIGINS:
             raise VlmEvalError(f"calibration source origin is not governed: {seed['id']}")
-        if governance["age_safety"] != "clear_adult":
-            raise VlmEvalError(f"calibration source is not age-cleared adult: {seed['id']}")
         if (
             not isinstance(governance["rights_evidence"], str)
             or not governance["rights_evidence"].strip()
@@ -244,7 +241,6 @@ def build_calibration_from_seed_manifest(
                 "defect_mask_sha256": hashlib.sha256(defect.tobytes()).hexdigest(),
                 "defect_type": seed["defect_type"],
                 "source_origin": seed["governance"]["source_origin"],
-                "age_safety": seed["governance"]["age_safety"],
                 "rights_evidence": seed["governance"]["rights_evidence"],
             }
         )
@@ -355,11 +351,9 @@ def build_calibration_from_gold_selection(
             raise VlmEvalError(f"gold source missing for calibration case: {case['id']}")
         intake_path = images_root / image_id / "manifest.json"
         try:
-            intake = json.loads(intake_path.read_text(encoding="utf-8"))
+            json.loads(intake_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise VlmEvalError(f"intake authority missing for {image_id}: {exc}") from exc
-        if intake.get("age_safety", {}).get("verdict") != "clear_adult":
-            raise VlmEvalError(f"gold calibration source is not age-cleared adult: {image_id}")
         origin_note = str(manifest.get("source", {}).get("origin_note", "")).strip()
         if not origin_note:
             raise VlmEvalError(f"gold calibration rights evidence missing: {image_id}")
@@ -410,7 +404,6 @@ def build_calibration_from_gold_selection(
                     "defect_type": str(case["defect_type"]),
                     "governance": {
                         "source_origin": manifest["source"]["source_origin"],
-                        "age_safety": "clear_adult",
                         "rights_evidence": manifest["source"]["origin_note"],
                         "source_sha256": hashlib.sha256(source_target.read_bytes()).hexdigest(),
                     },

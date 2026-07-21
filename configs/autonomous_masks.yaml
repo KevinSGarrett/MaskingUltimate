@@ -93,7 +93,7 @@ calibration:
   confidence_level: 0.95
   evidence_scope: pooled_risk_bucket
   risk_bucket_registry: configs/autonomy_risk_buckets.yaml
-  risk_bucket_registry_sha256: 7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a
+  risk_bucket_registry_sha256: 2f2ec6e513c75dc79357d215e82bc8b7254dcb88c6eb83d7c82bd246ad00363e
   stability_registry: configs/autonomy_stability.yaml
   stability_registry_sha256: 19ab8bfe68d9e757b5f33e9e48fc231303ee02570f64cb6c154a317c914939e5
   require_candidate_stability: true

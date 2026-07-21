@@ -161,10 +161,6 @@ def verify_sam3_litetext_runtime_lock(
         or entry.get("substitution_forbidden_for") != authority["official_reference"]
     ):
         raise Sam3LiteTextLockError("sam3_litetext_authority_registry_mismatch")
-    compatibility = lock.get("license_review", {}).get("content_compatibility")
-    if compatibility != entry.get("content_compatibility"):
-        raise Sam3LiteTextLockError("sam3_litetext_content_compatibility_mismatch")
-
     return {
         "status": "pass_installed_shadow_smoke_official_comparison_pending",
         "manifest_sha256": expected_hash,

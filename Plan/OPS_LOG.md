@@ -11121,3 +11121,34 @@ Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md  (pointer only)
 - Root causes: (1) v1 full-body scope false-fail; (2) llava truncated JSON → synthesized fail demotes; (3) OOM/SIGKILL on concurrent BiRefNet+llava.
 - Deployed `strict-visual-gate-v4-20260721-no-trunc-fail`: truncated primary → VISUAL_CRITIC_BLOCKED (no demote), hand zoom 1.35, num_predict 1280, babysit free>=22GiB/util<=40.
 - Live: babysit + STRICT waiter + hand tournament + CAA mint + in-flight STRICT burst; visual_qualified still 0; CAA fail-closed until STRICT pass. NEVER EC2.
+
+## 2026-07-21 — Plan/Items/Tracker modernization and content-neutral admission reconciliation
+
+**Scope:** full authoritative Plan/Instructions/Items audit against Kevin's pasted self-hosted review,
+RunPod/AWS clarification, and content-neutral intake directive.
+
+**Result:** Added doc 25 and Instruction 14; replaced fixed model-name visual authority with
+evidence-qualified roles and positive/negative calibration; added 29 atomic Items for critic roles,
+proposal disagreement/repair, persistent RunPod execution, read-only AWS inventory/migration, and
+recurring durability/currency checks. Removed special catalog-content and apparent-age admission
+language from active Plan/Instructions/Items; retired QC-V2-011 remains absent. Historical evidence
+text was preserved as immutable audit history.
+
+**Tracker:** `tracker.py rebuild` parsed 827 items (29 new, 798 preserved, zero orphaned);
+`tracker.py validate` reported no structural problems and 23 unresolved hard blockers; report and all
+phase views regenerated. No new item was marked complete from planning evidence.
+
+## 2026-07-21 — Uniform admission implementation and validation closeout
+
+**Result:** Reconciled the active plan, Instructions, Items, tracker records, provider/model
+registries, serving provenance, promotion packets, cloud-teacher admission, DAZ/reference policy,
+intake metadata, calibration fixtures, and their tests onto one uniform source-admission contract.
+Preserved raw third-party identifiers and append-only historical evidence strictly as provenance.
+
+**Evidence:** `qa/live_verification/plan_items_tracker_reconciliation_20260721.json`.
+Tracker rebuild parsed 827 items with zero orphans; validation passed with 23 honestly unresolved
+hard blockers. Focused governance, currency, registry, promotion, provider-matrix, serving, DAZ,
+reference, Civitai, intake, anatomy, ontology, cloud-teacher, tracker, and schema suites passed.
+Ruff, Black (84 changed Python files), and `git diff --check` passed. Repository-wide collection is
+separately blocked by the pre-existing absent `maskfactory.serve.docker_contract`; the asset-complete
+EoMT test separately reports local snapshot drift. Neither boundary is relabeled as a migration pass.

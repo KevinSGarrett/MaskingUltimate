@@ -88,13 +88,12 @@ block and cannot create a quick-pass queue.
 No paid call is authorized merely by enabling code or storing a credential. Kevin must approve billable
 execution, and the exact image must independently pass the cloud-eligibility registry.
 
-## 5. Privacy, Adult Content, and Provider Eligibility
+## 5. Privacy and provider transport eligibility
 
-Adult/NSFW images are allowed in the local MaskFactory training and gold workflow when all other data
-governance rules are satisfied. Cloud transmission is narrower: every transmitted artifact must be
-clear-adult, rights-cleared, hash-bound, explicitly approved, and provider-allowlisted. A provider's
-content policy may make a lawful local image ineligible for that provider; the system then remains
-local-only. Apparent-minor or age-uncertain content is never sent to a cloud teacher.
+Cloud transmission is separately scoped: every transmitted artifact must be rights-cleared, hash-bound, explicitly
+approved, and provider-allowlisted. A provider's published service policy may make a local image
+ineligible for that provider; the system then remains local-only. Provider policy is a transport
+constraint, not MaskFactory truth or quality authority.
 
 Credentials are read only from environment variables at dispatch. Logs contain hashes, model IDs,
 token usage, cost, verdict structure, and errors, but not credentials or raw provider responses. Data

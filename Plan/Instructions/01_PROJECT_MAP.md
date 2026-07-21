@@ -10,8 +10,8 @@ you will build starting in Phase P0.
 
 | Layer | Location | What it is | Who edits it, and when |
 |---|---|---|---|
-| **Spec** | `Plan\00`–`24`, plus approved handoffs | The complete technical blueprint, including autonomous exact-output authority, claim-scoped completion, and the MaskFactory↔ComfyUI bridge. | Changes only through deliberate spec/owner amendments. Later approved decisions outrank conflicting earlier text and must be recorded in traceability. |
-| **Checklist** | `Plan\Items\` (21 parsed phase files, 798 action items) | The spec atomized into checkable build items, each tagged with its phase, governing source, explicit verification, and blockers. | Edit only when the plan itself changes. After editing, run `python tracker.py rebuild` in `Tracker\`. |
+| **Spec** | `Plan\00`–`25`, plus approved handoffs | The complete technical blueprint, including autonomous exact-output authority, claim-scoped completion, the MaskFactory↔ComfyUI bridge, evidence-qualified visual critics, and RunPod asset reconciliation. | Changes only through deliberate spec/owner amendments. Later approved decisions outrank conflicting earlier text and must be recorded in traceability. |
+| **Checklist** | `Plan\Items\` (21 parsed phase files, 827 action items) | The spec atomized into checkable build items, each tagged with its phase, governing source, explicit verification, and blockers. | Edit only when the plan itself changes. After editing, run `python tracker.py rebuild` in `Tracker\`. |
 | **State** | `Plan\Tracker\` | Live item state plus independently computed required core, optional accuracy, post-core scale/DAZ, legacy DoD, and Goals rollups. | You update item state through `tracker.py` only. Never hand-edit `tracker.json`; completion policy changes must update doc 24, registry, schema, and tracker mirror together. |
 | **Operating Manual** | `Plan\Instructions\` (this folder) | How you, the building AI, actually conduct yourself session to session. | Static reference for you. Not something you update as part of normal building work. |
 
@@ -29,7 +29,7 @@ gold." Both matter; they answer different questions.
 
 ---
 
-## 2. The Specification Set (`Plan\00`–`24` plus approved handoffs)
+## 2. The Specification Set (`Plan\00`–`25` plus approved handoffs)
 
 | # | File | Contents |
 |---|------|----------|
@@ -61,6 +61,7 @@ gold." Both matter; they answer different questions.
 | 22 | `22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md` | Challenger lifecycle, governance, benchmarking, and recurring currency review |
 | 23 | `23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md` | Optional real-accuracy and post-core scale/DAZ maturity program |
 | 24 | `24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md` | Required human-free finish line, operational certificate, runtime/release bridge, adoption, invalidation, and recovery |
+| 25 | `25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md` | Qualified critic roles, positive/negative calibration, proposal disagreement/repair, persistent RunPod operation, and AWS-to-RunPod inventory/migration |
 
 The approved SAM 3.1/autonomous-gold handoff is also authoritative. Its full
 requirement mapping is maintained in `Plan\Items\TRACEABILITY_18_22_SAM31.md`.
@@ -70,7 +71,7 @@ create them per §5 below, `Plan\OPS_LOG.md` and `Plan\DECISIONS_LOG.md`.
 
 ## 3. The Checklist (`Plan\Items\`)
 
-The parsed checklist contains **798 atomic items across 21 phase files**.
+The parsed checklist contains **827 atomic items across 21 phase files**.
 `Plan\Items\00_ITEMS_MASTER_INDEX.md` is the authoritative file/count map,
 and `Plan\Items\TRACEABILITY_18_22_SAM31.md` maps every requirement in docs
 18–22 and the SAM 3.1 handoff to an existing or newly added item; doc 24 maps
@@ -83,7 +84,7 @@ verification clause, and explicit blockers.
 | File/dir | What |
 |---|---|
 | `tracker.py` | The CLI. `rebuild`, `show`, `set`, `list`, `next`, `metrics`, `goal`, `validate`, `report`. |
-| `tracker.json` | Canonical live state of all 798 items + completion placeholders + DoD + Goals + metrics. |
+| `tracker.json` | Canonical live state of all 827 items + completion placeholders + DoD + Goals + metrics. |
 | `completion_track_registry.json` + schema | Frozen three-profile completion authority; core is required, accuracy/scale are non-blocking. |
 | `CHANGELOG.jsonl` | Append-only audit trail of every state change ever made. |
 | `backups\` | Auto-snapshots of `tracker.json` before every write. |
@@ -115,6 +116,7 @@ when to write to each.
 | How does ComfyUI load a gold mask? | `Plan\13` §2 |
 | Something's broken (CVAT, GPU OOM, DVC push failing)? | `Plan\15` §7 (troubleshooting table) |
 | What exactly is required completion? | `Plan\24`, `Tracker\completion_track_registry.json`, and the dashboard's Required Core Status |
+| Which visual critic may approve a candidate, and how are AWS assets reconciled to RunPod? | `Plan\25`, `Instructions\13_SELF_HOSTED_STRICT_VLM_GATE.md`, and `Instructions\14_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION.md` |
 | How do MaskFactory and the main ComfyUI project share work safely and preserve both Codex tasks/worktrees? | `Plan\24` §§6–11, `Plan\13` §§6–8, `Instructions\09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md`, and the generated `Instructions\10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json` |
 | Is this item a hard blocker? | `Tracker\README.md` §5, or `tracker.py list --hard-blockers` |
 | What phase am I in, what's the entry gate? | `Tracker\DASHBOARD.md`, or `07_PHASE_QUICK_REFERENCE.md` here |

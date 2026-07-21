@@ -3,7 +3,7 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 798 action items across phases P0-P9, three independently scoped
+build-out: 827 action items across phases P0-P9, three independently scoped
 completion profiles, Definition-of-Done (D1-D11) and Goals (G1-G9) rollups,
 plus free-form project metrics.
 
@@ -95,7 +95,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 798
+EXPECTED_ITEM_COUNT = 827
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",
@@ -767,12 +767,19 @@ def cmd_set(args):
     rec = data["items"][args.id]
 
     if not any(
-        [args.status, args.note, args.evidence, args.percent is not None, args.blocked_reason]
+        [
+            args.status,
+            args.note,
+            args.evidence,
+            args.percent is not None,
+            args.blocked_reason,
+            getattr(args, "clear_notes", False),
+        ]
     ):
         print(json.dumps(rec, indent=2, ensure_ascii=False))
         print(
             "\n(no changes specified -- showing current record; pass --status / "
-            "--note / --evidence / --percent / --blocked-reason to update it)"
+            "--note / --evidence / --percent / --blocked-reason / --clear-notes to update it)"
         )
         return
 
@@ -825,6 +832,8 @@ def cmd_set(args):
         rec["blocked_reason"] = args.blocked_reason
         if rec["status"] != "blocked":
             print(f"Note: --blocked-reason set but status is '{rec['status']}', not 'blocked'.")
+    if getattr(args, "clear_notes", False):
+        rec["notes"] = []
     if args.note:
         rec.setdefault("notes", []).append({"ts": now, "actor": args.actor, "text": args.note})
 
@@ -841,6 +850,7 @@ def cmd_set(args):
             "note": args.note,
             "evidence": args.evidence,
             "blocked_reason": args.blocked_reason,
+            "notes_cleared": getattr(args, "clear_notes", False),
         }
     )
     pct = f" ({rec['percent_complete']}%)" if rec["percent_complete"] else ""
@@ -1798,7 +1808,7 @@ def build_parser():
     p = argparse.ArgumentParser(
         prog="tracker.py",
         description=(
-            "MaskFactory project tracker -- 798 build items + independently scoped "
+            "MaskFactory project tracker -- 827 build items + independently scoped "
             "completion profiles + DoD/Goals rollups."
         ),
     )
@@ -1822,6 +1832,11 @@ def build_parser():
     )
     sp.add_argument("--percent", type=int, help="0-100 progress override")
     sp.add_argument("--blocked-reason", help="Why the item is blocked (required for blocked)")
+    sp.add_argument(
+        "--clear-notes",
+        action="store_true",
+        help="Clear mutable note history while preserving the append-only changelog",
+    )
     sp.add_argument("--actor", default="ai_agent", help="Who made this change (default: ai_agent)")
     sp.set_defaults(func=cmd_set)
 

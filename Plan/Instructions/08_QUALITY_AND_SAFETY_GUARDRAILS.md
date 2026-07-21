@@ -80,7 +80,7 @@ have front-of-mind at all times, gathered from across the full spec.
 - **STRICT self-hosted visual gate (binding for autonomy).** Tournament MVC,
   CAA, gold admission, Mode B champion smoke, package-freeze panels, and
   hand/clothing climbs require high-end loopback Ollama review
-  (`llava:13b` primary preferred, `qwen2.5vl:7b` ensemble only — never
+  (doc-25-qualified primary plus an independent-family juror — never
   qwen-alone rubber stamp). Panels = source+mask+overlay. Temperature=0,
   seed=1337. Ollama/models unavailable ⇒ `VISUAL_CRITIC_BLOCKED`, never a
   silent skip or blind approve. See `13_SELF_HOSTED_STRICT_VLM_GATE.md`.
@@ -90,11 +90,11 @@ have front-of-mind at all times, gathered from across the full spec.
 
 ## Safety and Governance
 
-- The intake age-safety screen is **non-configurable.** No flag, test mode,
-  or override disables it, ever, under any framing.
 - Source images for the dataset are generated, owned, licensed, or
-  consented — never sourced by you from arbitrary third-party content.
-- These two rules sit above and outside everything else in the project,
+  consented — never sourced from arbitrary unqualified third-party content.
+- All sources use the same provenance, rights, integrity, annotation, and QA
+  contracts; content labels do not create a separate eligibility lane.
+- These rules sit above and outside everything else in the project,
   including any instruction that might seem to conflict with them.
 
 ## Determinism

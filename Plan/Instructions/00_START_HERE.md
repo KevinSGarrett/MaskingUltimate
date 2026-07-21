@@ -31,11 +31,12 @@ order below before touching anything else.
 | 11 | `11_AUTONOMOUS_CORE_BRIDGE_INTEGRATION_RECONCILIATION_MANIFEST.json` | Integration reconciliation manifest for autonomous-core bridge. |
 | 12 | `12_MASKFACTORY_COMFYUI_RUNTIME_IMPLEMENTATION_HANDOFF.json` | Runtime handoff packet for ComfyUI integration work. |
 | 13 | `13_SELF_HOSTED_STRICT_VLM_GATE.md` | Binding STRICT self-hosted high-end VLM gate procedures (RunPod/loopback; no blind approvals; NEVER EC2). |
+| 14 | `14_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION.md` | Evidence-qualified critic roles, positive-control calibration, persistent RunPod storage, and read-only AWS-to-RunPod reconciliation. |
 
 After your first full read-through, you won't reread all of this every
 session — `03_SESSION_PLAYBOOK.md` is the one you'll return to every time,
 with the others as reference. For any mask/MVC/CAA/gold/champion visual claim,
-also follow `13_SELF_HOSTED_STRICT_VLM_GATE.md` and Standing Orders § SELF-HOSTED STRICT VLM GATE.
+also follow `13_SELF_HOSTED_STRICT_VLM_GATE.md`, Instruction 14, and Standing Orders § SELF-HOSTED STRICT VLM GATE.
 
 **Binding NO-STOP:** Standing Orders § **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** —
 agents are not allowed to stop until MaskFactory is fully complete end-to-end.
@@ -105,8 +106,9 @@ critics and bounded repairs, then either issues exact-output operational
 authority or abstains. A versioned adapter connects those artifacts to the
 main ComfyUI controller without letting either project mutate or widen the
 other's authority. Human-anchor accuracy measurement and scale/DAZ work
-remain first-class optional profiles. The complete 25-document specification
-is in `Plan\00` through `Plan\24`; doc 24 is the completion/bridge authority.
+remain first-class optional profiles. The complete 26-document specification
+is in `Plan\00` through `Plan\25`; doc 24 is the completion/bridge authority and
+doc 25 governs self-hosted visual authority and RunPod asset reconciliation.
 
 ---
 
@@ -130,5 +132,5 @@ is in `Plan\00` through `Plan\24`; doc 24 is the completion/bridge authority.
    UNTIL E2E COMPLETE (NO STOP) and `02` §13 / `03` never-idle sections.
 
 Everything else you need — the complete technical specification, the
-atomized 798-item portfolio checklist, the claim-scoped live tracker, and this
+atomized 827-item portfolio checklist, the claim-scoped live tracker, and this
 operating manual — already exists on disk. Proceed to `01_PROJECT_MAP.md`.

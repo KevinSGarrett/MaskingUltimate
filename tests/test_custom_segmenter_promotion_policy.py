@@ -91,10 +91,6 @@ def _certificate(manifest: dict, margins: dict[str, float]) -> tuple[dict, dict]
         "target_role": "custom_segmenter",
         "lifecycle_state": "benchmarked",
         "identity_hashes": identities,
-        "content_compatibility": {
-            "adult_nonexplicit": "allowed",
-            "consensual_explicit_adult": "allowed",
-        },
         "license_gate": {
             "verify_license": False,
             "checkpoint_decision": "allowed",
@@ -279,12 +275,6 @@ def test_certificate_rejects_every_stale_identity(identity_key: str) -> None:
     ("mutation", "message"),
     [
         (lambda packet: packet.update(lifecycle_state="installed"), "identity or lifecycle"),
-        (
-            lambda packet: packet["content_compatibility"].update(
-                consensual_explicit_adult="prohibited"
-            ),
-            "content decision is not allowed",
-        ),
         (
             lambda packet: packet["license_gate"].update(verify_license=True),
             "license gate is unresolved",

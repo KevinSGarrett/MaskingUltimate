@@ -162,7 +162,7 @@ Goal: use qualified existing labels, the governed 83k reference corpus, and exac
 - [ ] MF-P9-13.08 Run real holdout ablations by source and mapped label scope · Verify: only non-regressing sources/labels remain active · Blocked by: MF-P9-13.06, frozen real human-anchor holdout
 
 ## MF-P9-14 — Governed reference corpus, benchmark, and retrieval (spec: 23 §§7–8; reference_library.yaml)
-- [ ] MF-P9-14.01 Freeze source/output roots, immutable-original policy, content policy, and no-truth authority · Verify: policy validator passes and adult/NSFW tags do not exclude governed adult images · Blocked by: none
+- [ ] MF-P9-14.01 Freeze source/output roots, immutable-original policy, uniform admission, and no-truth authority · Verify: policy validator passes and source selection does not change eligibility or authority · Blocked by: none
 - [ ] MF-P9-14.02 Complete exact inventory, validation, SHA dedup, and representative selection · Verify: counts reconcile and invalid files are reason-coded · Blocked by: MF-P9-14.01
 - [ ] MF-P9-14.03 Complete body-part/difficulty visual indexing of every exact representative · Verify: classified equals representative count with zero unresolved failures · Blocked by: MF-P9-14.02
 - [ ] MF-P9-14.04 Build near-duplicate groups and leakage-resistant diversity ranking · Verify: deterministic replay and duplicate fixtures pass · Blocked by: MF-P9-14.03

@@ -12,7 +12,6 @@ from typing import Any
 
 import yaml
 
-from ..governance import CONTENT_COMPATIBILITY_KEYS
 from ..validation import ArtifactValidationError, require_valid_document
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -20,7 +19,7 @@ DEFAULT_CUSTOM_SEGMENTER_MARGIN_MANIFEST = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "custom_segmenter_margins_v1.json"
 )
 CUSTOM_SEGMENTER_MARGIN_MANIFEST_SHA256 = (
-    "04adf71f05d0bbf160cb63ed9830f3e0d8a383617aeff4c09ccd6efcb09b05be"
+    "01467db7bcb37e4e4e09a16f2312c6fd6cc9d1d4e4fda2184f8627352e8f24ef"
 )
 CERTIFICATE_AUTHORITY = "custom_segmenter_role_promotion_gate"
 SOURCE_FILES = (
@@ -42,7 +41,6 @@ REQUIRED_RESULT_INPUT_HASHES = {
 REQUIRED_CERTIFICATE_IDENTITY_HASHES = {
     "benchmark_results_sha256",
     "checkpoint_sha256",
-    "content_decision_sha256",
     "dataset_manifest_sha256",
     "evaluation_set_sha256",
     "hardware_profile_sha256",
@@ -295,13 +293,6 @@ def validate_custom_segmenter_benchmark_results(
 
 
 def _validate_content_and_license(certificate: Mapping[str, Any]) -> None:
-    compatibility = certificate.get("content_compatibility")
-    if not isinstance(compatibility, Mapping) or set(compatibility) != set(
-        CONTENT_COMPATIBILITY_KEYS
-    ):
-        raise CustomSegmenterPromotionError("certificate content decisions are incomplete")
-    if any(compatibility[lane] != "allowed" for lane in CONTENT_COMPATIBILITY_KEYS):
-        raise CustomSegmenterPromotionError("certificate content decision is not allowed")
     license_gate = certificate.get("license_gate")
     if not isinstance(license_gate, Mapping) or set(license_gate) != {
         "verify_license",
@@ -361,7 +352,6 @@ def validate_custom_segmenter_promotion_certificate(
         "target_role",
         "lifecycle_state",
         "identity_hashes",
-        "content_compatibility",
         "license_gate",
         "benchmark_results",
         "rollback_evidence",

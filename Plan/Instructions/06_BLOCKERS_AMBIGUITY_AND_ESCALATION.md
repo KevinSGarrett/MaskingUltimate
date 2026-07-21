@@ -75,7 +75,7 @@ rather than manufacturing an approval.
 | **Spending real money** (launching the optional AWS burst training instance, any other billable action) | The *decision* to use g6e.xlarge spot in the dev account is already made in the spec — but actually incurring a real-world cost is a distinct action that needs an explicit go-ahead from Kevin first, every time, even though the technical choice was pre-approved. |
 | **Approving a scope change** (adding a v2-deferred label, enabling video/multi-person, anything doc 01 §5 lists as out-of-scope) | These were deliberately deferred; expanding scope is a project decision, not a build decision. |
 | **Resolving a genuinely unresolved spec ambiguity** (after you've exhausted §2 above) | At that point it needs a human call, logged as such. |
-| **Relaxing any data-governance or age-safety rule, for any reason** | Never — not even Kevin overrides this one; if he asks you to, that itself is a signal to hold the line and explain why, not comply. |
+| **Removing provenance, rights, integrity, or lineage evidence** | Never. Those fields establish whether a source and its derived artifacts may be used and reproduced. |
 
 ## 5. Everything Else Is Yours
 

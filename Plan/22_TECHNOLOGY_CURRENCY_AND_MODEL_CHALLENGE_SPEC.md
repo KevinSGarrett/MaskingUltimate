@@ -12,14 +12,8 @@ benchmarking, promotion, zero-touch throughput, statistical confidence, or truth
 ## 1. Operating Profile
 
 MaskFactory is private, personal, local, noncommercial, and not distributed. `production` means the
-active local MaskFactory path. The only content-compatibility lanes governed here are:
-
-- `adult_nonexplicit`
-- `consensual_explicit_adult`
-
-Both lanes are permitted by the project profile. Every provider and registered model must still carry
-its own explicit `allowed | prohibited | unclear` decision. A registry-wide decision never substitutes
-for an artifact-specific decision.
+active local MaskFactory path. Providers are evaluated by capability, exact artifact,
+runtime compatibility, license, benchmark evidence, authority constraints, and rollback readiness.
 
 ## 2. Active Registry Contract
 
@@ -50,16 +44,15 @@ The installed model registry contains no `planned` entries. Promotion changes li
 transactionally: the winner becomes `promoted`; the displaced incumbent becomes `benchmarked` and
 remains a rollback provider. Rollback restores both role and lifecycle state.
 
-## 4. License and Content Activation Gate
+## 4. License and activation gate
 
-Before activation in either content lane, all of the following must pass:
+Before activation, all of the following must pass:
 
 1. The provider is `installed`, `benchmarked`, or `promoted`.
-2. Its lane-specific compatibility is exactly `allowed`; missing, `unclear`, and `prohibited` block.
-3. `verify_license` is false. `verify_license: true` is an operational blocker, not a reminder.
-4. Before a new benchmark or promotion, the exact license source/version, an immutable evidence hash,
-   reviewed terms, compatibility decision, and review timestamp are recorded.
-5. A checkpoint-specific restriction overrides a repository-level license.
+2. `verify_license` is false. `verify_license: true` is an operational blocker, not a reminder.
+3. Before a new benchmark or promotion, the exact license source/version, an immutable evidence hash,
+   reviewed terms, allowed use, and review timestamp are recorded.
+4. A checkpoint-specific restriction overrides a repository-level license.
 
 The external probe reports activation eligibility and blockers independently from file availability.
 An available file is not necessarily an eligible provider.

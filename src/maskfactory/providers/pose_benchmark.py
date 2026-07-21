@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "pose_variant_benchmark_v1.json"
 )
-POLICY_SHA256 = "3791ffe1f527a465d06d271aaca585fdf16253584667797a49b07adab10c8517"
+POLICY_SHA256 = "5bf1e5b67c61db9192d5af1d336fddaa98c73af9ff00fee06365652f13fd4e59"
 CONTEXTS = (
     "whole_body",
     "hands",

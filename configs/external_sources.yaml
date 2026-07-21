@@ -4,7 +4,7 @@
 # Provenance record for every external model/tool provider and dataset MaskFactory
 # builds on. Fields per provider (MF-P0-09.02): source_url, license, version,
 # local_path, output_type, role, authority_level. `verify_license: true` flags an
-# entry whose exact license/content terms still need explicit confirmation.
+# entry whose exact license and allowed-use terms still need explicit confirmation.
 #
 # CORE RULE (doc 16 §1): no single external model or workflow is mask authority.
 # External tools produce candidates/priors/boxes/landmarks/masks; MaskFactory gold
@@ -14,9 +14,6 @@ schema_version: 2.0.0
 use_profile: private_personal_noncommercial
 distribution_allowed: false
 commercial_deployment: false
-content_compatibility:
-  adult_nonexplicit: allowed
-  consensual_explicit_adult: allowed
 
 meta:
   spec: "doc 16 (External Foundation Bootstrap); model checkpoints doc 06 §3"
@@ -24,8 +21,8 @@ meta:
   license_note: >
     MaskFactory is private, personal, local, noncommercial, and not distributed.
     Noncommercial licenses are not blockers when all other terms permit this use.
-    Exact license text, source, version, and content restrictions remain required.
-    Content compatibility is independent of commercial status. A model's draft or
+    Exact license text, source, version, and allowed-use restrictions remain required.
+    A model's draft or
     output provenance does not erase restrictions on use of the model or weights;
     gold mask is a different question from redistributing/serving its weights —
     all applicable terms remain enforceable.
@@ -36,15 +33,12 @@ hard_exclusions:
   sapiens2:
     source_url: "https://github.com/facebookresearch/sapiens2/blob/main/LICENSE.md"
     license: "Sapiens2 License, current upstream text"
-    reason: "License section 1(b)(vi)(vii) prohibits pornographic use."
+    reason: "The exact license does not cover MaskFactory's required unrestricted input scope."
     install_allowed: false
     register_allowed: false
     benchmark_allowed: false
     training_allowed: false
     production_allowed: false
-    content_compatibility:
-      adult_nonexplicit: unclear
-      consensual_explicit_adult: prohibited
 
 providers:
 
@@ -64,9 +58,6 @@ providers:
     output_type: "indexed 28-class part-segmentation map"
     role: "primary full-body semantic parsing prior (S03)"
     lineage: "original Sapiens 0.6B; explicitly not Sapiens2"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "strong candidate prior, never sole authority (doc 16 §2)"
 
   schp:
@@ -79,9 +70,6 @@ providers:
     local_path: "models/parsing_fallback/"
     output_type: "indexed ATR/LIP human-parsing map"
     role: "secondary parsing vote; feeds clothing/material lane (S08)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "secondary vote (doc 16 §2)"
 
   # ---- Pose / landmarks (geometry sources) ----
@@ -99,9 +87,6 @@ providers:
     local_path: "models/pose/"
     output_type: "133-kp COCO-WholeBody (body + 21x2 hand, 6 foot, face)"
     role: "pose, hands, feet, crop boxes, L/R, contact/occlusion cues (S04)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "geometry source (doc 16 §2)"
 
   openpose:
@@ -114,9 +99,6 @@ providers:
     local_path: "(not installed; DWPose used instead)"
     output_type: "body/hand/face keypoints"
     role: "reference + Civitai control-graph compatibility only"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "geometry source (reference)"
 
   mediapipe:
@@ -132,9 +114,6 @@ providers:
     local_path: "models/hand/hand_landmarker.task"
     output_type: "21-kp hand landmarks + handedness"
     role: "hand crop-lane landmarks; handedness for L/R vote (QC-014)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "geometry source (doc 16 §2)"
 
   densepose:
@@ -150,9 +129,6 @@ providers:
     local_path: "models/densepose/densepose_rcnn_R_50_FPN_s1x.pkl"
     output_type: "dense body UV surface + part index"
     role: "front/back, L/R, surface continuity, impossible-adjacency checks (S08.5)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "geometry referee (doc 16 §2)"
 
   # ---- Boundary refinement / silhouette ----
@@ -169,9 +145,6 @@ providers:
     local_path: "models/sam2/"
     output_type: "refined binary mask from box/point/mask prompt"
     role: "boundary refinement from priors, crop lanes, alpha/matte proposals (S07)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
 
   sam3_1:
     component: "concept discovery + interactive segmentation challenger"
@@ -209,9 +182,6 @@ providers:
     authority_constraints:
       - "independent candidate family within certified tournaments"
       - "never decides semantic labels"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "concept/interactive candidate; never sole semantic authority (doc 16 §7)"
 
   sam3_litetext_s0:
@@ -267,9 +237,6 @@ providers:
       - "never active, fallback, rollback, or a substitute for official SAM 3.1"
       - "evaluation-only candidate within frozen blinded tournaments"
       - "never decides semantic labels or gold status"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "optional shadow-only experiment; no production or gold authority"
 
   birefnet:
@@ -285,9 +252,6 @@ providers:
     local_path: "models/silhouette/BiRefNet-general.safetensors"
     output_type: "full-person silhouette / soft matte"
     role: "first-stage person silhouette + hair/background separation (S02)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "silhouette source (doc 16 §2)"
 
   rmbg:
@@ -299,9 +263,6 @@ providers:
     version: "RMBG-2.0"
     local_path: "models/silhouette/rmbg/"
     output_type: "person/background silhouette"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     role: "silhouette cross-check + review-workflow reference (doc 16 §2.1)"
     authority_level: "silhouette source (alternative)"
 
@@ -323,9 +284,6 @@ providers:
     governed_resolution: "native_divisible_by_32"
     output_type: "dynamic-resolution full-person silhouette / soft matte"
     role: "benchmark against BiRefNet-general"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "silhouette candidate"
 
   birefnet_hr:
@@ -348,9 +306,6 @@ providers:
     high_memory_promotion_eligible_on_8gb: false
     output_type: "high-resolution full-person silhouette"
     role: "benchmark against BiRefNet-general"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "silhouette candidate"
 
   birefnet_hr_matting:
@@ -373,9 +328,6 @@ providers:
     high_memory_promotion_eligible_on_8gb: false
     output_type: "high-resolution alpha matte"
     role: "benchmark against BiRefNet-general and ViTMatte"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "matting candidate; never sole mask authority"
 
   # ---- Open-vocab prompting (boxes only) ----
@@ -392,9 +344,6 @@ providers:
     local_path: "models/gdino/groundingdino_swint_ogc.pth"
     output_type: "open-vocabulary bounding boxes"
     role: "prompt/box source for hair, garments, accessories (S06)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "prompt/box source ONLY, never final masks (doc 16 §7)"
 
   florence2:
@@ -407,9 +356,6 @@ providers:
     local_path: "models/florence2/"
     output_type: "open-vocab boxes, region captions, grounding"
     role: "prompt/box source; Civitai Florence2+SAM2 graph compatibility"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "prompt/box source only (doc 16 §7)"
 
   # ---- Face/hair detail + matting ----
@@ -423,9 +369,6 @@ providers:
     local_path: "models/faceparse/79999_iter.pth"
     output_type: "face-component parse (skin, brows, eyes, nose, lips, hair)"
     role: "face/hair detail; Sapiens covers hair/face primarily (S03)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "detail fallback vote"
 
   vitmatte:
@@ -442,9 +385,6 @@ providers:
     local_path: "models/matting/vitmatte_s.pth"
     output_type: "0-255 alpha matte from trimap"
     role: "hair alpha matte (derived artifact; v2 training only) (doc 03 §7)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "derived-only; never gold binary truth"
 
   # ---- Detection ----
@@ -461,9 +401,6 @@ providers:
     local_path: "models/detect/yolo11m.pt"
     output_type: "person bounding boxes"
     role: "person detection + context crops (S01)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "detection source"
 
   rfdetr:
@@ -489,9 +426,6 @@ providers:
     local_path: "models/runtime_cache/rfdetr_weights_1.7.1"
     output_type: "person boxes and optional instance masks"
     role: "preferred modern challenger to YOLO11; no hosted API dependency"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "detection candidate"
 
   yolo26:
@@ -504,9 +438,6 @@ providers:
     local_path: "(not installed; optional shadow challenger)"
     output_type: "person boxes"
     role: "optional benchmark only"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "detection candidate"
 
   # ---- Local VLM QA (never mask authority) ----
@@ -520,9 +451,6 @@ providers:
     local_path: "managed by Ollama (docker container per MF-P0-05)"
     output_type: "strict-JSON QA verdicts + routing suggestions"
     role: "VLM QA + routing only (S11); text-only cloud boundary (doc 10 §5-6)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "QA/router ONLY — cannot approve gold, clear a BLOCK, or edit a pixel"
 
   qwen3_vl:
@@ -556,9 +484,6 @@ providers:
     local_path: "C:/Users/kevin/.ollama/models/manifests/registry.ollama.ai/library/qwen3-vl"
     output_type: "strict-JSON semantic criticism and repair routing"
     role: "challenger to Qwen2.5-VL; LLaVA retires only after measured win"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "independent critic; blocking defects veto certification"
 
   rtmw_x:
@@ -580,9 +505,6 @@ providers:
     local_path: "models/pose/rtm/rtmw-x_simcc-cocktail14_pt-ucoco_270e-384x288-f840f204_20231122.pth"
     output_type: "133 COCO-WholeBody keypoints with character-anatomical side semantics"
     role: "whole-body pose challenger to DWPose"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "installed shadow geometry candidate; DWPose remains active/rollback"
 
   rtmo:
@@ -604,9 +526,6 @@ providers:
     local_path: "models/pose/rtm/rtmo-l_16xb16-700e_body7-crowdpose-640x640-5bafdc11_20231219.pth"
     output_type: "multi-person CrowdPose-14 keypoints with stable person-box assignment"
     role: "crowded-scene pose challenger"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "installed shadow geometry candidate; DWPose remains active/rollback"
 
   sam3d_body:
@@ -636,9 +555,6 @@ providers:
     local_path: "models/runtime_cache/sam3d_body_checkpoint_11aaa346"
     output_type: "single-person 3D human mesh/body geometry"
     role: "primary modern challenger to DensePose; DensePose remains rollback fallback"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "checkpoint-installed geometry candidate; no inference, benchmark, gold, or production authority until isolated-runtime qualification"
 
   eomt_dinov3:
@@ -658,9 +574,6 @@ providers:
     runtime_evidence: "qa/live_verification/eomt_dinov3_runtime_20260715.json"
     output_type: "trainable 65-class body_parts_v2 segmentation head over DINOv3; pretrained COCO head has no MaskFactory authority"
     role: "challenger to retained SegFormer and Mask2Former baselines"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "installed training/shadow-evaluation candidate only until a gold-trained checkpoint is certified and promoted"
 
   segformer_b2:
@@ -673,9 +586,6 @@ providers:
     local_path: "(not installed; isolated training challenger)"
     output_type: "semantic body-part segmentation"
     role: "retained baseline challenger for the custom-segmenter role"
-    content_compatibility:
-      adult_nonexplicit: unclear
-      consensual_explicit_adult: unclear
     authority_level: "custom-model tournament candidate"
 
   mask2former_swin_t:
@@ -688,9 +598,6 @@ providers:
     local_path: "(not installed; isolated training challenger)"
     output_type: "semantic/instance/panoptic body-part segmentation"
     role: "retained baseline challenger for the custom-segmenter role"
-    content_compatibility:
-      adult_nonexplicit: unclear
-      consensual_explicit_adult: unclear
     authority_level: "custom-model tournament candidate"
 
   # ---- Human review tool ----
@@ -707,9 +614,6 @@ providers:
     local_path: "C:/Comfy_UI_Main_Masking/cvat (git-ignored external clone)"
     output_type: "human-corrected polygons/masks (COCO RLE + CVAT XML)"
     role: "human correction + review with SAM2 interactor (S12, doc 11)"
-    content_compatibility:
-      adult_nonexplicit: allowed
-      consensual_explicit_adult: allowed
     authority_level: "annotation tool; human judgment is the review authority"
 
   # ---- AUTO-DISCOVERED PLANNED CHALLENGERS (append-only import boundary) ----

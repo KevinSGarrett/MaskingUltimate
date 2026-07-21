@@ -20,13 +20,10 @@ def _synthetic() -> dict:
     return copy.deepcopy(validate_daz_configuration(CONFIG)["training_policy"])
 
 
-def test_daz_configuration_is_hidden_default_disabled_and_adult_assets_remain_eligible():
+def test_daz_configuration_is_hidden_and_default_disabled():
     documents = validate_daz_configuration(CONFIG)
     assert documents["worker"]["enabled"] is False
     assert documents["worker"]["window_visibility"] == "hidden"
-    assert (
-        documents["operating_profile"]["content_policy"]["adult_and_nsfw_assets_eligible"] is True
-    )
     assert documents["training_policy"]["truth_tier"] == "weighted_pseudo_label"
     assert documents["acquisition_capacity"]["soft_floor_gib"] == 150
     assert documents["acquisition_capacity"]["new_work_allowed_states"] == ["healthy"]

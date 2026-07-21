@@ -13,8 +13,7 @@
     "distribution",
     "automatic_asset_purchase",
     "automatic_account_login",
-    "character_scope",
-    "content_policy"
+    "character_scope"
   ],
   "properties": {
     "schema_version": {"const": "1.0.0"},
@@ -28,28 +27,13 @@
     "character_scope": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["age", "person_count", "presentation", "wardrobe_states"],
+      "required": ["person_count", "presentation", "wardrobe_states"],
       "properties": {
-        "age": {"const": "adult_only"},
         "person_count": {"const": [1, 2, 3, 4]},
         "presentation": {"const": ["male", "female"]},
         "wardrobe_states": {
           "const": ["clothed", "partially_clothed", "underwear", "swimwear", "unclothed"]
         }
-      }
-    },
-    "content_policy": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "adult_and_nsfw_assets_eligible",
-        "content_tags_are_organizational_not_training_exclusions",
-        "known_or_suspected_minor_prohibited"
-      ],
-      "properties": {
-        "adult_and_nsfw_assets_eligible": {"const": true},
-        "content_tags_are_organizational_not_training_exclusions": {"const": true},
-        "known_or_suspected_minor_prohibited": {"const": true}
       }
     }
   }

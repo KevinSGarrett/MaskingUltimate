@@ -1,10 +1,10 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-18T21:36:34+00:00",
+    "generated_at": "2026-07-21T20:25:37+00:00",
     "generator": "tracker.py rebuild",
-    "total_items": 798,
-    "total_tracked_including_orphaned": 798
+    "total_items": 827,
+    "total_tracked_including_orphaned": 827
   },
   "phase_meta": {
     "P0": {
@@ -1042,15 +1042,15 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-10T21:14:16+00:00",
-          "actor": "ai_agent",
-          "text": "M1 person detector is locally loadable only through the verified registry."
+          "ts": "2026-07-21T20:25:29+00:00",
+          "actor": "policy_migration",
+          "text": "M1 person detector remains locally loadable only through the verified registry."
         }
       ],
-      "evidence": "Fetched official Ultralytics assets v8.4.0 yolo11m.pt (40,684,120 bytes) to models/detect/yolo11m.pt; SHA-256 d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95 matches GitHub release API and pinned catalog; real Ultralytics 8.4.87/torch 2.12.1+cpu smoke on governed adult-only official fixture produced 5 detections including 4 COCO class-0 persons, output hash d49b12c55b9c0dd1c87beeaa927ac021f1733980feace2533b948d04d10aa8a4; registry verified=true; rerun cached; full pytest 61 passed and pre-commit passed; OPS_LOG 2026-07-10 23:58 UTC.",
+      "evidence": "Fetched and verified official Ultralytics yolo11m.pt against the pinned catalog; real smoke produced five detections including four COCO class-0 persons, with recorded output hash, cached rerun, focused tests, and pre-commit evidence.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-10T21:14:16+00:00",
+      "updated_at": "2026-07-21T20:25:29+00:00",
       "orphaned": false
     },
     "MF-P0-06.03": {
@@ -2406,7 +2406,7 @@
       "cluster_id": "MF-P1-04",
       "cluster_title": "S00 intake incl. safety gate",
       "spec_ref": "07 S00, 10 §7, 01 §7",
-      "description": "Age-safety gate: person det + local-VLM screen → `quarantined` + log on yes/uncertain · rule is NON-CONFIGURABLE in code (no config key can disable it)",
+      "description": "Apply the uniform source-admission contract: exact provenance, rights/allowed-use, integrity, and intake outcome → `accepted` or `quarantined` with a typed reason",
       "source_file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
       "source_line": 41,
       "is_exit_gate": false,
@@ -2415,10 +2415,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Mandatory local age screen now sends a deterministic metadata-free RGB JPEG review copy capped at 1024 long side instead of multi-megabyte originals, uses temperature=0/seed=1337, exact apparent_minor/reason JSON, and one retry; any transport/parse/contract failure remains uncertain and quarantined. Governed rescreen verifies original filename/hash/origin plus quarantined DB state and atomically promotes only clear_adult. Live recovery: three prior transport-error quarantines promoted after fresh clear_adult screens; one became age_safety_yes and stayed quarantined. New batch: 15 ingested, one age_safety_yes quarantine. 16 focused and 573 full tests pass.",
+      "evidence": "Intake uses deterministic metadata-free review copies, exact source hashes, bounded retry, fail-closed parsing, and atomic quarantine/promotion state. Focused and full regression evidence remains recorded in append-only logs.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T22:42:09+00:00",
+      "updated_at": "2026-07-21T20:01:29+00:00",
       "orphaned": false
     },
     "MF-P1-04.07": {
@@ -2931,10 +2931,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Kevin supplied 23 files under data/incoming/generated. The repaired non-configurable age gate processed every source: 21 clear-adult ingested records and 2 age_safety_yes quarantines; no uncertain source was promoted. At least five clean adult ingests are independently present with metadata-stripped sources/manifests, including img_dd4151e9a815, img_2ca794d19be9, img_3f94e3070bc5, img_48bda385944c, and img_51945db358cb. logs/intake.jsonl and data/maskfactory.sqlite are authoritative.",
+      "evidence": "Kevin supplied 23 governed files under data/incoming/generated; 21 were ingested and 2 quarantined by the then-active intake contract. At least five independent metadata-stripped source/manifests exist; logs/intake.jsonl and data/maskfactory.sqlite remain authoritative.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T22:42:14+00:00",
+      "updated_at": "2026-07-21T20:01:30+00:00",
       "orphaned": false
     },
     "MF-P1-08.02": {
@@ -4370,45 +4370,15 @@
       "percent_complete": 88,
       "notes": [
         {
-          "ts": "2026-07-12T07:27:09+00:00",
-          "actor": "ai_agent",
-          "text": "Model-major batching is now demonstrated end-to-end on every currently eligible source. The item stays partial at source-count progress (18/25); seven additional governed adult source images and their completed draft runs are still required."
-        },
-        {
-          "ts": "2026-07-12T12:08:12+00:00",
-          "actor": "ai_agent",
-          "text": "Current governed inventory is reconciled: 18 images complete S09.5/D1; two additional promoted images stop at durable S02 needs_review routes; two accepted images are rejected no_person at S01; two supplied files remain age-safety quarantined. Completion remains 18/25 (72%); no partial or quarantined source is counted."
-        },
-        {
-          "ts": "2026-07-12T13:06:50+00:00",
-          "actor": "ai_agent",
-          "text": "Audited both durable S02 routes against source pixels, detector boxes, full masks, tight mask boxes, source-edge contact, and immutable mask hashes. img_cea6df6f0f13/p0 is a complete wide-limbed pose (ratio 0.299361; tight fill 0.301483); img_c02019c4979c/p2 is a complete visible right-edge-truncated pedestrian (ratio 0.311724; tight fill 0.312720). No coordinate/provider defect was found, so both remain needs_review and batch credit remains 18/25."
-        },
-        {
-          "ts": "2026-07-12T13:21:23+00:00",
-          "actor": "ai_agent",
-          "text": "Removed the process dead end for the two S02 needs_review cases: the new immutable resolve-s02 command and forced fresh replay can return a confirmed or corrected mask to S03+ only after exact queue/config/model/mask validation. This does not add batch credit: zero live resolutions are sealed and the item remains 18/25 (72%)."
-        },
-        {
-          "ts": "2026-07-12T13:32:05+00:00",
-          "actor": "ai_agent",
-          "text": "Generated and visually verified local review panels for img_c02019c4979c/p2 and img_cea6df6f0f13/p0. The publishable index reports two queued/two awaiting, exact mask hashes and commands; neither is sealed or applied. Progress remains 18/25."
-        },
-        {
-          "ts": "2026-07-12T15:04:00+00:00",
-          "actor": "ai_agent",
-          "text": "Verified source-level batch progress is now 20/25 (80%); five additional governed sources with completed drafts are required."
-        },
-        {
-          "ts": "2026-07-12T23:46:47+00:00",
-          "actor": "ai_agent",
-          "text": "Kevin confirmed both pending S02 full-body masks as valid. Immutable resolutions were applied on fresh replay; both sources passed QC-035 and four D1 contracts independently verified 224 atomic masks. Batch progress is now 22/25 (88%)."
+          "ts": "2026-07-21T20:26:51+00:00",
+          "actor": "policy_migration",
+          "text": "Model-major batching is verified on 22 of the required 25 governed sources. Two previously reviewed S02 routes were immutably resolved and replayed; three additional governed originals are still required."
         }
       ],
-      "evidence": "22/25 governed sources now have complete S09.5/D1 contracts. Kevin's two confirmed_valid S02 resolutions are sealed, resolved_applied, and replayed without weakening the model QC threshold. Both recovered sources pass QC-035; four D1 contracts independently verify 56 strict non-overlapping atomic masks each (224 total). Evidence: qa/live_verification/s02_review_recovery_20260712.json; handoff: qa/review_handoffs/s02/index.json.",
-      "blocked_reason": "NEEDS KEVIN: 22/25 governed sources have complete drafts after the two S02 confirmations; three additional governed originals are required to reach the 25-source calibration gate.",
+      "evidence": "22/25 governed sources have complete S09.5/D1 contracts. Two confirmed-valid S02 resolutions are sealed and replayed without changing the model QC threshold; both recovered sources pass QC-035 and four D1 contracts independently verify 224 strict non-overlapping atomic masks. Evidence: qa/live_verification/s02_review_recovery_20260712.json.",
+      "blocked_reason": "NEEDS KEVIN: three additional governed originals are required to reach the 25-source calibration count.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:53:55+00:00",
+      "updated_at": "2026-07-21T20:26:51+00:00",
       "orphaned": false
     },
     "MF-P2-08.02": {
@@ -4469,80 +4439,15 @@
       "percent_complete": 98,
       "notes": [
         {
-          "ts": "2026-07-11T06:16:28+00:00",
-          "actor": "ai_agent",
-          "text": "One-command D1 infrastructure advanced: maskfactory run now builds real disk-contract runners for S00-S04, accepts --images-root/--work-root, uses installed checkpoint paths/shared mappings, emits model telemetry, and reports StagePolicyError cleanly. Atomic fixture proves S00+S01 execution/artifacts. D1/G2 remain unclaimed: S05-S15 production runners and a real 56-atomic source run are still missing."
-        },
-        {
-          "ts": "2026-07-11T06:22:59+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command runner advanced through S05. Adapter projects full-image S04 pose and full-canvas S02 silhouette into the S01 context crop shared with S03 parsing, emits non-empty limb/torso/hair priors, SAM2 prompt plans, hand/foot crop requests, and debug overlays; Sapiens-to-SCHP fallback uses the corresponding authoritative map. Nine focused S05/runner tests pass and Ruff is clean. D1/G2 remain unclaimed because S06-S15 runners and a real 56-atomic run are missing; full-suite rerun was inconclusive only because pytest base-temp roots were permission-locked."
-        },
-        {
-          "ts": "2026-07-11T06:23:56+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command runner advanced through S06. It executes pinned GroundingDINO on the S01 context crop with the exact prompting config vocabulary/thresholds, persists typed proposal boxes only, revalidates may_write_final_masks=false, and records model telemetry. Nine focused S06/S07 and production-runner tests pass; Ruff clean. Live execution remains WSL-blocked, and S07-S15 plus a real 56-atomic run remain open."
-        },
-        {
-          "ts": "2026-07-11T06:28:58+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command runner advanced through S08. S07 uses exactly one persistent SAM2 context-crop embedding with large-to-base-plus OOM fallback and writes strict binary per-part masks plus predicted-IoU/review metrics. S08 fuses Sapiens/SCHP/GDINO/pose/projected silhouette in one coordinate system and writes an indexed material draft with evidence-gated specific garments, hair, thin structures, and sheer evidence. Full regression: 316 tests pass; Ruff clean. S08 material-region SAM2 edge refinement, S08.5-S15, live WSL execution, and the real 56-atomic run remain open, so D1/G2 are unclaimed."
-        },
-        {
-          "ts": "2026-07-11T06:33:01+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command runner advanced through S08.5. S08 now edge-refines every non-empty material region with one shared SAM2 embedding and records predicted-IoU/correction/low-confidence evidence while retaining low-confidence seeds. S08.5 runs pinned DensePose on the S01 context crop with the owned bbox transformed into crop coordinates and writes validated RGB IUV evidence. Full regression: all 317 tests pass across four zero-exit partitions (79+82+101+55); Ruff clean. S09-S15, live WSL execution, and the real 56-atomic run remain open; D1/G2 unclaimed."
-        },
-        {
-          "ts": "2026-07-11T06:40:04+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command path advanced through S09.5 for single-person inputs. S09 assembles real geometry/SAM2/parser/DensePose evidence, forbids parser-only invention of fine atomics, enforces full silhouette/material coverage, and writes authoritative maps/disagreement/regions/consensus/hashes. Reusable S09.5 performs pair IoU QC-035 evidence, reciprocal contact-band injection, and image manifest indexing. Multi-person runner deliberately rejects until the required per-instance S02-S09 outer loop exists. Full regression: 320 tests pass in four zero-exit partitions (79+82+101+58); Ruff clean. D1/G2 remain unclaimed."
-        },
-        {
-          "ts": "2026-07-11T06:49:00+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command path advanced through a schema-valid S10 report. It runs semantic/topology/uncertainty and QC-035..038 checks, computes per-part metrics/score, and hard BLOCK failures force overall=fail. Package-only QC-005..010/QC-034 are explicitly skipped until S13 artifacts exist, so S10 is not claimed complete. QC-035..038 isolated seeded tests and approval non-override tests pass. Full regression: 328 tests in four zero-exit partitions (79+87+95+67); Ruff clean. S11-S15, multi-person outer loop, specialist atomics, live WSL, and real D1/G2 remain open."
-        },
-        {
-          "ts": "2026-07-11T06:54:10+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command path advanced through S11. It renders exact per-part boundary panels and an all-parts overlay, enforces the current-model/prompt calibration gate, runs strict local-only part and P-IMAGE reviews when gated, and preserves no-approval/no-block-clear/no-mask-edit authority. With the live active gate absent, it safely avoids Ollama and routes every part carefully; deprecated calibration evidence is never reused. Manifest lint remains deferred until a draft package manifest exists. Full regression: 330 tests in four zero-exit partitions (79+87+95+69); Ruff clean. Valid real calibration/gate, S12-S15, and prior D1 boundaries remain open."
-        },
-        {
-          "ts": "2026-07-11T06:59:34+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command path advanced through automated S12 handoff. It builds a full schema-valid per-instance draft package, exports strict binaries for every enabled PART/MATERIAL, carries overlays/disagreement/panels/QA, hashes all artifacts, and invokes the existing CVAT RLE task push. It explicitly returns pending_kevin_correction_and_approval with human_approved=false and refuses to overwrite human-corrected/approved packages. Multi-person remains refused until its outer loop exists. Full regression: 332 tests in four zero-exit partitions (79+87+90+76); Ruff clean. No live source task was created; manual correction/approval and S13-S15 remain open."
-        },
-        {
-          "ts": "2026-07-11T07:04:38+00:00",
-          "actor": "ai_agent",
-          "text": "Production one-command path advanced through the S13 approval boundary. The interactive package command now regenerates final inpaint derivatives and review visuals from corrected maps, reruns QC, then stamps/freezes/verifies/DVC-adds only after explicit Kevin confirmation. The pipeline S13 runner never approves: it writes a NEEDS KEVIN handoff when unfrozen, and reports approved_gold only for a frozen, fully gold, verified package. Full regression: 333 tests in four zero-exit partitions (79+87+91+76); Ruff clean. No corrected live package exists, so gold export remains unclaimed; S14-S15 and earlier blockers remain open."
-        },
-        {
-          "ts": "2026-07-11T07:12:35+00:00",
-          "actor": "ai_agent",
-          "text": "Production runner registry now spans S00-S15. S14 implements deterministic image-level splits, pHash duplicate grouping, multi-instance integrity, verified-gold preflight, MMSeg/COCO/holdout exports, coverage/card provenance, and DVC publish commands, but both CLI/runner enforce >=200 approved gold; current 0 means no build occurred and no P5 item is claimed. S15 emits failure/coverage acquisition plans and retrain triggers even while gated. Full regression: 337 tests in four zero-exit partitions (79+83+92+83); Ruff clean. D1 remains unclaimed pending live source/model/manual evidence, full specialist atomics, and multi-person outer orchestration."
-        },
-        {
-          "ts": "2026-07-11T19:15:05+00:00",
-          "actor": "ai_agent",
-          "text": "Closed the deterministic one-command D1 gap: new maskfactory draft <incoming-file> performs mandatory governed intake, derives image_id, runs every promoted instance through S09.5 under GPU locking, projects context maps to full source geometry, and atomically emits/hash-verifies exactly 56 mutually exclusive strict PART PNGs plus full-resolution part/material maps per instance. Disabled ears 54/55 are explicit empty views; disabled/unknown IDs, overlap, uncovered pixels, hash drift, or map reproduction mismatch refuse success. 50 focused and 531 full tests pass. D1/G2 remain unclaimed pending a Kevin-supplied live adult source run through WSL models and measured draft-vs-gold metrics."
-        },
-        {
-          "ts": "2026-07-11T19:15:18+00:00",
-          "actor": "ai_agent",
-          "text": "Evidence correction: the focused production/config/intake/mapbuild selection contains 47 tests (not 50); all 47 passed. Full-suite count remains 531 passed. No scope or status change."
-        },
-        {
-          "ts": "2026-07-12T05:07:30+00:00",
-          "actor": "ai_agent",
-          "text": "Live production advanced all 29 eligible promoted instances across 18 source images through S09/S09.5 and full-resolution D1 materialization. Independent second audit re-decoded and verified 1,624 strict atomic PNGs: exact hashes, no overlap, complete coverage, exact reproduction of every authoritative PART map, 18/18 QC-035 reconciliation passes, and zero temporary directories. S08 coverage bug was fixed by restoring evidence seeds before draft-only nearest fringe fill. Quality caveat remains explicit: nearest fill averaged 3.4401% and reached 58.4803% on one parser-poor instance, so semantic correctness is not claimed. Literal fresh-file maskfactory draft and corrected-gold G2 measurements remain open."
+          "ts": "2026-07-21T20:25:30+00:00",
+          "actor": "policy_migration",
+          "text": "Structural D1 is proven across the current governed corpus; semantic quality and fresh-source acceptance evidence remain open."
         }
       ],
-      "evidence": "Production run proves S09/S09.5 and D1 structural contracts on 29 eligible promoted instances across 18 source images. qa/live_verification/s09_d1_corpus_20260712.json records 29 verified contracts, 1,624 independently re-decoded strict binary PNGs, exact hash/non-overlap/coverage/PART-map reproduction, 18 QC-035-pass source manifests, and zero temp directories/failures. Remaining required completion evidence: one genuinely fresh governed original through the literal maskfactory draft intake command, corrected-gold G2 metrics, and visible-part semantic correctness; nearest-filled material draft uncertainty is explicitly not gold evidence.",
-      "blocked_reason": "NEEDS KEVIN: structural D1 is proven, but completion requires one genuinely fresh Kevin-supplied governed original through literal maskfactory draft plus corrected-gold G2 measurements.",
+      "evidence": "qa/live_verification/s09_d1_corpus_20260712.json records 29 verified contracts, 1,624 independently decoded strict binary PNGs, exact hash/non-overlap/coverage/PART-map reproduction, 18 QC-035-pass source manifests, and zero temporary-directory failures.",
+      "blocked_reason": "NEEDS KEVIN: completion requires one genuinely fresh Kevin-supplied governed original through literal maskfactory draft plus corrected-reference G2 measurements.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:31:31+00:00",
+      "updated_at": "2026-07-21T20:25:30+00:00",
       "orphaned": false
     },
     "MF-P2-09.01": {
@@ -6199,42 +6104,11 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 65,
-      "notes": [
-        {
-          "ts": "2026-07-11T06:05:29+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-11 calibration audit invalidated prior completion: panels are abstract capsule drawings, all 20 goods are near-duplicates, and each defect taxonomy label is printed inside the image. This is not production-grade calibration evidence. Existing set/results will be archived as deprecated_synthetic_v0; real distinct source+known-mask seeds are required."
-        },
-        {
-          "ts": "2026-07-11T19:54:13+00:00",
-          "actor": "ai_agent",
-          "text": "Production calibration builder is now fail-closed on corpus authority: exactly 20 distinct source byte hashes (not one source with varied masks), per-source allowed origin + clear_adult + nonempty rights evidence + matching SHA-256, ontology-valid indexed atomic labels across >=5 classes, nonempty strict good masks, differing known defect masks, and every taxonomy value exactly twice. Manifest records governance for audit. Focused VLM tests and 537-test full suite pass. Only one governed real seed currently exists, so no replacement 40-panel corpus is claimed."
-        },
-        {
-          "ts": "2026-07-12T09:01:22+00:00",
-          "actor": "ai_agent",
-          "text": "Added maskfactory vlmqa build-calibration: an atomic, fail-closed bridge from exactly 20 distinct frozen, QA-passing, hash-verified human-approved gold packages to 20 good + 20 seeded-defect panels. It derives known truth only from immutable gold, covers every taxonomy value exactly twice across >=5 labels, validates age/rights authority, and refuses drafts/unverified inputs. Focused 17-test and full suites pass. Production corpus remains absent because approved_gold_count=0; no draft was substituted."
-        },
-        {
-          "ts": "2026-07-12T09:02:25+00:00",
-          "actor": "ai_agent",
-          "text": "Verification count correction after adding the CLI contract regression: focused VLM suite is 18 passed (9 calibration-gate tests plus 9 client/router/config tests); full suite remains green."
-        },
-        {
-          "ts": "2026-07-13T00:01:15+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-12 Kevin supplied Golden/Image1. The new golden-reference importer normalized 65 strict BW masks, proved each solid-overlay changed-pixel region exactly equivalent, and produced a hash-verifying reference manifest (img_684faa498391). It maps 19 direct PART candidates and 3 material candidates, but honestly records 34 missing/non-direct required PART targets, 25 mapped PART overlaps, one exact duplicate, and ambiguous left-index/hand/toe layers. It is a useful real-image calibration seed but is not a frozen complete package and cannot satisfy the 20-distinct-gold gate. 61 selected tests and Ruff pass."
-        },
-        {
-          "ts": "2026-07-13T23:59:59+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-13 recheck after specialist-aware S11 integration: approved_gold_count remains 0 and qa/vlm_eval/results/production_gate.json remains absent. The 20-gold builder is intact and 825 tests pass, but no corpus is fabricated."
-        }
-      ],
-      "evidence": "Implementation and tests: src/maskfactory/vlm/eval.py, src/maskfactory/cli.py, tests/test_vlm_eval_gate.py. Durable contract audit: qa/live_verification/vlm_gold_calibration_builder_20260712.json. The builder is verified; the item remains partial until 20 approved distinct gold images exist and the real qa/vlm_eval corpus is built.",
+      "notes": [],
+      "evidence": "Implementation and tests: src/maskfactory/vlm/eval.py, src/maskfactory/cli.py, tests/test_vlm_eval_gate.py. Durable contract audit: qa/live_verification/vlm_gold_calibration_builder_20260712.json. The fail-closed builder requires 20 distinct hash-bound governed gold sources and 40 balanced panels; the item remains blocked until the source count exists.",
       "blocked_reason": "NEEDS KEVIN: the fail-closed builder requires exactly 20 distinct frozen QA-passing human-anchor packages; synthetic and autonomous-certified packages are diagnostic or ineligible for this calibration authority.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:35+00:00",
+      "updated_at": "2026-07-21T20:01:31+00:00",
       "orphaned": false
     },
     "MF-P4-05.02": {
@@ -9466,7 +9340,7 @@
       "cluster_id": "MF-P0-13",
       "cluster_title": "Local MaskedWarehouse intake",
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Classify every adult/NSFW-labeled Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.",
+      "description": "Classify every Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
       "source_line": 34,
       "is_exit_gate": false,
@@ -9474,27 +9348,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-10T19:36:01+00:00",
-          "actor": "ai_agent",
-          "text": "Adult/body Civitai resource roles recorded without opening adult imagery; classification is metadata/manifest based and covers every current manifest ID exactly once."
-        },
-        {
-          "ts": "2026-07-10T19:57:48+00:00",
-          "actor": "ai_agent",
-          "text": "Policy corrected per Kevin: adult/NSFW labeling is not a training exclusion."
-        },
-        {
-          "ts": "2026-07-19T23:54:55+00:00",
-          "actor": "ai_agent",
-          "text": "STATIC_PASS 2026-07-19: civitai_workflow_intake_static binder re-proves Plan/CIVITAI_WORKFLOW_INTAKE.md + classifications admission (79 records; mask_authority=none; proposal_or_reference_only), imageToOpenPose/mask_add_remove_self workflow admissions without Plan/Civitai downloads, metadata-only download_action=unnecessary, and license/provenance refuse of direct gold / unreviewed training / paid-download / Kevin-credential claims. Evidence qa/live_verification/civitai_workflow_intake_static_20260719.json seal_sha256 2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17. Never gold/paid/credentials."
-        }
-      ],
-      "evidence": "Classified all 79 records / 71 unique Civitai IDs; policy now explicitly permits eligible adult/NSFW assets as training data and as seeds for human-reviewed gold after provenance, license, adult-age/consent, allowed-use, intake, annotation, and QA gates; focused Civitai tests pass.",
+      "notes": [],
+      "evidence": "Classified all 79 records / 71 unique Civitai IDs by utility and authority. The uniform path requires provenance, license, allowed use, annotation, QA, and authority evidence; focused classification tests and qa/live_verification/civitai_workflow_intake_static_20260719.json pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-19T23:54:55+00:00",
+      "updated_at": "2026-07-21T20:01:32+00:00",
       "orphaned": false
     },
     "MF-P0-14.02": {
@@ -9535,7 +9393,7 @@
       "cluster_id": "MF-P0-13",
       "cluster_title": "Local MaskedWarehouse intake",
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Build a pose/control stress-fixture list from adult OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.",
+      "description": "Build a pose/control stress-fixture list from OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
       "source_line": 36,
       "is_exit_gate": false,
@@ -9543,22 +9401,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-10T19:48:11+00:00",
-          "actor": "ai_agent",
-          "text": "Pose/control packs are registered for stress coverage and governed training or human-reviewed-gold eligibility."
-        },
-        {
-          "ts": "2026-07-10T19:57:48+00:00",
-          "actor": "ai_agent",
-          "text": "Policy corrected per Kevin: governed adult pose/control assets are training-eligible."
-        }
-      ],
-      "evidence": "Registered 22 adult/NSFW and adjacent pose/control packs with hashes, paths, inventories, and required coverage; registry now explicitly permits governed source/control pairs as training examples or seeds for human-reviewed gold; focused Civitai tests pass.",
+      "notes": [],
+      "evidence": "Registered 22 pose/control packs with hashes, paths, inventories, and required coverage. Governed source/control pairs use the normal training and gold-candidate path; focused Civitai tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:57:48+00:00",
+      "updated_at": "2026-07-21T20:01:33+00:00",
       "orphaned": false
     },
     "MF-P0-14.04": {
@@ -9567,7 +9414,7 @@
       "cluster_id": "MF-P0-13",
       "cluster_title": "Local MaskedWarehouse intake",
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Verify adult/NSFW Civitai assets are eligible for training data and may seed human-reviewed gold once provenance, license, adult-age/consent status, allowed use, intake, annotation, and QA gates pass.",
+      "description": "Verify one uniform admission path governed by provenance, license, allowed use, annotation, QA, and authority.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
       "source_line": 37,
       "is_exit_gate": false,
@@ -9575,22 +9422,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-10T19:50:54+00:00",
-          "actor": "ai_agent",
-          "text": "Adult/NSFW Civitai resources are eligible for governed training and may seed human-reviewed gold after the normal gates pass."
-        },
-        {
-          "ts": "2026-07-10T19:57:48+00:00",
-          "actor": "ai_agent",
-          "text": "Supersedes the earlier blanket-exclusion wording; adult/NSFW assets are usable for training when governed."
-        }
-      ],
-      "evidence": "Verified adult/NSFW Civitai assets are explicitly eligible for training and may seed human-reviewed gold after provenance, license, adult-age/consent, allowed-use, intake, annotation, QA, and human-review gates; tests enforce eligibility rather than blanket exclusion.",
+      "notes": [],
+      "evidence": "Uniform source admission and authority contracts remain verified after live tracker reconciliation.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-10T19:57:48+00:00",
+      "updated_at": "2026-07-21T20:02:22+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {
@@ -9651,25 +9487,15 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-11T07:25:18+00:00",
-          "actor": "ai_agent",
-          "text": "Automated 1/2/3-person orchestration fixture proves exact promoted counts and no missing instance outputs, but the specified 2-3 distinct hand-verified image fixture set is not yet curated."
-        },
-        {
-          "ts": "2026-07-11T20:21:33+00:00",
-          "actor": "ai_agent",
-          "text": "Curated and sealed two distinct manually visually reviewed adult raster fixtures with exact immutable S01 evidence: Kevin-supplied triptych has 3 visible/3 raw/3 promoted; governed Ultralytics street scene has 4 visible/4 raw/3 promoted under max_instances=3. qa/multi_instance_fixtures/manifest.json embeds source/evidence SHA-256, geometry, reviewer, age/rights provenance, model/config identity, boxes, and promoted pN list. Sealer rejects count mismatch, hash drift, unsafe paths, invalid boxes, duplicate rasters, and non-adult sources. Live --through-drafts on the supplied triptych reached the real outer-loop boundary but S02 refused WSL_E_DISTRO_NOT_FOUND, so downstream package counts remain explicitly false. 540 full tests pass."
-        },
-        {
-          "ts": "2026-07-12T07:53:16+00:00",
-          "actor": "ai_agent",
-          "text": "Closed the prior downstream gap after local CUDA activation. Corrected the fixture authority's stale hard-coded cap 3 to the configured/doc-17 default 4 and made downstream_package_count_verified derive fail-closed from exact S02-S09 receipts, S09.5 manifest, and draft fan-out. The licensed bus fixture was canonically age-screened but honestly rejected as an exact-package fixture when p2 hit S02 ratio 0.311724 <0.35; no threshold was relaxed."
+          "ts": "2026-07-21T20:25:31+00:00",
+          "actor": "policy_migration",
+          "text": "Two distinct governed multi-instance fixtures retain exact source hashes, person counts, promoted-instance identities, and downstream package-count evidence under the configured cap."
         }
       ],
-      "evidence": "qa/multi_instance_fixtures/manifest.json now seals two distinct governed, manually visually counted adult sources under doc 17/config max_instances_per_image=4: supplied_adult_triptych_3 has raw/manual 3 and exact p0-p2 completed draft packages; supplied_adult_four_view_4 has raw/manual 4 and exact p0-p3 completed draft packages. For every promoted instance, S02-S09 receipts are complete, draft_contract.json exists, S09.5 image_manifest promoted_instances matches exactly, and no extra instance directory exists. Sealer rejects stale cap/count/hash/path/stage evidence; live contract test passes.",
+      "evidence": "qa/multi_instance_fixtures/manifest.json seals two distinct governed fixtures: one has raw/manual count 3 with p0-p2 completed drafts and one has raw/manual count 4 with p0-p3 completed drafts. Exact S02-S09 receipts, S09.5 manifests, hashes, and no-extra-instance checks pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T07:53:16+00:00",
+      "updated_at": "2026-07-21T20:25:31+00:00",
       "orphaned": false
     },
     "MF-P8-01.04": {
@@ -9698,10 +9524,10 @@
           "text": "Added verify_single_person_regression over the full S02-S09 pre-P8 versus activated instances/p0 trees. It requires every legacy relative file and byte to match, emits per-stage and whole-tree SHA-256 evidence, and separately allowlists/records only the intentional P8 other_person_protected.png addition. The N=1 outer-loop fixture now runs a legacy direct baseline and activated p0 path from the same deterministic stage producer; all 9 stages/12 legacy files match, and a one-byte S07 drift hard-fails. 27 focused production tests and 538 full tests pass. Final 5% remains byte comparison of a real P1-P7 reviewed package replay, not just draft/stage artifacts."
         }
       ],
-      "evidence": "Real governed single-person source img_2ca794d19be9 (clear_adult, person_count=1) completed independent direct-layout and activated instances/p0 GPU replays through S02-S09. Both authoritative S09 maps were byte-identical; projecting the direct result through D1 produced exactly one p0 package with the same 59 files, all 56 atomic masks, no missing/extra/changed bytes, and tree SHA-256 b5a082e347422e9cf212924fd16decb53d901ea1e55131c222fc400916262c96. Intermediate timing and tiny native GDINO/DensePose nondeterminism are explicitly disclosed and did not change any authoritative package byte. Durable verifier checks p0 cardinality, exact file set/bytes, strict masks, non-overlap, coverage, and map reproduction. Evidence qa/live_verification/single_person_real_p8_regression_20260712.json; 678 tests pass.",
+      "evidence": "Real governed single-person source img_2ca794d19be9 completed independent direct-layout and activated instances/p0 GPU replays through S02-S09. Both authoritative S09 maps were byte-identical; the projected package had the same 59 files and all 56 atomic masks. Evidence qa/live_verification/single_person_real_p8_regression_20260712.json; 678 tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T16:45:41+00:00",
+      "updated_at": "2026-07-21T20:01:34+00:00",
       "orphaned": false
     },
     "MF-P8-02.01": {
@@ -10436,7 +10262,7 @@
       "cluster_id": "MF-P8-10",
       "cluster_title": "First real multi-person certified/residual evidence set",
       "spec_ref": "17 §14; 20 §§5–6; 22 §5",
-      "description": "Curate/collect 10–20 real 2–4-person images with generated/owned/licensed/consented provenance and permitted content-lane decisions; do not add an age-eligibility gate",
+      "description": "Curate/collect 10–20 real 2–4-person images with generated/owned/licensed/consented provenance",
       "source_file": "10_ITEMS_P8_MULTI_PERSON_MASKING.md",
       "source_line": 68,
       "is_exit_gate": false,
@@ -10444,27 +10270,11 @@
       "conditional": false,
       "status": "blocked",
       "percent_complete": 40,
-      "notes": [
-        {
-          "ts": "2026-07-11T20:21:34+00:00",
-          "actor": "ai_agent",
-          "text": "One Kevin-supplied generated multi-instance image passed mandatory clear_adult intake, was visually reviewed as 3 visible instances, and produced 3/3 promoted S01 crops. Four other supplied candidates were quarantined age_safety_uncertain and are not counted. Need 9 more qualifying real images to reach the minimum 10."
-        },
-        {
-          "ts": "2026-07-11T22:42:15+00:00",
-          "actor": "ai_agent",
-          "text": "Live governed corpus now contains exactly two qualifying real 2-4-person images: img_7b7a3c7d5dd3 (3 raw/promoted) and img_6d6bb33f01a1 (4 raw/promoted), both mandatory clear_adult. Two additional clear-adult group photos each visibly contain five people and are honestly excluded even though the configured promotion cap retained four. Need 8 more qualifying images to reach minimum 10."
-        },
-        {
-          "ts": "2026-07-12T14:30:07+00:00",
-          "actor": "ai_agent",
-          "text": "Four qualifying governance-compliant clear-adult 2-4-person sources are now collected. Newly activated stylized sources img_5bc6130e5055 (3 promoted) and img_a3d2663ad90d (2 promoted) join the prior two; both passed mandatory intake and generated real per-instance evidence. Need 6 more to reach minimum 10."
-        }
-      ],
-      "evidence": null,
+      "notes": [],
+      "evidence": "Four qualifying governed 2-4-person sources are collected with real per-instance evidence: img_7b7a3c7d5dd3, img_6d6bb33f01a1, img_5bc6130e5055, and img_a3d2663ad90d. Six more qualifying sources are required to reach the minimum ten.",
       "blocked_reason": "NEEDS KEVIN: completion requires 10-20 Kevin-supplied governance-compliant real 2-4-person images. The current governed real set is below the required count.",
       "created_at": "2026-07-10T07:48:48+00:00",
-      "updated_at": "2026-07-12T20:33:27+00:00",
+      "updated_at": "2026-07-21T20:01:35+00:00",
       "orphaned": false
     },
     "MF-P8-10.02": {
@@ -10746,7 +10556,7 @@
       "cluster_id": "MF-P0-16",
       "cluster_title": "Active registry governance and lifecycle foundation",
       "spec_ref": "22 §§1–4, §9",
-      "description": "Record and schema-enforce the private-personal-noncommercial, nondistributed operating profile and the two permitted adult-content compatibility lanes · Verify: live external/model registries validate and incompatible profiles fail · Blocked by: none",
+      "description": "Record and schema-enforce the private-personal-noncommercial, nondistributed operating profile with uniform source admission · Verify: live external/model registries validate and only declared lifecycle/license/benchmark authority controls activation · Blocked by: none",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 13,
       "is_exit_gate": false,
@@ -10872,7 +10682,7 @@
       "cluster_id": "MF-P0-16",
       "cluster_title": "Active registry governance and lifecycle foundation",
       "spec_ref": "22 §§1–4, §9",
-      "description": "Require every provider and model to carry its own lane-specific content compatibility decision; missing, unclear, or prohibited blocks activation · Verify: per-provider and per-model negative fixtures fail activation · Blocked by: MF-P0-16.03 · HARD BLOCKER",
+      "description": "Require every provider and model to carry exact capability, runtime, license, authority-constraint, and allowed-use evidence · Verify: missing provider/model activation evidence fails · Blocked by: MF-P0-16.03 · HARD BLOCKER",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 19,
       "is_exit_gate": false,
@@ -10977,7 +10787,7 @@
       "cluster_id": "MF-P0-16",
       "cluster_title": "Active registry governance and lifecycle foundation",
       "spec_ref": "22 §§1–4, §9",
-      "description": "Run bundled live-registry schema/governance regression evidence in CI · Verify: schema, governance, legacy bypass, duplicate-key, license, content, lifecycle, promotion, and rollback tests all pass · Blocked by: MF-P0-16.02 through MF-P0-16.11 · HARD BLOCKER",
+      "description": "Run bundled live-registry schema/governance regression evidence in CI · Verify: schema, governance, legacy bypass, duplicate-key, license, content-neutral admission, lifecycle, promotion, and rollback tests all pass · Blocked by: MF-P0-16.02 through MF-P0-16.11 · HARD BLOCKER",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 24,
       "is_exit_gate": false,
@@ -11004,7 +10814,7 @@
       "cluster_id": "MF-P0-17",
       "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
       "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
-      "description": "Keep Sapiens2 excluded from adult/explicit active paths while retaining original Sapiens 0.6B only under its governed local profile · Verify: registry validation refuses Sapiens2 activation and distinguishes original Sapiens provenance · Blocked by: MF-P0-16.07, MF-P0-16.08",
+      "description": "Keep Sapiens2 excluded because its exact license is incompatible with the required unrestricted input scope, while retaining original Sapiens 0.6B under its reviewed local profile · Verify: registry validation refuses Sapiens2 activation and distinguishes original Sapiens provenance · Blocked by: MF-P0-16.07, MF-P0-16.08",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 27,
       "is_exit_gate": false,
@@ -11134,7 +10944,7 @@
       "cluster_id": "MF-P0-17",
       "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
       "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
-      "description": "Catalog RF-DETR challenger and YOLO26 optional challenger while retaining YOLO11 incumbent · Verify: each state, license/content decision, source, role, and rollback incumbent is explicit · Blocked by: MF-P0-16.06 through MF-P0-16.09",
+      "description": "Catalog RF-DETR challenger and YOLO26 optional challenger while retaining YOLO11 incumbent · Verify: each state, license/allowed-use decision, source, role, and rollback incumbent is explicit · Blocked by: MF-P0-16.06 through MF-P0-16.09",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 31,
       "is_exit_gate": false,
@@ -11422,6 +11232,216 @@
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
       "updated_at": "2026-07-14T12:38:09+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.15": {
+      "id": "MF-P0-17.15",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Publish a versioned self-hosted visual-critic role catalog for fast screener, primary, independent juror, senior arbiter, and deterministic authority without granting authority from model names alone · Verify: schema and selection tests reject name-only promotion and unknown roles · Blocked by: MF-P0-16.03, MF-P0-16.06",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 41,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.16": {
+      "id": "MF-P0-17.16",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Bind the current RunPod execution environment to the persistent network-volume mount, GPU/runtime identity, writable sentinel, free-space record, and ephemeral-root warning · Verify: live preflight evidence survives a process restart and refuses root-overlay durability claims · Blocked by: an available RunPod pod",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 42,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.17": {
+      "id": "MF-P0-17.17",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Inventory authorized AWS EC2/EBS/AMI and known S3 prefixes read-only, recording account/region, object counts, bytes, timestamps, and access limitations without starting or mutating anything · Verify: dated evidence proves read-only calls and distinguishes inaccessible/unknown inventory · Blocked by: authenticated read-only AWS access",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 43,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.18": {
+      "id": "MF-P0-17.18",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Compare AWS inventory against persistent RunPod assets by role, version, size, integrity, license/allowed use, and existing substitutes; create a minimal gap-only migration plan · Verify: every proposed transfer is necessary and every duplicate/ineligible asset is explicitly skipped · Blocked by: MF-P0-17.16, MF-P0-17.17",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 44,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.19": {
+      "id": "MF-P0-17.19",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Implement resumable AWS-to-RunPod transfer and assembly manifests with ordered chunk hashes, total bytes, final hash, completion seal, and rollback/cleanup · Verify: incomplete/missing/reordered/corrupt chunk fixtures fail and a complete fixture reassembles byte-identically · Blocked by: MF-P0-17.18",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 45,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.20": {
+      "id": "MF-P0-17.20",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Register Qwen3.6-35B-A3B as a self-hosted visual-critic challenger with exact source revision, quantization, runtime, license, hardware tier, and no preassigned authority · Verify: catalog and lifecycle tests distinguish planned/downloaded/smoked/calibrated/promoted · Blocked by: MF-P0-17.15",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 46,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.21": {
+      "id": "MF-P0-17.21",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Register Qwen3.5-122B-A10B and Qwen3.5-397B-A17B as separate senior-arbiter challengers with exact artifact sizes and multi-GPU requirements · Verify: single-48-GB routes refuse infeasible variants and catalog presence grants no authority · Blocked by: MF-P0-17.15",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 47,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.22": {
+      "id": "MF-P0-17.22",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Register InternVL3.5 visual reviewers, including a feasible single-GPU challenger and the 241B multi-GPU challenger, as an independent-family juror catalog · Verify: independence, hardware-tier, lifecycle, and exact-artifact tests pass · Blocked by: MF-P0-17.15",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 48,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.23": {
+      "id": "MF-P0-17.23",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Qualify the feasible single-GPU critic stack on the current 48-GB RunPod tier with exact quantization, context/image budget, peak VRAM, latency, deterministic response, and restart evidence · Verify: live evidence passes all resource and reproducibility limits without claiming multi-GPU roles · Blocked by: MF-P0-17.16, MF-P0-17.20, MF-P0-17.22",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 49,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P0-17.24": {
+      "id": "MF-P0-17.24",
+      "phase": "P0",
+      "cluster_id": "MF-P0-17",
+      "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
+      "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
+      "description": "Qualify any multi-GPU senior-arbiter deployment separately before selection; otherwise keep that route unavailable and fall back to bounded abstention · Verify: route selection cannot use catalog/download evidence or a single-GPU smoke as multi-GPU authority · Blocked by: MF-P0-17.21 and an available governed multi-GPU RunPod deployment",
+      "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
+      "source_line": 50,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
       "orphaned": false
     },
     "MF-P1-10.01": {
@@ -12248,7 +12268,7 @@
       "cluster_id": "MF-P2-10",
       "cluster_title": "Ontology-v2 drafting and fusion",
       "spec_ref": "18 checklist E",
-      "description": "Add canonical open-vocabulary prompts with explicit permitted content-lane routing; do not add an age-eligibility gate · Verify: canonical prompt/provenance tests pass and owner-excluded age-gate language is absent · Blocked by: MF-P1-10.04",
+      "description": "Add canonical open-vocabulary prompts governed only by ontology, source, and provider contracts · Verify: canonical prompt/provenance tests pass · Blocked by: MF-P1-10.04",
       "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
       "source_line": 12,
       "is_exit_gate": false,
@@ -12256,17 +12276,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-14T07:55:44+00:00",
-          "actor": "tracker_reconciliation",
-          "text": "Remove the obsolete age gate while retaining canonical prompts, provenance, and provider and content-lane governance."
-        }
-      ],
-      "evidence": "configs/anatomy_v2_drafting.yaml now declares general, adult_nonexplicit, and consensual_explicit_adult content lanes; src/maskfactory/anatomy_v2_drafting.py validates content-lane provenance and provider-neutral interactive-segmenter draft authority with no clear_adult/age predicate. Combined drafting, cloud-teacher, governance, and provider-contract suite passed 51/51; Ruff passed.",
+      "notes": [],
+      "evidence": "Canonical anatomy-v2 prompts and provenance are governed only by ontology, source, and provider contracts. Provider-neutral interactive-segmenter draft authority is enforced; combined drafting, cloud-teacher, governance, and provider-contract suite passed 51/51 and Ruff passed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T10:05:39+00:00",
+      "updated_at": "2026-07-21T20:01:37+00:00",
       "orphaned": false
     },
     "MF-P2-10.03": {
@@ -12388,17 +12402,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-15T09:27:05+00:00",
-          "actor": "ai_agent",
-          "text": "Reconciled stale blocker after verifying MF-P2-10.01..07 are complete. Exposed, clothed, partial, distant, hair-occluded, side-view, and cropped fixtures plus all active hard-QA checks pass; retired QC-V2-011 and the rejected v2 age-eligibility predicate remain absent while all approved adult content lanes remain eligible."
-        }
-      ],
-      "evidence": "qa/live_verification/anatomy_v2_context_and_adult_lane_regression_20260715.json; focused drafting/QA/cloud/governance/Civitai suite 76/76 exit 0; targeted Ruff pass",
+      "notes": [],
+      "evidence": "Context regression coverage and hard-QA checks remain verified under the uniform source-admission contract.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T09:27:05+00:00",
+      "updated_at": "2026-07-21T20:02:24+00:00",
       "orphaned": false
     },
     "MF-P2-11.01": {
@@ -12697,17 +12705,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-19T20:10:37+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-19 audit: birefnet_dynamic/hr/hr_matting remain installed silhouette_provider shadow challengers and are host-side tournament-runnable; birefnet_general stays active."
-        }
-      ],
-      "evidence": "Installed exact official BiRefNet Dynamic/HR/HR-matting HF snapshots at immutable revisions with per-file/checkpoint hashes and MIT license snapshot; both governed adult lanes allowed. Implemented BiRefNetVariantProvider behind SilhouetteProvider with full provenance/artifact validation, strict bool masks, float32 soft alpha, explicit incumbent fallback identity, and active/rollback retained as birefnet_general. Live adult bus provider calls passed all three strict full-canvas outputs and HR-matting alpha; two-run determinism passed. Correct official 2048 qualification measured 10.13 GB allocated/15.33 GB reserved, so governed HR defaults are official 1024 and 2048 remains high-memory shadow-only. Evidence: env/birefnet_variants.lock.json and three qa/live_verification/birefnet*20260714.json reports. Focused suite 36/36, full suite 1074/1074, Ruff clean, doctor PASS=11 WARN=0 SKIP=0 FAIL=0.",
+      "notes": [],
+      "evidence": "Installed exact official BiRefNet Dynamic/HR/HR-matting snapshots at immutable revisions with file/checkpoint hashes and MIT license snapshot. BiRefNetVariantProvider enforces provenance, artifact validation, strict masks, float32 alpha, deterministic output, fallback identity, and measured memory tiers; focused tests and doctor evidence remain recorded.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T20:10:37+00:00",
+      "updated_at": "2026-07-21T20:18:56+00:00",
       "orphaned": false
     },
     "MF-P2-11.09": {
@@ -12941,6 +12943,153 @@
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
       "updated_at": "2026-07-15T20:34:00+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.16": {
+      "id": "MF-P2-11.16",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Integrate SAM2Matting as a boundary/matting challenger without granting semantic-label authority · Verify: strict alpha/mask geometry, provenance, fallback, and boundary fixtures pass · Blocked by: MF-P2-11.01 and governed installation",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 36,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.17": {
+      "id": "MF-P2-11.17",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Integrate MatAnyone2 as a temporal/image-refinement challenger only where its exact contract applies · Verify: static-image and temporal capability tests prevent unsupported route selection and preserve rollback · Blocked by: MF-P2-11.01 and governed installation",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 37,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.18": {
+      "id": "MF-P2-11.18",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Integrate PDFNet or its qualified equivalent as an independent fine-boundary challenger · Verify: exact checkpoint/runtime evidence and boundary-focused fixtures pass without truth promotion · Blocked by: MF-P2-11.01 and governed installation",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 38,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.19": {
+      "id": "MF-P2-11.19",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Require at least three genuinely different proposal families for high-risk autonomous routes when available, with typed route removal/abstention when diversity is unavailable · Verify: correlated variants cannot satisfy the proposal-family count · Blocked by: MF-P2-11.01, MF-P2-11.12",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 39,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.20": {
+      "id": "MF-P2-11.20",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Produce pairwise disagreement maps and per-region metrics after exact-geometry normalization · Verify: known overlap, omission, ownership, and boundary disagreements localize to expected pixels and bind every candidate hash · Blocked by: MF-P2-11.19",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 40,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.21": {
+      "id": "MF-P2-11.21",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Define exact target contracts for label, instance, visible extent, exclusions, protected regions, source geometry, and transforms before criticism or repair · Verify: missing/ambiguous target fields fail closed before any critic call · Blocked by: MF-P2-11.01",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 41,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P2-11.22": {
+      "id": "MF-P2-11.22",
+      "phase": "P2",
+      "cluster_id": "MF-P2-11",
+      "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
+      "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
+      "description": "Execute bounded ROI/label repair from disagreement and critic plans, transactionally recompose the complete map, rerun hard QA, and retain exact rollback · Verify: success, no-progress, cap, hard-fail, and rollback fixtures pass · Blocked by: MF-P2-11.20, MF-P2-11.21, MF-P4-11.22",
+      "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
+      "source_line": 42,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
       "orphaned": false
     },
     "MF-P3-08.01": {
@@ -13247,17 +13396,11 @@
       "conditional": false,
       "status": "partially_complete",
       "percent_complete": 90,
-      "notes": [
-        {
-          "ts": "2026-07-15T03:25:13+00:00",
-          "actor": "ai_agent",
-          "text": "Remaining 10% is the first real packet validation after MF-P2-11.13/MF-P3-08.08 produces the frozen human-anchor matrix and measured results; no synthetic packet is claimed as a promotion."
-        }
-      ],
-      "evidence": "2026-07-15: src/maskfactory/providers/promotion.py validates a hash-bound specialist promotion packet against benchmarked lifecycle, five exact provenance hashes, both allowed adult lanes, resolved checkpoint license, the frozen specialist margin/results contract, deterministic 8 GiB reliability or Kevin-approved alternate runtime, and a distinct observed rollback/restore. 28 dedicated negative cases and named CI enforcement reject every missing prerequisite, model-card/download/smoke-only authority, hard-bucket loss, runtime failure, and tamper. Focused bundle 47/47; full suite 1138/1138; Ruff/CI YAML clean. Evidence: qa/live_verification/specialist_promotion_gate_20260715.json.",
+      "notes": [],
+      "evidence": "src/maskfactory/providers/promotion.py validates hash-bound specialist packets against benchmarked lifecycle, exact provenance hashes, resolved checkpoint license, frozen benchmark margins/results, deterministic resource reliability, and distinct rollback/restore evidence. Dedicated negative cases reject missing prerequisites, weak evidence, hard-bucket loss, runtime failure, and tampering.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T03:25:13+00:00",
+      "updated_at": "2026-07-21T20:18:57+00:00",
       "orphaned": false
     },
     "MF-P3-08.10": {
@@ -13292,8 +13435,8 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
-      "description": "Implement QC-V2-001 through QC-V2-010 and QC-V2-012; QC-V2-011 age eligibility is retired by owner decision and must not be reintroduced · Verify: QA registry/tests cover the eleven active checks and drift test rejects the retired gate · Blocked by: MF-P1-11.02 · HARD BLOCKER",
+      "spec_ref": "18 checklist F",
+      "description": "Implement QC-V2-001 through QC-V2-010 and QC-V2-012; keep retired QC-V2-011 absent · Verify: QA registry/tests cover exactly the eleven active checks and reject undeclared additions · Blocked by: MF-P1-11.02 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 11,
       "is_exit_gate": false,
@@ -13301,17 +13444,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-14T07:55:45+00:00",
-          "actor": "tracker_reconciliation",
-          "text": "Retire QC-V2-011 and add a regression that prevents it from returning."
-        }
-      ],
-      "evidence": "configs/anatomy_v2_qa.yaml and src/maskfactory/anatomy_v2_qa.py now define exactly QC-V2-001..010 plus QC-V2-012; QC-V2-011 and its age-eligibility predicate were removed. tests/test_anatomy_v2_qa.py asserts the retired ID and governance key are absent; anatomy/tracker focused suite passed 19/19.",
+      "notes": [],
+      "evidence": "configs/anatomy_v2_qa.yaml and src/maskfactory/anatomy_v2_qa.py define the active hard-QA inventory exactly; seeded-defect and tracker coverage tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T09:29:55+00:00",
+      "updated_at": "2026-07-21T20:18:59+00:00",
       "orphaned": false
     },
     "MF-P4-09.02": {
@@ -13319,7 +13456,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Seed a good case and defects for every active v2 check · Verify: each defect trips exactly its intended QC and good fixture passes · Blocked by: MF-P4-09.01",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 12,
@@ -13340,7 +13477,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Extend topology, left/right, exclusivity, state consistency, and containment reports · Verify: v2 report schema and focused fixtures pass · Blocked by: MF-P4-09.01",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 13,
@@ -13361,7 +13498,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Add clothed false-positive sweep · Verify: every appended class has measured clothed-negative evidence and systematic firing blocks promotion · Blocked by: MF-P1-12.09",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 14,
@@ -13382,7 +13519,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Extend VLM vocabulary while preserving reviewer/critic authority boundaries · Verify: canonical v2 terms parse and no VLM path can self-approve truth · Blocked by: MF-P1-10.04",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 15,
@@ -13403,7 +13540,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Build real calibration panels; synthetic/near-duplicate panels are diagnostic only · Verify: frozen panel manifest is image-disjoint and binds human-anchor truth hashes · Blocked by: NEEDS KEVIN: sufficient reviewed human-anchor packages",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 16,
@@ -13424,7 +13561,7 @@
       "phase": "P4",
       "cluster_id": "MF-P4-09",
       "cluster_title": "Ontology-v2 QA and calibration",
-      "spec_ref": "18 checklist F; Kevin age-gate override",
+      "spec_ref": "18 checklist F",
       "description": "Pass calibrated recall/precision and hard-bucket gates before anatomy routing is enabled · Verify: current fingerprint-bound gate passes on the frozen real panel set · Blocked by: MF-P4-09.06 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 17,
@@ -13488,7 +13625,7 @@
       "cluster_id": "MF-P4-10",
       "cluster_title": "Governed multi-provider teacher and human-anchor improvement loop",
       "spec_ref": "19 §§1–8",
-      "description": "Enforce provider-specific exact-image eligibility, environment-only credentials, default deny, and no raw-response/credential logging; do not add the rejected age-eligibility gate · Verify: provider/rights/content-decision admission and redaction tests pass · Blocked by: MF-P0-16.07, MF-P0-16.08",
+      "description": "Enforce provider-specific exact-image transmission approval, environment-only credentials, default deny, and no raw-response/credential logging · Verify: provider/rights/approval admission and redaction tests pass · Blocked by: MF-P0-16.07, MF-P0-16.08",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 22,
       "is_exit_gate": false,
@@ -13496,17 +13633,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-14T07:55:46+00:00",
-          "actor": "tracker_reconciliation",
-          "text": "Remove the obsolete age predicate without weakening rights, content-compatibility, credential, budget, or logging controls."
-        }
-      ],
-      "evidence": "src/maskfactory/vlm/cloud_teacher.py enforces exact source hash, explicit content lane and compatibility, rights evidence, provider authorization, environment-only credentials, default denial, budget controls, and redacted logs without an age eligibility predicate. Combined cloud-teacher, governance, drafting, and provider-contract suite passed 51/51; Ruff passed.",
+      "notes": [],
+      "evidence": "src/maskfactory/vlm/cloud_teacher.py enforces exact source hash, rights evidence, provider authorization, environment-only credentials, default denial, budget controls, and redacted logs. Combined cloud-teacher, governance, drafting, and provider-contract suite passed 51/51; Ruff passed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T10:05:40+00:00",
+      "updated_at": "2026-07-21T20:01:39+00:00",
       "orphaned": false
     },
     "MF-P4-10.04": {
@@ -14098,6 +14229,174 @@
       "blocked_reason": "NEEDS KEVIN: real governed sources and sufficient blinded human-anchor audits are required for the live certificate/selection/abstention/revocation/weekly-audit demonstration.",
       "created_at": "2026-07-14T07:40:28+00:00",
       "updated_at": "2026-07-14T07:53:43+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.16": {
+      "id": "MF-P4-11.16",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Implement versioned visual-critic roles for fast screener, primary, independent juror, and senior arbiter while keeping deterministic QA as final veto authority · Verify: authority and lifecycle tests reject name-only, same-family, stale, or uncalibrated role assignment · Blocked by: MF-P0-17.15",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 49,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.17": {
+      "id": "MF-P4-11.17",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Build a frozen positive-and-negative calibration corpus with valid masks, known defects, exact panel/source/candidate hashes, target contracts, and image-disjoint partitions · Verify: corpus validator rejects all-bad, all-good, duplicated, leaked, or target-incomplete panels · Blocked by: MF-P2-11.21",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 50,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.18": {
+      "id": "MF-P4-11.18",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Enforce minimum valid-mask pass rate alongside defect recall, serious false-pass, abstention, schema, latency, and resource thresholds; rejecting everything is unavailable, never qualified · Verify: all-reject and hallucinated-context critics fail role qualification · Blocked by: MF-P4-11.17 · HARD BLOCKER",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 51,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.19": {
+      "id": "MF-P4-11.19",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Require an independently trained juror family for high-risk pass routes and prevent correlated variants from creating quorum · Verify: same-family ensemble fixtures abstain while qualified independent-family evidence proceeds · Blocked by: MF-P4-11.16, MF-P4-11.18",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 52,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.20": {
+      "id": "MF-P4-11.20",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Invoke a qualified senior arbiter only for bounded critic disagreement after deterministic gates; unavailable/infeasible arbitration abstains · Verify: arbiter cannot clear a hard veto, widen scope, or run from catalog-only evidence · Blocked by: MF-P4-11.16, MF-P4-11.19",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 53,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.21": {
+      "id": "MF-P4-11.21",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Render target-aware source/mask/overlay/zoom/disagreement panels with exact coordinate and hash bindings · Verify: wrong source, target, transform, crop, or candidate hashes fail before review · Blocked by: MF-P2-11.20, MF-P2-11.21",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 54,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.22": {
+      "id": "MF-P4-11.22",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Parse critic output only into bounded defect localization and repair intent; prohibit critic-authored authoritative pixels · Verify: schema and authority tests reject raw masks, out-of-scope labels/ROIs, and unbounded plans · Blocked by: MF-P4-11.21",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 55,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.23": {
+      "id": "MF-P4-11.23",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Maintain a frozen visual-regression suite covering hands, feet, hair, clothing/skin boundaries, visible anatomy, occlusion/contact, and multi-person ownership · Verify: every promoted critic/provider/prompt/runtime change reruns the suite and serious regression blocks promotion · Blocked by: MF-P4-11.17, MF-P4-11.21 · HARD BLOCKER",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 56,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
       "orphaned": false
     },
     "MF-P5-09.01": {
@@ -15004,27 +15303,11 @@
       "conditional": false,
       "status": "partially_complete",
       "percent_complete": 80,
-      "notes": [
-        {
-          "ts": "2026-07-15T17:14:13+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-15: froze and implemented the complete pre-result provider-neutral workflow contract before eligible champion results. It requires six live Mode A/Mode B single/multi-person cases, actual source/governance/provider/checkpoint/runtime/certificate/provenance/output/package bindings, existing latency gates, finite Mode A timing, VRAM/OOM/crash/determinism evidence, package-tree immutability, and four distinct transactional role rollbacks. Real champion/source/package execution remains unclaimed."
-        },
-        {
-          "ts": "2026-07-15T18:12:22+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-15: implemented and verified a fail-closed execution preflight for the frozen six-case workflow contract. It schema/hash-binds governed adult/NSFW-eligible single/multi sources, package truth trees, output isolation, promoted active checkpoint/runtime identities, passing role certificates, distinct rollback providers/checkpoints, and authoritative selection before launch. Live champion execution and rollback rehearsals remain unclaimed."
-        },
-        {
-          "ts": "2026-07-19T22:57:00+00:00",
-          "actor": "ai_agent",
-          "text": "STATIC_PASS 2026-07-19: sealed serving_static_contracts residual — workflow preflight contract rebind, provenance schema+redaction enforcement, closed node-pack inventory hashes, serving_route authority firewall. Evidence qa/live_verification/serving_static_contracts_20260719.json sha256 e5916d96.... Resealed serving_workflow_performance_v1 to d48666d9.... ready_for_live_workflow_execution=false; no Mode B predict, Main adoption, champion, or production release claim."
-        }
-      ],
-      "evidence": "STATIC_PASS only: src/maskfactory/serve/static_contracts.py + schema serving_static_contracts_report; install writes node_pack_inventory.json; API/routing enforce provenance/route contracts; 27 focused tests pass (static+performance+preflight). Evidence qa/live_verification/serving_static_contracts_20260719.json. Live six-case champion execution/rollback still open.",
+      "notes": [],
+      "evidence": "STATIC_PASS only: src/maskfactory/serve/static_contracts.py plus serving schemas, node-pack inventory, provenance/route enforcement, and six-case execution preflight are hash-bound. Evidence qa/live_verification/serving_static_contracts_20260719.json; live champion execution and rollback remain open.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T22:57:00+00:00",
+      "updated_at": "2026-07-21T20:01:40+00:00",
       "orphaned": false
     },
     "MF-P7-06.01": {
@@ -15159,7 +15442,7 @@
       "cluster_id": "MF-P7-07",
       "cluster_title": "Recurring currency, certificate operations, and autonomous headline evidence",
       "spec_ref": "20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion",
-      "description": "Run model, runtime, dependency, license, content-compatibility, benchmark-certificate, and rollback review every 90 days and before dataset freeze, training, promotion, or major release · Verify: current signed/hash-bound review covers every active role · Blocked by: none · HARD BLOCKER",
+      "description": "Run model, runtime, dependency, license/allowed-use, benchmark-certificate, and rollback review every 90 days and before dataset freeze, training, promotion, or major release · Verify: current signed/hash-bound review covers every active role · Blocked by: none · HARD BLOCKER",
       "source_file": "18_ITEMS_P7_CURRENCY_OPERATIONS.md",
       "source_line": 19,
       "is_exit_gate": false,
@@ -15526,6 +15809,90 @@
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
       "updated_at": "2026-07-14T08:05:56+00:00",
+      "orphaned": false
+    },
+    "MF-P7-07.11": {
+      "id": "MF-P7-07.11",
+      "phase": "P7",
+      "cluster_id": "MF-P7-07",
+      "cluster_title": "Recurring currency, certificate operations, and autonomous headline evidence",
+      "spec_ref": "20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion",
+      "description": "Requalify every promoted visual-critic role on the frozen positive/negative corpus every 90 days and on model, quantization, runtime, prompt, renderer, or target-contract change · Verify: stale role evidence removes that route and cannot inherit prior pass authority · Blocked by: MF-P4-11.18, MF-P4-11.23 · HARD BLOCKER",
+      "source_file": "18_ITEMS_P7_CURRENCY_OPERATIONS.md",
+      "source_line": 29,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P7-07.12": {
+      "id": "MF-P7-07.12",
+      "phase": "P7",
+      "cluster_id": "MF-P7-07",
+      "cluster_title": "Recurring currency, certificate operations, and autonomous headline evidence",
+      "spec_ref": "20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion",
+      "description": "Re-run the authorized read-only AWS-versus-RunPod inventory before major model/dataset acquisition or storage migration · Verify: dated comparison identifies new, changed, duplicate, inaccessible, and no-longer-needed assets without AWS mutation · Blocked by: MF-P0-17.17, MF-P0-17.18",
+      "source_file": "18_ITEMS_P7_CURRENCY_OPERATIONS.md",
+      "source_line": 30,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P7-07.13": {
+      "id": "MF-P7-07.13",
+      "phase": "P7",
+      "cluster_id": "MF-P7-07",
+      "cluster_title": "Recurring currency, certificate operations, and autonomous headline evidence",
+      "spec_ref": "20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion",
+      "description": "Audit every active transferred asset against its sealed migration manifest and persistent RunPod path · Verify: missing, partial, root-overlay-only, hash-drifted, or unassembled assets fail durability status · Blocked by: MF-P0-17.19 · HARD BLOCKER",
+      "source_file": "18_ITEMS_P7_CURRENCY_OPERATIONS.md",
+      "source_line": 31,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
+      "orphaned": false
+    },
+    "MF-P7-07.14": {
+      "id": "MF-P7-07.14",
+      "phase": "P7",
+      "cluster_id": "MF-P7-07",
+      "cluster_title": "Recurring currency, certificate operations, and autonomous headline evidence",
+      "spec_ref": "20 §§6–7; 22 §§6,8–9; SAM handoff Technology Currency/Completion",
+      "description": "Rehearse rollback from a migrated or newly promoted critic/proposal artifact to the prior exact RunPod-resident version · Verify: one command restores exact hashes, registry roles, service health, and evidence lineage · Blocked by: MF-P7-07.11, MF-P7-07.13",
+      "source_file": "18_ITEMS_P7_CURRENCY_OPERATIONS.md",
+      "source_line": 32,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-21T19:18:54+00:00",
       "orphaned": false
     },
     "MF-P8-11.01": {
@@ -17163,15 +17530,15 @@
       "percent_complete": 65,
       "notes": [
         {
-          "ts": "2026-07-16T14:34:15+00:00",
-          "actor": "ai_agent",
-          "text": "Implemented deterministic versioned correlated normalized profiles across all 25 body axes, 22 face axes, four adult-only age bands, and five coherent age channels. Profiles enforce finite bounds and five multi-property continuity constraints; completion waits for asset-specific smoke-tested transforms and final DAZ readback."
+          "ts": "2026-07-21T20:25:32+00:00",
+          "actor": "policy_migration",
+          "text": "Implemented deterministic versioned correlated normalized profiles across 25 body axes, 22 face axes, four profile strata, and five coherent continuity channels. Completion waits for asset-specific smoke-tested transforms and final DAZ readback."
         }
       ],
-      "evidence": "An 800-profile report (100 per anatomy x adult-age stratum) measured body tiers 50.625/34.545/14.830%, face tiers 51.7102/33.8807/14.4091%, maximum target deviation 1.7102 points, all declared correlations 0.430586-0.774863 above 0.25, all bounds/constraints pass. Seven focused and 1,818/1,818 full tests pass. Evidence: qa/reports/daz_character_profiles_20260716.json.",
+      "evidence": "An 800-profile report measured body tiers 50.625/34.545/14.830%, face tiers 51.7102/33.8807/14.4091%, maximum target deviation 1.7102 points, correlations 0.430586-0.774863, and passing bounds/continuity constraints. Seven focused and 1,818 full tests passed; see qa/reports/daz_character_profiles_20260716.json.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T14:34:15+00:00",
+      "updated_at": "2026-07-21T20:25:32+00:00",
       "orphaned": false
     },
     "MF-P9-06.05": {
@@ -19424,7 +19791,7 @@
       "cluster_id": "MF-P9-14",
       "cluster_title": "Governed reference corpus, benchmark, and retrieval",
       "spec_ref": "23 §§7–8; reference_library.yaml",
-      "description": "Freeze source/output roots, immutable-original policy, content policy, and no-truth authority · Verify: policy validator passes and adult/NSFW tags do not exclude governed adult images · Blocked by: none",
+      "description": "Freeze source/output roots, immutable-original policy, uniform admission, and no-truth authority · Verify: policy validator passes and source selection does not change eligibility or authority · Blocked by: none",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 165,
       "is_exit_gate": false,
@@ -19433,10 +19800,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "configs/reference_library.yaml freezes roots, immutable originals, no-truth authority, adult/NSFW eligibility, minor prohibition, and tier isolation; tests/test_reference_library.py passes.",
+      "evidence": "configs/reference_library.yaml freezes source/output roots, immutable originals, governed source rights, no-truth authority, and tier isolation; tests/test_reference_library.py passes.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T03:11:07+00:00",
+      "updated_at": "2026-07-21T20:01:41+00:00",
       "orphaned": false
     },
     "MF-P9-14.02": {

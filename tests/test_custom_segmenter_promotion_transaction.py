@@ -30,7 +30,7 @@ from maskfactory.training.promotion_policy import (
     load_custom_segmenter_margin_manifest,
 )
 from maskfactory.validation import validate_document
-from registry_helpers import ALLOWED_CONTENT, governed_file_model, governed_registry
+from registry_helpers import governed_file_model, governed_registry
 
 REAL_MATRIX_BUNDLE_LOADER = matrix_promotion.load_and_verify_matrix_promotion_bundle
 
@@ -111,7 +111,6 @@ def _certificate(candidate_hash: str) -> tuple[dict, dict]:
         "target_role": "custom_segmenter",
         "lifecycle_state": "benchmarked",
         "identity_hashes": identities,
-        "content_compatibility": dict(ALLOWED_CONTENT),
         "license_gate": {"verify_license": False, "checkpoint_decision": "allowed"},
         "benchmark_results": results,
         "rollback_evidence": {

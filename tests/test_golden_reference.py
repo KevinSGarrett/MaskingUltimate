@@ -130,8 +130,6 @@ def test_reference_cloud_benchmark_runs_each_provider_in_shadow(tmp_path: Path):
                 "images": {
                     manifest["image_id"]: {
                         "source_sha256": sha256_file(source_root / "Original.png"),
-                        "content_lane": "general",
-                        "content_compatibility": "allowed",
                         "rights_evidence": "test",
                         "approved_by": "kevin",
                         "approved_at": "2026-07-12T23:00:00Z",

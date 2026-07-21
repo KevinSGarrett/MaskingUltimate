@@ -268,7 +268,6 @@ def main() -> int:
         "fixture": {
             "path": FIXTURE.relative_to(ROOT).as_posix(),
             "sha256": _sha256(FIXTURE),
-            "adult_lane": "adult_nonexplicit_allowed",
             "rtmw_person_box_xyxy": bbox[0].tolist(),
         },
         "source": {

@@ -71,14 +71,6 @@ TRAINED_CANDIDATE_KEY = re.compile(r"^[a-z0-9][a-z0-9_-]{2,79}$")
 SmokeRunner = Callable[[Path, Path], dict[str, Any]]
 ServingSmokeRunner = Callable[[Path, Path, str, str], dict[str, Any]]
 _SMOKE_RUNNERS: dict[str, SmokeRunner] = {}
-_ALLOWED_CONTENT_COMPATIBILITY = {
-    "adult_nonexplicit": "allowed",
-    "consensual_explicit_adult": "allowed",
-}
-_UNCLEAR_CONTENT_COMPATIBILITY = {
-    "adult_nonexplicit": "unclear",
-    "consensual_explicit_adult": "unclear",
-}
 
 
 class ModelRegistryError(RuntimeError):
@@ -127,7 +119,6 @@ def _load_registry(path: Path) -> dict[str, Any]:
             "use_profile": USE_PROFILE,
             "distribution_allowed": False,
             "commercial_deployment": False,
-            "content_compatibility": dict(_ALLOWED_CONTENT_COMPATIBILITY),
             "models": [],
         }
     try:
@@ -515,7 +506,6 @@ def register_ollama_models(
                 else "manifest_linter"
             ),
             "lifecycle_state": "installed",
-            "content_compatibility": dict(_UNCLEAR_CONTENT_COMPATIBILITY),
             "license_review": {"status": "pending"},
             "managed": True,
             "manager": "ollama",
@@ -691,9 +681,6 @@ def fetch_models(
             "key": key,
             "role": source.get("role", "unspecified"),
             "lifecycle_state": "installed",
-            "content_compatibility": dict(
-                source.get("content_compatibility", _UNCLEAR_CONTENT_COMPATIBILITY)
-            ),
             "license_review": dict(source.get("license_review", {"status": "pending"})),
             "source_url": source["url"],
             "file": _relative_registry_path(target, models_root),
@@ -835,7 +822,6 @@ def resolve_registered_role_contract(
             "model_key": entry["key"],
             "role": entry["role"],
             "lifecycle_state": entry["lifecycle_state"],
-            "content_compatibility": dict(entry["content_compatibility"]),
             "license_eligibility": {
                 "status": (
                     license_review.get("status") if isinstance(license_review, dict) else "missing"
@@ -937,7 +923,6 @@ def register_training_candidate(
             "key": candidate_key,
             "role": candidate_role,
             "lifecycle_state": "installed",
-            "content_compatibility": dict(_ALLOWED_CONTENT_COMPATIBILITY),
             "license_review": {"status": "not_required"},
             "target_champion_role": artifact["target_champion_role"],
             "file": _relative_registry_path(destination / checkpoint.name, models_root_resolved),
@@ -1332,12 +1317,9 @@ def _promote_specialist_role_unlocked(
             "source_tree_sha256",
             "runtime_lock_sha256",
             "license_evidence_sha256",
-            "content_decision_sha256",
         )
     ):
         raise ModelRegistryError("specialist registry artifact hashes differ from signed packet")
-    if candidate.get("content_compatibility") != packet.get("content_compatibility"):
-        raise ModelRegistryError("specialist registry content decision differs from signed packet")
     resolve_registered_model(candidate_key, registry_path=registry_path, models_root=models_root)
     _validate_serving_champion_metadata(candidate, role=role, models_root=models_root)
     _validate_promotion_certificate(candidate, role=role)

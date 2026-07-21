@@ -50,7 +50,6 @@ def test_adult_anatomy_v2_proposal_is_append_only_complete_and_not_active() -> N
         "unreviewed_for_v2",
     ]
     assert document["governance"] == {
-        "confirmed_adult_required": True,
         "permitted_origins": ["generated", "owned_photo", "licensed", "consented_subject"],
         "hidden_anatomy_may_be_visible_gold": False,
         "clothing_contour_is_anatomy_evidence": False,

@@ -78,7 +78,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "660d0eb3f6bd00a1722f2fb5dfa2a2f1700e61480c484c96e351ebd62e985a17"},
+        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8"},
         {"kind": "evidence", "path": "qa/live_verification/eomt_dinov3_runtime_20260715.json", "sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"}
       ]
     },
@@ -90,7 +90,7 @@
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/rtm_pose.lock.json", "sha256": "f9f1edae8ab4159ac0226a137151da4da775d9f6a72ce188405ad07fb81b5e12"},
+        {"kind": "lock", "path": "env/rtm_pose.lock.json", "sha256": "efc3af77b9a5b717984b475ea5303aa4d9a6581b75eb8b5b936f63544e774bce"},
         {"kind": "evidence", "path": "qa/live_verification/rtm_pose_runtime_20260714.json", "sha256": "e94c81a4cc28772fdf5a6449a637e61feab5d898b3cac92d1de76e307690483e"}
       ]
     },
@@ -107,5 +107,5 @@
       ]
     }
   ],
-  "manifest_sha256": "4a6df9d7a038ae9ce76b0f69a7b69b8c15f0f32322d5bde4a7ca98d6c9ef417d"
+  "manifest_sha256": "af884dd08b1fd6fe1cf76e97497354347f7f5d6e63d9a793c56053b7f90f21a2"
 }

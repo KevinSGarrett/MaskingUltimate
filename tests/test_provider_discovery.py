@@ -59,10 +59,6 @@ def test_discovery_import_is_planned_only_and_preserves_roles_and_certificates(
     updated = yaml.safe_load(external.read_text(encoding="utf-8"))
     assert updated["providers"]["future_segmenter"]["lifecycle_state"] == "planned"
     assert updated["providers"]["future_segmenter"]["verify_license"] is True
-    assert updated["providers"]["future_segmenter"]["content_compatibility"] == {
-        "adult_nonexplicit": "unclear",
-        "consensual_explicit_adult": "unclear",
-    }
     assert {
         key: value for key, value in updated["providers"].items() if key != "future_segmenter"
     } == original["providers"]

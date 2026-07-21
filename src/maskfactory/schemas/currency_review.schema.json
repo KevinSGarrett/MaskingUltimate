@@ -68,21 +68,12 @@
   },
   "$defs": {
     "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "compatibility": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["adult_nonexplicit", "consensual_explicit_adult"],
-      "properties": {
-        "adult_nonexplicit": { "enum": ["allowed", "prohibited", "unclear"] },
-        "consensual_explicit_adult": { "enum": ["allowed", "prohibited", "unclear"] }
-      }
-    },
     "roleReview": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "role", "provider_alias", "registry", "authority_key", "lifecycle_state",
-        "artifact_sha256", "runtime_identity", "content_compatibility", "license_status",
+        "artifact_sha256", "runtime_identity", "license_status",
         "benchmark_certificate_sha256", "benchmark_issued_at", "rollback_provider",
         "rollback_evidence_sha256", "rollback_tested_at", "findings", "status"
       ],
@@ -94,7 +85,6 @@
         "lifecycle_state": { "type": ["string", "null"] },
         "artifact_sha256": { "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
         "runtime_identity": { "type": ["string", "null"] },
-        "content_compatibility": { "oneOf": [{ "$ref": "#/$defs/compatibility" }, { "type": "null" }] },
         "license_status": { "type": "string", "minLength": 1 },
         "benchmark_certificate_sha256": { "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
         "benchmark_issued_at": { "type": ["string", "null"], "format": "date-time" },

@@ -63,11 +63,6 @@ def _valid_packet() -> tuple[dict, dict]:
                 "checkpoint_sha256": _sha("checkpoint"),
                 "runtime_lock_sha256": _sha("runtime"),
                 "license_evidence_sha256": _sha("license"),
-                "content_decision_sha256": _sha("content"),
-            },
-            "content_compatibility": {
-                "adult_nonexplicit": "allowed",
-                "consensual_explicit_adult": "allowed",
             },
             "license_gate": {
                 "verify_license": False,
@@ -139,7 +134,6 @@ def test_model_card_download_and_smoke_alone_cannot_promote() -> None:
     "field",
     [
         "identity_hashes",
-        "content_compatibility",
         "license_gate",
         "benchmark_results",
         "runtime_reliability",
@@ -161,7 +155,6 @@ def test_missing_promotion_prerequisite_is_rejected(field: str) -> None:
             "checkpoint_sha256",
             "runtime_lock_sha256",
             "license_evidence_sha256",
-            "content_decision_sha256",
         }
     ),
 )
@@ -184,7 +177,6 @@ def test_installed_but_unbenchmarked_candidate_is_rejected() -> None:
 @pytest.mark.parametrize(
     ("path", "value", "message"),
     [
-        (("content_compatibility", "consensual_explicit_adult"), "prohibited", "not allowed"),
         (("license_gate", "verify_license"), True, "unresolved"),
         (("license_gate", "checkpoint_decision"), "unclear", "unresolved"),
         (("runtime_reliability", "deterministic"), False, "not reliable"),
@@ -200,7 +192,7 @@ def test_installed_but_unbenchmarked_candidate_is_rejected() -> None:
         (("rollback_evidence", "result"), "fail", "did not pass"),
     ],
 )
-def test_failed_license_content_runtime_or_rollback_gate_is_rejected(
+def test_failed_license_runtime_or_rollback_gate_is_rejected(
     path: tuple[str, str], value: object, message: str
 ) -> None:
     packet, manifest = _valid_packet()

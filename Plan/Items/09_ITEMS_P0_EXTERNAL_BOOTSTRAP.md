@@ -30,8 +30,8 @@ Goal: use already-built datasets, models, and Civitai workflows to seed MaskFact
 - [ ] MF-P0-13.03 Generate sample overlays for at least 5 face-source masks and 5 body-source masks to verify source-mask alignment before training use.
 - [ ] MF-P0-13.04 Record license/provenance status for every MaskedWarehouse source before any converted mask enters fixtures, training, or gold package workflows.
 
-## MF-P0-14 - Adult-inclusive Civitai body-resource intake (spec: 16, Civitai README)
-- [ ] MF-P0-14.01 Classify every adult/NSFW-labeled Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.
+## MF-P0-14 - Content-neutral Civitai body-resource intake (spec: 16, Civitai README)
+- [ ] MF-P0-14.01 Classify every Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.
 - [ ] MF-P0-14.02 Register usable auxiliary detector models for shoes/footwear, feet, hair, lips, socks, hands, face bands, armpits, nails, mouth, and any manually supplied rear/accessory/body detectors with hash, path, version, and install target.
-- [ ] MF-P0-14.03 Build a pose/control stress-fixture list from adult OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.
-- [ ] MF-P0-14.04 Verify adult/NSFW Civitai assets are eligible for training data and may seed human-reviewed gold once provenance, license, adult-age/consent status, allowed use, intake, annotation, and QA gates pass.
+- [ ] MF-P0-14.03 Build a pose/control stress-fixture list from OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.
+- [ ] MF-P0-14.04 Verify one uniform admission path governed by provenance, license, allowed use, annotation, QA, and authority.

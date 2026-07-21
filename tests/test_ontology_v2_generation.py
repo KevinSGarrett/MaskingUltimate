@@ -29,7 +29,6 @@ def test_v2_generator_is_append_only_and_inactive() -> None:
     assert [label_id for label_id, _ in v2_parts] == list(range(65))
     assert len(v2_parts) == 65
     assert document["visibility_state_aliases"] == {"fully_occluded": "occluded"}
-    assert document["governance"]["confirmed_adult_required"] is True
 
 
 def test_v2_boundary_swaps_derived_and_visualization_are_complete() -> None:

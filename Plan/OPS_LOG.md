@@ -11343,3 +11343,15 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Thirty-one combined panel/target/disagreement tests pass; Ruff and Black
   pass. Evidence:
   `qa/live_verification/target_aware_visual_panels_20260721.json`.
+
+## 2026-07-21 — Bounded visual repair intent
+
+- `MF-P4-11.22` reached `STATIC_PASS`. Closed critic output can express only
+  bounded defect boxes with exact panel citations and allowlisted repair
+  intent for the already-bound label/ROI.
+- Raw masks, pixels, tools, unknown fields, other labels, escaping ROIs or
+  points, unknown panel evidence, unbounded thresholds, and operation/time/
+  round overruns fail closed. Pass and abstain cannot carry repair work.
+- Nineteen combined parser/panel tests pass; Ruff and Black pass. The parser
+  sets critic pixel authority to false and only emits a canonical intent hash.
+  Evidence: `qa/live_verification/bounded_visual_repair_intent_20260721.json`.

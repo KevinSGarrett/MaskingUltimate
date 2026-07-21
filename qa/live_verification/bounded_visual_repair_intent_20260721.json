@@ -1,0 +1,27 @@
+{
+  "authority_claimed": false,
+  "critic_pixel_authority": false,
+  "focused_test_count": 19,
+  "focused_tests_status": "PASS",
+  "recorded_at": "2026-07-21T23:13:05.8138235Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/repair_intent.py": "e847f57a14814064b3a443b7f7052f17e5ecb779ea660af287641352a54bb68c",
+    "tests/test_visual_critic_repair_intent.py": "99a65c3f7f3ee95227f3b862b95941fc69054ecb7cf46a1b22ff8281e1f88cf6"
+  },
+  "status": "STATIC_PASS",
+  "verified_rejections": [
+    "raw_mask",
+    "raw_pixels",
+    "tool_call",
+    "out_of_scope_label",
+    "out_of_scope_roi",
+    "unknown_panel_citation",
+    "unbounded_operations",
+    "unbounded_rounds",
+    "unbounded_time",
+    "unbounded_threshold",
+    "target_hash_drift",
+    "repairs_on_pass_or_abstain"
+  ]
+}

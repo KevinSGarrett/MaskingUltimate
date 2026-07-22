@@ -1,8 +1,9 @@
 """Sealed residual-blocker inventory for unfinished tracker items.
 
 Classifies open / partially_complete / blocked items that remain after host-side
-STATIC binders into non-delegable residual classes (Kevin CVAT, AWAITING_MAIN,
-disk-heavy corpus, live DAZ/GPU/WSL, human-anchor holdout, etc.).
+STATIC binders into evidence-bound residual classes (optional Kevin CVAT,
+autonomous authority evidence, AWAITING_MAIN, disk-heavy corpus, live
+DAZ/GPU/WSL, human-anchor holdout, etc.).
 
 Never claims doctor-green, gold, Main-complete, or PRODUCTION_EVIDENCE_PASS.
 Never closes items; inventory-only honesty artifact.
@@ -26,6 +27,7 @@ TRACKER_PATH = ROOT / "Plan" / "Tracker" / "tracker.json"
 UNFINISHED = frozenset({"open", "in_progress", "partially_complete", "blocked", "failed"})
 
 RESIDUAL_CLASSES = (
+    "AUTONOMOUS_AUTHORITY_EVIDENCE",
     "NEEDS_KEVIN_CVAT",
     "NEEDS_KEVIN_OTHER",
     "AWAITING_MAIN",
@@ -80,6 +82,14 @@ def classify_residual(item: dict[str, Any]) -> tuple[str, str]:
     item_id = str(item.get("id") or "")
     blocked = str(item.get("blocked_reason") or "")
 
+    if item_id in {"MF-P1-12.09", "MF-P1-12.10"}:
+        return (
+            "AUTONOMOUS_AUTHORITY_EVIDENCE",
+            "Requires current hash-bound per-record autonomous semantic, visual, "
+            "repair, and outcome evidence; routine Kevin/CVAT review is not a "
+            "completion dependency.",
+        )
+
     if (
         any(
             k in blob
@@ -98,8 +108,6 @@ def classify_residual(item: dict[str, Any]) -> tuple[str, str]:
         or item_id.startswith("MF-P1-08.")
         or item_id
         in {
-            "MF-P1-12.09",
-            "MF-P1-12.10",
             "MF-P1-EXIT",
             "MF-P4-08.08",
             "MF-P8-11.07",

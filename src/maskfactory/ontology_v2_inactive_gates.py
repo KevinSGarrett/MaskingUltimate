@@ -216,8 +216,9 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
 
     Fixture/matrix-probe rows may exercise coverage accounting. Only hash-bound
     MaskedWarehouse authority rows can move toward completion, Reference_Images rows
-    provide retrieval/coverage context, and this STATIC gate never sets
-    ``pilot_complete=true``.
+    provide retrieval/coverage context, and this static gate never substitutes for
+    the current per-record autonomous semantic and visual authority evidence needed
+    to set ``pilot_complete=true``.
     """
 
     if not isinstance(manifest, Mapping):
@@ -240,7 +241,8 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
     )
     if manifest.get("pilot_complete") is True:
         raise OntologyV2InactiveGateError(
-            "STATIC pilot gate refuses pilot_complete=true without Kevin live pilot"
+            "static pilot gate refuses pilot_complete=true without current per-record "
+            "autonomous semantic and visual authority evidence"
         )
     images = manifest.get("images")
     if not isinstance(images, Sequence) or isinstance(images, (str, bytes)):

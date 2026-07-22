@@ -54,6 +54,7 @@
         "PROVIDER_PROMOTION_LIVE"
       ],
       "properties": {
+        "AUTONOMOUS_AUTHORITY_EVIDENCE": { "type": "integer", "minimum": 0 },
         "NEEDS_KEVIN_CVAT": { "type": "integer", "minimum": 0 },
         "NEEDS_KEVIN_OTHER": { "type": "integer", "minimum": 0 },
         "AWAITING_MAIN": { "type": "integer", "minimum": 0 },
@@ -96,6 +97,7 @@
           "residual_class": {
             "type": "string",
             "enum": [
+              "AUTONOMOUS_AUTHORITY_EVIDENCE",
               "NEEDS_KEVIN_CVAT",
               "NEEDS_KEVIN_OTHER",
               "AWAITING_MAIN",

@@ -24,6 +24,17 @@ def test_classify_known_non_delegable_buckets() -> None:
     assert (
         classify_residual(
             {
+                "id": "MF-P1-12.09",
+                "description": "Build a real-image autonomous authority pilot",
+                "blocked_reason": "NEEDS KEVIN: obsolete pilot review wording",
+                "notes": [],
+            }
+        )[0]
+        == "AUTONOMOUS_AUTHORITY_EVIDENCE"
+    )
+    assert (
+        classify_residual(
+            {
                 "id": "MF-P1-08.02",
                 "description": "Annotate image 1 fully in CVAT",
                 "blocked_reason": "NEEDS KEVIN: CVAT annotation clicks",
@@ -68,6 +79,7 @@ def test_suite_seals_schema_valid_inventory() -> None:
     assert report["unfinished_item_count"] == len(report["items"])
     assert report["unfinished_item_count"] >= 1
     assert sum(report["residual_class_counts"].values()) == report["unfinished_item_count"]
+    assert report["residual_class_counts"]["AUTONOMOUS_AUTHORITY_EVIDENCE"] >= 1
     assert report["residual_class_counts"]["NEEDS_KEVIN_CVAT"] >= 1
     assert report["residual_class_counts"]["AWAITING_MAIN"] >= 1
     assert validate_document(report, "residual_blocker_inventory_report") == ()

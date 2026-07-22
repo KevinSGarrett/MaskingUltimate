@@ -12003,3 +12003,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   migration watcher, so the item is intentionally only partially complete.
   This transport grants no gold, release, champion, or production-mask
   authority.
+
+## 2026-07-22 - Ontology-v2 real-image authority-pilot selection
+
+- `MF-P1-12.09` advanced to 70% with a real, hash-bound 24-image selection:
+  20 polygon hard-QC candidates from six MaskedWarehouse datasets and four
+  retrieval/coverage images from the governed reference library. Every source
+  and split group is distinct, and every source encoded hash was reverified.
+- The manifest binds all ten appended anatomy classes and all nine required
+  visibility/applicability states through 90 target contracts. Existing source
+  evidence resolves only `visible` and `ambiguous_do_not_use`; seven states
+  remain open for qualified autonomous per-record semantic and visual evidence.
+- No external candidate or reference image was promoted: semantic-positive
+  count and mask-truth-authority count are both zero, `pilot_complete=false`,
+  and the active runtime ontology remains v1. Coarse and unsided source labels
+  cannot invent laterality or fine subparts.
+- Removed the obsolete automatic `NEEDS_KEVIN_CVAT` classification for
+  `MF-P1-12.09` and `.10`. Their remaining dependency is autonomous evidence;
+  optional human/CVAT review is not a completion requirement.
+- Evidence:
+  `qa/live_verification/ontology_v2_real_image_authority_pilot_20260722.json`.
+  Manifest self-seal:
+  `22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101`.
+  Sixty-four focused/adjacent tests, Ruff, Black, source rehash, tracker validation, and
+  manifest closed-field verification passed.

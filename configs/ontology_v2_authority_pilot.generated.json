@@ -1,0 +1,1736 @@
+{
+  "schema_version": "maskfactory.ontology_v2_authority_pilot.v1",
+  "artifact_type": "ontology_v2_real_image_authority_pilot",
+  "authority": "real_image_pilot_selection_no_mask_truth_or_gold_authority",
+  "ontology_version": "body_parts_v2",
+  "ontology_sha256": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
+  "active_runtime_ontology": "body_parts_v1",
+  "production_activation_performed": false,
+  "mandatory_human_anchor": false,
+  "pilot_complete": false,
+  "selection_status": "real_source_selection_complete_authority_resolution_open",
+  "source_lineage": {
+    "nude_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "nude_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+    "nude_record_count": 81910,
+    "hard_qc_records_path": "runtime_artifacts/nude_polygon_hard_qc_20260722_v9/records.jsonl",
+    "hard_qc_records_sha256": "fd9b16cd08f031bbc0d631f895764d23ca92d38fb27030fdeb1aad28530ce584",
+    "reference_inventory_summary_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/manifests/inventory_summary.json",
+    "reference_inventory_summary_sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259"
+  },
+  "image_count": 24,
+  "maskedwarehouse_image_count": 20,
+  "reference_image_count": 4,
+  "target_contract_count": 90,
+  "requested_states": [
+    "ambiguous_do_not_use",
+    "cropped_out",
+    "not_applicable",
+    "not_visible",
+    "occluded",
+    "occluded_by_clothing",
+    "partially_visible",
+    "unreviewed_for_v2",
+    "visible"
+  ],
+  "requested_appended_classes": [
+    "anus",
+    "glans_penis",
+    "left_areola",
+    "left_nipple",
+    "left_scrotal_region",
+    "penis_shaft",
+    "right_areola",
+    "right_nipple",
+    "right_scrotal_region",
+    "vulva"
+  ],
+  "resolved_states": [
+    "ambiguous_do_not_use",
+    "visible"
+  ],
+  "missing_resolved_states": [
+    "cropped_out",
+    "not_applicable",
+    "not_visible",
+    "occluded",
+    "occluded_by_clothing",
+    "partially_visible",
+    "unreviewed_for_v2"
+  ],
+  "semantic_positive_count": 0,
+  "images": [
+    {
+      "image_id": "pilot_1096584129e3547f79664b66",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
+      "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
+      "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nweud_v1",
+      "sample_id": "nude_75c9d7433ca6f4dae51b59c1",
+      "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "left_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_002ecf54c0f1dc24e17a8027",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
+      "source_encoded_sha256": "002ecf54c0f1dc24e17a802740955685a37a0566c35131dd79f31a63b2082342",
+      "source_decoded_pixel_sha256": "b862a92495101e6bd5eabddde32bffe08406b81458c9996547b511b4ea3d56b8",
+      "width": 1280,
+      "height": 1280,
+      "dataset_id": "roboflow_mange_v3",
+      "sample_id": "nude_f5031c9419c7577bbd11fb79",
+      "split_group_id": "nude_group_3f444a82e78bce66bb55d017",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_00bc9973de076d57ed61bb47",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
+      "source_encoded_sha256": "00bc9973de076d57ed61bb471ffdc11ea0fa1652ee9f45f76b0a147d5ee00e40",
+      "source_decoded_pixel_sha256": "7d610640a95f9249d10e5d9d0ff45bc8d744404b3fb96180a4ac10e29a31ab2d",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_mange_v2",
+      "sample_id": "nude_42bb180ef3abb4bc9d2f86e3",
+      "split_group_id": "nude_group_dc463a993ec4361373c1a412",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_01e1b30947582bd814703e50",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
+      "source_encoded_sha256": "01e1b30947582bd814703e505fcdb71d34fd57635b167c07eb112f2aa7c61510",
+      "source_decoded_pixel_sha256": "16ce0d18804173b5d527f8988f102227ad7790e77f7ea6343e6adfaa1677992b",
+      "width": 768,
+      "height": 768,
+      "dataset_id": "roboflow_doujin_nsfw_detector_v8",
+      "sample_id": "nude_3d817d2e96c2747900623ee5",
+      "split_group_id": "nude_group_f59738151c3ae27f5726c7aa",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_02e69d18badc795d18256a7f",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
+      "source_encoded_sha256": "02e69d18badc795d18256a7f19c1534824128fb059d52f5a8bdeb41f61c5fafe",
+      "source_decoded_pixel_sha256": "b91751fa8b00fb0a2cb859c4868bfac85ee83b795a626223f04f0535c8bd7707",
+      "width": 512,
+      "height": 512,
+      "dataset_id": "roboflow_clip_05_v1",
+      "sample_id": "nude_5a3da16df8baf010e5765fb6",
+      "split_group_id": "nude_group_0000151d3dce15f0dcc79a6c",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_0cdf223a0c05b97655aa0be0",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
+      "source_encoded_sha256": "0cdf223a0c05b97655aa0be0cd212bd05268f1258c365cc3f24ea7576b7ab548",
+      "source_decoded_pixel_sha256": "7945129835042a13227d1a1dc57344ae1470f2c3406601aedabf64075b2fb514",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nsegnu_v1",
+      "sample_id": "nude_3d82502d1441a1209c4745e3",
+      "split_group_id": "nude_group_4b3818c122648e50ce7dd98f",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_116d2959f4c0db4f3fcb2852",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
+      "source_encoded_sha256": "116d2959f4c0db4f3fcb28525df775fc5497e8b9a34ec5ec318c91eae5dd8587",
+      "source_decoded_pixel_sha256": "4b0b533d5141919ddb32cfd5ce1012117d43b60c330f56a0c177a84ff5a3c694",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nweud_v1",
+      "sample_id": "nude_a96e53df452e6500352095ed",
+      "split_group_id": "nude_group_7816ab0277dba0bf7afddd3b",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "left_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_00488c4c64077691ee54afdf",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
+      "source_encoded_sha256": "00488c4c64077691ee54afdf3141765e02c76d8bbcd9283f24dbac8d56cb6e7d",
+      "source_decoded_pixel_sha256": "7b97b9183773fab8ba1ea6706ce0b8b228b6cfb3d59ad67126c7fcc78c69a2ad",
+      "width": 1280,
+      "height": 1280,
+      "dataset_id": "roboflow_mange_v3",
+      "sample_id": "nude_f51a96e3e04524b0f62a9dac",
+      "split_group_id": "nude_group_cd279be9762ec416e8234d96",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "vulva",
+          "requested_state": "visible",
+          "current_state": "visible",
+          "state_evidence_basis": "visible_external_anatomy_alias_polygon",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_00f088ea158e79defb94e0e3",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
+      "source_encoded_sha256": "00f088ea158e79defb94e0e3529d14d2c3edd0df8ae25ba859e41d670f23b141",
+      "source_decoded_pixel_sha256": "2a34917ca470c20e968633a3d2baaa01c7d6f5871f6c1bdb4d8b97ebcfb8f233",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_mange_v2",
+      "sample_id": "nude_03edbc9f3f28ac4f2405a31e",
+      "split_group_id": "nude_group_9f85d9e1bad4adeef6256677",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_235a016f8edddd58c40051df",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
+      "source_encoded_sha256": "235a016f8edddd58c40051dfe506e00ae47e80b2eff7bca733ce728978884980",
+      "source_decoded_pixel_sha256": "925defea287e5becfd814004531714ebff0af008a7d12b3935d18af9b249ab5c",
+      "width": 768,
+      "height": 768,
+      "dataset_id": "roboflow_doujin_nsfw_detector_v8",
+      "sample_id": "nude_fdf5c169d51a7d48284351a5",
+      "split_group_id": "nude_group_3e543d97fc8918afb056f307",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_18f4a50783cdcb90f123c9fc",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
+      "source_encoded_sha256": "18f4a50783cdcb90f123c9fc74c3e79d547c246d35c033cf6cb39eaa2347127a",
+      "source_decoded_pixel_sha256": "be743f88231f249416c0afd4ab25d46905b1b18a6eb29a21b77e6150b2001546",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nsegnu_v1",
+      "sample_id": "nude_cf140b86049c5e12cb01be7e",
+      "split_group_id": "nude_group_192d09c5bcfcf2170dab1757",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_56a7fab623ff7baaa423c286",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
+      "source_encoded_sha256": "56a7fab623ff7baaa423c286a82117889020816ac195794c4cb3a694c38014d1",
+      "source_decoded_pixel_sha256": "33d35d086bc6bde62cd37c3b7632a9a20eab34ac95a8647c2594d5ed4ddc797e",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nweud_v1",
+      "sample_id": "nude_a8cd48b01f8dd4b59e798f2d",
+      "split_group_id": "nude_group_0152622331730a447b6e7bde",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "left_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "anus",
+          "requested_state": "visible",
+          "current_state": "visible",
+          "state_evidence_basis": "exact_external_polygon_label",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "not_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_0367973fd14f50074a7ffe7f",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
+      "source_encoded_sha256": "0367973fd14f50074a7ffe7fa2b7dd35932c50a120957766ba88230c3ff1542a",
+      "source_decoded_pixel_sha256": "566b68ec94d838520d32092e2ba29cc617383c562d68c9e142d591bd7b4022a1",
+      "width": 1280,
+      "height": 1280,
+      "dataset_id": "roboflow_mange_v3",
+      "sample_id": "nude_62e26b5edbe951ed5778ecc0",
+      "split_group_id": "nude_group_ebef8d552bf89bfb19cbc0e0",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_05e50529b9b9c34e095eb35b",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
+      "source_encoded_sha256": "05e50529b9b9c34e095eb35bb1c1b5fdd0caf88ce6b756bf5df896faa78d6358",
+      "source_decoded_pixel_sha256": "4019da7a1a1ba79edcd8c6e25eea566f3ac03cb5e538b5ad406a0e280eb69dab",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_mange_v2",
+      "sample_id": "nude_fac42ba3a28d940f719b5347",
+      "split_group_id": "nude_group_1c10fcd1839214fa46464cc4",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_29aa1b87f21e61a6828af8e7",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
+      "source_encoded_sha256": "29aa1b87f21e61a6828af8e7a2d1ed29e9af8f4499153e62f77e2fb1a8ee564b",
+      "source_decoded_pixel_sha256": "c063d721a25ddbb28157e8b198aaeb2344ca0fd40c99f2be3404a47d5a0f3eeb",
+      "width": 768,
+      "height": 768,
+      "dataset_id": "roboflow_doujin_nsfw_detector_v8",
+      "sample_id": "nude_5a01195f9b218c5d60a9009a",
+      "split_group_id": "nude_group_2b1d69772a081947bd430797",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_1925650521381fb1a55a3d95",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
+      "source_encoded_sha256": "1925650521381fb1a55a3d95a4dbd8058f185c6f7d538ffab5d15ac1a7e6d7ea",
+      "source_decoded_pixel_sha256": "518bea51afde8b93be0211cd2fd709feb4cc430e46000bacb557a7d17006e8e5",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nsegnu_v1",
+      "sample_id": "nude_a8a77daf45de485426758c94",
+      "split_group_id": "nude_group_7659f9b0382b08b5f5d47b56",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "vulva",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "occluded_by_clothing",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_009c0787ece4012a52cb7569",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
+      "source_encoded_sha256": "009c0787ece4012a52cb7569179c4443b111c1bf6a9a8dd274973d2348410acc",
+      "source_decoded_pixel_sha256": "2c26974f8ae91e017e4f6c3e2cd9cee7e9e24677b40026351de4ff35170a163b",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_nweud_v1",
+      "sample_id": "nude_cb76f416635c40ad3619dce1",
+      "split_group_id": "nude_group_0952a9b55401863299571732",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "left_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_areola": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
+        },
+        "right_scrotal_region": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "ambiguous_do_not_use",
+          "state_evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": false
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_048944333321f631b3df20ae",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
+      "source_encoded_sha256": "048944333321f631b3df20ae01f897cbb35a6009995281c306e02c3849e6b389",
+      "source_decoded_pixel_sha256": "4df29b245f68115041114656db2d728967240510df1071536edd7b45c6c1456d",
+      "width": 1280,
+      "height": 1280,
+      "dataset_id": "roboflow_mange_v3",
+      "sample_id": "nude_1fb85fe8144c2a76c10034b1",
+      "split_group_id": "nude_group_545b908e95b7895efb9f10e2",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "ambiguous_do_not_use",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_073128d65126eda0ca8da1f0",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
+      "source_encoded_sha256": "073128d65126eda0ca8da1f0f432e9cc94abc9b47429b546ea9ead10f9131956",
+      "source_decoded_pixel_sha256": "c4b06055d48fc22ac76628b9788bcad8c1a3049d287d0c2a73fdb2bac48d8aa1",
+      "width": 640,
+      "height": 640,
+      "dataset_id": "roboflow_mange_v2",
+      "sample_id": "nude_a564d090007c264f116eef91",
+      "split_group_id": "nude_group_2004f560f33292cf54528478",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_2c0189418cc243182703bd6f",
+      "source_kind": "maskedwarehouse_external_candidate",
+      "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
+      "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
+      "source_encoded_sha256": "2c0189418cc243182703bd6fe52a92d90e584001fc0ba694b86aaba6e611cbc2",
+      "source_decoded_pixel_sha256": "c2e5f7c261e671a93ea4a53d20b045e4696f471bbb111530578d8f682de2afad",
+      "width": 768,
+      "height": 768,
+      "dataset_id": "roboflow_doujin_nsfw_detector_v8",
+      "sample_id": "nude_2f99941d8101a692139b7a7c",
+      "split_group_id": "nude_group_64f364e9a62c6c2274f12f2b",
+      "source_role": "polygon_external_supervision",
+      "source_authority": "external_annotation_unqualified",
+      "annotation_evidence_authority": "machine_hard_qc_candidate_only",
+      "mask_truth_authority": false,
+      "observed_semantics": {
+        "anus": {
+          "state": "visible",
+          "evidence_basis": "exact_external_polygon_label"
+        },
+        "glans_penis": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "left_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "penis_shaft": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "coarse_external_penis_polygon_cannot_invent_subpart"
+        },
+        "right_nipple": {
+          "state": "ambiguous_do_not_use",
+          "evidence_basis": "unsided_external_nipple_polygon_cannot_invent_laterality"
+        },
+        "vulva": {
+          "state": "visible",
+          "evidence_basis": "visible_external_anatomy_alias_polygon"
+        }
+      },
+      "target_contracts": [
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_nipple",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_00453ba6c3bc7e59c98b81d2",
+      "source_kind": "reference_library_coverage",
+      "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
+      "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
+      "source_encoded_sha256": "00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
+      "source_decoded_pixel_sha256": "6bcf2a6b5c0726fcdd705e3526f9dee3db5b444400bbf3c53b07918321436e95",
+      "width": 3456,
+      "height": 5184,
+      "dataset_id": "ultimate_masking_reference_images",
+      "sample_id": null,
+      "split_group_id": "reference_00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
+      "source_role": "retrieval_and_coverage_reference",
+      "source_authority": "reference_only_no_mask_truth",
+      "annotation_evidence_authority": "none",
+      "mask_truth_authority": false,
+      "retrieval_bucket_hint": "clothed__one",
+      "retrieval_hint_is_semantic_truth": false,
+      "observed_semantics": {},
+      "target_contracts": [
+        {
+          "canonical_label": "anus",
+          "requested_state": "partially_visible",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "vulva",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_scrotal_region",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_0037ba94c0e67e05b76ec773",
+      "source_kind": "reference_library_coverage",
+      "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
+      "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
+      "source_encoded_sha256": "0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
+      "source_decoded_pixel_sha256": "37e0259db9ae23db47c6b74a9a095edb4a95f3633286a2d8640e61c860489f88",
+      "width": 3333,
+      "height": 5000,
+      "dataset_id": "ultimate_masking_reference_images",
+      "sample_id": null,
+      "split_group_id": "reference_0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
+      "source_role": "retrieval_and_coverage_reference",
+      "source_authority": "reference_only_no_mask_truth",
+      "annotation_evidence_authority": "none",
+      "mask_truth_authority": false,
+      "retrieval_bucket_hint": "nude__one",
+      "retrieval_hint_is_semantic_truth": false,
+      "observed_semantics": {},
+      "target_contracts": [
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "penis_shaft",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "anus",
+          "requested_state": "not_applicable",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_0337c01dd65416589fda75bb",
+      "source_kind": "reference_library_coverage",
+      "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
+      "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
+      "source_encoded_sha256": "0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
+      "source_decoded_pixel_sha256": "7e22012492f581841e53407798b7fc7f0320c327ea336fd3e8f0cf6c632168c6",
+      "width": 5472,
+      "height": 3648,
+      "dataset_id": "ultimate_masking_reference_images",
+      "sample_id": null,
+      "split_group_id": "reference_0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
+      "source_role": "retrieval_and_coverage_reference",
+      "source_authority": "reference_only_no_mask_truth",
+      "annotation_evidence_authority": "none",
+      "mask_truth_authority": false,
+      "retrieval_bucket_hint": "mixed__two",
+      "retrieval_hint_is_semantic_truth": false,
+      "observed_semantics": {},
+      "target_contracts": [
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "glans_penis",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_areola",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    },
+    {
+      "image_id": "pilot_0042c1c8bd9c45083df258e6",
+      "source_kind": "reference_library_coverage",
+      "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
+      "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
+      "source_encoded_sha256": "0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
+      "source_decoded_pixel_sha256": "a8301c23bec7c20617248083c7f83420e6debbf327c863dd95057bebe6ceb48f",
+      "width": 2437,
+      "height": 3000,
+      "dataset_id": "ultimate_masking_reference_images",
+      "sample_id": null,
+      "split_group_id": "reference_0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
+      "source_role": "retrieval_and_coverage_reference",
+      "source_authority": "reference_only_no_mask_truth",
+      "annotation_evidence_authority": "none",
+      "mask_truth_authority": false,
+      "retrieval_bucket_hint": "underwear_swimwear__one",
+      "retrieval_hint_is_semantic_truth": false,
+      "observed_semantics": {},
+      "target_contracts": [
+        {
+          "canonical_label": "left_nipple",
+          "requested_state": "occluded",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "left_scrotal_region",
+          "requested_state": "cropped_out",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        },
+        {
+          "canonical_label": "right_areola",
+          "requested_state": "unreviewed_for_v2",
+          "current_state": "unreviewed_for_v2",
+          "state_evidence_basis": "qualified_autonomous_visual_resolution_pending",
+          "semantic_positive_authority": false,
+          "qualified_visual_resolution_required": true
+        }
+      ]
+    }
+  ],
+  "claim_limits": [
+    "external polygon evidence remains machine hard-QC candidate evidence, not gold",
+    "coarse or unsided source labels never create fine anatomy or laterality",
+    "reference-library bucket names are retrieval hints only and grant no semantic or pixel truth",
+    "requested coverage is not resolved authority",
+    "the pilot remains incomplete until qualified autonomous evidence resolves every required state and applicable class"
+  ],
+  "self_sha256": "22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101"
+}

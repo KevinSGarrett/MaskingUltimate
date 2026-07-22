@@ -11929,3 +11929,25 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   remain open.
 - Evidence:
   `qa/live_verification/nude_civitai_reference_box_prompt_batch_implementation_20260722.json`.
+
+## 2026-07-22 - Reference-person draft mask hard-QA veto layer
+
+- Added eight deterministic blocking checks after source identity: artifact
+  integrity, strict binary PNG geometry, pixel identity, prompt containment and
+  polarity, collapsed-mask area, topology, duplicate person masks, and exact
+  zero cross-person overlap.
+- A source or mask defect now fails only its record and allows unrelated shard
+  records to continue. Structural or authority tamper still fails the sealed
+  provider batch itself. Hard-QA policy overrides may be stricter but cannot
+  weaken any default threshold.
+- Added provider-specific, idempotent hard-QA queue receipts that advance no
+  terminal authority, plus an integrated runner option to emit hard-QA evidence
+  immediately after provider generation.
+- Seeded collapsed, overlapping, artifact-tampered, source-drifted,
+  authority-escalated, and policy-weakened negatives all fail closed. Validation:
+  242 focused/adjacent tests passed; Ruff, Black, and diff integrity passed.
+- No live mask passed this gate yet because shared GPU admission remains locally
+  unavailable; strict visual review, repair, qualification, and certification
+  therefore remain open.
+- Evidence:
+  `qa/live_verification/nude_civitai_reference_person_mask_hard_qc_implementation_20260722.json`.

@@ -21,6 +21,9 @@ from maskfactory.nude_box_mask_generation import (  # noqa: E402
     Sam2BoxPromptInteractiveSegmenter,
     generate_box_prompt_provider_batch,
 )
+from maskfactory.nude_reference_mask_hard_qc import (  # noqa: E402
+    run_reference_person_mask_hard_qc,
+)
 from maskfactory.providers.contracts import ProviderIdentity  # noqa: E402
 from maskfactory.providers.sam31_runtime import OfficialSam31Runtime  # noqa: E402
 from maskfactory.providers.sam31_shadow import Sam31InteractiveSegmenter  # noqa: E402
@@ -147,6 +150,7 @@ def main() -> None:
     parser.add_argument("--provider", choices=("sam2_1", "sam3_1"), required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--output-json", type=Path, required=True)
+    parser.add_argument("--hard-qc-json", type=Path)
     parser.add_argument("--sample-id", action="append")
     parser.add_argument("--runtime-fingerprint")
     parser.add_argument("--sam2-large-checkpoint", type=Path)
@@ -167,6 +171,14 @@ def main() -> None:
         sample_ids=args.sample_id,
     )
     _write_json_atomic(args.output_json, result)
+    hard_qc = None
+    if args.hard_qc_json is not None:
+        hard_qc = run_reference_person_mask_hard_qc(
+            result,
+            output_root=args.output_dir,
+            source_paths=source_paths,
+        )
+        _write_json_atomic(args.hard_qc_json, hard_qc)
     print(
         json.dumps(
             {
@@ -177,6 +189,11 @@ def main() -> None:
                 "status_counts": result["status_counts"],
                 "self_sha256": result["self_sha256"],
                 "output_json": str(args.output_json.resolve()),
+                "hard_qc_status_counts": hard_qc["status_counts"] if hard_qc else None,
+                "hard_qc_self_sha256": hard_qc["self_sha256"] if hard_qc else None,
+                "hard_qc_json": (
+                    str(args.hard_qc_json.resolve()) if args.hard_qc_json is not None else None
+                ),
             },
             sort_keys=True,
         )

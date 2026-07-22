@@ -247,6 +247,13 @@ def test_corrupt_artifact_and_correlated_families_fail_closed(tmp_path: Path):
     with pytest.raises(NudeBoxMaskGenerationError, match="artifact_hash_mismatch"):
         validate_box_prompt_provider_batch(first, output_root=roots[0])
 
+    authority_drift = json.loads(json.dumps(second))
+    authority_drift["records"][0]["candidates"][0]["production_mask_authority"] = True
+    body = {key: value for key, value in authority_drift.items() if key != "self_sha256"}
+    authority_drift["self_sha256"] = _sha(body)
+    with pytest.raises(NudeBoxMaskGenerationError, match="candidate_authority_invalid"):
+        validate_box_prompt_provider_batch(authority_drift, output_root=roots[1])
+
 
 def test_catalog_hash_and_source_hash_fail_closed(tmp_path: Path):
     catalog, paths = _fixture(tmp_path)

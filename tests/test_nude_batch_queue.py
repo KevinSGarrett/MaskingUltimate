@@ -24,6 +24,9 @@ from maskfactory.nude_record_qualification import (
     qualify_terminal_record,
     verify_complete_panel_evidence,
 )
+from maskfactory.nude_reference_mask_hard_qc import (
+    build_reference_mask_hard_qc_stage_receipt,
+)
 from maskfactory.providers.disagreement import binary_mask_sha256
 
 
@@ -528,6 +531,54 @@ def test_box_prompt_mask_stage_checkpoint_is_provider_specific_and_nonterminal(
     assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
     assert queue.summary(platform="runpod")["stage_evidence"] == {
         "box_prompt_mask_generation:sam2_1_large": 1
+    }
+
+
+def test_reference_mask_hard_qc_checkpoint_is_idempotent_and_nonterminal(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="hard-qc-worker")
+    assert lease is not None
+    provider = {
+        "provider_key": "sam2_1_large",
+        "role": "interactive_segmenter",
+        "model_family": "sam2",
+        "source_commit": "a" * 40,
+        "runtime_fingerprint": "b" * 64,
+        "contract_version": "1.0.0",
+    }
+    receipt = build_reference_mask_hard_qc_stage_receipt(
+        provider=provider,
+        provider_batch_sha256="c" * 64,
+        policy_sha256="d" * 64,
+        record={
+            "sample_id": "hard-qc-sample",
+            "source_sha256": "e" * 64,
+            "status": "pass",
+            "blockers": [],
+            "source_check": {"check_id": "NREF-QC-000", "passed": True},
+            "candidate_reports": [{"person_index": 0, "status": "pass"}],
+        },
+    )
+    receipt["sample_index"] = 0
+
+    first = queue.checkpoint_reference_mask_hard_qc(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    replay = queue.checkpoint_reference_mask_hard_qc(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+
+    assert first == {"inserted": 1, "retained": 0, "terminal_progress_advanced": False}
+    assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
+    assert queue.summary(platform="runpod")["stage_evidence"] == {
+        "reference_person_mask_hard_qc:sam2_1_large": 1
     }
 
 

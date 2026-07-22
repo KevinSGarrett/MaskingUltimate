@@ -420,14 +420,8 @@ def validate_box_prompt_provider_batch(
 ) -> dict[str, Any]:
     """Revalidate a provider batch, including every retained mask byte."""
 
-    if document.get("schema_version") != "maskfactory.nude_box_prompt_provider_batch.v1":
-        raise NudeBoxMaskGenerationError("provider_batch_schema_invalid")
-    body = {key: value for key, value in document.items() if key != "self_sha256"}
-    if document.get("self_sha256") != _canonical_sha256(body):
-        raise NudeBoxMaskGenerationError("provider_batch_hash_mismatch")
-    records = document.get("records")
-    if not isinstance(records, list) or len(records) != document.get("record_count"):
-        raise NudeBoxMaskGenerationError("provider_batch_records_invalid")
+    validated = validate_box_prompt_provider_batch_structure(document)
+    records = validated["records"]
     candidates = 0
     root = Path(output_root).resolve()
     for record in records:
@@ -447,8 +441,128 @@ def validate_box_prompt_provider_batch(
             if int(binary.sum()) != candidate.get("pixel_count"):
                 raise NudeBoxMaskGenerationError("provider_mask_pixel_count_mismatch")
             candidates += 1
-    if candidates != document.get("candidate_count"):
+    if candidates != validated.get("candidate_count"):
         raise NudeBoxMaskGenerationError("provider_batch_candidate_count_mismatch")
+    return validated
+
+
+def validate_box_prompt_provider_batch_structure(document: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate sealed metadata without reading candidate artifacts."""
+
+    if not isinstance(document, Mapping):
+        raise NudeBoxMaskGenerationError("provider_batch_invalid")
+    if document.get("schema_version") != "maskfactory.nude_box_prompt_provider_batch.v1":
+        raise NudeBoxMaskGenerationError("provider_batch_schema_invalid")
+    body = {key: value for key, value in document.items() if key != "self_sha256"}
+    if document.get("self_sha256") != _canonical_sha256(body):
+        raise NudeBoxMaskGenerationError("provider_batch_hash_mismatch")
+    records = document.get("records")
+    if not isinstance(records, list) or len(records) != document.get("record_count"):
+        raise NudeBoxMaskGenerationError("provider_batch_records_invalid")
+    provider = document.get("provider")
+    expected_provider_fields = {
+        "provider_key",
+        "role",
+        "model_family",
+        "source_commit",
+        "runtime_fingerprint",
+        "contract_version",
+    }
+    if not isinstance(provider, Mapping) or set(provider) != expected_provider_fields:
+        raise NudeBoxMaskGenerationError("provider_batch_identity_invalid")
+    try:
+        identity = ProviderIdentity(**provider)
+    except (TypeError, ValueError) as exc:
+        raise NudeBoxMaskGenerationError("provider_batch_identity_invalid") from exc
+    if identity.role != "interactive_segmenter":
+        raise NudeBoxMaskGenerationError("provider_batch_role_invalid")
+    if (
+        document.get("authority") != "draft_provider_masks_only"
+        or document.get("source_images_are_pixel_truth") is not False
+        or document.get("boxes_are_pixel_truth") is not False
+        or document.get("production_mask_authority") is not False
+        or document.get("operational_certificates_issued") is not False
+    ):
+        raise NudeBoxMaskGenerationError("provider_batch_authority_invalid")
+    if (
+        not isinstance(document.get("catalog_batch_sha256"), str)
+        or SHA256.fullmatch(document["catalog_batch_sha256"]) is None
+    ):
+        raise NudeBoxMaskGenerationError("provider_batch_catalog_hash_invalid")
+    candidate_count = 0
+    statuses = Counter()
+    sample_ids = set()
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise NudeBoxMaskGenerationError("provider_batch_record_invalid")
+        sample_id = record.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id or sample_id in sample_ids:
+            raise NudeBoxMaskGenerationError("provider_batch_sample_id_invalid")
+        sample_ids.add(sample_id)
+        status = record.get("status")
+        if status not in {"generated", "catalog_abstain", "provider_abstain"}:
+            raise NudeBoxMaskGenerationError("provider_batch_status_invalid")
+        candidates = record.get("candidates")
+        if not isinstance(candidates, list) or (status == "generated") != bool(candidates):
+            raise NudeBoxMaskGenerationError("provider_batch_candidate_state_invalid")
+        if (
+            not isinstance(record.get("source_sha256"), str)
+            or SHA256.fullmatch(record["source_sha256"]) is None
+        ):
+            raise NudeBoxMaskGenerationError("provider_batch_source_hash_invalid")
+        if not isinstance(record.get("reason"), list) or not all(
+            isinstance(reason, str) for reason in record["reason"]
+        ):
+            raise NudeBoxMaskGenerationError("provider_batch_reasons_invalid")
+        statuses[status] += 1
+        person_indexes = set()
+        for candidate in record.get("candidates", ()):
+            if not isinstance(candidate, Mapping):
+                raise NudeBoxMaskGenerationError("provider_batch_candidate_invalid")
+            person_index = candidate.get("person_index")
+            if (
+                not isinstance(person_index, int)
+                or isinstance(person_index, bool)
+                or person_index < 0
+                or person_index in person_indexes
+            ):
+                raise NudeBoxMaskGenerationError("provider_batch_person_index_invalid")
+            person_indexes.add(person_index)
+            if (
+                candidate.get("candidate_label") != "person"
+                or candidate.get("authority") != "draft_machine_candidate_only"
+                or candidate.get("production_mask_authority") is not False
+                or candidate.get("operational_certificate_eligible") is not False
+            ):
+                raise NudeBoxMaskGenerationError("provider_batch_candidate_authority_invalid")
+            for field in ("mask_sha256", "artifact_sha256"):
+                if (
+                    not isinstance(candidate.get(field), str)
+                    or SHA256.fullmatch(candidate[field]) is None
+                ):
+                    raise NudeBoxMaskGenerationError(f"provider_batch_{field}_invalid")
+            relative = Path(str(candidate.get("artifact_relative_path") or ""))
+            if relative.is_absolute() or not relative.parts or ".." in relative.parts:
+                raise NudeBoxMaskGenerationError("provider_batch_candidate_path_invalid")
+            confidence = candidate.get("confidence")
+            pixel_count = candidate.get("pixel_count")
+            if (
+                isinstance(confidence, bool)
+                or not isinstance(confidence, (int, float))
+                or not math.isfinite(float(confidence))
+                or not 0 <= float(confidence) <= 1
+                or isinstance(pixel_count, bool)
+                or not isinstance(pixel_count, int)
+                or pixel_count < 1
+                or not isinstance(candidate.get("prompt_fingerprint"), str)
+                or not candidate["prompt_fingerprint"]
+            ):
+                raise NudeBoxMaskGenerationError("provider_batch_candidate_metadata_invalid")
+            candidate_count += 1
+    if candidate_count != document.get("candidate_count"):
+        raise NudeBoxMaskGenerationError("provider_batch_candidate_count_mismatch")
+    if dict(sorted(statuses.items())) != document.get("status_counts"):
+        raise NudeBoxMaskGenerationError("provider_batch_status_counts_mismatch")
     return dict(document)
 
 
@@ -662,4 +776,5 @@ __all__ = [
     "generate_box_prompt_provider_batch",
     "validate_box_prompt_mask_stage_receipt",
     "validate_box_prompt_provider_batch",
+    "validate_box_prompt_provider_batch_structure",
 ]

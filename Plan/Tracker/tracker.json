@@ -23278,13 +23278,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-22T11:26:08+00:00",
+          "actor": "ai_agent",
+          "text": "Original Porn-Blocker-Benchmark v4 holdout is frozen before first evaluation. The validator binds all ordered sample IDs, source hashes, split groups, shard and full split-map hashes, rejects training/critic use, and proves every related group member remains holdout."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_holdout_policy_freeze_20260722.json; policy seal 86251a0672cd8dcc5e5d73baec0060b959889a3bf5ae5982fded4db541cbb529; 50 samples/46 groups/0 cross-partition groups; 4 tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T11:26:08+00:00",
       "orphaned": false
     },
     "MF-P5-11.03": {

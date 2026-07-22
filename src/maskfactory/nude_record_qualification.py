@@ -10,6 +10,10 @@ from typing import Any, Mapping, Sequence
 import numpy as np
 from PIL import Image
 
+from .nude_person_ownership import (
+    NudePersonOwnershipError,
+    validate_person_instance_ownership_report,
+)
 from .nude_polygon_hard_qc import NudePolygonQcError, evaluate_anatomy_mask_scale
 from .nude_visual_evidence import verify_pixel_semantic_visual_evidence
 
@@ -93,15 +97,21 @@ def _verify_pixel_semantic_evidence(
         raise NudeRecordQualificationError(f"pixel_semantic_visual_evidence_invalid:{exc}") from exc
 
 
-def _verify_label_scale(panels: Mapping[str, Any], *, candidate_label: str) -> dict[str, Any]:
+def _mask_pixels(panels: Mapping[str, Any]) -> np.ndarray:
     mask_entry = panels.get("mask")
     if not isinstance(mask_entry, Mapping):
         raise NudeRecordQualificationError("mask_panel_entry_invalid")
     path = Path(_nonempty(mask_entry.get("path"), "panel_mask_path"))
     try:
-        pixels = np.asarray(Image.open(path).convert("L")) > 0
-        return evaluate_anatomy_mask_scale(pixels, candidate_label=candidate_label)
-    except (OSError, NudePolygonQcError) as exc:
+        return np.asarray(Image.open(path).convert("L")) > 0
+    except OSError as exc:
+        raise NudeRecordQualificationError(f"mask_panel_pixels_invalid:{exc}") from exc
+
+
+def _verify_label_scale(mask_pixels: np.ndarray, *, candidate_label: str) -> dict[str, Any]:
+    try:
+        return evaluate_anatomy_mask_scale(mask_pixels, candidate_label=candidate_label)
+    except NudePolygonQcError as exc:
         raise NudeRecordQualificationError(f"label_scale_hard_qc_invalid:{exc}") from exc
 
 
@@ -170,8 +180,10 @@ def _verify_provider_comparison(
 def _verify_ownership(
     ownership: Mapping[str, Any],
     *,
+    anatomy_mask: np.ndarray,
     source_sha256: str,
     selected_mask_sha256: str,
+    candidate_label: str,
     acceptance_required: bool,
 ) -> dict[str, Any]:
     if not isinstance(ownership, Mapping):
@@ -197,15 +209,19 @@ def _verify_ownership(
             raise NudeRecordQualificationError("verified_person_instance_ownership_required")
         if person_index is not None or owner_id is not None or scene_instance_id is not None:
             raise NudeRecordQualificationError("ambiguous_ownership_cannot_claim_owner")
-    return {
-        "status": status,
-        "source_sha256": source_sha256,
-        "mask_sha256": selected_mask_sha256,
-        "person_index": person_index,
-        "owner_id": owner_id,
-        "scene_instance_id": scene_instance_id,
-        "report_sha256": report_sha256,
-    }
+    try:
+        verified = validate_person_instance_ownership_report(
+            ownership,
+            anatomy_mask,
+            source_sha256=source_sha256,
+            mask_sha256=selected_mask_sha256,
+            candidate_label=candidate_label,
+        )
+    except NudePersonOwnershipError as exc:
+        raise NudeRecordQualificationError(f"ownership_report_invalid:{exc}") from exc
+    if verified["report_sha256"] != report_sha256:
+        raise NudeRecordQualificationError("ownership_report_sha256_drift")
+    return verified
 
 
 def _verify_hard_qc(hard_qc: Mapping[str, Any], *, selected_mask_sha256: str) -> dict[str, str]:
@@ -336,11 +352,14 @@ def qualify_terminal_record(
     selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
-    label_scale_hard_qc = _verify_label_scale(panels, candidate_label=candidate_label)
+    mask_pixels = _mask_pixels(panels)
+    label_scale_hard_qc = _verify_label_scale(mask_pixels, candidate_label=candidate_label)
     ownership = _verify_ownership(
         record.get("ownership", {}),
+        anatomy_mask=mask_pixels,
         source_sha256=source_sha256,
         selected_mask_sha256=selected_mask_sha256,
+        candidate_label=candidate_label,
         acceptance_required=True,
     )
     provider_comparison = _verify_provider_comparison(
@@ -435,15 +454,18 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     observed_semantic = _verify_pixel_semantic_evidence(evidence, semantic_panels)
     if dict(pixel_semantic_evidence) != observed_semantic:
         raise NudeRecordQualificationError("pixel_semantic_visual_evidence_drift")
+    mask_pixels = _mask_pixels(panels)
     observed_scale = _verify_label_scale(
-        panels, candidate_label=str(evidence.get("candidate_label") or "")
+        mask_pixels, candidate_label=str(evidence.get("candidate_label") or "")
     )
     if evidence.get("label_scale_hard_qc") != observed_scale:
         raise NudeRecordQualificationError("label_scale_hard_qc_drift")
     _verify_ownership(
         evidence.get("ownership", {}),
+        anatomy_mask=mask_pixels,
         source_sha256=str(payload["source_sha256"]),
         selected_mask_sha256=str(payload["mask_sha256"]),
+        candidate_label=str(evidence.get("candidate_label") or ""),
         acceptance_required=True,
     )
     _verify_provider_comparison(
@@ -557,11 +579,14 @@ def qualify_nonacceptance_record(
         raise NudeRecordQualificationError("failure_reasons_required")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
-    label_scale_hard_qc = _verify_label_scale(panels, candidate_label=candidate_label)
+    mask_pixels = _mask_pixels(panels)
+    label_scale_hard_qc = _verify_label_scale(mask_pixels, candidate_label=candidate_label)
     ownership = _verify_ownership(
         record.get("ownership", {}),
+        anatomy_mask=mask_pixels,
         source_sha256=source_sha256,
         selected_mask_sha256=selected_mask_sha256,
+        candidate_label=candidate_label,
         acceptance_required=False,
     )
     provider_comparison = _verify_provider_comparison(

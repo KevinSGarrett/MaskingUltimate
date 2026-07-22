@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 from PIL import Image, ImageDraw
 
+from maskfactory.nude_person_ownership import resolve_person_instance_ownership
 from maskfactory.nude_record_qualification import (
     NudeRecordQualificationError,
     qualify_input_terminal_record,
@@ -21,7 +22,7 @@ from maskfactory.nude_record_qualification import (
 )
 from maskfactory.providers.disagreement import binary_mask_sha256
 
-_PANEL_CONTEXTS: dict[str, tuple[str, str]] = {}
+_PANEL_CONTEXTS: dict[str, tuple[str, str, np.ndarray]] = {}
 
 
 def _sha(value: str) -> str:
@@ -31,6 +32,33 @@ def _sha(value: str) -> str:
 def _canonical_sha256(value: object) -> str:
     encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _ownership(mask: np.ndarray, source_sha256: str, *, ambiguous: bool = False) -> dict:
+    boxes = (
+        [(0, [8, 6, 40, 42]), (1, [10, 8, 38, 40])]
+        if ambiguous
+        else [(0, [8, 6, 40, 42]), (1, [0, 0, 8, 8])]
+    )
+    reports = [
+        {
+            "provider_id": provider,
+            "family_id": family,
+            "source_sha256": source_sha256,
+            "report_sha256": _sha(provider),
+            "persons": [
+                {"person_index": index, "bbox_xyxy": box, "confidence": 0.9} for index, box in boxes
+            ],
+        }
+        for provider, family in (("yolo11m", "yolo"), ("rf_detr_medium", "rfdetr"))
+    ]
+    return resolve_person_instance_ownership(
+        mask,
+        source_sha256=source_sha256,
+        mask_sha256=binary_mask_sha256(mask),
+        candidate_label="breast_region",
+        detector_reports=reports,
+    )
 
 
 def _panels(tmp_path: Path) -> dict[str, dict[str, str]]:
@@ -68,26 +96,23 @@ def _panels(tmp_path: Path) -> dict[str, dict[str, str]]:
         }
     result["source"]["original_source_path"] = str(original)
     bundle = verify_complete_panel_evidence(result)
-    _PANEL_CONTEXTS[bundle["panel_bundle_sha256"]] = (source_sha, binary_mask_sha256(mask))
+    _PANEL_CONTEXTS[bundle["panel_bundle_sha256"]] = (
+        source_sha,
+        binary_mask_sha256(mask),
+        mask,
+    )
     return result
 
 
 def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str, object]:
-    source_sha256, selected = _PANEL_CONTEXTS[panel_bundle_sha256]
+    source_sha256, selected, mask = _PANEL_CONTEXTS[panel_bundle_sha256]
+    ownership = _ownership(mask, source_sha256)
     record: dict[str, object] = {
         "sample_id": "adult-sample-0001",
         "candidate_label": "breast_region",
         "source_sha256": source_sha256,
         "mask_sha256": selected,
-        "ownership": {
-            "status": "verified",
-            "source_sha256": source_sha256,
-            "mask_sha256": selected,
-            "person_index": 0,
-            "owner_id": "person-0",
-            "scene_instance_id": "adult-scene-person-0",
-            "report_sha256": _sha("ownership-report"),
-        },
+        "ownership": ownership,
         "outcome": outcome,
         "provider_comparison": {
             "status": "pass",
@@ -129,7 +154,7 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                 "mask_sha256": selected,
                 "panel_bundle_sha256": panel_bundle_sha256,
                 "person_index": 0,
-                "ownership_report_sha256": _sha("ownership-report"),
+                "ownership_report_sha256": ownership["report_sha256"],
                 "verdict": "pass",
                 "confidence": 0.94,
                 "evidence": "The target boundary follows the visible anatomy and excludes background.",
@@ -144,7 +169,7 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                 "mask_sha256": selected,
                 "panel_bundle_sha256": panel_bundle_sha256,
                 "person_index": 0,
-                "ownership_report_sha256": _sha("ownership-report"),
+                "ownership_report_sha256": ownership["report_sha256"],
                 "verdict": "pass",
                 "confidence": 0.91,
                 "evidence": "Contour and ownership views agree with the selected person and label.",
@@ -221,18 +246,12 @@ def test_acceptance_requires_verified_exact_person_instance_ownership(tmp_path: 
     panels = _panels(tmp_path)
     bundle = verify_complete_panel_evidence(panels)
     record = _record(bundle["panel_bundle_sha256"])
-    record["ownership"] = {
-        "status": "ambiguous",
-        "source_sha256": record["source_sha256"],
-        "mask_sha256": record["mask_sha256"],
-        "person_index": None,
-        "owner_id": None,
-        "scene_instance_id": None,
-        "report_sha256": _sha("ambiguous-ownership"),
-    }
+    _, _, mask = _PANEL_CONTEXTS[bundle["panel_bundle_sha256"]]
+    record["ownership"] = _ownership(mask, str(record["source_sha256"]), ambiguous=True)
+    ownership_report_sha256 = record["ownership"]["report_sha256"]  # type: ignore[index]
     for review in record["strict_reviews"]:  # type: ignore[union-attr]
         review["person_index"] = None
-        review["ownership_report_sha256"] = _sha("ambiguous-ownership")
+        review["ownership_report_sha256"] = ownership_report_sha256
     for candidate in record["provider_comparison"]["candidates"]:  # type: ignore[index]
         candidate["person_index"] = None
     with pytest.raises(
@@ -357,18 +376,12 @@ def test_ambiguous_ownership_routes_to_abstention_without_claiming_an_owner(
         }
     )
     record["strict_reviews"][1]["verdict"] = "uncertain"  # type: ignore[index]
-    record["ownership"] = {
-        "status": "ambiguous",
-        "source_sha256": record["source_sha256"],
-        "mask_sha256": record["mask_sha256"],
-        "person_index": None,
-        "owner_id": None,
-        "scene_instance_id": None,
-        "report_sha256": _sha("ambiguous-ownership"),
-    }
+    _, _, mask = _PANEL_CONTEXTS[bundle["panel_bundle_sha256"]]
+    record["ownership"] = _ownership(mask, str(record["source_sha256"]), ambiguous=True)
+    ownership_report_sha256 = record["ownership"]["report_sha256"]  # type: ignore[index]
     for review in record["strict_reviews"]:  # type: ignore[union-attr]
         review["person_index"] = None
-        review["ownership_report_sha256"] = _sha("ambiguous-ownership")
+        review["ownership_report_sha256"] = ownership_report_sha256
     for candidate in record["provider_comparison"]["candidates"]:  # type: ignore[index]
         candidate["person_index"] = None
     result = qualify_nonacceptance_record(record, panels=panels)

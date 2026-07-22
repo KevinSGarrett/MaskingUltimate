@@ -9,6 +9,7 @@ import pytest
 from PIL import Image, ImageDraw
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
+from maskfactory.nude_person_ownership import resolve_person_instance_ownership
 from maskfactory.nude_record_qualification import (
     qualify_input_terminal_record,
     qualify_nonacceptance_record,
@@ -104,21 +105,32 @@ def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
         return hashlib.sha256(value.encode()).hexdigest()
 
     selected = binary_mask_sha256(mask)
+    ownership = resolve_person_instance_ownership(
+        mask,
+        source_sha256=source_sha,
+        mask_sha256=selected,
+        candidate_label="breast_region",
+        detector_reports=[
+            {
+                "provider_id": provider,
+                "family_id": family,
+                "source_sha256": source_sha,
+                "report_sha256": sha(f"ownership-{provider}-{index}"),
+                "persons": [
+                    {"person_index": 0, "bbox_xyxy": [8, 6, 40, 42], "confidence": 0.9},
+                    {"person_index": 1, "bbox_xyxy": [0, 0, 8, 8], "confidence": 0.9},
+                ],
+            }
+            for provider, family in (("yolo11m", "yolo"), ("rf_detr_medium", "rfdetr"))
+        ],
+    )
     result = qualify_terminal_record(
         {
             "sample_id": f"qualified-{index}",
             "candidate_label": "breast_region",
             "source_sha256": source_sha,
             "mask_sha256": selected,
-            "ownership": {
-                "status": "verified",
-                "source_sha256": source_sha,
-                "mask_sha256": selected,
-                "person_index": 0,
-                "owner_id": "person-0",
-                "scene_instance_id": f"fixture-scene-{index}-person-0",
-                "report_sha256": sha(f"ownership-{index}"),
-            },
+            "ownership": ownership,
             "outcome": "accepted",
             "provider_comparison": {
                 "status": "pass",
@@ -160,7 +172,7 @@ def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
                     "mask_sha256": selected,
                     "panel_bundle_sha256": bundle["panel_bundle_sha256"],
                     "person_index": 0,
-                    "ownership_report_sha256": sha(f"ownership-{index}"),
+                    "ownership_report_sha256": ownership["report_sha256"],
                     "verdict": "pass",
                     "confidence": 0.9,
                     "evidence": "Boundary, target ownership, and background exclusion agree.",

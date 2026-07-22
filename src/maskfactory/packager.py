@@ -25,6 +25,11 @@ from .autonomy.package_semantic_alignment import (
     semantic_alignment_report_sha256,
     validate_package_semantic_alignment,
 )
+from .autonomy.per_record_qa import (
+    PerRecordQaError,
+    per_record_qa_vector_sha256,
+    validate_per_record_qa_vector,
+)
 from .dvc_runtime import DvcRuntimeError, run_dvc
 from .inpaint import derive_inpaint
 from .io.hashing import sha256_file, sha256_file_map
@@ -120,6 +125,11 @@ def certify_autonomous_package(
     context: str,
     pipeline_fingerprint: str,
     evidence_path: Path,
+    qa_vector_path: Path,
+    target_contract_paths: tuple[Path, ...],
+    qualified_qa_registry_path: Path,
+    qa_registry_policy_path: Path,
+    qa_calibration_evidence_path: Path,
     semantic_alignment_path: Path,
     critic_role_certificates: tuple[dict[str, Any], ...],
     critic_catalog: dict[str, Any],
@@ -136,6 +146,42 @@ def certify_autonomous_package(
     evidence_path = Path(evidence_path)
     if not evidence_path.is_file():
         raise FileNotFoundError(f"autonomous certification evidence is missing: {evidence_path}")
+    qa_vector_path = Path(qa_vector_path)
+    qualified_qa_registry_path = Path(qualified_qa_registry_path)
+    qa_registry_policy_path = Path(qa_registry_policy_path)
+    qa_calibration_evidence_path = Path(qa_calibration_evidence_path)
+    if not all(
+        path.is_file()
+        for path in (
+            qa_vector_path,
+            qualified_qa_registry_path,
+            qa_registry_policy_path,
+            qa_calibration_evidence_path,
+        )
+    ):
+        raise FileNotFoundError(
+            "autonomous QA vector, registry binding/policy, or calibration evidence is missing"
+        )
+    if not target_contract_paths:
+        raise ValueError("autonomous certification requires per-label target contracts")
+    try:
+        qa_vector = json.loads(qa_vector_path.read_text(encoding="utf-8"))
+        qualified_qa_registry = json.loads(qualified_qa_registry_path.read_text(encoding="utf-8"))
+        target_contracts = {}
+        for target_path in target_contract_paths:
+            target_contract = json.loads(Path(target_path).read_text(encoding="utf-8"))
+            label_id = str((target_contract.get("target") or {}).get("label_id") or "")
+            if not label_id or label_id in target_contracts:
+                raise ValueError("target-contract labels are empty or duplicated")
+            target_contracts[label_id] = target_contract
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("autonomous per-record QA inputs are unreadable") from exc
+    qa_registry_policy_sha256 = sha256_file(qa_registry_policy_path)
+    qa_calibration_sha256 = sha256_file(qa_calibration_evidence_path)
+    if qualified_qa_registry.get("registry_file_sha256") != qa_registry_policy_sha256:
+        raise ValueError("qualified QA registry policy hash mismatch")
+    if qualified_qa_registry.get("calibration_evidence_sha256") != qa_calibration_sha256:
+        raise ValueError("qualified QA calibration evidence hash mismatch")
     semantic_alignment_path = Path(semantic_alignment_path)
     if not semantic_alignment_path.is_file():
         raise FileNotFoundError(
@@ -191,6 +237,17 @@ def certify_autonomous_package(
         if failed:
             _bounce(package_root, results)
             raise PackageBlockedError(results, _failing_panels(package_root, failed))
+        current_manifest = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))
+        try:
+            qa_binding = validate_per_record_qa_vector(
+                qa_vector,
+                package_root=package_root,
+                manifest=current_manifest,
+                target_contracts=target_contracts,
+                qualified_registry=qualified_qa_registry,
+            )
+        except PerRecordQaError as exc:
+            raise ValueError(f"autonomous per-record QA rejected: {exc}") from exc
         try:
             semantic_binding = validate_package_semantic_alignment(
                 semantic_alignment,
@@ -213,6 +270,9 @@ def certify_autonomous_package(
             final_mask_set_sha256=mask_set_sha256,
             semantic_alignment_report_sha256=semantic_binding["report_sha256"],
             critic_quorum_sha256=semantic_binding["quorum_sha256"],
+            per_record_qa_vector_sha256=qa_binding["vector_sha256"],
+            qa_registry_sha256=qa_binding["resolved_registry_sha256"],
+            qa_calibration_evidence_sha256=qa_binding["calibration_evidence_sha256"],
             training_loss_weight=float(training_loss_weight),
             timestamp=timestamp,
         )
@@ -238,6 +298,9 @@ def certify_autonomous_package(
                 ),
                 "semantic_alignment_report_sha256": semantic_binding["report_sha256"],
                 "critic_quorum_sha256": semantic_binding["quorum_sha256"],
+                "per_record_qa_vector_sha256": qa_binding["vector_sha256"],
+                "qa_registry_sha256": qa_binding["resolved_registry_sha256"],
+                "qa_calibration_evidence_sha256": qa_binding["calibration_evidence_sha256"],
                 "policy": "immutable; corrections require a new mask version",
             },
         )
@@ -259,6 +322,16 @@ def certify_autonomous_package(
             )
         if _final_mask_set_sha256(package_root) != mask_set_sha256:
             raise RuntimeError("autonomous final mask set drifted during finalization")
+        current_qa_vector = json.loads(qa_vector_path.read_text(encoding="utf-8"))
+        if (
+            current_qa_vector.get("vector_sha256") != qa_binding["vector_sha256"]
+            or per_record_qa_vector_sha256(current_qa_vector) != qa_binding["vector_sha256"]
+        ):
+            raise RuntimeError("autonomous per-record QA vector drifted during finalization")
+        if sha256_file(qa_registry_policy_path) != qa_registry_policy_sha256:
+            raise RuntimeError("autonomous QA registry policy drifted during finalization")
+        if sha256_file(qa_calibration_evidence_path) != qa_calibration_sha256:
+            raise RuntimeError("autonomous QA calibration evidence drifted during finalization")
         current_semantic_alignment = json.loads(semantic_alignment_path.read_text(encoding="utf-8"))
         if (
             current_semantic_alignment.get("report_sha256") != semantic_binding["report_sha256"]
@@ -542,6 +615,9 @@ def _stamp_autonomous_manifest(
     final_mask_set_sha256: str,
     semantic_alignment_report_sha256: str,
     critic_quorum_sha256: str,
+    per_record_qa_vector_sha256: str,
+    qa_registry_sha256: str,
+    qa_calibration_evidence_sha256: str,
     training_loss_weight: float,
     timestamp: datetime,
 ) -> None:
@@ -585,6 +661,9 @@ def _stamp_autonomous_manifest(
         "final_mask_set_sha256": final_mask_set_sha256,
         "semantic_alignment_report_sha256": semantic_alignment_report_sha256,
         "critic_quorum_sha256": critic_quorum_sha256,
+        "per_record_qa_vector_sha256": per_record_qa_vector_sha256,
+        "qa_registry_sha256": qa_registry_sha256,
+        "qa_calibration_evidence_sha256": qa_calibration_evidence_sha256,
         "certified_at": timestamp.isoformat(),
     }
     manifest["review"] = {

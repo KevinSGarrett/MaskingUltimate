@@ -122,3 +122,24 @@ aids; all metrics and training labels use the binary unless a matting-specific m
 - Package is immutable after approval; any edit spawns v2 and demotes v1 to `deprecated`.
 - `maskfactory verify-package <image_id>` re-checks all hashes + reruns format QCs; used by backup
   restore tests (runbook §5) and nightly integrity sweep.
+
+## 10. Autonomous-certified per-record QA bindings
+
+Before autonomous freeze, `certification` must include
+`per_record_qa_vector_sha256`, `qa_registry_sha256`, and
+`qa_calibration_evidence_sha256` in addition to the final mask-set, semantic
+alignment, and critic-quorum hashes. The closed
+`autonomous_gold_per_record_qa_vector` schema binds one package revision,
+source/person/character owner, every active label, its target-contract and
+threshold-resolution hashes, encoded and decoded mask hashes, and all 33
+required quantitative metric families. Mandatory ownership, overlap,
+laterality, transform, duplicate, and recomposition metrics cannot be marked
+not applicable.
+
+The packager and CLI require the vector, every per-label target contract, the
+registry-policy bytes, calibration-evidence bytes, and an empirically qualified
+registry binding before they can stamp or freeze an
+autonomous package. The current uncalibrated candidate registry therefore
+fails package admission by design. A deterministic-QA pass is still not gold;
+semantic alignment, qualified independent critic quorum, exact package
+certificate, and current revocation evidence remain separate required gates.

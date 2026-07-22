@@ -11951,3 +11951,18 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   therefore remain open.
 - Evidence:
   `qa/live_verification/nude_civitai_reference_person_mask_hard_qc_implementation_20260722.json`.
+
+## 2026-07-22 - Guarded RunPod migration authority adopted
+
+- The user-authorized automation
+  `runpod-us-wa-1-2xa40-guarded-migration-watcher` is the sole migration
+  authority. It checks every ten minutes for an exact 2x NVIDIA A40 Secure
+  Cloud offer in US-WA-1 for network volume `o9qv2ld91c` at total price
+  <=$0.70/hour.
+- MaskFactory must not create a competing watcher, independently migrate, stop
+  the old pod, touch AWS, or bypass the shared coordinator. Work continues on
+  pod `1q4ji0gg1fkhvt` until a verified migration-complete handoff arrives.
+- The watcher is fail-closed and may stop the old pod only after candidate,
+  volume, 100 GB disk, dual-GPU telemetry, coordinator, and rollback checks
+  pass. This supersedes earlier text saying no 2xA40 watcher existed or was
+  authorized.

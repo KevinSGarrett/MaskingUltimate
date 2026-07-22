@@ -105,6 +105,11 @@
         "pipeline_fingerprint",
         "evidence_sha256",
         "final_mask_set_sha256",
+        "semantic_alignment_report_sha256",
+        "critic_quorum_sha256",
+        "per_record_qa_vector_sha256",
+        "qa_registry_sha256",
+        "qa_calibration_evidence_sha256",
         "certified_at"
       ],
       "properties": {
@@ -134,6 +139,9 @@
         "final_mask_set_sha256": { "$ref": "#/$defs/sha256" },
         "semantic_alignment_report_sha256": { "$ref": "#/$defs/sha256" },
         "critic_quorum_sha256": { "$ref": "#/$defs/sha256" },
+        "per_record_qa_vector_sha256": { "$ref": "#/$defs/sha256" },
+        "qa_registry_sha256": { "$ref": "#/$defs/sha256" },
+        "qa_calibration_evidence_sha256": { "$ref": "#/$defs/sha256" },
         "certified_at": { "$ref": "#/$defs/timestamp" }
       }
     },

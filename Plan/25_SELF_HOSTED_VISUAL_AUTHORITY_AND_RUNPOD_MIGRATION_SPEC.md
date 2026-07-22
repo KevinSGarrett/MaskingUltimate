@@ -380,3 +380,13 @@ positive/negative calibration evidence by label, context, domain, size,
 occlusion/contact, and multi-person risk. Promotion creates a new immutable
 registry version; observed qualification results may never rewrite this
 candidate in place or lower thresholds to manufacture passes.
+
+The executable per-record binding is
+`autonomous_gold_per_record_qa_vector.schema.json` plus
+`maskfactory.autonomy.per_record_qa`. It requires all 33 metric families for
+every active label and binds target contracts, threshold resolutions, encoded
+and decoded masks, owner/package revision, and the complete final mask-set.
+`maskfactory autonomous-certify-package` requires the vector, all target
+contracts, qualified registry binding, exact registry-policy bytes, and exact
+calibration-evidence bytes. Missing, unqualified, stale, or hash-drifted inputs
+fail before an autonomous package can be stamped.

@@ -47,6 +47,44 @@ def _tree_bytes(root: Path) -> dict[str, bytes]:
     }
 
 
+def _stub_per_record_qa(tmp_path: Path, monkeypatch):
+    qa_vector = tmp_path / "qa_vector.json"
+    qa_registry = tmp_path / "qa_registry.json"
+    qa_registry_policy = tmp_path / "qa_registry_policy.yaml"
+    qa_calibration = tmp_path / "qa_calibration.json"
+    target_contract = tmp_path / "target_contract.json"
+    qa_vector.write_text(json.dumps({"vector_sha256": "1" * 64}), encoding="utf-8")
+    qa_registry_policy.write_text("registry: qualified-fixture\n", encoding="utf-8")
+    qa_calibration.write_text('{"calibration":"qualified-fixture"}\n', encoding="utf-8")
+    qa_registry.write_text(
+        json.dumps(
+            {
+                "registry_file_sha256": hashlib.sha256(qa_registry_policy.read_bytes()).hexdigest(),
+                "calibration_evidence_sha256": hashlib.sha256(
+                    qa_calibration.read_bytes()
+                ).hexdigest(),
+            }
+        ),
+        encoding="utf-8",
+    )
+    target_contract.write_text(
+        json.dumps({"target": {"label_id": "left_forearm"}}), encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        "maskfactory.packager.validate_per_record_qa_vector",
+        lambda *_args, **_kwargs: {
+            "status": "pass",
+            "vector_sha256": "1" * 64,
+            "resolved_registry_sha256": "2" * 64,
+            "calibration_evidence_sha256": "3" * 64,
+        },
+    )
+    monkeypatch.setattr(
+        "maskfactory.packager.per_record_qa_vector_sha256", lambda _document: "1" * 64
+    )
+    return qa_vector, qa_registry, qa_registry_policy, qa_calibration, (target_contract,)
+
+
 @pytest.fixture
 def clean_package(tmp_path: Path) -> Path:
     package = tmp_path / "clean"
@@ -305,6 +343,9 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
         },
     )
     dvc_calls = []
+    qa_vector, qa_registry, qa_registry_policy, qa_calibration, target_contracts = (
+        _stub_per_record_qa(tmp_path, monkeypatch)
+    )
 
     result = certify_autonomous_package(
         package,
@@ -312,6 +353,11 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
         context="solo",
         pipeline_fingerprint="pipeline-v2",
         evidence_path=evidence,
+        qa_vector_path=qa_vector,
+        target_contract_paths=target_contracts,
+        qualified_qa_registry_path=qa_registry,
+        qa_registry_policy_path=qa_registry_policy,
+        qa_calibration_evidence_path=qa_calibration,
         semantic_alignment_path=semantic_alignment,
         critic_role_certificates=({"certificate_sha256": "f" * 64},),
         critic_catalog={"schema_version": "fixture"},
@@ -331,6 +377,9 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
     assert sealed["certification"]["certificates"][0]["risk_bucket"] == "small_parts"
     assert sealed["certification"]["semantic_alignment_report_sha256"] == semantic_report_sha256
     assert sealed["certification"]["critic_quorum_sha256"] == "e" * 64
+    assert sealed["certification"]["per_record_qa_vector_sha256"] == "1" * 64
+    assert sealed["certification"]["qa_registry_sha256"] == "2" * 64
+    assert sealed["certification"]["qa_calibration_evidence_sha256"] == "3" * 64
     freeze = json.loads((package / ".maskfactory_frozen.json").read_text(encoding="utf-8"))
     assert freeze["authority"] == "autonomous_certified_gold"
     assert verify_packages(package)[0].passed
@@ -344,6 +393,8 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
         "semantic_drift",
         "semantic_content_drift",
         "mask_drift",
+        "registry_policy_drift",
+        "calibration_drift",
     ],
 )
 def test_autonomous_certification_interruption_or_hash_drift_restores_exact_package(
@@ -393,6 +444,9 @@ def test_autonomous_certification_interruption_or_hash_drift_restores_exact_pack
             "quorum_sha256": "e" * 64,
         },
     )
+    qa_vector, qa_registry, qa_registry_policy, qa_calibration, target_contracts = (
+        _stub_per_record_qa(tmp_path, monkeypatch)
+    )
 
     def seeded_failure(_path: Path) -> None:
         if failure_mode == "dvc_exception":
@@ -411,8 +465,12 @@ def test_autonomous_certification_interruption_or_hash_drift_restores_exact_pack
                 ),
                 encoding="utf-8",
             )
-        else:
+        elif failure_mode == "mask_drift":
             mask.write_bytes(b"seeded post-QA mask drift")
+        elif failure_mode == "registry_policy_drift":
+            qa_registry_policy.write_text("registry: drifted\n", encoding="utf-8")
+        else:
+            qa_calibration.write_text('{"calibration":"drifted"}\n', encoding="utf-8")
 
     expected = "DVC interruption" if failure_mode == "dvc_exception" else "drifted"
     with pytest.raises(RuntimeError, match=expected):
@@ -422,6 +480,11 @@ def test_autonomous_certification_interruption_or_hash_drift_restores_exact_pack
             context="solo",
             pipeline_fingerprint="pipeline-v2",
             evidence_path=evidence,
+            qa_vector_path=qa_vector,
+            target_contract_paths=target_contracts,
+            qualified_qa_registry_path=qa_registry,
+            qa_registry_policy_path=qa_registry_policy,
+            qa_calibration_evidence_path=qa_calibration,
             semantic_alignment_path=semantic_alignment,
             critic_role_certificates=({"certificate_sha256": "f" * 64},),
             critic_catalog={"schema_version": "fixture"},

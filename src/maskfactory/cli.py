@@ -10376,6 +10376,33 @@ def autonomous_semantic_requalification_publish_command(
     "--evidence", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
 )
 @click.option(
+    "--qa-vector",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--target-contract",
+    "target_contract_paths",
+    multiple=True,
+    required=True,
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
+@click.option(
+    "--qualified-qa-registry",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--qa-registry-policy",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--qa-calibration-evidence",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
     "--semantic-alignment",
     type=click.Path(path_type=Path, dir_okay=False, exists=True),
     required=True,
@@ -10415,6 +10442,11 @@ def autonomous_certify_package_command(
     context: str,
     pipeline_fingerprint: str,
     evidence: Path,
+    qa_vector: Path,
+    target_contract_paths: tuple[Path, ...],
+    qualified_qa_registry: Path,
+    qa_registry_policy: Path,
+    qa_calibration_evidence: Path,
     semantic_alignment: Path,
     critic_role_certificate_paths: tuple[Path, ...],
     critic_catalog: Path,
@@ -10441,6 +10473,11 @@ def autonomous_certify_package_command(
             context=context,
             pipeline_fingerprint=pipeline_fingerprint,
             evidence_path=evidence,
+            qa_vector_path=qa_vector,
+            target_contract_paths=target_contract_paths,
+            qualified_qa_registry_path=qualified_qa_registry,
+            qa_registry_policy_path=qa_registry_policy,
+            qa_calibration_evidence_path=qa_calibration_evidence,
             semantic_alignment_path=semantic_alignment,
             critic_role_certificates=critic_role_certificates,
             critic_catalog=critic_catalog_document,

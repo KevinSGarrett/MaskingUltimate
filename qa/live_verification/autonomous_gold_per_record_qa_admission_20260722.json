@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "autonomous_gold_per_record_qa_admission_20260722",
+  "tracker_items": ["MF-P4-11.11", "MF-P4-12.11"],
+  "status": "STATIC_ADMISSION_GATE_PASS_LIVE_QUALIFICATION_OPEN",
+  "implementation": {
+    "per_record_qa_module_sha256": "d29f852221941db3e59ea6c39ff307afc55f0f49dcf61ab71f052d714007394c",
+    "closed_qa_vector_schema_sha256": "1f49146769686bdd45c254e661186460b4024c7774b0b67f6ec579c49e159397",
+    "packager_sha256": "08be8f5c25d94df06dea1e002faf723957cc9d2f8d2bf1d7126aef329508f08a",
+    "cli_sha256": "f7609aa36e0517d45b51f199bfa8f0ef261b7f601f7eac0371a9c8e899252a17",
+    "manifest_schema_sha256": "924f48915eccb44710ecee69257a806fed17d4aaba12464c28785a2547b7acb9",
+    "manifest_v2_schema_sha256": "79ad75b80940c59ecd487bcd2e4c071f777eefddd211162499dbb59e31312015"
+  },
+  "verified_contract": {
+    "metric_family_count": 33,
+    "requires_every_active_label": true,
+    "requires_target_contract_v2": true,
+    "requires_qualified_registry": true,
+    "requires_registry_calibration_evidence": true,
+    "verifies_registry_policy_file_hash": true,
+    "verifies_calibration_evidence_file_hash": true,
+    "binds_encoded_and_decoded_mask_hashes": true,
+    "binds_complete_final_mask_set": true,
+    "binds_person_character_and_package_revision": true,
+    "mandatory_metrics_may_be_not_applicable": false,
+    "qa_vector_authority_claim": "qualified_deterministic_QA_only_not_gold"
+  },
+  "package_freeze_bindings": [
+    "per_record_qa_vector_sha256",
+    "qa_registry_sha256",
+    "qa_calibration_evidence_sha256",
+    "semantic_alignment_report_sha256",
+    "critic_quorum_sha256",
+    "final_mask_set_sha256"
+  ],
+  "negative_fixtures": [
+    "unqualified_registry",
+    "missing_metric",
+    "mandatory_metric_not_applicable",
+    "target_contract_hash_drift",
+    "threshold_resolution_hash_drift",
+    "encoded_or_decoded_mask_drift",
+    "final_mask_set_drift",
+    "person_character_package_identity_drift",
+    "unsealed_vector_content_tamper",
+    "registry_policy_byte_drift_after_dvc",
+    "calibration_evidence_byte_drift_after_dvc"
+  ],
+  "validation": {
+    "focused_and_adjacent_tests_passed": 78,
+    "ruff": "PASS",
+    "black": "PASS",
+    "json_schemas": "PASS",
+    "cli_required_options": [
+      "--qa-vector",
+      "--target-contract",
+      "--qualified-qa-registry",
+      "--qa-registry-policy",
+      "--qa-calibration-evidence"
+    ],
+    "diff_integrity": "PASS"
+  },
+  "open_requirements": [
+    "empirically_calibrate_and_publish_qualified_threshold_registry",
+    "execute_real_per_record_metric_producers",
+    "qualify_primary_and_independent_visual_critics",
+    "issue_new_exact_per_record_autonomous_gold_certificate",
+    "prove_real_single_and_multi_person_freeze_revoke_and_stale_rejection"
+  ],
+  "claim_limits": [
+    "no_current_registry_is_qualified",
+    "no_real_package_was_frozen",
+    "no_autonomous_certified_gold_was_created",
+    "no_visual_critic_role_was_promoted"
+  ]
+}

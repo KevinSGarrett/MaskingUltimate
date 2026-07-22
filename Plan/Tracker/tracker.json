@@ -22931,11 +22931,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "qa/live_verification/nude_corpus_split_grouping_20260722.json: all 81,910 source hashes reverified and assigned exactly once to 42,219 deterministic exact/source-family/dual-perceptual groups; mapping SHA256 cab2b74545177264bfad8b07ff51cf692c3eff4fe37612276a6e5381a7d2527a matches local and RunPod; downstream loader fail-closes on drift.",
+      "notes": [
+        {
+          "ts": "2026-07-22T11:48:26+00:00",
+          "actor": "ai_agent",
+          "text": "Corrected a discovered video-frame family gap: explicit mp4/mov/avi/mkv/webm frame suffixes now collapse before grouping. V4 adds 235 correlated duplicate records and keeps every record in exactly one deterministic group."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_corpus_split_grouping_20260722.json; qa/live_verification/nude_corpus_video_frame_dedup_correction_20260722.json: corrected v4 maps all 81,910 records exactly once into 41,984 groups; explicit video-frame families collapse; mapping SHA256 544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T09:10:14+00:00",
+      "updated_at": "2026-07-22T11:48:26+00:00",
       "orphaned": false
     },
     "MF-P0-18.06": {
@@ -22952,11 +22958,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "qa/live_verification/nude_corpus_split_grouping_20260722.json: zero post-assignment group leaks; 439 upstream cross-partition groups moved atomically to strictest partition; main.v3/v4/v5 have 1,175 cross-version groups covering 8,658 records; mange.v2/v3 have 2,110 groups covering 9,861 records; all 50 original holdout records remain isolated.",
+      "notes": [
+        {
+          "ts": "2026-07-22T11:48:28+00:00",
+          "actor": "ai_agent",
+          "text": "The corrected v4 preflight found and atomically resolved 12 additional cross-partition video-frame families. Downstream hard-QC, role population, and frozen holdout were regenerated/rebound before further use."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_corpus_split_grouping_20260722.json; qa/live_verification/nude_corpus_video_frame_dedup_correction_20260722.json: corrected v4 assigns 451 cross-partition groups atomically to the strictest partition and preserves the original 50-record holdout with zero group leakage.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T09:10:15+00:00",
+      "updated_at": "2026-07-22T11:48:28+00:00",
       "orphaned": false
     },
     "MF-P0-18.07": {
@@ -23046,7 +23058,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 40,
+      "percent_complete": 45,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23057,12 +23069,17 @@
           "ts": "2026-07-22T10:08:28+00:00",
           "actor": "ai_agent",
           "text": "Current v6 polygon evidence has explicit per-record source role, direct crosswalk binding, and a 97,833-mask train-role prerequisite manifest. No mask is training-authorized; provider/VLM/repair/certificate gates remain open."
+        },
+        {
+          "ts": "2026-07-22T11:48:28+00:00",
+          "actor": "ai_agent",
+          "text": "Corrected v4 full-corpus hard QC now covers 39,354 polygon records / 125,976 masks; 37,736 records pass deterministic QC and 1,618 quarantine. A diverse 12-group CPU refinement canary is draft-only. Independent provider, strict per-record VLM, terminal receipt, and certificate gates remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json.",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T10:08:28+00:00",
+      "updated_at": "2026-07-22T11:48:28+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {
@@ -23194,7 +23211,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 30,
+      "percent_complete": 35,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
@@ -23205,12 +23222,17 @@
           "ts": "2026-07-22T11:28:58+00:00",
           "actor": "ai_agent",
           "text": "The evaluation-only representative lane now has 50/50 durable terminal receipts, idempotent replay, and second-process resume evidence. Four generation/review lanes still require provider, strict-VLM, repair/abstention, and evidence completion."
+        },
+        {
+          "ts": "2026-07-22T11:48:28+00:00",
+          "actor": "ai_agent",
+          "text": "Polygon canary now spans 12 corrected unique split groups and multiple anatomy labels across live-photo and illustration domains, with parent/refined evidence. It remains draft-only; four generation/review lanes still need full provider, strict-VLM, repair/abstention, and terminal evidence."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:28:58+00:00",
+      "updated_at": "2026-07-22T11:48:28+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {
@@ -23300,12 +23322,17 @@
           "ts": "2026-07-22T11:28:58+00:00",
           "actor": "ai_agent",
           "text": "All 50 frozen holdout records now also have durable evaluation-only queue receipts; no mask was generated and no training, critic-calibration, or production authority was granted."
+        },
+        {
+          "ts": "2026-07-22T11:48:29+00:00",
+          "actor": "ai_agent",
+          "text": "Rebound the unchanged original 50-record / 46-group holdout to corrected v4 split mapping SHA256 544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad. Live validation proves zero cross-partition groups; new durable queue replay is 50/50 and idempotent."
         }
       ],
-      "evidence": "qa/live_verification/nude_holdout_policy_freeze_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
+      "evidence": "qa/live_verification/nude_holdout_policy_freeze_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:28:58+00:00",
+      "updated_at": "2026-07-22T11:48:29+00:00",
       "orphaned": false
     },
     "MF-P5-11.03": {

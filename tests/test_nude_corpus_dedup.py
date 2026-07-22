@@ -136,6 +136,34 @@ def test_roboflow_suffix_is_removed_only_inside_lineage() -> None:
     assert normalized_source_family_key(first) == normalized_source_family_key(second)
 
 
+def test_explicit_video_frames_share_one_source_family_and_strictest_partition() -> None:
+    first = _record(
+        "frame-1",
+        dataset="clip.v1",
+        lineage="clip-05",
+        path="train/clip-05_mp4-0001_jpg.rf.0123456789abcdef.jpg",
+        sha="a" * 64,
+        split="train",
+    )
+    second = _record(
+        "frame-2",
+        dataset="clip.v1",
+        lineage="clip-05",
+        path="test/clip-05_mp4-0099_jpg.rf.fedcba9876543210.jpg",
+        sha="b" * 64,
+        split="test",
+    )
+    assert normalized_source_family_key(first) == "clip-05:clip-05"
+    assert normalized_source_family_key(first) == normalized_source_family_key(second)
+    grouped, _ = group_records(
+        [first, second],
+        dhashes=(0, 2**64 - 1),
+        phashes=(0, 2**64 - 1),
+    )
+    assert grouped[0]["split_group_id"] == grouped[1]["split_group_id"]
+    assert {row["assigned_partition"] for row in grouped} == {"test"}
+
+
 def test_partition_preflight_rejects_one_group_in_multiple_partitions() -> None:
     records = [
         {"sample_id": "a", "split_group_id": "group", "assigned_partition": "train"},

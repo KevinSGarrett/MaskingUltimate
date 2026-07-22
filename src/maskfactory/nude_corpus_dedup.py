@@ -19,6 +19,7 @@ from .nude_corpus_intake import ADOPTED_RECORD_COUNT, load_adopted_intake, load_
 PARTITION_PRECEDENCE = {"train": 0, "validation": 1, "test": 2, "holdout": 3}
 ROBOFLOW_SUFFIX = re.compile(r"\.rf\.[0-9a-f]{8,}$", re.IGNORECASE)
 ENCODING_SUFFIX = re.compile(r"_(?:jpg|jpeg|png)$", re.IGNORECASE)
+VIDEO_FRAME_SUFFIX = re.compile(r"(?:[_-](?:mp4|mov|avi|mkv|webm))[-_]\d+$", re.IGNORECASE)
 
 
 class NudeCorpusDedupError(RuntimeError):
@@ -106,6 +107,7 @@ def normalized_source_family_key(record: Mapping[str, Any]) -> str:
     relative = str(record.get("source_relative_path") or "").replace("\\", "/")
     stem = Path(relative).stem.casefold()
     stem = ENCODING_SUFFIX.sub("", ROBOFLOW_SUFFIX.sub("", stem))
+    stem = VIDEO_FRAME_SUFFIX.sub("", stem)
     if not lineage or not stem:
         raise NudeCorpusDedupError("source family identity missing")
     return f"{lineage}:{stem}"
@@ -315,6 +317,58 @@ def build_full_corpus_groups(
     return grouped, summary
 
 
+def regroup_from_verified_hash_evidence(
+    intake_root: Path,
+    *,
+    prior_summary_path: Path,
+    prior_mapping_path: Path,
+    hamming_threshold: int = 3,
+    phash_threshold: int = 6,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Reapply corrected grouping rules without decoding unchanged source pixels again."""
+
+    prior = load_group_evidence(prior_summary_path, prior_mapping_path)
+    intake = load_adopted_intake(intake_root, platform="local")
+    records_by_id = load_records(intake)
+    if set(prior) != set(records_by_id):
+        raise NudeCorpusDedupError("prior hash evidence sample coverage drift")
+    records = [records_by_id[key] for key in sorted(records_by_id)]
+    dhashes = []
+    phashes = []
+    for record in records:
+        evidence = prior[str(record["sample_id"])]
+        if evidence.get("source_sha256") != record.get("source_sha256"):
+            raise NudeCorpusDedupError("prior hash evidence source drift")
+        try:
+            dhashes.append(int(str(evidence["dhash64"]), 16))
+            phashes.append(int(str(evidence["phash64"]), 16))
+        except (KeyError, ValueError) as exc:
+            raise NudeCorpusDedupError("prior perceptual hash invalid") from exc
+    grouped, summary = group_records(
+        records,
+        dhashes=dhashes,
+        phashes=phashes,
+        hamming_threshold=hamming_threshold,
+        phash_threshold=phash_threshold,
+    )
+    summary.update(
+        {
+            "schema_version": "maskfactory.nude_corpus_split_groups.v2",
+            "artifact_type": "nude_corpus_split_group_summary",
+            "registry_sha256": intake["registry"]["self_sha256"],
+            "shard_index_sha256": intake["index"]["self_sha256"],
+            "source_hashes_verified": True,
+            "perceptual_hash": "dhash64_9x8_bilinear",
+            "secondary_perceptual_hash": "phash64_dct_32x32_top8",
+            "family_normalization": "roboflow_suffix_plus_explicit_video_frame_collapse_v2",
+            "prior_mapping_file_sha256": hashlib.sha256(
+                Path(prior_mapping_path).read_bytes()
+            ).hexdigest(),
+        }
+    )
+    return grouped, summary
+
+
 def write_group_evidence(
     records: Sequence[Mapping[str, Any]], summary: Mapping[str, Any], output_dir: Path
 ) -> dict[str, Any]:
@@ -397,6 +451,7 @@ __all__ = [
     "group_records",
     "load_group_evidence",
     "normalized_source_family_key",
+    "regroup_from_verified_hash_evidence",
     "requested_partition",
     "write_group_evidence",
 ]

@@ -10,7 +10,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import shutil
+import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict
 from datetime import datetime
@@ -20,6 +23,8 @@ from typing import Any
 from PIL import Image, ImageDraw
 
 from ..io.hashing import sha256_file, sha256_file_map
+from ..io.png_strict import read_mask, write_label_map
+from ..ontology import OntologyError, load_ontology
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
 REPORT_KEYS = frozenset(
@@ -664,6 +669,335 @@ def execute_semantic_requalification_batch(
     }
     result["result_sha256"] = _canonical_sha256(result)
     return result
+
+
+def publish_semantic_relabel_versions(
+    plan: Mapping[str, Any],
+    result: Mapping[str, Any],
+    *,
+    packages_root: Path,
+    publication_root: Path,
+    ontology_path: Path,
+    now: datetime,
+) -> dict[str, Any]:
+    """Publish verified relabel outcomes as new immutable machine candidates.
+
+    Parent packages are read-only. Source and binary target masks remain byte exact;
+    the copied indexed map and manifest are changed together so the new label has
+    one coherent ontology meaning. Previous certification never crosses the version
+    boundary: every published package must pass fresh package certification.
+    """
+
+    if plan.get("plan_sha256") != _canonical_sha256(_without_self_hash(plan, "plan_sha256")):
+        raise PackageSemanticAlignmentError("semantic bulk plan hash mismatch")
+    if result.get("result_sha256") != _canonical_sha256(
+        _without_self_hash(result, "result_sha256")
+    ):
+        raise PackageSemanticAlignmentError("semantic bulk result hash mismatch")
+    if result.get("plan_sha256") != plan.get("plan_sha256"):
+        raise PackageSemanticAlignmentError("semantic bulk publication plan binding drifted")
+    batches = plan.get("batches")
+    batch_index = result.get("batch_index")
+    if (
+        not isinstance(batches, Sequence)
+        or isinstance(batches, (str, bytes))
+        or not isinstance(batch_index, int)
+        or batch_index < 0
+        or batch_index >= len(batches)
+    ):
+        raise PackageSemanticAlignmentError("semantic bulk publication batch is invalid")
+    batch = batches[batch_index]
+    if not isinstance(batch, Mapping) or result.get("batch_sha256") != batch.get("batch_sha256"):
+        raise PackageSemanticAlignmentError("semantic bulk publication batch binding drifted")
+    if (
+        result.get("authority_claimed") is not False
+        or result.get("mutation_performed") is not False
+    ):
+        raise PackageSemanticAlignmentError("semantic bulk result has an invalid authority claim")
+
+    try:
+        ontology = load_ontology(ontology_path)
+    except OntologyError as exc:
+        raise PackageSemanticAlignmentError(str(exc)) from exc
+    ontology_sha256 = sha256_file(Path(ontology_path))
+    packages = Path(packages_root).resolve()
+    publication = Path(publication_root).resolve()
+    cases = {
+        str(case.get("case_id")): case
+        for case in plan.get("cases") or ()
+        if isinstance(case, Mapping)
+    }
+    published: list[dict[str, Any]] = []
+    for outcome in result.get("outcomes") or ():
+        if (
+            not isinstance(outcome, Mapping)
+            or outcome.get("outcome") != "relabel_new_immutable_version"
+        ):
+            continue
+        case_id = str(outcome.get("case_id"))
+        case = cases.get(case_id)
+        if case is None or case_id not in set(batch.get("case_ids") or ()):
+            raise PackageSemanticAlignmentError(
+                "semantic relabel outcome references an unknown case"
+            )
+        relative = Path(str(case.get("package", "")))
+        if relative.is_absolute() or not relative.parts or ".." in relative.parts:
+            raise PackageSemanticAlignmentError("semantic relabel package path is unsafe")
+        parent = (packages / relative).resolve()
+        if packages not in parent.parents:
+            raise PackageSemanticAlignmentError("semantic relabel package escapes its root")
+        manifest_path = parent / "manifest.json"
+        source = parent / str(case.get("source_file"))
+        if sha256_file(manifest_path) != case.get("manifest_sha256"):
+            raise PackageSemanticAlignmentError("semantic relabel parent manifest drifted")
+        if sha256_file(source) != case.get("source_sha256"):
+            raise PackageSemanticAlignmentError("semantic relabel parent source drifted")
+        if outcome.get("manifest_sha256") != case.get("manifest_sha256") or outcome.get(
+            "source_sha256"
+        ) != case.get("source_sha256"):
+            raise PackageSemanticAlignmentError("semantic relabel outcome lineage drifted")
+        relabel_map = outcome.get("relabel_map")
+        if not isinstance(relabel_map, Mapping) or not relabel_map:
+            raise PackageSemanticAlignmentError("semantic relabel map is missing")
+
+        parent_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if parent_manifest.get("mask_ontology_version", "body_parts_v1") != ontology.version:
+            raise PackageSemanticAlignmentError("semantic relabel ontology version drifted")
+        _validate_relabel_map(parent_manifest, relabel_map, ontology)
+        revision_payload = {
+            "case_id": case_id,
+            "parent_manifest_sha256": case["manifest_sha256"],
+            "result_sha256": result["result_sha256"],
+            "relabel_map": dict(sorted((str(k), str(v)) for k, v in relabel_map.items())),
+            "ontology_sha256": ontology_sha256,
+        }
+        revision_id = f"semantic_relabel_v1_{_canonical_sha256(revision_payload)[:24]}"
+        destination = publication / revision_id / relative
+        existing_lineage = (
+            _load_json(destination / "semantic_relabel_lineage.json")
+            if destination.exists()
+            else None
+        )
+        published_at = (
+            existing_lineage.get("published_at")
+            if isinstance(existing_lineage, Mapping)
+            else now.isoformat()
+        )
+        if not isinstance(published_at, str) or not published_at:
+            raise PackageSemanticAlignmentError("semantic relabel publication time is invalid")
+        lineage = {
+            "schema_version": "1.0.0",
+            "authority_claimed": False,
+            "publication_status": "immutable_machine_candidate_requires_recertification",
+            "revision_id": revision_id,
+            "case_id": case_id,
+            "parent_package": relative.as_posix(),
+            "parent_manifest_sha256": case["manifest_sha256"],
+            "parent_lineage_sha256": case.get("lineage_sha256"),
+            "source_sha256": case["source_sha256"],
+            "preserved_target_mask_sha256s": {
+                str(target["label_id"]): str(target["mask_sha256"])
+                for target in case.get("targets") or ()
+                if isinstance(target, Mapping)
+            },
+            "plan_sha256": plan["plan_sha256"],
+            "batch_sha256": result["batch_sha256"],
+            "result_sha256": result["result_sha256"],
+            "quorum_sha256": result.get("quorum_sha256"),
+            "ontology_version": ontology.version,
+            "ontology_sha256": ontology_sha256,
+            "relabel_map": revision_payload["relabel_map"],
+            "published_at": published_at,
+        }
+        lineage["lineage_sha256"] = _canonical_sha256(lineage)
+        if existing_lineage is not None and existing_lineage != lineage:
+            raise PackageSemanticAlignmentError(
+                f"semantic relabel publication conflicts with existing revision: {revision_id}"
+            )
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        staging = destination.parent / f".{destination.name}.tmp-{uuid.uuid4().hex}"
+        try:
+            shutil.copytree(parent, staging, copy_function=shutil.copy2)
+            _rewrite_relabel_candidate(
+                staging,
+                parent_manifest=parent_manifest,
+                relabel_map=relabel_map,
+                ontology=ontology,
+                lineage=lineage,
+                now=datetime.fromisoformat(published_at.replace("Z", "+00:00")),
+            )
+            if destination.exists():
+                if _tree_hashes(destination) != _tree_hashes(staging):
+                    raise PackageSemanticAlignmentError(
+                        f"semantic relabel immutable revision drifted: {revision_id}"
+                    )
+            else:
+                os.replace(staging, destination)
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
+        published_manifest_sha256 = sha256_file(destination / "manifest.json")
+        published.append(
+            {
+                "case_id": case_id,
+                "revision_id": revision_id,
+                "package": destination.as_posix(),
+                "manifest_sha256": published_manifest_sha256,
+                "lineage_sha256": lineage["lineage_sha256"],
+                "authority_claimed": False,
+                "requires_recertification": True,
+            }
+        )
+
+    publication_result: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "authority_claimed": False,
+        "plan_sha256": plan["plan_sha256"],
+        "batch_sha256": result["batch_sha256"],
+        "result_sha256": result["result_sha256"],
+        "published_count": len(published),
+        "published": published,
+    }
+    publication_result["publication_sha256"] = _canonical_sha256(publication_result)
+    return publication_result
+
+
+def _validate_relabel_map(
+    manifest: Mapping[str, Any], relabel_map: Mapping[str, Any], ontology: Any
+) -> None:
+    parts = manifest.get("parts")
+    if not isinstance(parts, Mapping):
+        raise PackageSemanticAlignmentError("semantic relabel manifest parts are invalid")
+    destinations: set[str] = set()
+    for old_value, new_value in relabel_map.items():
+        old, new = str(old_value), str(new_value)
+        if old == new or new in destinations:
+            raise PackageSemanticAlignmentError("semantic relabel map collides")
+        try:
+            old_label = ontology.label(old, require_enabled=True)
+            new_label = ontology.label(new, require_enabled=True)
+        except OntologyError as exc:
+            raise PackageSemanticAlignmentError(str(exc)) from exc
+        if old_label.map != new_label.map or old_label.mask_type != new_label.mask_type:
+            raise PackageSemanticAlignmentError(
+                "semantic relabel labels are not map/type compatible"
+            )
+        source_entry = parts.get(old)
+        destination_entry = parts.get(new)
+        if not isinstance(source_entry, Mapping) or not isinstance(
+            source_entry.get("mask_file"), str
+        ):
+            raise PackageSemanticAlignmentError(f"semantic relabel source is not active: {old}")
+        if isinstance(destination_entry, Mapping) and destination_entry.get("status") != "n/a":
+            raise PackageSemanticAlignmentError(
+                f"semantic relabel destination is already active: {new}"
+            )
+        destinations.add(new)
+
+
+def _rewrite_relabel_candidate(
+    package: Path,
+    *,
+    parent_manifest: Mapping[str, Any],
+    relabel_map: Mapping[str, Any],
+    ontology: Any,
+    lineage: Mapping[str, Any],
+    now: datetime,
+) -> None:
+    manifest = json.loads(json.dumps(parent_manifest))
+    parts = manifest["parts"]
+    for old_value, new_value in sorted(relabel_map.items()):
+        old, new = str(old_value), str(new_value)
+        old_entry = parts[old]
+        previous_destination = parts.get(new)
+        old_mask_relative = Path(str(old_entry["mask_file"]))
+        new_mask_relative = old_mask_relative.with_name(f"{new}{old_mask_relative.suffix}")
+        old_mask = package / old_mask_relative
+        new_mask = package / new_mask_relative
+        if new_mask.exists() and new_mask != old_mask:
+            raise PackageSemanticAlignmentError("semantic relabel destination mask file collides")
+        new_mask.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(old_mask, new_mask)
+        old_entry["mask_file"] = new_mask_relative.as_posix()
+        old_entry["mask_sha256"] = sha256_file(new_mask)
+        old_entry["status"] = "draft_model_generated"
+        if isinstance(previous_destination, Mapping):
+            parts[old] = dict(previous_destination)
+        else:
+            del parts[old]
+        parts[new] = old_entry
+
+        old_panel = package / "qa_panels" / f"{old}.png"
+        new_panel = package / "qa_panels" / f"{new}.png"
+        if old_panel.is_file():
+            if new_panel.exists():
+                raise PackageSemanticAlignmentError("semantic relabel destination panel collides")
+            os.replace(old_panel, new_panel)
+
+        old_label = ontology.label(old, require_enabled=True)
+        new_label = ontology.label(new, require_enabled=True)
+        if old_label.id is not None and new_label.id is not None:
+            map_name = f"label_map_{old_label.map}.png"
+            map_path = package / map_name
+            if map_path.is_file():
+                values = read_mask(map_path)
+                if bool((values == new_label.id).any()):
+                    raise PackageSemanticAlignmentError(
+                        "semantic relabel destination already has indexed pixels"
+                    )
+                values[values == old_label.id] = new_label.id
+                write_label_map(
+                    map_path,
+                    values,
+                    bits=16 if old_label.map == "part" else 8,
+                )
+
+    manifest["workflow_status"] = "machine_candidate"
+    manifest["workflow_updated_at"] = now.isoformat()
+    manifest["truth_tier"] = "machine_candidate"
+    (package / "semantic_relabel_lineage.json").write_text(
+        json.dumps(lineage, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    (package / ".maskfactory_frozen.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0.0",
+                "frozen_at": now.isoformat(),
+                "authority_claimed": False,
+                "revision_id": lineage["revision_id"],
+                "lineage_sha256": lineage["lineage_sha256"],
+                "policy": "immutable machine candidate; fresh certification required",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    manifest["files"] = {
+        path.relative_to(package).as_posix(): sha256_file(path)
+        for path in sorted(package.rglob("*"))
+        if path.is_file() and path.name != "manifest.json"
+    }
+    (package / "manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+
+def _load_json(path: Path) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PackageSemanticAlignmentError(
+            f"cannot read immutable semantic lineage: {path}"
+        ) from exc
+
+
+def _tree_hashes(root: Path) -> dict[str, str]:
+    return {
+        path.relative_to(root).as_posix(): sha256_file(path)
+        for path in sorted(root.rglob("*"))
+        if path.is_file()
+    }
 
 
 def validate_package_semantic_alignment(

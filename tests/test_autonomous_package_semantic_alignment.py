@@ -17,6 +17,7 @@ from maskfactory.autonomy.package_semantic_alignment import (
     deterministic_qa_sha256,
     execute_semantic_requalification_batch,
     final_mask_set_sha256,
+    publish_semantic_relabel_versions,
     semantic_alignment_report_sha256,
     validate_package_semantic_alignment,
 )
@@ -386,6 +387,175 @@ def test_bulk_executor_emits_consensus_relabel_proposal_without_rewriting(
     assert result["counts"]["relabel_new_immutable_version"] == 1
     assert result["outcomes"][0]["relabel_map"] == {"left_forearm": "right_upper_arm"}
     assert result["mutation_performed"] is False
+
+
+def test_bulk_relabel_publisher_creates_immutable_candidate_and_preserves_parent(
+    tmp_path: Path,
+) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    parent = packages / "img_00"
+    shutil.copytree(fixture.parents[1], parent)
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = tuple(
+        _batch_review(
+            plan,
+            batch,
+            certificate,
+            verdict="relabel",
+            proposed_label_id="right_upper_arm",
+        )
+        for certificate in certificates
+    )
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    parent_package = parent / "instances" / "p0"
+    before = {
+        path.relative_to(parent_package): path.read_bytes()
+        for path in parent_package.rglob("*")
+        if path.is_file()
+    }
+    publication = publish_semantic_relabel_versions(
+        plan,
+        result,
+        packages_root=packages,
+        publication_root=tmp_path / "published",
+        ontology_path=Path("configs/ontology.yaml"),
+        now=NOW,
+    )
+    assert publication["published_count"] == 1
+    published = Path(publication["published"][0]["package"])
+    manifest = json.loads((published / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["workflow_status"] == "machine_candidate"
+    assert manifest["truth_tier"] == "machine_candidate"
+    assert "left_forearm" not in manifest["parts"]
+    assert manifest["parts"]["right_upper_arm"]["mask_file"] == "masks/right_upper_arm.png"
+    assert (published / "masks" / "right_upper_arm.png").read_bytes() == before[
+        Path("masks/left_forearm.png")
+    ]
+    assert (published / "source.png").read_bytes() == before[Path("source.png")]
+    assert set(np.unique(np.asarray(Image.open(published / "label_map_part.png")))) == {0, 15}
+    assert (
+        json.loads((published / ".maskfactory_frozen.json").read_text(encoding="utf-8"))[
+            "authority_claimed"
+        ]
+        is False
+    )
+    assert {
+        path.relative_to(parent_package): path.read_bytes()
+        for path in parent_package.rglob("*")
+        if path.is_file()
+    } == before
+
+    repeated = publish_semantic_relabel_versions(
+        plan,
+        result,
+        packages_root=packages,
+        publication_root=tmp_path / "published",
+        ontology_path=Path("configs/ontology.yaml"),
+        now=NOW,
+    )
+    assert repeated == publication
+
+    plan_path = tmp_path / "publish_plan.json"
+    result_path = tmp_path / "publish_result.json"
+    receipt_path = tmp_path / "publish_receipt.json"
+    plan_path.write_text(json.dumps(plan), encoding="utf-8")
+    result_path.write_text(json.dumps(result), encoding="utf-8")
+    from maskfactory.cli import main
+
+    cli_result = CliRunner().invoke(
+        main,
+        [
+            "autonomous-semantic-requalification-publish",
+            "--plan",
+            str(plan_path),
+            "--result",
+            str(result_path),
+            "--root",
+            str(packages),
+            "--publication-root",
+            str(tmp_path / "published_cli"),
+            "--ontology",
+            "configs/ontology.yaml",
+            "--output",
+            str(receipt_path),
+            "--as-of",
+            NOW.isoformat(),
+        ],
+    )
+    assert cli_result.exit_code == 0, cli_result.output
+    assert json.loads(cli_result.output)["requires_recertification"] is True
+    assert json.loads(receipt_path.read_text(encoding="utf-8"))["published_count"] == 1
+
+    (published / "source.png").write_bytes(b"drift")
+    with pytest.raises(PackageSemanticAlignmentError, match="immutable revision drifted"):
+        publish_semantic_relabel_versions(
+            plan,
+            result,
+            packages_root=packages,
+            publication_root=tmp_path / "published",
+            ontology_path=Path("configs/ontology.yaml"),
+            now=NOW,
+        )
+
+
+def test_bulk_relabel_publisher_rejects_unknown_label_and_parent_drift(tmp_path: Path) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    shutil.copytree(fixture.parents[1], packages / "img_00")
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = tuple(
+        _batch_review(plan, batch, certificate, verdict="relabel", proposed_label_id="not_real")
+        for certificate in certificates
+    )
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    with pytest.raises(PackageSemanticAlignmentError, match="unknown ontology label"):
+        publish_semantic_relabel_versions(
+            plan,
+            result,
+            packages_root=packages,
+            publication_root=tmp_path / "published",
+            ontology_path=Path("configs/ontology.yaml"),
+            now=NOW,
+        )
+    (packages / "img_00" / "instances" / "p0" / "manifest.json").write_text("{}")
+    with pytest.raises(PackageSemanticAlignmentError, match="parent manifest drifted"):
+        publish_semantic_relabel_versions(
+            plan,
+            result,
+            packages_root=packages,
+            publication_root=tmp_path / "published",
+            ontology_path=Path("configs/ontology.yaml"),
+            now=NOW,
+        )
 
 
 def test_bulk_executor_abstains_one_drifted_case_and_continues(tmp_path: Path) -> None:

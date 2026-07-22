@@ -10263,6 +10263,103 @@ def autonomous_semantic_requalification_execute_command(
     )
 
 
+@main.command("autonomous-semantic-requalification-publish")
+@click.option(
+    "--plan",
+    "plan_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--result",
+    "result_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--publication-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    required=True,
+)
+@click.option(
+    "--ontology",
+    "ontology_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/ontology.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    required=True,
+    help="Immutable publication receipt; package versions are written below publication-root.",
+)
+@click.option("--as-of", default=None, help="UTC ISO-8601 publication time.")
+def autonomous_semantic_requalification_publish_command(
+    plan_path: Path,
+    result_path: Path,
+    packages_root: Path,
+    publication_root: Path,
+    ontology_path: Path,
+    output: Path,
+    as_of: str | None,
+) -> None:
+    """Publish consensus relabels as immutable, uncertified package versions."""
+
+    from datetime import UTC, datetime
+
+    from .autonomy.package_semantic_alignment import (
+        PackageSemanticAlignmentError,
+        publish_semantic_relabel_versions,
+    )
+
+    try:
+        now = datetime.fromisoformat(as_of.replace("Z", "+00:00")) if as_of else datetime.now(UTC)
+        if now.tzinfo is None:
+            raise ValueError("--as-of must include a timezone")
+        publication = publish_semantic_relabel_versions(
+            json.loads(plan_path.read_text(encoding="utf-8")),
+            json.loads(result_path.read_text(encoding="utf-8")),
+            packages_root=packages_root,
+            publication_root=publication_root,
+            ontology_path=ontology_path,
+            now=now,
+        )
+        encoded = (json.dumps(publication, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        if output.exists() and output.read_bytes() != encoded:
+            raise PackageSemanticAlignmentError(
+                "semantic publication receipt conflicts with an existing immutable output"
+            )
+        output.parent.mkdir(parents=True, exist_ok=True)
+        if not output.exists():
+            output.write_bytes(encoded)
+    except (
+        OSError,
+        ValueError,
+        json.JSONDecodeError,
+        PackageSemanticAlignmentError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "status": "published",
+                "published_count": publication["published_count"],
+                "publication_sha256": publication["publication_sha256"],
+                "requires_recertification": True,
+                "output": str(output),
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @main.command("autonomous-certify-package")
 @click.argument("image_id")
 @click.option("--instance", default="p0", show_default=True)

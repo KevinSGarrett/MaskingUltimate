@@ -22947,13 +22947,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 90,
+      "notes": [
+        {
+          "ts": "2026-07-22T08:52:16+00:00",
+          "actor": "ai_agent",
+          "text": "The full queue/recovery contract is implemented, focused-tested, seeded for all 322 RunPod shards, and hash-mirrored to persistent /workspace. It remains partial pending one live provider crash/restart campaign and observed 1,000-record milestone under production load."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; 13 focused queue/intake tests pass; local and RunPod queue SHA256 ccac74754d892a9310fa55c4beb3d31cff9f8a41591231aaed5e0d5bbb893c74; 322 queued shards account for 81,910 records.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T08:52:16+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

@@ -20,6 +20,8 @@ STANDING ORDERS — MaskFactory continuous autonomous build
 MISSION
 Build the real MaskFactory product end-to-end: masks, packages, autonomous certification/repair/abstain, live local runtime (Docker CVAT/Nuclio/Ollama), bridge contracts, and honest tracker truth. Maximize real product progress per hour. Do not optimize for looking busy.
 
+**Platform policy:** RunPod is MaskFactory’s production compute, self-hosted review, training, batch, and persistent-runtime platform; the F-drive DVC remote is a governed local backup tier; AWS is retired from active operation and may be accessed only through narrowly scoped, non-mutating, hash-verified legacy-source recovery when unique required material may still exist there.
+
 AUTHORITY
 - Live tracker = status authority (`Plan/Tracker/tracker.py`), not plan prose, checkboxes, or memory.
 - Governing plan: `maskfactory-full-completion_69d863cb.plan.md` + `Plan/` specs.

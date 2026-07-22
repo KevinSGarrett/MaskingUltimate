@@ -23,17 +23,15 @@ New-Item -ItemType Directory -Force $UvCache | Out-Null
 $env:UV_CACHE_DIR = $UvCache
 $Requirements = @(
     "dvc==3.67.1",
-    "dvc-s3==3.3.0",
-    "fsspec==2026.4.0",
-    "s3fs==2026.4.0"
+    "fsspec==2026.4.0"
 )
 uv pip install --python $Python $Requirements
 if ($LASTEXITCODE -ne 0) {
-    throw "failed to install pinned DVC/S3 runtime"
+    throw "failed to install pinned local DVC runtime"
 }
 
 $version = & $Dvc version
-if ($LASTEXITCODE -ne 0 -or ($version -join "`n") -notmatch "s3 \(s3fs = 2026\.4\.0\)") {
-    throw "DVC runtime does not report the pinned S3 backend"
+if ($LASTEXITCODE -ne 0 -or ($version -join "`n") -notmatch "DVC version: 3\.67\.1") {
+    throw "DVC runtime does not report the pinned local-runtime version"
 }
 $version

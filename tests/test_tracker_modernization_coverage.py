@@ -21,9 +21,9 @@ def _tracker_module() -> dict:
 def test_expanded_tracker_has_exact_authoritative_item_count_and_no_duplicate_ids() -> None:
     module = _tracker_module()
     items = module["parse_items_files"]()
-    assert module["EXPECTED_ITEM_COUNT"] == 856
-    assert len(items) == 856
-    assert len(set(items)) == 856
+    assert module["EXPECTED_ITEM_COUNT"] == 858
+    assert len(items) == 858
+    assert len(set(items)) == 858
 
 
 def test_ontology_v2_checklist_is_imported_one_to_one_as_seventy_items() -> None:
@@ -50,7 +50,7 @@ def test_every_new_atomic_item_has_explicit_verification_and_blocker_clauses() -
         for item in items.values()
         if item["source_file"][:2].isdigit() and 11 <= int(item["source_file"][:2]) <= 20
     ]
-    assert len(new_items) == 374
+    assert len(new_items) == 375
     for item in new_items:
         assert "Verify:" in item["description"], item["id"]
         assert "Blocked by:" in item["description"], item["id"]

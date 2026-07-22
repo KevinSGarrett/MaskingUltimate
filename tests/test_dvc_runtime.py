@@ -88,12 +88,12 @@ def test_dvc_bootstrap_script_matches_environment_lock() -> None:
     lock = Path("env/requirements.lock.txt").read_text(encoding="utf-8")
     for requirement in (
         "dvc==3.67.1",
-        "dvc-s3==3.3.0",
         "fsspec==2026.4.0",
-        "s3fs==2026.4.0",
     ):
         assert requirement in script
         assert requirement in lock
+    assert "dvc-s3" not in script
+    assert "s3fs" not in script
 
 
 def test_gitignore_keeps_dvc_descriptors_publishable() -> None:

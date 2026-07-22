@@ -1,5 +1,7 @@
 # 14 — Self-Hosted Visual Authority and RunPod Migration
 
+RunPod is the production compute and persistent-runtime platform. The governed F-drive DVC remote is a local backup/restore tier. AWS is retired from active operation and is permitted only for specifically justified, read-only, non-mutating, hash-verified legacy-source recovery; it is never a routine prerequisite or global blocker.
+
 Use this procedure with doc 25 whenever selecting a visual critic, approving
 strict-VLM evidence, adding proposal/refinement providers, or reconciling
 assets from AWS to RunPod.

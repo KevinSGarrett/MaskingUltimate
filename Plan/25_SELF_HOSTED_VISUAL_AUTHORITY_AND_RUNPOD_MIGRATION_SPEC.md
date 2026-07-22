@@ -230,7 +230,9 @@ Regression includes the accepted target plus protected invariants: unchanged
 identity/owner, untouched accepted regions, neighboring labels, materials,
 transforms, instance exclusivity, and prior known-good fixtures.
 
-## 10. AWS read-only inventory and AWS-to-RunPod migration
+## 10. Optional read-only legacy-source recovery from AWS
+
+RunPod is the production compute, review, training, batch, and persistent-runtime platform. The F-drive DVC remote is a governed local backup tier. AWS is retired from active operation: this section applies only when specifically justified evidence suggests that a known legacy resource contains unique required material. It is never a routine prerequisite or global blocker.
 
 AWS authentication authorizes source discovery only. MaskFactory must not
 start EC2, attach or snapshot EBS, alter S3, or execute MaskFactory workloads

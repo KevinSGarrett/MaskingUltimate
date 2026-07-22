@@ -11977,3 +11977,8 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - `MF-P1-07.09` reached `PRODUCTION_EVIDENCE_PASS`: DVC 3.67.1 added the three real qualified external-supervision canary packages as `data/packages.dvc` (`41609c16a8aed4de946dd4cd6aafc943.dir`, 15 files, 1,242,277 bytes).
 - The governed `maskfactory-dvc-local` remote accepted 14 objects; `dvc status -c` reported cache/remote in sync. A separate minimal DVC repository then fetched 14 objects and restored all 15 files with an exact source/restore SHA-256 map match.
 - No AWS mutation was used. The payload remains train-only `weighted_pseudo_label`, not autonomous gold. Evidence: `qa/live_verification/dvc_packages_first_push_restore_20260722.json`.
+## 2026-07-22 — RunPod-first platform policy and local CVAT recovery
+
+- Adopted the binding RunPod-first/AWS-retirement policy in standing orders, doc 25, Instructions 14, the master index, active DVC bootstrap, and tracker-backed item `MF-P0-17.25`. The completed F-drive DVC proof remains the local backup tier; it is not represented as RunPod persistence.
+- Docker Desktop recovered at engine 29.6.1. Pinned CVAT v2.24.0 became healthy after warm-up; the idempotent credential bootstrap stored a new local token without printing it, and the live SAM2 interactor smoke passed (`task_id=1`, 17.537 s, 21,491 foreground pixels).
+- Remaining doctor failures are independently tracked: Ubuntu-22.04 roundtrip/model smokes and the C: free-space hard floor. They do not authorize weakening thresholds or bypassing the RunPod coordinator.

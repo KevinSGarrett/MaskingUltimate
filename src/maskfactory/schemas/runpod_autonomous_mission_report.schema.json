@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/runpod_autonomous_mission_report.schema.json",
+  "title": "MaskFactory RunPod autonomous work-cell mission report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mission_id",
+    "manifest_sha256",
+    "mission_state",
+    "record_count",
+    "terminal_record_count",
+    "remaining_record_count",
+    "stage_counts",
+    "outcome_counts",
+    "repair_attempt_count",
+    "milestones",
+    "integrity_errors",
+    "queue_state_sha256",
+    "self_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "maskfactory.runpod_autonomous_mission_report.v1"},
+    "mission_id": {"type": "string", "minLength": 1},
+    "manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "mission_state": {"enum": ["admitted", "running", "complete", "failed"]},
+    "record_count": {"type": "integer", "minimum": 0},
+    "terminal_record_count": {"type": "integer", "minimum": 0},
+    "remaining_record_count": {"type": "integer", "minimum": 0},
+    "stage_counts": {"$ref": "#/$defs/countMap"},
+    "outcome_counts": {"$ref": "#/$defs/countMap"},
+    "repair_attempt_count": {"type": "integer", "minimum": 0},
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "terminal_record_count"],
+        "properties": {
+          "sequence": {"type": "integer", "minimum": 1},
+          "terminal_record_count": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "integrity_errors": {"type": "array", "items": {"type": "string"}},
+    "queue_state_sha256": {"$ref": "#/$defs/sha256"},
+    "self_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "countMap": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    }
+  }
+}

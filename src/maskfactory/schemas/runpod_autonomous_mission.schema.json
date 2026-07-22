@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/runpod_autonomous_mission.schema.json",
+  "title": "MaskFactory RunPod autonomous work-cell mission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mission_id",
+    "input",
+    "bindings",
+    "provider_bindings",
+    "role_bindings",
+    "repair_policy",
+    "execution",
+    "authority_ceiling",
+    "allowed_output_prefix",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "maskfactory.runpod_autonomous_mission.v1"},
+    "mission_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{7,127}$"},
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest_path", "manifest_sha256", "record_count", "shard_count"],
+      "properties": {
+        "manifest_path": {"type": "string", "minLength": 1},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "record_count": {"type": "integer", "minimum": 1},
+        "shard_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ontology_sha256",
+        "target_contract_schema_sha256",
+        "qa_threshold_registry_sha256",
+        "provider_catalog_sha256",
+        "critic_catalog_sha256",
+        "certification_policy_sha256"
+      ],
+      "properties": {
+        "ontology_sha256": {"$ref": "#/$defs/sha256"},
+        "target_contract_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "qa_threshold_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "critic_catalog_sha256": {"$ref": "#/$defs/sha256"},
+        "certification_policy_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "provider_bindings": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["provider_id", "family", "checkpoint_sha256", "runtime_sha256"],
+        "properties": {
+          "provider_id": {"type": "string", "minLength": 1},
+          "family": {"type": "string", "minLength": 1},
+          "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+          "runtime_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "role_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_visual_critic", "independent_juror"],
+      "properties": {
+        "primary_visual_critic": {"$ref": "#/$defs/roleBinding"},
+        "independent_juror": {"$ref": "#/$defs/roleBinding"}
+      }
+    },
+    "repair_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts",
+        "max_changed_pixel_fraction",
+        "max_elapsed_seconds",
+        "allowed_operations"
+      ],
+      "properties": {
+        "max_attempts": {"type": "integer", "minimum": 0, "maximum": 20},
+        "max_changed_pixel_fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "max_elapsed_seconds": {"type": "integer", "minimum": 1},
+        "allowed_operations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "box_refine",
+              "point_refine",
+              "mask_prompt_refine",
+              "roi_regenerate",
+              "component_prune",
+              "hole_fill_bounded"
+            ]
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lease_seconds",
+        "max_record_attempts",
+        "checkpoint_records",
+        "milestone_records"
+      ],
+      "properties": {
+        "lease_seconds": {"type": "integer", "minimum": 5, "maximum": 86400},
+        "max_record_attempts": {"type": "integer", "minimum": 1, "maximum": 20},
+        "checkpoint_records": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "milestone_records": {"type": "integer", "minimum": 1, "maximum": 1000000}
+      }
+    },
+    "authority_ceiling": {
+      "enum": [
+        "machine_verified_candidate",
+        "operationally_certified_artifact",
+        "autonomous_certified_gold"
+      ]
+    },
+    "allowed_output_prefix": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    },
+    "manifest_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "roleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "model_id",
+        "family",
+        "revision_sha256",
+        "role_certificate_sha256",
+        "revoked"
+      ],
+      "properties": {
+        "status": {"enum": ["qualified", "unavailable"]},
+        "model_id": {"type": ["string", "null"], "minLength": 1},
+        "family": {"type": ["string", "null"], "minLength": 1},
+        "revision_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "role_certificate_sha256": {
+          "oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+        },
+        "revoked": {"type": "boolean"}
+      }
+    }
+  }
+}

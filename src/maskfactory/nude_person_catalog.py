@@ -149,6 +149,8 @@ def compare_person_proposal_catalogs(
                 {
                     "bbox_xyxy": list(_box(proposal.get("bbox_xyxy"), width=width, height=height)),
                     "confidence": float(confidence),
+                    "label": "person",
+                    "authority": "proposal_only",
                 }
             )
         identities.add(identity)
@@ -159,6 +161,7 @@ def compare_person_proposal_catalogs(
                 "family_id": family_id,
                 "revision": revision,
                 "artifact_sha256": artifact_sha256,
+                "source_sha256": source_sha256,
                 "proposals": proposals,
             }
         )
@@ -237,4 +240,65 @@ def compare_person_proposal_catalogs(
     return {**body, "report_sha256": _canonical_sha256(body)}
 
 
-__all__ = ["NudePersonCatalogError", "compare_person_proposal_catalogs"]
+def validate_person_proposal_catalog_report(report: Mapping[str, Any]) -> dict[str, Any]:
+    """Recompute a catalog comparison from its embedded proposal evidence."""
+
+    if not isinstance(report, Mapping):
+        raise NudePersonCatalogError("person_catalog_report_invalid")
+    policy = report.get("policy")
+    if not isinstance(policy, Mapping):
+        raise NudePersonCatalogError("person_catalog_policy_invalid")
+    try:
+        rebuilt = compare_person_proposal_catalogs(
+            sample_id=str(report.get("sample_id") or ""),
+            source_sha256=str(report.get("source_sha256") or ""),
+            image_size=report.get("image_size", ()),
+            provider_records=report.get("provider_records", ()),
+            iou_min=float(policy["iou_min"]),
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        if isinstance(exc, NudePersonCatalogError):
+            raise
+        raise NudePersonCatalogError("person_catalog_policy_invalid") from exc
+    if dict(report) != rebuilt:
+        raise NudePersonCatalogError("person_catalog_report_drift")
+    return rebuilt
+
+
+def build_person_catalog_stage_receipt(report: Mapping[str, Any]) -> dict[str, Any]:
+    """Seal one nonterminal catalog comparison for durable queue replay."""
+
+    validated = validate_person_proposal_catalog_report(report)
+    body: dict[str, Any] = {
+        "schema_version": "maskfactory.nude_person_catalog_stage.v1",
+        "stage": "person_catalog_comparison",
+        "sample_id": validated["sample_id"],
+        "source_sha256": validated["source_sha256"],
+        "status": validated["status"],
+        "catalog_report_sha256": validated["report_sha256"],
+        "catalog_report": validated,
+        "authority": "intermediate_non_authoritative_evidence",
+        "production_mask_authority": False,
+        "operational_certificate_issued": False,
+    }
+    return {**body, "evidence_sha256": _canonical_sha256(body)}
+
+
+def validate_person_catalog_stage_receipt(payload: Mapping[str, Any]) -> dict[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise NudePersonCatalogError("person_catalog_stage_payload_invalid")
+    if payload.get("schema_version") != "maskfactory.nude_person_catalog_stage.v1":
+        raise NudePersonCatalogError("person_catalog_stage_schema_invalid")
+    rebuilt = build_person_catalog_stage_receipt(payload.get("catalog_report", {}))
+    if dict(payload) != rebuilt:
+        raise NudePersonCatalogError("person_catalog_stage_evidence_drift")
+    return rebuilt
+
+
+__all__ = [
+    "NudePersonCatalogError",
+    "build_person_catalog_stage_receipt",
+    "compare_person_proposal_catalogs",
+    "validate_person_catalog_stage_receipt",
+    "validate_person_proposal_catalog_report",
+]

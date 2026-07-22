@@ -9,6 +9,10 @@ import pytest
 from PIL import Image, ImageDraw
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
+from maskfactory.nude_person_catalog import (
+    build_person_catalog_stage_receipt,
+    compare_person_proposal_catalogs,
+)
 from maskfactory.nude_person_ownership import (
     build_person_ownership_stage_receipt,
     resolve_person_instance_ownership,
@@ -403,6 +407,65 @@ def test_ownership_stage_checkpoint_is_durable_idempotent_and_nonterminal(
     summary = queue.summary(platform="runpod")
     assert summary["checkpointed_records"] == 0
     assert summary["stage_evidence"] == {"person_instance_ownership": 1}
+
+
+def test_person_catalog_stage_checkpoint_is_durable_idempotent_and_nonterminal(
+    tmp_path: Path,
+) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="catalog-worker")
+    assert lease is not None
+    source_sha256 = "a" * 64
+    provider_records = []
+    for provider_id, family_id, artifact in (
+        ("groundingdino", "groundingdino", "b" * 64),
+        ("yolo11m", "yolo", "c" * 64),
+    ):
+        provider_records.append(
+            {
+                "provider_id": provider_id,
+                "family_id": family_id,
+                "revision": "rev-1",
+                "artifact_sha256": artifact,
+                "source_sha256": source_sha256,
+                "proposals": [
+                    {
+                        "bbox_xyxy": [5, 5, 95, 95],
+                        "confidence": 0.9,
+                        "label": "person",
+                        "authority": "proposal_only",
+                    }
+                ],
+            }
+        )
+    report = compare_person_proposal_catalogs(
+        sample_id="catalog-sample",
+        source_sha256=source_sha256,
+        image_size=[100, 100],
+        provider_records=provider_records,
+    )
+    receipt = build_person_catalog_stage_receipt(report)
+    receipt["sample_index"] = 0
+
+    first = queue.checkpoint_person_catalogs(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    replay = queue.checkpoint_person_catalogs(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+
+    assert first == {"inserted": 1, "retained": 0, "terminal_progress_advanced": False}
+    assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
+    summary = queue.summary(platform="runpod")
+    assert summary["checkpointed_records"] == 0
+    assert summary["stage_evidence"] == {"person_catalog_comparison": 1}
 
 
 def test_ownership_stage_checkpoint_rejects_authority_tamper(tmp_path: Path) -> None:

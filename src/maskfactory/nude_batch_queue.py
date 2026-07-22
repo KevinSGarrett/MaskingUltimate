@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
 
+from .nude_person_catalog import validate_person_catalog_stage_receipt
 from .nude_person_ownership import validate_person_ownership_stage_receipt
 from .nude_record_qualification import (
     validate_input_terminal_queue_payload,
@@ -491,6 +492,83 @@ class NudeBatchQueue:
                 platform=platform,
                 shard_path=shard_path,
                 event="person_ownership_checkpoint",
+                detail={"inserted": inserted, "retained": retained},
+                now=now,
+            )
+        return {
+            "inserted": inserted,
+            "retained": retained,
+            "terminal_progress_advanced": False,
+        }
+
+    def checkpoint_person_catalogs(
+        self,
+        *,
+        platform: str,
+        shard_path: str,
+        lease_token: str,
+        receipts: Sequence[Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        """Persist replayable provider-catalog comparisons without terminal progress."""
+
+        if not receipts:
+            raise NudeBatchQueueError("empty person catalog checkpoint")
+        validated = []
+        for receipt in receipts:
+            sample_index = receipt.get("sample_index")
+            if (
+                not isinstance(sample_index, int)
+                or isinstance(sample_index, bool)
+                or sample_index < 0
+            ):
+                raise NudeBatchQueueError("person catalog sample_index invalid")
+            payload = validate_person_catalog_stage_receipt(
+                {key: value for key, value in receipt.items() if key != "sample_index"}
+            )
+            validated.append((sample_index, payload))
+        now = time.time()
+        inserted = 0
+        retained = 0
+        with self._transaction() as connection:
+            shard = self._owned_lease(connection, platform, shard_path, lease_token)
+            for sample_index, payload in validated:
+                if sample_index >= int(shard["sample_count"]):
+                    raise NudeBatchQueueError("person catalog checkpoint exceeds shard")
+                payload_sha = _canonical_sha256(payload)
+                values = (
+                    platform,
+                    str(payload["sample_id"]),
+                    shard_path,
+                    sample_index,
+                    str(payload["stage"]),
+                    str(payload["source_sha256"]),
+                    str(payload["evidence_sha256"]),
+                    payload_sha,
+                    json.dumps(payload, sort_keys=True),
+                    now,
+                )
+                try:
+                    connection.execute(
+                        "INSERT INTO record_stage_evidence(platform,sample_id,shard_path,"
+                        "sample_index,stage,source_sha256,evidence_sha256,payload_sha256,"
+                        "payload_json,recorded_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                        values,
+                    )
+                    inserted += 1
+                except sqlite3.IntegrityError as exc:
+                    existing = connection.execute(
+                        "SELECT payload_sha256 FROM record_stage_evidence WHERE platform=? "
+                        "AND sample_id=? AND stage=?",
+                        (platform, payload["sample_id"], payload["stage"]),
+                    ).fetchone()
+                    if existing is None or existing["payload_sha256"] != payload_sha:
+                        raise NudeBatchQueueError("person catalog idempotency conflict") from exc
+                    retained += 1
+            self._event(
+                connection,
+                platform=platform,
+                shard_path=shard_path,
+                event="person_catalog_checkpoint",
                 detail={"inserted": inserted, "retained": retained},
                 now=now,
             )

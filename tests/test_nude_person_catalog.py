@@ -6,7 +6,10 @@ import pytest
 
 from maskfactory.nude_person_catalog import (
     NudePersonCatalogError,
+    build_person_catalog_stage_receipt,
     compare_person_proposal_catalogs,
+    validate_person_catalog_stage_receipt,
+    validate_person_proposal_catalog_report,
 )
 
 
@@ -58,6 +61,12 @@ def test_reordered_independent_catalogs_get_stable_spatial_indexes() -> None:
     assert left_members == {"groundingdino": 2.0, "yolo": 5.0}
     assert result["production_mask_authority"] is False
     assert len(result["report_sha256"]) == 64
+    assert validate_person_proposal_catalog_report(result) == result
+
+    receipt = build_person_catalog_stage_receipt(result)
+    assert receipt["stage"] == "person_catalog_comparison"
+    assert receipt["operational_certificate_issued"] is False
+    assert validate_person_catalog_stage_receipt(receipt) == receipt
 
 
 def test_count_disagreement_abstains() -> None:
@@ -115,3 +124,16 @@ def test_proposal_truth_or_provenance_drift_fails_closed(mutation: str) -> None:
         providers[1]["family_id"] = "yolo"
     with pytest.raises(NudePersonCatalogError):
         _compare(providers)
+
+
+def test_catalog_stage_receipt_rejects_authority_tamper() -> None:
+    report = _compare(
+        [
+            _provider("yolo11m", "yolo", [[5, 5, 90, 95]]),
+            _provider("groundingdino", "groundingdino", [[2, 3, 92, 97]]),
+        ]
+    )
+    receipt = build_person_catalog_stage_receipt(report)
+    receipt["production_mask_authority"] = True
+    with pytest.raises(NudePersonCatalogError, match="stage_evidence_drift"):
+        validate_person_catalog_stage_receipt(receipt)

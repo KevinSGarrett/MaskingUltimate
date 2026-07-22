@@ -18,6 +18,7 @@ from maskfactory.autonomy.work_cell import (
 )
 from maskfactory.autonomy.work_cell_command_handlers import command_binding_sha256
 from maskfactory.autonomy.work_cell_mission_builder import build_mission_artifacts
+from maskfactory.autonomy.work_cell_receipts import file_sha256
 from maskfactory.autonomy.work_cell_runner import WorkCellRunner
 
 HEX = "a" * 64
@@ -908,6 +909,157 @@ def test_cli_run_executes_subprocess_json_handlers_for_full_batch(tmp_path: Path
     )
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"accepted": 1}
+
+
+def test_receipt_emitter_converts_exact_stage_artifact_to_work_cell_receipt(
+    tmp_path: Path,
+) -> None:
+    artifact = tmp_path / "source_decode.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_stage.source_decode.v1",
+                "decoded_pixel_sha256": HEX,
+                "alpha_policy": "absent",
+                "width": 64,
+                "height": 48,
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    cli = Path.cwd() / "tools" / "emit_runpod_work_cell_receipt.py"
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--stage",
+            "source_decode",
+            "--status",
+            "pass",
+            "--artifact",
+            str(artifact),
+        ],
+        cwd=Path.cwd(),
+        env=env,
+        input=json.dumps({"record_id": "r1", "stage": "source_decode", "lease_token": "lease"}),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    assert json.loads(result.stdout) == {
+        "stage": "source_decode",
+        "status": "pass",
+        "actor_kind": "deterministic_qa",
+        "evidence_sha256": file_sha256(artifact),
+        "detail": {
+            "decoded_pixel_sha256": HEX,
+            "alpha_policy": "absent",
+            "width": 64,
+            "height": 48,
+        },
+    }
+
+
+def test_receipt_emitter_fail_closes_on_missing_visual_evidence(tmp_path: Path) -> None:
+    artifact = tmp_path / "primary_visual_review.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_stage.primary_visual_review.v1",
+                "critic_report_sha256": HEX,
+                "verdict": "pass",
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    cli = Path.cwd() / "tools" / "emit_runpod_work_cell_receipt.py"
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--stage",
+            "primary_visual_review",
+            "--status",
+            "pass",
+            "--artifact",
+            str(artifact),
+        ],
+        cwd=Path.cwd(),
+        env=env,
+        input=json.dumps({"stage": "primary_visual_review"}),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert "panel_sha256" in result.stderr
+
+
+def test_receipt_emitter_cannot_turn_hard_qc_veto_into_mission_pass(tmp_path: Path) -> None:
+    artifact = tmp_path / "hard_qc.json"
+    artifact.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_stage.hard_qc.v1",
+                "qa_vector_sha256": HEX,
+                "hard_veto_count": 1,
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    cli = Path.cwd() / "tools" / "emit_runpod_work_cell_receipt.py"
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--stage",
+            "hard_qc",
+            "--status",
+            "pass",
+            "--artifact",
+            str(artifact),
+        ],
+        cwd=Path.cwd(),
+        env=env,
+        input=json.dumps({"stage": "hard_qc"}),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    document = manifest()
+    cell = AutonomousWorkCell(tmp_path / "work-cell")
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [
+            {
+                "record_id": "r1",
+                "source_sha256": HEX,
+                "input_payload_sha256": HEX,
+                "input": {"sample_id": "s1"},
+            }
+        ],
+    )
+    for stage, actor in [
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+    ]:
+        work = cell.claim(document["mission_id"], owner="worker")
+        assert work["stage"] == stage
+        cell.apply_result(document["mission_id"], "r1", work["lease_token"], receipt(stage, actor))
+    work = cell.claim(document["mission_id"], owner="worker")
+    assert work["stage"] == "hard_qc"
+    with pytest.raises(WorkCellError, match="hard QA pass cannot retain hard vetoes"):
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], json.loads(result.stdout)
+        )
 
 
 def test_cli_run_rejects_subprocess_handler_binding_drift(tmp_path: Path) -> None:

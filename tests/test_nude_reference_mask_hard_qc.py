@@ -97,8 +97,54 @@ def _visual_response(verdict="pass", confidence=0.9, problems=None):
                     "neighbor_overlap",
                 )
             },
+            "findings": {
+                name: ("pass" if verdict == "pass" else verdict)
+                for name in (
+                    "anatomy",
+                    "boundary",
+                    "leakage",
+                    "missing_area",
+                    "label_consistency",
+                    "ownership",
+                    "laterality",
+                    "topology",
+                    "occlusion",
+                    "protected_regions",
+                    "uncertainty",
+                )
+            },
+            "evidence_regions": [
+                {
+                    "tile": "overlay",
+                    "bbox_xyxy": [100, 100, 900, 900],
+                    "finding": name,
+                    "observation": f"target {name} inspected",
+                }
+                for name in (
+                    "anatomy",
+                    "boundary",
+                    "leakage",
+                    "missing_area",
+                    "label_consistency",
+                    "ownership",
+                    "laterality",
+                    "topology",
+                    "occlusion",
+                    "protected_regions",
+                    "uncertainty",
+                )
+            ],
             "problems": problems or [],
             "evidence": "complete per-view inspection",
+            "repair_plan": {
+                "tool": "none",
+                "hypothesis_id": "",
+                "roi_xyxy": [],
+                "positive_points": [],
+                "negative_points": [],
+                "maximum_changed_fraction": 0,
+                "rationale": "no repair requested",
+            },
         }
     )
 
@@ -562,3 +608,70 @@ def test_strict_visual_review_rejects_stale_or_mismatched_role_authority(tmp_pat
     )
     with pytest.raises(NudeReferenceStrictVisualReviewError, match="certificate_mismatch"):
         run_reference_person_strict_visual_review(**kwargs)
+
+
+@pytest.mark.parametrize("defect", ["rubber_stamp", "roi_escape", "missing_region"])
+def test_strict_visual_review_blocks_inconsistent_or_unbounded_structured_output(
+    tmp_path: Path, defect: str
+):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    payload = json.loads(_visual_response())
+    if defect == "rubber_stamp":
+        payload["findings"]["ownership"] = "uncertain"
+    elif defect == "missing_region":
+        payload["evidence_regions"] = []
+    else:
+        payload["verdict"] = "fail"
+        payload["findings"]["boundary"] = "fail"
+        payload["problems"] = ["boundary_too_loose"]
+        payload["repair_plan"] = {
+            "tool": "sam2_refine",
+            "hypothesis_id": "expand-boundary",
+            "roi_xyxy": [0, 0, 40, 24],
+            "positive_points": [[10, 10]],
+            "negative_points": [],
+            "maximum_changed_fraction": 0.1,
+            "rationale": "repair the cited boundary",
+        }
+    invalid = json.dumps(payload)
+    kwargs = _strict_kwargs(source, root, batch, hard_qc, tmp_path)
+    kwargs["reviewers"][0].responses = [invalid, invalid]
+    result = run_reference_person_strict_visual_review(**kwargs)
+    report = result["records"][0]["candidate_reports"][0]
+    assert report["status"] == "blocked"
+    assert report["reviewer_verdicts"][0]["status"] == "blocked"
+
+
+def test_strict_visual_review_retains_bounded_repair_hypothesis_without_pixel_authority(
+    tmp_path: Path,
+):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    payload = json.loads(_visual_response(verdict="fail", problems=["boundary_too_loose"]))
+    payload["repair_plan"] = {
+        "tool": "sam2_refine",
+        "hypothesis_id": "expand-owned-boundary-v1",
+        "roi_xyxy": [2, 2, 18, 22],
+        "positive_points": [[10, 10]],
+        "negative_points": [[2, 2]],
+        "maximum_changed_fraction": 0.1,
+        "rationale": "expand only the cited owned-person boundary",
+    }
+    response = json.dumps(payload)
+    kwargs = _strict_kwargs(source, root, batch, hard_qc, tmp_path)
+    for reviewer in kwargs["reviewers"]:
+        reviewer.responses = [response]
+    result = run_reference_person_strict_visual_review(**kwargs)
+    report = result["records"][0]["candidate_reports"][0]
+    assert report["status"] == "fail"
+    assert all(
+        vote["repair_plan"]["hypothesis_id"] == "expand-owned-boundary-v1"
+        for vote in report["reviewer_verdicts"]
+    )
+    assert report["production_mask_authority"] is False
+    assert report["operational_certificate_eligible"] is False

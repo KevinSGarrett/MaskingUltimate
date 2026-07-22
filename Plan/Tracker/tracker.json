@@ -23259,7 +23259,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 86,
+      "percent_complete": 89,
       "notes": [
         {
           "ts": "2026-07-22T11:12:15+00:00",
@@ -23315,12 +23315,17 @@
           "ts": "2026-07-22T16:57:02+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22: the CivitAI reference-person batch path now binds each hard-QC-clean candidate to six separately hashed views, a closed v2 target contract, canonical decoded source and mask pixels, exact owner, current promoted primary and independent-family role certificates, exact reviewer model/family/runtime identity, structured per-record responses, and a nonterminal idempotent queue receipt. Missing contract, stale/same-family/mismatched authority, malformed JSON, outage, contact-sheet substitution, or hard-QC failure cannot pass. 59 focused/adjacent tests plus Ruff/Black/diff pass. Live qualified critic execution remains zero and the item stays open."
+        },
+        {
+          "ts": "2026-07-22T17:03:47+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22: strict per-record outputs now require eleven target-aware finding dimensions, one cited normalized evidence region for every dimension, all six independently hashed views, and a closed verdict contract. Rubber-stamp passes, incomplete evidence localization, malformed responses, pass-with-repair, or inconsistent findings block after one retry. 90 adjacent tests pass; live qualified reviews remain zero."
         }
       ],
-      "evidence": "qa/live_verification/nude_civitai_reference_strict_visual_batch_implementation_20260722.json; 59 focused/adjacent tests, Ruff, Black, diff integrity PASS.",
+      "evidence": "qa/live_verification/nude_civitai_reference_strict_visual_batch_implementation_20260722.json; qa/live_verification/nude_civitai_strict_visual_structured_repair_intent_20260722.json; 90 focused/adjacent tests, Ruff, Black, diff integrity PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T16:57:02+00:00",
+      "updated_at": "2026-07-22T17:03:47+00:00",
       "orphaned": false
     },
     "MF-P4-12.06": {
@@ -23336,7 +23341,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23397,12 +23402,17 @@
           "ts": "2026-07-22T14:29:49+00:00",
           "actor": "ai_agent",
           "text": "Live dual-detector ambiguity now becomes a sealed continue-on-exception ownership receipt, and four such receipts persist/replay without terminal advancement. Strict-critic repair/abstention throughput remains open."
+        },
+        {
+          "ts": "2026-07-22T17:03:48+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22: qualified critics may now emit only closed repair hypotheses using allowlisted tools, exact hypothesis ID, target-contained ROI, bounded points, and <=0.25 changed fraction; critics still cannot author pixels or issue authority. Escaping/malformed/pass-associated plans block. Execution into immutable child candidates and live re-review remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
+      "evidence": "qa/live_verification/nude_civitai_strict_visual_structured_repair_intent_20260722.json; 90 focused/adjacent tests PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T14:29:49+00:00",
+      "updated_at": "2026-07-22T17:03:48+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {

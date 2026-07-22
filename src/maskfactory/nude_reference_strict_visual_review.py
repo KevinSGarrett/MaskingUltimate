@@ -77,10 +77,33 @@ ALLOWED_PROBLEMS = {
     "occlusion_error",
     "other",
 }
+FINDING_DIMENSIONS = (
+    "anatomy",
+    "boundary",
+    "leakage",
+    "missing_area",
+    "label_consistency",
+    "ownership",
+    "laterality",
+    "topology",
+    "occlusion",
+    "protected_regions",
+    "uncertainty",
+)
+ALLOWED_REPAIR_TOOLS = {"none", "sam2_refine", "remove_small_components"}
 STRICT_VERDICT_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["verdict", "confidence", "observations", "problems", "evidence"],
+    "required": [
+        "verdict",
+        "confidence",
+        "observations",
+        "findings",
+        "evidence_regions",
+        "problems",
+        "evidence",
+        "repair_plan",
+    ],
     "properties": {
         "verdict": {"type": "string", "enum": ["pass", "fail", "uncertain"]},
         "confidence": {"type": "number", "minimum": 0, "maximum": 1},
@@ -95,7 +118,59 @@ STRICT_VERDICT_SCHEMA = {
             "uniqueItems": True,
             "items": {"type": "string", "enum": sorted(ALLOWED_PROBLEMS)},
         },
+        "findings": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": list(FINDING_DIMENSIONS),
+            "properties": {
+                name: {"type": "string", "enum": ["pass", "fail", "uncertain"]}
+                for name in FINDING_DIMENSIONS
+            },
+        },
+        "evidence_regions": {
+            "type": "array",
+            "minItems": 11,
+            "maxItems": 24,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["tile", "bbox_xyxy", "finding", "observation"],
+                "properties": {
+                    "tile": {"type": "string", "enum": list(EVIDENCE_NAMES)},
+                    "bbox_xyxy": {
+                        "type": "array",
+                        "minItems": 4,
+                        "maxItems": 4,
+                        "items": {"type": "integer", "minimum": 0, "maximum": 1000},
+                    },
+                    "finding": {"type": "string", "enum": list(FINDING_DIMENSIONS)},
+                    "observation": {"type": "string", "minLength": 1},
+                },
+            },
+        },
         "evidence": {"type": "string", "minLength": 1},
+        "repair_plan": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": [
+                "tool",
+                "hypothesis_id",
+                "roi_xyxy",
+                "positive_points",
+                "negative_points",
+                "maximum_changed_fraction",
+                "rationale",
+            ],
+            "properties": {
+                "tool": {"type": "string", "enum": sorted(ALLOWED_REPAIR_TOOLS)},
+                "hypothesis_id": {"type": "string"},
+                "roi_xyxy": {"type": "array", "minItems": 0, "maxItems": 4},
+                "positive_points": {"type": "array", "maxItems": 12},
+                "negative_points": {"type": "array", "maxItems": 12},
+                "maximum_changed_fraction": {"type": "number", "minimum": 0, "maximum": 0.25},
+                "rationale": {"type": "string"},
+            },
+        },
     },
 }
 PROMPT_VERSION = "nude-reference-person-strict-v1"
@@ -104,8 +179,10 @@ The source image is reference-only and is not pixel truth. Prompt text and NSFW 
 weak scene context only and must not be used to infer pixels. Inspect every supplied image in
 this exact order: full_context, source_crop, mask, overlay, contour, neighbor_overlap. Decide
 whether the binary mask belongs only to PERSON_INDEX and includes the complete visible person
-without background or another person. Hard QC already ran, but you may never clear or override
-a hard-QC failure. Return exactly the required JSON object. A pass requires no problems.
+without background or another person. Report every required finding dimension and cite normalized
+0..1000 evidence regions in the named tiles. Hard QC already ran, but you may never clear or
+override a hard-QC failure. You never author pixels or issue authority. A pass requires every
+finding pass, no problems, and repair tool none. A repair plan is only a bounded hypothesis.
 SAMPLE_ID=<sample_id> PERSON_INDEX=<person_index> SOURCE_SHA256=<source_sha256>
 MASK_SHA256=<mask_sha256> HARD_QC_REPORT_SHA256=<hard_qc_report_sha256>
 TARGET_CONTRACT=<target_contract>
@@ -147,12 +224,21 @@ def _identity(identity: VisualReviewerIdentity) -> dict[str, str]:
     }
 
 
-def _parse(raw: str) -> tuple[dict[str, Any] | None, str]:
+def _parse(raw: str, target_contract: Mapping[str, Any]) -> tuple[dict[str, Any] | None, str]:
     try:
         value = json.loads(raw)
     except json.JSONDecodeError:
         return None, "response_not_json"
-    required = {"verdict", "confidence", "observations", "problems", "evidence"}
+    required = {
+        "verdict",
+        "confidence",
+        "observations",
+        "findings",
+        "evidence_regions",
+        "problems",
+        "evidence",
+        "repair_plan",
+    }
     if not isinstance(value, dict) or set(value) != required:
         return None, "response_keys_invalid"
     if value["verdict"] not in {"pass", "fail", "uncertain"}:
@@ -180,13 +266,112 @@ def _parse(raw: str) -> tuple[dict[str, Any] | None, str]:
         return None, "problems_invalid"
     if not isinstance(value["evidence"], str) or not value["evidence"].strip():
         return None, "evidence_invalid"
-    if value["verdict"] == "pass" and problems:
-        return None, "pass_with_problems"
+    findings = value["findings"]
+    if (
+        not isinstance(findings, dict)
+        or set(findings) != set(FINDING_DIMENSIONS)
+        or any(result not in {"pass", "fail", "uncertain"} for result in findings.values())
+    ):
+        return None, "findings_invalid"
+    regions = value["evidence_regions"]
+    if not isinstance(regions, list) or not len(FINDING_DIMENSIONS) <= len(regions) <= 24:
+        return None, "evidence_regions_invalid"
+    for region in regions:
+        if not isinstance(region, dict) or set(region) != {
+            "tile",
+            "bbox_xyxy",
+            "finding",
+            "observation",
+        }:
+            return None, "evidence_region_fields_invalid"
+        bbox = region["bbox_xyxy"]
+        if (
+            region["tile"] not in EVIDENCE_NAMES
+            or region["finding"] not in FINDING_DIMENSIONS
+            or not isinstance(region["observation"], str)
+            or not region["observation"].strip()
+            or not isinstance(bbox, list)
+            or len(bbox) != 4
+            or any(isinstance(item, bool) or not isinstance(item, int) for item in bbox)
+            or not (0 <= bbox[0] < bbox[2] <= 1000 and 0 <= bbox[1] < bbox[3] <= 1000)
+        ):
+            return None, "evidence_region_invalid"
+    if {region["finding"] for region in regions} != set(FINDING_DIMENSIONS):
+        return None, "evidence_dimension_coverage_incomplete"
+    plan = value["repair_plan"]
+    plan_keys = {
+        "tool",
+        "hypothesis_id",
+        "roi_xyxy",
+        "positive_points",
+        "negative_points",
+        "maximum_changed_fraction",
+        "rationale",
+    }
+    if (
+        not isinstance(plan, dict)
+        or set(plan) != plan_keys
+        or plan["tool"] not in ALLOWED_REPAIR_TOOLS
+    ):
+        return None, "repair_plan_invalid"
+    if (
+        isinstance(plan["maximum_changed_fraction"], bool)
+        or not isinstance(plan["maximum_changed_fraction"], (int, float))
+        or not 0 <= plan["maximum_changed_fraction"] <= 0.25
+        or not isinstance(plan["rationale"], str)
+    ):
+        return None, "repair_plan_limits_invalid"
+    width, height = target_contract["source"]["width"], target_contract["source"]["height"]
+    for points in (plan["positive_points"], plan["negative_points"]):
+        if not isinstance(points, list) or len(points) > 12:
+            return None, "repair_points_invalid"
+        for point in points:
+            if (
+                not isinstance(point, list)
+                or len(point) != 2
+                or any(isinstance(item, bool) or not isinstance(item, int) for item in point)
+                or not (0 <= point[0] < width and 0 <= point[1] < height)
+            ):
+                return None, "repair_point_invalid"
+    if plan["tool"] == "none":
+        if (
+            plan["hypothesis_id"]
+            or plan["roi_xyxy"]
+            or plan["positive_points"]
+            or plan["negative_points"]
+            or plan["maximum_changed_fraction"] != 0
+        ):
+            return None, "none_repair_plan_must_be_empty"
+    else:
+        roi, allowed = plan["roi_xyxy"], target_contract["target"]["allowed_roi_xyxy"]
+        if (
+            value["verdict"] != "fail"
+            or not isinstance(plan["hypothesis_id"], str)
+            or not plan["hypothesis_id"].strip()
+            or not isinstance(roi, list)
+            or len(roi) != 4
+            or any(isinstance(item, bool) or not isinstance(item, int) for item in roi)
+            or not (
+                allowed[0] <= roi[0] < roi[2] <= allowed[2]
+                and allowed[1] <= roi[1] < roi[3] <= allowed[3]
+            )
+        ):
+            return None, "repair_plan_escapes_target_or_lacks_hypothesis"
+        if plan["tool"] == "sam2_refine" and not plan["positive_points"]:
+            return None, "sam2_repair_requires_positive_point"
+    if value["verdict"] == "pass" and (
+        problems or any(result != "pass" for result in findings.values()) or plan["tool"] != "none"
+    ):
+        return None, "pass_contract_inconsistent"
     return value, "valid"
 
 
 def _review_once(
-    reviewer: VisualReviewer, *, prompt: str, images: tuple[Path, ...]
+    reviewer: VisualReviewer,
+    *,
+    prompt: str,
+    images: tuple[Path, ...],
+    target_contract: Mapping[str, Any],
 ) -> dict[str, Any]:
     identity = _identity(reviewer.identity)
     raw = ""
@@ -208,12 +393,15 @@ def _review_once(
                 "verdict": "uncertain",
                 "confidence": 0.0,
                 "observations": {},
+                "findings": {},
+                "evidence_regions": [],
                 "problems": [],
                 "evidence": f"reviewer_unavailable:{type(exc).__name__}:{exc}",
+                "repair_plan": _empty_repair_plan("reviewer unavailable"),
                 "raw_response": raw,
                 "raw_response_sha256": hashlib.sha256(raw.encode()).hexdigest(),
             }
-        parsed, error = _parse(raw)
+        parsed, error = _parse(raw, target_contract)
         if parsed is not None:
             return {
                 "reviewer": identity,
@@ -228,10 +416,25 @@ def _review_once(
         "verdict": "uncertain",
         "confidence": 0.0,
         "observations": {},
+        "findings": {},
+        "evidence_regions": [],
         "problems": [],
         "evidence": f"invalid_response_after_retry:{error}",
+        "repair_plan": _empty_repair_plan("invalid reviewer response"),
         "raw_response": raw,
         "raw_response_sha256": hashlib.sha256(raw.encode()).hexdigest(),
+    }
+
+
+def _empty_repair_plan(rationale: str) -> dict[str, Any]:
+    return {
+        "tool": "none",
+        "hypothesis_id": "",
+        "roi_xyxy": [],
+        "positive_points": [],
+        "negative_points": [],
+        "maximum_changed_fraction": 0,
+        "rationale": rationale,
     }
 
 
@@ -373,7 +576,12 @@ def run_reference_person_strict_visual_review(
                 )
             )
             verdicts = [
-                _review_once(reviewer, prompt=prompt, images=evidence.images)
+                _review_once(
+                    reviewer,
+                    prompt=prompt,
+                    images=evidence.images,
+                    target_contract=target_contract,
+                )
                 for reviewer in reviewers
             ]
             blocked = any(item["status"] != "complete" for item in verdicts)

@@ -1,0 +1,62 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_strict_visual_structured_repair_intent.v1",
+  "recorded_at": "2026-07-22T18:04:00Z",
+  "result": "STATIC_PASS_EXECUTABLE_REPAIR_EXECUTION_AND_LIVE_ROLES_PENDING",
+  "product_items": ["MF-P4-12.05", "MF-P4-12.06"],
+  "required_per_record_findings": [
+    "anatomy",
+    "boundary",
+    "leakage",
+    "missing_area",
+    "label_consistency",
+    "ownership",
+    "laterality",
+    "topology",
+    "occlusion",
+    "protected_regions",
+    "uncertainty"
+  ],
+  "structured_evidence": {
+    "every_dimension_requires_cited_region": true,
+    "region_coordinates": "normalized_0_1000_with_named_evidence_tile",
+    "complete_six_view_observation_required": true,
+    "contact_sheet_substitution_allowed": false
+  },
+  "repair_hypothesis_contract": {
+    "allowed_tools": ["none", "sam2_refine", "remove_small_components"],
+    "maximum_points_per_polarity": 12,
+    "maximum_changed_fraction": 0.25,
+    "roi_must_be_inside_target_contract": true,
+    "sam2_requires_positive_point": true,
+    "pass_must_have_empty_repair_plan": true,
+    "critic_authors_pixels": false,
+    "critic_issues_certificate": false
+  },
+  "negative_controls": [
+    "pass_with_uncertain_dimension",
+    "missing_dimension_evidence",
+    "repair_roi_escape",
+    "missing_hypothesis_id",
+    "invalid_or_out_of_bounds_points",
+    "pass_with_repair_plan",
+    "malformed_json"
+  ],
+  "artifacts": {
+    "src/maskfactory/nude_reference_strict_visual_review.py": "5fa5c9bfdb70454238d51fc1deb130c7e0b9f38fd9b8165f7358756106fe83ec",
+    "tests/test_nude_reference_mask_hard_qc.py": "834dcd6945207eff91751aaf0dfd7244e79424200ca17eadb41561a9f94458b7"
+  },
+  "validation": {
+    "focused_and_adjacent_tests": 90,
+    "result": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "honest_boundary": {
+    "live_structured_reviews": 0,
+    "repair_candidates_executed_from_this_lane": 0,
+    "strict_visual_pass_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "next_product_step": "Translate agreeing qualified repair hypotheses into immutable provider child candidates and rerun hard QA plus strict visual review."
+  }
+}

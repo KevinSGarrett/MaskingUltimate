@@ -20,6 +20,7 @@ from .nude_corpus_intake import (
     representative_shards,
     validate_shard,
 )
+from .nude_visual_evidence import verify_pixel_semantic_visual_evidence
 from .providers.disagreement import binary_mask_sha256
 
 MIN_SOURCE_RETENTION = 0.70
@@ -357,6 +358,14 @@ def run_polygon_refinement_canary(
         raw_label, candidate_label, source_mask, refined, refinement = selected
         case_dir = output_dir / sample_id
         views = _render_views(image, source_mask, refined, case_dir)
+        semantic_views = verify_pixel_semantic_visual_evidence(
+            original_source_path=image_path,
+            original_source_sha256=str(record["source_sha256"]),
+            selected_mask_sha256=str(refinement["selected_mask_sha256"]),
+            views={
+                kind: views[kind] for kind in ("source", "mask", "overlay", "contour", "ownership")
+            },
+        )
         outcomes[refinement["outcome"]] += 1
         used_groups.add(split_group_id)
         rows.append(
@@ -369,6 +378,7 @@ def run_polygon_refinement_canary(
                 "candidate_label": candidate_label,
                 "refinement": refinement,
                 "views": views,
+                "pixel_semantic_visual_evidence": semantic_views,
                 "ownership_binding": "source_annotation_localization_only_no_person_instance_authority",
             }
         )

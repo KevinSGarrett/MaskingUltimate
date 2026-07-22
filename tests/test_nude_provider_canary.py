@@ -7,6 +7,7 @@ import pytest
 
 from maskfactory.nude_provider_canary import (
     NudeProviderCanaryError,
+    _reference_context,
     _runtime_bindings,
     _validated_box,
 )
@@ -50,3 +51,48 @@ def test_runtime_bindings_require_installed_no_gold_providers(tmp_path: Path) ->
     path.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(NudeProviderCanaryError, match="authority_invalid"):
         _runtime_bindings(path)
+
+
+def _reference_record() -> dict[str, object]:
+    return {
+        "dataset_id": "civitai_top_nsfw_images_2025",
+        "source_role": "reference_and_tournament_input",
+        "authority": "reference_only_no_mask_truth",
+        "media_domain": "synthetic_or_generated",
+        "annotation_count": 0,
+        "has_bbox": False,
+        "has_polygon_segmentation": False,
+        "source_labels": [],
+        "metadata_ref": "CivitAI_Top_NSFW_Images/prompts.json",
+        "metadata_nsfw_level": "X",
+        "source_split": "unsplit_reference",
+        "source_relative_path": "CivitAI_Top_NSFW_Images/images/1.jpeg",
+        "source_sha256": "a" * 64,
+    }
+
+
+def test_reference_prompt_join_is_weak_context_not_pixel_truth(tmp_path: Path) -> None:
+    metadata = tmp_path / "CivitAI_Top_NSFW_Images" / "prompts.json"
+    metadata.parent.mkdir()
+    metadata.write_text(
+        json.dumps({"1.jpeg": {"prompt": "two people, standing", "nsfwLevel": "X"}}),
+        encoding="utf-8",
+    )
+    context = _reference_context(tmp_path, _reference_record(), {})
+    assert context["image_filename"] == "1.jpeg"
+    assert context["prompt"] == "two people, standing"
+    assert context["authority"] == "weak_scene_action_retrieval_context_only"
+    assert context["may_supply_pixel_truth"] is False
+    assert context["may_infer_anatomy_labels"] is False
+    assert context["may_infer_fine_masks"] is False
+
+
+def test_reference_prompt_join_rejects_metadata_drift(tmp_path: Path) -> None:
+    metadata = tmp_path / "CivitAI_Top_NSFW_Images" / "prompts.json"
+    metadata.parent.mkdir()
+    metadata.write_text(
+        json.dumps({"1.jpeg": {"prompt": "person", "nsfwLevel": "Mature"}}),
+        encoding="utf-8",
+    )
+    with pytest.raises(NudeProviderCanaryError, match="nsfw_level_drift"):
+        _reference_context(tmp_path, _reference_record(), {})

@@ -23,6 +23,9 @@ ADOPTED_SHARD_INDEX_SHA256 = "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9b
 ADOPTED_DATASET_COUNT = 16
 ADOPTED_RECORD_COUNT = 81_910
 ADOPTED_SHARDS_PER_PLATFORM = 322
+CIVITAI_REFERENCE_DATASET_ID = "civitai_top_nsfw_images_2025"
+CIVITAI_REFERENCE_RECORD_COUNT = 6_537
+CIVITAI_REFERENCE_METADATA_REF = "CivitAI_Top_NSFW_Images/prompts.json"
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PROJECT_CROSSWALK_OVERRIDES = PROJECT_ROOT / "configs" / "nude_corpus_ontology_overrides.json"
 
@@ -184,10 +187,55 @@ def load_records(intake: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
             sample_id = row.get("sample_id")
             if not isinstance(sample_id, str) or sample_id in records:
                 raise NudeCorpusIntakeError(f"record_identity_invalid:{line_number}")
+            if row.get("dataset_id") == CIVITAI_REFERENCE_DATASET_ID:
+                validate_civitai_reference_record(row)
             records[sample_id] = row
     if len(records) != ADOPTED_RECORD_COUNT:
         raise NudeCorpusIntakeError("records_count_drift")
+    if (
+        sum(row.get("dataset_id") == CIVITAI_REFERENCE_DATASET_ID for row in records.values())
+        != CIVITAI_REFERENCE_RECORD_COUNT
+    ):
+        raise NudeCorpusIntakeError("civitai_reference_record_count_drift")
     return records
+
+
+def validate_civitai_reference_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    """Enforce the zero-source-truth role of one CivitAI reference image."""
+
+    expected = {
+        "dataset_id": CIVITAI_REFERENCE_DATASET_ID,
+        "source_role": "reference_and_tournament_input",
+        "authority": "reference_only_no_mask_truth",
+        "media_domain": "synthetic_or_generated",
+        "annotation_count": 0,
+        "has_bbox": False,
+        "has_polygon_segmentation": False,
+        "source_labels": [],
+        "metadata_ref": CIVITAI_REFERENCE_METADATA_REF,
+        "source_split": "unsplit_reference",
+    }
+    for field, value in expected.items():
+        if record.get(field) != value:
+            raise NudeCorpusIntakeError(f"civitai_reference_role_drift:{field}")
+    relative = record.get("source_relative_path")
+    if (
+        not isinstance(relative, str)
+        or not relative.startswith("CivitAI_Top_NSFW_Images/images/")
+        or Path(relative).name != relative.rsplit("/", 1)[-1]
+    ):
+        raise NudeCorpusIntakeError("civitai_reference_path_drift")
+    level = record.get("metadata_nsfw_level")
+    if level not in {"Mature", "X"}:
+        raise NudeCorpusIntakeError("civitai_reference_nsfw_level_invalid")
+    source_sha256 = record.get("source_sha256")
+    if (
+        not isinstance(source_sha256, str)
+        or len(source_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in source_sha256)
+    ):
+        raise NudeCorpusIntakeError("civitai_reference_source_sha256_invalid")
+    return dict(record)
 
 
 def build_project_registry_manifest(intake: Mapping[str, Any]) -> dict[str, Any]:

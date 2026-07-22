@@ -14,6 +14,7 @@ from maskfactory.nude_corpus_intake import (
     canonical_sha256,
     crosswalk_source_labels,
     rasterize_coco_segmentation,
+    validate_civitai_reference_record,
     validate_shard,
 )
 
@@ -206,3 +207,45 @@ def test_coarse_crosswalk_fails_closed_before_it_can_invent_a_fine_label() -> No
                 "scene_and_action_labels": {},
             },
         )
+
+
+def _civitai_reference_record() -> dict[str, object]:
+    return {
+        "dataset_id": "civitai_top_nsfw_images_2025",
+        "source_role": "reference_and_tournament_input",
+        "authority": "reference_only_no_mask_truth",
+        "media_domain": "synthetic_or_generated",
+        "annotation_count": 0,
+        "has_bbox": False,
+        "has_polygon_segmentation": False,
+        "source_labels": [],
+        "metadata_ref": "CivitAI_Top_NSFW_Images/prompts.json",
+        "metadata_nsfw_level": "X",
+        "source_split": "unsplit_reference",
+        "source_relative_path": "CivitAI_Top_NSFW_Images/images/1.jpeg",
+        "source_sha256": "a" * 64,
+    }
+
+
+def test_civitai_reference_record_has_zero_inherited_pixel_truth() -> None:
+    record = _civitai_reference_record()
+    assert validate_civitai_reference_record(record) == record
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("source_role", "polygon_external_supervision"),
+        ("authority", "external_labeled_reference"),
+        ("annotation_count", 1),
+        ("has_bbox", True),
+        ("has_polygon_segmentation", True),
+        ("source_labels", ["nipple"]),
+        ("media_domain", "photo"),
+    ),
+)
+def test_civitai_reference_record_rejects_resealed_role_drift(field: str, value: object) -> None:
+    record = _civitai_reference_record()
+    record[field] = value
+    with pytest.raises(NudeCorpusIntakeError, match=f"role_drift:{field}"):
+        validate_civitai_reference_record(record)

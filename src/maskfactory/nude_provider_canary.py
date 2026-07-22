@@ -12,10 +12,12 @@ from PIL import Image
 
 from .nude_corpus_dedup import load_group_evidence
 from .nude_corpus_intake import (
+    CIVITAI_REFERENCE_METADATA_REF,
     crosswalk_source_labels,
     load_adopted_intake,
     load_records,
     representative_shards,
+    validate_civitai_reference_record,
     validate_shard,
 )
 
@@ -133,6 +135,54 @@ def _validated_box(annotation: Mapping[str, Any], *, width: int, height: int) ->
     return [x, y, x + box_width, y + box_height]
 
 
+def _reference_context(
+    source_root: Path,
+    record: Mapping[str, Any],
+    cache: dict[str, tuple[dict[str, Any], str]],
+) -> dict[str, Any]:
+    """Join filename metadata while forbidding prompt-to-pixel inference."""
+
+    validate_civitai_reference_record(record)
+    metadata_ref = str(record["metadata_ref"])
+    if metadata_ref != CIVITAI_REFERENCE_METADATA_REF:
+        raise NudeProviderCanaryError("reference_metadata_ref_invalid")
+    if metadata_ref not in cache:
+        path = (source_root / metadata_ref).resolve(strict=True)
+        try:
+            path.relative_to(source_root)
+        except ValueError as exc:
+            raise NudeProviderCanaryError("reference_metadata_path_escaped_source_root") from exc
+        raw = path.read_bytes()
+        document = json.loads(raw)
+        if not isinstance(document, dict):
+            raise NudeProviderCanaryError("reference_metadata_catalog_invalid")
+        cache[metadata_ref] = document, hashlib.sha256(raw).hexdigest()
+    catalog, metadata_sha256 = cache[metadata_ref]
+    filename = Path(str(record["source_relative_path"])).name
+    entry = catalog.get(filename)
+    if not isinstance(entry, Mapping):
+        raise NudeProviderCanaryError("reference_metadata_filename_missing")
+    prompt = entry.get("prompt")
+    nsfw_level = entry.get("nsfwLevel")
+    if not isinstance(prompt, str) or not prompt.strip():
+        raise NudeProviderCanaryError("reference_metadata_prompt_invalid")
+    if nsfw_level != record.get("metadata_nsfw_level"):
+        raise NudeProviderCanaryError("reference_metadata_nsfw_level_drift")
+    return {
+        "schema_version": "maskfactory.civitai_reference_context.v1",
+        "metadata_ref": metadata_ref,
+        "metadata_file_sha256": metadata_sha256,
+        "image_filename": filename,
+        "prompt": prompt,
+        "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+        "nsfw_level": nsfw_level,
+        "authority": "weak_scene_action_retrieval_context_only",
+        "may_supply_pixel_truth": False,
+        "may_infer_anatomy_labels": False,
+        "may_infer_fine_masks": False,
+    }
+
+
 def build_provider_canary_manifest(
     intake_root: Path,
     *,
@@ -152,6 +202,7 @@ def build_provider_canary_manifest(
     source_root = Path(intake["registry"]["root"]).resolve()
     shards = representative_shards(intake)
     cache: dict[str, tuple[dict[int, list[dict[str, Any]]], dict[int, str], str]] = {}
+    reference_metadata_cache: dict[str, tuple[dict[str, Any], str]] = {}
     lane_rows = []
     for lane in CANARY_LANES:
         shard = validate_shard(shards[lane], expected_lane=lane, platform="local")
@@ -212,6 +263,9 @@ def build_provider_canary_manifest(
                 if not prompts:
                     continue
             else:
+                reference_context = _reference_context(
+                    source_root, record, reference_metadata_cache
+                )
                 prompts = [
                     {
                         "raw_label": None,
@@ -231,10 +285,14 @@ def build_provider_canary_manifest(
                     "source_geometry": [source_height, source_width],
                     "split_group_id": group_id,
                     "assigned_partition": group["assigned_partition"],
+                    "split_assignment_authority": "hash_bound_dedup_group_mapping",
                     "annotation_ref": record.get("annotation_ref"),
                     "annotation_file_sha256": annotation_sha256,
                     "pixel_prompts": prompts,
                     "scene_action_supervision": actions,
+                    "reference_context": (
+                        reference_context if lane == "reference_and_tournament_input" else None
+                    ),
                     "provider_route": list(PROVIDER_ROUTES[lane]),
                     "source_supplies_pixel_truth": False,
                     "candidate_authority": "draft_machine_candidate_only",
@@ -278,6 +336,8 @@ def build_provider_canary_manifest(
             "human_gold_granted": False,
             "production_mask_authority_granted": False,
             "operational_certificates_issued": False,
+            "reference_images_are_pixel_truth": False,
+            "reference_prompt_may_infer_pixel_anatomy": False,
         },
     }
     manifest["self_sha256"] = hashlib.sha256(

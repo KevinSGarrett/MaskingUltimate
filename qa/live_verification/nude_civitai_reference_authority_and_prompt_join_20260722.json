@@ -1,0 +1,98 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_reference_authority.v1",
+  "artifact_type": "civitai_reference_only_role_and_weak_metadata_join",
+  "recorded_at": "2026-07-22T14:44:00Z",
+  "status": "STATIC_AND_REAL_CORPUS_BINDING_PASS_PROPOSAL_EXECUTION_OPEN",
+  "tracker_items": [
+    "MF-P4-12.04",
+    "MF-P4-12.07"
+  ],
+  "adopted_intake": {
+    "dataset_id": "civitai_top_nsfw_images_2025",
+    "relative_root": "CivitAI_Top_NSFW_Images",
+    "record_count": 6537,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+    "metadata_file_sha256": "abbfdbb7d2efc1f3ec2c8975815b446f341930bebe4bbb34701b05c34f7b6f84",
+    "source_role": "reference_and_tournament_input",
+    "authority": "reference_only_no_mask_truth",
+    "media_domain": "synthetic_or_generated",
+    "polygon_annotation_count": 0,
+    "bbox_annotation_count": 0,
+    "segmentation_annotation_count": 0
+  },
+  "population_validation": {
+    "records_validated": 6537,
+    "unique_sample_ids": 6537,
+    "unique_source_hashes": 6516,
+    "split_group_count": 6515,
+    "filename_prompt_join_count": 6537,
+    "prompt_catalog_entry_count": 6537,
+    "metadata_nsfw_level_counts": {
+      "Mature": 1797,
+      "X": 4740
+    },
+    "assigned_partition_counts": {
+      "train": 6537
+    },
+    "split_mapping_sha256": "544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad"
+  },
+  "shards": {
+    "local_count": 26,
+    "runpod_count": 26,
+    "sample_total_per_platform": 6537,
+    "full_256_record_shards_per_platform": 25,
+    "final_137_record_shards_per_platform": 1,
+    "first_runpod_path": "runpod/reference_and_tournament_input.0001.json",
+    "last_runpod_path": "runpod/reference_and_tournament_input.0026.json"
+  },
+  "metadata_authority": {
+    "filename_join_required": true,
+    "prompt_authority": "weak_scene_action_retrieval_context_only",
+    "prompt_may_supply_pixel_truth": false,
+    "prompt_may_infer_anatomy_labels": false,
+    "prompt_may_infer_fine_masks": false,
+    "new_masks_require_independent_provider_and_qualification_evidence": true
+  },
+  "real_canary_manifest": {
+    "record_count": 24,
+    "reference_record_count": 8,
+    "reference_filenames": [
+      "1.jpeg",
+      "10.jpeg",
+      "100.jpeg",
+      "1000.jpeg",
+      "1001.jpeg",
+      "1002.jpeg",
+      "1003.jpeg",
+      "1004.jpeg"
+    ],
+    "manifest_self_sha256": "6ca7d9c3c0c105a645d0ff6d8638f022859ef60f04cb311e16f10a13cf71ac0a",
+    "manifest_file_sha256": "3ff923e293fd18189301b7e6ad3db5f9b52c370ca2b619a4569c20620fe6c082",
+    "provider_execution_completed": false,
+    "strict_visual_review_completed": false,
+    "operational_certificates_issued": 0
+  },
+  "runpod_mirror": {
+    "remote_root": "/workspace/assets/MaskedWarehouse/Nude/CivitAI_Top_NSFW_Images",
+    "full_corpus_relative_paths_and_hashes_matched": 82639,
+    "full_corpus_missing": 0,
+    "full_corpus_hash_mismatch": 0,
+    "manifest_stream_sha256": "d4f86007390874bb0a5f258768b3f2bf898cb3ba4434545b46414a31f13ed876",
+    "source_evidence": "qa/live_verification/nude_corpus_runpod_sync_20260722.json"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_corpus_intake.py": "8d06b98ff89db856895833a8d8a8251df95a7cf6cf9954f2a01ddd2cdb8a5e2b",
+    "src/maskfactory/nude_provider_canary.py": "8d55ec07217917fc2dda1d800aafec6e2f8b04658e477d8aef37ba6e8263e4c3",
+    "tests/test_nude_corpus_intake.py": "1d95bf9dedf1346238095f0354b93d0c4f307e3de3616309dfa797aff7a288fe",
+    "tests/test_nude_provider_canary.py": "4cabfd5adc1fbf0b7ef49082bf425ffef57411638a6c57a3d558fb9bd5a34f96"
+  },
+  "validation": {
+    "focused_tests": "45 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "real_81910_record_load_and_6537_prompt_join": "PASS",
+    "real_canary_manifest_build": "PASS"
+  },
+  "remaining": "Execute multi-provider proposal generation and exact-output qualification across all 26 reference shards; current source images and prompt metadata retain zero pixel-truth authority."
+}

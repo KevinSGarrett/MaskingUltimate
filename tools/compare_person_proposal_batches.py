@@ -19,7 +19,7 @@ def _artifact_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _load_output(path: Path) -> tuple[dict[str, Any], dict[str, str]]:
+def _load_output(path: Path) -> tuple[dict[str, Any], dict[str, str], float]:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict):
         raise ValueError("provider output is not an object")
@@ -41,6 +41,7 @@ def _load_output(path: Path) -> tuple[dict[str, Any], dict[str, str]]:
             "family_id": "groundingdino",
             "revision": f"{document.get('source_revision')}:{document.get('checkpoint_sha256')}",
         }
+        native_confidence_min = document.get("box_threshold")
     elif schema == "maskfactory.yolo11_person_batch.v1":
         if (
             document.get("provider") != "yolo11m_person"
@@ -52,11 +53,18 @@ def _load_output(path: Path) -> tuple[dict[str, Any], dict[str, str]]:
             "family_id": "yolo",
             "revision": str(document.get("checkpoint_sha256")),
         }
+        native_confidence_min = document.get("confidence_min")
     else:
         raise ValueError("unsupported person provider output schema")
     if not all(isinstance(value, str) and value for value in identity.values()):
         raise ValueError("provider revision invalid")
-    return document, identity
+    if (
+        isinstance(native_confidence_min, bool)
+        or not isinstance(native_confidence_min, (int, float))
+        or not 0 <= float(native_confidence_min) <= 1
+    ):
+        raise ValueError("provider native confidence threshold invalid")
+    return document, identity, float(native_confidence_min)
 
 
 def compare_batches(
@@ -66,6 +74,8 @@ def compare_batches(
     yolo_path: Path,
     platform: str,
     iou_min: float = 0.50,
+    groundingdino_confidence_min: float | None = None,
+    yolo_confidence_min: float | None = None,
 ) -> dict[str, Any]:
     shard = validate_shard(
         shard_path,
@@ -74,15 +84,23 @@ def compare_batches(
     )
     outputs = []
     for path in (groundingdino_path, yolo_path):
-        document, identity = _load_output(path)
-        outputs.append((path, document, identity))
-    if len({identity["family_id"] for _, _, identity in outputs}) != 2:
+        document, identity, native_confidence_min = _load_output(path)
+        requested = (
+            groundingdino_confidence_min
+            if identity["family_id"] == "groundingdino"
+            else yolo_confidence_min
+        )
+        applied = native_confidence_min if requested is None else float(requested)
+        if not native_confidence_min <= applied <= 1:
+            raise ValueError("derived confidence threshold cannot be below provider execution")
+        outputs.append((path, document, identity, native_confidence_min, applied))
+    if len({identity["family_id"] for _, _, identity, _, _ in outputs}) != 2:
         raise ValueError("independent provider families required")
 
     expected_ids = shard["ordered_sample_ids"]
     expected_by_id = {sample["sample_id"]: sample for sample in shard["samples"]}
     provider_maps = []
-    for path, document, identity in outputs:
+    for path, document, identity, native_confidence_min, applied_confidence_min in outputs:
         records = document["records"]
         if [record.get("sample_id") for record in records] != expected_ids:
             raise ValueError("provider output shard order mismatch")
@@ -91,6 +109,8 @@ def compare_batches(
                 path,
                 document,
                 identity,
+                native_confidence_min,
+                applied_confidence_min,
                 {record["sample_id"]: record for record in records},
             )
         )
@@ -105,7 +125,14 @@ def compare_batches(
         with Image.open(source_path) as image:
             image_size = list(image.size)
         provider_records = []
-        for path, document, identity, records in provider_maps:
+        for (
+            path,
+            document,
+            identity,
+            native_confidence_min,
+            applied_confidence_min,
+            records,
+        ) in provider_maps:
             record = records[sample_id]
             if record.get("source_sha256") != source_sha256:
                 raise ValueError(f"provider source mismatch:{sample_id}")
@@ -117,7 +144,12 @@ def compare_batches(
                     **identity,
                     "artifact_sha256": _artifact_sha256(path),
                     "source_sha256": source_sha256,
-                    "proposals": record.get("proposals"),
+                    "proposals": [
+                        proposal
+                        for proposal in record.get("proposals", [])
+                        if float(proposal.get("confidence", proposal.get("box_score", -1)))
+                        >= applied_confidence_min
+                    ],
                 }
             )
         comparisons.append(
@@ -146,9 +178,22 @@ def compare_batches(
                 "path": str(path),
                 "artifact_sha256": _artifact_sha256(path),
                 "output_sha256": document["output_sha256"],
+                "native_confidence_min": native_confidence_min,
+                "applied_confidence_min": applied_confidence_min,
             }
-            for path, document, identity, _ in provider_maps
+            for (
+                path,
+                document,
+                identity,
+                native_confidence_min,
+                applied_confidence_min,
+                _,
+            ) in provider_maps
         ],
+        "comparison_policy": {
+            "iou_min": iou_min,
+            "confidence_filter_may_only_raise_provider_execution_threshold": True,
+        },
         "status_counts": dict(sorted(statuses.items())),
         "reason_counts": dict(sorted(reasons.items())),
         "records": comparisons,
@@ -166,6 +211,8 @@ def main() -> None:
     parser.add_argument("--yolo-output", type=Path, required=True)
     parser.add_argument("--platform", choices=("local", "runpod"), required=True)
     parser.add_argument("--iou-min", type=float, default=0.50)
+    parser.add_argument("--groundingdino-confidence-min", type=float)
+    parser.add_argument("--yolo-confidence-min", type=float)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = compare_batches(
@@ -174,6 +221,8 @@ def main() -> None:
         yolo_path=args.yolo_output,
         platform=args.platform,
         iou_min=args.iou_min,
+        groundingdino_confidence_min=args.groundingdino_confidence_min,
+        yolo_confidence_min=args.yolo_confidence_min,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -60,6 +60,7 @@ def _fixture(tmp_path: Path):
         "may_write_final_masks": False,
         "source_revision": "rev-g",
         "checkpoint_sha256": "a" * 64,
+        "box_threshold": 0.3,
         "record_count": 1,
         "records": [{**sample, "image_size": [100, 80], "proposals": [proposal]}],
     }
@@ -70,6 +71,7 @@ def _fixture(tmp_path: Path):
         "provider": "yolo11m_person",
         "provider_family": "yolo",
         "checkpoint_sha256": "b" * 64,
+        "confidence_min": 0.5,
         "record_count": 1,
         "records": [{**sample, "proposals": [proposal]}],
     }
@@ -94,6 +96,30 @@ def test_complete_outputs_compare_as_non_authoritative_catalog(tmp_path: Path) -
     assert report["record_count"] == 1
     assert report["production_mask_authority"] is False
     assert len(report["self_sha256"]) == 64
+
+
+def test_comparison_may_raise_but_never_lower_provider_execution_threshold(
+    tmp_path: Path,
+) -> None:
+    runner = _module()
+    shard, (gdino, yolo) = _fixture(tmp_path)
+    report = runner.compare_batches(
+        shard_path=shard,
+        groundingdino_path=gdino,
+        yolo_path=yolo,
+        platform="runpod",
+        groundingdino_confidence_min=0.95,
+    )
+    assert report["status_counts"] == {"abstain": 1}
+    assert report["reason_counts"] == {"no_person_consensus": 1}
+    with pytest.raises(ValueError, match="cannot be below"):
+        runner.compare_batches(
+            shard_path=shard,
+            groundingdino_path=gdino,
+            yolo_path=yolo,
+            platform="runpod",
+            groundingdino_confidence_min=0.2,
+        )
 
 
 def test_provider_output_seal_or_order_drift_fails_closed(tmp_path: Path) -> None:

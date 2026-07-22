@@ -1,0 +1,55 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_training_role_ownership_gate.v1",
+  "artifact_type": "adult_training_role_person_ownership_gate",
+  "recorded_at": "2026-07-22T12:26:19Z",
+  "status": "HARD_QA_PASS_BOUNDED",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.06",
+    "MF-P5-11.01"
+  ],
+  "product_behavior": {
+    "role_candidates_are_training_authority": false,
+    "person_instance_ownership_verified": false,
+    "ownership_status": "unresolved",
+    "person_instance_ownership_is_remaining_required_gate": true,
+    "downstream_training_may_infer_ownership_from_localization": false
+  },
+  "full_population_result": {
+    "input_record_count": 39354,
+    "input_mask_count": 125976,
+    "role_candidate_count": 96514,
+    "unresolved_ownership_count": 96514,
+    "verified_ownership_count": 0,
+    "missing_ownership_gate_count": 0,
+    "training_authority_granted_count": 0,
+    "source_polygon_records_sha256": "5f0619637d23885df379119568d54c1160c04ba183aa8d99b82f960c73818ad6",
+    "role_candidate_stream_sha256": "fc7acfda2bf312345d0c0dc4275478f847486f5c6204cebd01fa623089d6e59d",
+    "summary_file_sha256": "39298d4cbf64cce28817ad78df2c41346e5caf6417fc3da5cc7894b643086ee0",
+    "summary_self_sha256": "f73bddc05d4935073bc85c0ad885ba8db5060de429d82577bd8373b05959ce04"
+  },
+  "validation": {
+    "focused_tests": "45 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "all_rows_scanned": true,
+    "failure_then_fix": {
+      "initial_failure": "Standalone tool import failed because PYTHONPATH did not include src; no corpus records were processed.",
+      "correction": "Relaunched the governed tool with PYTHONPATH=src.",
+      "corrected_run": "PASS"
+    }
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_training_role_gate.py": "d3850f54915ccac75fcf86e76edc429cd242df3b7d9e102d23efdab659371bfa",
+    "tests/test_nude_training_role_gate.py": "a80d31140269ec73b38cfbffef70bf824eea777cf8ddbf5211919404079c9a3e"
+  },
+  "authority_boundary": {
+    "external_annotations_are_human_gold": false,
+    "production_mask_authority_granted": false,
+    "training_authority_granted": false,
+    "live_person_instance_ownership_completed": false,
+    "strict_visual_review_completed": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Generate and verify exact person-instance ownership, then satisfy independent provider, strict per-record visual review, terminal receipt, certificate, and immutable weighted-export gates before any candidate enters training."
+}

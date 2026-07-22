@@ -29,7 +29,10 @@ def _candidate() -> dict[str, object]:
 def test_polygon_train_role_is_only_a_non_authoritative_admission_prerequisite() -> None:
     result = require_nude_pixel_training_role(_candidate())
     assert result["pixel_training_role_eligible"] is True
+    assert result["person_instance_ownership_verified"] is False
+    assert result["ownership_status"] == "unresolved"
     assert result["training_authority_granted"] is False
+    assert "person_instance_ownership" in result["remaining_required_gates"]
     assert "strict_per_record_visual_review" in result["remaining_required_gates"]
 
 
@@ -117,4 +120,14 @@ def test_population_builder_exports_only_train_polygon_hard_qc_candidates(tmp_pa
     assert summary["input_record_count"] == 3
     assert summary["input_mask_count"] == 3
     assert summary["role_eligible_mask_count"] == 1
+    assert summary["schema_version"] == "maskfactory.nude_training_role_population.v2"
+    assert summary["person_instance_ownership_verified_count"] == 0
+    assert summary["ownership_status_counts"] == {"unresolved": 1}
     assert summary["training_authority_granted"] is False
+
+    row = json.loads(
+        (tmp_path / "output" / "role_eligible_masks.jsonl").read_text(encoding="utf-8")
+    )
+    assert row["person_instance_ownership_verified"] is False
+    assert row["ownership_status"] == "unresolved"
+    assert "person_instance_ownership" in row["remaining_required_gates"]

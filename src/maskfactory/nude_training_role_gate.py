@@ -74,11 +74,14 @@ def require_nude_pixel_training_role(candidate: Mapping[str, Any]) -> dict[str, 
         "candidate_label": candidate_label,
         "candidate_kind": mapping_kind,
         "pixel_training_role_eligible": True,
+        "person_instance_ownership_verified": False,
+        "ownership_status": "unresolved",
         "training_authority_granted": False,
         "remaining_required_gates": [
             "external_supervision_qualification",
             "independent_provider_comparison",
             "hard_qc",
+            "person_instance_ownership",
             "strict_per_record_visual_review",
             "terminal_machine_verified_outcome",
             "immutable_weighted_training_export",
@@ -138,7 +141,7 @@ def build_nude_training_role_population(polygon_records: Path, output_dir: Path)
                 target.write(json.dumps(candidate, sort_keys=True, separators=(",", ":")) + "\n")
     output_sha256 = hashlib.sha256(output_path.read_bytes()).hexdigest()
     summary: dict[str, Any] = {
-        "schema_version": "maskfactory.nude_training_role_population.v1",
+        "schema_version": "maskfactory.nude_training_role_population.v2",
         "artifact_type": "nude_pixel_training_role_population",
         "status": "ROLE_GATE_PASS_PENDING_QUALIFICATION",
         "source_polygon_records_sha256": hashlib.sha256(polygon_records.read_bytes()).hexdigest(),
@@ -149,10 +152,13 @@ def build_nude_training_role_population(polygon_records: Path, output_dir: Path)
         "role_eligible_mask_count": sum(labels.values()),
         "role_eligible_label_counts": dict(sorted(labels.items())),
         "role_eligible_masks_sha256": output_sha256,
+        "person_instance_ownership_verified_count": 0,
+        "ownership_status_counts": {"unresolved": sum(labels.values())},
         "training_authority_granted": False,
         "claim_boundary": (
             "Role eligibility does not replace external qualification, provider comparison, hard "
-            "QC, strict visual review, terminal outcome, or immutable weighted export gates."
+            "QC, person-instance ownership, strict visual review, terminal outcome, or immutable "
+            "weighted export gates."
         ),
     }
     encoded = json.dumps(summary, sort_keys=True, separators=(",", ":"))

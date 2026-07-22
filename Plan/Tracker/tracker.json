@@ -23058,7 +23058,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 58,
+      "percent_complete": 60,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23094,12 +23094,17 @@
           "ts": "2026-07-22T12:22:22+00:00",
           "actor": "ai_agent",
           "text": "Provider proposals and both critic roles must now agree on the exact verified polygon candidate person_index and ownership-report hash; a cross-person vote cannot support acceptance. Live ownership generation remains open."
+        },
+        {
+          "ts": "2026-07-22T12:27:07+00:00",
+          "actor": "ai_agent",
+          "text": "All 96,514 shape-bound training-role candidates now explicitly carry unresolved person-instance ownership, zero ownership-qualified count, and a mandatory ownership gate. No candidate is training-authorized; live ownership/provider/VLM/certificate work remains open."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:22:22+00:00",
+      "updated_at": "2026-07-22T12:27:07+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {

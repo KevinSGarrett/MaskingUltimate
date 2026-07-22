@@ -11784,10 +11784,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Replaced the false IoU-only rejection of one-pixel polygon rasterization with a separately logged
   maximum 1.5-pixel per-edge quantization alternative. The 0.90 IoU floor was not lowered; larger
   geometry mismatches remain quarantined.
-- Mirrored the immutable records and summary to the persistent RunPod path under summary seal
-  `a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111`; local/remote SHA-256
-  matches. This was CPU/network work and did not start GPU inference.
+- Mirrored the immutable records and summary to the persistent RunPod path under current summary
+  seal `0ef0b0fea810253280d7f8f0036e43d050ff386c8d40bbd1196b5370d9665ae2`; local/remote SHA-256
+  matches. The earlier `a377...` artifact remains preserved and was superseded only to write
+  `source_role` per record and bind the crosswalk hash directly; counts/outcomes did not change.
+  This was CPU/network work and did not start GPU inference.
 - Verification: 30 focused tests passed; Ruff, Black, JSON validation, diff integrity, tracker
   validation, and tracker report passed. `MF-P0-18.03` and `MF-P0-18.07` are complete;
   `MF-P0-18.04` and `MF-P4-12.02` remain honestly partial.
 - Evidence: `qa/live_verification/nude_polygon_hard_qc_20260722.json`.
+
+## 2026-07-22 - Adult source-role training boundary
+
+- Added an executable fail-closed gate at the pixel-training boundary. Only train-partition
+  `polygon_external_supervision` masks with anatomy-compatible mapping kinds and exact source/mask
+  hashes can pass this role prerequisite. Bbox, action, context, reference, evaluation holdout,
+  validation/test, and coarse-as-fine inputs are rejected.
+- Ran the gate over the full polygon population. Of 125,976 hard-QC materialized masks, 97,833
+  train-partition masks are role eligible pending all remaining qualification gates. The manifest
+  grants zero training authority and names the external qualification, provider comparison, hard
+  QC, strict visual review, terminal machine outcome, and immutable weighted-export gates still
+  required.
+- Mirrored the exact manifest to RunPod under seal
+  `8f432af45f8a1364745c3cac87c19be91554ed95017b78149e29f506b1bb7f9d`; local/remote hashes match.
+- Evidence: `qa/live_verification/nude_training_role_gate_20260722.json`.

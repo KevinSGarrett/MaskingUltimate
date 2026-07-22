@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_pixel_training_role_gate_evidence",
+  "status": "STATIC_AND_FULL_POPULATION_ROLE_GATE_PASS",
+  "source": {
+    "polygon_summary_self_sha256": "0ef0b0fea810253280d7f8f0036e43d050ff386c8d40bbd1196b5370d9665ae2",
+    "polygon_records_sha256": "685d72ecd2bf2d825787b9ef2c8f63df0161e3d19ed6fb71304b827fee96f489",
+    "crosswalk_override_sha256": "95d3c4219ba0dbbc642d4be341d590f3169e3440b17e9cfef33fdc3d5bf1db7b"
+  },
+  "full_population": {
+    "input_records": 39354,
+    "input_masks": 125976,
+    "input_outcomes": {
+      "hard_qc_pass_candidate": 37736,
+      "quarantined_input": 1618
+    },
+    "input_partitions": {
+      "train": 34031,
+      "validation": 3058,
+      "test": 2265
+    },
+    "role_eligible_train_masks": 97833,
+    "role_eligible_label_counts": {
+      "anus": 5738,
+      "breast_region": 12267,
+      "buttocks_region": 9708,
+      "clitoris": 2559,
+      "feet_region_unspecified": 2808,
+      "female_pubic_hair": 2605,
+      "head_face": 29951,
+      "male_genital_region": 915,
+      "male_pubic_hair": 2133,
+      "nipple": 8877,
+      "penis": 4795,
+      "scrotum_or_testicular_region": 115,
+      "vulva_external_region": 15362
+    },
+    "role_manifest_sha256": "3e801bc4495ffd53fe8dd6263301963db826de98b81f0511851d31cf48c1128d",
+    "summary_self_sha256": "8f432af45f8a1364745c3cac87c19be91554ed95017b78149e29f506b1bb7f9d",
+    "summary_file_sha256": "a7f5c9e4f5344700a5a2d9fbf507d5da012eabe83f6180d5b487ba6e233411e8"
+  },
+  "fail_closed_rules": {
+    "bbox_prompt_supervision_rejected": true,
+    "bbox_action_supervision_rejected": true,
+    "reference_only_rejected": true,
+    "evaluation_holdout_rejected": true,
+    "validation_and_test_partitions_rejected": true,
+    "action_and_context_mapping_kinds_rejected": true,
+    "coarse_as_fine_rejected": true,
+    "unbound_source_or_mask_hash_rejected": true
+  },
+  "runpod_mirror": {
+    "paths_env_sourced": true,
+    "remote_path": "/workspace/maskfactory/runtime_artifacts/nude_training_role_population/8f432af45f8a1364745c3cac87c19be91554ed95017b78149e29f506b1bb7f9d",
+    "role_manifest_sha256": "3e801bc4495ffd53fe8dd6263301963db826de98b81f0511851d31cf48c1128d",
+    "summary_file_sha256": "a7f5c9e4f5344700a5a2d9fbf507d5da012eabe83f6180d5b487ba6e233411e8",
+    "local_remote_hash_match": true
+  },
+  "verification": {
+    "focused_role_gate_tests": "17 passed",
+    "real_five_lane_canary_records": 1074,
+    "real_canary_unmapped_labels": 0,
+    "real_canary_action_boxes_excluded_from_pixels": 46,
+    "real_canary_context_boxes_excluded_from_anatomy_prompts": 10,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "authority": {
+    "training_authority_granted": false,
+    "external_supervision_qualification_complete": false,
+    "independent_provider_comparison_complete": false,
+    "strict_visual_review_complete": false,
+    "terminal_machine_verified_outcome_complete": false,
+    "immutable_weighted_export_complete": false
+  },
+  "claim_boundary": "This proves source-role and train-partition eligibility for the exact population. It does not admit any mask to training until all remaining qualification, visual, outcome, and immutable export gates pass."
+}

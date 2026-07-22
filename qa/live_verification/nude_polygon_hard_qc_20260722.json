@@ -81,9 +81,11 @@
       "maximum_per_edge_raster_quantization_px": 1.5,
       "rule": "IoU must pass, or every edge must remain within the separately logged quantization bound"
     },
-    "summary_self_sha256": "a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111",
-    "records_sha256": "1f04bf6776adc1e8b1d4b2b016a582e872dac44b9884780e58334af14e46aa79",
-    "summary_file_sha256": "d0b199791c2a971f7e5c86b14b2e7ce48ff8953e8620c82abcf26120da51b623"
+    "summary_self_sha256": "0ef0b0fea810253280d7f8f0036e43d050ff386c8d40bbd1196b5370d9665ae2",
+    "records_sha256": "685d72ecd2bf2d825787b9ef2c8f63df0161e3d19ed6fb71304b827fee96f489",
+    "summary_file_sha256": "55c1a45e2c08660e892a6740170db49f4aefea00f764d992a520837ed2a675c4",
+    "source_role_written_per_record": true,
+    "crosswalk_override_sha256_bound_in_summary": true
   },
   "representative_lane_regression": {
     "selected_records": 1074,
@@ -102,9 +104,9 @@
   },
   "runpod_mirror": {
     "paths_env_sourced": true,
-    "remote_path": "/workspace/maskfactory/runtime_artifacts/nude_polygon_hard_qc/a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111",
-    "records_sha256": "1f04bf6776adc1e8b1d4b2b016a582e872dac44b9884780e58334af14e46aa79",
-    "summary_file_sha256": "d0b199791c2a971f7e5c86b14b2e7ce48ff8953e8620c82abcf26120da51b623",
+    "remote_path": "/workspace/maskfactory/runtime_artifacts/nude_polygon_hard_qc/0ef0b0fea810253280d7f8f0036e43d050ff386c8d40bbd1196b5370d9665ae2",
+    "records_sha256": "685d72ecd2bf2d825787b9ef2c8f63df0161e3d19ed6fb71304b827fee96f489",
+    "summary_file_sha256": "55c1a45e2c08660e892a6740170db49f4aefea00f764d992a520837ed2a675c4",
     "local_remote_hash_match": true,
     "gpu_inference_started": false,
     "gpu_observation": {
@@ -130,6 +132,11 @@
     {
       "result": "ACCEPTED",
       "reason": "full RLE population is pixel-identical to canonical pycocotools; hard geometry remains fail-closed and source-area drift is explicit advisory lineage"
+    },
+    {
+      "result": "SUPERSEDED_WITHOUT_OUTCOME_CHANGE",
+      "prior_summary_self_sha256": "a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111",
+      "reason": "v6 writes source_role on every record and binds the project crosswalk override hash directly in the summary; all counts and QC outcomes are unchanged"
     }
   ],
   "verification": {

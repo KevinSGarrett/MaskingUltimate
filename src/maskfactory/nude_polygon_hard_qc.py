@@ -219,6 +219,7 @@ def run_full_polygon_hard_qc(
             {
                 "sample_id": sample_id,
                 "dataset_id": record["dataset_id"],
+                "source_role": record["source_role"],
                 "source_sha256": record["source_sha256"],
                 "annotation_ref": annotation_ref,
                 "annotation_file_sha256": annotation_sha,
@@ -237,6 +238,7 @@ def run_full_polygon_hard_qc(
         "artifact_type": "nude_polygon_full_corpus_hard_qc_summary",
         "status": "PASS_BOUNDED_HARD_QC",
         "registry_sha256": intake["registry"]["self_sha256"],
+        "crosswalk_override_sha256": intake["crosswalk_override_sha256"],
         "split_mapping_sha256": hashlib.sha256(Path(split_mapping).read_bytes()).hexdigest(),
         "record_count": len(output),
         "mask_count": mask_count,

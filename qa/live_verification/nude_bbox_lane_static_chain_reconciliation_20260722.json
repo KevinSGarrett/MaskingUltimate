@@ -1,0 +1,46 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_bbox_lane_static_chain_reconciliation.v1",
+  "recorded_at_utc": "2026-07-22T19:43:17.8703550Z",
+  "tracker_item": "MF-P4-12.03",
+  "result": "STATIC_CHAIN_PASS_LIVE_CANARY_OPEN",
+  "proven_static_chain": {
+    "bbox_is_prompt_only_not_pixel_truth": true,
+    "exact_source_and_prompt_binding": true,
+    "provider_neutral_mask_generation": true,
+    "strict_binary_mask_and_hash_binding": true,
+    "independent_provider_comparison": true,
+    "deterministic_hard_vetoes": true,
+    "per_record_strict_visual_review_contract": true,
+    "bounded_immutable_repair_contract": true,
+    "person_ownership_quorum": true,
+    "provider_specific_resumable_checkpoints": true,
+    "terminal_qualification_contract": true
+  },
+  "live_boundary": {
+    "live_provider_masks_generated_for_canary": 0,
+    "live_hard_qc_records": 0,
+    "live_strict_visual_reviews": 0,
+    "live_repair_outcomes": 0,
+    "live_terminal_outcomes": 0,
+    "completion_claimed": false,
+    "remaining": "Run the sealed bbox canary through multiple admitted GPU providers, then execute hard QA, qualified per-record visual review, bounded repair, and terminal outcomes without weakening thresholds."
+  },
+  "validation": {
+    "pytest": {
+      "command": "python -m pytest -q tests/test_nude_box_mask_generation.py tests/test_nude_box_prompt_runner.py tests/test_nude_reference_mask_hard_qc.py tests/test_nude_batch_queue.py tests/test_nude_record_qualification.py tests/test_nude_visual_evidence.py",
+      "result": "PASS",
+      "passed": 72
+    },
+    "ruff": "PASS",
+    "tracked_implementation_hashes": {
+      "src/maskfactory/nude_box_mask_generation.py": "6ae1939b1edfda1bb87c3cb882430985a933354e406d72b3113038fe0885aa46",
+      "src/maskfactory/nude_reference_mask_hard_qc.py": "769538dd164208105a832fa204151b1aef5e62dcfe09bb60d5dd616d64412d42",
+      "src/maskfactory/nude_reference_strict_visual_review.py": "5fa5c9bfdb70454238d51fc1deb130c7e0b9f38fd9b8165f7358756106fe83ec",
+      "src/maskfactory/nude_reference_mask_repair.py": "0fd0571216da30871b1754b94e772d47c0fcfc5c0b7eb27a41244e5b09de1c76",
+      "src/maskfactory/nude_batch_queue.py": "5f7f22782943fb25fd23f1eddcd8706fd7b1b7e8c72aadd32c990fb71be4baff",
+      "src/maskfactory/nude_record_qualification.py": "6189d59c620389835d054698011c7adfe12a19c420a111ecc677ce880d9fa986",
+      "tools/run_nude_box_prompt_masks.py": "307213122fc315804c8f0ed9e0dbcc720ea2b6010f3555f57d2141676b65fe09"
+    }
+  },
+  "claim_boundary": "This reconciles already implemented and currently passing local contracts. It does not prove a live provider mask, qualified visual verdict, repair success, terminal certificate, training authority, or production authority."
+}

@@ -12079,3 +12079,20 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   required.
 - Evidence:
   `qa/live_verification/nude_training_role_ownership_reconciliation_20260722.json`.
+
+## 2026-07-22 - Bbox-mask lane current-head reconciliation
+
+- Revalidated the complete local MF-P4-12.03 control chain rather than leaving
+  the tracker at its earlier provider-manifest-only state. The implementation
+  now has provider-neutral box-prompt generation, strict binary/hash binding,
+  independent-provider comparison, deterministic hard vetoes, per-record
+  strict-review and bounded immutable-repair contracts, exact ownership
+  quorum, resumable provider checkpoints, and terminal qualification controls.
+- Boxes remain prompts only and never pixel truth. Seventy-two focused tests
+  and Ruff pass on the current tracked bytes.
+- The item advanced from 15% to 45% only for the proven static chain. Live
+  canary masks, live hard-QC records, qualified visual decisions, repair
+  outcomes, and terminal outcomes all remain zero; no certificate, training,
+  gold, or production authority was inferred.
+- Evidence:
+  `qa/live_verification/nude_bbox_lane_static_chain_reconciliation_20260722.json`.

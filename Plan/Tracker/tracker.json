@@ -23286,7 +23286,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 15,
+      "percent_complete": 45,
       "notes": [
         {
           "ts": "2026-07-22T11:53:27+00:00",
@@ -23297,12 +23297,17 @@
           "ts": "2026-07-22T12:22:23+00:00",
           "actor": "ai_agent",
           "text": "The bbox provider route now has an enforced downstream ownership quorum: every independent candidate and critic must bind the same verified person_index/report. Live provider execution remains pending coordinator admission."
+        },
+        {
+          "ts": "2026-07-22T19:44:05+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 current-head reconciliation: the bbox lane has executable provider-neutral mask generation, exact provenance, independent comparison, deterministic hard vetoes, qualified-review and bounded immutable-repair contracts, ownership quorum, resumable checkpoints, and terminal qualification enforcement. Seventy-two focused tests and Ruff pass. Live multi-provider canary masks, per-record QA/review/repair, and terminal outcomes remain zero and open."
         }
       ],
-      "evidence": "qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json",
+      "evidence": "STATIC_CHAIN_PASS only: qa/live_verification/nude_bbox_lane_static_chain_reconciliation_20260722.json. 72 focused tests and Ruff pass; current implementation hashes are bound. Live provider masks=0, live hard-QC/review/repair/terminal outcomes=0; no gold, certificate, training, or production authority.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:22:23+00:00",
+      "updated_at": "2026-07-22T19:44:05+00:00",
       "orphaned": false
     },
     "MF-P4-12.04": {

@@ -341,8 +341,9 @@ def _repair_ready_review(source, root, batch, hard_qc, tmp_path):
         "rationale": "repair the cited owned-person boundary",
     }
     kwargs = _strict_kwargs(source, root, batch, hard_qc, tmp_path)
+    response_count = sum(len(record["candidates"]) for record in batch["records"])
     for reviewer in kwargs["reviewers"]:
-        reviewer.responses = [json.dumps(payload)]
+        reviewer.responses = [json.dumps(payload)] * response_count
     return run_reference_person_strict_visual_review(**kwargs), kwargs["target_contracts"]
 
 
@@ -899,5 +900,50 @@ def test_repair_batch_roi_escape_is_record_error_and_preserves_parent(tmp_path: 
 
     assert result["status_counts"] == {"record_error": 1}
     assert "repair_changed_pixels_outside_roi" in result["records"][0]["reasons"][0]
+    assert result["records"][0]["candidate_results"][0]["status"] == "record_error"
     assert parent_path.read_bytes() == parent_bytes
     assert not list(root.glob("**/repairs/*.png"))
+
+
+def test_multi_person_target_error_does_not_discard_valid_sibling_repair(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path, two_people=True)
+    initial_hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    assert initial_hard_qc["status_counts"] == {"pass": 1}
+    failed_review, target_contracts = _repair_ready_review(
+        source, root, batch, initial_hard_qc, tmp_path
+    )
+    repair = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=failed_review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=_RepairProvider(),
+    )
+
+    outcomes = repair["records"][0]["candidate_results"]
+    assert repair["status_counts"] == {"repair_candidates_created": 1}
+    assert [outcome["status"] for outcome in outcomes] == [
+        "child_candidate_created",
+        "record_error",
+    ]
+    assert "repair_cross_person_protected_overlap" in outcomes[1]["reason"]
+    reentry, reentry_contracts = build_reference_person_repair_reentry_batch(
+        parent_provider_batch=batch,
+        repair_batch=repair,
+        output_root=root,
+        parent_target_contracts=target_contracts,
+    )
+    assert reentry_contracts["sample-a"][0]["package"]["revision"] == 2
+    assert reentry_contracts["sample-a"][1]["package"]["revision"] == 1
+    assert [candidate["lineage"]["kind"] for candidate in reentry["records"][0]["candidates"]] == [
+        "bounded_immutable_repair_child",
+        "immutable_protected_parent",
+    ]
+    reentry_hard_qc = run_reference_person_mask_hard_qc(
+        reentry, output_root=root, source_paths={"sample-a": source}
+    )
+    assert reentry_hard_qc["status_counts"] == {"pass": 1}

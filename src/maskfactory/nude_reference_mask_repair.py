@@ -96,6 +96,122 @@ def _child_contract(
     return child
 
 
+def _execute_candidate_repair(
+    *,
+    report: Mapping[str, Any],
+    sample_id: str,
+    source_embedding: Any,
+    parent_candidates: Mapping[int, Mapping[str, Any]],
+    parent_masks: Mapping[int, np.ndarray],
+    histories: Mapping[str, Mapping[int, Sequence[Mapping[str, Any]]]],
+    maximum_attempts: int,
+    repair_provider: InteractiveSegmenter,
+    output_root: Path,
+    target_contracts: Mapping[str, Mapping[int, Mapping[str, Any]]],
+) -> dict[str, Any]:
+    person_index = int(report["person_index"])
+    plan, plan_reason = _agreed_plan(report)
+    prior = list(histories.get(sample_id, {}).get(person_index, ()))
+    if plan is None:
+        return {"person_index": person_index, "status": "abstain", "reason": plan_reason}
+    if len(prior) >= maximum_attempts:
+        return {
+            "person_index": person_index,
+            "status": "abstain",
+            "reason": "repair_attempt_cap_exhausted",
+        }
+    plan_sha = _canonical_sha256(plan)
+    if any(
+        item.get("plan_sha256") == plan_sha or item.get("hypothesis_id") == plan["hypothesis_id"]
+        for item in prior
+    ):
+        return {
+            "person_index": person_index,
+            "status": "abstain",
+            "reason": "duplicate_repair_hypothesis",
+        }
+    parent = parent_candidates[person_index]
+    parent_mask = parent_masks[person_index]
+    proposals = repair_provider.refine(
+        source_embedding,
+        prompt={
+            "positive_points": plan["positive_points"],
+            "negative_points": plan["negative_points"],
+            "box_xyxy": plan["roi_xyxy"],
+            "mask_prompt": parent_mask,
+        },
+    )
+    selected = _select(proposals, repair_provider.identity, parent_mask.shape)
+    child_mask = np.asarray(selected.mask).astype(bool)
+    roi = plan["roi_xyxy"]
+    outside = np.ones_like(child_mask, dtype=bool)
+    outside[roi[1] : roi[3], roi[0] : roi[2]] = False
+    if np.any((child_mask ^ parent_mask) & outside):
+        raise NudeReferenceMaskRepairError("repair_changed_pixels_outside_roi")
+    protected = np.zeros_like(child_mask)
+    for other_index, other_mask in parent_masks.items():
+        if other_index != person_index:
+            protected |= other_mask
+    if np.any(child_mask & protected):
+        raise NudeReferenceMaskRepairError("repair_cross_person_protected_overlap")
+    changed = int(np.count_nonzero(child_mask ^ parent_mask))
+    changed_fraction = changed / max(1, int(np.count_nonzero(child_mask | parent_mask)))
+    if changed == 0:
+        return {
+            "person_index": person_index,
+            "status": "no_progress",
+            "reason": "identical_child_mask",
+            "plan_sha256": plan_sha,
+        }
+    if changed_fraction > float(plan["maximum_changed_fraction"]):
+        raise NudeReferenceMaskRepairError("repair_changed_fraction_exceeded")
+    relative = (
+        Path(sample_id)
+        / f"person_{person_index:03d}"
+        / "repairs"
+        / f"attempt_{len(prior) + 1:02d}_{plan_sha[:12]}.png"
+    )
+    path = write_binary_mask(
+        Path(output_root) / relative,
+        child_mask,
+        source_size=(parent_mask.shape[1], parent_mask.shape[0]),
+    )
+    artifact_sha = sha256_file(path)
+    mask_sha = binary_mask_sha256(child_mask)
+    parent_contract = target_contracts[sample_id][person_index]
+    if parent_contract["contract_sha256"] != report["target_contract_sha256"]:
+        raise NudeReferenceMaskRepairError("repair_target_contract_drift")
+    child_contract = _child_contract(
+        parent_contract,
+        artifact_sha256=artifact_sha,
+        mask_sha256=mask_sha,
+        hypothesis_id=plan["hypothesis_id"],
+    )
+    return {
+        "person_index": person_index,
+        "status": "child_candidate_created",
+        "attempt": len(prior) + 1,
+        "hypothesis_id": plan["hypothesis_id"],
+        "plan_sha256": plan_sha,
+        "parent_artifact_sha256": parent["artifact_sha256"],
+        "parent_mask_sha256": parent["mask_sha256"],
+        "child_relative_path": relative.as_posix(),
+        "child_artifact_sha256": artifact_sha,
+        "child_mask_sha256": mask_sha,
+        "child_pixel_count": int(np.count_nonzero(child_mask)),
+        "changed_pixels": changed,
+        "changed_fraction": changed_fraction,
+        "repair_confidence": float(selected.confidence),
+        "repair_provider": _provider(repair_provider.identity),
+        "child_target_contract": child_contract,
+        "authority": "draft_repair_candidate_only",
+        "hard_qc_complete": False,
+        "strict_visual_review_complete": False,
+        "production_mask_authority": False,
+        "operational_certificate_eligible": False,
+    }
+
+
 def execute_reference_person_repair_batch(
     *,
     provider_batch: Mapping[str, Any],
@@ -157,122 +273,36 @@ def execute_reference_person_repair_batch(
                 with Image.open(Path(output_root) / candidate["artifact_relative_path"]) as opened:
                     parent_masks[index] = np.asarray(opened.convert("L")) == 255
             for report in review_record["candidate_reports"]:
-                person_index = int(report["person_index"])
-                plan, plan_reason = _agreed_plan(report)
-                prior = list(histories.get(sample_id, {}).get(person_index, ()))
-                if plan is None:
-                    candidate_outputs.append(
-                        {"person_index": person_index, "status": "abstain", "reason": plan_reason}
+                person_index = report.get("person_index")
+                try:
+                    outcome = _execute_candidate_repair(
+                        report=report,
+                        sample_id=sample_id,
+                        source_embedding=source_embedding,
+                        parent_candidates=parent_candidates,
+                        parent_masks=parent_masks,
+                        histories=histories,
+                        maximum_attempts=maximum_attempts,
+                        repair_provider=repair_provider,
+                        output_root=output_root,
+                        target_contracts=target_contracts,
                     )
-                    continue
-                if len(prior) >= maximum_attempts:
-                    candidate_outputs.append(
-                        {
-                            "person_index": person_index,
-                            "status": "abstain",
-                            "reason": "repair_attempt_cap_exhausted",
-                        }
-                    )
-                    continue
-                plan_sha = _canonical_sha256(plan)
-                if any(
-                    item.get("plan_sha256") == plan_sha
-                    or item.get("hypothesis_id") == plan["hypothesis_id"]
-                    for item in prior
-                ):
-                    candidate_outputs.append(
-                        {
-                            "person_index": person_index,
-                            "status": "abstain",
-                            "reason": "duplicate_repair_hypothesis",
-                        }
-                    )
-                    continue
-                parent = parent_candidates[person_index]
-                parent_mask = parent_masks[person_index]
-                proposals = repair_provider.refine(
-                    source_embedding,
-                    prompt={
-                        "positive_points": plan["positive_points"],
-                        "negative_points": plan["negative_points"],
-                        "box_xyxy": plan["roi_xyxy"],
-                        "mask_prompt": parent_mask,
-                    },
-                )
-                selected = _select(proposals, repair_provider.identity, parent_mask.shape)
-                child_mask = np.asarray(selected.mask).astype(bool)
-                roi = plan["roi_xyxy"]
-                outside = np.ones_like(child_mask, dtype=bool)
-                outside[roi[1] : roi[3], roi[0] : roi[2]] = False
-                if np.any((child_mask ^ parent_mask) & outside):
-                    raise NudeReferenceMaskRepairError("repair_changed_pixels_outside_roi")
-                protected = np.zeros_like(child_mask)
-                for other_index, other_mask in parent_masks.items():
-                    if other_index != person_index:
-                        protected |= other_mask
-                if np.any(child_mask & protected):
-                    raise NudeReferenceMaskRepairError("repair_cross_person_protected_overlap")
-                changed = int(np.count_nonzero(child_mask ^ parent_mask))
-                changed_fraction = changed / max(1, int(np.count_nonzero(child_mask | parent_mask)))
-                if changed == 0:
+                    candidate_outputs.append(outcome)
+                    if outcome["status"] == "child_candidate_created":
+                        with Image.open(
+                            Path(output_root) / outcome["child_relative_path"]
+                        ) as opened:
+                            parent_masks[int(person_index)] = np.asarray(opened.convert("L")) == 255
+                except Exception as exc:  # one target never stalls a sibling target
+                    reason = f"{type(exc).__name__}:{exc}"
+                    record_reasons.append(reason)
                     candidate_outputs.append(
                         {
                             "person_index": person_index,
-                            "status": "no_progress",
-                            "reason": "identical_child_mask",
-                            "plan_sha256": plan_sha,
+                            "status": "record_error",
+                            "reason": reason,
                         }
                     )
-                    continue
-                if changed_fraction > float(plan["maximum_changed_fraction"]):
-                    raise NudeReferenceMaskRepairError("repair_changed_fraction_exceeded")
-                relative = (
-                    Path(sample_id)
-                    / f"person_{person_index:03d}"
-                    / "repairs"
-                    / f"attempt_{len(prior) + 1:02d}_{plan_sha[:12]}.png"
-                )
-                path = write_binary_mask(
-                    Path(output_root) / relative,
-                    child_mask,
-                    source_size=(parent_mask.shape[1], parent_mask.shape[0]),
-                )
-                artifact_sha = sha256_file(path)
-                mask_sha = binary_mask_sha256(child_mask)
-                parent_contract = target_contracts[sample_id][person_index]
-                if parent_contract["contract_sha256"] != report["target_contract_sha256"]:
-                    raise NudeReferenceMaskRepairError("repair_target_contract_drift")
-                child_contract = _child_contract(
-                    parent_contract,
-                    artifact_sha256=artifact_sha,
-                    mask_sha256=mask_sha,
-                    hypothesis_id=plan["hypothesis_id"],
-                )
-                candidate_outputs.append(
-                    {
-                        "person_index": person_index,
-                        "status": "child_candidate_created",
-                        "attempt": len(prior) + 1,
-                        "hypothesis_id": plan["hypothesis_id"],
-                        "plan_sha256": plan_sha,
-                        "parent_artifact_sha256": parent["artifact_sha256"],
-                        "parent_mask_sha256": parent["mask_sha256"],
-                        "child_relative_path": relative.as_posix(),
-                        "child_artifact_sha256": artifact_sha,
-                        "child_mask_sha256": mask_sha,
-                        "child_pixel_count": int(np.count_nonzero(child_mask)),
-                        "changed_pixels": changed,
-                        "changed_fraction": changed_fraction,
-                        "repair_confidence": float(selected.confidence),
-                        "repair_provider": _provider(repair_provider.identity),
-                        "child_target_contract": child_contract,
-                        "authority": "draft_repair_candidate_only",
-                        "hard_qc_complete": False,
-                        "strict_visual_review_complete": False,
-                        "production_mask_authority": False,
-                        "operational_certificate_eligible": False,
-                    }
-                )
         except Exception as exc:  # one record never stalls unrelated records
             record_reasons.append(f"{type(exc).__name__}:{exc}")
         finally:
@@ -287,7 +317,11 @@ def execute_reference_person_repair_batch(
                 "status": (
                     "repair_candidates_created"
                     if statuses["child_candidate_created"]
-                    else "abstain" if candidate_outputs else "record_error"
+                    else (
+                        "record_error"
+                        if statuses["record_error"] or not candidate_outputs
+                        else "abstain"
+                    )
                 ),
                 "reasons": record_reasons,
                 "candidate_results": candidate_outputs,

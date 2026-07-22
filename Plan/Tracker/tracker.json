@@ -14632,7 +14632,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 65,
+      "percent_complete": 72,
       "notes": [
         {
           "ts": "2026-07-21T23:31:42+00:00",
@@ -14653,12 +14653,17 @@
           "ts": "2026-07-22T06:28:55+00:00",
           "actor": "codex",
           "text": "2026-07-22 real 12-source LV-MHP qualification: InternVL3.5-8B defect recall 1.0 and serious false-pass 0.0, but valid-mask pass rate 0.0; role remains unavailable. This confirms the rejecting-everything gate works and prevents use as the independent juror for bulk requalification."
+        },
+        {
+          "ts": "2026-07-22T07:04:25+00:00",
+          "actor": "ai_agent",
+          "text": "Corrected two real visual-evidence delivery defects without weakening qualification thresholds: InternVL now uses documented deterministic dynamic high-resolution tiling (21 patches for each valid case's three composites), and real-corpus v2 renders padded target/candidate focus crops rather than duplicate full-frame zooms. Real 12-case v2 corpus bc53b407... and source bindings eb46647b... validate and are mirrored persistently on RunPod. Live rerun is still open: queued request req_46e0cdbd... never started a provider because its one-time token was lost across an idempotent grant replay; no role or authority granted."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; report b981d28355e6bc49c250856ffada295bfd6ef884f8d77c14efbfba37c10fbbe6",
+      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/visual_critic_high_resolution_evidence_fix_20260722.json; prior failed report b981d28355e6bc49c250856ffada295bfd6ef884f8d77c14efbfba37c10fbbe6; commits 4261a46cddf652e8908d99081d54d8fcd9b1a326 and f573b58a9e059ad6f275f45c5718af35fe86eee0; 35+23 focused tests PASS, Ruff/Black/diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T06:28:55+00:00",
+      "updated_at": "2026-07-22T07:04:25+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {

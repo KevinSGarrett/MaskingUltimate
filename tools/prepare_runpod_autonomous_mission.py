@@ -8,7 +8,10 @@ import json
 from pathlib import Path
 from typing import Any
 
-from maskfactory.autonomy.work_cell_mission_builder import build_mission_artifacts
+from maskfactory.autonomy.work_cell_mission_builder import (
+    build_mission_artifacts,
+    build_wrapper_handler_specs,
+)
 
 
 def _read(path: Path) -> Any:
@@ -24,7 +27,15 @@ def main() -> None:
     parser.add_argument("--bindings", type=Path, required=True)
     parser.add_argument("--providers", type=Path, required=True)
     parser.add_argument("--roles", type=Path, required=True)
-    parser.add_argument("--handlers", type=Path, required=True)
+    parser.add_argument("--handlers", type=Path)
+    parser.add_argument("--stage-commands", type=Path)
+    parser.add_argument("--handler-artifact-root", type=Path)
+    parser.add_argument(
+        "--stage-wrapper",
+        type=Path,
+        default=Path("tools/run_runpod_work_cell_stage.py"),
+    )
+    parser.add_argument("--python-executable", default="python")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--authority-ceiling", default="machine_verified_candidate")
     parser.add_argument("--allowed-output-prefix")
@@ -32,6 +43,22 @@ def main() -> None:
     parser.add_argument("--execution", type=Path)
     parser.add_argument("--bulk-policy", type=Path)
     args = parser.parse_args()
+    if args.handlers and args.stage_commands:
+        parser.error("--handlers and --stage-commands are mutually exclusive")
+    if not args.handlers and not args.stage_commands:
+        parser.error("--handlers or --stage-commands is required")
+    if args.stage_commands and args.handler_artifact_root is None:
+        parser.error("--handler-artifact-root is required with --stage-commands")
+    handlers = (
+        _read(args.handlers)
+        if args.handlers
+        else build_wrapper_handler_specs(
+            _read(args.stage_commands),
+            artifact_root=args.handler_artifact_root,
+            wrapper_path=args.stage_wrapper,
+            python_executable=args.python_executable,
+        )
+    )
 
     result = build_mission_artifacts(
         mission_id=args.mission_id,
@@ -41,7 +68,7 @@ def main() -> None:
         bindings=_read(args.bindings),
         provider_bindings=_read(args.providers),
         role_bindings=_read(args.roles),
-        handlers=_read(args.handlers),
+        handlers=handlers,
         output_dir=args.output_dir,
         authority_ceiling=args.authority_ceiling,
         allowed_output_prefix=args.allowed_output_prefix,

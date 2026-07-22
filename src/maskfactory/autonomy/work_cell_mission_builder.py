@@ -99,6 +99,64 @@ def normalize_handler_specs(
     return normalized
 
 
+def build_wrapper_handler_specs(
+    stage_commands: Mapping[str, Mapping[str, Any]],
+    *,
+    artifact_root: Path,
+    wrapper_path: Path,
+    python_executable: str = "python",
+) -> dict[str, dict[str, Any]]:
+    """Build subprocess handlers that run a real stage command and emit a receipt."""
+
+    missing = sorted(set(STAGES) - set(stage_commands))
+    extra = sorted(set(stage_commands) - set(STAGES))
+    if missing or extra:
+        raise MissionBuilderError(
+            f"stage command coverage invalid: missing={missing} extra={extra}"
+        )
+    handlers: dict[str, dict[str, Any]] = {}
+    for stage in STAGES:
+        row = dict(stage_commands[stage])
+        command = row.get("command")
+        if not isinstance(command, list) or not all(isinstance(part, str) for part in command):
+            raise MissionBuilderError(f"stage command invalid: {stage}")
+        stage_timeout = int(row.get("stage_timeout_seconds", row.get("timeout_seconds", 900)))
+        handler_timeout = int(row.get("handler_timeout_seconds", stage_timeout + 60))
+        if stage_timeout < 1 or handler_timeout < stage_timeout:
+            raise MissionBuilderError(f"stage timeout invalid: {stage}")
+        wrapper_command = [
+            python_executable,
+            str(wrapper_path),
+            "--stage",
+            stage,
+            "--artifact-root",
+            str(artifact_root),
+            "--timeout-seconds",
+            str(stage_timeout),
+        ]
+        if row.get("status") is not None:
+            wrapper_command.extend(["--status", str(row["status"])])
+        if row.get("actor_kind") is not None:
+            wrapper_command.extend(["--actor-kind", str(row["actor_kind"])])
+        wrapper_command.append("--")
+        wrapper_command.extend(command)
+        binding_files = [
+            {"path": str(wrapper_path), "sha256": "0" * 64},
+            *[dict(item) for item in row.get("binding_files", [])],
+        ]
+        handler: dict[str, Any] = {
+            "kind": "subprocess_json",
+            "command": wrapper_command,
+            "timeout_seconds": handler_timeout,
+            "binding_files": binding_files,
+        }
+        for optional in ("cwd", "env", "description"):
+            if optional in row:
+                handler[optional] = row[optional]
+        handlers[stage] = handler
+    return handlers
+
+
 def build_mission_artifacts(
     *,
     mission_id: str,

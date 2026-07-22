@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T19:29:55+00:00",
+    "generated_at": "2026-07-22T19:37:16+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 858,
     "total_tracked_including_orphaned": 858
@@ -23189,7 +23189,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 78,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23260,12 +23260,17 @@
           "ts": "2026-07-22T14:29:35+00:00",
           "actor": "ai_agent",
           "text": "Pinned YOLO11M plus independent GroundingDINO ran on four real adult polygon records. Exact catalog consensus verified 4/25 anatomy-mask ownerships and abstained 21/25 on detector catalog disagreement; no thresholds were lowered and no mask gained authority."
+        },
+        {
+          "ts": "2026-07-22T19:36:30+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22 reconciled the sealed dual-detector ownership canary into the full v6 training-role population: 4 exact mask bindings verified, 9 ambiguous, 96,501 unresolved. Only the ownership prerequisite is removed for verified rows; training authority remains false for all."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_yolo_person_detection_canary_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
+      "evidence": "qa/live_verification/nude_training_role_ownership_reconciliation_20260722.json; v6 population summary file sha256 80bfcc9ee098d0535a4b3036c8e51db80bc43afc9783bec9f5d44a0483b4a69e / self seal a4e5fb103d104b754c5b82ea1c3f8982c5224873676f3662dcc0f3af7d0c607c; population sha256 cc94942372110dca15ae9bb76bad1c7dfcc6a30ffeb733e157536aced5a3fdbe; 4 verified, 9 ambiguous, 96,501 unresolved, zero training authority; 66 focused/adjacent tests pass; Ruff/Black/tracker/diff pass.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T14:29:35+00:00",
+      "updated_at": "2026-07-22T19:37:14+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {

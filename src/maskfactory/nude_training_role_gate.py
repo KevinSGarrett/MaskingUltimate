@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from .nude_corpus_intake import FINE_LABELS_NOT_INFERRED_FROM_COARSE
+from .nude_person_ownership import validate_person_ownership_stage_receipt
 
 PIXEL_TRAINING_SOURCE_ROLE = "polygon_external_supervision"
 PIXEL_TRAINING_PARTITION = "train"
@@ -76,6 +77,10 @@ def require_nude_pixel_training_role(candidate: Mapping[str, Any]) -> dict[str, 
         "pixel_training_role_eligible": True,
         "person_instance_ownership_verified": False,
         "ownership_status": "unresolved",
+        "person_index": None,
+        "scene_instance_id": None,
+        "ownership_report_sha256": None,
+        "ownership_stage_evidence_sha256": None,
         "training_authority_granted": False,
         "remaining_required_gates": [
             "external_supervision_qualification",
@@ -89,7 +94,62 @@ def require_nude_pixel_training_role(candidate: Mapping[str, Any]) -> dict[str, 
     }
 
 
-def build_nude_training_role_population(polygon_records: Path, output_dir: Path) -> dict[str, Any]:
+def _ownership_index(
+    path: Path | None,
+) -> tuple[dict[tuple[str, str, str], dict[str, Any]], str | None, int]:
+    if path is None:
+        return {}, None, 0
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise NudeTrainingRoleError("ownership_stage_receipts_invalid") from exc
+    if not isinstance(payload, list):
+        raise NudeTrainingRoleError("ownership_stage_receipts_not_list")
+    index: dict[tuple[str, str, str], dict[str, Any]] = {}
+    queue_envelope_compatibility_count = 0
+    for receipt in payload:
+        candidate_receipt = receipt
+        if isinstance(receipt, Mapping) and "sample_index" in receipt:
+            sample_index = receipt["sample_index"]
+            if (
+                isinstance(sample_index, bool)
+                or not isinstance(sample_index, int)
+                or sample_index < 0
+            ):
+                raise NudeTrainingRoleError("ownership_stage_receipt_sample_index_invalid")
+            candidate_receipt = {
+                key: value for key, value in receipt.items() if key != "sample_index"
+            }
+            queue_envelope_compatibility_count += 1
+        try:
+            validated = validate_person_ownership_stage_receipt(candidate_receipt)
+        except ValueError as exc:
+            raise NudeTrainingRoleError(f"ownership_stage_receipt_invalid:{exc}") from exc
+        for report in validated["ownership_reports"]:
+            key = (
+                validated["sample_id"],
+                report["mask_sha256"],
+                report["candidate_label"],
+            )
+            if key in index:
+                raise NudeTrainingRoleError("ownership_stage_receipt_duplicate_binding")
+            index[key] = {
+                **report,
+                "ownership_stage_evidence_sha256": validated["evidence_sha256"],
+            }
+    return (
+        index,
+        hashlib.sha256(path.read_bytes()).hexdigest(),
+        queue_envelope_compatibility_count,
+    )
+
+
+def build_nude_training_role_population(
+    polygon_records: Path,
+    output_dir: Path,
+    *,
+    ownership_stage_receipts: Path | None = None,
+) -> dict[str, Any]:
     """Write every train-role-eligible mask while retaining all exclusions as counts."""
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -97,6 +157,13 @@ def build_nude_training_role_population(polygon_records: Path, output_dir: Path)
     outcomes: Counter[str] = Counter()
     partitions: Counter[str] = Counter()
     labels: Counter[str] = Counter()
+    ownership_statuses: Counter[str] = Counter()
+    (
+        ownership_index,
+        ownership_receipts_sha256,
+        ownership_queue_envelope_compatibility_count,
+    ) = _ownership_index(ownership_stage_receipts)
+    matched_ownership_bindings = 0
     input_records = 0
     input_masks = 0
     with (
@@ -137,11 +204,33 @@ def build_nude_training_role_population(polygon_records: Path, output_dir: Path)
                 candidate["mask_index"] = mask_index
                 candidate["split_group_id"] = record.get("split_group_id")
                 candidate["dataset_id"] = record.get("dataset_id")
+                ownership = ownership_index.get(
+                    (
+                        candidate["sample_id"],
+                        candidate["mask_sha256"],
+                        candidate["candidate_label"],
+                    )
+                )
+                if ownership is not None:
+                    matched_ownership_bindings += 1
+                    candidate["ownership_status"] = ownership["status"]
+                    candidate["person_instance_ownership_verified"] = (
+                        ownership["status"] == "verified"
+                    )
+                    candidate["person_index"] = ownership.get("person_index")
+                    candidate["scene_instance_id"] = ownership.get("scene_instance_id")
+                    candidate["ownership_report_sha256"] = ownership["report_sha256"]
+                    candidate["ownership_stage_evidence_sha256"] = ownership[
+                        "ownership_stage_evidence_sha256"
+                    ]
+                    if candidate["person_instance_ownership_verified"]:
+                        candidate["remaining_required_gates"].remove("person_instance_ownership")
                 labels[str(candidate["candidate_label"])] += 1
+                ownership_statuses[str(candidate["ownership_status"])] += 1
                 target.write(json.dumps(candidate, sort_keys=True, separators=(",", ":")) + "\n")
     output_sha256 = hashlib.sha256(output_path.read_bytes()).hexdigest()
     summary: dict[str, Any] = {
-        "schema_version": "maskfactory.nude_training_role_population.v2",
+        "schema_version": "maskfactory.nude_training_role_population.v3",
         "artifact_type": "nude_pixel_training_role_population",
         "status": "ROLE_GATE_PASS_PENDING_QUALIFICATION",
         "source_polygon_records_sha256": hashlib.sha256(polygon_records.read_bytes()).hexdigest(),
@@ -152,8 +241,13 @@ def build_nude_training_role_population(polygon_records: Path, output_dir: Path)
         "role_eligible_mask_count": sum(labels.values()),
         "role_eligible_label_counts": dict(sorted(labels.items())),
         "role_eligible_masks_sha256": output_sha256,
-        "person_instance_ownership_verified_count": 0,
-        "ownership_status_counts": {"unresolved": sum(labels.values())},
+        "ownership_stage_receipts_sha256": ownership_receipts_sha256,
+        "ownership_queue_envelope_compatibility_count": (
+            ownership_queue_envelope_compatibility_count
+        ),
+        "matched_ownership_binding_count": matched_ownership_bindings,
+        "person_instance_ownership_verified_count": ownership_statuses["verified"],
+        "ownership_status_counts": dict(sorted(ownership_statuses.items())),
         "training_authority_granted": False,
         "claim_boundary": (
             "Role eligibility does not replace external qualification, provider comparison, hard "

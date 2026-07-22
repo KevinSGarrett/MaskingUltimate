@@ -12062,3 +12062,20 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   tracker evidence bind the corrected seals. Ninety-two focused/adjacent
   ontology and canonical-target-contract tests pass; Ruff, Black, source rehash,
   tracker validation, and diff integrity pass.
+
+## 2026-07-22 - Adult polygon ownership-to-training-role reconciliation
+
+- Rebuilt the full 96,514-mask train-role population with the existing sealed
+  four-record dual-detector ownership canary. Exact matching uses sample ID,
+  mask SHA-256, and candidate label; it verified four masks, retained nine as
+  ambiguous, and left 96,501 unresolved.
+- The batch queue had added a non-authoritative `sample_index` envelope field
+  around each otherwise byte-equivalent ownership stage receipt. Compatibility
+  handling strips only that one typed nonnegative field, then requires the
+  original inner evidence seal to validate; unknown fields and drift fail.
+- The four verified rows remove only the person-instance-ownership prerequisite.
+  Training authority remains false for all 96,514 rows; provider comparison,
+  strict visual review, terminal outcome, and immutable weighted export remain
+  required.
+- Evidence:
+  `qa/live_verification/nude_training_role_ownership_reconciliation_20260722.json`.

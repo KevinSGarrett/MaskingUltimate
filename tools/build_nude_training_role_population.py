@@ -14,8 +14,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--polygon-records", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--ownership-stage-receipts", type=Path)
     args = parser.parse_args()
-    result = build_nude_training_role_population(args.polygon_records, args.output_dir)
+    result = build_nude_training_role_population(
+        args.polygon_records,
+        args.output_dir,
+        ownership_stage_receipts=args.ownership_stage_receipts,
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

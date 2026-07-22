@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from maskfactory.nude_person_ownership import build_person_ownership_stage_receipt
 from maskfactory.nude_training_role_gate import (
     NudeTrainingRoleError,
     build_nude_training_role_population,
@@ -120,7 +121,7 @@ def test_population_builder_exports_only_train_polygon_hard_qc_candidates(tmp_pa
     assert summary["input_record_count"] == 3
     assert summary["input_mask_count"] == 3
     assert summary["role_eligible_mask_count"] == 1
-    assert summary["schema_version"] == "maskfactory.nude_training_role_population.v2"
+    assert summary["schema_version"] == "maskfactory.nude_training_role_population.v3"
     assert summary["person_instance_ownership_verified_count"] == 0
     assert summary["ownership_status_counts"] == {"unresolved": 1}
     assert summary["training_authority_granted"] is False
@@ -131,3 +132,81 @@ def test_population_builder_exports_only_train_polygon_hard_qc_candidates(tmp_pa
     assert row["person_instance_ownership_verified"] is False
     assert row["ownership_status"] == "unresolved"
     assert "person_instance_ownership" in row["remaining_required_gates"]
+
+
+def test_population_ingests_only_exact_sealed_ownership_bindings(tmp_path: Path) -> None:
+    record = {
+        "sample_id": "eligible",
+        "dataset_id": "fixture",
+        "source_role": "polygon_external_supervision",
+        "assigned_partition": "train",
+        "source_sha256": "a" * 64,
+        "split_group_id": "group-eligible",
+        "outcome": "hard_qc_pass_candidate",
+        "masks": [
+            {
+                "mask_sha256": "b" * 64,
+                "raw_label": "anus",
+                "candidate_label": "anus",
+                "candidate_kind": "anatomy",
+            },
+            {
+                "mask_sha256": "c" * 64,
+                "raw_label": "breast",
+                "candidate_label": "breast_region",
+                "candidate_kind": "coarse_anatomy",
+            },
+        ],
+    }
+    source = tmp_path / "records.jsonl"
+    source.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    report = {
+        "candidate_label": "anus",
+        "mask_sha256": "b" * 64,
+        "source_sha256": "a" * 64,
+        "status": "verified",
+        "person_index": 0,
+        "scene_instance_id": "scene-p0",
+        "production_mask_authority": False,
+        "operational_certificate_eligible": False,
+        "report_sha256": "d" * 64,
+    }
+    receipt = build_person_ownership_stage_receipt(
+        sample_id="eligible", source_sha256="a" * 64, ownership_reports=[report]
+    )
+    receipt["sample_index"] = 0
+    receipts = tmp_path / "receipts.json"
+    receipts.write_text(json.dumps([receipt]), encoding="utf-8")
+    summary = build_nude_training_role_population(
+        source,
+        tmp_path / "output",
+        ownership_stage_receipts=receipts,
+    )
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "output" / "role_eligible_masks.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert summary["matched_ownership_binding_count"] == 1
+    assert summary["ownership_queue_envelope_compatibility_count"] == 1
+    assert summary["person_instance_ownership_verified_count"] == 1
+    assert summary["ownership_status_counts"] == {"unresolved": 1, "verified": 1}
+    assert rows[0]["person_instance_ownership_verified"] is True
+    assert rows[0]["person_index"] == 0
+    assert "person_instance_ownership" not in rows[0]["remaining_required_gates"]
+    assert rows[1]["person_instance_ownership_verified"] is False
+    assert rows[1]["ownership_report_sha256"] is None
+
+
+def test_population_rejects_tampered_ownership_stage_receipt(tmp_path: Path) -> None:
+    source = tmp_path / "records.jsonl"
+    source.write_text("", encoding="utf-8")
+    receipts = tmp_path / "receipts.json"
+    receipts.write_text(json.dumps([{"schema_version": "wrong"}]), encoding="utf-8")
+    with pytest.raises(NudeTrainingRoleError, match="ownership_stage_receipt_invalid"):
+        build_nude_training_role_population(
+            source,
+            tmp_path / "output",
+            ownership_stage_receipts=receipts,
+        )

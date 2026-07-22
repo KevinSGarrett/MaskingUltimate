@@ -40,6 +40,21 @@ STAGES = (
 TERMINAL_STAGES = frozenset({"completed", "abstained", "quarantined", "rejected"})
 TERMINAL_OUTCOMES = frozenset({"accepted", "abstained", "quarantined", "rejected"})
 VISUAL_STAGES = frozenset({"primary_visual_review", "independent_visual_review"})
+REQUIRED_BULK_SCOPE = frozenset(
+    {
+        "source_decode",
+        "person_ownership",
+        "mask_generation",
+        "deterministic_hard_qa",
+        "strict_visual_review",
+        "bounded_repair",
+        "mask_correction",
+        "package_freeze",
+        "certification",
+        "milestone_reporting",
+    }
+)
+REQUIRED_TERMINAL_OUTCOMES = frozenset({"accepted", "abstained", "quarantined", "rejected"})
 
 PASS_NEXT = {
     "source_decode": "detection_ownership",
@@ -121,6 +136,14 @@ def validate_mission_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
             raise WorkCellError("certified authority requires two qualified visual roles")
         if primary["family"] == juror["family"]:
             raise WorkCellError("visual quorum requires independent model families")
+    bulk_policy = manifest["bulk_policy"]
+    missing_scope = sorted(REQUIRED_BULK_SCOPE - set(bulk_policy["workload_scope"]))
+    if missing_scope:
+        raise WorkCellError(f"bulk mission scope incomplete: {missing_scope}")
+    if set(bulk_policy["terminal_outcomes"]) != REQUIRED_TERMINAL_OUTCOMES:
+        raise WorkCellError("bulk mission terminal outcomes incomplete")
+    if bulk_policy["material_incident_threshold_fraction"] > 0.25:
+        raise WorkCellError("material incident threshold too loose for autonomous batch work")
     return manifest
 
 
@@ -644,9 +667,11 @@ class AutonomousWorkCell:
             ).fetchone()
             if mission_row is None:
                 raise WorkCellError("unknown mission")
+            manifest = json.loads(mission_row["manifest_json"])
             rows = connection.execute(
                 "SELECT record_id,source_sha256,input_payload_sha256,stage,outcome,"
-                "repair_attempt_count,processing_attempt_count,lease_owner,lease_expires_at "
+                "repair_attempt_count,processing_attempt_count,lease_owner,lease_expires_at,"
+                "last_error "
                 "FROM records WHERE mission_id=? ORDER BY record_id",
                 (mission_id,),
             ).fetchall()
@@ -670,6 +695,21 @@ class AutonomousWorkCell:
             errors.append("terminal_outcome_count_mismatch")
         if mission_row["state"] == "complete" and terminal_count != len(rows):
             errors.append("complete_mission_has_nonterminal_records")
+        material_incidents: list[dict[str, Any]] = []
+        system_failure_count = sum(
+            1 for row in rows if str(row["last_error"] or "").startswith("stage_executor_failure:")
+        )
+        material_threshold = float(manifest["bulk_policy"]["material_incident_threshold_fraction"])
+        if rows and system_failure_count / len(rows) >= material_threshold:
+            material_incidents.append(
+                {
+                    "incident_type": "stage_executor_failure_rate",
+                    "count": system_failure_count,
+                    "record_count": len(rows),
+                    "fraction": system_failure_count / len(rows),
+                    "threshold_fraction": material_threshold,
+                }
+            )
         canonical_state = {
             "mission": {
                 "mission_id": mission_row["mission_id"],
@@ -690,6 +730,9 @@ class AutonomousWorkCell:
             "stage_counts": dict(sorted(stage_counts.items())),
             "outcome_counts": dict(sorted(outcome_counts.items())),
             "repair_attempt_count": sum(int(row["repair_attempt_count"]) for row in rows),
+            "bulk_policy_sha256": canonical_sha256(manifest["bulk_policy"]),
+            "reporting_mode": manifest["bulk_policy"]["reporting_mode"],
+            "material_incidents": material_incidents,
             "milestones": [
                 {
                     "sequence": int(row["sequence"]),

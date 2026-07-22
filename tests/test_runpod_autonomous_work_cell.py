@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -81,6 +84,27 @@ def manifest(*, record_count: int = 1, authority: str = "operationally_certified
                 "max_elapsed_seconds": 300,
                 "allowed_operations": ["box_refine", "point_refine"],
             },
+            "bulk_policy": {
+                "workload_scope": [
+                    "source_decode",
+                    "person_ownership",
+                    "mask_generation",
+                    "deterministic_hard_qa",
+                    "strict_visual_review",
+                    "bounded_repair",
+                    "mask_correction",
+                    "package_freeze",
+                    "certification",
+                    "milestone_reporting",
+                ],
+                "reporting_mode": "milestone_only",
+                "suppress_per_record_chat": True,
+                "require_no_routine_human_review": True,
+                "allow_optional_exception_queue": True,
+                "self_hosted_llm_bulk_review": True,
+                "material_incident_threshold_fraction": 0.1,
+                "terminal_outcomes": ["accepted", "abstained", "quarantined", "rejected"],
+            },
             "execution": {
                 "lease_seconds": 10,
                 "max_record_attempts": 3,
@@ -107,6 +131,7 @@ def test_schemas_are_closed_and_valid() -> None:
     for name in (
         "runpod_autonomous_mission.schema.json",
         "runpod_autonomous_mission_report.schema.json",
+        "runpod_work_cell_handlers.schema.json",
     ):
         schema = json.loads((root / name).read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(schema)
@@ -136,6 +161,32 @@ def test_manifest_rejects_drift_correlated_roles_and_unqualified_authority() -> 
     }
     document = seal_manifest(document)
     with pytest.raises(WorkCellError, match="two qualified visual roles"):
+        validate_mission_manifest(document)
+
+
+def test_manifest_requires_bulk_masking_review_repair_and_milestone_policy() -> None:
+    document = manifest()
+    document["bulk_policy"]["workload_scope"].remove("mask_correction")
+    document = seal_manifest(document)
+    with pytest.raises(WorkCellError, match="bulk mission scope incomplete"):
+        validate_mission_manifest(document)
+
+    document = manifest()
+    document["bulk_policy"]["reporting_mode"] = "per_record_chat"
+    document = seal_manifest(document)
+    with pytest.raises(WorkCellError, match="schema invalid"):
+        validate_mission_manifest(document)
+
+    document = manifest()
+    document["bulk_policy"]["require_no_routine_human_review"] = False
+    document = seal_manifest(document)
+    with pytest.raises(WorkCellError, match="schema invalid"):
+        validate_mission_manifest(document)
+
+    document = manifest()
+    document["bulk_policy"]["material_incident_threshold_fraction"] = 0.5
+    document = seal_manifest(document)
+    with pytest.raises(WorkCellError, match="incident threshold"):
         validate_mission_manifest(document)
 
 
@@ -172,6 +223,9 @@ def test_complete_mission_advances_all_authority_stages(tmp_path: Path) -> None:
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"accepted": 1}
     assert report["milestones"][0]["terminal_record_count"] == 1
+    assert report["reporting_mode"] == "milestone_only"
+    assert report["bulk_policy_sha256"]
+    assert report["material_incidents"] == []
     assert report["integrity_errors"] == []
     assert report["self_sha256"]
 
@@ -382,6 +436,15 @@ def test_runner_isolates_stage_failure_and_continues_other_records(tmp_path: Pat
     report = runner.run(document["mission_id"])
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"abstained": 2}
+    assert report["material_incidents"] == [
+        {
+            "incident_type": "stage_executor_failure_rate",
+            "count": 2,
+            "record_count": 2,
+            "fraction": 1.0,
+            "threshold_fraction": 0.1,
+        }
+    ]
     assert len(list((tmp_path / "executor_failures").rglob("*.json"))) == 2
 
 
@@ -398,3 +461,215 @@ def test_runner_rejects_deployed_stage_hash_drift(tmp_path: Path) -> None:
     runner = WorkCellRunner(cell, handlers, owner="daemon")
     with pytest.raises(WorkCellError, match="implementation drift"):
         runner.run(document["mission_id"])
+
+
+def test_cli_run_loads_hash_bound_handlers_and_writes_milestones(tmp_path: Path) -> None:
+    handler_source = tmp_path / "stage_handlers.py"
+    handler_source.write_text(
+        "\n".join(
+            [
+                "ACTORS = {",
+                "    'source_decode': 'deterministic_qa',",
+                "    'detection_ownership': 'deterministic_qa',",
+                "    'provider_tournament': 'segmentation_provider',",
+                "    'hard_qc': 'deterministic_qa',",
+                "    'primary_visual_review': 'visual_critic',",
+                "    'independent_visual_review': 'visual_critic',",
+                "    'repair_planning': 'visual_critic',",
+                "    'repair_execution': 'segmentation_provider',",
+                "    'package_freeze': 'deterministic_qa',",
+                "    'certification': 'certificate_service',",
+                "}",
+                "def handle(work):",
+                "    return {",
+                "        'stage': work['stage'],",
+                "        'status': 'pass',",
+                "        'actor_kind': ACTORS[work['stage']],",
+                "        'evidence_sha256': 'a' * 64,",
+                "    }",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    source_hash = _sha256_file_for_test(handler_source)
+    document = manifest(record_count=1)
+    document["mission_id"] = "mission-cli-0001"
+    document["input"]["record_count"] = 1
+    document["allowed_output_prefix"] = "missions/mission-cli-0001"
+    document["stage_versions"] = {stage: source_hash for stage in document["stage_versions"]}
+    document = seal_manifest(document)
+    manifest_path = tmp_path / "mission.json"
+    records_path = tmp_path / "records.json"
+    handlers_path = tmp_path / "handlers.json"
+    manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    records_path.write_text(
+        json.dumps([{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}]),
+        encoding="utf-8",
+    )
+    handlers_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
+                "handlers": {
+                    stage: {
+                        "source_path": str(handler_source),
+                        "callable": "handle",
+                        "implementation_sha256": source_hash,
+                    }
+                    for stage in document["stage_versions"]
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    root = tmp_path / "queue"
+    cli = Path.cwd() / "tools" / "manage_runpod_autonomous_work_cell.py"
+    for command in (
+        ["--root", str(root), "admit", "--manifest", str(manifest_path)],
+        [
+            "--root",
+            str(root),
+            "seed",
+            "--mission-id",
+            document["mission_id"],
+            "--records",
+            str(records_path),
+        ],
+        [
+            "--root",
+            str(root),
+            "run",
+            "--mission-id",
+            document["mission_id"],
+            "--owner",
+            "runpod-daemon",
+            "--handlers",
+            str(handlers_path),
+            "--milestone-output-dir",
+            str(tmp_path / "milestones"),
+        ],
+    ):
+        subprocess.run([sys.executable, str(cli), *command], check=True, env=env, cwd=Path.cwd())
+
+    report = json.loads(
+        subprocess.check_output(
+            [
+                sys.executable,
+                str(cli),
+                "--root",
+                str(root),
+                "report",
+                "--mission-id",
+                document["mission_id"],
+            ],
+            env=env,
+            cwd=Path.cwd(),
+            text=True,
+        )
+    )
+    assert report["mission_state"] == "complete"
+    assert report["outcome_counts"] == {"accepted": 1}
+    snapshots = list((tmp_path / "milestones").glob("mission-cli-0001_terminal_*.json"))
+    assert len(snapshots) == 1
+
+
+def test_cli_run_rejects_incomplete_handler_manifest_before_work(tmp_path: Path) -> None:
+    document = manifest(record_count=1)
+    manifest_path = tmp_path / "mission.json"
+    records_path = tmp_path / "records.json"
+    handlers_path = tmp_path / "handlers.json"
+    manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    records_path.write_text(
+        json.dumps([{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}]),
+        encoding="utf-8",
+    )
+    handlers_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
+                "handlers": {
+                    "source_decode": {
+                        "source_path": "stage_handlers.py",
+                        "callable": "handle",
+                        "implementation_sha256": HEX,
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    root = tmp_path / "queue"
+    cli = Path.cwd() / "tools" / "manage_runpod_autonomous_work_cell.py"
+    subprocess.run(
+        [sys.executable, str(cli), "--root", str(root), "admit", "--manifest", str(manifest_path)],
+        check=True,
+        env=env,
+        cwd=Path.cwd(),
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--root",
+            str(root),
+            "seed",
+            "--mission-id",
+            document["mission_id"],
+            "--records",
+            str(records_path),
+        ],
+        check=True,
+        env=env,
+        cwd=Path.cwd(),
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--root",
+            str(root),
+            "run",
+            "--mission-id",
+            document["mission_id"],
+            "--owner",
+            "runpod-daemon",
+            "--handlers",
+            str(handlers_path),
+        ],
+        env=env,
+        cwd=Path.cwd(),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "handler manifest schema invalid" in result.stderr
+    report = json.loads(
+        subprocess.check_output(
+            [
+                sys.executable,
+                str(cli),
+                "--root",
+                str(root),
+                "report",
+                "--mission-id",
+                document["mission_id"],
+            ],
+            env=env,
+            cwd=Path.cwd(),
+            text=True,
+        )
+    )
+    assert report["stage_counts"] == {"source_decode": 1}
+
+
+def _sha256_file_for_test(path: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    digest.update(path.read_bytes())
+    return digest.hexdigest()

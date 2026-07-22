@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/runpod_work_cell_handlers.schema.json",
+  "title": "MaskFactory RunPod autonomous work-cell stage handlers",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "handlers"],
+  "properties": {
+    "schema_version": {"const": "maskfactory.runpod_work_cell_handlers.v1"},
+    "handlers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_decode",
+        "detection_ownership",
+        "provider_tournament",
+        "hard_qc",
+        "primary_visual_review",
+        "independent_visual_review",
+        "repair_planning",
+        "repair_execution",
+        "package_freeze",
+        "certification"
+      ],
+      "properties": {
+        "source_decode": {"$ref": "#/$defs/handler"},
+        "detection_ownership": {"$ref": "#/$defs/handler"},
+        "provider_tournament": {"$ref": "#/$defs/handler"},
+        "hard_qc": {"$ref": "#/$defs/handler"},
+        "primary_visual_review": {"$ref": "#/$defs/handler"},
+        "independent_visual_review": {"$ref": "#/$defs/handler"},
+        "repair_planning": {"$ref": "#/$defs/handler"},
+        "repair_execution": {"$ref": "#/$defs/handler"},
+        "package_freeze": {"$ref": "#/$defs/handler"},
+        "certification": {"$ref": "#/$defs/handler"}
+      }
+    }
+  },
+  "$defs": {
+    "handler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_path", "callable", "implementation_sha256"],
+      "properties": {
+        "source_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+$"
+        },
+        "callable": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"},
+        "implementation_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

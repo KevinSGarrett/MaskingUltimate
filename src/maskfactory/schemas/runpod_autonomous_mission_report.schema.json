@@ -15,6 +15,9 @@
     "stage_counts",
     "outcome_counts",
     "repair_attempt_count",
+    "bulk_policy_sha256",
+    "reporting_mode",
+    "material_incidents",
     "milestones",
     "integrity_errors",
     "queue_state_sha256",
@@ -31,6 +34,29 @@
     "stage_counts": {"$ref": "#/$defs/countMap"},
     "outcome_counts": {"$ref": "#/$defs/countMap"},
     "repair_attempt_count": {"type": "integer", "minimum": 0},
+    "bulk_policy_sha256": {"$ref": "#/$defs/sha256"},
+    "reporting_mode": {"const": "milestone_only"},
+    "material_incidents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "incident_type",
+          "count",
+          "record_count",
+          "fraction",
+          "threshold_fraction"
+        ],
+        "properties": {
+          "incident_type": {"enum": ["stage_executor_failure_rate"]},
+          "count": {"type": "integer", "minimum": 0},
+          "record_count": {"type": "integer", "minimum": 1},
+          "fraction": {"type": "number", "minimum": 0, "maximum": 1},
+          "threshold_fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+        }
+      }
+    },
     "milestones": {
       "type": "array",
       "items": {

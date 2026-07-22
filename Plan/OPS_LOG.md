@@ -11859,3 +11859,45 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Validation: 34 focused qualification/producer/package tests passed; Ruff, Black, and diff
   integrity passed.
 - Evidence: `qa/live_verification/external_supervision_package_population_canary_20260722.json`.
+
+## 2026-07-22 - CivitAI reference-only role and first proposal-catalog shard
+
+- Made the exact 6,537 files under `Nude/CivitAI_Top_NSFW_Images` durable as
+  `reference_and_tournament_input`, `reference_only_no_mask_truth`, and
+  `synthetic_or_generated` in the spec, item catalog, operating instruction,
+  intake verifier, tracker, and tests. Their 6,537 exact `prompts.json` joins
+  remain weak scene/action/retrieval context only and cannot create anatomy
+  pixels, fine labels, boxes, masks, gold, or production authority.
+- Re-audited the RunPod mirror: 26 exact reference shards contain 6,537 unique
+  records (25x256 plus 1x137), preserve the exact
+  `/workspace/assets/MaskedWarehouse/Nude/CivitAI_Top_NSFW_Images` path, and
+  have zero role/path/source-truth violations.
+- Executed the first 256-record shard through independent YOLO11M and
+  GroundingDINO person discovery on CPU. YOLO produced 243 proposal-only boxes
+  in 324 seconds. GroundingDINO produced 450 proposal-only boxes, was
+  intentionally interrupted after record 6, and resumed the exact contiguous
+  prefix to 256 without recomputing it.
+- The GroundingDINO dependency wrote one diagnostic line before JSON. Preserved
+  the raw bytes, validated the exact prefix and internal seal, wrote a separately
+  hashed sanitized artifact, and changed the runner so future model diagnostics
+  go to stderr. No output pixels or proposal values changed.
+- Compared native 0.30 and raised 0.40/0.50 GroundingDINO floors without ever
+  lowering an execution threshold. The deterministic selection chose 0.40:
+  157 strict spatial-consensus catalogs / 175 person instances and 99
+  abstentions (64 no-person consensus, 30 count disagreement, 5 ambiguous
+  spatial matches). Minimum/median accepted pairwise box IoU are
+  0.7050242516/0.9787272524. These remain discovery catalogs, not masks.
+- Checkpointed all 256 per-record catalog receipts into a dedicated SQLite
+  canary queue. Exact replay retained 256/256 without duplicates and advanced
+  zero terminal mask progress. GPU mask proposals, mask hard QC, strict VLM,
+  repair, terminal qualification, and certificates remain open.
+- Current coordinator state is honestly local-blocked for GPU work:
+  `RECOVERY_REQUIRED`, admission disabled, expired exact lease
+  `lease_f31c0165ee8f4c9bb31e5ef96ef87d22`; no bypass was attempted. Independent
+  CPU/local work remains active.
+- Validation: 239 focused/adjacent tests, Ruff, Black, JSON validation, tracker
+  validation, and diff integrity pass. The broad worktree suite still contains
+  unrelated governed-asset and historical source-lock failures and is not used
+  as acceptance evidence for this increment.
+- Evidence:
+  `qa/live_verification/nude_civitai_reference_person_catalog_canary_20260722.json`.

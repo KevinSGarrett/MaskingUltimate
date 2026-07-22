@@ -1,0 +1,142 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_reference_person_catalog.v1",
+  "recorded_at": "2026-07-22T15:48:30Z",
+  "result": "PASS_PERSON_CATALOG_STAGE_ONLY",
+  "authority_boundary": {
+    "source_images_are_gold": false,
+    "source_images_are_pixel_truth": false,
+    "prompt_metadata_may_create_pixel_labels": false,
+    "person_boxes_are_mask_truth": false,
+    "production_mask_authority": false,
+    "operational_certificate_issued": false
+  },
+  "adopted_intake": {
+    "dataset_id": "civitai_top_nsfw_images_2025",
+    "local_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\CivitAI_Top_NSFW_Images",
+    "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/CivitAI_Top_NSFW_Images",
+    "source_role": "reference_and_tournament_input",
+    "authority": "reference_only_no_mask_truth",
+    "media_domain": "synthetic_or_generated",
+    "record_count": 6537,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+    "runpod_shard_count": 26,
+    "runpod_shard_sizes": {
+      "256": 25,
+      "137": 1
+    },
+    "unique_sample_id_count": 6537,
+    "role_path_or_source_truth_violations": 0,
+    "polygon_annotation_count": 0,
+    "bbox_annotation_count": 0,
+    "segmentation_annotation_count": 0,
+    "prompt_join_role": "weak_scene_action_retrieval_context_only"
+  },
+  "canary_shard": {
+    "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "self_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a",
+    "record_count": 256,
+    "exact_source_hash_preflight": "PASS"
+  },
+  "providers": {
+    "yolo11m_person": {
+      "runner_commit": "5db37857f",
+      "checkpoint_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+      "run_policy_sha256": "50f8013483c5e115f89ecdd5b348ee329d5038e9eb2b75d37971dff64ca2ef3c",
+      "output_sha256": "ceb0f17ef6526e51dbe0d47329000dffd55a0cf50f6e4790a13af950aae9eca9",
+      "output_file_sha256": "2f137b8ef2dab3424e2cf0a608b692112f665a81c1a1a95173cd36096b46180f",
+      "record_count": 256,
+      "proposal_count": 243,
+      "model_load_count": 1,
+      "authority_or_label_violations": 0,
+      "elapsed_seconds": 324.0,
+      "records_per_second": 0.7901234568
+    },
+    "groundingdino_person": {
+      "runner_commit": "dbed5c9ee",
+      "superseding_stdout_fix_commit": "696f36ec7",
+      "checkpoint_sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+      "run_policy_sha256": "9ae3c574bc94e36716c7204dde863ee9b394610ff9ce52e0cfdaec20ffe5bc65",
+      "checkpoint_self_sha256": "f9bab507589a6c6041ecdd2a5567a4e0006b224425bb3f5b34bcb9dd4bbbc180",
+      "output_sha256": "2bd5bcab025ebbc6453d55ad8dcc34ac12767343c6adc1de5955d73a197a46fb",
+      "sanitized_output_file_sha256": "cb33be870190fb3a2a4b4930bde63d95690688d7117b05463ad13899fa3f253b",
+      "raw_output_file_sha256": "6be4c5b3ce519c7588bef6880f920bbabce5fb643e7139a04569ffc5e76172a5",
+      "removed_exact_stdout_prefix_sha256": "ec9334ce755b56ea542d0341ab6366c3f9fc6f2858ccadf02924d1289f3de5d4",
+      "record_count": 256,
+      "proposal_count": 450,
+      "model_load_count": 1,
+      "intentional_interruption_checkpoint_count": 6,
+      "resumed_record_count": 6,
+      "processed_after_resume_count": 250,
+      "authority_violations": 0,
+      "prompt_or_phrase_violations": 0
+    }
+  },
+  "comparison": {
+    "deployment_commit": "fc0287d6e",
+    "selection_rule": "maximize_strict_spatial_consensus_pass_count_then_higher_nonweakening_threshold",
+    "native_0_30": {
+      "pass": 125,
+      "abstain": 131,
+      "self_sha256": "154b9f9d65dc06ee6f3904f6506a793d46ec5a502102149a938978b0754474bc"
+    },
+    "raised_0_40_selected": {
+      "pass": 157,
+      "abstain": 99,
+      "person_catalog_count": 175,
+      "minimum_pairwise_iou_min": 0.7050242516457054,
+      "minimum_pairwise_iou_median": 0.9787272523724949,
+      "reason_counts": {
+        "no_person_consensus": 64,
+        "person_count_disagreement": 30,
+        "person_spatial_matching_ambiguous": 5
+      },
+      "self_sha256": "9aa78ea1a4a9d06ae19fd05e5e866bad5c7a79e78d47ee8a580b6c7d4e626472",
+      "file_sha256": "77f97391760d1edf64072200a45c7671162137e5598b2ddc0d548b939831b75c"
+    },
+    "raised_0_50": {
+      "pass": 146,
+      "abstain": 110,
+      "self_sha256": "c8ee55be8faef76eb6aa9c9bec6997505da8a29fdf097e8f2337c9e61a804289"
+    },
+    "selection_receipt_self_sha256": "e4dba7e1ffac777f9a87ab4678100ba78d5bc6bfdec46cb71a304760b5d7efbf"
+  },
+  "durable_queue": {
+    "seeded_shards": 1,
+    "record_count": 256,
+    "person_catalog_stage_evidence_count": 256,
+    "first_checkpoint_inserted": 256,
+    "idempotent_replay_retained": 256,
+    "terminal_progress_advanced": false,
+    "runtime_private_lease_preserved": true
+  },
+  "validation": {
+    "focused_and_adjacent_test_count": 239,
+    "focused_and_adjacent_tests": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "tracker_validate": "PASS",
+    "tracked_worktree_head_matches_origin": true
+  },
+  "gpu_state": {
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "used_memory_mib": 648,
+    "free_memory_mib": 47993,
+    "utilization_percent": 0,
+    "coordinator_mode": "RECOVERY_REQUIRED",
+    "admission_enabled": false,
+    "blocking_lease_id": "lease_f31c0165ee8f4c9bb31e5ef96ef87d22",
+    "blocking_lease_result": "lease_expired",
+    "bypass_attempted": false
+  },
+  "open_work": {
+    "generated_masks": 0,
+    "hard_qc_mask_pass": 0,
+    "strict_visual_reviews": 0,
+    "repairs": 0,
+    "terminal_machine_verified_candidates": 0,
+    "quarantined_terminal_records": 0,
+    "operational_certificates": 0,
+    "next_stage": "Under an admitted maskfactory_generation GPU lease, generate independent box-prompted masks for the 157 passing person catalogs; route the 99 abstentions through bounded third-provider or repair logic while unrelated records continue. Then run hard QC, strict per-record visual review, repair/abstention, and exact-output qualification."
+  }
+}

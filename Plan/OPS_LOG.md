@@ -11563,3 +11563,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   tests pass; Ruff, Black, tracker validation, and diff integrity pass.
   Evidence: `qa/live_verification/sam31_runpod_runtime_smoke_20260722.json` and
   `qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json`.
+
+## 2026-07-22 - Missing Docker serve contract restored
+
+- Restored the source module already required by the gold-volume tournament
+  test: `maskfactory.serve.docker_contract`. The fail-closed static probe binds
+  the Python 3.11 serve image, exact cu128 Torch/Torchvision pins, curated serve
+  requirements, no-dependency package install, runtime identity, GPU request,
+  repository bind, localhost-only 8765 publication, and exact serve command.
+- Drift tests reject a changed Torch pin, changed runtime identity, LAN port,
+  missing GPU request, and missing service. Four dedicated and six existing
+  gold-volume tests pass; Ruff and Black pass. This is static container-spec
+  coherence only and does not claim image build, live health, champions, or
+  prediction authority.

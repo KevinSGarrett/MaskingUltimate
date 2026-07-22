@@ -9,12 +9,14 @@ from typing import Any
 
 from .ontology_v2_authority_pilot import canonical_sha256, verify_authority_pilot
 
-SCHEMA_VERSION = "maskfactory.ontology_v2_resolution_workload.v1"
+SCHEMA_VERSION = "maskfactory.ontology_v2_resolution_workload.v2"
 AUTHORITY = "scheduling_only_no_semantic_mask_gold_or_certificate_authority"
 REQUIRED_STAGES = (
     "source_identity",
-    "target_contract_validation",
+    "coverage_target_validation",
     "provider_proposals",
+    "owner_and_candidate_binding",
+    "canonical_target_contract_materialization",
     "deterministic_hard_qa",
     "qualified_primary_visual_review",
     "independent_family_juror_review",
@@ -43,29 +45,29 @@ def build_resolution_workload(
         raise OntologyV2ResolutionWorkloadError("pilot_manifest_file_sha256_invalid")
     entries: list[dict[str, Any]] = []
     for image in pilot["images"]:
-        for image_target_ordinal, target in enumerate(image["target_contracts"]):
-            target_hash = _sha(target)
+        for coverage_target_ordinal, target in enumerate(image["coverage_targets"]):
+            coverage_target_hash = _sha(target)
             identity = {
                 "pilot_manifest_self_sha256": pilot["self_sha256"],
                 "image_id": image["image_id"],
-                "image_target_ordinal": image_target_ordinal,
+                "coverage_target_ordinal": coverage_target_ordinal,
                 "source_encoded_sha256": image["source_encoded_sha256"],
-                "target_contract_sha256": target_hash,
+                "coverage_target_sha256": coverage_target_hash,
             }
             entries.append(
                 {
                     "work_unit_id": f"v2r_{_sha(identity)[:32]}",
                     "ordinal": 0,
                     "image_id": image["image_id"],
-                    "image_target_ordinal": image_target_ordinal,
+                    "coverage_target_ordinal": coverage_target_ordinal,
                     "source_kind": image["source_kind"],
                     "source_path": image["source_path"],
                     "runpod_path": image.get("runpod_path"),
                     "source_encoded_sha256": image["source_encoded_sha256"],
                     "source_decoded_pixel_sha256": image.get("source_decoded_pixel_sha256"),
                     "split_group_id": image["split_group_id"],
-                    "target_contract": dict(target),
-                    "target_contract_sha256": target_hash,
+                    "coverage_target": dict(target),
+                    "coverage_target_sha256": coverage_target_hash,
                     "status": "queued",
                     "attempt_count": 0,
                     "max_attempts": 3,
@@ -77,8 +79,8 @@ def build_resolution_workload(
             )
     entries.sort(
         key=lambda row: (
-            row["target_contract"]["canonical_label"],
-            row["target_contract"]["requested_state"],
+            row["coverage_target"]["canonical_label"],
+            row["coverage_target"]["requested_state"],
             row["source_encoded_sha256"],
         )
     )
@@ -155,15 +157,15 @@ def verify_resolution_workload(
         "work_unit_id",
         "ordinal",
         "image_id",
-        "image_target_ordinal",
+        "coverage_target_ordinal",
         "source_kind",
         "source_path",
         "runpod_path",
         "source_encoded_sha256",
         "source_decoded_pixel_sha256",
         "split_group_id",
-        "target_contract",
-        "target_contract_sha256",
+        "coverage_target",
+        "coverage_target_sha256",
         "status",
         "attempt_count",
         "max_attempts",
@@ -191,13 +193,13 @@ def verify_resolution_workload(
             or entry["required_stages"] != list(REQUIRED_STAGES)
         ):
             raise OntologyV2ResolutionWorkloadError("workload_entry_state_invalid")
-        if _sha(entry["target_contract"]) != entry["target_contract_sha256"]:
-            raise OntologyV2ResolutionWorkloadError("workload_target_contract_hash_mismatch")
+        if _sha(entry["coverage_target"]) != entry["coverage_target_sha256"]:
+            raise OntologyV2ResolutionWorkloadError("workload_coverage_target_hash_mismatch")
         actual_bindings.add(
             (
                 entry["image_id"],
-                entry["image_target_ordinal"],
-                entry["target_contract_sha256"],
+                entry["coverage_target_ordinal"],
+                entry["coverage_target_sha256"],
             )
         )
     if pilot is not None:
@@ -205,12 +207,12 @@ def verify_resolution_workload(
         if workload["pilot_manifest_self_sha256"] != pilot["self_sha256"]:
             raise OntologyV2ResolutionWorkloadError("workload_pilot_binding_mismatch")
         expected_bindings = {
-            (image["image_id"], image_target_ordinal, _sha(target))
+            (image["image_id"], coverage_target_ordinal, _sha(target))
             for image in pilot["images"]
-            for image_target_ordinal, target in enumerate(image["target_contracts"])
+            for coverage_target_ordinal, target in enumerate(image["coverage_targets"])
         }
         if actual_bindings != expected_bindings:
-            raise OntologyV2ResolutionWorkloadError("workload_target_population_mismatch")
+            raise OntologyV2ResolutionWorkloadError("workload_coverage_population_mismatch")
     return {
         "status": "PASS_QUEUED_NO_AUTHORITY",
         "work_unit_count": len(entries),

@@ -12047,3 +12047,18 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `fd0ac903984f72973d5937abae6116b9d08a9aa53690acac15210ce7f89ff999`.
   Seventy-one focused/adjacent tests, Ruff, Black, tracker validation, and diff
   integrity passed.
+
+### Contract-vocabulary correction
+
+- A post-build audit found that the pre-proposal class/state coverage requests
+  were named `target_contracts`, which could be confused with MaskFactory's
+  canonical v2 target contract. The latter also requires exact owner,
+  candidate-mask, protected-region, transform, and package bindings that do not
+  exist before proposal generation.
+- The pilot and workload schemas were advanced to v2 and now use
+  `coverage_targets`. The workload explicitly requires owner/candidate binding
+  and canonical target-contract materialization before hard QA or visual review.
+  Historical commit evidence remains in Git; current generated artifacts and
+  tracker evidence bind the corrected seals. Ninety-two focused/adjacent
+  ontology and canonical-target-contract tests pass; Ruff, Black, source rehash,
+  tracker validation, and diff integrity pass.

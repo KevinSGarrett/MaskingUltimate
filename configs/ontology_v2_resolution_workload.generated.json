@@ -1,9 +1,9 @@
 {
-  "schema_version": "maskfactory.ontology_v2_resolution_workload.v1",
+  "schema_version": "maskfactory.ontology_v2_resolution_workload.v2",
   "artifact_type": "ontology_v2_autonomous_resolution_workload",
   "authority": "scheduling_only_no_semantic_mask_gold_or_certificate_authority",
-  "pilot_manifest_file_sha256": "37c538ed41f294b06f46116e37ac19a5240c6a1fe2340c8d085506956ebf9158",
-  "pilot_manifest_self_sha256": "22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101",
+  "pilot_manifest_file_sha256": "f6d8e4220922d81083c61950facfdaed5eeae9a297e49c028eec0dbb39e18f82",
+  "pilot_manifest_self_sha256": "380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628",
   "ontology_version": "body_parts_v2",
   "ontology_sha256": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
   "work_unit_count": 90,
@@ -13,8 +13,10 @@
   "completion_claimed": false,
   "required_stages": [
     "source_identity",
-    "target_contract_validation",
+    "coverage_target_validation",
     "provider_proposals",
+    "owner_and_candidate_binding",
+    "canonical_target_contract_materialization",
     "deterministic_hard_qa",
     "qualified_primary_visual_review",
     "independent_family_juror_review",
@@ -24,17 +26,17 @@
   ],
   "entries": [
     {
-      "work_unit_id": "v2r_0f3ac461cb483ed0a385ae7f5742acf7",
+      "work_unit_id": "v2r_ac71b25775ac11c1529421c72db3e0c0",
       "ordinal": 0,
       "image_id": "pilot_048944333321f631b3df20ae",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "source_encoded_sha256": "048944333321f631b3df20ae01f897cbb35a6009995281c306e02c3849e6b389",
       "source_decoded_pixel_sha256": "4df29b245f68115041114656db2d728967240510df1071536edd7b45c6c1456d",
       "split_group_id": "nude_group_545b908e95b7895efb9f10e2",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "unreviewed_for_v2",
@@ -42,7 +44,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "18261723b817b67f0607fb3bcc5793d602e9cb30938bec2b4625a35c5ea084c6",
+      "coverage_target_sha256": "18261723b817b67f0607fb3bcc5793d602e9cb30938bec2b4625a35c5ea084c6",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -51,8 +53,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -62,17 +66,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_f18d78a22e8691fb7450f250a4942b58",
+      "work_unit_id": "v2r_61c7dccb5cf6aab4191f65ec920c3191",
       "ordinal": 1,
       "image_id": "pilot_002ecf54c0f1dc24e17a8027",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "source_encoded_sha256": "002ecf54c0f1dc24e17a802740955685a37a0566c35131dd79f31a63b2082342",
       "source_decoded_pixel_sha256": "b862a92495101e6bd5eabddde32bffe08406b81458c9996547b511b4ea3d56b8",
       "split_group_id": "nude_group_3f444a82e78bce66bb55d017",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -80,7 +84,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "f8cf6a757e563a510425b822cdde9f698a129647132bfc1eb9ecefd052d10e87",
+      "coverage_target_sha256": "f8cf6a757e563a510425b822cdde9f698a129647132bfc1eb9ecefd052d10e87",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -89,8 +93,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -100,17 +106,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_99e2df9c7e71e7624f4ced7708d51b81",
+      "work_unit_id": "v2r_077347f33085474f6bdd1a4f0099d52d",
       "ordinal": 2,
       "image_id": "pilot_0037ba94c0e67e05b76ec773",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "source_encoded_sha256": "0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
       "source_decoded_pixel_sha256": "37e0259db9ae23db47c6b74a9a095edb4a95f3633286a2d8640e61c860489f88",
       "split_group_id": "reference_0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -118,7 +124,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "9b36dc8251e84d22f3897d520d1a01e31043e0a643b340d3ddb51040d7d8cdda",
+      "coverage_target_sha256": "9b36dc8251e84d22f3897d520d1a01e31043e0a643b340d3ddb51040d7d8cdda",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -127,8 +133,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -138,17 +146,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_edf2a2da0381736d1cac566c42458892",
+      "work_unit_id": "v2r_02e3b432a9a8cc797ff100749a5b0c55",
       "ordinal": 3,
       "image_id": "pilot_56a7fab623ff7baaa423c286",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "source_encoded_sha256": "56a7fab623ff7baaa423c286a82117889020816ac195794c4cb3a694c38014d1",
       "source_decoded_pixel_sha256": "33d35d086bc6bde62cd37c3b7632a9a20eab34ac95a8647c2594d5ed4ddc797e",
       "split_group_id": "nude_group_0152622331730a447b6e7bde",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -156,7 +164,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "8cfb18256e4bffd797103e91fefdc436f5b724b64349fc57fd6933980019c7c0",
+      "coverage_target_sha256": "8cfb18256e4bffd797103e91fefdc436f5b724b64349fc57fd6933980019c7c0",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -165,8 +173,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -176,17 +186,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_56c853d553fc6278fb1f9f37e5c6d2c9",
+      "work_unit_id": "v2r_d58d5714f39fdf059a01c5927258e3d8",
       "ordinal": 4,
       "image_id": "pilot_0cdf223a0c05b97655aa0be0",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "source_encoded_sha256": "0cdf223a0c05b97655aa0be0cd212bd05268f1258c365cc3f24ea7576b7ab548",
       "source_decoded_pixel_sha256": "7945129835042a13227d1a1dc57344ae1470f2c3406601aedabf64075b2fb514",
       "split_group_id": "nude_group_4b3818c122648e50ce7dd98f",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -194,7 +204,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "80ec413c7d8a83afc511c89985cdf27d4a4ab1d5b7c43e67cd6818e28f448a70",
+      "coverage_target_sha256": "80ec413c7d8a83afc511c89985cdf27d4a4ab1d5b7c43e67cd6818e28f448a70",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -203,8 +213,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -214,17 +226,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_cfe71e3f87bf586f57a85858351fd3fd",
+      "work_unit_id": "v2r_a643a9440c33c212d593999753820e5c",
       "ordinal": 5,
       "image_id": "pilot_1925650521381fb1a55a3d95",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "source_encoded_sha256": "1925650521381fb1a55a3d95a4dbd8058f185c6f7d538ffab5d15ac1a7e6d7ea",
       "source_decoded_pixel_sha256": "518bea51afde8b93be0211cd2fd709feb4cc430e46000bacb557a7d17006e8e5",
       "split_group_id": "nude_group_7659f9b0382b08b5f5d47b56",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -232,7 +244,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "8e761acbdad56a0bf78414c9062fb06deabcc640c031aee321eff777ad58e0f6",
+      "coverage_target_sha256": "8e761acbdad56a0bf78414c9062fb06deabcc640c031aee321eff777ad58e0f6",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -241,8 +253,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -252,17 +266,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_a36c7c5f2b1971aec67853a610f2d902",
+      "work_unit_id": "v2r_7217f6029c483f170e7da3fb455f33f9",
       "ordinal": 6,
       "image_id": "pilot_00453ba6c3bc7e59c98b81d2",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "source_encoded_sha256": "00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
       "source_decoded_pixel_sha256": "6bcf2a6b5c0726fcdd705e3526f9dee3db5b444400bbf3c53b07918321436e95",
       "split_group_id": "reference_00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -270,7 +284,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "e1d730decf69f53066d4eb4741ec15b26bc9a75eabb0873f3d54b7c16e47c583",
+      "coverage_target_sha256": "e1d730decf69f53066d4eb4741ec15b26bc9a75eabb0873f3d54b7c16e47c583",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -279,8 +293,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -290,17 +306,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_642416b94797fe07be6fc3ca2fdf1ce8",
+      "work_unit_id": "v2r_f3d49eef608e96dfcd06a50cad33f936",
       "ordinal": 7,
       "image_id": "pilot_00488c4c64077691ee54afdf",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "source_encoded_sha256": "00488c4c64077691ee54afdf3141765e02c76d8bbcd9283f24dbac8d56cb6e7d",
       "source_decoded_pixel_sha256": "7b97b9183773fab8ba1ea6706ce0b8b228b6cfb3d59ad67126c7fcc78c69a2ad",
       "split_group_id": "nude_group_cd279be9762ec416e8234d96",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -308,7 +324,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "46536fe5865b851a751de77f949629c680a500d2c06f003916c0a679d6c6e75b",
+      "coverage_target_sha256": "46536fe5865b851a751de77f949629c680a500d2c06f003916c0a679d6c6e75b",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -317,8 +333,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -328,17 +346,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_791df30a896b458ec6c5336fa5665aec",
+      "work_unit_id": "v2r_788e7b431910bc6f1a259300a06267f5",
       "ordinal": 8,
       "image_id": "pilot_56a7fab623ff7baaa423c286",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "source_encoded_sha256": "56a7fab623ff7baaa423c286a82117889020816ac195794c4cb3a694c38014d1",
       "source_decoded_pixel_sha256": "33d35d086bc6bde62cd37c3b7632a9a20eab34ac95a8647c2594d5ed4ddc797e",
       "split_group_id": "nude_group_0152622331730a447b6e7bde",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "anus",
         "requested_state": "visible",
         "current_state": "visible",
@@ -346,7 +364,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "77c320a0377f8516c13f78ead58f497fd61e10944acbc67362dc99bba0724d4a",
+      "coverage_target_sha256": "77c320a0377f8516c13f78ead58f497fd61e10944acbc67362dc99bba0724d4a",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -355,8 +373,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -366,17 +386,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_9a73dd970c027066845be3cf45182568",
+      "work_unit_id": "v2r_34f99842d3b8b503bc9102dd110a6972",
       "ordinal": 9,
       "image_id": "pilot_29aa1b87f21e61a6828af8e7",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "source_encoded_sha256": "29aa1b87f21e61a6828af8e7a2d1ed29e9af8f4499153e62f77e2fb1a8ee564b",
       "source_decoded_pixel_sha256": "c063d721a25ddbb28157e8b198aaeb2344ca0fd40c99f2be3404a47d5a0f3eeb",
       "split_group_id": "nude_group_2b1d69772a081947bd430797",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -384,7 +404,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "250f8aff572a8759abd82b372b60c2f00928689c1345044faa6feb656fe5be7e",
+      "coverage_target_sha256": "250f8aff572a8759abd82b372b60c2f00928689c1345044faa6feb656fe5be7e",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -393,8 +413,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -404,17 +426,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_a1bbc0f384b01bba81ba3139a305de2f",
+      "work_unit_id": "v2r_b4ed299ed44ad3f3fb57ce3c6bfdc280",
       "ordinal": 10,
       "image_id": "pilot_0337c01dd65416589fda75bb",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "source_encoded_sha256": "0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
       "source_decoded_pixel_sha256": "7e22012492f581841e53407798b7fc7f0320c327ea336fd3e8f0cf6c632168c6",
       "split_group_id": "reference_0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -422,7 +444,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "64def186576a0218e3016b62c2ee7b076b68fc3c3480bb7b719788a2b627e7f9",
+      "coverage_target_sha256": "64def186576a0218e3016b62c2ee7b076b68fc3c3480bb7b719788a2b627e7f9",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -431,8 +453,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -442,17 +466,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_9741e2eca225691a71130d253de6bb4f",
+      "work_unit_id": "v2r_dd28c5adc39d61935e930311e066e91f",
       "ordinal": 11,
       "image_id": "pilot_073128d65126eda0ca8da1f0",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "source_encoded_sha256": "073128d65126eda0ca8da1f0f432e9cc94abc9b47429b546ea9ead10f9131956",
       "source_decoded_pixel_sha256": "c4b06055d48fc22ac76628b9788bcad8c1a3049d287d0c2a73fdb2bac48d8aa1",
       "split_group_id": "nude_group_2004f560f33292cf54528478",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -460,7 +484,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "c549dc7c9e3fab0ff345765e601823754bea483c53f5ab93306b2d5d4310cc35",
+      "coverage_target_sha256": "c549dc7c9e3fab0ff345765e601823754bea483c53f5ab93306b2d5d4310cc35",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -469,8 +493,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -480,17 +506,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_97429407afdaf198bfd30c519ca38e5c",
+      "work_unit_id": "v2r_99f398e05089c68ad018d664f0b48069",
       "ordinal": 12,
       "image_id": "pilot_00f088ea158e79defb94e0e3",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "source_encoded_sha256": "00f088ea158e79defb94e0e3529d14d2c3edd0df8ae25ba859e41d670f23b141",
       "source_decoded_pixel_sha256": "2a34917ca470c20e968633a3d2baaa01c7d6f5871f6c1bdb4d8b97ebcfb8f233",
       "split_group_id": "nude_group_9f85d9e1bad4adeef6256677",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -498,7 +524,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "a4c6320ee6e8a560bc570baedf89011a526f411272f0a9a87f26184892fd4286",
+      "coverage_target_sha256": "a4c6320ee6e8a560bc570baedf89011a526f411272f0a9a87f26184892fd4286",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -507,8 +533,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -518,17 +546,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ee62458e579d985af99652af7daad5ed",
+      "work_unit_id": "v2r_efd0c327b493520f6f92108042c45a6a",
       "ordinal": 13,
       "image_id": "pilot_00bc9973de076d57ed61bb47",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "source_encoded_sha256": "00bc9973de076d57ed61bb471ffdc11ea0fa1652ee9f45f76b0a147d5ee00e40",
       "source_decoded_pixel_sha256": "7d610640a95f9249d10e5d9d0ff45bc8d744404b3fb96180a4ac10e29a31ab2d",
       "split_group_id": "nude_group_dc463a993ec4361373c1a412",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -536,7 +564,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "7c4f406e84413dff7295a88237be3dcaacdd7a2428c401ea42f75f2e19707b44",
+      "coverage_target_sha256": "7c4f406e84413dff7295a88237be3dcaacdd7a2428c401ea42f75f2e19707b44",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -545,8 +573,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -556,17 +586,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ae94be594d44e6b8180f43bcf3a766ff",
+      "work_unit_id": "v2r_1721c3cc98ef6e31a356ff5bd8b4180e",
       "ordinal": 14,
       "image_id": "pilot_0367973fd14f50074a7ffe7f",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "source_encoded_sha256": "0367973fd14f50074a7ffe7fa2b7dd35932c50a120957766ba88230c3ff1542a",
       "source_decoded_pixel_sha256": "566b68ec94d838520d32092e2ba29cc617383c562d68c9e142d591bd7b4022a1",
       "split_group_id": "nude_group_ebef8d552bf89bfb19cbc0e0",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -574,7 +604,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "58f06964e47067e338f1831f545da3f6ebc651a0e3c60d28b6d9a9622853a7f2",
+      "coverage_target_sha256": "58f06964e47067e338f1831f545da3f6ebc651a0e3c60d28b6d9a9622853a7f2",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -583,8 +613,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -594,17 +626,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_cf97378e15465f824e5956e36e604f92",
+      "work_unit_id": "v2r_6be49c40ea9cd8d1df3e1ea1615c72d7",
       "ordinal": 15,
       "image_id": "pilot_048944333321f631b3df20ae",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "source_encoded_sha256": "048944333321f631b3df20ae01f897cbb35a6009995281c306e02c3849e6b389",
       "source_decoded_pixel_sha256": "4df29b245f68115041114656db2d728967240510df1071536edd7b45c6c1456d",
       "split_group_id": "nude_group_545b908e95b7895efb9f10e2",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -612,7 +644,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "048e879b8c152192a1231fcc616515c665f1b1840f0a3dfacb2767d6414dfced",
+      "coverage_target_sha256": "048e879b8c152192a1231fcc616515c665f1b1840f0a3dfacb2767d6414dfced",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -621,8 +653,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -632,17 +666,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_81121ebfeb33580804717b70f68b4b72",
+      "work_unit_id": "v2r_2daa9bcd9196891dfbacbc14663e9319",
       "ordinal": 16,
       "image_id": "pilot_02e69d18badc795d18256a7f",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "source_encoded_sha256": "02e69d18badc795d18256a7f19c1534824128fb059d52f5a8bdeb41f61c5fafe",
       "source_decoded_pixel_sha256": "b91751fa8b00fb0a2cb859c4868bfac85ee83b795a626223f04f0535c8bd7707",
       "split_group_id": "nude_group_0000151d3dce15f0dcc79a6c",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -650,7 +684,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "f6665451faae9876c99cd0dc2ac88bfbc0d9685c409988164ada43850ff7eb89",
+      "coverage_target_sha256": "f6665451faae9876c99cd0dc2ac88bfbc0d9685c409988164ada43850ff7eb89",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -659,8 +693,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -670,17 +706,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_9070f7626bc67d84a8d9e6378b43dc38",
+      "work_unit_id": "v2r_98d8af59393ea15a0e8e99f134930118",
       "ordinal": 17,
       "image_id": "pilot_116d2959f4c0db4f3fcb2852",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "source_encoded_sha256": "116d2959f4c0db4f3fcb28525df775fc5497e8b9a34ec5ec318c91eae5dd8587",
       "source_decoded_pixel_sha256": "4b0b533d5141919ddb32cfd5ce1012117d43b60c330f56a0c177a84ff5a3c694",
       "split_group_id": "nude_group_7816ab0277dba0bf7afddd3b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "glans_penis",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -688,7 +724,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "a3ea2553990c850f395a7b3cfc019ea0f5715e17105b4cfe5ed69a9431841706",
+      "coverage_target_sha256": "a3ea2553990c850f395a7b3cfc019ea0f5715e17105b4cfe5ed69a9431841706",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -697,8 +733,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -708,17 +746,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_dc3a34201ef0bea6fcfc7892e71bbce0",
+      "work_unit_id": "v2r_7e647bd7765bf7300fb944f6c50c6bda",
       "ordinal": 18,
       "image_id": "pilot_18f4a50783cdcb90f123c9fc",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "source_encoded_sha256": "18f4a50783cdcb90f123c9fc74c3e79d547c246d35c033cf6cb39eaa2347127a",
       "source_decoded_pixel_sha256": "be743f88231f249416c0afd4ab25d46905b1b18a6eb29a21b77e6150b2001546",
       "split_group_id": "nude_group_192d09c5bcfcf2170dab1757",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -726,7 +764,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "cd111995780dcfe01ffb56d2bbc24e6368cf7bc2b79bde7e229079810b988a0a",
+      "coverage_target_sha256": "cd111995780dcfe01ffb56d2bbc24e6368cf7bc2b79bde7e229079810b988a0a",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -735,8 +773,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -746,17 +786,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_f892340ab4087472910911e4df88aac5",
+      "work_unit_id": "v2r_140fc6f0e6bb3aff8f74e17d5d8b3754",
       "ordinal": 19,
       "image_id": "pilot_009c0787ece4012a52cb7569",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "source_encoded_sha256": "009c0787ece4012a52cb7569179c4443b111c1bf6a9a8dd274973d2348410acc",
       "source_decoded_pixel_sha256": "2c26974f8ae91e017e4f6c3e2cd9cee7e9e24677b40026351de4ff35170a163b",
       "split_group_id": "nude_group_0952a9b55401863299571732",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -764,7 +804,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "f7a524dcaf4e56bc5597db30ac51240f368dd1a9dfbad493dd7e8b26793b95aa",
+      "coverage_target_sha256": "f7a524dcaf4e56bc5597db30ac51240f368dd1a9dfbad493dd7e8b26793b95aa",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -773,8 +813,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -784,17 +826,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_bc48054812938190768dfce9e2af4ade",
+      "work_unit_id": "v2r_840b5388fc93234778a8573abf44b92f",
       "ordinal": 20,
       "image_id": "pilot_0367973fd14f50074a7ffe7f",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "source_encoded_sha256": "0367973fd14f50074a7ffe7fa2b7dd35932c50a120957766ba88230c3ff1542a",
       "source_decoded_pixel_sha256": "566b68ec94d838520d32092e2ba29cc617383c562d68c9e142d591bd7b4022a1",
       "split_group_id": "nude_group_ebef8d552bf89bfb19cbc0e0",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -802,7 +844,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "b3cb6c54336f1b2a7ee8d29dec46db8e76aac1654be382055c8d3e6241d1bd61",
+      "coverage_target_sha256": "b3cb6c54336f1b2a7ee8d29dec46db8e76aac1654be382055c8d3e6241d1bd61",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -811,8 +853,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -822,17 +866,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_7f2afd803cd1db9068a1a35bb5a61fcf",
+      "work_unit_id": "v2r_2839d47d1f99832b573372f4d115e0ac",
       "ordinal": 21,
       "image_id": "pilot_00bc9973de076d57ed61bb47",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "source_encoded_sha256": "00bc9973de076d57ed61bb471ffdc11ea0fa1652ee9f45f76b0a147d5ee00e40",
       "source_decoded_pixel_sha256": "7d610640a95f9249d10e5d9d0ff45bc8d744404b3fb96180a4ac10e29a31ab2d",
       "split_group_id": "nude_group_dc463a993ec4361373c1a412",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -840,7 +884,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "3e9b52903151c97e7b4f4a38990216b952b3da771931685440e37b878965a7b9",
+      "coverage_target_sha256": "3e9b52903151c97e7b4f4a38990216b952b3da771931685440e37b878965a7b9",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -849,8 +893,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -860,17 +906,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_fa659d43c10d978d6ae32cdd8a5fe164",
+      "work_unit_id": "v2r_1a782d1c5ca824f349b6ce71eceeec89",
       "ordinal": 22,
       "image_id": "pilot_0037ba94c0e67e05b76ec773",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "source_encoded_sha256": "0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
       "source_decoded_pixel_sha256": "37e0259db9ae23db47c6b74a9a095edb4a95f3633286a2d8640e61c860489f88",
       "split_group_id": "reference_0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -878,7 +924,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "232ef4ace59d760077c96aab7f9ea4497960b61b4971be4c79931a2828b95ed2",
+      "coverage_target_sha256": "232ef4ace59d760077c96aab7f9ea4497960b61b4971be4c79931a2828b95ed2",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -887,8 +933,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -898,17 +946,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_0fd1321ceb621dedb3f325f1b9e706a0",
+      "work_unit_id": "v2r_b54bd9f0aff79aa9e584267a7f881e13",
       "ordinal": 23,
       "image_id": "pilot_116d2959f4c0db4f3fcb2852",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "source_encoded_sha256": "116d2959f4c0db4f3fcb28525df775fc5497e8b9a34ec5ec318c91eae5dd8587",
       "source_decoded_pixel_sha256": "4b0b533d5141919ddb32cfd5ce1012117d43b60c330f56a0c177a84ff5a3c694",
       "split_group_id": "nude_group_7816ab0277dba0bf7afddd3b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -916,7 +964,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "028311c2187ed8350ec2d791e3fa9ba802f956902edec577f607f7cd579f837e",
+      "coverage_target_sha256": "028311c2187ed8350ec2d791e3fa9ba802f956902edec577f607f7cd579f837e",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -925,8 +973,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -936,17 +986,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_59bc206eedfcabc5ef071d5d4fa56a12",
+      "work_unit_id": "v2r_2f6bd5f92341e4b0a5163a58cd8b52f8",
       "ordinal": 24,
       "image_id": "pilot_18f4a50783cdcb90f123c9fc",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "source_encoded_sha256": "18f4a50783cdcb90f123c9fc74c3e79d547c246d35c033cf6cb39eaa2347127a",
       "source_decoded_pixel_sha256": "be743f88231f249416c0afd4ab25d46905b1b18a6eb29a21b77e6150b2001546",
       "split_group_id": "nude_group_192d09c5bcfcf2170dab1757",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -954,7 +1004,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "4eaa20523f3c95dbe251100f30ff774a74f2ac87deb277c8fd7db1fb812c56c6",
+      "coverage_target_sha256": "4eaa20523f3c95dbe251100f30ff774a74f2ac87deb277c8fd7db1fb812c56c6",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -963,8 +1013,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -974,17 +1026,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_619736afe53d580a6b54f5688b0e74eb",
+      "work_unit_id": "v2r_4d6ec119d25c52c2117fb588fe90be23",
       "ordinal": 25,
       "image_id": "pilot_0337c01dd65416589fda75bb",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "source_encoded_sha256": "0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
       "source_decoded_pixel_sha256": "7e22012492f581841e53407798b7fc7f0320c327ea336fd3e8f0cf6c632168c6",
       "split_group_id": "reference_0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -992,7 +1044,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "b314482666837cff0e754619e6da22ffe24840757d2f6b727b22b4be12cc23e3",
+      "coverage_target_sha256": "b314482666837cff0e754619e6da22ffe24840757d2f6b727b22b4be12cc23e3",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1001,8 +1053,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1012,17 +1066,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ff596e431d45337ac57e38049b6d34c7",
+      "work_unit_id": "v2r_855edf3b1de070401ea7c5924bcdd8b2",
       "ordinal": 26,
       "image_id": "pilot_1096584129e3547f79664b66",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
       "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
       "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_areola",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -1030,7 +1084,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "59586e17da897c613a5219f90a3cba979a3302d7ef7929656281c0d5961b2179",
+      "coverage_target_sha256": "59586e17da897c613a5219f90a3cba979a3302d7ef7929656281c0d5961b2179",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1039,8 +1093,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1050,17 +1106,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_e493b6c2dd4e71801ab4fab33829fbaf",
+      "work_unit_id": "v2r_ff121eced8f250305555d28b96e74aa7",
       "ordinal": 27,
       "image_id": "pilot_00f088ea158e79defb94e0e3",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "source_encoded_sha256": "00f088ea158e79defb94e0e3529d14d2c3edd0df8ae25ba859e41d670f23b141",
       "source_decoded_pixel_sha256": "2a34917ca470c20e968633a3d2baaa01c7d6f5871f6c1bdb4d8b97ebcfb8f233",
       "split_group_id": "nude_group_9f85d9e1bad4adeef6256677",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -1068,7 +1124,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "d86de0cf724d90a2f25d8c66dbfc51e5e772e5273c0fbe7ec0a1855ecb0a992f",
+      "coverage_target_sha256": "d86de0cf724d90a2f25d8c66dbfc51e5e772e5273c0fbe7ec0a1855ecb0a992f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1077,8 +1133,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1088,17 +1146,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ec648820eca5c1d57a15af98378cb386",
+      "work_unit_id": "v2r_ec1e766a2c8faecbf8d0ff9c3557f085",
       "ordinal": 28,
       "image_id": "pilot_073128d65126eda0ca8da1f0",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "source_encoded_sha256": "073128d65126eda0ca8da1f0f432e9cc94abc9b47429b546ea9ead10f9131956",
       "source_decoded_pixel_sha256": "c4b06055d48fc22ac76628b9788bcad8c1a3049d287d0c2a73fdb2bac48d8aa1",
       "split_group_id": "nude_group_2004f560f33292cf54528478",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -1106,7 +1164,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "1a0a7cbe4d5d966adf76a70a7c4da431d89d89c09a2515ba0a89bbe8f5d2b500",
+      "coverage_target_sha256": "1a0a7cbe4d5d966adf76a70a7c4da431d89d89c09a2515ba0a89bbe8f5d2b500",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1115,8 +1173,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1126,17 +1186,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_55875273586678ed7c458b2e3fc1fd41",
+      "work_unit_id": "v2r_7fe04233cdc3ed61d28a8d648827f19d",
       "ordinal": 29,
       "image_id": "pilot_29aa1b87f21e61a6828af8e7",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "source_encoded_sha256": "29aa1b87f21e61a6828af8e7a2d1ed29e9af8f4499153e62f77e2fb1a8ee564b",
       "source_decoded_pixel_sha256": "c063d721a25ddbb28157e8b198aaeb2344ca0fd40c99f2be3404a47d5a0f3eeb",
       "split_group_id": "nude_group_2b1d69772a081947bd430797",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -1144,7 +1204,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "6595c15ead6b690aa6b0ff8bda1f36769838682d94cfca5e966aa0f405748998",
+      "coverage_target_sha256": "6595c15ead6b690aa6b0ff8bda1f36769838682d94cfca5e966aa0f405748998",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1153,8 +1213,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1164,17 +1226,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_4df1f184ef10bcdf2b38ad9d23ff2597",
+      "work_unit_id": "v2r_c5dcce363e2643b97f9e5e1b6724750e",
       "ordinal": 30,
       "image_id": "pilot_02e69d18badc795d18256a7f",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "source_encoded_sha256": "02e69d18badc795d18256a7f19c1534824128fb059d52f5a8bdeb41f61c5fafe",
       "source_decoded_pixel_sha256": "b91751fa8b00fb0a2cb859c4868bfac85ee83b795a626223f04f0535c8bd7707",
       "split_group_id": "nude_group_0000151d3dce15f0dcc79a6c",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -1182,7 +1244,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "a5d4283490e0a1448ef75819a89c07fc33e0f410398c7790713de8a5e0aa43c5",
+      "coverage_target_sha256": "a5d4283490e0a1448ef75819a89c07fc33e0f410398c7790713de8a5e0aa43c5",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1191,8 +1253,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1202,17 +1266,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_97d7a5464f499b7a750c17e538f421c0",
+      "work_unit_id": "v2r_d0c47d99726f1d008030a1dbf6989ae5",
       "ordinal": 31,
       "image_id": "pilot_0042c1c8bd9c45083df258e6",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "source_encoded_sha256": "0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
       "source_decoded_pixel_sha256": "a8301c23bec7c20617248083c7f83420e6debbf327c863dd95057bebe6ceb48f",
       "split_group_id": "reference_0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -1220,7 +1284,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "39a2c37e904249b424ce11ec05ffe945b9ac0335ea561a68a68905178946cdae",
+      "coverage_target_sha256": "39a2c37e904249b424ce11ec05ffe945b9ac0335ea561a68a68905178946cdae",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1229,8 +1293,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1240,17 +1306,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_43a32b2132cec68d23a310b744deb117",
+      "work_unit_id": "v2r_96a95a0417451356004d819bd47b8c3a",
       "ordinal": 32,
       "image_id": "pilot_00f088ea158e79defb94e0e3",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "source_encoded_sha256": "00f088ea158e79defb94e0e3529d14d2c3edd0df8ae25ba859e41d670f23b141",
       "source_decoded_pixel_sha256": "2a34917ca470c20e968633a3d2baaa01c7d6f5871f6c1bdb4d8b97ebcfb8f233",
       "split_group_id": "nude_group_9f85d9e1bad4adeef6256677",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -1258,7 +1324,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "c2375c962d953666e9ac770606f8402f437a489588e13a831f72e7109651658c",
+      "coverage_target_sha256": "c2375c962d953666e9ac770606f8402f437a489588e13a831f72e7109651658c",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1267,8 +1333,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1278,17 +1346,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_702e0c4d07a7078c7a759d1682fba8dd",
+      "work_unit_id": "v2r_f3bfedc8a47158064692b8c109869018",
       "ordinal": 33,
       "image_id": "pilot_05e50529b9b9c34e095eb35b",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "source_encoded_sha256": "05e50529b9b9c34e095eb35bb1c1b5fdd0caf88ce6b756bf5df896faa78d6358",
       "source_decoded_pixel_sha256": "4019da7a1a1ba79edcd8c6e25eea566f3ac03cb5e538b5ad406a0e280eb69dab",
       "split_group_id": "nude_group_1c10fcd1839214fa46464cc4",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -1296,7 +1364,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "5020396ec32fbcde1f88566a226977a2c9fc7d40ac5a3a1baefb1329d3745371",
+      "coverage_target_sha256": "5020396ec32fbcde1f88566a226977a2c9fc7d40ac5a3a1baefb1329d3745371",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1305,8 +1373,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1316,17 +1386,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_dbc8245bfd67818398e53b6c3ae15081",
+      "work_unit_id": "v2r_e6693a3abe949073a29e95d8570ceb92",
       "ordinal": 34,
       "image_id": "pilot_1096584129e3547f79664b66",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
       "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
       "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -1334,7 +1404,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "218ce666b7b70610f0df1f43db06089dec773ef530c6a93a471d99e076363f7f",
+      "coverage_target_sha256": "218ce666b7b70610f0df1f43db06089dec773ef530c6a93a471d99e076363f7f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1343,8 +1413,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1354,17 +1426,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_aa4f672718f0686cf417bda2803e17dc",
+      "work_unit_id": "v2r_4c1243c6e7d997638a756c2b1da7db4c",
       "ordinal": 35,
       "image_id": "pilot_00bc9973de076d57ed61bb47",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "source_encoded_sha256": "00bc9973de076d57ed61bb471ffdc11ea0fa1652ee9f45f76b0a147d5ee00e40",
       "source_decoded_pixel_sha256": "7d610640a95f9249d10e5d9d0ff45bc8d744404b3fb96180a4ac10e29a31ab2d",
       "split_group_id": "nude_group_dc463a993ec4361373c1a412",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_nipple",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -1372,7 +1444,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "3c6ab61a05ebbf77ae68ea5dd41a6810734363ef8d02b9b7183ffbe0ed8153c5",
+      "coverage_target_sha256": "3c6ab61a05ebbf77ae68ea5dd41a6810734363ef8d02b9b7183ffbe0ed8153c5",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1381,8 +1453,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1392,17 +1466,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_101db77d35af100b5596a0db74805d37",
+      "work_unit_id": "v2r_6ff822fe7e765c85cbbcaf1ce29ad278",
       "ordinal": 36,
       "image_id": "pilot_009c0787ece4012a52cb7569",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "source_encoded_sha256": "009c0787ece4012a52cb7569179c4443b111c1bf6a9a8dd274973d2348410acc",
       "source_decoded_pixel_sha256": "2c26974f8ae91e017e4f6c3e2cd9cee7e9e24677b40026351de4ff35170a163b",
       "split_group_id": "nude_group_0952a9b55401863299571732",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -1410,7 +1484,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "a70e25a1a44be596fb6cd776c6e898b4270506ebb64814e82c0c6378dba40546",
+      "coverage_target_sha256": "a70e25a1a44be596fb6cd776c6e898b4270506ebb64814e82c0c6378dba40546",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1419,8 +1493,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1430,17 +1506,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_7729f953b77928542eaf33a568297f26",
+      "work_unit_id": "v2r_0bf4ce1e8e5bd2173497da854aedb1c4",
       "ordinal": 37,
       "image_id": "pilot_0042c1c8bd9c45083df258e6",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "source_encoded_sha256": "0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
       "source_decoded_pixel_sha256": "a8301c23bec7c20617248083c7f83420e6debbf327c863dd95057bebe6ceb48f",
       "split_group_id": "reference_0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -1448,7 +1524,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "37819e37743557657d3ade9ad2e5a3171274f0a438ff201ca75227de78ebc948",
+      "coverage_target_sha256": "37819e37743557657d3ade9ad2e5a3171274f0a438ff201ca75227de78ebc948",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1457,8 +1533,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1468,17 +1546,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_f36b1fc7fc56342aa5da6ec577eeed7f",
+      "work_unit_id": "v2r_d224cda9a8d7c717a08ba8af44da7139",
       "ordinal": 38,
       "image_id": "pilot_2c0189418cc243182703bd6f",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "source_encoded_sha256": "2c0189418cc243182703bd6fe52a92d90e584001fc0ba694b86aaba6e611cbc2",
       "source_decoded_pixel_sha256": "c2e5f7c261e671a93ea4a53d20b045e4696f471bbb111530578d8f682de2afad",
       "split_group_id": "nude_group_64f364e9a62c6c2274f12f2b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -1486,7 +1564,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "f6bab7edd770be65530e26dc9e0c0e2854c8e0b670a1f5223ede2ea6d82f622b",
+      "coverage_target_sha256": "f6bab7edd770be65530e26dc9e0c0e2854c8e0b670a1f5223ede2ea6d82f622b",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1495,8 +1573,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1506,17 +1586,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_86c653220fb4a7f9dfd79dc770fd47d0",
+      "work_unit_id": "v2r_b81450d61320563ecc7c0cddb4c3b5d3",
       "ordinal": 39,
       "image_id": "pilot_235a016f8edddd58c40051df",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "source_encoded_sha256": "235a016f8edddd58c40051dfe506e00ae47e80b2eff7bca733ce728978884980",
       "source_decoded_pixel_sha256": "925defea287e5becfd814004531714ebff0af008a7d12b3935d18af9b249ab5c",
       "split_group_id": "nude_group_3e543d97fc8918afb056f307",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -1524,7 +1604,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "e96de0e65e6c313bcf237b894841025ab399cea012f795afba3292f5235e70d9",
+      "coverage_target_sha256": "e96de0e65e6c313bcf237b894841025ab399cea012f795afba3292f5235e70d9",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1533,8 +1613,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1544,17 +1626,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_3db5d109ba6cf39f6a47f8b2d63d6029",
+      "work_unit_id": "v2r_af8221223fcf35d3378401a611a3b448",
       "ordinal": 40,
       "image_id": "pilot_01e1b30947582bd814703e50",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "source_encoded_sha256": "01e1b30947582bd814703e505fcdb71d34fd57635b167c07eb112f2aa7c61510",
       "source_decoded_pixel_sha256": "16ce0d18804173b5d527f8988f102227ad7790e77f7ea6343e6adfaa1677992b",
       "split_group_id": "nude_group_f59738151c3ae27f5726c7aa",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -1562,7 +1644,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "43d4ffe3e187d61d05dc0432b6bcc738c78bb1958219fc9b789c78e2e4428e74",
+      "coverage_target_sha256": "43d4ffe3e187d61d05dc0432b6bcc738c78bb1958219fc9b789c78e2e4428e74",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1571,8 +1653,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1582,17 +1666,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_80306793fc7c929154588aa3765442c1",
+      "work_unit_id": "v2r_ca7d316f9898b9a59ae0d5591d38c27a",
       "ordinal": 41,
       "image_id": "pilot_05e50529b9b9c34e095eb35b",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "source_encoded_sha256": "05e50529b9b9c34e095eb35bb1c1b5fdd0caf88ce6b756bf5df896faa78d6358",
       "source_decoded_pixel_sha256": "4019da7a1a1ba79edcd8c6e25eea566f3ac03cb5e538b5ad406a0e280eb69dab",
       "split_group_id": "nude_group_1c10fcd1839214fa46464cc4",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -1600,7 +1684,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "8c4a22384ae4f769198131d0dde08914709b21987f764b6d103991a53b3ad2ab",
+      "coverage_target_sha256": "8c4a22384ae4f769198131d0dde08914709b21987f764b6d103991a53b3ad2ab",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1609,8 +1693,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1620,17 +1706,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_343b7d3eb061b71c591f2bbf8813f034",
+      "work_unit_id": "v2r_d9b2d96e82b0e4a7ded151e04ae15470",
       "ordinal": 42,
       "image_id": "pilot_073128d65126eda0ca8da1f0",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00261-2392674902_webp_webp_webp.rf.70801a056bf3772b9427d2c1859698b0.jpg",
       "source_encoded_sha256": "073128d65126eda0ca8da1f0f432e9cc94abc9b47429b546ea9ead10f9131956",
       "source_decoded_pixel_sha256": "c4b06055d48fc22ac76628b9788bcad8c1a3049d287d0c2a73fdb2bac48d8aa1",
       "split_group_id": "nude_group_2004f560f33292cf54528478",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -1638,7 +1724,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "4e0b88bf9addfd0c3d1e82c1b940edc7b328f9227059269edb58df018326e16f",
+      "coverage_target_sha256": "4e0b88bf9addfd0c3d1e82c1b940edc7b328f9227059269edb58df018326e16f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1647,8 +1733,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1658,17 +1746,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_d236cc4206ae6248e39736dc87f29010",
+      "work_unit_id": "v2r_3bbd54f5a8d3c3c624e9e13a0caf262b",
       "ordinal": 43,
       "image_id": "pilot_0cdf223a0c05b97655aa0be0",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "source_encoded_sha256": "0cdf223a0c05b97655aa0be0cd212bd05268f1258c365cc3f24ea7576b7ab548",
       "source_decoded_pixel_sha256": "7945129835042a13227d1a1dc57344ae1470f2c3406601aedabf64075b2fb514",
       "split_group_id": "nude_group_4b3818c122648e50ce7dd98f",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -1676,7 +1764,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "2bd3ecc4e9ed3a8a2339791e1982b78755243706562c9ef3ce4db113449acff5",
+      "coverage_target_sha256": "2bd3ecc4e9ed3a8a2339791e1982b78755243706562c9ef3ce4db113449acff5",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1685,8 +1773,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1696,17 +1786,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_98952bbae903d7f5a71c4bc9cc50d26e",
+      "work_unit_id": "v2r_e45ec9490e154f39534ee6e6257a45a4",
       "ordinal": 44,
       "image_id": "pilot_00f088ea158e79defb94e0e3",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/valid/00236-3504896832_webp.rf.72086a7912cc66c51ee1a944d4831d85.jpg",
       "source_encoded_sha256": "00f088ea158e79defb94e0e3529d14d2c3edd0df8ae25ba859e41d670f23b141",
       "source_decoded_pixel_sha256": "2a34917ca470c20e968633a3d2baaa01c7d6f5871f6c1bdb4d8b97ebcfb8f233",
       "split_group_id": "nude_group_9f85d9e1bad4adeef6256677",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "left_scrotal_region",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -1714,7 +1804,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "46d01813a599fd4421da81760cb72b119d75b0fcca5042e18d15e3f10c1b5d65",
+      "coverage_target_sha256": "46d01813a599fd4421da81760cb72b119d75b0fcca5042e18d15e3f10c1b5d65",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1723,8 +1813,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1734,17 +1826,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_58a95a71fb4c1630c4108372644bd0a7",
+      "work_unit_id": "v2r_841816e3cb05d9e8e2ce70d0037ce401",
       "ordinal": 45,
       "image_id": "pilot_05e50529b9b9c34e095eb35b",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "source_encoded_sha256": "05e50529b9b9c34e095eb35bb1c1b5fdd0caf88ce6b756bf5df896faa78d6358",
       "source_decoded_pixel_sha256": "4019da7a1a1ba79edcd8c6e25eea566f3ac03cb5e538b5ad406a0e280eb69dab",
       "split_group_id": "nude_group_1c10fcd1839214fa46464cc4",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -1752,7 +1844,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "a7c1d0721718c62429a209831f0863fa9ce97f85af0899197bbaba548c4d345f",
+      "coverage_target_sha256": "a7c1d0721718c62429a209831f0863fa9ce97f85af0899197bbaba548c4d345f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1761,8 +1853,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1772,17 +1866,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_95806a513b4ec108b619642fc30965ce",
+      "work_unit_id": "v2r_0bd262ee3274ea1ea9b3e13ef6a77fd0",
       "ordinal": 46,
       "image_id": "pilot_0037ba94c0e67e05b76ec773",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/nude__one/0037ba94c0e67e05__a00307.jpg",
       "source_encoded_sha256": "0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
       "source_decoded_pixel_sha256": "37e0259db9ae23db47c6b74a9a095edb4a95f3633286a2d8640e61c860489f88",
       "split_group_id": "reference_0037ba94c0e67e05b76ec773a7acbabb8bd612f05c39ec976bc08db561c6eea5",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -1790,7 +1884,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "ec8f5d8fdf766046c01b2030bb2a133cb016e39830bd0f46e062f964e04412a4",
+      "coverage_target_sha256": "ec8f5d8fdf766046c01b2030bb2a133cb016e39830bd0f46e062f964e04412a4",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1799,8 +1893,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1810,17 +1906,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_143dcf7987cece5851c354490afd79c5",
+      "work_unit_id": "v2r_6f4af80300dc35af21a4ebd9f91e5c54",
       "ordinal": 47,
       "image_id": "pilot_048944333321f631b3df20ae",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "source_encoded_sha256": "048944333321f631b3df20ae01f897cbb35a6009995281c306e02c3849e6b389",
       "source_decoded_pixel_sha256": "4df29b245f68115041114656db2d728967240510df1071536edd7b45c6c1456d",
       "split_group_id": "nude_group_545b908e95b7895efb9f10e2",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -1828,7 +1924,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "df8806e3559f201bcf92ae03490270085f2ea1075653ad77f59436ec2b01c770",
+      "coverage_target_sha256": "df8806e3559f201bcf92ae03490270085f2ea1075653ad77f59436ec2b01c770",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1837,8 +1933,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1848,17 +1946,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_a1e6da7a6a7226626fc33713c898e3ed",
+      "work_unit_id": "v2r_5abffc81a557cabfc68077d9568b149c",
       "ordinal": 48,
       "image_id": "pilot_00488c4c64077691ee54afdf",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "source_encoded_sha256": "00488c4c64077691ee54afdf3141765e02c76d8bbcd9283f24dbac8d56cb6e7d",
       "source_decoded_pixel_sha256": "7b97b9183773fab8ba1ea6706ce0b8b228b6cfb3d59ad67126c7fcc78c69a2ad",
       "split_group_id": "nude_group_cd279be9762ec416e8234d96",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -1866,7 +1964,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "6067ce847cd01ea523f32a2c27634c33292ef3def2b51a55aaa0fa75555cfea4",
+      "coverage_target_sha256": "6067ce847cd01ea523f32a2c27634c33292ef3def2b51a55aaa0fa75555cfea4",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1875,8 +1973,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1886,17 +1986,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_20dc88c255ccaff1354f84db7a76223f",
+      "work_unit_id": "v2r_93ccac0a488278dc09fb48895e3c94c1",
       "ordinal": 49,
       "image_id": "pilot_002ecf54c0f1dc24e17a8027",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "source_encoded_sha256": "002ecf54c0f1dc24e17a802740955685a37a0566c35131dd79f31a63b2082342",
       "source_decoded_pixel_sha256": "b862a92495101e6bd5eabddde32bffe08406b81458c9996547b511b4ea3d56b8",
       "split_group_id": "nude_group_3f444a82e78bce66bb55d017",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -1904,7 +2004,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "11f7553c08b221ef0a23a727e27e7827de207416ec4ec275ab3ef70a67c8242a",
+      "coverage_target_sha256": "11f7553c08b221ef0a23a727e27e7827de207416ec4ec275ab3ef70a67c8242a",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1913,8 +2013,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1924,17 +2026,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_400e749c8cf1f2017dae8b65d4d0267a",
+      "work_unit_id": "v2r_c73e669d472d0e652a876c6b7ac268eb",
       "ordinal": 50,
       "image_id": "pilot_56a7fab623ff7baaa423c286",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "source_encoded_sha256": "56a7fab623ff7baaa423c286a82117889020816ac195794c4cb3a694c38014d1",
       "source_decoded_pixel_sha256": "33d35d086bc6bde62cd37c3b7632a9a20eab34ac95a8647c2594d5ed4ddc797e",
       "split_group_id": "nude_group_0152622331730a447b6e7bde",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -1942,7 +2044,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "e9682a71055510f18198208d599971be42475c9dac653ae0bcac844d4870d753",
+      "coverage_target_sha256": "e9682a71055510f18198208d599971be42475c9dac653ae0bcac844d4870d753",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1951,8 +2053,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -1962,17 +2066,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_7a3ff3c7d6ed7b3743628e481e2546a2",
+      "work_unit_id": "v2r_13222587a44136ef6fcedad02ffdbd8a",
       "ordinal": 51,
       "image_id": "pilot_009c0787ece4012a52cb7569",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "source_encoded_sha256": "009c0787ece4012a52cb7569179c4443b111c1bf6a9a8dd274973d2348410acc",
       "source_decoded_pixel_sha256": "2c26974f8ae91e017e4f6c3e2cd9cee7e9e24677b40026351de4ff35170a163b",
       "split_group_id": "nude_group_0952a9b55401863299571732",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -1980,7 +2084,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "4c1842824acbe9e234aca04a5c2114b8763dedaf9ab3f8f4e8fc92afbd76b5c4",
+      "coverage_target_sha256": "4c1842824acbe9e234aca04a5c2114b8763dedaf9ab3f8f4e8fc92afbd76b5c4",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -1989,8 +2093,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2000,17 +2106,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_43b3ac26952d2bf9c702e6f619baddbf",
+      "work_unit_id": "v2r_955c73a0666bcd161448357e2b6e71d2",
       "ordinal": 52,
       "image_id": "pilot_01e1b30947582bd814703e50",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "source_encoded_sha256": "01e1b30947582bd814703e505fcdb71d34fd57635b167c07eb112f2aa7c61510",
       "source_decoded_pixel_sha256": "16ce0d18804173b5d527f8988f102227ad7790e77f7ea6343e6adfaa1677992b",
       "split_group_id": "nude_group_f59738151c3ae27f5726c7aa",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -2018,7 +2124,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "a2c6f00289db6e083e12035c11eb570eb85a19a729205daaa93ed704e11a198d",
+      "coverage_target_sha256": "a2c6f00289db6e083e12035c11eb570eb85a19a729205daaa93ed704e11a198d",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2027,8 +2133,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2038,17 +2146,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_058dcbc4eddeb4532cb5a03c5d8f525c",
+      "work_unit_id": "v2r_c1cb69cd6dfcdadc4568016c1b2c5b6b",
       "ordinal": 53,
       "image_id": "pilot_0cdf223a0c05b97655aa0be0",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "source_encoded_sha256": "0cdf223a0c05b97655aa0be0cd212bd05268f1258c365cc3f24ea7576b7ab548",
       "source_decoded_pixel_sha256": "7945129835042a13227d1a1dc57344ae1470f2c3406601aedabf64075b2fb514",
       "split_group_id": "nude_group_4b3818c122648e50ce7dd98f",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "penis_shaft",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -2056,7 +2164,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "40f0668b8d505487841f251b1fbbbeac2b2de6616673f3c18a651c75a6760297",
+      "coverage_target_sha256": "40f0668b8d505487841f251b1fbbbeac2b2de6616673f3c18a651c75a6760297",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2065,8 +2173,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2076,17 +2186,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_841f21f080cac246f3dc9b23a6a61c9b",
+      "work_unit_id": "v2r_18e14c92a01278f59ef7594a1f446cce",
       "ordinal": 54,
       "image_id": "pilot_56a7fab623ff7baaa423c286",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/81884B8_png.rf.c7323a7c6b14da977fd07fbdcea958d4.jpg",
       "source_encoded_sha256": "56a7fab623ff7baaa423c286a82117889020816ac195794c4cb3a694c38014d1",
       "source_decoded_pixel_sha256": "33d35d086bc6bde62cd37c3b7632a9a20eab34ac95a8647c2594d5ed4ddc797e",
       "split_group_id": "nude_group_0152622331730a447b6e7bde",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -2094,7 +2204,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "42f20f6a07788bc77c9c0e400197c90773f402877d3fa17b5e8b4ca1cf8b8453",
+      "coverage_target_sha256": "42f20f6a07788bc77c9c0e400197c90773f402877d3fa17b5e8b4ca1cf8b8453",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2103,8 +2213,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2114,17 +2226,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_4bd0ba3cfe08b9b0f3522e440b2f1dd2",
+      "work_unit_id": "v2r_730044b424e6476af4d68e32fc28937e",
       "ordinal": 55,
       "image_id": "pilot_048944333321f631b3df20ae",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00023-2708200737_webp.rf.c11025b264ddc69e02ffed560f50b2d5.jpg",
       "source_encoded_sha256": "048944333321f631b3df20ae01f897cbb35a6009995281c306e02c3849e6b389",
       "source_decoded_pixel_sha256": "4df29b245f68115041114656db2d728967240510df1071536edd7b45c6c1456d",
       "split_group_id": "nude_group_545b908e95b7895efb9f10e2",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -2132,7 +2244,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "e3fe77e8074936b153c6760a62334451170b28c718e73a955c71ff966d73945a",
+      "coverage_target_sha256": "e3fe77e8074936b153c6760a62334451170b28c718e73a955c71ff966d73945a",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2141,8 +2253,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2152,17 +2266,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_569c0999493a20c836228b6af7fd470d",
+      "work_unit_id": "v2r_a326ace0df84039aa56b8d849dbe42db",
       "ordinal": 56,
       "image_id": "pilot_05e50529b9b9c34e095eb35b",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/train/00031-207054044_webp.rf.b39793f21d2d5ba635dc05a22664dba2.jpg",
       "source_encoded_sha256": "05e50529b9b9c34e095eb35bb1c1b5fdd0caf88ce6b756bf5df896faa78d6358",
       "source_decoded_pixel_sha256": "4019da7a1a1ba79edcd8c6e25eea566f3ac03cb5e538b5ad406a0e280eb69dab",
       "split_group_id": "nude_group_1c10fcd1839214fa46464cc4",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -2170,7 +2284,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "82866e96959833a5ce120b4544f7dbaf8868ad58f3d6b31d9c30cd3ba20cce3a",
+      "coverage_target_sha256": "82866e96959833a5ce120b4544f7dbaf8868ad58f3d6b31d9c30cd3ba20cce3a",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2179,8 +2293,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2190,17 +2306,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_09623b29f3cd70f104ff29661856d865",
+      "work_unit_id": "v2r_bdaad2dc06ec3da42c0d965b4df9fc73",
       "ordinal": 57,
       "image_id": "pilot_01e1b30947582bd814703e50",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "source_encoded_sha256": "01e1b30947582bd814703e505fcdb71d34fd57635b167c07eb112f2aa7c61510",
       "source_decoded_pixel_sha256": "16ce0d18804173b5d527f8988f102227ad7790e77f7ea6343e6adfaa1677992b",
       "split_group_id": "nude_group_f59738151c3ae27f5726c7aa",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -2208,7 +2324,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "14a1ef519790277e8e23b5d15f31c5971c979adae0a00dd20773d99028ceac42",
+      "coverage_target_sha256": "14a1ef519790277e8e23b5d15f31c5971c979adae0a00dd20773d99028ceac42",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2217,8 +2333,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2228,17 +2346,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_32975673191de402c6f82930343c0c10",
+      "work_unit_id": "v2r_f81992aad424ca5171375f1c9a3384bd",
       "ordinal": 58,
       "image_id": "pilot_0337c01dd65416589fda75bb",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/mixed__two/0337c01dd6541658__AE6I6581.jpg",
       "source_encoded_sha256": "0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
       "source_decoded_pixel_sha256": "7e22012492f581841e53407798b7fc7f0320c327ea336fd3e8f0cf6c632168c6",
       "split_group_id": "reference_0337c01dd65416589fda75bb5594ad2098e56d72f618e2ee171ab629a8707d24",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -2246,7 +2364,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "636814ceaaeaf97cbe6b64101038464889d6f6ea4cfa2184bd6cfea965b817ad",
+      "coverage_target_sha256": "636814ceaaeaf97cbe6b64101038464889d6f6ea4cfa2184bd6cfea965b817ad",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2255,8 +2373,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2266,17 +2386,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_2f658d0be9388582c527d27341b65f6d",
+      "work_unit_id": "v2r_91bc252edf69497a7d2490b421704752",
       "ordinal": 59,
       "image_id": "pilot_00488c4c64077691ee54afdf",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "source_encoded_sha256": "00488c4c64077691ee54afdf3141765e02c76d8bbcd9283f24dbac8d56cb6e7d",
       "source_decoded_pixel_sha256": "7b97b9183773fab8ba1ea6706ce0b8b228b6cfb3d59ad67126c7fcc78c69a2ad",
       "split_group_id": "nude_group_cd279be9762ec416e8234d96",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -2284,7 +2404,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "376b2aca5785fcf7b99936dacf9268da7922caaea68b0570331338c15eb5876f",
+      "coverage_target_sha256": "376b2aca5785fcf7b99936dacf9268da7922caaea68b0570331338c15eb5876f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2293,8 +2413,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2304,17 +2426,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_f1a8ae1d885634c07f7e033a6571fe98",
+      "work_unit_id": "v2r_28ea24939a89935f40b6cd030e5226c2",
       "ordinal": 60,
       "image_id": "pilot_0367973fd14f50074a7ffe7f",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "source_encoded_sha256": "0367973fd14f50074a7ffe7fa2b7dd35932c50a120957766ba88230c3ff1542a",
       "source_decoded_pixel_sha256": "566b68ec94d838520d32092e2ba29cc617383c562d68c9e142d591bd7b4022a1",
       "split_group_id": "nude_group_ebef8d552bf89bfb19cbc0e0",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -2322,7 +2444,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "325aaf14cf7c0693b6b932f5efb817d8ff6efd6b5bb9ef922469a3135779951e",
+      "coverage_target_sha256": "325aaf14cf7c0693b6b932f5efb817d8ff6efd6b5bb9ef922469a3135779951e",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2331,8 +2453,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2342,17 +2466,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_7ee820c9d12421ccd6d6819d35192ddf",
+      "work_unit_id": "v2r_281b94e41dace7163d1da45318388dd2",
       "ordinal": 61,
       "image_id": "pilot_0042c1c8bd9c45083df258e6",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/underwear_swimwear__one/0042c1c8bd9c4508__IMG_260.jpg",
       "source_encoded_sha256": "0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
       "source_decoded_pixel_sha256": "a8301c23bec7c20617248083c7f83420e6debbf327c863dd95057bebe6ceb48f",
       "split_group_id": "reference_0042c1c8bd9c45083df258e62ee50d30ebb7173ce4cd6c1ded67a8e3695eed10",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -2360,7 +2484,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "caedf19fcc19012b661d3c1506cc18d7976ed8b7d416dc2973a1db0eb74806d6",
+      "coverage_target_sha256": "caedf19fcc19012b661d3c1506cc18d7976ed8b7d416dc2973a1db0eb74806d6",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2369,8 +2493,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2380,17 +2506,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_92dd73b5d9bf9abc73ac01b12a365268",
+      "work_unit_id": "v2r_81514814ca9147d4209c2b001e02a262",
       "ordinal": 62,
       "image_id": "pilot_002ecf54c0f1dc24e17a8027",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "source_encoded_sha256": "002ecf54c0f1dc24e17a802740955685a37a0566c35131dd79f31a63b2082342",
       "source_decoded_pixel_sha256": "b862a92495101e6bd5eabddde32bffe08406b81458c9996547b511b4ea3d56b8",
       "split_group_id": "nude_group_3f444a82e78bce66bb55d017",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_areola",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -2398,7 +2524,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "dc2e0461b060d4f13c3ccd67790cd4b60bdb412f6390f97347477763f250e7f7",
+      "coverage_target_sha256": "dc2e0461b060d4f13c3ccd67790cd4b60bdb412f6390f97347477763f250e7f7",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2407,8 +2533,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2418,17 +2546,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_96c454120c8f4f8fc439f58cdd544b29",
+      "work_unit_id": "v2r_7cbb01fb8e10d636979e2a82160f46e4",
       "ordinal": 63,
       "image_id": "pilot_235a016f8edddd58c40051df",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "source_encoded_sha256": "235a016f8edddd58c40051dfe506e00ae47e80b2eff7bca733ce728978884980",
       "source_decoded_pixel_sha256": "925defea287e5becfd814004531714ebff0af008a7d12b3935d18af9b249ab5c",
       "split_group_id": "nude_group_3e543d97fc8918afb056f307",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -2436,7 +2564,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "4557b8a5ca0c30d850abc06f382a581c3eacffd03ec1c3cf27b39e4b4034fde6",
+      "coverage_target_sha256": "4557b8a5ca0c30d850abc06f382a581c3eacffd03ec1c3cf27b39e4b4034fde6",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2445,8 +2573,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2456,17 +2586,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_b2881ed354b8e5c2812138822b3247c8",
+      "work_unit_id": "v2r_7a4723f0c9dc14c69bc6dc4b569de640",
       "ordinal": 64,
       "image_id": "pilot_2c0189418cc243182703bd6f",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "source_encoded_sha256": "2c0189418cc243182703bd6fe52a92d90e584001fc0ba694b86aaba6e611cbc2",
       "source_decoded_pixel_sha256": "c2e5f7c261e671a93ea4a53d20b045e4696f471bbb111530578d8f682de2afad",
       "split_group_id": "nude_group_64f364e9a62c6c2274f12f2b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -2474,7 +2604,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "972c062493ec0e61a0a6aa0e6c3add10b5898b434458c7e02c70d22ab1033a76",
+      "coverage_target_sha256": "972c062493ec0e61a0a6aa0e6c3add10b5898b434458c7e02c70d22ab1033a76",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2483,8 +2613,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2494,17 +2626,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_8427693e5015376ed9328b02f514b938",
+      "work_unit_id": "v2r_0e309a3e8880857f1291db333154d992",
       "ordinal": 65,
       "image_id": "pilot_1925650521381fb1a55a3d95",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "source_encoded_sha256": "1925650521381fb1a55a3d95a4dbd8058f185c6f7d538ffab5d15ac1a7e6d7ea",
       "source_decoded_pixel_sha256": "518bea51afde8b93be0211cd2fd709feb4cc430e46000bacb557a7d17006e8e5",
       "split_group_id": "nude_group_7659f9b0382b08b5f5d47b56",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -2512,7 +2644,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "9488adc49e5bbf02b8f49dac2c80a63db431e7b45e9d74f4d4354a3d2504c5fb",
+      "coverage_target_sha256": "9488adc49e5bbf02b8f49dac2c80a63db431e7b45e9d74f4d4354a3d2504c5fb",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2521,8 +2653,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2532,17 +2666,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_d3c39e8e41bd2831beedd93ca0a093e3",
+      "work_unit_id": "v2r_62d548f6f281a9dc3f80f1aef202db54",
       "ordinal": 66,
       "image_id": "pilot_0cdf223a0c05b97655aa0be0",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/2549251_jpg.rf.d13ffb61289be361a3e96c9851331bd0.jpg",
       "source_encoded_sha256": "0cdf223a0c05b97655aa0be0cd212bd05268f1258c365cc3f24ea7576b7ab548",
       "source_decoded_pixel_sha256": "7945129835042a13227d1a1dc57344ae1470f2c3406601aedabf64075b2fb514",
       "split_group_id": "nude_group_4b3818c122648e50ce7dd98f",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -2550,7 +2684,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "9f96fcad325e5f76f265f69fcae409f9ad7a59db223031738a8b71a6ba4c565c",
+      "coverage_target_sha256": "9f96fcad325e5f76f265f69fcae409f9ad7a59db223031738a8b71a6ba4c565c",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2559,8 +2693,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2570,17 +2706,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ccc28b6e8d35af7ba3fb9e4d25853ad2",
+      "work_unit_id": "v2r_171ee86b813a6b7b6e79622f389c07f2",
       "ordinal": 67,
       "image_id": "pilot_02e69d18badc795d18256a7f",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "source_encoded_sha256": "02e69d18badc795d18256a7f19c1534824128fb059d52f5a8bdeb41f61c5fafe",
       "source_decoded_pixel_sha256": "b91751fa8b00fb0a2cb859c4868bfac85ee83b795a626223f04f0535c8bd7707",
       "split_group_id": "nude_group_0000151d3dce15f0dcc79a6c",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -2588,7 +2724,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "d83c9b821b662dc18e377bfa761111ccd7563192bdcc9635dce6b5e48ebec50e",
+      "coverage_target_sha256": "d83c9b821b662dc18e377bfa761111ccd7563192bdcc9635dce6b5e48ebec50e",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2597,8 +2733,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2608,17 +2746,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_9ed62acafd71add093db96665b540323",
+      "work_unit_id": "v2r_56d186a33664a9df06cd36dc0993326d",
       "ordinal": 68,
       "image_id": "pilot_235a016f8edddd58c40051df",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "source_encoded_sha256": "235a016f8edddd58c40051dfe506e00ae47e80b2eff7bca733ce728978884980",
       "source_decoded_pixel_sha256": "925defea287e5becfd814004531714ebff0af008a7d12b3935d18af9b249ab5c",
       "split_group_id": "nude_group_3e543d97fc8918afb056f307",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -2626,7 +2764,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "6bba33ed62c97400d1715d9aaaafbf36bfc3fa5b2de5d8d7f9487a05e1b72d43",
+      "coverage_target_sha256": "6bba33ed62c97400d1715d9aaaafbf36bfc3fa5b2de5d8d7f9487a05e1b72d43",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2635,8 +2773,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2646,17 +2786,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_84eb703d04e379f00f3a6ce8922a77ca",
+      "work_unit_id": "v2r_201ba2fcafcabb867fff8b7f7bd65046",
       "ordinal": 69,
       "image_id": "pilot_29aa1b87f21e61a6828af8e7",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "source_encoded_sha256": "29aa1b87f21e61a6828af8e7a2d1ed29e9af8f4499153e62f77e2fb1a8ee564b",
       "source_decoded_pixel_sha256": "c063d721a25ddbb28157e8b198aaeb2344ca0fd40c99f2be3404a47d5a0f3eeb",
       "split_group_id": "nude_group_2b1d69772a081947bd430797",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -2664,7 +2804,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "dc7405d2d34de66f0e4abea0a8e864eaa61e0e9d135b19e79b6504de5c4f4344",
+      "coverage_target_sha256": "dc7405d2d34de66f0e4abea0a8e864eaa61e0e9d135b19e79b6504de5c4f4344",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2673,8 +2813,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2684,17 +2826,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_055d00333cab15e2a0f571fa0f0c2ff7",
+      "work_unit_id": "v2r_7798e60668c8b20552deb1832dcb4315",
       "ordinal": 70,
       "image_id": "pilot_002ecf54c0f1dc24e17a8027",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00037-1777062125_webp_webp_webp.rf.fa852fd29f0d13bb852838ff73bf4f58.jpg",
       "source_encoded_sha256": "002ecf54c0f1dc24e17a802740955685a37a0566c35131dd79f31a63b2082342",
       "source_decoded_pixel_sha256": "b862a92495101e6bd5eabddde32bffe08406b81458c9996547b511b4ea3d56b8",
       "split_group_id": "nude_group_3f444a82e78bce66bb55d017",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -2702,7 +2844,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "919949fc915cb79f935e01842078edcffe10c3ae15bae5aafee1849b16e43b9d",
+      "coverage_target_sha256": "919949fc915cb79f935e01842078edcffe10c3ae15bae5aafee1849b16e43b9d",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2711,8 +2853,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2722,17 +2866,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_14ee26c06d941ef7736678355d5ed0b5",
+      "work_unit_id": "v2r_a9178e9249954b64ec1aa898a4d8cb2b",
       "ordinal": 71,
       "image_id": "pilot_01e1b30947582bd814703e50",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/25_jpeg.rf.ef7ff4883ead879de8e961b75e332610.jpg",
       "source_encoded_sha256": "01e1b30947582bd814703e505fcdb71d34fd57635b167c07eb112f2aa7c61510",
       "source_decoded_pixel_sha256": "16ce0d18804173b5d527f8988f102227ad7790e77f7ea6343e6adfaa1677992b",
       "split_group_id": "nude_group_f59738151c3ae27f5726c7aa",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_nipple",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -2740,7 +2884,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "2fa13490ff8a4bb326625a71689b59a37d30ef252a3e9ac769fd8525e6ed5720",
+      "coverage_target_sha256": "2fa13490ff8a4bb326625a71689b59a37d30ef252a3e9ac769fd8525e6ed5720",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2749,8 +2893,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2760,17 +2906,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_d0f3097e825a228f192b9ea9f05232be",
+      "work_unit_id": "v2r_1c66f9392afc2dba41966c768342011e",
       "ordinal": 72,
       "image_id": "pilot_1096584129e3547f79664b66",
-      "image_target_ordinal": 4,
+      "coverage_target_ordinal": 4,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
       "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
       "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "ambiguous_do_not_use",
@@ -2778,7 +2924,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "2cc189215c5d3a9c9e0b7f8b787770d508a4787a9e0d0da197e735191a78c10b",
+      "coverage_target_sha256": "2cc189215c5d3a9c9e0b7f8b787770d508a4787a9e0d0da197e735191a78c10b",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2787,8 +2933,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2798,17 +2946,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_c776ba5c1b0924d7cda0a35b4db60da2",
+      "work_unit_id": "v2r_8e6ebc8efe41495314e1a8d3ec26e076",
       "ordinal": 73,
       "image_id": "pilot_1096584129e3547f79664b66",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
       "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
       "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -2816,7 +2964,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "cee9c7b8eae05d4cb9ea724516a70d97784578af93fb15b519c348cf25d85577",
+      "coverage_target_sha256": "cee9c7b8eae05d4cb9ea724516a70d97784578af93fb15b519c348cf25d85577",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2825,8 +2973,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2836,17 +2986,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_9f66e177c01eb5e032c8b188cd073881",
+      "work_unit_id": "v2r_8a4c06f3704d43b09b8849728b367c10",
       "ordinal": 74,
       "image_id": "pilot_00453ba6c3bc7e59c98b81d2",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "source_encoded_sha256": "00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
       "source_decoded_pixel_sha256": "6bcf2a6b5c0726fcdd705e3526f9dee3db5b444400bbf3c53b07918321436e95",
       "split_group_id": "reference_00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -2854,7 +3004,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "3202e31fba114e9467a558aaafb4633dfcb644d94f5b015e98a5214a15650b3f",
+      "coverage_target_sha256": "3202e31fba114e9467a558aaafb4633dfcb644d94f5b015e98a5214a15650b3f",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2863,8 +3013,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2874,17 +3026,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_76c72fc540243931a81b7fbd898a791a",
+      "work_unit_id": "v2r_5562b0541481b0b2f266d202a6e66c3c",
       "ordinal": 75,
       "image_id": "pilot_18f4a50783cdcb90f123c9fc",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "source_encoded_sha256": "18f4a50783cdcb90f123c9fc74c3e79d547c246d35c033cf6cb39eaa2347127a",
       "source_decoded_pixel_sha256": "be743f88231f249416c0afd4ab25d46905b1b18a6eb29a21b77e6150b2001546",
       "split_group_id": "nude_group_192d09c5bcfcf2170dab1757",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -2892,7 +3044,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "40908dbaae85b0098749e655b52debc75ee58b28fcc590f972d242e92f16a292",
+      "coverage_target_sha256": "40908dbaae85b0098749e655b52debc75ee58b28fcc590f972d242e92f16a292",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2901,8 +3053,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2912,17 +3066,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_818617ce6ae31a152bfa5eb0847eec62",
+      "work_unit_id": "v2r_428bab008cf46a2c12fdb64ba5d7d345",
       "ordinal": 76,
       "image_id": "pilot_02e69d18badc795d18256a7f",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/clip-05.v1i.coco/train/clip-05_mp4-0021_jpg.rf.4eca6a66a2ed33f938cfac0c6e99e9bd.jpg",
       "source_encoded_sha256": "02e69d18badc795d18256a7f19c1534824128fb059d52f5a8bdeb41f61c5fafe",
       "source_decoded_pixel_sha256": "b91751fa8b00fb0a2cb859c4868bfac85ee83b795a626223f04f0535c8bd7707",
       "split_group_id": "nude_group_0000151d3dce15f0dcc79a6c",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -2930,7 +3084,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "8a56dc327d65d7e24b57df900a083f0e718c124282dcb736733118ea643009b0",
+      "coverage_target_sha256": "8a56dc327d65d7e24b57df900a083f0e718c124282dcb736733118ea643009b0",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2939,8 +3093,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2950,17 +3106,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_6ea3484f5a5aca9836cd12e247219e4a",
+      "work_unit_id": "v2r_4d4f43c2af6a18f2fd30e8bbc26160a3",
       "ordinal": 77,
       "image_id": "pilot_29aa1b87f21e61a6828af8e7",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/12_jpeg.rf.ab96058da5d4c42ee673f52e894327fe.jpg",
       "source_encoded_sha256": "29aa1b87f21e61a6828af8e7a2d1ed29e9af8f4499153e62f77e2fb1a8ee564b",
       "source_decoded_pixel_sha256": "c063d721a25ddbb28157e8b198aaeb2344ca0fd40c99f2be3404a47d5a0f3eeb",
       "split_group_id": "nude_group_2b1d69772a081947bd430797",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -2968,7 +3124,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "07f3a8e3cf37d842a93abce71f41cd32d11958d9c2e6bb54c26d6b90442a7969",
+      "coverage_target_sha256": "07f3a8e3cf37d842a93abce71f41cd32d11958d9c2e6bb54c26d6b90442a7969",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -2977,8 +3133,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -2988,17 +3146,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ab75e8dca6b9941462840663b017091e",
+      "work_unit_id": "v2r_c97ceabbada42cf4d882bbf9852dbe5a",
       "ordinal": 78,
       "image_id": "pilot_2c0189418cc243182703bd6f",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/10_jpeg.rf.0a21df76fd4f0e7e3653cc5040930264.jpg",
       "source_encoded_sha256": "2c0189418cc243182703bd6fe52a92d90e584001fc0ba694b86aaba6e611cbc2",
       "source_decoded_pixel_sha256": "c2e5f7c261e671a93ea4a53d20b045e4696f471bbb111530578d8f682de2afad",
       "split_group_id": "nude_group_64f364e9a62c6c2274f12f2b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -3006,7 +3164,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "a3194fdffcacd2c13ecaad0a087b9c0c72e66904f1140ae5ed329bd9932e2d0e",
+      "coverage_target_sha256": "a3194fdffcacd2c13ecaad0a087b9c0c72e66904f1140ae5ed329bd9932e2d0e",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3015,8 +3173,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3026,17 +3186,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_204f4f6e43e16586aa5818fa1b1bec23",
+      "work_unit_id": "v2r_fd33dff2242d044807229a4c7c7cabba",
       "ordinal": 79,
       "image_id": "pilot_116d2959f4c0db4f3fcb2852",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "source_encoded_sha256": "116d2959f4c0db4f3fcb28525df775fc5497e8b9a34ec5ec318c91eae5dd8587",
       "source_decoded_pixel_sha256": "4b0b533d5141919ddb32cfd5ce1012117d43b60c330f56a0c177a84ff5a3c694",
       "split_group_id": "nude_group_7816ab0277dba0bf7afddd3b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -3044,7 +3204,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "ee7bd84f90edb3b22c7a6dc9f7e4b767d7f3e9b9d8bd7abf72b12950014ec561",
+      "coverage_target_sha256": "ee7bd84f90edb3b22c7a6dc9f7e4b767d7f3e9b9d8bd7abf72b12950014ec561",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3053,8 +3213,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3064,17 +3226,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_f427126e6193814ea3c4f6edd5c01fd6",
+      "work_unit_id": "v2r_87c1220f3690491f467bda85da4b1716",
       "ordinal": 80,
       "image_id": "pilot_235a016f8edddd58c40051df",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/7_jpeg.rf.97987f87b869b301d0aa8a1479dcd5c1.jpg",
       "source_encoded_sha256": "235a016f8edddd58c40051dfe506e00ae47e80b2eff7bca733ce728978884980",
       "source_decoded_pixel_sha256": "925defea287e5becfd814004531714ebff0af008a7d12b3935d18af9b249ab5c",
       "split_group_id": "nude_group_3e543d97fc8918afb056f307",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "right_scrotal_region",
         "requested_state": "visible",
         "current_state": "unreviewed_for_v2",
@@ -3082,7 +3244,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "6cf428c74b466943c1cd3bea4a680a7cbda059b1e32a275cf8c4e8b44b1be830",
+      "coverage_target_sha256": "6cf428c74b466943c1cd3bea4a680a7cbda059b1e32a275cf8c4e8b44b1be830",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3091,8 +3253,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3102,17 +3266,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_2485e88753ba1f5ee4c3f91526d2a552",
+      "work_unit_id": "v2r_0514269717662b8d52646e7d06184454",
       "ordinal": 81,
       "image_id": "pilot_0367973fd14f50074a7ffe7f",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00048-3785629263_webp_webp_webp.rf.3d8291d20f495226f250bb33461307c7.jpg",
       "source_encoded_sha256": "0367973fd14f50074a7ffe7fa2b7dd35932c50a120957766ba88230c3ff1542a",
       "source_decoded_pixel_sha256": "566b68ec94d838520d32092e2ba29cc617383c562d68c9e142d591bd7b4022a1",
       "split_group_id": "nude_group_ebef8d552bf89bfb19cbc0e0",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "ambiguous_do_not_use",
         "current_state": "unreviewed_for_v2",
@@ -3120,7 +3284,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "0ae80991252635dfb7983ae67d85ab3fdad4efeaed41c330f5e152596f7520ee",
+      "coverage_target_sha256": "0ae80991252635dfb7983ae67d85ab3fdad4efeaed41c330f5e152596f7520ee",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3129,8 +3293,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3140,17 +3306,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_a1efd8abb2046c146acc8afff46e0874",
+      "work_unit_id": "v2r_ea1f868309cf9533cd92f80fa027767f",
       "ordinal": 82,
       "image_id": "pilot_00453ba6c3bc7e59c98b81d2",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "reference_library_coverage",
       "source_path": "F:/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "runpod_path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images/benchmark_reference/clothed__one/00453ba6c3bc7e59__86_EM_Nose_References.jpg",
       "source_encoded_sha256": "00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
       "source_decoded_pixel_sha256": "6bcf2a6b5c0726fcdd705e3526f9dee3db5b444400bbf3c53b07918321436e95",
       "split_group_id": "reference_00453ba6c3bc7e59c98b81d27439fa9b64183cef45d9a01cc31f2806e1d5b8ce",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "cropped_out",
         "current_state": "unreviewed_for_v2",
@@ -3158,7 +3324,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "3abed795fb244e21e6055185d29b3b903553f078b0bd63a184c27dcb7e4ca42b",
+      "coverage_target_sha256": "3abed795fb244e21e6055185d29b3b903553f078b0bd63a184c27dcb7e4ca42b",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3167,8 +3333,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3178,17 +3346,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_c20424396cdbd7c590a2d3fdaf9fb32a",
+      "work_unit_id": "v2r_aaf0ea0e00d5fc7ac300f57e88169d03",
       "ordinal": 83,
       "image_id": "pilot_009c0787ece4012a52cb7569",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/7F9120B_png.rf.6fd17f01eef854de89aa69037c990d7c.jpg",
       "source_encoded_sha256": "009c0787ece4012a52cb7569179c4443b111c1bf6a9a8dd274973d2348410acc",
       "source_decoded_pixel_sha256": "2c26974f8ae91e017e4f6c3e2cd9cee7e9e24677b40026351de4ff35170a163b",
       "split_group_id": "nude_group_0952a9b55401863299571732",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "not_applicable",
         "current_state": "unreviewed_for_v2",
@@ -3196,7 +3364,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "4be3203aeb2c98a85588336d1ee3d1aa6e484c7a5fe50f865098302549a823ad",
+      "coverage_target_sha256": "4be3203aeb2c98a85588336d1ee3d1aa6e484c7a5fe50f865098302549a823ad",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3205,8 +3373,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3216,17 +3386,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_4eb7baa920a5da26b0faa34f32c195e3",
+      "work_unit_id": "v2r_a2bbe783c48f6e1e253a78f6149e7b48",
       "ordinal": 84,
       "image_id": "pilot_116d2959f4c0db4f3fcb2852",
-      "image_target_ordinal": 2,
+      "coverage_target_ordinal": 2,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/valid/4877850_png.rf.a7af242d2275211bfa86bb30311097f2.jpg",
       "source_encoded_sha256": "116d2959f4c0db4f3fcb28525df775fc5497e8b9a34ec5ec318c91eae5dd8587",
       "source_decoded_pixel_sha256": "4b0b533d5141919ddb32cfd5ce1012117d43b60c330f56a0c177a84ff5a3c694",
       "split_group_id": "nude_group_7816ab0277dba0bf7afddd3b",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "not_visible",
         "current_state": "unreviewed_for_v2",
@@ -3234,7 +3404,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "e6c25b7ff29ede1503889ad9372c08f239939b4e389aa50951425ad3aefa6287",
+      "coverage_target_sha256": "e6c25b7ff29ede1503889ad9372c08f239939b4e389aa50951425ad3aefa6287",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3243,8 +3413,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3254,17 +3426,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ce74a65197e46b83d019f7f2e1dd89d2",
+      "work_unit_id": "v2r_1f0d47bcaf61220ca375c2e174f81de8",
       "ordinal": 85,
       "image_id": "pilot_1096584129e3547f79664b66",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NWeud.v1i.coco-segmentation/train/A9158D9_png.rf.f240b89601d955a0492537e92faa8d0c.jpg",
       "source_encoded_sha256": "1096584129e3547f79664b6658ae7bd9aa57b62c7f926599f89bab80b1b3b132",
       "source_decoded_pixel_sha256": "31f936ba6d377d475840195a25c77979f30063ddaf67ed5e99dee1bece80d706",
       "split_group_id": "nude_group_e1329496643a61329a4f8e7a",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "occluded",
         "current_state": "unreviewed_for_v2",
@@ -3272,7 +3444,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "ff383e2cb0dc91476eff5b89aa834bad8cc4ba0e6d092daddf8586a154cb3f11",
+      "coverage_target_sha256": "ff383e2cb0dc91476eff5b89aa834bad8cc4ba0e6d092daddf8586a154cb3f11",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3281,8 +3453,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3292,17 +3466,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_77ce42418a69151c6df20d5d69c9e99f",
+      "work_unit_id": "v2r_99a5afbbb4afc37ad3e83838d1a88226",
       "ordinal": 86,
       "image_id": "pilot_18f4a50783cdcb90f123c9fc",
-      "image_target_ordinal": 1,
+      "coverage_target_ordinal": 1,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/7DC1C93_jpg.rf.55976bc6132d85f47679bd6c04d52aae.jpg",
       "source_encoded_sha256": "18f4a50783cdcb90f123c9fc74c3e79d547c246d35c033cf6cb39eaa2347127a",
       "source_decoded_pixel_sha256": "be743f88231f249416c0afd4ab25d46905b1b18a6eb29a21b77e6150b2001546",
       "split_group_id": "nude_group_192d09c5bcfcf2170dab1757",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "occluded_by_clothing",
         "current_state": "unreviewed_for_v2",
@@ -3310,7 +3484,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "4ea92adc1223a6bd0952a114948d695eff552a2e47e86bd4884d2807fe34b7e1",
+      "coverage_target_sha256": "4ea92adc1223a6bd0952a114948d695eff552a2e47e86bd4884d2807fe34b7e1",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3319,8 +3493,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3330,17 +3506,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_1c00a92a53e945d3b81fe7a133a5b3c3",
+      "work_unit_id": "v2r_b603c0f48fbcde23b3deb4456edd957f",
       "ordinal": 87,
       "image_id": "pilot_1925650521381fb1a55a3d95",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/NsegNu.v1i.coco-segmentation/train/0167DFD_jpg.rf.314dea86e596e38b7819fa4e160d1c09.jpg",
       "source_encoded_sha256": "1925650521381fb1a55a3d95a4dbd8058f185c6f7d538ffab5d15ac1a7e6d7ea",
       "source_decoded_pixel_sha256": "518bea51afde8b93be0211cd2fd709feb4cc430e46000bacb557a7d17006e8e5",
       "split_group_id": "nude_group_7659f9b0382b08b5f5d47b56",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "partially_visible",
         "current_state": "unreviewed_for_v2",
@@ -3348,7 +3524,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "f1464a04de2eec1532d9fc42133ff1f3905fd7a56c1afa0f9ebee7b80892de55",
+      "coverage_target_sha256": "f1464a04de2eec1532d9fc42133ff1f3905fd7a56c1afa0f9ebee7b80892de55",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3357,8 +3533,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3368,17 +3546,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_ec825d2e5eb497dfd09ddf52782d9275",
+      "work_unit_id": "v2r_28cf91673485c63b6ad2da45c1b523c9",
       "ordinal": 88,
       "image_id": "pilot_00bc9973de076d57ed61bb47",
-      "image_target_ordinal": 3,
+      "coverage_target_ordinal": 3,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v2i.coco-segmentation/test/00161-1690283259_webp_webp_webp.rf.cd79a06238c756adfed69c6177ec232f.jpg",
       "source_encoded_sha256": "00bc9973de076d57ed61bb471ffdc11ea0fa1652ee9f45f76b0a147d5ee00e40",
       "source_decoded_pixel_sha256": "7d610640a95f9249d10e5d9d0ff45bc8d744404b3fb96180a4ac10e29a31ab2d",
       "split_group_id": "nude_group_dc463a993ec4361373c1a412",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "unreviewed_for_v2",
         "current_state": "unreviewed_for_v2",
@@ -3386,7 +3564,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": true
       },
-      "target_contract_sha256": "1232a5e790279cfd697dbfbdd63fa776ba9317ba80df60492176397ec4ade43c",
+      "coverage_target_sha256": "1232a5e790279cfd697dbfbdd63fa776ba9317ba80df60492176397ec4ade43c",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3395,8 +3573,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3406,17 +3586,17 @@
       ]
     },
     {
-      "work_unit_id": "v2r_d61b007521473f805fb24b32350abd13",
+      "work_unit_id": "v2r_ef16bd2ee15907643cab1cfad895345b",
       "ordinal": 89,
       "image_id": "pilot_00488c4c64077691ee54afdf",
-      "image_target_ordinal": 0,
+      "coverage_target_ordinal": 0,
       "source_kind": "maskedwarehouse_external_candidate",
       "source_path": "C:/Comfy_UI_Main/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "runpod_path": "/workspace/assets/MaskedWarehouse/Nude/mange.v3i.coco-segmentation/train/00219-2162171672_webp_webp_webp.rf.90ab442c184749ee0a62b397ab46f33b.jpg",
       "source_encoded_sha256": "00488c4c64077691ee54afdf3141765e02c76d8bbcd9283f24dbac8d56cb6e7d",
       "source_decoded_pixel_sha256": "7b97b9183773fab8ba1ea6706ce0b8b228b6cfb3d59ad67126c7fcc78c69a2ad",
       "split_group_id": "nude_group_cd279be9762ec416e8234d96",
-      "target_contract": {
+      "coverage_target": {
         "canonical_label": "vulva",
         "requested_state": "visible",
         "current_state": "visible",
@@ -3424,7 +3604,7 @@
         "semantic_positive_authority": false,
         "qualified_visual_resolution_required": false
       },
-      "target_contract_sha256": "3afdd676cd6b1bf2243f7e0766e5b3c4941980c98ad674e5b6d401824e11ccb3",
+      "coverage_target_sha256": "3afdd676cd6b1bf2243f7e0766e5b3c4941980c98ad674e5b6d401824e11ccb3",
       "status": "queued",
       "attempt_count": 0,
       "max_attempts": 3,
@@ -3433,8 +3613,10 @@
       "authority": "none",
       "required_stages": [
         "source_identity",
-        "target_contract_validation",
+        "coverage_target_validation",
         "provider_proposals",
+        "owner_and_candidate_binding",
+        "canonical_target_contract_materialization",
         "deterministic_hard_qa",
         "qualified_primary_visual_review",
         "independent_family_juror_review",
@@ -3451,5 +3633,5 @@
     "one failed work unit cannot stop unrelated work units",
     "all pixel changes require a new immutable candidate and complete re-review"
   ],
-  "self_sha256": "fd0ac903984f72973d5937abae6116b9d08a9aa53690acac15210ce7f89ff999"
+  "self_sha256": "3f8d9eca7027da36cb551972a71da69ed9c1004881856219e331aa1aee877147"
 }

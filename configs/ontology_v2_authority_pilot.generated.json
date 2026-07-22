@@ -1,5 +1,5 @@
 {
-  "schema_version": "maskfactory.ontology_v2_authority_pilot.v1",
+  "schema_version": "maskfactory.ontology_v2_authority_pilot.v2",
   "artifact_type": "ontology_v2_real_image_authority_pilot",
   "authority": "real_image_pilot_selection_no_mask_truth_or_gold_authority",
   "ontology_version": "body_parts_v2",
@@ -21,7 +21,7 @@
   "image_count": 24,
   "maskedwarehouse_image_count": 20,
   "reference_image_count": 4,
-  "target_contract_count": 90,
+  "coverage_target_count": 90,
   "requested_states": [
     "ambiguous_do_not_use",
     "cropped_out",
@@ -106,7 +106,7 @@
           "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_areola",
           "requested_state": "visible",
@@ -191,7 +191,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_areola",
           "requested_state": "visible",
@@ -268,7 +268,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_nipple",
           "requested_state": "visible",
@@ -345,7 +345,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_nipple",
           "requested_state": "visible",
@@ -414,7 +414,7 @@
           "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_nipple",
           "requested_state": "occluded",
@@ -475,7 +475,7 @@
           "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "penis_shaft",
           "requested_state": "visible",
@@ -556,7 +556,7 @@
           "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "glans_penis",
           "requested_state": "visible",
@@ -633,7 +633,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "vulva",
           "requested_state": "visible",
@@ -710,7 +710,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_scrotal_region",
           "requested_state": "visible",
@@ -787,7 +787,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_scrotal_region",
           "requested_state": "visible",
@@ -848,7 +848,7 @@
           "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_areola",
           "requested_state": "partially_visible",
@@ -929,7 +929,7 @@
           "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "anus",
           "requested_state": "visible",
@@ -1006,7 +1006,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_areola",
           "requested_state": "partially_visible",
@@ -1083,7 +1083,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_nipple",
           "requested_state": "partially_visible",
@@ -1160,7 +1160,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_nipple",
           "requested_state": "partially_visible",
@@ -1221,7 +1221,7 @@
           "evidence_basis": "coarse_external_breast_polygon_cannot_invent_areola_or_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "vulva",
           "requested_state": "partially_visible",
@@ -1290,7 +1290,7 @@
           "evidence_basis": "coarse_external_scrotal_region_cannot_invent_laterality"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "penis_shaft",
           "requested_state": "partially_visible",
@@ -1367,7 +1367,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "glans_penis",
           "requested_state": "partially_visible",
@@ -1444,7 +1444,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_scrotal_region",
           "requested_state": "partially_visible",
@@ -1513,7 +1513,7 @@
           "evidence_basis": "visible_external_anatomy_alias_polygon"
         }
       },
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_scrotal_region",
           "requested_state": "partially_visible",
@@ -1559,7 +1559,7 @@
       "retrieval_bucket_hint": "clothed__one",
       "retrieval_hint_is_semantic_truth": false,
       "observed_semantics": {},
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "anus",
           "requested_state": "partially_visible",
@@ -1605,7 +1605,7 @@
       "retrieval_bucket_hint": "nude__one",
       "retrieval_hint_is_semantic_truth": false,
       "observed_semantics": {},
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_areola",
           "requested_state": "occluded",
@@ -1651,7 +1651,7 @@
       "retrieval_bucket_hint": "mixed__two",
       "retrieval_hint_is_semantic_truth": false,
       "observed_semantics": {},
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "right_areola",
           "requested_state": "occluded",
@@ -1697,7 +1697,7 @@
       "retrieval_bucket_hint": "underwear_swimwear__one",
       "retrieval_hint_is_semantic_truth": false,
       "observed_semantics": {},
-      "target_contracts": [
+      "coverage_targets": [
         {
           "canonical_label": "left_nipple",
           "requested_state": "occluded",
@@ -1729,8 +1729,8 @@
     "external polygon evidence remains machine hard-QC candidate evidence, not gold",
     "coarse or unsided source labels never create fine anatomy or laterality",
     "reference-library bucket names are retrieval hints only and grant no semantic or pixel truth",
-    "requested coverage is not resolved authority",
+    "coverage targets are not canonical v2 target contracts or resolved authority",
     "the pilot remains incomplete until qualified autonomous evidence resolves every required state and applicable class"
   ],
-  "self_sha256": "22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101"
+  "self_sha256": "380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628"
 }

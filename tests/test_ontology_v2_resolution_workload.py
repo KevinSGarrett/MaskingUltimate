@@ -29,10 +29,18 @@ def test_resolution_workload_is_deterministic_complete_and_non_authoritative(tmp
     assert first == second
     result = verify_resolution_workload(first, pilot=pilot)
     assert result["status"] == "PASS_QUEUED_NO_AUTHORITY"
-    assert first["work_unit_count"] == pilot["target_contract_count"]
+    assert first["work_unit_count"] == pilot["coverage_target_count"]
     assert first["queued_count"] == first["work_unit_count"]
     assert {entry["authority"] for entry in first["entries"]} == {"none"}
     assert {entry["status"] for entry in first["entries"]} == {"queued"}
+    stages = first["required_stages"]
+    assert stages.index("owner_and_candidate_binding") < stages.index(
+        "canonical_target_contract_materialization"
+    )
+    assert stages.index("canonical_target_contract_materialization") < stages.index(
+        "deterministic_hard_qa"
+    )
+    assert all("target_contract" not in entry for entry in first["entries"])
 
 
 @pytest.mark.parametrize(
@@ -42,8 +50,8 @@ def test_resolution_workload_is_deterministic_complete_and_non_authoritative(tmp
         (lambda value: value["entries"][0].update(authority="gold"), "entry_state"),
         (lambda value: value["entries"][0].update(status="complete"), "entry_state"),
         (
-            lambda value: value["entries"][0]["target_contract"].update(requested_state="visible"),
-            "target_contract_hash",
+            lambda value: value["entries"][0]["coverage_target"].update(requested_state="visible"),
+            "coverage_target_hash",
         ),
         (
             lambda value: value["entries"].pop(),

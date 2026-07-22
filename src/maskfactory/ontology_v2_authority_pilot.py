@@ -33,7 +33,7 @@ from .ontology_v2_inactive_gates import (
     appended_v2_part_names,
 )
 
-SCHEMA_VERSION = "maskfactory.ontology_v2_authority_pilot.v1"
+SCHEMA_VERSION = "maskfactory.ontology_v2_authority_pilot.v2"
 AUTHORITY = "real_image_pilot_selection_no_mask_truth_or_gold_authority"
 WAREHOUSE_SOURCE_KIND = "maskedwarehouse_external_candidate"
 REFERENCE_SOURCE_KIND = "reference_library_coverage"
@@ -211,7 +211,7 @@ def _target_matrix(rows: list[dict[str, Any]]) -> None:
         if observed and observed["state"] == requested_state:
             current_state = requested_state
             evidence_basis = observed["evidence_basis"]
-        rows[index]["target_contracts"].append(
+        rows[index]["coverage_targets"].append(
             {
                 "canonical_label": label,
                 "requested_state": requested_state,
@@ -269,7 +269,7 @@ def build_authority_pilot(
                 "annotation_evidence_authority": hard_qc["external_mask_authority"],
                 "mask_truth_authority": False,
                 "observed_semantics": observed,
-                "target_contracts": [],
+                "coverage_targets": [],
                 "_observations": observations,
             }
         )
@@ -301,22 +301,22 @@ def build_authority_pilot(
                 "retrieval_bucket_hint": bucket,
                 "retrieval_hint_is_semantic_truth": False,
                 "observed_semantics": {},
-                "target_contracts": [],
+                "coverage_targets": [],
                 "_observations": {},
             }
         )
     _target_matrix(rows)
     requested_states = sorted(
-        {target["requested_state"] for row in rows for target in row["target_contracts"]}
+        {target["requested_state"] for row in rows for target in row["coverage_targets"]}
     )
     requested_classes = sorted(
-        {target["canonical_label"] for row in rows for target in row["target_contracts"]}
+        {target["canonical_label"] for row in rows for target in row["coverage_targets"]}
     )
     resolved_states = sorted(
         {
             target["current_state"]
             for row in rows
-            for target in row["target_contracts"]
+            for target in row["coverage_targets"]
             if target["current_state"] != "unreviewed_for_v2"
         }
     )
@@ -347,7 +347,7 @@ def build_authority_pilot(
         "image_count": len(rows),
         "maskedwarehouse_image_count": warehouse_count,
         "reference_image_count": len(REFERENCE_BUCKETS),
-        "target_contract_count": sum(len(row["target_contracts"]) for row in rows),
+        "coverage_target_count": sum(len(row["coverage_targets"]) for row in rows),
         "requested_states": requested_states,
         "requested_appended_classes": requested_classes,
         "resolved_states": resolved_states,
@@ -358,7 +358,7 @@ def build_authority_pilot(
             "external polygon evidence remains machine hard-QC candidate evidence, not gold",
             "coarse or unsided source labels never create fine anatomy or laterality",
             "reference-library bucket names are retrieval hints only and grant no semantic or pixel truth",
-            "requested coverage is not resolved authority",
+            "coverage targets are not canonical v2 target contracts or resolved authority",
             "the pilot remains incomplete until qualified autonomous evidence resolves every required state and applicable class",
         ],
     }
@@ -385,7 +385,7 @@ def verify_authority_pilot(
         "image_count",
         "maskedwarehouse_image_count",
         "reference_image_count",
-        "target_contract_count",
+        "coverage_target_count",
         "requested_states",
         "requested_appended_classes",
         "resolved_states",
@@ -433,9 +433,9 @@ def verify_authority_pilot(
             not path.is_file() or sha256_file(path) != row["source_encoded_sha256"]
         ):
             raise OntologyV2AuthorityPilotError(f"pilot_source_hash_mismatch:{row.get('image_id')}")
-        targets = row.get("target_contracts")
+        targets = row.get("coverage_targets")
         if not isinstance(targets, list) or not targets:
-            raise OntologyV2AuthorityPilotError("pilot_target_contracts_missing")
+            raise OntologyV2AuthorityPilotError("pilot_coverage_targets_missing")
         for target in targets:
             if set(target) != {
                 "canonical_label",
@@ -445,7 +445,7 @@ def verify_authority_pilot(
                 "semantic_positive_authority",
                 "qualified_visual_resolution_required",
             }:
-                raise OntologyV2AuthorityPilotError("pilot_target_fields_not_closed")
+                raise OntologyV2AuthorityPilotError("pilot_coverage_target_fields_not_closed")
             requested_states.add(str(target["requested_state"]))
             requested_classes.add(str(target["canonical_label"]))
             if target["current_state"] not in CURRENT_STATES:
@@ -468,7 +468,7 @@ def verify_authority_pilot(
     return {
         "status": "PASS_SELECTION_AUTHORITY_RESOLUTION_OPEN",
         "image_count": len(images),
-        "target_contract_count": sum(len(row["target_contracts"]) for row in images),
+        "coverage_target_count": sum(len(row["coverage_targets"]) for row in images),
         "requested_state_count": len(requested_states),
         "requested_class_count": len(requested_classes),
         "resolved_state_count": len(resolved_states),

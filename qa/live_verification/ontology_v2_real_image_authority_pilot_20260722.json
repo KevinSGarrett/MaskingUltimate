@@ -1,11 +1,11 @@
 {
-  "schema_version": "maskfactory.live_verification.ontology_v2_authority_pilot.v1",
+  "schema_version": "maskfactory.live_verification.ontology_v2_authority_pilot.v2",
   "captured_at_utc": "2026-07-22T19:13:03.1401018+00:00",
   "item_id": "MF-P1-12.09",
   "status": "PARTIAL_PASS_SELECTION_COMPLETE_AUTHORITY_RESOLUTION_OPEN",
   "manifest_path": "configs/ontology_v2_authority_pilot.generated.json",
-  "manifest_file_sha256": "37c538ed41f294b06f46116e37ac19a5240c6a1fe2340c8d085506956ebf9158",
-  "manifest_self_sha256": "22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101",
+  "manifest_file_sha256": "f6d8e4220922d81083c61950facfdaed5eeae9a297e49c028eec0dbb39e18f82",
+  "manifest_self_sha256": "380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628",
   "source_lineage": {
     "nude_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
     "nude_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
@@ -19,7 +19,7 @@
     "reference_image_count": 4,
     "distinct_encoded_hash_count": 24,
     "distinct_split_group_count": 24,
-    "target_contract_count": 90,
+    "coverage_target_count": 90,
     "requested_class_count": 10,
     "requested_state_count": 9,
     "dataset_count": 7
@@ -46,13 +46,13 @@
   "validation": {
     "source_rehash": "PASS_24_OF_24",
     "closed_manifest_verifier": "PASS_SELECTION_AUTHORITY_RESOLUTION_OPEN",
-    "focused_and_adjacent_pytest": "64 passed",
+    "focused_and_adjacent_pytest": "92 passed after contract-vocabulary correction",
     "ruff": "PASS",
     "black": "PASS",
     "fail_closed_fixtures": [
       "pilot completion overclaim",
       "source mask-truth escalation",
-      "target semantic-authority escalation",
+      "coverage-target semantic-authority escalation",
       "duplicate source identity",
       "mandatory human-anchor reintroduction",
       "generated v2 manifest schema drift"
@@ -60,10 +60,11 @@
   },
   "honest_non_claims": [
     "The requested class/state matrix is coverage planning, not resolved semantic authority.",
+    "Coverage targets are not canonical v2 target contracts; those require exact owner, candidate, protected-region, transform, and package bindings after proposal generation.",
     "External polygon hard-QC candidates are not gold or production mask authority.",
     "Reference-library folder names are retrieval hints, not pixel or semantic truth.",
     "The pilot is not complete until qualified autonomous per-record evidence resolves every required state and applicable class.",
     "No human or CVAT action is a mandatory completion dependency."
   ],
-  "next_action": "Run qualified autonomous per-record semantic and visual resolution, bounded repair where needed, and immutable outcome recording for the 90 target contracts."
+  "next_action": "Generate candidates and ownership, materialize canonical v2 target contracts, then run qualified autonomous semantic and visual resolution, bounded repair, and immutable outcome recording for the 90 coverage targets."
 }

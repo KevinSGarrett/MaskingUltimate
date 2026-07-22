@@ -39,7 +39,7 @@ def main() -> int:
             {
                 "status": document["selection_status"],
                 "images": document["image_count"],
-                "targets": document["target_contract_count"],
+                "coverage_targets": document["coverage_target_count"],
                 "resolved_states": document["resolved_states"],
                 "pilot_complete": document["pilot_complete"],
                 "self_sha256": document["self_sha256"],

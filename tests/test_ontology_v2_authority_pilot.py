@@ -47,12 +47,12 @@ def _manifest(tmp_path):
                 .hexdigest(),
                 "split_group_id": f"group-{index}",
                 "mask_truth_authority": False,
-                "target_contracts": targets,
+                "coverage_targets": targets,
             }
         )
     # Ensure the global class vocabulary is exact even though each row is bounded.
     for index, label in enumerate(labels):
-        images[index]["target_contracts"].append(
+        images[index]["coverage_targets"].append(
             {
                 "canonical_label": label,
                 "requested_state": "visible",
@@ -77,7 +77,7 @@ def _manifest(tmp_path):
         "image_count": 24,
         "maskedwarehouse_image_count": 20,
         "reference_image_count": 4,
-        "target_contract_count": sum(len(row["target_contracts"]) for row in images),
+        "coverage_target_count": sum(len(row["coverage_targets"]) for row in images),
         "requested_states": sorted(REQUIRED_PILOT_STATES),
         "requested_appended_classes": sorted(labels),
         "resolved_states": [],
@@ -108,7 +108,7 @@ def test_real_pilot_verifier_accepts_selection_without_promoting_authority(tmp_p
             "mask_truth",
         ),
         (
-            lambda value: value["images"][0]["target_contracts"][0].update(
+            lambda value: value["images"][0]["coverage_targets"][0].update(
                 semantic_positive_authority=True
             ),
             "promoted",

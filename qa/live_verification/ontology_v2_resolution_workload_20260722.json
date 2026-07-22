@@ -1,19 +1,19 @@
 {
-  "schema_version": "maskfactory.live_verification.ontology_v2_resolution_workload.v1",
+  "schema_version": "maskfactory.live_verification.ontology_v2_resolution_workload.v2",
   "captured_at_utc": "2026-07-22T19:31:00Z",
   "item_id": "MF-P1-12.09",
   "status": "STATIC_PASS_QUEUED_NO_AUTHORITY",
   "pilot_manifest_path": "configs/ontology_v2_authority_pilot.generated.json",
-  "pilot_manifest_file_sha256": "37c538ed41f294b06f46116e37ac19a5240c6a1fe2340c8d085506956ebf9158",
-  "pilot_manifest_self_sha256": "22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101",
+  "pilot_manifest_file_sha256": "f6d8e4220922d81083c61950facfdaed5eeae9a297e49c028eec0dbb39e18f82",
+  "pilot_manifest_self_sha256": "380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628",
   "workload_path": "configs/ontology_v2_resolution_workload.generated.json",
-  "workload_file_sha256": "7c48a88e199a796e1b57027b13424a931bef252ca2a5bf87f4227ccb136f4284",
-  "workload_self_sha256": "fd0ac903984f72973d5937abae6116b9d08a9aa53690acac15210ce7f89ff999",
+  "workload_file_sha256": "a0479c9daf3282fb3792f6279cba0cc6a31569696adebb56312707cda5273ff2",
+  "workload_self_sha256": "3f8d9eca7027da36cb551972a71da69ed9c1004881856219e331aa1aee877147",
   "counts": {
-    "pilot_target_contracts": 90,
+    "pilot_coverage_targets": 90,
     "work_units": 90,
     "unique_work_unit_ids": 90,
-    "unique_target_bindings": 90,
+    "unique_coverage_target_bindings": 90,
     "queued": 90,
     "completed": 0,
     "failed": 0
@@ -26,13 +26,15 @@
     "source encoded and decoded-pixel SHA-256",
     "split group",
     "local and RunPod source paths",
-    "target contract and target-contract SHA-256",
-    "per-image target ordinal"
+    "coverage target and coverage-target SHA-256",
+    "per-image coverage-target ordinal"
   ],
   "required_stage_order": [
     "source_identity",
-    "target_contract_validation",
+    "coverage_target_validation",
     "provider_proposals",
+    "owner_and_candidate_binding",
+    "canonical_target_contract_materialization",
     "deterministic_hard_qa",
     "qualified_primary_visual_review",
     "independent_family_juror_review",
@@ -43,20 +45,21 @@
   "validation": {
     "closed_workload_verifier": "PASS_QUEUED_NO_AUTHORITY",
     "deterministic_rebuild": "PASS",
-    "focused_and_adjacent_pytest": "71 passed",
+    "focused_and_adjacent_pytest": "92 passed after contract-vocabulary correction",
     "ruff": "PASS",
     "black": "PASS",
     "negative_fixtures": [
       "completion overclaim",
       "authority escalation",
       "premature complete status",
-      "target-contract hash drift",
+      "coverage-target hash drift",
       "population truncation",
       "pilot revision mismatch"
     ]
   },
   "honest_non_claims": [
     "Queue membership is not semantic review, visual approval, mask truth, gold, or certification.",
+    "A coverage target is not a canonical v2 target contract and cannot be passed to a critic.",
     "No provider, critic, repair, or certificate execution is claimed by this artifact.",
     "The ontology-v2 authority pilot remains incomplete.",
     "Human or CVAT review is not a mandatory dependency."

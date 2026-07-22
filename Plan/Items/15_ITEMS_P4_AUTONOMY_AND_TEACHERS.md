@@ -7,6 +7,10 @@
 
 Goal: earn selective autonomy through measured, hash-bound evidence while keeping deterministic vetoes and residual routing fail-closed.
 
+## MF-P4-11.25-.26 - Semantic package authority and bulk requalification addendum (spec: 25 sections 7-9)
+- [ ] MF-P4-11.25 Require package-specific semantic label/pixel alignment from a current primary critic plus independent-family juror before autonomous package freeze and training; bind exact source, final mask set, every active label/mask, label-aware panels, deterministic QA, quorum, and report hashes, and quarantine legacy packages missing either semantic or quorum binding without rewriting them - Verify: wrong-label consensus, all-pass structural QA, missing/stale/same-family critic, hard-veto, incomplete-label, and hash-drift fixtures all fail closed - Blocked by: MF-P4-11.18, MF-P4-11.19, MF-P4-11.21 - HARD BLOCKER
+- [ ] MF-P4-11.26 Run semantic requalification in deterministic bulk batches by default across eligible MaskFactory packages, qualified MaskedWarehouse labels/masks, and reference-library retrieval cases; automatically accept exact matches, publish unambiguous relabels only as new immutable versions, continue past malformed/uncertain cases, and emit compact summary/exception reports with human review optional - Verify: batch planner is deterministic, every case/panel/mask is hash-bound, required primary-plus-independent roles are explicit, one malformed case does not stop other cases, and no frozen package is mutated - Blocked by: MF-P4-11.21, MF-P4-11.25 - HARD BLOCKER
+
 ## MF-P4-09 — Ontology-v2 QA and calibration (spec: 18 checklist F)
 - [ ] MF-P4-09.01 Implement QC-V2-001 through QC-V2-010 and QC-V2-012; keep retired QC-V2-011 absent · Verify: QA registry/tests cover exactly the eleven active checks and reject undeclared additions · Blocked by: MF-P1-11.02 · HARD BLOCKER
 - [ ] MF-P4-09.02 Seed a good case and defects for every active v2 check · Verify: each defect trips exactly its intended QC and good fixture passes · Blocked by: MF-P4-09.01

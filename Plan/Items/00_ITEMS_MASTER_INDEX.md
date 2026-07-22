@@ -9,7 +9,7 @@ Later governed specs 18–22 and the SAM 3.1 handoff are imported into the same 
 source-to-item map is `TRACEABILITY_18_22_SAM31.md`; doc 18's original 70-entry checklist remains
 an evidence source, not a separate status system.
 
-**Total items: 831** across 21 checklist files (including profile-scoped phase exits and the required
+**Total items: 833** across 21 checklist files (including profile-scoped phase exits and the required
 doc-24 core exit). No legacy phase exit is global completion authority.
 
 ## File Map
@@ -30,7 +30,7 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md | P1 ontology-v2 and truth authority | 36 | v2 generator/migration/CVAT, four truth tiers |
 | 13_ITEMS_P2_PROVIDER_MODERNIZATION.md | P2 provider-neutral modernization | 30 | v2 drafting, proposal diversity, disagreement maps, bounded repair, SAM 3.1/provider benchmark matrix |
 | 14_ITEMS_P3_MODERN_SPECIALISTS.md | P3 modern specialists | 10 | measured pose/geometry/silhouette/specialist challengers |
-| 15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md | P4 teachers/autonomy | 43 | v2 QA, evidence-qualified visual critics, cloud incremental value, certification/audit/revocation |
+| 15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md | P4 teachers/autonomy | 45 | v2 QA, evidence-qualified visual critics, cloud incremental value, certification/audit/revocation |
 | 16_ITEMS_P5_CERTIFIED_TRAINING.md | P5 certified training | 22 | v2 training, tier weights, hard-bucket-safe promotion |
 | 17_ITEMS_P6_MODERN_SERVING.md | P6 modern serving | 15 | v2 ComfyUI/API, provider-neutral serving, safe CVAT publication |
 | 18_ITEMS_P7_CURRENCY_OPERATIONS.md | P7 currency/autonomous operations | 20 | v2 activation, critic currency, RunPod asset durability, recurring reviews, revised headline evidence |

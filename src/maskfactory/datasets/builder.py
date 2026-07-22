@@ -691,12 +691,27 @@ def _package_truth(manifest: dict[str, Any], *, policy: dict[str, TruthTierPolic
             "pipeline_fingerprint",
             "evidence_sha256",
             "final_mask_set_sha256",
+            "semantic_alignment_report_sha256",
+            "critic_quorum_sha256",
         }
         if not isinstance(certification, dict) or not required <= set(certification):
             raise ValueError("autonomous certified truth lacks certificate-bound provenance")
         certificates = certification.get("certificates")
         if not isinstance(certificates, list) or not certificates:
             raise ValueError("autonomous certified truth has no risk certificates")
+        for field in (
+            "evidence_sha256",
+            "final_mask_set_sha256",
+            "semantic_alignment_report_sha256",
+            "critic_quorum_sha256",
+        ):
+            value = certification.get(field)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise ValueError(f"autonomous certified truth has invalid {field} binding")
         expected_weight = policy[tier].training_weight
     elif tier == WEIGHTED_PSEUDO_LABEL:
         if partition != "train":

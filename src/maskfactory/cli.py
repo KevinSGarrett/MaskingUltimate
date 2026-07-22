@@ -10085,6 +10085,58 @@ def package(
     click.echo(f"approved and frozen: {image_id}")
 
 
+@main.command("autonomous-semantic-requalification-plan")
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    required=True,
+)
+@click.option("--batch-size", type=click.IntRange(min=1, max=128), default=32)
+def autonomous_semantic_requalification_plan_command(
+    packages_root: Path,
+    output: Path,
+    batch_size: int,
+) -> None:
+    """Plan one bulk, label-aware critic pass over autonomous packages."""
+
+    from .autonomy.package_semantic_alignment import (
+        PackageSemanticAlignmentError,
+        build_semantic_requalification_plan,
+    )
+
+    try:
+        plan = build_semantic_requalification_plan(
+            packages_root,
+            batch_size=batch_size,
+        )
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(
+            json.dumps(plan, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    except (OSError, PackageSemanticAlignmentError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "status": "planned",
+                "plan_sha256": plan["plan_sha256"],
+                "case_count": plan["case_count"],
+                "batch_count": len(plan["batches"]),
+                "exception_count": plan["exception_count"],
+                "output": str(output),
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @main.command("autonomous-certify-package")
 @click.argument("image_id")
 @click.option("--instance", default="p0", show_default=True)
@@ -10099,6 +10151,25 @@ def package(
 @click.option("--pipeline-fingerprint", required=True)
 @click.option(
     "--evidence", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
+)
+@click.option(
+    "--semantic-alignment",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Package-specific label/pixel alignment report from a qualified critic quorum.",
+)
+@click.option(
+    "--critic-role-certificate",
+    "critic_role_certificate_paths",
+    multiple=True,
+    required=True,
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+)
+@click.option(
+    "--critic-catalog",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/visual_critic_catalog.yaml"),
+    show_default=True,
 )
 @click.option("--training-loss-weight", type=click.FloatRange(min=0.5, max=0.75), default=0.65)
 @click.option(
@@ -10121,6 +10192,9 @@ def autonomous_certify_package_command(
     context: str,
     pipeline_fingerprint: str,
     evidence: Path,
+    semantic_alignment: Path,
+    critic_role_certificate_paths: tuple[Path, ...],
+    critic_catalog: Path,
     training_loss_weight: float,
     packages_root: Path,
     database: Path,
@@ -10134,12 +10208,19 @@ def autonomous_certify_package_command(
         certificates = tuple(
             json.loads(path.read_text(encoding="utf-8")) for path in certificate_paths
         )
+        critic_role_certificates = tuple(
+            json.loads(path.read_text(encoding="utf-8")) for path in critic_role_certificate_paths
+        )
+        critic_catalog_document = yaml.safe_load(critic_catalog.read_text(encoding="utf-8"))
         certify_autonomous_package(
             package_root,
             certificates=certificates,
             context=context,
             pipeline_fingerprint=pipeline_fingerprint,
             evidence_path=evidence,
+            semantic_alignment_path=semantic_alignment,
+            critic_role_certificates=critic_role_certificates,
+            critic_catalog=critic_catalog_document,
             training_loss_weight=training_loss_weight,
         )
         persist_image_progress(database, image_id, "approved_gold")

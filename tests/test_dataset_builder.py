@@ -12,7 +12,9 @@ from maskfactory.cli import main
 from maskfactory.datasets.active_learning import run_active_learning
 from maskfactory.datasets.builder import (
     PackageTruth,
+    _package_truth,
     _truth_aware_splits,
+    _truth_tier_policy,
     build_dataset,
     mark_dataset_exported,
 )
@@ -50,6 +52,23 @@ def _reference_gate(tmp_path: Path, monkeypatch) -> Path:
         "maskfactory.datasets.builder.evaluate_benchmark_training_isolation", evaluate
     )
     return database
+
+
+def test_legacy_autonomous_package_without_semantic_quorum_is_training_ineligible() -> None:
+    manifest = {
+        "truth_tier": "autonomous_certified_gold",
+        "truth_partition": "train",
+        "training_loss_weight": 0.65,
+        "certification": {
+            "certificates": [{"certificate_sha256": "a" * 64}],
+            "pipeline_fingerprint": "legacy-caa",
+            "evidence_sha256": "b" * 64,
+            "final_mask_set_sha256": "c" * 64,
+        },
+    }
+
+    with pytest.raises(ValueError, match="lacks certificate-bound provenance"):
+        _package_truth(manifest, policy=_truth_tier_policy())
 
 
 def test_hash_split_duplicate_groups_synthetic_and_hard_override() -> None:
@@ -524,6 +543,8 @@ def test_builder_enforces_truth_tier_weights_volume_and_holdout_isolation(
         "pipeline_fingerprint": "fixture-pipeline",
         "evidence_sha256": "b" * 64,
         "final_mask_set_sha256": "c" * 64,
+        "semantic_alignment_report_sha256": "d" * 64,
+        "critic_quorum_sha256": "e" * 64,
     }
     package(
         "img_000000000014",

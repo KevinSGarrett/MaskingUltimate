@@ -199,6 +199,22 @@ STRICT gate is mandatory before accepting / promoting when masks/panels exist fo
 4. Mode B / champion promotion visual smoke (when applicable)
 5. Hand + clothing climbs in flight
 
+### Bulk semantic review is mandatory by default
+- After a diagnostic sample exposes a corpus-level issue, process the eligible
+  population in deterministic hash-bound batches rather than interrupting Kevin
+  for one package at a time.
+- Generate label-aware panels/contact sheets automatically; require the current
+  promoted primary high-capability visual critic and an independent-family
+  juror for every semantic pass.
+- Accept exact label/pixel matches automatically. Relabel only into a new
+  immutable package version when evidence is unambiguous; otherwise reject or
+  abstain. Never rewrite a frozen package.
+- One malformed or uncertain case becomes an exception row and cannot stop the
+  rest of the batch. Report a compact summary and exceptions only. Human review
+  is an optional exception route, never the default throughput dependency.
+- `C:\Comfy_UI_Main\MaskedWarehouse`, `F:\Reference_Images`, and their exact
+  RunPod mirrors must feed this bulk lane under their distinct authority rules.
+
 Evidence must log: **model id, prompt hash, response, panel hashes**.
 
 ### GPU coordination (RunPod)

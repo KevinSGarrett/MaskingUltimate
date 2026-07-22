@@ -11735,3 +11735,29 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205` (10/10 checks).
   The snapshot records 489,638 MaskedWarehouse files and 3,711 reference-library files. Exact new
   per-file local/remote sampling and database/manifest hash reconciliation remains explicitly open.
+
+## 2026-07-22 - Semantic authority leak contained and bulk review made default
+
+- Audited all 220 frozen CAA packages on the persistent RunPod volume. All 220 retained readable,
+  hash-consistent files and structural QA pass reports, but all 220 declared `torso`, and none
+  contained package-specific semantic-alignment or independent-critic quorum bindings.
+- Visually inspected `img_5c0e973a6230`: its mask geometry is a good head/hair/face silhouette,
+  but the immutable package declares it as `torso` / `chest_upper_torso`. The defect is the anatomy
+  label-to-pixel binding, not the silhouette quality.
+- Preserved every historical package and quarantined legacy packages missing either binding from
+  training and positive critic calibration. New autonomous freeze now requires exact source, final
+  mask set, active label/mask, panel, deterministic-QA, semantic report, and current independent
+  critic quorum hashes.
+- Made semantic requalification bulk by default: deterministic batches, automatic label-aware
+  panels, current primary plus independent-family review, automatic exact-match acceptance,
+  immutable-version-only relabeling, abstain/reject for uncertainty, continue-on-exception, compact
+  summary output, and optional rather than default human review.
+- `C:\Comfy_UI_Main\MaskedWarehouse`, `F:\Reference_Images`, and their RunPod mirrors are durable
+  inputs to the bulk lane under their distinct authority rules.
+- The live InternVL3.5 8B real-corpus juror qualification failed honestly on valid-mask pass rate
+  (0.0) while defect recall was 1.0; it remains unpromoted and cannot authorize these packages.
+- The committed bulk planner generated one 220-case RunPod plan as seven deterministic batches of
+  32 or fewer with zero planning exceptions. Plan SHA-256:
+  `73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc`. No critic provider was
+  started by planning; execution remains pending qualified primary and independent roles.
+- Evidence: `qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json`.

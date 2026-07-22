@@ -136,6 +136,8 @@ Completed/open state is migrated from the checklist only when its evidence satis
 | §9 regression and release evidence | `MF-P4-11.23`; `MF-P7-07.11`, `.14` |
 | §§10–11 AWS read-only inventory and persistent RunPod migration | `MF-P0-17.16`–`.19`; `MF-P7-07.12`–`.14` |
 
+| Doc 25 package semantic alignment and bulk-by-default requalification addendum | `MF-P4-11.25`-`.26` |
+
 ## Deliberate reuse rather than duplication
 
 - Existing `MF-P2-09.*` remains the governed auxiliary-specialist implementation; `MF-P2-11.*` adds provider-neutral modern challengers and the new benchmark matrix.

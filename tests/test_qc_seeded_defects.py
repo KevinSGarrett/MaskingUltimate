@@ -9,6 +9,9 @@ import pytest
 from PIL import Image
 
 from maskfactory.autonomy.calibration import verify_human_gold_audit_record
+from maskfactory.autonomy.package_semantic_alignment import (
+    semantic_alignment_report_sha256,
+)
 from maskfactory.derive import derive_package
 from maskfactory.fusion.mapbuild import export_binaries
 from maskfactory.io.png_strict import read_mask, write_binary_mask, write_label_map
@@ -255,7 +258,7 @@ def test_clean_package_requires_confirmation_then_freezes_hashes_and_dvc_adds(
 
 
 def test_autonomous_certification_freezes_explicit_machine_truth_without_human_relabel(
-    clean_package: Path, tmp_path: Path
+    clean_package: Path, tmp_path: Path, monkeypatch
 ) -> None:
     package = tmp_path / "autonomous"
     shutil.copytree(clean_package, package)
@@ -288,6 +291,19 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
     ).hexdigest()
     evidence = tmp_path / "autonomy_evidence.json"
     evidence.write_text('{"hard_gates":"pass"}\n', encoding="utf-8")
+    semantic_alignment_document = {"schema_version": "fixture"}
+    semantic_report_sha256 = semantic_alignment_report_sha256(semantic_alignment_document)
+    semantic_alignment_document["report_sha256"] = semantic_report_sha256
+    semantic_alignment = tmp_path / "semantic_alignment.json"
+    semantic_alignment.write_text(json.dumps(semantic_alignment_document), encoding="utf-8")
+    monkeypatch.setattr(
+        "maskfactory.packager.validate_package_semantic_alignment",
+        lambda *_args, **_kwargs: {
+            "status": "pass",
+            "report_sha256": semantic_report_sha256,
+            "quorum_sha256": "e" * 64,
+        },
+    )
     dvc_calls = []
 
     result = certify_autonomous_package(
@@ -296,6 +312,9 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
         context="solo",
         pipeline_fingerprint="pipeline-v2",
         evidence_path=evidence,
+        semantic_alignment_path=semantic_alignment,
+        critic_role_certificates=({"certificate_sha256": "f" * 64},),
+        critic_catalog={"schema_version": "fixture"},
         dvc_add=dvc_calls.append,
         now=lambda: datetime.fromisoformat(issued),
     )
@@ -310,14 +329,25 @@ def test_autonomous_certification_freezes_explicit_machine_truth_without_human_r
     assert sealed["parts"]["left_forearm"]["status"] != "human_approved_gold"
     assert sealed["review"]["reviewer"] is None
     assert sealed["certification"]["certificates"][0]["risk_bucket"] == "small_parts"
+    assert sealed["certification"]["semantic_alignment_report_sha256"] == semantic_report_sha256
+    assert sealed["certification"]["critic_quorum_sha256"] == "e" * 64
     freeze = json.loads((package / ".maskfactory_frozen.json").read_text(encoding="utf-8"))
     assert freeze["authority"] == "autonomous_certified_gold"
     assert verify_packages(package)[0].passed
 
 
-@pytest.mark.parametrize("failure_mode", ["dvc_exception", "evidence_drift", "mask_drift"])
+@pytest.mark.parametrize(
+    "failure_mode",
+    [
+        "dvc_exception",
+        "evidence_drift",
+        "semantic_drift",
+        "semantic_content_drift",
+        "mask_drift",
+    ],
+)
 def test_autonomous_certification_interruption_or_hash_drift_restores_exact_package(
-    clean_package: Path, tmp_path: Path, failure_mode: str
+    clean_package: Path, tmp_path: Path, failure_mode: str, monkeypatch
 ) -> None:
     package = tmp_path / f"autonomous_{failure_mode}"
     shutil.copytree(clean_package, package)
@@ -350,12 +380,37 @@ def test_autonomous_certification_interruption_or_hash_drift_restores_exact_pack
     ).hexdigest()
     evidence = tmp_path / f"evidence_{failure_mode}.json"
     evidence.write_text('{"hard_gates":"pass"}\n', encoding="utf-8")
+    semantic_alignment_document = {"schema_version": "fixture"}
+    semantic_report_sha256 = semantic_alignment_report_sha256(semantic_alignment_document)
+    semantic_alignment_document["report_sha256"] = semantic_report_sha256
+    semantic_alignment = tmp_path / f"semantic_{failure_mode}.json"
+    semantic_alignment.write_text(json.dumps(semantic_alignment_document), encoding="utf-8")
+    monkeypatch.setattr(
+        "maskfactory.packager.validate_package_semantic_alignment",
+        lambda *_args, **_kwargs: {
+            "status": "pass",
+            "report_sha256": semantic_report_sha256,
+            "quorum_sha256": "e" * 64,
+        },
+    )
 
     def seeded_failure(_path: Path) -> None:
         if failure_mode == "dvc_exception":
             raise RuntimeError("seeded autonomous DVC interruption")
         if failure_mode == "evidence_drift":
             evidence.write_text('{"hard_gates":"drifted"}\n', encoding="utf-8")
+        elif failure_mode == "semantic_drift":
+            semantic_alignment.write_text(json.dumps({"report_sha256": "0" * 64}), encoding="utf-8")
+        elif failure_mode == "semantic_content_drift":
+            semantic_alignment.write_text(
+                json.dumps(
+                    {
+                        "report_sha256": semantic_report_sha256,
+                        "unbound_change": True,
+                    }
+                ),
+                encoding="utf-8",
+            )
         else:
             mask.write_bytes(b"seeded post-QA mask drift")
 
@@ -367,6 +422,9 @@ def test_autonomous_certification_interruption_or_hash_drift_restores_exact_pack
             context="solo",
             pipeline_fingerprint="pipeline-v2",
             evidence_path=evidence,
+            semantic_alignment_path=semantic_alignment,
+            critic_role_certificates=({"certificate_sha256": "f" * 64},),
+            critic_catalog={"schema_version": "fixture"},
             dvc_add=seeded_failure,
             now=lambda: datetime.fromisoformat("2026-07-14T12:00:00+00:00"),
         )

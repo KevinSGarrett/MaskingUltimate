@@ -30,6 +30,31 @@ assets from AWS to RunPod.
    coverage, retrieval, benchmark, and hard-case selection. It supplies no
    mask truth by itself; pair it only with independently qualified masks when a
    labeled case is required.
+9. Before autonomous package freeze or training admission, require a
+   package-specific semantic-alignment report bound to the exact source, final
+   mask set, every active label/mask, label-aware panels, deterministic QA, and
+   current primary plus independent-family critic quorum.
+10. Preserve but quarantine any legacy package missing either the semantic
+    report hash or quorum hash. Never rewrite a frozen version; publish a new
+    immutable version only after exact requalification.
+
+## 1.1 Bulk semantic review is the default
+
+1. Plan eligible packages in deterministic, hash-bound batches; do not pause
+   the project for one package at a time after a diagnostic sample identifies a
+   population-level issue.
+2. Generate label-aware panels and contact sheets automatically and run the
+   promoted primary high-capability critic plus an independent-family juror on
+   every case.
+3. Accept exact label/pixel matches automatically. Relabel only by publishing a
+   new immutable package version when the evidence is unambiguous. Reject or
+   abstain every uncertain, incomplete, or authority-invalid result.
+4. Continue the remaining batch when one case fails. Return a compact summary
+   and exception report; human review is optional exception handling, not the
+   default throughput path.
+5. Feed qualified MaskedWarehouse labels and masks into their permitted lanes,
+   and use the reference library for retrieval, coverage, hard-case selection,
+   and benchmarks. Reference selection alone never creates mask truth.
 
 ## 2. Candidate generation and repair
 

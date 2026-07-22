@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-22T06:20:00Z",
+  "authority_claimed": false,
+  "status": "fail_closed_quarantine_and_bulk_requalification_required",
+  "population": {
+    "root": "/workspace/maskfactory/data/packages_caa_iso220",
+    "inventory_sha256": "d26fef17e3fd013e6595f9dffbc46e94b87f46876643fdc030d83cc660664dee",
+    "inventory_file_sha256": "e50873888fe95d0e58d6a61c472cb5c5d06b8f29b1e683a6168f1dc9c0fb0f57",
+    "package_count": 220,
+    "truth_tiers": {
+      "autonomous_certified_gold": 220
+    },
+    "declared_active_labels": {
+      "torso": 220
+    },
+    "source_families": {
+      "CelebAMask-HQ": 219,
+      "other": 1
+    },
+    "structural_qa_outcomes": {
+      "pass": 220
+    },
+    "unreadable_document_count": 0,
+    "source_or_mask_hash_mismatch_count": 0,
+    "missing_semantic_alignment_binding_count": 220,
+    "missing_independent_critic_quorum_binding_count": 220
+  },
+  "diagnostic_sample": {
+    "image_id": "img_5c0e973a6230",
+    "source_sha256": "3537e8fb0dfedf54213cd17b7535ad67be30812a0b2305f136f70f65e1034691",
+    "mask_sha256": "a3b7f62fd03ad869ebf399b9b8e56141b6db40f794dbb24762704b31d670d41a",
+    "panel_sha256": "28a1863f05466dd584336d48e8686fa3333bc7e1487c6df168829581bbd48f28",
+    "declared_lifecycle_label": "torso",
+    "ontology_paint_label": "chest_upper_torso",
+    "visual_geometry_finding": "The silhouette and its boundary are visually good for the woman's head, hair, face, and adjacent neck/shoulder pixels.",
+    "semantic_finding": "The selected pixels do not represent the declared torso or chest_upper_torso anatomy label.",
+    "disposition": "preserve_geometry_but_withhold_gold_and_training_authority_until_new_semantically_correct_version"
+  },
+  "real_corpus_critic_qualification": {
+    "model_id": "internvl3_5_8b_bf16",
+    "family_id": "internvl",
+    "role_id": "independent_juror",
+    "model_revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79",
+    "runtime_sha256": "5010000fc3b97bb4a00c29104dd85628429886a74f3bbd1ba65633ab9122aea4",
+    "corpus_sha256": "1fab174a5df8bc2f5ffc649522e16dada8348c955435d7e794c5ad0d3903d1c8",
+    "report_sha256": "b981d28355e6bc49c250856ffada295bfd6ef884f8d77c14efbfba37c10fbbe6",
+    "status": "fail",
+    "failures": [
+      "valid_mask_pass_rate_below_minimum"
+    ],
+    "metrics": {
+      "valid_mask_pass_rate": 0.0,
+      "defect_recall": 1.0,
+      "serious_false_pass_rate": 0.0,
+      "precision": 0.8333333333333334,
+      "schema_compliance_rate": 1.0,
+      "context_binding_rate": 1.0,
+      "deterministic_replay_rate": 1.0,
+      "p95_latency_ms": 2287.174232304096,
+      "peak_vram_fraction": 0.3743182743182743
+    }
+  },
+  "enforced_policy": {
+    "legacy_package_disposition": "preserve_immutable_but_quarantine_from_training_and_positive_critic_calibration",
+    "future_freeze_requirement": "exact_package_semantic_alignment_plus_current_primary_and_independent_family_quorum",
+    "execution_mode": "bulk_by_default",
+    "default_batch_size": 32,
+    "operator_interruption_policy": "compact_exception_report_only",
+    "human_review_policy": "optional_exception_path_not_default_throughput",
+    "relabel_policy": "new_immutable_package_version_only",
+    "required_corpora": [
+      "C:\\Comfy_UI_Main\\MaskedWarehouse",
+      "F:\\Reference_Images",
+      "/workspace/assets/MaskedWarehouse",
+      "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images"
+    ]
+  },
+  "runpod_bulk_plan": {
+    "output": "/workspace/maskfactory/runtime_artifacts/semantic_requalification_f3d6a4d4b/caa_iso220_bulk_plan.json",
+    "file_sha256": "9780ede1cd3b99931f53211c358e35a862f8c7e2bc3a1a0fda6717ab273f33d8",
+    "plan_sha256": "73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc",
+    "case_count": 220,
+    "batch_size": 32,
+    "batch_count": 7,
+    "exception_count": 0,
+    "provider_started": false
+  },
+  "completion_boundary": {
+    "semantic_gate_implemented": true,
+    "bulk_plan_contract_implemented": true,
+    "bulk_plan_generated_on_runpod": true,
+    "all_220_requalified": false,
+    "primary_and_independent_roles_promoted": false,
+    "note": "Implementation and quarantine are real; no package is relabeled or re-certified until the current role-qualified critics execute the deterministic bulk plan."
+  }
+}

@@ -132,6 +132,8 @@
         "pipeline_fingerprint": { "type": "string", "minLength": 1 },
         "evidence_sha256": { "$ref": "#/$defs/sha256" },
         "final_mask_set_sha256": { "$ref": "#/$defs/sha256" },
+        "semantic_alignment_report_sha256": { "$ref": "#/$defs/sha256" },
+        "critic_quorum_sha256": { "$ref": "#/$defs/sha256" },
         "certified_at": { "$ref": "#/$defs/timestamp" }
       }
     },

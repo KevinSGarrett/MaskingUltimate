@@ -19,6 +19,12 @@ from PIL import Image
 
 from . import __version__
 from .autonomy.calibration import verify_autonomy_certificate
+from .autonomy.package_semantic_alignment import (
+    PackageSemanticAlignmentError,
+    final_mask_set_sha256,
+    semantic_alignment_report_sha256,
+    validate_package_semantic_alignment,
+)
 from .dvc_runtime import DvcRuntimeError, run_dvc
 from .inpaint import derive_inpaint
 from .io.hashing import sha256_file, sha256_file_map
@@ -114,6 +120,9 @@ def certify_autonomous_package(
     context: str,
     pipeline_fingerprint: str,
     evidence_path: Path,
+    semantic_alignment_path: Path,
+    critic_role_certificates: tuple[dict[str, Any], ...],
+    critic_catalog: dict[str, Any],
     training_loss_weight: float = 0.65,
     dvc_add: DvcAdd | None = None,
     now: Callable[[], datetime] | None = None,
@@ -127,6 +136,17 @@ def certify_autonomous_package(
     evidence_path = Path(evidence_path)
     if not evidence_path.is_file():
         raise FileNotFoundError(f"autonomous certification evidence is missing: {evidence_path}")
+    semantic_alignment_path = Path(semantic_alignment_path)
+    if not semantic_alignment_path.is_file():
+        raise FileNotFoundError(
+            "autonomous semantic-alignment evidence is missing: " f"{semantic_alignment_path}"
+        )
+    try:
+        semantic_alignment = json.loads(semantic_alignment_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("autonomous semantic-alignment evidence is unreadable") from exc
+    if not critic_role_certificates:
+        raise ValueError("autonomous certification requires critic role certificates")
     if not certificates:
         raise ValueError("autonomous certification requires one or more risk certificates")
     manifest = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))
@@ -139,6 +159,7 @@ def certify_autonomous_package(
     }
     if not labels:
         raise ValueError("autonomous package has no certifiable mask labels")
+    validation_time = (now or (lambda: datetime.now(UTC)))().astimezone(UTC)
     covered: set[str] = set()
     for certificate in certificates:
         risk_bucket = certificate.get("risk_bucket")
@@ -150,7 +171,7 @@ def certify_autonomous_package(
                 instance_context=str(certificate.get("instance_context", context)),
                 risk_bucket=str(risk_bucket),
                 pipeline_fingerprint=pipeline_fingerprint,
-                now=(now or (lambda: datetime.now(UTC)))(),
+                now=validation_time,
             )
             if not valid:
                 raise ValueError(f"autonomous certificate rejected for {label}: {reason}")
@@ -170,7 +191,19 @@ def certify_autonomous_package(
         if failed:
             _bounce(package_root, results)
             raise PackageBlockedError(results, _failing_panels(package_root, failed))
-        timestamp = (now or (lambda: datetime.now(UTC)))().astimezone(UTC)
+        try:
+            semantic_binding = validate_package_semantic_alignment(
+                semantic_alignment,
+                package_root=package_root,
+                manifest=json.loads((package_root / "manifest.json").read_text(encoding="utf-8")),
+                deterministic_results=results,
+                critic_certificates=critic_role_certificates,
+                critic_catalog=critic_catalog,
+                now=validation_time,
+            )
+        except PackageSemanticAlignmentError as exc:
+            raise ValueError(f"autonomous semantic alignment rejected: {exc}") from exc
+        timestamp = validation_time
         mask_set_sha256 = _final_mask_set_sha256(package_root)
         _stamp_autonomous_manifest(
             package_root,
@@ -178,6 +211,8 @@ def certify_autonomous_package(
             pipeline_fingerprint=pipeline_fingerprint,
             evidence_sha256=sha256_file(evidence_path),
             final_mask_set_sha256=mask_set_sha256,
+            semantic_alignment_report_sha256=semantic_binding["report_sha256"],
+            critic_quorum_sha256=semantic_binding["quorum_sha256"],
             training_loss_weight=float(training_loss_weight),
             timestamp=timestamp,
         )
@@ -201,6 +236,8 @@ def certify_autonomous_package(
                 "certificate_sha256s": sorted(
                     certificate["sha256"] for certificate in certificates
                 ),
+                "semantic_alignment_report_sha256": semantic_binding["report_sha256"],
+                "critic_quorum_sha256": semantic_binding["quorum_sha256"],
                 "policy": "immutable; corrections require a new mask version",
             },
         )
@@ -222,6 +259,13 @@ def certify_autonomous_package(
             )
         if _final_mask_set_sha256(package_root) != mask_set_sha256:
             raise RuntimeError("autonomous final mask set drifted during finalization")
+        current_semantic_alignment = json.loads(semantic_alignment_path.read_text(encoding="utf-8"))
+        if (
+            current_semantic_alignment.get("report_sha256") != semantic_binding["report_sha256"]
+            or semantic_alignment_report_sha256(current_semantic_alignment)
+            != semantic_binding["report_sha256"]
+        ):
+            raise RuntimeError("autonomous semantic-alignment evidence drifted during finalization")
     except BaseException:
         _restore_directory_snapshot(package_root, backup)
         raise
@@ -496,6 +540,8 @@ def _stamp_autonomous_manifest(
     pipeline_fingerprint: str,
     evidence_sha256: str,
     final_mask_set_sha256: str,
+    semantic_alignment_report_sha256: str,
+    critic_quorum_sha256: str,
     training_loss_weight: float,
     timestamp: datetime,
 ) -> None:
@@ -537,6 +583,8 @@ def _stamp_autonomous_manifest(
         "pipeline_fingerprint": pipeline_fingerprint,
         "evidence_sha256": evidence_sha256,
         "final_mask_set_sha256": final_mask_set_sha256,
+        "semantic_alignment_report_sha256": semantic_alignment_report_sha256,
+        "critic_quorum_sha256": critic_quorum_sha256,
         "certified_at": timestamp.isoformat(),
     }
     manifest["review"] = {
@@ -562,19 +610,7 @@ def _stamp_autonomous_manifest(
 
 def _final_mask_set_sha256(package_root: Path) -> str:
     manifest = json.loads((package_root / "manifest.json").read_text(encoding="utf-8"))
-    paths = [
-        package_root / name
-        for name in ("label_map_part.png", "label_map_material.png")
-        if (package_root / name).is_file()
-    ]
-    for entry in manifest.get("parts", {}).values():
-        relative = entry.get("mask_file") if isinstance(entry, dict) else None
-        if isinstance(relative, str) and (package_root / relative).is_file():
-            paths.append(package_root / relative)
-    file_map = sha256_file_map(package_root, paths)
-    return hashlib.sha256(
-        json.dumps(file_map, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
+    return final_mask_set_sha256(package_root, manifest)
 
 
 def _bounce(package_root: Path, results: tuple[QcResult, ...]) -> None:

@@ -195,6 +195,37 @@ panels, uncertainty map, measurements, proposal manifest, critic responses,
 repair lineage, target contract, QA report, operational certificate when
 earned, and exact source/output hashes. A VLM pass is never itself gold.
 
+Structural QA, statistical risk certification, and multi-provider pixel
+consensus do not prove that the selected pixels represent the declared anatomy
+label. Before autonomous freeze and before training consumption, every package
+must therefore carry a package-specific semantic-alignment report bound to the
+exact source, final mask set, every active label and mask, label-aware panels,
+deterministic QA, and a current primary-critic plus independent-family-juror
+quorum. Every active label must pass. Missing or incomplete coverage, defect,
+abstention, stale/revoked/same-family authority, hard veto, or hash drift
+rejects the package from autonomous gold and training use.
+
+Legacy frozen packages lacking `semantic_alignment_report_sha256` or
+`critic_quorum_sha256` remain immutable historical evidence but are
+quarantined from training and positive critic calibration until a new package
+version passes this gate. Do not rewrite or delete the legacy version. This
+prevents a geometrically good head, hair, or whole-person silhouette from
+becoming torso or other body-part truth merely because structural QA and model
+consensus passed.
+
+Semantic requalification is bulk by default. The system groups all eligible
+packages into deterministic hash-bound batches, renders label-aware panels and
+contact sheets, runs the promoted primary high-capability critic and an
+independent model over every case, automatically accepts exact label/pixel
+matches, creates a new immutable relabeled version only when both critics and
+hard QA support an unambiguous label, and otherwise rejects or abstains. A
+single malformed or uncertain case becomes an exception row and does not stop
+the remaining batch. Operator output is a compact batch summary plus exception
+report; human review is an optional exception path, never the default
+throughput dependency. `C:\Comfy_UI_Main\MaskedWarehouse` and
+`F:\Reference_Images` plus their exact RunPod mirrors feed this same bulk lane
+under their distinct truth-authority rules.
+
 Regression includes the accepted target plus protected invariants: unchanged
 identity/owner, untouched accepted regions, neighboring labels, materials,
 transforms, instance exclusivity, and prior known-good fixtures.

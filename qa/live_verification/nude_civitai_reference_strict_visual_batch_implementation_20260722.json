@@ -1,0 +1,58 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_reference_strict_visual_batch_implementation.v1",
+  "recorded_at": "2026-07-22T17:38:00Z",
+  "result": "STATIC_PASS_EXECUTABLE_LIVE_QUALIFIED_ROLES_AND_MASKS_PENDING",
+  "product_items": ["MF-P4-12.04", "MF-P4-12.05"],
+  "enforced_before_reviewer_execution": [
+    "hard_qc_record_pass",
+    "closed_target_contract_v2",
+    "encoded_and_canonical_decoded_source_identity",
+    "encoded_and_decoded_mask_identity",
+    "exact_person_owner",
+    "current_promoted_primary_visual_critic_certificate",
+    "current_promoted_independent_juror_certificate",
+    "independent_model_families",
+    "reviewer_model_family_and_runtime_match_certificate"
+  ],
+  "per_candidate_evidence": [
+    "full_context",
+    "source_crop",
+    "binary_mask",
+    "overlay",
+    "contour",
+    "neighbor_overlap"
+  ],
+  "fail_closed_controls": {
+    "contact_sheet_can_approve": false,
+    "hard_qc_can_be_overridden": false,
+    "invalid_json_after_retry": "STRICT_VISUAL_CRITIC_BLOCKED",
+    "reviewer_outage": "STRICT_VISUAL_CRITIC_BLOCKED",
+    "missing_v2_target_contract": "FAIL_BEFORE_MODEL_CALL",
+    "stale_role_certificate": "FAIL_BEFORE_MODEL_CALL",
+    "same_family_quorum": "FAIL_BEFORE_MODEL_CALL",
+    "reviewer_certificate_mismatch": "FAIL_BEFORE_MODEL_CALL",
+    "production_mask_authority": false,
+    "operational_certificates_issued": false,
+    "autonomous_certified_gold_created": false
+  },
+  "artifacts": {
+    "src/maskfactory/nude_reference_strict_visual_review.py": "0988e828faa894dbe5aa6e2bbfc9f22c40c91c770881a2e38d418467d8fb94d7",
+    "src/maskfactory/nude_batch_queue.py": "1d9bf165d9580323e03ee96c7c72f9834715aba4f85f5459cf3515e5d7e86c68",
+    "tests/test_nude_reference_mask_hard_qc.py": "0a84c8f2a561d0af6960832bdedb38d32a1ca60fad564aedc20d7d6ad6fcd8c7",
+    "tests/test_nude_batch_queue.py": "11b9b7cfa74f4e7058da3aa6528578023062b3d9d9d4b07cbbf9893a760d24ee"
+  },
+  "validation": {
+    "focused_and_adjacent_tests": 59,
+    "result": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "live_boundary": {
+    "live_generated_masks_reviewed": 0,
+    "qualified_primary_role_available": false,
+    "qualified_independent_juror_available": false,
+    "strict_visual_pass_count": 0,
+    "next_required_runtime": "Generate exact provider masks under shared GPU admission and qualify a real primary-plus-independent critic pair before invoking this batch stage."
+  }
+}

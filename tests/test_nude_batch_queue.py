@@ -27,6 +27,9 @@ from maskfactory.nude_record_qualification import (
 from maskfactory.nude_reference_mask_hard_qc import (
     build_reference_mask_hard_qc_stage_receipt,
 )
+from maskfactory.nude_reference_strict_visual_review import (
+    build_reference_strict_visual_stage_receipt,
+)
 from maskfactory.providers.disagreement import binary_mask_sha256
 
 
@@ -579,6 +582,50 @@ def test_reference_mask_hard_qc_checkpoint_is_idempotent_and_nonterminal(tmp_pat
     assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
     assert queue.summary(platform="runpod")["stage_evidence"] == {
         "reference_person_mask_hard_qc:sam2_1_large": 1
+    }
+
+
+def test_reference_strict_visual_checkpoint_is_idempotent_and_nonterminal(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="visual-worker")
+    assert lease is not None
+    provider = {
+        "provider_key": "sam2_1_large",
+        "role": "interactive_segmenter",
+        "model_family": "sam2",
+        "source_commit": "a" * 40,
+        "runtime_fingerprint": "b" * 64,
+        "contract_version": "1.0.0",
+    }
+    receipt = build_reference_strict_visual_stage_receipt(
+        provider=provider,
+        visual_review_sha256="c" * 64,
+        record={
+            "sample_id": "visual-sample",
+            "source_sha256": "d" * 64,
+            "status": "pass",
+            "blockers": [],
+            "candidate_reports": [],
+        },
+    )
+    receipt["sample_index"] = 0
+    first = queue.checkpoint_reference_strict_visual_review(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    replay = queue.checkpoint_reference_strict_visual_review(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    assert first == {"inserted": 1, "retained": 0, "terminal_progress_advanced": False}
+    assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
+    assert queue.summary(platform="runpod")["stage_evidence"] == {
+        "reference_person_strict_visual_review:sam2_1_large": 1
     }
 
 

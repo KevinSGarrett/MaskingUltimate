@@ -116,6 +116,7 @@ def run_s01(
         device=device,
     )
     detector_source = "yolo11m"
+    effective_confidence_min = confidence_min
     if not detections and fallback_checkpoint is not None:
         detections = infer_groundingdino_people(
             image_path,
@@ -129,11 +130,12 @@ def run_s01(
             hf_home=fallback_hf_home,
         )
         detector_source = "groundingdino_swint_ogc"
+        effective_confidence_min = min(fallback_box_threshold, fallback_text_threshold)
     return process_detections(
         image,
         detections,
         output_dir,
-        confidence_min=confidence_min,
+        confidence_min=effective_confidence_min,
         instance_min_area_pct=instance_min_area_pct,
         max_instances_per_image=max_instances_per_image,
         crowd_scene_threshold=crowd_scene_threshold,

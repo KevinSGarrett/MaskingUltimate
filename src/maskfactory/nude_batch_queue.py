@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
 
+from .nude_person_ownership import validate_person_ownership_stage_receipt
 from .nude_record_qualification import (
     validate_input_terminal_queue_payload,
     validate_nonacceptance_queue_payload,
@@ -106,6 +107,21 @@ class NudeBatchQueue:
                     shard_path TEXT NOT NULL,
                     event TEXT NOT NULL,
                     detail_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS record_stage_evidence (
+                    platform TEXT NOT NULL,
+                    sample_id TEXT NOT NULL,
+                    shard_path TEXT NOT NULL,
+                    sample_index INTEGER NOT NULL,
+                    stage TEXT NOT NULL,
+                    source_sha256 TEXT NOT NULL,
+                    evidence_sha256 TEXT NOT NULL,
+                    payload_sha256 TEXT NOT NULL,
+                    payload_json TEXT NOT NULL,
+                    recorded_at REAL NOT NULL,
+                    PRIMARY KEY(platform, sample_id, stage),
+                    UNIQUE(platform, shard_path, sample_index, stage),
+                    FOREIGN KEY(platform, shard_path) REFERENCES shards(platform, shard_path)
                 );
                 """
             )
@@ -407,6 +423,83 @@ class NudeBatchQueue:
             outcomes=validated,
         )
 
+    def checkpoint_person_ownership(
+        self,
+        *,
+        platform: str,
+        shard_path: str,
+        lease_token: str,
+        receipts: Sequence[Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        """Persist replayable ownership work without advancing terminal progress."""
+
+        if not receipts:
+            raise NudeBatchQueueError("empty ownership checkpoint")
+        validated = []
+        for receipt in receipts:
+            sample_index = receipt.get("sample_index")
+            if (
+                not isinstance(sample_index, int)
+                or isinstance(sample_index, bool)
+                or sample_index < 0
+            ):
+                raise NudeBatchQueueError("ownership sample_index invalid")
+            payload = validate_person_ownership_stage_receipt(
+                {key: value for key, value in receipt.items() if key != "sample_index"}
+            )
+            validated.append((sample_index, payload))
+        now = time.time()
+        inserted = 0
+        retained = 0
+        with self._transaction() as connection:
+            shard = self._owned_lease(connection, platform, shard_path, lease_token)
+            for sample_index, payload in validated:
+                if sample_index >= int(shard["sample_count"]):
+                    raise NudeBatchQueueError("ownership checkpoint exceeds shard")
+                payload_sha = _canonical_sha256(payload)
+                values = (
+                    platform,
+                    str(payload["sample_id"]),
+                    shard_path,
+                    sample_index,
+                    str(payload["stage"]),
+                    str(payload["source_sha256"]),
+                    str(payload["evidence_sha256"]),
+                    payload_sha,
+                    json.dumps(payload, sort_keys=True),
+                    now,
+                )
+                try:
+                    connection.execute(
+                        "INSERT INTO record_stage_evidence(platform,sample_id,shard_path,"
+                        "sample_index,stage,source_sha256,evidence_sha256,payload_sha256,"
+                        "payload_json,recorded_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                        values,
+                    )
+                    inserted += 1
+                except sqlite3.IntegrityError as exc:
+                    existing = connection.execute(
+                        "SELECT payload_sha256 FROM record_stage_evidence WHERE platform=? "
+                        "AND sample_id=? AND stage=?",
+                        (platform, payload["sample_id"], payload["stage"]),
+                    ).fetchone()
+                    if existing is None or existing["payload_sha256"] != payload_sha:
+                        raise NudeBatchQueueError("ownership idempotency conflict") from exc
+                    retained += 1
+            self._event(
+                connection,
+                platform=platform,
+                shard_path=shard_path,
+                event="person_ownership_checkpoint",
+                detail={"inserted": inserted, "retained": retained},
+                now=now,
+            )
+        return {
+            "inserted": inserted,
+            "retained": retained,
+            "terminal_progress_advanced": False,
+        }
+
     def mark_submitted_unknown(
         self,
         *,
@@ -466,6 +559,14 @@ class NudeBatchQueue:
                     (platform,),
                 )
             }
+            stage_counts = {
+                row["stage"]: int(row["count"])
+                for row in connection.execute(
+                    "SELECT stage,COUNT(*) AS count FROM record_stage_evidence "
+                    "WHERE platform=? GROUP BY stage",
+                    (platform,),
+                )
+            }
             totals = connection.execute(
                 "SELECT COUNT(*) AS shards,COALESCE(SUM(sample_count),0) AS records,"
                 "COALESCE(SUM(next_sample_index),0) AS checkpointed FROM shards WHERE platform=?",
@@ -478,6 +579,7 @@ class NudeBatchQueue:
             "checkpointed_records": int(totals["checkpointed"]),
             "states": states,
             "outcomes": outcomes,
+            "stage_evidence": stage_counts,
         }
 
     def milestone_report(self, *, platform: str) -> dict[str, Any]:

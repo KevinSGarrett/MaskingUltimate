@@ -88,7 +88,7 @@ def resolve_person_instance_ownership(
     families: set[str] = set()
     providers: set[str] = set()
     normalized_reports: list[dict[str, Any]] = []
-    indexes: set[int] | None = None
+    index_sets: list[set[int]] = []
     for report in detector_reports:
         if not isinstance(report, Mapping):
             raise NudePersonOwnershipError("detector_report_invalid")
@@ -137,7 +137,7 @@ def resolve_person_instance_ownership(
             )
         families.add(family_id)
         providers.add(provider_id)
-        indexes = seen if indexes is None else indexes & seen
+        index_sets.append(seen)
         normalized_reports.append(
             {
                 "provider_id": provider_id,
@@ -150,12 +150,16 @@ def resolve_person_instance_ownership(
     if len(families) < 2:
         raise NudePersonOwnershipError("two_detector_families_required")
 
+    person_catalog_consensus = bool(index_sets) and all(
+        indexes == index_sets[0] for indexes in index_sets[1:]
+    )
+    consensus_indexes = index_sets[0] if person_catalog_consensus else set.intersection(*index_sets)
     by_report = [
         {int(person["person_index"]): person for person in report["persons"]}
         for report in normalized_reports
     ]
     candidates = []
-    for person_index in sorted(indexes or set()):
+    for person_index in sorted(consensus_indexes):
         rows = [report[person_index] for report in by_report]
         pair_ious = [_iou(tuple(rows[0]["bbox_xyxy"]), tuple(row["bbox_xyxy"])) for row in rows[1:]]
         candidates.append(
@@ -173,6 +177,7 @@ def resolve_person_instance_ownership(
     runner_up = ordered[1]["minimum_anatomy_containment"] if len(ordered) > 1 else 0.0
     verified = bool(
         winner
+        and person_catalog_consensus
         and winner["minimum_anatomy_containment"] >= containment_min
         and winner["minimum_provider_box_iou"] >= provider_box_iou_min
         and runner_up <= runner_up_max
@@ -190,6 +195,8 @@ def resolve_person_instance_ownership(
             f"nude-{source_sha256[:16]}-p{person_index}" if person_index is not None else None
         ),
         "detector_family_count": len(families),
+        "person_index_sets": [sorted(indexes) for indexes in index_sets],
+        "person_catalog_consensus": person_catalog_consensus,
         "detector_reports": normalized_reports,
         "candidates": ordered,
         "policy": {
@@ -197,7 +204,17 @@ def resolve_person_instance_ownership(
             "runner_up_max": runner_up_max,
             "provider_box_iou_min": provider_box_iou_min,
         },
-        "reasons": [] if verified else ["person_instance_ownership_ambiguous"],
+        "reasons": (
+            []
+            if verified
+            else [
+                (
+                    "person_detector_catalog_disagreement"
+                    if not person_catalog_consensus
+                    else "person_instance_ownership_ambiguous"
+                )
+            ]
+        ),
         "production_mask_authority": False,
         "operational_certificate_eligible": False,
     }
@@ -241,8 +258,76 @@ def validate_person_instance_ownership_report(
     return rebuilt
 
 
+def build_person_ownership_stage_receipt(
+    *,
+    sample_id: str,
+    source_sha256: str,
+    ownership_reports: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Seal non-authoritative per-mask ownership work for durable batch resume."""
+
+    if not isinstance(sample_id, str) or not sample_id.strip():
+        raise NudePersonOwnershipError("stage_sample_id_invalid")
+    source_sha256 = _sha(source_sha256, "source_sha256")
+    if not ownership_reports:
+        raise NudePersonOwnershipError("stage_ownership_reports_required")
+    normalized = []
+    mask_ids = set()
+    for report in ownership_reports:
+        if not isinstance(report, Mapping):
+            raise NudePersonOwnershipError("stage_ownership_report_invalid")
+        if report.get("source_sha256") != source_sha256:
+            raise NudePersonOwnershipError("stage_ownership_source_mismatch")
+        mask_sha256 = _sha(report.get("mask_sha256"), "stage_mask_sha256")
+        if mask_sha256 in mask_ids:
+            raise NudePersonOwnershipError("stage_mask_sha256_duplicated")
+        mask_ids.add(mask_sha256)
+        if report.get("status") not in {"verified", "ambiguous"}:
+            raise NudePersonOwnershipError("stage_ownership_status_invalid")
+        if not isinstance(report.get("candidate_label"), str) or not report["candidate_label"]:
+            raise NudePersonOwnershipError("stage_candidate_label_invalid")
+        if report.get("production_mask_authority") is not False:
+            raise NudePersonOwnershipError("stage_production_authority_forbidden")
+        if report.get("operational_certificate_eligible") is not False:
+            raise NudePersonOwnershipError("stage_certificate_eligibility_forbidden")
+        _sha(report.get("report_sha256"), "stage_ownership_report_sha256")
+        normalized.append(dict(report))
+    normalized.sort(key=lambda row: (str(row["candidate_label"]), str(row["mask_sha256"])))
+    body: dict[str, Any] = {
+        "schema_version": "maskfactory.nude_person_ownership_stage.v1",
+        "stage": "person_instance_ownership",
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "mask_count": len(normalized),
+        "verified_count": sum(report["status"] == "verified" for report in normalized),
+        "ambiguous_count": sum(report["status"] == "ambiguous" for report in normalized),
+        "ownership_reports": normalized,
+        "authority": "intermediate_non_authoritative_evidence",
+        "production_mask_authority": False,
+        "operational_certificate_issued": False,
+    }
+    return {**body, "evidence_sha256": _canonical_sha256(body)}
+
+
+def validate_person_ownership_stage_receipt(payload: Mapping[str, Any]) -> dict[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise NudePersonOwnershipError("ownership_stage_payload_invalid")
+    if payload.get("schema_version") != "maskfactory.nude_person_ownership_stage.v1":
+        raise NudePersonOwnershipError("ownership_stage_schema_invalid")
+    rebuilt = build_person_ownership_stage_receipt(
+        sample_id=str(payload.get("sample_id") or ""),
+        source_sha256=str(payload.get("source_sha256") or ""),
+        ownership_reports=payload.get("ownership_reports", ()),
+    )
+    if dict(payload) != rebuilt:
+        raise NudePersonOwnershipError("ownership_stage_evidence_drift")
+    return rebuilt
+
+
 __all__ = [
     "NudePersonOwnershipError",
+    "build_person_ownership_stage_receipt",
     "resolve_person_instance_ownership",
+    "validate_person_ownership_stage_receipt",
     "validate_person_instance_ownership_report",
 ]

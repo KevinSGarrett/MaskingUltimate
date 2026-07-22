@@ -184,6 +184,40 @@ def test_s01_uses_groundingdino_only_after_yolo_returns_zero_boxes(
     assert primary.detector_source == "yolo11m"
 
 
+def test_s01_preserves_groundingdino_admission_floor_after_yolo_miss(
+    tmp_path: Path, monkeypatch
+) -> None:
+    import maskfactory.stages.s01_person_detection as s01
+
+    image_path = tmp_path / "illustration.png"
+    Image.new("RGB", (200, 120), "white").save(image_path)
+    checkpoint = tmp_path / "yolo.pt"
+    fallback = tmp_path / "gdino.pth"
+    checkpoint.write_bytes(b"yolo")
+    fallback.write_bytes(b"gdino")
+    monkeypatch.setattr(s01, "infer_yolo11_people", lambda *args, **kwargs: [])
+    monkeypatch.setattr(
+        s01,
+        "infer_groundingdino_people",
+        lambda *args, **kwargs: [Detection((5, 5, 95, 115), 0.35)],
+    )
+
+    result = run_s01(
+        image_path,
+        tmp_path / "fallback",
+        checkpoint=checkpoint,
+        confidence_min=0.5,
+        device="cpu",
+        fallback_checkpoint=fallback,
+        fallback_box_threshold=0.30,
+        fallback_text_threshold=0.25,
+    )
+
+    assert result.outcome == "promoted"
+    assert result.detector_source == "groundingdino_swint_ogc"
+    assert result.persons[0].confidence == 0.35
+
+
 def test_groundingdino_person_fallback_preserves_proposal_authority_and_nms(
     tmp_path: Path, monkeypatch
 ) -> None:

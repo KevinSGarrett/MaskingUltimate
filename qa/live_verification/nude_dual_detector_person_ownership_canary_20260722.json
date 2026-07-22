@@ -1,0 +1,119 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_dual_detector_person_ownership_canary.v1",
+  "artifact_type": "real_adult_dual_detector_person_instance_ownership_and_abstention",
+  "recorded_at": "2026-07-22T14:16:50Z",
+  "status": "BOUNDED_LIVE_AND_MICROBATCH_PASS_WITH_FAIL_CLOSED_ABSTENTIONS",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P4-12.06",
+    "MF-P4-12.07"
+  ],
+  "providers": {
+    "incumbent": {
+      "provider_id": "yolo11m",
+      "family_id": "yolo",
+      "checkpoint_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95"
+    },
+    "independent": {
+      "provider_id": "groundingdino_swint_ogc",
+      "family_id": "groundingdino",
+      "checkpoint_sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+      "source_revision": "856dde20aee659246248e20734ef9ba5214f5e44",
+      "source_checkout_clean": true,
+      "source_file_count": 67,
+      "source_bytes": 12524395,
+      "single_record_runner_sha256": "9cb1077354848ef03ac0ce0059ba524bf75ee2b7b7c64b51e147ad2591ad8193",
+      "device": "cpu",
+      "model_load_count_per_record": 1,
+      "total_elapsed_seconds": 80.38438836485147,
+      "proposal_count": 14
+    }
+  },
+  "live_result": {
+    "record_count": 4,
+    "dataset_count": 4,
+    "anatomy_mask_count": 25,
+    "verified_person_ownership_count": 4,
+    "ambiguous_person_ownership_count": 21,
+    "production_mask_authority_count": 0,
+    "operational_certificate_count": 0,
+    "runtime_report_self_sha256": "8c26933706c5ec18d69915b2b9ebbb8a30c2e357e9c6ebabe993c36108a99226",
+    "runtime_report_file_sha256": "74a0b189998cbbeca5ab9e5584be119ba189d25a424f5a1c51788e615b1ac3e7"
+  },
+  "microbatch_execution": {
+    "record_count": 4,
+    "maximum_supported_record_count": 256,
+    "model_load_count": 1,
+    "elapsed_seconds": 52.85543300956488,
+    "prior_four_individual_loads_elapsed_seconds": 80.38438836485147,
+    "elapsed_reduction_fraction": 0.3424664405025664,
+    "proposal_count": 14,
+    "exact_proposal_replay_count": 4,
+    "exact_proposal_replay_passed": true,
+    "input_manifest_sha256": "29ee3b42eb0a7ca820927fee8c0cb164493d4987ad885d1627eaada3ba6d7a33",
+    "batch_output_sha256": "3cf3ce0d5713fdfe8fe20bc40251edfeac2e4ffa0e4bbb4ab7b9f27f2dc42c3a",
+    "runner_sha256": "2dd3a73a07a256f5eaec6b8a1761bc928f5a752cb311bdc06361afa7eac63e21",
+    "source_hash_drift_fails_closed": true,
+    "duplicate_sample_id_fails_closed": true,
+    "proposal_only_authority_preserved": true
+  },
+  "durable_stage_checkpoint": {
+    "execution_location": "local_windows_queue_consuming_runpod_proposals",
+    "record_count": 4,
+    "first_write_inserted_count": 4,
+    "reopen_replay_inserted_count": 0,
+    "reopen_replay_retained_count": 4,
+    "stage_evidence_kind": "person_instance_ownership",
+    "stage_evidence_count": 4,
+    "terminal_checkpointed_record_count": 0,
+    "terminal_progress_advanced": false,
+    "owned_lease_required": true,
+    "exact_idempotency_required": true,
+    "duplicate_mask_assignment_blocked": true,
+    "production_authority_claim_blocked": true,
+    "stage_receipts_sha256": "8a58790cc7cc3623b2a2f53f28e8be084d1d3dc5b9b6f3a6f14913b2361099d0",
+    "queue_report_self_sha256": "4d25c02d81ff4d346df9d2603b08a3107f5ce458dbd51e1f40c3aa2a546ed029"
+  },
+  "product_corrections": {
+    "groundingdino_fallback_preserves_its_own_admission_floor": true,
+    "yolo_confidence_floor_unchanged": true,
+    "complete_person_index_catalog_consensus_required": true,
+    "one_person_versus_two_person_collapse_cannot_verify_p0": true,
+    "missing_primary_people_continue_as_no_owner_abstentions": true,
+    "thresholds_lowered_to_force_throughput": false
+  },
+  "visual_audit": {
+    "promoted_groundingdino_crops_reviewed": 9,
+    "findings": [
+      "The photographic close-up produced one matching person proposal from both detector families; all four bound anatomy masks verified to p0.",
+      "The two-person illustrated mange.v2 source produced one broad YOLO person versus two GroundingDINO persons; all nine anatomy masks abstained on catalog disagreement.",
+      "The two-person illustrated mange.v3 source produced zero YOLO people versus two visually correct GroundingDINO person crops; all eleven anatomy masks abstained.",
+      "The multi-panel illustrated doujin source produced zero YOLO people versus four panel-local GroundingDINO crops; its anatomy mask abstained because stable scene-person identity was not proven across panels."
+    ]
+  },
+  "validation": {
+    "focused_and_neighbor_tests": "78 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/stages/s01_person_detection.py": "6afb2b394ec0d5b7c1dbf9e23d2b8355c0024036a5d256e183b02417cddf4fc8",
+    "src/maskfactory/nude_person_ownership.py": "8f54a3020e54f4a7311e8a751591c033ce5d374852cb5e1b8a22e560f68e4cdb",
+    "src/maskfactory/nude_batch_queue.py": "c4f31406b23e8b5badd5d7f02ba7ecd0f9e1b6a7edec8cdd0f50dd6982d12e31",
+    "tests/test_s01_s02.py": "5055a9871180158ff375029b722bf25e0b9d735511b7dcfbf19340df6bd67b9e",
+    "tests/test_nude_person_ownership.py": "617cbcb2ab559e3d9b79c9ed91d52b0d3c6f5a25a4e9427892dbce3adc233785",
+    "tests/test_nude_batch_queue.py": "ed2cad57bb58443f1c300aa7d3370709505618d2b669718207b54a709e7ced26",
+    "tools/run_groundingdino_wsl.py": "2dd3a73a07a256f5eaec6b8a1761bc928f5a752cb311bdc06361afa7eac63e21",
+    "tests/test_groundingdino_batch_runner.py": "897c0c3ad6eea3e3fd942dfe1936c8cfd703f41fce6cd49aab4a5f0741eb40c3"
+  },
+  "authority_boundary": {
+    "person_ownership_verified_only_for_exact_consensus_outputs": true,
+    "strict_visual_critic_verdicts_completed": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Deploy the durable queue worker/database on persistent RunPod storage, expand the detector canary across a representative 256-record polygon shard, and continue provider-mask plus strict-VLM qualification."
+}

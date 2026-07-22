@@ -85,6 +85,26 @@ def test_detector_index_without_spatial_agreement_cannot_verify() -> None:
     assert result["status"] == "ambiguous"
 
 
+def test_detector_person_count_disagreement_cannot_merge_people_into_p0() -> None:
+    mask = np.zeros((100, 120), dtype=np.bool_)
+    mask[20:40, 10:30] = True
+    result = _resolve(
+        mask,
+        [
+            _report("yolo11m", "yolo", [(0, [0, 0, 120, 100])]),
+            _report(
+                "groundingdino",
+                "groundingdino",
+                [(0, [0, 0, 55, 100]), (1, [60, 0, 120, 100])],
+            ),
+        ],
+    )
+    assert result["status"] == "ambiguous"
+    assert result["person_catalog_consensus"] is False
+    assert result["person_index"] is None
+    assert result["reasons"] == ["person_detector_catalog_disagreement"]
+
+
 @pytest.mark.parametrize("mutation", ["same_family", "source", "mask_hash"])
 def test_provenance_drift_fails_closed(mutation: str) -> None:
     mask = np.zeros((50, 50), dtype=np.bool_)

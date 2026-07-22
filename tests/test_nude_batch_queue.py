@@ -9,7 +9,10 @@ import pytest
 from PIL import Image, ImageDraw
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
-from maskfactory.nude_person_ownership import resolve_person_instance_ownership
+from maskfactory.nude_person_ownership import (
+    build_person_ownership_stage_receipt,
+    resolve_person_instance_ownership,
+)
 from maskfactory.nude_record_qualification import (
     qualify_input_terminal_record,
     qualify_nonacceptance_record,
@@ -364,6 +367,57 @@ def test_qualified_checkpoint_revalidates_receipt_before_mutation(tmp_path: Path
             shard_path=lease["shard_path"],
             lease_token=lease["lease_token"],
             outcomes=[tampered],
+        )
+
+
+def test_ownership_stage_checkpoint_is_durable_idempotent_and_nonterminal(
+    tmp_path: Path,
+) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="ownership-worker")
+    assert lease is not None
+    candidate = _qualified_outcome(tmp_path, 0)
+    receipt = build_person_ownership_stage_receipt(
+        sample_id=str(candidate["sample_id"]),
+        source_sha256=str(candidate["source_sha256"]),
+        ownership_reports=[candidate["qualification_evidence"]["ownership"]],
+    )
+    receipt["sample_index"] = 0
+
+    first = queue.checkpoint_person_ownership(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    replay = queue.checkpoint_person_ownership(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+
+    assert first == {"inserted": 1, "retained": 0, "terminal_progress_advanced": False}
+    assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
+    summary = queue.summary(platform="runpod")
+    assert summary["checkpointed_records"] == 0
+    assert summary["stage_evidence"] == {"person_instance_ownership": 1}
+
+
+def test_ownership_stage_checkpoint_rejects_authority_tamper(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="ownership-worker")
+    assert lease is not None
+    candidate = _qualified_outcome(tmp_path, 0)
+    ownership = dict(candidate["qualification_evidence"]["ownership"])
+    ownership["production_mask_authority"] = True
+    with pytest.raises(ValueError, match="stage_production_authority_forbidden"):
+        build_person_ownership_stage_receipt(
+            sample_id=str(candidate["sample_id"]),
+            source_sha256=str(candidate["source_sha256"]),
+            ownership_reports=[ownership],
         )
 
 

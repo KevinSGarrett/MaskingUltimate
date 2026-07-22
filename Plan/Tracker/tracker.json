@@ -23021,7 +23021,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 96,
+      "percent_complete": 97,
       "notes": [
         {
           "ts": "2026-07-22T08:52:16+00:00",
@@ -23042,12 +23042,17 @@
           "ts": "2026-07-22T12:31:13+00:00",
           "actor": "ai_agent",
           "text": "Queue milestone reports now self-seal exact canonical state, prove per-shard contiguous lineage and global zero-loss/zero-duplicate counts, refuse overwrite, report lane/outcome totals, and preserve complete=true on exact completed-shard replay. Live provider crash/restart and observed 1,000-record milestone remain open."
+        },
+        {
+          "ts": "2026-07-22T14:29:34+00:00",
+          "actor": "ai_agent",
+          "text": "Intermediate person-instance ownership receipts now persist through the durable queue under an owned lease, survive process reopen, replay idempotently, and cannot advance terminal progress or claim production authority. Live provider crash/restart and the 1,000-record milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json",
+      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:31:13+00:00",
+      "updated_at": "2026-07-22T14:29:34+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23063,7 +23068,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 73,
+      "percent_complete": 78,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23129,12 +23134,17 @@
           "ts": "2026-07-22T13:24:21+00:00",
           "actor": "ai_agent",
           "text": "A real four-dataset polygon ownership canary ran pinned YOLO11M: two records promoted one person and two illustration records missed all people. Visual audit also found a two-person illustration collapsed to one broad box. No ownership was verified; independent detector consensus remains open."
+        },
+        {
+          "ts": "2026-07-22T14:29:35+00:00",
+          "actor": "ai_agent",
+          "text": "Pinned YOLO11M plus independent GroundingDINO ran on four real adult polygon records. Exact catalog consensus verified 4/25 anatomy-mask ownerships and abstained 21/25 on detector catalog disagreement; no thresholds were lowered and no mask gained authority."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_yolo_person_detection_canary_20260722.json",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_yolo_person_detection_canary_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T13:24:21+00:00",
+      "updated_at": "2026-07-22T14:29:35+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {
@@ -23214,7 +23224,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 81,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-22T11:12:15+00:00",
@@ -23260,12 +23270,17 @@
           "ts": "2026-07-22T13:17:21+00:00",
           "actor": "ai_agent",
           "text": "Five-view terminal qualification now recomputes a sealed two-detector-family ownership decision from the exact anatomy-mask pixels. Same-index spatial disagreement and cross-person overlap cannot be rubber-stamped; live adult critics remain open."
+        },
+        {
+          "ts": "2026-07-22T14:29:35+00:00",
+          "actor": "ai_agent",
+          "text": "Real dual-detector person crops were visually audited and exact verified/ambiguous ownership receipts were sealed for the canary. Independent promoted strict-VLM per-record verdicts remain open, so this is not a strict visual pass."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T13:17:21+00:00",
+      "updated_at": "2026-07-22T14:29:35+00:00",
       "orphaned": false
     },
     "MF-P4-12.06": {
@@ -23281,7 +23296,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 82,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23337,12 +23352,17 @@
           "ts": "2026-07-22T13:17:22+00:00",
           "actor": "ai_agent",
           "text": "Ambiguous person ownership is now a deterministic continue-on-exception outcome with no owner identity, while verified outcomes require replayable detector consensus. Live detector and provider/critic repair throughput remains open."
+        },
+        {
+          "ts": "2026-07-22T14:29:49+00:00",
+          "actor": "ai_agent",
+          "text": "Live dual-detector ambiguity now becomes a sealed continue-on-exception ownership receipt, and four such receipts persist/replay without terminal advancement. Strict-critic repair/abstention throughput remains open."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_terminal_label_scale_gate_20260722.json; qa/live_verification/nude_person_instance_ownership_consensus_gate_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T13:17:22+00:00",
+      "updated_at": "2026-07-22T14:29:49+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {
@@ -23358,7 +23378,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 57,
+      "percent_complete": 63,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
@@ -23409,12 +23429,17 @@
           "ts": "2026-07-22T13:24:22+00:00",
           "actor": "ai_agent",
           "text": "The polygon lane now has real single-family person-detection measurements across four adult datasets. YOLO11M succeeded on two records but failed illustration/multi-person coverage on the other two; no thresholds were lowered and all four remain ownership-unverified pending an independent detector."
+        },
+        {
+          "ts": "2026-07-22T14:29:50+00:00",
+          "actor": "ai_agent",
+          "text": "The polygon representative canary now has a true one-load GroundingDINO microbatch on RunPod, exact replay against four single-image runs, dual-family person ownership, visual crop audit, and durable intermediate receipt replay. Full 256-record shard, provider masks, strict VLM, and terminal outcomes remain open."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_yolo_person_detection_canary_20260722.json",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json; qa/live_verification/nude_yolo_person_detection_canary_20260722.json; qa/live_verification/nude_dual_detector_person_ownership_canary_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T13:24:22+00:00",
+      "updated_at": "2026-07-22T14:29:50+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {

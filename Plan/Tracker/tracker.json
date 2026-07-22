@@ -11604,19 +11604,29 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 10,
+      "status": "partially_complete",
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-22T18:42:24+00:00",
           "actor": "codex",
           "text": "RunPod-first policy adopted. Target is a distinct persistent-volume package sync and clean restore proof with resumability, corruption/missing-file rejection, and F-drive backup replication; existing MF-P1-07.09 remains complete and is not reused as RunPod evidence."
+        },
+        {
+          "ts": "2026-07-22T18:55:38+00:00",
+          "actor": "codex",
+          "text": "RUNTIME_PASS_BOUNDED: persistent /workspace volume binding 13/13; deterministic 5-chunk sync; 0-upload/5-reuse idempotent replay; manifest self-seal, ordered chunk hashes, archive hash, and separate-process 15-file restore verified. Seeded missing/corrupt/partial cases each repaired exactly one chunk. F-drive DVC backup push/isolated restore remains exact. Actual restore after authorized pod replacement is still open, so completion is intentionally withheld."
+        },
+        {
+          "ts": "2026-07-22T18:55:53+00:00",
+          "actor": "codex",
+          "text": "Correction to immediately prior tracker evidence entry: the shell resolved the evidence hash from Plan/Tracker and left that entry's SHA value empty. The exact tracked evidence SHA-256 is 0954318c66c5a5f97ea1a1da4774bdc8339564df0160f78e9ffb30de6541a9db."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/runpod_package_persistence_and_restore_20260722.json SHA256=0954318c66c5a5f97ea1a1da4774bdc8339564df0160f78e9ffb30de6541a9db; runtime_artifacts/runpod_package_persistence_20260722/{preflight,live_sync,live_sync_resume,live_sync_hardened_resume,live_sync_missing_repair,live_sync_corrupt_repair,live_sync_partial_repair}.json; qa/live_verification/dvc_packages_first_push_restore_20260722.json SHA256=6321e81bab426e4513a2b16fc1b5f456292cab21714588fd74be342906de1354",
       "blocked_reason": null,
       "created_at": "2026-07-22T18:41:45+00:00",
-      "updated_at": "2026-07-22T18:42:24+00:00",
+      "updated_at": "2026-07-22T18:55:53+00:00",
       "orphaned": false
     },
     "MF-P1-10.01": {

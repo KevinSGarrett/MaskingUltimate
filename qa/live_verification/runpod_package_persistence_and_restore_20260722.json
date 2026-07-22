@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "runpod_package_persistence_and_restore_evidence",
+  "tracker_item": "MF-P0-17.25",
+  "status": "RUNTIME_PASS_BOUNDED_PROCESS_RESTORE_POD_REPLACEMENT_OPEN",
+  "recorded_date": "2026-07-22",
+  "platform": {
+    "pod_id": "1q4ji0gg1fkhvt",
+    "network_volume_id": "o9qv2ld91c",
+    "mount_path": "/workspace",
+    "network_volume_size_gib": 1000,
+    "preflight_check_count": 13,
+    "preflight_pass_count": 13,
+    "preflight_runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/preflight.json",
+    "preflight_runtime_report_sha256": "b21f96c6aa58572c58c61e737e2ac600b381e29e01634abdd2d0c41d610b6c73"
+  },
+  "package_descriptor": {
+    "path": "data/packages.dvc",
+    "sha256": "1a15b90a1741874d8e5c1dedfca3f6599bca92d9e4d09af2351cfeaba4ff892c",
+    "dvc_md5": "41609c16a8aed4de946dd4cd6aafc943.dir",
+    "file_count": 15,
+    "size_bytes": 1242277,
+    "package_count": 3,
+    "authority": "weighted_pseudo_label_train_only_not_gold"
+  },
+  "persistent_sync": {
+    "tool": "tools/sync_packages_runpod.py",
+    "tool_sha256": "14e7c0b3afcff50b4820353040062123afb65d6353d1a51359ee3fb3f6bdfbd3",
+    "remote_root": "/workspace/maskfactory/releases/package_sync/3b7f659cce57672467be14457b367e13b90599817ab74bc3fd1c3d3219a2105a",
+    "manifest_sha256": "3b7f659cce57672467be14457b367e13b90599817ab74bc3fd1c3d3219a2105a",
+    "archive_sha256": "20525ba54c02e788f72d76ce50adf51ba0bba4c9aafc49c60895984148701cce",
+    "chunk_count": 5,
+    "chunk_bytes": 262144,
+    "initial_upload": {
+      "chunks_uploaded": 5,
+      "chunks_reused": 0,
+      "restored_files": 15,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync.json",
+      "runtime_report_sha256": "5f834dc65cf398aac3c2e79fbdad985bdea25758b57f9ce84595296943db3251"
+    },
+    "idempotent_resume": {
+      "chunks_uploaded": 0,
+      "chunks_reused": 5,
+      "restored_files": 15,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync_resume.json",
+      "runtime_report_sha256": "d65eeb2e786ac06779945a0ca07385c46be175412fa01bf9dd70d096720caa4d"
+    },
+    "hardened_remote_replay": {
+      "chunks_uploaded": 0,
+      "chunks_reused": 5,
+      "restored_files": 15,
+      "manifest_self_seal_matches_remote_directory": true,
+      "ordered_individual_chunk_hashes_verified": true,
+      "archive_hash_and_size_verified": true,
+      "separate_process_file_map_verified": true,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync_hardened_resume.json",
+      "runtime_report_sha256": "ba23713d485b43980b5da7a92326cc7c57c0f6e28c7a6a61b09d21ef67509d0f"
+    }
+  },
+  "fault_recovery": {
+    "missing_chunk": {
+      "seeded_fault": "missing",
+      "chunks_uploaded": 1,
+      "chunks_reused": 4,
+      "restored_files": 15,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync_missing_repair.json",
+      "runtime_report_sha256": "2146c0b24437c8c540f5cbf9f18c5df849669d11d032861bae46173176a60b01"
+    },
+    "corrupt_chunk": {
+      "seeded_fault": "corrupt",
+      "chunks_uploaded": 1,
+      "chunks_reused": 4,
+      "restored_files": 15,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync_corrupt_repair.json",
+      "runtime_report_sha256": "986ed06a88a28947d671b5b6f34c855545f04343cf89e9a654378c803d300a5a"
+    },
+    "partial_chunk": {
+      "seeded_fault": "partial",
+      "chunks_uploaded": 1,
+      "chunks_reused": 4,
+      "restored_files": 15,
+      "runtime_report": "runtime_artifacts/runpod_package_persistence_20260722/live_sync_partial_repair.json",
+      "runtime_report_sha256": "bb11c6a193837bfea253c3a1ad94e5653bd9c5965c1e47fa7280fb18c558e736"
+    }
+  },
+  "local_backup": {
+    "remote": "F:/MaskFactory_DataRelocated/dvc_local_remote",
+    "dvc_status": "cache_and_remote_in_sync",
+    "objects_pushed": 14,
+    "isolated_restore_file_count": 15,
+    "source_restore_sha256_maps_equal": true,
+    "evidence": "qa/live_verification/dvc_packages_first_push_restore_20260722.json",
+    "evidence_sha256": "6321e81bab426e4513a2b16fc1b5f456292cab21714588fd74be342906de1354"
+  },
+  "validation": {
+    "commands": [
+      "python -m black tools/sync_packages_runpod.py tests/test_sync_packages_runpod.py",
+      "python -m ruff check tools/sync_packages_runpod.py tests/test_sync_packages_runpod.py",
+      "python -m pytest -q tests/test_sync_packages_runpod.py tests/test_runpod_persistence_verifier.py",
+      "python tools/sync_packages_runpod.py --env-file <redacted-local-env-path> --pod-id 1q4ji0gg1fkhvt --source data/packages --output runtime_artifacts/runpod_package_persistence_20260722/live_sync_hardened_resume.json"
+    ],
+    "focused_tests_passed": 8,
+    "credentials_emitted": false,
+    "gpu_work_performed": false
+  },
+  "claim_limits": [
+    "this proves exact persistent-volume binding, resumable transport, process-replacement restore, seeded missing/corrupt/partial recovery, and governed F-drive backup restore for this package descriptor",
+    "actual restore after pod replacement has not yet been observed and MF-P0-17.25 remains open until the authorized migration watcher supplies that evidence",
+    "the synchronized payload is weighted pseudo-label training supervision, not human-anchor gold or autonomous-certified gold",
+    "this transport evidence grants no package, release, model, champion, or production-mask authority"
+  ]
+}

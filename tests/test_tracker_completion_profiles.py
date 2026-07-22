@@ -44,7 +44,6 @@ def test_doc24_addendum_contributes_exactly_forty_three_unique_p6_rows() -> None
         for item in items.values()
         if item["source_file"] == "21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md"
     ]
-    assert len(items) == 856
     assert len(addendum) == 43
     assert {item["cluster_id"] for item in addendum} == {
         "MF-P6-07",

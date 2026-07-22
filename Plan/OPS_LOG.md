@@ -11982,3 +11982,24 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Adopted the binding RunPod-first/AWS-retirement policy in standing orders, doc 25, Instructions 14, the master index, active DVC bootstrap, and tracker-backed item `MF-P0-17.25`. The completed F-drive DVC proof remains the local backup tier; it is not represented as RunPod persistence.
 - Docker Desktop recovered at engine 29.6.1. Pinned CVAT v2.24.0 became healthy after warm-up; the idempotent credential bootstrap stored a new local token without printing it, and the live SAM2 interactor smoke passed (`task_id=1`, 17.537 s, 21,491 foreground pixels).
 - Remaining doctor failures are independently tracked: Ubuntu-22.04 roundtrip/model smokes and the C: free-space hard floor. They do not authorize weakening thresholds or bypassing the RunPod coordinator.
+
+## 2026-07-22 — Persistent RunPod package transport and bounded restore proof
+
+- `MF-P0-17.25` reached a bounded runtime proof on pod `1q4ji0gg1fkhvt`
+  and network volume `o9qv2ld91c`: all 13 persistent-volume preflight checks
+  passed for the exact `/workspace` mount.
+- A deterministic five-chunk archive of `data/packages.dvc` synchronized to
+  `/workspace/maskfactory/releases/package_sync/3b7f659cce57672467be14457b367e13b90599817ab74bc3fd1c3d3219a2105a`.
+  The initial run uploaded five chunks; an idempotent replay reused all five.
+  The hardened replay verified the manifest self-seal and directory binding,
+  each ordered chunk hash and size, the whole archive, and all 15 restored
+  files from a separate process.
+- Seeded missing, corrupt, and partial first-chunk cases each replaced exactly
+  one chunk, reused the other four, and restored the exact 15-file payload.
+  The governed F-drive DVC backup remains independently push/restore proven.
+- Evidence:
+  `qa/live_verification/runpod_package_persistence_and_restore_20260722.json`.
+  Actual restore after pod replacement remains open for the sole authorized
+  migration watcher, so the item is intentionally only partially complete.
+  This transport grants no gold, release, champion, or production-mask
+  authority.

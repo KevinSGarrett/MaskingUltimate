@@ -3,7 +3,10 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
+import cv2
+import numpy as np
 import pytest
+from PIL import Image, ImageDraw
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
 from maskfactory.nude_record_qualification import (
@@ -12,6 +15,7 @@ from maskfactory.nude_record_qualification import (
     qualify_terminal_record,
     verify_complete_panel_evidence,
 )
+from maskfactory.providers.disagreement import binary_mask_sha256
 
 
 def _descriptors() -> list[dict[str, object]]:
@@ -61,24 +65,49 @@ def _outcome(index: int, *, sample: str, outcome: str = "quarantined") -> dict[s
 
 
 def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
+    source = np.full((48, 48, 3), 40 + index, dtype=np.uint8)
+    source[12:36, 14:34] = [180, 130, 100]
+    original = tmp_path / f"{index}-original.png"
+    Image.fromarray(source).save(original)
+    source_sha = hashlib.sha256(original.read_bytes()).hexdigest()
+    mask = np.zeros((48, 48), dtype=bool)
+    mask[12:36, 14:34] = True
+    mask_rgb = np.repeat((mask.astype(np.uint8) * 255)[..., None], 3, axis=2)
+    overlay = source.copy()
+    overlay[mask] = [120, 20, 20]
+    contour = source.copy()
+    contours, _ = cv2.findContours(
+        mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+    cv2.drawContours(contour, contours, -1, (255, 0, 0), 2)
+    ownership_image = Image.fromarray(source.copy())
+    ImageDraw.Draw(ownership_image).rectangle((14, 12, 34, 36), outline=(255, 0, 0), width=2)
+    arrays = {
+        "source": source,
+        "mask": mask_rgb,
+        "overlay": overlay,
+        "contour": contour,
+        "ownership": np.asarray(ownership_image),
+    }
     panels = {}
-    for kind in ("source", "mask", "overlay", "contour", "ownership"):
+    for kind, array in arrays.items():
         path = tmp_path / f"{index}-{kind}.png"
-        path.write_bytes(f"{index}:{kind}".encode())
+        Image.fromarray(array).save(path)
         panels[kind] = {
             "path": str(path),
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         }
+    panels["source"]["original_source_path"] = str(original)
     bundle = verify_complete_panel_evidence(panels)
 
     def sha(value: str) -> str:
         return hashlib.sha256(value.encode()).hexdigest()
 
-    selected = sha(f"selected-{index}")
+    selected = binary_mask_sha256(mask)
     result = qualify_terminal_record(
         {
             "sample_id": f"qualified-{index}",
-            "source_sha256": sha(f"source-{index}"),
+            "source_sha256": source_sha,
             "mask_sha256": selected,
             "outcome": "accepted",
             "provider_comparison": {
@@ -139,6 +168,10 @@ def _abstained_outcome(tmp_path: Path, index: int) -> dict[str, object]:
     evidence = accepted["qualification_evidence"]
     reviews = [dict(review) for review in evidence["strict_reviews"]]
     reviews[0]["verdict"] = "uncertain"
+    panels = {kind: dict(value) for kind, value in evidence["panel_evidence"]["panels"].items()}
+    panels["source"]["original_source_path"] = evidence["pixel_semantic_visual_evidence"][
+        "original_source_path"
+    ]
     result = qualify_nonacceptance_record(
         {
             "sample_id": accepted["sample_id"],
@@ -151,7 +184,7 @@ def _abstained_outcome(tmp_path: Path, index: int) -> dict[str, object]:
             "hard_qc": evidence["hard_qc"],
             "strict_reviews": reviews,
         },
-        panels=evidence["panel_evidence"]["panels"],
+        panels=panels,
     )
     result["sample_index"] = index
     return result

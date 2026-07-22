@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from .nude_visual_evidence import verify_pixel_semantic_visual_evidence
+
 REQUIRED_PANEL_KINDS = (
     "source",
     "mask",
@@ -65,6 +67,26 @@ def verify_complete_panel_evidence(panels: Mapping[str, Any]) -> dict[str, Any]:
     bundle = {"required_kinds": list(REQUIRED_PANEL_KINDS), "panels": verified}
     bundle["panel_bundle_sha256"] = _canonical_sha256(bundle)
     return bundle
+
+
+def _verify_pixel_semantic_evidence(
+    record: Mapping[str, Any], panels: Mapping[str, Any]
+) -> dict[str, Any]:
+    source_entry = panels.get("source")
+    if not isinstance(source_entry, Mapping):
+        raise NudeRecordQualificationError("source_panel_entry_invalid")
+    original_source_path = source_entry.get("original_source_path")
+    if not isinstance(original_source_path, str) or not original_source_path:
+        raise NudeRecordQualificationError("original_source_path_required")
+    try:
+        return verify_pixel_semantic_visual_evidence(
+            original_source_path=Path(original_source_path),
+            original_source_sha256=str(record.get("source_sha256") or ""),
+            selected_mask_sha256=str(record.get("mask_sha256") or ""),
+            views={kind: panels[kind] for kind in REQUIRED_PANEL_KINDS},
+        )
+    except ValueError as exc:
+        raise NudeRecordQualificationError(f"pixel_semantic_visual_evidence_invalid:{exc}") from exc
 
 
 def _verify_provider_comparison(
@@ -238,6 +260,7 @@ def qualify_terminal_record(
     source_sha256 = _sha256(record.get("source_sha256"), "source_sha256")
     selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
     panel_evidence = verify_complete_panel_evidence(panels)
+    pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
     provider_comparison = _verify_provider_comparison(
         record.get("provider_comparison", {}), selected_mask_sha256=selected_mask_sha256
     )
@@ -259,6 +282,7 @@ def qualify_terminal_record(
         "provider_comparison": provider_comparison,
         "hard_qc": hard_qc,
         "panel_evidence": panel_evidence,
+        "pixel_semantic_visual_evidence": pixel_semantic_evidence,
         "strict_reviews": strict_reviews,
         "repair": repair,
         "authority": "machine_verified_candidate",
@@ -310,6 +334,17 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     verified_panels = verify_complete_panel_evidence(panels)
     if verified_panels != panel_evidence:
         raise NudeRecordQualificationError("qualification_panel_evidence_drift")
+    pixel_semantic_evidence = evidence.get("pixel_semantic_visual_evidence")
+    if not isinstance(pixel_semantic_evidence, Mapping):
+        raise NudeRecordQualificationError("pixel_semantic_visual_evidence_required")
+    original_source_path = pixel_semantic_evidence.get("original_source_path")
+    if not isinstance(original_source_path, str) or not original_source_path:
+        raise NudeRecordQualificationError("original_source_path_required")
+    semantic_panels = {kind: dict(panels[kind]) for kind in REQUIRED_PANEL_KINDS}
+    semantic_panels["source"]["original_source_path"] = original_source_path
+    observed_semantic = _verify_pixel_semantic_evidence(evidence, semantic_panels)
+    if dict(pixel_semantic_evidence) != observed_semantic:
+        raise NudeRecordQualificationError("pixel_semantic_visual_evidence_drift")
     _verify_provider_comparison(
         evidence.get("provider_comparison", {}),
         selected_mask_sha256=str(payload["mask_sha256"]),
@@ -408,6 +443,7 @@ def qualify_nonacceptance_record(
     ):
         raise NudeRecordQualificationError("failure_reasons_required")
     panel_evidence = verify_complete_panel_evidence(panels)
+    pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
     provider_comparison = _verify_provider_comparison(
         record.get("provider_comparison", {}),
         selected_mask_sha256=selected_mask_sha256,
@@ -479,6 +515,7 @@ def qualify_nonacceptance_record(
         "provider_comparison": provider_comparison,
         "hard_qc": hard_qc_evidence,
         "panel_evidence": panel_evidence,
+        "pixel_semantic_visual_evidence": pixel_semantic_evidence,
         "strict_reviews": reviews,
         "repair": repair_evidence,
         "authority": "no_mask_authority",
@@ -508,6 +545,14 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
     panels = evidence.get("panel_evidence", {}).get("panels")
     if not isinstance(panels, Mapping):
         raise NudeRecordQualificationError("qualification_panels_invalid")
+    pixel_semantic_evidence = evidence.get("pixel_semantic_visual_evidence")
+    if not isinstance(pixel_semantic_evidence, Mapping):
+        raise NudeRecordQualificationError("pixel_semantic_visual_evidence_required")
+    original_source_path = pixel_semantic_evidence.get("original_source_path")
+    if not isinstance(original_source_path, str) or not original_source_path:
+        raise NudeRecordQualificationError("original_source_path_required")
+    semantic_panels = {kind: dict(panels[kind]) for kind in REQUIRED_PANEL_KINDS}
+    semantic_panels["source"]["original_source_path"] = original_source_path
     rebuilt = qualify_nonacceptance_record(
         {
             "sample_id": evidence.get("sample_id"),
@@ -521,7 +566,7 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
             "strict_reviews": evidence.get("strict_reviews"),
             "repair": evidence.get("repair"),
         },
-        panels=panels,
+        panels=semantic_panels,
     )
     if dict(evidence) != rebuilt["qualification_evidence"]:
         raise NudeRecordQualificationError("nonacceptance_evidence_drift")

@@ -102,6 +102,7 @@ def verify_pixel_semantic_visual_evidence(
 
     result = {
         "schema_version": "maskfactory.nude_pixel_semantic_visual_evidence.v1",
+        "original_source_path": str(source_path.resolve()),
         "original_source_sha256": original_source_sha256,
         "decoded_source_pixels_sha256": hashlib.sha256(original.tobytes()).hexdigest(),
         "selected_mask_sha256": observed_mask_sha256,

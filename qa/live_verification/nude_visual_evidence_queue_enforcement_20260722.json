@@ -1,0 +1,53 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_visual_evidence_queue_enforcement.v1",
+  "artifact_type": "adult_corpus_pixel_semantic_evidence_queue_boundary",
+  "recorded_at": "2026-07-22T12:15:37Z",
+  "status": "PASS",
+  "tracker_items": [
+    "MF-P4-12.05",
+    "MF-P4-12.06"
+  ],
+  "enforced_outcomes": [
+    "accepted",
+    "repaired",
+    "abstained",
+    "rejected"
+  ],
+  "enforcement": {
+    "original_source_path_required": true,
+    "original_source_file_rehashed": true,
+    "source_pixels_redecoded": true,
+    "selected_mask_pixels_redecoded": true,
+    "five_view_semantics_recomputed_before_receipt": true,
+    "semantic_evidence_stored_in_receipt": true,
+    "semantic_evidence_recomputed_before_queue_mutation": true,
+    "missing_or_drifted_semantic_evidence_rejected": true
+  },
+  "real_canary": {
+    "record_count": 12,
+    "pixel_semantic_evidence_pass_count": 12,
+    "report_sha256": "95a5e5d0f02a13282a8ec728dbc8a57cb92e95aea0e32f7e89caf768dff565d4"
+  },
+  "negative_controls": [
+    "missing_original_source_path_rejected",
+    "source_hash_or_pixel_drift_rejected",
+    "mask_payload_drift_rejected",
+    "overlay_outside_mask_rejected",
+    "panel_file_hash_drift_rejected"
+  ],
+  "implementation_sha256": {
+    "src/maskfactory/nude_record_qualification.py": "443d5eb17824c7e6abb3a5085b065b3f5816269b8fc617c65e34d5e886406ffa",
+    "src/maskfactory/nude_visual_evidence.py": "ee9e900386743ee74a1d1ebc21834486501e774bb421ee768fa0392fe5f8d21f",
+    "src/maskfactory/nude_polygon_refinement.py": "60424861e57cb951b11d107b99949a528e0c5f168f7d306bae0eef1a425aed20",
+    "tests/test_nude_record_qualification.py": "c53156b4f059de5fa0de7dff981ef5c100067b9025dbdfbe7bf8e3bf28a3391b",
+    "tests/test_nude_batch_queue.py": "14216a3f45c705c25eb34ba6f4e6231126e588d2d42e3da9ce258665427489df",
+    "tests/test_nude_visual_evidence.py": "04b870b26cfee17a5765b945a9293391ae857cdf1faba5062ca750266140b1ce"
+  },
+  "authority": {
+    "strict_vlm_quorum_completed": false,
+    "person_instance_ownership_verified": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Live provider candidates and independent strict-VLM responses must pass this enforced boundary before terminal queue outcomes can be accepted."
+}

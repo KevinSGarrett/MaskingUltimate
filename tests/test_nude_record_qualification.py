@@ -3,7 +3,10 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
+import cv2
+import numpy as np
 import pytest
+from PIL import Image, ImageDraw
 
 from maskfactory.nude_record_qualification import (
     NudeRecordQualificationError,
@@ -15,6 +18,9 @@ from maskfactory.nude_record_qualification import (
     validate_qualified_queue_payload,
     verify_complete_panel_evidence,
 )
+from maskfactory.providers.disagreement import binary_mask_sha256
+
+_PANEL_CONTEXTS: dict[str, tuple[str, str]] = {}
 
 
 def _sha(value: str) -> str:
@@ -22,19 +28,49 @@ def _sha(value: str) -> str:
 
 
 def _panels(tmp_path: Path) -> dict[str, dict[str, str]]:
+    source = np.full((48, 48, 3), 40, dtype=np.uint8)
+    source[12:36, 14:34] = [180, 130, 100]
+    original = tmp_path / "original.png"
+    Image.fromarray(source).save(original)
+    source_sha = hashlib.sha256(original.read_bytes()).hexdigest()
+    mask = np.zeros((48, 48), dtype=bool)
+    mask[12:36, 14:34] = True
+    mask_rgb = np.repeat((mask.astype(np.uint8) * 255)[..., None], 3, axis=2)
+    overlay = source.copy()
+    overlay[mask] = [120, 20, 20]
+    contour = source.copy()
+    contours, _ = cv2.findContours(
+        mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+    cv2.drawContours(contour, contours, -1, (255, 0, 0), 2)
+    ownership_image = Image.fromarray(source.copy())
+    ImageDraw.Draw(ownership_image).rectangle((14, 12, 34, 36), outline=(255, 0, 0), width=2)
+    arrays = {
+        "source": source,
+        "mask": mask_rgb,
+        "overlay": overlay,
+        "contour": contour,
+        "ownership": np.asarray(ownership_image),
+    }
     result = {}
-    for kind in ("source", "mask", "overlay", "contour", "ownership"):
+    for kind, array in arrays.items():
         path = tmp_path / f"{kind}.png"
-        path.write_bytes(f"panel:{kind}".encode())
-        result[kind] = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        Image.fromarray(array).save(path)
+        result[kind] = {
+            "path": str(path),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+    result["source"]["original_source_path"] = str(original)
+    bundle = verify_complete_panel_evidence(result)
+    _PANEL_CONTEXTS[bundle["panel_bundle_sha256"]] = (source_sha, binary_mask_sha256(mask))
     return result
 
 
 def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str, object]:
-    selected = _sha("selected-mask")
+    source_sha256, selected = _PANEL_CONTEXTS[panel_bundle_sha256]
     record: dict[str, object] = {
         "sample_id": "adult-sample-0001",
-        "source_sha256": _sha("source"),
+        "source_sha256": source_sha256,
         "mask_sha256": selected,
         "outcome": outcome,
         "provider_comparison": {
@@ -125,6 +161,14 @@ def test_panel_hash_drift_fails_closed(tmp_path: Path) -> None:
     Path(panels["overlay"]["path"]).write_bytes(b"drift")
     with pytest.raises(NudeRecordQualificationError, match="overlay_hash_mismatch"):
         verify_complete_panel_evidence(panels)
+
+
+def test_terminal_receipt_requires_original_source_pixel_binding(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    panels["source"].pop("original_source_path")
+    with pytest.raises(NudeRecordQualificationError, match="original_source_path_required"):
+        qualify_terminal_record(_record(bundle["panel_bundle_sha256"]), panels=panels)
 
 
 def test_hard_qc_veto_cannot_be_cleared_by_passing_critics(tmp_path: Path) -> None:

@@ -11,14 +11,14 @@
   "adopted_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
   "implementation": {
     "src/maskfactory/nude_record_qualification.py": "b405868466be2de5510a207d0f147ca2975867d692a688e1d0a2f40275043856",
-    "src/maskfactory/nude_batch_queue.py": "e7fff627867db30815e3403f89b161e801d0e5282dee0665584129fb4c2688e9"
+    "src/maskfactory/nude_batch_queue.py": "5c5d75170b146a60f32094996f48a655700e34ff90a96b7ddfb18d829cdd3c51"
   },
   "tests": {
     "command": "python -m pytest -q tests/test_nude_record_qualification.py tests/test_nude_batch_queue.py tests/test_nude_polygon_hard_qc.py tests/test_nude_training_role_gate.py",
-    "result": "40 passed",
+    "result": "41 passed",
     "test_file_sha256": {
       "tests/test_nude_record_qualification.py": "c02b0b4bdfb5d028608bb92ebf27cce310e38df05ea00f54152a33aeab88e24b",
-      "tests/test_nude_batch_queue.py": "5008004489aaac09a868632da0b096d00cde9239895bf6e1968dfcddf1b2e50d"
+      "tests/test_nude_batch_queue.py": "09fef529d72b29658d8f66534ed9c8291c40f0a83314cc925cfb56a714e0c198"
     },
     "ruff": "pass",
     "black_check": "pass",
@@ -46,6 +46,7 @@
     "bounded_repair_max_attempts": 3,
     "same_hash_repair_rejected_as_no_progress": true,
     "durable_queue_recomputes_receipt_hash": true,
+    "low_level_checkpoint_bypass_rejected": true,
     "human_gold_granted": false,
     "production_mask_authority_granted": false,
     "operational_certificate_issued": false

@@ -23110,18 +23110,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 45,
+      "percent_complete": 48,
       "notes": [
         {
           "ts": "2026-07-22T11:12:15+00:00",
           "actor": "ai_agent",
           "text": "Fail-closed per-record gate now requires independently hash-verified source/mask/overlay/contour/ownership views, two provider families, hard-QC pass, and two current independent strict-review roles. Contact-sheet substitution, rubber stamps, cross-record panel drift, and hard-QC override fail. Live adult provider/VLM execution remains open."
+        },
+        {
+          "ts": "2026-07-22T11:14:21+00:00",
+          "actor": "ai_agent",
+          "text": "Direct checkpoint mutation now revalidates every accepted/repaired qualification receipt; the safer wrapper is no longer optional for authority enforcement."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; 40 focused tests pass; Ruff/Black/diff integrity pass",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; 41 focused tests pass; low-level checkpoint bypass test passes; Ruff/Black/diff integrity pass",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:12:15+00:00",
+      "updated_at": "2026-07-22T11:14:21+00:00",
       "orphaned": false
     },
     "MF-P4-12.06": {

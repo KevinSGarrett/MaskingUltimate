@@ -294,6 +294,8 @@ class NudeBatchQueue:
                     raise NudeBatchQueueError("checkpoint must be contiguous")
                 if outcome.get("outcome") not in TERMINAL_OUTCOMES:
                     raise NudeBatchQueueError("terminal outcome invalid")
+                if outcome.get("outcome") in {"accepted", "repaired"}:
+                    validate_qualified_queue_payload(outcome)
                 source_sha = str(outcome.get("source_sha256", ""))
                 evidence_sha = str(outcome.get("evidence_sha256", ""))
                 if len(source_sha) != 64 or len(evidence_sha) != 64:

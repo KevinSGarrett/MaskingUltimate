@@ -25,7 +25,7 @@ def _descriptors() -> list[dict[str, object]]:
     ]
 
 
-def _outcome(index: int, *, sample: str, outcome: str = "accepted") -> dict[str, object]:
+def _outcome(index: int, *, sample: str, outcome: str = "quarantined") -> dict[str, object]:
     return {
         "sample_index": index,
         "sample_id": sample,
@@ -162,7 +162,7 @@ def test_claims_are_exclusive_and_checkpoint_resumes_by_index(tmp_path: Path) ->
         platform="runpod",
         shard_path=first["shard_path"],
         lease_token=first["lease_token"],
-        outcomes=[_outcome(1, sample="sample-b", outcome="repaired")],
+        outcomes=[_outcome(1, sample="sample-b", outcome="quarantined")],
     )
     assert done["complete"] is True
     assert queue.summary(platform="runpod")["checkpointed_records"] == 2
@@ -248,4 +248,19 @@ def test_qualified_checkpoint_revalidates_receipt_before_mutation(tmp_path: Path
             shard_path=lease["shard_path"],
             lease_token=lease["lease_token"],
             outcomes=[tampered],
+        )
+
+
+def test_low_level_checkpoint_cannot_bypass_accepted_receipt_gate(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="bypass-attempt")
+    assert lease is not None
+    unsafe = _outcome(0, sample="unsafe", outcome="accepted")
+    with pytest.raises(ValueError, match="qualification_evidence_required"):
+        queue.checkpoint(
+            platform="runpod",
+            shard_path=lease["shard_path"],
+            lease_token=lease["lease_token"],
+            outcomes=[unsafe],
         )

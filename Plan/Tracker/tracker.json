@@ -13720,7 +13720,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 72,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-22T06:28:55+00:00",
@@ -13741,12 +13741,17 @@
           "ts": "2026-07-22T06:47:39+00:00",
           "actor": "ai_agent",
           "text": "Made bulk-first review durable in cold-session memory and the session playbook: diagnostic single-case review cannot become the production loop; entire eligible populations use deterministic batches, automatic contact sheets, promoted primary plus independent-family juror, immutable relabel versions, continue-on-exception, compact operator reporting, optional human exception handling, and required MaskedWarehouse/reference-library inputs. Added a regression guard spanning standing orders, startup, playbook, Instruction 14, doc 25, and the item catalog; 7 focused tests PASS with Ruff, Black, tracker validation, and diff integrity clean."
+        },
+        {
+          "ts": "2026-07-22T07:12:40+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented and pushed the missing resumable batch resolver and CLI at 4f597aa484ac17564ecda8a84c84c86cf942c343. It requires a current primary plus independent certificate quorum, revalidates every plan/review/package/source/mask/panel hash, accepts exact consensus, emits relabel proposals without mutating frozen bytes, applies reject/abstain precedence, continues after package-specific drift, and emits compact summary/exceptions. Static behavior is green; real 220-case execution remains open pending promoted critics."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; contact-sheet manifest SHA-256 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; first sheet 200f920482f1c164afd61917aeda06440a744632794ceb3a888550713e0ae4a9; 220 cases, 7 sheets, 0 planner exceptions",
+      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/bulk_semantic_requalification_executor_20260722.json; plan 73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc; contact-sheet manifest 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; commit 4f597aa484ac17564ecda8a84c84c86cf942c343; 14 focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T06:47:39+00:00",
+      "updated_at": "2026-07-22T07:12:40+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {

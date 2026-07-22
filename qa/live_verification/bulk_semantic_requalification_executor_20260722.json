@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "status": "STATIC_PASS",
+  "authority_claimed": false,
+  "tracker_item": "MF-P4-11.26",
+  "commit": "4f597aa484ac17564ecda8a84c84c86cf942c343",
+  "product_outcome": "The deterministic bulk plan now has a resumable per-batch resolver and CLI instead of ending at contact-sheet generation.",
+  "behavior": {
+    "authority": "Requires a current primary_visual_critic plus independent_juror certificate quorum before resolving any case.",
+    "bindings": "Revalidates plan, batch, review, case-decision, manifest, source, mask, and panel hashes.",
+    "accept": "Two exact pass decisions produce accept_exact_label.",
+    "relabel": "Two identical relabel decisions produce a relabel_new_immutable_version proposal; no package or pixel mutation occurs.",
+    "reject_abstain": "Reject takes precedence; disagreement, uncertainty, or abstention produces abstain.",
+    "continuation": "A package-specific drift or malformed case becomes an exception row and does not stop unrelated cases.",
+    "operator_output": "CLI prints a compact summary plus exceptions and writes one immutable hash-bound result."
+  },
+  "source_sha256": {
+    "src/maskfactory/autonomy/package_semantic_alignment.py": "7c2a8a7188acddf49e8988e218c92ca414a30aa7ac7497d7524b8e88af4c4801",
+    "src/maskfactory/cli.py": "6b49c74cb5b7fbba56f1f3994bf4c27a41dcec6b9c8123f2cc0b7c970efacd7d",
+    "tests/test_autonomous_package_semantic_alignment.py": "4cb3bfc11d14ea7c71918d44c28e58847d3c950dd5efd6028af3aea8a26a65df"
+  },
+  "verification": {
+    "focused_tests": "14 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS",
+    "broader_suite_note": "An adjacent dataset-builder run had 3 pre-existing failures because the Civitai fixture cache adjusting_hair_hand_in_hair is absent; 32 other selected tests passed and no semantic executor failure occurred."
+  },
+  "remaining_acceptance": "Execute all seven real 220-package batches with promoted current critic roles and publish accepted or corrected immutable package versions; no live critic authority is claimed by this static executor evidence."
+}

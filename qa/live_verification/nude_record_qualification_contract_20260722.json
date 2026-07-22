@@ -10,16 +10,16 @@
   "adopted_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
   "adopted_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
   "implementation": {
-    "src/maskfactory/nude_record_qualification.py": "34a23dd13493891807fa7e64c36884e2ad65d5e8aca0aadb1e3d4bdb27fb2d97",
-    "src/maskfactory/nude_batch_queue.py": "86ff61a471a4b4d1a38ec79bc93f6be91c34edc631218445343341a5cf5ac72a"
+    "src/maskfactory/nude_record_qualification.py": "dc180548de207463bb959baf36385631ef89bff7fcdadf036db83b88b8ed2bed",
+    "src/maskfactory/nude_batch_queue.py": "48b37535f714ba667d1c5305714f88feed9674cfbfde126ee68f8bc1a070c1b8"
   },
   "tests": {
     "command": "python -m pytest -q tests/test_nude_record_qualification.py tests/test_nude_batch_queue.py tests/test_nude_polygon_hard_qc.py tests/test_nude_training_role_gate.py",
-    "result": "46 passed",
-    "broader_adult_and_critic_regression_result": "100 passed",
+    "result": "49 passed",
+    "broader_adult_and_critic_regression_result": "103 passed",
     "test_file_sha256": {
-      "tests/test_nude_record_qualification.py": "b242759dc4ef612e8c786e04112a288a8e0265973139323a299502471b812983",
-      "tests/test_nude_batch_queue.py": "c6942e2d55e59110bab6909a2a8c970cfba2ef0617949d229cd477ce35c70156"
+      "tests/test_nude_record_qualification.py": "8153ba1fbcc30854c40ceeb9a32143122d4fe679fe60e6b1321dd65b7ff8707d",
+      "tests/test_nude_batch_queue.py": "96c67e096d9e064b269a384af14dc74976eb7869fe44e89e8cb545c09bcd49bd"
     },
     "ruff": "pass",
     "black_check": "pass",
@@ -52,6 +52,9 @@
     "nonacceptance_requires_two_independent_record_level_reviews": true,
     "nonacceptance_retains_reason_and_failure_stage": true,
     "repair_exhaustion_requires_exact_bounded_attempt_count": true,
+    "quarantined_input_receipt_binds_registry_shard_source_and_reason": true,
+    "holdout_receipt_requires_evaluation_only_role_policy_and_split_group": true,
+    "all_six_queue_terminal_outcomes_require_revalidated_receipts": true,
     "human_gold_granted": false,
     "production_mask_authority_granted": false,
     "operational_certificate_issued": false

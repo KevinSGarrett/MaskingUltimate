@@ -7,6 +7,7 @@ import pytest
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
 from maskfactory.nude_record_qualification import (
+    qualify_input_terminal_record,
     qualify_nonacceptance_record,
     qualify_terminal_record,
     verify_complete_panel_evidence,
@@ -27,14 +28,36 @@ def _descriptors() -> list[dict[str, object]]:
 
 
 def _outcome(index: int, *, sample: str, outcome: str = "quarantined") -> dict[str, object]:
-    return {
-        "sample_index": index,
-        "sample_id": sample,
-        "source_sha256": "a" * 64,
-        "evidence_sha256": "b" * 64,
-        "outcome": outcome,
-        "provider_lineage": ["fixture-provider"],
-    }
+    if outcome not in {"quarantined", "holdout"}:
+        return {
+            "sample_index": index,
+            "sample_id": sample,
+            "source_sha256": "a" * 64,
+            "evidence_sha256": "b" * 64,
+            "outcome": outcome,
+            "provider_lineage": ["fixture-provider"],
+        }
+    receipt = qualify_input_terminal_record(
+        {
+            "sample_id": sample,
+            "source_sha256": "a" * 64,
+            "source_role": (
+                "bbox_evaluation_only" if outcome == "holdout" else "polygon_external_supervision"
+            ),
+            "registry_sha256": "c" * 64,
+            "shard_sha256": "d" * 64,
+            "outcome": outcome,
+            "reasons": ["fixture_terminal_reason"],
+            "input_report_sha256": "e" * 64,
+            **(
+                {"holdout_policy_sha256": "f" * 64, "split_group_id": "holdout-group"}
+                if outcome == "holdout"
+                else {}
+            ),
+        }
+    )
+    receipt["sample_index"] = index
+    return receipt
 
 
 def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
@@ -206,7 +229,7 @@ def test_checkpoint_rejects_gaps_bad_hashes_and_idempotency_conflicts(tmp_path: 
         )
     invalid = _outcome(0, sample="bad-hash")
     invalid["evidence_sha256"] = "short"
-    with pytest.raises(NudeBatchQueueError, match="hash binding"):
+    with pytest.raises(ValueError, match="evidence_sha256_mismatch"):
         queue.checkpoint(
             platform="runpod",
             shard_path=lease["shard_path"],
@@ -314,3 +337,20 @@ def test_low_level_checkpoint_accepts_valid_abstention_and_rejects_tampering(
             lease_token=lease["lease_token"],
             outcomes=[tampered],
         )
+
+
+def test_holdout_receipt_is_evaluation_only_and_training_ineligible(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="holdout-worker")
+    assert lease is not None
+    payload = _outcome(0, sample="holdout-sample", outcome="holdout")
+    evidence = payload["qualification_evidence"]
+    assert evidence["evaluation_only"] is True
+    assert evidence["training_authority"] is False
+    queue.checkpoint(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        outcomes=[payload],
+    )

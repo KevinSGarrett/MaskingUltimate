@@ -531,6 +531,76 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
     return dict(payload)
 
 
+def qualify_input_terminal_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    """Bind an input quarantine or isolated holdout without fabricating mask evidence."""
+
+    outcome = record.get("outcome")
+    if outcome not in {"quarantined", "holdout"}:
+        raise NudeRecordQualificationError("input_terminal_outcome_invalid")
+    sample_id = _nonempty(record.get("sample_id"), "sample_id")
+    source_sha256 = _sha256(record.get("source_sha256"), "source_sha256")
+    source_role = _nonempty(record.get("source_role"), "source_role")
+    registry_sha256 = _sha256(record.get("registry_sha256"), "registry_sha256")
+    shard_sha256 = _sha256(record.get("shard_sha256"), "shard_sha256")
+    reasons = record.get("reasons")
+    if (
+        not isinstance(reasons, Sequence)
+        or isinstance(reasons, (str, bytes))
+        or not reasons
+        or any(not isinstance(reason, str) or not reason.strip() for reason in reasons)
+    ):
+        raise NudeRecordQualificationError("input_terminal_reasons_required")
+    evidence: dict[str, Any] = {
+        "schema_version": "maskfactory.nude_input_terminal.v1",
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "source_role": source_role,
+        "registry_sha256": registry_sha256,
+        "shard_sha256": shard_sha256,
+        "outcome": outcome,
+        "reasons": sorted(set(reasons)),
+        "input_report_sha256": _sha256(record.get("input_report_sha256"), "input_report_sha256"),
+        "mask_generated": False,
+        "training_authority": False,
+        "production_mask_authority": False,
+    }
+    if outcome == "holdout":
+        if source_role != "bbox_evaluation_only":
+            raise NudeRecordQualificationError("holdout_source_role_invalid")
+        evidence["holdout_policy_sha256"] = _sha256(
+            record.get("holdout_policy_sha256"), "holdout_policy_sha256"
+        )
+        evidence["split_group_id"] = _nonempty(record.get("split_group_id"), "split_group_id")
+        evidence["evaluation_only"] = True
+    else:
+        if record.get("holdout_policy_sha256") is not None:
+            raise NudeRecordQualificationError("quarantine_cannot_claim_holdout_policy")
+        evidence["evaluation_only"] = False
+    evidence_sha256 = _canonical_sha256(evidence)
+    return {
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "outcome": outcome,
+        "evidence_sha256": evidence_sha256,
+        "qualification_evidence": evidence,
+    }
+
+
+def validate_input_terminal_queue_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Recompute a quarantine/holdout receipt before durable queue mutation."""
+
+    evidence = payload.get("qualification_evidence")
+    if not isinstance(evidence, Mapping):
+        raise NudeRecordQualificationError("qualification_evidence_required")
+    rebuilt = qualify_input_terminal_record(evidence)
+    if dict(evidence) != rebuilt["qualification_evidence"]:
+        raise NudeRecordQualificationError("input_terminal_evidence_drift")
+    for field in ("sample_id", "source_sha256", "outcome", "evidence_sha256"):
+        if payload.get(field) != rebuilt.get(field):
+            raise NudeRecordQualificationError(f"input_terminal_{field}_mismatch")
+    return dict(payload)
+
+
 __all__ = [
     "NudeRecordQualificationError",
     "FAILURE_STAGES",
@@ -538,6 +608,8 @@ __all__ = [
     "REQUIRED_REVIEW_ROLES",
     "qualify_terminal_record",
     "qualify_nonacceptance_record",
+    "qualify_input_terminal_record",
+    "validate_input_terminal_queue_payload",
     "validate_nonacceptance_queue_payload",
     "validate_qualified_queue_payload",
     "verify_complete_panel_evidence",

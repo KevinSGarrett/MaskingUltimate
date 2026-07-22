@@ -7,8 +7,10 @@ import pytest
 
 from maskfactory.nude_record_qualification import (
     NudeRecordQualificationError,
+    qualify_input_terminal_record,
     qualify_nonacceptance_record,
     qualify_terminal_record,
+    validate_input_terminal_queue_payload,
     validate_nonacceptance_queue_payload,
     validate_qualified_queue_payload,
     verify_complete_panel_evidence,
@@ -261,3 +263,40 @@ def test_repair_exhaustion_is_bounded_and_reason_coded(tmp_path: Path) -> None:
     record["strict_reviews"][0]["verdict"] = "fail"  # type: ignore[index]
     result = qualify_nonacceptance_record(record, panels=panels)
     assert result["qualification_evidence"]["repair"]["attempts"] == 3
+
+
+def test_quarantine_receipt_has_no_mask_or_authority() -> None:
+    result = qualify_input_terminal_record(
+        {
+            "sample_id": "bad-input",
+            "source_sha256": _sha("source"),
+            "source_role": "polygon_external_supervision",
+            "registry_sha256": _sha("registry"),
+            "shard_sha256": _sha("shard"),
+            "outcome": "quarantined",
+            "reasons": ["decode_failed"],
+            "input_report_sha256": _sha("input-report"),
+        }
+    )
+    evidence = result["qualification_evidence"]
+    assert evidence["mask_generated"] is False
+    assert evidence["training_authority"] is False
+    assert validate_input_terminal_queue_payload(result) == result
+
+
+def test_holdout_requires_evaluation_role_policy_and_split_group() -> None:
+    with pytest.raises(NudeRecordQualificationError, match="holdout_source_role_invalid"):
+        qualify_input_terminal_record(
+            {
+                "sample_id": "unsafe-holdout",
+                "source_sha256": _sha("source"),
+                "source_role": "polygon_external_supervision",
+                "registry_sha256": _sha("registry"),
+                "shard_sha256": _sha("shard"),
+                "outcome": "holdout",
+                "reasons": ["evaluation_only"],
+                "input_report_sha256": _sha("input-report"),
+                "holdout_policy_sha256": _sha("holdout-policy"),
+                "split_group_id": "group-1",
+            }
+        )

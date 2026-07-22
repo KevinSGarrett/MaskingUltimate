@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
 
 from .nude_record_qualification import (
+    validate_input_terminal_queue_payload,
     validate_nonacceptance_queue_payload,
     validate_qualified_queue_payload,
 )
@@ -301,6 +302,8 @@ class NudeBatchQueue:
                     validate_qualified_queue_payload(outcome)
                 if outcome.get("outcome") in {"abstained", "rejected"}:
                     validate_nonacceptance_queue_payload(outcome)
+                if outcome.get("outcome") in {"quarantined", "holdout"}:
+                    validate_input_terminal_queue_payload(outcome)
                 source_sha = str(outcome.get("source_sha256", ""))
                 evidence_sha = str(outcome.get("evidence_sha256", ""))
                 if len(source_sha) != 64 or len(evidence_sha) != 64:

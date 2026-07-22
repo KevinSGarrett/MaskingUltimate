@@ -23009,18 +23009,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 90,
+      "percent_complete": 92,
       "notes": [
         {
           "ts": "2026-07-22T08:52:16+00:00",
           "actor": "ai_agent",
           "text": "The full queue/recovery contract is implemented, focused-tested, seeded for all 322 RunPod shards, and hash-mirrored to persistent /workspace. It remains partial pending one live provider crash/restart campaign and observed 1,000-record milestone under production load."
+        },
+        {
+          "ts": "2026-07-22T11:20:47+00:00",
+          "actor": "ai_agent",
+          "text": "All six terminal outcomes now require a revalidated receipt at the SQLite mutation boundary: accepted, repaired, abstained, rejected, quarantined, and holdout. Live crash/restart and 1,000-record production milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; 13 focused queue/intake tests pass; local and RunPod queue SHA256 ccac74754d892a9310fa55c4beb3d31cff9f8a41591231aaed5e0d5bbb893c74; 322 queued shards account for 81,910 records.",
+      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; 103 adult/critic regression tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:52:16+00:00",
+      "updated_at": "2026-07-22T11:20:47+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23147,7 +23152,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 45,
+      "percent_complete": 55,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23158,12 +23163,17 @@
           "ts": "2026-07-22T11:18:21+00:00",
           "actor": "ai_agent",
           "text": "Continue-on-exception contracts now cover accepted, repaired, abstained, and rejected mask candidates. Abstention requires an uncertain independent verdict; strict-review rejection requires a fail; hard-QC rejection retains the veto; repair exhaustion is bounded to at most three attempts. Quarantined-input/holdout receipts and live execution remain open."
+        },
+        {
+          "ts": "2026-07-22T11:20:48+00:00",
+          "actor": "ai_agent",
+          "text": "Continue-on-exception accounting now includes registry/shard/source/reason-bound input quarantine and policy/split-group-bound evaluation-only holdout receipts. Every queue terminal outcome is fail-closed; live repair/abstention throughput remains open."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; 46 focused and 100 broader tests pass",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; 49 focused and 103 broader tests pass",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:18:21+00:00",
+      "updated_at": "2026-07-22T11:20:48+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {

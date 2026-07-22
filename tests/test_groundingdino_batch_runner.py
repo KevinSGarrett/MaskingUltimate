@@ -40,6 +40,7 @@ def _load_runner(tmp_path: Path, monkeypatch):
     def load_model(*args, **kwargs):
         calls["load_model"] += 1
         calls["load_devices"].append(kwargs.get("device"))
+        print("model diagnostic")
         return object()
 
     def load_image(path: str):
@@ -72,7 +73,9 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_batch_uses_one_model_load_and_binds_every_source(tmp_path: Path, monkeypatch) -> None:
+def test_batch_uses_one_model_load_and_binds_every_source(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
     runner, calls = _load_runner(tmp_path, monkeypatch)
     checkpoint = tmp_path / "model.pth"
     checkpoint.write_bytes(b"checkpoint")
@@ -111,6 +114,9 @@ def test_batch_uses_one_model_load_and_binds_every_source(tmp_path: Path, monkey
         record["source_sha256"] for record in records
     ]
     assert len(result["output_sha256"]) == 64
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "model diagnostic" in captured.err
 
 
 def test_batch_fails_closed_on_hash_drift_and_duplicate_sample(tmp_path: Path, monkeypatch) -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import platform
@@ -214,7 +215,8 @@ def run(
     _validate_prompts_and_thresholds(prompts, box_threshold, text_threshold, device)
     package = Path(groundingdino.__file__).resolve().parent
     config = package / "config" / "GroundingDINO_SwinT_OGC.py"
-    model = load_model(str(config), str(checkpoint), device=device)
+    with contextlib.redirect_stdout(sys.stderr):
+        model = load_model(str(config), str(checkpoint), device=device)
     try:
         image_size, proposals = _predict_one(
             model,
@@ -312,7 +314,8 @@ def run_batch(
     if pending:
         package = Path(groundingdino.__file__).resolve().parent
         config = package / "config" / "GroundingDINO_SwinT_OGC.py"
-        model = load_model(str(config), str(checkpoint), device=device)
+        with contextlib.redirect_stdout(sys.stderr):
+            model = load_model(str(config), str(checkpoint), device=device)
         model_load_count = 1
         try:
             for record in pending:

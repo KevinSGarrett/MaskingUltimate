@@ -20,6 +20,7 @@ from maskfactory.nude_reference_mask_hard_qc import (
     validate_reference_mask_hard_qc_stage_receipt,
     validate_reference_person_mask_hard_qc,
 )
+from maskfactory.nude_reference_mask_repair import execute_reference_person_repair_batch
 from maskfactory.nude_reference_strict_visual_review import (
     NudeReferenceStrictVisualReviewError,
     VisualReviewerIdentity,
@@ -65,6 +66,28 @@ class _Provider:
             mask[top + 1 : bottom - 1, left + inset : right - inset] = True
             mask[point_y, point_x] = True
         return (MaskProposal(mask, 0.9, self.identity, "prompt"),)
+
+
+class _RepairProvider:
+    def __init__(self, *, outside_roi=False, no_progress=False):
+        self.identity = ProviderIdentity(
+            "repair-provider", "interactive_segmenter", "repair-family", "9" * 40, "8" * 64
+        )
+        self.outside_roi = outside_roi
+        self.no_progress = no_progress
+        self.refine_calls = 0
+
+    def embed(self, image):
+        return np.asarray(image).shape
+
+    def refine(self, embedding, *, prompt):
+        self.refine_calls += 1
+        mask = np.asarray(prompt["mask_prompt"]).copy()
+        if not self.no_progress:
+            mask[0, 0] = True if self.outside_roi else mask[0, 0]
+            if not self.outside_roi:
+                mask[2, 2] = ~mask[2, 2]
+        return (MaskProposal(mask.astype(bool), 0.95, self.identity, "repair-prompt"),)
 
 
 class _Reviewer:
@@ -300,6 +323,23 @@ def _strict_kwargs(source, root, batch, hard_qc, tmp_path, reviewers=None):
         "critic_certificates": certificates,
         "now": NOW,
     }
+
+
+def _repair_ready_review(source, root, batch, hard_qc, tmp_path):
+    payload = json.loads(_visual_response(verdict="fail", problems=["boundary_too_loose"]))
+    payload["repair_plan"] = {
+        "tool": "sam2_refine",
+        "hypothesis_id": "expand-owned-boundary-v1",
+        "roi_xyxy": [2, 2, 18, 22],
+        "positive_points": [[10, 10]],
+        "negative_points": [[2, 2]],
+        "maximum_changed_fraction": 0.25,
+        "rationale": "repair the cited owned-person boundary",
+    }
+    kwargs = _strict_kwargs(source, root, batch, hard_qc, tmp_path)
+    for reviewer in kwargs["reviewers"]:
+        reviewer.responses = [json.dumps(payload)]
+    return run_reference_person_strict_visual_review(**kwargs), kwargs["target_contracts"]
 
 
 def _catalog(source_sha256: str, *, two_people: bool = False):
@@ -675,3 +715,126 @@ def test_strict_visual_review_retains_bounded_repair_hypothesis_without_pixel_au
     )
     assert report["production_mask_authority"] is False
     assert report["operational_certificate_eligible"] is False
+
+
+def test_repair_batch_creates_immutable_child_and_v2_child_contract(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    review, target_contracts = _repair_ready_review(source, root, batch, hard_qc, tmp_path)
+    parent = batch["records"][0]["candidates"][0]
+    parent_path = root / parent["artifact_relative_path"]
+    parent_bytes = parent_path.read_bytes()
+    result = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=_RepairProvider(),
+    )
+
+    assert result["status_counts"] == {"repair_candidates_created": 1}
+    child = result["records"][0]["candidate_results"][0]
+    assert child["status"] == "child_candidate_created"
+    assert (root / child["child_relative_path"]).is_file()
+    assert child["child_artifact_sha256"] != child["parent_artifact_sha256"]
+    assert child["child_mask_sha256"] != child["parent_mask_sha256"]
+    assert parent_path.read_bytes() == parent_bytes
+    contract = child["child_target_contract"]
+    assert contract["package"]["revision"] == 2
+    assert contract["package"]["parent_revision"] == 1
+    assert contract["target"] == target_contracts["sample-a"][0]["target"]
+    assert contract["owner"] == target_contracts["sample-a"][0]["owner"]
+    assert result["hard_qc_complete"] is False
+    assert result["strict_visual_review_complete"] is False
+    assert result["production_mask_authority"] is False
+    assert result["autonomous_certified_gold_created"] is False
+
+
+def test_repair_batch_rejects_duplicate_hypothesis_without_provider_execution(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    review, target_contracts = _repair_ready_review(source, root, batch, hard_qc, tmp_path)
+    plan = review["records"][0]["candidate_reports"][0]["reviewer_verdicts"][0]["repair_plan"]
+    provider = _RepairProvider()
+    result = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=provider,
+        attempt_history={
+            "sample-a": {
+                0: [
+                    {
+                        "hypothesis_id": plan["hypothesis_id"],
+                        "plan_sha256": _sha(plan),
+                    }
+                ]
+            }
+        },
+    )
+
+    assert result["status_counts"] == {"abstain": 1}
+    assert result["records"][0]["candidate_results"] == [
+        {
+            "person_index": 0,
+            "status": "abstain",
+            "reason": "duplicate_repair_hypothesis",
+        }
+    ]
+    assert provider.refine_calls == 0
+
+
+def test_repair_batch_terminates_identical_child_as_no_progress(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    review, target_contracts = _repair_ready_review(source, root, batch, hard_qc, tmp_path)
+    result = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=_RepairProvider(no_progress=True),
+    )
+
+    candidate = result["records"][0]["candidate_results"][0]
+    assert result["status_counts"] == {"abstain": 1}
+    assert candidate["status"] == "no_progress"
+    assert candidate["reason"] == "identical_child_mask"
+    assert not list(root.glob("**/repairs/*.png"))
+
+
+def test_repair_batch_roi_escape_is_record_error_and_preserves_parent(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    review, target_contracts = _repair_ready_review(source, root, batch, hard_qc, tmp_path)
+    parent_path = root / batch["records"][0]["candidates"][0]["artifact_relative_path"]
+    parent_bytes = parent_path.read_bytes()
+    result = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=_RepairProvider(outside_roi=True),
+    )
+
+    assert result["status_counts"] == {"record_error": 1}
+    assert "repair_changed_pixels_outside_roi" in result["records"][0]["reasons"][0]
+    assert parent_path.read_bytes() == parent_bytes
+    assert not list(root.glob("**/repairs/*.png"))

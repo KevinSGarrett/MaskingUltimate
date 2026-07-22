@@ -1,7 +1,7 @@
 # MaskFactory Project Tracker — README
 
 This folder is the **live, machine-readable status tracker** for the entire
-Ultimate Masking System build-out: all 855 action items from
+Ultimate Masking System build-out: all 856 action items from
 `Plan\Items\*.md`, three independently scoped completion profiles, the
 Definition-of-Done (D1–D11) and Goals (G1–G9) rollups, and tier-separated
 truth, labor, audit, coverage, and certified-package metrics.
@@ -54,7 +54,7 @@ python tracker.py <command> ...
 python tracker.py rebuild
 ```
 Run this once to initialize (already done — `tracker.json` exists with all
-855 items after the docs 18–26/SAM 3.1/DAZ/bridge/adult-corpus reconciliation). Rerun it any time `Plan\Items\*.md` is
+856 items after the docs 18–26/SAM 3.1/DAZ/bridge/adult-corpus reconciliation). Rerun it any time `Plan\Items\*.md` is
 edited (labels added, items split, etc.). It **preserves all existing
 status/evidence/notes** for ids that still exist, marks ids no longer found
 in the source as `orphaned: true` (never deletes their history), and adds
@@ -109,7 +109,7 @@ python tracker.py list [--phase P0..P9] [--status open,blocked] [--hard-blockers
                         [--conditional] [--blocked] [--search "sam2"]
                         [--profile core_autonomous_runtime]
 ```
-Statuses can be comma-separated. No filters = list everything (855 lines).
+Statuses can be comma-separated. No filters = list everything (856 lines).
 `--profile` restricts the result—including `--blocked` or `--hard-blockers`—to
 the profile's complete transitive item-dependency closure.
 
@@ -160,7 +160,7 @@ they are not auto-computed the way DoD items are (see §5).
 ```
 python tracker.py validate
 ```
-Confirms 855 non-orphaned items, no duplicate/invalid statuses, validates the
+Confirms 856 non-orphaned items, no duplicate/invalid statuses, validates the
 closed completion registry and its mirror in `tracker.py`, fails any direct or
 transitive human/CVAT/volume/full-library/DAZ/soak dependency assigned to core, and flags
 `complete` items missing evidence, `blocked` items missing a reason, and any

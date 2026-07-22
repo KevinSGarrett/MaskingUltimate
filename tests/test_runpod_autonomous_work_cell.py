@@ -1062,6 +1062,59 @@ def test_receipt_emitter_cannot_turn_hard_qc_veto_into_mission_pass(tmp_path: Pa
         )
 
 
+def test_runpod_stage_wrapper_runs_tool_and_emits_hash_bound_receipt(tmp_path: Path) -> None:
+    stage_writer = tmp_path / "stage_writer.py"
+    stage_writer.write_text(
+        "\n".join(
+            [
+                "import json, pathlib, sys",
+                "artifact = pathlib.Path(sys.argv[1])",
+                "work = json.load(sys.stdin)",
+                "assert work['record_id'] == 'r1'",
+                "artifact.write_text(json.dumps({",
+                "  'schema_version': 'maskfactory.runpod_stage.hard_qc.v1',",
+                "  'work_cell_status': 'pass',",
+                f"  'qa_vector_sha256': '{HEX}',",
+                "  'hard_veto_count': 0,",
+                "}, sort_keys=True), encoding='utf-8')",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    wrapper = Path.cwd() / "tools" / "run_runpod_work_cell_stage.py"
+    artifact_root = tmp_path / "artifacts"
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(wrapper),
+            "--stage",
+            "hard_qc",
+            "--artifact-root",
+            str(artifact_root),
+            "--",
+            sys.executable,
+            str(stage_writer),
+            "{artifact}",
+        ],
+        cwd=Path.cwd(),
+        env=env,
+        input=json.dumps({"record_id": "r1", "stage": "hard_qc", "lease_token": "lease"}),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    artifact_path = artifact_root / "hard_qc" / "r1.hard_qc.json"
+    assert artifact_path.is_file()
+    assert json.loads(result.stdout) == {
+        "stage": "hard_qc",
+        "status": "pass",
+        "actor_kind": "deterministic_qa",
+        "evidence_sha256": file_sha256(artifact_path),
+        "detail": {"qa_vector_sha256": HEX, "hard_veto_count": 0},
+    }
+
+
 def test_cli_run_rejects_subprocess_handler_binding_drift(tmp_path: Path) -> None:
     spec = {
         "kind": "subprocess_json",

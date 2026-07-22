@@ -1319,3 +1319,31 @@ special routing that prevents required training coverage.
 **What we did instead:** Added binding Standing Orders section **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** forbidding idle Kevin waits, “no further action,” post-seal parking while unblocked work remains, waiting on subagent notifications without chaining, and treating usage-limit/agent-death as project pause without durable nohup + relaunch. Required immediate next-wave chaining and lane-switching on NEEDS KEVIN. Wired into `.cursor/rules`, Instructions `00`/`02`/`03` never-idle procedure, AGENTS/CLAUDE one-liners, and `.wt_climb4` Plan twins.
 **Why:** Kevin hard mandate 2026-07-21: agents are NOT allowed to stop until entire MaskFactory project is fully completed end-to-end. Auto only; NEVER EC2.
 **Approved by:** Kevin (explicit CRITICAL MANDATE — IMPLEMENTED INTO RULES) | AI-autonomous implementation
+
+## 2026-07-22 - Real source corpora are mandatory and ontology v2 has 66 classes
+
+**Item(s) affected:** MF-P0-13.05/.06, MF-P1-10.*, MF-P1-11.*, MF-P4-11.17/.23/.24,
+MF-P5-09.*, MF-P9-13.02/.08, MF-P9-14.08/.10
+
+**Previous value:** The local corpora were documented as inventories but could be omitted by a
+semantic-calibration path that accepted synthetic colored-shape positives. Ontology v2 exposed 65
+classes and did not contain a separately governed anus/visible anal-opening class.
+
+**New value:** Every production semantic-critic calibration/qualification path requires exact real
+source bindings from the governed MaskedWarehouse and reference-image roots. Evidence-qualified
+MaskedWarehouse masks, points, silhouettes, and annotations must be consumed by named downstream
+lanes; real reference images are mandatory retrieval/coverage/benchmark inputs. Synthetic scenes,
+old draft masks, in-review masks, rejected masks, and unbound positives cannot satisfy semantic
+validity. Ontology v2 contains 66 classes, preserves IDs 0..55, and appends exactly IDs 56..65,
+including `anus`, with the complete visible-anatomy alias vocabulary.
+
+**Authority boundary:** MaskedWarehouse directory membership does not by itself promote a draft to
+gold, and reference-image selection does not supply mask truth. Exact provenance and authority
+evidence decide how each asset may be consumed. Autonomous certification is valid; manual CVAT is
+not a mandatory product-completion dependency.
+
+**Why:** Kevin explicitly required the existing golden masks, points, silhouettes, and real reference
+library to be used by the ultimate masking system and required complete visible adult anatomy rather
+than synthetic controls or old low-quality drafts.
+
+**Approved by:** Kevin, explicit owner directive on 2026-07-22

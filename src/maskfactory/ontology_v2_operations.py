@@ -37,7 +37,7 @@ EXPECTED_OPERATIONS_POLICY = {
         "schema": "manifest_v2",
         "require_exhaustive_file_hashes": True,
         "require_strict_binary_masks": True,
-        "gold_requires_v2_review_authority": True,
+        "gold_requires_v2_authority": True,
     },
     "gc": {
         "eligible_path_pattern": "masks@vN",

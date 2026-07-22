@@ -20,6 +20,8 @@ policy:
   external_labels_truth_partition: train
   external_labels_may_enter_holdout: false
   external_labels_may_satisfy_certified_volume: false
+  external_labels_may_support_semantic_critic_calibration: true
+  semantic_critic_calibration_may_mint_gold_or_certificates: false
   maximum_combined_external_batch_fraction: 0.35
   require_entry_for_every_inventory_source: true
   require_remap_and_visual_qa_before_fixture_use: true
@@ -47,6 +49,7 @@ sources:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
       - private_noncommercial_local_training_after_qualification
+      - private_noncommercial_semantic_critic_calibration_after_qualification
     prohibited_uses:
       - gold_package_inputs
       - commercial_or_distributed_outputs
@@ -88,6 +91,7 @@ sources:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
       - private_noncommercial_local_training_after_qualification
+      - private_noncommercial_semantic_critic_calibration_after_qualification
     prohibited_uses:
       - gold_package_inputs
       - commercial_or_distributed_outputs
@@ -130,6 +134,7 @@ sources:
       - local_non_distributable_research_qc_after_remap_and_visual_qa
       - local_non_distributable_fixture_generation_after_remap_and_visual_qa
       - private_noncommercial_local_training_after_qualification
+      - private_noncommercial_semantic_critic_calibration_after_qualification
     prohibited_uses:
       - gold_package_inputs
       - commercial_or_distributed_outputs

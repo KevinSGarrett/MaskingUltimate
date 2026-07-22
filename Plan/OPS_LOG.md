@@ -11707,3 +11707,31 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   unsuitable as acceptance evidence because of known missing governed assets, pre-existing
   governing-source drift, and subprocess import-path failures.
 - Evidence: `qa/live_verification/source_registration_reconciliation_20260722.json`.
+
+## 2026-07-22 - Required real corpora and complete visible-anatomy contract
+
+- Made `C:\Comfy_UI_Main\MaskedWarehouse` and
+  `F:\Reference_Images\Ultimate_Masking_Reference_Images` durable required inputs in standing
+  orders, session-start instructions, operating rules, external-foundation instructions, specs,
+  source registry, checklist items, tracker metadata, runtime policy, tests, and the pursuing goal.
+- MaskedWarehouse assets must bind to an actual training, semantic-calibration, seeded-defect,
+  multi-person-QA, or benchmark consumer lane. Reference images drive real-image retrieval,
+  coverage, calibration, and hard-case benchmarking; selecting an image does not invent mask truth.
+- Replaced synthetic semantic-positive calibration authority with a 12-case, 12-source real-image
+  corpus and exact source/base-annotation/candidate/panel hashes. Synthetic geometry and historical
+  draft/in-review/rejected masks now fail before visual-critic model load.
+- Expanded ontology v2 from 56 to 66 classes with IDs 56..65 for bilateral areolas and nipples,
+  vulva, penis shaft, glans penis, bilateral scrotal regions, and anus. Natural-language aliases
+  cover vagina, penis head, testicle(s), asshole/anal opening, breasts, areolas, nipples, butt/ass,
+  and left/right butt cheek without creating duplicate mask classes.
+- Resealed the specialist, provider-matrix, custom-segmenter margin, and custom-segmenter tournament
+  policies against the exact 66-class sources. The focused 284-test suite, Ruff, Black, and diff
+  integrity pass. RunPod inventory reconciliation and live visual-critic qualification remain open.
+- Evidence: `qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json` and
+  `qa/live_verification/real_corpus_calibration_activation_20260722.json`.
+- Live RunPod recheck passed 13/13 persistence checks on the current 1 TiB network volume. Both
+  governed roots exist with the required top-level structure, and the remote authoritative corpus
+  snapshot byte-matches local evidence at SHA-256
+  `46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205` (10/10 checks).
+  The snapshot records 489,638 MaskedWarehouse files and 3,711 reference-library files. Exact new
+  per-file local/remote sampling and database/manifest hash reconciliation remains explicitly open.

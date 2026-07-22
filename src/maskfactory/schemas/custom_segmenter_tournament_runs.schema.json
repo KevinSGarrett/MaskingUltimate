@@ -86,7 +86,7 @@
       "properties": {
         "run_manifest": {"type": "object"},
         "run_manifest_sha256": {"$ref": "#/$defs/sha256"},
-        "label_observations": {"type": "array", "minItems": 65, "maxItems": 65, "items": {"$ref": "#/$defs/metricObservation"}},
+        "label_observations": {"type": "array", "minItems": 66, "maxItems": 66, "items": {"$ref": "#/$defs/metricObservation"}},
         "context_observations": {"type": "array", "minItems": 17, "maxItems": 17, "items": {"$ref": "#/$defs/metricObservation"}},
         "error_observations": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/errorObservation"}},
         "runtime_metrics": {"$ref": "#/$defs/runtime"}

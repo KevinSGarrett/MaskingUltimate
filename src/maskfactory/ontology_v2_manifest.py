@@ -116,12 +116,12 @@ def build_manifest_v2_schema(path: Path | str = DEFAULT_SCHEMA_V1) -> dict[str, 
             "previous_workflow_status": {"type": ["string", "null"]},
             "added_labels": {
                 "type": "array",
-                "minItems": 9,
-                "maxItems": 9,
+                "minItems": 10,
+                "maxItems": 10,
                 "uniqueItems": True,
                 "items": {"$ref": "#/$defs/labelName"},
             },
-            "status": {"const": "awaiting_v2_human_review"},
+            "status": {"const": "awaiting_v2_authority_resolution"},
         },
     }
 
@@ -387,7 +387,7 @@ def migrate_v1_manifest_document(manifest: Mapping[str, Any]) -> dict[str, Any]:
         "delta_sha256": _delta_sha256(),
         "previous_workflow_status": previous_workflow,
         "added_labels": [label["name"] for label in additions],
-        "status": "awaiting_v2_human_review",
+        "status": "awaiting_v2_authority_resolution",
     }
     if result.get("files") != source.get("files"):
         raise OntologyV2ManifestError("migration changed the authoritative files map")

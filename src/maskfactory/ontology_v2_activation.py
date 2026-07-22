@@ -48,7 +48,8 @@ REQUIRED_V2_DERIVED = {
     "penis_visible": "part:penis_shaft | part:glans_penis",
     "scrotum_visible": "part:left_scrotal_region | part:right_scrotal_region",
     "external_genitalia_visible": "part:vulva | derived:penis_visible | derived:scrotum_visible",
-    "pelvic_anatomy_visible": "part:pelvic_region | derived:external_genitalia_visible",
+    "external_pelvic_anatomy_visible": "derived:external_genitalia_visible | part:anus",
+    "pelvic_anatomy_visible": "part:pelvic_region | derived:external_pelvic_anatomy_visible",
 }
 
 
@@ -123,12 +124,12 @@ def validate_v2_authority_pair(
         for label in ontology["labels"]
         if isinstance(label, Mapping) and label.get("map") == "part"
     ]
-    if [label.get("id") for label in part_labels] != list(range(65)):
-        raise OntologyV2ActivationError("ontology-v2 PART IDs are not exact contiguous 0..64")
+    if [label.get("id") for label in part_labels] != list(range(66)):
+        raise OntologyV2ActivationError("ontology-v2 PART IDs are not exact contiguous 0..65")
     return {
         "ontology_version": "body_parts_v2",
         "activation_status": expected_status,
-        "part_class_count": 65,
+        "part_class_count": 66,
         "formula_count": len(formula_names),
         "required_v2_formula_count": len(REQUIRED_V2_DERIVED),
         "ontology_sha256": _sha256(ontology_data),

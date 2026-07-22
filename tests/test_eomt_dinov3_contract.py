@@ -24,7 +24,7 @@ def test_eomt_contract_binds_exact_v2_vocabulary_and_discards_coco_head() -> Non
     contract = EomtDinov3TrainingContract()
     compiled = contract.validate()
     assert compiled["provider_key"] == "eomt_dinov3_small_640"
-    assert compiled["num_classes"] == 65
+    assert compiled["num_classes"] == 66
     assert compiled["class_names"] == list(V2_CLASS_NAMES)
     assert compiled["class_names_sha256"] == V2_VOCABULARY_SHA256
     assert compiled["pretrained_head_disposition"] == "discard_coco_panoptic_head"

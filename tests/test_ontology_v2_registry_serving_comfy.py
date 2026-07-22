@@ -67,7 +67,7 @@ def test_exact_v2_registry_contract_and_serving_alias_provenance(tmp_path: Path)
     entry = json.loads(registry.read_text(encoding="utf-8"))["models"][0]
     contract = validate_bodypart_model_contract(entry, require_explicit=True)
     assert contract["ontology_version"] == V2_ONTOLOGY_VERSION
-    assert contract["num_classes"] == 65
+    assert contract["num_classes"] == 66
 
     calls: list[tuple[str, ...]] = []
 
@@ -121,7 +121,7 @@ def test_v2_serving_rejects_non_exact_vocabulary(tmp_path: Path) -> None:
     names[-2:] = reversed(names[-2:])
     registry, models_root = _v2_registry(tmp_path, names)
     runtime = InferenceRuntime(registry_path=registry, models_root=models_root)
-    with pytest.raises(ServingError, match="vocabulary must be exact 65 names in ID order"):
+    with pytest.raises(ServingError, match="vocabulary must be exact 66 names in ID order"):
         runtime.configure_champion_predictor(lambda _checkpoints: object())
 
 

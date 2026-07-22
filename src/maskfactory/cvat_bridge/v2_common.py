@@ -1,7 +1,7 @@
 """Inactive body_parts_v2 CVAT authority shared by project, push, and pull.
 
 The active production bridge remains body_parts_v1.  This module deliberately
-uses separate configuration, mappings, task records, and a 65-label PART-only
+uses separate configuration, mappings, task records, and a 66-label PART-only
 scope so a pilot can never mutate or silently reuse an open v1 task.
 """
 
@@ -58,8 +58,8 @@ def load_v2_ontology(path: Path | str = DEFAULT_ONTOLOGY_V2) -> Ontology:
     # Disabled v1 ears still occupy immutable IDs 54/55 and must receive an
     # explicit v2 review state; enabled_only would silently collapse the scope.
     parts = ontology.labels_for_map("part")
-    if len(parts) != 65 or [label.id for label in parts] != list(range(65)):
-        raise CvatV2Error("CVAT v2 requires exactly the append-only PART IDs 0..64")
+    if len(parts) != 66 or [label.id for label in parts] != list(range(66)):
+        raise CvatV2Error("CVAT v2 requires exactly the append-only PART IDs 0..65")
     return ontology
 
 
@@ -108,7 +108,7 @@ def load_v2_cvat_config(path: Path | str = DEFAULT_V2_CONFIG) -> dict[str, Any]:
         raise CvatV2Error("CVAT v2 project name must be versioned and distinct from v1")
     exact = {
         "ontology_version": V2_ONTOLOGY_VERSION,
-        "label_scope": "part_ids_0_64",
+        "label_scope": "part_ids_0_65",
         "label_source": "configs/ontology_v2.yaml",
         "color_source": "configs/viz_v2.yaml",
     }
@@ -128,7 +128,7 @@ def load_v2_cvat_config(path: Path | str = DEFAULT_V2_CONFIG) -> dict[str, Any]:
 
 
 class V2CvatLabelMap:
-    """Strict canonical mapping for the 65 PART labels and v2 state attributes."""
+    """Strict canonical mapping for the 66 PART labels and v2 state attributes."""
 
     def __init__(self, labels: list[dict[str, Any]], *, ontology: Ontology | None = None) -> None:
         authority = ontology or load_v2_ontology()
@@ -190,7 +190,7 @@ class V2CvatLabelMap:
         return {
             "schema_version": "2.0.0",
             "ontology_version": V2_ONTOLOGY_VERSION,
-            "label_scope": "part_ids_0_64",
+            "label_scope": "part_ids_0_65",
             "project_id": int(project_id),
             "project_name": project_name,
             "aliases_help_only": v2_alias_help(),
@@ -209,7 +209,7 @@ def mapping_from_document(document: Mapping[str, Any]) -> tuple[int, V2CvatLabel
     if (
         document.get("schema_version") != "2.0.0"
         or document.get("ontology_version") != V2_ONTOLOGY_VERSION
-        or document.get("label_scope") != "part_ids_0_64"
+        or document.get("label_scope") != "part_ids_0_65"
     ):
         raise CvatV2Error("CVAT v2 mapping metadata is invalid")
     labels_document = document.get("labels")

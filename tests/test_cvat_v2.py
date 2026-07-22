@@ -271,11 +271,11 @@ def _complete_annotations(client: FakeCvatV2, mapping_path: Path, task_id: int) 
     return annotations
 
 
-def test_v2_project_is_65_canonical_part_labels_with_exact_state_attributes() -> None:
+def test_v2_project_is_66_canonical_part_labels_with_exact_state_attributes() -> None:
     specification = v2_project_label_spec()
-    assert len(specification) == 65
+    assert len(specification) == 66
     assert [entry["name"] for entry in specification[:2]] == ["background", "hair"]
-    assert [entry["name"] for entry in specification[-9:]] == [
+    assert [entry["name"] for entry in specification[-10:]] == [
         "left_areola",
         "right_areola",
         "left_nipple",
@@ -285,6 +285,7 @@ def test_v2_project_is_65_canonical_part_labels_with_exact_state_attributes() ->
         "glans_penis",
         "left_scrotal_region",
         "right_scrotal_region",
+        "anus",
     ]
     assert all(entry["type"] == "any" for entry in specification)
     assert all(
@@ -313,7 +314,7 @@ def test_init_v2_project_never_reuses_v1_and_persists_alias_help_only(tmp_path: 
     assert client.project_posts[0]["name"] == "MaskFactory_body_parts_v2_pilot"
     mapping = json.loads((tmp_path / "mapping.json").read_text())
     assert mapping["ontology_version"] == "body_parts_v2"
-    assert len(mapping["labels"]) == 65
+    assert len(mapping["labels"]) == 66
     assert mapping["aliases_help_only"]["vagina"]["canonical"] == "vulva"
     assert "vagina" not in mapping["labels"]
 
@@ -342,7 +343,7 @@ def test_v2_push_has_explicit_unreviewed_tags_doc18_sop_and_crop_presets(tmp_pat
     assert "Aliases are search/help only" in description
     assert task["create"]["project_id"] == 88
     annotations = task["annotations"]
-    assert len(annotations["tags"]) == 65
+    assert len(annotations["tags"]) == 66
     assert len(annotations["shapes"]) == 1
     _, mapping = mapping_from_document(json.loads(mapping_path.read_text()))
     states = {}

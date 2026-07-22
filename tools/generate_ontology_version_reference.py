@@ -32,7 +32,7 @@ def render_reference() -> str:
     """Render the exact checked-in version matrix from generated ontologies."""
     v1 = _indexed_parts(V1_ONTOLOGY)
     v2 = _indexed_parts(V2_ONTOLOGY)
-    if len(v1) != 56 or len(v2) != 65 or v2[: len(v1)] != v1:
+    if len(v1) != 56 or len(v2) != 66 or v2[: len(v1)] != v1:
         raise ValueError("body_parts_v2 is not an exact append-only 56-to-65 extension")
     additions = v2[len(v1) :]
     lines = [
@@ -42,7 +42,7 @@ def render_reference() -> str:
         "| Contract | Active production v1 | Approved, inactive v2 |",
         "|---|---|---|",
         "| Version | `body_parts_v1` | `body_parts_v2` |",
-        "| PART IDs/logits including background | `0..55` / 56 | `0..64` / 65 |",
+        "| PART IDs/logits including background | `0..55` / 56 | `0..65` / 66 |",
         "| Ontology | `configs/ontology.yaml` | `configs/ontology_v2.yaml` |",
         "| Manifest schema | `manifest.schema.json` | `manifest_v2.schema.json` |",
         "| Derived/viz config | `derived.yaml`, `viz.yaml` | `derived_v2.yaml`, `viz_v2.yaml` |",

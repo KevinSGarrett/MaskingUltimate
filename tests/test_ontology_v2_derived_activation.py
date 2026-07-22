@@ -28,9 +28,9 @@ def test_inactive_and_activation_ready_pairs_are_exact_and_complete() -> None:
     )
     active_ontology, active_derived = render_active_v2_authority_pair()
     active = validate_v2_authority_pair(active_ontology, active_derived, expected_status="active")
-    assert inactive["part_class_count"] == active["part_class_count"] == 65
-    assert inactive["formula_count"] == active["formula_count"] == 52
-    assert inactive["required_v2_formula_count"] == len(REQUIRED_V2_DERIVED) == 12
+    assert inactive["part_class_count"] == active["part_class_count"] == 66
+    assert inactive["formula_count"] == active["formula_count"] == 53
+    assert inactive["required_v2_formula_count"] == len(REQUIRED_V2_DERIVED) == 13
     assert inactive["ontology_sha256"] != active["ontology_sha256"]
     assert inactive["derived_sha256"] != active["derived_sha256"]
 
@@ -39,7 +39,7 @@ def test_every_v2_formula_executes_and_visible_silhouette_includes_new_atomics(
     tmp_path: Path,
 ) -> None:
     package = tmp_path / "package"
-    part = np.arange(65, dtype=np.uint16)[None, :]
+    part = np.arange(66, dtype=np.uint16)[None, :]
     material = np.ones(part.shape, dtype=np.uint8)
     write_label_map(package / "label_map_part.png", part, bits=16)
     write_label_map(package / "label_map_material.png", material, bits=8)
@@ -49,8 +49,8 @@ def test_every_v2_formula_executes_and_visible_silhouette_includes_new_atomics(
         config_path=Path("configs/derived_v2.yaml"),
         ontology=ontology,
     )
-    assert len(masks) == len(formulas) == 52
-    expected_visible_ids = set(range(1, 50)) | set(range(54, 65))
+    assert len(masks) == len(formulas) == 53
+    expected_visible_ids = set(range(1, 50)) | set(range(54, 66))
     person_visible = masks["person_full_visible"][0]
     full_body = masks["full_body_parts_visible"][0]
     assert {index for index, value in enumerate(person_visible) if value} == expected_visible_ids
@@ -62,7 +62,12 @@ def test_every_v2_formula_executes_and_visible_silhouette_includes_new_atomics(
     assert np.array_equal(masks["penis_visible"], np.isin(part, (61, 62)))
     assert np.array_equal(masks["scrotum_visible"], np.isin(part, (63, 64)))
     assert np.array_equal(masks["external_genitalia_visible"], np.isin(part, (60, 61, 62, 63, 64)))
-    assert np.array_equal(masks["pelvic_anatomy_visible"], np.isin(part, (9, 60, 61, 62, 63, 64)))
+    assert np.array_equal(
+        masks["external_pelvic_anatomy_visible"], np.isin(part, (60, 61, 62, 63, 64, 65))
+    )
+    assert np.array_equal(
+        masks["pelvic_anatomy_visible"], np.isin(part, (9, 60, 61, 62, 63, 64, 65))
+    )
 
 
 def test_active_v1_silhouette_behavior_remains_legacy_until_activation(tmp_path: Path) -> None:
@@ -89,7 +94,7 @@ def test_rehearsal_switches_pair_and_restores_seeded_partial_failure_without_act
     assert report["active_ontology_preserved"] == "body_parts_v1"
     assert report["production_activation_performed"] is False
     assert report["inactive_drift_check"] == "pass"
-    assert report["successful_pair_switch"]["active"]["part_class_count"] == 65
+    assert report["successful_pair_switch"]["active"]["part_class_count"] == 66
     assert report["seeded_second_file_failure_restored_v1"] is True
     assert report["source_unchanged"] is True
     assert len(report["sha256"]) == 64

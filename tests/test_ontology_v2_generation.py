@@ -26,8 +26,8 @@ def test_v2_generator_is_append_only_and_inactive() -> None:
     v1_parts = [(label.id, label.name) for label in v1.labels_for_map("part")]
     v2_parts = [(label.id, label.name) for label in v2.labels_for_map("part")]
     assert v2_parts[:56] == v1_parts
-    assert [label_id for label_id, _ in v2_parts] == list(range(65))
-    assert len(v2_parts) == 65
+    assert [label_id for label_id, _ in v2_parts] == list(range(66))
+    assert len(v2_parts) == 66
     assert document["visibility_state_aliases"] == {"fully_occluded": "occluded"}
 
 
@@ -44,6 +44,7 @@ def test_v2_boundary_swaps_derived_and_visualization_are_complete() -> None:
         "glans_penis",
         "left_scrotal_region",
         "right_scrotal_region",
+        "anus",
     ):
         label = by_name[name]
         assert label["boundary_rule"] in ontology["boundary_rules"]
@@ -59,10 +60,11 @@ def test_v2_boundary_swaps_derived_and_visualization_are_complete() -> None:
         "left_breast_full",
         "right_breast_full",
         "external_genitalia_visible",
+        "external_pelvic_anatomy_visible",
         "pelvic_anatomy_visible",
     ):
         assert required in derived["formulas"]
-    assert "part_ids:56-64" in derived["formulas"]["full_body_parts_visible"]
+    assert "part_ids:56-65" in derived["formulas"]["full_body_parts_visible"]
 
     v1_viz = yaml.safe_load(Path("configs/viz.yaml").read_text(encoding="utf-8"))
     v2_viz = build_viz_v2()
@@ -84,6 +86,9 @@ def test_v2_aliases_return_canonical_provenance_and_never_become_labels() -> Non
     testicle = resolve_v2_alias("left_testicle")
     assert testicle.canonical == "left_scrotal_region"
     assert testicle.warning == "external_scrotal_surface_not_internal_organ"
+    assert resolve_v2_alias("asshole").canonical == "anus"
+    assert resolve_v2_alias("left butt cheek").canonical == "left_glute"
+    assert resolve_v2_alias("breasts").canonical == "both_breasts_full"
     canonical = resolve_v2_alias("both_nipples")
     assert canonical.canonical == "both_nipples"
     assert canonical.was_alias is False

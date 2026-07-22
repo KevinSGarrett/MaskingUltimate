@@ -45,7 +45,7 @@
     "vitmatte"
   ],
   "measurement_contract": {
-    "required_label_count": 65,
+    "required_label_count": 66,
     "required_cell_artifact_keys": [
       "determinism_outputs",
       "metric_observations",
@@ -79,9 +79,9 @@
   ],
   "source_hashes": {
     "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "d57837a1dc0e493b5ef6c9a301fab7d479803dec9ffdeae96ad515f9f6298b3e",
-    "configs/external_sources.yaml": "e3cba6fc8ada84c014203efa2e30f6deb1ee8376a4b1bb0fa2ea213bff62e119",
+    "configs/external_sources.yaml": "1e443d50d92440231ddd78288253769126766827781fee9f74e08afe631e1b84",
     "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
-    "configs/ontology_v2.yaml": "cd603d2d269f89bde370f74b02a617755c91f1e756c01d03bb2903f0fd8d8f40",
+    "configs/ontology_v2.yaml": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
     "env/provider_runtime_matrix.json": "219fc1c74a4f7bc7f8f55eb8acff57e825a9730829531f7a7be18ebca44b02c7",
@@ -90,8 +90,8 @@
     "qa/governance/benchmark_matrices/mediapipe_vote_ablation_v1.json": "c70e0babb43dc02460549fac7d4c5b1d8a636642d6230858923910cb58cc27cb",
     "qa/governance/benchmark_matrices/pose_variant_benchmark_v1.json": "4e58b439146124bcdbc0e62e62181165451337db16aaaf30b0485165204c7fa0",
     "qa/governance/benchmark_matrices/silhouette_variant_benchmark_v1.json": "8d0c08d2e9f71d0eb86f1a68e8b038fa54c8838615f19b1b1fe3d8e894dd0acf",
-    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "a4c1d93af92142d2ed7cdd57efa55157b0ba0c14f21440a9099c0072c9e56cd0",
-    "src/maskfactory/providers/benchmark_policy.py": "d3758e928c9774b5c9158aa960d2aa26f772786861e311dc2a4ebfdc2ea4b68f",
+    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "077735ee8249de3e93c98c92c72b7a2f1dcfbb6e09fbb036a1d1e2505d9aa3f1",
+    "src/maskfactory/providers/benchmark_policy.py": "b43b83dca89d2125d0b4657ebc968ff5bbee42fbf9db440bd0396ae41b7d4fce",
     "src/maskfactory/providers/geometry_benchmark.py": "569c8a48ee179a508512d330d701b0505e17e11bb9fc5d46cb76142dcf62b0ac",
     "src/maskfactory/providers/mediapipe_ablation.py": "f3e37e371016dc2e14b666c299bd2d0b9c9c0fdf9f23a8b82977bfc6a2ef46d5",
     "src/maskfactory/providers/pose_benchmark.py": "229281835c548db8cb88cdea4a79e869fcbe89d43d195480ab850cb33aa7441c",
@@ -99,5 +99,5 @@
     "src/maskfactory/providers/silhouette_benchmark.py": "ca2dc22da503b755765f7ea05802ae3c86e74066ba0cba3deb3afef254abeef6",
     "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
   },
-  "sha256": "112f8de3ec927d57445b925c2d005f29b538f464c070b916aa70e191f0685c6e"
+  "sha256": "3c36aaf1928ae45a9dbf331afd274366622c7ff093f0014d9a8aeadad62e37fb"
 }

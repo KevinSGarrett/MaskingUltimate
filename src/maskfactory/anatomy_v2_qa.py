@@ -26,7 +26,7 @@ from .qa.checks import QcResult
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "configs" / "anatomy_v2_qa.yaml"
-QC_IDS = tuple(f"QC-V2-{index:03d}" for index in (*range(1, 11), 12))
+QC_IDS = tuple(f"QC-V2-{index:03d}" for index in range(1, 13))
 CHEST_CHILDREN = {
     "left_breast_full": ("left_breast", "left_areola", "left_nipple"),
     "right_breast_full": ("right_breast", "right_areola", "right_nipple"),
@@ -38,6 +38,7 @@ PELVIC_CHILDREN = (
     "glans_penis",
     "left_scrotal_region",
     "right_scrotal_region",
+    "anus",
 )
 
 
@@ -151,6 +152,7 @@ def run_anatomy_v2_qc(
         ),
         _qc009(part_entries, atomics, material, rois, set(config["clothing_material_ids"])),
         _qc010(atomics, part_entries, inputs.label_provenance, inputs.projected_or_amodal_labels),
+        _qc011(atomics, part_entries, inputs.midline_x),
         _qc012(inputs, part, expected),
     )
 
@@ -179,7 +181,7 @@ def clothed_false_positive_sweep(
             raise AnatomyV2QaError(
                 f"clothed sweep case lacks reviewed garment pixels: {case.case_id}"
             )
-        anatomy = roi & np.isin(part, tuple(range(56, 65)))
+        anatomy = roi & np.isin(part, tuple(range(56, 66)))
         records.append(
             {
                 "case_id": case.case_id,
@@ -430,6 +432,28 @@ def _qc010(atomics, entries, provenance, projected_labels):
         ):
             failures.append(name)
     return QcResult("QC-V2-010", "no_hidden_authority_leak", not failures, f"violations={failures}")
+
+
+def _qc011(atomics, entries, midline):
+    anus = atomics["anus"]
+    failures = []
+    if anus.any():
+        state = entries.get("anus", {}).get("visibility")
+        if state not in V2_VISIBLE_STATES | {"occluded"}:
+            failures.append(f"visible_mask_with_state={state}")
+        if ndimage.label(anus)[1] != 1:
+            failures.append("multiple_components")
+        x_coordinates = np.where(anus)[1]
+        tolerance = max(2, round(anus.shape[1] * 0.25))
+        if abs(float(x_coordinates.mean()) - float(midline)) > tolerance:
+            failures.append("implausible_midline_distance")
+        neighbors = atomics["left_glute"] | atomics["right_glute"] | atomics["pelvic_region"]
+        radius = max(1, round(anus.shape[1] / 128))
+        if neighbors.any() and not np.any(
+            ndimage.binary_dilation(anus, iterations=radius) & neighbors
+        ):
+            failures.append("not_adjacent_to_visible_pelvic_surface")
+    return QcResult("QC-V2-011", "anal_opening_topology", not failures, f"violations={failures}")
 
 
 def _qc012(inputs, part, expected):

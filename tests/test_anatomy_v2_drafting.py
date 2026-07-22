@@ -87,13 +87,13 @@ def test_review_crops_and_prompts_assert_no_positive_or_hidden_anatomy() -> None
         pelvic_bbox_xyxy=(20, 55, 110, 130),
         visibility_states=states,
     )
-    assert len(crops) == 9
+    assert len(crops) == 10
     assert all(crop.authority == "review_crop_only" for crop in crops)
     assert all(crop.asserts_positive_anatomy is False for crop in crops)
     assert all(0 <= crop.bbox_xyxy[0] < crop.bbox_xyxy[2] <= 100 for crop in crops)
     assert all(0 <= crop.bbox_xyxy[1] < crop.bbox_xyxy[3] <= 120 for crop in crops)
     requests = canonical_open_vocab_requests(crops)
-    assert len(requests) == 8
+    assert len(requests) == 9
     assert "penis_shaft" not in {request.label for request in requests}
     assert all(request.authority == "proposal_box_only" for request in requests)
     assert all(request.may_write_final_mask is False for request in requests)
@@ -252,7 +252,7 @@ def test_fusion_carves_breast_pelvic_parents_and_routes_conflicts_to_ignore() ->
     ).any()
     genital = np.logical_or.reduce([result.atomic_masks[name] for name in NEW_LABELS[4:]])
     assert not (result.atomic_masks["pelvic_region"] & genital).any()
-    assert set(np.unique(result.part_map)).issubset(set(range(65)))
+    assert set(np.unique(result.part_map)).issubset(set(range(66)))
 
 
 def test_review_bundle_contains_strict_masks_panel_confidence_provenance_and_instructions(
@@ -276,9 +276,10 @@ def test_review_bundle_contains_strict_masks_panel_confidence_provenance_and_ins
     report_path, panel_path, mask_paths = write_anatomy_review_bundle(
         source, result, {"left_areola": candidate}, tmp_path / "review"
     )
-    assert report_path.is_file() and panel_path.is_file() and len(mask_paths) == 9
+    assert report_path.is_file() and panel_path.is_file() and len(mask_paths) == 10
     report = json.loads(report_path.read_text())
-    assert report["human_review_required"] is True and report["gold_approved"] is False
+    assert report["authority_resolution_required"] is True
+    assert report["mandatory_human_review"] is False and report["gold_approved"] is False
     assert report["labels"]["left_areola"]["confidence_max"] == pytest.approx(0.87)
     assert "areolar ring" in report["labels"]["left_areola"]["correction_instruction"]
     assert report["labels"]["left_areola"]["provenance"]["status"] == "candidate"
@@ -342,10 +343,10 @@ def test_required_drafting_fixture_conditions(
         pelvic_bbox_xyxy=(size // 4, size // 2, size + 10, size + 20),
         visibility_states={name: state for name in NEW_LABELS},
     )
-    assert len(crops) == 9
+    assert len(crops) == 10
     assert all(0 <= value <= size for crop in crops for value in crop.bbox_xyxy)
     requests = canonical_open_vocab_requests(crops)
     if state in {"occluded_by_clothing", "cropped_out"}:
         assert requests == ()
     else:
-        assert len(requests) == 9
+        assert len(requests) == 10

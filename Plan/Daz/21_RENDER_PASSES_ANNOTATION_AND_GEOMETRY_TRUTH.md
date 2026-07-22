@@ -74,7 +74,7 @@ products.
 
 - PART uses the active MaskFactory ontology IDs exactly.
 - A v1 render accepts IDs 0–55 only.
-- A v2 render accepts IDs 0–64 only and is produced only by an explicitly v2 job.
+- A v2 render accepts IDs 0–65 only and is produced only by an explicitly v2 job.
 - Background is 0 only where 0 is the canonical background value; body labels use their canonical
   indexed values without local remapping.
 - The decoder uses the canonical ontology snapshot recorded by hash.

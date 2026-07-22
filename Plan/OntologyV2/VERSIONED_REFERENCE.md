@@ -4,7 +4,7 @@
 | Contract | Active production v1 | Approved, inactive v2 |
 |---|---|---|
 | Version | `body_parts_v1` | `body_parts_v2` |
-| PART IDs/logits including background | `0..55` / 56 | `0..64` / 65 |
+| PART IDs/logits including background | `0..55` / 56 | `0..65` / 66 |
 | Ontology | `configs/ontology.yaml` | `configs/ontology_v2.yaml` |
 | Manifest schema | `manifest.schema.json` | `manifest_v2.schema.json` |
 | Derived/viz config | `derived.yaml`, `viz.yaml` | `derived_v2.yaml`, `viz_v2.yaml` |
@@ -29,6 +29,7 @@ is complete; generating or reviewing v2 artifacts does not activate them.
 | 62 | `glans_penis` |
 | 63 | `left_scrotal_region` |
 | 64 | `right_scrotal_region` |
+| 65 | `anus` |
 
 ## Version-aware operator commands
 

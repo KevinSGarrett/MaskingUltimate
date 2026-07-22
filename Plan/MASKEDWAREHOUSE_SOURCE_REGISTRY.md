@@ -2,7 +2,7 @@
 
 This registry records the already-downloaded masked image datasets under `C:\Comfy_UI_Main\MaskedWarehouse` that should feed MaskFactory.
 
-These datasets are never automatically gold. Under the locked private/personal/noncommercial/non-distributed profile, qualified sources may become train-only `external_labeled_reference` supervision at the `weighted_pseudo_label` tier. Every admitted source still passes license/provenance review, label remapping, source-image hashing, visual alignment QA, and split dedup before training.
+These datasets are never automatically operational gold. Under the locked private/personal/noncommercial/non-distributed profile, qualified sources are required `external_labeled_reference` inputs for their exact permitted training, semantic-calibration, seeded-defect, multi-person, and benchmark scopes; model-loss accounting remains `weighted_pseudo_label`. Every admitted source still passes license/provenance review, label remapping, source-image hashing, visual alignment QA, identity, and split dedup before use.
 
 ## Local Warehouse Roots
 
@@ -31,8 +31,10 @@ the human-facing summary of the current intake gate.
 Recording a source here does **not** make it MaskFactory gold. External masks remain
 source labels. Training admission is fail-closed until the machine registry's complete
 license, remap, hash, visual-QA, identity, and split-dedup gate list passes. Admission
-is restricted to `weighted_pseudo_label` / `train`; calibration, holdout, certified
-volume, distribution, and gold promotion remain prohibited.
+is restricted to the exact label and evidence scope. Training uses
+`weighted_pseudo_label` / `train`; semantic critic calibration may use the same
+qualified source annotation as `external_labeled_reference`. Certified volume,
+operational certificates, distribution, and gold promotion remain prohibited.
 
 ## Required Intake Steps
 
@@ -58,6 +60,11 @@ volume, distribution, and gold promotion remain prohibited.
 ## Non-Negotiable Rules
 
 - Existing masks in `MaskedWarehouse` are source masks, not MaskFactory gold masks.
+- Qualified source masks must actually be consumed in their permitted training,
+  semantic-calibration, seeded-defect, multi-person, and benchmark lanes; mounting
+  or inventorying the directory is not implementation.
+- Synthetic shapes and old draft/in-review/rejected package masks may not replace
+  these real labeled controls for semantic role qualification.
 - Qualified CelebAMask-HQ, LaPa, and LV-MHP labels may train the private local system only as bounded-scope, low-weight, train-only pseudo supervision.
 - `split_required` or ambiguous source labels become coarse auxiliary targets or ignore 255, never fabricated atomic PART truth.
 - Do not mix face-only datasets into full-body part training without explicit role tags.

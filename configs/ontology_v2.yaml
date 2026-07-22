@@ -988,6 +988,21 @@ labels:
   swap_partner: left_scrotal_region
   visibility_default: unreviewed_for_v2
   boundary_rule: visible_scrotal_midline
+- id: 65
+  name: anus
+  mask_type: atomic_exclusive
+  map: part
+  side: center
+  parent_union: pelvic_anatomy_visible
+  enabled: true
+  expected_area_pct_range:
+  - 0.001
+  - 0.75
+  max_components: 1
+  exclusivity_group: part_map
+  swap_partner: null
+  visibility_default: unreviewed_for_v2
+  boundary_rule: visible_anal_opening_only
 - id: 0
   name: none_background
   mask_type: material
@@ -2244,6 +2259,20 @@ labels:
   boundary_rule: script_formula
   formula: part:vulva | derived:penis_visible | derived:scrotum_visible
 - id: null
+  name: external_pelvic_anatomy_visible
+  mask_type: derived_union
+  map: none
+  side: center
+  parent_union: null
+  enabled: true
+  expected_area_pct_range: null
+  max_components: null
+  exclusivity_group: null
+  swap_partner: null
+  visibility_default: n/a
+  boundary_rule: script_formula
+  formula: derived:external_genitalia_visible | part:anus
+- id: null
   name: pelvic_anatomy_visible
   mask_type: derived_union
   map: none
@@ -2256,7 +2285,7 @@ labels:
   swap_partner: null
   visibility_default: n/a
   boundary_rule: script_formula
-  formula: part:pelvic_region | derived:external_genitalia_visible
+  formula: part:pelvic_region | derived:external_pelvic_anatomy_visible
 protected_classes:
 - other_person
 - occluding_object
@@ -2307,6 +2336,8 @@ boundary_rules:
     rule: visible glans surface only; never infer covered extent
   visible_scrotal_midline:
     rule: split visible external scrotal surface at a defensible character-side midline
+  visible_anal_opening_only:
+    rule: visible external anal opening only; never infer hidden or internal extent
 projected_templates:
 - amodal_<part>
 - inpaint_<part>_d<k>f<f>
@@ -2341,6 +2372,38 @@ aliases:
     kind: derived_union
   nipples:
     canonical: both_nipples
+    kind: derived_union
+  asshole:
+    canonical: anus
+  anal_opening:
+    canonical: anus
+  anal opening:
+    canonical: anus
+  butt:
+    canonical: both_glutes
+    kind: derived_union
+  butts:
+    canonical: both_glutes
+    kind: derived_union
+  buttocks:
+    canonical: both_glutes
+    kind: derived_union
+  ass:
+    canonical: both_glutes
+    kind: derived_union
+  left_butt_cheek:
+    canonical: left_glute
+  left butt cheek:
+    canonical: left_glute
+  right_butt_cheek:
+    canonical: right_glute
+  right butt cheek:
+    canonical: right_glute
+  breasts:
+    canonical: both_breasts_full
+    kind: derived_union
+  boobs:
+    canonical: both_breasts_full
     kind: derived_union
 governance:
   permitted_origins:

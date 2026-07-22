@@ -151,7 +151,7 @@ Rules:
 - mappings are visible-surface only;
 - areola excludes nipple;
 - breast atomics carve out same-side areola/nipple;
-- pelvic region carves out visible IDs 60–64;
+- pelvic region carves out visible IDs 60–65;
 - shaft and glans are exclusive;
 - scrotal regions split by character-left/right external surface;
 - geografts/base hidden polygons are composited before label rendering;

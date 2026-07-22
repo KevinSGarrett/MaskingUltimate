@@ -28,6 +28,11 @@ from maskfactory.vlm.live_calibration import (
     parse_critic_response,
     validate_live_calibration_inputs,
 )
+from maskfactory.vlm.real_corpus_policy import (
+    load_bindings,
+    load_real_corpus_policy,
+    validate_real_source_bindings,
+)
 
 
 def _args() -> argparse.Namespace:
@@ -38,6 +43,12 @@ def _args() -> argparse.Namespace:
     parser.add_argument("--runtime-sha256", required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--corpus-root", type=Path, required=True)
+    parser.add_argument("--source-bindings", type=Path, required=True)
+    parser.add_argument(
+        "--real-corpus-policy",
+        type=Path,
+        default=Path("configs/visual_critic_real_corpus.yaml"),
+    )
     parser.add_argument("--catalog", type=Path, default=Path("configs/visual_critic_catalog.yaml"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model-path", type=Path)
@@ -175,6 +186,12 @@ def main() -> int:
     args = _args()
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     validate_live_calibration_inputs(manifest, args.corpus_root)
+    validate_real_source_bindings(
+        corpus=manifest,
+        corpus_root=args.corpus_root,
+        bindings=load_bindings(args.source_bindings),
+        policy=load_real_corpus_policy(args.real_corpus_policy),
+    )
     catalog = load_catalog(args.catalog)
     taxonomy = list(manifest["defect_taxonomy"])
     if args.backend == "internvl" and args.model_path is None:

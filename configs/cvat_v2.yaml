@@ -5,7 +5,7 @@ project:
   name: "MaskFactory_body_parts_v2_pilot"
   v1_project_name: "MaskFactory_body_parts_v1"
   ontology_version: "body_parts_v2"
-  label_scope: "part_ids_0_64"
+  label_scope: "part_ids_0_65"
   label_source: "configs/ontology_v2.yaml"
   color_source: "configs/viz_v2.yaml"
   label_mapping_file: "data/cvat_v2/label_mapping.json"

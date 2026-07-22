@@ -14,7 +14,7 @@ def test_generated_ontology_version_reference_is_current_and_exact() -> None:
     rendered = render_reference()
     assert DEFAULT_OUTPUT.read_text(encoding="utf-8") == rendered
     assert "`0..55` / 56" in rendered
-    assert "`0..64` / 65" in rendered
+    assert "`0..65` / 66" in rendered
     assert rendered.count("| 56 | `left_areola` |") == 1
     assert rendered.count("| 64 | `right_scrotal_region` |") == 1
     assert "approved, inactive v2" in rendered.lower()

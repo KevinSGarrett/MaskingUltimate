@@ -27,7 +27,7 @@ V2_CLASS_NAMES = tuple(
     )
 )
 V2_NEW_CLASS_NAMES = V2_CLASS_NAMES[56:]
-V2_NEW_CLASS_IDS = tuple(range(56, 65))
+V2_NEW_CLASS_IDS = tuple(range(56, 66))
 V2_NAME_TO_ID = {name: class_id for class_id, name in enumerate(V2_CLASS_NAMES)}
 V2_SIDE_PARTNERS = {
     "left_areola": "right_areola",
@@ -75,7 +75,7 @@ def supervision_contract(manifest: Mapping[str, Any]) -> dict[str, Any]:
             "supervised_ids": list(range(56)),
             "v2_finetune_eligible": False,
             "new_label_negative_ids": [],
-            "reason": "v1 absence provides no negative evidence for IDs 56-64",
+            "reason": "v1 absence provides no negative evidence for IDs 56-65",
         }
     if version != V2_ONTOLOGY_VERSION:
         raise V2TrainingContractError(f"unsupported supervision ontology: {version!r}")
@@ -83,23 +83,23 @@ def supervision_contract(manifest: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "ontology_version": V2_ONTOLOGY_VERSION,
         "mode": "v2_finetune",
-        "head_num_classes": 65,
-        "supervised_ids": list(range(65)),
+        "head_num_classes": 66,
+        "supervised_ids": list(range(66)),
         "v2_finetune_eligible": True,
         "new_label_negative_ids": list(V2_NEW_CLASS_IDS),
-        "reason": "all 65 labels carry body_parts_v2 human review authority",
+        "reason": "all 66 labels carry body_parts_v2 review authority",
     }
 
 
 def prepare_v2_training_map(
     label_map: np.ndarray, ambiguity_mask: np.ndarray | None = None
 ) -> np.ndarray:
-    """Preserve exact IDs 0..64 and burn only explicit ambiguity to ignore 255."""
+    """Preserve exact IDs 0..65 and burn only explicit ambiguity to ignore 255."""
     labels = np.asarray(label_map)
     if labels.ndim != 2 or not np.issubdtype(labels.dtype, np.integer):
         raise V2TrainingContractError("v2 training map must be an indexed 2-D integer array")
     valid = labels != IGNORE_INDEX
-    invalid = np.unique(labels[valid][(labels[valid] < 0) | (labels[valid] >= 65)])
+    invalid = np.unique(labels[valid][(labels[valid] < 0) | (labels[valid] >= 66)])
     if invalid.size:
         raise V2TrainingContractError(f"v2 training map has out-of-range IDs: {invalid.tolist()}")
     if ambiguity_mask is None:
@@ -113,22 +113,22 @@ def prepare_v2_training_map(
 
 
 def validate_v2_training_config(config: Mapping[str, Any]) -> None:
-    """Validate a separate inactive 65-class training config without touching v1."""
+    """Validate a separate inactive 66-class training config without touching v1."""
     if config.get("activation_status") != "approved_design_not_active":
         raise V2TrainingContractError("v2 training config must remain inactive before activation")
     if config.get("ontology_version") != V2_ONTOLOGY_VERSION:
         raise V2TrainingContractError("v2 training config ontology_version is not body_parts_v2")
     model = _mapping(config.get("model"), "model")
-    if model.get("num_classes") != 65:
-        raise V2TrainingContractError("v2 training config requires exactly 65 classes, never 57")
+    if model.get("num_classes") != 66:
+        raise V2TrainingContractError("v2 training config requires exactly 66 classes, never 57")
     if tuple(model.get("classes", ())) != V2_CLASS_NAMES:
-        raise V2TrainingContractError("v2 training config class vocabulary is not exact IDs 0..64")
+        raise V2TrainingContractError("v2 training config class vocabulary is not exact IDs 0..65")
     data = _mapping(config.get("data"), "data")
     if data.get("ignore_index") != IGNORE_INDEX:
         raise V2TrainingContractError("v2 training config requires ignore_index 255")
     sampler = _mapping(data.get("sampler"), "data.sampler")
     if tuple(sampler.get("anatomy_ids", ())) != V2_NEW_CLASS_IDS:
-        raise V2TrainingContractError("v2 sampler must target exact anatomy IDs 56..64")
+        raise V2TrainingContractError("v2 sampler must target exact anatomy IDs 56..65")
     if float(sampler.get("anatomy_crop_min_fraction", -1)) < 0.5:
         raise V2TrainingContractError("v2 sampler requires at least 50% anatomy-positive crops")
     whole_fraction = float(sampler.get("whole_body_min_fraction", -1))

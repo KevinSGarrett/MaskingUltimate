@@ -5,7 +5,7 @@
 **Project root:** `C:\Comfy_UI_Main_Masking\`
 **Plan pack location:** `C:\Comfy_UI_Main_Masking\Plan\`
 **Blueprint version:** 1.2.0
-**Ontology versions:** active `body_parts_v1` (56 PART IDs `0..55`); approved but inactive `body_parts_v2` (65 PART IDs `0..64`, doc 18)
+**Ontology versions:** active `body_parts_v1` (56 PART IDs `0..55`); approved but inactive `body_parts_v2` (66 PART IDs `0..65`, doc 18)
 **Date:** 2026-07-09
 **Owner:** Kevin (Scentiment / solo dev)
 **Target hardware (verified):** NVIDIA GeForce RTX 5060 Laptop GPU, 8 GB VRAM, driver 592.01 (Blackwell / sm_120)

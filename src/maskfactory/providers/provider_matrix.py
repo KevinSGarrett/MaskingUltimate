@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "provider_benchmark_matrix_v1.json"
 )
-POLICY_SHA256 = "112f8de3ec927d57445b925c2d005f29b538f464c070b916aa70e191f0685c6e"
+POLICY_SHA256 = "3c36aaf1928ae45a9dbf331afd274366622c7ff093f0014d9a8aeadad62e37fb"
 SCREENING_ROUTES = (
     ("sam2_1_only", "frozen_baseline_prompts", "sam2_1"),
     ("sam3_1_only", "sam3_1_direct", "none"),
@@ -142,7 +142,7 @@ def validate_policy(
     if tuple(document["required_provider_artifact_keys"]) != PROVIDER_ARTIFACT_KEYS:
         raise ProviderMatrixError("provider matrix artifact vocabulary drifted")
     if document["measurement_contract"] != {
-        "required_label_count": 65,
+        "required_label_count": 66,
         "required_cell_artifact_keys": [
             "determinism_outputs",
             "metric_observations",

@@ -1,10 +1,10 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T04:08:12+00:00",
+    "generated_at": "2026-07-22T05:26:17+00:00",
     "generator": "tracker.py rebuild",
-    "total_items": 827,
-    "total_tracked_including_orphaned": 827
+    "total_items": 831,
+    "total_tracked_including_orphaned": 831
   },
   "phase_meta": {
     "P0": {
@@ -6998,7 +6998,7 @@
       "cluster_id": "MF-P5-03",
       "cluster_title": "Train 6.1 body-part segmenter",
       "spec_ref": "12 §5/§6.1",
-      "description": "Author `configs\\training\\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 65-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8",
+      "description": "Author `configs\\training\\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 66-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 27,
       "is_exit_gate": false,
@@ -9304,6 +9304,60 @@
       "updated_at": "2026-07-10T19:29:32+00:00",
       "orphaned": false
     },
+    "MF-P0-13.05": {
+      "id": "MF-P0-13.05",
+      "phase": "P0",
+      "cluster_id": "MF-P0-13",
+      "cluster_title": "Local MaskedWarehouse intake",
+      "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
+      "description": "Bind every eligible MaskedWarehouse source to an actual consumer lane—training, semantic calibration, seeded defects, multi-person QA, or benchmark—and forbid inventory-only completion · Verify: machine report names consumed source/mask/annotation hashes and downstream artifacts.",
+      "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
+      "source_line": 32,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "in_progress",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Actual LV-MHP MaskedWarehouse images and annotations now feed the semantic calibration and seeded-defect lane with exact hashes. Completion stays open until every eligible MaskedWarehouse source is mapped to a named downstream consumer artifact."
+        }
+      ],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-22T05:06:30+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
+      "orphaned": false
+    },
+    "MF-P0-13.06": {
+      "id": "MF-P0-13.06",
+      "phase": "P0",
+      "cluster_id": "MF-P0-13",
+      "cluster_title": "Local MaskedWarehouse intake",
+      "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
+      "description": "Verify local `C:\\Comfy_UI_Main\\MaskedWarehouse` and RunPod `/workspace/assets/MaskedWarehouse` inventories reconcile before remote use · Verify: exact inventory seal and sampled file hashes match; drift fails before model/provider invocation.",
+      "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
+      "source_line": 33,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "in_progress",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-22T05:37:00+00:00",
+          "actor": "codex",
+          "text": "Live RunPod presence and hash-bound authoritative snapshot are verified. Completion remains open for a new bounded local/remote sampled-file hash comparison; the attempted recursive 489k-file FUSE walk timed out and was replaced with the safe snapshot check."
+        }
+      ],
+      "evidence": "qa/live_verification/runpod_persistence_binding_20260722.json and qa/live_verification/runpod_corpus_mirror_reconciliation_20260722.json: current pod RUNNING; 1 TiB persistent volume 13/13; exact remote snapshot hash 46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205; both required roots and top-level structures 10/10.",
+      "blocked_reason": null,
+      "created_at": "2026-07-22T05:06:30+00:00",
+      "updated_at": "2026-07-22T05:37:00+00:00",
+      "orphaned": false
+    },
     "MF-P0-14.01": {
       "id": "MF-P0-14.01",
       "phase": "P0",
@@ -9312,7 +9366,7 @@
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
       "description": "Classify every Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
-      "source_line": 34,
+      "source_line": 36,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -9333,7 +9387,7 @@
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
       "description": "Register usable auxiliary detector models for shoes/footwear, feet, hair, lips, socks, hands, face bands, armpits, nails, mouth, and any manually supplied rear/accessory/body detectors with hash, path, version, and install target.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
-      "source_line": 35,
+      "source_line": 37,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -9365,7 +9419,7 @@
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
       "description": "Build a pose/control stress-fixture list from OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
-      "source_line": 36,
+      "source_line": 38,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -9386,7 +9440,7 @@
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
       "description": "Record provenance, license, allowed-use, annotation, QA, and authority metadata for every registered source.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
-      "source_line": 37,
+      "source_line": 39,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -11199,12 +11253,17 @@
           "ts": "2026-07-22T04:02:07+00:00",
           "actor": "codex",
           "text": "2026-07-22 MatAnyone2 refresh: the isolated matrix now covers ten provider runtimes with eight live-qualified and two exact pending states. MatAnyone2 uses a separately locked RunPod Python 3.10/Torch 2.10/cu128 environment. Percent remains 97 because SAM 3.1 point refinement and SAM 3D Body exact-repeat qualification remain unresolved."
+        },
+        {
+          "ts": "2026-07-22T05:28:50+00:00",
+          "actor": "codex",
+          "text": "The provider aggregate remains 97%. EoMT static contracts now bind 66 classes, while its amended 66-class isolated live runtime requalification remains open alongside the already recorded exact provider gaps."
         }
       ],
       "evidence": "env/provider_runtime_matrix.json canonical SHA-256 b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef; ten provider runtimes, eight qualified, two exact pending, zero human gates, twenty-two exact artifacts. MatAnyone2 static and temporal routes are live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/matanyone2_runpod_capability_20260722.json, qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T04:02:07+00:00",
+      "updated_at": "2026-07-22T05:28:50+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -11511,7 +11570,7 @@
       "cluster_id": "MF-P1-10",
       "cluster_title": "Ontology-v2 generator and machine authority",
       "spec_ref": "18 checklist B",
-      "description": "Import nine proposed labels append-only from `ontology_v2_additions.yaml` · Verify: generated inactive v2 preserves IDs 0..55 and appends exactly 56..64 · Blocked by: MF-P0-15.02",
+      "description": "Import ten proposed labels append-only from `ontology_v2_additions.yaml` · Verify: generated inactive v2 preserves IDs 0..55 and appends exactly 56..65 · Blocked by: MF-P0-15.02",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 11,
       "is_exit_gate": false,
@@ -11519,11 +11578,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:45+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
       "orphaned": false
     },
     "MF-P1-10.02": {
@@ -11532,7 +11597,7 @@
       "cluster_id": "MF-P1-10",
       "cluster_title": "Ontology-v2 generator and machine authority",
       "spec_ref": "18 checklist B",
-      "description": "Add boundary rules for areola ring, nipple carve-out, external vulva, shaft/glans, and scrotal midline · Verify: every new atomic references a validated rule and unknown rules fail generation · Blocked by: MF-P1-10.01",
+      "description": "Add boundary rules for areola ring, nipple carve-out, external vulva, shaft/glans, scrotal midline, and visible external anal opening · Verify: every new atomic references a validated rule and unknown rules fail generation · Blocked by: MF-P1-10.01",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 12,
       "is_exit_gate": false,
@@ -11540,11 +11605,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:46+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
       "orphaned": false
     },
     "MF-P1-10.03": {
@@ -11582,11 +11653,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:47+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
       "orphaned": false
     },
     "MF-P1-10.05": {
@@ -11635,11 +11712,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:47+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-10.07": {
@@ -11656,11 +11739,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:47+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-10.08": {
@@ -11669,7 +11758,7 @@
       "cluster_id": "MF-P1-10",
       "cluster_title": "Ontology-v2 generator and machine authority",
       "spec_ref": "18 checklist B",
-      "description": "Wire CI to prove IDs 0..55 unchanged and 56..64 contiguous · Verify: deliberate prefix or gap drift fails CI · Blocked by: MF-P1-10.07 · HARD BLOCKER",
+      "description": "Wire CI to prove IDs 0..55 unchanged and 56..65 contiguous · Verify: deliberate prefix or gap drift fails CI · Blocked by: MF-P1-10.07 · HARD BLOCKER",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 18,
       "is_exit_gate": false,
@@ -11677,11 +11766,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:48+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-10.09": {
@@ -11690,7 +11785,7 @@
       "cluster_id": "MF-P1-10",
       "cluster_title": "Ontology-v2 generator and machine authority",
       "spec_ref": "18 checklist B",
-      "description": "Prove exactly 65 class names including background and correct flips · Verify: production loader tests exact order/count and every reciprocal swap · Blocked by: MF-P1-10.03, MF-P1-10.07",
+      "description": "Prove exactly 66 class names including background and correct flips · Verify: production loader tests exact order/count and every reciprocal swap · Blocked by: MF-P1-10.03, MF-P1-10.07",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 19,
       "is_exit_gate": false,
@@ -11698,11 +11793,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: generated configs/ontology_v2.yaml plus ontology-v2 generation/drift tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:48+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-11.01": {
@@ -11719,11 +11820,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:49+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-11.02": {
@@ -11740,11 +11847,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:49+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-11.03": {
@@ -11774,7 +11887,7 @@
       "cluster_id": "MF-P1-11",
       "cluster_title": "Ontology-v2 visibility, manifest, and migration",
       "spec_ref": "18 checklist C",
-      "description": "Implement idempotent v1→v2 migration with unchanged pixels and nine unreviewed additions · Verify: rerun is byte-identical and source package remains unchanged · Blocked by: MF-P1-11.01, MF-P1-11.03",
+      "description": "Implement idempotent v1→v2 migration with unchanged pixels and ten unreviewed additions · Verify: rerun is byte-identical and source package remains unchanged · Blocked by: MF-P1-11.01, MF-P1-11.03",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 25,
       "is_exit_gate": false,
@@ -11787,12 +11900,17 @@
           "ts": "2026-07-19T22:43:44+00:00",
           "actor": "ai_agent",
           "text": "STATIC 2026-07-19: migration path now refuses production/activation/gold claims via refuse_migration_production_claims; apply refuses activate_v2 extras. Already complete; hardening only."
+        },
+        {
+          "ts": "2026-07-22T05:26:51+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
         }
       ],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T22:43:44+00:00",
+      "updated_at": "2026-07-22T05:26:51+00:00",
       "orphaned": false
     },
     "MF-P1-11.05": {
@@ -11884,18 +12002,24 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: manifest-v2 schema, migration and recovery/rollback fixtures.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:52+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:47:52+00:00",
+      "updated_at": "2026-07-22T05:26:52+00:00",
       "orphaned": false
     },
     "MF-P1-12.01": {
       "id": "MF-P1-12.01",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Create a versioned v2 CVAT project without mutating open v1 tasks · Verify: project IDs/labels differ and v1 task hashes remain unchanged · Blocked by: MF-P1-10.07",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -11916,7 +12040,7 @@
       "id": "MF-P1-12.02",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Add canonical v2 labels and visibility attributes · Verify: exact label/attribute contract round-trips through the CVAT API · Blocked by: MF-P1-12.01",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -11937,7 +12061,7 @@
       "id": "MF-P1-12.03",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Surface aliases as help/search text only · Verify: aliases cannot be exported as canonical labels · Blocked by: MF-P1-12.02",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -11958,7 +12082,7 @@
       "id": "MF-P1-12.04",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Update task descriptions with the doc-18 SOP and character-perspective reminder · Verify: created task description contains versioned SOP/hash and side authority · Blocked by: MF-P1-12.01",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -11979,7 +12103,7 @@
       "id": "MF-P1-12.05",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Add chest/pelvic review crop presets · Verify: fixture coordinates remain source-bound and reversible · Blocked by: MF-P1-12.01",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -12000,7 +12124,7 @@
       "id": "MF-P1-12.06",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Push migrated tasks with additions explicitly unreviewed · Verify: every appended label starts unreviewed and no negative is fabricated · Blocked by: MF-P1-11.04, MF-P1-12.02",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -12021,7 +12145,7 @@
       "id": "MF-P1-12.07",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Pull exact v2 states/masks and reject aliases/unknown values · Verify: round-trip and rejection fixtures pass · Blocked by: MF-P1-12.02",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -12042,7 +12166,7 @@
       "id": "MF-P1-12.08",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
       "description": "Block export when visible masks are absent or null-mask states contain masks · Verify: CVAT export negative fixtures fail before package mutation · Blocked by: MF-P1-11.02, MF-P1-12.07 · HARD BLOCKER",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
@@ -12063,9 +12187,9 @@
       "id": "MF-P1-12.09",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
-      "description": "Pilot 20–30 governed source images covering all v2 states and applicable classes · Verify: distinct-image manifest report covers the required state/class matrix · Blocked by: NEEDS KEVIN: supply/authorize the pilot sources and perform any required human-anchor decisions",
+      "description": "Build a 20–30 real-image authority pilot from `C:\\Comfy_UI_Main\\MaskedWarehouse` plus retrieval/coverage evidence from `F:\\Reference_Images\\Ultimate_Masking_Reference_Images` and their RunPod mirrors · Verify: hash-bound distinct-image manifest covers every v2 state/applicable class without synthetic positives or mandatory human anchors · Blocked by: MF-P1-10.07",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 40,
       "is_exit_gate": false,
@@ -12090,9 +12214,9 @@
       "id": "MF-P1-12.10",
       "phase": "P1",
       "cluster_id": "MF-P1-12",
-      "cluster_title": "Ontology-v2 CVAT and human-anchor review surface",
+      "cluster_title": "Ontology-v2 optional CVAT and autonomous authority surface",
       "spec_ref": "18 checklist D",
-      "description": "Record pilot review time/ambiguities and revise guidelines before scale annotation · Verify: signed pilot report links task IDs, minutes, ambiguity outcomes, and SOP revision · Blocked by: NEEDS KEVIN: complete the pilot review decisions in MF-P1-12.09",
+      "description": "Record autonomous pilot latency, ambiguity/abstention outcomes, correction loops, and guideline changes before scale processing · Verify: signed pilot report links source hashes, authority records, decisions, timings, ambiguity outcomes, and SOP revision · Blocked by: MF-P1-12.09",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 41,
       "is_exit_gate": false,
@@ -12140,7 +12264,7 @@
       "cluster_id": "MF-P1-13",
       "cluster_title": "Explicit truth tiers, package authority, and routing",
       "spec_ref": "20 §§1,5; 22 §5; SAM handoff Truth Tiers/Gates",
-      "description": "Require human anchors to declare train, calibration, or holdout partition and enforce image-disjoint identity/pHash groups · Verify: cross-partition leakage fixtures fail · Blocked by: MF-P1-13.01 · HARD BLOCKER",
+      "description": "Require any optional human anchors to declare train, calibration, or holdout partition and enforce image-disjoint identity/pHash groups · Verify: cross-partition leakage fixtures fail · Blocked by: MF-P1-13.01 · HARD BLOCKER",
       "source_file": "12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md",
       "source_line": 45,
       "is_exit_gate": false,
@@ -12832,8 +12956,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "in_progress",
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-15T00:36:40+00:00",
@@ -12844,12 +12968,17 @@
           "ts": "2026-07-19T20:10:40+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 audit: eomt_dinov3 remains installed custom_segmenter shadow challenger and is host-side tournament-runnable; SegFormer/Mask2Former stay planned baselines."
+        },
+        {
+          "ts": "2026-07-22T05:28:50+00:00",
+          "actor": "codex",
+          "text": "The 65-class live smoke is historical and no longer proves the amended 66-class vocabulary. Static 66-class config/provider/tournament contracts pass, but the exact EoMT asset is absent from this worktree/root and a 66-class isolated live runtime smoke remains required before recompletion."
         }
       ],
       "evidence": "env/eomt_dinov3_runtime.lock.json binds revision 602edaa, exact 93,450,628-byte safetensors/config/preprocessor hashes, Transformers 5.13/cu128 runtime, 65-class ontology hash, training config, smoke, contract, and tests. qa/live_verification/eomt_dinov3_runtime_20260715.json proves deterministic two-run adult-bus CUDA panoptic inference, 700,448,768-byte peak reserved, and 0.039196s warm latency. Contract tests discard the COCO-133 head, require a random 65-class body_parts_v2 head, reject vocabulary/snapshot/authority drift, preserve SegFormer/Mask2Former, and deny pretrained gold authority. Full suite 1095/1095; Ruff clean.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T20:10:40+00:00",
+      "updated_at": "2026-07-22T05:28:50+00:00",
       "orphaned": false
     },
     "MF-P2-11.11": {
@@ -14390,7 +14519,7 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Build a frozen positive-and-negative calibration corpus with valid masks, known defects, exact panel/source/candidate hashes, target contracts, and image-disjoint partitions · Verify: corpus validator rejects all-bad, all-good, duplicated, leaked, or target-incomplete panels · Blocked by: MF-P2-11.21",
+      "description": "Build a frozen positive-and-negative semantic calibration corpus from real source pixels and evidence-qualified valid masks, with known defects, exact source/base-annotation/candidate/panel hashes, authority bindings, target contracts, and image-disjoint partitions; synthetic geometry remains contract-test-only · Verify: production runner rejects synthetic/draft positives and corpus validator rejects all-bad, all-good, duplicated, leaked, authority-incomplete, or target-incomplete panels · Blocked by: MF-P2-11.21",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 50,
       "is_exit_gate": false,
@@ -14408,12 +14537,17 @@
           "ts": "2026-07-21T23:23:13+00:00",
           "actor": "codex",
           "text": "Materialized the frozen v1 calibration corpus: 12 image-disjoint cases across calibration and qualification_holdout, including 2 valid masks and all 10 frozen defect types. Seventy-two actual PNG panels cover all seven required contexts; exact files, panels, targets, partitions, outcomes, and corpus seal validate from disk. Synthetic exact geometry does not itself claim real-image generalization or critic qualification."
+        },
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Supersedes the earlier synthetic-geometry evidence: materialized and validated 12 image-disjoint cases from 12 real LV-MHP source images with exact source, annotation, base-mask, candidate, panel, qualification, split, and reference-inventory bindings."
         }
       ],
-      "evidence": "qa/live_verification/visual_critic_calibration_corpus_20260721.json SHA-256 44bf04f9a9bb181fee4deb16af5ba3fb25e6f2b507d5248affee292b950618aa; corpus ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74; manifest file 9959872d1b2044c35ad33fb69b9e06b5ad9d3f193e23b13fb366bd8affcee219; 12 cases, 72 PNGs, 17 focused tests; Ruff/Black pass.",
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T23:23:13+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
       "orphaned": false
     },
     "MF-P4-11.18": {
@@ -14428,8 +14562,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "in_progress",
+      "percent_complete": 60,
       "notes": [
         {
           "ts": "2026-07-21T23:31:42+00:00",
@@ -14440,12 +14574,17 @@
           "ts": "2026-07-22T00:49:49+00:00",
           "actor": "codex",
           "text": "2026-07-22 live gate application: InternVL3.5-8B and Qwen3.6-27B both failed the frozen positive/negative role thresholds by rejecting both valid masks. A target-grounded v2 corpus corrected side/owner/protected-region fixture defects; Qwen still rejected both valid controls. No visual role, certificate, or mask authority was granted. Exact results and metric reconciliation are under qa/live_verification/."
+        },
+        {
+          "ts": "2026-07-22T04:15:24+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 live-product reopening: existing static gate is correct, but Qwen3.6-27B and InternVL3.5-8B rejected valid controls and no self-hosted visual role is qualified. Target RUNTIME_PASS_BOUNDED plus positive/negative visual qualification, bounded repair-intent emission, correction re-review, and honest retry/residual/abstain outcomes without critic pixel authority."
         }
       ],
       "evidence": "qa/live_verification/visual_critic_role_qualification_gate_20260721.json; 11 focused and 29 combined tests PASS; Ruff/Black PASS; all-reject, all-abstain, hallucinated-context, serious-false-pass, schema/replay/latency/VRAM/hash drift fail closed",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T00:49:49+00:00",
+      "updated_at": "2026-07-22T04:15:24+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {
@@ -14562,9 +14701,41 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Maintain a frozen visual-regression suite covering hands, feet, hair, clothing/skin boundaries, visible anatomy, occlusion/contact, and multi-person ownership · Verify: every promoted critic/provider/prompt/runtime change reruns the suite and serious regression blocks promotion · Blocked by: MF-P4-11.17, MF-P4-11.21 · HARD BLOCKER",
+      "description": "Maintain a frozen real-image visual-regression suite covering hands, feet, hair, clothing/skin boundaries, complete visible adult anatomy, occlusion/contact, and multi-person ownership, using `F:\\Reference_Images` for coverage/retrieval and qualified `C:\\Comfy_UI_Main\\MaskedWarehouse` labels or exact qualified package masks for labeled cases · Verify: every promoted critic/provider/prompt/runtime change reruns the suite and serious regression blocks promotion; synthetic-only suites cannot promote · Blocked by: MF-P4-11.17, MF-P4-11.21 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 56,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "in_progress",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-21T23:46:02+00:00",
+          "actor": "codex",
+          "text": "STATIC_PASS using deterministic synthetic exact geometry. No real-image generalization or live critic authority is claimed; those gates remain open."
+        },
+        {
+          "ts": "2026-07-22T05:26:50+00:00",
+          "actor": "codex",
+          "text": "Earlier synthetic-only completion evidence is superseded and cannot promote. Real source-bound calibration cases now exist, but the frozen regression suite still requires full hands/feet/hair/clothing/complete-visible-anatomy/occlusion/multi-person coverage and promoted-change rerun evidence."
+        }
+      ],
+      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json; suite seal 22001e0769d2fe7f36077e0f23affd9b975e3987b43d73fb87781c25e09b7781; 14 image-disjoint cases/98 panels cover 7 required domains with valid+serious controls; 10 focused/25 combined tests PASS; any artifact/provider/prompt/runtime/renderer/schema change requires rerun and serious miss blocks promotion",
+      "blocked_reason": null,
+      "created_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
+      "orphaned": false
+    },
+    "MF-P4-11.24": {
+      "id": "MF-P4-11.24",
+      "phase": "P4",
+      "cluster_id": "MF-P4-11",
+      "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
+      "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
+      "description": "Bind every live semantic-critic calibration case to an exact real source and qualified base mask/annotation; reject synthetic shapes, package drafts, in-review/rejected masks, missing source evidence, authority drift, and source/base-mask hash drift before model load · Verify: source-binding validator and CLI negative tests fail before provider invocation · Blocked by: MF-P4-11.17 · HARD BLOCKER",
+      "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
+      "source_line": 57,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -14572,15 +14743,15 @@
       "percent_complete": 100,
       "notes": [
         {
-          "ts": "2026-07-21T23:46:02+00:00",
+          "ts": "2026-07-22T05:26:50+00:00",
           "actor": "codex",
-          "text": "STATIC_PASS using deterministic synthetic exact geometry. No real-image generalization or live critic authority is claimed; those gates remain open."
+          "text": "Production calibration rejects synthetic, draft, in-review, rejected, unqualified, and hash-drifted positives before provider/model load; CLI missing-binding negative path exits before output or provider invocation."
         }
       ],
-      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json; suite seal 22001e0769d2fe7f36077e0f23affd9b975e3987b43d73fb87781c25e09b7781; 14 image-disjoint cases/98 panels cover 7 required domains with valid+serious controls; 10 focused/25 combined tests PASS; any artifact/provider/prompt/runtime/renderer/schema change requires rerun and serious miss blocks promotion",
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
-      "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T23:46:02+00:00",
+      "created_at": "2026-07-22T05:06:30+00:00",
+      "updated_at": "2026-07-22T05:26:50+00:00",
       "orphaned": false
     },
     "MF-P5-09.01": {
@@ -14589,7 +14760,7 @@
       "cluster_id": "MF-P5-09",
       "cluster_title": "Ontology-v2 dataset and training",
       "spec_ref": "18 checklist G",
-      "description": "Accept only fully reviewed v2 packages for 65-class supervision · Verify: frozen discovery rejects incomplete review authority · Blocked by: MF-P1-11.06",
+      "description": "Accept only authority-complete v2 packages for 66-class supervision; autonomous certification is valid and CVAT is not mandatory · Verify: frozen discovery rejects unresolved class authority · Blocked by: MF-P1-11.06",
       "source_file": "16_ITEMS_P5_CERTIFIED_TRAINING.md",
       "source_line": 11,
       "is_exit_gate": false,
@@ -14597,11 +14768,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: ontology-v2 dataset/training contract, migration, vocabulary, split, and augmentation tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:52+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:48:02+00:00",
+      "updated_at": "2026-07-22T05:26:52+00:00",
       "orphaned": false
     },
     "MF-P5-09.02": {
@@ -14631,7 +14808,7 @@
       "cluster_id": "MF-P5-09",
       "cluster_title": "Ontology-v2 dataset and training",
       "spec_ref": "18 checklist G",
-      "description": "Burn ambiguity to ignore index 255 and export IDs 56..64 exactly · Verify: byte-for-value fixture preserves atomics outside explicit ambiguity · Blocked by: MF-P1-11.02",
+      "description": "Burn ambiguity to ignore index 255 and export IDs 56..65 exactly · Verify: byte-for-value fixture preserves atomics outside explicit ambiguity · Blocked by: MF-P1-11.02",
       "source_file": "16_ITEMS_P5_CERTIFIED_TRAINING.md",
       "source_line": 13,
       "is_exit_gate": false,
@@ -14639,11 +14816,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: ontology-v2 dataset/training contract, migration, vocabulary, split, and augmentation tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:52+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:48:05+00:00",
+      "updated_at": "2026-07-22T05:26:52+00:00",
       "orphaned": false
     },
     "MF-P5-09.04": {
@@ -14694,7 +14877,7 @@
       "cluster_id": "MF-P5-09",
       "cluster_title": "Ontology-v2 dataset and training",
       "spec_ref": "18 checklist G",
-      "description": "Author exact 65-class configs and eliminate 57-class conflict · Verify: config validation accepts 56 v1/65 v2 and rejects 57 · Blocked by: MF-P1-10.09",
+      "description": "Author exact 66-class configs and eliminate 57-class conflict · Verify: config validation accepts 56 v1/66 v2 and rejects 57 · Blocked by: MF-P1-10.09",
       "source_file": "16_ITEMS_P5_CERTIFIED_TRAINING.md",
       "source_line": 16,
       "is_exit_gate": false,
@@ -14702,11 +14885,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused reconciliation suite passed 164 tests on 2026-07-14: tracker coverage, ontology-v2 generation/migration/operations/rollback/CVAT/drafting/QA/serving, truth tiers, governance/model registry, autonomy, cloud teacher, repair, and external probe. Evidence: ontology-v2 dataset/training contract, migration, vocabulary, split, and augmentation tests.",
+      "notes": [
+        {
+          "ts": "2026-07-22T05:26:52+00:00",
+          "actor": "codex",
+          "text": "Evidence refreshed for the owner-approved 66-class visible-anatomy amendment and autonomous authority path; no mandatory CVAT dependency was introduced."
+        }
+      ],
+      "evidence": "qa/live_verification/required_real_corpora_and_anatomy_v2_20260722.json; 284 focused tests PASS; Ruff, Black (40 changed Python files), and git diff --check PASS; ontology v2 exact 66 classes/IDs 0..65; real-corpus bindings enforced.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:48:07+00:00",
+      "updated_at": "2026-07-22T05:26:52+00:00",
       "orphaned": false
     },
     "MF-P5-09.07": {
@@ -19738,7 +19927,7 @@
       "cluster_id": "MF-P9-13",
       "cluster_title": "Qualified MaskedWarehouse external supervision",
       "spec_ref": "23 §§4–6; MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Admit CelebAMask-HQ, LaPa, and LV-MHP only as external_labeled_reference / weighted_pseudo_label / train · Verify: authority tests reject gold, calibration, holdout, and certified-volume claims · Blocked by: MF-P9-13.01 · HARD BLOCKER",
+      "description": "Admit qualified CelebAMask-HQ, LaPa, and LV-MHP as `external_labeled_reference` for exact-scope training supervision and semantic visual calibration while retaining `weighted_pseudo_label` for model-loss accounting · Verify: authority tests allow only qualified label-scoped training/calibration and reject operational-gold, certificate, distribution, and certified-volume claims · Blocked by: MF-P9-13.01 · HARD BLOCKER",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 156,
       "is_exit_gate": false,
@@ -19938,7 +20127,7 @@
       "cluster_id": "MF-P9-13",
       "cluster_title": "Qualified MaskedWarehouse external supervision",
       "spec_ref": "23 §§4–6; MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Run real holdout ablations by source and mapped label scope · Verify: only non-regressing sources/labels remain active · Blocked by: MF-P9-13.06, frozen real human-anchor holdout",
+      "description": "Run leakage-disjoint real ablations by source and mapped label scope against qualified external-labeled benchmarks and any available independent human-anchor holdout · Verify: only non-regressing sources/labels remain active and absence of optional human anchors does not block the external-source ablation · Blocked by: MF-P9-13.06",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 162,
       "is_exit_gate": false,
@@ -20170,7 +20359,7 @@
       "cluster_id": "MF-P9-14",
       "cluster_title": "Governed reference corpus, benchmark, and retrieval",
       "spec_ref": "23 §§7–8; reference_library.yaml",
-      "description": "Connect retrieval references to coverage deficits, hard-case matching, and acquisition planning without truth promotion · Verify: retrieved images remain no-authority until independently certified · Blocked by: MF-P9-14.05",
+      "description": "Connect retrieval references to coverage deficits, hard-case matching, semantic-calibration case acquisition, and acquisition planning without truth promotion · Verify: retrieved images are demonstrably consumed by selection reports yet remain no-authority until independently paired with a qualified mask · Blocked by: MF-P9-14.05",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 172,
       "is_exit_gate": false,
@@ -20228,6 +20417,33 @@
       "updated_at": "2026-07-19T22:53:00+00:00",
       "orphaned": false
     },
+    "MF-P9-14.10": {
+      "id": "MF-P9-14.10",
+      "phase": "P9",
+      "cluster_id": "MF-P9-14",
+      "cluster_title": "Governed reference corpus, benchmark, and retrieval",
+      "spec_ref": "23 §§7–8; reference_library.yaml",
+      "description": "Reconcile `F:\\Reference_Images\\Ultimate_Masking_Reference_Images` with RunPod `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images` before remote retrieval/calibration · Verify: inventory seal, database/manifest hashes, and sampled source hashes match; drift fails before provider invocation · Blocked by: MF-P9-14.02",
+      "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
+      "source_line": 174,
+      "is_exit_gate": false,
+      "hard_blocker": false,
+      "conditional": false,
+      "status": "in_progress",
+      "percent_complete": 80,
+      "notes": [
+        {
+          "ts": "2026-07-22T05:37:00+00:00",
+          "actor": "codex",
+          "text": "Live Ultimate reference root, manifests, benchmark pack, and exact authoritative snapshot hash are verified on RunPod. Completion remains open for a fresh direct database/manifest and sampled-source hash comparison against F:."
+        }
+      ],
+      "evidence": "qa/live_verification/runpod_persistence_binding_20260722.json and qa/live_verification/runpod_corpus_mirror_reconciliation_20260722.json: current pod RUNNING; 1 TiB persistent volume 13/13; exact remote snapshot hash 46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205; both required roots and top-level structures 10/10.",
+      "blocked_reason": null,
+      "created_at": "2026-07-22T05:06:30+00:00",
+      "updated_at": "2026-07-22T05:37:00+00:00",
+      "orphaned": false
+    },
     "MF-P9-15.01": {
       "id": "MF-P9-15.01",
       "phase": "P9",
@@ -20236,7 +20452,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Make near-perfect selective autonomy the product acceptance target: ordinary mIoU ≥0.95, boundary-F1 ≥0.90, hard anatomy mIoU ≥0.85 · Verify: blinded real human-anchor holdout report meets each metric without bucket collapse · Blocked by: frozen real human-anchor holdout and eligible challengers",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 176,
+      "source_line": 177,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20268,7 +20484,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Require zero cross-instance bleed, zero left/right swaps, and 100% format integrity · Verify: any seeded or audited violation blocks/revokes · Blocked by: existing QA/certification paths · HARD BLOCKER",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 177,
+      "source_line": 178,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -20305,7 +20521,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Sustain zero-touch fraction ≥0.95, routine human touch ≤0.05, and manual pixel-edit fraction ≤0.01 · Verify: measured production report, not review-time proxy · Blocked by: end-to-end eligible corpus",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 178,
+      "source_line": 179,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20337,7 +20553,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Present only QA-complete evidence bundles for a binary approve/reject owner decision · Verify: incomplete QA/identity/split/hash bundles cannot be decided · Blocked by: none",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 179,
+      "source_line": 180,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20358,7 +20574,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Record decisions in an idempotent hash-chained ledger · Verify: tamper, replay, and conflicting-decision fixtures fail closed · Blocked by: MF-P9-15.04",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 180,
+      "source_line": 181,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20379,7 +20595,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "On approve, seal prepared human-anchor truth or record autonomous audit agreement without changing authority · Verify: approval never invents human gold · Blocked by: MF-P9-15.04, MF-P9-15.05",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 181,
+      "source_line": 182,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20400,7 +20616,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "On reject, route bounded repair and revoke exact audited certificate scope when applicable · Verify: residual/revocation transaction test passes · Blocked by: MF-P9-15.04, MF-P9-15.05",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 182,
+      "source_line": 183,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20421,7 +20637,7 @@
       "spec_ref": "23 §§2–3,9–12; docs 20–22",
       "description": "Demonstrate end-to-end autonomous generate→critic→repair→certify→audit operation with sparse owner decisions · Verify: headline evidence reports quality and labor separately · Blocked by: MF-P9-15.01 through MF-P9-15.07",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 183,
+      "source_line": 184,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -20518,7 +20734,7 @@
       "spec_ref": null,
       "description": "Qualified external labels and DAZ improve untouched real human-anchor results; reference leakage is zero; selective autonomy meets the quality/labor targets; DAZ survives the seven-day soak and remains reversible · Verify: signed P9 evidence bundle plus full regression, real holdout ablations, rollback, and tracker validation pass · Blocked by: every MF-P9 item",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
-      "source_line": 186,
+      "source_line": 187,
       "is_exit_gate": true,
       "hard_blocker": false,
       "conditional": false,

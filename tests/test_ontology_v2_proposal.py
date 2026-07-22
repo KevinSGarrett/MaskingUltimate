@@ -14,12 +14,12 @@ def test_adult_anatomy_v2_proposal_is_append_only_complete_and_not_active() -> N
     assert document["status"] == "approved_design_not_active"
     assert document["base_ontology"] == "body_parts_v1"
     assert document["target_ontology"] == "body_parts_v2"
-    assert document["part_id_range"] == [0, 64]
-    assert document["num_part_classes_including_background"] == 65
+    assert document["part_id_range"] == [0, 65]
+    assert document["num_part_classes_including_background"] == 66
     assert [label.id for label in PART_LABELS] == list(range(56))
 
     additions = document["labels"]
-    assert [label["id"] for label in additions] == list(range(56, 65))
+    assert [label["id"] for label in additions] == list(range(56, 66))
     names = {label["name"] for label in additions}
     assert names == {
         "left_areola",
@@ -31,6 +31,7 @@ def test_adult_anatomy_v2_proposal_is_append_only_complete_and_not_active() -> N
         "glans_penis",
         "left_scrotal_region",
         "right_scrotal_region",
+        "anus",
     }
     assert names.isdisjoint({label.name for label in PART_LABELS})
     by_name = {label["name"]: label for label in additions}
@@ -42,7 +43,7 @@ def test_adult_anatomy_v2_proposal_is_append_only_complete_and_not_active() -> N
 
     formulas = document["derived_formulas"]
     aliases = document["aliases"]
-    canonical = names | set(formulas)
+    canonical = names | set(formulas) | {label.name for label in PART_LABELS} | {"both_glutes"}
     assert {entry["canonical"] for entry in aliases.values()} <= canonical
     assert document["visibility_states_added"] == [
         "occluded_by_clothing",
@@ -64,7 +65,9 @@ def test_adult_anatomy_v2_spec_covers_annotation_migration_and_system_consumers(
         "unreviewed_for_v2",
         "occluded_by_clothing",
         "ambiguous_do_not_use",
-        "num_classes: 65",
+        "num_classes: 66",
+        "`anus`",
+        "`left butt cheek`",
         "CVAT annotation SOP",
         "QC-V2-012",
         "Migration from v1",

@@ -209,8 +209,8 @@
           "items": {
             "$ref": "#/$defs/labelName"
           },
-          "maxItems": 9,
-          "minItems": 9,
+          "maxItems": 10,
+          "minItems": 10,
           "type": "array",
           "uniqueItems": true
         },
@@ -237,7 +237,7 @@
           "$ref": "#/$defs/sha256"
         },
         "status": {
-          "const": "awaiting_v2_human_review"
+          "const": "awaiting_v2_authority_resolution"
         },
         "to_ontology": {
           "const": "body_parts_v2"

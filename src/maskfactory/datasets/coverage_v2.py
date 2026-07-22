@@ -68,10 +68,10 @@ def load_v2_operations_policy(path: Path | str = DEFAULT_POLICY) -> dict[str, An
     coverage = document.get("coverage")
     if not isinstance(coverage, dict):
         raise OntologyV2OperationsError("operations policy coverage must be an object")
-    if coverage.get("foreground_class_ids") != [1, 64] or coverage.get("excluded_class_ids") != {
+    if coverage.get("foreground_class_ids") != [1, 65] or coverage.get("excluded_class_ids") != {
         0: "background_is_not_a_body_part_acquisition_target"
     }:
-        raise OntologyV2OperationsError("coverage must target exact foreground IDs 1..64")
+        raise OntologyV2OperationsError("coverage must target exact foreground IDs 1..65")
     minimum = coverage.get("minimum_clear_positive_instances_per_new_class")
     target = coverage.get("target_clear_positive_instances_per_new_class")
     if not isinstance(minimum, int) or not isinstance(target, int) or not 50 <= minimum <= target:
@@ -119,7 +119,8 @@ def load_v2_operations_policy(path: Path | str = DEFAULT_POLICY) -> dict[str, An
     invariants = document.get("acquisition_invariants")
     expected_invariants = {
         "destination": "hard_case_holdout",
-        "human_review_required": True,
+        "authority_resolution_required": True,
+        "mandatory_human_review": False,
         "governed_source_required": True,
         "fabricated_positive_allowed": False,
         "aliases_allowed_in_failure_queue": False,
@@ -172,7 +173,7 @@ def build_v2_coverage_matrix(
         parts = package.get("parts")
         if not isinstance(parts, Mapping) or set(parts) != set(V2_PART_CLASS_NAMES):
             raise OntologyV2OperationsError(
-                "approved coverage package must contain exact IDs 0..64"
+                "approved coverage package must contain exact IDs 0..65"
             )
         view = _person_value(package, "view")
         poses = _person_value(package, "pose_tags")
@@ -392,7 +393,7 @@ def _validate_matrix_semantics(
             raise OntologyV2OperationsError(f"v2 coverage target/deficit drift: {key}")
     positives = document["new_class_positive_targets"]
     if [row["label"] for row in positives] != list(V2_PART_CLASS_NAMES[56:]):
-        raise OntologyV2OperationsError("v2 clear-positive rows are not exact IDs 56..64")
+        raise OntologyV2OperationsError("v2 clear-positive rows are not exact IDs 56..65")
     minimum = policy["coverage"]["minimum_clear_positive_instances_per_new_class"]
     target = policy["coverage"]["target_clear_positive_instances_per_new_class"]
     for row in positives:

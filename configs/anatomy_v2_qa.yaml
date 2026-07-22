@@ -12,6 +12,7 @@ hard_checks:
   - QC-V2-008
   - QC-V2-009
   - QC-V2-010
+  - QC-V2-011
   - QC-V2-012
 governance:
   permitted_source_origins: [generated, owned_photo, licensed, consented_subject]
@@ -33,6 +34,7 @@ vlm:
     - glans_penis
     - left_scrotal_region
     - right_scrotal_region
+    - anus
   problem_types:
     - anatomy_boundary
     - anatomy_clothing_false_positive

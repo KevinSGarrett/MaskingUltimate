@@ -11,7 +11,7 @@
     "train_holdout_overlap_allowed": false
   },
   "shared_contract_hashes": {
-    "data": "ba9551dde6f9260089a209ccd1939b2d9528c69f148328e754d1d92bd2e4498e",
+    "data": "728deff8510d30ad6e48df6fd0abfc8cf149f9540a0735341ceefb3ce4039d87",
     "augmentations": "5a83e39e9b81292dca92806366379ceac304ceb18818dc3005a1ed91ff40ca4e",
     "training": "96e7461646b6cc1d257eec95a4e7df116e46de9c119f70254777a6b2d2cbc663",
     "evaluation": "7b9d0ed2384ef6c9bd438f25003eb186418ceb6312c41bcb52d6076669d93de5",
@@ -19,8 +19,8 @@
   },
   "shared_values": {
     "ontology_version": "body_parts_v2",
-    "class_count": 65,
-    "class_names_sha256": "7f78e0c3405c8bd05e23522ccb453faa7f4a2bbba0a9b29493c7e7d0d19a6124",
+    "class_count": 66,
+    "class_names_sha256": "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e",
     "ignore_index": 255,
     "seed": 1337,
     "crop_size": [512, 512],
@@ -49,19 +49,19 @@
     "segformer_b3": {
       "model_family": "segformer",
       "config_path": "configs/training/bodypart_v2_segformer_b3.yaml",
-      "config_sha256": "cd36c8d23fb1b27ed17a9b943ebb29bed9eb88226fa26c4b3f62c64c18c1673f",
+      "config_sha256": "12326689a8deba28add81c5ea843a0c800f07e9ad09776a5455eef6cdd37bff3",
       "frozen_initial_artifact_hashes": {}
     },
     "mask2former_swin_b": {
       "model_family": "mask2former",
       "config_path": "configs/training/bodypart_v2_mask2former_swinb.yaml",
-      "config_sha256": "55022d26a2e11c4e3c160e91c1d745525eb67a2db730bc64e3e8203dd8c8cc10",
+      "config_sha256": "5912dc23502b5b5ef1c8d8a548a81c8e48446743d46255de4ccc500713de20f7",
       "frozen_initial_artifact_hashes": {}
     },
     "eomt_dinov3_small_640": {
       "model_family": "eomt_dinov3",
       "config_path": "configs/training/eomt_dinov3_small_v2.yaml",
-      "config_sha256": "6ac527c41e165a58d77bf163ae2be5ad9346353f114b7a9839990bd72de69a8c",
+      "config_sha256": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f",
       "frozen_initial_artifact_hashes": {
         "initial_checkpoint": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f"
       }
@@ -109,16 +109,16 @@
     "rollback_failure_rate"
   ],
   "source_hashes": {
-    "configs/ontology_v2.yaml": "cd603d2d269f89bde370f74b02a617755c91f1e756c01d03bb2903f0fd8d8f40",
+    "configs/ontology_v2.yaml": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
-    "configs/training/bodypart_v2_mask2former_swinb.yaml": "55022d26a2e11c4e3c160e91c1d745525eb67a2db730bc64e3e8203dd8c8cc10",
-    "configs/training/bodypart_v2_segformer_b3.yaml": "cd36c8d23fb1b27ed17a9b943ebb29bed9eb88226fa26c4b3f62c64c18c1673f",
-    "configs/training/eomt_dinov3_small_v2.yaml": "6ac527c41e165a58d77bf163ae2be5ad9346353f114b7a9839990bd72de69a8c",
+    "configs/training/bodypart_v2_mask2former_swinb.yaml": "5912dc23502b5b5ef1c8d8a548a81c8e48446743d46255de4ccc500713de20f7",
+    "configs/training/bodypart_v2_segformer_b3.yaml": "12326689a8deba28add81c5ea843a0c800f07e9ad09776a5455eef6cdd37bff3",
+    "configs/training/eomt_dinov3_small_v2.yaml": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f",
     "env/eomt_dinov3_runtime.lock.json": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8",
-    "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json": "2d12da9ca70a0a36dc4c060aa5947ceaf9f4eb136d240c24f6511caaf259e6e6",
-    "src/maskfactory/training/bodypart/v2_contract.py": "1333350547156d2d954e37b12c23923fca099248bdf272d1a50e8e43fcb9e8ca",
+    "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json": "485f841139a9bf79b3e3cf60639bc7ff0fdbd09bfd942772576f466a907e19b4",
+    "src/maskfactory/training/bodypart/v2_contract.py": "692e5c4552bfbf4450b6116740c82ac94e86d9938f60b8e34563eb397105cf09",
     "src/maskfactory/training/mmseg_metric.py": "d5f25c481fae72dfaec5d752d5d2ef87eef3023035dd8b404c6f9e89611f1384",
     "src/maskfactory/training/run.py": "96b56d03859ea3582f326687e49d40a666076e997a1297c64703510333b09580"
   },
-  "sha256": "431843f95ba4045a00a2220e19d770eb27531ffd63bd40649a7b8698baab9927"
+  "sha256": "093eef03b2c7855f090dd1681aa0f0c9075d775009523574fb402a5fd427141c"
 }

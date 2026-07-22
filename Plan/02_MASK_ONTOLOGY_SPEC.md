@@ -37,7 +37,7 @@ can be enforced by construction.
 Binary gold PNGs are generated as `(part_map == ID) * 255`.
 
 This table is the active v1 registry: 56 indexed PART records, IDs `0..55`, with background
-already occupying ID 0. Document 18 appends IDs `56..64` for v2 without changing any row below;
+already occupying ID 0. Document 18 appends IDs `56..65` for v2 without changing any row below;
 the generated cross-version mirror is `Plan\OntologyV2\VERSIONED_REFERENCE.md`.
 
 | ID | label | ID | label |

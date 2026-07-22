@@ -35,7 +35,7 @@
       "properties": {
         "cell_id": {"type": "string"},
         "cell_identity_sha256": {"$ref": "#/$defs/sha256"},
-        "label_observations": {"type": "array", "minItems": 65, "maxItems": 65, "items": {"$ref": "#/$defs/label"}},
+        "label_observations": {"type": "array", "minItems": 66, "maxItems": 66, "items": {"$ref": "#/$defs/label"}},
         "aggregate_counts": {"type": "object"},
         "artifact_hashes": {"type": "object", "minProperties": 4, "maxProperties": 4, "additionalProperties": {"$ref": "#/$defs/sha256"}},
         "observations_sha256": {"$ref": "#/$defs/sha256"}

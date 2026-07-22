@@ -22,7 +22,7 @@ EOMT_FILES = {
     "preprocessor_config.json": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
     "README.md": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
 }
-V2_VOCABULARY_SHA256 = "7f78e0c3405c8bd05e23522ccb453faa7f4a2bbba0a9b29493c7e7d0d19a6124"
+V2_VOCABULARY_SHA256 = "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e"
 
 
 class EomtDinov3ContractError(ValueError):
@@ -114,10 +114,10 @@ class EomtDinov3TrainingContract:
             "seed": 1337,
             "supervision": {
                 "v1": "v1_pretraining_only",
-                "v2": "fully_reviewed_65_class_only",
+                "v2": "fully_reviewed_66_class_only",
             },
             "sampler": {
-                "anatomy_ids": list(range(56, 65)),
+                "anatomy_ids": list(range(56, 66)),
                 "anatomy_crop_min_fraction": 0.5,
                 "whole_body_min_fraction": 0.25,
                 "fabricate_hidden_positive": False,

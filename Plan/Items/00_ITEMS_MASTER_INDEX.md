@@ -9,7 +9,7 @@ Later governed specs 18–22 and the SAM 3.1 handoff are imported into the same 
 source-to-item map is `TRACEABILITY_18_22_SAM31.md`; doc 18's original 70-entry checklist remains
 an evidence source, not a separate status system.
 
-**Total items: 827** across 21 checklist files (including profile-scoped phase exits and the required
+**Total items: 831** across 21 checklist files (including profile-scoped phase exits and the required
 doc-24 core exit). No legacy phase exit is global completion authority.
 
 ## File Map
@@ -24,18 +24,18 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 06_ITEMS_P5_TRAINING.md | P5 Custom Model Training (wk 6–10, ≥200 certified) | 38 | D6, D7 |
 | 07_ITEMS_P6_COMFYUI_SERVING.md | P6 legacy trained-champion serving plus independent doc-24 core bridge lane | 20 | optional D8 plus required core bridge |
 | 08_ITEMS_P7_SCALE_OPERATIONS.md | P7 Optional Scale & Continuous | 17 | optional D5, D10, headline test |
-| 09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md | P0 External Foundation Bootstrap | 22 | Existing-model/dataset foundation for D1/D5/D6/D8 |
+| 09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md | P0 External Foundation Bootstrap | 24 | Existing-model/dataset foundation for D1/D5/D6/D8 |
 | 10_ITEMS_P8_MULTI_PERSON_MASKING.md | P8 Multi-Person / Multi-Character Masking (after P7) | 45 | D11, G9 |
 | 11_ITEMS_P0_MODERNIZATION_FOUNDATION.md | P0 v2/registry/provider foundation | 41 | reproducibility, registry governance, challenger installation, RunPod durability, AWS inventory/migration |
 | 12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md | P1 ontology-v2 and truth authority | 36 | v2 generator/migration/CVAT, four truth tiers |
 | 13_ITEMS_P2_PROVIDER_MODERNIZATION.md | P2 provider-neutral modernization | 30 | v2 drafting, proposal diversity, disagreement maps, bounded repair, SAM 3.1/provider benchmark matrix |
 | 14_ITEMS_P3_MODERN_SPECIALISTS.md | P3 modern specialists | 10 | measured pose/geometry/silhouette/specialist challengers |
-| 15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md | P4 teachers/autonomy | 42 | v2 QA, evidence-qualified visual critics, cloud incremental value, certification/audit/revocation |
+| 15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md | P4 teachers/autonomy | 43 | v2 QA, evidence-qualified visual critics, cloud incremental value, certification/audit/revocation |
 | 16_ITEMS_P5_CERTIFIED_TRAINING.md | P5 certified training | 22 | v2 training, tier weights, hard-bucket-safe promotion |
 | 17_ITEMS_P6_MODERN_SERVING.md | P6 modern serving | 15 | v2 ComfyUI/API, provider-neutral serving, safe CVAT publication |
 | 18_ITEMS_P7_CURRENCY_OPERATIONS.md | P7 currency/autonomous operations | 20 | v2 activation, critic currency, RunPod asset durability, recurring reviews, revised headline evidence |
 | 19_ITEMS_P8_AUTONOMOUS_MULTI_PERSON.md | P8 autonomous multi-person | 8 | certificate-covered instances, residual/audit routing |
-| 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 146 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
+| 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 147 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
 | 21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md | P6 autonomous core and cross-project ComfyUI bridge | 43 | required human-free runtime completion, exact-output authority, release/adoption bridge, recovery |
 
 ## ID Scheme & Traceability

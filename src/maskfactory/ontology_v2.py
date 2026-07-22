@@ -52,6 +52,9 @@ _V2_BOUNDARY_RULES = {
     "visible_scrotal_midline": {
         "rule": "split visible external scrotal surface at a defensible character-side midline"
     },
+    "visible_anal_opening_only": {
+        "rule": "visible external anal opening only; never infer hidden or internal extent"
+    },
 }
 
 
@@ -97,8 +100,8 @@ def _validate_proposal(document: Mapping[str, Any]) -> None:
         "base_ontology": "body_parts_v1",
         "target_ontology": "body_parts_v2",
         "id_policy": "append_only",
-        "part_id_range": [0, 64],
-        "num_part_classes_including_background": 65,
+        "part_id_range": [0, 65],
+        "num_part_classes_including_background": 66,
         "ignore_index": 255,
     }
     for key, expected in exact.items():
@@ -114,14 +117,14 @@ def _validate_proposal(document: Mapping[str, Any]) -> None:
         raise OntologyV2Error("active v1 PART mapping is not contiguous 0..55")
 
     additions = document.get("labels")
-    if not isinstance(additions, list) or len(additions) != 9:
-        raise OntologyV2Error("ontology-v2 must contain exactly nine appended labels")
+    if not isinstance(additions, list) or len(additions) != 10:
+        raise OntologyV2Error("ontology-v2 must contain exactly ten appended labels")
     if any(not isinstance(label, dict) for label in additions):
         raise OntologyV2Error("every ontology-v2 label must be an object")
     if any(not _REQUIRED_LABEL_FIELDS <= set(label) for label in additions):
         raise OntologyV2Error("ontology-v2 label is missing a required field")
-    if [label["id"] for label in additions] != list(range(56, 65)):
-        raise OntologyV2Error("ontology-v2 label IDs must be contiguous 56..64")
+    if [label["id"] for label in additions] != list(range(56, 66)):
+        raise OntologyV2Error("ontology-v2 label IDs must be contiguous 56..65")
     names = [label["name"] for label in additions]
     if len(names) != len(set(names)) or set(names) & base_names:
         raise OntologyV2Error("ontology-v2 names must be unique and append-only")
@@ -143,7 +146,7 @@ def _validate_proposal(document: Mapping[str, Any]) -> None:
         raise OntologyV2Error("ontology-v2 derived_formulas must be non-empty")
     if not isinstance(aliases, dict) or not aliases:
         raise OntologyV2Error("ontology-v2 aliases must be non-empty")
-    canonical = set(names) | set(formulas)
+    canonical = base_names | set(names) | set(formulas)
     for alias, record in aliases.items():
         if (
             alias in canonical
@@ -257,9 +260,9 @@ def build_derived_v2(path: Path | str = DEFAULT_PROPOSAL) -> dict[str, Any]:
         if label["mask_type"] == "derived_union"
     }
     formulas.update(proposal["derived_formulas"])
-    formulas["full_body_parts_visible"] = "part_ids:1-49 | part_ids:54-55 | part_ids:56-64"
+    formulas["full_body_parts_visible"] = "part_ids:1-49 | part_ids:54-55 | part_ids:56-65"
     formulas["visible_body_skin"] = (
-        "((part_ids:1-49 | part_ids:54-55 | part_ids:56-64) & material:skin) - part:hair"
+        "((part_ids:1-49 | part_ids:54-55 | part_ids:56-65) & material:skin) - part:hair"
     )
     return {
         "config_version": "2.0.0",
@@ -303,6 +306,8 @@ def build_viz_v2(path: Path | str = DEFAULT_PROPOSAL) -> dict[str, Any]:
             "#0277BD",
             "#827717",
             "#4E342E",
+            "#880E4F",
+            "#004D40",
         )
     )
     for label in ontology["labels"]:

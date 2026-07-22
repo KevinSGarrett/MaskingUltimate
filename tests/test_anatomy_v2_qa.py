@@ -58,6 +58,8 @@ def _good_inputs() -> AnatomyV2QaInputs:
     left_scrotal[50:57, 24:32] = True
     right_scrotal = np.zeros(shape, dtype=bool)
     right_scrotal[50:57, 32:40] = True
+    anus = np.zeros(shape, dtype=bool)
+    anus[57:59, 31:33] = True
     positives = {
         "left_areola": left_areola,
         "right_areola": right_areola,
@@ -67,6 +69,7 @@ def _good_inputs() -> AnatomyV2QaInputs:
         "glans_penis": glans,
         "left_scrotal_region": left_scrotal,
         "right_scrotal_region": right_scrotal,
+        "anus": anus,
     }
     for name, mask in positives.items():
         part[mask] = ids[name]
@@ -89,6 +92,7 @@ def _good_inputs() -> AnatomyV2QaInputs:
                     "glans_penis",
                     "left_scrotal_region",
                     "right_scrotal_region",
+                    "anus",
                 )
             ]
         ),
@@ -201,6 +205,7 @@ def _seed_defect(inputs: AnatomyV2QaInputs, qc_id: str) -> AnatomyV2QaInputs:
                     "glans_penis",
                     "left_scrotal_region",
                     "right_scrotal_region",
+                    "anus",
                 )
             ]
         )
@@ -219,6 +224,19 @@ def _seed_defect(inputs: AnatomyV2QaInputs, qc_id: str) -> AnatomyV2QaInputs:
         seeded.manifest["parts"]["vulva"]["visibility"] = "occluded_by_clothing"
     elif qc_id == "QC-V2-010":
         seeded = _clone(seeded, projected_or_amodal_labels=frozenset({"left_areola"}))
+    elif qc_id == "QC-V2-011":
+        original = seeded.atomic_masks["anus"].copy()
+        anus_id = int(seeded.part_map[original][0])
+        pelvic_id = int(seeded.part_map[34, 40])
+        seeded.atomic_masks["anus"][:] = False
+        seeded.atomic_masks["anus"][57, 30] = True
+        seeded.atomic_masks["anus"][57, 34] = True
+        seeded.atomic_masks["pelvic_region"][original] = True
+        seeded.atomic_masks["pelvic_region"][57, 30] = False
+        seeded.atomic_masks["pelvic_region"][57, 34] = False
+        seeded.part_map[original] = pelvic_id
+        seeded.part_map[57, 30] = anus_id
+        seeded.part_map[57, 34] = anus_id
     elif qc_id == "QC-V2-012":
         seeded.manifest["parts"]["vagina"] = {"visibility": "not_visible"}
     else:  # pragma: no cover - closed parameter list below
@@ -237,7 +255,7 @@ def test_config_has_exact_checks_and_qa_only_canonical_vlm_vocabulary() -> None:
     assert not set(load_v2_proposal()["aliases"]) & set(
         config["vlm"]["canonical_anatomy_vocabulary"]
     )
-    assert "QC-V2-011" not in config["hard_checks"]
+    assert "QC-V2-011" in config["hard_checks"]
 
 
 def test_good_seed_passes_all_active_checks_and_report_remains_non_authoritative(

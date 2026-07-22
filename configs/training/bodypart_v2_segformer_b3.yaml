@@ -5,7 +5,7 @@ task: bodypart_semantic_segmentation
 model:
   architecture: segformer_b3
   pretrained: imagenet
-  num_classes: 65
+  num_classes: 66
   classes: &v2_classes
     - background
     - hair
@@ -72,6 +72,7 @@ model:
     - glans_penis
     - left_scrotal_region
     - right_scrotal_region
+    - anus
 data:
   dataset: maskfactory_bodyparts_v2
   crop_size: [512, 512]
@@ -79,9 +80,9 @@ data:
   seed: 1337
   supervision:
     v1: v1_pretraining_only
-    v2: fully_reviewed_65_class_only
+    v2: fully_reviewed_66_class_only
   sampler:
-    anatomy_ids: [56, 57, 58, 59, 60, 61, 62, 63, 64]
+    anatomy_ids: [56, 57, 58, 59, 60, 61, 62, 63, 64, 65]
     anatomy_crop_min_fraction: 0.5
     whole_body_min_fraction: 0.25
     fabricate_hidden_positive: false

@@ -6,11 +6,11 @@
   "results_state": "sealed_before_results",
   "delta_convention": "positive_is_challenger_improvement",
   "source_hashes": {
-    "configs/anatomy_v2_qa.yaml": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
+    "configs/anatomy_v2_qa.yaml": "fd755b5f0a5173b1592d5fd85b970b81d9e67b7dc4a797de870b588e883293b4",
     "configs/autonomy_multi_person_risk_buckets.yaml": "981fdfd8a436a3563ecc51fc8cd6bd4ff03b6113338eb6ea995e9cfbd46eabf1",
     "configs/autonomy_risk_buckets.yaml": "2f2ec6e513c75dc79357d215e82bc8b7254dcb88c6eb83d7c82bd246ad00363e",
     "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
-    "configs/ontology_v2.yaml": "cd603d2d269f89bde370f74b02a617755c91f1e756c01d03bb2903f0fd8d8f40",
+    "configs/ontology_v2.yaml": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d"
   },
   "role": {
@@ -24,6 +24,7 @@
       "minimum_improvement": 0.05
     },
     "hard_labels": [
+      "anus",
       "belly_button",
       "chest_upper_torso",
       "glans_penis",
@@ -96,5 +97,5 @@
       "rollback_failure_rate"
     ]
   },
-  "sha256": "01467db7bcb37e4e4e09a16f2312c6fd6cc9d1d4e4fda2184f8627352e8f24ef"
+  "sha256": "d009abe2667092e5d990a05f92ba39072e6b25022f0c1116c5ed93bcb7adad90"
 }

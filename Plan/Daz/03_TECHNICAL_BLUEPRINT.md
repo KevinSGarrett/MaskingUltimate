@@ -182,8 +182,8 @@ scene, pass, and semantic mapping. It never means human-anchor truth for real im
 
 - The job declares exactly one target: `body_parts_v1` or `body_parts_v2`.
 - The active default remains v1 until MaskFactory's existing v2 activation bundle passes.
-- A v1 job must not emit IDs 56–64 into its indexed PART map.
-- A v2 job must map and validate all IDs 0–64, including explicit state behavior for anatomy that is
+- A v1 job must not emit IDs 56–65 into its indexed PART map.
+- A v2 job must map and validate all IDs 0–65, including explicit state behavior for anatomy that is
   not applicable or not visible.
 - Synthetic geometry can know applicability, but the existing human-review-only v2 `not_applicable`
   rule means synthetic packages need a dedicated structured `synthetic_configuration_evidence` field;

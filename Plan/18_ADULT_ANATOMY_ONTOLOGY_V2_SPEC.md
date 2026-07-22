@@ -13,8 +13,8 @@
 ## 1. Decision and non-negotiable principles
 
 MaskFactory will support observable adult anatomy as an append-only ontology upgrade. Existing
-PART IDs `0..55` never move. Nine visible-surface labels are appended as IDs `56..64`, producing
-exactly **65 PART logits including background ID 0**. The old phrase "57-class (56 PART IDs plus
+PART IDs `0..55` never move. Ten visible-surface labels are appended as IDs `56..65`, producing
+exactly **66 PART logits including background ID 0**. The old phrase "57-class (56 PART IDs plus
 background)" is invalid because v1 ID 0 is already background; v2 removes that ambiguity.
 
 The upgrade preserves the constitutional rules:
@@ -25,7 +25,7 @@ The upgrade preserves the constitutional rules:
 4. `unreviewed_for_v2` is not a negative label and cannot enter v2 supervised training.
 5. Ambiguous pixels become ignore index `255`; the annotator never guesses a boundary or side.
 6. Projected/amodal estimates, if ever enabled, remain separate and can never become visible-mask gold, training truth, or approval evidence.
-7. Anatomy applicability is never inferred from name, gender presentation, clothing, or model guess. `not_applicable` requires human-reviewed evidence.
+7. Anatomy applicability is never inferred from name, gender presentation, clothing, or an unsupported model guess. `not_applicable` requires evidence-qualified authority.
 
 ## 2. Append-only PART registry
 
@@ -40,8 +40,9 @@ The upgrade preserves the constitutional rules:
 | 62 | `glans_penis` | Visible glans only; no inference beneath foreskin or clothing | center | `penis_visible` |
 | 63 | `left_scrotal_region` | Character-left visible scrotal surface; not an internal testicle mask | character-left | `scrotum_visible` |
 | 64 | `right_scrotal_region` | Character-right visible scrotal surface; not an internal testicle mask | character-right | `scrotum_visible` |
+| 65 | `anus` | Visible external anal opening only; never an inferred internal canal | center | `external_pelvic_anatomy_visible` |
 
-All nine labels are `atomic_exclusive`, enabled in v2, and belong to the PART-map exclusivity
+All ten labels are `atomic_exclusive`, enabled in v2, and belong to the PART-map exclusivity
 group. Existing `left_breast`, `right_breast`, and `pelvic_region` masks must carve out pixels
 owned by these new atomics. The full surface remains available through derived unions.
 
@@ -59,6 +60,11 @@ Aliases are accepted for search/UI convenience but never create duplicate truth 
 | `right_testicle` | `right_scrotal_region` | UI alias only; external character-right surface |
 | `areolas` | `both_areolae` | Derived union |
 | `nipples` | `both_nipples` | Derived union |
+| `asshole` / `anal opening` | `anus` | Visible external anal opening only |
+| `butt` / `butts` / `buttocks` / `ass` | `both_glutes` | Existing derived union |
+| `left butt cheek` | `left_glute` | Existing character-left atomic |
+| `right butt cheek` | `right_glute` | Existing character-right atomic |
+| `breasts` / `boobs` | `both_breasts_full` | Complete v2 breast-surface derived union |
 
 APIs and manifests emit canonical names. Alias resolution happens before validation and must be
 recorded in provenance when a user supplied an alias.
@@ -78,7 +84,8 @@ These outputs are script-generated and never manually annotated:
 - `penis_visible = penis_shaft | glans_penis`
 - `scrotum_visible = left_scrotal_region | right_scrotal_region`
 - `external_genitalia_visible = vulva | penis_visible | scrotum_visible`
-- `pelvic_anatomy_visible = pelvic_region | external_genitalia_visible`
+- `external_pelvic_anatomy_visible = external_genitalia_visible | anus`
+- `pelvic_anatomy_visible = pelvic_region | external_pelvic_anatomy_visible`
 
 Existing `both_breasts` remains the v1 union of IDs 5 and 6 for compatibility. New callers that
 need complete v2 breast surface use `both_breasts_full`.
@@ -86,7 +93,7 @@ need complete v2 breast surface use `both_breasts_full`.
 The inactive machine authority is `configs/derived_v2.yaml`; it must remain byte-identical to the
 generator before activation. It contains exactly one executable formula for every v2
 `derived_union`. `full_body_parts_visible`, `person_full_visible`, and `visible_body_skin` cover all
-visible atomic PART IDs `1..49`, `54..55`, and `56..64`, while protected QA IDs `50..53` remain
+visible atomic PART IDs `1..49`, `54..55`, and `56..65`, while protected QA IDs `50..53` remain
 excluded. The active `configs/ontology.yaml` and `configs/derived.yaml` remain v1 until the complete
 MF-P7-06.06 gate passes.
 
@@ -116,7 +123,7 @@ not_applicable | unreviewed_for_v2 | ambiguous_do_not_use`
 | `ambiguous_do_not_use` | Uncertain zone recorded separately | Pixels burn to `255`; excluded from metrics/loss |
 
 `fully_occluded` is accepted as an input alias for `occluded`, but canonical manifests write
-`occluded`. Older v1 packages migrate all nine new labels to `unreviewed_for_v2`; they are never
+`occluded`. Older v1 packages migrate all ten new labels to `unreviewed_for_v2`; they are never
 automatically marked absent, occluded, or not applicable.
 
 ## 5. CVAT annotation SOP
@@ -132,22 +139,23 @@ For every promoted person and every v2 label, the reviewer must select one state
 7. Pubic hair or another body part owns visible occluding pixels according to normal z-order.
 8. Covered anatomy uses `occluded_by_clothing` with no mask. A fabric contour is not sufficient.
 9. A missing/cropped finger follows the same system: visible mask, explicit occluded/cropped state, or ignored ambiguous region. Omission is never an implicit negative.
-10. CVAT export refuses approval until all 65 PART entries have a valid state and every v2-visible entry has a mask.
+10. CVAT export, when the optional review path is used, refuses approval until all 66 PART entries have a valid state and every v2-visible entry has a mask. Autonomous certification may satisfy the same state/mask contract without making CVAT mandatory.
 
 ## 6. Automatic QA additions
 
 The v2 QA battery adds hard checks:
 
-- **QC-V2-001 — state completeness:** all IDs `0..64` represented; no `unreviewed_for_v2` in a v2-approved package.
+- **QC-V2-001 — state completeness:** all IDs `0..65` represented; no `unreviewed_for_v2` in a v2-approved package.
 - **QC-V2-002 — state/mask consistency:** visible states require a nonempty mask; null-mask states prohibit one; ambiguity requires an ignore region.
 - **QC-V2-003 — atomic exclusivity:** new labels do not overlap any PART atomic.
 - **QC-V2-004 — nipple/areola topology:** nipple is adjacent to or enclosed by its same-side areolar ring after scale-aware tolerance; neither crosses the body midline.
 - **QC-V2-005 — breast carve-out:** breast atomics exclude same-side areola/nipple; `*_breast_full` restores the surface.
-- **QC-V2-006 — genital carve-out:** pelvic_region excludes IDs 60–64; the pelvic union restores the complete visible region.
+- **QC-V2-006 — pelvic-anatomy carve-out:** pelvic_region excludes IDs 60–65; the pelvic union restores the complete visible region.
 - **QC-V2-007 — penis topology:** glans and shaft are exclusive, adjacent when both visible, and remain one anatomical component unless honestly occluded.
 - **QC-V2-008 — scrotal side integrity:** left/right obey character perspective; unresolved sides must be ambiguous.
 - **QC-V2-009 — clothing authority:** `occluded_by_clothing` requires null anatomy mask and visible clothing material in the reviewed region.
 - **QC-V2-010 — no hidden-authority leak:** projected/amodal anatomy cannot satisfy visible-mask, gold, training, metric, or approval requirements.
+- **QC-V2-011 — anal-opening topology:** a visible anus is a single evidence-qualified external component with plausible posterior pelvic adjacency and no internal projection.
 - **QC-V2-012 — alias canonicalization:** maps/manifests never persist aliases as labels.
 
 Seeded-defect fixtures must exercise every new check before activation.
@@ -156,16 +164,16 @@ Seeded-defect fixtures must exercise every new check before activation.
 
 ### 7.1 Eligibility
 
-- A package may train v2 only after all nine new labels are human-reviewed and none remains `unreviewed_for_v2`.
+- A package may train v2 only after all ten new labels are authority-resolved and none remains `unreviewed_for_v2`; qualification may be autonomous and does not require CVAT.
 - v1 packages remain useful for v1 pretraining and existing-class training. They do not silently become v2 negatives.
 - Clothed v2-reviewed images contribute existing PART/MATERIAL supervision and explicit non-visible anatomy states. Nude/partially nude images provide positive anatomy pixels.
 - Split assignment remains identity/pHash-grouped; near duplicates never cross train/val/test.
 
 ### 7.2 Model shape and sampling
 
-- Main semantic head: `num_classes: 65` (IDs `0..64`, background included).
+- Main semantic head: `num_classes: 66` (IDs `0..65`, background included).
 - Ignore index: `255` everywhere.
-- Rare-class sampler: at least 50% of v2 fine-tune crops contain IDs 56–64 once inventory supports it; retain whole-body batches to prevent forgetting.
+- Rare-class sampler: at least 50% of v2 fine-tune crops contain IDs 56–65 once inventory supports it; retain whole-body batches to prevent forgetting.
 - Use inverse-square-root class weighting capped at ×8, anatomy-focused crops, and balanced anatomy/view/pose/skin-tone/lighting/occlusion coverage.
 - Never balance by fabricating a positive beneath clothing.
 
@@ -179,12 +187,12 @@ Seeded-defect fixtures must exercise every new check before activation.
 ## 8. Migration from v1
 
 1. Freeze and hash active v1 ontology, schemas, CVAT label map, dataset versions, and champions. Existing IDs/packages remain readable.
-2. Generate v2 with unchanged IDs `0..55`, appended IDs `56..64`, new unions, aliases, states, and QA rules. CI proves no old ID/name changed.
-3. Add manifest `reviewed_ontology_version` and per-class review authority. A migrated v1 package receives `unreviewed_for_v2` for all nine additions.
+2. Generate v2 with unchanged IDs `0..55`, appended IDs `56..65`, new unions, aliases, states, and QA rules. CI proves no old ID/name changed.
+3. Add manifest `reviewed_ontology_version` and per-class review authority. A migrated v1 package receives `unreviewed_for_v2` for all ten additions.
 4. Regenerate CVAT labels and create a versioned v2 project. Do not mutate an open v1 task in place.
 5. Re-review selected packages. Only fully resolved packages may freeze as `body_parts_v2` and enter v2 datasets.
 6. Build a new dataset version; never rewrite an existing DVC dataset/tag.
-7. Train/evaluate a 65-logit challenger. v1 champions continue serving until v2 passes every gate.
+7. Train/evaluate a 66-logit challenger. v1 champions continue serving until v2 passes every gate.
 8. Update serving/ComfyUI after registry promotion. Responses expose ontology version and reject labels unsupported by the champion.
 9. Run rollback: restore v1 champion pointers and prove v1 workflows remain byte-compatible.
 
@@ -198,7 +206,7 @@ Activation requires coordinated changes to:
 - S03/S05/S06/S07/S09 candidates, anatomy crops/prompts, fusion and carve-outs
 - map/binary export, derived formulas, inpaint selectors, package verifier
 - QC/topology/panels/seeded defects, VLM vocabulary and calibration
-- dataset builder, v2 eligibility, augmentation, 65-class configs and metrics
+- dataset builder, v2 eligibility, augmentation, 66-class configs and metrics
 - leaderboard, holdouts, promotion gates, registry vocabulary hashes
 - serving API validation/provenance and champion loading
 - ComfyUI selectors, package browser, workflows and unions
@@ -211,6 +219,6 @@ machine-readable delta is `Plan/OntologyV2/ontology_v2_additions.yaml`.
 ## 10. Activation gate
 
 `body_parts_v2` is active only when every checklist item has specific evidence, generated files
-are drift-clean, v1 compatibility passes, the v2 CVAT pilot is reviewed, all seeded QA defects
-are caught, a v2 dataset is immutable, and the 65-class challenger passes per-class and
+are drift-clean, v1 compatibility passes, the real-image authority pilot is complete (optional CVAT review does not block autonomy), all seeded QA defects
+are caught, a v2 dataset is immutable, and the 66-class challenger passes per-class and
 clothed-false-positive gates. Until then, production manifests and models remain v1.

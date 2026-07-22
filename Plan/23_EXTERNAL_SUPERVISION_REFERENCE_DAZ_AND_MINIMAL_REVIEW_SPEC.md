@@ -56,7 +56,7 @@ created. Source roles are orthogonal lineage attributes:
 |---|---|---|---:|---|
 | real human anchor | `human_anchor_gold` | train/calibration/holdout | 1.0 train | final real authority |
 | real certificate-covered output | `autonomous_certified_gold` | train | 0.65 default | certified volume while valid |
-| qualified external label | `weighted_pseudo_label` | train | 0.10–0.25 | never gold/certified volume |
+| qualified external label | `weighted_pseudo_label` for training; `external_labeled_reference` source role for semantic-critic controls | train; leakage-disjoint semantic-critic calibration | 0.10–0.25 training | never operational gold/certified volume |
 | `synthetic_geometry_exact` | `weighted_pseudo_label` | train | 0.10–0.25 | never gold/certified volume |
 | unlabeled reference corpus | none | none | 0 | no truth from selection |
 | unresolved machine output | `machine_candidate` | residual | 0 | no training/holdout authority |
@@ -85,8 +85,11 @@ data cannot be presented as a full-body sample.
 
 The swimsuit preview remains blocked because recorded preview terms prohibit derivatives and full-data
 rights are not established. The body archive remains blocked because its official source/license is
-unknown. External masks never become human/autonomous gold, never enter calibration/holdout, and never
-satisfy certified-volume gates.
+unknown. External masks never become human/autonomous gold, never enter model
+calibration or certified holdout as gold, and never satisfy certified-volume
+gates. After their exact qualification, however, they are required real labeled
+references for leakage-disjoint semantic visual-critic calibration and seeded-
+defect construction within the source label scope.
 
 Qualified external labels use per-source weights 0.10–0.25 and a combined batch cap of 0.35 until real
 holdout ablations justify a narrower policy. Real certified supervision remains dominant. Dataset cards
@@ -108,7 +111,7 @@ one split group. Strict maps use MaskFactory writers and ambiguous pixels are 25
 | Tier | Target | Use | Prohibited use |
 |---|---:|---|---|
 | `benchmark_reference` | 2,500 | frozen coverage/reference evaluation and acquisition targets | training, retrieval, truth authority |
-| `retrieval_reference` | 18,000 | hard-case similarity, coverage deficits, acquisition context | automatic truth/training admission |
+| `retrieval_reference` | 18,000 | hard-case similarity, coverage deficits, semantic-calibration acquisition context | automatic truth/training admission |
 
 Originals are immutable. The centralized source policy in doc 01 §7 applies without adding a
 reference-library-specific admission system.

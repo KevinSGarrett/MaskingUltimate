@@ -24,7 +24,7 @@ DEFAULT_POLICY_PATH = (
     / "benchmark_matrices"
     / "custom_segmenter_training_tournament_v1.json"
 )
-POLICY_SHA256 = "431843f95ba4045a00a2220e19d770eb27531ffd63bd40649a7b8698baab9927"
+POLICY_SHA256 = "093eef03b2c7855f090dd1681aa0f0c9075d775009523574fb402a5fd427141c"
 PROVIDERS = ("segformer_b3", "mask2former_swin_b", "eomt_dinov3_small_640")
 CONTEXTS = (
     "clothing_materials",
@@ -265,7 +265,7 @@ def validate_policy(
     values = document["shared_values"]
     expected_values = {
         "ontology_version": "body_parts_v2",
-        "class_count": 65,
+        "class_count": 66,
         "class_names_sha256": canonical_sha256(list(V2_CLASS_NAMES)),
         "ignore_index": 255,
         "seed": 1337,

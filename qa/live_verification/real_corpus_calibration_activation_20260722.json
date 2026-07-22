@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_live_verification",
+  "item_ids": [
+    "MF-P4-11.17",
+    "MF-P4-11.24",
+    "MF-P9-13.02",
+    "MF-P9-14.08"
+  ],
+  "verified_at": "2026-07-22",
+  "status": "STATIC_AND_REAL_CORPUS_BUILD_PASS",
+  "product_result": {
+    "semantic_critic_requires_real_source_bindings_before_model_load": true,
+    "synthetic_positive_controls_allowed": false,
+    "draft_or_in_review_positive_controls_allowed": false,
+    "maskedwarehouse_consumed_as_labeled_real_source": true,
+    "reference_library_inventory_bound": true,
+    "operational_gold_claimed": false,
+    "critic_role_qualified": false
+  },
+  "live_corpus": {
+    "runtime_path": "runtime_artifacts/visual_critic_real_corpus_v1_splitbound",
+    "case_count": 12,
+    "unique_real_source_count": 12,
+    "calibration_train_split_count": 6,
+    "qualification_test_split_count": 6,
+    "defect_type_count": 10,
+    "corpus_sha256": "1fab174a5df8bc2f5ffc649522e16dada8348c955435d7e794c5ad0d3903d1c8",
+    "source_bindings_sha256": "a7085b457fd881e030825bc475da151999db583fb2c02ecfb0e246ae8d8696da",
+    "reference_inventory_sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259"
+  },
+  "source_roots": {
+    "maskedwarehouse_windows": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+    "maskedwarehouse_runpod": "/workspace/assets/MaskedWarehouse",
+    "reference_windows": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images",
+    "reference_runpod": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images"
+  },
+  "validation": [
+    {
+      "command": "python -m pytest -q tests/test_visual_critic_real_corpus_policy.py tests/test_visual_critic_calibration_builder.py tests/test_live_visual_critic_calibration.py tests/test_visual_critic_qualification.py",
+      "status": "PASS",
+      "tests_passed": 34
+    },
+    {
+      "command": "ruff check src/maskfactory/vlm/real_corpus_policy.py tools/build_real_visual_critic_calibration_corpus.py tools/run_visual_critic_calibration.py tests/test_visual_critic_real_corpus_policy.py",
+      "status": "PASS"
+    },
+    {
+      "command": "PYTHONPATH=src python tools/build_real_visual_critic_calibration_corpus.py --output runtime_artifacts/visual_critic_real_corpus_v1_splitbound --maskedwarehouse-root C:/Comfy_UI_Main/MaskedWarehouse --reference-root F:/Reference_Images/Ultimate_Masking_Reference_Images --project-root . --policy configs/visual_critic_real_corpus.yaml",
+      "status": "PASS"
+    }
+  ],
+  "visual_review": {
+    "reviewed_cases": [
+      "vcr_001_valid",
+      "vcr_005_leakage"
+    ],
+    "result": "real people and LV-MHP annotation pixels were present; no synthetic geometric scene or historical draft package mask was used"
+  },
+  "remaining": [
+    "run the split-bound corpus through a self-hosted critic under a valid SharedRunPodCoordinator lease",
+    "complete any remaining source-level qualification evidence needed for broader training admission",
+    "expand the frozen real regression corpus across the full visible-anatomy and clothing/hair coverage matrix"
+  ]
+}

@@ -79,7 +79,7 @@ workhorse:
   authoritative_map_write: false
   human_approval_required: false
   certificate_covered_autoaccept: true
-  residual_human_review_required: true
+  residual_abstain_or_optional_human_review: true
   quick_pass_enabled: true
   think: false
   generation_options:

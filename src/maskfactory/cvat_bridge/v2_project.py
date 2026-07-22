@@ -71,8 +71,8 @@ def v2_project_label_spec(viz_path: Path | str = DEFAULT_VIZ_V2) -> list[dict[st
                 "attributes": [dict(attribute) for attribute in attributes],
             }
         )
-    if len(result) != 65:
-        raise CvatV2Error("CVAT v2 project spec must contain exactly 65 PART labels")
+    if len(result) != 66:
+        raise CvatV2Error("CVAT v2 project spec must contain exactly 66 PART labels")
     return result
 
 
@@ -113,7 +113,7 @@ def init_v2_project(
         "project_name": project_name,
         "created": not exact,
         "mapping": mapping_path,
-        "label_count": 65,
+        "label_count": 66,
         "v1_project_untouched": True,
     }
 

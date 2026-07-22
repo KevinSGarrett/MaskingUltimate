@@ -18,13 +18,14 @@ prompts:
   glans_penis: "visible exposed glans penis"
   left_scrotal_region: "visible exposed character-left external scrotal surface"
   right_scrotal_region: "visible exposed character-right external scrotal surface"
+  anus: "visible exposed external anal opening"
 crop_groups:
   chest:
     labels: [left_areola, right_areola, left_nipple, right_nipple]
     scale: 1.35
     lane: anatomy_v2_chest
   pelvic:
-    labels: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]
+    labels: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region, anus]
     scale: 1.45
     lane: anatomy_v2_pelvic
 fusion:
@@ -33,5 +34,5 @@ fusion:
   incompatible_genital_overlap: ambiguous_do_not_use
   unrelated_v1_overlap: ambiguous_do_not_use
   breast_carveouts: [left_areola, right_areola, left_nipple, right_nipple]
-  pelvic_carveouts: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]
+  pelvic_carveouts: [vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region, anus]
   output_authority: non_gold_review_draft

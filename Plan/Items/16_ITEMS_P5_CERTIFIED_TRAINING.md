@@ -8,12 +8,12 @@
 Goal: train and promote only from explicitly partitioned truth tiers and frozen, hard-bucket-safe evaluation.
 
 ## MF-P5-09 — Ontology-v2 dataset and training (spec: 18 checklist G)
-- [ ] MF-P5-09.01 Accept only fully reviewed v2 packages for 65-class supervision · Verify: frozen discovery rejects incomplete review authority · Blocked by: MF-P1-11.06
+- [ ] MF-P5-09.01 Accept only authority-complete v2 packages for 66-class supervision; autonomous certification is valid and CVAT is not mandatory · Verify: frozen discovery rejects unresolved class authority · Blocked by: MF-P1-11.06
 - [ ] MF-P5-09.02 Preserve v1 data without treating appended labels as negatives · Verify: v1 is 56-class pretraining-only and cannot enter v2 fine-tuning as implicit negatives · Blocked by: MF-P5-09.01
-- [ ] MF-P5-09.03 Burn ambiguity to ignore index 255 and export IDs 56..64 exactly · Verify: byte-for-value fixture preserves atomics outside explicit ambiguity · Blocked by: MF-P1-11.02
+- [ ] MF-P5-09.03 Burn ambiguity to ignore index 255 and export IDs 56..65 exactly · Verify: byte-for-value fixture preserves atomics outside explicit ambiguity · Blocked by: MF-P1-11.02
 - [ ] MF-P5-09.04 Add anatomy-focused crops plus whole-body anti-forgetting batches without fabricated positives · Verify: deterministic sampler meets frozen proportions when inventory supports them · Blocked by: MF-P5-09.01
 - [ ] MF-P5-09.05 Update flip, rotation, crop, color, and class-weight tests for v2 · Verify: every appended swap/ignore/weight invariant passes · Blocked by: MF-P1-10.03, MF-P5-09.03
-- [ ] MF-P5-09.06 Author exact 65-class configs and eliminate 57-class conflict · Verify: config validation accepts 56 v1/65 v2 and rejects 57 · Blocked by: MF-P1-10.09
+- [ ] MF-P5-09.06 Author exact 66-class configs and eliminate 57-class conflict · Verify: config validation accepts 56 v1/66 v2 and rejects 57 · Blocked by: MF-P1-10.09
 - [ ] MF-P5-09.07 Build identity-separated positive and clothed-negative holdouts · Verify: identity/pHash leakage and unreviewed negatives fail · Blocked by: human-anchor v2 corpus
 - [ ] MF-P5-09.08 Reach 50–100 clear positive instances per appended class before production claims · Verify: immutable inventory report meets every per-class floor · Blocked by: NEEDS KEVIN: sufficient reviewed source evidence
 - [ ] MF-P5-09.09 Publish per-class IoU, boundary-F, recall, clothed false positives, and side-swap rates · Verify: every appended class and required context has finite holdout evidence · Blocked by: MF-P5-09.07, MF-P5-09.08

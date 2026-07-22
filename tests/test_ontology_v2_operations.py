@@ -45,7 +45,7 @@ def _approved_package() -> dict:
 
 def test_v2_policy_covers_every_class_dimension_and_failure_action(tmp_path: Path) -> None:
     policy = load_v2_operations_policy()
-    assert policy["coverage"]["foreground_class_ids"] == [1, 64]
+    assert policy["coverage"]["foreground_class_ids"] == [1, 65]
     assert policy["coverage"]["excluded_class_ids"] == {
         0: "background_is_not_a_body_part_acquisition_target"
     }
@@ -71,9 +71,9 @@ def test_v2_matrix_is_exact_per_class_state_view_pose_and_occlusion(tmp_path: Pa
         [_approved_package()], generated_at=datetime(2026, 7, 14, tzinfo=UTC)
     )
     assert matrix["approved_package_count"] == 1
-    assert matrix["foreground_class_count"] == 64
-    assert len(matrix["cells"]) == 64 * (9 + 6 + 7 + 8)
-    assert len(matrix["new_class_positive_targets"]) == 9
+    assert matrix["foreground_class_count"] == 65
+    assert len(matrix["cells"]) == 65 * (9 + 6 + 7 + 8)
+    assert len(matrix["new_class_positive_targets"]) == 10
     assert next(
         row for row in matrix["new_class_positive_targets"] if row["label"] == "glans_penis"
     ) == {
@@ -145,7 +145,8 @@ def test_v2_failure_reasons_return_canonical_fail_closed_acquisition_actions(
         assert first["required_views"]
         assert first["required_occlusion_contexts"]
         assert first["destination"] == "hard_case_holdout"
-        assert first["human_review_required"] is True
+        assert first["authority_resolution_required"] is True
+        assert first["mandatory_human_review"] is False
         assert first["fabricated_positive_allowed"] is False
         assert first["production_activation_granted"] is False
 
@@ -155,7 +156,8 @@ def test_v2_failure_reasons_return_canonical_fail_closed_acquisition_actions(
     assert action["required_review_states"] == ["occluded_by_clothing"]
     assert action["required_occlusion_contexts"] == ["clothing"]
     assert action["destination"] == "hard_case_holdout"
-    assert action["human_review_required"] is True
+    assert action["authority_resolution_required"] is True
+    assert action["mandatory_human_review"] is False
     assert action["fabricated_positive_allowed"] is False
     assert action["production_activation_granted"] is False
     with pytest.raises(OntologyV2OperationsError, match="not canonical"):

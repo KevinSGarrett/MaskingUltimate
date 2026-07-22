@@ -654,7 +654,7 @@ providers:
     config_sha256: "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3"
     runtime_config: "configs/training/eomt_dinov3_small_v2.yaml"
     runtime_evidence: "qa/live_verification/eomt_dinov3_runtime_20260715.json"
-    output_type: "trainable 65-class body_parts_v2 segmentation head over DINOv3; pretrained COCO head has no MaskFactory authority"
+    output_type: "trainable 66-class body_parts_v2 segmentation head over DINOv3; pretrained COCO head has no MaskFactory authority"
     role: "challenger to retained SegFormer and Mask2Former baselines"
     authority_level: "installed training/shadow-evaluation candidate only until a gold-trained checkpoint is certified and promoted"
 

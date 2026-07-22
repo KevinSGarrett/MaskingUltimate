@@ -18,8 +18,8 @@ pretraining:
 target_head:
   ontology_version: body_parts_v2
   vocabulary_source: configs/ontology_v2.yaml
-  class_count: 65
-  class_names_sha256: 7f78e0c3405c8bd05e23522ccb453faa7f4a2bbba0a9b29493c7e7d0d19a6124
+  class_count: 66
+  class_names_sha256: 69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e
   ignore_index: 255
   initialization: random_new_segmentation_head
 runtime:
@@ -34,9 +34,9 @@ data:
   seed: 1337
   supervision:
     v1: v1_pretraining_only
-    v2: fully_reviewed_65_class_only
+    v2: fully_reviewed_66_class_only
   sampler:
-    anatomy_ids: [56, 57, 58, 59, 60, 61, 62, 63, 64]
+    anatomy_ids: [56, 57, 58, 59, 60, 61, 62, 63, 64, 65]
     anatomy_crop_min_fraction: 0.5
     whole_body_min_fraction: 0.25
     fabricate_hidden_positive: false

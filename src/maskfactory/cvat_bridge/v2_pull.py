@@ -387,7 +387,7 @@ def apply_v2_review(
         "reviewer": reviewer,
         "reviewed_at": reviewed_at,
         "ontology_version": V2_ONTOLOGY_VERSION,
-        "reviewed_label_count": 65,
+        "reviewed_label_count": 66,
         "visible_mask_count": sum(label.mask is not None for label in reviewed.labels.values()),
         "ambiguity_region_count": sum(
             label.ambiguity is not None for label in reviewed.labels.values()

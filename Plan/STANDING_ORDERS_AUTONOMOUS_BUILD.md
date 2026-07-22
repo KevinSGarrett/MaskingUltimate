@@ -101,6 +101,17 @@ ACCEPTANCE / QA BAR (PRODUCT)
 - MaskedWarehouse sources are not gold until inventory, provenance, identity/dedup, ontology remap, lineage, and independent cross-provider QA pass.
 - Prefer climbing HARD_QA → RUNTIME → VISUAL on every mask-producing increment immediately after STATIC — do not defer “until later polish.”
 
+REQUIRED REAL CORPORA (BINDING; DO NOT FORGET)
+- `C:\Comfy_UI_Main\MaskedWarehouse` and its RunPod mirror `/workspace/assets/MaskedWarehouse` are required labeled-source inputs. Authority-qualified masks, points, silhouettes, and semantic annotations must feed their exact permitted training, calibration, seeded-defect, multi-person, and benchmark lanes; they must not remain inventory-only.
+- `F:\Reference_Images`, especially `F:\Reference_Images\Ultimate_Masking_Reference_Images`, and its RunPod mirror `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images` are required real-image retrieval, coverage, benchmark, and hard-case inputs.
+- At session start and before remote corpus use, trust the latest hash-bound evidence only after
+  `tools\verify_runpod_persistence.py` and `tools\verify_runpod_corpus_mirrors.py` pass for the
+  current pod. Keep fresh local/remote sampled-file and database/manifest reconciliation items open
+  until their exact verify clauses pass.
+- Semantic visual-role qualification must use real source pixels and evidence-qualified valid masks. Synthetic shapes are contract/parser fixtures only and may not serve as positive semantic controls. Old draft, in-review, rejected, or visibly defective package masks may not serve as valid controls or gold.
+- Preserve authority distinctions: external labeled reference, weighted pseudo-label, benchmark-only reference, human-anchor gold, autonomous-certified gold, draft, and rejected are different tiers. A folder name never promotes bytes.
+- The inactive ontology-v2 lane must include the complete visible adult anatomy contract and user aliases defined by doc 18, including anus and butt/breast/genital aliases. Adult/NSFW content is not itself an exclusion category; uniform provenance, rights, integrity, annotation-QA, split/leakage, authority, and applicable-use rules apply.
+
 CORRECTION LOOP
 Fail → capture command/QC → classify defect vs env → fix owned scope → re-run failed tier + neighbor regression → evidence shows fail→fix→revalidate → only then raise claimed tier.
 

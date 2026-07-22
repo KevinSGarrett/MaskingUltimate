@@ -153,13 +153,13 @@ Goal: use qualified existing labels, the governed 83k reference corpus, and exac
 
 ## MF-P9-13 — Qualified MaskedWarehouse external supervision (spec: 23 §§4–6; MASKEDWAREHOUSE_SOURCE_REGISTRY)
 - [ ] MF-P9-13.01 Lock the private/personal/noncommercial/non-distributed use profile and official license evidence for every inventoried source · Verify: machine registry rejects any profile drift or missing source · Blocked by: none
-- [ ] MF-P9-13.02 Admit CelebAMask-HQ, LaPa, and LV-MHP only as external_labeled_reference / weighted_pseudo_label / train · Verify: authority tests reject gold, calibration, holdout, and certified-volume claims · Blocked by: MF-P9-13.01 · HARD BLOCKER
+- [ ] MF-P9-13.02 Admit qualified CelebAMask-HQ, LaPa, and LV-MHP as `external_labeled_reference` for exact-scope training supervision and semantic visual calibration while retaining `weighted_pseudo_label` for model-loss accounting · Verify: authority tests allow only qualified label-scoped training/calibration and reject operational-gold, certificate, distribution, and certified-volume claims · Blocked by: MF-P9-13.01 · HARD BLOCKER
 - [ ] MF-P9-13.03 Keep CC-BY-NC-ND preview and unknown-provenance body archive blocked · Verify: conversion/training negative fixtures pass · Blocked by: MF-P9-13.01
 - [ ] MF-P9-13.04 Complete deterministic remap, hash manifest, alignment QA, identity, and split-dedup qualification per source · Verify: every required gate is evidence-bound before admission · Blocked by: MF-P9-13.01 through MF-P9-13.03
 - [ ] MF-P9-13.05 Build role-aware converters that preserve coarse/split-required uncertainty as ignore rather than fabricated atomic PART truth · Verify: ambiguous pixels are 255 and label-scope fixtures pass · Blocked by: MF-P9-13.04
 - [ ] MF-P9-13.06 Materialize qualified train-only packages and dataset cards with source/label/weight composition · Verify: builder and launcher accept only gated rows · Blocked by: MF-P9-13.05
 - [ ] MF-P9-13.07 Enforce the combined external-label batch cap while keeping certified real supervision dominant · Verify: boundary and bypass tests pass · Blocked by: MF-P9-13.06
-- [ ] MF-P9-13.08 Run real holdout ablations by source and mapped label scope · Verify: only non-regressing sources/labels remain active · Blocked by: MF-P9-13.06, frozen real human-anchor holdout
+- [ ] MF-P9-13.08 Run leakage-disjoint real ablations by source and mapped label scope against qualified external-labeled benchmarks and any available independent human-anchor holdout · Verify: only non-regressing sources/labels remain active and absence of optional human anchors does not block the external-source ablation · Blocked by: MF-P9-13.06
 
 ## MF-P9-14 — Governed reference corpus, benchmark, and retrieval (spec: 23 §§7–8; reference_library.yaml)
 - [ ] MF-P9-14.01 Freeze source/output roots, immutable-original policy, uniform registration, and no-truth authority · Verify: policy validator passes and source selection does not change truth or authority · Blocked by: none
@@ -169,8 +169,9 @@ Goal: use qualified existing labels, the governed 83k reference corpus, and exac
 - [ ] MF-P9-14.05 Select exactly 2,500 benchmark and 18,000 retrieval references with declared coverage · Verify: tier counts and all required body-part tags pass · Blocked by: MF-P9-14.04
 - [ ] MF-P9-14.06 Materialize selections with hash verification and contact sheets · Verify: every output exists and matches its recorded SHA-256 · Blocked by: MF-P9-14.05
 - [ ] MF-P9-14.07 Enforce zero path/SHA/near-duplicate overlap between benchmark and all training/calibration/holdout sources · Verify: builder/preflight leakage fixtures block · Blocked by: MF-P9-14.05 · HARD BLOCKER
-- [ ] MF-P9-14.08 Connect retrieval references to coverage deficits, hard-case matching, and acquisition planning without truth promotion · Verify: retrieved images remain no-authority until independently certified · Blocked by: MF-P9-14.05
+- [ ] MF-P9-14.08 Connect retrieval references to coverage deficits, hard-case matching, semantic-calibration case acquisition, and acquisition planning without truth promotion · Verify: retrieved images are demonstrably consumed by selection reports yet remain no-authority until independently paired with a qualified mask · Blocked by: MF-P9-14.05
 - [ ] MF-P9-14.09 Run recurring drift/coverage reports and immutable benchmark versioning · Verify: update cannot silently replace a frozen benchmark · Blocked by: MF-P9-14.06 through MF-P9-14.08
+- [ ] MF-P9-14.10 Reconcile `F:\Reference_Images\Ultimate_Masking_Reference_Images` with RunPod `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images` before remote retrieval/calibration · Verify: inventory seal, database/manifest hashes, and sampled source hashes match; drift fails before provider invocation · Blocked by: MF-P9-14.02
 
 ## MF-P9-15 — Near-perfect selective autonomy with minimal binary review (spec: 23 §§2–3,9–12; docs 20–22)
 - [ ] MF-P9-15.01 Make near-perfect selective autonomy the product acceptance target: ordinary mIoU ≥0.95, boundary-F1 ≥0.90, hard anatomy mIoU ≥0.85 · Verify: blinded real human-anchor holdout report meets each metric without bucket collapse · Blocked by: frozen real human-anchor holdout and eligible challengers

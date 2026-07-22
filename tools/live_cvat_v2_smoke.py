@@ -1,4 +1,4 @@
-"""Prove the isolated v2 project accepts 65 state tags plus mask drafts.
+"""Prove the isolated v2 project accepts 66 state tags plus mask drafts.
 
 The fixture is a synthetic color field, not anatomy evidence.  The disposable
 task is deleted and can never count as human review, gold, or pilot coverage.
@@ -156,7 +156,7 @@ def main() -> int:
             "human_review_credit": False,
             "pilot_image_credit": False,
         }
-        if result["tag_count"] != 65 or result["shape_count"] != 1 or result["track_count"] != 0:
+        if result["tag_count"] != 66 or result["shape_count"] != 1 or result["track_count"] != 0:
             raise CvatV2Error(f"live CVAT v2 annotation round trip drifted: {result}")
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0

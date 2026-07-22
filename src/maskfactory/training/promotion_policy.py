@@ -19,7 +19,7 @@ DEFAULT_CUSTOM_SEGMENTER_MARGIN_MANIFEST = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "custom_segmenter_margins_v1.json"
 )
 CUSTOM_SEGMENTER_MARGIN_MANIFEST_SHA256 = (
-    "01467db7bcb37e4e4e09a16f2312c6fd6cc9d1d4e4fda2184f8627352e8f24ef"
+    "d009abe2667092e5d990a05f92ba39072e6b25022f0c1116c5ed93bcb7adad90"
 )
 CERTIFICATE_AUTHORITY = "custom_segmenter_role_promotion_gate"
 SOURCE_FILES = (

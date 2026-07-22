@@ -169,7 +169,9 @@ Rules:
 - Fixture Main / `fixture_authority` / producer_partial = **`STATIC_PASS` only**. Never `complete` P6-11/12 on that alone.
 - Tracker notes and blocked reasons for those items must use `STATIC_PASS` / `AWAITING_MAIN` vocabulary via `tracker.py` only.
 - Docker Desktop is autonomous when up (`Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`), but a past green doctor or smoke does **not** remain current — re-probe. Do not claim doctor-green while disk/WSL/preflight fails.
-- External MaskedWarehouse masks are never gold; strategy receipts and sample probes are not admission.
+- External MaskedWarehouse masks retain external-labeled-reference authority rather than operational gold. After exact provenance, rights, remap/ontology, integrity, alignment, identity, and leakage qualification, they are required inputs for their permitted training, semantic-calibration, seeded-defect, multi-person, and benchmark scopes. Strategy receipts and sample probes alone are not admission.
+- Semantic visual-role positives must use real pixels and evidence-qualified masks. Synthetic shapes and old draft/in-review/rejected package masks are never valid semantic positive controls.
+- The required real corpus roots are `C:\Comfy_UI_Main\MaskedWarehouse` and `F:\Reference_Images\Ultimate_Masking_Reference_Images`, with persistent RunPod mirrors under `/workspace/assets/MaskedWarehouse` and `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
 
 ## 12. Self-Hosted STRICT VLM Gate (No Blind Approvals)
 

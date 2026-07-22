@@ -71,15 +71,15 @@ def test_v1_is_pretraining_only_and_unreviewed_v2_cannot_enter_finetune() -> Non
         supervision_contract({"mask_ontology_version": "body_parts_v2"})
 
 
-def test_v2_export_preserves_ids_56_through_64_and_burns_separate_ambiguity(
+def test_v2_export_preserves_ids_56_through_65_and_burns_separate_ambiguity(
     tmp_path: Path,
 ) -> None:
     package = tmp_path / "p0"
     package.mkdir()
-    part = np.arange(56, 65, dtype=np.uint8).reshape(3, 3)
-    material = np.full((3, 3), 1, dtype=np.uint8)
-    ambiguity = np.zeros((3, 3), dtype=np.uint8)
-    ambiguity[1, 1] = 255
+    part = np.arange(56, 66, dtype=np.uint8).reshape(2, 5)
+    material = np.full((2, 5), 1, dtype=np.uint8)
+    ambiguity = np.zeros((2, 5), dtype=np.uint8)
+    ambiguity[0, 4] = 255
     Image.fromarray(part, mode="L").save(package / "label_map_part.png")
     Image.fromarray(material, mode="L").save(package / "label_map_material.png")
     Image.fromarray(ambiguity, mode="L").save(package / "ambiguity.png")
@@ -101,32 +101,32 @@ def test_v2_export_preserves_ids_56_through_64_and_burns_separate_ambiguity(
         package, ontology=load_ontology(DEFAULT_ONTOLOGY_V2)
     )
     expected = part.copy()
-    expected[1, 1] = IGNORE_INDEX
+    expected[0, 4] = IGNORE_INDEX
     np.testing.assert_array_equal(exported_part, expected)
     assert set(exported_part.ravel()) == set(V2_NEW_CLASS_IDS) - {60} | {IGNORE_INDEX}
-    assert exported_material[1, 1] == IGNORE_INDEX
+    assert exported_material[0, 4] == IGNORE_INDEX
     np.testing.assert_array_equal(
         prepare_v2_training_map(part, ambiguity > 0),
         expected,
     )
     with pytest.raises(V2TrainingContractError, match="out-of-range"):
-        prepare_v2_training_map(np.array([[65]], dtype=np.uint8))
+        prepare_v2_training_map(np.array([[66]], dtype=np.uint8))
 
 
 @pytest.mark.parametrize(
     "name",
     ["bodypart_v2_segformer_b3.yaml", "bodypart_v2_mask2former_swinb.yaml"],
 )
-def test_inactive_configs_are_exact_65_class_contracts_and_never_57(name: str) -> None:
+def test_inactive_configs_are_exact_66_class_contracts_and_never_57(name: str) -> None:
     config = _config(name)
     validate_v2_training_config(config)
-    assert config["model"]["num_classes"] == len(config["model"]["classes"]) == 65
+    assert config["model"]["num_classes"] == len(config["model"]["classes"]) == 66
     assert tuple(config["model"]["classes"]) == V2_CLASS_NAMES
     assert config["data"]["ignore_index"] == 255
     assert config["promotion_gate"]["aggregate_miou_only_can_pass"] is False
     drifted = copy.deepcopy(config)
     drifted["model"]["num_classes"] = 57
-    with pytest.raises(V2TrainingContractError, match="65 classes, never 57"):
+    with pytest.raises(V2TrainingContractError, match="66 classes, never 57"):
         validate_v2_training_config(drifted)
 
 
@@ -165,8 +165,8 @@ def test_v2_flip_crop_rotation_color_and_class_weight_contracts() -> None:
     jittered = photometric_jitter(image, brightness=0.2, contrast=-0.2, saturation=0.2, hue=0.04)
     assert not np.array_equal(jittered, image)
     np.testing.assert_array_equal(labels, original_labels)
-    weights = inverse_sqrt_class_weights([100] * 56 + [1] * 9, cap_multiplier=8)
-    assert len(weights) == 65 and max(weights) == 8
+    weights = inverse_sqrt_class_weights([100] * 56 + [1] * 10, cap_multiplier=8)
+    assert len(weights) == 66 and max(weights) == 8
 
 
 def test_batch_plan_meets_anatomy_and_whole_body_contract_without_fabrication() -> None:
@@ -217,8 +217,8 @@ def test_holdouts_are_identity_and_phash_separated_and_semantically_typed() -> N
 
 def test_metrics_are_per_class_and_promotion_fails_closed_on_evidence_or_clothing() -> None:
     holdout = build_v2_holdout_manifest(_holdout_records())
-    positive = np.array(V2_NEW_CLASS_IDS, dtype=np.uint8).reshape(3, 3)
-    negative = np.zeros((3, 3), dtype=np.uint8)
+    positive = np.array(V2_NEW_CLASS_IDS, dtype=np.uint8).reshape(2, 5)
+    negative = np.zeros((2, 5), dtype=np.uint8)
     report = evaluate_v2_holdouts(
         (
             V2EvaluationSample(
@@ -255,7 +255,7 @@ def test_metrics_are_per_class_and_promotion_fails_closed_on_evidence_or_clothin
         {
             "clothed_false_positive_images": 1,
             "clothed_false_positive_image_rate": 1.0,
-            "clothed_false_positive_pixel_rate": 1 / 9,
+            "clothed_false_positive_pixel_rate": 1 / 10,
             "systematic_clothed_false_positive": True,
         }
     )

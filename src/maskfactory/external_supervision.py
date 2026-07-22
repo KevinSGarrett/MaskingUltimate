@@ -78,6 +78,8 @@ def validate_external_supervision_registry(
         "external_labels_truth_partition": TRAIN_PARTITION,
         "external_labels_may_enter_holdout": False,
         "external_labels_may_satisfy_certified_volume": False,
+        "external_labels_may_support_semantic_critic_calibration": True,
+        "semantic_critic_calibration_may_mint_gold_or_certificates": False,
     }
     for field, expected in required_policy.items():
         if policy.get(field) != expected:

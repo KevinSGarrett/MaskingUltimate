@@ -130,7 +130,8 @@ forbidden when a local repair can preserve already accepted regions.
 Every visual role and every bound prompt/controller revision must pass one
 frozen, image-disjoint calibration manifest containing:
 
-- known-good masks that must pass rather than universally abstain;
+- real source pixels and evidence-qualified known-good masks that must pass
+  rather than universally abstain;
 - seeded boundary, leakage, missing-area, flood, wrong-label, wrong-side,
   anatomy, ownership, protected-region, and transform defects;
 - small-part, hand, hair, contact, occlusion, crop, and multi-person cases;
@@ -144,6 +145,29 @@ rate, abstention rate, per-defect coverage, latency, VRAM, and deterministic
 replay. Passing only negative controls is insufficient. A critic that rejects
 everything is unavailable, not safe. Role thresholds are frozen before the
 run and cannot be adjusted from the observed answers.
+
+The production semantic corpus must draw its labeled positive controls from
+`C:\Comfy_UI_Main\MaskedWarehouse` (RunPod:
+`/workspace/assets/MaskedWarehouse`) or from exact human-anchor/autonomous-
+certified package bytes. It must retain source, annotation/base-mask, remap,
+authority, partition, and qualification hashes for every case. The real-image
+coverage, retrieval, benchmark, and hard-case source is `F:\Reference_Images`,
+especially `F:\Reference_Images\Ultimate_Masking_Reference_Images` (RunPod:
+`/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`).
+Synthetic geometric scenes may validate schemas, parsers, renderers, and
+defect operators, but they are ineligible as valid positive controls for a
+semantic critic role. Draft model outputs, `in_review` packages, rejected
+outputs, and historical low-quality masks are also ineligible. A live runner
+must fail closed when the real-source binding manifest is absent, hash-drifted,
+synthetic, draft, or outside its declared authority scope.
+
+MaskedWarehouse annotations retain `external_labeled_reference` authority and
+may support bounded training and critic calibration after exact source-level
+provenance, rights, remap/ontology, integrity, visual alignment, instance
+identity, and split/leakage qualification. This use does not convert them into
+operational gold or allow them to mint certificates. Reference-library images
+remain no-truth inputs until independently paired with an authority-qualified
+mask.
 
 ## 8. Review and bounded correction loop
 

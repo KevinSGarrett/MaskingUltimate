@@ -52,10 +52,10 @@ def v2_task_description(instance: V2ReviewInstance) -> str:
         (
             "MaskFactory body_parts_v2 PILOT — Document 18 human review SOP.",
             "This is a separate v2 task. Never copy approval from an open body_parts_v1 task.",
-            "Select exactly one visibility state and set review_complete=true for every canonical PART label 0..64.",
+            "Select exactly one visibility state and set review_complete=true for every canonical PART label 0..65.",
             "Character perspective is authoritative: left/right means the character's left/right, not the viewer's.",
             "Work at 400-800% for areola/nipple and pelvic boundaries; label exposed visible surface only.",
-            "Areola excludes nipple; breast excludes both. Shaft excludes visible glans. Pelvic region excludes IDs 60-64.",
+            "Areola excludes nipple; breast excludes both. Shaft excludes visible glans. Pelvic region excludes IDs 60-65, including the visible anus.",
             "Clothing owns covered pixels: use occluded_by_clothing with no anatomy mask; never infer through fabric.",
             "If a boundary or scrotal side is not defensible, use ambiguous_do_not_use and draw only the ignore region.",
             "not_applicable requires human evidence. unreviewed_for_v2 can never be approved or exported.",
@@ -241,7 +241,7 @@ def initial_v2_annotations(
                 "source": "auto",
             }
         )
-    if len(tags) != 65:
+    if len(tags) != 66:
         raise CvatV2Error("CVAT v2 push must create exactly one state tag per PART label")
     return tags, shapes
 

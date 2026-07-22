@@ -119,9 +119,9 @@ def test_frozen_manifest_covers_every_governed_bucket_and_is_hash_locked() -> No
         ROOT / "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json"
     )
     assert manifest["sha256"] == CUSTOM_SEGMENTER_MARGIN_MANIFEST_SHA256
-    assert len(manifest["role"]["hard_labels"]) == 26
+    assert len(manifest["role"]["hard_labels"]) == 27
     assert len(manifest["role"]["high_risk_contexts"]) == 17
-    assert len(expanded) == 158
+    assert len(expanded) == 161
     assert all(
         prefix in {bucket.split(":", maxsplit=1)[0] for bucket in expanded}
         for prefix in ("label", "context", "zero_regression")

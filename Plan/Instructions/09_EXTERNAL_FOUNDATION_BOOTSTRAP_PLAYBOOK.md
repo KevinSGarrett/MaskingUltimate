@@ -24,7 +24,15 @@ Use this playbook when turning existing datasets, models, or Civitai workflows i
 - Use Dataset Ninja and similar platforms to discover datasets, inspect label taxonomies, and compare coverage. Download from official dataset sources whenever possible.
 - Store model weights outside `Plan\`, normally under model cache or runtime model directories.
 - Store documentation, manifests, small workflow JSONs, and dataset registry records inside `Plan\`.
-- Treat `C:\Comfy_UI_Main\MaskedWarehouse` as an available local source root for face and body segmentation data, but still require inventory, provenance, remap, and QA before training use.
+- Treat `C:\Comfy_UI_Main\MaskedWarehouse` as a required local labeled-source root. After source-specific inventory, provenance, deterministic remap, alignment, split/dedup, and authority qualification, consume its masks, points, silhouettes, annotations, and real source pixels in their exact permitted training, semantic-calibration, seeded-defect, multi-person, benchmark, and QA lanes. Inventory-only completion is insufficient.
+- Treat `F:\Reference_Images` and `F:\Reference_Images\Ultimate_Masking_Reference_Images` as the required real-image retrieval, coverage, benchmark, and hard-case library. It remains no-mask-truth by selection alone and must be linked by exact hashes to any separately qualified annotation.
+- The persistent RunPod bindings are `/workspace/assets/MaskedWarehouse` and `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`; validate source inventories and hashes before remote use.
+- Recheck the live persistent mount with `tools\verify_runpod_persistence.py`, then run
+  `tools\verify_runpod_corpus_mirrors.py` against the current pod ID and the authoritative
+  `runpod_assets_authoritative_latest.json` snapshot. A hash-bound snapshot proves the expected
+  remote corpus roots are still the governed copies; MF-P0-13.06/MF-P9-14.10 remain open until
+  their separately required fresh sampled-file/database/manifest comparisons also pass.
+- Synthetic geometry is parser/contract-fixture only for semantic critic qualification. Never use an old draft, in-review, rejected, or visibly defective mask as a valid/gold positive control.
 
 ## Getting Started
 

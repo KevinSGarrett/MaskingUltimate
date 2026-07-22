@@ -98,6 +98,23 @@ the claim matters. Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
 
 ---
 
+### Required corpus memory (every session)
+
+- `C:\Comfy_UI_Main\MaskedWarehouse` is a required labeled-source root. Its
+  authority-qualified masks, points, silhouettes, annotations, multi-person
+  labels, and exact source pixels must be consumed by their permitted training,
+  calibration, seeded-defect, benchmark, and QA lanes—not merely inventoried.
+- `F:\Reference_Images`, especially
+  `F:\Reference_Images\Ultimate_Masking_Reference_Images`, is the required
+  real-image retrieval, coverage, benchmark, and hard-case library. Selection
+  alone grants no mask truth.
+- Persistent RunPod mirrors are `/workspace/assets/MaskedWarehouse` and
+  `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
+  Bind every use to exact inventory/source/annotation/mask hashes.
+- Synthetic geometry may test parsers and contracts only. It cannot be the valid
+  semantic control for visual-role qualification. Draft, in-review, rejected,
+  or visibly defective historical masks cannot be reused as valid/gold controls.
+
 ## 3. What MaskFactory Is, In Three Sentences
 
 MaskFactory is an autonomous-first pipeline that generates pixel-accurate

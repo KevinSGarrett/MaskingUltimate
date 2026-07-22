@@ -32,9 +32,9 @@ formulas:
   full_arms: part_ids:12-33
   full_legs: part_ids:34-47
   abdomen_full: part:abdomen_stomach | part:belly_button
-  full_body_parts_visible: part_ids:1-49 | part_ids:54-55 | part_ids:56-64
+  full_body_parts_visible: part_ids:1-49 | part_ids:54-55 | part_ids:56-65
   person_full_visible: silhouette:person_full_visible
-  visible_body_skin: ((part_ids:1-49 | part_ids:54-55 | part_ids:56-64) & material:skin) - part:hair
+  visible_body_skin: ((part_ids:1-49 | part_ids:54-55 | part_ids:56-65) & material:skin) - part:hair
   clothing_visible: material_ids:3-8,10-12,15
   bra_visible: material:bra
   panty_visible: material:underwear_bottom
@@ -55,4 +55,5 @@ formulas:
   penis_visible: part:penis_shaft | part:glans_penis
   scrotum_visible: part:left_scrotal_region | part:right_scrotal_region
   external_genitalia_visible: part:vulva | derived:penis_visible | derived:scrotum_visible
-  pelvic_anatomy_visible: part:pelvic_region | derived:external_genitalia_visible
+  external_pelvic_anatomy_visible: derived:external_genitalia_visible | part:anus
+  pelvic_anatomy_visible: part:pelvic_region | derived:external_pelvic_anatomy_visible

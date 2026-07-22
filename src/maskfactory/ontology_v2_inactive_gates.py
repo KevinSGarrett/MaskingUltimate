@@ -1,8 +1,8 @@
 """STATIC inactive-path gates for body_parts_v2.
 
 Strengthens inactive authority identity, migration refusal of production/gold
-claims, and CVAT pilot readiness checks that are code/fixture-only. Never grants
-production activation and never substitutes Kevin pilot sources.
+claims, and real-corpus pilot readiness checks that are code/fixture-only. Never grants
+production activation and never substitutes fixtures for hash-bound governed sources.
 """
 
 from __future__ import annotations
@@ -42,8 +42,8 @@ FORBIDDEN_ACTIVATION_TRUE_KEYS = (
     "v2_champion_claimed",
     "human_anatomy_gold_claimed",
     "pilot_complete",
-    "kevin_pilot_sources_authorized",
     "mapping_authority",
+    "mandatory_human_anchor",
 )
 FORBIDDEN_SOURCE_KINDS_FOR_COMPLETION = frozenset(
     {
@@ -73,7 +73,7 @@ def appended_v2_part_names() -> tuple[str, ...]:
         if isinstance(label, Mapping)
         and label.get("map") == "part"
         and isinstance(label.get("id"), int)
-        and 56 <= int(label["id"]) <= 64
+        and 56 <= int(label["id"]) <= 65
     )
 
 
@@ -174,11 +174,11 @@ def refuse_apply_when_activation_requested(
 
 
 def build_cvat_v2_pilot_matrix_contract() -> dict[str, Any]:
-    """Return the code/fixture pilot matrix contract (Kevin sources still required)."""
+    """Return the real-corpus pilot matrix contract without a mandatory human lane."""
 
     appended = appended_v2_part_names()
-    if len(appended) != 9:
-        raise OntologyV2InactiveGateError("pilot matrix requires exactly nine appended PART labels")
+    if len(appended) != 10:
+        raise OntologyV2InactiveGateError("pilot matrix requires exactly ten appended PART labels")
     proposal = load_v2_proposal()
     aliases = sorted(str(alias) for alias in proposal.get("aliases", {}))
     core = {
@@ -191,8 +191,12 @@ def build_cvat_v2_pilot_matrix_contract() -> dict[str, Any]:
         "active_runtime_ontology": ACTIVE_RUNTIME_ONTOLOGY,
         "production_activation_performed": False,
         "pilot_complete": False,
-        "kevin_pilot_sources_required": True,
-        "kevin_pilot_sources_authorized": False,
+        "maskedwarehouse_root": "C:/Comfy_UI_Main/MaskedWarehouse",
+        "reference_library_root": "F:/Reference_Images/Ultimate_Masking_Reference_Images",
+        "runpod_maskedwarehouse_root": "/workspace/assets/MaskedWarehouse",
+        "runpod_reference_library_root": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images",
+        "governed_real_sources_required": True,
+        "mandatory_human_anchor": False,
         "image_count_min": PILOT_IMAGE_MIN,
         "image_count_max": PILOT_IMAGE_MAX,
         "required_states": list(REQUIRED_PILOT_STATES),
@@ -208,11 +212,12 @@ def build_cvat_v2_pilot_matrix_contract() -> dict[str, Any]:
 
 
 def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, Any]:
-    """Evaluate a pilot distinct-image manifest without inventing Kevin sources.
+    """Evaluate a pilot distinct-image manifest without inventing real-source authority.
 
-    Fixture/matrix-probe rows may exercise coverage accounting. Only rows with
-    ``source_kind=kevin_governed_pilot`` and explicit Kevin authorization can move
-    toward completion, and this STATIC gate never sets ``pilot_complete=true``.
+    Fixture/matrix-probe rows may exercise coverage accounting. Only hash-bound
+    MaskedWarehouse authority rows can move toward completion, Reference_Images rows
+    provide retrieval/coverage context, and this STATIC gate never sets
+    ``pilot_complete=true``.
     """
 
     if not isinstance(manifest, Mapping):
@@ -226,8 +231,8 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
             ),
             "production_activation_granted": manifest.get("production_activation_granted", False),
             "pilot_complete": manifest.get("pilot_complete", False),
-            "kevin_pilot_sources_authorized": manifest.get("kevin_pilot_sources_authorized", False),
             "mapping_authority": manifest.get("mapping_authority", False),
+            "mandatory_human_anchor": manifest.get("mandatory_human_anchor", False),
             "active_runtime_ontology": manifest.get(
                 "active_runtime_ontology", ACTIVE_RUNTIME_ONTOLOGY
             ),
@@ -237,12 +242,6 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
         raise OntologyV2InactiveGateError(
             "STATIC pilot gate refuses pilot_complete=true without Kevin live pilot"
         )
-    if manifest.get("kevin_pilot_sources_authorized") is True:
-        raise OntologyV2InactiveGateError(
-            "STATIC pilot gate refuses kevin_pilot_sources_authorized=true "
-            "(Kevin must authorize real pilot sources out-of-band)"
-        )
-
     images = manifest.get("images")
     if not isinstance(images, Sequence) or isinstance(images, (str, bytes)):
         raise OntologyV2InactiveGateError("pilot readiness images must be a list")
@@ -253,7 +252,8 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
     seen_ids: set[str] = set()
     covered_states: set[str] = set()
     covered_classes: set[str] = set()
-    kevin_rows = 0
+    maskedwarehouse_rows = 0
+    reference_rows = 0
     fixture_rows = 0
 
     for row in images:
@@ -268,8 +268,10 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
         source_kind = row.get("source_kind")
         if not isinstance(source_kind, str) or not source_kind.strip():
             raise OntologyV2InactiveGateError(f"pilot source_kind missing for {image_id}")
-        if source_kind == "kevin_governed_pilot":
-            kevin_rows += 1
+        if source_kind == "maskedwarehouse_authority_qualified":
+            maskedwarehouse_rows += 1
+        elif source_kind == "reference_library_coverage":
+            reference_rows += 1
         elif (
             source_kind in FORBIDDEN_SOURCE_KINDS_FOR_COMPLETION
             or source_kind == "fixture_matrix_probe"
@@ -317,24 +319,23 @@ def evaluate_cvat_v2_pilot_readiness(manifest: Mapping[str, Any]) -> dict[str, A
         "active_runtime_ontology": ACTIVE_RUNTIME_ONTOLOGY,
         "production_activation_performed": False,
         "production_activation_claimed": False,
-        # STATIC gate never completes the Kevin pilot; structure may still be ready.
+        # STATIC gate never completes the real-source pilot; structure may still be ready.
         "pilot_complete": False,
         "completion_eligible": False,
-        "kevin_pilot_sources_required": True,
-        "kevin_pilot_sources_authorized": False,
+        "governed_real_sources_required": True,
+        "mandatory_human_anchor": False,
         "matrix_structurally_ready": matrix_structurally_ready,
         "distinct_image_count": distinct,
         "image_count_in_range": count_in_range,
-        "kevin_governed_row_count": kevin_rows,
+        "maskedwarehouse_authority_row_count": maskedwarehouse_rows,
+        "reference_library_coverage_row_count": reference_rows,
         "fixture_probe_row_count": fixture_rows,
         "covered_states": sorted(covered_states),
         "missing_states": missing_states,
         "covered_appended_classes": sorted(covered_classes),
         "missing_appended_classes": missing_classes,
         "contract_seal_sha256": contract["seal_sha256"],
-        "remaining_blocker": (
-            "NEEDS KEVIN: supply/authorize governed pilot sources and human-anchor decisions"
-        ),
+        "remaining_blocker": "exact hash-bound real-source authority and coverage pilot not yet complete",
     }
     return {**core, "seal_sha256": _canonical_sha256(core)}
 
@@ -365,7 +366,7 @@ def build_inactive_path_static_report(
         "items": ["MF-P1-12.09", "MF-P1-10.05", "MF-P1-11.04", "MF-P1-11.05", "MF-P1-11.06"],
         "honest_non_claims": [
             "body_parts_v2 production activation",
-            "Kevin pilot sources authorized",
+            "real-source authority pilot complete",
             "pilot_complete",
             "doctor-green",
             "human_anchor_gold",
@@ -398,7 +399,6 @@ def fixture_pilot_probe_manifest() -> dict[str, Any]:
         "active_runtime_ontology": ACTIVE_RUNTIME_ONTOLOGY,
         "production_activation_performed": False,
         "pilot_complete": False,
-        "kevin_pilot_sources_authorized": False,
         "mapping_authority": False,
         "images": images,
     }

@@ -49,7 +49,7 @@ def test_migration_refusal_blocks_gold_and_activation_claims() -> None:
         {
             "mask_ontology_version": "body_parts_v2",
             "workflow_status": "in_review",
-            "ontology_migration": {"status": "awaiting_v2_human_review"},
+            "ontology_migration": {"status": "awaiting_v2_authority_resolution"},
             "production_activation_performed": False,
         }
     )
@@ -92,12 +92,16 @@ def test_pilot_matrix_contract_is_deterministic_and_inactive() -> None:
     assert first == second
     assert first["activation_status"] == INACTIVE_STATUS
     assert first["pilot_complete"] is False
-    assert first["kevin_pilot_sources_required"] is True
-    assert first["kevin_pilot_sources_authorized"] is False
+    assert first["governed_real_sources_required"] is True
+    assert first["mandatory_human_anchor"] is False
+    assert first["maskedwarehouse_root"] == "C:/Comfy_UI_Main/MaskedWarehouse"
+    assert (
+        first["reference_library_root"] == "F:/Reference_Images/Ultimate_Masking_Reference_Images"
+    )
     assert first["image_count_min"] == PILOT_IMAGE_MIN
     assert set(first["required_states"]) == set(REQUIRED_PILOT_STATES)
     assert first["required_appended_classes"] == list(appended_v2_part_names())
-    assert len(first["required_appended_classes"]) == 9
+    assert len(first["required_appended_classes"]) == 10
 
 
 def test_fixture_pilot_probe_covers_matrix_but_never_completes() -> None:
@@ -109,13 +113,16 @@ def test_fixture_pilot_probe_covers_matrix_but_never_completes() -> None:
     assert report["missing_states"] == []
     assert report["missing_appended_classes"] == []
     assert report["fixture_probe_row_count"] == 24
-    assert report["kevin_governed_row_count"] == 0
+    assert report["maskedwarehouse_authority_row_count"] == 0
+    assert report["reference_library_coverage_row_count"] == 0
     assert report["pilot_complete"] is False
     assert report["completion_eligible"] is False
-    assert "NEEDS KEVIN" in report["remaining_blocker"]
+    assert report["remaining_blocker"] == (
+        "exact hash-bound real-source authority and coverage pilot not yet complete"
+    )
 
 
-def test_pilot_gate_refuses_completion_and_kevin_authorization_claims() -> None:
+def test_pilot_gate_refuses_completion_and_mandatory_human_anchor_claims() -> None:
     manifest = fixture_pilot_probe_manifest()
     bad_complete = copy.deepcopy(manifest)
     bad_complete["pilot_complete"] = True
@@ -123,8 +130,8 @@ def test_pilot_gate_refuses_completion_and_kevin_authorization_claims() -> None:
         evaluate_cvat_v2_pilot_readiness(bad_complete)
 
     bad_auth = copy.deepcopy(manifest)
-    bad_auth["kevin_pilot_sources_authorized"] = True
-    with pytest.raises(OntologyV2InactiveGateError, match="kevin_pilot_sources_authorized"):
+    bad_auth["mandatory_human_anchor"] = True
+    with pytest.raises(OntologyV2InactiveGateError, match="mandatory_human_anchor"):
         evaluate_cvat_v2_pilot_readiness(bad_auth)
 
     bad_alias = copy.deepcopy(manifest)

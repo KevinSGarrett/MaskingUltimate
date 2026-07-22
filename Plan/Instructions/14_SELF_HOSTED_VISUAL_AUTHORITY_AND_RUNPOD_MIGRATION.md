@@ -21,6 +21,15 @@ assets from AWS to RunPod.
    cleared by any model vote.
 6. Legacy critics with the recorded zero-positive-pass result remain
    `VISUAL_CRITIC_BLOCKED` until a new frozen calibration proves otherwise.
+7. For semantic role qualification, require real source pixels plus an exact
+   real-source binding manifest. Use qualified labeled controls from
+   `C:\Comfy_UI_Main\MaskedWarehouse` or exact qualified MaskFactory package
+   bytes. Never use synthetic shapes, old draft packages, or rejected masks as
+   valid semantic controls.
+8. Use `F:\Reference_Images\Ultimate_Masking_Reference_Images` for real-image
+   coverage, retrieval, benchmark, and hard-case selection. It supplies no
+   mask truth by itself; pair it only with independently qualified masks when a
+   labeled case is required.
 
 ## 2. Candidate generation and repair
 
@@ -44,8 +53,13 @@ assets from AWS to RunPod.
    on EC2.
 2. Put models, datasets, caches, evidence, and resumable job state on the
    mounted persistent network volume. Treat the pod root overlay as ephemeral.
+   The required corpus mirrors are `/workspace/assets/MaskedWarehouse` and
+   `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
 3. Before a long job, prove the mount identity, writable sentinel, free space,
-   environment identity, GPU identity, and output/checkpoint destination.
+   environment identity, GPU identity, output/checkpoint destination, and both required corpus
+   roots. Use `tools\verify_runpod_persistence.py` plus
+   `tools\verify_runpod_corpus_mirrors.py`; never rely on a chat statement that the assets were
+   copied.
 4. Resume from hash-verified checkpoints after interruption. Never relabel a
    partial download, interrupted transfer, or root-overlay file as durable.
 5. A multi-GPU critic role requires a separately measured deployment; it does

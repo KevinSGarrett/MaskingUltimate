@@ -32,10 +32,10 @@ All DAZ content, generated scenes, caches, renders, annotations, and DAZ-specifi
 ### 3.1 MaskFactory facts
 
 - Repository root is `C:\Comfy_UI_Main_Masking`.
-- The live project currently tracks 609 items and is actively changing; this DAZ blueprint must not
+- The live project currently tracks 831 items and is actively changing; this DAZ blueprint must not
   overwrite the live tracker or unrelated work.
 - MaskFactory uses file-based, deterministic, idempotent stages and immutable evidence.
-- Active part ontology is `body_parts_v1`, IDs 0–55. `body_parts_v2`, IDs 0–64, is approved but inactive
+- Active part ontology is `body_parts_v1`, IDs 0–55. `body_parts_v2`, IDs 0–65, is approved but inactive
   until its existing migration and evidence requirements pass.
 - Multi-person operation promotes up to four people by default, executes per-instance pipelines, and
   requires QC-035 instance exclusivity and QC-036 cross-instance bleed hard blocks.

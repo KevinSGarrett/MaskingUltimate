@@ -152,7 +152,7 @@ def test_v1_to_v2_migration_is_append_only_idempotent_and_non_authoritative() ->
     assert v2_manifest_issues(migrated) == ()
     assert migrate_v1_manifest_document(migrated) == migrated
     additions = migrated["ontology_migration"]["added_labels"]
-    assert len(additions) == 9
+    assert len(additions) == 10
     for name in additions:
         entry = migrated["parts"][name]
         assert entry["visibility"] == "unreviewed_for_v2"

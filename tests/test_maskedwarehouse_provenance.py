@@ -37,6 +37,8 @@ def test_machine_registry_validator_accepts_locked_private_noncommercial_profile
     registry = load_external_supervision_registry(PROVENANCE, INVENTORY)
     assert registry["project_use_profile"]["id"] == PRIVATE_NONCOMMERCIAL_PROFILE
     assert registry["policy"]["maximum_combined_external_batch_fraction"] == 0.35
+    assert registry["policy"]["external_labels_may_support_semantic_critic_calibration"] is True
+    assert registry["policy"]["semantic_critic_calibration_may_mint_gold_or_certificates"] is False
 
 
 def test_all_provenance_entries_record_license_and_gates():
@@ -82,6 +84,10 @@ def test_known_noncommercial_sources_are_train_eligible_only_as_weighted_pseudo_
         assert admission["holdout_eligible"] is False
         assert admission["dataset_volume_eligible"] is False
         assert 0.10 <= admission["training_loss_weight"] <= 0.25
+        assert (
+            "private_noncommercial_semantic_critic_calibration_after_qualification"
+            in entry["allowed_uses"]
+        )
 
 
 def test_external_training_admission_fails_closed_until_every_qualification_gate_passes():

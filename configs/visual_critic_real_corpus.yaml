@@ -1,0 +1,34 @@
+schema_version: "1.0.0"
+policy_id: maskfactory_visual_critic_real_corpus_v1
+semantic_role_qualification:
+  require_real_source_pixels: true
+  require_case_source_bindings: true
+  require_reference_library_binding: true
+  allow_synthetic_positive_controls: false
+  allow_draft_package_positive_controls: false
+  allow_in_review_package_positive_controls: false
+  allow_rejected_positive_controls: false
+  allowed_source_authorities:
+    - external_labeled_reference
+    - human_anchor_gold
+    - autonomous_certified_gold
+roots:
+  maskedwarehouse:
+    role: labeled_real_source
+    candidates:
+      - 'C:\Comfy_UI_Main\MaskedWarehouse'
+      - /workspace/assets/MaskedWarehouse
+  reference_library:
+    role: real_reference_retrieval_benchmark
+    candidates:
+      - 'F:\Reference_Images\Ultimate_Masking_Reference_Images'
+      - /workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images
+    required_identity_files:
+      - manifests/inventory_summary.json
+      - manifests/reference_library.sqlite
+claim_boundary:
+  maskedwarehouse_annotations_are_operational_gold: false
+  reference_images_have_mask_truth_by_selection: false
+  source_folder_name_changes_authority: false
+  semantic_calibration_mints_certificates: false
+  synthetic_corpus_is_contract_test_only: true

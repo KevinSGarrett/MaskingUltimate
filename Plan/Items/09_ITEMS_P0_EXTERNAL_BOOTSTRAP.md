@@ -29,6 +29,8 @@ Goal: use already-built datasets, models, and Civitai workflows to seed MaskFact
 - [ ] MF-P0-13.02 Build initial remap plans for CelebAMask-HQ, LaPa, LV-MHP-v1, the swimsuit segmentation sample, and the Body archive.
 - [ ] MF-P0-13.03 Generate sample overlays for at least 5 face-source masks and 5 body-source masks to verify source-mask alignment before training use.
 - [ ] MF-P0-13.04 Record license/provenance status for every MaskedWarehouse source before any converted mask enters fixtures, training, or gold package workflows.
+- [ ] MF-P0-13.05 Bind every eligible MaskedWarehouse source to an actual consumer lane—training, semantic calibration, seeded defects, multi-person QA, or benchmark—and forbid inventory-only completion · Verify: machine report names consumed source/mask/annotation hashes and downstream artifacts.
+- [ ] MF-P0-13.06 Verify local `C:\Comfy_UI_Main\MaskedWarehouse` and RunPod `/workspace/assets/MaskedWarehouse` inventories reconcile before remote use · Verify: exact inventory seal and sampled file hashes match; drift fails before model/provider invocation.
 
 ## MF-P0-14 - Civitai body-resource intake (spec: 16, Civitai README)
 - [ ] MF-P0-14.01 Classify every Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.

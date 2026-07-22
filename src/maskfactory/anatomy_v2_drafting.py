@@ -40,6 +40,7 @@ NEW_LABELS = (
     "glans_penis",
     "left_scrotal_region",
     "right_scrotal_region",
+    "anus",
 )
 CHEST_LABELS = NEW_LABELS[:4]
 PELVIC_LABELS = NEW_LABELS[4:]
@@ -148,7 +149,7 @@ def load_anatomy_v2_config(path: Path | str = DEFAULT_CONFIG) -> dict[str, Any]:
             raise AnatomyV2DraftError(f"anatomy-v2 governance must disable {required_false}")
     prompts = document.get("prompts")
     if not isinstance(prompts, dict) or tuple(prompts) != NEW_LABELS:
-        raise AnatomyV2DraftError("anatomy-v2 prompt keys must be the nine canonical additions")
+        raise AnatomyV2DraftError("anatomy-v2 prompt keys must be the ten canonical additions")
     if any(
         not isinstance(value, str) or not value.startswith("visible exposed")
         for value in prompts.values()
@@ -310,6 +311,7 @@ def same_side_anatomy_priors(
         "glans_penis": pelvic,
         "left_scrotal_region": pelvic & left_half,
         "right_scrotal_region": pelvic & right_half,
+        "anus": pelvic,
     }
     sides = {
         "left_areola": "character_left",
@@ -570,7 +572,7 @@ def fuse_anatomy_v2_candidates(
         ("glans_penis", "left_scrotal_region"),
         ("glans_penis", "right_scrotal_region"),
         ("left_scrotal_region", "right_scrotal_region"),
-    )
+    ) + tuple((name, "anus") for name in PELVIC_LABELS if name != "anus")
     conflict_pixels = 0
     for first, second in conflict_pairs:
         overlap = new[first] & new[second]
@@ -711,7 +713,8 @@ def write_anatomy_review_bundle(
             }
             for name in NEW_LABELS
         },
-        "human_review_required": True,
+        "authority_resolution_required": True,
+        "mandatory_human_review": False,
         "gold_approved": False,
     }
     report_path = output / "anatomy_v2_review.json"
@@ -794,6 +797,7 @@ def _correction_instruction(label: str, state: str) -> str:
         "glans_penis": "Confirm visible glans only and exclude covered extent.",
         "left_scrotal_region": "Confirm character-left external scrotal surface at a defensible midline.",
         "right_scrotal_region": "Confirm character-right external scrotal surface at a defensible midline.",
+        "anus": "Confirm only the visible external anal opening; never infer an internal canal.",
     }
     suffix = (
         " Keep the mask null and record the state evidence."

@@ -23,8 +23,8 @@ EXPECTED_VERSION = "body_parts_v1"
 EXPECTED_PART_IDS = tuple(range(56))
 EXPECTED_MATERIAL_IDS = tuple(range(16))
 EXPECTED_V2_VERSION = "body_parts_v2"
-EXPECTED_V2_PART_IDS = tuple(range(65))
-EXPECTED_V2_APPENDED_PART_IDS = tuple(range(56, 65))
+EXPECTED_V2_PART_IDS = tuple(range(66))
+EXPECTED_V2_APPENDED_PART_IDS = tuple(range(56, 66))
 V2_ACTIVATION_STATUS = "approved_design_not_active"
 
 
@@ -158,7 +158,7 @@ def build_v2_ontology_snapshot(
     if part_ids != EXPECTED_V2_PART_IDS:
         raise OntologySnapshotError(
             "part_id_contract_invalid",
-            "canonical v2 PART IDs must be ordered and contiguous 0..64",
+            "canonical v2 PART IDs must be ordered and contiguous 0..65",
         )
     derived = tuple(label for label in ontology.labels if label.map == "none")
     material_labels = ontology.labels_for_map("material")
@@ -193,7 +193,7 @@ def build_v2_ontology_snapshot(
         "left_right_convention": raw["left_right_convention"],
         "visible_pixel_only": raw["visible_pixel_only"],
         "part_id_min": 0,
-        "part_id_max": 64,
+        "part_id_max": 65,
         "part_label_count": len(part_labels),
         "enabled_part_label_count": sum(1 for label in part_labels if label.enabled),
         "disabled_part_labels": [label.name for label in part_labels if not label.enabled],

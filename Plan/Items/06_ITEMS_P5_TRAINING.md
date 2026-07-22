@@ -24,7 +24,7 @@ Goal: D6 (champion beats draft pipeline on frozen holdout) + D7 (finger mIoU ≥
 - [ ] MF-P5-02.05 Banned-aug guard: configs reject vflip / elastic / perspective / MixUp / CutMix
 
 ## MF-P5-03 — Train 6.1 body-part segmenter (spec: 12 §5/§6.1)
-- [ ] MF-P5-03.01 Author `configs\training\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 65-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8
+- [ ] MF-P5-03.01 Author `configs\training\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 66-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8
 - [ ] MF-P5-03.02 Train SegFormer-B3 under `runs\gpu.lock` · eval per-part IoU + boundary-F on val every 4k · thermal cooldown (sleep 60 s @ >87 °C) verified during a long run
 - [ ] MF-P5-03.03 Challenger: Mask2Former-SwinB config + run (activation checkpointing) — optional Swin-L only on a capacity-qualified RunPod tier (05-08.03)
 - [ ] MF-P5-03.04 Final eval on frozen test_holdout + hard_case_holdout → leaderboard rows with full per-class + group scores

@@ -92,8 +92,8 @@ def test_v2_inactive_snapshot_has_appended_ids_and_no_mapping_authority() -> Non
     assert snapshot["ontology_version"] == "body_parts_v2"
     assert snapshot["activation_status"] == "approved_design_not_active"
     assert snapshot["mapping_authority"] is False
-    assert [label["id"] for label in snapshot["part_labels"]] == list(range(65))
-    assert snapshot["appended_part_ids"] == list(range(56, 65))
+    assert [label["id"] for label in snapshot["part_labels"]] == list(range(66))
+    assert snapshot["appended_part_ids"] == list(range(56, 66))
     assert snapshot["disabled_part_labels"] == ["left_ear", "right_ear"]
     assert snapshot["snapshot_id"].startswith("ontology_v2_")
 

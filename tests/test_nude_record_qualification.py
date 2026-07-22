@@ -93,6 +93,7 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                     "revision": "rev-a",
                     "artifact_sha256": _sha("sam-artifact"),
                     "mask_sha256": selected,
+                    "person_index": 0,
                 },
                 {
                     "provider_id": "birefnet",
@@ -100,6 +101,7 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                     "revision": "rev-b",
                     "artifact_sha256": _sha("birefnet-artifact"),
                     "mask_sha256": _sha("other-mask"),
+                    "person_index": 0,
                 },
             ],
         },
@@ -119,6 +121,8 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                 "prompt_sha256": _sha("prompt"),
                 "mask_sha256": selected,
                 "panel_bundle_sha256": panel_bundle_sha256,
+                "person_index": 0,
+                "ownership_report_sha256": _sha("ownership-report"),
                 "verdict": "pass",
                 "confidence": 0.94,
                 "evidence": "The target boundary follows the visible anatomy and excludes background.",
@@ -132,6 +136,8 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
                 "prompt_sha256": _sha("prompt"),
                 "mask_sha256": selected,
                 "panel_bundle_sha256": panel_bundle_sha256,
+                "person_index": 0,
+                "ownership_report_sha256": _sha("ownership-report"),
                 "verdict": "pass",
                 "confidence": 0.91,
                 "evidence": "Contour and ownership views agree with the selected person and label.",
@@ -193,6 +199,11 @@ def test_acceptance_requires_verified_exact_person_instance_ownership(tmp_path: 
         "scene_instance_id": None,
         "report_sha256": _sha("ambiguous-ownership"),
     }
+    for review in record["strict_reviews"]:  # type: ignore[union-attr]
+        review["person_index"] = None
+        review["ownership_report_sha256"] = _sha("ambiguous-ownership")
+    for candidate in record["provider_comparison"]["candidates"]:  # type: ignore[index]
+        candidate["person_index"] = None
     with pytest.raises(
         NudeRecordQualificationError, match="verified_person_instance_ownership_required"
     ):
@@ -214,6 +225,19 @@ def test_provider_and_critic_families_must_be_independent(tmp_path: Path) -> Non
     record = _record(bundle["panel_bundle_sha256"])
     record["provider_comparison"]["candidates"][1]["family_id"] = "sam"  # type: ignore[index]
     with pytest.raises(NudeRecordQualificationError, match="independent_provider"):
+        qualify_terminal_record(record, panels=panels)
+
+
+def test_provider_and_critic_votes_must_match_verified_person_ownership(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record["provider_comparison"]["candidates"][1]["person_index"] = 1  # type: ignore[index]
+    with pytest.raises(NudeRecordQualificationError, match="provider_person_index_mismatch"):
+        qualify_terminal_record(record, panels=panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record["strict_reviews"][0]["ownership_report_sha256"] = _sha("wrong-owner")  # type: ignore[index]
+    with pytest.raises(NudeRecordQualificationError, match="ownership_report_mismatch"):
         qualify_terminal_record(record, panels=panels)
     record = _record(bundle["panel_bundle_sha256"])
     record["strict_reviews"][1]["family_id"] = "internvl"  # type: ignore[index]
@@ -311,6 +335,11 @@ def test_ambiguous_ownership_routes_to_abstention_without_claiming_an_owner(
         "scene_instance_id": None,
         "report_sha256": _sha("ambiguous-ownership"),
     }
+    for review in record["strict_reviews"]:  # type: ignore[union-attr]
+        review["person_index"] = None
+        review["ownership_report_sha256"] = _sha("ambiguous-ownership")
+    for candidate in record["provider_comparison"]["candidates"]:  # type: ignore[index]
+        candidate["person_index"] = None
     result = qualify_nonacceptance_record(record, panels=panels)
     assert result["qualification_evidence"]["ownership"]["status"] == "ambiguous"
     record["ownership"]["person_index"] = 0  # type: ignore[index]

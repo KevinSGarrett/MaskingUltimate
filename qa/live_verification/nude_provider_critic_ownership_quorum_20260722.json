@@ -1,0 +1,41 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_provider_critic_ownership_quorum.v1",
+  "artifact_type": "adult_corpus_cross_provider_and_critic_person_ownership_quorum",
+  "recorded_at": "2026-07-22T12:21:47Z",
+  "status": "PASS_STATIC_BOUNDARY",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.03",
+    "MF-P4-12.04",
+    "MF-P4-12.05"
+  ],
+  "accepted_or_repaired_quorum": {
+    "every_provider_candidate_person_index_matches_verified_owner": true,
+    "primary_critic_person_index_matches_verified_owner": true,
+    "independent_juror_person_index_matches_verified_owner": true,
+    "both_critics_bind_exact_ownership_report_sha256": true,
+    "provider_person_mismatch_rejected": true,
+    "critic_ownership_report_mismatch_rejected": true
+  },
+  "nonacceptance_quorum": {
+    "ambiguous_owner_uses_null_person_index": true,
+    "providers_and_critics_bind_same_ambiguous_ownership_report": true,
+    "ambiguous_owner_claim_rejected": true
+  },
+  "validation": {
+    "focused_tests": "28 passed",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_record_qualification.py": "7c57bf70a1fd758a5b28ce1f5331fb720169857b5b803d421d19b8b18508c40d",
+    "tests/test_nude_record_qualification.py": "b44e5a5e4dff8a206fcdee75c3d4a7259c0a24d03601f833e91b4a75fd4a5796",
+    "tests/test_nude_batch_queue.py": "579950709b5d1632db6519c7b5d878b9774c1e61e39e64564bc08fb88dc92f4c"
+  },
+  "authority": {
+    "live_provider_ownership_quorum_completed": false,
+    "live_strict_vlm_ownership_quorum_completed": false,
+    "production_mask_authority_granted": false
+  },
+  "remaining": "Run the prepared real provider canaries and independent strict reviewers with matching live ownership reports. Static enforcement proves rejection behavior, not live ownership correctness."
+}

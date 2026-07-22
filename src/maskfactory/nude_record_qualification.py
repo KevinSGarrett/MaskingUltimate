@@ -94,6 +94,7 @@ def _verify_provider_comparison(
     *,
     selected_mask_sha256: str,
     allowed_statuses: frozenset[str] = frozenset({"pass"}),
+    expected_person_index: int | None,
 ) -> dict[str, Any]:
     if comparison.get("status") not in allowed_statuses:
         raise NudeRecordQualificationError("provider_comparison_not_passed")
@@ -115,6 +116,13 @@ def _verify_provider_comparison(
         revision = _nonempty(candidate.get("revision"), "provider_revision")
         artifact_sha256 = _sha256(candidate.get("artifact_sha256"), "provider_artifact_sha256")
         mask_sha256 = _sha256(candidate.get("mask_sha256"), "provider_mask_sha256")
+        person_index = candidate.get("person_index")
+        if person_index is not None and (
+            not isinstance(person_index, int) or isinstance(person_index, bool) or person_index < 0
+        ):
+            raise NudeRecordQualificationError("provider_person_index_invalid")
+        if expected_person_index is not None and person_index != expected_person_index:
+            raise NudeRecordQualificationError("provider_person_index_mismatch")
         identity = f"{provider_id}@{revision}"
         if identity in identities:
             raise NudeRecordQualificationError("provider_candidate_duplicate")
@@ -128,6 +136,7 @@ def _verify_provider_comparison(
                 "revision": revision,
                 "artifact_sha256": artifact_sha256,
                 "mask_sha256": mask_sha256,
+                "person_index": person_index,
             }
         )
     if len(normalized) < 2 or len(families) < 2:
@@ -201,6 +210,8 @@ def _verify_strict_reviews(
     *,
     selected_mask_sha256: str,
     panel_bundle_sha256: str,
+    expected_person_index: int,
+    ownership_report_sha256: str,
 ) -> list[dict[str, Any]]:
     if not isinstance(reviews, Sequence) or isinstance(reviews, (str, bytes)):
         raise NudeRecordQualificationError("strict_reviews_invalid")
@@ -219,6 +230,10 @@ def _verify_strict_reviews(
             raise NudeRecordQualificationError("strict_review_mask_mismatch")
         if review.get("panel_bundle_sha256") != panel_bundle_sha256:
             raise NudeRecordQualificationError("strict_review_panel_bundle_mismatch")
+        if review.get("person_index") != expected_person_index:
+            raise NudeRecordQualificationError("strict_review_person_index_mismatch")
+        if review.get("ownership_report_sha256") != ownership_report_sha256:
+            raise NudeRecordQualificationError("strict_review_ownership_report_mismatch")
         evidence = _nonempty(review.get("evidence"), "strict_review_evidence")
         if evidence.strip().lower() in {"pass", "looks good", "approved", "ok"}:
             raise NudeRecordQualificationError("strict_review_rubber_stamp_rejected")
@@ -239,6 +254,8 @@ def _verify_strict_reviews(
                 ),
                 "mask_sha256": selected_mask_sha256,
                 "panel_bundle_sha256": panel_bundle_sha256,
+                "person_index": expected_person_index,
+                "ownership_report_sha256": ownership_report_sha256,
                 "verdict": "pass",
                 "confidence": float(review.get("confidence", -1)),
                 "evidence": evidence,
@@ -309,13 +326,17 @@ def qualify_terminal_record(
         acceptance_required=True,
     )
     provider_comparison = _verify_provider_comparison(
-        record.get("provider_comparison", {}), selected_mask_sha256=selected_mask_sha256
+        record.get("provider_comparison", {}),
+        selected_mask_sha256=selected_mask_sha256,
+        expected_person_index=int(ownership["person_index"]),
     )
     hard_qc = _verify_hard_qc(record.get("hard_qc", {}), selected_mask_sha256=selected_mask_sha256)
     strict_reviews = _verify_strict_reviews(
         record.get("strict_reviews", ()),
         selected_mask_sha256=selected_mask_sha256,
         panel_bundle_sha256=panel_evidence["panel_bundle_sha256"],
+        expected_person_index=int(ownership["person_index"]),
+        ownership_report_sha256=str(ownership["report_sha256"]),
     )
     repair = _verify_repair(
         record.get("repair"), outcome=str(outcome), selected_mask_sha256=selected_mask_sha256
@@ -402,12 +423,15 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     _verify_provider_comparison(
         evidence.get("provider_comparison", {}),
         selected_mask_sha256=str(payload["mask_sha256"]),
+        expected_person_index=int(evidence["ownership"]["person_index"]),
     )
     _verify_hard_qc(evidence.get("hard_qc", {}), selected_mask_sha256=str(payload["mask_sha256"]))
     _verify_strict_reviews(
         evidence.get("strict_reviews", ()),
         selected_mask_sha256=str(payload["mask_sha256"]),
         panel_bundle_sha256=str(panel_evidence.get("panel_bundle_sha256")),
+        expected_person_index=int(evidence["ownership"]["person_index"]),
+        ownership_report_sha256=str(evidence["ownership"]["report_sha256"]),
     )
     _verify_repair(
         evidence.get("repair"),
@@ -422,6 +446,8 @@ def _verify_nonacceptance_reviews(
     *,
     selected_mask_sha256: str,
     panel_bundle_sha256: str,
+    expected_person_index: int | None,
+    ownership_report_sha256: str,
 ) -> list[dict[str, Any]]:
     if not isinstance(reviews, Sequence) or isinstance(reviews, (str, bytes)):
         raise NudeRecordQualificationError("strict_reviews_invalid")
@@ -441,6 +467,10 @@ def _verify_nonacceptance_reviews(
             raise NudeRecordQualificationError("strict_review_mask_mismatch")
         if review.get("panel_bundle_sha256") != panel_bundle_sha256:
             raise NudeRecordQualificationError("strict_review_panel_bundle_mismatch")
+        if review.get("person_index") != expected_person_index:
+            raise NudeRecordQualificationError("strict_review_person_index_mismatch")
+        if review.get("ownership_report_sha256") != ownership_report_sha256:
+            raise NudeRecordQualificationError("strict_review_ownership_report_mismatch")
         evidence = _nonempty(review.get("evidence"), "strict_review_evidence")
         if evidence.strip().lower() in {"pass", "fail", "uncertain", "looks good", "ok"}:
             raise NudeRecordQualificationError("strict_review_rubber_stamp_rejected")
@@ -464,6 +494,8 @@ def _verify_nonacceptance_reviews(
                 ),
                 "mask_sha256": selected_mask_sha256,
                 "panel_bundle_sha256": panel_bundle_sha256,
+                "person_index": expected_person_index,
+                "ownership_report_sha256": ownership_report_sha256,
                 "verdict": verdict,
                 "confidence": confidence,
                 "evidence": evidence,
@@ -508,6 +540,7 @@ def qualify_nonacceptance_record(
         record.get("provider_comparison", {}),
         selected_mask_sha256=selected_mask_sha256,
         allowed_statuses=frozenset({"pass", "fail", "abstain"}),
+        expected_person_index=ownership["person_index"],
     )
     if failure_stage == "provider_comparison" and provider_comparison["status"] == "pass":
         raise NudeRecordQualificationError("provider_failure_stage_requires_nonpass")
@@ -515,6 +548,8 @@ def qualify_nonacceptance_record(
         record.get("strict_reviews", ()),
         selected_mask_sha256=selected_mask_sha256,
         panel_bundle_sha256=panel_evidence["panel_bundle_sha256"],
+        expected_person_index=ownership["person_index"],
+        ownership_report_sha256=str(ownership["report_sha256"]),
     )
     verdicts = {review["verdict"] for review in reviews}
     if outcome == "abstained" and "uncertain" not in verdicts:

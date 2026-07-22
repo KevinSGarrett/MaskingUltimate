@@ -295,3 +295,51 @@ This amendment is complete only when:
 Until then, legacy visual-critic evidence remains bounded or blocked and no
 planning, download, negative-only smoke, or model-size reputation is promoted
 to runtime authority.
+
+## 13. Canonical claim firewall and authority matrix
+
+These names are the only current cross-project status vocabulary. A package,
+trainer, service, bridge, report, or tracker entry must not shorten them to
+`gold`, `approved`, `certified`, or `pass` without its exact tier, scope,
+certificate ID, and package revision.
+
+| State | Exact meaning | Authority ceiling |
+|---|---|---|
+| `source_reference` | Original image with no mask truth | retrieval/context only |
+| `detection_proposal` | Box, point, prompt, pose, ownership hypothesis, or scene metadata | no pixel authority |
+| `mask_candidate` | One provider-generated mask | draft only |
+| `machine_verified_candidate` | Deterministic tournament gates passed | no semantic/gold authority |
+| `strict_visual_pass_bounded` | Exact target passed a qualified primary and independent-family juror | no gold/certificate authority by itself |
+| `operationally_certified_artifact` | Exact operational certificate for declared production uses | never training/human truth |
+| `autonomous_certified_gold` | Exact immutable package passed the complete contract in section 14 | declared training/benchmark uses only; no human-accuracy claim |
+| `human_anchor_gold` | Separately governed voluntary human authority | optional, never a default autonomous dependency |
+| `abstained`, `quarantined`, `rejected` | Typed non-authority outcome | none |
+
+Population statistics, provider consensus, contact sheets, VLM votes, and
+operational certificates cannot upgrade an individually unreviewed mask.
+
+## 14. Canonical autonomous-certified-gold contract
+
+`autonomous_certified_gold` requires one closed, versioned, package-specific
+record that binds every active label and the complete final mask set. It must
+bind encoded and canonical decoded source identity; decoder/orientation/color/
+ICC/alpha policy; image, person, and character-instance identity; ontology
+version/hash and canonical label; label scale; laterality under character
+perspective; visible/amodal and presence/absence/occlusion state; explicit
+inclusions, exclusions, protected regions, overlap/containment/topology rules,
+and truncation/contact/occlusion/crop context; complete invertible transform
+chain and round-trip evidence; encoded and decoded mask identity; strict binary
+geometry; immutable package revision and parent; exact provider/prompt/runtime
+lineage; frozen per-label/context QA vector; current qualified primary and
+independent-family juror certificates and responses; semantic-alignment report;
+repair lineage; policy fingerprint; permitted uses; signer; validity; revocation
+snapshot; and claim limits.
+
+Every pixel change creates a new candidate and reruns deterministic QA,
+ownership, complete-map recomposition, semantic review, critic quorum, package
+verification, and certification. Missing, ambiguous, stale, revoked,
+same-family, hash-drifted, contact-sheet-only, or partially covered evidence
+abstains or quarantines. Historical packages missing package-specific
+`semantic_alignment_report_sha256` or `critic_quorum_sha256` remain immutable
+but are ineligible for training, champion, positive calibration, autonomous
+gold metrics, and production mask authority until a new revision qualifies.

@@ -1,10 +1,10 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T15:07:55+00:00",
+    "generated_at": "2026-07-22T16:49:57+00:00",
     "generator": "tracker.py rebuild",
-    "total_items": 855,
-    "total_tracked_including_orphaned": 855
+    "total_items": 856,
+    "total_tracked_including_orphaned": 856
   },
   "phase_meta": {
     "P0": {
@@ -13289,7 +13289,7 @@
       "cluster_id": "MF-P2-11",
       "cluster_title": "Provider-neutral discovery, segmentation, pose, and geometry architecture",
       "spec_ref": "SAM handoff Provider-Neutral Architecture/Benchmark Matrix",
-      "description": "Define exact target contracts for label, instance, visible extent, exclusions, protected regions, source geometry, and transforms before criticism or repair · Verify: missing/ambiguous target fields fail closed before any critic call · Blocked by: MF-P2-11.01",
+      "description": "Define exact target contracts for encoded and decoded source/mask identity, decoder policy, label/ontology/scale/laterality/character perspective, instance ownership, visible/amodal and presence/occlusion state, inclusions/exclusions/protected regions, overlap/containment/topology/context rules, immutable package lineage, coordinate space, complete transform chain, and round-trip evidence before criticism or repair · Verify: missing/ambiguous target fields, decoder/pixel drift, wrong owner/label/scale/laterality, incomplete context, noninvertible transforms, or package-lineage drift fail closed before any critic call · Blocked by: MF-P2-11.01",
       "source_file": "13_ITEMS_P2_PROVIDER_MODERNIZATION.md",
       "source_line": 41,
       "is_exit_gate": false,
@@ -13307,12 +13307,17 @@
           "ts": "2026-07-21T22:42:20+00:00",
           "actor": "codex",
           "text": "The contract and pre-call authorization fail before critic invocation on missing, ambiguous, hash-drifted, geometry-drifted, owner-drifted, or non-round-tripping inputs. No critic or repair execution is claimed by this STATIC_PASS."
+        },
+        {
+          "ts": "2026-07-22T16:51:12+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22 autonomous-gold amendment: preserved v1 and added a closed v2 target contract binding encoded/decoded source and mask identity, decoder policy, ontology/scale/laterality/perspective, owner, visibility/context, inclusions/exclusions/protected regions, overlap/topology, complete invertible transform chain, and immutable package lineage. 47 focused/adjacent tests pass. This is STATIC_PASS only; no critic role, visual pass, certificate, or gold authority is claimed."
         }
       ],
-      "evidence": "qa/live_verification/visual_critic_target_contract_20260721.json SHA-256 c820d3a4c2b501da34790d0e2d420bc900ee7977b659f6289252ed4cc55bc777; exact source/owner/label/extent/exclusion/protected-region/geometry/transform/candidate bindings; pre-call live hash and geometry authorization; 15 focused tests pass; Ruff/Black pass.",
+      "evidence": "qa/live_verification/visual_critic_target_contract_20260721.json; qa/live_verification/autonomous_gold_target_contract_v2_20260722.json; closed v1/v2 validation and fail-before-call authorization; 47 focused/adjacent tests, Ruff, Black, diff integrity PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T22:42:20+00:00",
+      "updated_at": "2026-07-22T16:51:12+00:00",
       "orphaned": false
     },
     "MF-P2-11.22": {
@@ -14640,7 +14645,7 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Enforce minimum valid-mask pass rate alongside defect recall, serious false-pass, abstention, schema, latency, and resource thresholds; rejecting everything is unavailable, never qualified · Verify: all-reject and hallucinated-context critics fail role qualification · Blocked by: MF-P4-11.17 · HARD BLOCKER",
+      "description": "Enforce frozen real-image valid-mask pass rate, defect recall/precision, serious false-pass, abstention, hallucinated-context, label-scope, evidence-localization, deterministic replay, malformed/truncated/schema, latency, VRAM, and panel-budget thresholds; rejecting everything or reviewing the wrong target/person/tile is unavailable, never qualified · Verify: all-reject, rubber-stamp, hallucinated-context, wrong-target/person/tile, evidence-free, and nondeterministic critics fail role qualification · Blocked by: MF-P4-11.17 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 55,
       "is_exit_gate": false,
@@ -14795,7 +14800,7 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Maintain a frozen real-image visual-regression suite covering hands, feet, hair, clothing/skin boundaries, complete visible adult anatomy, occlusion/contact, and multi-person ownership, using `F:\\Reference_Images` for coverage/retrieval and qualified `C:\\Comfy_UI_Main\\MaskedWarehouse` labels or exact qualified package masks for labeled cases · Verify: every promoted critic/provider/prompt/runtime change reruns the suite and serious regression blocks promotion; synthetic-only suites cannot promote · Blocked by: MF-P4-11.17, MF-P4-11.21 · HARD BLOCKER",
+      "description": "Maintain a frozen real-image visual-regression suite covering all 66 active classes plus every required risk/domain stratum: hands/fingers, feet/toes, hair, clothing/skin boundaries, complete visible adult anatomy, label scale, laterality, ownership, transform, occlusion/contact, crop/out-of-frame, media domain, and multi-person risk, using `F:\\Reference_Images` for coverage/retrieval and qualified `C:\\Comfy_UI_Main\\MaskedWarehouse` labels or exact qualified package masks for labeled cases · Verify: missing strata are explicit failures, every promoted critic/provider/prompt/runtime change reruns the suite, and serious regression blocks promotion; synthetic-only suites cannot promote · Blocked by: MF-P4-11.17, MF-P4-11.21 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 60,
       "is_exit_gate": false,
@@ -23521,6 +23526,27 @@
       "updated_at": "2026-07-22T12:35:14+00:00",
       "orphaned": false
     },
+    "MF-P4-12.10": {
+      "id": "MF-P4-12.10",
+      "phase": "P4",
+      "cluster_id": null,
+      "cluster_title": null,
+      "spec_ref": null,
+      "description": "Prove one exact real record from `source_reference` through detection, ownership, multi-provider masks, frozen per-label/context QA, qualified independent visual quorum, bounded repair when required, complete-map semantic alignment, immutable `autonomous_certified_gold` package, verification, revocation, and stale-certificate rejection · Verify: clean-checkout source-to-package and revoke/replay tests bind every exact hash and no weaker status or population evidence can promote the record · Blocked by: MF-P2-11.21, MF-P4-11.18, MF-P4-11.19, MF-P4-11.25, MF-P4-12.06 · HARD BLOCKER",
+      "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
+      "source_line": 22,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "open",
+      "percent_complete": 0,
+      "notes": [],
+      "evidence": null,
+      "blocked_reason": null,
+      "created_at": "2026-07-22T16:49:57+00:00",
+      "updated_at": "2026-07-22T16:49:57+00:00",
+      "orphaned": false
+    },
     "MF-P5-11.01": {
       "id": "MF-P5-11.01",
       "phase": "P5",
@@ -23529,7 +23555,7 @@
       "spec_ref": null,
       "description": "Export qualified polygons and machine-verified candidates into immutable weighted training datasets with exact source/remap/group seals · Verify: unqualified, coarse-as-fine, reference, quarantined, and holdout records are rejected · Blocked by: MF-P0-18.06, MF-P4-12.08 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 24,
+      "source_line": 25,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -23550,7 +23576,7 @@
       "spec_ref": null,
       "description": "Freeze the original holdout policy and prove zero exact/near/source-family overlap with training/calibration · Verify: immutable holdout seal and leakage test pass before first evaluation · Blocked by: MF-P0-18.06 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 25,
+      "source_line": 26,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -23587,7 +23613,7 @@
       "spec_ref": null,
       "description": "Train and benchmark anatomy-aware challengers, then promote only measured winners through existing champion policy · Verify: per-class/boundary/false-positive/hard-bucket results bind exact corpus and checkpoint seals · Blocked by: MF-P5-11.01, MF-P5-11.02",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 26,
+      "source_line": 27,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23608,7 +23634,7 @@
       "spec_ref": null,
       "description": "Probe `/workspace/assets/MaskedWarehouse/Nude`, source `paths.env`, and synchronize only missing/hash-drifted allowlisted paths while retaining `Nude/CivitAI_Top_NSFW_Images` as reference-only input · Verify: local/pod counts and registry/index seals match, exact CivitAI relative paths and roles remain unchanged, and ZIP/cache duplicates are excluded · Blocked by: MF-P0-18.01",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 29,
+      "source_line": 30,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23635,7 +23661,7 @@
       "spec_ref": null,
       "description": "Prove durable RunPod queue, checkpoint, crash recovery, and capacity-coordinated provider/VLM bursts · Verify: restart resumes by sample ID and incompatible large models serialize without OOM · Blocked by: MF-P4-12.01, MF-P7-08.01",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 30,
+      "source_line": 31,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23656,7 +23682,7 @@
       "spec_ref": null,
       "description": "Account all 81,910 adopted records as qualified input, candidate, repaired, abstained/rejected, quarantined, or holdout and bind accepted outputs into training/release/recovery evidence · Verify: signed reconciliation has zero unknown records and the frozen ComfyUI release path consumes the qualified result · Blocked by: MF-P4-12.08, MF-P5-11.03, MF-P7-08.02 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 31,
+      "source_line": 32,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,

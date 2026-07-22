@@ -1,0 +1,40 @@
+{
+  "schema_version": "maskfactory.live_verification.autonomous_gold_target_contract_v2.v1",
+  "recorded_at": "2026-07-22T17:20:00Z",
+  "result": "STATIC_PASS_RUNTIME_AND_GOLD_PROMOTION_OPEN",
+  "product_item": "MF-P2-11.21",
+  "authority_matrix_source": "Plan/25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md sections 13-14",
+  "v1_preserved": true,
+  "v2_enforces": [
+    "encoded_and_decoded_source_identity",
+    "decoder_orientation_color_icc_alpha_policy",
+    "person_and_character_instance_ownership",
+    "ontology_label_scale_laterality_character_perspective",
+    "visibility_presence_occlusion_and_context",
+    "explicit_inclusions_exclusions_protected_regions",
+    "overlap_containment_and_topology_policy",
+    "encoded_and_decoded_mask_identity",
+    "coordinate_space_and_complete_invertible_transform_chain",
+    "immutable_package_revision_and_parent"
+  ],
+  "artifacts": {
+    "src/maskfactory/vlm/target_contract.py": "c64d6c9f673cc8f4a4056ff1dc10e9ad12e7db6a0562f8b4098c0be0441b8581",
+    "tests/test_visual_critic_target_contract.py": "cf5946df71af8d56ac1a0d63e2f762d0d8faa2a39b6af479e4b8fbac22147ff6"
+  },
+  "validation": {
+    "focused_and_adjacent_tests": 47,
+    "focused_and_adjacent_test_result": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS",
+    "tracker_non_orphaned_items": 856,
+    "tracker_structural_validation": "PASS_WITH_EXPECTED_COUNT_WARNING"
+  },
+  "honest_boundary": {
+    "qualified_primary_critic_exists": false,
+    "qualified_independent_juror_exists": false,
+    "strict_visual_passes_created": 0,
+    "autonomous_certified_gold_created": 0,
+    "runtime_or_release_authority_claimed": false
+  }
+}

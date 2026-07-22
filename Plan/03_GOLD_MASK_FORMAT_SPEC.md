@@ -5,6 +5,14 @@
 > package layout only with an explicit `operationally_certified_artifact` authority record and active
 > operational certificate; that does not create gold or training truth.
 > Human review and a minimum package count are not core prerequisites.
+>
+> **Autonomous-gold amendment (doc 25 sections 13-14):** the word `gold` in
+> this document never promotes a package by itself. `autonomous_certified_gold`
+> is a distinct exact-output training authority requiring the complete current
+> per-record target, QA, semantic-alignment, independent critic-quorum, repair,
+> package, policy, and revocation bindings. `operationally_certified_artifact`
+> remains non-training authority. Historical bytes retain their recorded tier
+> and cannot inherit this newer authority.
 
 ---
 

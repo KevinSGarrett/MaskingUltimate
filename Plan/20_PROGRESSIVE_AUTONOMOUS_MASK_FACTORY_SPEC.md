@@ -74,6 +74,24 @@ and fails closed on any mismatch. Certificate schema
 Any pipeline change, expiry, serious audited failure, distribution drift, or hash mismatch revokes the
 certificate. A hair certificate cannot authorize fingers, occlusion, or multi-person contact.
 
+### 4.0.1 Historical machine-population evidence is not a certificate
+
+The disabled `configs/autonomy_autonomous_gold_profile.yaml` and schema
+`2.0.0-autonomous` preserve earlier machine-population Wilson calculations as
+`machine_verified_population_risk_evidence`. Even a statistically passing
+population cannot authorize one record: provider agreement and stability do
+not establish target semantics or exact pixels. The verifier therefore always
+returns `population_certificate_not_per_record_authority` for this schema.
+Such evidence cannot produce `calibrated_auto_accepted`, enter a gold audit
+population, authorize training, or satisfy an operational release.
+
+Only a new exact immutable per-record package that binds its target contract,
+qualified per-label/context QA registry, complete deterministic QA vector,
+current primary-plus-independent critic quorum, semantic-alignment report,
+repair lineage, package revision, revocation state, and exact output hashes may
+earn `autonomous_certified_gold` under doc 25. Population evidence remains an
+advisory input and never widens that package-specific authority.
+
 ### 4.1 Pre-review improvement is not autonomous acceptance
 
 The certificate governs whether routine human review may be skipped. It does not prevent S11 from

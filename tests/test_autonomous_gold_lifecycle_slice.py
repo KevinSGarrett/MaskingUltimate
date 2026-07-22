@@ -4,10 +4,8 @@ Proves the two honest branches of the measured path:
   * fail-closed: below the genuine Wilson/zero-failure sample floor the
     certificate does NOT pass, so NO calibrated_auto_accepted sidecar is written
     and the audit population stays zero (no fabricated certificate);
-  * reaches-queue: with a sample count that genuinely satisfies the *unchanged*
-    one-sided Wilson and exact zero-failure bounds, real
-    calibrated_auto_accepted sidecars are written and the weekly audit queue
-    observes a non-zero population.
+  * claim firewall: even when the historical population statistics pass, they
+    cannot create calibrated sidecars or a gold audit population.
 
 The production ``runs/`` pool is scanned separately and is never touched by the
 demonstration, so the honest production state is preserved.
@@ -47,7 +45,7 @@ def test_slice_fails_closed_below_sample_floor(tmp_path: Path) -> None:
     assert evidence["claim_boundary"]["no_champion_force_registered"] is True
 
 
-def test_slice_reaches_audit_queue(tmp_path: Path) -> None:
+def test_passing_population_statistics_still_cannot_reach_gold_queue(tmp_path: Path) -> None:
     harness = _load_harness()
     evidence = harness.run_slice(
         tmp_path / "wd",
@@ -57,7 +55,10 @@ def test_slice_reaches_audit_queue(tmp_path: Path) -> None:
     )
     counts = evidence["demonstration_counts"]
     assert evidence["certificate_summary"]["passed"] is True
-    assert evidence["certificate_verify_valid"] is True
+    assert evidence["certificate_verify_valid"] is False
+    assert evidence["certificate_verify_reason"] == (
+        "population_certificate_not_per_record_authority"
+    )
     assert evidence["certificate_summary"]["aggregate_false_accept_bound_method"] == (
         "one_sided_wilson"
     )
@@ -65,10 +66,10 @@ def test_slice_reaches_audit_queue(tmp_path: Path) -> None:
         "exact_zero_failure"
     )
     assert counts["machine_verified_candidate_sidecars"] == 600
-    assert counts["calibrated_auto_accepted_sidecars"] == 30
-    assert counts["audit_queue_population_count"] == 30
-    assert counts["audit_queue_selected_count"] > 0
-    assert counts["audit_queue_outcomes_status"] == "pending"
+    assert counts["calibrated_auto_accepted_sidecars"] == 0
+    assert counts["audit_queue_population_count"] == 0
+    assert counts["audit_queue_selected_count"] == 0
+    assert counts["audit_queue_outcomes_status"] == "empty"
     # Honest boundary: demonstration never inflates the production pool.
     assert evidence["production_pool_honest"]["calibrated_auto_accepted_count"] == 0
     assert evidence["production_pool_honest"]["lifecycle_sidecars_seen"] == 0

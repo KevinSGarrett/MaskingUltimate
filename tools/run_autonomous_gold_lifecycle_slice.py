@@ -1,4 +1,4 @@
-"""Runtime driver: exercise the measured autonomous-gold lifecycle/audit plumbing.
+"""Runtime driver: prove population evidence cannot promote per-record authority.
 
 This closes the *runtime* gap left by the measured-path wiring fix: the unit
 test (``tests/test_autonomous_gold_audit_queue_wiring.py``) proves the code path
@@ -11,15 +11,14 @@ certificate/Wilson math:
      mask into an isolated demonstration machine-root (NEVER the production
      ``runs/`` pool);
   2. assemble a frozen, image-disjoint autonomous-verification corpus from them;
-  3. mint a governed autonomous-gold certificate via the unmodified
+  3. build historical machine-population evidence via
      ``build_autonomous_gold_certificate`` (real ``verify_machine_audit_record``,
      one-sided Wilson + exact zero-failure bounds preserved) — the certificate
      only passes because the sample floor genuinely satisfies both bounds;
-  4. run the real ``run_autonomous_correction_loop`` with
-     ``allow_autonomous_profile=True`` and the passing certificate so each winner
-     is raised to ``calibrated_auto_accepted`` (``autonomous_certified_gold``);
-  5. build the weekly audit queue from those sidecars -> non-zero
-     ``population_count`` (the symptom that was previously stuck at zero).
+  4. prove the real verifier refuses per-record authority even when the
+     population statistics pass;
+  5. prove no ``calibrated_auto_accepted`` sidecars or gold audit population
+     are created.
 
 Honest boundary (EVIDENCE_TIER = DEMONSTRATION, never inflated):
   * The provider "families" are synthetic construction used to exercise the
@@ -28,9 +27,8 @@ Honest boundary (EVIDENCE_TIER = DEMONSTRATION, never inflated):
     pool. The production pool is scanned separately and reported honestly (it
     stays whatever it truly is; producing real gold there still requires the
     multi-provider GPU tournament runtime).
-  * It NEVER weakens the Wilson/zero-failure math and NEVER fabricates a passing
-    certificate: if the sample floor is too small the certificate fails closed
-    and no ``calibrated_auto_accepted`` sidecar is written.
+  * It preserves the Wilson/zero-failure calculation as diagnostic evidence,
+    but passing statistics never authorize pixels or a package.
 
 Usage:
   python tools/run_autonomous_gold_lifecycle_slice.py \
@@ -69,16 +67,15 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_TYPE = "autonomous_gold_lifecycle_slice"
 SCHEMA_VERSION = "1.0.0"
 EVIDENCE_TIER = "DEMONSTRATION"
-AUTHORITY = "autonomous_certified_gold_profile"
+AUTHORITY = "machine_verified_population_risk_evidence"
 LABEL = "torso"
 CONTEXT = "solo"
 PIPELINE_FP = "autonomous-gold-lifecycle-slice-fp-v1"
 NEXT_STEP = (
-    "Real production autonomous_certified_gold still requires the multi-provider "
-    "GPU tournament runtime to emit genuine machine_verified_candidate sidecars "
-    "under runs/ (independent >=3 model families per image), then re-run "
-    "tools/build_autonomous_gold_admission.py --corpus. This driver proves the "
-    "lifecycle/audit-queue plumbing fires end-to-end with the unchanged Wilson math."
+    "Real autonomous_certified_gold requires one exact immutable package with "
+    "qualified per-label/context QA, semantic alignment, independent critic quorum, "
+    "complete package hashes, and current revocation evidence. Population Wilson "
+    "evidence remains advisory only."
 )
 
 
@@ -320,7 +317,9 @@ def run_slice(
             ],
         },
         "claim_boundary": {
-            "is_operational_admission_authority_demonstration": True,
+            "is_operational_admission_authority_demonstration": False,
+            "is_per_record_authority": False,
+            "is_autonomous_certified_gold_authority": False,
             "is_not_independent_real_accuracy_claim": True,
             "is_not_production_evidence_pass": True,
             "does_not_touch_production_runs_pool": True,
@@ -434,8 +433,11 @@ def main(argv: list[str] | None = None) -> int:
         )
     )
     passed = (
-        evidence["certificate_summary"]["passed"]
-        and evidence["demonstration_counts"]["audit_queue_population_count"] > 0
+        evidence["certificate_verify_valid"] is False
+        and evidence["certificate_verify_reason"]
+        == "population_certificate_not_per_record_authority"
+        and evidence["demonstration_counts"]["calibrated_auto_accepted_sidecars"] == 0
+        and evidence["demonstration_counts"]["audit_queue_population_count"] == 0
     )
     return 0 if passed else 1
 

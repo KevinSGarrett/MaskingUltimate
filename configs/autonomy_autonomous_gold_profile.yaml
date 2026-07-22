@@ -1,22 +1,15 @@
 schema_version: "1.0.0"
 profile_id: "maskfactory-autonomous-certified-gold-admission-v1"
-enabled: true
-authority: "autonomous_certified_gold_profile"
+enabled: false
+authority: "machine_verified_population_risk_evidence"
 governing_amendment: "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md#autonomous-gold-redesign"
-# Approved authority replacement (NOT a weakening of the Wilson statistics).
+# Historical statistical evidence only (NOT per-record pixel authority).
 #
-# Per Kevin's approved autonomous-gold amendment, human anchors are NOT the
-# operational-gold authority. This profile REPLACES the human-audit calibration
-# authority with a governed autonomous authority: certification is estimated
-# from independent multi-provider (different model family) agreement plus
-# candidate/perturbation stability plus complete-map hard-veto QA. The exact
-# one-sided Wilson false-accept bound and the exact zero-failure serious bound
-# are preserved unchanged and applied to the autonomously-verified sample set;
-# only the *authority* that supplies each sample changes (cross-family
-# disagreement stands in for a human-audited defect, and is deliberately
-# conservative because correlated SAM variants do not count as independent).
+# The Wilson calculations remain reproducible, but provider agreement cannot
+# establish pixel semantics. This profile is disabled for admission and may
+# only describe population-level machine evidence.
 authority_replacement:
-  replaces: "human_anchor_gold_calibration_authority"
+  replaces: "nothing_population_statistics_only"
   does_not_weaken_wilson_math: true
   preserves_exact_bounds: true
   never_trains_against_human_anchor_holdout: true
@@ -40,8 +33,11 @@ statistical_floors:
   serious_false_accept_bound_method: "exact_zero_failure"
   maximum_certificate_age_days: 30
 claim_boundary:
-  is_operational_admission_authority: true
+  is_operational_admission_authority: false
+  is_per_record_authority: false
+  is_autonomous_certified_gold_authority: false
+  requires_current_semantic_alignment_and_critic_quorum: true
   is_not_independent_real_accuracy_claim: true
   is_not_human_anchor_holdout: true
   default_off_in_hot_tournament_path: true
-profile_sha256: "789d9e0af3a72cd8ff5fa4b0229cbcf662a3f904e9b336f6483a2fbfc287c823"
+profile_sha256: "269e02c8cc345ea94654efcb8175c3fb573c848e1d20ba94c6db87fdcabb1d5d"

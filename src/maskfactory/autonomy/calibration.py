@@ -26,11 +26,11 @@ from .stability import StabilityError, load_stability_policy, verify_stability_e
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-# Governed autonomous-gold admission profile (approved amendment authority
-# replacement). Additive to the human-anchor path; never weakens Wilson math.
+# Historical population-risk profile. It may measure a frozen population but
+# can never promote an individual mask or replace current per-record authority.
 AUTONOMOUS_GOLD_PROFILE_PATH = Path("configs/autonomy_autonomous_gold_profile.yaml")
 AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA = "2.0.0-autonomous"
-AUTONOMOUS_GOLD_AUTHORITY = "autonomous_certified_gold_profile"
+AUTONOMOUS_GOLD_AUTHORITY = "machine_verified_population_risk_evidence"
 
 
 class AutonomyCalibrationError(RuntimeError):
@@ -619,13 +619,14 @@ def verify_autonomy_certificate(
         if certificate.get("audit_authority") != "human_approved_gold_only":
             return False, "certificate_human_anchor_authority_missing"
     elif schema_version == AUTONOMOUS_GOLD_CERTIFICATE_SCHEMA:
-        # Governed autonomous-gold admission authority (approved amendment).
-        # Default-off: the hot tournament path only honors it when the caller
-        # explicitly opts in via ``allow_autonomous_profile``.
         if not allow_autonomous_profile:
             return False, "autonomous_profile_not_enabled"
         if certificate.get("audit_authority") != AUTONOMOUS_GOLD_AUTHORITY:
             return False, "certificate_autonomous_authority_missing"
+        # Population statistics cannot upgrade an individually unreviewed mask.
+        # This historical certificate lacks exact per-record target, qualified
+        # critic quorum, semantic alignment, and current QA-registry bindings.
+        return False, "population_certificate_not_per_record_authority"
     elif schema_version != "2.0.0" or certificate.get("audit_authority") != "human_anchor_gold":
         return False, "certificate_human_anchor_authority_missing"
     claimed = certificate.get("sha256")
@@ -667,7 +668,7 @@ def load_autonomous_gold_profile(
     if (
         document.get("schema_version") != "1.0.0"
         or document.get("profile_id") != "maskfactory-autonomous-certified-gold-admission-v1"
-        or document.get("enabled") is not True
+        or document.get("enabled") is not False
         or document.get("authority") != AUTONOMOUS_GOLD_AUTHORITY
     ):
         raise AutonomyCalibrationError("autonomous-gold profile identity is invalid")
@@ -676,7 +677,12 @@ def load_autonomous_gold_profile(
         raise AutonomyCalibrationError("autonomous-gold profile hash mismatch")
     replacement = document.get("authority_replacement")
     floors = document.get("statistical_floors")
-    if not isinstance(replacement, dict) or not isinstance(floors, dict):
+    claim_boundary = document.get("claim_boundary")
+    if (
+        not isinstance(replacement, dict)
+        or not isinstance(floors, dict)
+        or not isinstance(claim_boundary, dict)
+    ):
         raise AutonomyCalibrationError("autonomous-gold profile contract is incomplete")
     if (
         replacement.get("does_not_weaken_wilson_math") is not True
@@ -693,6 +699,16 @@ def load_autonomous_gold_profile(
         or floors.get("aggregate_false_accept_bound_method") != "one_sided_wilson"
         or floors.get("serious_false_accept_bound_method") != "exact_zero_failure"
         or int(floors.get("maximum_certificate_age_days", 0)) <= 0
+        or claim_boundary
+        != {
+            "is_operational_admission_authority": False,
+            "is_per_record_authority": False,
+            "is_autonomous_certified_gold_authority": False,
+            "requires_current_semantic_alignment_and_critic_quorum": True,
+            "is_not_independent_real_accuracy_claim": True,
+            "is_not_human_anchor_holdout": True,
+            "default_off_in_hot_tournament_path": True,
+        }
     ):
         raise AutonomyCalibrationError("autonomous-gold profile floors are invalid")
     return document
@@ -732,14 +748,27 @@ def build_autonomous_gold_certificate(
     machine_artifacts_root: Path = Path("runs"),
     machine_authority_validator: MachineAuthorityValidator | None = None,
 ) -> dict[str, Any]:
-    """Mint an autonomous-gold certificate from independent multi-provider agreement.
+    """Build bounded historical population-risk evidence.
 
-    Replaces the human-audit authority with the approved autonomous authority
-    (independent cross-family agreement + stability + hard-veto QA) while keeping
-    the exact one-sided Wilson and zero-failure bounds unchanged. Fails closed on
-    thin evidence; never fabricates samples.
+    Agreement and stability statistics remain useful diagnostics, but never
+    supply per-record semantic/pixel authority and never mint gold.
     """
     profile_doc = dict(profile) if profile is not None else load_autonomous_gold_profile()
+    expected_claim_boundary = {
+        "is_operational_admission_authority": False,
+        "is_per_record_authority": False,
+        "is_autonomous_certified_gold_authority": False,
+        "requires_current_semantic_alignment_and_critic_quorum": True,
+        "is_not_independent_real_accuracy_claim": True,
+        "is_not_human_anchor_holdout": True,
+        "default_off_in_hot_tournament_path": True,
+    }
+    if (
+        profile_doc.get("enabled") is not False
+        or profile_doc.get("authority") != AUTONOMOUS_GOLD_AUTHORITY
+        or profile_doc.get("claim_boundary") != expected_claim_boundary
+    ):
+        raise AutonomyCalibrationError("population profile claim boundary is invalid")
     floors = profile_doc["statistical_floors"]
     families_minimum = int(profile_doc["independent_provider_families_minimum"])
     bucket = risk_bucket or context
@@ -858,6 +887,15 @@ def build_autonomous_gold_certificate(
         "serious_false_accept_bound_method": "exact_zero_failure",
         "false_accept_upper_bound": false_upper,
         "serious_false_accept_upper_bound": serious_upper,
+        "claim_scope": "population_risk_evidence_only",
+        "per_record_authority": False,
+        "autonomous_certified_gold_authority": False,
+        "required_missing_bindings": [
+            "per_record_target_contract_sha256",
+            "qualified_critic_quorum_sha256",
+            "semantic_alignment_report_sha256",
+            "qualified_per_label_context_qa_registry_sha256",
+        ],
         "issued_at": issued.isoformat().replace("+00:00", "Z"),
         "expires_at": expires.isoformat().replace("+00:00", "Z"),
         "passed": not failures,

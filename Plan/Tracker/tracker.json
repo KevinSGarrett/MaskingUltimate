@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T17:56:19+00:00",
+    "generated_at": "2026-07-22T18:03:35+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 857,
     "total_tracked_including_orphaned": 857
@@ -14488,19 +14488,30 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Allow `autonomous_certified_gold` only for exact covered, in-distribution, hard-QA-clean winners under an unexpired/unrevoked certificate; sparse/shifted cases abstain · Verify: scope/context/fingerprint/drift negative fixtures route residual · Blocked by: MF-P4-11.10 · HARD BLOCKER",
+      "description": "Allow `autonomous_certified_gold` only for one exact immutable per-record package binding target contract, qualified per-label/context QA registry and vector, current semantic alignment, qualified independent critic quorum, complete mask-set/package revision, and unexpired/unrevoked certificate; population statistics, provider consensus, operational certificates, sparse/shifted evidence, and missing bindings cannot promote the record · Verify: population-certificate, scope/context/fingerprint/drift, missing semantic/quorum/QA, and stale/revoked fixtures route residual or quarantine · Blocked by: MF-P4-11.10, MF-P4-11.18, MF-P4-11.19, MF-P4-12.11 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 48,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
-      "notes": [],
-      "evidence": "Focused 2026-07-14 governance/truth/autonomy/CVAT suite passed 92 tests; combined modernization evidence suite passed 164 tests. Runtime validation uses JSON Schema plus governance; active legacy versions, per-provider missing decisions, unresolved license activation, duplicate YAML keys, invalid lifecycle transitions, hard-bucket promotion regressions, and unsafe CVAT publication are rejected. Evidence: src/maskfactory/autonomy/ and tests/test_autonomy.py cover bounded/deduplicated tournaments, independent families, hard veto, deterministic selection, correction, statistical certificates, mixed audits, revocation, lifecycle, retraining plans, and stale-fingerprint rejection.",
+      "status": "partially_complete",
+      "percent_complete": 65,
+      "notes": [
+        {
+          "ts": "2026-07-22T18:03:36+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22 claim-firewall correction: the historical 2.0.0-autonomous machine-population Wilson profile is disabled and recast as machine_verified_population_risk_evidence. Even statistically passing population evidence now fails exact-record verification with population_certificate_not_per_record_authority and cannot create calibrated_auto_accepted, autonomous_certified_gold, or a gold audit population. Exact per-record semantic/quorum/qualified-QA/package certification remains open."
+        },
+        {
+          "ts": "2026-07-22T18:05:37+00:00",
+          "actor": "ai_agent",
+          "text": "Updated the executable lifecycle-slice driver itself: statistically passing machine-population evidence must now prove zero calibrated_auto_accepted sidecars and zero gold-audit population; the driver succeeds only when the claim firewall is active."
+        }
+      ],
+      "evidence": "qa/live_verification/population_certificate_claim_firewall_20260722.json SHA-256 4379a0faeac07028c743c8402c34f45bb5014029468d0c498f462a5f1d719ed5; 54 focused/adjacent tests pass; Ruff, Black, diff integrity PASS; no exact per-record gold authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:50:17+00:00",
+      "updated_at": "2026-07-22T18:05:37+00:00",
       "orphaned": false
     },
     "MF-P4-11.12": {

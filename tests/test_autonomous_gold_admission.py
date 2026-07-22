@@ -4,8 +4,8 @@ The autonomous path replaces the human-anchor calibration authority with
 independent multi-provider agreement + stability + hard-veto QA, WITHOUT
 weakening the exact one-sided Wilson / zero-failure bounds. These tests prove:
   * the sealed profile loads and is contract-valid;
-  * a sufficiently large zero-defect autonomous corpus mints a passing cert that
-    verifies only when the caller opts in (default-off, zero regression);
+  * a sufficiently large zero-defect autonomous corpus may pass its historical
+    population statistics but never verifies as per-record authority;
   * the exact bounds are preserved (thin or defect-heavy corpora fail closed);
   * a human-anchor-only verify never honors an autonomous certificate.
 """
@@ -79,9 +79,27 @@ def test_profile_loads_and_is_sealed() -> None:
     assert profile["authority"] == AUTONOMOUS_GOLD_AUTHORITY
     assert profile["independent_provider_families_minimum"] >= 3
     assert profile["authority_replacement"]["does_not_weaken_wilson_math"] is True
+    assert profile["enabled"] is False
+    assert profile["claim_boundary"]["is_per_record_authority"] is False
 
 
-def test_large_zero_defect_corpus_passes_and_verifies_when_opted_in(tmp_path: Path) -> None:
+def test_profile_cannot_restore_population_admission_authority() -> None:
+    profile = load_autonomous_gold_profile()
+    profile["claim_boundary"]["is_operational_admission_authority"] = True
+    with pytest.raises(AutonomyCalibrationError, match="claim boundary is invalid"):
+        build_autonomous_gold_certificate(
+            Path("missing-does-not-matter.json"),
+            label=LABEL,
+            context=CONTEXT,
+            risk_bucket=BUCKET,
+            pipeline_fingerprint=PIPELINE_FP,
+            profile=profile,
+        )
+
+
+def test_large_zero_defect_corpus_passes_statistics_but_not_record_authority(
+    tmp_path: Path,
+) -> None:
     # ~600 zero-defect samples are required to satisfy BOTH the 0.01 Wilson bound
     # and the 0.005 exact zero-failure serious bound — identical rigor to the
     # human-anchor certificate, not a weakened threshold.
@@ -106,7 +124,10 @@ def test_large_zero_defect_corpus_passes_and_verifies_when_opted_in(tmp_path: Pa
         pipeline_fingerprint=PIPELINE_FP,
         allow_autonomous_profile=True,
     )
-    assert valid is True, reason
+    assert valid is False
+    assert reason == "population_certificate_not_per_record_authority"
+    assert certificate["per_record_authority"] is False
+    assert certificate["autonomous_certified_gold_authority"] is False
 
 
 def test_default_off_rejects_autonomous_certificate(tmp_path: Path) -> None:

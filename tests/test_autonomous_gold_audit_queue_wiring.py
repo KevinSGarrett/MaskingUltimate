@@ -1,4 +1,4 @@
-"""Measured-path wiring: autonomous-gold certificate -> lifecycle -> audit queue.
+"""Population evidence cannot promote per-record authority.
 
 These tests prove the plumbing that was silently dropped: the governed
 autonomous-certified-gold authority (default OFF) must be forwarded through the
@@ -132,7 +132,7 @@ def test_autonomous_profile_off_stays_machine_verified(tmp_path: Path) -> None:
     assert result.decision.certificate_reason == "autonomous_profile_not_enabled"
 
 
-def test_autonomous_profile_on_reaches_audit_queue(tmp_path: Path) -> None:
+def test_population_profile_on_still_cannot_reach_gold_audit_queue(tmp_path: Path) -> None:
     certificate = _passing_autonomous_certificate(tmp_path)
     config = _config()
     lifecycle_root = tmp_path / "lifecycle"
@@ -152,8 +152,11 @@ def test_autonomous_profile_on_reaches_audit_queue(tmp_path: Path) -> None:
             certificate=certificate,
             allow_autonomous_profile=True,
         )
-        assert result.decision.status == "calibrated_auto_accepted"
-        assert result.decision.truth_tier == "autonomous_certified_gold"
+        assert result.decision.status == "machine_verified_candidate"
+        assert result.decision.truth_tier == "machine_candidate"
+        assert (
+            result.decision.certificate_reason == "population_certificate_not_per_record_authority"
+        )
         write_lifecycle_sidecar(
             lifecycle_root / f"hair_{index}.json",
             image_id=f"img_{index:012x}",
@@ -168,7 +171,6 @@ def test_autonomous_profile_on_reaches_audit_queue(tmp_path: Path) -> None:
         period_id="2026-W29",
         operations_policy=config["operations"],
     )
-    # The measured path now yields a real audit population instead of zero.
-    assert queue["population_count"] == 30
-    assert queue["selected_count"] > 0
-    assert queue["outcomes_status"] == "pending"
+    assert queue["population_count"] == 0
+    assert queue["selected_count"] == 0
+    assert queue["outcomes_status"] == "empty"

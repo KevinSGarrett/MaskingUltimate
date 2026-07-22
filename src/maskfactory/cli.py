@@ -10154,6 +10154,115 @@ def autonomous_semantic_requalification_plan_command(
     )
 
 
+@main.command("autonomous-semantic-requalification-execute")
+@click.option(
+    "--plan",
+    "plan_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+)
+@click.option("--batch-index", type=click.IntRange(min=0), required=True)
+@click.option(
+    "--review",
+    "review_paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    multiple=True,
+    required=True,
+)
+@click.option(
+    "--critic-certificate",
+    "certificate_paths",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    multiple=True,
+    required=True,
+)
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=Path("configs/visual_critic_catalog.yaml"),
+    show_default=True,
+)
+@click.option(
+    "--root",
+    "packages_root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    required=True,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path, dir_okay=False),
+    required=True,
+)
+@click.option("--as-of", default=None, help="UTC ISO-8601 certificate evaluation time.")
+def autonomous_semantic_requalification_execute_command(
+    plan_path: Path,
+    batch_index: int,
+    review_paths: tuple[Path, ...],
+    certificate_paths: tuple[Path, ...],
+    catalog_path: Path,
+    packages_root: Path,
+    output: Path,
+    as_of: str | None,
+) -> None:
+    """Resolve one hash-bound bulk batch and emit only its compact result."""
+
+    from datetime import UTC, datetime
+
+    from .autonomy.package_semantic_alignment import (
+        PackageSemanticAlignmentError,
+        execute_semantic_requalification_batch,
+    )
+    from .vlm.critic_catalog import load_catalog
+
+    try:
+        now = datetime.fromisoformat(as_of.replace("Z", "+00:00")) if as_of else datetime.now(UTC)
+        if now.tzinfo is None:
+            raise ValueError("--as-of must include a timezone")
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        reviews = [json.loads(path.read_text(encoding="utf-8")) for path in review_paths]
+        certificates = [json.loads(path.read_text(encoding="utf-8")) for path in certificate_paths]
+        result = execute_semantic_requalification_batch(
+            plan,
+            batch_index=batch_index,
+            critic_reviews=reviews,
+            critic_certificates=certificates,
+            critic_catalog=load_catalog(catalog_path),
+            packages_root=packages_root,
+            now=now,
+        )
+        encoded = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        if output.exists() and output.read_bytes() != encoded:
+            raise PackageSemanticAlignmentError(
+                "semantic batch result conflicts with an existing immutable output"
+            )
+        output.parent.mkdir(parents=True, exist_ok=True)
+        if not output.exists():
+            output.write_bytes(encoded)
+    except (
+        OSError,
+        ValueError,
+        json.JSONDecodeError,
+        PackageSemanticAlignmentError,
+    ) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        json.dumps(
+            {
+                "status": "resolved",
+                "batch_index": result["batch_index"],
+                "result_sha256": result["result_sha256"],
+                "counts": result["counts"],
+                "exception_count": len(result["exceptions"]),
+                "exceptions": result["exceptions"],
+                "next_batch_index": result["next_batch_index"],
+                "output": str(output),
+            },
+            sort_keys=True,
+        )
+    )
+
+
 @main.command("autonomous-certify-package")
 @click.argument("image_id")
 @click.option("--instance", default="p0", show_default=True)

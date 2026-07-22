@@ -58,6 +58,30 @@ DECISION_KEYS = frozenset(
         "decision_sha256",
     }
 )
+BATCH_REVIEW_KEYS = frozenset(
+    {
+        "schema_version",
+        "plan_sha256",
+        "batch_sha256",
+        "role_id",
+        "certificate_sha256",
+        "model_id",
+        "family_id",
+        "case_decisions",
+        "review_sha256",
+    }
+)
+BATCH_CASE_DECISION_KEYS = frozenset({"case_id", "targets", "decision_sha256"})
+BATCH_TARGET_DECISION_KEYS = frozenset(
+    {
+        "label_id",
+        "mask_sha256",
+        "panel_sha256",
+        "verdict",
+        "proposed_label_id",
+    }
+)
+BATCH_TARGET_VERDICTS = frozenset({"pass", "relabel", "reject", "abstain"})
 
 
 class PackageSemanticAlignmentError(ValueError):
@@ -376,6 +400,272 @@ def render_semantic_requalification_contact_sheets(
     return manifest
 
 
+def _without_self_hash(value: Mapping[str, Any], field: str) -> dict[str, Any]:
+    return {key: item for key, item in value.items() if key != field}
+
+
+def execute_semantic_requalification_batch(
+    plan: Mapping[str, Any],
+    *,
+    batch_index: int,
+    critic_reviews: Sequence[Mapping[str, Any]],
+    critic_certificates: Sequence[Mapping[str, Any]],
+    critic_catalog: Mapping[str, Any],
+    packages_root: Path,
+    now: datetime,
+) -> dict[str, Any]:
+    """Resolve one bulk batch without mutating any frozen package.
+
+    Authority failures reject the whole batch. Package-specific drift or malformed
+    decisions become compact exception rows so unrelated cases continue. Relabel
+    outcomes are proposals for a new immutable version; this function never renames
+    a label or writes mask pixels in place.
+    """
+
+    expected_plan_sha256 = _canonical_sha256(_without_self_hash(plan, "plan_sha256"))
+    if plan.get("plan_sha256") != expected_plan_sha256:
+        raise PackageSemanticAlignmentError("semantic bulk plan hash mismatch")
+    batches = plan.get("batches")
+    if not isinstance(batches, Sequence) or isinstance(batches, (str, bytes)):
+        raise PackageSemanticAlignmentError("semantic bulk batches are invalid")
+    if batch_index < 0 or batch_index >= len(batches):
+        raise PackageSemanticAlignmentError("semantic bulk batch_index is invalid")
+    batch = batches[batch_index]
+    if not isinstance(batch, Mapping):
+        raise PackageSemanticAlignmentError("semantic bulk batch row is invalid")
+    expected_batch_sha256 = _canonical_sha256(_without_self_hash(batch, "batch_sha256"))
+    if batch.get("batch_sha256") != expected_batch_sha256:
+        raise PackageSemanticAlignmentError("semantic bulk batch hash mismatch")
+
+    from ..vlm.critic_authority import CriticAuthorityError, evaluate_pass_quorum
+
+    try:
+        quorum = evaluate_pass_quorum(
+            critic_certificates,
+            critic_catalog,
+            now=now,
+            deterministic_hard_veto=False,
+        )
+    except CriticAuthorityError as exc:
+        raise PackageSemanticAlignmentError(str(exc)) from exc
+    if quorum.get("status") != "eligible":
+        raise PackageSemanticAlignmentError("semantic bulk critic quorum is ineligible")
+
+    certificates = {
+        str(certificate.get("certificate_sha256")): certificate
+        for certificate in critic_certificates
+    }
+    required_roles = set(batch.get("required_roles") or ())
+    if required_roles != {"primary_visual_critic", "independent_juror"}:
+        raise PackageSemanticAlignmentError("semantic bulk required roles drifted")
+    reviews_by_role: dict[str, Mapping[str, Any]] = {}
+    for review in critic_reviews:
+        if not isinstance(review, Mapping) or set(review) != BATCH_REVIEW_KEYS:
+            raise PackageSemanticAlignmentError("semantic bulk review fields are invalid")
+        if review.get("schema_version") != "1.0.0":
+            raise PackageSemanticAlignmentError("semantic bulk review schema is invalid")
+        if (
+            review.get("plan_sha256") != plan["plan_sha256"]
+            or review.get("batch_sha256") != batch["batch_sha256"]
+        ):
+            raise PackageSemanticAlignmentError("semantic bulk review binding drifted")
+        if review.get("review_sha256") != _canonical_sha256(
+            _without_self_hash(review, "review_sha256")
+        ):
+            raise PackageSemanticAlignmentError("semantic bulk review hash mismatch")
+        role = str(review.get("role_id"))
+        certificate = certificates.get(str(review.get("certificate_sha256")))
+        if role not in required_roles or role in reviews_by_role or certificate is None:
+            raise PackageSemanticAlignmentError(
+                "semantic bulk review role or certificate is unknown or duplicated"
+            )
+        if any(
+            review.get(field) != certificate.get(field)
+            for field in ("role_id", "model_id", "family_id")
+        ):
+            raise PackageSemanticAlignmentError("semantic bulk critic identity drifted")
+        reviews_by_role[role] = review
+    if set(reviews_by_role) != required_roles:
+        raise PackageSemanticAlignmentError("semantic bulk reviews lack the required quorum")
+
+    case_ids = [str(value) for value in batch.get("case_ids") or ()]
+    cases = {
+        str(case.get("case_id")): case
+        for case in plan.get("cases") or ()
+        if isinstance(case, Mapping)
+    }
+    review_cases: dict[str, dict[str, Mapping[str, Any]]] = {}
+    for role, review in reviews_by_role.items():
+        decisions = review.get("case_decisions")
+        if not isinstance(decisions, Sequence) or isinstance(decisions, (str, bytes)):
+            raise PackageSemanticAlignmentError("semantic bulk case decisions are invalid")
+        role_cases: dict[str, Mapping[str, Any]] = {}
+        for decision in decisions:
+            if not isinstance(decision, Mapping) or set(decision) != BATCH_CASE_DECISION_KEYS:
+                raise PackageSemanticAlignmentError(
+                    "semantic bulk case decision fields are invalid"
+                )
+            case_id = str(decision.get("case_id"))
+            if case_id in role_cases or case_id not in case_ids:
+                raise PackageSemanticAlignmentError(
+                    "semantic bulk case decision is unknown or duplicated"
+                )
+            if decision.get("decision_sha256") != _canonical_sha256(
+                _without_self_hash(decision, "decision_sha256")
+            ):
+                raise PackageSemanticAlignmentError("semantic bulk case decision hash mismatch")
+            role_cases[case_id] = decision
+        if set(role_cases) != set(case_ids):
+            raise PackageSemanticAlignmentError(
+                "semantic bulk review does not cover the exact batch"
+            )
+        review_cases[role] = role_cases
+
+    packages = Path(packages_root)
+    outcomes: list[dict[str, Any]] = []
+    exceptions: list[dict[str, str]] = []
+    for case_id in case_ids:
+        case = cases.get(case_id)
+        if case is None:
+            raise PackageSemanticAlignmentError(f"semantic bulk plan case is missing: {case_id}")
+        try:
+            package = packages / str(case["package"])
+            manifest_path = package / "manifest.json"
+            source = package / str(case["source_file"])
+            if sha256_file(manifest_path) != case.get("manifest_sha256"):
+                raise PackageSemanticAlignmentError("manifest hash drifted")
+            if sha256_file(source) != case.get("source_sha256"):
+                raise PackageSemanticAlignmentError("source hash drifted")
+            target_rows = {
+                str(target["label_id"]): target
+                for target in case.get("targets") or ()
+                if isinstance(target, Mapping)
+            }
+            if not target_rows:
+                raise PackageSemanticAlignmentError("case has no semantic targets")
+            decisions_by_role: dict[str, dict[str, Mapping[str, Any]]] = {}
+            for role in sorted(required_roles):
+                decision = review_cases[role][case_id]
+                targets = decision.get("targets")
+                if not isinstance(targets, Sequence) or isinstance(targets, (str, bytes)):
+                    raise PackageSemanticAlignmentError("critic targets are invalid")
+                observed: dict[str, Mapping[str, Any]] = {}
+                for target in targets:
+                    if not isinstance(target, Mapping) or set(target) != BATCH_TARGET_DECISION_KEYS:
+                        raise PackageSemanticAlignmentError(
+                            "critic target decision fields are invalid"
+                        )
+                    label = str(target.get("label_id"))
+                    planned = target_rows.get(label)
+                    if planned is None or label in observed:
+                        raise PackageSemanticAlignmentError(
+                            "critic target is unknown or duplicated"
+                        )
+                    if target.get("mask_sha256") != planned.get("mask_sha256") or target.get(
+                        "panel_sha256"
+                    ) != planned.get("panel_sha256"):
+                        raise PackageSemanticAlignmentError(
+                            "critic target mask or panel binding drifted"
+                        )
+                    verdict = target.get("verdict")
+                    proposed = target.get("proposed_label_id")
+                    if verdict not in BATCH_TARGET_VERDICTS:
+                        raise PackageSemanticAlignmentError("critic target verdict is invalid")
+                    if verdict == "relabel":
+                        if not isinstance(proposed, str) or not proposed or proposed == label:
+                            raise PackageSemanticAlignmentError(
+                                "critic relabel proposal is invalid"
+                            )
+                    elif proposed is not None:
+                        raise PackageSemanticAlignmentError(
+                            "non-relabel critic target carries a proposed label"
+                        )
+                    mask_path = package / str(planned["mask_file"])
+                    panel_path = package / str(planned["panel_file"])
+                    if (
+                        sha256_file(mask_path) != planned["mask_sha256"]
+                        or sha256_file(panel_path) != planned["panel_sha256"]
+                    ):
+                        raise PackageSemanticAlignmentError(
+                            "target mask or panel drifted after planning"
+                        )
+                    observed[label] = target
+                if set(observed) != set(target_rows):
+                    raise PackageSemanticAlignmentError("critic review does not cover every target")
+                decisions_by_role[role] = observed
+
+            relabel_map: dict[str, str] = {}
+            outcome = "accept_exact_label"
+            for label in sorted(target_rows):
+                pair = [decisions_by_role[role][label] for role in sorted(required_roles)]
+                verdicts = {str(value["verdict"]) for value in pair}
+                if "reject" in verdicts:
+                    outcome = "reject"
+                    relabel_map = {}
+                    break
+                if "abstain" in verdicts or len(verdicts) != 1:
+                    outcome = "abstain"
+                    relabel_map = {}
+                    break
+                verdict = next(iter(verdicts))
+                if verdict == "relabel":
+                    proposals = {str(value["proposed_label_id"]) for value in pair}
+                    if len(proposals) != 1:
+                        outcome = "abstain"
+                        relabel_map = {}
+                        break
+                    relabel_map[label] = next(iter(proposals))
+                    outcome = "relabel_new_immutable_version"
+            if len(set(relabel_map.values())) != len(relabel_map):
+                outcome = "abstain"
+                relabel_map = {}
+            outcomes.append(
+                {
+                    "case_id": case_id,
+                    "package": case["package"],
+                    "outcome": outcome,
+                    "relabel_map": relabel_map,
+                    "source_sha256": case["source_sha256"],
+                    "manifest_sha256": case["manifest_sha256"],
+                }
+            )
+        except (KeyError, OSError, PackageSemanticAlignmentError) as exc:
+            exceptions.append(
+                {
+                    "case_id": case_id,
+                    "package": str(case.get("package", "unknown")),
+                    "reason": str(exc),
+                    "action": "abstain_and_report",
+                }
+            )
+
+    counts = {
+        outcome: sum(row["outcome"] == outcome for row in outcomes)
+        for outcome in (
+            "accept_exact_label",
+            "relabel_new_immutable_version",
+            "reject",
+            "abstain",
+        )
+    }
+    result: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "authority_claimed": False,
+        "plan_sha256": plan["plan_sha256"],
+        "batch_index": batch_index,
+        "batch_sha256": batch["batch_sha256"],
+        "quorum_sha256": quorum["quorum_sha256"],
+        "mutation_performed": False,
+        "outcomes": outcomes,
+        "counts": counts,
+        "exceptions": exceptions,
+        "next_batch_index": batch_index + 1 if batch_index + 1 < len(batches) else None,
+        "operator_report_policy": "compact_summary_and_exceptions_only",
+    }
+    result["result_sha256"] = _canonical_sha256(result)
+    return result
+
+
 def validate_package_semantic_alignment(
     report: Mapping[str, Any],
     *,
@@ -516,6 +806,7 @@ __all__ = [
     "PackageSemanticAlignmentError",
     "build_semantic_requalification_plan",
     "deterministic_qa_sha256",
+    "execute_semantic_requalification_batch",
     "final_mask_set_sha256",
     "render_semantic_requalification_contact_sheets",
     "semantic_alignment_report_sha256",

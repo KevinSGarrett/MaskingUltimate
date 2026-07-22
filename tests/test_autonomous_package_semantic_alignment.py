@@ -13,7 +13,9 @@ from PIL import Image
 
 from maskfactory.autonomy.package_semantic_alignment import (
     PackageSemanticAlignmentError,
+    build_semantic_requalification_plan,
     deterministic_qa_sha256,
+    execute_semantic_requalification_batch,
     final_mask_set_sha256,
     semantic_alignment_report_sha256,
     validate_package_semantic_alignment,
@@ -233,6 +235,264 @@ def test_bulk_plan_batches_all_valid_cases_and_reports_only_exceptions(
     assert contact_manifest["plan_sha256"] == first["plan_sha256"]
     assert contact_manifest["sheets"][0]["case_ids"] == first["batches"][0]["case_ids"]
     assert (contact_root / contact_manifest["sheets"][0]["file"]).is_file()
+
+
+def _batch_review(
+    plan: dict,
+    batch: dict,
+    certificate: dict,
+    *,
+    verdict: str,
+    proposed_label_id: str | None = None,
+) -> dict:
+    decisions = []
+    cases = {case["case_id"]: case for case in plan["cases"]}
+    for case_id in batch["case_ids"]:
+        targets = [
+            {
+                "label_id": target["label_id"],
+                "mask_sha256": target["mask_sha256"],
+                "panel_sha256": target["panel_sha256"],
+                "verdict": verdict,
+                "proposed_label_id": proposed_label_id if verdict == "relabel" else None,
+            }
+            for target in cases[case_id]["targets"]
+        ]
+        decision = {"case_id": case_id, "targets": targets}
+        from maskfactory.vlm.critic_catalog import canonical_sha256
+
+        decision["decision_sha256"] = canonical_sha256(decision)
+        decisions.append(decision)
+    review = {
+        "schema_version": "1.0.0",
+        "plan_sha256": plan["plan_sha256"],
+        "batch_sha256": batch["batch_sha256"],
+        "role_id": certificate["role_id"],
+        "certificate_sha256": certificate["certificate_sha256"],
+        "model_id": certificate["model_id"],
+        "family_id": certificate["family_id"],
+        "case_decisions": decisions,
+    }
+    review["review_sha256"] = canonical_sha256(review)
+    return review
+
+
+def test_bulk_executor_accepts_exact_quorum_without_mutating_packages(tmp_path: Path) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    target = packages / "img_00"
+    shutil.copytree(fixture.parents[1], target)
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = tuple(
+        _batch_review(plan, batch, certificate, verdict="pass") for certificate in certificates
+    )
+    before = (target / "instances" / "p0" / "manifest.json").read_bytes()
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    assert result["counts"]["accept_exact_label"] == 1
+    assert result["mutation_performed"] is False
+    assert result["exceptions"] == []
+    assert (target / "instances" / "p0" / "manifest.json").read_bytes() == before
+
+    plan_path = tmp_path / "plan.json"
+    plan_path.write_text(json.dumps(plan), encoding="utf-8")
+    review_paths = []
+    certificate_paths = []
+    for index, (review, certificate) in enumerate(zip(reviews, certificates, strict=True)):
+        review_path = tmp_path / f"review_{index}.json"
+        certificate_path = tmp_path / f"certificate_{index}.json"
+        review_path.write_text(json.dumps(review), encoding="utf-8")
+        certificate_path.write_text(json.dumps(certificate), encoding="utf-8")
+        review_paths.append(review_path)
+        certificate_paths.append(certificate_path)
+    catalog_path = tmp_path / "catalog.json"
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+    output = tmp_path / "resolved.json"
+    from maskfactory.cli import main
+
+    arguments = [
+        "autonomous-semantic-requalification-execute",
+        "--plan",
+        str(plan_path),
+        "--batch-index",
+        "0",
+        "--catalog",
+        str(catalog_path),
+        "--root",
+        str(packages),
+        "--output",
+        str(output),
+        "--as-of",
+        NOW.isoformat(),
+    ]
+    for review_path in review_paths:
+        arguments.extend(("--review", str(review_path)))
+    for certificate_path in certificate_paths:
+        arguments.extend(("--critic-certificate", str(certificate_path)))
+    cli_result = CliRunner().invoke(main, arguments)
+    assert cli_result.exit_code == 0, cli_result.output
+    assert (
+        json.loads(output.read_text(encoding="utf-8"))["result_sha256"] == result["result_sha256"]
+    )
+    assert json.loads(cli_result.output)["exception_count"] == 0
+
+
+def test_bulk_executor_emits_consensus_relabel_proposal_without_rewriting(
+    tmp_path: Path,
+) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    target = packages / "img_00"
+    shutil.copytree(fixture.parents[1], target)
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = tuple(
+        _batch_review(
+            plan,
+            batch,
+            certificate,
+            verdict="relabel",
+            proposed_label_id="right_upper_arm",
+        )
+        for certificate in certificates
+    )
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    assert result["counts"]["relabel_new_immutable_version"] == 1
+    assert result["outcomes"][0]["relabel_map"] == {"left_forearm": "right_upper_arm"}
+    assert result["mutation_performed"] is False
+
+
+def test_bulk_executor_abstains_one_drifted_case_and_continues(tmp_path: Path) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    for index in range(2):
+        shutil.copytree(fixture.parents[1], packages / f"img_{index:02d}")
+    plan = build_semantic_requalification_plan(packages, batch_size=2)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = tuple(
+        _batch_review(plan, batch, certificate, verdict="pass") for certificate in certificates
+    )
+    Image.new("RGB", (12, 10), "red").save(packages / "img_00" / "instances" / "p0" / "source.png")
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    assert len(result["outcomes"]) == 1
+    assert result["counts"]["accept_exact_label"] == 1
+    assert len(result["exceptions"]) == 1
+    assert result["exceptions"][0]["action"] == "abstain_and_report"
+
+
+@pytest.mark.parametrize(
+    ("primary_verdict", "independent_verdict", "expected"),
+    [
+        ("pass", "relabel", "abstain"),
+        ("pass", "reject", "reject"),
+        ("pass", "abstain", "abstain"),
+    ],
+)
+def test_bulk_executor_resolves_disagreement_fail_closed(
+    tmp_path: Path,
+    primary_verdict: str,
+    independent_verdict: str,
+    expected: str,
+) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    shutil.copytree(fixture.parents[1], packages / "img_00")
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = (
+        _batch_review(plan, batch, certificates[0], verdict=primary_verdict),
+        _batch_review(
+            plan,
+            batch,
+            certificates[1],
+            verdict=independent_verdict,
+            proposed_label_id=("right_upper_arm" if independent_verdict == "relabel" else None),
+        ),
+    )
+    result = execute_semantic_requalification_batch(
+        plan,
+        batch_index=0,
+        critic_reviews=reviews,
+        critic_certificates=certificates,
+        critic_catalog=catalog,
+        packages_root=packages,
+        now=NOW,
+    )
+    assert result["counts"][expected] == 1
+    assert result["mutation_performed"] is False
+
+
+def test_bulk_executor_rejects_review_hash_drift_before_case_resolution(
+    tmp_path: Path,
+) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    shutil.copytree(fixture.parents[1], packages / "img_00")
+    plan = build_semantic_requalification_plan(packages, batch_size=1)
+    catalog = _catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    batch = plan["batches"][0]
+    reviews = [
+        _batch_review(plan, batch, certificate, verdict="pass") for certificate in certificates
+    ]
+    reviews[0]["case_decisions"][0]["targets"][0]["verdict"] = "reject"
+    with pytest.raises(PackageSemanticAlignmentError, match="review hash mismatch"):
+        execute_semantic_requalification_batch(
+            plan,
+            batch_index=0,
+            critic_reviews=reviews,
+            critic_certificates=certificates,
+            critic_catalog=catalog,
+            packages_root=packages,
+            now=NOW,
+        )
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,54 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_record_qualification.v1",
+  "artifact_type": "adult_corpus_per_record_qualification_contract_evidence",
+  "recorded_at": "2026-07-22T11:20:00Z",
+  "status": "PASS_STATIC_AND_FOCUSED_RUNTIME",
+  "tracker_items": [
+    "MF-P4-12.05",
+    "MF-P4-12.06"
+  ],
+  "adopted_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+  "adopted_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+  "implementation": {
+    "src/maskfactory/nude_record_qualification.py": "b405868466be2de5510a207d0f147ca2975867d692a688e1d0a2f40275043856",
+    "src/maskfactory/nude_batch_queue.py": "e7fff627867db30815e3403f89b161e801d0e5282dee0665584129fb4c2688e9"
+  },
+  "tests": {
+    "command": "python -m pytest -q tests/test_nude_record_qualification.py tests/test_nude_batch_queue.py tests/test_nude_polygon_hard_qc.py tests/test_nude_training_role_gate.py",
+    "result": "40 passed",
+    "test_file_sha256": {
+      "tests/test_nude_record_qualification.py": "c02b0b4bdfb5d028608bb92ebf27cce310e38df05ea00f54152a33aeab88e24b",
+      "tests/test_nude_batch_queue.py": "5008004489aaac09a868632da0b096d00cde9239895bf6e1968dfcddf1b2e50d"
+    },
+    "ruff": "pass",
+    "black_check": "pass",
+    "git_diff_check": "pass"
+  },
+  "verified_controls": {
+    "per_record_five_view_evidence": [
+      "source",
+      "mask",
+      "overlay",
+      "contour",
+      "ownership"
+    ],
+    "contact_sheet_cannot_substitute": true,
+    "panel_paths_and_sha256_revalidated_at_checkpoint": true,
+    "minimum_independent_provider_families": 2,
+    "required_strict_review_roles": [
+      "primary_visual_critic",
+      "independent_juror"
+    ],
+    "strict_review_families_must_differ": true,
+    "hard_qc_veto_precedes_critic": true,
+    "rubber_stamp_evidence_rejected": true,
+    "selected_mask_bound_across_provider_qc_panel_and_reviews": true,
+    "bounded_repair_max_attempts": 3,
+    "same_hash_repair_rejected_as_no_progress": true,
+    "durable_queue_recomputes_receipt_hash": true,
+    "human_gold_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificate_issued": false
+  },
+  "claim_boundary": "This proves the fail-closed host contract and durable accepted/repaired checkpoint gate. It does not prove that either currently promoted strict-VLM role has reviewed the adult canary, that provider inference has run, that failure receipts are complete, or that any operational certificate has been issued. GPU execution remains locally blocked by the shared coordinator's expired InternVL recovery-required lease."
+}

@@ -11,6 +11,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
 
+from .nude_record_qualification import validate_qualified_queue_payload
+
 TERMINAL_OUTCOMES = frozenset(
     {"accepted", "repaired", "abstained", "rejected", "quarantined", "holdout"}
 )
@@ -361,6 +363,29 @@ class NudeBatchQueue:
                     now=now,
                 )
             return {"inserted": inserted, "next_sample_index": next_index, "complete": complete}
+
+    def checkpoint_qualified(
+        self,
+        *,
+        platform: str,
+        shard_path: str,
+        lease_token: str,
+        outcomes: Sequence[Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        """Checkpoint accepted/repaired rows only after exact evidence revalidation."""
+
+        validated = []
+        for outcome in outcomes:
+            payload = validate_qualified_queue_payload(outcome)
+            if "sample_index" not in payload:
+                raise NudeBatchQueueError("qualified outcome sample_index required")
+            validated.append(payload)
+        return self.checkpoint(
+            platform=platform,
+            shard_path=shard_path,
+            lease_token=lease_token,
+            outcomes=validated,
+        )
 
     def mark_submitted_unknown(
         self,

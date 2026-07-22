@@ -12027,3 +12027,23 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `22221c29b802461e0c85e7707dc7dab8f374007d2bd55e8e5ce1a67ef7f3a101`.
   Sixty-four focused/adjacent tests, Ruff, Black, source rehash, tracker validation, and
   manifest closed-field verification passed.
+
+## 2026-07-22 - Ontology-v2 autonomous-resolution workload
+
+- Expanded the 24-image pilot into 90 deterministic work units, exactly one
+  for every bound class/state target contract. Each unit binds both pilot
+  hashes, source encoded/decoded identity, split group, local and RunPod paths,
+  and the exact target-contract hash.
+- Every unit is initially `queued`, has a three-attempt ceiling, and must pass
+  source identity, target validation, provider proposals, deterministic hard
+  QA, qualified primary and independent-family visual review, bounded repair
+  when needed, semantic alignment, and immutable outcome recording.
+- The workload is scheduling evidence only: all 90 entries have
+  `authority=none`, completed/failed counts are zero, and no review, mask truth,
+  gold, certificate, or pilot-completion claim was made.
+- Evidence:
+  `qa/live_verification/ontology_v2_resolution_workload_20260722.json`.
+  Workload self-seal:
+  `fd0ac903984f72973d5937abae6116b9d08a9aa53690acac15210ce7f89ff999`.
+  Seventy-one focused/adjacent tests, Ruff, Black, tracker validation, and diff
+  integrity passed.

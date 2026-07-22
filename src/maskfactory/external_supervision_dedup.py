@@ -9,9 +9,11 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import numpy as np
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from .external_supervision_evidence import publish_immutable_evidence, seal_payload
+from .nude_corpus_dedup import anchored_dual_hash_pairs
 
 SOURCE_KEYS = ("celebamask_hq", "lapa", "lv_mhp_v1")
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
@@ -21,11 +23,16 @@ class ExternalDedupError(ValueError):
     """External-source dedup inputs or image bindings are invalid."""
 
 
+class ExternalImageDecodeError(ExternalDedupError):
+    """A hash-bound source image cannot be decoded and must be quarantined."""
+
+
 def build_external_split_dedup_evidence(
     *,
     manifest_paths: Mapping[str, Path],
     source_roots: Mapping[str, Path],
     hamming_threshold: int = 3,
+    phash_threshold: int = 6,
 ) -> dict[str, Any]:
     """Bind every eligible source image to one exact/perceptual split group."""
 
@@ -33,8 +40,11 @@ def build_external_split_dedup_evidence(
         raise ExternalDedupError("dedup requires all three canonical eligible sources")
     if not 0 <= hamming_threshold <= 7:
         raise ExternalDedupError("hamming threshold must be between 0 and 7")
+    if not 0 <= phash_threshold <= 16:
+        raise ExternalDedupError("pHash threshold must be between 0 and 16")
 
     records: list[dict[str, Any]] = []
+    quarantined_records: list[dict[str, Any]] = []
     manifest_bindings: dict[str, dict[str, Any]] = {}
     for source in SOURCE_KEYS:
         manifest_path = Path(manifest_paths[source]).resolve(strict=True)
@@ -65,7 +75,22 @@ def build_external_split_dedup_evidence(
             actual_sha = hashlib.sha256(raw_bytes).hexdigest()
             if actual_sha != item.get("sha256"):
                 raise ExternalDedupError(f"source image hash drift: {source}:{relative}")
-            dhash = _dhash64(raw_bytes, identity=f"{source}:{relative}")
+            upstream_split = _upstream_split(source, relative, split_map)
+            try:
+                dhash, phash = _perceptual_hashes(raw_bytes, identity=f"{source}:{relative}")
+            except ExternalImageDecodeError:
+                quarantined_records.append(
+                    {
+                        "record_id": f"{source}:{relative}",
+                        "source": source,
+                        "relative_path": relative,
+                        "source_sha256": actual_sha,
+                        "upstream_split": upstream_split,
+                        "reason": "source_image_decode_failed",
+                        "disposition": "excluded_from_qualification_and_training",
+                    }
+                )
+                continue
             after = image_path.stat()
             if _stat_identity(before) != _stat_identity(after):
                 raise ExternalDedupError(f"source image changed during dedup: {source}:{relative}")
@@ -76,7 +101,8 @@ def build_external_split_dedup_evidence(
                     "relative_path": relative,
                     "source_sha256": actual_sha,
                     "dhash64": f"{dhash:016x}",
-                    "upstream_split": _upstream_split(source, relative, split_map),
+                    "phash64": f"{phash:016x}",
+                    "upstream_split": upstream_split,
                 }
             )
         manifest_bindings[source] = {
@@ -87,12 +113,9 @@ def build_external_split_dedup_evidence(
         }
 
     records.sort(key=lambda item: item["record_id"].encode("utf-8"))
+    quarantined_records.sort(key=lambda item: item["record_id"].encode("utf-8"))
     if len({record["record_id"] for record in records}) != len(records):
         raise ExternalDedupError("dedup record identities are not unique")
-    pairs = find_hamming_pairs(
-        tuple(int(record["dhash64"], 16) for record in records),
-        threshold=hamming_threshold,
-    )
     parent = list(range(len(records)))
 
     def find(index: int) -> int:
@@ -110,8 +133,30 @@ def build_external_split_dedup_evidence(
     for index, record in enumerate(records):
         previous = exact_first.setdefault(record["source_sha256"], index)
         union(previous, index)
-    for left, right in pairs:
-        union(left, right)
+    exact_components: dict[int, list[int]] = {}
+    for index in range(len(records)):
+        exact_components.setdefault(find(index), []).append(index)
+    ordered_components = sorted(
+        exact_components.values(), key=lambda members: records[members[0]]["record_id"]
+    )
+    representatives = [
+        min(
+            members,
+            key=lambda index: (
+                records[index]["dhash64"],
+                records[index]["phash64"],
+                records[index]["record_id"],
+            ),
+        )
+        for members in ordered_components
+    ]
+    for anchor, member in anchored_dual_hash_pairs(
+        tuple(int(records[index]["dhash64"], 16) for index in representatives),
+        tuple(int(records[index]["phash64"], 16) for index in representatives),
+        dhash_threshold=hamming_threshold,
+        phash_threshold=phash_threshold,
+    ):
+        union(ordered_components[anchor][0], ordered_components[member][0])
 
     groups: dict[int, list[int]] = {}
     for index in range(len(records)):
@@ -159,10 +204,17 @@ def build_external_split_dedup_evidence(
         "status": "PASS",
         "hash_algorithm": "sha256",
         "perceptual_hash": "dhash64_9x8_bilinear",
+        "secondary_perceptual_hash": "phash64_dct_32x32_top8",
         "hamming_threshold": hamming_threshold,
+        "phash_threshold": phash_threshold,
+        "near_duplicate_rule": (
+            f"anchored_dhash_lte_{hamming_threshold}_and_phash_lte_{phash_threshold}"
+        ),
         "partition_rule": "all records sharing split_group_id must remain in one downstream partition",
         "manifest_bindings": manifest_bindings,
+        "source_image_count": len(records) + len(quarantined_records),
         "record_count": len(records),
+        "quarantined_record_count": len(quarantined_records),
         "split_group_count": len(groups),
         "duplicate_record_count": len(records) - len(groups),
         "cross_source_exact_group_count": cross_source_exact,
@@ -170,6 +222,7 @@ def build_external_split_dedup_evidence(
         "upstream_split_conflict_group_count": upstream_conflicts,
         "groups": group_summaries,
         "records": records,
+        "quarantined_records": quarantined_records,
     }
     evidence["seal_sha256"] = seal_payload(evidence)
     return evidence
@@ -255,20 +308,34 @@ def _lv_mhp_split_map(root: Path) -> dict[str, str]:
     return result
 
 
-def _dhash64(raw_bytes: bytes, *, identity: str) -> int:
+def _perceptual_hashes(raw_bytes: bytes, *, identity: str) -> tuple[int, int]:
     try:
         with Image.open(io.BytesIO(raw_bytes)) as opened:
             image = ImageOps.exif_transpose(opened.convert("RGB"))
-            grayscale = image.convert("L").resize((9, 8), Image.Resampling.BILINEAR)
+            grayscale = image.convert("L")
+            gradient = grayscale.resize((9, 8), Image.Resampling.BILINEAR)
+            dct_input = np.asarray(
+                grayscale.resize((32, 32), Image.Resampling.BILINEAR), dtype=np.float64
+            )
     except (OSError, UnidentifiedImageError) as exc:
-        raise ExternalDedupError(f"cannot decode source image: {identity}") from exc
-    pixels = grayscale.tobytes()
-    value = 0
+        raise ExternalImageDecodeError(f"cannot decode source image: {identity}") from exc
+    pixels = gradient.tobytes()
+    dhash = 0
     for row in range(8):
         offset = row * 9
         for column in range(8):
-            value = (value << 1) | int(pixels[offset + column + 1] > pixels[offset + column])
-    return value
+            dhash = (dhash << 1) | int(pixels[offset + column + 1] > pixels[offset + column])
+    coordinates = np.arange(32, dtype=np.float64)
+    frequencies = np.arange(8, dtype=np.float64)[:, None]
+    dct_matrix = np.cos(np.pi * (2 * coordinates + 1) * frequencies / 64.0)
+    dct_matrix[0] *= 1.0 / np.sqrt(2.0)
+    dct_matrix *= np.sqrt(2.0 / 32.0)
+    coefficients = dct_matrix @ dct_input @ dct_matrix.T
+    median = float(np.median(coefficients.flatten()[1:]))
+    phash = 0
+    for value in coefficients.flatten():
+        phash = (phash << 1) | int(float(value) > median)
+    return dhash, phash
 
 
 def _stat_identity(value: Any) -> tuple[int, int, int, int]:
@@ -282,6 +349,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.add_argument(f"--{source}-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--hamming-threshold", type=int, default=3)
+    parser.add_argument("--phash-threshold", type=int, default=6)
     args = parser.parse_args(argv)
     manifests = {source: getattr(args, f"{source}_manifest") for source in SOURCE_KEYS}
     roots = {source: getattr(args, f"{source}_root") for source in SOURCE_KEYS}
@@ -289,6 +357,7 @@ def main(argv: list[str] | None = None) -> int:
         manifest_paths=manifests,
         source_roots=roots,
         hamming_threshold=args.hamming_threshold,
+        phash_threshold=args.phash_threshold,
     )
     file_sha256 = publish_immutable_evidence(evidence, args.output)
     print(

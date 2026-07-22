@@ -1,67 +1,59 @@
 # MaskedWarehouse Split-Dedup Strategy
 
-**Proof tier:** `STATIC_PASS` planning + algorithm contract only.
-**Not:** full-corpus admission, gold labeling, runtime qualification, or production training enablement.
+**Proof tier:** `LIVE_PASS` for the three eligible sources.
+**Authority boundary:** train-only `weighted_pseudo_label`; never gold, holdout, or production-mask authority.
 
 ## Goal
 
-Before any eligible MaskedWarehouse source (`celebamask_hq`, `lapa`, `lv_mhp_v1`) may be
-admitted as train-only `external_labeled_reference` / `weighted_pseudo_label`, every source
-image must be bound into an exact/perceptual split group so near-duplicates cannot leak
-across train/val/test partitions (`split_dedup_passed` gate).
+Before an eligible MaskedWarehouse source (`celebamask_hq`, `lapa`, `lv_mhp_v1`) may be
+admitted, every decodable source image is bound to one exact/perceptual split group. A
+hash-bound decode failure is quarantined from qualification and training without stopping
+the remaining corpus.
 
-## Locked algorithm (already implemented)
+## Locked algorithm
 
 | Field | Value |
 |---|---|
-| Exact identity | SHA-256 of source image bytes |
-| Perceptual hash | `dHash64` 9×8 bilinear grayscale |
-| Pairing index | Segmented Hamming blocks (`find_hamming_pairs`) |
-| Default threshold | Hamming ≤ 3 |
-| Partition rule | All records sharing `split_group_id` stay in one downstream partition |
+| Exact identity | SHA-256 of source image bytes, verified against its sealed source manifest |
+| Primary perceptual hash | `dHash64` 9x8 bilinear grayscale |
+| Secondary perceptual hash | `pHash64` 32x32 DCT top 8x8 |
+| Near-duplicate rule | fixed-anchor dHash <= 3 **and** pHash <= 6 |
+| Anti-chain rule | exact components are formed first; one deterministic representative may join only one fixed perceptual anchor |
+| Partition rule | all records sharing `split_group_id` remain in one downstream partition |
 | Implementation | `src/maskfactory/external_supervision_dedup.py` |
-| Unit proof | `tests/test_external_supervision_dedup.py` |
+| Unit proof | `tests/test_external_supervision_dedup.py`, `tests/test_nude_corpus_dedup.py` |
 
-External source masks remain **never gold**. Split-dedup evidence cannot mint gold,
-holdout, calibration, or certified-volume authority.
+The original single-dHash transitive result was rejected after it formed unrelated groups of
+2,676 and 1,521 records. Its bytes and seal remain retained as negative evidence. Thresholds
+were not lowered to obtain the accepted result.
 
-## Why full live materialization is deferred
+## Accepted live result (2026-07-22)
 
-A complete cross-source run hashes and dHashes on the order of **~57k images** and emits a
-large sealed `records[]` artifact. Under current disk pressure this project must not:
+- Source images: 57,148 (CelebAMask-HQ 30,000; LaPa 22,168; LV-MHP 4,980)
+- Decodable grouped records: 57,147
+- Quarantined: `lv_mhp_v1:LV-MHP-v1/images/3492.jpg` (sealed bytes matched; decode failed)
+- Split groups: 53,840
+- Duplicate records: 3,307
+- Upstream split-conflict groups: 184; these groups must stay together downstream
+- Maximum group size: 6; groups above 10: 0
+- Accepted evidence seal: `45283eff4341cf58db079f981a95422fef8e97b29fc85b56332f0469edce9ae4`
+- Accepted file SHA-256: `72f5555046b5999c0a7fe014748bd545ad5b0205ed878d7d7a4a26aa6cb26cf7`
+- Compact committed evidence: `qa/live_verification/external_supervision_live_admission_20260722.json`
 
-- copy MaskedWarehouse trees into the repo
-- materialize a multi-GB sealed record dump under `runtime_artifacts/`
-- claim `split_dedup_passed` from fixtures or strategy text alone
+All three source-specific qualification bundles verify with no unmet gates. Admission remains
+train-only weighted pseudo-label supervision. External masks do not become MaskFactory gold.
 
-## STATIC strategy (honest tiers)
-
-1. **Algorithm STATIC_PASS** — unit/fixture tests prove exact union, perceptual pairing,
-   upstream-split conflict detection, seal/schema, and fail-closed hash drift.
-2. **Strategy receipt STATIC_PASS** — machine-readable receipt binds this document hash and
-   explicitly sets `admission_ready=false`, `source_masks_are_gold=false`,
-   `full_corpus_materialized=false`.
-3. **Bounded sample probe STATIC_PASS** — optional tiny deterministic sample from sealed
-   manifests may exercise the live path without claiming the admission gate.
-4. **Full-corpus `split_dedup_passed`** — remains **open** until a capacity-safe off-project
-   or project-contained sealed artifact covers all three manifests end-to-end.
-
-## Admission rule
-
-`any_source_admitted` stays false while `split_dedup_passed` is missing for any eligible
-source. Strategy receipts and fixture gate sets are **not** substitutes for the live gate.
-
-## Operator resume
-
-When free disk and I/O budget allow, run:
+## Reproduction
 
 ```text
 python -m maskfactory.external_supervision_dedup \
   --celebamask_hq-manifest <sealed> --celebamask_hq-root <root> \
   --lapa-manifest <sealed> --lapa-root <root> \
   --lv_mhp_v1-manifest <sealed> --lv_mhp_v1-root <root> \
-  --output <sealed split_dedup_passed.json>
+  --output <immutable split_dedup_passed.json>
 ```
 
-Then materialize under `runtime_artifacts/external_supervision/shared/` and re-run the
-qualification gap report. Do not free disk destructively to force this step.
+Materialize the accepted artifact under
+`runtime_artifacts/external_supervision/shared/split_dedup_passed.json`, rebuild the gap
+report, and rebuild all three qualification bundles. Never substitute the earlier STATIC
+strategy receipt or the rejected single-hash artifact for the accepted live evidence.

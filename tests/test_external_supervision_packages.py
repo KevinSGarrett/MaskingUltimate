@@ -18,6 +18,8 @@ from maskfactory.external_supervision_evidence import (
 from maskfactory.external_supervision_packages import (
     AUTHORITY,
     DEFAULT_MAXIMUM_COMBINED_EXTERNAL_BATCH_FRACTION,
+    LIVE_AUTHORITY,
+    LIVE_PROOF_TIER,
     PROOF_TIER,
     ExternalPackageSelection,
     ExternalSupervisionPackageError,
@@ -222,6 +224,33 @@ def test_materialize_gated_packages_and_dataset_card(tmp_path: Path) -> None:
     require_external_package_qualification(manifest)
     assert (package / "label_map_part.png").is_file()
     assert (tmp_path / "batch" / "batch_manifest.json").is_file()
+
+
+def test_explicit_live_admission_marks_only_verified_train_only_output(tmp_path: Path) -> None:
+    report = materialize_qualified_train_only_packages(
+        [_selection("lapa", "img_ext_lapa_live", ("head_face", "hair"))],
+        destination=tmp_path / "live_batch",
+        provenance=_load_provenance(),
+        inventory=_load_inventory(),
+        evidence_bundles_by_source={"lapa": _evidence_bundle(tmp_path, "lapa")},
+        project_root=tmp_path,
+        companion_certified_rows=[
+            {
+                "image_id": f"real_{index}",
+                "source_role": "owned_photo",
+                "truth_tier": "human_anchor_gold",
+                "truth_partition": "train",
+                "training_loss_weight": 1.0,
+            }
+            for index in range(3)
+        ],
+        live_warehouse_admission=True,
+    )
+    assert report["proof_tier"] == LIVE_PROOF_TIER
+    assert report["authority"] == LIVE_AUTHORITY
+    assert report["admission_ready"] is True
+    assert report["live_warehouse_admission"] is True
+    assert report["any_source_admitted_live"] is True
 
 
 def test_materialize_refuses_ungated_source(tmp_path: Path) -> None:

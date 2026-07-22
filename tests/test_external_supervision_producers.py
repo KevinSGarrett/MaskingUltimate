@@ -198,6 +198,43 @@ def test_fixture_bundle_admits_under_registry_but_live_gap_stays_honest(tmp_path
     assert assessment.feasible is False
 
 
+def test_gap_reports_verified_non_fixture_bundle_as_admitted(tmp_path: Path):
+    project = tmp_path / "project"
+    evidence_root = project / "qa" / "external_supervision"
+    fixture_paths = build_deterministic_fixture_gate_set(evidence_root, "lapa")
+    project_paths: dict[str, Path] = {}
+    for gate, relative in fixture_paths.items():
+        path = evidence_root / relative
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+        artifact.pop("fixture")
+        artifact["seal_sha256"] = seal_payload(artifact)
+        path.write_text(json.dumps(artifact, sort_keys=True), encoding="utf-8")
+        project_paths[gate] = Path("qa/external_supervision") / relative
+    bundle = build_qualification_evidence_bundle(
+        source="lapa", gate_artifact_paths=project_paths, project_root=project
+    )
+    bundle_path = (
+        project
+        / "runtime_artifacts"
+        / "external_supervision"
+        / "lapa"
+        / "qualification_evidence_bundle.json"
+    )
+    bundle_path.parent.mkdir(parents=True)
+    bundle_path.write_text(json.dumps(bundle, sort_keys=True), encoding="utf-8")
+
+    gap = build_qualification_gap_report(
+        project_root=project,
+        evidence_root=Path("qa/external_supervision"),
+        live_artifact_root=Path("runtime_artifacts/external_supervision"),
+        off_project_manifest_root=tmp_path / "off",
+    )
+
+    assert gap["sources"]["lapa"]["admission_ready"] is True
+    assert gap["sources"]["lapa"]["qualification_bundle_verified"] is True
+    assert gap["any_source_admitted"] is True
+
+
 def test_produce_project_contained_evidence_writes_gap_without_claiming_admission(tmp_path: Path):
     # Tiny off-project stand-ins so materialize path is exercised without multi-GB trees.
     off = tmp_path / "off"

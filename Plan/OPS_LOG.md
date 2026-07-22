@@ -11808,3 +11808,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Mirrored the exact manifest to RunPod under seal
   `8f432af45f8a1364745c3cac87c19be91554ed95017b78149e29f506b1bb7f9d`; local/remote hashes match.
 - Evidence: `qa/live_verification/nude_training_role_gate_20260722.json`.
+
+## 2026-07-22 - MaskedWarehouse full split-dedup and live qualification
+
+- Executed the complete cross-source split gate over 57,148 governed images from
+  CelebAMask-HQ, LaPa, and LV-MHP v1. One manifest-matching LV-MHP JPEG was truncated and is
+  hash-bound in quarantine; 57,147 decodable records remain grouped.
+- Rejected the initial single-dHash result because transitive unions created unrelated groups of
+  2,676 and 1,521 images. Preserved that artifact as negative evidence and replaced the algorithm
+  with exact-component-first, fixed-anchor dual dHash/pHash grouping. Thresholds remain dHash <=3
+  and pHash <=6.
+- Accepted result: 53,840 split groups, 3,307 duplicate records, 184 upstream split-conflict
+  groups, maximum group size 6, and zero groups above 10. Full artifact seal:
+  `45283eff4341cf58db079f981a95422fef8e97b29fc85b56332f0469edce9ae4`.
+- Materialized the accepted shared gate plus the three sealed source manifests and LV-MHP identity
+  evidence into the isolated worktree. All three qualification bundles pass with zero unmet gates
+  or evidence tokens and are admitted only as train-only `weighted_pseudo_label` supervision.
+- Added an explicit live packaging mode that rejects fixture-marked gate evidence and reports
+  `LIVE_PASS` only after the existing full verifier admits the source. Default hermetic/static
+  behavior remains distinct. No external mask gained gold, holdout, or production-mask authority.
+- Validation: 48 focused tests passed; Ruff, Black, JSON Schema, self-seal, record/group coverage,
+  diff integrity, tracker validation, and tracker report passed. `MF-P9-13.04` is complete;
+  `MF-P9-13.05` and `MF-P9-13.06` remain partial pending full converted/package population.
+- Evidence: `qa/live_verification/external_supervision_live_admission_20260722.json`.

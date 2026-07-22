@@ -1,0 +1,50 @@
+{
+  "accepted_split_dedup": {
+    "duplicate_record_count": 3307,
+    "file_sha256": "72f5555046b5999c0a7fe014748bd545ad5b0205ed878d7d7a4a26aa6cb26cf7",
+    "groups_over_10": 0,
+    "max_group_size": 6,
+    "near_duplicate_rule": "anchored_dhash_lte_3_and_phash_lte_6",
+    "perceptual_only_group_count": 2364,
+    "quarantined_record_count": 1,
+    "quarantined_record_id": "lv_mhp_v1:LV-MHP-v1/images/3492.jpg",
+    "record_count": 57147,
+    "seal_sha256": "45283eff4341cf58db079f981a95422fef8e97b29fc85b56332f0469edce9ae4",
+    "source_image_count": 57148,
+    "split_group_count": 53840,
+    "upstream_split_conflict_group_count": 184
+  },
+  "admission": {
+    "celebamask_hq": true,
+    "lapa": true,
+    "lv_mhp_v1": true,
+    "truth_partition": "train",
+    "truth_tier": "weighted_pseudo_label"
+  },
+  "artifact_type": "external_supervision_live_admission_evidence",
+  "authority_limits": {
+    "holdout_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "source_masks_are_gold": false
+  },
+  "qualification_bundle_seals": {
+    "celebamask_hq": "35551806d5206c1f79cd8d47224d5b5bc998500048655cdd0072c8538e920e71",
+    "lapa": "aa899272fc605e8efe5b2b385c4be8a1ebe61bc5b4549ebd835e1c903148460a",
+    "lv_mhp_v1": "66db1f6c3e264136f73cf53e8c460ce1099ae1856646b17e7a9821c8ab8f7899"
+  },
+  "rejected_split_dedup": {
+    "file_sha256": "d3db6fe8fd048114d462c657f97e63899926b307ef44faaa6c0882d3fb06c562",
+    "max_group_size": 2676,
+    "reason": "unsafe_transitive_single_dhash_components",
+    "seal_sha256": "7df782083ed1d1cb48ba1f9cc46624d22dd21a9bd990551a25c475fbfc256883"
+  },
+  "schema_version": "1.0.0",
+  "self_sha256": "d4a83c6cf89fd8f6d59f5c492868bad28ecce3820598361ed56ee385b6133055",
+  "status": "PASS",
+  "validation": {
+    "black_passed": true,
+    "focused_tests_passed": 48,
+    "ruff_passed": true,
+    "schema_seal_coverage_passed": true
+  }
+}

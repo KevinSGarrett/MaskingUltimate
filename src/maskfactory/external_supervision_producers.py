@@ -29,6 +29,7 @@ from .external_supervision_evidence import (
     SHARED_GATE_SOURCES,
     publish_immutable_evidence,
     seal_payload,
+    verify_qualification_evidence_bundle,
 )
 from .truth_tiers import WEIGHTED_PSEUDO_LABEL
 
@@ -428,12 +429,39 @@ def build_qualification_gap_report(
                 "file_sha256": hashlib.sha256(found.read_bytes()).hexdigest(),
             }
         off_manifest = off_project_manifest_root / OFF_PROJECT_MANIFEST_NAMES[source]
+        bundle_path = live / source / "qualification_evidence_bundle.json"
+        bundle_verified = False
+        bundle_file_sha256: str | None = None
+        if bundle_path.is_file():
+            try:
+                bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+                verification = verify_qualification_evidence_bundle(
+                    bundle, source=source, project_root=root
+                )
+                gate_records = bundle.get("gates") if isinstance(bundle, Mapping) else None
+                fixture_backed = not isinstance(gate_records, list) or any(
+                    json.loads(
+                        (root / Path(str(record["artifact_path"]))).read_text(encoding="utf-8")
+                    ).get("fixture")
+                    is True
+                    for record in gate_records
+                    if isinstance(record, Mapping) and "artifact_path" in record
+                )
+                bundle_verified = verification.passed and not fixture_backed
+                bundle_file_sha256 = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                bundle_verified = False
         sources[source] = {
             "present_gates": present,
             "missing_gates": missing,
             "off_project_manifest_available": off_manifest.is_file(),
             "off_project_manifest_path": str(off_manifest) if off_manifest.is_file() else None,
             "admission_ready": not missing,
+            "qualification_bundle_verified": bundle_verified,
+            "qualification_bundle_path": (
+                bundle_path.resolve().relative_to(root).as_posix() if bundle_verified else None
+            ),
+            "qualification_bundle_file_sha256": bundle_file_sha256,
             "source_masks_are_gold": False,
         }
     identity_off = off_project_manifest_root / OFF_PROJECT_IDENTITY_NAME
@@ -452,7 +480,10 @@ def build_qualification_gap_report(
         "source_masks_are_gold": False,
         "gold_authority_granted": False,
         "holdout_authority_granted": False,
-        "any_source_admitted": False,
+        "any_source_admitted": any(
+            info["admission_ready"] and info["qualification_bundle_verified"]
+            for info in sources.values()
+        ),
         "disk_capacity": {
             "path": capacity.path,
             "free_bytes": capacity.free_bytes,

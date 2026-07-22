@@ -41,6 +41,8 @@ from .truth_tiers import (
 
 PROOF_TIER = "STATIC_PASS"
 AUTHORITY = "external_supervision_package_static_only_no_live_admission"
+LIVE_PROOF_TIER = "LIVE_PASS"
+LIVE_AUTHORITY = "external_supervision_train_only_live_qualified"
 DEFAULT_MAXIMUM_COMBINED_EXTERNAL_BATCH_FRACTION = 0.35
 
 
@@ -247,6 +249,33 @@ def validate_external_batch_cap(
     }
 
 
+def _require_non_fixture_evidence_bundle(bundle: Mapping[str, Any], *, project_root: Path) -> None:
+    """Refuse a live-admission claim backed by hermetic fixture gate artifacts."""
+
+    gates = bundle.get("gates")
+    if not isinstance(gates, list) or not gates:
+        raise ExternalSupervisionPackageError("live qualification gate bindings missing")
+    root = Path(project_root).resolve(strict=True)
+    for record in gates:
+        if not isinstance(record, Mapping) or not isinstance(record.get("artifact_path"), str):
+            raise ExternalSupervisionPackageError("live qualification gate binding malformed")
+        relative = Path(record["artifact_path"])
+        if relative.is_absolute():
+            raise ExternalSupervisionPackageError("live qualification gate path is unsafe")
+        try:
+            artifact_path = (root / relative).resolve(strict=True)
+            artifact_path.relative_to(root)
+            artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
+        except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as exc:
+            raise ExternalSupervisionPackageError(
+                "live qualification gate cannot be read safely"
+            ) from exc
+        if not isinstance(artifact, Mapping) or artifact.get("fixture") is True:
+            raise ExternalSupervisionPackageError(
+                "live warehouse admission cannot use fixture qualification evidence"
+            )
+
+
 def materialize_qualified_train_only_packages(
     selections: Sequence[ExternalPackageSelection],
     *,
@@ -259,10 +288,11 @@ def materialize_qualified_train_only_packages(
     registry_path: Path | None = None,
     inventory_path: Path | None = None,
     ablation_report: Mapping[str, Any] | None = None,
+    live_warehouse_admission: bool = False,
 ) -> dict[str, Any]:
     """Materialize gated train-only packages plus a composition dataset card.
 
-    STATIC_PASS only: never claims live warehouse admission, gold, or doctor-green.
+    Live admission is explicit and rejects fixture-backed evidence. Neither mode grants gold.
     """
 
     if not selections:
@@ -315,6 +345,10 @@ def materialize_qualified_train_only_packages(
         if not decision.admitted:
             raise ExternalSupervisionPackageError(
                 f"builder refused ungated external source {selection.source}: {decision.reason}"
+            )
+        if live_warehouse_admission:
+            _require_non_fixture_evidence_bundle(
+                evidence_bundles_by_source[selection.source], project_root=project_root
             )
 
         admission = registry["sources"][selection.source]["training_admission"]
@@ -375,8 +409,8 @@ def materialize_qualified_train_only_packages(
             "completed_gates": completed,
             "evidence_bundle_sha256": decision.evidence_bundle_sha256,
             "qualification_reason": decision.reason,
-            "proof_tier": PROOF_TIER,
-            "live_warehouse_admission": False,
+            "proof_tier": LIVE_PROOF_TIER if live_warehouse_admission else PROOF_TIER,
+            "live_warehouse_admission": live_warehouse_admission,
             "ablation_active": ablation_active,
         }
 
@@ -469,11 +503,11 @@ def materialize_qualified_train_only_packages(
     report = {
         "schema_version": "1.0.0",
         "artifact_type": "external_supervision_train_only_batch",
-        "proof_tier": PROOF_TIER,
-        "authority": AUTHORITY,
-        "admission_ready": False,
-        "live_warehouse_admission": False,
-        "any_source_admitted_live": False,
+        "proof_tier": LIVE_PROOF_TIER if live_warehouse_admission else PROOF_TIER,
+        "authority": LIVE_AUTHORITY if live_warehouse_admission else AUTHORITY,
+        "admission_ready": live_warehouse_admission,
+        "live_warehouse_admission": live_warehouse_admission,
+        "any_source_admitted_live": live_warehouse_admission,
         "package_count": len(package_records),
         "packages": package_records,
         "source_composition": source_counts,
@@ -579,6 +613,8 @@ __all__ = [
     "DEFAULT_MAXIMUM_COMBINED_EXTERNAL_BATCH_FRACTION",
     "ExternalPackageSelection",
     "ExternalSupervisionPackageError",
+    "LIVE_AUTHORITY",
+    "LIVE_PROOF_TIER",
     "PROOF_TIER",
     "assert_builder_accepts_only_gated_external_rows",
     "assert_launcher_accepts_only_gated_external_rows",

@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -91,6 +92,8 @@ def test_exact_and_perceptual_groups_are_deterministic_and_schema_valid(tmp_path
     assert first["duplicate_record_count"] >= 2
     assert first["cross_source_exact_group_count"] == 1
     assert first["upstream_split_conflict_group_count"] == 1
+    assert first["near_duplicate_rule"] == "anchored_dhash_lte_3_and_phash_lte_6"
+    assert all(len(record["phash64"]) == 16 for record in first["records"])
     duplicated = [
         record
         for record in first["records"]
@@ -135,3 +138,42 @@ def test_unlisted_lv_mhp_image_fails_closed(tmp_path: Path):
     split_list.write_text("", encoding="utf-8")
     with pytest.raises(ExternalDedupError, match="absent from upstream split lists"):
         build_external_split_dedup_evidence(manifest_paths=manifests, source_roots=roots)
+
+
+def test_hash_bound_decode_failure_is_quarantined_without_admission(tmp_path: Path):
+    roots, _ = _fixture(tmp_path)
+    corrupt = roots["lv_mhp_v1"] / "LV-MHP-v1" / "images" / "0002.jpg"
+    corrupt.write_bytes(b"not a decodable image")
+    split_list = roots["lv_mhp_v1"] / "LV-MHP-v1" / "train_list.txt"
+    split_list.write_text("0001.jpg\n0002.jpg\n", encoding="utf-8")
+    manifests: dict[str, Path] = {}
+    for source, root in roots.items():
+        manifest = build_source_hash_manifest(source=source, source_root=root)
+        path = tmp_path / "corrupt_manifests" / f"{source}.json"
+        publish_source_hash_manifest(manifest, path)
+        manifests[source] = path
+
+    evidence = build_external_split_dedup_evidence(
+        manifest_paths=manifests,
+        source_roots=roots,
+    )
+
+    assert evidence["source_image_count"] == 6
+    assert evidence["record_count"] == 5
+    assert evidence["quarantined_record_count"] == 1
+    assert evidence["quarantined_records"] == [
+        {
+            "record_id": "lv_mhp_v1:LV-MHP-v1/images/0002.jpg",
+            "source": "lv_mhp_v1",
+            "relative_path": "LV-MHP-v1/images/0002.jpg",
+            "source_sha256": hashlib.sha256(corrupt.read_bytes()).hexdigest(),
+            "upstream_split": "train",
+            "reason": "source_image_decode_failed",
+            "disposition": "excluded_from_qualification_and_training",
+        }
+    ]
+    assert all(
+        record["record_id"] != evidence["quarantined_records"][0]["record_id"]
+        for record in evidence["records"]
+    )
+    Draft202012Validator(json.loads(SCHEMA.read_text(encoding="utf-8"))).validate(evidence)

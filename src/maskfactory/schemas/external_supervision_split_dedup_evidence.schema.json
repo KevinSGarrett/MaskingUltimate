@@ -4,7 +4,7 @@
   "title": "External supervision exact and perceptual split-group evidence",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "artifact_type", "source", "gate", "status", "hash_algorithm", "perceptual_hash", "hamming_threshold", "partition_rule", "manifest_bindings", "record_count", "split_group_count", "duplicate_record_count", "cross_source_exact_group_count", "perceptual_only_group_count", "upstream_split_conflict_group_count", "groups", "records", "seal_sha256"],
+  "required": ["schema_version", "artifact_type", "source", "gate", "status", "hash_algorithm", "perceptual_hash", "secondary_perceptual_hash", "hamming_threshold", "phash_threshold", "near_duplicate_rule", "partition_rule", "manifest_bindings", "source_image_count", "record_count", "quarantined_record_count", "split_group_count", "duplicate_record_count", "cross_source_exact_group_count", "perceptual_only_group_count", "upstream_split_conflict_group_count", "groups", "records", "quarantined_records", "seal_sha256"],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "artifact_type": {"const": "external_supervision_split_dedup_evidence"},
@@ -13,7 +13,10 @@
     "status": {"const": "PASS"},
     "hash_algorithm": {"const": "sha256"},
     "perceptual_hash": {"const": "dhash64_9x8_bilinear"},
+    "secondary_perceptual_hash": {"const": "phash64_dct_32x32_top8"},
     "hamming_threshold": {"type": "integer", "minimum": 0, "maximum": 7},
+    "phash_threshold": {"type": "integer", "minimum": 0, "maximum": 16},
+    "near_duplicate_rule": {"type": "string", "pattern": "^anchored_dhash_lte_[0-7]_and_phash_lte_(?:[0-9]|1[0-6])$"},
     "partition_rule": {"type": "string", "minLength": 1},
     "manifest_bindings": {
       "type": "object",
@@ -25,7 +28,9 @@
         "lv_mhp_v1": {"$ref": "#/$defs/manifestBinding"}
       }
     },
+    "source_image_count": {"type": "integer", "minimum": 3},
     "record_count": {"type": "integer", "minimum": 3},
+    "quarantined_record_count": {"type": "integer", "minimum": 0},
     "split_group_count": {"type": "integer", "minimum": 1},
     "duplicate_record_count": {"type": "integer", "minimum": 0},
     "cross_source_exact_group_count": {"type": "integer", "minimum": 0},
@@ -33,6 +38,7 @@
     "upstream_split_conflict_group_count": {"type": "integer", "minimum": 0},
     "groups": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/group"}},
     "records": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/record"}},
+    "quarantined_records": {"type": "array", "items": {"$ref": "#/$defs/quarantinedRecord"}},
     "seal_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   },
   "$defs": {
@@ -62,15 +68,30 @@
     "record": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["record_id", "source", "relative_path", "source_sha256", "dhash64", "upstream_split", "split_group_id"],
+      "required": ["record_id", "source", "relative_path", "source_sha256", "dhash64", "phash64", "upstream_split", "split_group_id"],
       "properties": {
         "record_id": {"type": "string", "minLength": 1},
         "source": {"enum": ["celebamask_hq", "lapa", "lv_mhp_v1"]},
         "relative_path": {"type": "string", "minLength": 1},
         "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "dhash64": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+        "phash64": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
         "upstream_split": {"type": "string", "minLength": 1},
         "split_group_id": {"type": "string", "pattern": "^external_group_[0-9a-f]{24}$"}
+      }
+    },
+    "quarantinedRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_id", "source", "relative_path", "source_sha256", "upstream_split", "reason", "disposition"],
+      "properties": {
+        "record_id": {"type": "string", "minLength": 1},
+        "source": {"enum": ["celebamask_hq", "lapa", "lv_mhp_v1"]},
+        "relative_path": {"type": "string", "minLength": 1},
+        "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "upstream_split": {"type": "string", "minLength": 1},
+        "reason": {"const": "source_image_decode_failed"},
+        "disposition": {"const": "excluded_from_qualification_and_training"}
       }
     }
   }

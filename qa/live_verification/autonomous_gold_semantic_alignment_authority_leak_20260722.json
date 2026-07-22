@@ -84,12 +84,17 @@
     "batch_size": 32,
     "batch_count": 7,
     "exception_count": 0,
+    "contact_sheet_count": 7,
+    "contact_sheet_manifest_sha256": "0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac",
+    "first_contact_sheet_sha256": "200f920482f1c164afd61917aeda06440a744632794ceb3a888550713e0ae4a9",
+    "first_contact_sheet_visual_finding": "All 32 first-batch panels show face/head/hair silhouettes while every case is declared torso; this confirms the diagnostic mismatch is population-level within the sampled deterministic batch.",
     "provider_started": false
   },
   "completion_boundary": {
     "semantic_gate_implemented": true,
     "bulk_plan_contract_implemented": true,
     "bulk_plan_generated_on_runpod": true,
+    "bulk_contact_sheets_generated_and_visually_reviewed": true,
     "all_220_requalified": false,
     "primary_and_independent_roles_promoted": false,
     "note": "Implementation and quarantine are real; no package is relabeled or re-certified until the current role-qualified critics execute the deterministic bulk plan."

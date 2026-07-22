@@ -11760,4 +11760,9 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   32 or fewer with zero planning exceptions. Plan SHA-256:
   `73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc`. No critic provider was
   started by planning; execution remains pending qualified primary and independent roles.
+- Generated seven automatic contact sheets and visually reviewed batch 0. All 32 panels in that
+  deterministic batch show head/face/hair silhouettes while the displayed declared label is
+  `torso`, confirming the semantic mismatch is not an edge-quality problem and is not confined to
+  the original diagnostic image. Contact-sheet manifest SHA-256:
+  `0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac`.
 - Evidence: `qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json`.

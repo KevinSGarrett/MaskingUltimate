@@ -13720,7 +13720,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 65,
+      "percent_complete": 70,
       "notes": [
         {
           "ts": "2026-07-22T06:28:55+00:00",
@@ -13731,12 +13731,17 @@
           "ts": "2026-07-22T06:36:39+00:00",
           "actor": "codex",
           "text": "Live RunPod planner generated all 220 cases as seven deterministic batches of at most 32 with zero planning exceptions. Plan 73c17c26... is persistent and provider-free; critic execution remains pending promoted primary and independent-family roles."
+        },
+        {
+          "ts": "2026-07-22T06:41:08+00:00",
+          "actor": "codex",
+          "text": "Generated seven 1920px-wide automatic RunPod contact sheets for the 220-case plan and visually reviewed batch 0. Its 32/32 cases visibly show head/face/hair silhouettes under declared torso labels, confirming a population-level semantic mismatch rather than bad boundaries. Critic execution and new immutable package outcomes remain open."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; RunPod plan SHA-256 73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc; 220 cases, 7 batches, 0 planning exceptions; 24 focused tests PASS",
+      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; contact-sheet manifest SHA-256 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; first sheet 200f920482f1c164afd61917aeda06440a744632794ceb3a888550713e0ae4a9; 220 cases, 7 sheets, 0 planner exceptions",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T06:36:39+00:00",
+      "updated_at": "2026-07-22T06:41:08+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {

@@ -17,6 +17,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from PIL import Image, ImageDraw
+
 from ..io.hashing import sha256_file, sha256_file_map
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
@@ -259,6 +261,121 @@ def build_semantic_requalification_plan(
     return plan
 
 
+def render_semantic_requalification_contact_sheets(
+    plan: Mapping[str, Any],
+    *,
+    packages_root: Path,
+    output_root: Path,
+    columns: int = 4,
+    tile_width: int = 480,
+) -> dict[str, Any]:
+    """Render compact batch overviews without replacing authoritative panels."""
+
+    expected_plan_sha256 = _canonical_sha256(
+        {key: value for key, value in plan.items() if key != "plan_sha256"}
+    )
+    if plan.get("plan_sha256") != expected_plan_sha256:
+        raise PackageSemanticAlignmentError("semantic bulk plan hash mismatch")
+    if not 1 <= columns <= 8 or not 160 <= tile_width <= 1024:
+        raise PackageSemanticAlignmentError("contact-sheet geometry is out of bounds")
+
+    packages = Path(packages_root)
+    output = Path(output_root)
+    output.mkdir(parents=True, exist_ok=True)
+    cases = {
+        str(case["case_id"]): case
+        for case in plan.get("cases", ())
+        if isinstance(case, Mapping) and isinstance(case.get("case_id"), str)
+    }
+    sheets: list[dict[str, Any]] = []
+    for batch in plan.get("batches", ()):
+        if not isinstance(batch, Mapping):
+            raise PackageSemanticAlignmentError("semantic batch row is invalid")
+        tiles: list[tuple[Image.Image, str, str]] = []
+        for case_id in batch.get("case_ids", ()):
+            case = cases.get(str(case_id))
+            if case is None:
+                raise PackageSemanticAlignmentError(
+                    f"contact-sheet case is missing from plan: {case_id}"
+                )
+            targets = case.get("targets")
+            if not isinstance(targets, Sequence) or not targets:
+                raise PackageSemanticAlignmentError(f"contact-sheet case has no targets: {case_id}")
+            first = targets[0]
+            if not isinstance(first, Mapping):
+                raise PackageSemanticAlignmentError(f"contact-sheet target is invalid: {case_id}")
+            panel = packages / str(case["package"]) / str(first["panel_file"])
+            if not panel.is_file() or sha256_file(panel) != first.get("panel_sha256"):
+                raise PackageSemanticAlignmentError(
+                    f"contact-sheet panel is missing or drifted: {case_id}"
+                )
+            with Image.open(panel) as opened:
+                rendered = opened.convert("RGB")
+            height = max(1, round(rendered.height * tile_width / rendered.width))
+            rendered = rendered.resize(
+                (tile_width, height),
+                Image.Resampling.LANCZOS,
+            )
+            labels = [
+                str(target.get("label_id")) for target in targets if isinstance(target, Mapping)
+            ]
+            tiles.append(
+                (
+                    rendered,
+                    f"{case['image_id']} / {case['instance_id']}",
+                    ", ".join(labels[:3]) + (f" +{len(labels) - 3}" if len(labels) > 3 else ""),
+                )
+            )
+
+        header_height = 42
+        tile_height = max((image.height for image, _, _ in tiles), default=1)
+        rows = max(1, (len(tiles) + columns - 1) // columns)
+        sheet = Image.new(
+            "RGB",
+            (columns * tile_width, rows * (header_height + tile_height)),
+            "black",
+        )
+        draw = ImageDraw.Draw(sheet)
+        for index, (tile, identity, labels) in enumerate(tiles):
+            column = index % columns
+            row = index // columns
+            x = column * tile_width
+            y = row * (header_height + tile_height)
+            draw.text((x + 6, y + 4), identity, fill="white")
+            draw.text((x + 6, y + 22), labels, fill="#7CFC00")
+            sheet.paste(tile, (x, y + header_height))
+
+        batch_index = int(batch.get("batch_index", len(sheets)))
+        path = output / f"batch_{batch_index:03d}.png"
+        sheet.save(path, format="PNG", optimize=True)
+        sheets.append(
+            {
+                "batch_index": batch_index,
+                "batch_sha256": batch.get("batch_sha256"),
+                "file": path.name,
+                "sha256": sha256_file(path),
+                "case_ids": list(batch.get("case_ids", ())),
+                "width": sheet.width,
+                "height": sheet.height,
+                "purpose": "operator_overview_only; per-target panels remain authoritative",
+            }
+        )
+
+    manifest: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "authority_claimed": False,
+        "plan_sha256": plan["plan_sha256"],
+        "sheet_count": len(sheets),
+        "sheets": sheets,
+    }
+    manifest["manifest_sha256"] = _canonical_sha256(manifest)
+    (output / "contact_sheet_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return manifest
+
+
 def validate_package_semantic_alignment(
     report: Mapping[str, Any],
     *,
@@ -400,6 +517,7 @@ __all__ = [
     "build_semantic_requalification_plan",
     "deterministic_qa_sha256",
     "final_mask_set_sha256",
+    "render_semantic_requalification_contact_sheets",
     "semantic_alignment_report_sha256",
     "validate_package_semantic_alignment",
 ]

@@ -223,7 +223,16 @@ def test_bulk_plan_batches_all_valid_cases_and_reports_only_exceptions(
     )
     assert result.exit_code == 0, result.output
     assert json.loads(output.read_text(encoding="utf-8")) == first
-    assert json.loads(result.output)["exception_count"] == 1
+    summary = json.loads(result.output)
+    assert summary["exception_count"] == 1
+    assert summary["contact_sheet_count"] == 1
+    contact_root = tmp_path / "bulk_plan_contact_sheets"
+    contact_manifest = json.loads(
+        (contact_root / "contact_sheet_manifest.json").read_text(encoding="utf-8")
+    )
+    assert contact_manifest["plan_sha256"] == first["plan_sha256"]
+    assert contact_manifest["sheets"][0]["case_ids"] == first["batches"][0]["case_ids"]
+    assert (contact_root / contact_manifest["sheets"][0]["file"]).is_file()
 
 
 @pytest.mark.parametrize(

@@ -10097,10 +10097,17 @@ def package(
     type=click.Path(path_type=Path, dir_okay=False),
     required=True,
 )
+@click.option(
+    "--contact-sheets-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=None,
+    help="Defaults to <output stem>_contact_sheets beside the plan.",
+)
 @click.option("--batch-size", type=click.IntRange(min=1, max=128), default=32)
 def autonomous_semantic_requalification_plan_command(
     packages_root: Path,
     output: Path,
+    contact_sheets_root: Path | None,
     batch_size: int,
 ) -> None:
     """Plan one bulk, label-aware critic pass over autonomous packages."""
@@ -10108,6 +10115,7 @@ def autonomous_semantic_requalification_plan_command(
     from .autonomy.package_semantic_alignment import (
         PackageSemanticAlignmentError,
         build_semantic_requalification_plan,
+        render_semantic_requalification_contact_sheets,
     )
 
     try:
@@ -10120,6 +10128,12 @@ def autonomous_semantic_requalification_plan_command(
             json.dumps(plan, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+        sheets_root = contact_sheets_root or (output.parent / f"{output.stem}_contact_sheets")
+        contact_sheets = render_semantic_requalification_contact_sheets(
+            plan,
+            packages_root=packages_root,
+            output_root=sheets_root,
+        )
     except (OSError, PackageSemanticAlignmentError) as exc:
         raise click.ClickException(str(exc)) from exc
     click.echo(
@@ -10130,6 +10144,9 @@ def autonomous_semantic_requalification_plan_command(
                 "case_count": plan["case_count"],
                 "batch_count": len(plan["batches"]),
                 "exception_count": plan["exception_count"],
+                "contact_sheet_count": contact_sheets["sheet_count"],
+                "contact_sheet_manifest_sha256": contact_sheets["manifest_sha256"],
+                "contact_sheets_root": str(sheets_root),
                 "output": str(output),
             },
             sort_keys=True,

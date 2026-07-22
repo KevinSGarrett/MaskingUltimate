@@ -63,6 +63,12 @@ because the work is done or because context/time is running out.
     wait for Kevin. Plan the continuous chain: after each wave, immediate next
     highest-value unblocked work until E2E complete (or only true NEEDS KEVIN
     remain while other lanes still run). Ensure durable `nohup` for long climbs.
+11. **Bulk-first visual throughput.** When a diagnostic package reveals a
+    population-level semantic or pixel issue, follow Instruction 14 §1.1 and
+    MF-P4-11.26: batch the entire eligible population, generate contact sheets,
+    run the promoted primary plus independent-family juror, and return only a
+    compact summary/exceptions. Do not turn one-at-a-time review into the normal
+    operating loop or make human review the default dependency.
 
 ## 2. The Main Work Loop
 

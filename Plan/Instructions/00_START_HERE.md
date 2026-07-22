@@ -115,6 +115,25 @@ the claim matters. Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
   semantic control for visual-role qualification. Draft, in-review, rejected,
   or visibly defective historical masks cannot be reused as valid/gold controls.
 
+### Bulk review memory (every session)
+
+- A single-package visual review is a diagnostic probe, not the production
+  throughput pattern. When a probe exposes a population-level issue, submit the
+  entire eligible population through deterministic, hash-bound batches.
+- Generate label-aware panels/contact sheets automatically and require the
+  promoted primary high-capability visual critic plus an independent-family
+  juror for every case. Automatically accept exact label/pixel matches; publish
+  an unambiguous relabel only as a new immutable package version; otherwise
+  reject or abstain.
+- One malformed or uncertain case must not stop its batch. Report a compact
+  batch summary and exception list instead of interrupting Kevin case by case.
+  Human review is optional exception handling, never the default throughput
+  dependency.
+- The bulk lane must consume qualified material from
+  `C:\Comfy_UI_Main\MaskedWarehouse`, `F:\Reference_Images`, and their exact
+  RunPod mirrors under the distinct authority rules in doc 25 and Instruction
+  14.
+
 ## 3. What MaskFactory Is, In Three Sentences
 
 MaskFactory is an autonomous-first pipeline that generates pixel-accurate

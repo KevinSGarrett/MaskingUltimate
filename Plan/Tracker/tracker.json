@@ -13720,7 +13720,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 72,
       "notes": [
         {
           "ts": "2026-07-22T06:28:55+00:00",
@@ -13736,12 +13736,17 @@
           "ts": "2026-07-22T06:41:08+00:00",
           "actor": "codex",
           "text": "Generated seven 1920px-wide automatic RunPod contact sheets for the 220-case plan and visually reviewed batch 0. Its 32/32 cases visibly show head/face/hair silhouettes under declared torso labels, confirming a population-level semantic mismatch rather than bad boundaries. Critic execution and new immutable package outcomes remain open."
+        },
+        {
+          "ts": "2026-07-22T06:47:39+00:00",
+          "actor": "ai_agent",
+          "text": "Made bulk-first review durable in cold-session memory and the session playbook: diagnostic single-case review cannot become the production loop; entire eligible populations use deterministic batches, automatic contact sheets, promoted primary plus independent-family juror, immutable relabel versions, continue-on-exception, compact operator reporting, optional human exception handling, and required MaskedWarehouse/reference-library inputs. Added a regression guard spanning standing orders, startup, playbook, Instruction 14, doc 25, and the item catalog; 7 focused tests PASS with Ruff, Black, tracker validation, and diff integrity clean."
         }
       ],
       "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; contact-sheet manifest SHA-256 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; first sheet 200f920482f1c164afd61917aeda06440a744632794ceb3a888550713e0ae4a9; 220 cases, 7 sheets, 0 planner exceptions",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T06:41:08+00:00",
+      "updated_at": "2026-07-22T06:47:39+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {

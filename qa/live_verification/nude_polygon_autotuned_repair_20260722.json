@@ -1,0 +1,88 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_polygon_autotuned_repair.v1",
+  "artifact_type": "adult_polygon_bounded_autotuned_boundary_repair",
+  "recorded_at": "2026-07-22T12:43:18Z",
+  "status": "HARD_QA_PASS_BOUNDED",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.06",
+    "MF-P4-12.07"
+  ],
+  "product_behavior": {
+    "fixed_iteration_refinement_replaced": true,
+    "maximum_attempts": 5,
+    "candidate_iterations": [1, 2, 3, 4, 5],
+    "selection_order": [
+      "maximum_boundary_alignment_score",
+      "minimum_changed_pixels",
+      "minimum_iterations"
+    ],
+    "unsafe_attempts_rejected": true,
+    "duplicate_proposals_detected": true,
+    "no_safe_attempt_preserves_parent_and_abstains": true,
+    "authority_remains_draft": true
+  },
+  "real_canary": {
+    "record_count": 12,
+    "unique_split_group_count": 12,
+    "outcome_counts": {
+      "draft_refined_candidate_autotuned": 12
+    },
+    "selected_iteration_counts": {
+      "1": 8,
+      "2": 1,
+      "3": 1,
+      "4": 2,
+      "5": 0
+    },
+    "improved_over_previous_fixed_iteration_count": 4,
+    "equal_to_previous_fixed_iteration_count": 8,
+    "mean_boundary_score_gain_over_fixed_iteration": 0.00032901763916015625,
+    "minimum_boundary_alignment_gain_over_parent": 0.028582721948623657,
+    "mean_boundary_alignment_gain_over_parent": 0.15321882193287215,
+    "maximum_boundary_alignment_gain_over_parent": 0.34259647130966187,
+    "nonregression_gate_pass_count": 12,
+    "pixel_semantic_evidence_pass_count": 12,
+    "deterministic_mask_and_attempt_replay": true,
+    "report_self_sha256": "c66f3db24dc32959aab0e8223a398a92ed6363d3155b88043670aa43d22dd601",
+    "report_file_sha256": "ae4f15c9b6f12bf08a6c636f7375941103bdfc558f8936cac93f461a94b82664",
+    "contact_sheet_sha256": "992b1a4361f7bae0783e96776be46afa07339f52b33288046d2beaad5cb91ac1"
+  },
+  "visual_diagnostic": {
+    "reviewed": true,
+    "scope": "Twelve-row source/parent/final/overlay/contour/localization/delta contact sheet plus the four changed per-record comparison panels.",
+    "observations": [
+      "All selected changes remain localized to the existing external-polygon regions.",
+      "No gross whole-person substitution or distant background expansion is visible.",
+      "The first photograph contains multiple people and therefore remains ownership-unverified.",
+      "Several illustration labels are source-supplied and remain semantically unqualified even when their boundaries improve."
+    ],
+    "strict_vlm_pass_claimed": false,
+    "person_instance_ownership_claimed": false,
+    "semantic_label_approval_claimed": false
+  },
+  "validation": {
+    "focused_and_neighbor_tests": "51 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS",
+    "failure_then_fix": {
+      "initial_failure": "The first positive unit fixture had no measured safe boundary improvement and correctly abstained.",
+      "correction": "Replaced it with a deterministic high-contrast fixture that supplies genuine positive boundary evidence; retained the flat-image abstention control.",
+      "corrected_run": "PASS"
+    }
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_polygon_refinement.py": "58103d898c3ab578fc39290f0f58c9b13eddb4fa67459e6b9d76dea40ecbedb3",
+    "tests/test_nude_polygon_refinement.py": "4dffe8abdf2eba4d5390527c11d712cc22ff5fad63437139a2c5281f3fe3a901"
+  },
+  "authority_boundary": {
+    "independent_provider_comparison_passed": false,
+    "person_instance_ownership_verified": false,
+    "strict_visual_review_passed": false,
+    "operational_certificates_issued": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false
+  },
+  "remaining": "Run independent provider comparison, exact person ownership, promoted strict visual critics, terminal repair/abstention receipts, and operational certification before any selected mask may leave draft authority."
+}

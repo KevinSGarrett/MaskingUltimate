@@ -204,6 +204,105 @@ def refine_polygon_mask(
     return selected, report
 
 
+def autotune_polygon_refinement(
+    image_rgb: np.ndarray,
+    source_mask: np.ndarray,
+    *,
+    attempt_iterations: tuple[int, ...] = (1, 2, 3, 4, 5),
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Select the best safe deterministic graph-cut proposal within a fixed budget."""
+
+    if (
+        not attempt_iterations
+        or len(attempt_iterations) > 5
+        or len(set(attempt_iterations)) != len(attempt_iterations)
+        or any(
+            not isinstance(value, int) or isinstance(value, bool) or not 1 <= value <= 5
+            for value in attempt_iterations
+        )
+    ):
+        raise NudePolygonRefinementError("attempt_iterations_invalid")
+    source = np.asarray(source_mask).astype(bool)
+    attempts: list[tuple[np.ndarray, dict[str, Any]]] = []
+    for iterations in attempt_iterations:
+        selected, report = refine_polygon_mask(image_rgb, source, iterations=iterations)
+        attempts.append((selected, report))
+    safe = [
+        (selected, report)
+        for selected, report in attempts
+        if report["outcome"] == "draft_refined_candidate"
+    ]
+    if safe:
+        selected, chosen = max(
+            safe,
+            key=lambda item: (
+                float(item[1]["proposal_boundary_alignment_score"]),
+                -int(item[1]["proposal_changed_pixels"]),
+                -int(item[1]["iterations"]),
+            ),
+        )
+        terminal_outcome = "draft_refined_candidate_autotuned"
+    else:
+        selected = source
+        chosen = attempts[0][1]
+        terminal_outcome = "abstained_no_safe_refinement"
+    default = next((report for _, report in attempts if int(report["iterations"]) == 3), None)
+    unique_proposals = {str(report["proposal_mask_sha256"]) for _, report in attempts}
+    selected_report = dict(chosen)
+    selected_report.update(
+        {
+            "schema_version": "maskfactory.nude_polygon_refinement.v3",
+            "outcome": terminal_outcome,
+            "selected_mask_sha256": _mask_sha256(selected),
+            "refined_mask_sha256": _mask_sha256(selected),
+            "refined_pixels": int(selected.sum()),
+            "changed_pixels": int(np.logical_xor(source, selected).sum()),
+            "parent_preserved": bool(np.array_equal(selected, source)),
+            "autotune": {
+                "attempt_budget": 5,
+                "attempt_count": len(attempts),
+                "attempt_iterations": list(attempt_iterations),
+                "selected_iterations": (int(chosen["iterations"]) if safe else None),
+                "unique_proposal_count": len(unique_proposals),
+                "duplicate_proposal_count": len(attempts) - len(unique_proposals),
+                "safe_proposal_count": len(safe),
+                "default_iterations": 3 if default is not None else None,
+                "boundary_score_gain_over_default": (
+                    float(chosen["proposal_boundary_alignment_score"])
+                    - float(default["proposal_boundary_alignment_score"])
+                    if safe and default is not None
+                    else None
+                ),
+                "selection_order": [
+                    "maximum_boundary_alignment_score",
+                    "minimum_changed_pixels",
+                    "minimum_iterations",
+                ],
+                "attempts": [
+                    {
+                        "iterations": int(report["iterations"]),
+                        "outcome": str(report["outcome"]),
+                        "proposal_mask_sha256": str(report["proposal_mask_sha256"]),
+                        "selected_mask_sha256": str(report["selected_mask_sha256"]),
+                        "proposal_boundary_alignment_score": float(
+                            report["proposal_boundary_alignment_score"]
+                        ),
+                        "boundary_alignment_gain": float(report["boundary_alignment_gain"]),
+                        "proposal_changed_pixels": int(report["proposal_changed_pixels"]),
+                        "reasons": list(report["reasons"]),
+                    }
+                    for _, report in attempts
+                ],
+            },
+            "authority": "deterministic_refiner_draft_only",
+            "independent_provider_comparison_passed": False,
+            "strict_visual_review_passed": False,
+            "operational_certificate_eligible": False,
+        }
+    )
+    return selected, selected_report
+
+
 def _save_png(path: Path, image: np.ndarray) -> str:
     path.parent.mkdir(parents=True, exist_ok=True)
     Image.fromarray(image).save(path, format="PNG")
@@ -348,7 +447,7 @@ def run_polygon_refinement_canary(
                 annotation["segmentation"], width=image.shape[1], height=image.shape[0]
             )
             try:
-                refined, refinement = refine_polygon_mask(image, source_mask)
+                refined, refinement = autotune_polygon_refinement(image, source_mask)
             except NudePolygonRefinementError:
                 continue
             selected = (raw_label, mapped[0]["candidate_label"], source_mask, refined, refinement)
@@ -441,6 +540,7 @@ def run_polygon_refinement_canary(
 
 
 __all__ = [
+    "autotune_polygon_refinement",
     "NudePolygonRefinementError",
     "refine_polygon_mask",
     "run_polygon_refinement_canary",

@@ -12096,3 +12096,19 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   gold, or production authority was inferred.
 - Evidence:
   `qa/live_verification/nude_bbox_lane_static_chain_reconciliation_20260722.json`.
+
+## 2026-07-22 - Resumable terminal batch executor
+
+- Added an executable JSONL batch boundary for adult-corpus terminal outcomes.
+  Accepted/repaired records use the full qualification path; abstained/rejected
+  records use non-authority receipts; quarantined/holdout inputs cannot claim a
+  generated mask.
+- Every input receives one immutable hash-bound receipt or typed processing
+  error, and malformed records do not stop unrelated records. Exact replay is
+  idempotent, a source-manifest identity pins each output root, conflicting
+  bytes fail closed, and writes use same-directory atomic replacement.
+- The executor grants no certificate, gold, training, or production authority.
+  Real terminal inputs remain at zero until admitted providers and qualified
+  visual roles produce the upstream evidence.
+- Evidence: `qa/live_verification/nude_terminal_batch_executor_20260722.json`.
+  Seventy-four focused/adjacent tests, Ruff, Black, and CLI help pass.

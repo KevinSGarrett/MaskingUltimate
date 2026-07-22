@@ -13720,7 +13720,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 80,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-22T06:28:55+00:00",
@@ -13746,12 +13746,17 @@
           "ts": "2026-07-22T07:12:40+00:00",
           "actor": "ai_agent",
           "text": "Implemented and pushed the missing resumable batch resolver and CLI at 4f597aa484ac17564ecda8a84c84c86cf942c343. It requires a current primary plus independent certificate quorum, revalidates every plan/review/package/source/mask/panel hash, accepts exact consensus, emits relabel proposals without mutating frozen bytes, applies reject/abstain precedence, continues after package-specific drift, and emits compact summary/exceptions. Static behavior is green; real 220-case execution remains open pending promoted critics."
+        },
+        {
+          "ts": "2026-07-22T07:22:20+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented and pushed immutable semantic relabel publication at c258e186c. Consensus relabel results now create atomic, hash-bound machine-candidate package revisions while preserving parent/source/binary-mask bytes, remapping indexed ontology plus manifest coherently, refusing collisions/drift, and requiring fresh certification. The 220-package live critic run remains open."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/bulk_semantic_requalification_executor_20260722.json; plan 73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc; contact-sheet manifest 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; commit 4f597aa484ac17564ecda8a84c84c86cf942c343; 14 focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
+      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/bulk_semantic_requalification_executor_20260722.json; qa/live_verification/bulk_semantic_relabel_publication_20260722.json; plan 73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc; contact-sheet manifest 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; commits 4f597aa484ac17564ecda8a84c84c86cf942c343 and c258e186c; 32 focused/adjacent tests PASS; CLI publication, Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T07:12:40+00:00",
+      "updated_at": "2026-07-22T07:22:20+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {

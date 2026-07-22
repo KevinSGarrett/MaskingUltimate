@@ -11236,12 +11236,17 @@
           "ts": "2026-07-22T01:55:22+00:00",
           "actor": "codex",
           "text": "2026-07-22 seal refresh: the SAM 3D backend gained explicit source/checkpoint-root injection for hermetic mocked contract tests without changing production defaults. Its runtime-lock hash and aggregate matrix were rebound; live result and authority are unchanged."
+        },
+        {
+          "ts": "2026-07-22T03:03:28+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 SAM2Matting refresh: the isolated matrix now covers nine provider runtimes with seven live-qualified and two exact pending states. The core remains PyTorch 2.11/cu128; SAM2Matting is isolated on RunPod Python 3.10/Torch 2.8/cu128. Percent remains 97 because SAM 3.1 point refinement and SAM 3D Body exact-repeat qualification are unresolved."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 618ed1c39f962276182d9a8885baa78efcd6cb5ac71449695ca11fac3eb96e45; qa/live_verification/sam31_runpod_runtime_smoke_20260722.json; qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json; provider runtime matrix and hermetic SAM 3D contract verification pass.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e; nine provider runtimes, seven qualified, two explicit pending, zero human gates, twenty exact artifacts. SAM2Matting Base+ is live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T01:55:22+00:00",
+      "updated_at": "2026-07-22T03:03:28+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {

@@ -23,13 +23,13 @@ REQUIRED_DOMAINS = (
     "visible_anatomy",
 )
 DOMAIN_LABELS = {
-    "clothing_skin_boundary": frozenset({"torso_skin"}),
-    "feet": frozenset({"left_foot", "right_foot"}),
-    "hair": frozenset({"hair"}),
-    "hands": frozenset({"left_hand", "right_hand"}),
-    "multi_person_ownership": frozenset({"left_arm", "right_arm"}),
-    "occlusion_contact": frozenset({"left_hand", "right_hand"}),
-    "visible_anatomy": frozenset({"face_skin", "torso_skin"}),
+    "clothing_skin_boundary": frozenset({"torso_skin", "torso_skin_external_reference"}),
+    "feet": frozenset({"left_foot", "right_foot", "left_foot_external_reference"}),
+    "hair": frozenset({"hair", "hair_external_reference"}),
+    "hands": frozenset({"left_hand", "right_hand", "left_hand_region_external_reference"}),
+    "multi_person_ownership": frozenset({"left_arm", "right_arm", "right_arm_external_reference"}),
+    "occlusion_contact": frozenset({"left_hand", "right_hand", "right_arm_external_reference"}),
+    "visible_anatomy": frozenset({"face_skin", "torso_skin", "face_external_reference"}),
 }
 PANEL_KEYS = frozenset(
     {
@@ -42,10 +42,13 @@ PANEL_KEYS = frozenset(
         "disagreement",
     }
 )
-MANIFEST_KEYS = frozenset(
+MANIFEST_KEYS_V1 = frozenset(
     {"schema_version", "suite_id", "frozen_at", "required_domains", "cases", "suite_sha256"}
 )
-CASE_KEYS = frozenset(
+MANIFEST_KEYS_V2 = MANIFEST_KEYS_V1 | frozenset(
+    {"truth_source", "source_bindings_sha256", "reference_coverage"}
+)
+CASE_KEYS_V1 = frozenset(
     {
         "case_id",
         "domain",
@@ -57,6 +60,28 @@ CASE_KEYS = frozenset(
         "panel_set_sha256",
         "case_sha256",
     }
+)
+CASE_KEYS_V2 = CASE_KEYS_V1 | frozenset({"source_binding"})
+SOURCE_BINDING_KEYS = frozenset(
+    {
+        "source_family",
+        "source_root_id",
+        "source_relative_path",
+        "source_file_sha256",
+        "source_panel_sha256",
+        "annotation_relative_paths",
+        "annotation_file_sha256s",
+        "base_mask_pixel_sha256",
+        "source_authority",
+        "real_source_pixels",
+        "synthetic",
+        "production_draft",
+        "qualification_evidence_sha256",
+        "source_binding_sha256",
+    }
+)
+REFERENCE_COVERAGE_KEYS = frozenset(
+    {"root_id", "inventory_relative_path", "inventory_sha256", "role", "truth_authority"}
 )
 CHANGE_KEYS = frozenset(
     {
@@ -104,8 +129,24 @@ def regression_suite_sha256(manifest: Mapping[str, Any]) -> str:
 
 
 def validate_regression_suite(manifest: Mapping[str, Any]) -> None:
-    if set(manifest) != MANIFEST_KEYS or manifest.get("schema_version") != "1.0.0":
+    schema_version = manifest.get("schema_version")
+    expected_manifest_keys = MANIFEST_KEYS_V2 if schema_version == "2.0.0" else MANIFEST_KEYS_V1
+    if set(manifest) != expected_manifest_keys or schema_version not in {"1.0.0", "2.0.0"}:
         raise VisualRegressionError("regression suite fields or schema are invalid")
+    real_suite = schema_version == "2.0.0"
+    if real_suite:
+        if manifest.get("truth_source") != "real_image_external_labeled_reference":
+            raise VisualRegressionError("real regression suite truth source is invalid")
+        reference = manifest.get("reference_coverage")
+        if not isinstance(reference, Mapping) or set(reference) != REFERENCE_COVERAGE_KEYS:
+            raise VisualRegressionError("real regression reference coverage is invalid")
+        _sha(reference.get("inventory_sha256"), "reference_coverage.inventory_sha256")
+        if (
+            reference.get("root_id") != "reference_library"
+            or reference.get("role") != "coverage_retrieval_only"
+            or reference.get("truth_authority") != "none"
+        ):
+            raise VisualRegressionError("real regression reference authority is invalid")
     if manifest["required_domains"] != list(REQUIRED_DOMAINS):
         raise VisualRegressionError("regression suite domain contract drifted")
     if manifest["suite_sha256"] != regression_suite_sha256(manifest):
@@ -116,8 +157,10 @@ def validate_regression_suite(manifest: Mapping[str, Any]) -> None:
     case_ids: set[str] = set()
     sources: set[str] = set()
     outcomes: dict[str, set[str]] = defaultdict(set)
+    source_bindings: list[Mapping[str, Any]] = []
     for case in cases:
-        if not isinstance(case, Mapping) or set(case) != CASE_KEYS:
+        expected_case_keys = CASE_KEYS_V2 if real_suite else CASE_KEYS_V1
+        if not isinstance(case, Mapping) or set(case) != expected_case_keys:
             raise VisualRegressionError("regression case fields are invalid")
         case_id = str(case["case_id"])
         if not case_id or case_id in case_ids:
@@ -136,6 +179,50 @@ def validate_regression_suite(manifest: Mapping[str, Any]) -> None:
         if source_sha in sources:
             raise VisualRegressionError("regression source images are not image-disjoint")
         sources.add(source_sha)
+        if real_suite:
+            binding = case.get("source_binding")
+            if not isinstance(binding, Mapping) or set(binding) != SOURCE_BINDING_KEYS:
+                raise VisualRegressionError(f"{case_id} real source binding is invalid")
+            if binding.get("source_binding_sha256") != canonical_sha256(
+                {key: value for key, value in binding.items() if key != "source_binding_sha256"}
+            ):
+                raise VisualRegressionError(f"{case_id} real source binding hash mismatch")
+            if (
+                binding.get("source_family") != "maskedwarehouse"
+                or binding.get("source_root_id") != "maskedwarehouse"
+                or binding.get("source_authority") != "external_labeled_reference"
+                or binding.get("real_source_pixels") is not True
+                or binding.get("synthetic") is not False
+                or binding.get("production_draft") is not False
+                or binding.get("source_panel_sha256") != source_sha
+            ):
+                raise VisualRegressionError(f"{case_id} real source authority is invalid")
+            for field in (
+                "source_file_sha256",
+                "base_mask_pixel_sha256",
+                "qualification_evidence_sha256",
+            ):
+                _sha(binding.get(field), f"{case_id}.{field}")
+            annotation_paths = binding.get("annotation_relative_paths")
+            annotation_hashes = binding.get("annotation_file_sha256s")
+            if (
+                not isinstance(annotation_paths, list)
+                or not annotation_paths
+                or not isinstance(annotation_hashes, list)
+                or len(annotation_paths) != len(annotation_hashes)
+            ):
+                raise VisualRegressionError(f"{case_id} annotation binding is invalid")
+            for path in [binding.get("source_relative_path"), *annotation_paths]:
+                if (
+                    not isinstance(path, str)
+                    or not path
+                    or path.startswith(("/", "\\"))
+                    or ".." in path.replace("\\", "/").split("/")
+                ):
+                    raise VisualRegressionError(f"{case_id} real source path is unsafe")
+            for index, digest in enumerate(annotation_hashes):
+                _sha(digest, f"{case_id}.annotation[{index}]")
+            source_bindings.append(binding)
         if not isinstance(case["panels"], Mapping) or set(case["panels"]) != PANEL_KEYS:
             raise VisualRegressionError(f"{case_id} panel hashes are incomplete")
         if not isinstance(case["panel_files"], Mapping) or set(case["panel_files"]) != PANEL_KEYS:
@@ -168,6 +255,8 @@ def validate_regression_suite(manifest: Mapping[str, Any]) -> None:
         outcomes[domain].add(str(outcome))
     if any(outcomes[domain] != {"valid_mask", "serious_defect"} for domain in REQUIRED_DOMAINS):
         raise VisualRegressionError("every regression domain needs valid and serious controls")
+    if real_suite and manifest.get("source_bindings_sha256") != canonical_sha256(source_bindings):
+        raise VisualRegressionError("real regression source-binding seal mismatch")
 
 
 def validate_regression_suite_files(manifest: Mapping[str, Any], root: Path) -> None:
@@ -194,6 +283,8 @@ def evaluate_visual_regression(
     """Evaluate one exact promotion fingerprint; any serious miss blocks it."""
 
     validate_regression_suite(manifest)
+    if manifest.get("schema_version") != "2.0.0":
+        raise VisualRegressionError("synthetic-only regression suite cannot authorize promotion")
     if set(change) != CHANGE_KEYS or change.get("schema_version") != "1.0.0":
         raise VisualRegressionError("regression change binding fields or schema are invalid")
     if change["suite_sha256"] != manifest["suite_sha256"]:

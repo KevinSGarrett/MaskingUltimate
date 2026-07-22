@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T06:28:15+00:00",
+    "generated_at": "2026-07-22T07:49:25+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 833,
     "total_tracked_including_orphaned": 833
@@ -14801,8 +14801,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 35,
+      "status": "partially_complete",
+      "percent_complete": 65,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -14813,12 +14813,22 @@
           "ts": "2026-07-22T05:26:50+00:00",
           "actor": "codex",
           "text": "Earlier synthetic-only completion evidence is superseded and cannot promote. Real source-bound calibration cases now exist, but the frozen regression suite still requires full hands/feet/hair/clothing/complete-visible-anatomy/occlusion/multi-person coverage and promoted-change rerun evidence."
+        },
+        {
+          "ts": "2026-07-22T07:46:05+00:00",
+          "actor": "codex",
+          "text": "Replaced synthetic-only promotion authority with frozen real-image v2 controls: 14 image-disjoint LV-MHP sources, 44 exact annotation files, 98 target-aware panels, strict external-reference source bindings, and F:\\Reference_Images inventory bound for coverage/retrieval only. Synthetic v1 now fails closed for promotion. Visual sampling confirmed real pixels and owner-bound controls. Item remains open because LV-MHP hand truth is coarse arm/hand rather than finger-exact, complete visible adult-anatomy truth is not yet represented, and no current promoted primary+independent critic rerun exists."
+        },
+        {
+          "ts": "2026-07-22T07:49:24+00:00",
+          "actor": "codex",
+          "text": "Regenerated the frozen v2 panels at deterministic maximum 1280-pixel review resolution so every committed artifact passes the repository 2 MiB gate; original source-file hashes remain bound. Final suite and source-binding seals supersede the pre-resize probe seals."
         }
       ],
-      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json; suite seal 22001e0769d2fe7f36077e0f23affd9b975e3987b43d73fb87781c25e09b7781; 14 image-disjoint cases/98 panels cover 7 required domains with valid+serious controls; 10 focused/25 combined tests PASS; any artifact/provider/prompt/runtime/renderer/schema change requires rerun and serious miss blocks promotion",
+      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json (synthetic plumbing only, superseded for promotion); qa/live_verification/frozen_real_visual_regression_suite_20260722.json; real suite 653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a; source-binding seal 98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1; 44 focused/adjacent tests PASS; Ruff, Black, JSON, tracker validation, artifact-size gate, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T05:26:50+00:00",
+      "updated_at": "2026-07-22T07:49:24+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

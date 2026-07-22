@@ -1,0 +1,1934 @@
+{
+  "cases": [
+    {
+      "case_id": "rvr_001_clothing_skin_boundary_valid",
+      "case_sha256": "5e38fc517c3a04e4dc03b0f40eb997dee5a8adbfd45c0313dcd1cd3f95371ad0",
+      "defect_type": null,
+      "domain": "clothing_skin_boundary",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_001_clothing_skin_boundary_valid/binary_mask.png",
+        "contour": "panels/rvr_001_clothing_skin_boundary_valid/contour.png",
+        "disagreement": "panels/rvr_001_clothing_skin_boundary_valid/disagreement.png",
+        "full_context": "panels/rvr_001_clothing_skin_boundary_valid/full_context.png",
+        "overlay": "panels/rvr_001_clothing_skin_boundary_valid/overlay.png",
+        "source": "panels/rvr_001_clothing_skin_boundary_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_001_clothing_skin_boundary_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "1820a27fbb66d073073d7f1596ee9e6f4f53311be4b52a44b19b822f46986a7c",
+      "panels": {
+        "binary_mask": "f5dbbaf5ca03dd62b48eab94aac5dfdd3626e901cc2adde4d3bbe56bbb1418bb",
+        "contour": "fc82eb9b1582dc7751afa72c97bcfc6701b00424c71880a3f9477218c7fc6847",
+        "disagreement": "f4dc285d8aac46d45b64397a686b839e1aa5b72bdf3db778d1d76e59a5b25b64",
+        "full_context": "c6d9cbd421f8dc7722e57221442fb6be6078e8c9ce9c18944101aaa90a384320",
+        "overlay": "becf5905b84cf8c39dbaf7007c951f421442ede0ebfca76a7adedbb1c709758e",
+        "source": "c6d9cbd421f8dc7722e57221442fb6be6078e8c9ce9c18944101aaa90a384320",
+        "uncertainty_zoom": "3e32c74cf75e254e3c0492bcf1039b082e8ce8336833f673999c669a2c60bb16"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "fc094b77cd25a9e99addae5a73f6151f96f237d597e627e0e7e8ba8273a0c9f9",
+          "4fc3084c08f79c902b5f37d42ff3f3de26cf8d9195b3c64465ec28ec83c1c6a0"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0004_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0004_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "3b4469c454bc83da153bf26284f59ec08b4ea3f1db8e423843f09370d9db25ab",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "490262cc9f7d2cd5cd92eb3174b96c21aac9494697233395600bfc5def384827",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "dff8dd2b46913dd8bd499623c9da30c2bf70b5d2a4731ae03e7b3d88cb5866b6",
+        "source_panel_sha256": "c6d9cbd421f8dc7722e57221442fb6be6078e8c9ce9c18944101aaa90a384320",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0004.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 640,
+          "mask_sha256": "f5dbbaf5ca03dd62b48eab94aac5dfdd3626e901cc2adde4d3bbe56bbb1418bb",
+          "width": 400
+        },
+        "contract_id": "target-rvr_001_clothing_skin_boundary_valid",
+        "contract_sha256": "7bbf53b02cee847ba1a3a77407499ee8e5e417e6fab77dbe0396a91518d4ce72",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0004-p1",
+          "person_index": 1,
+          "person_mask_sha256": "df47b9548f6a4b2e1df22354513dd7a006607233b0e24b72bec192c39f4d81af"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "59a07aafeba96a1f6b217b110f99daca003e95b287c98ea6251f15a8a8ecb722",
+            "owner_person_index": 1,
+            "region_id": "protected-face-rvr_001_clothing_skin_boundary_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 640,
+          "image_id": "lv_mhp_v1-0004",
+          "sha256": "c6d9cbd421f8dc7722e57221442fb6be6078e8c9ce9c18944101aaa90a384320",
+          "width": 400
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            400,
+            640
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "torso_skin_external_reference",
+          "maximum_area_pixels": 256000,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_002_clothing_skin_boundary_wrong_label",
+      "case_sha256": "c1df1cae4bbb5606829042c7690ba0fe5a6527c1e23b138ac20677bef708e5c6",
+      "defect_type": "wrong_label",
+      "domain": "clothing_skin_boundary",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_002_clothing_skin_boundary_wrong_label/binary_mask.png",
+        "contour": "panels/rvr_002_clothing_skin_boundary_wrong_label/contour.png",
+        "disagreement": "panels/rvr_002_clothing_skin_boundary_wrong_label/disagreement.png",
+        "full_context": "panels/rvr_002_clothing_skin_boundary_wrong_label/full_context.png",
+        "overlay": "panels/rvr_002_clothing_skin_boundary_wrong_label/overlay.png",
+        "source": "panels/rvr_002_clothing_skin_boundary_wrong_label/source.png",
+        "uncertainty_zoom": "panels/rvr_002_clothing_skin_boundary_wrong_label/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "74269e109562eac0d766829c62b89366bead77154dd26f725c2e57bf6896154c",
+      "panels": {
+        "binary_mask": "80269a6c4d6ab4fa8b7b0b120bba755358fd03b67fdfab0d84c02bf6cc140093",
+        "contour": "2f498f371c2876d8d57c20e138ceb288215d8c6edf562262ce4da88c9d074697",
+        "disagreement": "10f26430de7c2c388d4c0b678134e33d29e1384e5265abbc1c2c1144ed0ffb7c",
+        "full_context": "64dfe172ecdd93646318644ee8e04ed9c55a3325a423bfdd72b0e1e3639df977",
+        "overlay": "2f4381cf407299f3f087d29f93db9c089e2dbbe6f564b6921731257eaac7550a",
+        "source": "64dfe172ecdd93646318644ee8e04ed9c55a3325a423bfdd72b0e1e3639df977",
+        "uncertainty_zoom": "4ba9777575db382f0881bacdfb3454494ca56f599664605aeac156c44930d9f0"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "ef6dbf7a3fefe67d902c61c85b53f8160f5b323ce1d8c2a8e873bfb2b335f606",
+          "4e95b2fcf9ee12ab4f87adeb2714fd1f68a76f041201f1b0e50e878ad7aa7222"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0007_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0007_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "c39b03bc303a60413b57fdd6c2c0dc46cdac4a57b5f5579177fe51e4e4ea8e40",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "fd9c41c9d968bd5b7a98f0136f51e3a92903a9cb2b2310b32e8b1c76eddfbc93",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "4855f16817aa5ec1b3e255fbbe6e8848ac69873f1aef9d71c863e6095b2b6706",
+        "source_panel_sha256": "64dfe172ecdd93646318644ee8e04ed9c55a3325a423bfdd72b0e1e3639df977",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0007.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 533,
+          "mask_sha256": "80269a6c4d6ab4fa8b7b0b120bba755358fd03b67fdfab0d84c02bf6cc140093",
+          "width": 800
+        },
+        "contract_id": "target-rvr_002_clothing_skin_boundary_wrong_label",
+        "contract_sha256": "cac47221d94c487dc07a7a5d0936408cf7b6308c406a8b152d5b8dceaa0676c9",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0007-p1",
+          "person_index": 1,
+          "person_mask_sha256": "1f7a8a7c86403bb69cb1b69a5a9ff6cd18fcc8b8cd2c438ab44efcaf4a614a66"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "2eb902e591bafecb5af232e0e8e7217ba517d2a30ffba89671ee074f414ca923",
+            "owner_person_index": 1,
+            "region_id": "protected-face-rvr_002_clothing_skin_boundary_wrong_label"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 533,
+          "image_id": "lv_mhp_v1-0007",
+          "sha256": "64dfe172ecdd93646318644ee8e04ed9c55a3325a423bfdd72b0e1e3639df977",
+          "width": 800
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            800,
+            533
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "torso_skin_external_reference",
+          "maximum_area_pixels": 426400,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_003_feet_valid",
+      "case_sha256": "8ab646002045919415a08f38f7630f908339c9ac6574a6e4698831d045fd3b6f",
+      "defect_type": null,
+      "domain": "feet",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_003_feet_valid/binary_mask.png",
+        "contour": "panels/rvr_003_feet_valid/contour.png",
+        "disagreement": "panels/rvr_003_feet_valid/disagreement.png",
+        "full_context": "panels/rvr_003_feet_valid/full_context.png",
+        "overlay": "panels/rvr_003_feet_valid/overlay.png",
+        "source": "panels/rvr_003_feet_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_003_feet_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "c716ba12997641256ff107dce2beb8e69a685adf4ef1919b873ffd0856409926",
+      "panels": {
+        "binary_mask": "98fb11bb4fd7e2500033a77cfc1fe08fcf8abc113a085fbbf0d6aaf503c119fa",
+        "contour": "93c82fc5afadbbeb72458aa404c239df59d1702e745dee3d54d069e1efb321f4",
+        "disagreement": "d0bd67e71e4d58cbc717a636f58277b69b6a0f90a11badb4237e8b1c08264d3a",
+        "full_context": "f6499207d919e0af38615781f5fb92769eb83c57d59d396c0722b9bef7e5476c",
+        "overlay": "d0ee3f8ea49394aa9438bf63eb0da172abd773933eb704b4549a645397c38867",
+        "source": "f6499207d919e0af38615781f5fb92769eb83c57d59d396c0722b9bef7e5476c",
+        "uncertainty_zoom": "af1a28cce66588b6d679d75cf62900f53bca6024cd39b7125717f670371a61d5"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+          "7760a41119a5f33d18d6c115ec98b65ebd62c99531a38d67c78c87872532d1e4"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0001_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0001_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "93b20bc29bdd84727133392800a72aea96655c6be1b100fd8018db7bc15c1366",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "748483c3ee0ae19f9f6a5c520e9277105b1853f57b5fc1868649d04d5e637673",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "adef946e161ab60130e63558d34b23ae77fdb7883e29e7563efb9df2b1e1ddb8",
+        "source_panel_sha256": "f6499207d919e0af38615781f5fb92769eb83c57d59d396c0722b9bef7e5476c",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0001.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 900,
+          "mask_sha256": "98fb11bb4fd7e2500033a77cfc1fe08fcf8abc113a085fbbf0d6aaf503c119fa",
+          "width": 600
+        },
+        "contract_id": "target-rvr_003_feet_valid",
+        "contract_sha256": "4e17d67f9d8d4060a805fab969712b8cef2de1a20121d3d4b48cbb7bd32eb444",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0001-p1",
+          "person_index": 1,
+          "person_mask_sha256": "81ec5f6c582de8c5348f50ea3fc0bdbf623070296ca452e9357d198d1b0f9c02"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "fb760d1f5a6fef519f2e5027aa2f0601ac64c03f5ca75390596e58219733b6e7",
+            "owner_person_index": 1,
+            "region_id": "protected-face-rvr_003_feet_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 900,
+          "image_id": "lv_mhp_v1-0001",
+          "sha256": "f6499207d919e0af38615781f5fb92769eb83c57d59d396c0722b9bef7e5476c",
+          "width": 600
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            600,
+            900
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_foot_external_reference",
+          "maximum_area_pixels": 540000,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_004_feet_wrong_side",
+      "case_sha256": "c6b2263695c5978421f0219acf19c1a02570796accbc6452e9d3904fcb21c487",
+      "defect_type": "wrong_side",
+      "domain": "feet",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_004_feet_wrong_side/binary_mask.png",
+        "contour": "panels/rvr_004_feet_wrong_side/contour.png",
+        "disagreement": "panels/rvr_004_feet_wrong_side/disagreement.png",
+        "full_context": "panels/rvr_004_feet_wrong_side/full_context.png",
+        "overlay": "panels/rvr_004_feet_wrong_side/overlay.png",
+        "source": "panels/rvr_004_feet_wrong_side/source.png",
+        "uncertainty_zoom": "panels/rvr_004_feet_wrong_side/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "f35656a358442afdb52f51fc6e2502d8d2f09559bb94d970a92fc554fffcd115",
+      "panels": {
+        "binary_mask": "539c3a054b3aa132565406d5541ff9418ad64bf34aae8365131dd48ebcfb3283",
+        "contour": "4ee8ffae447858d1e6d5769afe3f673bc5f7cd86622c857bc6781795c4c43716",
+        "disagreement": "23d4a53e28ef73ec7b28050d8ac4c0de5882b7ac3bf88988ac8f8a3016a300da",
+        "full_context": "ba270229407afdebecc1df3b866d57b0fa6cbc62e97ed440dfc0f2d8916f924b",
+        "overlay": "d5eaa0f338ba4b69a86908ec64103fbfd88422202e0db19db59023720b0a4edc",
+        "source": "ba270229407afdebecc1df3b866d57b0fa6cbc62e97ed440dfc0f2d8916f924b",
+        "uncertainty_zoom": "a2e475fc3c60cccd3510730a5fe255c310f00f90d5c02ad0b700621574b1cd5e"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "e4b90b350e848d39efe73122eb16f25eb86d0908f63d7473c6e73680935d0ca5",
+          "086deec9f8a5fa8ff67afce690f415d7fbebcd78aaf389f9868e59bc5a0ab6dc"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0002_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0002_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "cdbb46cdad1ef1cb01fe9b2c132183fa3b25b42524656cb4faf37aac1832cf20",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "fd3c1ad34a371b9134d2f2ee94707d5376c17a9d0f759d0aa6220fd9c2457a72",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "55393142348bf90d2e64ce2814dd9117994875b3798d8c902c14b6f072e610b6",
+        "source_panel_sha256": "ba270229407afdebecc1df3b866d57b0fa6cbc62e97ed440dfc0f2d8916f924b",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0002.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 672,
+          "mask_sha256": "539c3a054b3aa132565406d5541ff9418ad64bf34aae8365131dd48ebcfb3283",
+          "width": 447
+        },
+        "contract_id": "target-rvr_004_feet_wrong_side",
+        "contract_sha256": "7568b0b54aaff63bd9a4b0eea1168ae3059dafe8b5660b32e578e72bff7eb715",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0002-p0",
+          "person_index": 0,
+          "person_mask_sha256": "818b260c495375336e201a0a4c88295611ae52cfa55b68d6c852eaf39b0941d5"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "81af7babd7bcc9e13488aa624f928caba385601bbfb747e28e976aa19dece76e",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_004_feet_wrong_side"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 672,
+          "image_id": "lv_mhp_v1-0002",
+          "sha256": "ba270229407afdebecc1df3b866d57b0fa6cbc62e97ed440dfc0f2d8916f924b",
+          "width": 447
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            447,
+            672
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_foot_external_reference",
+          "maximum_area_pixels": 300384,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_005_hair_valid",
+      "case_sha256": "b46a4cd90b761106f4ed9954c680c62618ead21dafe0c28b8152fa3bfff7b040",
+      "defect_type": null,
+      "domain": "hair",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_005_hair_valid/binary_mask.png",
+        "contour": "panels/rvr_005_hair_valid/contour.png",
+        "disagreement": "panels/rvr_005_hair_valid/disagreement.png",
+        "full_context": "panels/rvr_005_hair_valid/full_context.png",
+        "overlay": "panels/rvr_005_hair_valid/overlay.png",
+        "source": "panels/rvr_005_hair_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_005_hair_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "d4a291eb8f204fd2c1d7a4ba50f66e80269c918fbda2b098058ff8a17200dd59",
+      "panels": {
+        "binary_mask": "77c674cdd2fa0747d65dd8b54ec5567ed5182f847b7dd17b8e4698501265cc2e",
+        "contour": "f20023117523d761d7077205bb6a49a2cc26d260571091792cc59343de4254a1",
+        "disagreement": "9a73ed970e674ba10b786d13615785ff5069972f8133dc94944c13283d527659",
+        "full_context": "ad1ee742014fe1582f0c482ae5f39b9596976aaa2fe043d697de52f5edf51984",
+        "overlay": "ef98448958321e9a438d83a72d7997eebf235b8aeeaa47219609dcca3fada4c9",
+        "source": "ad1ee742014fe1582f0c482ae5f39b9596976aaa2fe043d697de52f5edf51984",
+        "uncertainty_zoom": "1e378ede27827aee9169c354163ccfc82fbb57db99ad7d90405cfb2bfe9c42e0"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "2a12233b2985d4bae93110ac9cd8bd80c66535576c942c70cd15668960b27823",
+          "314e6a0b6658299e491925edbcc45199836cf94233deffaffd97ecc84f7ace41",
+          "cc85390a8cd34a917cc1f5fc60bcbd8dde1f2da24ec586c7216c36b578c0607e"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0003_03_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0003_03_02.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0003_03_03.png"
+        ],
+        "base_mask_pixel_sha256": "a1aafc455fc853eb431202c8d4ac9968fc1aa0b005df206bbc04bafac31a6c24",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "9706c9af582f595109708d9be03d12c5eab63f2131b922f64ea3df0d69f97b77",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "f3a1623466bff1c9dc72815fd94b9f7ecfc082e23bf4cb877b0f7d97836b0930",
+        "source_panel_sha256": "ad1ee742014fe1582f0c482ae5f39b9596976aaa2fe043d697de52f5edf51984",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0003.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 525,
+          "mask_sha256": "77c674cdd2fa0747d65dd8b54ec5567ed5182f847b7dd17b8e4698501265cc2e",
+          "width": 373
+        },
+        "contract_id": "target-rvr_005_hair_valid",
+        "contract_sha256": "aa688410273fa01a2234299f4b19fb720bc2b5f4d246a6df3e9a6bacf3a1fe57",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0003-p0",
+          "person_index": 0,
+          "person_mask_sha256": "cb8b7ac7bd4c51456b917fde202a02eae0df02bde3269a6f06905a82ba34bf4f"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "324c10d5e664e2695fefd48cf1da7dd69468556245f92e39a66ac4578f995d2b",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_005_hair_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 525,
+          "image_id": "lv_mhp_v1-0003",
+          "sha256": "ad1ee742014fe1582f0c482ae5f39b9596976aaa2fe043d697de52f5edf51984",
+          "width": 373
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            373,
+            525
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "hair_external_reference",
+          "maximum_area_pixels": 195825,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_006_hair_boundary",
+      "case_sha256": "2690a619e2ab7a965a15546495a4093c8e6bee1e8f53d0e26d1142bf806236fc",
+      "defect_type": "boundary",
+      "domain": "hair",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_006_hair_boundary/binary_mask.png",
+        "contour": "panels/rvr_006_hair_boundary/contour.png",
+        "disagreement": "panels/rvr_006_hair_boundary/disagreement.png",
+        "full_context": "panels/rvr_006_hair_boundary/full_context.png",
+        "overlay": "panels/rvr_006_hair_boundary/overlay.png",
+        "source": "panels/rvr_006_hair_boundary/source.png",
+        "uncertainty_zoom": "panels/rvr_006_hair_boundary/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "903d74ed2622d20b852725852ff7be811dd95499033935e19e26bfcb7cd8c989",
+      "panels": {
+        "binary_mask": "321d92513c3cafba5a35537e1884e0f24711be0dad38c7168301a88c4b733e5d",
+        "contour": "10b3b0a0765c57b4d7731486862f168dbf272dc9350267d95bdbe35f513cd8ae",
+        "disagreement": "f729cc334a2771e6527e9ef0cdc6128dc1c80a191bc121f2619b47cd133b2a11",
+        "full_context": "731c515466e5452a963b101c84ba7b6951f5789b983dfa304f8cacc4f78d0337",
+        "overlay": "7a8607b8551fbbba664d8aa959275aaf779647ff5dab610e051f903092ff294e",
+        "source": "731c515466e5452a963b101c84ba7b6951f5789b983dfa304f8cacc4f78d0337",
+        "uncertainty_zoom": "425b985a6a43c14c2e04a1e9c01f80ebe56a08f80a7cdf00724930314a66c490"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "c869bd5a57cceac7b2f86702c746171d5f03872d1222cbbe8ff9b0fd8ee56011",
+          "9b985bfce88bfcfc3a9bbc8a6be7f4a22b1fce990026abbc12fb24393c2c7ae8"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0005_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0005_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "6eb681e40f6668dd80901b643accbb7ebc1e26c48a1735e8cc7c3c5f87351eee",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "4e8decb98a0dd6db608a4c4b3a9ccd65bca4921034a50d603d4277d1b1308d73",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "cd372a28126bc98ff7283a836877a23f2b89bd72a65c83a79c4ff35418b209d2",
+        "source_panel_sha256": "731c515466e5452a963b101c84ba7b6951f5789b983dfa304f8cacc4f78d0337",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0005.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 355,
+          "mask_sha256": "321d92513c3cafba5a35537e1884e0f24711be0dad38c7168301a88c4b733e5d",
+          "width": 630
+        },
+        "contract_id": "target-rvr_006_hair_boundary",
+        "contract_sha256": "9bd94de1668a560fc315cb90419a82e9d32cb50f75a123dc3caf330620060e2d",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0005-p0",
+          "person_index": 0,
+          "person_mask_sha256": "3f37aae3d855867a1bbd6ad700d755f70459177814cdff952509318a2060dc71"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "07c0162f9a73926aeb4fb7f3f03e99e5e5876086f399681ce8f0cc0a1657441a",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_006_hair_boundary"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 355,
+          "image_id": "lv_mhp_v1-0005",
+          "sha256": "731c515466e5452a963b101c84ba7b6951f5789b983dfa304f8cacc4f78d0337",
+          "width": 630
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            630,
+            355
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "hair_external_reference",
+          "maximum_area_pixels": 223650,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_007_hands_valid",
+      "case_sha256": "19f0b510404016f47a914568165cf6d477668d0adc3486070ba9cc180c4b3b68",
+      "defect_type": null,
+      "domain": "hands",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_007_hands_valid/binary_mask.png",
+        "contour": "panels/rvr_007_hands_valid/contour.png",
+        "disagreement": "panels/rvr_007_hands_valid/disagreement.png",
+        "full_context": "panels/rvr_007_hands_valid/full_context.png",
+        "overlay": "panels/rvr_007_hands_valid/overlay.png",
+        "source": "panels/rvr_007_hands_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_007_hands_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "4f5007cd3207b35227485f0bd753baa6baa1ea74291c91c552328821d349478b",
+      "panels": {
+        "binary_mask": "0235f93dad9964ce107ae3a65c7ff0a69cbb006e5eabfad8ef4bffb28f6aa19d",
+        "contour": "6bcc6d6c28204e73f2445c8f4899219edac9443ee2493089250038b4ca2153e8",
+        "disagreement": "384ba8d8187a2237f2790c24c636d97d31671fe132c8d14baf509d28e59bc7ae",
+        "full_context": "d3699e8c289551821d953cf9aaaf110faa6f9048ed934bedb3cf8c883b3a63a2",
+        "overlay": "045e36de5f7462ec38523f0c28aa3f347125b8a037d3fb384f0ea9663893757d",
+        "source": "d3699e8c289551821d953cf9aaaf110faa6f9048ed934bedb3cf8c883b3a63a2",
+        "uncertainty_zoom": "b4a8e9b3583b1c74b02f769db6132c3e1c9b2afa095d72c5e38d52c3183a236e"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "5f60f9c597eb609146f3135bdb5acafff6228faaaf76a90cef6367483ffbb030",
+          "0c77695101a5b3e0a7bbf1d874307b0300d375ed347dbe0f5a98f18cca4715f1",
+          "c0d2d0071c82b7586eb6bd5fa1dc0e8e6d95de79499748bd28befddeab79a00b",
+          "25659393625586d03b7a6be249b0ea56e62920e14002c9079d2a98a6719938cf",
+          "3e7cf0898d7d678652bf793117c0568419aa3003f61340ba632a518b228c2fec",
+          "a7b2b31f8d6b1237aa6f1ea2804817545721045cb8c3e527ab0740fe9a11b281",
+          "8a53cce9bee75ebb14ba7700f442c4983faa4ef03520e95ee83d85b1ed98ecb0",
+          "72460f414a83550fba34f5b5b2265061f76944f7a57a93fa38363f39b7338cf6",
+          "d1dc10513e8726686281d8577219d7cdbdce412f2cc172c6b55c2cf9bd207fa5",
+          "aadc243dacddacfc4b89ab8c7f2fc0373b6c0f9b8ddca343a77fb465f4d82ceb"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_02.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_03.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_04.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_05.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_06.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_07.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_08.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_09.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0006_10_10.png"
+        ],
+        "base_mask_pixel_sha256": "f579829276a20a2e0329d60a893b57aabae1e602ed8ae187bce32c80542e3c43",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "6de7c2f47f13bbad30053575c02a5cce2f5b08292940b6baef2038bcb8a537f0",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "cdd7b8771551c01ca7039eea2086cbd2e9090e03f47151533d16be66284b01e2",
+        "source_panel_sha256": "d3699e8c289551821d953cf9aaaf110faa6f9048ed934bedb3cf8c883b3a63a2",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0006.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 461,
+          "mask_sha256": "0235f93dad9964ce107ae3a65c7ff0a69cbb006e5eabfad8ef4bffb28f6aa19d",
+          "width": 800
+        },
+        "contract_id": "target-rvr_007_hands_valid",
+        "contract_sha256": "46a88a0e640fd5b81387fc7c722b7264db4745f3d1c348290aaabd014fed3982",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0006-p0",
+          "person_index": 0,
+          "person_mask_sha256": "ce4d706fe0b53f5de2c0125c918645a1134682476bab1c26ca8b70a50e03d8af"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "2da65129c2d3d67d955ca23ccbe3b7ab147e79dc169127c5d79c8c2fc50f6d4e",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_007_hands_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 461,
+          "image_id": "lv_mhp_v1-0006",
+          "sha256": "d3699e8c289551821d953cf9aaaf110faa6f9048ed934bedb3cf8c883b3a63a2",
+          "width": 800
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            800,
+            461
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand_region_external_reference",
+          "maximum_area_pixels": 368800,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_008_hands_wrong_side",
+      "case_sha256": "e9e9e2779a70d3d130bf34c2d977bdd1de2e9f8c97962de27d63705d70fdfbd2",
+      "defect_type": "wrong_side",
+      "domain": "hands",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_008_hands_wrong_side/binary_mask.png",
+        "contour": "panels/rvr_008_hands_wrong_side/contour.png",
+        "disagreement": "panels/rvr_008_hands_wrong_side/disagreement.png",
+        "full_context": "panels/rvr_008_hands_wrong_side/full_context.png",
+        "overlay": "panels/rvr_008_hands_wrong_side/overlay.png",
+        "source": "panels/rvr_008_hands_wrong_side/source.png",
+        "uncertainty_zoom": "panels/rvr_008_hands_wrong_side/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "2b68bb24f39f3722385551dd58993545f9d1233e3c83ba39807de8101b5db341",
+      "panels": {
+        "binary_mask": "7b01a256761462d272a25fe099c53df61e627affaa4aad72a3395a78529209f9",
+        "contour": "078779fcec45c843447a8caeabf515b7d1d0caa2fe5e99985185c9305a09dad9",
+        "disagreement": "04c605dc260a8c41986aa58ea05941e7c1ed418616657b374247d3d0b6fed015",
+        "full_context": "ae64eb1dc3aa0c3783717808370a8f95c5b750d59271735cf7bb9573770ebb60",
+        "overlay": "557483bbe634bc1eab8997b233690947532ad814dcafa8b72c53b33fb60a73d9",
+        "source": "ae64eb1dc3aa0c3783717808370a8f95c5b750d59271735cf7bb9573770ebb60",
+        "uncertainty_zoom": "2645c6aee0f0e99882f43a002357fa4f5fe455504605ebd6f06f73921fbd1092"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "357846971398541d586f9910ab0380b3309d9e12101093c4a9ed197706cec5d0",
+          "0de50f3bd86661d2e7aaaee1ac9723ac136cc1ae8e091808488b698a17d0bf77"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0008_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0008_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "379d0c5ebb255df56c4a65793edc9e5c1d0d752e6942e8ce46c9646c4c976d1e",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "02e8164bc1b84507a685ab9e4ad4194141a1e4766f45305ee9157338b537914d",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "0ced586a2785e316f8be79006687b72ee4148685f4615f634de78452810ff4ce",
+        "source_panel_sha256": "ae64eb1dc3aa0c3783717808370a8f95c5b750d59271735cf7bb9573770ebb60",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0008.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 956,
+          "mask_sha256": "7b01a256761462d272a25fe099c53df61e627affaa4aad72a3395a78529209f9",
+          "width": 1280
+        },
+        "contract_id": "target-rvr_008_hands_wrong_side",
+        "contract_sha256": "20b95c7fcafc3e3e7476a600abb237f5052c906796ba29aa6e51906f2a419b23",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0008-p1",
+          "person_index": 1,
+          "person_mask_sha256": "5cb8abb58bcb4f0bf4ea4decc46e9a0004210139594fcfbfd23652f9e87de1ba"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "7e41815a812c7af61e1bc5547f523a1e2b37b031184603ba0d90eb05b1d194f7",
+            "owner_person_index": 1,
+            "region_id": "protected-face-rvr_008_hands_wrong_side"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 956,
+          "image_id": "lv_mhp_v1-0008",
+          "sha256": "ae64eb1dc3aa0c3783717808370a8f95c5b750d59271735cf7bb9573770ebb60",
+          "width": 1280
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            1280,
+            956
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand_region_external_reference",
+          "maximum_area_pixels": 1223680,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_009_multi_person_ownership_valid",
+      "case_sha256": "3b9f9f83f05b668cb40034a614f0a3990a97b5676a3144e17f6ad7c4e8179f24",
+      "defect_type": null,
+      "domain": "multi_person_ownership",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_009_multi_person_ownership_valid/binary_mask.png",
+        "contour": "panels/rvr_009_multi_person_ownership_valid/contour.png",
+        "disagreement": "panels/rvr_009_multi_person_ownership_valid/disagreement.png",
+        "full_context": "panels/rvr_009_multi_person_ownership_valid/full_context.png",
+        "overlay": "panels/rvr_009_multi_person_ownership_valid/overlay.png",
+        "source": "panels/rvr_009_multi_person_ownership_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_009_multi_person_ownership_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "9095eca73745c57a1dd1c1ca69be335e8087bced48af8934561ab13fe187bde1",
+      "panels": {
+        "binary_mask": "09d37e32d960c3c40de041464d10870c33322ebddb9eee320204c842c472f9b9",
+        "contour": "00fa41732778a6ecc1e7dbbfacaec47bce7ac85078023717e03d952f39cae0e1",
+        "disagreement": "17239ff0ae42bb4babc2923bd6678a84122cc4ea66db388aa1be6eb6a3812d02",
+        "full_context": "d0ddf9d01d65afe01a607a30a896da809da99a72af5d3c10d16b862d86109faf",
+        "overlay": "4ded57eb68181050cfb01c12eb55063946bba7bc49e278d308f3766776bf5ea3",
+        "source": "d0ddf9d01d65afe01a607a30a896da809da99a72af5d3c10d16b862d86109faf",
+        "uncertainty_zoom": "0567b3f9431572f1b973d5a1c6c031950067feb5b20af68da9937bd617cbd7e3"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "d6aa1ff84a1a99689e3be6d2bec9798718862a73dd4ab598fca3f679dc5553b6",
+          "f58af55357e4dc8247c9d9f1dc53b1b1e73e89fa2c29da00452ff28d50f37b48"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0009_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0009_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "bdd8d96880ad405f4c006236b8d2ca8fa0fbbc0d67e98c932e70441459480a55",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "29b17e925ca5b2fa080b0def22cbca3659214401c1d70b79d7cf8939ca3e1106",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "deaa7770bb11c7a55b128a6a466fa462a6716d18113f17ecd2b2b54816cf85db",
+        "source_panel_sha256": "d0ddf9d01d65afe01a607a30a896da809da99a72af5d3c10d16b862d86109faf",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0009.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 431,
+          "mask_sha256": "09d37e32d960c3c40de041464d10870c33322ebddb9eee320204c842c472f9b9",
+          "width": 600
+        },
+        "contract_id": "target-rvr_009_multi_person_ownership_valid",
+        "contract_sha256": "8ecf12804ed9a96c6891e4c818f19bd44bbd2936a53349ce77c020e25faf9514",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0009-p0",
+          "person_index": 0,
+          "person_mask_sha256": "addfd9b698bbb45e688b31cd265120746c8f93a1622176561ba30ff0271062f1"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "20977abedf357b426c9cdf5943831bca1f32cbe0154f3124543a5145c4d781af",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_009_multi_person_ownership_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 431,
+          "image_id": "lv_mhp_v1-0009",
+          "sha256": "d0ddf9d01d65afe01a607a30a896da809da99a72af5d3c10d16b862d86109faf",
+          "width": 600
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            600,
+            431
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_arm_external_reference",
+          "maximum_area_pixels": 258600,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_010_multi_person_ownership_ownership",
+      "case_sha256": "c5dbaabc8bfdeea6f3f39aa816c20d1d2b869b4676d42d6e683d3fdd66c79043",
+      "defect_type": "ownership",
+      "domain": "multi_person_ownership",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_010_multi_person_ownership_ownership/binary_mask.png",
+        "contour": "panels/rvr_010_multi_person_ownership_ownership/contour.png",
+        "disagreement": "panels/rvr_010_multi_person_ownership_ownership/disagreement.png",
+        "full_context": "panels/rvr_010_multi_person_ownership_ownership/full_context.png",
+        "overlay": "panels/rvr_010_multi_person_ownership_ownership/overlay.png",
+        "source": "panels/rvr_010_multi_person_ownership_ownership/source.png",
+        "uncertainty_zoom": "panels/rvr_010_multi_person_ownership_ownership/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "d0e9925b983297f5dbbf7bde1bb7007bc206fffadf30f6804ff2e1de4109791e",
+      "panels": {
+        "binary_mask": "008be90b3c2907c88a4d9d4c4a482b5c13ab3048daf5699fb16de75f98892d5d",
+        "contour": "a3f76d87297fa6bdfeb937440919017799afa66ab4df10659f20a3356d41e9a6",
+        "disagreement": "26ec3cc3e3fd4475530be6c601f6793a39c04094000096248c5afdf71fa5014b",
+        "full_context": "f5a0ba56131ae01286fd8ca20db9b78e43cb33f36f455f43685349204ec5eaa6",
+        "overlay": "13648a5e7096a6bdf80448b6eb3581b36494ad6c5d2b15c9e31271a434a37bec",
+        "source": "f5a0ba56131ae01286fd8ca20db9b78e43cb33f36f455f43685349204ec5eaa6",
+        "uncertainty_zoom": "abc10cfda3c5f1b5b94180fad5934d23a517bf7bacf8048ed0c7463e8c2f6704"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "851a8228404132db3542bb79f17100e2201c4c624f5594750edd55f7e23d9fcb",
+          "57b5eeb1f4752edadaaef24309c90aa2cfc6d06b065c2ae4c356048f0aaf91be",
+          "2c4c0d0a2240b5ae12a2e5474478c79badb02cbb78382edf4829ef3540f775f9"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0010_03_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0010_03_02.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0010_03_03.png"
+        ],
+        "base_mask_pixel_sha256": "d00209d9820c41950e5a2bb8991800d6d23018ce0f7143150f3f30ddd23dead7",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "367c2fde697d13642dfa056fc075185636d799ec1e0f2c1af9976e404d688e57",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "42550ab2025a917a98c8321725b2cc0c4a2a97b84454775979e3c0816729eb99",
+        "source_panel_sha256": "f5a0ba56131ae01286fd8ca20db9b78e43cb33f36f455f43685349204ec5eaa6",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0010.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 500,
+          "mask_sha256": "008be90b3c2907c88a4d9d4c4a482b5c13ab3048daf5699fb16de75f98892d5d",
+          "width": 380
+        },
+        "contract_id": "target-rvr_010_multi_person_ownership_ownership",
+        "contract_sha256": "61b8088093c615dc85f1b313ec02fbb8273fecc7cd3dc38db713bc58534cab2f",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0010-p0",
+          "person_index": 0,
+          "person_mask_sha256": "11600a5aae33984dc7867cb1322027adf0dcf468db3148f284322b6b6c97971f"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "ae330c5fa7b8321d7233ccd9e42e4122bc386cde8ecb772c2a1b19a507a01e82",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_010_multi_person_ownership_ownership"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 500,
+          "image_id": "lv_mhp_v1-0010",
+          "sha256": "f5a0ba56131ae01286fd8ca20db9b78e43cb33f36f455f43685349204ec5eaa6",
+          "width": 380
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            380,
+            500
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_arm_external_reference",
+          "maximum_area_pixels": 190000,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_011_occlusion_contact_valid",
+      "case_sha256": "12ff9a57237a69bf022803063dbb7fbdc1a603582f0377e8d713c81783c7fb57",
+      "defect_type": null,
+      "domain": "occlusion_contact",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_011_occlusion_contact_valid/binary_mask.png",
+        "contour": "panels/rvr_011_occlusion_contact_valid/contour.png",
+        "disagreement": "panels/rvr_011_occlusion_contact_valid/disagreement.png",
+        "full_context": "panels/rvr_011_occlusion_contact_valid/full_context.png",
+        "overlay": "panels/rvr_011_occlusion_contact_valid/overlay.png",
+        "source": "panels/rvr_011_occlusion_contact_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_011_occlusion_contact_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "47a1e67c258b5b08e71073b482e8d2bd7e7d2b756a8ef4568b015daf2c83ed1c",
+      "panels": {
+        "binary_mask": "d94c7d4a3df5c37e551c8087eb260d894f46c9473c09046ccb2bf25c1691573d",
+        "contour": "5290a4736642303fa5c4b0d37d574f62939e80790c63f2d3067ee32ae21957a2",
+        "disagreement": "817efd776d4172cb7e802a4777e189657d037888afec117c5196514cc3c3f6b3",
+        "full_context": "ba3e49823b01fa9a0b49709e16a164813c41aaaa095e7ccb5578e15caf84d0a4",
+        "overlay": "931ab01c0c05fb9224094718fa96ae50ba7654ffcadf5be6a9189edfe85dcfd7",
+        "source": "ba3e49823b01fa9a0b49709e16a164813c41aaaa095e7ccb5578e15caf84d0a4",
+        "uncertainty_zoom": "4325a4ba17755dd461c689fbc7041e3684ad1cb6f5dbe99883ea9f3ad178b0d3"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "8cfc6b8e8dac1cc6850f6b2da91f0161cfa9a7786769e9f886d985e948b9e963",
+          "35867979ac21ed352c89dbfb93bf6fc4a91fe9b3cbca5d97cd3024c7a4078046",
+          "fa1472f921210dea158c93a2de4b2fbc3bcdf1ded603e2c1e6db3ccd5535bfcb",
+          "2e6ea5fce0a2efee8185337c0e06b6ff3a4707f8dc9a57cf22840287f2ad6453",
+          "4ab796f0204af7cc9a529ad42a4c086463ce1f9309891dee978fbe9a24325122",
+          "9f50cb693227e47f0ab8289941efd77ebe7de219d553b1ca9d0e376144ae0be3",
+          "46df55ec213565558f0e53dded18a00959a08f7306e57c999f8382c7ca7deed8"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_02.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_03.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_04.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_05.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_06.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0011_07_07.png"
+        ],
+        "base_mask_pixel_sha256": "a84fe04bec2e3611ca41b0062374467d774ccf35c89cb2955c72c4d572d51f47",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "9cd4e9ea8eb0eb666e2216921c1c27be869cd223cf075ab788c0388f4992d72c",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "e5a75a6cf04495162909e7d9e744489e7e905642c185f6d7a02b92be6bb1432c",
+        "source_panel_sha256": "ba3e49823b01fa9a0b49709e16a164813c41aaaa095e7ccb5578e15caf84d0a4",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0011.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 360,
+          "mask_sha256": "d94c7d4a3df5c37e551c8087eb260d894f46c9473c09046ccb2bf25c1691573d",
+          "width": 640
+        },
+        "contract_id": "target-rvr_011_occlusion_contact_valid",
+        "contract_sha256": "65c9249e1cde5b5c89080ff587e6de30abdd331a02b6649d2b2a5a5b2de80272",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0011-p0",
+          "person_index": 0,
+          "person_mask_sha256": "d49da6f7637332df8e47a5c7b41a05672decbd0fb8e444d9b13bd1395089d3a9"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "308307f15c3064d76f4c86a764405a5a174a7d5f46ec75d7e193e7face3a0659",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_011_occlusion_contact_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 360,
+          "image_id": "lv_mhp_v1-0011",
+          "sha256": "ba3e49823b01fa9a0b49709e16a164813c41aaaa095e7ccb5578e15caf84d0a4",
+          "width": 640
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            640,
+            360
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_arm_external_reference",
+          "maximum_area_pixels": 230400,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_012_occlusion_contact_protected_region",
+      "case_sha256": "c821213a64e77e811138e3cb90db3ad918f0a17f2dda589e46c72255270474e4",
+      "defect_type": "protected_region",
+      "domain": "occlusion_contact",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_012_occlusion_contact_protected_region/binary_mask.png",
+        "contour": "panels/rvr_012_occlusion_contact_protected_region/contour.png",
+        "disagreement": "panels/rvr_012_occlusion_contact_protected_region/disagreement.png",
+        "full_context": "panels/rvr_012_occlusion_contact_protected_region/full_context.png",
+        "overlay": "panels/rvr_012_occlusion_contact_protected_region/overlay.png",
+        "source": "panels/rvr_012_occlusion_contact_protected_region/source.png",
+        "uncertainty_zoom": "panels/rvr_012_occlusion_contact_protected_region/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "b86a2899d641aeefc2c1bd2d85eb361a32d6dfcdffe730c2239d58029893ec0f",
+      "panels": {
+        "binary_mask": "3e44b4bc56d4de27630c9a76c321b6bee11455e43a91a96d6f20eb5af377a427",
+        "contour": "cbf33856b1dfe677e0e994645dd977be1dcf3c54a5844f9c8c2a7e72c36a413a",
+        "disagreement": "a49246d954ae53e3b442ce9d16c070a219c939b560e5180648ca72e99fecf27d",
+        "full_context": "b4611acc1cef9c847f5a8c2debdfef2673263fb1672def7df1546dec6b547519",
+        "overlay": "6cd05d4e2d78c1a2a610fa260ad19c7f97f2793522775a6d27565ca3b9d78800",
+        "source": "b4611acc1cef9c847f5a8c2debdfef2673263fb1672def7df1546dec6b547519",
+        "uncertainty_zoom": "01a9afc8bd78ef1c4b93e01d2c61fff95794b94f4030b22f418476a6faffcb81"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "ca8aac61aaa28d6d24eb7edba2450cbd2ee88b5b335e0b6b08598f8ceca8bef5",
+          "d875d902fa2e21030f53200c1c06cadc599c1b5f8f36289015b52822ab266d33",
+          "5c3d885128faf8252acdcf2d60ec50df4d51eeb15485dee7e1b202f8d3d475d9"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0012_03_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0012_03_02.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0012_03_03.png"
+        ],
+        "base_mask_pixel_sha256": "6068b2b9211905ed74a6eaca04d848fd07c1d5ba8ef6abd8778517d15bd7bad7",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "db65fcefc135ad7f6f836341c0099086b9610566a94ab218c4dbeb62764b8e25",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "5d3b7c2291963438c51861cc8222e817204a12eba8da3e2a314ecb0d23cf2be8",
+        "source_panel_sha256": "b4611acc1cef9c847f5a8c2debdfef2673263fb1672def7df1546dec6b547519",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0012.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 576,
+          "mask_sha256": "3e44b4bc56d4de27630c9a76c321b6bee11455e43a91a96d6f20eb5af377a427",
+          "width": 1024
+        },
+        "contract_id": "target-rvr_012_occlusion_contact_protected_region",
+        "contract_sha256": "fdfe982aecf3c8a62b262af829941f278337910c10feae7ff9a34afd85d54763",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0012-p0",
+          "person_index": 0,
+          "person_mask_sha256": "b223ac7797cb485de902f2009ad9ead769111d71f148b3b6db09d34e18e21c32"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "1b7182201ca74e3002f168cd1ff9b9309ee97085639b9fa8e812cfe44c3488ce",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_012_occlusion_contact_protected_region"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 576,
+          "image_id": "lv_mhp_v1-0012",
+          "sha256": "b4611acc1cef9c847f5a8c2debdfef2673263fb1672def7df1546dec6b547519",
+          "width": 1024
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            1024,
+            576
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_arm_external_reference",
+          "maximum_area_pixels": 589824,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_013_visible_anatomy_valid",
+      "case_sha256": "f1cf0e343c8c07f0ece5691cb8eab63ef0613c4563ef249081f182532cf542eb",
+      "defect_type": null,
+      "domain": "visible_anatomy",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/rvr_013_visible_anatomy_valid/binary_mask.png",
+        "contour": "panels/rvr_013_visible_anatomy_valid/contour.png",
+        "disagreement": "panels/rvr_013_visible_anatomy_valid/disagreement.png",
+        "full_context": "panels/rvr_013_visible_anatomy_valid/full_context.png",
+        "overlay": "panels/rvr_013_visible_anatomy_valid/overlay.png",
+        "source": "panels/rvr_013_visible_anatomy_valid/source.png",
+        "uncertainty_zoom": "panels/rvr_013_visible_anatomy_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "667d892428d57922b7a7a86ce4cdb4ef6c1984d14d3bd1abb0915876363a71aa",
+      "panels": {
+        "binary_mask": "0280f89a3295b2acee0ee8597b6ffe9d5fe04ae10036ce373e8991cb608f6061",
+        "contour": "848c8c979c67266d298fe72a5d67396131750f49df877014ca4a1fde3ab8b5be",
+        "disagreement": "7c379eece68926df9e72771db23d169e5a9ac27110e4606ef8f8c233a1ff6e6b",
+        "full_context": "9578c46ce198973d948659bb617d9e8259bf02c60182182f0a559c717548a774",
+        "overlay": "c7a3d5f581494c8374a3cb3472d1c3520d8364d327c015e9ac467c47181d1a29",
+        "source": "9578c46ce198973d948659bb617d9e8259bf02c60182182f0a559c717548a774",
+        "uncertainty_zoom": "3cdfb31da421c6edb5c36b5b0583e335ec5ee3394b82d604bdad08a77ee4819f"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "dca4d42a4b3072c5678bbe181ad4c4067be7e674b2bd63914095aa065c078c5b",
+          "c5ccfca9897bf19e075f8ba9cdcf5bb9a056889353a9280bf32702cd767d2c44"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0014_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0014_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "a566ee7f8575ee59c92961e89eb883312c78870da48d6eb21b35d4812b4b6fd3",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "615096bdc7435fe6d571e091408062d734d2e9e1c74edc6fc2fa7e5a3e4a593a",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "e596ef6c073c88f6ec958098a8085e5cabcd719cc4c98630068f72aa65e529cb",
+        "source_panel_sha256": "9578c46ce198973d948659bb617d9e8259bf02c60182182f0a559c717548a774",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0014.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 950,
+          "mask_sha256": "0280f89a3295b2acee0ee8597b6ffe9d5fe04ae10036ce373e8991cb608f6061",
+          "width": 633
+        },
+        "contract_id": "target-rvr_013_visible_anatomy_valid",
+        "contract_sha256": "067768b6a8c2e436edddc3902d8efb2f2352b4e38a97e029492c99d9e6eb7712",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0014-p0",
+          "person_index": 0,
+          "person_mask_sha256": "67c1f9802beaf61eac6b4a3bb7a0fd4a566495b13dd931c2d746316d9391753d"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "a566ee7f8575ee59c92961e89eb883312c78870da48d6eb21b35d4812b4b6fd3",
+            "owner_person_index": 0,
+            "region_id": "protected-face-rvr_013_visible_anatomy_valid"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 950,
+          "image_id": "lv_mhp_v1-0014",
+          "sha256": "9578c46ce198973d948659bb617d9e8259bf02c60182182f0a559c717548a774",
+          "width": 633
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            633,
+            950
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "face_external_reference",
+          "maximum_area_pixels": 601350,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "rvr_014_visible_anatomy_wrong_label",
+      "case_sha256": "3d1e36db721ddba411cedf020994b7397bac14050c7780fae0cabb5f0bf2d1f8",
+      "defect_type": "wrong_label",
+      "domain": "visible_anatomy",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/rvr_014_visible_anatomy_wrong_label/binary_mask.png",
+        "contour": "panels/rvr_014_visible_anatomy_wrong_label/contour.png",
+        "disagreement": "panels/rvr_014_visible_anatomy_wrong_label/disagreement.png",
+        "full_context": "panels/rvr_014_visible_anatomy_wrong_label/full_context.png",
+        "overlay": "panels/rvr_014_visible_anatomy_wrong_label/overlay.png",
+        "source": "panels/rvr_014_visible_anatomy_wrong_label/source.png",
+        "uncertainty_zoom": "panels/rvr_014_visible_anatomy_wrong_label/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "a74f8001c69368321a0e194e59eaab79ef8246e7ec647dfa5ab6dd7c4c4a7858",
+      "panels": {
+        "binary_mask": "d9ade80678edc33d7f45eb8bb9012b47c04c6dd3bdc8136422171b843a405b3a",
+        "contour": "9a79f6c517ac8f2e75a965b76f643ad39c78ed784aa095b902c47db6e62e8fa0",
+        "disagreement": "a4d7b43e961b1319d389d1568f8b4c4a2ef1af19efdedd91a3e927bbeb14a629",
+        "full_context": "28e298a068b7839295037d4481edd11b0039d349f6da96650f4c616af2a3484a",
+        "overlay": "f88d8263cee06248a02600e7345d81d77a34120cd540d1c4ff71955d1a5cb0e2",
+        "source": "28e298a068b7839295037d4481edd11b0039d349f6da96650f4c616af2a3484a",
+        "uncertainty_zoom": "1a7ff6a027587a2a33d5fcdfd6456424c86d1921d0c06d972c93119592359273"
+      },
+      "source_binding": {
+        "annotation_file_sha256s": [
+          "72952d275c2d6383706cdcb16fa6043c6c7edfa0ca36e127c7551b07193160da",
+          "9d7e1e3367dc728bc01ddef5c4278e8b8235853f6017882d8c828188cca901ec"
+        ],
+        "annotation_relative_paths": [
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0015_02_01.png",
+          "Body/LV-MHP-v1/LV-MHP-v1/annotations/0015_02_02.png"
+        ],
+        "base_mask_pixel_sha256": "a92f15f7cfa1bd56b50db6bbdbeac9e74b6c75a619c68386ab9e06c8f7eb7b57",
+        "production_draft": false,
+        "qualification_evidence_sha256": "4d109de471f88e3e2e1d223bf2b077e9bdb573f9757e54756cf48466156f599d",
+        "real_source_pixels": true,
+        "source_authority": "external_labeled_reference",
+        "source_binding_sha256": "66b009a56b7cd35e6602179339ec62e1e4dff3bc10f49b1dfcdad319fbb26286",
+        "source_family": "maskedwarehouse",
+        "source_file_sha256": "b2a6ac61214e0916e83aab9aa1e5282cad616eba227a941340fab5e13e707dc0",
+        "source_panel_sha256": "28e298a068b7839295037d4481edd11b0039d349f6da96650f4c616af2a3484a",
+        "source_relative_path": "Body/LV-MHP-v1/LV-MHP-v1/images/0015.jpg",
+        "source_root_id": "maskedwarehouse",
+        "synthetic": false
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 563,
+          "mask_sha256": "d9ade80678edc33d7f45eb8bb9012b47c04c6dd3bdc8136422171b843a405b3a",
+          "width": 450
+        },
+        "contract_id": "target-rvr_014_visible_anatomy_wrong_label",
+        "contract_sha256": "17663bace9a4d5691ecbfea0e2d0744df350f3a89a56b1639110e26d10c0463c",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "lv_mhp_v1-0015-p1",
+          "person_index": 1,
+          "person_mask_sha256": "417f151eda21a9ad950cf8c04ca18b7bdc99b376de963bca1b1be818d4547253"
+        },
+        "protected_regions": [
+          {
+            "label_id": "face_external_reference",
+            "mask_sha256": "a92f15f7cfa1bd56b50db6bbdbeac9e74b6c75a619c68386ab9e06c8f7eb7b57",
+            "owner_person_index": 1,
+            "region_id": "protected-face-rvr_014_visible_anatomy_wrong_label"
+          }
+        ],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 563,
+          "image_id": "lv_mhp_v1-0015",
+          "sha256": "28e298a068b7839295037d4481edd11b0039d349f6da96650f4c616af2a3484a",
+          "width": 450
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            450,
+            563
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "face_external_reference",
+          "maximum_area_pixels": 253350,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "frozen_at": "2026-07-22T07:30:00Z",
+  "reference_coverage": {
+    "inventory_relative_path": "manifests/inventory_summary.json",
+    "inventory_sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259",
+    "role": "coverage_retrieval_only",
+    "root_id": "reference_library",
+    "truth_authority": "none"
+  },
+  "required_domains": [
+    "clothing_skin_boundary",
+    "feet",
+    "hair",
+    "hands",
+    "multi_person_ownership",
+    "occlusion_contact",
+    "visible_anatomy"
+  ],
+  "schema_version": "2.0.0",
+  "source_bindings_sha256": "98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1",
+  "suite_id": "maskfactory_real_visual_regression_v2",
+  "suite_sha256": "653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a",
+  "truth_source": "real_image_external_labeled_reference"
+}

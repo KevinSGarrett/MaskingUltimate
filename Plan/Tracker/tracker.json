@@ -23009,7 +23009,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 94,
       "notes": [
         {
           "ts": "2026-07-22T08:52:16+00:00",
@@ -23020,12 +23020,17 @@
           "ts": "2026-07-22T11:20:47+00:00",
           "actor": "ai_agent",
           "text": "All six terminal outcomes now require a revalidated receipt at the SQLite mutation boundary: accepted, repaired, abstained, rejected, quarantined, and holdout. Live crash/restart and 1,000-record production milestone remain open."
+        },
+        {
+          "ts": "2026-07-22T11:28:57+00:00",
+          "actor": "ai_agent",
+          "text": "Live local execution checkpointed the complete 50-record holdout shard in two contiguous batches, replayed the first batch idempotently, and resumed from a second process with identical queue SHA. Provider-lane crash/restart and 1,000-record milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; 103 adult/critic regression tests pass",
+      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:20:47+00:00",
+      "updated_at": "2026-07-22T11:28:57+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23189,18 +23194,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 20,
+      "percent_complete": 30,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
           "actor": "ai_agent",
           "text": "The required representative shard selection and intake/decode/alignment/schema/evidence foundation are green for all five lanes. Provider provenance, hard QC, strict VLM, repair/abstention, durable resume, and signed terminal outcomes remain open."
+        },
+        {
+          "ts": "2026-07-22T11:28:58+00:00",
+          "actor": "ai_agent",
+          "text": "The evaluation-only representative lane now has 50/50 durable terminal receipts, idempotent replay, and second-process resume evidence. Four generation/review lanes still require provider, strict-VLM, repair/abstention, and evidence completion."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722/report.json; exact 1,074-record five-lane bounded canary.",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:12:31+00:00",
+      "updated_at": "2026-07-22T11:28:58+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {
@@ -23285,12 +23295,17 @@
           "ts": "2026-07-22T11:26:08+00:00",
           "actor": "ai_agent",
           "text": "Original Porn-Blocker-Benchmark v4 holdout is frozen before first evaluation. The validator binds all ordered sample IDs, source hashes, split groups, shard and full split-map hashes, rejects training/critic use, and proves every related group member remains holdout."
+        },
+        {
+          "ts": "2026-07-22T11:28:58+00:00",
+          "actor": "ai_agent",
+          "text": "All 50 frozen holdout records now also have durable evaluation-only queue receipts; no mask was generated and no training, critic-calibration, or production authority was granted."
         }
       ],
-      "evidence": "qa/live_verification/nude_holdout_policy_freeze_20260722.json; policy seal 86251a0672cd8dcc5e5d73baec0060b959889a3bf5ae5982fded4db541cbb529; 50 samples/46 groups/0 cross-partition groups; 4 tests pass",
+      "evidence": "qa/live_verification/nude_holdout_policy_freeze_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:26:08+00:00",
+      "updated_at": "2026-07-22T11:28:58+00:00",
       "orphaned": false
     },
     "MF-P5-11.03": {

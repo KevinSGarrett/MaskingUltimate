@@ -12,6 +12,7 @@ def _crosswalk() -> dict[str, object]:
         "anatomy_aliases": {
             "breast": {"canonical_candidate": "breast_region", "kind": "coarse_anatomy"},
             "nipple": {"canonical_candidate": "nipple", "kind": "anatomy"},
+            "mystery": {"canonical_candidate": "not_in_policy", "kind": "anatomy"},
         },
         "scene_and_action_labels": {"Sex": "sexual_activity_scene"},
         "context_aliases": {
@@ -77,7 +78,7 @@ def test_polygon_bbox_alignment_failure_is_hard_block() -> None:
 def test_one_pixel_raster_quantization_is_accepted_without_lowering_iou_gate() -> None:
     result = evaluate_polygon_annotation(
         {"segmentation": [[1, 1, 2, 1, 2, 2, 1, 2]], "bbox": [1, 1, 1, 1]},
-        raw_label="nipple",
+        raw_label="breast",
         width=4,
         height=4,
         crosswalk=_crosswalk(),
@@ -94,7 +95,7 @@ def test_compressed_rle_is_materialized_as_pixel_truth_candidate() -> None:
             "bbox": [0, 0, 2, 2],
             "area": 3,
         },
-        raw_label="nipple",
+        raw_label="breast",
         width=3,
         height=2,
         crosswalk=_crosswalk(),
@@ -111,7 +112,7 @@ def test_stale_rle_source_area_is_preserved_as_advisory_not_mask_authority() -> 
             "bbox": [0, 0, 2, 2],
             "area": 4,
         },
-        raw_label="nipple",
+        raw_label="breast",
         width=3,
         height=2,
         crosswalk=_crosswalk(),
@@ -119,3 +120,31 @@ def test_stale_rle_source_area_is_preserved_as_advisory_not_mask_authority() -> 
     assert result["mask_pixels"] == 3
     assert result["source_annotation_area"] == 4.0
     assert result["source_annotation_area_matches_decoded_mask"] is False
+
+
+def test_fine_anatomy_whole_person_substitution_is_hard_blocked() -> None:
+    with pytest.raises(NudePolygonQcError, match="image_area_implausible"):
+        evaluate_polygon_annotation(
+            {
+                "segmentation": [[4, 4, 59, 4, 59, 59, 4, 59]],
+                "bbox": [4, 4, 56, 56],
+            },
+            raw_label="nipple",
+            width=64,
+            height=64,
+            crosswalk=_crosswalk(),
+        )
+
+
+def test_every_pixel_label_requires_explicit_scale_policy() -> None:
+    with pytest.raises(NudePolygonQcError, match="scale_policy_missing"):
+        evaluate_polygon_annotation(
+            {
+                "segmentation": [[4, 4, 11, 4, 11, 11, 4, 11]],
+                "bbox": [4, 4, 8, 8],
+            },
+            raw_label="mystery",
+            width=64,
+            height=64,
+            crosswalk=_crosswalk(),
+        )

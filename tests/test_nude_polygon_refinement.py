@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from maskfactory.nude_polygon_hard_qc import NudePolygonQcError
 from maskfactory.nude_polygon_refinement import (
     NudePolygonRefinementError,
     autotune_polygon_refinement,
@@ -74,7 +75,7 @@ def test_autotune_selects_best_safe_unique_proposal_with_bounded_attempts() -> N
     image[30:70, 35:65] = 255
     source = np.zeros((96, 96), dtype=bool)
     source[28:72, 33:67] = True
-    selected, report = autotune_polygon_refinement(image, source)
+    selected, report = autotune_polygon_refinement(image, source, candidate_label="breast_region")
     assert report["outcome"] == "draft_refined_candidate_autotuned"
     assert not np.array_equal(selected, source)
     tuning = report["autotune"]
@@ -100,7 +101,7 @@ def test_autotune_abstains_and_preserves_parent_when_no_attempt_is_safe() -> Non
     image = np.full((64, 64, 3), 100, dtype=np.uint8)
     source = np.zeros((64, 64), dtype=bool)
     source[16:48, 16:48] = True
-    selected, report = autotune_polygon_refinement(image, source)
+    selected, report = autotune_polygon_refinement(image, source, candidate_label="breast_region")
     assert report["outcome"] == "abstained_no_safe_refinement"
     assert report["parent_preserved"] is True
     assert report["changed_pixels"] == 0
@@ -114,4 +115,18 @@ def test_autotune_attempt_policy_fails_closed(attempts: tuple[int, ...]) -> None
     source = np.zeros((32, 32), dtype=bool)
     source[8:24, 8:24] = True
     with pytest.raises(NudePolygonRefinementError, match="attempt_iterations_invalid"):
-        autotune_polygon_refinement(image, source, attempt_iterations=attempts)
+        autotune_polygon_refinement(
+            image,
+            source,
+            candidate_label="breast_region",
+            attempt_iterations=attempts,
+        )
+
+
+def test_autotune_cannot_bypass_label_scale_hard_qc() -> None:
+    image = np.zeros((64, 64, 3), dtype=np.uint8)
+    image[4:60, 4:60] = 255
+    source = np.zeros((64, 64), dtype=bool)
+    source[4:60, 4:60] = True
+    with pytest.raises(NudePolygonQcError, match="image_area_implausible"):
+        autotune_polygon_refinement(image, source, candidate_label="nipple")

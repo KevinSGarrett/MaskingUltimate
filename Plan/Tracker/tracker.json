@@ -23063,7 +23063,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 63,
+      "percent_complete": 68,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23109,12 +23109,17 @@
           "ts": "2026-07-22T12:44:05+00:00",
           "actor": "ai_agent",
           "text": "The real polygon lane now evaluates five bounded deterministic graph-cut variants and selects only the best non-regressing boundary candidate. Four of 12 real canary masks improved over the former fixed iteration; all remain ownership/VLM/provider-unqualified drafts."
+        },
+        {
+          "ts": "2026-07-22T13:00:42+00:00",
+          "actor": "ai_agent",
+          "text": "All 125,976 polygon masks now carry recomputed image-area scale evidence under explicit policy for every current canonical pixel label. Fine-anatomy whole-person substitutions and missing label policies hard-fail; the 26 largest real extremes were visually checked and retained without threshold weakening."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_provider_critic_ownership_quorum_20260722.json; qa/live_verification/nude_training_role_ownership_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:44:05+00:00",
+      "updated_at": "2026-07-22T13:00:42+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {
@@ -23251,7 +23256,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 74,
+      "percent_complete": 77,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23292,12 +23297,17 @@
           "ts": "2026-07-22T12:44:06+00:00",
           "actor": "ai_agent",
           "text": "Boundary repair now has a five-attempt deterministic budget, duplicate-proposal/no-progress accounting, best-safe selection, and exact parent-preserving abstention when every attempt is unsafe. Live provider/strict-critic terminal repair remains open."
+        },
+        {
+          "ts": "2026-07-22T13:00:43+00:00",
+          "actor": "ai_agent",
+          "text": "Every autotuned repair proposal now rechecks label-aware scale before selection, so bounded correction cannot turn a fine target into a whole-person mask. Unsafe scale attempts are rejected and parent preservation remains fail-closed."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json; qa/live_verification/nude_visual_evidence_queue_enforcement_20260722.json; qa/live_verification/nude_person_instance_ownership_receipt_gate_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:44:06+00:00",
+      "updated_at": "2026-07-22T13:00:43+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {
@@ -23313,7 +23323,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 52,
+      "percent_complete": 55,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
@@ -23354,12 +23364,17 @@
           "ts": "2026-07-22T12:44:06+00:00",
           "actor": "ai_agent",
           "text": "The 12-record polygon canary now proves deterministic bounded variant selection, parent rollback/abstention, hard non-regression, real panel rendering, and exact replay; provider comparison, person ownership, and promoted strict critics remain open."
+        },
+        {
+          "ts": "2026-07-22T13:00:43+00:00",
+          "actor": "ai_agent",
+          "text": "The real polygon canary now proves that all 12 selected repair outputs pass the same label-scale whole-person veto as the full corpus, with identical selected pixels and pixel-semantic evidence after integration. Provider/ownership/strict-critic stages remain open."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json; qa/live_verification/nude_polygon_autotuned_repair_20260722.json; qa/live_verification/nude_label_scale_whole_person_hard_qc_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:44:06+00:00",
+      "updated_at": "2026-07-22T13:00:43+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {

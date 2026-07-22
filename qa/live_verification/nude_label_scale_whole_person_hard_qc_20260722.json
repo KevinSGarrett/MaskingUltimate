@@ -1,0 +1,101 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_label_scale_whole_person_hard_qc.v1",
+  "artifact_type": "adult_anatomy_label_scale_and_whole_person_substitution_hard_qc",
+  "recorded_at": "2026-07-22T12:55:24Z",
+  "status": "HARD_QA_PASS_BOUNDED",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P5-11.01"
+  ],
+  "product_behavior": {
+    "mask_image_area_ratio_recomputed_from_pixels": true,
+    "all_13_current_pixel_labels_require_explicit_scale_policy": true,
+    "unknown_pixel_label_scale_policy_fails_closed": true,
+    "fine_anatomy_whole_person_substitution_hard_blocked": true,
+    "autotuned_refinement_cannot_bypass_scale_veto": true,
+    "coarse_anatomy_closeups_retained": true,
+    "thresholds_lowered_to_increase_throughput": false
+  },
+  "full_corpus_result": {
+    "schema_version": "maskfactory.nude_polygon_hard_qc.v4",
+    "record_count": 39354,
+    "mask_count": 125976,
+    "hard_qc_pass_candidate_records": 37536,
+    "quarantined_input_records": 1818,
+    "newly_quarantined_record_count": 0,
+    "changed_outcome_or_reason_record_count": 0,
+    "records_sha256": "fd9b16cd08f031bbc0d631f895764d23ca92d38fb27030fdeb1aad28530ce584",
+    "summary_file_sha256": "8d2b6c5758818fde1a5574d24b33cfeca402405ea02a6df1cad4dde6339ca96e",
+    "summary_self_sha256": "6d8685b990f8aaeebb9f58f7cf123609ebe0e2d3fe93a63782dc99a9dcca3c1c"
+  },
+  "scale_policy": {
+    "anus": 0.30,
+    "breast_region": 0.85,
+    "buttocks_region": 0.90,
+    "clitoris": 0.02,
+    "feet_region_unspecified": 0.50,
+    "female_pubic_hair": 0.05,
+    "head_face": 0.80,
+    "male_genital_region": 0.75,
+    "male_pubic_hair": 0.05,
+    "nipple": 0.05,
+    "penis": 0.30,
+    "scrotum_or_testicular_region": 0.10,
+    "vulva_external_region": 0.75
+  },
+  "visual_extreme_audit": {
+    "reviewed_record_count": 26,
+    "selection": "The two largest image-area masks for each of the 13 current canonical pixel labels.",
+    "contact_sheet_sha256": "6952a227b3b4ed2b730caa4cf273f706619daec7dc669afeede16135a76c0726",
+    "observations": [
+      "The largest coarse breast, buttocks, head/face, genital-region, and vulva-region masks are close-up regional annotations rather than whole-person substitutions.",
+      "The largest fine nipple, clitoris, anus, penis, pubic-hair, and scrotal-region masks remain well below their conservative hard maxima.",
+      "No current mask required reclassification solely to make the new policy pass."
+    ],
+    "strict_semantic_approval_claimed": false,
+    "person_instance_ownership_claimed": false
+  },
+  "training_role_rebind": {
+    "candidate_count": 96514,
+    "candidate_stream_sha256": "fc7acfda2bf312345d0c0dc4275478f847486f5c6204cebd01fa623089d6e59d",
+    "source_polygon_records_sha256": "fd9b16cd08f031bbc0d631f895764d23ca92d38fb27030fdeb1aad28530ce584",
+    "summary_file_sha256": "19fbb4e742a0e4cace585fd2168944bfa59442801361732a42f00afa7580bee2",
+    "training_authority_granted": false
+  },
+  "refinement_integration": {
+    "real_canary_record_count": 12,
+    "label_scale_qc_pass_count": 12,
+    "selected_masks_unchanged_from_preintegration_canary": true,
+    "pixel_semantic_evidence_pass_count": 12,
+    "report_self_sha256": "18ba843e1a1d7eef75e691f5f30a8bf333de6499db9382eb75ad166ee0ff2e1b",
+    "report_file_sha256": "dc465761be37300507e73c9c296eb25a100bda0fa2f6ca036b16614f2c373f0e",
+    "contact_sheet_sha256": "992b1a4361f7bae0783e96776be46afa07339f52b33288046d2beaad5cb91ac1"
+  },
+  "validation": {
+    "focused_and_neighbor_tests": "71 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS",
+    "run_incident": {
+      "failure": "A detached shell returned before the first full-corpus child, and a second identical process was started against the same output path.",
+      "containment": "The later duplicate PID 21124 was stopped after exact command-line and start-time identification; original PID 4828 completed the governed output.",
+      "concurrent_writer_count_at_completion": 1
+    }
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_polygon_hard_qc.py": "e333f0b2119783228034bff4658afa6cbd7f06ab6d20c95b48a78ec9c4dd7d65",
+    "src/maskfactory/nude_polygon_refinement.py": "13ea7ff50cf2f2e2d7bea9803bb1eadfe39b4cf9b350330a6a0abf37fa647460",
+    "tests/test_nude_polygon_hard_qc.py": "32d794d0a8800dc229aef44ffc377fcc5fd992fcf59b00e389fb826896eacbad",
+    "tests/test_nude_polygon_refinement.py": "272a910f965aae5a9370ade0d3ba9eda638a45c8d89bba82f30c45f514f36a91"
+  },
+  "authority_boundary": {
+    "external_annotations_are_human_gold": false,
+    "strict_visual_review_completed": false,
+    "person_instance_ownership_verified": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Apply the same label-scale veto after provider generation, then complete ownership, independent comparison, strict visual review, terminal receipts, and certification."
+}

@@ -20,6 +20,7 @@ from .nude_corpus_intake import (
     representative_shards,
     validate_shard,
 )
+from .nude_polygon_hard_qc import NudePolygonQcError, evaluate_anatomy_mask_scale
 from .nude_visual_evidence import verify_pixel_semantic_visual_evidence
 from .providers.disagreement import binary_mask_sha256
 
@@ -208,6 +209,7 @@ def autotune_polygon_refinement(
     image_rgb: np.ndarray,
     source_mask: np.ndarray,
     *,
+    candidate_label: str,
     attempt_iterations: tuple[int, ...] = (1, 2, 3, 4, 5),
 ) -> tuple[np.ndarray, dict[str, Any]]:
     """Select the best safe deterministic graph-cut proposal within a fixed budget."""
@@ -223,9 +225,24 @@ def autotune_polygon_refinement(
     ):
         raise NudePolygonRefinementError("attempt_iterations_invalid")
     source = np.asarray(source_mask).astype(bool)
+    evaluate_anatomy_mask_scale(source, candidate_label=candidate_label)
     attempts: list[tuple[np.ndarray, dict[str, Any]]] = []
     for iterations in attempt_iterations:
         selected, report = refine_polygon_mask(image_rgb, source, iterations=iterations)
+        report = dict(report)
+        try:
+            report["label_scale_qc"] = evaluate_anatomy_mask_scale(
+                selected, candidate_label=candidate_label
+            )
+        except NudePolygonQcError as exc:
+            report["outcome"] = "rejected_refinement_regression"
+            report["reasons"] = sorted(set([*report["reasons"], str(exc)]))
+            report["label_scale_qc"] = {
+                "candidate_label": candidate_label,
+                "status": "fail",
+                "reason": str(exc),
+            }
+            selected = source
         attempts.append((selected, report))
     safe = [
         (selected, report)
@@ -252,6 +269,7 @@ def autotune_polygon_refinement(
     selected_report.update(
         {
             "schema_version": "maskfactory.nude_polygon_refinement.v3",
+            "candidate_label": candidate_label,
             "outcome": terminal_outcome,
             "selected_mask_sha256": _mask_sha256(selected),
             "refined_mask_sha256": _mask_sha256(selected),
@@ -447,7 +465,11 @@ def run_polygon_refinement_canary(
                 annotation["segmentation"], width=image.shape[1], height=image.shape[0]
             )
             try:
-                refined, refinement = autotune_polygon_refinement(image, source_mask)
+                refined, refinement = autotune_polygon_refinement(
+                    image,
+                    source_mask,
+                    candidate_label=str(mapped[0]["candidate_label"]),
+                )
             except NudePolygonRefinementError:
                 continue
             selected = (raw_label, mapped[0]["candidate_label"], source_mask, refined, refinement)

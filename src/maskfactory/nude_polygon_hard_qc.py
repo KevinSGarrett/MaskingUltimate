@@ -23,10 +23,48 @@ from .providers.disagreement import binary_mask_sha256
 
 MIN_MASK_BBOX_IOU = 0.90
 MAX_MASK_BBOX_EDGE_DELTA_PX = 1.5
+MAX_MASK_IMAGE_AREA_RATIO_BY_LABEL = {
+    "anus": 0.30,
+    "breast_region": 0.85,
+    "buttocks_region": 0.90,
+    "clitoris": 0.02,
+    "feet_region_unspecified": 0.50,
+    "female_pubic_hair": 0.05,
+    "head_face": 0.80,
+    "male_genital_region": 0.75,
+    "male_pubic_hair": 0.05,
+    "nipple": 0.05,
+    "penis": 0.30,
+    "scrotum_or_testicular_region": 0.10,
+    "vulva_external_region": 0.75,
+}
 
 
 class NudePolygonQcError(RuntimeError):
     """A corpus-level identity, mapping, or annotation invariant failed closed."""
+
+
+def evaluate_anatomy_mask_scale(mask: np.ndarray, *, candidate_label: str) -> dict[str, Any]:
+    """Reject catastrophic whole-image substitutions using explicit label policy."""
+
+    binary = np.asarray(mask)
+    if binary.ndim != 2 or binary.size == 0:
+        raise NudePolygonQcError("anatomy_mask_scale_shape_invalid")
+    binary = binary.astype(bool)
+    maximum_image_area_ratio = MAX_MASK_IMAGE_AREA_RATIO_BY_LABEL.get(candidate_label)
+    if maximum_image_area_ratio is None:
+        raise NudePolygonQcError("polygon_label_scale_policy_missing")
+    mask_image_area_ratio = float(binary.sum()) / int(binary.size)
+    if mask_image_area_ratio > maximum_image_area_ratio:
+        raise NudePolygonQcError("anatomy_mask_image_area_implausible")
+    return {
+        "candidate_label": candidate_label,
+        "image_pixels": int(binary.size),
+        "mask_pixels": int(binary.sum()),
+        "mask_image_area_ratio": mask_image_area_ratio,
+        "maximum_mask_image_area_ratio": maximum_image_area_ratio,
+        "whole_person_substitution_rejected": False,
+    }
 
 
 def _bbox_iou(first: Sequence[float], second: Sequence[float]) -> float:
@@ -102,12 +140,17 @@ def evaluate_polygon_annotation(
     maximum_edge_delta = max(abs(first - second) for first, second in zip(expected, observed))
     if bbox_iou < MIN_MASK_BBOX_IOU and maximum_edge_delta > MAX_MASK_BBOX_EDGE_DELTA_PX:
         raise NudePolygonQcError("polygon_bbox_alignment_failed")
+    candidate_label = str(mapped[0]["candidate_label"])
+    scale_qc = evaluate_anatomy_mask_scale(mask, candidate_label=candidate_label)
     return {
         "raw_label": raw_label,
-        "candidate_label": mapped[0]["candidate_label"],
+        "candidate_label": candidate_label,
         "candidate_kind": mapped[0]["kind"],
         "mask_sha256": binary_mask_sha256(mask),
         "mask_pixels": int(mask.sum()),
+        "image_pixels": scale_qc["image_pixels"],
+        "mask_image_area_ratio": scale_qc["mask_image_area_ratio"],
+        "maximum_mask_image_area_ratio": scale_qc["maximum_mask_image_area_ratio"],
         "mask_bbox_xyxy": list(observed),
         "annotation_bbox_xyxy": list(expected),
         "bbox_iou": bbox_iou,
@@ -246,7 +289,7 @@ def run_full_polygon_hard_qc(
             }
         )
     summary = {
-        "schema_version": "maskfactory.nude_polygon_hard_qc.v3",
+        "schema_version": "maskfactory.nude_polygon_hard_qc.v4",
         "artifact_type": "nude_polygon_full_corpus_hard_qc_summary",
         "status": "PASS_BOUNDED_HARD_QC",
         "registry_sha256": intake["registry"]["self_sha256"],
@@ -268,6 +311,10 @@ def run_full_polygon_hard_qc(
             "mask_bbox_iou_minimum": MIN_MASK_BBOX_IOU,
             "mask_bbox_edge_tolerance_px": MAX_MASK_BBOX_EDGE_DELTA_PX,
             "bbox_rule": "iou_at_least_minimum_or_all_edges_within_quantization_tolerance",
+            "label_aware_maximum_mask_image_area_ratio": dict(
+                sorted(MAX_MASK_IMAGE_AREA_RATIO_BY_LABEL.items())
+            ),
+            "whole_person_substitution_rejected": True,
             "raw_label_preserved": True,
             "action_scene_as_pixel_mask_rejected": True,
             "unmapped_label_rejected": True,
@@ -306,7 +353,9 @@ def write_polygon_qc_evidence(
 __all__ = [
     "MIN_MASK_BBOX_IOU",
     "MAX_MASK_BBOX_EDGE_DELTA_PX",
+    "MAX_MASK_IMAGE_AREA_RATIO_BY_LABEL",
     "NudePolygonQcError",
+    "evaluate_anatomy_mask_scale",
     "evaluate_polygon_annotation",
     "run_full_polygon_hard_qc",
     "write_polygon_qc_evidence",

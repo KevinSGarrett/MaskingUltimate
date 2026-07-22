@@ -11966,3 +11966,9 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   volume, 100 GB disk, dual-GPU telemetry, coordinator, and rollback checks
   pass. This supersedes earlier text saying no 2xA40 watcher existed or was
   authorized.
+## 2026-07-22 — MaskedWarehouse consumer binding proof
+
+- Added a fail-closed machine verifier and sealed binding registry for `MF-P0-13.05`.
+- All three policy-eligible sources (`celebamask_hq`, `lapa`, `lv_mhp_v1`) now bind exact source, annotation, package-manifest, and downstream-artifact hashes to a real benchmark or multi-person-QA consumer record.
+- `swimsuit_preview` and `body_archive` remain explicitly policy-blocked and cannot be disguised as inventory-only completion or consumer inputs.
+- Evidence: `qa/live_verification/maskedwarehouse_consumer_bindings_20260722.json` SHA-256 `f61e09f6461ea11f1dc5e6fe5d9fe264115519a398422ce425f8c0f35dfeb881`; 23 focused/neighbor tests passed; Ruff, Black, and diff integrity passed. This grants no gold, holdout, or production-mask authority.

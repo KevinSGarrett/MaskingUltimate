@@ -9329,19 +9329,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 35,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-22T05:26:50+00:00",
           "actor": "codex",
           "text": "Actual LV-MHP MaskedWarehouse images and annotations now feed the semantic calibration and seeded-defect lane with exact hashes. Completion stays open until every eligible MaskedWarehouse source is mapped to a named downstream consumer artifact."
+        },
+        {
+          "ts": "2026-07-22T18:29:35+00:00",
+          "actor": "codex",
+          "text": "PRODUCTION_EVIDENCE_PASS for the bounded consumer-binding verify clause: every eligible legacy MaskedWarehouse source is consumed by an exact hash-bound benchmark or multi-person-QA downstream record; ineligible sources remain typed policy blocks. Binding itself grants no gold or production authority."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/maskedwarehouse_consumer_bindings_20260722.json SHA256 f61e09f6461ea11f1dc5e6fe5d9fe264115519a398422ce425f8c0f35dfeb881, seal 02f6390f76bb55bbc563becc8724bbe7e090b4b12f68b9f2876ba9b9263c7d10; 3/3 eligible consumed, 2/2 ineligible policy-blocked; 23 focused/neighbor tests PASS; Ruff, Black, diff integrity PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T05:06:30+00:00",
-      "updated_at": "2026-07-22T05:26:50+00:00",
+      "updated_at": "2026-07-22T18:29:35+00:00",
       "orphaned": false
     },
     "MF-P0-13.06": {

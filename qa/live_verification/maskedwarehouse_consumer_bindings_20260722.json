@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskedwarehouse_consumer_binding_report",
+  "status": "PASS",
+  "provenance_sha256": "3b1ce3d0146ac0c55a35f9e89ba93d6ff477963168bfb6b4df52f12ab61d344b",
+  "binding_sha256": "93ad21b9392c5a75bd17206d5f3ac6db2d416666a0299db7e1436e4871fbe374",
+  "eligible_source_count": 3,
+  "consumed_eligible_source_count": 3,
+  "policy_blocked_source_count": 2,
+  "sources": [
+    {
+      "source": "celebamask_hq",
+      "eligible": true,
+      "status": "consumed",
+      "consumers": [
+        {
+          "lane": "benchmark",
+          "artifact_path": "qa/live_verification/external_supervision_package_population_canary_20260722.json",
+          "artifact_sha256": "d9a5b9db548a10f9471406444155da2be7fb944856fb5b72a66e0678edc42789",
+          "source_sha256": "92583489fae83d937ed33b51459e41bf52104b87b4214ea9390512d860c88c2d",
+          "annotation_sha256": "4d588a66304129e18b2899960632b057c94196cbf820c7776d688256ba0e329f",
+          "manifest_sha256": "a81f1ad487e511859e5b382427efa41d5ca5f61f563d99d7e2be415cf6bcebb2"
+        }
+      ]
+    },
+    {
+      "source": "lapa",
+      "eligible": true,
+      "status": "consumed",
+      "consumers": [
+        {
+          "lane": "benchmark",
+          "artifact_path": "qa/live_verification/external_supervision_package_population_canary_20260722.json",
+          "artifact_sha256": "d9a5b9db548a10f9471406444155da2be7fb944856fb5b72a66e0678edc42789",
+          "source_sha256": "bfeafa93dab56077f2560b00b73a693c5c8c9b0898283a3dfe019092a7e3be3e",
+          "annotation_sha256": "f55b63041d4cce8f588e927151569159f0fbaa4ba6435c54179a6743297d4cca",
+          "manifest_sha256": "08314b17fd3f11d3a4011728904f00e05197f7e3b67714545aa602002a10bc60"
+        }
+      ]
+    },
+    {
+      "source": "lv_mhp_v1",
+      "eligible": true,
+      "status": "consumed",
+      "consumers": [
+        {
+          "lane": "multi_person_qa",
+          "artifact_path": "qa/live_verification/external_supervision_package_population_canary_20260722.json",
+          "artifact_sha256": "d9a5b9db548a10f9471406444155da2be7fb944856fb5b72a66e0678edc42789",
+          "source_sha256": "adef946e161ab60130e63558d34b23ae77fdb7883e29e7563efb9df2b1e1ddb8",
+          "annotation_sha256": "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+          "manifest_sha256": "7498d6caa2b2f2dec7839f08612234b2b7eb057db93707699aa1c3575008e05d"
+        }
+      ]
+    },
+    {
+      "source": "swimsuit_preview",
+      "eligible": false,
+      "status": "policy_blocked"
+    },
+    {
+      "source": "body_archive",
+      "eligible": false,
+      "status": "policy_blocked"
+    }
+  ],
+  "authority_limits": {
+    "source_masks_are_gold": false,
+    "consumer_binding_grants_gold": false,
+    "consumer_binding_grants_production_authority": false
+  },
+  "seal_sha256": "02f6390f76bb55bbc563becc8724bbe7e090b4b12f68b9f2876ba9b9263c7d10"
+}

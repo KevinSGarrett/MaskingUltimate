@@ -162,7 +162,8 @@ doctor-green, or mark production complete on weaker proof.
 | `VISUAL_QA_PASS_BOUNDED` | Human/agent pixel review pass on named artifacts; defects veto gold |
 | `PRODUCTION_EVIDENCE_PASS` | Real adopted Main/ComfyUI/production receipts bound by commit/hash |
 | `AWAITING_MAIN` | Producer STATIC credit retained; blocked until KevinSGarrett/Comfy_UI_Main supplies real artifacts |
-| `RUNTIME_BLOCKED` / `EC2_DEFERRED` | Explicit non-pass states; never relabel as pass |
+| `RUNTIME_BLOCKED` | Explicit non-pass state; never relabel as pass |
+| `RUNPOD_SCALE_PASS` | Remote GPU execution proven on persistent RunPod storage under a valid SharedRunPodCoordinator v2 lease |
 
 Rules:
 - Fixture Main / `fixture_authority` / producer_partial = **`STATIC_PASS` only**. Never `complete` P6-11/12 on that alone.

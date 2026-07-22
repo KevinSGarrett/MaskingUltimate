@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://maskfactory.local/schemas/ops_bootstrap_static_report.schema.json",
   "title": "MaskFactory P1-09 ops-bootstrap STATIC residual report",
-  "description": "STATIC_PASS binder for fixture QC-006 hash-manifest integrity, multi-package reindex rebuild-clean, and DVC wiring honesty without AWS/S3 push. Never completes MF-P1-07.09 or live B1 restore.",
+  "description": "STATIC_PASS binder for fixture QC-006 hash-manifest integrity, multi-package reindex rebuild-clean, and governed persistent DVC wiring without attempting a push. Never completes MF-P1-07.09 or live B1 restore.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -18,12 +18,11 @@
     "checks",
     "mf_p1_07_09_complete",
     "mf_p1_09_05_complete",
-    "dvc_s3_push_succeeded",
+    "dvc_persistent_push_succeeded",
     "dvc_push_attempted",
-    "aws_credentials_present",
     "b1_mirror_present",
     "human_anchor_package_present",
-    "kevin_dvc_s3_push_required",
+    "literal_data_packages_push_required",
     "kevin_b1_restore_required",
     "doctor_green_claimed",
     "gold_claimed",
@@ -36,11 +35,11 @@
     "sha256"
   ],
   "properties": {
-    "schema_version": { "const": "1.0.0" },
+    "schema_version": { "const": "1.1.0" },
     "artifact_type": { "const": "ops_bootstrap_static_report" },
     "proof_tier": { "const": "STATIC_PASS" },
     "authority": {
-      "const": "ops_bootstrap_static_only_no_dvc_s3_push_no_b1_restore_no_human_anchor_package_authority"
+      "const": "ops_bootstrap_static_only_no_persistent_push_no_b1_restore_no_human_anchor_package_authority"
     },
     "checked_at": { "type": "string", "minLength": 1 },
     "items": {
@@ -115,12 +114,11 @@
     },
     "mf_p1_07_09_complete": { "const": false },
     "mf_p1_09_05_complete": { "const": false },
-    "dvc_s3_push_succeeded": { "const": false },
+    "dvc_persistent_push_succeeded": { "const": false },
     "dvc_push_attempted": { "const": false },
-    "aws_credentials_present": { "type": "boolean" },
     "b1_mirror_present": { "const": false },
     "human_anchor_package_present": { "const": false },
-    "kevin_dvc_s3_push_required": { "const": true },
+    "literal_data_packages_push_required": { "const": true },
     "kevin_b1_restore_required": { "const": true },
     "doctor_green_claimed": { "const": false },
     "gold_claimed": { "const": false },
@@ -136,8 +134,8 @@
       "additionalProperties": false,
       "required": ["remote_name", "remote_url", "dvc_version_token", "executable_basename"],
       "properties": {
-        "remote_name": { "const": "maskfactory-dvc-dev" },
-        "remote_url": { "const": "s3://maskfactory-dvc-dev" },
+        "remote_name": { "const": "maskfactory-dvc-local" },
+        "remote_url": { "const": "F:/MaskFactory_DataRelocated/dvc_local_remote" },
         "dvc_version_token": { "type": "string", "minLength": 1 },
         "executable_basename": { "type": "string", "minLength": 1 }
       }

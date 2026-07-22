@@ -13,7 +13,7 @@ Goal: D6 (champion beats draft pipeline on frozen holdout) + D7 (finger mIoU ≥
 - [ ] MF-P5-01.03 Pre-flight: `verify-package` on every eligible package · any hash/format mismatch hard-fails the build
 - [ ] MF-P5-01.04 Byte-identical rebuild test (sorted inputs, seed 1337, zeroed zip timestamps) — G8 for datasets
 - [ ] MF-P5-01.05 Holdout isolation: trainers receive no read path to holdout\ · enforcement test proves it
-- [ ] MF-P5-01.06 Build `datasets\bodyparts@v1` · `dvc add` · `git tag dataset/bodyparts-v1` · `dvc push` to s3://maskfactory-dvc-dev
+- [ ] MF-P5-01.06 Build `datasets\bodyparts@v1` · `dvc add` · `git tag dataset/bodyparts-v1` · `dvc push` to the governed local/persistent remote
 - [ ] MF-P5-01.07 Dataset card audit: counts per split/class/cell · ontology version · build cmd + git sha · synthetic ratio recorded
 
 ## MF-P5-02 — Augmentation pipeline (spec: 12 §4) — CI BLOCKER
@@ -26,7 +26,7 @@ Goal: D6 (champion beats draft pipeline on frozen holdout) + D7 (finger mIoU ≥
 ## MF-P5-03 — Train 6.1 body-part segmenter (spec: 12 §5/§6.1)
 - [ ] MF-P5-03.01 Author `configs\training\bodypart_segformer_b3.yaml`: 56-class v1 (IDs 0..55 including background; v2 is 65-class per doc 18) · 512 crops · AdamW 6e-5 poly 1.0 · 40k iters (80k @500 gold) · warmup 1.5k · CE+Dice · class weights ∝ 1/√pixel_freq cap ×8 · bf16 AMP · batch 2 × grad-accum 8
 - [ ] MF-P5-03.02 Train SegFormer-B3 under `runs\gpu.lock` · eval per-part IoU + boundary-F on val every 4k · thermal cooldown (sleep 60 s @ >87 °C) verified during a long run
-- [ ] MF-P5-03.03 Challenger: Mask2Former-SwinB config + run (activation checkpointing) — optional Swin-L only via AWS burst (05-08.03)
+- [ ] MF-P5-03.03 Challenger: Mask2Former-SwinB config + run (activation checkpointing) — optional Swin-L only on a capacity-qualified RunPod tier (05-08.03)
 - [ ] MF-P5-03.04 Final eval on frozen test_holdout + hard_case_holdout → leaderboard rows with full per-class + group scores
 - [ ] MF-P5-03.05 Every run logged to `runs\<run_id>\` {run.json, config, git_sha, dataset_ref + DVC md5, ckpts, tb, eval}
 
@@ -58,7 +58,7 @@ Goal: D6 (champion beats draft pipeline on frozen holdout) + D7 (finger mIoU ≥
 ## MF-P5-08 — Conditional / optional models (spec: 12 §6.4–6.5/§5)
 - [ ] MF-P5-08.01 (Trigger: ≥80 hair-prominent certified training packages with required human-anchor holdout) ViTMatte fine-tune · GATE: hair boundary-F ≥0.65 AND matte MSE −15% vs stock
 - [ ] MF-P5-08.02 (Trigger: ≥ 120 approved projected labels AND chest-lane fail rate > 10%) breastproj SegFormer-B1 · GATE: projected IoU ≥ 0.75 · outputs provenance-tagged `model:breastproj@<run>`, purple-editable, never truth
-- [ ] MF-P5-08.03 (Optional) AWS burst runbook executed once: g6e.xlarge L40S spot in dev 548846591581 · git clone + `dvc pull` · train · `dvc push` + runs sync · instance terminated with the run
+- [ ] MF-P5-08.03 (Optional) governed RunPod scale runbook executed once: validate persistent inputs · acquire/heartbeat SharedRunPodCoordinator v2 lease · train · persist/hash outputs and evidence · contain owned process · release lease
 
 ## P5 Exit Gate
 - [ ] MF-P5-EXIT Custom models are the drafters · leaderboard is the arbiter · **D6 + D7** checked with evidence rows · doc 14 §6 checkboxes updated

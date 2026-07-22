@@ -51,7 +51,7 @@ independent real accuracy and scale/DAZ maturity are non-blocking profiles.
 2. Full atomic ontology (doc 02): 56 exclusive atomic parts + band regions + conditional classes + material/clothing layer + projected/amodal regions + protected QA classes + derived unions.
 3. End-to-end pipeline: intake → detection → parsing → pose → geometry priors → refinement → clothing parse → fusion/panoptic resolution → hard QA → independent critics → bounded repair → autonomous certificate or abstention → MaskFactory bridge → ComfyUI serving. CVAT review, dataset packaging, active learning, and fine-tuning are optional profile lanes rather than core-runtime dependencies.
 4. Specialist lanes: hands/fingers, chest/breast/clothing boundary, hair/face, feet/toes, 3D body prior sanity checks.
-5. Local-first execution on the RTX 5060 laptop (8 GB VRAM), with optional AWS burst training (accounts already exist: prod 277361136276 / dev 548846591581).
+5. Local-first execution on the RTX 5060 laptop (8 GB VRAM), with capacity-qualified RunPod execution for workloads that do not fit locally. AWS access is read-only inventory only and is never a MaskFactory compute target.
 6. Full reproducibility, hashing, versioning (git + DVC), and operations runbook.
 
 ## 5. Out of Scope (v1)

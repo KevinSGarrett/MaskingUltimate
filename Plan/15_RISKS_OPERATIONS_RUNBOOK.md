@@ -46,7 +46,7 @@ docker ps                               # cvat_server/db/redis + nuclio + ollama
 maskfactory status --queues             # incoming / careful / quick-pass / rejected counts
 tail -n 30 logs/maskfactory_$(date).log # no ERROR lines unaccounted for
 ```
-End of any working session: `git push` + `dvc push` (rule from doc 14 §10). Nightly (scheduled
+End of any working session: `git push` + `dvc push` to the governed local/persistent remote (rule from doc 14 §10). Nightly (scheduled
 task, Windows Task Scheduler → WSL): integrity sweep = `maskfactory verify-package --sample 10`
 + backup mirror (§5) + manifest lint (doc 10 §8).
 
@@ -84,7 +84,7 @@ Never junction `models\` to an external/removable drive (checkpoint reads are la
 | B1 mirror | `data\packages`, `qa\`, `configs\`, `state.db` snapshot | `robocopy /MIR` to `D:\MaskFactoryBackup\` (or NAS) | nightly (scheduled) |
 | B2 cold copy | zip of B1 + `models\model_registry.json` | external SSD, kept offline | weekly |
 | B3 code | repo | `git push` (GitHub, Scentiment-Dev) | every session |
-| B4 datasets/models | dataset builds + champion ckpts | `dvc push` → S3 `maskfactory-dvc-dev` | every build/promotion |
+| B4 datasets/models | dataset builds + champion ckpts | `dvc push` to governed local/persistent storage plus hash-verified RunPod persistence when used | every build/promotion |
 | B5 DB | SQLite | `sqlite3 state.db ".backup ..."` into B1 before mirror | nightly, 7 rotations |
 
 **Restore test (monthly, D10 item):** pick 3 random packages from B2 → restore to a temp dir →
@@ -116,7 +116,7 @@ leaderboard artifacts. Post-gc: `verify-package --sample 10` + reindex must be c
 | QC-005 dims mismatch | resize snuck into a stage | stage must operate at native dims or record transform; check crop paste-back transform |
 | QC-014 L/R flag storm on one image | subject in mirror pose / DensePose confused | trust the 2-of-3 vote; review with SOP-2 trace-the-chain; if human confirms correct, log override reason (vote stays advisory only for `uncertain`, never for BLOCK) |
 | Fusion disagreement > 40% pixels (QC-031 storm) | one source degraded (e.g., parsing ckpt wrong) | check `model_registry` hashes; re-run stage solo; compare source overlays in panel |
-| `dvc push` fails | AWS creds/expired token (dev 548846591581) | refresh SSO/keys; `dvc push -r maskfactory-dvc-dev -v`; artifacts are still safe locally + B1 |
+| `dvc push` fails | governed local/persistent remote unavailable or full | verify the configured remote path, mount identity, free space, and write permissions; artifacts remain safe locally + B1 |
 | WSL clock skew breaks TLS/downloads | Windows sleep drift | `sudo hwclock -s` (or `wsl --shutdown` + restart) |
 | Pipeline "GPU busy" refusal | stale `runs\gpu.lock` after crash | confirm no python/uvicorn holds GPU (`nvidia-smi`), then delete lock; doctor reports stale locks |
 | ComfyUI node "package not found" | wrong `packages_root` or status filter | check `maskfactory_nodes\config.json`; browser node lists nearest ids + statuses |

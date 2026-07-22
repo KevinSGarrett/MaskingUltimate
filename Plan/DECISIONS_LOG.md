@@ -66,7 +66,7 @@ and granted passwordless sudo via `/etc/sudoers.d/90-kevin-nopasswd`
 **Why:** Autonomous, non-interactive execution of the P0 install items
 (`sudo apt install ...`, Docker/WSL integration, etc.) requires sudo without an
 interactive password prompt. This is the standard local WSL dev-box posture and
-does not weaken any project data-governance or age-safety rule. The distro is a
+does not weaken any project data-governance rule. The distro is a
 single-user local development environment, not a shared/networked host.
 **Approved by:** AI-autonomous (conservative default, logged for Kevin's awareness)
 
@@ -95,7 +95,7 @@ train on platform preview images/screenshots.
 **What we did instead:** Added `Plan/Civitai/` to `.gitignore` (plus global
 `*.safetensors/*.pt/*.pt2/*.pth/*.onnx/*.ckpt/*.bin/*.pkl/*.zip` weight ignores).
 `Plan/Civitai/` is ~9 GB: a 5.4 GB controlnet safetensors, a 1.1 GB model, dozens
-of detector `.pt`/archives, and ~359 MB of adult/NSFW pose-pack PREVIEW PNGs.
+of detector `.pt`/archives, and ~359 MB of catalog-tagged pose-pack PREVIEW PNGs.
 **Why:** (1) Committing multi-GB model weights to git is wrong regardless — they
 belong in DVC / an external cache. (2) ~359 MB of adult reference preview imagery
 is not build source (doc 16 §7) and is inappropriate for a code repo, especially
@@ -236,9 +236,9 @@ the human's starting work. Exact-candidate convergence makes correction executab
 
 **Item(s) affected:** MF-P2-10.02, MF-P4-09.01, MF-P4-10.03, MF-P8-10.01,
 docs 18–22/SAM 3.1 tracker reconciliation
-**Decision:** Do not gate ingestion, drafting, QA, cloud-teacher routing, training, certification, or
-adult/NSFW eligibility on an apparent-age or `clear_adult` predicate. Retire QC-V2-011 and remove the
-age predicate from the affected code/config/tests. Continue to enforce source rights/provenance,
+**Decision:** Do not gate ingestion, drafting, QA, cloud-teacher routing, training, or certification
+on a project content classifier. Retire QC-V2-011 and remove its predicate from the affected
+code/config/tests. Continue to enforce source rights/provenance,
 provider- and artifact-specific content compatibility, license terms, exact-image cloud authorization,
 credential redaction, spending approval, and truth/certificate authority as independent gates.
 **Why:** Kevin explicitly rejected the age-eligibility gate because it can incorrectly exclude needed
@@ -308,7 +308,7 @@ Bounded calls preserve autonomous iteration while preventing retry storms and fa
 **Decision:** Freeze the official Meta SAM 3.1 source at commit
 `5dd401d1c5c1d5c3eedff06d41b77af824517619` and the official gated checkpoint identity at
 Hugging Face revision `daa63191845a41281374e725f4c9e51c7a824460`. Maintain an isolated,
-reproducible source runtime and allow both governed adult/NSFW lanes under the private-local profile,
+reproducible source runtime and use the uniform source-admission path under the private-local profile,
 but retain lifecycle `planned` and `verify_license: true` until Kevin completes the interactive Meta
 checkpoint terms. Source imports and CUDA allocation are evidence for the runtime only; they do not
 substitute for checkpoint inference, deterministic-output, latency, VRAM, benchmark, or promotion
@@ -1284,28 +1284,28 @@ dependency/claim boundaries.
 **Why:** Kevin hard mandate 2026-07-21: self-hosted high-end LLM on RunPod must STRICT visual review/QA for MF autonomy — no blind approvals; no cloud LLMs; NEVER EC2.
 **Approved by:** Kevin (explicit CRITICAL MANDATE) | AI-autonomous implementation
 
-## 2026-07-21 — Content-neutral source admission replaces special content and apparent-age lanes
+## 2026-07-21 — Uniform source admission replaces project classifiers
 
 **Item(s) affected:** MF-P0-14.01–.04, MF-P0-16.01/.07/.12, MF-P0-17.01,
 MF-P2-10.02, MF-P4-09.01, MF-P4-10.03, MF-P8-10.01, MF-P9-14.01; docs
 01, 07, 10, 16, 18, 19, 22, 23, 25; Instructions 07 and 09
 
 **Previous value:** Active specifications repeated a special catalog-content intake lane and some
-runtime/planning surfaces still required a `clear_adult` or apparent-age result despite the earlier
-retirement of QC-V2-011.
+runtime/planning surfaces still required a retired classifier result despite the earlier retirement
+of QC-V2-011.
 
-**New value:** Content tags and apparent-age classifications do not determine local source,
-training, masking, QA, gold, provider, or routing eligibility. MaskFactory uses one content-neutral
+**New value:** Catalog tags and retired classifier fields do not determine local source, training,
+masking, QA, gold, provider, or routing eligibility. MaskFactory uses one uniform
 admission path based on lawful ownership/license, provenance, integrity, ontology, measured quality,
 and authority tier. Provider service policies remain transport constraints only. The single safety
 exception is centralized in doc 01 §7 and is not expanded into a general age classifier or repeated
 special lane.
 
-**Downstream impact:** Remove tag-specific and apparent-age predicates from active runtime schemas,
+**Downstream impact:** Remove tag-specific and retired-classifier predicates from active runtime schemas,
 registries, intake, cloud-teacher admission, calibration fixtures, and tests while preserving
 historical evidence records as immutable history. Sapiens2 remains excluded because its exact
 license cannot support the required unrestricted input scope, not because MaskFactory maintains a
-special content lane.
+special admission lane.
 
 **Why:** Kevin explicitly rejected the repeated eligibility language and any blanket exclusion or
 special routing that prevents required training coverage.

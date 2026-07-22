@@ -60,10 +60,10 @@ Declare target tier before edits. Never report a lower tier as a higher tier.
 - Tier 3 RUNTIME_PASS_BOUNDED: live Docker preflight when in scope; doctor/provider smoke; real bounded package run; CVAT/SAM2/Ollama smokes when claimed
 - Tier 4 VISUAL_QA_PASS_BOUNDED: render real panels (source/mask/overlay/contour/ownership); review pixels/paths; local VLM critic when Ollama up; panel+report hashes. Decoding a PNG ≠ visual QA. VLM never clears hard BLOCK or invents gold.
 - Tier 5 PRODUCTION_EVIDENCE_PASS: verify clause satisfied; `tracker.py set … --evidence` with real commands/paths/hashes before `complete`
-- Tier 6 EC2_DEFERRED until local tiers green for claimed scope
+- Tier 6 RUNPOD_SCALE_PASS: remote GPU execution is proven on persistent RunPod storage under a valid SharedRunPodCoordinator v2 capacity lease
 - AUDIO: N/A for MaskFactory core — do not invent audio gates; Main-owned if bridge touches audio
 
-Claim vocabulary ONLY: PLANNED, IN_PROGRESS, RECONSTRUCTED, STATIC_PASS, HARD_QA_PASS_BOUNDED, RUNTIME_PASS_BOUNDED, RUNTIME_BLOCKED, VISUAL_QA_PASS_BOUNDED, VISUAL_CRITIC_BLOCKED, PRODUCTION_EVIDENCE_PASS, AWAITING_MAIN, HOLD, BLOCKED, COMPLETE, EC2_DEFERRED, AUDIO_QA_N_A_CORE.
+Claim vocabulary ONLY: PLANNED, IN_PROGRESS, RECONSTRUCTED, STATIC_PASS, HARD_QA_PASS_BOUNDED, RUNTIME_PASS_BOUNDED, RUNTIME_BLOCKED, VISUAL_QA_PASS_BOUNDED, VISUAL_CRITIC_BLOCKED, PRODUCTION_EVIDENCE_PASS, RUNPOD_SCALE_PASS, AWAITING_MAIN, HOLD, BLOCKED, COMPLETE, AUDIO_QA_N_A_CORE.
 Forbidden without matching evidence: “done/green/production-ready/fully working/visual QA pass/doctor green/gold”.
 
 SELF-HOSTED LLM / OLLAMA (MUST USE WHEN VISUAL/VLM IN SCOPE)
@@ -191,6 +191,20 @@ STRICT gate is mandatory before accepting / promoting when masks/panels exist fo
 Evidence must log: **model id, prompt hash, response, panel hashes**.
 
 ### GPU coordination (RunPod)
+
+SharedRunPodCoordinator v2 is the exclusive cross-project admission authority
+for the current 48 GB RunPod. Follow
+`C:\Users\kevin\.codex\shared_runpod_coordinator\README.md`: request and
+validate a lease before new GPU work, heartbeat it while the work runs, and
+release it on completion or containment. Its fresh telemetry, qualified peak
+reservations, and workload-compatibility rules supersede the former
+single-workload assumption. `runs/gpu.lock` may serialize MaskFactory's own
+critical sections, but it cannot block unrelated ComfyUI work.
+`/workspace/tmp/gpu.lock` and mere foreign-process presence are not capacity
+vetoes. CPU-only work never needs a lease. Never remove an active internal
+lock, kill another project's process, steal a lease, or exceed a granted
+reservation; use cooperative yield when capacity truly does not fit.
+
 Serialize with hand/clothing tournament workers: run critic **bursts when VRAM free**, unload large VLMs after (`unload_after_burst`), do not OOM hand workers. Do not kill healthy hand tournament PIDs unless VRAM forces brief serialize — then resume.
 
 ### Proof vocabulary

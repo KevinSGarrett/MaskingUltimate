@@ -90,8 +90,10 @@ then `docker exec ollama ollama pull qwen2.5vl:7b`. Pipeline talks to `http://12
 `pip install mmengine "mmcv>=2.1" mmsegmentation mmdet` (mmcv compiled for cu128 — build from
 source if wheel missing, §8) — OR detectron2 Mask2Former project (already built for M9).
 Decision: **primary trainer = MMSegmentation** (Mask2Former & SegFormer configs both available),
-detectron2 kept for DensePose only. Optional AWS burst: g6e.xlarge (L40S 48 GB) spot in dev acct
-548846591581 for Swin-L runs; artifacts sync back via DVC remote (S3 bucket `maskfactory-dvc-dev`).
+detectron2 kept for DensePose only. Swin-L or other high-memory runs use a
+qualified RunPod tier under a valid SharedRunPodCoordinator v2 lease, with all
+inputs, checkpoints, and evidence on persistent storage. AWS is read-only
+inventory only and is never a training or artifact-publish target.
 
 ## 7. ComfyUI Side (native Windows)
 

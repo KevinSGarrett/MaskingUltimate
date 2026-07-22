@@ -1,15 +1,14 @@
 """STATIC binders for MF-P1-09 ops-bootstrap residuals beyond ops_static_contracts.
 
 Covers fixture hash-manifest (QC-006) integrity, multi-package reindex rebuild-clean,
-and DVC wiring honesty without any AWS/S3 push. Never completes MF-P1-07.09 or claims
-live B1 restore / doctor-green / gold / PRODUCTION_EVIDENCE_PASS.
+and governed persistent DVC wiring without attempting a push. Never completes
+MF-P1-07.09 or claims live B1 restore, gold, or production evidence.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
 import tempfile
 from datetime import UTC, datetime
@@ -25,16 +24,16 @@ from .validation import validate_document
 PROOF_TIER = "STATIC_PASS"
 ARTIFACT_TYPE = "ops_bootstrap_static_report"
 AUTHORITY = (
-    "ops_bootstrap_static_only_no_dvc_s3_push_no_b1_restore_no_human_anchor_package_authority"
+    "ops_bootstrap_static_only_no_persistent_push_no_b1_restore_no_human_anchor_package_authority"
 )
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 ROOT = Path(__file__).resolve().parents[2]
 DVC_CONFIG = ROOT / ".dvc" / "config"
 GITIGNORE = ROOT / ".gitignore"
 BOOTSTRAP_DVC = ROOT / "tools" / "bootstrap_dvc.ps1"
 REQUIREMENTS_LOCK = ROOT / "env" / "requirements.lock.txt"
-EXPECTED_REMOTE_NAME = "maskfactory-dvc-dev"
-EXPECTED_REMOTE_URL = "s3://maskfactory-dvc-dev"
+EXPECTED_REMOTE_NAME = "maskfactory-dvc-local"
+EXPECTED_REMOTE_URL = "F:/MaskFactory_DataRelocated/dvc_local_remote"
 
 HASH_MANIFEST_CHECKS = (
     "fixture_qc006_hash_integrity_pass",
@@ -59,8 +58,7 @@ DVC_WIRING_CHECKS = (
 HONEST_NON_CLAIMS = (
     "mf_p1_07_09_complete",
     "mf_p1_09_05_complete",
-    "dvc_s3_push_succeeded",
-    "aws_credentials_present",
+    "dvc_persistent_push_succeeded",
     "b1_mirror_present",
     "human_anchor_package_present",
     "doctor_green",
@@ -85,11 +83,11 @@ def _file_sha(path: Path) -> str:
 
 
 def refuse_bootstrap_overclaim(document: Mapping[str, Any]) -> None:
-    """Fail closed on DVC S3 completion / B1 restore / gold overclaims."""
+    """Fail closed on persistent-push, B1-restore, or authority overclaims."""
     forbidden_true = (
         "mf_p1_07_09_complete",
         "mf_p1_09_05_complete",
-        "dvc_s3_push_succeeded",
+        "dvc_persistent_push_succeeded",
         "dvc_push_attempted",
         "b1_mirror_present",
         "human_anchor_package_present",
@@ -305,19 +303,14 @@ def evaluate_dvc_bootstrap_pins(
 ) -> dict[str, bool]:
     script = bootstrap_path.read_text(encoding="utf-8")
     lock = lock_path.read_text(encoding="utf-8")
-    for requirement in (
-        "dvc==3.67.1",
-        "dvc-s3==3.3.0",
-        "fsspec==2026.4.0",
-        "s3fs==2026.4.0",
-    ):
+    for requirement in ("dvc==3.67.1",):
         if requirement not in script or requirement not in lock:
             raise OpsBootstrapStaticError(f"dvc_pin_drift:{requirement}")
     return {"dvc_bootstrap_pins_match_lock": True}
 
 
 def evaluate_dvc_runtime_honesty(*, root: Path = ROOT) -> dict[str, Any]:
-    """Resolve DVC + remote list; never invoke push; refuse S3-complete overclaim."""
+    """Resolve DVC and the governed persistent remote without invoking push."""
     executable = resolve_dvc_executable(root=root)
     version = run_dvc(("version",), root=root, timeout=60)
     if version.returncode != 0:
@@ -329,15 +322,6 @@ def evaluate_dvc_runtime_honesty(*, root: Path = ROOT) -> dict[str, Any]:
     if EXPECTED_REMOTE_NAME not in remote_text or EXPECTED_REMOTE_URL not in remote_text:
         raise OpsBootstrapStaticError(f"dvc_remote_list_mismatch:{remote_text!r}")
 
-    aws_present = any(
-        os.environ.get(key)
-        for key in (
-            "AWS_ACCESS_KEY_ID",
-            "AWS_SECRET_ACCESS_KEY",
-            "AWS_SESSION_TOKEN",
-            "AWS_PROFILE",
-        )
-    )
     try:
         refuse_bootstrap_overclaim({"mf_p1_07_09_complete": True})
         raise OpsBootstrapStaticError("mf_p1_07_09_overclaim_negative_passed")
@@ -354,9 +338,8 @@ def evaluate_dvc_runtime_honesty(*, root: Path = ROOT) -> dict[str, Any]:
         "mf_p1_07_09_overclaim_refused": True,
         "executable": str(executable),
         "dvc_version_token": version_match.group(1) if version_match else "unknown",
-        "aws_credentials_present": bool(aws_present),
         "dvc_push_attempted": False,
-        "dvc_s3_push_succeeded": False,
+        "dvc_persistent_push_succeeded": False,
     }
 
 
@@ -442,12 +425,11 @@ def run_ops_bootstrap_static_suite(*, workspace: Path | None = None) -> dict[str
         },
         "mf_p1_07_09_complete": False,
         "mf_p1_09_05_complete": False,
-        "dvc_s3_push_succeeded": False,
+        "dvc_persistent_push_succeeded": False,
         "dvc_push_attempted": False,
-        "aws_credentials_present": bool(runtime["aws_credentials_present"]),
         "b1_mirror_present": False,
         "human_anchor_package_present": False,
-        "kevin_dvc_s3_push_required": True,
+        "literal_data_packages_push_required": True,
         "kevin_b1_restore_required": True,
         "doctor_green_claimed": False,
         "gold_claimed": False,

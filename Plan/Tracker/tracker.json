@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T04:02:07+00:00",
+    "generated_at": "2026-07-22T04:08:12+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 827,
     "total_tracked_including_orphaned": 827
@@ -2880,40 +2880,25 @@
       "cluster_id": "MF-P1-07",
       "cluster_title": "Packager + format QA battery",
       "spec_ref": "09 §1/§7, 03 §3/§9",
-      "description": "`dvc init` · configure remote `s3://maskfactory-dvc-dev` (dev acct 548846591581, creds via env) · first `dvc add data\\packages` + `dvc push` succeeds",
+      "description": "`dvc init` · configure a governed local/persistent remote · first `dvc add data\\packages` + `dvc push` succeeds without any AWS mutation",
       "source_file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
       "source_line": 69,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "blocked",
-      "percent_complete": 65,
+      "status": "partially_complete",
+      "percent_complete": 80,
       "notes": [
         {
-          "ts": "2026-07-12T09:51:02+00:00",
-          "actor": "ai_agent",
-          "text": "Removed the obsolete missing-executable/backend portion of this blocker. Added dvc-s3 and transitive pins, reproducible uv bootstrap, initialized the default S3 remote, production resolver for package/dataset flows, repository-local config/cache isolation, and Git exceptions for DVC descriptors. Live dvc status/remote/local-add pass; no unauthorized remote request was made."
-        },
-        {
-          "ts": "2026-07-12T09:53:22+00:00",
-          "actor": "ai_agent",
-          "text": "Verification count correction after adding fail-closed subprocess-timeout coverage: focused DVC/package/dataset suite is 27 passed; full suite remains green."
-        },
-        {
-          "ts": "2026-07-19T23:56:26+00:00",
-          "actor": "ai_agent",
-          "text": "STATIC_PASS 2026-07-19: ops_bootstrap_static re-proves DVC wiring honesty (remote s3://maskfactory-dvc-dev, resolver, remote list, gitignore descriptors, bootstrap pins) with dvc_push_attempted=false and mf_p1_07_09_complete=false. No AWS push. Evidence qa/live_verification/ops_bootstrap_static_20260719.json."
-        },
-        {
-          "ts": "2026-07-20T04:10:36+00:00",
-          "actor": "ai_agent",
-          "text": "2026-07-19 (late): local-first DVC push/cache PASS (dvc 3.67.1; local remote maskfactory-dvc-local on F:; 52 objects pushed; dvc status -c in sync). Honest finding: F: junction blocks dvc add of data/packages (target outside git workdir). Cloud s3 push still deferred (needs dvc-s3+AWS). Evidence: qa/live_verification/agent_queue_execution_20260719T2300.json"
+          "ts": "2026-07-22T04:08:12+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 plan correction: AWS is read-only inventory only. The item now targets the governed local/persistent DVC remote. Existing evidence proves DVC 3.67.1, local remote maskfactory-dvc-local on F:, 52 objects pushed, and remote status in sync; the remaining clause is an exact data/packages descriptor push that works across the governed F junction."
         }
       ],
-      "evidence": "qa/live_verification/dvc_s3_runtime_20260712.json records runtime versions, S3 capability, initialized remote, production wiring, valid local-add md5 descriptor, 26 focused tests, full-suite pass, and the negative credential audit.",
-      "blocked_reason": "NEEDS KEVIN: DVC is installed, initialized, production-wired, and locally verified; completion requires Kevin-authorized AWS credentials plus the first eligible human-anchor or autonomous-certified package for the governed S3 push.",
+      "evidence": "qa/live_verification/agent_queue_execution_20260719T2300.json proves DVC 3.67.1, governed local remote maskfactory-dvc-local on F:, 52 objects pushed, and dvc status -c in sync. No AWS write is required or authorized. Completion remains open until the literal data/packages add/push succeeds through a junction-compatible descriptor path.",
+      "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-20T04:10:36+00:00",
+      "updated_at": "2026-07-22T04:08:12+00:00",
       "orphaned": false
     },
     "MF-P1-08.01": {
@@ -6818,25 +6803,25 @@
       "cluster_id": "MF-P5-01",
       "cluster_title": "Dataset build v1 + DVC",
       "spec_ref": "12 §1/§3",
-      "description": "Build `datasets\\bodyparts@v1` · `dvc add` · `git tag dataset/bodyparts-v1` · `dvc push` to s3://maskfactory-dvc-dev",
+      "description": "Build `datasets\\bodyparts@v1` · `dvc add` · `git tag dataset/bodyparts-v1` · `dvc push` to the governed local/persistent remote",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 16,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
+      "status": "open",
       "percent_complete": 0,
       "notes": [
         {
-          "ts": "2026-07-12T15:52:22+00:00",
-          "actor": "ai_agent",
-          "text": "Implementation readiness: dataset build manifest now seals exact source-package paths and successful dvc add + git tag + dvc push atomically synchronize included package/SQLite states to exported/S14. Seeded failure tests pass. Live item remains open because approved_gold_count=0 and the non-bypassable entry gate requires >=200; no live v1/tag/push claimed. Evidence qa/live_verification/dataset_export_state_contract_20260712.json."
+          "ts": "2026-07-22T04:08:13+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 plan correction: dataset publication targets the governed local/persistent DVC remote; AWS credentials and S3 mutation are no longer prerequisites. The item remains open for the real bodyparts@v1 build, tag, and persistent push."
         }
       ],
       "evidence": null,
-      "blocked_reason": "NEEDS KEVIN: bodyparts@v1 requires at least 200 certified training packages (human-anchor train plus autonomous-certified), Kevin-authorized AWS credentials, and the first governed DVC S3 push; certified count is 0.",
+      "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:36+00:00",
+      "updated_at": "2026-07-22T04:08:13+00:00",
       "orphaned": false
     },
     "MF-P5-01.07": {
@@ -7087,40 +7072,25 @@
       "cluster_id": "MF-P5-03",
       "cluster_title": "Train 6.1 body-part segmenter",
       "spec_ref": "12 §5/§6.1",
-      "description": "Challenger: Mask2Former-SwinB config + run (activation checkpointing) — optional Swin-L only via AWS burst (05-08.03)",
+      "description": "Challenger: Mask2Former-SwinB config + run (activation checkpointing) — optional Swin-L only on a capacity-qualified RunPod tier (05-08.03)",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 29,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "blocked",
+      "status": "partially_complete",
       "percent_complete": 65,
       "notes": [
         {
-          "ts": "2026-07-11T17:24:13+00:00",
-          "actor": "ai_agent",
-          "text": "Authored bodypart_mask2former_swinb.yaml with local Swin-B, activation checkpointing in backbone/trainer, 512 crops, bf16, effective batch 16, native matcher CE/BCE/Dice losses, 40k/80k schedule, 4k evaluation, hard holdouts, exact thermal hook policy, and Swin-L restricted to MF-P5-08.03 AWS burst. Class-contract preflight intentionally refuses both body-part configs while the literal 57 logits conflict with authoritative IDs 0..55; no challenger run is claimed. 34 focused and 481 full tests pass; Ruff clean."
-        },
-        {
-          "ts": "2026-07-11T17:59:29+00:00",
-          "actor": "ai_agent",
-          "text": "Mask2Former-SwinB governed config now compiles into the pinned official Swin-B/Mask2Former structure with with_cp activation checkpointing, mmdet pixel decoder/Hungarian matcher/native classification-mask-dice losses, class-frequency weights, bf16 accumulation, Swin-specific paramwise optimizer, 4k IoU/BF validation, thermal hook, and the same fail-closed launcher/evidence contract. Swin-L remains AWS-only. No challenger run or checkpoint is claimed; >=200 gold, full CUDA runtime, and 56/57 decision remain. 33 focused and 501 full tests pass; Ruff clean."
-        },
-        {
-          "ts": "2026-07-12T10:59:01+00:00",
-          "actor": "ai_agent",
-          "text": "Class-count blocker removed from the challenger: Mask2Former-SwinB now declares and compiles 56 v1 classes; its matcher retains the framework-required extra no-object classification weight. Remaining work is the actual >=200-gold CUDA challenger run/evaluation; Swin-L remains AWS-only."
-        },
-        {
-          "ts": "2026-07-13T01:23:04+00:00",
-          "actor": "ai_agent",
-          "text": "The local CUDA/OpenMMLab runtime is now ready; the challenger remains blocked on the approved dataset and completed baseline run. Optional AWS execution still requires spending approval."
+          "ts": "2026-07-22T04:14:04+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 plan correction: Swin-L may run only on a capacity-qualified RunPod tier under SharedRunPodCoordinator v2. Remaining work is the real certified-dataset challenger run and evaluation."
         }
       ],
       "evidence": "qa/live_verification/bodypart_class_contract_20260712.json proves corrected SegFormer and Mask2Former configs plus drift refusal. Mask2Former compiler structure remains focused-test covered; no run/checkpoint is claimed.",
-      "blocked_reason": "The real Mask2Former challenger requires the at-least-200 certified bodyparts dataset and completed human-anchor holdout baseline. Optional AWS execution additionally requires Kevin spending approval; local CUDA is ready.",
+      "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:56:27+00:00",
+      "updated_at": "2026-07-22T04:14:04+00:00",
       "orphaned": false
     },
     "MF-P5-03.04": {
@@ -7717,25 +7687,25 @@
       "cluster_id": "MF-P5-08",
       "cluster_title": "Conditional / optional models",
       "spec_ref": "12 §6.4–6.5/§5",
-      "description": "(Optional) AWS burst runbook executed once: g6e.xlarge L40S spot in dev 548846591581 · git clone + `dvc pull` · train · `dvc push` + runs sync · instance terminated with the run",
+      "description": "(Optional) governed RunPod scale runbook executed once: validate persistent inputs · acquire/heartbeat SharedRunPodCoordinator v2 lease · train · persist/hash outputs and evidence · contain owned process · release lease",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 61,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "deferred",
+      "status": "open",
       "percent_complete": 0,
       "notes": [
         {
-          "ts": "2026-07-12T20:32:45+00:00",
-          "actor": "ai_agent",
-          "text": "Optional AWS burst is deferred; any billable launch requires explicit Kevin spending approval and an approved dataset."
+          "ts": "2026-07-22T04:08:13+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 plan correction: this is now a governed RunPod scale rehearsal under SharedRunPodCoordinator v2 with persistent, hash-verified inputs/outputs and exact lease lifecycle. AWS is read-only inventory only and is never a compute or publication target."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T20:32:45+00:00",
+      "updated_at": "2026-07-22T04:08:13+00:00",
       "orphaned": false
     },
     "MF-P5-EXIT": {

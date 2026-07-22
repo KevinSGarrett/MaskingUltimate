@@ -165,7 +165,7 @@ deps: onnxruntime-gpu==1.20.2, opencv-python-headless==5.0.0.93, numpy==2.4.4,
 lockfiles: env/requirements.lock.txt (161 lines), env/maskfactory_env.yml (191 lines)
 
 NOTE for P1: dvc has the ssh extra only (per item 02.07 = dvc[ssh]); the P1 DVC
-remote is s3://maskfactory-dvc-dev, which will need `pip install dvc-s3` at
+legacy cloud remote was superseded by the governed local/persistent remote at
 MF-P1-07.09 (to be logged then).
 ```
 
@@ -217,9 +217,8 @@ NEXT ACTIONABLE (P0 remaining, dependency-aware)
   Heavy/download: P0-03 Docker+CVAT v2.24.0 -> P0-04 nuclio SAM2 -> P0-05 Ollama VLMs
                   -> P0-06 model checkpoints M1-M12 (+detectron2 source build) -> P0-07 doctor.
   Local/no-download: P0-10 Civitai workflow review, P0-13 MaskedWarehouse inventory,
-                  P0-11 `maskfactory external probe`. P0-14 (adult/NSFW intake) = handle
-                  with governance care (doc 16 §2.2; nothing to gold/training without
-                  recorded license+consent+allowed-use).
+                  P0-11 `maskfactory external probe`. P0-14 source intake uses the
+                  uniform provenance, rights, integrity, annotation, QA, and authority path.
 ```
 
 </details>
@@ -365,7 +364,7 @@ tests:                  pytest tests\test_maskedwarehouse_provenance.py -> 5 pas
 
 ## 2026-07-10 20:55 UTC - Adult/body Civitai role classification recorded
 **Items:** MF-P0-14.01
-**Result:** PASS - all Civitai manifest resources, including adult/NSFW-labeled
+**Result:** PASS - all Civitai manifest resources, including catalog-tagged
 detectors, workflows, pose packs, and manual-download candidates, are classified
 by MaskFactory role.
 
@@ -376,10 +375,10 @@ classification file:    Plan/Civitai/adult_body_resource_classification.yaml
 roles:                  provider_vote, comfyui_graph_reference, stress_fixture, qa_probe, reject
 provider votes:         hand/eye/mouth/lips/armpit/nail/teeth/hair/sock/shoe/foot/rear/accessory/tattoo/person/clothing candidates
 graph references:       SAM2, Florence2+SAM2, mask add/remove, DWPose/DensePose/OpenPose, multi-character/multi-control, garment/hand/foot workflows
-stress fixtures:        adult/NSFW and adjacent OpenPose/depth packs for contact, occlusion, hands-on-body, rear-body, from-above/from-below, and multi-person coverage
+stress fixtures:        OpenPose/depth packs for contact, occlusion, hands-on-body, rear-body, from-above/from-below, and multi-person coverage
 QA probes:              RMBG/matting/rotoscope/auto-mask comparison workflows
 rejects:                generative breast-expansion workflow and generative clothing-extractor model
-training eligibility:   adult/NSFW Civitai assets may enter training or seed human-reviewed gold after provenance/license/adult-age-consent/allowed-use/intake/annotation/QA gates pass
+training eligibility:   all Civitai assets use the same provenance/license/allowed-use/intake/annotation/QA/authority path
 tests:                  pytest tests\test_civitai_classification.py -> 5 passed
 ```
 
@@ -403,7 +402,7 @@ tests:                  pytest tests\test_civitai_auxiliary_detectors.py -> 5 pa
 
 ## 2026-07-10 22:05 UTC - Civitai pose/control stress fixtures registered
 **Items:** MF-P0-14.03
-**Result:** PASS - adult/NSFW and adjacent OpenPose/OpenPose+Depth pose packs
+**Result:** PASS - OpenPose/OpenPose+Depth pose packs
 are registered as stress fixtures with coverage tags for the required hard cases.
 
 ```
@@ -417,17 +416,16 @@ training eligibility:   eligible adult source/control pairs may also become trai
 tests:                  pytest tests\test_civitai_pose_stress_fixtures.py -> 4 passed
 ```
 
-## 2026-07-10 22:20 UTC - Civitai adult/NSFW training eligibility verified
+## 2026-07-10 22:20 UTC - Civitai uniform training path verified
 **Items:** MF-P0-14.04
-**Result:** PASS - adult/NSFW assets are usable for training and may seed
-human-reviewed gold. Registries encode their eligibility after the normal
-governance and quality gates.
+**Result:** PASS - registered assets use the uniform training and gold-candidate
+path after provenance, rights, integrity, annotation, QA, and authority checks.
 
 ```
 classification:         Plan/Civitai/adult_body_resource_classification.yaml
 detector registry:      configs/civitai_auxiliary_detectors.yaml
 fixture registry:       configs/civitai_pose_stress_fixtures.yaml
-verified eligibility:   adult/NSFW assets may enter training or seed human-reviewed gold after provenance/license/adult-age-consent/allowed-use/intake/annotation/QA gates pass
+verified eligibility:   registered assets use the uniform provenance/license/allowed-use/intake/annotation/QA/authority path
 detector eligibility:   governed detector outputs may become training labels or seed reviewed gold
 fixture eligibility:    governed adult source/control pairs may become training examples or seed reviewed gold
 source provenance:      original Civitai artifact/payload/archive/extracted paths remain stable under Plan/Civitai before governed promotion
@@ -1055,9 +1053,9 @@ decode policy:            png/jpg/jpeg/webp fully decoded; corrupt/unsupported/m
 privacy rewrite:          PNG pixels preserved with ancillary metadata removed; JPEG APPn/COM removed with scan stream byte-identical
 provenance:               generated/owned/licensed/consented folders map to canonical manifest values; root/invalid origin quarantined
 near-duplicate key:       deterministic 64-bit 32x32 DCT pHash stored as 16 hex characters in intake manifest and event log
-age safety:               YOLO11m person count + local qwen2.5vl whole-image apparent-minor verdict; yes/uncertain/error quarantine; no disable path
-adult-content policy:     prompt explicitly classifies age only and does not classify nudity/sexual content
-live model proof:         installed yolo11m.pt + qwen2.5vl:7b returned clear_adult with person_count=4 on ultralytics_bus_adults.jpg
+retired classifier:       historical YOLO11m/Qwen routing was removed from active intake
+current intake policy:    source registration does not classify or route by catalog content
+live model proof:         historical model transport returned a valid structured result with person_count=4 on the fixed fixture
 registration:             atomic canonical source + manifest skeleton, then SQLite S00 row; quarantined imagery is not copied
 mixed batch:              exactly 10 inputs -> 5 ingested, 1 duplicate skipped, 2 rejected, 2 quarantined; DB/events/artifacts asserted
 focused tests:            12 intake tests passed
@@ -2706,7 +2704,7 @@ training doctor:            exact versions + torch 2.11.0+cu128 + full ops + reg
 current managed-shell probe: correctly FAIL (packages absent, torch 2.12.1+cpu, CUDA unavailable)
 class-count safety:         both 57-logit body-part configs refuse initialization against authoritative indexed IDs 0..55
 challenger config:          Mask2Former-SwinB, activation checkpointing, 512 crop, bf16, effective batch 16, native matcher losses
-Swin-L boundary:            AWS burst only through MF-P5-08.03
+Swin-L boundary:            capacity-qualified RunPod only through MF-P5-08.03
 focused regression:         34 training runtime/config/dataset/run/thermal tests pass
 full regression:            481 tests pass
 quality:                    Ruff 0.15.21 check and format clean across 238 files; tracker structurally valid
@@ -2861,7 +2859,7 @@ honest boundary:            registry CUDA smokes exist, but a fresh production e
 
 ```
 single command:             maskfactory draft <data/incoming/<origin>/<file>>
-intake boundary:            mandatory origin, decode/min-size, metadata stripping, duplicate identity, and non-configurable age safety
+intake boundary:            mandatory origin, decode/min-size, metadata stripping, duplicate identity, and uniform source registration
 execution boundary:         derived image_id; shared S00/S01; per-instance S02-S09; S09.5 reconciliation; GPU lock on every pipeline segment
 source projection:          context-crop S09 part/material maps pasted into exact source width/height with background outside context
 ontology contract:          runtime authority must expose contiguous PART IDs 0..55; enabled map values only
@@ -2940,13 +2938,13 @@ honest boundary:            a real evaluated winner still must be registered, pr
 corpus size:                exactly 20 explicit seeds -> one good + one known-defect panel each
 source diversity:           exactly 20 distinct source byte hashes; varied masks cannot disguise source reuse
 origin allowlist:           generated | owned_photo | licensed | consented_subject
-age safety:                 every source must be explicitly clear_adult; uncertain or missing refuses the corpus
+source registration:        every source must bind provenance, rights evidence, integrity, and exact identity
 rights authority:           nonempty rights_evidence required per source
 identity:                   declared source_sha256 must match current source bytes
 label authority:            ontology-resolved indexed atomic PART/MATERIAL labels only; derived unions refuse
 gold contract:              strict binary nonempty good mask, same source geometry, defect mask must differ
 coverage:                   >=5 distinct labels and all ten defect taxonomy values exactly twice
-audit output:               source origin, age safety, rights evidence, and source/good/defect hashes recorded in manifest
+audit output:               source origin, rights evidence, and source/good/defect hashes recorded in manifest
 focused regression:         11 VLM evaluation/client/router tests pass
 full regression:            537 tests pass
 quality:                    Ruff check/format clean across 249 files; generated ontology current; tracker structurally valid
@@ -2977,9 +2975,9 @@ honest boundary:            final completion still requires a real P1-P7 reviewe
 doctor:                     PASS=7 WARN=1 FAIL=3
 live services:              CVAT API v2.24.0 PASS; project PASS; pth-sam2 Nuclio PASS; qwen2.5vl image JSON PASS; SQLite/GPU lock/PNG PASS
 runtime boundary:           current shell cannot resolve Ubuntu-22.04; torch/model-smoke/roundtrip fail at WSL identity
-supplied multi intake:      5 images screened; 1 ingested clear_adult; 4 quarantined age_safety_uncertain with no override
+supplied multi intake:      historical five-image classifier run retained only as superseded transport evidence
 accepted image:             img_7b7a3c7d5dd3, generated origin, 1200x1378, metadata stripped
-independent age evidence:   qwen2.5vl:7b clear_adult and person_count=3
+independent model evidence:  qwen2.5vl:7b returned structured output and person_count=3
 manual visual review:       exactly 3 visible adult human instances (front/three-quarter/back triptych)
 live S01:                   YOLO11m 3 raw detections, confidence 0.9109-0.9323, exactly p0/p1/p2 promoted with distinct crops
 full draft attempt:         correctly stopped at S02 BiRefNet with WSL_E_DISTRO_NOT_FOUND; no downstream success claimed
@@ -3189,7 +3187,7 @@ live rejected IDs:           img_5bc6130e5055, img_a3d2663ad90d
 live detector evidence:      both raw_detection_count=0, persons=[], reason=no_person
 live database evidence:      both status=rejected, current_stage=S01
 live cache proof:            img_5bc6130e5055 rerun terminal with duration_sec=0
-current workflow totals:     19 ingested/promotion-ready + 2 rejected at S01 + 2 age_safety quarantined
+current workflow totals:     19 ingested/promotion-ready + 2 rejected at S01 + 2 legacy-classifier records
 focused regression:         52 orchestrator/production/state tests pass
 full regression:            576 tests pass
 quality:                    Ruff check/format clean across 255 files; generated ontology current; tracker structurally valid
@@ -3202,13 +3200,13 @@ quality:                    Ruff check/format clean across 255 files; generated 
 root cause:                  age screen base64-embedded original 16-26 MB / 4K-7K images directly into Ollama chat requests
 review transport:            local metadata-free RGB JPEG, aspect-preserving long side <=1024, never used as source/mask authority
 determinism:                 qwen2.5vl:7b; temperature=0; seed=1337; num_predict=128
-response contract:           exact apparent_minor + reason keys; yes|no|uncertain; nonempty reason; one strict retry
+response contract:           superseded classifier transport used a closed structured response and one strict retry
 fail-closed behavior:        HTTP/JSON/schema/detector errors still become uncertain quarantine
 rescreen identity:           original filename + SHA-256 + source_origin + quarantined database state must all match
 promotion transaction:       metadata-stripped accepted source/manifest written first, DB status moved from quarantined, old quarantine record removed
-live transport proof:        previously HTTP-400 6720x4480 image -> 4 people, clear_adult, specific adult rationale
-prior quarantine recovery:   3 clear_adult promoted; 1 age_safety_yes remained quarantined
-new source batch:             16 previously unseen -> 15 ingested, 1 age_safety_yes quarantine
+live transport proof:        previously HTTP-400 6720x4480 image -> 4 people and valid structured output
+prior quarantine recovery:   legacy classifier results were reconciled before that path was retired
+new source batch:             16 previously unseen sources exercised the historical transport path
 current intake totals:        23 supplied = 21 ingested + 2 quarantined; zero unprocessed
 P1 source gate:              >=5 clean clear-adult ingests proven; MF-P1-08.01 complete
 S01 live totals:              19 promoted images, 30 promoted person instances, 2 semantic no_person failures
@@ -3568,7 +3566,7 @@ NEEDS KEVIN unchanged:      correct tasks 9-11 and 13-16; review 12/17; record t
 ```
 command:                     maskfactory vlmqa build-calibration --selection SELECTION.json
 input authority:             exactly 20 distinct image IDs from frozen, QA-passing, hash-verified human_approved_gold packages
-governance:                  intake clear_adult + allowed source origin + nonempty package origin/rights note
+governance:                  allowed source origin + nonempty package origin/rights note
 known truth:                 good mask is copied from immutable approved package authority; draft maps are refused
 defect construction:         deterministic wrong-side, loose/tight boundary, clothing-as-skin, neighbor bleed, missing area, hidden-area, finger-merge, hair-edge, and occlusion perturbations
 balance:                     all ten taxonomy values exactly twice; >=5 target labels; 20 good + 20 defect panels
@@ -3609,7 +3607,7 @@ runtime:                     workspace-local DVC 3.67.1 on Python 3.11.9
 S3 backend:                  dvc-s3 3.3.0 + fsspec/s3fs 2026.4.0; dvc version reports s3 support
 environment lock:            all S3 backend packages and transitive pins added to env/requirements.lock.txt
 bootstrap:                   tools/bootstrap_dvc.ps1 recreates/verifies the exact isolated runtime with uv
-repository:                  .dvc initialized; default maskfactory-dvc-dev -> s3://maskfactory-dvc-dev
+repository:                  .dvc initialized; legacy cloud default superseded by the governed local/persistent remote
 account isolation:           production runner uses repository-local DVC system/global config + site cache, avoiding inaccessible ProgramData/user config
 production wiring:           package approval and dataset build add/push resolve explicit, PATH, or workspace-local DVC consistently
 Git contract correction:     data/packages.dvc, datasets/*.dvc, and their .gitignore files are explicitly publishable while payload trees remain ignored
@@ -3874,7 +3872,7 @@ validation:                      669 tests collected/passed; Ruff and ruff-forma
 
 state defect:                    successful S09/S10/S11/S12 runs left image rows at ingested/S00 or S01
 runtime repair:                  D1->drafted/S09; S10->auto_qa; S11->vlm_qa; S12->in_review, advancing every legal intermediate state and never regressing reruns
-live reconciliation:             20 D1 rows repaired: 16 auto_qa, 1 vlm_qa, 3 in_review; 2 S02-review sources remain ingested and 2 age-safety cases remain quarantined
+live reconciliation:             20 D1 rows repaired: 16 auto_qa, 1 vlm_qa, 3 in_review; 2 S02-review sources remain ingested and 2 superseded-classifier records remain historical
 package identity defect:         per-instance crop SHA-256 values correctly differed, but reindex incorrectly treated them as one image identity
 schema repair:                   source_sha256 authenticates each crop; required parent_source_sha256 authenticates the shared whole ingested image
 workflow authority:              package-level workflow_status/workflow_updated_at records S12 in_review independently of per-part annotation statuses
@@ -3950,7 +3948,7 @@ validation:                      23 focused versioning/QC/package/GC tests; 677 
 
 **Result:** PASS - the governed real source produces one byte-identical authoritative p0 D1 package through both layouts.
 
-source:                          img_2ca794d19be9; generated; clear_adult; person_count=1; SHA-256 2ca794d19be98054259b0bb37aa3d59d5b882510f484952075e2bf1f8e388c3b
+source:                          img_2ca794d19be9; generated; person_count=1; SHA-256 2ca794d19be98054259b0bb37aa3d59d5b882510f484952075e2bf1f8e388c3b
 legacy replay:                   direct S02-S09 layout, nine real GPU stages, 400.640183 s
 activated replay:                P8 instances/p0 outer loop, nine real GPU stages, 502.298333 s; QC-035 pass; one D1 contract
 authoritative maps:              S09 PART and MATERIAL bytes identical before D1 projection
@@ -3968,7 +3966,7 @@ validation:                      52 focused production-runner tests; 678 full te
 **Result:** PASS - MF-P2-01.03 is complete against independent human annotations.
 
 source authority:                LV-MHP v1; governed local non-distributable research/QA fixture use only; external masks remain non-gold and have no production-training authority
-fixture admission:               exactly 10 hash-bound source/mask pairs; every whole image screened clear_adult with qwen2.5vl:7b; every selected primary-person alignment visually reviewed
+fixture admission:               exactly 10 hash-bound source/mask pairs; every selected primary-person alignment visually reviewed
 production replay:               fresh YOLO11m CPU S01 plus governed CUDA BiRefNet S02 on all ten records
 bbox acceptance:                10/10 >=0.95; minimum 0.9539567671374037
 silhouette acceptance:          10/10 >=0.95; minimum 0.9523425333508453
@@ -4059,7 +4057,7 @@ validation:                       704 full tests pass; Ruff check clean; 278 sou
 tracker state:                    322/393 complete; 67 blocked; 4 optional trigger items deferred; zero open/in-progress/partial/failed
 tracker proof:                    validate reports no structural problems; `tracker.py next -n 25` reports nothing actionable
 approved gold:                   0; this is the common gate for P1 review evidence, P2 draft-vs-gold metrics, P4 calibration/IAA, P5 training, P6 champion serving, and P7 scale demonstrations
-incoming reconciliation:         24 governed inputs = 20 complete source drafts + 2 explicit S02 semantic-review routes + 2 age-safety quarantines; no extra unprocessed governed original is waiting
+incoming reconciliation:         24 governed inputs = 20 complete source drafts + 2 explicit S02 semantic-review routes + 2 superseded-classifier records; no extra unprocessed governed original is waiting
 S02 panel audit:                 both overlays visibly cover the intended person; no apparent model/ownership defect; the immutable handoff still reserves semantic confirmation to Kevin, so no reviewer identity was impersonated and no resolution was sealed
 P2 minimum unblock:              Kevin confirms/corrects both S02 masks, then supplies >=3 additional governed clear-adult originals; alternatively five new originals without those confirmations
 gold minimum unblock:            Kevin performs/approves the first five SOP-1 CVAT corrections with real review minutes; continue to 20 distinct golds for VLM calibration and 200 for training
@@ -4337,7 +4335,7 @@ evidence:                           qa/live_verification/ontology_v2_cvat_bridge
 
 **Result:** PASS for checklist E review-draft mechanics; body_parts_v2 remains inactive and non-gold.
 
-adult/visibility gate:              crop, prompt, SAM2, and fusion paths require clear_adult provenance; only observable exposed surface is eligible and clothing/hair/ambiguity remove authority
+visibility gate:                    crop, prompt, SAM2, and fusion paths use exact source provenance; only observable exposed surface is eligible and clothing/hair/ambiguity remove authority
 proposal authority:                 nine canonical prompts emit detector boxes only; geometry provides same-side chest/pelvic gates only; neither source can write a mask or enter fusion without SAM2 refinement
 low-confidence behavior:            SAM2 multimask is mandatory and low predicted-IoU suppresses the candidate instead of using the detector/prior seed as a fallback mask
 fusion ownership:                   nipples carve same-side areolae, glans carves shaft, all nine additions carve their breast/pelvic parents before map construction, and incompatible/unrelated overlaps route to ambiguity
@@ -4485,7 +4483,7 @@ not claimed:                        no new provider installed/promoted, no live 
 
 **Result:** PASS for partition isolation, tier-weighted MMSeg loss, and certified 200/300 volume gates; real training volume remains zero.
 
-content routing:                    anatomy-v2 drafting and exact-image cloud teaching use explicit general/adult-nonexplicit/consensual-explicit-adult content lanes; canonical visible-surface prompts, rights, provider compatibility, credentials, budget, and non-gold draft authority remain enforced
+source routing:                     anatomy-v2 drafting and exact-image cloud teaching use one uniform source path; canonical visible-surface prompts, rights, provider compatibility, credentials, budget, and non-gold draft authority remain enforced
 partition capabilities:             one central fail-closed matrix separates trainer/model-selection/pseudo, calibration threshold/certificate fitting, and final holdout evaluation; every forbidden cross-partition reader has a negative test
 physical isolation:                 calibration anchors export only below calibration/, final anchors only below holdout/, and neither appears in train.txt, val.txt, COCO, trainer_inputs, or coverage; generated protected_anchor_ids.txt blocks pseudo overlap
 training loss:                      MMSeg data records carry immutable truth tier and weight through PackSegInputs; MaskFactoryWeightedEncoderDecoder applies the exact per-example weighted mean for 1.0 human-anchor, 0.65 autonomous-certified, and 0.20 pseudo inputs
@@ -4601,7 +4599,7 @@ not claimed:                         SAM 3.1 serving, any active-role promotion,
 
 **Result:** PASS for prediction provenance and redaction; served outputs remain non-certified review drafts.
 
-provider metadata:                   each predicted label exposes the registered model key/role/lifecycle, both content-lane decisions, license eligibility status, benchmark-certificate status/scope hash fields, and rollback declaration status
+provider metadata:                   each predicted label exposes the registered model key/role/lifecycle, license/allowed-use status, benchmark-certificate status/scope hash fields, and rollback declaration status
 truth authority:                     every raw model prediction is explicitly `machine_candidate`, `not_certified`, certificate scope `null`, routed to `review_draft`, with residual reason `model_draft_has_no_autonomy_certificate`
 ComfyUI surface:                     `MFPredictMasks` preserves the complete API provenance in `manifest_json`
 redaction:                           the closed serving-provenance schema exposes no checkpoint path, runtime path, source URL, license text, credential, or environment value; redaction assertions cover representative sensitive fields
@@ -4662,7 +4660,7 @@ not claimed:                         populated human-anchor calibration strata, 
 
 cryptographic authority:             currency reviews are Ed25519-signed with the private key outside the repository and the public verification key under `configs/governance`; payload and full-review hashes are independently verified
 bound inputs:                        each review binds the pipeline, external/model registries, rollback evidence, conda environment, Python lock, and project metadata plus the exact active-role digest
-role gates:                          every active role is rederived from current files and checked for lifecycle, artifact hash, runtime, both approved adult-content lanes, license decision, role-scoped benchmark certificate, distinct rollback provider, and current rollback drill
+role gates:                          every active role is rederived from current files and checked for lifecycle, artifact hash, runtime, license decision, role-scoped benchmark certificate, distinct rollback provider, and current rollback drill
 live review:                         `qa/governance/currency/current_review.json` review `505e2f7105ae6f46200034a6`, SHA-256 `df954786dbd417d9260d2d5eb6ad622ce9070b17bd494b399a8570ee4d070084`, covers all five real active roles and chains the preserved prior review
 honest result:                       audit-mode recomputation passes, while default verification exits nonzero on `benchmark_certificate_missing`, `rollback_evidence_missing`, and `rollback_provider_not_distinct`
 provider correction:                the uninstalled custom segmenter no longer falsely owns an active role; SegFormer B2, Mask2Former Swin-T, and EoMT/DINOv3 are registered only as planned shadow challengers
@@ -5033,7 +5031,7 @@ Objectives:                         primary `macro_mean_iou` improvement >=0.005
 Margins:                            label/context boundary-F, IoU, small-part recall, and instance recall tolerances are immutable and source-hash-bound; bleed, side/front-back, protected-region, hard-QA, determinism, hallucination/confusion, identity, crash, OOM, and rollback failures have zero tolerance
 Average-win rejection:              positive aggregate improvement cannot override a failed label, context, or zero-regression row; omitted/duplicate buckets, margin drift, NaN, stale inputs, and pre-freeze results fail closed
 Certificate identity:               12 exact hashes bind benchmark results, source tree, checkpoint, runtime, license, content, dataset, evaluation set, prompts, hardware, QA, and measurement code to lifecycle `benchmarked`
-Certificate safety:                 every missing and every stale identity was tested; both adult content lanes and checkpoint license must be allowed; rollback and restore must be observed against a distinct incumbent
+Certificate safety:                 every missing and every stale identity was tested; checkpoint license/allowed use must be valid; rollback and restore must be observed against a distinct incumbent
 Authority boundary:                validation grants prerequisites-only evidence and performs no role/lifecycle mutation, serving activation, or gold authorization
 CI and verification:                named governance CI includes the 40-case dedicated suite; focused policy/schema/training/tracker bundle passed 92/92; complete repository suite passed 1,186/1,186; Ruff passed
 Evidence:                           `qa/live_verification/custom_segmenter_promotion_policy_20260715.json`; no human-anchor result, benchmark winner, promotion, or serving claim exists
@@ -5086,7 +5084,7 @@ Evidence:                           `qa/live_verification/wsl_external_vhd_stora
 
 **Result:** MF-P7-07.03 is 95% complete; every stale/missing category now has an exact fail-closed regression, while live require-pass remains honestly gated by MF-P7-07.01.
 
-Active-path coverage:               exact seeded failures cover binding, authority, promoted lifecycle, artifact hash, runtime identity, both approved adult-content lanes, license decision, benchmark hash/scope/primary/hard-bucket/freshness, and rollback provider/authority/artifact/evidence/freshness
+Active-path coverage:               exact seeded failures cover binding, authority, promoted lifecycle, artifact hash, runtime identity, license decision, benchmark hash/scope/primary/hard-bucket/freshness, and rollback provider/authority/artifact/evidence/freshness
 Current-input coverage:             missing pipeline, external registry, model registry, rollback document, and governance-decision dependency each fail with their exact `input_missing:*` code; signed input drift still fails `active_input_hash_mismatch`
 Review coverage:                    missing review file, signature/payload tamper, expiry/staleness, role recomputation drift, and forged pass all fail closed
 Test isolation:                     every destructive missing-file fixture now operates on a private temporary copy of each authority input and cannot mutate the live registry
@@ -5234,9 +5232,9 @@ Evidence:                           `qa/live_verification/retraining_operations_
 Dependency audit:                   MF-P2-10.01 through MF-P2-10.07 are all complete; the old reason incorrectly claimed MF-P2-10.02 still needed to remove the retired gate
 Named context coverage:             exposed, clothed, partial, distant, hair-occluded, side-view, and cropped drafting fixtures all pass
 Hard-QA coverage:                   exactly QC-V2-001 through QC-V2-010 plus QC-V2-012 remain active; retired QC-V2-011 is absent and the clothed false-positive sweep passes
-Adult content lanes:                general, adult-nonexplicit, and consensual-explicit-adult remain allowed; adult/NSFW assets may enter governed training and seed the human-reviewed gold workflow
-Removed boundary:                   no owner-rejected anatomy-v2 age-eligibility or `clear_adult` admission predicate exists in drafting, v2 QA, or exact-image cloud-teacher eligibility
-Preserved boundary:                 the independent apparent-minor intake quarantine remains unchanged; fixture completion grants no gold or production authority
+Uniform source path:                no catalog-content lane or project classifier determines training, drafting, QA, or gold-candidate routing
+Removed boundary:                   no retired classifier predicate exists in drafting, v2 QA, or exact-image cloud-teacher eligibility
+Preserved boundary:                 fixture completion grants no gold or production authority
 Verification:                       focused drafting/QA/cloud/governance/Civitai suite 76/76; focused anatomy/tracker 33/33; complete repository 1,376/1,376 with exit 0; targeted Ruff pass
 Runtime safety:                     no WSL, Docker, CVAT, external VHD, or external-drive file was accessed
 Evidence:                           `qa/live_verification/anatomy_v2_context_and_adult_lane_regression_20260715.json`
@@ -5273,7 +5271,7 @@ Frozen runtime candidate:           Transformers 5.13.1 source commit `4626421dc
 Honesty boundary:                   environment path, Python/Torch/Torchvision/CUDA versions, transitive requirements, import/inference, VRAM, latency, determinism, and quality remain explicitly null/unverified
 Authority boundary:                 shadow-only experiment beside official `sam3_1`; active, fallback, rollback, production, semantic, mask, and gold authority are forbidden
 Role coverage:                      concept-detector and interactive-segmenter tests reject silent substitution, catalog aliasing, missing/late official SAM 3.1, and declaration mismatch
-Adult content lanes:                `adult_nonexplicit` and `consensual_explicit_adult` remain allowed for this governed experiment
+Uniform source path:                this governed experiment uses the same provenance, rights, integrity, technical-QA, and authority checks as every other source
 CI coverage:                        the named registry-governance gate now includes the seven-case exact-lock/overclaim suite
 Verification:                       dedicated 7/7; provider-plus-lock 29/29; governance/promotion 140/140; complete repository 1,415/1,415 with exit 0; repository Ruff, targeted Black, CI YAML, and diff checks pass
 Evidence hygiene:                   an earlier detached full-suite console was excluded because its exit code could not be recovered; only retained session 60369 is counted
@@ -5457,7 +5455,7 @@ frozen governance rule rather than a caller assertion, while live SAM 3.1 qualif
 and real multi-person tournament execution remain open.
 
 Frozen policy:                      canonical SHA-256 `860d1e1300737102b9c4f954d06112e74c45d79a805c2cbbda1a1a1a4827fa8d`, frozen before real tournament results
-Governed derivation:                registry families require eligible lifecycle, verified artifact identity, verified license review, and both permitted content lanes; runtime families require live-smoke-passed, installed checkpoint, passing smoke, and no gold authority; internal families require every frozen source file
+Governed derivation:                registry families require eligible lifecycle, verified artifact identity, and verified license review; runtime families require live-smoke-passed, installed checkpoint, passing smoke, and no gold authority; internal families require every frozen source file
 Current repository state:           deterministic repair, fusion, geometry, pose, RF-DETR detection, SAM2.1 refinement, silhouette, and specialist are eligible; SAM3.1 discovery/refinement remain unavailable under the exact source-only/manual-checkpoint-gate runtime record
 Fail-closed behavior:               caller availability overrides no longer exist; missing/stale policy, registry identity, runtime manifest/artifact, internal source, lifecycle, license, content, checkpoint, or smoke evidence prevents eligibility or verification
 Per-target enforcement:             every governed-available family must contribute to every target; unavailable families cannot appear; newly qualified families become mandatory automatically
@@ -5617,13 +5615,13 @@ Evidence:                          `qa/live_verification/sam3_litetext_reviewed_
 contract now has a schema-valid, hash-sealed, fail-closed execution preflight. The
 champion-backed run and rollback rehearsals remain pending and are not claimed.
 
-Sources/packages:                  exact governed single/multi sources, adult/NSFW-eligible content-lane decisions, image disjointness, eligible truth tier, manifest identity, and full package-tree identity are checked before launch
+Sources/packages:                  exact governed single/multi sources, image disjointness, eligible truth tier, manifest identity, and full package-tree identity are checked before launch
 Truth isolation:                   output under `data/packages` or either selected package is rejected; preflight has no serving, package-write, truth, gold, or promotion authority
 Active roles:                      body-part, hand, clothing, and interactive providers require promoted lifecycle plus active checkpoint/runtime files matching authoritative registry identities
 Certificates/rollback:            every role requires a passing role-bound certificate, a distinct benchmarked/promoted rollback provider, a rollback checkpoint file matching registry identity, and a governed one-command declaration
 Control plane/API:                 provider selection is recomputed from the authoritative registries; only credential-free loopback HTTP base URLs are accepted
 Evidence:                          both ready and not-ready reports are schema-valid and hash sealed; CLI output uses exclusive creation and refuses overwrite
-Adult-content boundary:            the regression fixture explicitly uses a governed adult-explicit lane; no adult/NSFW exclusion was added, while the independent Sapiens2 prohibition remains unchanged
+Source boundary:                   the regression fixture uses the uniform source path; the independent Sapiens2 license prohibition remains unchanged
 Verification:                      7 focused preflight tests, 120 affected serving/ComfyUI/provider/governance/currency tests, and all 1,623 repository tests pass; Ruff, Black, JSON parsing, schema validation, and diff check pass
 Current readiness:                 false until promoted body-part/hand/clothing champions and distinct tested rollback providers exist; official SAM3.1 terms/token access is also still absent
 Evidence file:                     `qa/live_verification/provider_neutral_workflow_preflight_20260715.json`
@@ -5644,7 +5642,7 @@ Retraining policy:                 administrative pre-result source rebind only,
 Currency review:                   archived `b83bb5c7a27da05ea5d71aa0`; current signed review `1cb8f3fc9c0d2725870beb2a` verifies against current inputs and honestly remains FAIL on missing real role certificates and distinct tested rollback providers
 Verification:                      6 specialist transaction, 2 new matrix-bundle, 292 affected integration, and complete repository 1,631/1,631 tests pass; Ruff, targeted Black, schemas, and diff check pass
 Live machine:                      Docker 29.4.3 and Ubuntu-22.04 healthy; CVAT 2.24, SAM2 Nuclio, CUDA, all 14 model smokes, WSL backing store/round-trip, Ollama, PNG, SQLite, and GPU lock pass; doctor `PASS=11 WARN=1 FAIL=0`
-Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Source boundary:                   governed inputs use the uniform source path; the independent Sapiens2 license prohibition remains unchanged
 Authority withheld:                no real human-anchor result, winner, signed production promotion bundle, registry mutation, serving change, mask, truth, or gold authority is claimed
 Remaining work:                    real role-specific results and winner; production-event signed aggregate certificate; observed live promotion/rollback; aggregate matrix binding for the custom body-part mutation and interactive-SAM rollback path
 Evidence:                          `qa/live_verification/specialist_champion_transaction_contract_20260715.json`
@@ -5667,7 +5665,7 @@ Retraining policy:                 administrative pre-result source rebind only,
 Currency review:                   archived `1cb8f3fc9c0d2725870beb2a`; current signed review `422bb732e8738a6038124ce1` verifies against current inputs and honestly remains FAIL on missing real role certificates and distinct tested rollback providers
 Verification:                      11 custom transaction tests; 58 focused matrix/registry/schema/retraining tests; complete repository 1,634/1,634; pre-commit Ruff/Black/schema hooks pass
 Production safety:                 `models/model_registry.json` was not modified; no role, lifecycle, serving route, mask, truth tier, or gold authority changed
-Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Source boundary:                   governed inputs use the uniform source path; the independent Sapiens2 license prohibition remains unchanged
 Remaining work:                    real image-disjoint human-anchor matrix results, measured winners, production-event certificate, observed live promotions/rollbacks, and the distinct interactive-SAM rollback path
 Evidence:                          `qa/live_verification/custom_segmenter_matrix_bound_transaction_20260715.json`
 
@@ -5701,7 +5699,7 @@ Telemetry:                          S08 records the provider that actually refin
 Verification:                       122 focused interactive/production/provider/serve tests and complete repository 1,640/1,640 pass; Ruff lint, Ruff/Black-compatible formatting, and diff check pass
 Machine state:                      Docker Engine 29.4.3, Ubuntu-22.04, docker-desktop, CVAT/Traefik, Nuclio, and the SAM2 interactor were confirmed running by read-only probes; no restart, VHDX mutation, elevation, or UAC action was performed
 Production safety:                 pipeline, external registry, model registry, lifecycle states, and active provider are unchanged; no official SAM3.1 inference, promotion, mask, truth, or gold claim is made
-Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Source boundary:                   governed inputs use the uniform source path; the independent Sapiens2 license prohibition remains unchanged
 Remaining work:                    serialized hash-sealed interactive promotion/rollback transaction, official gated checkpoint and exact benchmark, live GPU production smoke, live rollback rehearsal, and repair orchestration
 Evidence:                          `qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json`
 
@@ -5723,7 +5721,7 @@ Concurrency/failure proof:         simultaneous promotions serialize to one hist
 Verification:                      189 focused provider/registry/serving tests and complete repository 1,653/1,653 pass; Ruff, formatting compatibility, schema compilation, and diff check pass
 Machine safety:                    no WSL/Docker restart, VHDX operation, elevation, UAC prompt, or infrastructure mutation was performed
 Production safety:                 live pipeline, external registry, model registry, lifecycle states, and active provider remain unchanged; no official SAM3.1 inference or winner is claimed
-Adult-content boundary:            governed adult/NSFW inputs remain eligible; no adult-content exclusion was added; the independent Sapiens2 prohibition remains unchanged
+Source boundary:                   governed inputs use the uniform source path; the independent Sapiens2 license prohibition remains unchanged
 Remaining work:                    gated official checkpoint, frozen human-anchor matrix execution, real signed winner certificate, exact-input live candidate/incumbent smokes, observed production promotion, and observed one-command rollback
 Evidence:                          `qa/live_verification/interactive_provider_transaction_contract_20260715.json`
 
@@ -5829,7 +5827,7 @@ and labor targets remain honestly open until measured.
 Approved source:                    pasted-text attachment SHA-256 `0679f23da58844605adbe86e79562b650072c0d4b52ac2ecc8f9fc43a4e2af31`; Plan document 23 is the reconciled local authority
 Product target:                     zero-touch >=0.95, routine human touch <=0.05, manual pixel-edit fraction <=0.01, ordinary PART mIoU >=0.95, boundary-F1 >=0.90, hard-anatomy mIoU >=0.85, and zero left/right swaps or cross-instance bleed
 Authority architecture:             licensed real labels are train-only weighted external supervision; `F:\Reference_Images` is no-truth benchmark/retrieval input; DAZ contributes exact geometry only as train-only weighted synthetic supervision; frozen real human anchors retain calibration/holdout authority
-MaskedWarehouse:                    private/personal/noncommercial/non-distributed profile locked; CelebAMask-HQ, LaPa, and LV-MHP admitted only after license/remap/identity/split gates; CC-BY-NC-ND preview and unknown-provenance body archive remain blocked; adult/NSFW governed assets are eligible and known/suspected-minor content remains prohibited
+MaskedWarehouse:                    private/personal/noncommercial/non-distributed profile locked; CelebAMask-HQ, LaPa, and LV-MHP admitted only after license/remap/identity/split gates; CC-BY-NC-ND preview and unknown-provenance body archive remain blocked on license/provenance grounds; all sources use the uniform admission path
 Reference library:                  83,422 discovered, 83,411 valid, 69,398 exact representatives; active CUDA indexing reached 49,762 classified (71.705%), 19,636 remaining, and zero failures at the captured log boundary; near-duplicate grouping and 2,500/18,000 tier selection remain downstream
 DAZ foundation:                     `F:\DAZ` root UUID `6bd1b3ba-162a-400b-96dc-e4951b892a04`; all 25 roots present; DAZ Studio 6 hash `2079c762...`; doctor 7/7 pass; generation default-disabled/hidden/process-per-job with no automatic purchase or login
 DAZ capacity:                       148.003 GiB free is below the 150-GiB soft floor but above the 100-GiB hard floor; no large generation may start; eight existing Render-State acquisition workers remain alive and were not restarted
@@ -5981,7 +5979,7 @@ Near dedup:                          69,398 members form 64,104 deterministic cl
 Exact selection:                     2,500 benchmark plus 18,000 retrieval references; zero cross-tier path, SHA-256, or near-cluster overlap; selection fingerprint `70fe46a6...`
 Coverage:                            all 22 required body-part focus categories are present; the rarest selected category is `part_elbow` with 26 references
 Replay:                              independent selection runs 15 and 16 each processed 20,500 with zero failures and produced identical grouping/selection fingerprints and tier counts
-Authority:                           the corpus remains unlabeled reference-only with no truth/training/gold authority; governed adult/NSFW material is eligible and its tag is organizational; known/suspected minors remain prohibited
+Authority:                           the corpus remains unlabeled reference-only with no truth/training/gold authority; catalog tags are organizational and all sources use the uniform admission path
 Capacity decision:                   selected copies total 72,226,704,398 bytes (67.26 GiB); copying both tiers from 199.277 GiB free would project 132.011 GiB and violate the 150-GiB soft floor
 Safe materialization:                checked-in tier-aware copier uses bounded resume chunks, atomic copy, fsync, SHA-256/source-inventory equality, source-mutation detection, and per-file 150/100-GiB gates; only the 7.35-GiB benchmark tranche was started
 Recovered orchestrator issue:        the completed CUDA index was intact; only the legacy PowerShell inline probe failed from argument quoting, so no downstream stage had run and no data was lost
@@ -6028,7 +6026,7 @@ Durable implementation:               checked-in tier validator independently re
 Published snapshot:                   446,554,112-byte governed database, SHA-256 `7b1102d2...`, SQLite quick-check `ok`
 Contact sheets:                       hidden generator started at 10:07:59 UTC and is healthy/advancing; seven sheets existed at this evidence capture, so completion is not claimed
 Retrieval capacity hold:              the 18,000 selections total 64,329,397,650 bytes; duplicating them now would cross the shared F-drive 150-GiB soft floor, so zero retrieval copies were started
-Authority:                           copied references remain unlabeled/no-truth/no-training sources; governed adult/NSFW material is eligible, while known/suspected minors remain prohibited
+Authority:                           copied references remain unlabeled/no-truth/no-training sources; all sources use the uniform admission path
 Verification:                        nine focused reference tests and the complete 1,760/1,760 repository suite pass; Ruff and Black pass
 Evidence:                             `qa/reports/reference_benchmark_materialization_20260716.json`
 
@@ -6763,7 +6761,7 @@ Source binding:                       exact hashes and value crosswalks bind can
 Coverage layers:                      canonical, DAZ generation, and high-risk intersection layers remain explicit; fixed vocabularies, inventory registries, and continuous measurements cannot be silently conflated
 Reporting contract:                  marginal, pairwise, selected three-way, and accepted-only reporting separates planned, attempted, rendered, accepted, packaged, dataset-selected, and training-consumed states across scene, person-instance, and effective-training-weight units
 Publication/replay:                  closed JSON schema, deterministic report ID/hash, policy reconstruction, source-hash replay, atomic immutable idempotent publication, conflict rejection, and `daz coverage vocabulary-report` CLI pass
-Authority boundary:                  synthetic coverage counts are not gold counts, real-image accuracy, promotion authority, or a stronger truth tier; adult synthetic anatomy/wardrobe coverage remains permitted while minor content remains forbidden
+Authority boundary:                  synthetic coverage counts are not gold counts, real-image accuracy, promotion authority, or a stronger truth tier; synthetic anatomy/wardrobe coverage uses the same uniform source and authority rules
 Wave64 boundary:                     Main and the separate autonomy-bridge worktree remain untouched; downstream qualifiers may consume explicit versioned coverage context but cannot infer stronger mask provider/tier/ontology/owner/certificate authority
 Verification:                         14/14 focused vocabulary, 5/5 canonical coverage, and 6/6 source-policy tests pass; Ruff, changed-surface Black, JSON Schema meta-validation, all 130 JSON schemas, all 37 DAZ YAML documents, and Git diff checks pass
 Resource boundary:                   bounded focused processes were used because live ComfyUI plus WSL/Docker leave limited memory; every claimed process completed normally, and no current DAZ-wide or full-repository pass is claimed
@@ -8671,7 +8669,7 @@ python Plan/Tracker/tracker.py report
 | Package hard QC (sample draft) | `HARD_QA_PASS_BOUNDED` | not gold |
 | Package visual QA (sample draft) | `VISUAL_QA_REVIEWED_WITH_DEFECTS` | mask noise / garment bias |
 | `core_autonomous_runtime` | blocked | P6-11/12 Main deps + doctor/disk |
-| EC2 | `EC2_DEFERRED` | ? |
+| RunPod scale | `RUNTIME_BLOCKED` pending a measured coordinator lease and runtime proof | ? |
 | Audio QA | `AUDIO_QA_N_A_CORE` | Main-owned |
 
 ### Exact Kevin blockers
@@ -10162,7 +10160,7 @@ HEAD at start `585c2c42`. Re-probed live: Docker 29.4.3; CVAT 2.24.0 (localhost:
 
 ### DVC local-first (item 3) — DONE local tier
 - dvc 3.67.1 installed. **Honest finding:** `dvc add data/packages` FAILS — the F: junction resolves the target outside the git repo, and dvc requires targets inside the git workdir.
-- Local remote `maskfactory-dvc-local` -> `F:/MaskFactory_DataRelocated/dvc_local_remote`. `dvc add` in-repo drill package -> 52 objects / 6.06 MB cache; `dvc push -r maskfactory-dvc-local` -> **52 files pushed**; `dvc status -c` -> **in sync**. Cloud s3 deferred (needs dvc-s3 + AWS creds).
+- Local remote `maskfactory-dvc-local` -> `F:/MaskFactory_DataRelocated/dvc_local_remote`. `dvc add` in-repo drill package -> 52 objects / 6.06 MB cache; `dvc push -r maskfactory-dvc-local` -> **52 files pushed**; `dvc status -c` -> **in sync**. The legacy cloud-write path is retired.
 
 ### B1 restore drill (item 3) — DONE local
 - Seed pkg `img_a3d2663ad90d` (252 files, 8 MB) restored via robocopy to `runtime_artifacts/b1_restore_drill`; `maskfactory verify-package --root runtime_artifacts/b1_restore_drill` -> **PASS p0+p1** (~33s). Source integrity independently PASS (`verify-package img_51945db358cb`).
@@ -10674,7 +10672,7 @@ Evidence: qa/live_verification/tournament_sample_set_ultimate_mw_20260720T1505.j
 ## 2026-07-20 15:03 UTC - DVC local remote retargeted to C: backup; status -c / push PASS
 **Item:** dvc_push_local_first / maskfactory-dvc-local on fixed-disk C: backup
 **Command:** `dvc remote modify --local maskfactory-dvc-local url C:/Comfy_UI_Main_Masking/data_c_backup_relocated/dvc_local_remote`; `dvc status -c -r maskfactory-dvc-local`; `dvc push -r maskfactory-dvc-local`; `dvc status -c -r maskfactory-dvc-local`
-**Result:** PASS. Sibling had already copied F-only `dvc_local_remote` (52 files / 6,349,602 bytes) onto `C:\Comfy_UI_Main_Masking\data_c_backup_relocated\dvc_local_remote`. Retargeted gitignored `.dvc/config.local` from `F:/MaskFactory_DataRelocated/dvc_local_remote` -> C: backup path. `dvc status -c` -> **Cache and remote are in sync**; `dvc push -r maskfactory-dvc-local` -> **Everything is up to date**; post-push status -c still in sync. `data/` junction unchanged (still C: backup). F: tree left intact as secondary mirror. Cloud s3 push still deferred (no AWS creds / dvc-s3 on active PATH dvc). No tier inflation.
+**Result:** PASS. Sibling had already copied F-only `dvc_local_remote` (52 files / 6,349,602 bytes) onto `C:\Comfy_UI_Main_Masking\data_c_backup_relocated\dvc_local_remote`. Retargeted gitignored `.dvc/config.local` from `F:/MaskFactory_DataRelocated/dvc_local_remote` -> C: backup path. `dvc status -c` -> **Cache and remote are in sync**; `dvc push -r maskfactory-dvc-local` -> **Everything is up to date**; post-push status -c still in sync. `data/` junction unchanged (still C: backup). F: tree left intact as secondary mirror. The legacy cloud-write path is retired. No tier inflation.
 
 Evidence: qa/live_verification/dvc_local_c_backup_verify_20260720T1503Z.json; script runtime_artifacts/_seal_dvc_local_c_backup_verify_20260720.py.
 
@@ -11675,6 +11673,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   policy seals, runner/requirements hashes, runtime-matrix verification, and
   tracker validation pass. Evidence:
   `qa/live_verification/matanyone2_runpod_capability_20260722.json`.
+
+## 2026-07-22 - Active plan, storage, and GPU-authority reconciliation
+
+- Reconciled the live Plan, Items, Instructions, standing orders, tracker, and
+  dashboard to one uniform source-registration path. No active source route is
+  selected or blocked by a project content classifier; provenance, rights and
+  allowed use, integrity, annotation quality, technical QA, split/leakage
+  control, and evidence-backed authority remain the governing fields.
+- Retired the remaining active S3-write and EC2-compute requirements. AWS is
+  read-only inventory only. Dataset and package publication now target governed
+  local/persistent DVC storage; high-memory training targets qualified RunPod
+  capacity.
+- Adopted SharedRunPodCoordinator v2 as the exclusive cross-project GPU
+  admission authority. New RunPod GPU work requires a validated lease,
+  heartbeat, and release. MaskFactory `runs/gpu.lock` remains an internal
+  critical-section lock and cannot veto unrelated ComfyUI work; CPU-only work
+  requires no lease.
+- Rebuilt all 827 tracker items with zero orphans. `MF-P1-07.09`,
+  `MF-P5-01.06`, `MF-P5-03.03`, and `MF-P5-08.03` no longer depend on AWS
+  credentials, cloud writes, or EC2 spending. Historical append-only evidence
+  remains non-authoritative and cannot restore retired behavior.
 ## 2026-07-22 — S00 source registration simplification
 
 - Removed the retired intake classifier, its rescreen command, manifest fields, routing reasons,

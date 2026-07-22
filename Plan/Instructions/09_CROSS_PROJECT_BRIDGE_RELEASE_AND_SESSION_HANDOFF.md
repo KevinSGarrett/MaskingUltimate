@@ -161,7 +161,7 @@ paths. Therefore the repository has two non-interchangeable test lanes:
    governance, bridge contracts, tracker invariants, fail-closed behavior, and
    the CI-partition contract must remain in this lane.
 2. **Governed asset-complete lane:** runs the full `pytest` suite in a registered
-   local or EC2 environment with the required ignored bytes and runtime paths.
+   registered local or governed RunPod environment with the required ignored bytes and runtime paths.
    `pytest -m governed_asset` may be used for a bounded retest, but it does not
    replace the final full-suite run.
 

@@ -102,7 +102,7 @@ P2 doesn't yet loop over them.
 
 | ID | Task | Deliverable | Acceptance | Spec |
 |----|------|-------------|-----------|------|
-| MF-P5-01 | Dataset build v1 + DVC | `datasets\bodyparts@v1` + card + `dvc push` | rebuild byte-identical; holdout isolation verified (trainer cannot read it) | 12 §1, §3 |
+| MF-P5-01 | Dataset build v1 + DVC | `datasets\bodyparts@v1` + card + governed persistent `dvc push` | rebuild byte-identical; holdout isolation verified (trainer cannot read it) | 12 §1, §3 |
 | MF-P5-02 | Aug pipeline w/ swap_partner flip test | MMSeg dataset/transform code | CI flip-remap unit test green (BLOCKER); rare-class crop sampling measured | 12 §4 |
 | MF-P5-03 | Train 6.1 body-part segmenter | SegFormer-B3 run (+SwinB challenger) | leaderboard rows exist; eval on frozen holdouts | 12 §6.1 |
 | MF-P5-04 | Train 6.2 clothing parser | run + eval | strap/waistband IoU ≥0.55 checked | 12 §6.2 |

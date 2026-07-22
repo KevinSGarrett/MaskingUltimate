@@ -66,7 +66,7 @@ the required human-free `core_autonomous_runtime` profile. Parent IDs from doc 1
 - [ ] MF-P1-07.06 `verify-package <id>` (all hashes + format QCs) with `--root` and `--sample N` flags (runbook §5 + nightly sweep use)
 - [ ] MF-P1-07.07 Versioning: corrections spawn `masks@v2\`, atomic promotion, v1 → deprecated kept until gc (30 d)
 - [ ] MF-P1-07.08 Seeded-defect fixture per QC-001…010 · pytest: each trips exactly its QC · human approval CANNOT override a BLOCK (enforcement test)
-- [ ] MF-P1-07.09 `dvc init` · configure remote `s3://maskfactory-dvc-dev` (dev acct 548846591581, creds via env) · first `dvc add data\packages` + `dvc push` succeeds
+- [ ] MF-P1-07.09 `dvc init` · configure a governed local/persistent remote · first `dvc add data\packages` + `dvc push` succeeds without any AWS mutation
 
 ## MF-P1-08 — First 5 gold packages, hand-driven (spec: 11 SOP-1/-5)
 - [ ] MF-P1-08.01 Curate + drop 5 governed images into `incoming\<origin>\` · ingest clean

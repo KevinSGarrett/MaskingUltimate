@@ -79,10 +79,11 @@ datasets\bodyparts@vN\
   ontology-aware `verify-package` on each and hard-fails on any hash/format mismatch (a dataset
   can never contain unverified gold).
 - Versioning is immutable: preflight that neither `datasets\bodyparts@vN` nor
-  `dataset/bodyparts-vN` exists, then `dvc add`, successful `dvc push`, and only then create the
-  git tag and mark source packages exported. A failed push creates no tag or exported authority;
-  retries use a new N rather than rewriting a path/tag. Remote is S3 `maskfactory-dvc-dev`
-  (dev acct 548846591581, doc 06 §6); launching a billable remote still requires Kevin approval.
+  `dataset/bodyparts-vN` exists, then `dvc add`, successful `dvc push` to the
+  governed local/persistent remote, and only then create the git tag and mark
+  source packages exported. A failed push creates no tag or exported authority;
+  retries use a new N rather than rewriting a path/tag. AWS remains read-only
+  inventory and is not a DVC write target.
   Rebuilding vN from the same package set is byte-identical (G8: sorted inputs, seed 1337,
   zip timestamps zeroed).
 - Every training run records `dataset@vN` + its DVC md5 in `runs\<run_id>\run.json` — a metric is
@@ -103,18 +104,21 @@ datasets\bodyparts@vN\
 Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` parts are burned to
 255 in training maps so the model is never penalized on honest unknowns).
 
-## 5. Training Infrastructure (8 GB Local + Optional AWS Burst)
+## 5. Training Infrastructure (8 GB Local + Governed RunPod Scale)
 
 - Local: WSL2 conda env `maskfactory`, PyTorch ≥ 2.7 cu128 (sm_120), MMSegmentation. AMP (bf16)
   mandatory; crop 512; per-GPU batch 2 + gradient accumulation 8 (effective 16); checkpointing
   (activation ckpt) on for Swin backbones. The training slot **claims the whole GPU** — the
-  orchestrator lock (`runs\gpu.lock`, doc 05 §5) refuses concurrent pipeline/serving runs.
+  internal orchestrator lock (`runs\gpu.lock`, doc 05 §5) refuses conflicting
+  MaskFactory pipeline/serving runs. It is not a cross-project ComfyUI veto.
 - Thermals: laptop cooldown policy (doc 06 pitfall 6) — trainer sleeps 60 s every 30 min if GPU
   temp > 87 °C (nvidia-smi poll); expect ~1.5–3 h per 10k iters locally.
-- AWS burst (optional, decision pre-made): g6e.xlarge (L40S 48 GB) **spot** in dev acct
-  548846591581, AMI = Deep Learning PyTorch; sync code via git, data via `dvc pull`, artifacts
-  back via `dvc push` + `runs\` rsync. Use only for Mask2Former-Swin-L experiments or when local
-  wall-clock blocks the weekly cadence. Terminate rule: instance dies with the run (no idle GPUs).
+- RunPod scale: before new GPU work, obtain and validate a
+  SharedRunPodCoordinator v2 lease for the measured peak, maintain its heartbeat,
+  use only hash-verified persistent inputs and output paths, and release the
+  lease after the owned process is contained. CPU-only preparation needs no
+  lease. Never kill or preempt another project's process; yield cooperatively
+  when the qualified reservations do not fit. AWS is never a compute target.
 - Determinism: seed 1337, `cudnn.deterministic=true` for release runs (speed runs may relax; the
   leaderboard entry records which).
 - Every run: `runs\<run_id>\{run.json, config.yaml, git_sha, dataset_ref, ckpts\, tb\, eval\}`;
@@ -127,7 +131,7 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
   with background already represented by ID 0. The approved append-only v2 migration uses
   65 logits for IDs `0..64` (doc 18); the obsolete 57-class wording is invalid.
 - Arch A (default): **SegFormer-B3**, ImageNet-pretrained, 512 crops — fits 8 GB comfortably.
-- Arch B (challenger): **Mask2Former-SwinB** (local, ckpt-activated) or Swin-L (AWS burst only).
+- Arch B (challenger): **Mask2Former-SwinB** (local, ckpt-activated) or Swin-L on a capacity-qualified RunPod tier only.
 - Schedule: AdamW lr 6e-5 poly 1.0, 40k iters (≈300 gold) / 80k (≈500), warmup 1.5k; loss CE +
   Dice (Mask2Former: its native matcher losses); class weights ∝ 1/√pixel_freq, capped ×8.
 - Eval: per-part IoU + boundary-F@2px on val each 4k iters; final on test_holdout + hard_case.

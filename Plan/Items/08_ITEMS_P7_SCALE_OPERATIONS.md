@@ -35,7 +35,7 @@ Parent IDs from doc 14 §8 as amended by docs 20/22 and superseded for completio
 - [ ] MF-P7-05.02 Multi-person promotion go/no-go memo (atomic masks for person 2+: ontology namespacing + throughput impact)
 
 ## Standing Weekly Rhythm (recurring — not one-time; from doc 14 §10 / 15 §2–3)
-Mon mining review (30 min) → Tue–Thu build → Fri annotation block + backup verify → every session: `doctor` at start, `git push` + `dvc push` at end · nightly automation (B1/B5/integrity/lint) and weekly (B2, IAA, coverage, gc dry-run) keep running from P1-09/P4-03 setup.
+Mon mining review (30 min) → Tue–Thu build → Fri annotation block + backup verify → every session: `doctor` at start, `git push` + governed persistent `dvc push` at end · nightly automation (B1/B5/integrity/lint) and weekly (B2, IAA, coverage, gc dry-run) keep running from P1-09/P4-03 setup.
 
 ## P7 Optional Scale/Operations Portfolio Exit Gate
 - [ ] MF-P7-EXIT Optional `scale_daz_maturity` / `independent_real_accuracy` portfolio milestone: all applicable D1–D10 boxes in doc 00 §4 checked with evidence · **revised headline test passed:** 20 unseen images → selective autonomous certification/residual routing → preselected blinded mixed audit, no routine per-image correction, zero format/L/R failures, and separate labor/quality/confidence metrics (docs 20/22; MF-P7-07.07) · Per doc 24 this item is not a project-wide or `core_autonomous_runtime` exit gate

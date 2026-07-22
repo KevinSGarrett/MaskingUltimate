@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 from collections import Counter
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,26 @@ from maskfactory.nude_person_catalog import compare_person_proposal_catalogs
 
 def _artifact_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _catalog_proposal(proposal: Any, *, family_id: str) -> dict[str, Any]:
+    if not isinstance(proposal, Mapping):
+        raise ValueError("provider proposal is not an object")
+    normalized = dict(proposal)
+    if family_id == "groundingdino":
+        if proposal.get("prompt") != "person" or proposal.get("phrase") != "person":
+            raise ValueError("GroundingDINO proposal is not exact person discovery")
+        normalized["label"] = "person"
+        normalized["confidence"] = proposal.get("box_score")
+    confidence = normalized.get("confidence")
+    if (
+        isinstance(confidence, bool)
+        or not isinstance(confidence, (int, float))
+        or not 0 <= float(confidence) <= 1
+    ):
+        raise ValueError("provider proposal confidence is invalid")
+    normalized["confidence"] = float(confidence)
+    return normalized
 
 
 def _load_output(path: Path) -> tuple[dict[str, Any], dict[str, str], float]:
@@ -139,17 +160,17 @@ def compare_batches(
             reported_size = record.get("image_size")
             if reported_size is not None and reported_size != image_size:
                 raise ValueError(f"provider image size mismatch:{sample_id}")
+            filtered_proposals = []
+            for proposal in record.get("proposals", []):
+                normalized = _catalog_proposal(proposal, family_id=identity["family_id"])
+                if normalized["confidence"] >= applied_confidence_min:
+                    filtered_proposals.append(normalized)
             provider_records.append(
                 {
                     **identity,
                     "artifact_sha256": _artifact_sha256(path),
                     "source_sha256": source_sha256,
-                    "proposals": [
-                        proposal
-                        for proposal in record.get("proposals", [])
-                        if float(proposal.get("confidence", proposal.get("box_score", -1)))
-                        >= applied_confidence_min
-                    ],
+                    "proposals": filtered_proposals,
                 }
             )
         comparisons.append(

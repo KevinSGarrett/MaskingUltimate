@@ -48,10 +48,18 @@ def _fixture(tmp_path: Path):
     }
     shard = tmp_path / "shard.json"
     shard.write_text(json.dumps({**shard_body, "self_sha256": canonical_sha256(shard_body)}))
-    proposal = {
+    yolo_proposal = {
         "bbox_xyxy": [5, 5, 95, 78],
         "confidence": 0.9,
         "label": "person",
+        "authority": "proposal_only",
+    }
+    gdino_proposal = {
+        "bbox_xyxy": [5, 5, 95, 78],
+        "box_score": 0.9,
+        "text_score": 0.9,
+        "phrase": "person",
+        "prompt": "person",
         "authority": "proposal_only",
     }
     gdino_body = {
@@ -62,7 +70,7 @@ def _fixture(tmp_path: Path):
         "checkpoint_sha256": "a" * 64,
         "box_threshold": 0.3,
         "record_count": 1,
-        "records": [{**sample, "image_size": [100, 80], "proposals": [proposal]}],
+        "records": [{**sample, "image_size": [100, 80], "proposals": [gdino_proposal]}],
     }
     yolo_body = {
         "schema_version": "maskfactory.yolo11_person_batch.v1",
@@ -73,7 +81,7 @@ def _fixture(tmp_path: Path):
         "checkpoint_sha256": "b" * 64,
         "confidence_min": 0.5,
         "record_count": 1,
-        "records": [{**sample, "proposals": [proposal]}],
+        "records": [{**sample, "proposals": [yolo_proposal]}],
     }
     paths = []
     for name, body in (("gdino.json", gdino_body), ("yolo.json", yolo_body)):

@@ -167,6 +167,54 @@ def load_records(intake: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
     return records
 
 
+def build_project_registry_manifest(intake: Mapping[str, Any]) -> dict[str, Any]:
+    """Embed every supplied dataset row while binding the governing intake files."""
+
+    root = Path(intake["intake_root"])
+    registry = intake["registry"]
+    datasets = registry.get("datasets")
+    if not isinstance(datasets, list) or len(datasets) != ADOPTED_DATASET_COUNT:
+        raise NudeCorpusIntakeError("project_registry_dataset_count_drift")
+    required = {
+        "dataset_id",
+        "path",
+        "annotation_format",
+        "annotation_files",
+        "source_url",
+        "license_claim",
+        "lineage_group",
+        "primary_role",
+        "record_count",
+        "version_policy",
+    }
+    for row in datasets:
+        if not isinstance(row, dict) or required - set(row):
+            raise NudeCorpusIntakeError("project_registry_dataset_fields_missing")
+    manifest: dict[str, Any] = {
+        "schema_version": "maskfactory.nude_corpus_registry_adoption.v1",
+        "artifact_type": "governed_external_corpus_registry",
+        "authority": {
+            "source_labels_preserved": True,
+            "external_annotations_are_human_gold": False,
+            "downloaded_masks_are_production_authority": False,
+            "reference_images_are_pixel_truth": False,
+        },
+        "adopted_source": {
+            "registry_sha256": registry["self_sha256"],
+            "shard_index_sha256": intake["index"]["self_sha256"],
+            "dataset_policy_file_sha256": sha256_file(root / "dataset_policy.json"),
+            "ontology_crosswalk_file_sha256": sha256_file(root / "ontology_crosswalk.json"),
+            "batch_policy_file_sha256": sha256_file(root / "batch_policy.json"),
+        },
+        "dataset_count": len(datasets),
+        "record_count": registry["record_count"],
+        "role_counts": registry.get("role_counts"),
+        "datasets": sorted(datasets, key=lambda row: str(row["dataset_id"])),
+    }
+    manifest["self_sha256"] = canonical_sha256(manifest)
+    return manifest
+
+
 def representative_shards(intake: Mapping[str, Any]) -> dict[str, Path]:
     """Return exactly the first deterministic shard from every governed lane."""
 

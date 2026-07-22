@@ -9,6 +9,7 @@ import pytest
 
 from maskfactory.nude_corpus_intake import (
     NudeCorpusIntakeError,
+    build_project_registry_manifest,
     canonical_sha256,
     rasterize_coco_segmentation,
     validate_shard,
@@ -91,3 +92,36 @@ def test_shard_contract_rejects_reordered_or_duplicate_samples(tmp_path: Path) -
     path.write_text(json.dumps(shard), encoding="utf-8")
     with pytest.raises(NudeCorpusIntakeError, match="shard_coverage_invalid"):
         validate_shard(path, expected_lane="polygon_external_supervision", platform="local")
+
+
+def test_project_registry_preserves_exact_dataset_rows_and_denies_authority(tmp_path: Path) -> None:
+    for name in ("dataset_policy.json", "ontology_crosswalk.json", "batch_policy.json"):
+        (tmp_path / name).write_text("{}\n", encoding="utf-8")
+    row = {
+        "dataset_id": "fixture",
+        "path": r"C:\fixture",
+        "annotation_format": "coco_bbox",
+        "annotation_files": [{"path": "train/_annotations.coco.json", "categories": ["genital"]}],
+        "source_url": "https://example.invalid/source",
+        "license_claim": "declared fixture",
+        "lineage_group": "fixture-family",
+        "primary_role": "bbox_prompt_supervision",
+        "record_count": 1,
+        "version_policy": "active",
+    }
+    rows = [dict(row, dataset_id=f"fixture-{index}") for index in range(16)]
+    intake = {
+        "intake_root": tmp_path,
+        "registry": {
+            "self_sha256": "a" * 64,
+            "record_count": 81_910,
+            "role_counts": {"bbox_prompt_supervision": 81_910},
+            "datasets": rows,
+        },
+        "index": {"self_sha256": "b" * 64},
+    }
+    manifest = build_project_registry_manifest(intake)
+    assert manifest["datasets"] == sorted(rows, key=lambda item: item["dataset_id"])
+    assert manifest["dataset_count"] == 16
+    assert manifest["authority"]["external_annotations_are_human_gold"] is False
+    assert manifest["self_sha256"] == canonical_sha256(manifest)

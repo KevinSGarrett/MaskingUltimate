@@ -1,0 +1,1333 @@
+{
+  "adopted_source": {
+    "batch_policy_file_sha256": "d1ea1202a43bf50f19115b8557335c300f5f96ef3027ded0bbf6d27457f6ee9b",
+    "dataset_policy_file_sha256": "cd086904d156ebda491f424de77afdfb7e15804f9fa0697dbc672a0ca9c547f3",
+    "ontology_crosswalk_file_sha256": "567aea9a37312783f7e0f5535eec220df2942b5cb6d52b05746794af30a1ddaa",
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a"
+  },
+  "artifact_type": "governed_external_corpus_registry",
+  "authority": {
+    "downloaded_masks_are_production_authority": false,
+    "external_annotations_are_human_gold": false,
+    "reference_images_are_pixel_truth": false,
+    "source_labels_preserved": true
+  },
+  "dataset_count": 16,
+  "datasets": [
+    {
+      "annotation_files": [],
+      "annotation_format": "prompt_and_nsfw_level_metadata_only",
+      "bbox_annotations": 0,
+      "category_annotation_counts": {},
+      "dataset_id": "civitai_top_nsfw_images_2025",
+      "folder_name": "CivitAI_Top_NSFW_Images",
+      "license_claim": "Apache-2.0 dataset-card declaration; underlying image rights require independent release review",
+      "lineage_group": "civitai_top_nsfw_images",
+      "media_domain": "synthetic_or_generated",
+      "metadata_file": {
+        "entries": 6537,
+        "path": "CivitAI_Top_NSFW_Images/prompts.json",
+        "sha256": "abbfdbb7d2efc1f3ec2c8975815b446f341930bebe4bbb34701b05c34f7b6f84"
+      },
+      "metadata_nsfw_level_counts": {
+        "Mature": 1797,
+        "X": 4740
+      },
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\CivitAI_Top_NSFW_Images",
+      "primary_role": "reference_and_tournament_input",
+      "record_count": 6537,
+      "segmentation_annotations": 0,
+      "source_url": "https://huggingface.co/datasets/wallstoneai/civitai-top-nsfw-images-with-metadata",
+      "total_bytes_including_local_cache": 1127588413,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 42,
+          "categories": [
+            "beta-censor-betav0-1",
+            "armpit",
+            "ass",
+            "boobs",
+            "eyes",
+            "face",
+            "feet",
+            "genital",
+            "lips"
+          ],
+          "images": 20,
+          "path": "beta censor betav0.1.v3i.coco/test/_annotations.coco.json",
+          "sha256": "4662fd7b0f1206e1908d8f1acde487e1408e90318bcd16dad6e3942a6e146f10"
+        },
+        {
+          "annotations": 990,
+          "categories": [
+            "beta-censor-betav0-1",
+            "armpit",
+            "ass",
+            "boobs",
+            "eyes",
+            "face",
+            "feet",
+            "genital",
+            "lips"
+          ],
+          "images": 438,
+          "path": "beta censor betav0.1.v3i.coco/train/_annotations.coco.json",
+          "sha256": "6c011ce9d0700c1f789e6ebdd3baedc392dd6cb2256ed10facbc0e71bf54bd97"
+        },
+        {
+          "annotations": 79,
+          "categories": [
+            "beta-censor-betav0-1",
+            "armpit",
+            "ass",
+            "boobs",
+            "eyes",
+            "face",
+            "feet",
+            "genital",
+            "lips"
+          ],
+          "images": 42,
+          "path": "beta censor betav0.1.v3i.coco/valid/_annotations.coco.json",
+          "sha256": "3c745973c19acf058502d172cf68a4d0ae894a8a74e309ff1f3d370be510235d"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 1111,
+      "category_annotation_counts": {
+        "armpit": 65,
+        "ass": 105,
+        "boobs": 94,
+        "eyes": 182,
+        "face": 229,
+        "feet": 152,
+        "genital": 103,
+        "lips": 181
+      },
+      "dataset_id": "roboflow_beta_censor_v3",
+      "folder_name": "beta censor betav0.1.v3i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_beta_censor",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\beta censor betav0.1.v3i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 500,
+      "segmentation_annotations": 0,
+      "source_url": "https://universe.roboflow.com/yasos-workspace/beta-censor-betav0-1",
+      "total_bytes_including_local_cache": 18282192,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 389,
+          "categories": [
+            "clip-05",
+            "balls",
+            "penis"
+          ],
+          "images": 111,
+          "path": "clip-05.v1i.coco/train/_annotations.coco.json",
+          "sha256": "a3e61ac897669f6d9d09c011e054e81f02ae23e2ebbfb7b5d3b8e329400b7751"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 389,
+      "category_annotation_counts": {
+        "balls": 115,
+        "penis": 274
+      },
+      "dataset_id": "roboflow_clip_05_v1",
+      "folder_name": "clip-05.v1i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_clip_05",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\clip-05.v1i.coco",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 111,
+      "segmentation_annotations": 389,
+      "source_url": "https://universe.roboflow.com/els-workspace-vohhj/clip-05",
+      "total_bytes_including_local_cache": 4325767,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 195,
+          "categories": [
+            "nsfw",
+            "anus",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 43,
+          "path": "doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/test/_annotations.coco.json",
+          "sha256": "344c6225f0ca4163faf0bab466351f2a02c25114065e04b3d09529ead9a2a4cf"
+        },
+        {
+          "annotations": 689,
+          "categories": [
+            "nsfw",
+            "anus",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 169,
+          "path": "doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/train/_annotations.coco.json",
+          "sha256": "260573e44b0c64dcc56523186942a860d1d49ebe6da5a6e0f74c1c0e71d9f962"
+        },
+        {
+          "annotations": 258,
+          "categories": [
+            "nsfw",
+            "anus",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 52,
+          "path": "doujin_nsfw_detector.v8-v0.5.0.coco-segmentation/valid/_annotations.coco.json",
+          "sha256": "762468b9685feacf1cce76b06ad3cd94a43325c9a7bc06b0b24b1807c974ece1"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 1142,
+      "category_annotation_counts": {
+        "anus": 159,
+        "nipple": 375,
+        "penis": 462,
+        "vagina": 146
+      },
+      "dataset_id": "roboflow_doujin_nsfw_detector_v8",
+      "folder_name": "doujin_nsfw_detector.v8-v0.5.0.coco-segmentation",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_doujin_nsfw_detector",
+      "media_domain": "illustration_or_comic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\doujin_nsfw_detector.v8-v0.5.0.coco-segmentation",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 264,
+      "segmentation_annotations": 1142,
+      "source_url": "https://universe.roboflow.com/manus-labeling-workspace/doujin_nsfw_detector",
+      "total_bytes_including_local_cache": 31878871,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 3282,
+          "categories": [
+            "objects",
+            "breast",
+            "buttocks",
+            "genitals"
+          ],
+          "images": 9857,
+          "path": "edge cases.v2i.coco/train/_annotations.coco.json",
+          "sha256": "f5e165be4d4279b97e04297a9745f9bccb373700b6a1848e9287bc720ce633b3"
+        },
+        {
+          "annotations": 39,
+          "categories": [
+            "objects",
+            "breast",
+            "buttocks",
+            "genitals"
+          ],
+          "images": 1267,
+          "path": "edge cases.v2i.coco/valid/_annotations.coco.json",
+          "sha256": "a353c25c636a6ac1d0ee090396d528b307ded3b08bf283c4f8deb20581c38d16"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 3321,
+      "category_annotation_counts": {
+        "breast": 908,
+        "buttocks": 983,
+        "genitals": 1430
+      },
+      "dataset_id": "roboflow_edge_cases_v2",
+      "folder_name": "edge cases.v2i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_edge_cases",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\edge cases.v2i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 11124,
+      "segmentation_annotations": 0,
+      "source_url": "https://universe.roboflow.com/peter-7x3gt/edge-cases",
+      "total_bytes_including_local_cache": 1147159828,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 538,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 120,
+          "path": "main.v3i.coco/test/_annotations.coco.json",
+          "sha256": "186dce43b9c1cbb074fa36fdab97ef7f2074a218eed87eb88f89423697b8cc32"
+        },
+        {
+          "annotations": 12516,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 2523,
+          "path": "main.v3i.coco/train/_annotations.coco.json",
+          "sha256": "b155cabaf8bb35ccbc4a957374607e05b267a359a46df936f4587308f995a725"
+        },
+        {
+          "annotations": 1231,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 240,
+          "path": "main.v3i.coco/valid/_annotations.coco.json",
+          "sha256": "97566561f90501b2becf3959eea3df91b4f696a4511ca2776ea4485b85dd13e5"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 14285,
+      "category_annotation_counts": {
+        "Ass": 499,
+        "Asshole": 436,
+        "Bikini": 388,
+        "Blowjob": 200,
+        "Booty": 57,
+        "Bush": 596,
+        "Chains": 186,
+        "Chocker": 177,
+        "Clothed": 32,
+        "Cum": 898,
+        "Dildo": 102,
+        "Dress": 73,
+        "Feet": 2257,
+        "Flashing Tits": 111,
+        "From Behind": 172,
+        "Heels": 241,
+        "Leather Lingerie": 72,
+        "Lesbian": 25,
+        "Lingerie": 1077,
+        "Penis": 842,
+        "Pussy": 1413,
+        "Rope": 343,
+        "Sex": 436,
+        "Shower": 46,
+        "Stockings": 802,
+        "Tits": 2418,
+        "Tounge Out": 147,
+        "Underwear": 239
+      },
+      "dataset_id": "roboflow_main_hsqfp_v3",
+      "folder_name": "main.v3i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_main_hsqfp",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\main.v3i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 2883,
+      "segmentation_annotations": 3,
+      "source_url": "https://universe.roboflow.com/michaels-workspace-18cet/main-hsqfp",
+      "total_bytes_including_local_cache": 171075001,
+      "version_policy": "superseded_correlated_version_do_not_cross_split"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 538,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 120,
+          "path": "main.v4i.coco/test/_annotations.coco.json",
+          "sha256": "b1575869f6f52ca987b907ddcbbcddd831ff6e34e37057bdb74baf2c676680d0"
+        },
+        {
+          "annotations": 12517,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 2523,
+          "path": "main.v4i.coco/train/_annotations.coco.json",
+          "sha256": "4ded1988f762c58663071900b1d03d4a77d9fa49e226fd9f227954dd1dfc5b36"
+        },
+        {
+          "annotations": 1231,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 240,
+          "path": "main.v4i.coco/valid/_annotations.coco.json",
+          "sha256": "f8a2575eb8d8379a3a81fff18a42ac2c1fbf99aa24bb74210db93da8d10b543b"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 14286,
+      "category_annotation_counts": {
+        "Ass": 499,
+        "Asshole": 436,
+        "Bikini": 388,
+        "Blowjob": 200,
+        "Booty": 57,
+        "Bush": 597,
+        "Chains": 187,
+        "Chocker": 177,
+        "Clothed": 32,
+        "Cum": 898,
+        "Dildo": 102,
+        "Dress": 73,
+        "Feet": 2256,
+        "Flashing Tits": 111,
+        "From Behind": 172,
+        "Heels": 241,
+        "Leather Lingerie": 72,
+        "Lesbian": 25,
+        "Lingerie": 1076,
+        "Penis": 842,
+        "Pussy": 1413,
+        "Rope": 343,
+        "Sex": 436,
+        "Shower": 46,
+        "Stockings": 803,
+        "Tits": 2418,
+        "Tounge Out": 147,
+        "Underwear": 239
+      },
+      "dataset_id": "roboflow_main_hsqfp_v4",
+      "folder_name": "main.v4i.coco",
+      "license_claim": "Project-lineage CC BY 4.0 declaration; verify version page before external distribution",
+      "lineage_group": "roboflow_main_hsqfp",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\main.v4i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 2883,
+      "segmentation_annotations": 3,
+      "source_url": "https://universe.roboflow.com/michaels-workspace-18cet/main-hsqfp",
+      "total_bytes_including_local_cache": 117439156,
+      "version_policy": "superseded_correlated_version_do_not_cross_split"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 716,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 155,
+          "path": "main.v5i.coco/test/_annotations.coco.json",
+          "sha256": "4a18208c715cfd58c9d7083271e51bedc99030457c2ca87aa0c1c96feec27f21"
+        },
+        {
+          "annotations": 15759,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 3162,
+          "path": "main.v5i.coco/train/_annotations.coco.json",
+          "sha256": "df10ef48cf4231d12d6bff624f030b0bb32182d4ae5519bec2c0eeba86b999c5"
+        },
+        {
+          "annotations": 1665,
+          "categories": [
+            "parts",
+            "Ass",
+            "Asshole",
+            "Bikini",
+            "Blowjob",
+            "Booty",
+            "Bush",
+            "Chains",
+            "Chocker",
+            "Clothed",
+            "Cum",
+            "Dildo",
+            "Dress",
+            "Feet",
+            "Flashing Tits",
+            "From Behind",
+            "Heels",
+            "Leather Lingerie",
+            "Lesbian",
+            "Lingerie",
+            "Penis",
+            "Pussy",
+            "Rope",
+            "Sex",
+            "Shower",
+            "Stockings",
+            "Tits",
+            "Tounge Out",
+            "Underwear"
+          ],
+          "images": 332,
+          "path": "main.v5i.coco/valid/_annotations.coco.json",
+          "sha256": "63dd55cdf283bf5bcedf4e9b24f3c2ec39c208626900de3761e90dcd310da49b"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 18140,
+      "category_annotation_counts": {
+        "Ass": 603,
+        "Asshole": 494,
+        "Bikini": 410,
+        "Blowjob": 200,
+        "Booty": 59,
+        "Bush": 789,
+        "Chains": 237,
+        "Chocker": 210,
+        "Clothed": 58,
+        "Cum": 1037,
+        "Dildo": 129,
+        "Dress": 101,
+        "Feet": 2799,
+        "Flashing Tits": 162,
+        "From Behind": 201,
+        "Heels": 323,
+        "Leather Lingerie": 72,
+        "Lesbian": 29,
+        "Lingerie": 1196,
+        "Penis": 951,
+        "Pussy": 1803,
+        "Rope": 529,
+        "Sex": 528,
+        "Shower": 47,
+        "Stockings": 915,
+        "Tits": 3742,
+        "Tounge Out": 159,
+        "Underwear": 357
+      },
+      "dataset_id": "roboflow_main_hsqfp_v5",
+      "folder_name": "main.v5i.coco",
+      "license_claim": "Project-lineage CC BY 4.0 declaration; verify version page before external distribution",
+      "lineage_group": "roboflow_main_hsqfp",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\main.v5i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 3649,
+      "segmentation_annotations": 3,
+      "source_url": "https://universe.roboflow.com/michaels-workspace-18cet/main-hsqfp",
+      "total_bytes_including_local_cache": 145705622,
+      "version_policy": "preferred_version"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 2330,
+          "categories": [
+            "mange",
+            "anus",
+            "clitoris",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 306,
+          "path": "mange.v2i.coco-segmentation/test/_annotations.coco.json",
+          "sha256": "c860f8bca87696bc6223117db560c0ce2d247cfa13bacd6f316de1ed38c4962e"
+        },
+        {
+          "annotations": 27636,
+          "categories": [
+            "mange",
+            "anus",
+            "clitoris",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 4297,
+          "path": "mange.v2i.coco-segmentation/train/_annotations.coco.json",
+          "sha256": "500af42796c4e05cf32229f50235084b575e6e5e424df54e4b79513ae54013ca"
+        },
+        {
+          "annotations": 2448,
+          "categories": [
+            "mange",
+            "anus",
+            "clitoris",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 379,
+          "path": "mange.v2i.coco-segmentation/valid/_annotations.coco.json",
+          "sha256": "0ea91a34067a429896545761e1cd252e645555e0cdd6e782ddb0be3d4e27fafa"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 32414,
+      "category_annotation_counts": {
+        "anus": 1313,
+        "clitoris": 3739,
+        "female face": 6515,
+        "female pubic hair": 2092,
+        "male face": 2578,
+        "male pubic hair": 1653,
+        "nipple": 6728,
+        "penis": 3644,
+        "vagina": 4152
+      },
+      "dataset_id": "roboflow_mange_v2",
+      "folder_name": "mange.v2i.coco-segmentation",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_mange_gv4qo",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\mange.v2i.coco-segmentation",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 4982,
+      "segmentation_annotations": 32414,
+      "source_url": "https://universe.roboflow.com/hoge-roog2/mange-gv4qo",
+      "total_bytes_including_local_cache": 359228100,
+      "version_policy": "correlated_alternate_preprocessing_do_not_cross_split"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 2207,
+          "categories": [
+            "mange",
+            "anus",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 322,
+          "path": "mange.v3i.coco-segmentation/test/_annotations.coco.json",
+          "sha256": "ffa0e9df4e0235f632b959310c02753053716899585f96c3ada6872185db66e3"
+        },
+        {
+          "annotations": 24648,
+          "categories": [
+            "mange",
+            "anus",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 4190,
+          "path": "mange.v3i.coco-segmentation/train/_annotations.coco.json",
+          "sha256": "002a04807e848ddea175fb2d4f68a407b1ff591ebb02904a79c5f13d0baab3b6"
+        },
+        {
+          "annotations": 2340,
+          "categories": [
+            "mange",
+            "anus",
+            "female face",
+            "female pubic hair",
+            "male face",
+            "male pubic hair",
+            "nipple",
+            "penis",
+            "vagina"
+          ],
+          "images": 391,
+          "path": "mange.v3i.coco-segmentation/valid/_annotations.coco.json",
+          "sha256": "41a7541b9fbacfcb76b00e65c0c99b9f2f2cb61ec57ef8c59dca4ceccff34ec1"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 29195,
+      "category_annotation_counts": {
+        "anus": 1693,
+        "female face": 6404,
+        "female pubic hair": 1974,
+        "male face": 2580,
+        "male pubic hair": 2172,
+        "nipple": 6607,
+        "penis": 3544,
+        "vagina": 4221
+      },
+      "dataset_id": "roboflow_mange_v3",
+      "folder_name": "mange.v3i.coco-segmentation",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_mange_gv4qo",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\mange.v3i.coco-segmentation",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 4903,
+      "segmentation_annotations": 29195,
+      "source_url": "https://universe.roboflow.com/hoge-roog2/mange-gv4qo",
+      "total_bytes_including_local_cache": 867370145,
+      "version_policy": "preferred_version"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 81,
+          "categories": [
+            "NsegNu",
+            "anus",
+            "buttocks",
+            "female_breast",
+            "female_genitalia"
+          ],
+          "images": 73,
+          "path": "NsegNu.v1i.coco-segmentation/test/_annotations.coco.json",
+          "sha256": "517ef2b59b3cc5b5eddbf70cfbd22bea6add26189fa9006e48d750cbea6f238a"
+        },
+        {
+          "annotations": 1638,
+          "categories": [
+            "NsegNu",
+            "anus",
+            "buttocks",
+            "female_breast",
+            "female_genitalia"
+          ],
+          "images": 1509,
+          "path": "NsegNu.v1i.coco-segmentation/train/_annotations.coco.json",
+          "sha256": "cdfa1b919a1febe7f0bd945858b6a9565f3f579af771763f58a6b12065a82402"
+        },
+        {
+          "annotations": 170,
+          "categories": [
+            "NsegNu",
+            "anus",
+            "buttocks",
+            "female_breast",
+            "female_genitalia"
+          ],
+          "images": 163,
+          "path": "NsegNu.v1i.coco-segmentation/valid/_annotations.coco.json",
+          "sha256": "3b08e36599b0813ec428f16f598126261bbd17bc23332539b7fa0da6a52daa54"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 1889,
+      "category_annotation_counts": {
+        "anus": 1025,
+        "buttocks": 467,
+        "female_breast": 28,
+        "female_genitalia": 369
+      },
+      "dataset_id": "roboflow_nsegnu_v1",
+      "folder_name": "NsegNu.v1i.coco-segmentation",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_nsegnu",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\NsegNu.v1i.coco-segmentation",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 1745,
+      "segmentation_annotations": 1889,
+      "source_url": "https://universe.roboflow.com/ducktest/nsegnu",
+      "total_bytes_including_local_cache": 44452505,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 3015,
+          "categories": [
+            "Mosaic",
+            "ANUS_COVERED",
+            "ANUS_EXPOSED",
+            "ARMPITS_EXPOSED",
+            "BELLY_COVERED",
+            "BELLY_EXPOSED",
+            "BUTTOCKS_COVERED",
+            "BUTTOCKS_EXPOSED",
+            "FACE_FEMALE",
+            "FACE_MALE",
+            "FEET_COVERED",
+            "FEET_EXPOSED",
+            "FEMALE_BREAST_COVERED",
+            "FEMALE_BREAST_EXPOSED",
+            "FEMALE_GENITALIA_COVERED",
+            "FEMALE_GENITALIA_EXPOSED",
+            "MALE_BREAST_EXPOSED",
+            "MALE_GENITALIA_EXPOSED"
+          ],
+          "images": 658,
+          "path": "nsfw-dataset-detect-object.v2i.coco/test/_annotations.coco.json",
+          "sha256": "6b674f3cd964680fb6a2d1e2cea373f438473cbd4c34ff059540fb95e92e5cdd"
+        },
+        {
+          "annotations": 12113,
+          "categories": [
+            "Mosaic",
+            "ANUS_COVERED",
+            "ANUS_EXPOSED",
+            "ARMPITS_EXPOSED",
+            "BELLY_COVERED",
+            "BELLY_EXPOSED",
+            "BUTTOCKS_COVERED",
+            "BUTTOCKS_EXPOSED",
+            "FACE_FEMALE",
+            "FACE_MALE",
+            "FEET_COVERED",
+            "FEET_EXPOSED",
+            "FEMALE_BREAST_COVERED",
+            "FEMALE_BREAST_EXPOSED",
+            "FEMALE_GENITALIA_COVERED",
+            "FEMALE_GENITALIA_EXPOSED",
+            "MALE_BREAST_EXPOSED",
+            "MALE_GENITALIA_EXPOSED"
+          ],
+          "images": 2630,
+          "path": "nsfw-dataset-detect-object.v2i.coco/train/_annotations.coco.json",
+          "sha256": "891b0e74cefca9a10f52e7ab77f48527e3f0aaa51bc10d9d994604b53a487b9d"
+        },
+        {
+          "annotations": 2706,
+          "categories": [
+            "Mosaic",
+            "ANUS_COVERED",
+            "ANUS_EXPOSED",
+            "ARMPITS_EXPOSED",
+            "BELLY_COVERED",
+            "BELLY_EXPOSED",
+            "BUTTOCKS_COVERED",
+            "BUTTOCKS_EXPOSED",
+            "FACE_FEMALE",
+            "FACE_MALE",
+            "FEET_COVERED",
+            "FEET_EXPOSED",
+            "FEMALE_BREAST_COVERED",
+            "FEMALE_BREAST_EXPOSED",
+            "FEMALE_GENITALIA_COVERED",
+            "FEMALE_GENITALIA_EXPOSED",
+            "MALE_BREAST_EXPOSED",
+            "MALE_GENITALIA_EXPOSED"
+          ],
+          "images": 580,
+          "path": "nsfw-dataset-detect-object.v2i.coco/valid/_annotations.coco.json",
+          "sha256": "18ccfcc5b2a1e4b0e7e722f522bf3483418383a056284117c39190783c32631d"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 17834,
+      "category_annotation_counts": {
+        "ANUS_COVERED": 1,
+        "ANUS_EXPOSED": 855,
+        "ARMPITS_EXPOSED": 1666,
+        "BELLY_COVERED": 215,
+        "BELLY_EXPOSED": 1152,
+        "BUTTOCKS_COVERED": 61,
+        "BUTTOCKS_EXPOSED": 1457,
+        "FACE_FEMALE": 3089,
+        "FACE_MALE": 216,
+        "FEET_COVERED": 855,
+        "FEET_EXPOSED": 1155,
+        "FEMALE_BREAST_COVERED": 1139,
+        "FEMALE_BREAST_EXPOSED": 2617,
+        "FEMALE_GENITALIA_COVERED": 133,
+        "FEMALE_GENITALIA_EXPOSED": 2294,
+        "MALE_BREAST_EXPOSED": 37,
+        "MALE_GENITALIA_EXPOSED": 892
+      },
+      "dataset_id": "roboflow_nsfw_detect_object_v2",
+      "folder_name": "nsfw-dataset-detect-object.v2i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_nsfw_detect_object",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\nsfw-dataset-detect-object.v2i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 3868,
+      "segmentation_annotations": 3,
+      "source_url": "https://universe.roboflow.com/thelixs-workspace/nsfw-dataset-detect-object",
+      "total_bytes_including_local_cache": 188014699,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 694,
+          "categories": [
+            "breast",
+            "breast",
+            "breasts",
+            "fellatio",
+            "head",
+            "penis",
+            "pussy",
+            "sex_acting",
+            "toy"
+          ],
+          "images": 402,
+          "path": "nsfw.v1i.coco/test/_annotations.coco.json",
+          "sha256": "f51260009be1ef0f036fcf8712cd1190a48132711322fa3b31a343f728904664"
+        },
+        {
+          "annotations": 8871,
+          "categories": [
+            "breast",
+            "breast",
+            "breasts",
+            "fellatio",
+            "head",
+            "penis",
+            "pussy",
+            "sex_acting",
+            "toy"
+          ],
+          "images": 7803,
+          "path": "nsfw.v1i.coco/train/_annotations.coco.json",
+          "sha256": "3bce2b6f33efbd8cdfc13788b71b8f40ccf9a6be2afc5e90fc5587a336a3e461"
+        },
+        {
+          "annotations": 1512,
+          "categories": [
+            "breast",
+            "breast",
+            "breasts",
+            "fellatio",
+            "head",
+            "penis",
+            "pussy",
+            "sex_acting",
+            "toy"
+          ],
+          "images": 1260,
+          "path": "nsfw.v1i.coco/valid/_annotations.coco.json",
+          "sha256": "e686077ca1a877e7f0b3bfcf2ee44951f85f9d30bc2f39e87380a9e9d0a493b1"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 11077,
+      "category_annotation_counts": {
+        "breast": 2823,
+        "breasts": 1,
+        "fellatio": 190,
+        "head": 1755,
+        "penis": 2043,
+        "pussy": 2049,
+        "sex_acting": 127,
+        "toy": 2089
+      },
+      "dataset_id": "roboflow_nsfw_wh3c2_v1",
+      "folder_name": "nsfw.v1i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_nsfw_wh3c2",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\nsfw.v1i.coco",
+      "primary_role": "bbox_prompt_and_action_tag_supervision",
+      "record_count": 9465,
+      "segmentation_annotations": 24,
+      "source_url": "https://universe.roboflow.com/nsfwdetector/nsfw-wh3c2",
+      "total_bytes_including_local_cache": 418493278,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 2517,
+          "categories": [
+            "NWeud",
+            "anus",
+            "buttocks",
+            "face_female",
+            "feet",
+            "female_breast",
+            "female_genitalia",
+            "male_genitalia"
+          ],
+          "images": 1093,
+          "path": "NWeud.v1i.coco-segmentation/test/_annotations.coco.json",
+          "sha256": "d36cb4c9ba53809daf78dad76518cb3136e6a6bb9beecb93a26fc77b3d7cc934"
+        },
+        {
+          "annotations": 56685,
+          "categories": [
+            "NWeud",
+            "anus",
+            "buttocks",
+            "face_female",
+            "feet",
+            "female_breast",
+            "female_genitalia",
+            "male_genitalia"
+          ],
+          "images": 24615,
+          "path": "NWeud.v1i.coco-segmentation/train/_annotations.coco.json",
+          "sha256": "2a6004c370052fd174c366907c24a42872dfe99125106e627297efef2c9542d9"
+        },
+        {
+          "annotations": 3781,
+          "categories": [
+            "NWeud",
+            "anus",
+            "buttocks",
+            "face_female",
+            "feet",
+            "female_breast",
+            "female_genitalia",
+            "male_genitalia"
+          ],
+          "images": 1641,
+          "path": "NWeud.v1i.coco-segmentation/valid/_annotations.coco.json",
+          "sha256": "aada5289e2016e54fbcafd23403466424612ab537a1017ec42f24cfc45242532"
+        }
+      ],
+      "annotation_format": "coco_segmentation",
+      "bbox_annotations": 62983,
+      "category_annotation_counts": {
+        "anus": 3563,
+        "buttocks": 10746,
+        "face_female": 19662,
+        "feet": 3229,
+        "female_breast": 13761,
+        "female_genitalia": 10996,
+        "male_genitalia": 1026
+      },
+      "dataset_id": "roboflow_nweud_v1",
+      "folder_name": "NWeud.v1i.coco-segmentation",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_nweud",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\NWeud.v1i.coco-segmentation",
+      "primary_role": "polygon_external_supervision",
+      "record_count": 27349,
+      "segmentation_annotations": 62983,
+      "source_url": "https://universe.roboflow.com/ducktest/nweud",
+      "total_bytes_including_local_cache": 2698458036,
+      "version_policy": "active"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 87,
+          "categories": [
+            "pokies",
+            "pokies"
+          ],
+          "images": 66,
+          "path": "pokies.v2i.coco/test/_annotations.coco.json",
+          "sha256": "c143bb0397a5b8cb8aee210854b7690cd1f35e9fd7500b5b63aa67020cf8b92a"
+        },
+        {
+          "annotations": 1762,
+          "categories": [
+            "pokies",
+            "pokies"
+          ],
+          "images": 1398,
+          "path": "pokies.v2i.coco/train/_annotations.coco.json",
+          "sha256": "ef5e0d0065a8f7de51a25c43d0e88c5adc6f5697a3562a4a95ad0a3fa01310b3"
+        },
+        {
+          "annotations": 161,
+          "categories": [
+            "pokies",
+            "pokies"
+          ],
+          "images": 133,
+          "path": "pokies.v2i.coco/valid/_annotations.coco.json",
+          "sha256": "ba1b7b92f6fbda7d871ad8550fcfa1d230c50ff8df279704370c2614fa966680"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 2010,
+      "category_annotation_counts": {
+        "pokies": 2010
+      },
+      "dataset_id": "roboflow_pokies_v2",
+      "folder_name": "pokies.v2i.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_pokies",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\pokies.v2i.coco",
+      "primary_role": "bbox_prompt_supervision",
+      "record_count": 1597,
+      "segmentation_annotations": 0,
+      "source_url": "https://universe.roboflow.com/dragons/pokies",
+      "total_bytes_including_local_cache": 138658386,
+      "version_policy": "active_label_semantics_need_review"
+    },
+    {
+      "annotation_files": [
+        {
+          "annotations": 150,
+          "categories": [
+            "Porn-Blocker-Benchmark",
+            "breast",
+            "vagina"
+          ],
+          "images": 50,
+          "path": "Porn-Blocker-Benchmark.v4-v4.coco/test/_annotations.coco.json",
+          "sha256": "e8990b15c42432a2c2e0a04d07ae466b42ecad5da108478bf5f0944ef1b9210e"
+        }
+      ],
+      "annotation_format": "coco_bbox",
+      "bbox_annotations": 150,
+      "category_annotation_counts": {
+        "breast": 100,
+        "vagina": 50
+      },
+      "dataset_id": "roboflow_porn_blocker_benchmark_v4",
+      "folder_name": "Porn-Blocker-Benchmark.v4-v4.coco",
+      "license_claim": "CC BY 4.0",
+      "lineage_group": "roboflow_porn_blocker_benchmark",
+      "media_domain": "mixed_rendered_or_photographic",
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\Porn-Blocker-Benchmark.v4-v4.coco",
+      "primary_role": "bbox_evaluation_only",
+      "record_count": 50,
+      "segmentation_annotations": 0,
+      "source_url": "https://universe.roboflow.com/hanif-sembud/porn-blocker-benchmark",
+      "total_bytes_including_local_cache": 1735375,
+      "version_policy": "holdout_only"
+    }
+  ],
+  "record_count": 81910,
+  "role_counts": {
+    "bbox_evaluation_only": 50,
+    "bbox_prompt_and_action_tag_supervision": 9465,
+    "bbox_prompt_supervision": 26504,
+    "polygon_external_supervision": 39354,
+    "reference_and_tournament_input": 6537
+  },
+  "schema_version": "maskfactory.nude_corpus_registry_adoption.v1",
+  "self_sha256": "762754161f2e1fff20c48ab9c97a1b6d1ad416711101b7f4f169c50836f146c0"
+}

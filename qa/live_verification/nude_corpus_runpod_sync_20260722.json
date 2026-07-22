@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_corpus_runpod_sync_evidence",
+  "status": "RUNTIME_PASS_FULL_HASH",
+  "remote_binding": {
+    "paths_env_sourced": true,
+    "masked_warehouse": "/workspace/assets/MaskedWarehouse",
+    "nude_root": "/workspace/assets/MaskedWarehouse/Nude",
+    "initial_nude_root_present": false,
+    "post_transfer_top_level_entries": 17
+  },
+  "transfer": {
+    "policy": "initial all-missing allowlisted transfer",
+    "allowlisted_files": 82639,
+    "source_bytes": 7695149182,
+    "zip_or_huggingface_cache_paths_transferred": 0,
+    "source": "C:/Comfy_UI_Main/MaskedWarehouse/Nude",
+    "destination": "/workspace/assets/MaskedWarehouse/Nude"
+  },
+  "full_reconciliation": {
+    "relative_paths_checked": 82639,
+    "matched": 82639,
+    "missing": 0,
+    "size_mismatch": 0,
+    "sha256_mismatch": 0,
+    "local_manifest_stream_sha256": "d4f86007390874bb0a5f258768b3f2bf898cb3ba4434545b46414a31f13ed876",
+    "remote_manifest_stream_sha256": "d4f86007390874bb0a5f258768b3f2bf898cb3ba4434545b46414a31f13ed876",
+    "runtime_report_path": "runtime_artifacts/nude_runpod_sync_20260722/full_hash_verification.json",
+    "runtime_report_file_sha256": "f8935d8272221c5c4850210106c7e7409323d5c0a58e3a0f475f09546089080f"
+  },
+  "remote_registry_validation": {
+    "command": "python3 validate_registry.py --intake . --platform runpod --rehash sample",
+    "status": "PASS",
+    "datasets": 16,
+    "records": 81910,
+    "source_files_present": 81910,
+    "source_files_rehashed": 16,
+    "shards": 644,
+    "shards_per_platform": 322,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a"
+  },
+  "gpu_observation_after_transfer": {
+    "name": "NVIDIA RTX 6000 Ada Generation",
+    "utilization_percent": 0,
+    "memory_used_mib": 648,
+    "memory_total_mib": 49140,
+    "inference_started": false,
+    "throughput_records_per_second": null
+  },
+  "incident_and_correction": {
+    "initial_validator_result": "failed_before_validation because the supplied script defaulted to a Windows intake path on Linux",
+    "corrected_invocation": "explicit --intake . --platform runpod",
+    "first_full_hash_content_result": "82639/82639 file hashes matched, but text-mode CRLF transport changed only the manifest-stream seal",
+    "corrective_action": "binary manifest transport",
+    "corrected_full_hash_result": "PASS"
+  },
+  "claim_boundary": "This proves the allowlisted corpus mirror and supplied intake memory are byte-identical. It does not prove provider inference, strict-VLM review, repair, certification, training, or full-corpus outcome accounting."
+}

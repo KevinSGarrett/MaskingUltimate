@@ -1,0 +1,59 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_provider_canary_manifest.v1",
+  "artifact_type": "adult_corpus_provider_canary_execution_readiness",
+  "recorded_at": "2026-07-22T11:52:49Z",
+  "status": "PASS_READY_PENDING_SHARED_GPU_COORDINATOR",
+  "tracker_items": [
+    "MF-P4-12.03",
+    "MF-P4-12.04",
+    "MF-P4-12.07"
+  ],
+  "manifest_self_sha256": "f7d776ec1e5e409af91116201f033ffb52446b9fa81083c60d96ffa6276d22a9",
+  "manifest_file_sha256": "17d78412318f783e10864fb39770da20cf7a4da099970e55bd262d7d9f9b9730",
+  "split_mapping_sha256": "544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad",
+  "provider_runtime_matrix_sha256": "219fc1c74a4f7bc7f8f55eb8acff57e825a9730829531f7a7be18ebca44b02c7",
+  "lanes": {
+    "bbox_prompt_supervision": {
+      "record_count": 8,
+      "unique_split_group_count": 8
+    },
+    "bbox_prompt_and_action_tag_supervision": {
+      "record_count": 8,
+      "unique_split_group_count": 8
+    },
+    "reference_and_tournament_input": {
+      "record_count": 8,
+      "unique_split_group_count": 8
+    }
+  },
+  "verified_properties": {
+    "source_pixels_rehashed": true,
+    "source_geometry_verified": true,
+    "annotation_files_hash_bound": true,
+    "bbox_prompts_preserved_as_prompts_not_masks": true,
+    "raw_labels_preserved": true,
+    "scene_actions_separate_from_pixel_prompts": true,
+    "reference_lane_supplies_no_pixel_truth": true,
+    "provider_routes_are_independent_and_hash_bound": true,
+    "strict_vlm_per_record_required": true,
+    "contact_sheet_approval_forbidden": true
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_provider_canary.py": "5454bd24c510990bbcad79492b15b53a8ad4b39e180e3c770ac5eb317307047b",
+    "tests/test_nude_provider_canary.py": "2fcdbb1cf8eac864195f3474c847e9014517827f4879fc582d8d88fc71d0e6dd"
+  },
+  "validation": {
+    "focused_tests": "2 passed",
+    "ruff": "pass",
+    "black": "pass",
+    "real_manifest_build": "pass"
+  },
+  "authority": {
+    "provider_execution_completed": false,
+    "strict_visual_review_completed": false,
+    "human_gold_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "current_local_blocker": "SharedRunPodCoordinator v2 remains RECOVERY_REQUIRED with admission disabled. This blocks only GPU execution, not project-wide work."
+}

@@ -23094,13 +23094,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 10,
+      "notes": [
+        {
+          "ts": "2026-07-22T11:53:27+00:00",
+          "actor": "ai_agent",
+          "text": "A real 8-record bbox canary is source-hash/geometry/annotation/split-group bound with boxes preserved only as prompts and three governed provider roles selected. GPU provider execution, hard QC, strict review, repair/outcome, and certificate evidence remain open."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_provider_canary_manifest_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T11:53:27+00:00",
       "orphaned": false
     },
     "MF-P4-12.04": {
@@ -23115,13 +23121,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 10,
+      "notes": [
+        {
+          "ts": "2026-07-22T11:53:28+00:00",
+          "actor": "ai_agent",
+          "text": "A real 8-record reference/tournament canary is source-hash/geometry/split-group bound, explicitly carries no source pixel truth, and selects independent discovery/comparison/refinement roles. Proposal execution and qualification remain open."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_provider_canary_manifest_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T11:53:28+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {
@@ -23211,7 +23223,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 35,
+      "percent_complete": 40,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
@@ -23227,12 +23239,17 @@
           "ts": "2026-07-22T11:48:28+00:00",
           "actor": "ai_agent",
           "text": "Polygon canary now spans 12 corrected unique split groups and multiple anatomy labels across live-photo and illustration domains, with parent/refined evidence. It remains draft-only; four generation/review lanes still need full provider, strict-VLM, repair/abstention, and terminal evidence."
+        },
+        {
+          "ts": "2026-07-22T11:53:28+00:00",
+          "actor": "ai_agent",
+          "text": "Provider execution manifests now bind 24 real source-verified records across the bbox, bbox-plus-action, and reference lanes, with eight unique v4 groups per lane. GPU execution and strict per-record verdicts remain pending coordinator recovery."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json.",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:48:28+00:00",
+      "updated_at": "2026-07-22T11:53:28+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {

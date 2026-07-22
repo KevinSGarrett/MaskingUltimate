@@ -259,6 +259,14 @@ def test_claims_are_exclusive_and_checkpoint_resumes_by_index(tmp_path: Path) ->
         outcomes=[_outcome(1, sample="sample-b", outcome="quarantined")],
     )
     assert done["complete"] is True
+    replay_done = queue.checkpoint(
+        platform="runpod",
+        shard_path=first["shard_path"],
+        lease_token=first["lease_token"],
+        outcomes=[_outcome(1, sample="sample-b", outcome="quarantined")],
+    )
+    assert replay_done["complete"] is True
+    assert replay_done["idempotent_replay"] is True
     assert queue.summary(platform="runpod")["checkpointed_records"] == 2
 
 
@@ -401,3 +409,33 @@ def test_holdout_receipt_is_evaluation_only_and_training_ineligible(tmp_path: Pa
         lease_token=lease["lease_token"],
         outcomes=[payload],
     )
+
+
+def test_milestone_report_is_self_sealed_atomic_and_refuses_overwrite(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors(), platform="runpod")
+    lease = queue.claim(platform="runpod", owner="report-worker")
+    assert lease is not None
+    queue.checkpoint(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        outcomes=[_outcome(0, sample="report-sample")],
+    )
+    report_path = tmp_path / "reports" / "milestone-00000001.json"
+    report = queue.write_milestone_report(platform="runpod", output_path=report_path)
+    assert report["status"] == "PASS"
+    assert report["shard_count"] == 2
+    assert report["record_count"] == 4
+    assert report["checkpointed_record_count"] == 1
+    assert report["remaining_record_count"] == 3
+    assert report["next_thousand_record_milestone"] == 1000
+    assert report["lane_counts"]["polygon_external_supervision"] == {
+        "checkpointed_records": 1,
+        "records": 4,
+        "shards": 2,
+    }
+    assert report_path.is_file()
+    assert not report_path.with_suffix(".json.tmp").exists()
+    with pytest.raises(NudeBatchQueueError, match="already exists"):
+        queue.write_milestone_report(platform="runpod", output_path=report_path)

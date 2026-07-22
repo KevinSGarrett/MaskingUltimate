@@ -23021,7 +23021,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 94,
+      "percent_complete": 96,
       "notes": [
         {
           "ts": "2026-07-22T08:52:16+00:00",
@@ -23037,12 +23037,17 @@
           "ts": "2026-07-22T11:28:57+00:00",
           "actor": "ai_agent",
           "text": "Live local execution checkpointed the complete 50-record holdout shard in two contiguous batches, replayed the first batch idempotently, and resumed from a second process with identical queue SHA. Provider-lane crash/restart and 1,000-record milestone remain open."
+        },
+        {
+          "ts": "2026-07-22T12:31:13+00:00",
+          "actor": "ai_agent",
+          "text": "Queue milestone reports now self-seal exact canonical state, prove per-shard contiguous lineage and global zero-loss/zero-duplicate counts, refuse overwrite, report lane/outcome totals, and preserve complete=true on exact completed-shard replay. Live provider crash/restart and observed 1,000-record milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json",
+      "evidence": "qa/live_verification/nude_batch_queue_foundation_20260722.json; qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_holdout_durable_checkpoint_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:28:57+00:00",
+      "updated_at": "2026-07-22T12:31:13+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23298,7 +23303,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 45,
+      "percent_complete": 48,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
@@ -23329,12 +23334,17 @@
           "ts": "2026-07-22T12:11:56+00:00",
           "actor": "ai_agent",
           "text": "All 12 real polygon canary rows now carry separately verified pixel-semantic five-view evidence. Provider comparison, independent strict-VLM quorum, person-instance ownership, terminal outcomes, and remaining lanes are still open."
+        },
+        {
+          "ts": "2026-07-22T12:31:14+00:00",
+          "actor": "ai_agent",
+          "text": "The complete 50-record evaluation-only canary now has a self-sealed zero-gap/zero-duplicate terminal milestone report. The four provider/strict-critic canary lanes remain open."
         }
       ],
-      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json",
+      "evidence": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json; qa/live_verification/nude_holdout_policy_v4_rebind_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_provider_canary_manifest_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_pixel_semantic_visual_evidence_20260722.json; qa/live_verification/nude_batch_milestone_integrity_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:11:56+00:00",
+      "updated_at": "2026-07-22T12:31:14+00:00",
       "orphaned": false
     },
     "MF-P4-12.08": {
@@ -23349,13 +23359,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 5,
+      "notes": [
+        {
+          "ts": "2026-07-22T12:31:14+00:00",
+          "actor": "ai_agent",
+          "text": "All 322 RunPod shards / 81,910 records are durably queued and the initial queue state is self-sealed with exact lane totals and zero integrity errors. No provider records are claimed complete; progressive execution and the first observed 1,000-record milestone remain open."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_batch_milestone_integrity_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T12:31:14+00:00",
       "orphaned": false
     },
     "MF-P4-12.09": {

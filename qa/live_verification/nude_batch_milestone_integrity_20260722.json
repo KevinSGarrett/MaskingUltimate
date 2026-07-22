@@ -1,0 +1,76 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_batch_milestone_integrity.v1",
+  "artifact_type": "adult_corpus_batch_milestone_and_integrity_control",
+  "recorded_at": "2026-07-22T12:30:19Z",
+  "status": "HARD_QA_PASS_BOUNDED",
+  "tracker_items": [
+    "MF-P4-12.01",
+    "MF-P4-12.07",
+    "MF-P4-12.08"
+  ],
+  "product_behavior": {
+    "canonical_queue_state_hash": true,
+    "per_shard_contiguous_outcome_check": true,
+    "global_lost_or_duplicate_decision_check": true,
+    "lane_level_counts": true,
+    "thousand_record_milestone_accounting": true,
+    "atomic_report_write": true,
+    "immutable_report_overwrite_refused": true,
+    "completed_shard_exact_replay_reports_complete": true
+  },
+  "full_queue_initial_snapshot": {
+    "platform": "runpod",
+    "shard_count": 322,
+    "record_count": 81910,
+    "checkpointed_record_count": 0,
+    "remaining_record_count": 81910,
+    "next_milestone": 1000,
+    "integrity_error_count": 0,
+    "queue_state_sha256": "4dc1ff799cfe0145e4c6ab1c7aea69fa75a9c4253e7f2f5c678cf4dd9aba9f0c",
+    "report_self_sha256": "5f170b8f6b885f2737579b4d0554d677c083ac510fab0fc39a444c9977cb4ec7",
+    "report_file_sha256": "e02f3fde91795e654796f3636f2f75afec2c271c5d93d7e15df12817cb6b16f1"
+  },
+  "completed_holdout_canary_snapshot": {
+    "platform": "local",
+    "lane": "bbox_evaluation_only",
+    "shard_count": 1,
+    "record_count": 50,
+    "checkpointed_record_count": 50,
+    "remaining_record_count": 0,
+    "holdout_outcome_count": 50,
+    "integrity_error_count": 0,
+    "queue_state_sha256": "482d0c3cb691c8993da519a62d973cbf1ae0eb29311621332f2f4701c3ffc199",
+    "report_self_sha256": "a4333d237100c7f4ac7237762f66e57d9271228c4b1cefd2444926d81b983cec",
+    "report_file_sha256": "bb55c384e870116c681c1362c7705e1a8298a1eb2559ff7cb834fdfc0649c414"
+  },
+  "lane_population": {
+    "bbox_evaluation_only": 50,
+    "bbox_prompt_and_action_tag_supervision": 9465,
+    "bbox_prompt_supervision": 26504,
+    "polygon_external_supervision": 39354,
+    "reference_and_tournament_input": 6537
+  },
+  "validation": {
+    "neighbor_tests": "32 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS",
+    "failure_then_fix": {
+      "initial_failure": "The new milestone aggregator lacked its Counter import and failed its first focused test before production use.",
+      "correction": "Imported collections.Counter, formatted the module, and reran the complete queue/qualification/visual/holdout neighborhood.",
+      "corrected_run": "PASS"
+    }
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_batch_queue.py": "eb5a3d57ecaa3fb2f2fdd0688eae55b08a8911d280ae100324b6490dd0833a06",
+    "tests/test_nude_batch_queue.py": "acb31b9c802c988d9d61520a633c64ce9a585f0c0710a9d72be9a785230c826a"
+  },
+  "authority_boundary": {
+    "full_queue_processing_started": false,
+    "provider_execution_completed": false,
+    "strict_visual_review_completed": false,
+    "accepted_or_repaired_count": 0,
+    "production_mask_authority_granted": false
+  },
+  "remaining": "Run the four generation/review canary lanes through providers, ownership, hard QC, strict critics, bounded repair/abstention, and terminal receipts when shared RunPod admission is available; then expand to the 1,000-record milestone."
+}

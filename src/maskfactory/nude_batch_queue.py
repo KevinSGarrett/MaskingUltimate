@@ -7,6 +7,7 @@ import json
 import sqlite3
 import time
 import uuid
+from collections import Counter
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
@@ -263,7 +264,14 @@ class NudeBatchQueue:
             raise NudeBatchQueueError("empty checkpoint")
         now = time.time()
         with self._transaction() as connection:
-            shard = self._owned_lease(connection, platform, shard_path, lease_token)
+            shard = connection.execute(
+                "SELECT * FROM shards WHERE platform=? AND shard_path=?",
+                (platform, shard_path),
+            ).fetchone()
+            if shard is None:
+                raise NudeBatchQueueError("seeded shard required")
+            if shard["state"] != "complete":
+                shard = self._owned_lease(connection, platform, shard_path, lease_token)
             expected_index = int(shard["next_sample_index"])
             before_total = int(
                 connection.execute(
@@ -288,9 +296,11 @@ class NudeBatchQueue:
                 return {
                     "inserted": 0,
                     "next_sample_index": expected_index,
-                    "complete": False,
+                    "complete": expected_index == int(shard["sample_count"]),
                     "idempotent_replay": True,
                 }
+            if shard["state"] == "complete":
+                raise NudeBatchQueueError("complete shard only accepts exact replay")
             inserted = 0
             for offset, outcome in enumerate(outcomes):
                 sample_index = int(outcome["sample_index"])
@@ -469,3 +479,121 @@ class NudeBatchQueue:
             "states": states,
             "outcomes": outcomes,
         }
+
+    def milestone_report(self, *, platform: str) -> dict[str, Any]:
+        """Return a canonical queue snapshot with loss/duplication invariants."""
+
+        with self._connect() as connection:
+            shard_rows = connection.execute(
+                "SELECT platform,shard_path,lane,shard_sha256,sample_count,state,"
+                "next_sample_index,attempt_count,last_error FROM shards WHERE platform=? "
+                "ORDER BY shard_path",
+                (platform,),
+            ).fetchall()
+            if not shard_rows:
+                raise NudeBatchQueueError("platform has no seeded shards")
+            outcome_rows = connection.execute(
+                "SELECT shard_path,sample_index,sample_id,source_sha256,outcome,"
+                "evidence_sha256,payload_sha256 FROM record_outcomes WHERE platform=? "
+                "ORDER BY shard_path,sample_index",
+                (platform,),
+            ).fetchall()
+            milestone_rows = connection.execute(
+                "SELECT sequence,shard_path,detail_json FROM queue_events "
+                "WHERE platform=? AND event='thousand_record_milestone' ORDER BY sequence",
+                (platform,),
+            ).fetchall()
+
+        outcomes_by_shard: dict[str, list[dict[str, Any]]] = {}
+        outcome_counts: Counter[str] = Counter()
+        for row in outcome_rows:
+            item = dict(row)
+            outcomes_by_shard.setdefault(str(row["shard_path"]), []).append(item)
+            outcome_counts[str(row["outcome"])] += 1
+
+        errors: list[str] = []
+        lane_counts: dict[str, Counter[str]] = {}
+        shard_state: list[dict[str, Any]] = []
+        checkpointed_total = 0
+        record_total = 0
+        for row in shard_rows:
+            shard = dict(row)
+            path = str(row["shard_path"])
+            sample_count = int(row["sample_count"])
+            next_index = int(row["next_sample_index"])
+            records = outcomes_by_shard.get(path, [])
+            indices = [int(item["sample_index"]) for item in records]
+            expected_indices = list(range(next_index))
+            if next_index < 0 or next_index > sample_count:
+                errors.append(f"checkpoint_range_invalid:{path}")
+            if indices != expected_indices:
+                errors.append(f"checkpoint_lineage_gap_or_duplicate:{path}")
+            if row["state"] == "complete" and next_index != sample_count:
+                errors.append(f"complete_shard_not_fully_checkpointed:{path}")
+            if row["state"] != "complete" and next_index == sample_count:
+                errors.append(f"fully_checkpointed_shard_not_complete:{path}")
+            lane = str(row["lane"])
+            counts = lane_counts.setdefault(lane, Counter())
+            counts["shards"] += 1
+            counts["records"] += sample_count
+            counts["checkpointed_records"] += next_index
+            checkpointed_total += next_index
+            record_total += sample_count
+            shard["outcome_count"] = len(records)
+            shard["contiguous_outcomes"] = indices == expected_indices
+            shard_state.append(shard)
+
+        if checkpointed_total != len(outcome_rows):
+            errors.append("global_checkpoint_outcome_count_mismatch")
+        milestones = [
+            {
+                "sequence": int(row["sequence"]),
+                "shard_path": str(row["shard_path"]),
+                "detail": json.loads(str(row["detail_json"])),
+            }
+            for row in milestone_rows
+        ]
+        expected_milestone_count = checkpointed_total // 1000
+        if len(milestones) != expected_milestone_count:
+            errors.append("thousand_record_milestone_count_mismatch")
+
+        canonical_state = {
+            "platform": platform,
+            "shards": shard_state,
+            "outcomes": [dict(row) for row in outcome_rows],
+            "milestones": milestones,
+        }
+        report: dict[str, Any] = {
+            "schema_version": "maskfactory.nude_batch_milestone_report.v1",
+            "artifact_type": "adult_corpus_batch_milestone_report",
+            "platform": platform,
+            "status": "PASS" if not errors else "FAIL",
+            "shard_count": len(shard_rows),
+            "record_count": record_total,
+            "checkpointed_record_count": checkpointed_total,
+            "remaining_record_count": record_total - checkpointed_total,
+            "next_thousand_record_milestone": ((checkpointed_total // 1000) + 1) * 1000,
+            "outcome_counts": dict(sorted(outcome_counts.items())),
+            "lane_counts": {
+                lane: dict(sorted(counts.items())) for lane, counts in sorted(lane_counts.items())
+            },
+            "thousand_record_milestones": milestones,
+            "integrity_errors": errors,
+            "queue_state_sha256": _canonical_sha256(canonical_state),
+            "shards": shard_state,
+        }
+        report["self_sha256"] = _canonical_sha256(report)
+        return report
+
+    def write_milestone_report(self, *, platform: str, output_path: Path) -> dict[str, Any]:
+        """Atomically write one immutable, self-sealed milestone report."""
+
+        output_path = Path(output_path)
+        if output_path.exists():
+            raise NudeBatchQueueError("milestone report already exists")
+        report = self.milestone_report(platform=platform)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output_path.with_suffix(output_path.suffix + ".tmp")
+        temporary.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        temporary.replace(output_path)
+        return report

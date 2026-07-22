@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -88,6 +90,11 @@ def _selection(source: str, image_id: str, labels: tuple[str, ...]) -> ExternalP
         material_map=material,
         label_names=labels,
         training_loss_weight=0.15,
+        source_sha256="a" * 64,
+        source_relative_path=f"{source}/source.jpg",
+        annotation_sha256="b" * 64,
+        annotation_relative_path=f"{source}/annotation.png",
+        split_group_id="external_group_" + "c" * 24,
     )
 
 
@@ -251,6 +258,52 @@ def test_explicit_live_admission_marks_only_verified_train_only_output(tmp_path:
     assert report["admission_ready"] is True
     assert report["live_warehouse_admission"] is True
     assert report["any_source_admitted_live"] is True
+
+
+def test_package_population_does_not_require_a_fabricated_certified_batch(
+    tmp_path: Path,
+) -> None:
+    report = materialize_qualified_train_only_packages(
+        [_selection("lapa", "img_ext_lapa_population", ("head_face", "hair"))],
+        destination=tmp_path / "population",
+        provenance=_load_provenance(),
+        inventory=_load_inventory(),
+        evidence_bundles_by_source={"lapa": _evidence_bundle(tmp_path, "lapa")},
+        project_root=tmp_path,
+        live_warehouse_admission=True,
+    )
+
+    assert report["package_count"] == 1
+    assert report["live_warehouse_admission"] is True
+    assert report["training_batch_eligible"] is False
+    assert report["batch_cap_enforced"] is False
+    assert report["external_batch_metrics"] is None
+    card = (tmp_path / "population" / "dataset_card.md").read_text(encoding="utf-8")
+    assert "Training batch composition supplied: `false`" in card
+    assert "must supply the full composition and enforce the cap" in card
+    package = tmp_path / "population" / "packages" / "img_ext_lapa_population" / "instances" / "p0"
+    manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["source_lineage"]["source_sha256"] == "a" * 64
+    assert manifest["source_lineage"]["annotation_sha256"] == "b" * 64
+    assert manifest["source_lineage"]["split_group_id"] == "external_group_" + "c" * 24
+    for name, expected in manifest["file_sha256"].items():
+        assert hashlib.sha256((package / name).read_bytes()).hexdigest() == expected
+
+
+def test_live_package_population_rejects_missing_source_lineage(tmp_path: Path) -> None:
+    selection = replace(
+        _selection("lapa", "img_missing_lineage", ("head_face",)), source_sha256=None
+    )
+    with pytest.raises(ExternalSupervisionPackageError, match="source_sha256"):
+        materialize_qualified_train_only_packages(
+            [selection],
+            destination=tmp_path / "missing_lineage",
+            provenance=_load_provenance(),
+            inventory=_load_inventory(),
+            evidence_bundles_by_source={"lapa": _evidence_bundle(tmp_path, "lapa")},
+            project_root=tmp_path,
+            live_warehouse_admission=True,
+        )
 
 
 def test_materialize_refuses_ungated_source(tmp_path: Path) -> None:

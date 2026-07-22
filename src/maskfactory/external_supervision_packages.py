@@ -6,6 +6,7 @@ gates for hermetic tests; live warehouse admission and gold remain refused.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -61,6 +62,11 @@ class ExternalPackageSelection:
     label_names: tuple[str, ...]
     training_loss_weight: float
     source_rgb: np.ndarray | None = None
+    source_sha256: str | None = None
+    source_relative_path: str | None = None
+    annotation_sha256: str | None = None
+    annotation_relative_path: str | None = None
+    split_group_id: str | None = None
 
 
 def maximum_combined_external_batch_fraction(
@@ -276,6 +282,24 @@ def _require_non_fixture_evidence_bundle(bundle: Mapping[str, Any], *, project_r
             )
 
 
+def _require_live_selection_lineage(selection: ExternalPackageSelection) -> None:
+    for name in ("source_sha256", "annotation_sha256"):
+        value = getattr(selection, name)
+        if not isinstance(value, str) or len(value) != 64:
+            raise ExternalSupervisionPackageError(f"live package lineage missing {name}")
+        try:
+            int(value, 16)
+        except ValueError as exc:
+            raise ExternalSupervisionPackageError(f"live package lineage invalid {name}") from exc
+    for name in ("source_relative_path", "annotation_relative_path"):
+        value = getattr(selection, name)
+        if not isinstance(value, str) or not value or Path(value).is_absolute():
+            raise ExternalSupervisionPackageError(f"live package lineage invalid {name}")
+    group = selection.split_group_id
+    if not isinstance(group, str) or not group.startswith("external_group_"):
+        raise ExternalSupervisionPackageError("live package lineage missing split_group_id")
+
+
 def materialize_qualified_train_only_packages(
     selections: Sequence[ExternalPackageSelection],
     *,
@@ -350,6 +374,7 @@ def materialize_qualified_train_only_packages(
             _require_non_fixture_evidence_bundle(
                 evidence_bundles_by_source[selection.source], project_root=project_root
             )
+            _require_live_selection_lineage(selection)
 
         admission = registry["sources"][selection.source]["training_admission"]
         allowed_scope = set(admission.get("allowed_label_scope", ()))
@@ -380,6 +405,15 @@ def materialize_qualified_train_only_packages(
             bits=8,
         )
         (package / ".maskfactory_frozen.json").write_text("{}", encoding="utf-8")
+        package_file_sha256 = {
+            name: hashlib.sha256((package / name).read_bytes()).hexdigest()
+            for name in (
+                "source.png",
+                "label_map_part.png",
+                "label_map_material.png",
+                ".maskfactory_frozen.json",
+            )
+        }
 
         bundle = evidence_bundles_by_source[selection.source]
         raw_gates = bundle.get("completed_gates", bundle.get("gates"))
@@ -429,7 +463,15 @@ def materialize_qualified_train_only_packages(
                 "source_origin": "external_dataset",
                 "external_source": selection.source,
             },
-            "source_lineage": {"kind": EXTERNAL_LABEL_ROLE, "source": selection.source},
+            "source_lineage": {
+                "kind": EXTERNAL_LABEL_ROLE,
+                "source": selection.source,
+                "source_relative_path": selection.source_relative_path,
+                "source_sha256": selection.source_sha256,
+                "annotation_relative_path": selection.annotation_relative_path,
+                "annotation_sha256": selection.annotation_sha256,
+                "split_group_id": selection.split_group_id,
+            },
             "external_qualification": qualification,
             "ablation_active": ablation_active,
             "parts": parts,
@@ -438,12 +480,18 @@ def materialize_qualified_train_only_packages(
                 "label_map_part.png": "label_map_part.png",
                 "label_map_material.png": "label_map_material.png",
             },
+            "file_sha256": package_file_sha256,
             "person": {"view": "front", "person_count": 1, "pose_tags": ["standing"]},
         }
         require_external_package_qualification(manifest)
-        (package / "manifest.json").write_text(
+        manifest_path = package / "manifest.json"
+        manifest_path.write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
+        package_record_file_sha256 = {
+            **package_file_sha256,
+            "manifest.json": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+        }
 
         package_records.append(
             {
@@ -459,6 +507,10 @@ def materialize_qualified_train_only_packages(
                 "external_qualification_admitted": True,
                 "dataset_volume_eligible": False,
                 "evidence_bundle_sha256": decision.evidence_bundle_sha256,
+                "source_sha256": selection.source_sha256,
+                "annotation_sha256": selection.annotation_sha256,
+                "split_group_id": selection.split_group_id,
+                "package_file_sha256": package_record_file_sha256,
                 "ablation_active": ablation_active,
             }
         )
@@ -467,6 +519,7 @@ def materialize_qualified_train_only_packages(
         for name in selection.label_names:
             label_counts[name] = label_counts.get(name, 0) + 1
 
+    training_composition_supplied = companion_certified_rows is not None
     companion = list(companion_certified_rows or ())
     composition_rows = [
         {
@@ -483,13 +536,15 @@ def materialize_qualified_train_only_packages(
         }
         for row in package_records
     ] + list(companion)
-    assert_builder_accepts_only_gated_external_rows(
-        composition_rows, ablation_report=sealed_ablation
-    )
-    assert_launcher_accepts_only_gated_external_rows(
-        composition_rows, ablation_report=sealed_ablation
-    )
-    batch_metrics = validate_external_batch_cap(composition_rows, registry=registry)
+    batch_metrics: Mapping[str, Any] | None = None
+    if training_composition_supplied:
+        assert_builder_accepts_only_gated_external_rows(
+            composition_rows, ablation_report=sealed_ablation
+        )
+        assert_launcher_accepts_only_gated_external_rows(
+            composition_rows, ablation_report=sealed_ablation
+        )
+        batch_metrics = validate_external_batch_cap(composition_rows, registry=registry)
 
     card = _composition_dataset_card(
         package_records,
@@ -497,6 +552,8 @@ def materialize_qualified_train_only_packages(
         label_counts=label_counts,
         weight_sum=weight_sum,
         batch_metrics=batch_metrics,
+        proof_tier=LIVE_PROOF_TIER if live_warehouse_admission else PROOF_TIER,
+        live_warehouse_admission=live_warehouse_admission,
     )
     (destination / "dataset_card.md").write_text(card, encoding="utf-8")
 
@@ -508,6 +565,8 @@ def materialize_qualified_train_only_packages(
         "admission_ready": live_warehouse_admission,
         "live_warehouse_admission": live_warehouse_admission,
         "any_source_admitted_live": live_warehouse_admission,
+        "training_batch_eligible": training_composition_supplied,
+        "batch_cap_enforced": training_composition_supplied,
         "package_count": len(package_records),
         "packages": package_records,
         "source_composition": source_counts,
@@ -557,16 +616,19 @@ def _composition_dataset_card(
     source_counts: Mapping[str, int],
     label_counts: Mapping[str, int],
     weight_sum: float,
-    batch_metrics: Mapping[str, Any],
+    batch_metrics: Mapping[str, Any] | None,
+    proof_tier: str,
+    live_warehouse_admission: bool,
 ) -> str:
     lines = [
-        "# External supervision train-only batch (STATIC_PASS)",
+        f"# External supervision train-only package population ({proof_tier})",
         "",
         "- Authority: gated `external_labeled_reference` / `weighted_pseudo_label` / train only",
         "- Gold / holdout / certified-volume claims: blocked",
         f"- Packages: `{len(packages)}`",
-        f"- Proof tier: `{PROOF_TIER}`",
-        "- Live warehouse admission: `false`",
+        f"- Proof tier: `{proof_tier}`",
+        f"- Live warehouse admission: `{str(live_warehouse_admission).lower()}`",
+        f"- Training batch composition supplied: `{str(batch_metrics is not None).lower()}`",
         "",
         "## Source composition",
         "",
@@ -586,13 +648,26 @@ def _composition_dataset_card(
             "",
             "## Batch cap / certified-real dominance",
             "",
-            f"- External share: `{float(batch_metrics['external_image_share']):.6f}`",
-            f"- Cap: `{float(batch_metrics['maximum_combined_external_batch_fraction']):.2f}`",
-            f"- Certified real share: `{float(batch_metrics['certified_real_image_share']):.6f}`",
-            f"- Certified real dominant: `{bool(batch_metrics['certified_real_dominant'])}`",
-            "",
         )
     )
+    if batch_metrics is None:
+        lines.extend(
+            (
+                "- Not evaluated during package population.",
+                "- Dataset builder and training launcher must supply the full composition and enforce the cap before use.",
+                "",
+            )
+        )
+    else:
+        lines.extend(
+            (
+                f"- External share: `{float(batch_metrics['external_image_share']):.6f}`",
+                f"- Cap: `{float(batch_metrics['maximum_combined_external_batch_fraction']):.2f}`",
+                f"- Certified real share: `{float(batch_metrics['certified_real_image_share']):.6f}`",
+                f"- Certified real dominant: `{bool(batch_metrics['certified_real_dominant'])}`",
+                "",
+            )
+        )
     return "\n".join(lines)
 
 

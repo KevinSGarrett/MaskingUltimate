@@ -11841,3 +11841,21 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Thirteen focused converter/package tests and Ruff passed. The converter grants only train-only
   weighted pseudo-label authority; full package population remains tracked separately.
 - Evidence: `qa/live_verification/external_supervision_converter_live_canary_20260722.json`.
+
+## 2026-07-22 - Hash-bound external package population canary
+
+- Separated qualified external-package population from actual training-batch admission. Package
+  writing no longer requires fabricated certified-real companion rows; builder/launcher training
+  still require a complete composition and enforce the unchanged 35% cap and certified-real
+  dominance.
+- Made original source hash, annotation hash, project-relative source/annotation paths, and accepted
+  split-group identity mandatory for live packages. Each emitted source, PART map, MATERIAL map,
+  frozen marker, and manifest now has an exact retained SHA-256.
+- Materialized one real qualified package from each admitted source. Hard QA verified all lineage,
+  split-group, emitted-file hash, and dimension bindings. Manual five-tile panel inspection found
+  correct bounded scope and no cross-person bleed in the LV-MHP two-person case.
+- The three-package population is explicitly not a training batch: `training_batch_eligible=false`,
+  `batch_cap_enforced=false`, and no gold, production-mask, or strict-VLM authority is claimed.
+- Validation: 34 focused qualification/producer/package tests passed; Ruff, Black, and diff
+  integrity passed.
+- Evidence: `qa/live_verification/external_supervision_package_population_canary_20260722.json`.

@@ -20199,7 +20199,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 92,
       "notes": [
         {
           "ts": "2026-07-19T22:05:49+00:00",
@@ -20215,12 +20215,17 @@
           "ts": "2026-07-22T10:46:38+00:00",
           "actor": "codex",
           "text": "Live-admission packaging mode implemented 2026-07-22. Explicit live_warehouse_admission now rejects fixture-marked gates and emits LIVE_PASS/train-only authority after the full verifier admits a bundle; static fixture behavior remains distinct. Full warehouse package population is still open."
+        },
+        {
+          "ts": "2026-07-22T11:04:39+00:00",
+          "actor": "codex",
+          "text": "VISUAL_QA_PASS_BOUNDED 2026-07-22: package population is now separate from training-batch admission, eliminating fabricated certified-real companion rows while preserving the absolute builder/launcher cap. Live packages require source/annotation hashes and split-group identity, and retain hashes for every emitted file. One real package per admitted source passed lineage, hard-QA, and five-tile visual inspection; full resumable population remains."
         }
       ],
-      "evidence": "src/maskfactory/external_supervision_packages.py + tests/test_external_supervision_packages.py; 47 focused tests PASS, Ruff/Black PASS. Three real source bundles admit train-only weighted_pseudo_label; no gold/holdout/production authority.",
+      "evidence": "qa/live_verification/external_supervision_package_population_canary_20260722.json self 60cba86d0ac9e086a580c6cc68ea5e2022637763ffb3661ceaf03d01f0aace2d; runtime report seal ee3d115149bff8652146e99eee5e8b9310b1df8e9ee08ea92b4436a70a0affb2; 3 real packages / 3 sources, 34 focused tests PASS, Ruff/Black PASS. training_batch_eligible=false until a real full composition passes the unchanged cap.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-22T10:46:38+00:00",
+      "updated_at": "2026-07-22T11:04:39+00:00",
       "orphaned": false
     },
     "MF-P9-13.07": {

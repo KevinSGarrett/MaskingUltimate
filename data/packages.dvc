@@ -1,0 +1,6 @@
+outs:
+- md5: 41609c16a8aed4de946dd4cd6aafc943.dir
+  size: 1242277
+  nfiles: 15
+  hash: md5
+  path: packages

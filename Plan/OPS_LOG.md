@@ -11972,3 +11972,8 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - All three policy-eligible sources (`celebamask_hq`, `lapa`, `lv_mhp_v1`) now bind exact source, annotation, package-manifest, and downstream-artifact hashes to a real benchmark or multi-person-QA consumer record.
 - `swimsuit_preview` and `body_archive` remain explicitly policy-blocked and cannot be disguised as inventory-only completion or consumer inputs.
 - Evidence: `qa/live_verification/maskedwarehouse_consumer_bindings_20260722.json` SHA-256 `f61e09f6461ea11f1dc5e6fe5d9fe264115519a398422ce425f8c0f35dfeb881`; 23 focused/neighbor tests passed; Ruff, Black, and diff integrity passed. This grants no gold, holdout, or production-mask authority.
+## 2026-07-22 — Literal `data/packages` DVC push and isolated restore
+
+- `MF-P1-07.09` reached `PRODUCTION_EVIDENCE_PASS`: DVC 3.67.1 added the three real qualified external-supervision canary packages as `data/packages.dvc` (`41609c16a8aed4de946dd4cd6aafc943.dir`, 15 files, 1,242,277 bytes).
+- The governed `maskfactory-dvc-local` remote accepted 14 objects; `dvc status -c` reported cache/remote in sync. A separate minimal DVC repository then fetched 14 objects and restored all 15 files with an exact source/restore SHA-256 map match.
+- No AWS mutation was used. The payload remains train-only `weighted_pseudo_label`, not autonomous gold. Evidence: `qa/live_verification/dvc_packages_first_push_restore_20260722.json`.

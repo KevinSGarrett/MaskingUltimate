@@ -110,6 +110,7 @@ REQUIRED REAL CORPORA (BINDING; DO NOT FORGET)
   until their exact verify clauses pass.
 - Semantic visual-role qualification must use real source pixels and evidence-qualified valid masks. Synthetic shapes are contract/parser fixtures only and may not serve as positive semantic controls. Old draft, in-review, rejected, or visibly defective package masks may not serve as valid controls or gold.
 - Preserve authority distinctions: external labeled reference, weighted pseudo-label, benchmark-only reference, human-anchor gold, autonomous-certified gold, draft, and rejected are different tiers. A folder name never promotes bytes.
+- `C:\Comfy_UI_Main\MaskedWarehouse\Nude\_MASKFACTORY_INTAKE` is the durable adult-corpus memory. Adopt its recorded lineage before any rebuild; operate its role-separated 256-record shards continuously, checkpoint every shard, report every 1,000 records, and quarantine/abstain individual failures without stopping unrelated records. Use `Plan\26` and `Instructions\15`.
 - The inactive ontology-v2 lane must include the complete visible adult anatomy contract and user aliases defined by doc 18, including anus and butt/breast/genital aliases. Adult/NSFW content is not itself an exclusion category; uniform provenance, rights, integrity, annotation-QA, split/leakage, authority, and applicable-use rules apply.
 
 CORRECTION LOOP

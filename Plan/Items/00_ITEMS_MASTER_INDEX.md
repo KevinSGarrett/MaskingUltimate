@@ -9,7 +9,7 @@ Later governed specs 18–22 and the SAM 3.1 handoff are imported into the same 
 source-to-item map is `TRACEABILITY_18_22_SAM31.md`; doc 18's original 70-entry checklist remains
 an evidence source, not a separate status system.
 
-**Total items: 833** across 21 checklist files (including profile-scoped phase exits and the required
+**Total items: 855** across 22 checklist files (including profile-scoped phase exits and the required
 doc-24 core exit). No legacy phase exit is global completion authority.
 
 ## File Map
@@ -37,6 +37,7 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 19_ITEMS_P8_AUTONOMOUS_MULTI_PERSON.md | P8 autonomous multi-person | 8 | certificate-covered instances, residual/audit routing |
 | 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 147 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
 | 21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md | P6 autonomous core and cross-project ComfyUI bridge | 43 | required human-free runtime completion, exact-output authority, release/adoption bridge, recovery |
+| 22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md | P0/P4/P5/P7 adult-corpus autonomy | 22 | exact intake lineage, leakage-safe supervision, resumable mask generation/QA/repair, RunPod scale, training and release accounting |
 
 ## ID Scheme & Traceability
 

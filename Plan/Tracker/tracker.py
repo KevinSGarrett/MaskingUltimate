@@ -3,7 +3,7 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 833 action items across phases P0-P9, three independently scoped
+build-out: 855 action items across phases P0-P9, three independently scoped
 completion profiles, Definition-of-Done (D1-D11) and Goals (G1-G9) rollups,
 plus free-form project metrics.
 
@@ -95,7 +95,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 833
+EXPECTED_ITEM_COUNT = 855
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",
@@ -528,7 +528,7 @@ def parse_items_files():
         phase_match = re.search(r"_ITEMS_(P\d+)_", fname.name)
         if not phase_match:
             continue
-        phase = phase_match.group(1)
+        file_phase = phase_match.group(1)
         cluster_id = cluster_title = cluster_spec = None
         text = fname.read_text(encoding="utf-8")
         for lineno, line in enumerate(text.splitlines(), start=1):
@@ -545,6 +545,8 @@ def parse_items_files():
             im = ITEM_RE.match(stripped)
             if im:
                 item_id = im.group("id")
+                item_phase_match = re.match(r"MF-(P\d+)-", item_id)
+                phase = item_phase_match.group(1) if item_phase_match else file_phase
                 if item_id in items:
                     raise ValueError(f"Duplicate id {item_id} found again in {fname.name}:{lineno}")
                 items[item_id] = {
@@ -1808,7 +1810,7 @@ def build_parser():
     p = argparse.ArgumentParser(
         prog="tracker.py",
         description=(
-            "MaskFactory project tracker -- 833 build items + independently scoped "
+            "MaskFactory project tracker -- 855 build items + independently scoped "
             "completion profiles + DoD/Goals rollups."
         ),
     )

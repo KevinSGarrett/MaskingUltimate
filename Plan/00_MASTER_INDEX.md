@@ -56,6 +56,7 @@ can build the entire system from these 26 documents without asking a single desi
 | 23 | 23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md | Qualified external-label supervision, the disjoint 83k benchmark/retrieval corpus, exact DAZ synthetic truth, near-perfect selective-autonomy targets, and binary owner decisions |
 | 24 | 24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md | Required human-free completion profile, exact-output operational authority, MaskFactory↔ComfyUI runtime/release bridge, optional claim profiles, and recovery qualification |
 | 25 | 25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md | Evidence-qualified visual critics, multi-proposal disagreement/repair, positive-control calibration, persistent RunPod execution, and read-only AWS-to-RunPod asset reconciliation |
+| 26 | 26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md | Adopted 16-dataset adult-corpus registry, lane-separated external supervision, resumable 256-record processing, strict per-record QA, RunPod synchronization, training, and release integration |
 
 ---
 

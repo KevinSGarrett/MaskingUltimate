@@ -62,6 +62,7 @@ gold." Both matter; they answer different questions.
 | 23 | `23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md` | Optional real-accuracy and post-core scale/DAZ maturity program |
 | 24 | `24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md` | Required human-free finish line, operational certificate, runtime/release bridge, adoption, invalidation, and recovery |
 | 25 | `25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md` | Qualified critic roles, positive/negative calibration, proposal disagreement/repair, persistent RunPod operation, and AWS-to-RunPod inventory/migration |
+| 26 | `26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md` | Adult-corpus registration, ontology/source-role separation, leakage control, resumable batch QA/repair, RunPod scale, training, and release accounting |
 
 The approved SAM 3.1/autonomous-gold handoff is also authoritative. Its full
 requirement mapping is maintained in `Plan\Items\TRACEABILITY_18_22_SAM31.md`.
@@ -117,6 +118,7 @@ when to write to each.
 | Something's broken (CVAT, GPU OOM, DVC push failing)? | `Plan\15` §7 (troubleshooting table) |
 | What exactly is required completion? | `Plan\24`, `Tracker\completion_track_registry.json`, and the dashboard's Required Core Status |
 | Which visual critic may approve a candidate, and how are AWS assets reconciled to RunPod? | `Plan\25`, `Instructions\13_SELF_HOSTED_STRICT_VLM_GATE.md`, and `Instructions\14_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION.md` |
+| How is the 81,910-record adult corpus validated, processed, resumed, and synchronized? | `Plan\26` and `Instructions\15_ADULT_CORPUS_BATCH_OPERATION.md` |
 | How do MaskFactory and the main ComfyUI project share work safely and preserve both Codex tasks/worktrees? | `Plan\24` §§6–11, `Plan\13` §§6–8, `Instructions\09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md`, and the generated `Instructions\10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json` |
 | Is this item a hard blocker? | `Tracker\README.md` §5, or `tracker.py list --hard-blockers` |
 | What phase am I in, what's the entry gate? | `Tracker\DASHBOARD.md`, or `07_PHASE_QUICK_REFERENCE.md` here |

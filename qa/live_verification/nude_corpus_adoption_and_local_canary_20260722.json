@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_corpus_adoption_and_local_canary_evidence",
+  "status": "PASS_BOUNDED",
+  "adopted_lineage": {
+    "dataset_count": 16,
+    "record_count": 81910,
+    "shards_per_platform": 322,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+    "validator_command": "python C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\_MASKFACTORY_INTAKE\\validate_registry.py --rehash sample",
+    "validator_result": "PASS: 16 datasets, 81910 records, 644 shards, 322 shards per platform, 82639 transfer files, 16 sampled source files rehashed"
+  },
+  "representative_canary": {
+    "platform": "local",
+    "lane_count": 5,
+    "selected_record_count": 1074,
+    "source_hashes_verified": true,
+    "runtime_report_path": "runtime_artifacts/nude_corpus_canary_20260722/report.json",
+    "runtime_report_file_sha256": "ea1154364a41bf74c960545cb21c618c135be9ed7414dec04a50877c9bbd80a2",
+    "runtime_report_self_sha256": "902fb8f9262ca6056cc08a0d08c3c208de8fdd02c696d1cf65addcbccb2fa3dc",
+    "lanes": {
+      "bbox_evaluation_only": 50,
+      "bbox_prompt_and_action_tag_supervision": 256,
+      "bbox_prompt_supervision": 256,
+      "polygon_external_supervision": 256,
+      "reference_and_tournament_input": 256
+    },
+    "outcomes": {
+      "holdout_only": 50,
+      "prompt_ready_candidate": 512,
+      "proposal_ready_candidate": 256,
+      "qualified_input_candidate": 230,
+      "quarantined_input": 26
+    },
+    "polygon_evidence": {
+      "annotations_rasterized": 1094,
+      "foreground_pixels": 3941712,
+      "missing_annotation_quarantine": 22,
+      "non_polygon_segmentation_quarantine": 4
+    }
+  },
+  "authority_boundary": {
+    "downloaded_external_masks_are_gold": false,
+    "boxes_are_pixel_masks": false,
+    "action_or_scene_tags_are_pixel_masks": false,
+    "reference_images_are_mask_truth": false,
+    "holdout_is_training_input": false,
+    "operational_certificates_issued": false
+  },
+  "verification": {
+    "pytest": "7 passed",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "claim_boundary": "This evidence proves intake lineage, source decoding/hash checks, role separation, bounded polygon rasterization, and continue-on-record-quarantine for one representative local shard per lane. It does not prove provider generation, strict-VLM review, repair, certification, RunPod synchronization, or full-corpus completion."
+}

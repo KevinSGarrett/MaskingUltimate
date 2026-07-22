@@ -1,0 +1,31 @@
+# ITEMS — Adult Corpus Autonomous Ingestion, Qualification, and Scale (doc 26)
+
+## MF-P0-18 — Intake, registration, ontology, and leakage foundation
+- [ ] MF-P0-18.01 Adopt and validate the supplied 16-dataset/81,910-record lineage without rebuilding it first · Verify: sample-rehash validator returns the exact adopted registry/index seals and 322 shards per platform · Blocked by: none
+- [ ] MF-P0-18.02 Register every dataset's exact path, format, class set, source URL, declared license, lineage/version role, counts, and row seals · Verify: project registry and supplied registry reconcile 16/16 with no unaccounted field drift · Blocked by: MF-P0-18.01
+- [ ] MF-P0-18.03 Preserve raw labels and enforce coarse anatomy, fine anatomy, action/scene, object, state, and unmapped crosswalk roles · Verify: coarse-source fixtures cannot invent laterality/areola/nipple/shaft/glans/scrotal/glute fine labels · Blocked by: MF-P0-18.02 · HARD BLOCKER
+- [ ] MF-P0-18.04 Enforce polygons, boxes, action tags, reference-only images, and holdout as distinct source roles · Verify: box-as-mask, action-as-mask, reference-truth, and holdout-training fixtures fail closed · Blocked by: MF-P0-18.02 · HARD BLOCKER
+- [ ] MF-P0-18.05 Build exact/perceptual/source-family grouping over all records and discovered variants · Verify: deterministic full-corpus group seal exists and every record belongs to exactly one group · Blocked by: MF-P0-18.02
+- [ ] MF-P0-18.06 Prevent correlated `main.v3/v4/v5`, `mange.v2/v3`, augmentations, and near duplicates from crossing partitions · Verify: leakage preflight and correlated-version negative fixtures block · Blocked by: MF-P0-18.05 · HARD BLOCKER
+- [ ] MF-P0-18.07 Implement strict COCO polygon rasterization/alignment and bbox sanity validation with per-record quarantine · Verify: representative real shard continues after malformed records and retains exact reasons · Blocked by: MF-P0-18.01
+
+## MF-P4-12 — Large-batch autonomous mask generation, QA, and repair
+- [ ] MF-P4-12.01 Implement durable 256-record shard queue state, owned leases, retry caps, heartbeats, checkpoints, idempotency, submitted-unknown recovery, and milestone reports · Verify: crash/replay/expired-lease/contention tests resume by sample ID without duplicate accepted work · Blocked by: MF-P0-18.01 · HARD BLOCKER
+- [ ] MF-P4-12.02 Run the polygon lane through qualified external-mask comparison, hard QC, strict per-record visual review, repair/abstain, and signed outcomes · Verify: exact source/polygon/mask/panel/provider/verdict lineage for every record · Blocked by: MF-P0-18.03 through MF-P0-18.07, MF-P4-12.01
+- [ ] MF-P4-12.03 Generate multi-provider masks from bbox prompts without treating boxes as pixels · Verify: canary proves provider provenance, boundary refinement, hard QC, strict review, and terminal outcomes · Blocked by: MF-P0-18.04, MF-P4-12.01
+- [ ] MF-P4-12.04 Generate multi-provider tournament proposals for CivitAI reference images without source truth · Verify: proposals remain machine candidates and abstain when independent evidence is insufficient · Blocked by: MF-P0-18.04, MF-P4-12.01
+- [ ] MF-P4-12.05 Require complete source/mask/overlay/contour/ownership evidence and one structured strict-VLM verdict per record · Verify: contact-sheet-only, missing-panel, rubber-stamp, and hard-QC-clear attempts fail · Blocked by: MF-P4-11.18 through MF-P4-11.22 · HARD BLOCKER
+- [ ] MF-P4-12.06 Run bounded automatic repair/no-progress detection and continue-on-exception outcomes · Verify: pass/repair/abstain/quarantine controls preserve immutable parents and do not stall unrelated records · Blocked by: MF-P4-12.02 through MF-P4-12.05
+- [ ] MF-P4-12.07 Pass one representative shard from every lane before expansion · Verify: decode, annotation alignment, schema, provenance, hard QC, strict VLM, repair/abstention, resume, and evidence writing are measured · Blocked by: MF-P4-12.01 through MF-P4-12.06
+- [ ] MF-P4-12.08 Expand progressively to 1,000 records and the full eligible corpus without threshold weakening · Verify: checkpoint/milestone/throughput/GPU reports and zero lost or duplicate decisions · Blocked by: MF-P4-12.07 · HARD BLOCKER
+- [ ] MF-P4-12.09 Publish dataset-level anatomy/action/domain/split/agreement/QC/repair/abstention/certification coverage reports · Verify: report totals reconcile every processed record and cannot hide a failing stratum · Blocked by: MF-P4-12.08
+
+## MF-P5-11 — Qualified supervision, holdout, training, and champions
+- [ ] MF-P5-11.01 Export qualified polygons and machine-verified candidates into immutable weighted training datasets with exact source/remap/group seals · Verify: unqualified, coarse-as-fine, reference, quarantined, and holdout records are rejected · Blocked by: MF-P0-18.06, MF-P4-12.08 · HARD BLOCKER
+- [ ] MF-P5-11.02 Freeze the original holdout policy and prove zero exact/near/source-family overlap with training/calibration · Verify: immutable holdout seal and leakage test pass before first evaluation · Blocked by: MF-P0-18.06 · HARD BLOCKER
+- [ ] MF-P5-11.03 Train and benchmark anatomy-aware challengers, then promote only measured winners through existing champion policy · Verify: per-class/boundary/false-positive/hard-bucket results bind exact corpus and checkpoint seals · Blocked by: MF-P5-11.01, MF-P5-11.02
+
+## MF-P7-08 — RunPod corpus durability and full accounting
+- [ ] MF-P7-08.01 Probe `/workspace/assets/MaskedWarehouse/Nude`, source `paths.env`, and synchronize only missing/hash-drifted allowlisted paths · Verify: local/pod counts and registry/index seals match; ZIP/cache duplicates excluded · Blocked by: MF-P0-18.01
+- [ ] MF-P7-08.02 Prove durable RunPod queue, checkpoint, crash recovery, and capacity-coordinated provider/VLM bursts · Verify: restart resumes by sample ID and incompatible large models serialize without OOM · Blocked by: MF-P4-12.01, MF-P7-08.01
+- [ ] MF-P7-08.03 Account all 81,910 adopted records as qualified input, candidate, repaired, abstained/rejected, quarantined, or holdout and bind accepted outputs into training/release/recovery evidence · Verify: signed reconciliation has zero unknown records and the frozen ComfyUI release path consumes the qualified result · Blocked by: MF-P4-12.08, MF-P5-11.03, MF-P7-08.02 · HARD BLOCKER

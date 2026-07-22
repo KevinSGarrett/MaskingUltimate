@@ -32,6 +32,7 @@ order below before touching anything else.
 | 12 | `12_MASKFACTORY_COMFYUI_RUNTIME_IMPLEMENTATION_HANDOFF.json` | Runtime handoff packet for ComfyUI integration work. |
 | 13 | `13_SELF_HOSTED_STRICT_VLM_GATE.md` | Binding STRICT self-hosted high-end VLM gate procedures (RunPod/loopback; no blind approvals; NEVER EC2). |
 | 14 | `14_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION.md` | Evidence-qualified critic roles, positive-control calibration, persistent RunPod storage, and read-only AWS-to-RunPod reconciliation. |
+| 15 | `15_ADULT_CORPUS_BATCH_OPERATION.md` | Durable 16-dataset adult-corpus lineage, role-separated canaries, resumable 256-record operation, milestone reporting, and RunPod sync rules. |
 
 After your first full read-through, you won't reread all of this every
 session — `03_SESSION_PLAYBOOK.md` is the one you'll return to every time,

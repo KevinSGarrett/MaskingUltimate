@@ -21,9 +21,9 @@ def _tracker_module() -> dict:
 def test_expanded_tracker_has_exact_authoritative_item_count_and_no_duplicate_ids() -> None:
     module = _tracker_module()
     items = module["parse_items_files"]()
-    assert module["EXPECTED_ITEM_COUNT"] == 827
-    assert len(items) == 827
-    assert len(set(items)) == 827
+    assert module["EXPECTED_ITEM_COUNT"] == 855
+    assert len(items) == 855
+    assert len(set(items)) == 855
 
 
 def test_ontology_v2_checklist_is_imported_one_to_one_as_seventy_items() -> None:
@@ -50,7 +50,7 @@ def test_every_new_atomic_item_has_explicit_verification_and_blocker_clauses() -
         for item in items.values()
         if item["source_file"][:2].isdigit() and 11 <= int(item["source_file"][:2]) <= 20
     ]
-    assert len(new_items) == 370
+    assert len(new_items) == 374
     for item in new_items:
         assert "Verify:" in item["description"], item["id"]
         assert "Blocked by:" in item["description"], item["id"]
@@ -86,8 +86,8 @@ def test_traceability_covers_every_later_spec_and_sam31_handoff() -> None:
 def test_counts_and_owner_override_do_not_drift() -> None:
     master = (ITEMS / "00_ITEMS_MASTER_INDEX.md").read_text(encoding="utf-8")
     readme = (ROOT / "Plan" / "Tracker" / "README.md").read_text(encoding="utf-8")
-    assert "Total items: 827" in master
-    assert "all 827 action items" in readme
+    assert "Total items: 855" in master
+    assert "all 855 action items" in readme
 
 
 def test_tracker_and_runtime_certified_volume_targets_are_identical() -> None:

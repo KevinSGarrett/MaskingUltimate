@@ -407,6 +407,87 @@ class AutonomousWorkCell:
             )
         return expires
 
+    def release(
+        self,
+        mission_id: str,
+        record_id: str,
+        lease_token: str,
+        *,
+        reason: str,
+    ) -> None:
+        """Release one owned lease without advancing or weakening the record stage."""
+
+        if not reason.strip():
+            raise ValueError("release reason required")
+        now = self._clock()
+        with self._transaction() as connection:
+            self._owned_record(connection, mission_id, record_id, lease_token, now)
+            connection.execute(
+                "UPDATE records SET lease_owner=NULL,lease_token=NULL,lease_expires_at=NULL,"
+                "last_error=?,updated_at=? WHERE mission_id=? AND record_id=?",
+                (reason, now, mission_id, record_id),
+            )
+            self._event(
+                connection,
+                mission_id,
+                "lease_released",
+                {"record_id": record_id, "reason": reason},
+                now,
+            )
+
+    def terminalize_system_failure(
+        self,
+        mission_id: str,
+        record_id: str,
+        lease_token: str,
+        *,
+        reason: str,
+        evidence_sha256: str,
+    ) -> dict[str, Any]:
+        """Abstain one record for a typed executor failure without forging a stage receipt."""
+
+        if not reason.strip() or len(evidence_sha256) != 64:
+            raise WorkCellError("typed failure reason and evidence hash required")
+        now = self._clock()
+        with self._transaction() as connection:
+            self._mission(connection, mission_id)
+            self._owned_record(connection, mission_id, record_id, lease_token, now)
+            terminal_before = self._terminal_count(connection, mission_id)
+            connection.execute(
+                "UPDATE records SET stage='abstained',outcome='abstained',lease_owner=NULL,"
+                "lease_token=NULL,lease_expires_at=NULL,last_error=?,updated_at=? "
+                "WHERE mission_id=? AND record_id=?",
+                (reason, now, mission_id, record_id),
+            )
+            manifest = self._mission(connection, mission_id)
+            terminal_after = self._terminal_count(connection, mission_id)
+            interval = int(manifest["execution"]["milestone_records"])
+            for boundary in range(
+                ((terminal_before // interval) + 1) * interval,
+                terminal_after + 1,
+                interval,
+            ):
+                self._event(
+                    connection,
+                    mission_id,
+                    "terminal_record_milestone",
+                    {"terminal_record_count": boundary},
+                    now,
+                )
+            self._event(
+                connection,
+                mission_id,
+                "system_failure_abstention",
+                {
+                    "record_id": record_id,
+                    "reason": reason,
+                    "evidence_sha256": evidence_sha256,
+                },
+                now,
+            )
+            self._refresh_mission_state(connection, mission_id, now)
+        return {"record_id": record_id, "stage": "abstained", "outcome": "abstained"}
+
     def apply_result(
         self,
         mission_id: str,

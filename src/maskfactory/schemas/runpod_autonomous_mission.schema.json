@@ -10,6 +10,7 @@
     "input",
     "bindings",
     "provider_bindings",
+    "stage_versions",
     "role_bindings",
     "repair_policy",
     "execution",
@@ -64,6 +65,34 @@
           "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
           "runtime_sha256": {"$ref": "#/$defs/sha256"}
         }
+      }
+    },
+    "stage_versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_decode",
+        "detection_ownership",
+        "provider_tournament",
+        "hard_qc",
+        "primary_visual_review",
+        "independent_visual_review",
+        "repair_planning",
+        "repair_execution",
+        "package_freeze",
+        "certification"
+      ],
+      "properties": {
+        "source_decode": {"$ref": "#/$defs/sha256"},
+        "detection_ownership": {"$ref": "#/$defs/sha256"},
+        "provider_tournament": {"$ref": "#/$defs/sha256"},
+        "hard_qc": {"$ref": "#/$defs/sha256"},
+        "primary_visual_review": {"$ref": "#/$defs/sha256"},
+        "independent_visual_review": {"$ref": "#/$defs/sha256"},
+        "repair_planning": {"$ref": "#/$defs/sha256"},
+        "repair_execution": {"$ref": "#/$defs/sha256"},
+        "package_freeze": {"$ref": "#/$defs/sha256"},
+        "certification": {"$ref": "#/$defs/sha256"}
       }
     },
     "role_bindings": {

@@ -13,6 +13,7 @@ from maskfactory.autonomy.work_cell import (
     seal_manifest,
     validate_mission_manifest,
 )
+from maskfactory.autonomy.work_cell_runner import WorkCellRunner
 
 HEX = "a" * 64
 
@@ -58,6 +59,18 @@ def manifest(*, record_count: int = 1, authority: str = "operationally_certified
                     "runtime_sha256": HEX,
                 },
             ],
+            "stage_versions": {
+                "source_decode": HEX,
+                "detection_ownership": HEX,
+                "provider_tournament": HEX,
+                "hard_qc": HEX,
+                "primary_visual_review": HEX,
+                "independent_visual_review": HEX,
+                "repair_planning": HEX,
+                "repair_execution": HEX,
+                "package_freeze": HEX,
+                "certification": HEX,
+            },
             "role_bindings": {
                 "primary_visual_critic": role,
                 "independent_juror": {**role, "model_id": "model-b", "family": "family-b"},
@@ -298,3 +311,90 @@ def test_record_seed_drift_fails_closed(tmp_path: Path) -> None:
     changed["source_sha256"] = "b" * 64
     with pytest.raises(WorkCellError, match="record seed drift"):
         cell.seed_records(document["mission_id"], [changed])
+
+
+class _Handler:
+    implementation_sha256 = HEX
+
+    def __init__(self, actor: str, *, fail: bool = False) -> None:
+        self.actor = actor
+        self.fail = fail
+
+    def __call__(self, work):
+        if self.fail:
+            raise RuntimeError("seeded stage failure")
+        return receipt(work["stage"], self.actor)
+
+
+def _handlers(*, failing_stage: str | None = None):
+    actors = {
+        "source_decode": "deterministic_qa",
+        "detection_ownership": "deterministic_qa",
+        "provider_tournament": "segmentation_provider",
+        "hard_qc": "deterministic_qa",
+        "primary_visual_review": "visual_critic",
+        "independent_visual_review": "visual_critic",
+        "repair_planning": "visual_critic",
+        "repair_execution": "segmentation_provider",
+        "package_freeze": "deterministic_qa",
+        "certification": "certificate_service",
+    }
+    return {stage: _Handler(actor, fail=stage == failing_stage) for stage, actor in actors.items()}
+
+
+def test_runner_completes_whole_mission_and_reports_only_milestones(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest(record_count=2)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [
+            {"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX},
+            {"record_id": "r2", "source_sha256": "b" * 64, "input_payload_sha256": HEX},
+        ],
+    )
+    milestones = []
+    runner = WorkCellRunner(
+        cell,
+        _handlers(),
+        owner="runpod-daemon",
+        milestone_callback=lambda report: milestones.append(report["terminal_record_count"]),
+    )
+    report = runner.run(document["mission_id"])
+    assert report["mission_state"] == "complete"
+    assert report["outcome_counts"] == {"accepted": 2}
+    assert report["runner_stage_operations"] == 16
+    assert milestones == [1, 2]
+
+
+def test_runner_isolates_stage_failure_and_continues_other_records(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest(record_count=2)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [
+            {"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX},
+            {"record_id": "r2", "source_sha256": "b" * 64, "input_payload_sha256": HEX},
+        ],
+    )
+    runner = WorkCellRunner(cell, _handlers(failing_stage="source_decode"), owner="daemon")
+    report = runner.run(document["mission_id"])
+    assert report["mission_state"] == "complete"
+    assert report["outcome_counts"] == {"abstained": 2}
+    assert len(list((tmp_path / "executor_failures").rglob("*.json"))) == 2
+
+
+def test_runner_rejects_deployed_stage_hash_drift(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest()
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    handlers = _handlers()
+    handlers["source_decode"].implementation_sha256 = "b" * 64
+    runner = WorkCellRunner(cell, handlers, owner="daemon")
+    with pytest.raises(WorkCellError, match="implementation drift"):
+        runner.run(document["mission_id"])

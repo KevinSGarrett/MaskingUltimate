@@ -22,6 +22,12 @@ Source representations retain distinct roles:
 
 - COCO polygons are external labeled references after rasterization, alignment,
   ontology, identity, deduplication, and qualification pass.
+- COCO segmentation may use polygon arrays or validated compressed/uncompressed
+  RLE. RLE canvas and run totals must match exactly; decoded pixel area is
+  recomputed, while a stale exporter `area` field is preserved as advisory
+  lineage rather than overriding the mask. Polygon bbox alignment accepts either
+  the frozen IoU floor or at most 1.5 pixels of per-edge rasterization
+  quantization; larger mismatches remain quarantined rather than lowering QC.
 - COCO boxes are prompts/coarse detection supervision, never pixel masks.
 - sexual-action and position labels are scene/action supervision and evaluation
   context, never anatomy pixels.

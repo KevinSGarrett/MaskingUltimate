@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_polygon_full_corpus_hard_qc_evidence",
+  "status": "HARD_QA_PASS_BOUNDED_FULL_POLYGON_CORPUS",
+  "adopted_lineage": {
+    "dataset_count": 16,
+    "record_count": 81910,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+    "split_mapping_sha256": "cab2b74545177264bfad8b07ff51cf692c3eff4fe37612276a6e5381a7d2527a"
+  },
+  "project_crosswalk": {
+    "override_path": "configs/nude_corpus_ontology_overrides.json",
+    "override_sha256": "95d3c4219ba0dbbc642d4be341d590f3169e3440b17e9cfef33fdc3d5bf1db7b",
+    "project_registry_path": "configs/nude_corpus_registry.generated.json",
+    "project_registry_file_sha256": "44c911a2edb0627e61b296760eddca8c3fd5208d0efff12d075c8e9fb6151dcb",
+    "project_registry_self_sha256": "802b999db551910a6f5ea47e90853761aea82862a7401dc634a59e7dc5733e0b",
+    "records_audited": 81910,
+    "raw_label_occurrences": 168907,
+    "unmapped_label_counts": {},
+    "coarse_fine_invention_counts": {},
+    "mapping_kind_counts": {
+      "ambiguous_coarse_anatomy": 7778,
+      "ambiguous_visual_cue": 1112,
+      "anatomy": 18383,
+      "anatomy_state": 8464,
+      "appearance_region": 8388,
+      "coarse_anatomy": 95227,
+      "coarse_anatomy_state": 3283,
+      "context_garment": 4780,
+      "context_object": 2932,
+      "context_scene": 103,
+      "context_state": 497,
+      "source_alias_for_visible_external_anatomy": 13595
+    },
+    "action_label_counts": {
+      "breast_exposure_action": 374,
+      "fluid_or_ejaculate_visual_tag": 888,
+      "oral_sex_action": 763,
+      "rear_entry_or_rear_view_scene": 482,
+      "same_sex_female_scene_tag": 76,
+      "sex_toy_object": 285,
+      "sexual_activity_scene": 1497
+    },
+    "role_rules": {
+      "raw_labels_preserved": true,
+      "context_boxes_are_anatomy_prompts": false,
+      "context_or_action_tags_are_pixel_truth": false,
+      "coarse_labels_create_fine_laterality_or_subparts": false
+    }
+  },
+  "canonical_rle_crosscheck": {
+    "implementation_reference": "cocodataset/cocoapi common/maskApi.c rleFrString",
+    "pycocotools_version": "2.0.11",
+    "rle_annotations_checked": 5752,
+    "pixel_mismatch_vs_pycocotools": 0,
+    "decoded_area_mismatch_vs_pycocotools": 0,
+    "stale_source_annotation_area_count": 5750,
+    "disposition": "decoded mask pixels are authoritative for hard QC; stale source area is retained as advisory lineage"
+  },
+  "full_polygon_corpus": {
+    "records": 39354,
+    "hard_qc_pass_candidates": 37736,
+    "quarantined_inputs": 1618,
+    "materialized_masks": 125976,
+    "materialized_mask_pixels": 2078160300,
+    "accepted_encoding_counts": {
+      "coco_polygon": 122260,
+      "coco_rle": 3716
+    },
+    "hard_failure_annotation_counts": {
+      "annotation_bbox_invalid": 45,
+      "polygon_annotation_missing_or_count_mismatch": 51,
+      "polygon_bbox_alignment_failed": 1991
+    },
+    "accepted_advisory_counts": {
+      "source_annotation_area_drift": 3714
+    },
+    "bbox_policy": {
+      "iou_minimum": 0.9,
+      "maximum_per_edge_raster_quantization_px": 1.5,
+      "rule": "IoU must pass, or every edge must remain within the separately logged quantization bound"
+    },
+    "summary_self_sha256": "a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111",
+    "records_sha256": "1f04bf6776adc1e8b1d4b2b016a582e872dac44b9884780e58334af14e46aa79",
+    "summary_file_sha256": "d0b199791c2a971f7e5c86b14b2e7ce48ff8953e8620c82abcf26120da51b623"
+  },
+  "representative_lane_regression": {
+    "selected_records": 1074,
+    "source_hashes_verified": true,
+    "polygon_candidates": 234,
+    "polygon_quarantined": 22,
+    "polygon_masks": 1107,
+    "bbox_prompt_candidates": 512,
+    "action_scene_boxes_not_pixel_masks": 46,
+    "context_boxes_not_anatomy_prompts": 10,
+    "holdout_only": 50,
+    "reference_proposal_ready": 256,
+    "unmapped_labels": 0,
+    "report_path": "runtime_artifacts/nude_corpus_canary_20260722_v2/report.json",
+    "report_file_sha256": "68521b4f125c7180200ce9005d832b71f787fe37417d13c70a4425a3564d5907"
+  },
+  "runpod_mirror": {
+    "paths_env_sourced": true,
+    "remote_path": "/workspace/maskfactory/runtime_artifacts/nude_polygon_hard_qc/a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111",
+    "records_sha256": "1f04bf6776adc1e8b1d4b2b016a582e872dac44b9884780e58334af14e46aa79",
+    "summary_file_sha256": "d0b199791c2a971f7e5c86b14b2e7ce48ff8953e8620c82abcf26120da51b623",
+    "local_remote_hash_match": true,
+    "gpu_inference_started": false,
+    "gpu_observation": {
+      "utilization_percent": 0,
+      "memory_used_mib": 648,
+      "memory_total_mib": 49140
+    },
+    "inference_throughput_records_per_second": null
+  },
+  "corrective_iterations": [
+    {
+      "result": "REJECTED",
+      "reason": "supplied crosswalk omitted four polygon labels; project override added only coarse face and unsided-feet interpretations"
+    },
+    {
+      "result": "REJECTED",
+      "reason": "IoU-only comparison mislabeled one-pixel polygon rasterization quantization as geometry failure"
+    },
+    {
+      "result": "REJECTED",
+      "reason": "a provisional area gate incorrectly treated stale exporter metadata as stronger than canonical COCO RLE pixels"
+    },
+    {
+      "result": "ACCEPTED",
+      "reason": "full RLE population is pixel-identical to canonical pycocotools; hard geometry remains fail-closed and source-area drift is explicit advisory lineage"
+    }
+  ],
+  "verification": {
+    "focused_tests": "30 passed",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "authority_boundary": {
+    "human_gold_granted": false,
+    "production_mask_authority_granted": false,
+    "strict_visual_qa_completed": false,
+    "independent_provider_comparison_completed": false,
+    "operational_certificates_issued": false
+  },
+  "claim_boundary": "This completes full-corpus external polygon decoding, role-preserving remap, deterministic pixel materialization, alignment hard QC, quarantine accounting, and local/RunPod evidence mirroring. It does not complete provider comparison, strict per-record visual review, repair, certificate issuance, training admission, or release."
+}

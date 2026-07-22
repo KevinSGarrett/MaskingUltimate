@@ -22830,13 +22830,19 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-22T09:57:01+00:00",
+          "actor": "ai_agent",
+          "text": "Full 81,910-record audit accounts for 168,907 raw-label occurrences across anatomy/state/action/object/garment/scene/appearance roles with zero unmapped labels and zero coarse-to-fine inventions; project override is hash-bound in the adopted registry."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; configs/nude_corpus_ontology_overrides.json SHA256 95d3c4219ba0dbbc642d4be341d590f3169e3440b17e9cfef33fdc3d5bf1db7b; 30 focused tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T09:57:01+00:00",
       "orphaned": false
     },
     "MF-P0-18.04": {
@@ -22852,18 +22858,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 70,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
           "actor": "ai_agent",
           "text": "The bounded five-lane canary proves boxes/action tags/references/holdout remain distinct; full-corpus negative fixtures and downstream enforcement remain open."
+        },
+        {
+          "ts": "2026-07-22T09:57:03+00:00",
+          "actor": "ai_agent",
+          "text": "Full crosswalk now separates context objects/garments/scenes/states from anatomy and actions; the refreshed five-lane 1,074-record canary has zero unmapped labels, 46 action boxes and 10 context boxes excluded from anatomy prompting. Dedicated downstream training-export negative fixtures remain open."
         }
       ],
-      "evidence": "src/maskfactory/nude_corpus_intake.py; runtime_artifacts/nude_corpus_canary_20260722/report.json; 1,074 records across all five lanes with every forbidden authority conversion false.",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; runtime_artifacts/nude_corpus_canary_20260722_v2/report.json SHA256 68521b4f125c7180200ce9005d832b71f787fe37417d13c70a4425a3564d5907.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:12:31+00:00",
+      "updated_at": "2026-07-22T09:57:03+00:00",
       "orphaned": false
     },
     "MF-P0-18.05": {
@@ -22920,19 +22931,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-22T08:12:31+00:00",
           "actor": "ai_agent",
           "text": "Strict real-shard polygon rasterization, bbox sanity, decoding, and per-record quarantine are implemented and green; full-corpus alignment scan remains open."
+        },
+        {
+          "ts": "2026-07-22T09:57:02+00:00",
+          "actor": "ai_agent",
+          "text": "Full 39,354-record polygon lane materialized 125,976 masks / 2,078,160,300 pixels from polygon and COCO RLE encodings; 37,736 records are hard-QC candidates and 1,618 are reason-coded quarantines. Canonical pycocotools crosscheck is 5,752/5,752 pixel-identical."
         }
       ],
-      "evidence": "qa/live_verification/nude_corpus_adoption_and_local_canary_20260722.json; 1,094 polygons rasterized over 3,941,712 pixels, 230 candidates continued, 26 malformed records quarantined with exact reasons; 7 focused tests pass.",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; local records SHA256 1f04bf6776adc1e8b1d4b2b016a582e872dac44b9884780e58334af14e46aa79; RunPod mirror exact hash match; 30 focused tests pass, Ruff/Black clean.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:12:31+00:00",
+      "updated_at": "2026-07-22T09:57:02+00:00",
       "orphaned": false
     },
     "MF-P4-12.01": {
@@ -22974,13 +22990,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "partially_complete",
+      "percent_complete": 35,
+      "notes": [
+        {
+          "ts": "2026-07-22T09:57:03+00:00",
+          "actor": "ai_agent",
+          "text": "Deterministic full-corpus polygon decode/remap/materialization/alignment hard-QC and reason-coded quarantine are complete and hash-mirrored. Independent-provider comparison, strict per-record VLM panels/verdicts, bounded repair/abstention, and signed outcomes remain open."
+        }
+      ],
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; 39,354 records accounted at the hard-QC input tier only; no gold/production authority or certificates granted.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T08:10:14+00:00",
+      "updated_at": "2026-07-22T09:57:03+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {

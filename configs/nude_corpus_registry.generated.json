@@ -3,6 +3,7 @@
     "batch_policy_file_sha256": "d1ea1202a43bf50f19115b8557335c300f5f96ef3027ded0bbf6d27457f6ee9b",
     "dataset_policy_file_sha256": "cd086904d156ebda491f424de77afdfb7e15804f9fa0697dbc672a0ca9c547f3",
     "ontology_crosswalk_file_sha256": "567aea9a37312783f7e0f5535eec220df2942b5cb6d52b05746794af30a1ddaa",
+    "project_crosswalk_override_sha256": "95d3c4219ba0dbbc642d4be341d590f3169e3440b17e9cfef33fdc3d5bf1db7b",
     "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
     "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a"
   },
@@ -1329,5 +1330,5 @@
     "reference_and_tournament_input": 6537
   },
   "schema_version": "maskfactory.nude_corpus_registry_adoption.v1",
-  "self_sha256": "762754161f2e1fff20c48ab9c97a1b6d1ad416711101b7f4f169c50836f146c0"
+  "self_sha256": "802b999db551910a6f5ea47e90853761aea82862a7401dc634a59e7dc5733e0b"
 }

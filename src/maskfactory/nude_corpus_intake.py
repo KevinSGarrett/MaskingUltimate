@@ -23,6 +23,8 @@ ADOPTED_SHARD_INDEX_SHA256 = "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9b
 ADOPTED_DATASET_COUNT = 16
 ADOPTED_RECORD_COUNT = 81_910
 ADOPTED_SHARDS_PER_PLATFORM = 322
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_CROSSWALK_OVERRIDES = PROJECT_ROOT / "configs" / "nude_corpus_ontology_overrides.json"
 
 LANES = (
     "bbox_evaluation_only",
@@ -109,6 +111,26 @@ def load_adopted_intake(intake_root: Path, *, platform: str = "local") -> dict[s
     intake = Path(intake_root).resolve(strict=True)
     policy = _load_json(intake / "dataset_policy.json")
     crosswalk = _load_json(intake / "ontology_crosswalk.json")
+    overrides = _load_json(PROJECT_CROSSWALK_OVERRIDES)
+    source_aliases = crosswalk.get("anatomy_aliases")
+    override_aliases = overrides.get("anatomy_aliases")
+    if not isinstance(source_aliases, dict) or not isinstance(override_aliases, dict):
+        raise NudeCorpusIntakeError("crosswalk_aliases_invalid")
+    overlap = set(source_aliases) & set(override_aliases)
+    if overlap:
+        raise NudeCorpusIntakeError(f"crosswalk_override_collision:{sorted(overlap)}")
+    crosswalk = dict(crosswalk)
+    crosswalk["anatomy_aliases"] = {**source_aliases, **override_aliases}
+    source_context = crosswalk.get("context_aliases", {})
+    override_context = overrides.get("context_aliases", {})
+    if not isinstance(source_context, dict) or not isinstance(override_context, dict):
+        raise NudeCorpusIntakeError("crosswalk_context_aliases_invalid")
+    context_overlap = set(source_context) & set(override_context)
+    if context_overlap:
+        raise NudeCorpusIntakeError(
+            f"crosswalk_context_override_collision:{sorted(context_overlap)}"
+        )
+    crosswalk["context_aliases"] = {**source_context, **override_context}
     batch_policy = _load_json(intake / "batch_policy.json")
     registry = _load_json(intake / "dataset_registry.generated.json")
     index = _load_json(intake / "batch_shards" / "_index.json")
@@ -140,6 +162,7 @@ def load_adopted_intake(intake_root: Path, *, platform: str = "local") -> dict[s
         "intake_root": intake,
         "policy": policy,
         "crosswalk": crosswalk,
+        "crosswalk_override_sha256": sha256_file(PROJECT_CROSSWALK_OVERRIDES),
         "batch_policy": batch_policy,
         "registry": registry,
         "index": index,
@@ -204,6 +227,7 @@ def build_project_registry_manifest(intake: Mapping[str, Any]) -> dict[str, Any]
             "shard_index_sha256": intake["index"]["self_sha256"],
             "dataset_policy_file_sha256": sha256_file(root / "dataset_policy.json"),
             "ontology_crosswalk_file_sha256": sha256_file(root / "ontology_crosswalk.json"),
+            "project_crosswalk_override_sha256": intake["crosswalk_override_sha256"],
             "batch_policy_file_sha256": sha256_file(root / "batch_policy.json"),
         },
         "dataset_count": len(datasets),
@@ -253,10 +277,59 @@ def validate_shard(path: Path, *, expected_lane: str, platform: str) -> dict[str
 
 
 def rasterize_coco_segmentation(segmentation: Any, *, width: int, height: int) -> np.ndarray:
-    """Rasterize COCO polygon arrays without interpreting boxes as masks."""
+    """Rasterize COCO polygon or RLE masks without interpreting boxes as masks."""
 
     if width < 1 or height < 1:
         raise NudeCorpusIntakeError("polygon_canvas_invalid")
+    if isinstance(segmentation, dict):
+        size = segmentation.get("size")
+        counts = segmentation.get("counts")
+        if size != [height, width] or not isinstance(counts, (str, list)):
+            raise NudeCorpusIntakeError("coco_rle_contract_invalid")
+        if isinstance(counts, str):
+            decoded_counts: list[int] = []
+            position = 0
+            while position < len(counts):
+                value = 0
+                shift = 0
+                more = True
+                while more:
+                    if position >= len(counts):
+                        raise NudeCorpusIntakeError("coco_rle_counts_invalid")
+                    code = ord(counts[position]) - 48
+                    position += 1
+                    if code < 0 or code > 63:
+                        raise NudeCorpusIntakeError("coco_rle_counts_invalid")
+                    value |= (code & 0x1F) << (5 * shift)
+                    more = bool(code & 0x20)
+                    shift += 1
+                    if not more and code & 0x10:
+                        value |= -1 << (5 * shift)
+                if len(decoded_counts) > 2:
+                    value += decoded_counts[-2]
+                decoded_counts.append(value)
+            counts = decoded_counts
+        if (
+            not counts
+            or any(
+                not isinstance(value, int) or isinstance(value, bool) or value < 0
+                for value in counts
+            )
+            or sum(counts) != width * height
+        ):
+            raise NudeCorpusIntakeError("coco_rle_counts_invalid")
+        flat = np.zeros(width * height, dtype=bool)
+        offset = 0
+        foreground = False
+        for run_length in counts:
+            if foreground:
+                flat[offset : offset + run_length] = True
+            offset += run_length
+            foreground = not foreground
+        mask = flat.reshape((height, width), order="F")
+        if not mask.any():
+            raise NudeCorpusIntakeError("polygon_raster_empty")
+        return mask
     if not isinstance(segmentation, list) or not segmentation:
         raise NudeCorpusIntakeError("polygon_segmentation_required")
     canvas = Image.new("1", (width, height), 0)
@@ -300,11 +373,12 @@ def _valid_bbox(bbox: Any, *, width: int, height: int) -> bool:
     )
 
 
-def _crosswalk_labels(
+def crosswalk_source_labels(
     labels: Sequence[str], crosswalk: Mapping[str, Any]
 ) -> tuple[list[dict[str, str]], list[str], list[str]]:
     anatomy = crosswalk.get("anatomy_aliases", {})
     actions = crosswalk.get("scene_and_action_labels", {})
+    contexts = crosswalk.get("context_aliases", {})
     mapped: list[dict[str, str]] = []
     action_tags: list[str] = []
     unmapped: list[str] = []
@@ -319,9 +393,54 @@ def _crosswalk_labels(
             )
         elif raw in actions:
             action_tags.append(str(actions[raw]))
+        elif raw in contexts:
+            entry = contexts[raw]
+            mapped.append(
+                {
+                    "raw_label": raw,
+                    "candidate_label": str(entry["context_candidate"]),
+                    "kind": str(entry["kind"]),
+                }
+            )
         else:
             unmapped.append(raw)
     return mapped, action_tags, unmapped
+
+
+def audit_full_corpus_crosswalk(
+    records: Mapping[str, Mapping[str, Any]], crosswalk: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Account every raw label without allowing coarse-to-fine invention."""
+
+    raw_labels: Counter[str] = Counter()
+    candidate_labels: Counter[str] = Counter()
+    mapping_kinds: Counter[str] = Counter()
+    action_labels: Counter[str] = Counter()
+    unmapped_labels: Counter[str] = Counter()
+    coarse_fine_inventions: Counter[str] = Counter()
+    for record in records.values():
+        source_labels = record.get("source_labels") or []
+        raw_labels.update(str(label) for label in source_labels)
+        mapped, actions, unmapped = crosswalk_source_labels(source_labels, crosswalk)
+        for row in mapped:
+            candidate = str(row["candidate_label"])
+            kind = str(row["kind"])
+            candidate_labels[candidate] += 1
+            mapping_kinds[kind] += 1
+            if "coarse" in kind and candidate in FINE_LABELS_NOT_INFERRED_FROM_COARSE:
+                coarse_fine_inventions[candidate] += 1
+        action_labels.update(str(action) for action in actions)
+        unmapped_labels.update(str(label) for label in unmapped)
+    return {
+        "record_count": len(records),
+        "raw_label_occurrences": sum(raw_labels.values()),
+        "raw_label_counts": dict(sorted(raw_labels.items())),
+        "candidate_label_counts": dict(sorted(candidate_labels.items())),
+        "mapping_kind_counts": dict(sorted(mapping_kinds.items())),
+        "action_label_counts": dict(sorted(action_labels.items())),
+        "unmapped_label_counts": dict(sorted(unmapped_labels.items())),
+        "coarse_fine_invention_counts": dict(sorted(coarse_fine_inventions.items())),
+    }
 
 
 def run_representative_canary(
@@ -372,7 +491,7 @@ def run_representative_canary(
             }:
                 raise NudeCorpusIntakeError(f"source_dimension_mismatch:{sample_id}")
             counters["decoded"] += 1
-            mapped, actions, unmapped = _crosswalk_labels(
+            mapped, actions, unmapped = crosswalk_source_labels(
                 tuple(str(value) for value in record.get("source_labels", [])),
                 intake["crosswalk"],
             )
@@ -441,8 +560,17 @@ def run_representative_canary(
                         invalid_bbox = True
                         break
                     raw_label = categories.get(int(annotation["category_id"]), "unknown")
-                    if raw_label in intake["crosswalk"].get("scene_and_action_labels", {}):
+                    annotation_mapped, annotation_actions, annotation_unmapped = (
+                        crosswalk_source_labels((raw_label,), intake["crosswalk"])
+                    )
+                    if annotation_actions:
                         counters["action_scene_boxes_not_pixel_masks"] += 1
+                    elif annotation_unmapped:
+                        counters["unmapped_boxes_not_anatomy_prompts"] += 1
+                    elif annotation_mapped and str(annotation_mapped[0]["kind"]).startswith(
+                        "context_"
+                    ):
+                        counters["context_boxes_not_anatomy_prompts"] += 1
                     else:
                         counters["bbox_prompts"] += 1
                 if invalid_bbox:
@@ -521,6 +649,7 @@ __all__ = [
     "LANES",
     "NudeCorpusIntakeError",
     "canonical_sha256",
+    "crosswalk_source_labels",
     "load_adopted_intake",
     "load_records",
     "rasterize_coco_segmentation",

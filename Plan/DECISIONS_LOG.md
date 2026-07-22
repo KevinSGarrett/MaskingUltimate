@@ -1347,3 +1347,28 @@ library to be used by the ultimate masking system and required complete visible 
 than synthetic controls or old low-quality drafts.
 
 **Approved by:** Kevin, explicit owner directive on 2026-07-22
+
+## 2026-07-22 - Canonical COCO pixels outrank stale exporter area metadata
+
+**Item(s) affected:** MF-P0-18.03, MF-P0-18.04, MF-P0-18.07, MF-P4-12.02
+
+**Observed:** The corpus contains 5,752 compressed COCO RLE annotations. A provisional check against
+the separate annotation `area` field rejected 5,750, but a complete comparison against canonical
+`pycocotools` 2.0.11 found all 5,752 decoded masks pixel-identical with zero decoded-area mismatch.
+The source `area` metadata was produced from a different/stale geometry representation.
+
+**Decision:** Validate compressed/uncompressed RLE by exact canvas, run totals, canonical decoding,
+recomputed pixel area, and bbox geometry. Preserve the source `area` value and its match flag as
+advisory lineage; it cannot override canonical mask bytes. For polygon bbox comparison, keep the
+0.90 IoU gate and separately accept only cases where every bbox edge is within 1.5 pixels of the
+rasterized mask, explicitly recording the quantization method.
+
+**Authority boundary:** These rules create external machine hard-QC candidates only. Provider
+comparison, strict per-record visual QA, repair/abstention, operational certificates, training
+admission, and release authority remain separate open gates.
+
+**Why:** This preserves valid source supervision without lowering geometry thresholds or allowing
+stale metadata to become stronger than the actual COCO segmentation.
+
+**Approved by:** Kevin's adult-corpus intake directive; AI-autonomous implementation and canonical
+COCO API verification.

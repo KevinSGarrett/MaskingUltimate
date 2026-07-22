@@ -15,6 +15,10 @@ Operating memory for every fresh session:
   index `16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a`;
 - local shards are Windows-only; RunPod shards are remote-only;
 - polygons, boxes, actions, references, and holdout retain different roles;
+- decode both polygon arrays and valid COCO RLE; require exact RLE canvas/run
+  totals, recompute pixel area, retain stale source-area metadata as advisory,
+  preserve the 0.90 polygon bbox IoU floor, and allow only the separately logged
+  1.5-pixel per-edge rasterization-quantization alternative;
 - raw labels are preserved and coarse labels never create fine anatomy;
 - one failed record is quarantined/abstained while the shard continues;
 - checkpoint each 256; report each 1,000 or material failure/recovery milestone;

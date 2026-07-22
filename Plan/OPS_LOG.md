@@ -11766,3 +11766,28 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   the original diagnostic image. Contact-sheet manifest SHA-256:
   `0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac`.
 - Evidence: `qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json`.
+
+## 2026-07-22 - Adult polygon corpus full hard-QC and RunPod mirror
+
+- Audited all 81,910 source records / 168,907 raw-label occurrences. The project-owned crosswalk
+  now accounts for anatomy, anatomy state, appearance, action, garment, object, scene, and context
+  state without unmapped labels or coarse-to-fine invention; its exact hash is bound into the
+  generated project registry.
+- Materialized every usable COCO polygon and compressed RLE in the 39,354-record polygon lane:
+  125,976 masks / 2,078,160,300 foreground pixels. Exactly 37,736 records remain machine hard-QC
+  candidates and 1,618 records are reason-coded quarantines. No gold, production authority,
+  strict-visual verdict, or operational certificate was granted.
+- Compared all 5,752 compressed RLE annotations to canonical `pycocotools` 2.0.11: zero pixel or
+  decoded-area mismatches. The exporter `area` field is stale on 5,750 annotations, so it is
+  preserved as advisory lineage while exact RLE canvas/run totals, decoded pixels, and bbox geometry
+  remain hard gates.
+- Replaced the false IoU-only rejection of one-pixel polygon rasterization with a separately logged
+  maximum 1.5-pixel per-edge quantization alternative. The 0.90 IoU floor was not lowered; larger
+  geometry mismatches remain quarantined.
+- Mirrored the immutable records and summary to the persistent RunPod path under summary seal
+  `a377d776221d006d3288836395b057f82ca83f3d2a47a3e3a1e828c229363111`; local/remote SHA-256
+  matches. This was CPU/network work and did not start GPU inference.
+- Verification: 30 focused tests passed; Ruff, Black, JSON validation, diff integrity, tracker
+  validation, and tracker report passed. `MF-P0-18.03` and `MF-P0-18.07` are complete;
+  `MF-P0-18.04` and `MF-P4-12.02` remain honestly partial.
+- Evidence: `qa/live_verification/nude_polygon_hard_qc_20260722.json`.

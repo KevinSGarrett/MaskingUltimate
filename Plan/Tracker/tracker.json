@@ -9343,19 +9343,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-22T05:37:00+00:00",
           "actor": "codex",
           "text": "Live RunPod presence and hash-bound authoritative snapshot are verified. Completion remains open for a new bounded local/remote sampled-file hash comparison; the attempted recursive 489k-file FUSE walk timed out and was replaced with the safe snapshot check."
+        },
+        {
+          "ts": "2026-07-22T07:27:39+00:00",
+          "actor": "ai_agent",
+          "text": "Completed exact local/RunPod MaskedWarehouse reconciliation. The platform-neutral local inventory seal covers 489,638 files, remote authoritative snapshot count matches, and all 50 deterministic image/mask sample paths and SHA-256 hashes match byte-for-byte. The verifier fails closed on path/hash/count drift before provider use and performs no mutating API or GPU operation."
         }
       ],
-      "evidence": "qa/live_verification/runpod_persistence_binding_20260722.json and qa/live_verification/runpod_corpus_mirror_reconciliation_20260722.json: current pod RUNNING; 1 TiB persistent volume 13/13; exact remote snapshot hash 46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205; both required roots and top-level structures 10/10.",
+      "evidence": "qa/live_verification/runpod_corpus_mirror_sample_reconciliation_20260722.json: RUNTIME_PASS_HASH_BOUND_SNAPSHOT, 13/13 checks, local inventory seal c0e044909a602906cac2282624d74d1cff16850a202cccb9a4c874bdf989ea4d, 489638 local=remote files, sample set e6f92c3071ad2e1854af4deb75c6781a7f16ac85455084a1fa5cc7a613d2c598, 50/50 exact sampled path hashes; 6 verifier/persistence tests PASS; Ruff, Black, diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-22T05:06:30+00:00",
-      "updated_at": "2026-07-22T05:37:00+00:00",
+      "updated_at": "2026-07-22T07:27:39+00:00",
       "orphaned": false
     },
     "MF-P0-14.01": {

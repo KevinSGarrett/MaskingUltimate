@@ -33,6 +33,8 @@ import hashlib
 import json
 from pathlib import Path
 
+sample_paths = __SAMPLE_PATHS__
+
 roots = {
     'maskedwarehouse': Path('/workspace/assets/MaskedWarehouse'),
     'ultimate_reference_library': Path('/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images'),
@@ -47,6 +49,14 @@ def inventory(root):
 
 snapshot = Path('/workspace/maskfactory/qa/live_verification/runpod_assets_authoritative_latest.json')
 payload = {name: inventory(root) for name, root in roots.items()}
+payload['maskedwarehouse']['sample_hashes'] = {
+    relative: (
+        hashlib.sha256((roots['maskedwarehouse'] / relative).read_bytes()).hexdigest()
+        if (roots['maskedwarehouse'] / relative).is_file()
+        else None
+    )
+    for relative in sample_paths
+}
 payload['snapshot'] = {
     'path': str(snapshot),
     'exists': snapshot.is_file(),
@@ -69,7 +79,59 @@ def _utc_now() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
-def run_remote_inventory(*, host: str, port: int) -> dict[str, Any]:
+def maskedwarehouse_sample_bindings(inventory: dict[str, Any]) -> dict[str, str]:
+    """Return the exact deterministic local sample paths and expected hashes."""
+
+    bindings: dict[str, str] = {}
+    for source in inventory.get("sources") or ():
+        relative_root = Path(str(source.get("root", ""))).name
+        source_name = str(source.get("source", ""))
+        relative_roots = {
+            "celebamask_hq": "CelebAMask-HQ",
+            "lapa": "LaPa",
+            "lv_mhp_v1": "Body/LV-MHP-v1",
+            "swimsuit_preview": "Body/UniDataPro_swimsuit-human-segmentation-dataset",
+            "body_archive": "Body/archive",
+        }
+        relative_root = relative_roots.get(source_name, relative_root)
+        for role in ("image_samples", "mask_samples"):
+            for row in source.get(role) or ():
+                relative = (Path(relative_root) / str(row["path"])).as_posix()
+                digest = str(row.get("sha256", ""))
+                if relative in bindings or len(digest) != 64:
+                    raise RuntimeError("MaskedWarehouse deterministic sample inventory is invalid")
+                bindings[relative] = digest
+    if not bindings:
+        raise RuntimeError("MaskedWarehouse deterministic sample inventory is empty")
+    return dict(sorted(bindings.items()))
+
+
+def inventory_seal(inventory: dict[str, Any]) -> str:
+    """Seal platform-neutral counts, extensions, and deterministic samples."""
+
+    payload = {
+        "schema_version": inventory.get("schema_version"),
+        "sample_hash_policy": inventory.get("sample_hash_policy"),
+        "sources": [
+            {
+                "source": source.get("source"),
+                "counts": source.get("counts"),
+                "extensions": source.get("extensions"),
+                "image_samples": source.get("image_samples"),
+                "mask_samples": source.get("mask_samples"),
+            }
+            for source in inventory.get("sources") or ()
+        ],
+    }
+    return _sha256_text(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+
+
+def run_remote_inventory(
+    *, host: str, port: int, sample_paths: tuple[str, ...] = ()
+) -> dict[str, Any]:
+    script = REMOTE_INVENTORY.replace(
+        "__SAMPLE_PATHS__", json.dumps(list(sample_paths), separators=(",", ":"))
+    )
     completed = subprocess.run(
         [
             "ssh",
@@ -85,7 +147,7 @@ def run_remote_inventory(*, host: str, port: int) -> dict[str, Any]:
             "bash",
             "-s",
         ],
-        input=REMOTE_INVENTORY.replace("\r\n", "\n").encode("utf-8"),
+        input=script.replace("\r\n", "\n").encode("utf-8"),
         capture_output=True,
         check=False,
         timeout=120,
@@ -104,7 +166,13 @@ def run_remote_inventory(*, host: str, port: int) -> dict[str, Any]:
 
 
 def build_evidence(
-    *, pod: dict[str, Any], remote: dict[str, Any], source: dict[str, Any], source_path: Path
+    *,
+    pod: dict[str, Any],
+    remote: dict[str, Any],
+    source: dict[str, Any],
+    source_path: Path,
+    local_inventory: dict[str, Any] | None = None,
+    local_inventory_path: Path | None = None,
 ) -> dict[str, Any]:
     expected = {
         "maskedwarehouse": source["sanity_counts"]["masked_warehouse"],
@@ -140,6 +208,34 @@ def build_evidence(
             "snapshot_file_count": wanted["file_count"],
             "snapshot_bytes": wanted["bytes"],
         }
+    local_reconciliation: dict[str, Any] | None = None
+    if local_inventory is not None:
+        sample_bindings = maskedwarehouse_sample_bindings(local_inventory)
+        remote_samples = remote["maskedwarehouse"].get("sample_hashes") or {}
+        local_total = sum(
+            int(item.get("counts", {}).get("total_files", 0))
+            for item in local_inventory.get("sources") or ()
+        )
+        checks["maskedwarehouse_local_count_matches_snapshot"] = (
+            local_total == expected["maskedwarehouse"]["file_count"]
+        )
+        checks["maskedwarehouse_sample_paths_exact"] = set(remote_samples) == set(sample_bindings)
+        checks["maskedwarehouse_sample_hashes_match"] = remote_samples == sample_bindings
+        local_reconciliation = {
+            "inventory_path": (
+                local_inventory_path.as_posix() if local_inventory_path is not None else None
+            ),
+            "inventory_file_sha256": (
+                _sha256_file(local_inventory_path) if local_inventory_path is not None else None
+            ),
+            "inventory_seal_sha256": inventory_seal(local_inventory),
+            "local_file_count": local_total,
+            "remote_snapshot_file_count": expected["maskedwarehouse"]["file_count"],
+            "sample_count": len(sample_bindings),
+            "sample_set_sha256": _sha256_text(
+                json.dumps(sample_bindings, sort_keys=True, separators=(",", ":"))
+            ),
+        }
     return {
         "schema_version": "1.0.0",
         "recorded_at": _utc_now(),
@@ -160,6 +256,7 @@ def build_evidence(
             "verified_at_utc": source.get("verified_at_utc"),
         },
         "inventories": inventories,
+        "maskedwarehouse_local_remote_reconciliation": local_reconciliation,
         "checks": checks,
         "tool": {
             "path": "tools/verify_runpod_corpus_mirrors.py",
@@ -174,6 +271,11 @@ def main() -> int:
     parser.add_argument("--env-file", type=Path, required=True)
     parser.add_argument("--pod-id", required=True)
     parser.add_argument("--source-evidence", type=Path, required=True)
+    parser.add_argument(
+        "--local-maskedwarehouse-inventory",
+        type=Path,
+        default=Path("configs/maskedwarehouse_inventory.json"),
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     api_key = load_env_value(args.env_file, "RUNPOD_API_KEY")
@@ -184,9 +286,22 @@ def main() -> int:
     if not public_ip or not ssh_port:
         raise RuntimeError("RunPod pod has no public SSH endpoint")
     source = json.loads(args.source_evidence.read_text(encoding="utf-8-sig"))
-    remote = run_remote_inventory(host=public_ip, port=ssh_port)
+    local_inventory = json.loads(
+        args.local_maskedwarehouse_inventory.read_text(encoding="utf-8-sig")
+    )
+    sample_bindings = maskedwarehouse_sample_bindings(local_inventory)
+    remote = run_remote_inventory(
+        host=public_ip,
+        port=ssh_port,
+        sample_paths=tuple(sample_bindings),
+    )
     evidence = build_evidence(
-        pod=pod, remote=remote, source=source, source_path=args.source_evidence
+        pod=pod,
+        remote=remote,
+        source=source,
+        source_path=args.source_evidence,
+        local_inventory=local_inventory,
+        local_inventory_path=args.local_maskedwarehouse_inventory,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")

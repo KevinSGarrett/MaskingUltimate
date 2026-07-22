@@ -85,6 +85,7 @@ def test_coverage_reconciles_input_and_terminal_strata_without_hiding_gaps(tmp_p
         queue_path=tmp_path / "queue.sqlite",
         platform="local",
     )
+    assert report["schema_version"] == "maskfactory.nude_dataset_coverage.v2"
     assert report["status"] == "PASS"
     assert report["registry_record_count"] == 2
     assert report["processed_record_count"] == 1
@@ -97,4 +98,16 @@ def test_coverage_reconciles_input_and_terminal_strata_without_hiding_gaps(tmp_p
     assert report["processed_label_kind_counts"] == {"action_or_scene": 1, "anatomy": 1}
     assert report["outcome_counts"] == {"holdout": 1}
     assert report["certification_yield"] == 0.0
-    assert report["unprocessed_strata"]["dataset_id"] == ["dataset-b"]
+    dataset_rows = {row["stratum"]: row for row in report["stratum_coverage"]["dataset_id"]}
+    assert dataset_rows["dataset-a"] == {
+        "stratum": "dataset-a",
+        "population_count": 1,
+        "processed_count": 1,
+        "remaining_count": 0,
+        "coverage_fraction": 1.0,
+        "complete": True,
+    }
+    assert dataset_rows["dataset-b"]["remaining_count"] == 1
+    assert report["incomplete_strata"]["dataset_id"] == [dataset_rows["dataset-b"]]
+    assert report["all_processed_records_reconciled"] is True
+    assert report["full_population_complete"] is False

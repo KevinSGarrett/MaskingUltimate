@@ -12112,3 +12112,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   visual roles produce the upstream evidence.
 - Evidence: `qa/live_verification/nude_terminal_batch_executor_20260722.json`.
   Seventy-four focused/adjacent tests, Ruff, Black, and CLI help pass.
+
+## 2026-07-22 - Terminal queue and complete-stratum coverage bridge
+
+- Connected prepared terminal batches to the durable shard queue. The bridge
+  processes every record, revalidates exact artifacts and prepared-input
+  hashes, checkpoints only the valid contiguous prefix transactionally, and
+  preserves valid later artifacts when a middle record fails.
+- Each bridge run emits an immutable queue milestone and optional dataset
+  coverage snapshot. Coverage schema v2 reports population, processed,
+  remaining, fraction, and completeness for every dataset, role, media domain,
+  split, lineage, raw-label, and label-kind stratum; partially processed strata
+  can no longer disappear from an `unprocessed`-only list.
+- Rebuilt the real 81,910-record intake report against the existing 50-record
+  holdout queue. All 50 outcomes reconcile, 81,860 remain, full-population
+  completion is false, certification yield is zero, and every incomplete
+  stratum is explicit.
+- Evidence:
+  `qa/live_verification/nude_terminal_queue_and_coverage_bridge_20260722.json`.
+  Forty-nine focused/adjacent tests, Ruff, Black, and CLI help pass.
+- Runtime snapshot: Docker 29.6.1, CVAT 2.24 and Nuclio/SAM2 pass; the full
+  doctor is 8 PASS / 5 FAIL due Ubuntu WSL timeout, dependent model smokes,
+  Ollama image HTTP 500, and 10.8 GiB local free space. These remain local
+  runtime constraints and did not weaken the CPU queue/coverage evidence.

@@ -1,0 +1,72 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_terminal_queue_and_coverage_bridge.v1",
+  "recorded_at_utc": "2026-07-22T20:01:42.3707845Z",
+  "tracker_items": [
+    "MF-P4-12.03",
+    "MF-P4-12.09"
+  ],
+  "result": "STATIC_AND_REAL_COVERAGE_PASS_LIVE_PROVIDER_OUTCOMES_OPEN",
+  "implemented_behavior": {
+    "all_prepared_records_are_processed_independently": true,
+    "only_the_valid_contiguous_prefix_is_checkpointed": true,
+    "queue_checkpoint_is_transactional_and_revalidates_every_payload": true,
+    "later_valid_records_survive_a_middle_processing_error": true,
+    "terminal_artifacts_bind_exact_prepared_input_hashes": true,
+    "queue_milestone_is_emitted_and_self_sealed": true,
+    "dataset_coverage_is_emitted_and_self_sealed": true,
+    "partially_processed_strata_are_explicit": true,
+    "missing_or_partially_processed_strata_cannot_be_hidden": true,
+    "certificate_or_gold_authority_granted": false
+  },
+  "real_holdout_coverage_v2": {
+    "path": "runtime_artifacts/nude_dataset_coverage_v2_20260722/holdout_complete.json",
+    "file_sha256": "138761e930d47907970a17c82eb64cef9c1faab234c166d34b0eae0618f91bb4",
+    "self_sha256": "293dc3e193b3567d3e9481f3e8ec105da826041725f2c1d2593a5b171a5d2612",
+    "registry_record_count": 81910,
+    "processed_record_count": 50,
+    "remaining_record_count": 81860,
+    "all_processed_records_reconciled": true,
+    "full_population_complete": false,
+    "outcome_counts": {
+      "holdout": 50
+    },
+    "incomplete_stratum_counts": {
+      "dataset_id": 15,
+      "label_kind": 4,
+      "lineage_group": 12,
+      "media_domain": 3,
+      "raw_label": 78,
+      "source_role": 4,
+      "source_split": 4
+    },
+    "certification_yield": 0.0
+  },
+  "validation": {
+    "focused_and_adjacent_pytest": "PASS_49",
+    "ruff": "PASS",
+    "black": "PASS",
+    "cli_help": "PASS",
+    "implementation_sha256": {
+      "src/maskfactory/nude_terminal_queue_bridge.py": "bda9d62c873c01f5fa1a39a6a6e6c2ac865fa2cc180fc294d251446f4b0c41f9",
+      "src/maskfactory/nude_dataset_coverage.py": "c53f7619f727870e2ce3ac8486f5425b1264191353cd73271223bad8413c3baf",
+      "tools/checkpoint_nude_terminal_batch.py": "cb09dc4d38e0f76c67cea22972a2de1bf6c5a87377c42c86d63d29649454f575",
+      "tests/test_nude_terminal_queue_bridge.py": "7aa57685fc05fe141e872788b959fd5fb800dd7213804fd3296b401a649dfd8e",
+      "tests/test_nude_dataset_coverage.py": "b2a1215f0872386056338062064d721a78938ab5cadea7fc92222ce91e0a3eb0"
+    }
+  },
+  "runtime_snapshot": {
+    "docker_server": "29.6.1",
+    "production_cvat": "running_and_doctor_pass",
+    "nuclio_pth_sam2": "running_and_doctor_pass",
+    "ollama_tags_endpoint": "reachable",
+    "doctor_summary": "PASS_8_FAIL_5",
+    "doctor_failures": [
+      "ubuntu_wsl_preflight_timeout",
+      "registered_wsl_model_smokes_not_run",
+      "ollama_image_http_500",
+      "disk_free_10.8_gib",
+      "ubuntu_wsl_roundtrip_timeout"
+    ]
+  },
+  "claim_boundary": "This proves the durable terminal-to-queue integration and real 81,910-record coverage accounting. It does not prove live provider masks, qualified visual verdicts, repairs, certificates, autonomous gold, or full-corpus completion."
+}

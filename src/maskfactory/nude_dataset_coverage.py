@@ -67,6 +67,26 @@ def _label_kind(label: str, crosswalk: Mapping[str, Any]) -> str:
     return "unmapped"
 
 
+def _coverage_rows(population: Counter[str], processed: Counter[str]) -> list[dict[str, Any]]:
+    rows = []
+    for stratum in sorted(set(population) | set(processed)):
+        population_count = int(population.get(stratum, 0))
+        processed_count = int(processed.get(stratum, 0))
+        rows.append(
+            {
+                "stratum": stratum,
+                "population_count": population_count,
+                "processed_count": processed_count,
+                "remaining_count": population_count - processed_count,
+                "coverage_fraction": (
+                    processed_count / population_count if population_count else None
+                ),
+                "complete": population_count > 0 and processed_count == population_count,
+            }
+        )
+    return rows
+
+
 def build_nude_dataset_coverage(
     *,
     registry_records: Path,
@@ -159,8 +179,16 @@ def build_nude_dataset_coverage(
     if sum(certification_counts.values()) != processed_count:
         errors.append("certification_total_mismatch")
 
+    stratum_coverage = {axis: _coverage_rows(population[axis], processed[axis]) for axis in axes}
+    stratum_coverage["raw_label"] = _coverage_rows(population_labels, processed_labels)
+    stratum_coverage["label_kind"] = _coverage_rows(population_label_kinds, processed_label_kinds)
+    incomplete_strata = {
+        axis: [row for row in rows if not row["complete"]]
+        for axis, rows in stratum_coverage.items()
+    }
+
     report: dict[str, Any] = {
-        "schema_version": "maskfactory.nude_dataset_coverage.v1",
+        "schema_version": "maskfactory.nude_dataset_coverage.v2",
         "artifact_type": "adult_corpus_dataset_coverage",
         "status": "PASS" if not errors else "FAIL",
         "platform": platform,
@@ -187,9 +215,10 @@ def build_nude_dataset_coverage(
         "certification_yield": (
             certification_counts.get("issued", 0) / processed_count if processed_count else 0.0
         ),
-        "unprocessed_strata": {
-            axis: sorted(set(population[axis]) - set(processed[axis])) for axis in axes
-        },
+        "stratum_coverage": stratum_coverage,
+        "incomplete_strata": incomplete_strata,
+        "all_processed_records_reconciled": not errors,
+        "full_population_complete": not errors and processed_count == len(records),
         "integrity_errors": errors,
         "registry_records_sha256": hashlib.sha256(registry_records.read_bytes()).hexdigest(),
         "ontology_crosswalk_sha256": hashlib.sha256(ontology_crosswalk.read_bytes()).hexdigest(),

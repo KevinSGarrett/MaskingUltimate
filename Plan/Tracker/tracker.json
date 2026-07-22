@@ -23286,7 +23286,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 50,
+      "percent_complete": 55,
       "notes": [
         {
           "ts": "2026-07-22T11:53:27+00:00",
@@ -23307,12 +23307,17 @@
           "ts": "2026-07-22T19:50:24+00:00",
           "actor": "codex",
           "text": "2026-07-22 added a resumable terminal JSONL executor: accepted/repaired, abstained/rejected, and quarantined/holdout records route through their exact validators; each input writes one immutable receipt or typed error, malformed rows do not stop peers, replay is idempotent, and output roots are source-manifest bound. 74 focused/adjacent tests, Ruff, Black, and CLI help pass. Real terminal inputs remain zero."
+        },
+        {
+          "ts": "2026-07-22T20:02:43+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 terminal executor is now connected to the durable shard queue: every prepared record is processed, exact input/artifact hashes are revalidated, only the valid contiguous prefix is transactionally checkpointed, and later valid artifacts survive a middle error. Queue milestone and optional coverage snapshots are immutable. Live provider masks and downstream outcomes remain open."
         }
       ],
-      "evidence": "STATIC_EXECUTOR_PASS: qa/live_verification/nude_terminal_batch_executor_20260722.json; implementation hashes bound; 74 tests plus Ruff/Black/CLI pass. Live provider/QA/review/repair/terminal records remain zero; no certificate, gold, training, or production authority.",
+      "evidence": "STATIC_PASS queue bridge: qa/live_verification/nude_terminal_queue_and_coverage_bridge_20260722.json; 49 focused/adjacent tests, Ruff, Black, and CLI help pass. No live provider mask, critic verdict, repair, certificate, gold, or production authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T19:50:24+00:00",
+      "updated_at": "2026-07-22T20:02:43+00:00",
       "orphaned": false
     },
     "MF-P4-12.04": {
@@ -23683,18 +23688,23 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 22,
+      "percent_complete": 30,
       "notes": [
         {
           "ts": "2026-07-22T12:35:14+00:00",
           "actor": "ai_agent",
           "text": "Dataset-level reporting now reconciles all 81,910 registered inputs and every terminal queue receipt across dataset, role, media domain, split, lineage, raw anatomy/action labels, provider agreement, hard QC, repair, abstention, quarantine, and certificate yield. The completed 50-record holdout report is zero-gap with 0.0 certification yield; generation-lane outcome strata remain open."
+        },
+        {
+          "ts": "2026-07-22T20:02:45+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 coverage schema v2 now exposes partial as well as zero-coverage strata with population/processed/remaining/fraction/completeness. Real 81,910-record intake versus the existing 50-record holdout queue reconciles exactly: 50 processed, 81,860 remaining, full_population_complete=false, certification yield 0.0."
         }
       ],
-      "evidence": "qa/live_verification/nude_dataset_coverage_reporting_20260722.json",
+      "evidence": "HARD_QA_PASS_BOUNDED accounting: qa/live_verification/nude_terminal_queue_and_coverage_bridge_20260722.json; real report runtime_artifacts/nude_dataset_coverage_v2_20260722/holdout_complete.json file SHA256 138761e930d47907970a17c82eb64cef9c1faab234c166d34b0eae0618f91bb4 self SHA256 293dc3e193b3567d3e9481f3e8ec105da826041725f2c1d2593a5b171a5d2612. Full population remains open.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T12:35:14+00:00",
+      "updated_at": "2026-07-22T20:02:45+00:00",
       "orphaned": false
     },
     "MF-P4-12.10": {

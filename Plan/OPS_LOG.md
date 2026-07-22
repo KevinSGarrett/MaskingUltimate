@@ -11506,3 +11506,33 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   also normalized to the same source/use contract. Immutable historical
   evidence is not rewritten. Evidence:
   `qa/live_verification/uniform_admission_daz_boundary_reconciliation_20260721.json`.
+
+## 2026-07-22 - Live visual-critic qualification and target-grounding repair
+
+- Added a deterministic self-hosted calibration runner that binds every live
+  response to the exact model artifact, runtime, prompt, target contract,
+  panel set, corpus, hardware, latency, VRAM measurement, and replay. Unsupported
+  or malformed output remains an abstention; no report claims mask authority.
+- InternVL3.5-8B and Qwen3.6-27B both failed the unchanged role thresholds by
+  rejecting both valid masks. The first Qwen attempt also exposed two concrete
+  vLLM integration defects: unsupported `uniqueItems` grammar and stale
+  multimodal-cache state after the rejected request. Exact semantic duplicate
+  rejection remains in the parser, and the isolated Qwen server was restarted
+  with its multimodal processor cache disabled.
+- Inspection found the frozen v1 corpus's nominal valid side label and
+  wrong-side geometry were inconsistent and that owner/protected-region
+  grounding was visually ambiguous. The immutable v1 result is preserved.
+  A separately versioned v2 corpus corrects anatomical side, uses the owner's
+  real opposite hand for wrong-side truth, distinguishes ownership and
+  wrong-label masks, binds a protected face region, labels P0/P1, and adds
+  deterministic panel headers/ROI overlays.
+- Qwen rerun on v2 remained fail-closed because it still rejected both valid
+  controls. Defect precision was also corrected to its standard binary meaning;
+  exact subtype hits remain separately reported. Recomputed precision is
+  10/12 for all three live runs, while valid-mask pass rate remains 0/2, so no
+  model is promoted and the old hand-climb babysitter remains paused.
+- Focused corpus, live-runner, and qualification tests pass; Ruff and Black
+  pass. Evidence: `qa/live_verification/internvl3_5_8b_visual_calibration_20260722.json`,
+  `qa/live_verification/qwen3_6_27b_visual_calibration_20260722.json`,
+  `qa/live_verification/qwen3_6_27b_visual_calibration_v2_20260722.json`, and
+  `qa/live_verification/visual_critic_metric_reconciliation_20260722.json`.

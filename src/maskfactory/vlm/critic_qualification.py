@@ -253,11 +253,7 @@ def evaluate_critic_qualification(
     defects = [case for case in cases.values() if case["expected_outcome"] == "known_defect"]
     serious = [case for case in defects if case["defect_type"] in SERIOUS_DEFECTS]
     predicted_defects = [row for row in predictions if row["verdict"] == "defect"]
-    true_defect_calls = sum(
-        observed[case["case_id"]]["verdict"] == "defect"
-        and observed[case["case_id"]]["defect_type"] == case["defect_type"]
-        for case in defects
-    )
+    true_defect_calls = sum(observed[case["case_id"]]["verdict"] == "defect" for case in defects)
     metrics = {
         "valid_mask_pass_rate": _rate(
             sum(observed[case["case_id"]]["verdict"] == "pass" for case in valid), len(valid)

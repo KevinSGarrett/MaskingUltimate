@@ -88,6 +88,16 @@ def test_rejecting_everything_is_unavailable_not_qualified() -> None:
     )
     assert report["status"] == "fail"
     assert "valid_mask_pass_rate_below_minimum" in report["failures"]
+    assert report["metrics"]["precision"] == pytest.approx(10 / 12)
+
+
+def test_defect_precision_is_binary_while_subtype_accuracy_remains_separate() -> None:
+    evidence = _evidence()
+    anatomy = next(row for row in evidence["predictions"] if row["case_id"] == "vc_002_anatomy")
+    anatomy["defect_type"] = "boundary"
+    report = evaluate_critic_qualification(evidence, _corpus(), load_catalog())
+    assert report["metrics"]["precision"] == 1
+    assert report["per_defect_exact_hits"].get("anatomy") is None
 
 
 def test_abstaining_on_everything_is_unavailable_not_a_schema_error() -> None:

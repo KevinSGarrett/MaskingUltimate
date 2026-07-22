@@ -14421,12 +14421,17 @@
           "ts": "2026-07-21T23:31:42+00:00",
           "actor": "codex",
           "text": "STATIC_PASS only: gate implementation is complete, but no live critic role or production authority is claimed until a real frozen-corpus run passes."
+        },
+        {
+          "ts": "2026-07-22T00:49:49+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 live gate application: InternVL3.5-8B and Qwen3.6-27B both failed the frozen positive/negative role thresholds by rejecting both valid masks. A target-grounded v2 corpus corrected side/owner/protected-region fixture defects; Qwen still rejected both valid controls. No visual role, certificate, or mask authority was granted. Exact results and metric reconciliation are under qa/live_verification/."
         }
       ],
       "evidence": "qa/live_verification/visual_critic_role_qualification_gate_20260721.json; 11 focused and 29 combined tests PASS; Ruff/Black PASS; all-reject, all-abstain, hallucinated-context, serious-false-pass, schema/replay/latency/VRAM/hash drift fail closed",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T23:31:42+00:00",
+      "updated_at": "2026-07-22T00:49:49+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {

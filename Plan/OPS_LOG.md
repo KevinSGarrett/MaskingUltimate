@@ -11576,3 +11576,24 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   gold-volume tests pass; Ruff and Black pass. This is static container-spec
   coherence only and does not claim image build, live health, champions, or
   prediction authority.
+
+## 2026-07-22 - Official SAM 3.1 same-image visual-exemplar discovery verified
+
+- The exact official SAM 3.1 source, multiplex checkpoint, Python 3.11/cu128
+  runtime, governed multi-person fixture, and hash-bound same-image exemplar
+  were exercised in two fresh RunPod processes. A positive person box plus the
+  text concept `person` produced four strict full-frame mask candidates in each
+  process with byte-identical payload and compressed-NPZ hashes.
+- Independent Windows-host validation accepted the source pixels, exemplar
+  document, request, provider identity, shapes, candidate authority, and closed
+  artifacts. Object identities stayed stable against the earlier text-only
+  run, minimum per-object IoU was 0.9951, and the probability changes prove the
+  visual exemplar reached the live model.
+- `MF-P2-11.03` is complete at its bounded shadow-candidate verify clause. No
+  active map, provider lifecycle, production registry, promotion, semantic-mask
+  authority, certificate authority, or gold authority changed. The official
+  point-refinement route remains a separate unresolved item and was not
+  reclassified or retried.
+- Thirty-three focused discovery, exemplar, orchestration, and production tests
+  pass; JSON parsing, tracker validation, and diff integrity pass. Evidence:
+  `qa/live_verification/sam31_visual_exemplar_runpod_20260722.json`.

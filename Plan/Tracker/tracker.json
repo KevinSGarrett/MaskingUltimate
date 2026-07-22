@@ -12561,8 +12561,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 96,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-15T12:17:50+00:00",
@@ -12598,12 +12598,17 @@
           "ts": "2026-07-19T20:10:06+00:00",
           "actor": "ai_agent",
           "text": "2026-07-19 host-side: sam3_1 remains wired as concept_detector shadow challenger and is correctly skipped as lifecycle=planned in host-side tournaments; no live candidate evidence claimed. Evidence: qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56."
+        },
+        {
+          "ts": "2026-07-22T02:11:55+00:00",
+          "actor": "codex",
+          "text": "2026-07-22: exact official SAM 3.1 same-image visual-exemplar discovery passed two fresh RunPod processes on the governed multi-person fixture. One positive hash-bound person box plus text concept 'person' produced 4 strict full-frame mask candidates both times; payload and compressed NPZ hashes were byte-identical. Independent host validation accepted every provenance, request, shape, authority, and artifact field. Compared with text-only discovery, object IDs stayed stable, minimum per-object IoU was 0.9951, and probabilities changed, proving the exemplar reached the live model. No active map, registry lifecycle, promotion, mask authority, or gold authority changed; refinement remains a separate incomplete item."
         }
       ],
-      "evidence": "qa/live_verification/sam31_production_shadow_orchestration_20260715.json; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json; qa/live_verification/sam31_visual_exemplar_contract_20260717.json; qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56. Remaining: live GPU candidate evidence and measured benchmark after MF-P0-17.04.",
+      "evidence": "qa/live_verification/sam31_visual_exemplar_runpod_20260722.json SHA-256 03c9cf3d5f5a82575728e9310ee0b0ce906f474b384cfc3f5e4c52486bb2ae0c; qa/live_verification/sam31_runpod_runtime_smoke_20260722.json; 33 focused discovery/exemplar/orchestration/production integration tests pass; JSON parse and diff integrity pass.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T20:10:06+00:00",
+      "updated_at": "2026-07-22T02:11:55+00:00",
       "orphaned": false
     },
     "MF-P2-11.04": {

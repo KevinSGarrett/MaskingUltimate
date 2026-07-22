@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "qwen_challenger_benchmark_v1.json"
 )
-POLICY_SHA256 = "8c7f082e83ba39ca0fd3a92f6c245c3ef240086d9f848fdbd97a71fe0d4b2707"
+POLICY_SHA256 = "a1219d8df8b10ab78ad53dc0189684e2c706fb10da9c4ad988a7421d02109ddc"
 DATASETS = ("teacher_holdout", "local_40_panel", "incremental_200")
 PROVIDERS = ("qwen2_5_vl_7b", "qwen3_vl_4b", "qwen3_vl_8b_quantized")
 CHALLENGERS = PROVIDERS[1:]

@@ -86,9 +86,9 @@
   },
   "source_hashes": {
     "configs/cloud_teacher.yaml": "80f1d7496e42be2ebf8b802a3e597c1c819970820cfb39f5da1dbcc4b2171594",
-    "configs/external_sources.yaml": "b4ad38e516fa0da301b5d3d9acc0c3ba5f55e61cecdf2ddbf678b6a6404d460b",
+    "configs/external_sources.yaml": "3e5e17c93060c0f614b5fc0d65371d8c529ddd244b66d0f34e8b9ca7efb0f7db",
     "configs/vlm.yaml": "234d979a3debacb77fc6e4a6d3dfe3193e65e286036fc8ad215de8ee6aeafb49",
-    "env/qwen3_vl_ollama.lock.json": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059",
+    "env/qwen3_vl_ollama.lock.json": "fed13b69dd13ad3089fe5e6e0e3a41d6c14125b8d95c9c20960fc85cbf678fdc",
     "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
     "src/maskfactory/providers/qwen3_vl.py": "f95ee49780ab41ee43b0ce9ba392fd4251e445ea1d8dc088722d06d48f6352a9",
     "src/maskfactory/vlm/client.py": "7d2b14b64b8d58f3cee9e4dd2cb7c79a58dcba0493acf9009903368718439bc5",
@@ -97,5 +97,5 @@
     "src/maskfactory/vlm/prompts/p_workhorse.txt": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e"
   },
   "authority": "pre_result_policy_only_no_provider_mask_gold_or_block_clearance_authority",
-  "sha256": "8c7f082e83ba39ca0fd3a92f6c245c3ef240086d9f848fdbd97a71fe0d4b2707"
+  "sha256": "a1219d8df8b10ab78ad53dc0189684e2c706fb10da9c4ad988a7421d02109ddc"
 }

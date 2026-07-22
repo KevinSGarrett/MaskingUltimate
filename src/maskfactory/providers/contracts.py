@@ -71,6 +71,24 @@ class MaskProposal:
             raise ValueError("provider mask prompt fingerprint is required")
 
 
+@dataclass(frozen=True)
+class AlphaMatteProposal:
+    """Provider-neutral soft matte with exact proposal provenance."""
+
+    alpha: np.ndarray
+    provider: ProviderIdentity
+    prompt_fingerprint: str
+
+    def __post_init__(self) -> None:
+        alpha = np.asarray(self.alpha)
+        if alpha.ndim != 2 or alpha.dtype != np.float32:
+            raise ValueError("alpha matte must be a 2-D float32 array")
+        if not np.isfinite(alpha).all() or alpha.min() < 0 or alpha.max() > 1:
+            raise ValueError("alpha matte must contain finite values in 0..1")
+        if not self.prompt_fingerprint:
+            raise ValueError("alpha matte prompt fingerprint is required")
+
+
 @runtime_checkable
 class PersonDetector(Protocol):
     identity: ProviderIdentity
@@ -118,6 +136,13 @@ class SilhouetteProvider(Protocol):
 
 
 @runtime_checkable
+class MattingRefiner(Protocol):
+    identity: ProviderIdentity
+
+    def refine_matte(self, image_path: Path, *, prior_mask: np.ndarray) -> AlphaMatteProposal: ...
+
+
+@runtime_checkable
 class VlmReviewer(Protocol):
     identity: ProviderIdentity
 
@@ -143,11 +168,13 @@ def require_independent_model_families(
 
 
 __all__ = [
+    "AlphaMatteProposal",
     "BoxProposal",
     "ConceptDetector",
     "GeometryProvider",
     "InteractiveSegmenter",
     "MaskProposal",
+    "MattingRefiner",
     "PersonDetector",
     "PoseProvider",
     "PROVIDER_CONTRACT_VERSION",

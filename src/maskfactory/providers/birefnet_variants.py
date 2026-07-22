@@ -8,13 +8,18 @@ import math
 import subprocess
 import tempfile
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from .contracts import BoxProposal, MaskProposal, ProviderIdentity, SilhouetteProvider
+from .contracts import (
+    AlphaMatteProposal,
+    BoxProposal,
+    MaskProposal,
+    ProviderIdentity,
+    SilhouetteProvider,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 BIREFNET_RUNTIME_FINGERPRINT = "5b6d1c9cddec6e897d7ba9f16d40e0986ab66c677bef3ac830564f5553e16d1a"
@@ -44,22 +49,6 @@ CommandExecutor = Callable[[Sequence[str], int], subprocess.CompletedProcess[str
 
 class BiRefNetVariantError(RuntimeError):
     """A BiRefNet challenger violated runtime, provenance, or output contracts."""
-
-
-@dataclass(frozen=True)
-class AlphaMatteProposal:
-    alpha: np.ndarray
-    provider: ProviderIdentity
-    prompt_fingerprint: str
-
-    def __post_init__(self) -> None:
-        alpha = np.asarray(self.alpha)
-        if alpha.ndim != 2 or alpha.dtype != np.float32:
-            raise ValueError("alpha matte must be a 2-D float32 array")
-        if not np.isfinite(alpha).all() or alpha.min() < 0 or alpha.max() > 1:
-            raise ValueError("alpha matte must contain finite values in 0..1")
-        if not self.prompt_fingerprint:
-            raise ValueError("alpha matte prompt fingerprint is required")
 
 
 def _sha256(path: Path) -> str:

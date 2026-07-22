@@ -13075,13 +13075,19 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "complete",
+      "percent_complete": 100,
+      "notes": [
+        {
+          "ts": "2026-07-22T02:53:04+00:00",
+          "actor": "codex",
+          "text": "Installed as shadow boundary/alpha challenger only; receives an upstream binary prior and has no semantic-label, production-mask, or gold authority."
+        }
+      ],
+      "evidence": "Official SAM2Matting source 73dd721d and Base+ checkpoint 4315db9c/sha256 1f0eb2ed installed in isolated RunPod Python 3.10.12 torch 2.8.0+cu128 runtime; pip check passed. Two live deterministic 1920x1440 alpha passes matched payload e51a952a, recovered 5.546875% fractional-alpha boundary pixels, and passed authoritative visual review. Provider contract rejects geometry/provenance/checkpoint/determinism/semantic-authority drift and preserves explicit fallback. Evidence: qa/live_verification/sam2matting_runpod_runtime_20260722.json; lock: env/sam2matting_runtime.lock.json; focused provider/registry/runtime-matrix tests passed.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-22T02:53:04+00:00",
       "orphaned": false
     },
     "MF-P2-11.17": {

@@ -132,12 +132,12 @@
   },
   "source_hashes": {
     "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
-    "env/birefnet_variants.lock.json": "ed02d23315ad2d4d88bc62c1823fb7b4f34f8047b3f3239f59fc3aa85983d779",
+    "env/birefnet_variants.lock.json": "e725665b080577d22ccc502afe8c3fcce18edf617c0756a2cdbf7828527b4f6e",
     "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
     "qa/governance/benchmark_matrices/specialist_margins_v1.json": "a4c1d93af92142d2ed7cdd57efa55157b0ba0c14f21440a9099c0072c9e56cd0",
     "src/maskfactory/lanes/hair.py": "80dfbeaefdac3d5d9df683cdb964e459915d4c2b52e8089c37903d23744b6098",
-    "src/maskfactory/providers/birefnet_variants.py": "6916f277e99ac43dd9fcf61362dc8aeffa039cfb16d824a52c7c99a3bcdaaf83"
+    "src/maskfactory/providers/birefnet_variants.py": "ce0b1507c099a5bd6eeb57553759bb437db9f00f00c3c3d20b7463c915758254"
   },
   "authority_boundary": "Pre-result role matrix only. Synthetic fixtures prove enforcement but grant no measured performance, promotion, serving, certificate, production-mask, alpha-truth, or gold authority; completion requires an image-disjoint human-anchor holdout with reviewed auxiliary alpha references.",
-  "sha256": "88d17bf0ac2c7a4dc065936507b3e3f3edfbd3ce9fbad5a2783feb51597303ff"
+  "sha256": "07bfddf8897826af6efae11ad4858d1a00492aab0ac6e0403bce3730b454e22d"
 }

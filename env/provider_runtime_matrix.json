@@ -35,6 +35,18 @@
       ]
     },
     {
+      "provider": "sam2matting_base_plus",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "runpod_venv_sam2matting_73dd721d",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/sam2matting_runtime.lock.json", "sha256": "4898ca6ec9e7da8c062c0729806145853ad27871f1d11f74d50fc1ce6f43187d"},
+        {"kind": "evidence", "path": "qa/live_verification/sam2matting_runpod_runtime_20260722.json", "sha256": "d0d00c5269027057a2aead8b2e8a8e4e727004e1a7777a1acaca98cabbd81a74"}
+      ]
+    },
+    {
       "provider": "sam3_litetext_s0",
       "status": "live_smoke_passed",
       "isolation_boundary": "wsl_venv_sam3_litetext_b09766e5",
@@ -107,5 +119,5 @@
       ]
     }
   ],
-  "manifest_sha256": "618ed1c39f962276182d9a8885baa78efcd6cb5ac71449695ca11fac3eb96e45"
+  "manifest_sha256": "f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e"
 }

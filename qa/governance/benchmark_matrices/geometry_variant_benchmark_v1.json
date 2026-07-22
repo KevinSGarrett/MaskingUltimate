@@ -69,8 +69,8 @@
     "qa/governance/benchmark_matrices/specialist_margins_v1.json": "a4c1d93af92142d2ed7cdd57efa55157b0ba0c14f21440a9099c0072c9e56cd0",
     "qa/live_verification/sam3d_body_source_gate_20260715.json": "2e84034a199cabded783935a1fe54cfa38ba0ea879175e383320e16c28033c13",
     "src/maskfactory/lanes/prior3d.py": "cd8d174a2963ad7fbcef9d2d367bb2b5ce07dfc960e35da9537a3d4b1913e0fa",
-    "src/maskfactory/providers/contracts.py": "75677305f78c629767a3347effa82e1f7b0efa2f012384b7533fd8e2ca0a3de7"
+    "src/maskfactory/providers/contracts.py": "5dd377f42c6a438573ae751cd86c90191e3ecaa4fb682e3b2eb189389edf2ab2"
   },
   "authority_boundary": "pre_result_contract_only_no_installation_performance_promotion_mask_or_gold_authority",
-  "sha256": "2daf8e231731209fe8df2a5b0d92daf8426cd9b250e95e4231ca0f0d0b102827"
+  "sha256": "914b6304f7e7598f62f6272ef4d5e7a0e049e76952912400e8d9af69f68d3944"
 }

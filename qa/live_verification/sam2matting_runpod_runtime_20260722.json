@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P2-11.16",
+  "checked_at": "2026-07-22T02:48:31Z",
+  "result": "live_smoke_passed_shadow_boundary_challenger",
+  "execution": {
+    "provider": "runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "persistent_root": "/workspace",
+    "gpu": "NVIDIA RTX 6000 Ada Generation"
+  },
+  "installation": {
+    "source_commit": "73dd721d77b56749248aefe5e8824d7f61b9d13c",
+    "source_tree": "1ddcf4746771e2a0ecefe7356d151600f6037a33",
+    "checkpoint_revision": "4315db9c60d27fde396b09765748a0ca6c97bed5",
+    "checkpoint_sha256": "1f0eb2eda3e8bc9101eafc0b30b8b8fcae1ff83d8fd3adc18e2f3b410fdaae60",
+    "checkpoint_size_bytes": 383180506,
+    "python": "3.10.12",
+    "torch": "2.8.0+cu128",
+    "torchvision": "0.23.0+cu128",
+    "cuda": "12.8",
+    "requirements_lock_sha256": "ca23ae0b030b078a81c9f23e0923eac612e59ac13aa73cdeea9cd83304a6ac11",
+    "pip_check": "pass",
+    "first_install_attempt": "failed_root_cache_no_space",
+    "retry": "pass_with_uv_cache_and_tmp_on_persistent_workspace",
+    "root_free_bytes_after_cache_relocation": 5690831667
+  },
+  "fixture": {
+    "source": "official repository demo image and binary mask",
+    "image_sha256": "b819ca829d880b56be2c8360ba7dd53b2a0627d1de9467a28a861d23f6dcd09c",
+    "prior_file_sha256": "332ff65dc866ae96d42b0f300e66f41573660f8ad4c1d2110b584ae2e168e7a9",
+    "prior_payload_sha256": "aa01ceb4428730fe9228cac11984cf4df9961b5325fd9a14ee4b680a0226a795",
+    "shape": [1920, 1440],
+    "prior_foreground_fraction": 0.18887839988425925
+  },
+  "smoke": {
+    "runner": "tools/run_sam2matting.py",
+    "runner_sha256": "0f187148da678bfb1d89c648d8831d0ab060d6b0d4bd983974705eb7a997ea86",
+    "repeats": 2,
+    "deterministic": true,
+    "alpha_shape": [1920, 1440],
+    "alpha_sha256": "e51a952a86f9187d505ddd0a03d4d288ae4df7d526db5b1237b3eb68d807d624",
+    "output_npy_sha256": "52be035592553b18842620e58920e57b248e76496986bb780278da919041cf9c",
+    "output_png_sha256": "a6693acae67793aad6cb95aa93d9d44787eba954b992136fdd688e8dc46e74e9",
+    "threshold": 0.5,
+    "binary_sha256": "4d29b3f38a9bd8f4810a78ee6dd266d10e05dbfc1904dc4c6061caee8391843c",
+    "foreground_fraction": 0.17798032407407408,
+    "fractional_alpha_fraction": 0.05546875,
+    "load_seconds": 1.732257,
+    "embed_seconds": 0.25405,
+    "inference_seconds": [0.071061, 0.010659],
+    "peak_allocated_bytes": 988155904,
+    "peak_reserved_bytes": 1442840576
+  },
+  "visual_review": {
+    "result": "pass_for_shadow_boundary_challenger",
+    "observation": "alpha preserves the selected subject while recovering soft flyaway hair strands and translucent boundary structure absent from the coarse binary prior",
+    "local_runtime_only_files": [
+      "runtime_artifacts/sam2matting_live/image.jpg",
+      "runtime_artifacts/sam2matting_live/prior.png",
+      "runtime_artifacts/sam2matting_live/alpha.png"
+    ],
+    "reviewed_by": "Codex authoritative visual QA"
+  },
+  "authority": {
+    "semantic_label_authority": false,
+    "gold_authority": false,
+    "production_mask_authority": false,
+    "lifecycle": "installed_shadow_challenger",
+    "fallback": "explicit incumbent only"
+  },
+  "claims_not_made": [
+    "semantic labeling",
+    "champion promotion",
+    "production activation",
+    "gold authority",
+    "benchmark superiority"
+  ]
+}

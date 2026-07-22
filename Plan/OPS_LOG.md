@@ -11621,3 +11621,30 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   Ninety-nine focused production/SAM31 tests pass; Ruff, Black, JSON parsing,
   tracker validation, and diff integrity pass. Evidence:
   `qa/live_verification/sam31_specialist_route_rejection_20260722.json`.
+
+## 2026-07-22 - SAM2Matting boundary challenger installed and live-verified
+
+- Installed the official SAM2Matting source at commit
+  `73dd721d77b56749248aefe5e8824d7f61b9d13c` and the immutable SAM2.1 Base+
+  checkpoint at Hugging Face revision
+  `4315db9c60d27fde396b09765748a0ca6c97bed5`. The 383,180,506-byte
+  checkpoint matches SHA-256 `1f0eb2eda3e8bc9101eafc0b30b8b8fcae1ff83d8fd3adc18e2f3b410fdaae60`.
+- The first isolated install failed because the pod root package cache filled.
+  The retry moved UV cache and temporary extraction onto the persistent
+  workspace volume; all 95 exact packages installed and `uv pip check` passed.
+  The failure log remains preserved rather than being hidden.
+- Added a provider-neutral float32 alpha-matte contract and a fail-closed
+  SAM2Matting adapter. It accepts only a source image plus a strict,
+  same-geometry binary prior, verifies source/checkpoint/input/prior/output
+  hashes and two-run determinism, derives a binary proposal at a fixed 0.5
+  threshold, and falls back only to an explicitly configured incumbent.
+- A live 1920x1440 RunPod proof produced byte-identical alpha payloads across
+  two passes, 5.546875% fractional-alpha pixels, and a visually verified
+  improvement from the coarse prior to individual flyaway hair and translucent
+  boundary structure. Peak reserved VRAM was 1,442,840,576 bytes.
+- `MF-P2-11.16` is complete. The provider is installed as a shadow
+  boundary/alpha challenger only; it has no semantic-label, production-mask,
+  certification, or gold authority. The runtime matrix now records nine exact
+  providers and is resealed at
+  `f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e`.
+  Evidence: `qa/live_verification/sam2matting_runpod_runtime_20260722.json`.

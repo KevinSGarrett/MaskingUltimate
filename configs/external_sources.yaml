@@ -146,6 +146,46 @@ providers:
     output_type: "refined binary mask from box/point/mask prompt"
     role: "boundary refinement from priors, crop lanes, alpha/matte proposals (S07)"
 
+  sam2matting_base_plus:
+    component: "boundary and alpha-matte challenger"
+    lifecycle_state: installed
+    source_url: "https://github.com/FudanCVL/SAM2Matting"
+    repo: "https://github.com/FudanCVL/SAM2Matting.git"
+    source_revision: "73dd721d77b56749248aefe5e8824d7f61b9d13c"
+    source_tree: "1ddcf4746771e2a0ecefe7356d151600f6037a33"
+    license: "CC BY-NC-SA 4.0"
+    verify_license: false
+    license_source: "https://github.com/FudanCVL/SAM2Matting/blob/73dd721d77b56749248aefe5e8824d7f61b9d13c/LICENSE"
+    license_snapshot_sha256: "314842166187b53934f8b32222f8e1dfb6cf47037e1b2634d36f9e02b6091384"
+    license_reviewed_at: "2026-07-22T02:48:31Z"
+    version: "FudanCVL/SAM2Matting SAM2.1 Base+ at 4315db9c60d27fde396b09765748a0ca6c97bed5"
+    checkpoint:
+      filename: "checkpoints/SAM2Matting-SAM2.1Base+.pt"
+      sha256: "1f0eb2eda3e8bc9101eafc0b30b8b8fcae1ff83d8fd3adc18e2f3b410fdaae60"
+      size_bytes: 383180506
+      gating: none
+      downloaded: true
+      local_path: "/workspace/models/runtime_cache/sam2matting_checkpoint_4315db9c/SAM2Matting-SAM2.1Base+.pt"
+    runtime_lock: "env/sam2matting_runtime.lock.json"
+    runtime_environment: "/workspace/maskfactory/runtime_artifacts/sam2matting_env"
+    runtime_requirements_lock: "env/sam2matting_runtime.requirements.lock.txt"
+    runtime_evidence: "qa/live_verification/sam2matting_runpod_runtime_20260722.json"
+    local_path: "/workspace/models/runtime_cache/sam2matting_source_73dd721d"
+    output_type: "float32 alpha matte and fixed-threshold binary boundary proposal"
+    role: "shadow boundary/matting challenger from an upstream same-geometry binary prior"
+    capabilities:
+      - boundary_refinement
+      - alpha_matting
+    roles:
+      - boundary_refiner_challenger
+    role_eligibility: shadow_only
+    authority_constraints:
+      - "never decides semantic labels"
+      - "never authors gold or production masks"
+      - "requires an exact upstream binary prior and preserves its semantic ownership"
+      - "falls back only to an explicitly configured incumbent matting refiner"
+    authority_level: "shadow boundary/alpha candidate only"
+
   sam3_1:
     component: "concept discovery + interactive segmentation challenger"
     lifecycle_state: planned

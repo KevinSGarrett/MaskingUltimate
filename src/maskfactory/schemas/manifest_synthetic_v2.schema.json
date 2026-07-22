@@ -1,24 +1,516 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://maskfactory.local/schemas/manifest_synthetic_v2.schema.json",
-  "title": "MaskFactory body_parts_v2 synthetic per-instance package manifest",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schema_version", "package_id", "image_id", "scene_id", "scene_family_id", "variant_group_id", "promoted_person_id", "source_origin", "annotation_authority", "truth_tier", "truth_partition", "train_eligible", "evaluation_eligible", "training_loss_weight", "source_attributes", "ontology", "mask_authority", "person_construction", "synthetic_lineage", "files", "package_sha256"],
-  "properties": {
-    "schema_version": {"const": "maskfactory_instance_synthetic_1.0.0"},
-    "package_id": {"$ref": "#/$defs/id"}, "image_id": {"$ref": "#/$defs/id"}, "scene_id": {"$ref": "#/$defs/sceneId"}, "scene_family_id": {"$ref": "#/$defs/familyId"}, "variant_group_id": {"$ref": "#/$defs/id"}, "promoted_person_id": {"$ref": "#/$defs/pIndex"},
-    "source_origin": {"const": "synthetic"}, "annotation_authority": {"const": "geometry_render"}, "truth_tier": {"const": "weighted_pseudo_label"}, "truth_partition": {"const": "train"}, "train_eligible": {"const": true}, "evaluation_eligible": {"const": false}, "training_loss_weight": {"type": "number", "minimum": 0.1, "maximum": 0.25},
-    "source_attributes": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "contains": {"const": "synthetic_geometry_exact"}, "items": {"enum": ["synthetic_geometry_exact", "visible_pixel_truth"]}},
-    "ontology": {"type": "object", "additionalProperties": false, "required": ["name", "snapshot_sha256"], "properties": {"name": {"const": "body_parts_v2"}, "snapshot_sha256": {"$ref": "#/$defs/sha"}}},
-    "mask_authority": {"$ref": "#/$defs/maskAuthority"}, "person_construction": {"$ref": "#/$defs/personConstruction"}, "synthetic_lineage": {"$ref": "#/$defs/syntheticLineage"}, "files": {"$ref": "#/$defs/files"}, "package_sha256": {"$ref": "#/$defs/sha"}
-  },
-  "$defs": {
-    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}, "sceneId": {"type": "string", "pattern": "^daz_scene_[A-Za-z0-9._-]+$"}, "familyId": {"type": "string", "pattern": "^daz_family_[A-Za-z0-9._-]+$"}, "pIndex": {"enum": ["p0", "p1", "p2", "p3"]}, "relativePath": {"type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$"},
-    "fileEntry": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/relativePath"}, "sha256": {"$ref": "#/$defs/sha"}}},
-    "files": {"type": "object", "additionalProperties": false, "required": ["source_rgb", "full_body", "indexed_part", "material", "other_person", "protected", "qa_report"], "properties": {"source_rgb": {"$ref": "#/$defs/fileEntry"}, "full_body": {"$ref": "#/$defs/fileEntry"}, "indexed_part": {"$ref": "#/$defs/fileEntry"}, "material": {"$ref": "#/$defs/fileEntry"}, "other_person": {"$ref": "#/$defs/fileEntry"}, "protected": {"$ref": "#/$defs/fileEntry"}, "source_manifest": {"$ref": "#/$defs/fileEntry"}, "instance_manifest": {"$ref": "#/$defs/fileEntry"}, "synthetic_lineage": {"$ref": "#/$defs/fileEntry"}, "qa_report": {"$ref": "#/$defs/fileEntry"}, "hashes": {"$ref": "#/$defs/fileEntry"}}},
-    "maskAuthority": {"type": "object", "additionalProperties": false, "required": ["provider_id", "authority_tier", "ontology_version", "ontology_sha256", "owner", "package_revision", "certificate_id", "certificate_sha256", "certificate_scope", "transform_chain_sha256", "access_mode"], "properties": {"provider_id": {"const": "daz_exact_geometry"}, "authority_tier": {"const": "synthetic_exact"}, "ontology_version": {"const": "body_parts_v2"}, "ontology_sha256": {"$ref": "#/$defs/sha"}, "owner": {"const": "maskfactory"}, "package_revision": {"$ref": "#/$defs/id"}, "certificate_id": {"type": "string", "pattern": "^dacc_[0-9a-f]{24}$"}, "certificate_sha256": {"$ref": "#/$defs/sha"}, "certificate_scope": {"const": "scene_and_packages"}, "transform_chain_sha256": {"$ref": "#/$defs/sha"}, "access_mode": {"const": "mode_a_approved_package"}}},
-    "personConstruction": {"type": "object", "additionalProperties": false, "required": ["person_id", "figure_asset_id", "character_preset_asset_id", "body_profile_id", "face_profile_id", "skin_material_asset_id", "hair_asset_id", "wardrobe_asset_ids", "anatomy_configuration", "anatomy_asset_ids", "age_appearance_category", "presentation_profile", "morph_values", "pose_asset_id", "pose_adjustments", "mapping_bundle_id"], "properties": {"person_id": {"$ref": "#/$defs/pIndex"}, "figure_asset_id": {"$ref": "#/$defs/id"}, "character_preset_asset_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]}, "body_profile_id": {"$ref": "#/$defs/id"}, "face_profile_id": {"$ref": "#/$defs/id"}, "skin_material_asset_id": {"$ref": "#/$defs/id"}, "hair_asset_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]}, "wardrobe_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}, "anatomy_configuration": {"enum": ["adult_male", "adult_female"]}, "anatomy_asset_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}, "age_appearance_category": {"enum": ["adult_21_29", "adult_30_44", "adult_45_64", "adult_65_plus"]}, "presentation_profile": {"$ref": "#/$defs/id"}, "morph_values": {"type": "object", "additionalProperties": {"type": "number"}}, "pose_asset_id": {"$ref": "#/$defs/id"}, "pose_adjustments": {"type": "object", "additionalProperties": {"oneOf": [{"type": "number"}, {"type": "array", "minItems": 1, "maxItems": 4, "items": {"type": "number"}}]}}, "mapping_bundle_id": {"$ref": "#/$defs/id"}}},
-    "syntheticLineage": {"type": "object", "additionalProperties": false, "required": ["generator", "scene_id", "scene_family_id", "variant_group_id", "scene_state_sha256", "recipe_sha256", "asset_registry_snapshot_sha256", "operating_profile_snapshot_sha256", "registry_snapshot_sha256", "runtime_snapshot_sha256", "script_bundle_sha256", "renderer_snapshot_sha256", "asset_snapshot_sha256", "mapping_set_sha256", "mapping_ontology_version", "pass_profile_id", "pass_profile_sha256", "scene_certificate_id", "scene_certificate_sha256", "instance_mapping", "geometry_exact", "semantic_mapping_status", "visible_only", "amodal_train_eligible", "train_only", "counts_as_human_anchor_gold", "counts_as_autonomous_certified_gold"], "properties": {"generator": {"const": "daz_studio"}, "scene_id": {"$ref": "#/$defs/sceneId"}, "scene_family_id": {"$ref": "#/$defs/familyId"}, "variant_group_id": {"$ref": "#/$defs/id"}, "scene_state_sha256": {"$ref": "#/$defs/sha"}, "recipe_sha256": {"$ref": "#/$defs/sha"}, "asset_registry_snapshot_sha256": {"$ref": "#/$defs/sha"}, "operating_profile_snapshot_sha256": {"$ref": "#/$defs/sha"}, "registry_snapshot_sha256": {"$ref": "#/$defs/sha"}, "runtime_snapshot_sha256": {"$ref": "#/$defs/sha"}, "script_bundle_sha256": {"$ref": "#/$defs/sha"}, "renderer_snapshot_sha256": {"$ref": "#/$defs/sha"}, "asset_snapshot_sha256": {"$ref": "#/$defs/sha"}, "mapping_set_sha256": {"$ref": "#/$defs/sha"}, "mapping_ontology_version": {"const": "body_parts_v2"}, "pass_profile_id": {"$ref": "#/$defs/id"}, "pass_profile_sha256": {"$ref": "#/$defs/sha"}, "scene_certificate_id": {"type": "string", "pattern": "^dacc_[0-9a-f]{24}$"}, "scene_certificate_sha256": {"$ref": "#/$defs/sha"}, "instance_mapping": {"type": "object", "additionalProperties": false, "required": ["promoted_person_id", "instance_id"], "properties": {"promoted_person_id": {"$ref": "#/$defs/pIndex"}, "instance_id": {"type": "integer", "minimum": 1, "maximum": 4}}}, "geometry_exact": {"const": true}, "semantic_mapping_status": {"const": "validated"}, "visible_only": {"const": true}, "amodal_train_eligible": {"const": false}, "train_only": {"const": true}, "counts_as_human_anchor_gold": {"const": false}, "counts_as_autonomous_certified_gold": {"const": false}}}
-  }
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://maskfactory.local/schemas/manifest_synthetic_v2.schema.json",
+    "title": "MaskFactory body_parts_v2 synthetic per-instance package manifest",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "package_id",
+        "image_id",
+        "scene_id",
+        "scene_family_id",
+        "variant_group_id",
+        "promoted_person_id",
+        "source_origin",
+        "annotation_authority",
+        "truth_tier",
+        "truth_partition",
+        "train_eligible",
+        "evaluation_eligible",
+        "training_loss_weight",
+        "source_attributes",
+        "ontology",
+        "mask_authority",
+        "person_construction",
+        "synthetic_lineage",
+        "files",
+        "package_sha256"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": "maskfactory_instance_synthetic_1.0.0"
+        },
+        "package_id": {
+            "$ref": "#/$defs/id"
+        },
+        "image_id": {
+            "$ref": "#/$defs/id"
+        },
+        "scene_id": {
+            "$ref": "#/$defs/sceneId"
+        },
+        "scene_family_id": {
+            "$ref": "#/$defs/familyId"
+        },
+        "variant_group_id": {
+            "$ref": "#/$defs/id"
+        },
+        "promoted_person_id": {
+            "$ref": "#/$defs/pIndex"
+        },
+        "source_origin": {
+            "const": "synthetic"
+        },
+        "annotation_authority": {
+            "const": "geometry_render"
+        },
+        "truth_tier": {
+            "const": "weighted_pseudo_label"
+        },
+        "truth_partition": {
+            "const": "train"
+        },
+        "train_eligible": {
+            "const": true
+        },
+        "evaluation_eligible": {
+            "const": false
+        },
+        "training_loss_weight": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 0.25
+        },
+        "source_attributes": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "contains": {
+                "const": "synthetic_geometry_exact"
+            },
+            "items": {
+                "enum": [
+                    "synthetic_geometry_exact",
+                    "visible_pixel_truth"
+                ]
+            }
+        },
+        "ontology": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "snapshot_sha256"
+            ],
+            "properties": {
+                "name": {
+                    "const": "body_parts_v2"
+                },
+                "snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                }
+            }
+        },
+        "mask_authority": {
+            "$ref": "#/$defs/maskAuthority"
+        },
+        "person_construction": {
+            "$ref": "#/$defs/personConstruction"
+        },
+        "synthetic_lineage": {
+            "$ref": "#/$defs/syntheticLineage"
+        },
+        "files": {
+            "$ref": "#/$defs/files"
+        },
+        "package_sha256": {
+            "$ref": "#/$defs/sha"
+        }
+    },
+    "$defs": {
+        "sha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+        },
+        "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "sceneId": {
+            "type": "string",
+            "pattern": "^daz_scene_[A-Za-z0-9._-]+$"
+        },
+        "familyId": {
+            "type": "string",
+            "pattern": "^daz_family_[A-Za-z0-9._-]+$"
+        },
+        "pIndex": {
+            "enum": [
+                "p0",
+                "p1",
+                "p2",
+                "p3"
+            ]
+        },
+        "relativePath": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$"
+        },
+        "fileEntry": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "path",
+                "sha256"
+            ],
+            "properties": {
+                "path": {
+                    "$ref": "#/$defs/relativePath"
+                },
+                "sha256": {
+                    "$ref": "#/$defs/sha"
+                }
+            }
+        },
+        "files": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "source_rgb",
+                "full_body",
+                "indexed_part",
+                "material",
+                "other_person",
+                "protected",
+                "qa_report"
+            ],
+            "properties": {
+                "source_rgb": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "full_body": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "indexed_part": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "material": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "other_person": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "protected": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "source_manifest": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "instance_manifest": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "synthetic_lineage": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "qa_report": {
+                    "$ref": "#/$defs/fileEntry"
+                },
+                "hashes": {
+                    "$ref": "#/$defs/fileEntry"
+                }
+            }
+        },
+        "maskAuthority": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "provider_id",
+                "authority_tier",
+                "ontology_version",
+                "ontology_sha256",
+                "owner",
+                "package_revision",
+                "certificate_id",
+                "certificate_sha256",
+                "certificate_scope",
+                "transform_chain_sha256",
+                "access_mode"
+            ],
+            "properties": {
+                "provider_id": {
+                    "const": "daz_exact_geometry"
+                },
+                "authority_tier": {
+                    "const": "synthetic_exact"
+                },
+                "ontology_version": {
+                    "const": "body_parts_v2"
+                },
+                "ontology_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "owner": {
+                    "const": "maskfactory"
+                },
+                "package_revision": {
+                    "$ref": "#/$defs/id"
+                },
+                "certificate_id": {
+                    "type": "string",
+                    "pattern": "^dacc_[0-9a-f]{24}$"
+                },
+                "certificate_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "certificate_scope": {
+                    "const": "scene_and_packages"
+                },
+                "transform_chain_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "access_mode": {
+                    "const": "mode_a_approved_package"
+                }
+            }
+        },
+        "personConstruction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "person_id",
+                "figure_asset_id",
+                "character_preset_asset_id",
+                "body_profile_id",
+                "face_profile_id",
+                "skin_material_asset_id",
+                "hair_asset_id",
+                "wardrobe_asset_ids",
+                "anatomy_configuration",
+                "anatomy_asset_ids",
+                "age_appearance_category",
+                "presentation_profile",
+                "morph_values",
+                "pose_asset_id",
+                "pose_adjustments",
+                "mapping_bundle_id"
+            ],
+            "properties": {
+                "person_id": {
+                    "$ref": "#/$defs/pIndex"
+                },
+                "figure_asset_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "character_preset_asset_id": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/id"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "body_profile_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "face_profile_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "skin_material_asset_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "hair_asset_id": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/$defs/id"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "wardrobe_asset_ids": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/$defs/id"
+                    }
+                },
+                "anatomy_configuration": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "anatomy_asset_ids": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/$defs/id"
+                    }
+                },
+                "age_appearance_category": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "presentation_profile": {
+                    "$ref": "#/$defs/id"
+                },
+                "morph_values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number"
+                    }
+                },
+                "pose_asset_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "pose_adjustments": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "oneOf": [
+                            {
+                                "type": "number"
+                            },
+                            {
+                                "type": "array",
+                                "minItems": 1,
+                                "maxItems": 4,
+                                "items": {
+                                    "type": "number"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "mapping_bundle_id": {
+                    "$ref": "#/$defs/id"
+                }
+            }
+        },
+        "syntheticLineage": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "generator",
+                "scene_id",
+                "scene_family_id",
+                "variant_group_id",
+                "scene_state_sha256",
+                "recipe_sha256",
+                "asset_registry_snapshot_sha256",
+                "operating_profile_snapshot_sha256",
+                "registry_snapshot_sha256",
+                "runtime_snapshot_sha256",
+                "script_bundle_sha256",
+                "renderer_snapshot_sha256",
+                "asset_snapshot_sha256",
+                "mapping_set_sha256",
+                "mapping_ontology_version",
+                "pass_profile_id",
+                "pass_profile_sha256",
+                "scene_certificate_id",
+                "scene_certificate_sha256",
+                "instance_mapping",
+                "geometry_exact",
+                "semantic_mapping_status",
+                "visible_only",
+                "amodal_train_eligible",
+                "train_only",
+                "counts_as_human_anchor_gold",
+                "counts_as_autonomous_certified_gold"
+            ],
+            "properties": {
+                "generator": {
+                    "const": "daz_studio"
+                },
+                "scene_id": {
+                    "$ref": "#/$defs/sceneId"
+                },
+                "scene_family_id": {
+                    "$ref": "#/$defs/familyId"
+                },
+                "variant_group_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "scene_state_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "recipe_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "asset_registry_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "operating_profile_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "registry_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "runtime_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "script_bundle_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "renderer_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "asset_snapshot_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "mapping_set_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "mapping_ontology_version": {
+                    "const": "body_parts_v2"
+                },
+                "pass_profile_id": {
+                    "$ref": "#/$defs/id"
+                },
+                "pass_profile_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "scene_certificate_id": {
+                    "type": "string",
+                    "pattern": "^dacc_[0-9a-f]{24}$"
+                },
+                "scene_certificate_sha256": {
+                    "$ref": "#/$defs/sha"
+                },
+                "instance_mapping": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "promoted_person_id",
+                        "instance_id"
+                    ],
+                    "properties": {
+                        "promoted_person_id": {
+                            "$ref": "#/$defs/pIndex"
+                        },
+                        "instance_id": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 4
+                        }
+                    }
+                },
+                "geometry_exact": {
+                    "const": true
+                },
+                "semantic_mapping_status": {
+                    "const": "validated"
+                },
+                "visible_only": {
+                    "const": true
+                },
+                "amodal_train_eligible": {
+                    "const": false
+                },
+                "train_only": {
+                    "const": true
+                },
+                "counts_as_human_anchor_gold": {
+                    "const": false
+                },
+                "counts_as_autonomous_certified_gold": {
+                    "const": false
+                }
+            }
+        }
+    }
 }

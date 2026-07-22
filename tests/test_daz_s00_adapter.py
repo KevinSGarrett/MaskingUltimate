@@ -204,21 +204,21 @@ def test_adapter_policy_cannot_weaken_truth_verification_or_ontology(
         validate_s00_adapter_policy(policy)
 
 
-@pytest.mark.parametrize(
-    ("field", "value"),
-    [
-        ("anatomy_configuration", "minor_female"),
-        ("age_appearance_category", "teen"),
-        ("person_id", "p3"),
-    ],
-)
-def test_adapter_rejects_invalid_or_mismatched_adult_construction(
-    tmp_path: Path, field: str, value: str
-) -> None:
+def test_adapter_rejects_mismatched_construction_identity(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
-    fixture["metadata"]["person_construction_by_p_index"]["p0"][field] = value
-    with pytest.raises(S00AdapterError, match="adapter_adult_construction_invalid"):
+    fixture["metadata"]["person_construction_by_p_index"]["p0"]["person_id"] = "p3"
+    with pytest.raises(S00AdapterError, match="adapter_construction_identity_invalid"):
         adapt_accepted_scene(**fixture)
+
+
+def test_adapter_does_not_apply_descriptor_eligibility_filters(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    construction = fixture["metadata"]["person_construction_by_p_index"]["p0"]
+    construction["anatomy_configuration"] = "custom_profile_a"
+    construction["age_appearance_category"] = "custom_profile_b"
+    report, _root, published = adapt_accepted_scene(**fixture)
+    assert published is True
+    assert report["summary"]["package_count"] == 2
 
 
 def test_adapter_rejects_stale_certificate(tmp_path: Path) -> None:

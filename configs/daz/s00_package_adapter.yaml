@@ -35,7 +35,7 @@ file_roles:
   hashes: hashes.json
 source_registration:
   source_origin: synthetic
-  adult_construction_required: true
+  construction_metadata_required: true
   bypass_real_image_mask_provider_voting: true
   bypass_package_verification: false
   split_group_field: scene_family_id

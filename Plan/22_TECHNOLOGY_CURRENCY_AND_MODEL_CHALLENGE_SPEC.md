@@ -192,7 +192,7 @@ promoted registry untouched.
 
 ## 8. Currency Review
 
-Review models, runtimes, dependencies, licenses, content compatibility, benchmark certificates, and
+Review models, runtimes, dependencies, licenses, rights/allowed-use evidence, benchmark certificates, and
 rollback evidence every 90 days and before dataset freeze, training, promotion, or a major release.
 Newer models become challengers automatically, never replacements. CI fails closed on an active path
 when required hashes, decisions, reviews, benchmark evidence, or rollback evidence are absent or stale.
@@ -202,7 +202,7 @@ when required hashes, decisions, reviews, benchmark evidence, or rollback eviden
 - Live registry passes its bundled schema and governance validation.
 - Missing/downgraded schema versions fail active loading; explicit offline legacy reads remain tested.
 - Duplicate YAML keys fail tests.
-- Every provider and model has its own content decision and lifecycle state.
+- Every provider and model has its own source/use decision and lifecycle state.
 - An unresolved license blocks activation even when the artifact file exists.
 - Promotion and rollback restore both role and lifecycle state.
 - Tracker reports every truth tier separately and uses certified package count for gates.

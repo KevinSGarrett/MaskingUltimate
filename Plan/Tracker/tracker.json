@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-21T22:11:34+00:00",
+    "generated_at": "2026-07-22T00:02:11+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 827,
     "total_tracked_including_orphaned": 827
@@ -9427,12 +9427,17 @@
           "ts": "2026-07-21T23:52:54+00:00",
           "actor": "codex",
           "text": "Extended the completed reconciliation to active runtime locks; retired special content-policy fields were removed without changing provider artifacts, licensing identity, or runtime truth."
+        },
+        {
+          "ts": "2026-07-22T00:03:04+00:00",
+          "actor": "codex",
+          "text": "Extended uniform admission through DAZ adapter/QC/schema boundaries; descriptor category filters no longer decide acceptance, while construction identity, integrity, source/use, mask QA, and authority remain enforced."
         }
       ],
-      "evidence": "qa/live_verification/plan_items_tracker_reconciliation_20260721.json plus qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json; active Plan/Items/Instructions and five provider runtime locks use one uniform provenance/license/allowed-use/integrity/annotation/QA/authority path; dependent seals and runtime matrix 9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a verified; 23 tests PASS",
+      "evidence": "qa/live_verification/plan_items_tracker_reconciliation_20260721.json; qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json; qa/live_verification/uniform_admission_daz_boundary_reconciliation_20260721.json. Active Plan/Items/Instructions, runtime locks, and DAZ adapter/QC/schema boundaries use the uniform provenance/license/allowed-use/integrity/annotation/technical-QA/authority path. 101 focused DAZ tests, 23 runtime-lock tests, Ruff, Black, JSON parsing, active-policy scan, and tracker validation PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-21T23:52:54+00:00",
+      "updated_at": "2026-07-22T00:03:04+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {

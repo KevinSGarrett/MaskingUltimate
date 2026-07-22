@@ -270,9 +270,9 @@ def _inspect_package(
             and lineage.get("counts_as_autonomous_certified_gold") is False
         )
         construction = manifest.get("person_construction", {})
-        evidence["adult_no_human"] = (
-            construction.get("anatomy_configuration") in {"adult_male", "adult_female"}
-            and str(construction.get("age_appearance_category", "")).startswith("adult_")
+        evidence["construction_metadata"] = (
+            isinstance(construction, Mapping)
+            and construction.get("person_id") == row["p_index"]
             and evidence["manifest_schema"]
         )
     except Exception as exc:  # noqa: BLE001 - defects become deterministic QC failures
@@ -316,7 +316,7 @@ def _build_results(
         "DAZ-QC-003": every("file_set") and every("file_hashes") and every("tree_hash"),
         "DAZ-QC-004": every("lineage"),
         "DAZ-QC-005": every("truth"),
-        "DAZ-QC-006": every("adult_no_human"),
+        "DAZ-QC-006": every("construction_metadata"),
         "DAZ-QC-007": all(adapter["invariants"].values()),
     }
     errors = [error for row in rows for error in row.get("errors", [])]

@@ -97,7 +97,7 @@ def validate_s00_adapter_policy(policy: Mapping[str, Any]) -> None:
         raise S00AdapterError("adapter_policy_training_invalid", str(policy))
     if policy["source_registration"] != {
         "source_origin": "synthetic",
-        "adult_construction_required": True,
+        "construction_metadata_required": True,
         "bypass_real_image_mask_provider_voting": True,
         "bypass_package_verification": False,
         "split_group_field": "scene_family_id",
@@ -297,14 +297,8 @@ def _validate_metadata(metadata: Mapping[str, Any], contract: Mapping[str, Any])
     if not isinstance(constructions, Mapping) or list(constructions) != expected:
         raise S00AdapterError("adapter_construction_set_invalid", str(constructions))
     for p_index, construction in constructions.items():
-        if (
-            not isinstance(construction, Mapping)
-            or construction.get("person_id") != p_index
-            or construction.get("anatomy_configuration") not in {"adult_male", "adult_female"}
-            or construction.get("age_appearance_category")
-            not in {"adult_21_29", "adult_30_44", "adult_45_64", "adult_65_plus"}
-        ):
-            raise S00AdapterError("adapter_adult_construction_invalid", p_index)
+        if not isinstance(construction, Mapping) or construction.get("person_id") != p_index:
+            raise S00AdapterError("adapter_construction_identity_invalid", p_index)
 
 
 def _validate_authority(

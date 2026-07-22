@@ -265,16 +265,16 @@ available 8 GB GPU or an explicitly approved alternate runtime, and a tested one
 
 ## Technology-currency policy
 
-- Run a model, runtime, dependency, license, and content-compatibility audit every 90 days and before
+- Run a model, runtime, dependency, license, rights/allowed-use, and integrity audit every 90 days and before
   dataset freeze, training, production promotion, or a major release.
 - Newer models automatically become challengers, never automatic replacements.
 - Architecture documents name roles; registries select current providers.
-- CI fails on missing source/checkpoint hashes, unresolved license/content compatibility, expired
+- CI fails on missing source/checkpoint hashes, unresolved license or allowed-use evidence, expired
   currency review, invalid benchmark certificates, or untested rollback.
 - Historical evidence remains immutable.
 
 Document 22 is the authoritative detailed contract for active registry versions, provider/model
-lifecycle states, per-provider content decisions, license activation blockers, non-collapsing truth
+lifecycle states, per-provider source/use decisions, license activation blockers, non-collapsing truth
 metrics, certification statistics, hard-bucket non-inferiority, and currency review.
 
 ## Safe execution order

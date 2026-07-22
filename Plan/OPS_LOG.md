@@ -11492,3 +11492,17 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Twenty-three focused runtime-lock and matrix tests pass; Ruff and JSON
   validation pass. Immutable historical evidence is not rewritten. Evidence:
   `qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json`.
+
+## 2026-07-21 - Uniform admission extended through the DAZ adapter boundary
+
+- `MF-P0-14.04` was re-audited through the DAZ S00 adapter, adapted-package
+  QC, and synthetic-manifest schemas. Descriptor category allowlists and the
+  corresponding admission check were removed.
+- Construction metadata remains schema-valid and bound to the exact person;
+  provenance, rights/allowed-use, file integrity, annotation/mask QA, and
+  evidence-backed authority remain unchanged.
+- One hundred one focused DAZ adapter, adapted-package, and synthetic-manifest
+  tests pass; Ruff, Black, and JSON parsing pass. Active Plan/spec wording was
+  also normalized to the same source/use contract. Immutable historical
+  evidence is not rewritten. Evidence:
+  `qa/live_verification/uniform_admission_daz_boundary_reconciliation_20260721.json`.

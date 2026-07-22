@@ -4,9 +4,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from maskfactory.autonomy.metrics import (
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from maskfactory.autonomy.metrics import (  # noqa: E402
     build_autonomy_metrics_report_from_inputs,
     render_autonomy_metrics_dashboard,
     validate_autonomy_metrics_report,

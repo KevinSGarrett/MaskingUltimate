@@ -102,6 +102,7 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
         "reporting",
         "tournament",
         "calibration",
+        "package_semantic_alignment",
         "operations",
         "repair",
         "retraining",
@@ -242,6 +243,36 @@ def load_autonomy_config(path: Path = Path("configs/autonomous_masks.yaml")) -> 
         raise AutonomyCalibrationError(str(exc)) from exc
     if _sha256_file(stability_policy_path) != calibration["stability_registry_sha256"]:
         raise AutonomyCalibrationError("autonomy stability registry hash mismatch")
+    semantic_alignment = document["package_semantic_alignment"]
+    expected_semantic_alignment = {
+        "required_before_autonomous_freeze": True,
+        "required_before_training_consumption": True,
+        "require_package_specific_source_and_mask_hashes": True,
+        "require_all_active_labels_pass": True,
+        "require_deterministic_hard_veto_clear": True,
+        "require_current_primary_visual_critic": True,
+        "require_current_independent_juror": True,
+        "require_independent_model_families": True,
+        "require_critic_quorum_hash": True,
+        "legacy_packages_without_semantic_alignment": "reject",
+        "execution_mode": "bulk_by_default",
+        "default_batch_size": 32,
+        "maximum_batch_size": 128,
+        "operator_interruption_policy": "compact_exception_report_only",
+        "human_review_policy": "optional_exception_path_not_default_throughput",
+        "malformed_case_policy": "abstain_and_continue_batch",
+        "relabel_policy": "new_immutable_package_version_only",
+        "required_input_roots": {
+            "maskedwarehouse_local": r"C:\Comfy_UI_Main\MaskedWarehouse",
+            "maskedwarehouse_runpod": "/workspace/assets/MaskedWarehouse",
+            "reference_library_local": r"F:\Reference_Images",
+            "reference_library_runpod": (
+                "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images"
+            ),
+        },
+    }
+    if semantic_alignment != expected_semantic_alignment:
+        raise AutonomyCalibrationError("autonomy package semantic-alignment contract is invalid")
     operations = document["operations"]
     if (
         operations["calibrated_status_is_human_gold"] is not False

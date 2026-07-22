@@ -131,6 +131,18 @@ def test_autonomy_config_rejects_reporting_contract_drift(tmp_path: Path) -> Non
         load_autonomy_config(path)
 
 
+def test_autonomy_config_requires_closed_bulk_semantic_alignment_contract(
+    tmp_path: Path,
+) -> None:
+    config = load_autonomy_config(ROOT / "configs/autonomous_masks.yaml")
+    drifted = copy.deepcopy(config)
+    drifted["package_semantic_alignment"]["execution_mode"] = "one_case_at_a_time"
+    path = tmp_path / "autonomous_masks.yaml"
+    path.write_text(yaml.safe_dump(drifted, sort_keys=False), encoding="utf-8")
+    with pytest.raises(AutonomyCalibrationError, match="semantic-alignment contract"):
+        load_autonomy_config(path)
+
+
 @pytest.mark.parametrize(
     ("domain", "field"),
     [

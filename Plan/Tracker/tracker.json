@@ -23197,7 +23197,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 40,
+      "percent_complete": 45,
       "notes": [
         {
           "ts": "2026-07-22T11:53:28+00:00",
@@ -23218,12 +23218,17 @@
           "ts": "2026-07-22T15:49:55+00:00",
           "actor": "ai_agent",
           "text": "Executed the first full 256-record CivitAI reference shard through two independent person-proposal families on RunPod. YOLO and GroundingDINO outputs are source-hash/shard-order bound, checkpointed, and proposal-only; intentional GroundingDINO interruption resumed from 6/256 without recomputing the prefix. A non-weakening 0.40 GroundingDINO filter produced 157 strict spatial-consensus catalogs and 99 abstentions, all 256 catalog receipts checkpointed durably and replayed idempotently. No masks, strict-VLM verdicts, or certificates exist yet; GPU mask generation remains locally gated by the coordinator's expired RECOVERY_REQUIRED lease."
+        },
+        {
+          "ts": "2026-07-22T16:13:18+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22: executable reference-only box-prompt mask batch stage is now implemented. It consumes the exact selected 256-record catalog (157 pass/99 abstain), derives deterministic consensus boxes/interior prompts, runs provider-neutral interactive segmenters with a governed SAM2 primary/OOM bridge, writes strict hash-bound draft PNGs, checkpoints each provider nonterminally/idempotently, compares only independent model families, and continues after per-record failure. Static/adjacent validation is 235 PASS with Ruff/Black/diff clean. Live generated masks, hard QC, strict VLM, repair, and certificates remain zero; the shared GPU coordinator remains RECOVERY_REQUIRED on exact expired lease lease_f31c0165ee8f4c9bb31e5ef96ef87d22 and was not bypassed."
         }
       ],
       "evidence": "qa/live_verification/nude_civitai_reference_person_catalog_canary_20260722.json; selected comparison 9aa78ea1a4a9d06ae19fd05e5e866bad5c7a79e78d47ee8a580b6c7d4e626472; GroundingDINO output 2bd5bcab025ebbc6453d55ad8dcc34ac12767343c6adc1de5955d73a197a46fb; YOLO output ceb0f17ef6526e51dbe0d47329000dffd55a0cf50f6e4790a13af950aae9eca9; 239 focused/adjacent tests, Ruff, Black, tracker validation PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T15:49:55+00:00",
+      "updated_at": "2026-07-22T16:13:18+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {

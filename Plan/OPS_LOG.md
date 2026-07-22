@@ -11901,3 +11901,31 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   as acceptance evidence for this increment.
 - Evidence:
   `qa/live_verification/nude_civitai_reference_person_catalog_canary_20260722.json`.
+
+## 2026-07-22 - Executable CivitAI box-prompt mask batch stage
+
+- Implemented the next non-authoritative stage after the 157/99 person-catalog
+  split. It validates the exact sealed catalog and source bytes, derives a
+  deterministic union box plus a positive point inside every agreeing detector
+  box, executes provider-neutral interactive segmenters, and writes only strict
+  hash-bound draft PNGs.
+- Added a governed SAM2.1 primary/base-plus-OOM contract bridge, independent
+  model-family comparison, prompt-containment enforcement, per-record failure
+  abstention, exact idempotent replay, and provider-specific SQLite stage
+  checkpoints that never advance terminal queue progress.
+- Added an explicit RunPod/local CLI for SAM2.1 and official SAM3.1. The CLI
+  revalidates the reference-only shard role before loading a provider and can
+  target exact sample IDs without changing the source catalog seal.
+- The exact live 256-record selected catalog validates as 157 pass / 99
+  abstain, and the exact RunPod reference shard maps 256/256 records with no
+  source-role drift. No live masks were generated in this increment because the
+  shared GPU coordinator remains in `RECOVERY_REQUIRED` on expired exact lease
+  `lease_f31c0165ee8f4c9bb31e5ef96ef87d22`; the unavailable one-time token means
+  its authenticated release cannot be fabricated. Coordinator state was not
+  edited or bypassed.
+- Validation: 235 focused/adjacent tests passed; Ruff, Black, runner help,
+  exact live catalog/shard compatibility, tracker validation, and diff integrity
+  passed. Hard QC, strict visual review, repair, qualification, and certificates
+  remain open.
+- Evidence:
+  `qa/live_verification/nude_civitai_reference_box_prompt_batch_implementation_20260722.json`.

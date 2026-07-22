@@ -189,3 +189,35 @@ def test_writer_rejects_wrong_lane_label_provider_shape_empty_and_duplicate(tmp_
         write_sam31_candidate_package(
             source_image_path=source, candidates=duplicate, output_dir=tmp_path / "duplicate"
         )
+
+
+def test_cross_semantic_near_duplicate_masks_fail_closed(tmp_path: Path) -> None:
+    source = _source(tmp_path)
+    identity = sam31_provider_identity("concept_detector")
+    mask = np.zeros((20, 24), dtype=bool)
+    mask[2:18, 2:22] = True
+    almost_same = mask.copy()
+    almost_same[2, 2] = False
+    candidates = (
+        Sam31LaneCandidate(
+            "sam31-hair-p0",
+            "hair",
+            "hair",
+            "person-0.hair",
+            MaskProposal(mask, 0.95, identity, "a" * 64),
+        ),
+        Sam31LaneCandidate(
+            "sam31-head-face-p0",
+            "hair",
+            "head_face",
+            "person-0.head-face",
+            MaskProposal(almost_same, 0.94, identity, "b" * 64),
+        ),
+    )
+
+    with pytest.raises(Sam31CandidatePackageError, match="cross-semantic.*near-duplicates"):
+        write_sam31_candidate_package(
+            source_image_path=source,
+            candidates=candidates,
+            output_dir=tmp_path / "near-duplicate",
+        )

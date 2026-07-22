@@ -11597,3 +11597,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Thirty-three focused discovery, exemplar, orchestration, and production tests
   pass; JSON parsing, tracker validation, and diff integrity pass. Evidence:
   `qa/live_verification/sam31_visual_exemplar_runpod_20260722.json`.
+
+## 2026-07-22 - SAM 3.1 specialist discovery fails visual qualification safely
+
+- Corrected the shadow orchestration boundary so a strict mask returned by the
+  official concept detector is packaged directly under its `concept_detector`
+  provenance rather than being unnecessarily sent through the separately
+  unresolved interactive refiner. Box-only discovery still requires the exact
+  official interactive provider and fails closed when it is unavailable.
+- Added writer and verifier rejection for masks carrying different semantic
+  labels when their IoU is at least 0.98. This closes a concrete candidate
+  inflation path observed in live inference; it does not promote SAM 3.1 or
+  grant any semantic-mask authority.
+- A fresh RunPod run exercised one representative concept from all seven
+  specialist lanes. Text-only prompts returned zero candidates. Adding the
+  governed full-person exemplar returned eight strict masks, but the persisted
+  source/mask/overlay/contour panel showed whole-person silhouettes for every
+  requested specialist semantic. Median cross-output IoU was 0.9958 and the
+  maximum was 0.9983. The new candidate-package gate rejected the exact live
+  replay as cross-semantic near-duplicates.
+- `MF-P3-08.01` remains honestly at 90%; no specialist route passed visual
+  qualification and a materially different grounding strategy is required.
+  Ninety-nine focused production/SAM31 tests pass; Ruff, Black, JSON parsing,
+  tracker validation, and diff integrity pass. Evidence:
+  `qa/live_verification/sam31_specialist_route_rejection_20260722.json`.

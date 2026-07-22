@@ -472,14 +472,14 @@ def build_production_runners(
             else:
                 concept_loader = concept_provider_loaders.get("sam3_1")
                 interactive_loader = interactive_provider_loaders.get("sam3_1")
-                if concept_loader is None or interactive_loader is None:
+                if concept_loader is None:
                     path = write_sam31_shadow_noncompletion(
                         source_image_path=source_image_path,
                         parent_instance_key=instance_name,
                         lifecycle_state=lifecycle,
                         output_dir=output_dir,
                         status="failed",
-                        reason="runnable official SAM 3.1 lacks injected concept/interactive loaders",
+                        reason="runnable official SAM 3.1 lacks an injected concept loader",
                     )
                 else:
                     try:
@@ -488,7 +488,9 @@ def build_production_runners(
                             parent_instance_key=instance_name,
                             lifecycle_state=lifecycle,
                             concept_detector=concept_loader(),
-                            interactive_segmenter=interactive_loader(),
+                            interactive_segmenter=(
+                                interactive_loader() if interactive_loader is not None else None
+                            ),
                             output_dir=output_dir,
                         )
                     except Exception as exc:

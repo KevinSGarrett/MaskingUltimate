@@ -27,6 +27,7 @@ PACKAGE_AUTHORITY = (
     "isolated_sam31_specialist_candidates_only_"
     "no_active_map_serving_semantic_mask_or_gold_authority"
 )
+CROSS_SEMANTIC_MAX_IOU = 0.98
 LANE_TO_ROLE = {
     "accessory": "clothing_accessory_segmentation",
     "chest_pelvic": "chest_pelvic_segmentation",
@@ -102,6 +103,24 @@ def _bbox(mask: np.ndarray) -> list[int]:
     return [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
 
 
+def _reject_cross_semantic_near_duplicate(
+    *,
+    semantic_label: str,
+    mask: np.ndarray,
+    accepted: Sequence[tuple[str, np.ndarray, int]],
+) -> None:
+    area = int(mask.sum())
+    for previous_label, previous, previous_area in accepted:
+        if previous_label == semantic_label:
+            continue
+        if min(area, previous_area) / max(area, previous_area) < CROSS_SEMANTIC_MAX_IOU:
+            continue
+        intersection = int(np.count_nonzero(mask & previous))
+        union = area + previous_area - intersection
+        if intersection / union >= CROSS_SEMANTIC_MAX_IOU:
+            raise Sam31CandidatePackageError("cross-semantic candidate masks are near-duplicates")
+
+
 def _safe_path(root: Path, relative: str) -> Path:
     if not isinstance(relative, str) or Path(relative).is_absolute():
         raise Sam31CandidatePackageError("candidate artifact path is invalid")
@@ -146,6 +165,7 @@ def write_sam31_candidate_package(
     allowed = governed_lane_labels()
     seen_ids: set[str] = set()
     seen_routes: set[tuple[str, str, str]] = set()
+    accepted_masks: list[tuple[str, np.ndarray, int]] = []
     rows = []
     for candidate in sorted(candidates, key=lambda value: (value.lane, value.candidate_id)):
         proposal = candidate.proposal
@@ -172,6 +192,12 @@ def write_sam31_candidate_package(
         mask_path = output_dir / relative
         write_binary_mask(mask_path, proposal.mask, source_size=(width, height))
         strict = _strict_mask(mask_path, shape)
+        _reject_cross_semantic_near_duplicate(
+            semantic_label=candidate.semantic_label,
+            mask=strict,
+            accepted=accepted_masks,
+        )
+        accepted_masks.append((candidate.semantic_label, strict, int(strict.sum())))
         rows.append(
             {
                 "candidate_id": candidate.candidate_id,
@@ -251,6 +277,7 @@ def verify_sam31_candidate_package(
     seen_paths: set[str] = set()
     seen_ids: set[str] = set()
     seen_routes: set[tuple[str, str, str]] = set()
+    accepted_masks: list[tuple[str, np.ndarray, int]] = []
     for row in document["candidates"]:
         route = (row["lane"], row["semantic_label"], row["instance_key"])
         expected_identity = sam31_provider_identity(
@@ -267,6 +294,12 @@ def verify_sam31_candidate_package(
             raise Sam31CandidatePackageError("candidate routing is duplicated or invalid")
         path = _safe_path(artifact_root, row["mask_path"])
         mask = _strict_mask(path, (document["source_height"], document["source_width"]))
+        _reject_cross_semantic_near_duplicate(
+            semantic_label=row["semantic_label"],
+            mask=mask,
+            accepted=accepted_masks,
+        )
+        accepted_masks.append((row["semantic_label"], mask, int(mask.sum())))
         if (
             sha256_file(path) != row["mask_sha256"]
             or int(mask.sum()) != row["foreground_pixels"]

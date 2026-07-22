@@ -222,7 +222,7 @@ def run_sam31_shadow_orchestration(
     parent_instance_key: str,
     lifecycle_state: str,
     concept_detector: ConceptDetector,
-    interactive_segmenter: InteractiveSegmenter,
+    interactive_segmenter: InteractiveSegmenter | None,
     output_dir: Path,
     exemplar_paths: Sequence[Path] = (),
     pipeline_path: Path = DEFAULT_PIPELINE,
@@ -237,17 +237,20 @@ def run_sam31_shadow_orchestration(
     )
     if (
         concept_detector.identity != expected_concept
-        or interactive_segmenter.identity != expected_interactive
         or getattr(concept_detector, "authority", None) != SHADOW_AUTHORITY
-        or getattr(interactive_segmenter, "authority", None) != SHADOW_AUTHORITY
+        or (
+            interactive_segmenter is not None
+            and (
+                interactive_segmenter.identity != expected_interactive
+                or getattr(interactive_segmenter, "authority", None) != SHADOW_AUTHORITY
+            )
+        )
     ):
         raise Sam31OrchestrationError("SAM 3.1 loader identity or authority is not official shadow")
 
     source_image_path = Path(source_image_path)
     exemplars = tuple(Path(path) for path in exemplar_paths)
-    with Image.open(source_image_path) as source:
-        image = np.asarray(source.convert("RGB"))
-    embedding = interactive_segmenter.embed(image)
+    embedding: Any | None = None
     routes = canonical_sam31_concept_routes()
     candidates: list[Sam31LaneCandidate] = []
     discovery_results = 0
@@ -266,6 +269,14 @@ def run_sam31_shadow_orchestration(
                     raise Sam31OrchestrationError(
                         "SAM 3.1 discovery box label does not match its requested route"
                     )
+                if interactive_segmenter is None:
+                    raise Sam31OrchestrationError(
+                        "SAM 3.1 box discovery requires the official shadow interactive segmenter"
+                    )
+                if embedding is None:
+                    with Image.open(source_image_path) as source:
+                        image = np.asarray(source.convert("RGB"))
+                    embedding = interactive_segmenter.embed(image)
                 prompt = {
                     "positive_points": (),
                     "negative_points": (),
@@ -273,25 +284,23 @@ def run_sam31_shadow_orchestration(
                     "mask_prompt": None,
                 }
                 discovery_instance = proposal.instance_key or f"box-{proposal_index}"
+                refined = tuple(interactive_segmenter.refine(embedding, prompt=prompt))
             elif isinstance(proposal, MaskProposal):
                 if proposal.provider != expected_concept:
                     raise Sam31OrchestrationError(
                         "SAM 3.1 discovery mask has stale concept-provider identity"
                     )
-                prompt = {
-                    "positive_points": (),
-                    "negative_points": (),
-                    "box_xyxy": None,
-                    "mask_prompt": proposal.mask,
-                }
                 discovery_instance = f"mask-{proposal_index}"
+                refined = (proposal,)
             else:
                 raise Sam31OrchestrationError("SAM 3.1 discovery returned a foreign proposal")
-            refined = tuple(interactive_segmenter.refine(embedding, prompt=prompt))
             for refinement_index, mask in enumerate(refined):
-                if mask.provider != expected_interactive:
+                expected_provider = (
+                    expected_interactive if isinstance(proposal, BoxProposal) else expected_concept
+                )
+                if mask.provider != expected_provider:
                     raise Sam31OrchestrationError(
-                        "SAM 3.1 refinement has stale interactive-provider identity"
+                        "SAM 3.1 candidate has stale provider identity for its discovery route"
                     )
                 candidates.append(
                     Sam31LaneCandidate(

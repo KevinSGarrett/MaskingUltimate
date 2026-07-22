@@ -27,9 +27,26 @@ def _source(tmp_path: Path) -> Path:
 
 
 def _providers(*, emit: bool = True):
+    route_index = {
+        route.concept: index for index, route in enumerate(canonical_sam31_concept_routes())
+    }
+
     def discover(_path, *, concepts, exemplars):
         if not emit:
             return ()
+        index = route_index[concepts[0]]
+        if index:
+            mask = np.zeros((12, 16), dtype=bool)
+            mask[index // 16, index % 16] = True
+            return (
+                {
+                    "kind": "mask",
+                    "confidence": 0.91,
+                    "label": concepts[0],
+                    "instance_key": hashlib.sha256(concepts[0].encode()).hexdigest()[:12],
+                    "value": mask,
+                },
+            )
         return (
             {
                 "kind": "box",
@@ -99,6 +116,48 @@ def test_production_shadow_orchestration_persists_all_lanes_without_active_map_c
     assert len(summary["requested_lanes"]) == 7
     assert summary["authority"] == ORCHESTRATION_AUTHORITY
     assert pipeline.read_bytes() == before
+
+
+def test_direct_discovery_masks_do_not_require_or_invoke_interactive_refinement(
+    tmp_path: Path,
+) -> None:
+    source = _source(tmp_path)
+    route_index = {
+        route.concept: index for index, route in enumerate(canonical_sam31_concept_routes())
+    }
+
+    def discover(_path, *, concepts, exemplars):
+        del exemplars
+        mask = np.zeros((12, 16), dtype=bool)
+        index = route_index[concepts[0]]
+        mask[index // 16, index % 16] = True
+        return (
+            {
+                "kind": "mask",
+                "confidence": 0.93,
+                "label": concepts[0],
+                "instance_key": hashlib.sha256(concepts[0].encode()).hexdigest()[:12],
+                "value": mask,
+            },
+        )
+
+    detector = Sam31ConceptDetector(discover)
+    manifest = run_sam31_shadow_orchestration(
+        source_image_path=source,
+        parent_instance_key="p0",
+        lifecycle_state="installed",
+        concept_detector=detector,
+        interactive_segmenter=None,
+        output_dir=tmp_path / "direct",
+    )
+    document = json.loads(manifest.read_text(encoding="utf-8"))
+    package = json.loads(
+        (manifest.parent / document["candidate_package_path"]).read_text(encoding="utf-8")
+    )
+
+    assert document["status"] == "complete"
+    assert document["candidate_count"] == len(canonical_sam31_concept_routes())
+    assert {row["provider_role"] for row in package["candidates"]} == {"concept_detector"}
 
 
 def test_no_detection_and_unavailable_lifecycle_are_explicit_zero_authority_records(

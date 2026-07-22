@@ -682,7 +682,24 @@ def test_s06_production_runner_executes_installed_official_sam31_as_isolated_sid
         )
         return path
 
+    route_index = {
+        route.concept: index for index, route in enumerate(canonical_sam31_concept_routes())
+    }
+
     def discover(_path, *, concepts, exemplars):
+        index = route_index[concepts[0]]
+        if index:
+            mask = np.zeros((30, 20), dtype=bool)
+            mask[index // 20, index % 20] = True
+            return (
+                {
+                    "kind": "mask",
+                    "confidence": 0.9,
+                    "label": concepts[0],
+                    "instance_key": f"route-mask-{index}",
+                    "value": mask,
+                },
+            )
         return (
             {
                 "kind": "box",

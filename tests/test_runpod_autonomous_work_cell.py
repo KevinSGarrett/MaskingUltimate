@@ -117,12 +117,72 @@ def manifest(*, record_count: int = 1, authority: str = "operationally_certified
     )
 
 
-def receipt(stage: str, actor: str, status: str = "pass") -> dict[str, str]:
+def stage_detail(stage: str, status: str = "pass") -> dict[str, object]:
+    details: dict[str, dict[str, object]] = {
+        "source_decode": {
+            "decoded_pixel_sha256": HEX,
+            "alpha_policy": "absent",
+            "width": 32,
+            "height": 32,
+        },
+        "detection_ownership": {
+            "target_contract_sha256": HEX,
+            "person_count": 1,
+            "ownership_status": "verified",
+        },
+        "provider_tournament": {
+            "tournament_report_sha256": HEX,
+            "family_count": 2,
+            "candidate_count": 2,
+            "winner_mask_sha256": HEX,
+        },
+        "hard_qc": {"qa_vector_sha256": HEX, "hard_veto_count": 0},
+        "primary_visual_review": {
+            "panel_sha256": HEX,
+            "critic_report_sha256": HEX,
+            "verdict": "pass",
+        },
+        "independent_visual_review": {
+            "panel_sha256": HEX,
+            "critic_report_sha256": HEX,
+            "verdict": "pass",
+        },
+        "repair_planning": {
+            "defect_hypothesis_sha256": HEX,
+            "roi_sha256": HEX,
+            "operation": "box_refine",
+        },
+        "repair_execution": {
+            "parent_mask_sha256": HEX,
+            "new_mask_sha256": "b" * 64,
+            "changed_pixel_fraction": 0.1,
+        },
+        "package_freeze": {"package_sha256": HEX, "active_label_count": 1},
+        "certification": {
+            "certificate_sha256": HEX,
+            "authority_tier": "operationally_certified_artifact",
+        },
+    }
+    detail = dict(details[stage])
+    if status == "repairable" and stage in {
+        "hard_qc",
+        "primary_visual_review",
+        "independent_visual_review",
+    }:
+        if stage == "hard_qc":
+            detail["hard_veto_count"] = 1
+        else:
+            detail["verdict"] = "repairable"
+    return detail
+
+
+def receipt(stage: str, actor: str, status: str = "pass") -> dict[str, object]:
     return {
         "stage": stage,
         "status": status,
         "actor_kind": actor,
         "evidence_sha256": HEX,
+        "detail": stage_detail(stage, status),
     }
 
 
@@ -318,6 +378,47 @@ def test_repair_loop_requires_provider_pixel_author_and_rechecks_hard_qc(tmp_pat
     assert cell.claim(document["mission_id"], owner="worker")["stage"] == "hard_qc"
 
 
+def test_stage_receipts_require_exact_mask_qa_visual_repair_and_certificate_detail(
+    tmp_path: Path,
+) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest()
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    work = cell.claim(document["mission_id"], owner="worker")
+    bad = receipt("source_decode", "deterministic_qa")
+    bad.pop("detail")
+    with pytest.raises(WorkCellError, match="stage detail object required"):
+        cell.apply_result(document["mission_id"], "r1", work["lease_token"], bad)
+
+    cell.apply_result(
+        document["mission_id"],
+        "r1",
+        work["lease_token"],
+        receipt("source_decode", "deterministic_qa"),
+    )
+    work = cell.claim(document["mission_id"], owner="worker")
+    bad = receipt("detection_ownership", "deterministic_qa")
+    bad["detail"]["ownership_status"] = "ambiguous"
+    with pytest.raises(WorkCellError, match="ownership must be verified"):
+        cell.apply_result(document["mission_id"], "r1", work["lease_token"], bad)
+
+    cell.apply_result(
+        document["mission_id"],
+        "r1",
+        work["lease_token"],
+        receipt("detection_ownership", "deterministic_qa"),
+    )
+    work = cell.claim(document["mission_id"], owner="worker")
+    bad = receipt("provider_tournament", "segmentation_provider")
+    bad["detail"]["family_count"] = 1
+    with pytest.raises(WorkCellError, match="provider pass requires"):
+        cell.apply_result(document["mission_id"], "r1", work["lease_token"], bad)
+
+
 def test_expired_leases_requeue_then_abstain_at_retry_cap(tmp_path: Path) -> None:
     now = [100.0]
     cell = AutonomousWorkCell(tmp_path, clock=lambda: now[0])
@@ -481,11 +582,24 @@ def test_cli_run_loads_hash_bound_handlers_and_writes_milestones(tmp_path: Path)
                 "    'certification': 'certificate_service',",
                 "}",
                 "def handle(work):",
+                "    details = {",
+                "        'source_decode': {'decoded_pixel_sha256': 'a' * 64, 'alpha_policy': 'absent', 'width': 32, 'height': 32},",
+                "        'detection_ownership': {'target_contract_sha256': 'a' * 64, 'person_count': 1, 'ownership_status': 'verified'},",
+                "        'provider_tournament': {'tournament_report_sha256': 'a' * 64, 'family_count': 2, 'candidate_count': 2, 'winner_mask_sha256': 'a' * 64},",
+                "        'hard_qc': {'qa_vector_sha256': 'a' * 64, 'hard_veto_count': 0},",
+                "        'primary_visual_review': {'panel_sha256': 'a' * 64, 'critic_report_sha256': 'a' * 64, 'verdict': 'pass'},",
+                "        'independent_visual_review': {'panel_sha256': 'a' * 64, 'critic_report_sha256': 'a' * 64, 'verdict': 'pass'},",
+                "        'repair_planning': {'defect_hypothesis_sha256': 'a' * 64, 'roi_sha256': 'a' * 64, 'operation': 'box_refine'},",
+                "        'repair_execution': {'parent_mask_sha256': 'a' * 64, 'new_mask_sha256': 'b' * 64, 'changed_pixel_fraction': 0.1},",
+                "        'package_freeze': {'package_sha256': 'a' * 64, 'active_label_count': 1},",
+                "        'certification': {'certificate_sha256': 'a' * 64, 'authority_tier': 'operationally_certified_artifact'},",
+                "    }",
                 "    return {",
                 "        'stage': work['stage'],",
                 "        'status': 'pass',",
                 "        'actor_kind': ACTORS[work['stage']],",
                 "        'evidence_sha256': 'a' * 64,",
+                "        'detail': details[work['stage']],",
                 "    }",
             ]
         )

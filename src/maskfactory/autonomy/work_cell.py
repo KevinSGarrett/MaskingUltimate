@@ -88,6 +88,27 @@ def canonical_sha256(value: Mapping[str, Any]) -> str:
     return hashlib.sha256(body.encode("utf-8")).hexdigest()
 
 
+def _require_sha(detail: Mapping[str, Any], field: str) -> str:
+    value = detail.get(field)
+    if not isinstance(value, str) or len(value) != 64:
+        raise WorkCellError(f"stage detail {field} sha256 required")
+    return value
+
+
+def _require_int(detail: Mapping[str, Any], field: str, *, minimum: int = 0) -> int:
+    value = detail.get(field)
+    if not isinstance(value, int) or value < minimum:
+        raise WorkCellError(f"stage detail {field} integer required")
+    return value
+
+
+def _require_enum(detail: Mapping[str, Any], field: str, allowed: set[str]) -> str:
+    value = detail.get(field)
+    if not isinstance(value, str) or value not in allowed:
+        raise WorkCellError(f"stage detail {field} enum invalid")
+    return value
+
+
 def seal_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
     result = dict(value)
     result.pop("manifest_sha256", None)
@@ -562,6 +583,7 @@ class AutonomousWorkCell:
                 }
 
             self._validate_authority_for_result(manifest, stage, status, actor)
+            self._validate_stage_detail(manifest, stage, status, payload.get("detail"))
             next_stage, outcome, next_cycle = self._transition(manifest, stage, status, cycle)
             connection.execute(
                 "INSERT INTO stage_receipts(mission_id,record_id,stage,repair_cycle,status,"
@@ -633,6 +655,82 @@ class AutonomousWorkCell:
         if stage == "certification" and status == "pass":
             if manifest["authority_ceiling"] == "machine_verified_candidate":
                 raise WorkCellError("mission authority ceiling forbids certification")
+
+    @staticmethod
+    def _validate_stage_detail(
+        manifest: Mapping[str, Any], stage: str, status: str, detail: Any
+    ) -> None:
+        if not isinstance(detail, dict):
+            raise WorkCellError("stage detail object required")
+        if stage == "source_decode":
+            _require_sha(detail, "decoded_pixel_sha256")
+            _require_enum(detail, "alpha_policy", {"absent", "discarded", "premultiplied"})
+            _require_int(detail, "width", minimum=1)
+            _require_int(detail, "height", minimum=1)
+        elif stage == "detection_ownership":
+            _require_sha(detail, "target_contract_sha256")
+            _require_int(detail, "person_count", minimum=1)
+            _require_enum(detail, "ownership_status", {"verified", "ambiguous"})
+            if status == "pass" and detail["ownership_status"] != "verified":
+                raise WorkCellError("ownership must be verified to pass")
+        elif stage == "provider_tournament":
+            _require_sha(detail, "tournament_report_sha256")
+            family_count = _require_int(detail, "family_count", minimum=1)
+            candidate_count = _require_int(detail, "candidate_count", minimum=1)
+            if status == "pass":
+                if family_count < 2 or candidate_count < 2:
+                    raise WorkCellError("provider pass requires two families and candidates")
+                _require_sha(detail, "winner_mask_sha256")
+        elif stage == "hard_qc":
+            _require_sha(detail, "qa_vector_sha256")
+            hard_veto_count = _require_int(detail, "hard_veto_count", minimum=0)
+            if status == "pass" and hard_veto_count != 0:
+                raise WorkCellError("hard QA pass cannot retain hard vetoes")
+        elif stage in VISUAL_STAGES:
+            _require_sha(detail, "panel_sha256")
+            _require_sha(detail, "critic_report_sha256")
+            verdict = _require_enum(detail, "verdict", {"pass", "repairable", "abstain", "reject"})
+            if status == "pass" and verdict != "pass":
+                raise WorkCellError("visual pass requires pass verdict")
+        elif stage == "repair_planning":
+            _require_sha(detail, "defect_hypothesis_sha256")
+            _require_sha(detail, "roi_sha256")
+            _require_enum(
+                detail,
+                "operation",
+                {
+                    "box_refine",
+                    "point_refine",
+                    "mask_prompt_refine",
+                    "roi_regenerate",
+                    "component_prune",
+                    "hole_fill_bounded",
+                },
+            )
+        elif stage == "repair_execution":
+            _require_sha(detail, "parent_mask_sha256")
+            _require_sha(detail, "new_mask_sha256")
+            changed = detail.get("changed_pixel_fraction")
+            if not isinstance(changed, (int, float)) or changed < 0:
+                raise WorkCellError("repair changed_pixel_fraction invalid")
+            maximum = float(manifest["repair_policy"]["max_changed_pixel_fraction"])
+            if changed > maximum:
+                raise WorkCellError("repair changed_pixel_fraction exceeds mission policy")
+        elif stage == "package_freeze":
+            _require_sha(detail, "package_sha256")
+            _require_int(detail, "active_label_count", minimum=1)
+        elif stage == "certification":
+            _require_sha(detail, "certificate_sha256")
+            tier = _require_enum(
+                detail,
+                "authority_tier",
+                {
+                    "operationally_certified_artifact",
+                    "autonomous_certified_gold",
+                },
+            )
+            if status == "pass" and tier != manifest["authority_ceiling"]:
+                raise WorkCellError("certificate authority tier must match mission ceiling")
 
     @staticmethod
     def _transition(

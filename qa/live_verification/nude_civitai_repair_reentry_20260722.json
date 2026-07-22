@@ -1,0 +1,52 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_repair_reentry.v1",
+  "recorded_at": "2026-07-22T18:00:00Z",
+  "result": "STATIC_PASS_LIVE_QUALIFIED_CRITIC_EXECUTION_PENDING",
+  "tracker_item": "MF-P4-12.06",
+  "implementation_hashes": {
+    "src/maskfactory/nude_reference_mask_repair.py": "493e4e0878bf267646b5f504a1aadd61041ce1af1faee500b3b852ea683f1d39",
+    "src/maskfactory/nude_box_mask_generation.py": "6ae1939b1edfda1bb87c3cb882430985a933354e406d72b3113038fe0885aa46",
+    "src/maskfactory/nude_reference_mask_hard_qc.py": "769538dd164208105a832fa204151b1aef5e62dcfe09bb60d5dd616d64412d42",
+    "tests/test_nude_reference_mask_hard_qc.py": "64a3946c945fadb982512e9371b5346b16a37eb02797894ab3753dfa94fc37a1"
+  },
+  "verified_controls": [
+    "the sealed repair batch and every child PNG are rehashed before reuse",
+    "child encoded and decoded identities must match the resealed v2 target contract",
+    "the repair batch cannot claim hard-QC, strict-visual, operational, or autonomous-gold authority",
+    "a repaired target and every immutable protected sibling are rebuilt into one complete-map candidate batch",
+    "per-candidate author-provider and immutable lineage remain explicit in mixed-provider batches",
+    "the exact child target contract replaces only the repaired target while sibling target contracts remain unchanged",
+    "the rebuilt batch passes the ordinary non-overridable hard-QC entry point",
+    "the hard-QC report retains candidate-specific provider and repair lineage",
+    "fresh independent-family visual review receives the new exact target contract and complete evidence",
+    "a fresh visual pass still issues no operational certificate and creates no autonomous certified gold"
+  ],
+  "commands": [
+    {
+      "command": "python -m pytest -q tests/test_nude_box_mask_generation.py tests/test_nude_reference_mask_hard_qc.py tests/test_nude_batch_queue.py tests/test_visual_critic_authority.py tests/test_visual_critic_target_contract.py tests/test_visual_critic_repair_intent.py tests/test_autonomous_repair.py tests/test_tracker_modernization_coverage.py tests/test_tracker_completion_profiles.py",
+      "result": "PASS",
+      "passed": 127
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/nude_reference_mask_repair.py src/maskfactory/nude_box_mask_generation.py src/maskfactory/nude_reference_mask_hard_qc.py tests/test_nude_reference_mask_hard_qc.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "authority_claims": {
+    "live_repair_candidates_created": 0,
+    "live_hard_qc_rechecks_completed": 0,
+    "live_strict_visual_rereviews_completed": 0,
+    "operational_certificates_issued": 0,
+    "autonomous_certified_gold_created": 0
+  },
+  "remaining": [
+    "persist the repair stage and attempt history through the resumable shard queue",
+    "prove per-person continue-on-exception behavior on a multi-person record",
+    "execute repair and re-entry against promoted live independent critics",
+    "continue successful re-review through semantic alignment and exact certification"
+  ]
+}

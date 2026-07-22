@@ -20,7 +20,11 @@ from maskfactory.nude_reference_mask_hard_qc import (
     validate_reference_mask_hard_qc_stage_receipt,
     validate_reference_person_mask_hard_qc,
 )
-from maskfactory.nude_reference_mask_repair import execute_reference_person_repair_batch
+from maskfactory.nude_reference_mask_repair import (
+    build_reference_person_repair_reentry_batch,
+    execute_reference_person_repair_batch,
+    validate_reference_person_repair_batch,
+)
 from maskfactory.nude_reference_strict_visual_review import (
     NudeReferenceStrictVisualReviewError,
     VisualReviewerIdentity,
@@ -752,6 +756,65 @@ def test_repair_batch_creates_immutable_child_and_v2_child_contract(tmp_path: Pa
     assert result["strict_visual_review_complete"] is False
     assert result["production_mask_authority"] is False
     assert result["autonomous_certified_gold_created"] is False
+    assert validate_reference_person_repair_batch(result, output_root=root) == result
+
+
+def test_repair_child_reenters_complete_hard_qc_and_visual_review(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    initial_hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    failed_review, target_contracts = _repair_ready_review(
+        source, root, batch, initial_hard_qc, tmp_path
+    )
+    repair = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=failed_review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=_RepairProvider(),
+    )
+    reentry, child_contracts = build_reference_person_repair_reentry_batch(
+        parent_provider_batch=batch,
+        repair_batch=repair,
+        output_root=root,
+        parent_target_contracts=target_contracts,
+    )
+
+    candidate = reentry["records"][0]["candidates"][0]
+    assert candidate["author_provider"] == repair["repair_provider"]
+    assert candidate["lineage"]["kind"] == "bounded_immutable_repair_child"
+    assert child_contracts["sample-a"][0]["package"] == {
+        "package_id": "sample-a",
+        "revision": 2,
+        "parent_revision": 1,
+    }
+    repaired_hard_qc = run_reference_person_mask_hard_qc(
+        reentry, output_root=root, source_paths={"sample-a": source}
+    )
+    assert repaired_hard_qc["status_counts"] == {"pass": 1}
+    report = repaired_hard_qc["records"][0]["candidate_reports"][0]
+    assert report["author_provider"] == repair["repair_provider"]
+    assert report["lineage"] == candidate["lineage"]
+
+    catalog, certificates, reviewers = _critic_authority()
+    visual = run_reference_person_strict_visual_review(
+        provider_batch=reentry,
+        hard_qc=repaired_hard_qc,
+        output_root=root,
+        source_paths={"sample-a": source},
+        evidence_root=tmp_path / "repaired-visual",
+        reviewers=reviewers,
+        target_contracts=child_contracts,
+        critic_catalog=catalog,
+        critic_certificates=certificates,
+        now=NOW,
+    )
+    assert visual["status_counts"] == {"pass": 1}
+    assert visual["production_mask_authority"] is False
+    assert visual["operational_certificates_issued"] is False
 
 
 def test_repair_batch_rejects_duplicate_hypothesis_without_provider_execution(tmp_path: Path):

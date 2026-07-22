@@ -328,6 +328,14 @@ def run_reference_person_mask_hard_qc(
                 {
                     "person_index": person_index,
                     "mask_sha256": candidate["mask_sha256"],
+                    "author_provider": candidate.get("author_provider", validated["provider"]),
+                    "lineage": candidate.get(
+                        "lineage",
+                        {
+                            "kind": "direct_provider_candidate",
+                            "provider_batch_sha256": validated["self_sha256"],
+                        },
+                    ),
                     "checks": checks,
                 }
             )

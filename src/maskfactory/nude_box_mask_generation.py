@@ -535,6 +535,31 @@ def validate_box_prompt_provider_batch_structure(document: Mapping[str, Any]) ->
                 or candidate.get("operational_certificate_eligible") is not False
             ):
                 raise NudeBoxMaskGenerationError("provider_batch_candidate_authority_invalid")
+            author_provider = candidate.get("author_provider")
+            if author_provider is not None:
+                if (
+                    not isinstance(author_provider, Mapping)
+                    or set(author_provider) != expected_provider_fields
+                ):
+                    raise NudeBoxMaskGenerationError(
+                        "provider_batch_candidate_author_provider_invalid"
+                    )
+                try:
+                    author_identity = ProviderIdentity(**author_provider)
+                except (TypeError, ValueError) as exc:
+                    raise NudeBoxMaskGenerationError(
+                        "provider_batch_candidate_author_provider_invalid"
+                    ) from exc
+                if author_identity.role != "interactive_segmenter":
+                    raise NudeBoxMaskGenerationError(
+                        "provider_batch_candidate_author_provider_invalid"
+                    )
+                lineage = candidate.get("lineage")
+                if not isinstance(lineage, Mapping) or lineage.get("kind") not in {
+                    "immutable_protected_parent",
+                    "bounded_immutable_repair_child",
+                }:
+                    raise NudeBoxMaskGenerationError("provider_batch_candidate_lineage_invalid")
             for field in ("mask_sha256", "artifact_sha256"):
                 if (
                     not isinstance(candidate.get(field), str)

@@ -260,8 +260,10 @@ def execute_reference_person_repair_batch(
                         "child_relative_path": relative.as_posix(),
                         "child_artifact_sha256": artifact_sha,
                         "child_mask_sha256": mask_sha,
+                        "child_pixel_count": int(np.count_nonzero(child_mask)),
                         "changed_pixels": changed,
                         "changed_fraction": changed_fraction,
+                        "repair_confidence": float(selected.confidence),
                         "repair_provider": _provider(repair_provider.identity),
                         "child_target_contract": child_contract,
                         "authority": "draft_repair_candidate_only",
@@ -311,7 +313,224 @@ def execute_reference_person_repair_batch(
     return {**body, "self_sha256": _canonical_sha256(body)}
 
 
+def validate_reference_person_repair_batch(
+    document: Mapping[str, Any], *, output_root: Path
+) -> dict[str, Any]:
+    """Revalidate the sealed repair decision and every created child artifact."""
+
+    if not isinstance(document, Mapping):
+        raise NudeReferenceMaskRepairError("repair_batch_invalid")
+    body = {key: value for key, value in document.items() if key != "self_sha256"}
+    if document.get(
+        "schema_version"
+    ) != "maskfactory.nude_reference_person_repair_batch.v1" or document.get(
+        "self_sha256"
+    ) != _canonical_sha256(
+        body
+    ):
+        raise NudeReferenceMaskRepairError("repair_batch_seal_invalid")
+    if (
+        any(
+            document.get(field) is not False
+            for field in (
+                "hard_qc_complete",
+                "strict_visual_review_complete",
+                "production_mask_authority",
+                "operational_certificates_issued",
+                "autonomous_certified_gold_created",
+            )
+        )
+        or document.get("immutable_parents_preserved") is not True
+    ):
+        raise NudeReferenceMaskRepairError("repair_batch_authority_invalid")
+    try:
+        identity = ProviderIdentity(**document["repair_provider"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise NudeReferenceMaskRepairError("repair_batch_provider_invalid") from exc
+    if identity.role != "interactive_segmenter":
+        raise NudeReferenceMaskRepairError("repair_batch_provider_role_invalid")
+    records = document.get("records")
+    if not isinstance(records, list) or len(records) != document.get("record_count"):
+        raise NudeReferenceMaskRepairError("repair_batch_records_invalid")
+    statuses = Counter()
+    sample_ids = set()
+    root = Path(output_root).resolve()
+    for record in records:
+        if not isinstance(record, Mapping):
+            raise NudeReferenceMaskRepairError("repair_batch_record_invalid")
+        sample_id = record.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id or sample_id in sample_ids:
+            raise NudeReferenceMaskRepairError("repair_batch_sample_id_invalid")
+        sample_ids.add(sample_id)
+        status = record.get("status")
+        if status not in {"repair_candidates_created", "abstain", "record_error"}:
+            raise NudeReferenceMaskRepairError("repair_batch_status_invalid")
+        statuses[status] += 1
+        results = record.get("candidate_results")
+        if not isinstance(results, list):
+            raise NudeReferenceMaskRepairError("repair_batch_candidate_results_invalid")
+        people = set()
+        for result in results:
+            person_index = result.get("person_index") if isinstance(result, Mapping) else None
+            if (
+                not isinstance(person_index, int)
+                or isinstance(person_index, bool)
+                or person_index < 0
+                or person_index in people
+            ):
+                raise NudeReferenceMaskRepairError("repair_batch_person_index_invalid")
+            people.add(person_index)
+            if result.get("status") != "child_candidate_created":
+                continue
+            if (
+                result.get("authority") != "draft_repair_candidate_only"
+                or result.get("hard_qc_complete") is not False
+                or result.get("strict_visual_review_complete") is not False
+                or result.get("production_mask_authority") is not False
+                or result.get("operational_certificate_eligible") is not False
+            ):
+                raise NudeReferenceMaskRepairError("repair_child_authority_invalid")
+            relative = Path(str(result.get("child_relative_path") or ""))
+            path = (root / relative).resolve()
+            if path == root or root not in path.parents or not path.is_file():
+                raise NudeReferenceMaskRepairError("repair_child_path_invalid")
+            if sha256_file(path) != result.get("child_artifact_sha256"):
+                raise NudeReferenceMaskRepairError("repair_child_artifact_hash_mismatch")
+            with Image.open(path) as opened:
+                pixels = np.asarray(opened.convert("L"))
+            if set(np.unique(pixels).tolist()) - {0, 255}:
+                raise NudeReferenceMaskRepairError("repair_child_png_invalid")
+            binary = pixels == 255
+            if binary_mask_sha256(binary) != result.get("child_mask_sha256") or int(
+                np.count_nonzero(binary)
+            ) != result.get("child_pixel_count"):
+                raise NudeReferenceMaskRepairError("repair_child_pixel_identity_mismatch")
+            contract = result.get("child_target_contract")
+            validate_target_contract(contract)
+            if (
+                contract["candidate"]["encoded_sha256"] != result["child_artifact_sha256"]
+                or contract["candidate"]["decoded_pixel_sha256"] != result["child_mask_sha256"]
+            ):
+                raise NudeReferenceMaskRepairError("repair_child_contract_identity_mismatch")
+    if dict(sorted(statuses.items())) != document.get("status_counts"):
+        raise NudeReferenceMaskRepairError("repair_batch_status_counts_mismatch")
+    return dict(document)
+
+
+def build_reference_person_repair_reentry_batch(
+    *,
+    parent_provider_batch: Mapping[str, Any],
+    repair_batch: Mapping[str, Any],
+    output_root: Path,
+    parent_target_contracts: Mapping[str, Mapping[int, Mapping[str, Any]]],
+) -> tuple[dict[str, Any], dict[str, dict[int, dict[str, Any]]]]:
+    """Build a draft mixed-lineage batch for complete post-repair revalidation."""
+
+    parent = validate_box_prompt_provider_batch(parent_provider_batch, output_root=output_root)
+    repair = validate_reference_person_repair_batch(repair_batch, output_root=output_root)
+    if repair["provider_batch_sha256"] != parent["self_sha256"]:
+        raise NudeReferenceMaskRepairError("repair_reentry_parent_batch_drift")
+    repair_records = {record["sample_id"]: record for record in repair["records"]}
+    records = []
+    contracts: dict[str, dict[int, dict[str, Any]]] = {}
+    for parent_record in parent["records"]:
+        repair_record = repair_records.get(parent_record["sample_id"])
+        if repair_record is None:
+            continue
+        children = {
+            int(item["person_index"]): item
+            for item in repair_record["candidate_results"]
+            if item["status"] == "child_candidate_created"
+        }
+        if not children:
+            continue
+        candidates = []
+        child_contracts = {}
+        for parent_candidate in parent_record["candidates"]:
+            person_index = int(parent_candidate["person_index"])
+            candidate = deepcopy(dict(parent_candidate))
+            child = children.get(person_index)
+            try:
+                parent_contract = deepcopy(
+                    dict(parent_target_contracts[parent_record["sample_id"]][person_index])
+                )
+            except (KeyError, TypeError, ValueError) as exc:
+                raise NudeReferenceMaskRepairError(
+                    "repair_reentry_parent_target_contract_missing"
+                ) from exc
+            validate_target_contract(parent_contract)
+            if (
+                parent_contract["candidate"]["encoded_sha256"]
+                != parent_candidate["artifact_sha256"]
+                or parent_contract["candidate"]["decoded_pixel_sha256"]
+                != parent_candidate["mask_sha256"]
+            ):
+                raise NudeReferenceMaskRepairError("repair_reentry_parent_target_contract_drift")
+            if child is None:
+                candidate["author_provider"] = parent["provider"]
+                candidate["lineage"] = {
+                    "kind": "immutable_protected_parent",
+                    "parent_provider_batch_sha256": parent["self_sha256"],
+                    "parent_artifact_sha256": parent_candidate["artifact_sha256"],
+                    "repair_batch_sha256": repair["self_sha256"],
+                }
+                child_contracts[person_index] = parent_contract
+            else:
+                candidate.update(
+                    {
+                        "prompt_fingerprint": child["plan_sha256"],
+                        "confidence": child["repair_confidence"],
+                        "mask_sha256": child["child_mask_sha256"],
+                        "artifact_relative_path": child["child_relative_path"],
+                        "artifact_sha256": child["child_artifact_sha256"],
+                        "pixel_count": child["child_pixel_count"],
+                        "author_provider": repair["repair_provider"],
+                        "lineage": {
+                            "kind": "bounded_immutable_repair_child",
+                            "parent_provider_batch_sha256": parent["self_sha256"],
+                            "parent_artifact_sha256": child["parent_artifact_sha256"],
+                            "parent_mask_sha256": child["parent_mask_sha256"],
+                            "repair_batch_sha256": repair["self_sha256"],
+                            "hypothesis_id": child["hypothesis_id"],
+                            "plan_sha256": child["plan_sha256"],
+                        },
+                    }
+                )
+                child_contracts[person_index] = child["child_target_contract"]
+            candidates.append(candidate)
+        records.append(
+            {
+                "sample_id": parent_record["sample_id"],
+                "source_sha256": parent_record["source_sha256"],
+                "status": "generated",
+                "reason": [],
+                "candidates": candidates,
+            }
+        )
+        contracts[parent_record["sample_id"]] = child_contracts
+    counts = Counter(record["status"] for record in records)
+    body = {
+        "schema_version": "maskfactory.nude_box_prompt_provider_batch.v1",
+        "catalog_batch_sha256": parent["catalog_batch_sha256"],
+        "provider": repair["repair_provider"],
+        "record_count": len(records),
+        "candidate_count": sum(len(record["candidates"]) for record in records),
+        "status_counts": dict(sorted(counts.items())),
+        "records": records,
+        "authority": "draft_provider_masks_only",
+        "source_images_are_pixel_truth": False,
+        "boxes_are_pixel_truth": False,
+        "production_mask_authority": False,
+        "operational_certificates_issued": False,
+    }
+    reentry = {**body, "self_sha256": _canonical_sha256(body)}
+    validate_box_prompt_provider_batch(reentry, output_root=output_root)
+    return reentry, contracts
+
+
 __all__ = [
     "NudeReferenceMaskRepairError",
+    "build_reference_person_repair_reentry_batch",
     "execute_reference_person_repair_batch",
+    "validate_reference_person_repair_batch",
 ]

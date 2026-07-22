@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T16:49:57+00:00",
+    "generated_at": "2026-07-22T17:41:50+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 856,
     "total_tracked_including_orphaned": 856
@@ -83,6 +83,19 @@
     "autonomous_certified_gold_count": 0,
     "weighted_pseudo_label_count": 0,
     "machine_candidate_count": 0,
+    "detection_proposal_count": 693,
+    "provider_mask_candidate_count": 0,
+    "hard_qc_pass_count": 0,
+    "hard_qc_fail_count": 0,
+    "strict_visual_pass_count": 0,
+    "strict_visual_abstain_count": 0,
+    "repair_attempt_count": 0,
+    "repair_success_count": 0,
+    "semantic_alignment_pass_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "quarantined_legacy_package_count": 641,
+    "per_label_certification_yield_status": "zero_current_certified_outputs",
+    "per_domain_risk_bucket_coverage_status": "unmeasured_current_authority",
     "certified_training_package_count": 0,
     "effective_training_weight_units": 0.0,
     "zero_touch_fraction": null,
@@ -13703,18 +13716,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 85,
       "notes": [
         {
           "ts": "2026-07-22T06:28:54+00:00",
           "actor": "codex",
           "text": "Implemented fail-closed package semantic alignment before autonomous freeze and training, exact source/final-mask/active-label-mask/panel/deterministic-QA/report/quorum bindings, immutable legacy quarantine, and current primary-plus-independent-family authority validation. Live audit found 220/220 frozen CAA packages lack both semantic and quorum bindings; one diagnostic mask has good head/hair geometry but is declared torso. Completion remains open until current critics are promoted and the population is requalified into new versions."
+        },
+        {
+          "ts": "2026-07-22T17:41:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22 live reconciliation corrects the population boundary: 641 database lifecycle IDs exactly match 641 primary materialized package IDs; the earlier iso220 audit is an exact 220-ID subset. All 641 source/winner hashes verify, but zero packages have current semantic+independent-quorum bindings and zero recorded lifecycle byte hashes remain current. All 641 are therefore quarantined from training, champion, calibration, metrics, operational, and production authority pending new immutable versions."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; 220-package RunPod inventory seal d26fef17e3fd013e6595f9dffbc46e94b87f46876643fdc030d83cc660664dee; 24 focused semantic/package/dataset/schema/real-corpus tests PASS; Ruff, Black, JSON parse, tracker validation, and diff integrity PASS",
+      "evidence": "qa/live_verification/historical_caa_641_to_220_reconciliation_20260722.json; live sanitized inventory seal 4b1acb18100980f284c9c2f363911ef3a6783f1161a05156a60896edd21140aa; 16 focused tests PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T06:33:01+00:00",
+      "updated_at": "2026-07-22T17:41:52+00:00",
       "orphaned": false
     },
     "MF-P4-11.26": {
@@ -13730,7 +13748,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 88,
       "notes": [
         {
           "ts": "2026-07-22T06:28:55+00:00",
@@ -13761,12 +13779,17 @@
           "ts": "2026-07-22T07:22:20+00:00",
           "actor": "ai_agent",
           "text": "Implemented and pushed immutable semantic relabel publication at c258e186c. Consensus relabel results now create atomic, hash-bound machine-candidate package revisions while preserving parent/source/binary-mask bytes, remapping indexed ontology plus manifest coherently, refusing collisions/drift, and requiring fresh certification. The 220-package live critic run remains open."
+        },
+        {
+          "ts": "2026-07-22T17:41:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22 historical intake reconciliation is complete: 641/641 primary packages accounted, iso220 proven as subset, zero unknown records, and all 641 routed to immutable quarantine. Actual promoted-critic bulk requalification, relabel/repair outcomes, and new package versions remain open."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/bulk_semantic_requalification_executor_20260722.json; qa/live_verification/bulk_semantic_relabel_publication_20260722.json; plan 73c17c26b12191ed18b49ded78ec77d8f7d67d90baf0578a6a1c873ef0970edc; contact-sheet manifest 0f81690b7343842a9af139780d22064d5072b30ca74faaef7f26f743444601ac; commits 4f597aa484ac17564ecda8a84c84c86cf942c343 and c258e186c; 32 focused/adjacent tests PASS; CLI publication, Ruff, Black, tracker validation, and diff integrity PASS",
+      "evidence": "qa/live_verification/historical_caa_641_to_220_reconciliation_20260722.json; classification report SHA-256 30c701d4a3e5e812b430c8d908dfbba2ecff0fba9dded1a6bd2b0e27ce539479.",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T07:22:20+00:00",
+      "updated_at": "2026-07-22T17:41:52+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {

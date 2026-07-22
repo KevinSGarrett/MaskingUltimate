@@ -343,3 +343,16 @@ abstains or quarantines. Historical packages missing package-specific
 `semantic_alignment_report_sha256` or `critic_quorum_sha256` remain immutable
 but are ineligible for training, champion, positive calibration, autonomous
 gold metrics, and production mask authority until a new revision qualifies.
+
+The 2026-07-22 live reconciliation corrects the earlier population boundary:
+the 641 lifecycle/database identities now exactly match 641 materialized
+primary packages under `data/packages`; there are zero lifecycle-only and zero
+package-only identities. `data/packages_caa_iso220` is an exact 220-identity
+subset retained for the earlier isolated training/audit run, not the complete
+materialized population and not 220 additional packages. All 641 current
+source and winner-mask hashes verify, but zero packages bind both current
+semantic alignment and independent critic quorum, and zero retain their
+recorded lifecycle byte hash. Therefore all 641—not only the isolated 220—are
+quarantined from every authority-bearing use. Relative `package_truth` paths
+are interpreted only beneath their declared primary package root; existence in
+that context never repairs a stale lineage or missing semantic/quorum binding.

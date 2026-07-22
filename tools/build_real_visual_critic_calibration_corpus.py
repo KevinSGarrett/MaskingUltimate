@@ -210,6 +210,28 @@ def _candidate(scene: dict[str, Any], defect: str | None) -> np.ndarray:
     raise ValueError(f"unsupported defect: {defect}")
 
 
+def _focus_crop_xyxy(target: np.ndarray, candidate: np.ndarray) -> tuple[int, int, int, int]:
+    """Return a deterministic padded source crop that keeps the target evidence legible."""
+
+    if target.shape != candidate.shape or target.ndim != 2:
+        raise ValueError("focus-crop masks must share two-dimensional geometry")
+    focus = np.logical_or(target, candidate)
+    rows, columns = np.nonzero(focus)
+    height, width = focus.shape
+    if not len(rows):
+        return (0, 0, width, height)
+    x0, x1 = int(columns.min()), int(columns.max()) + 1
+    y0, y1 = int(rows.min()), int(rows.max()) + 1
+    extent = max(x1 - x0, y1 - y0)
+    padding = max(16, int(round(extent * 0.25)))
+    return (
+        max(0, x0 - padding),
+        max(0, y0 - padding),
+        min(width, x1 + padding),
+        min(height, y1 + padding),
+    )
+
+
 def build(
     output_root: Path,
     *,
@@ -320,7 +342,7 @@ def build(
                 candidate_file_sha256=candidate_sha,
                 expected_target_contract_sha256=contract["contract_sha256"],
                 expected_transform_sha256=transform_sha256(contract),
-                crop_xyxy=(0, 0, width, height),
+                crop_xyxy=_focus_crop_xyxy(scene["target"], candidate),
             )
             panel_hashes, panel_files = {}, {}
             for name in PANEL_NAMES:
@@ -373,8 +395,8 @@ def build(
             )
         manifest = {
             "schema_version": "1.0.0",
-            "corpus_id": "maskfactory_real_visual_critic_calibration_v1",
-            "frozen_at": "2026-07-22T00:00:00Z",
+            "corpus_id": "maskfactory_real_visual_critic_calibration_v2",
+            "frozen_at": "2026-07-22T07:00:00Z",
             "partitions": ["calibration", "qualification_holdout"],
             "defect_taxonomy": defects,
             "cases": cases,

@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from PIL import Image
-from tools.build_real_visual_critic_calibration_corpus import build
+from tools.build_real_visual_critic_calibration_corpus import _focus_crop_xyxy, build
 
 from maskfactory.vlm.real_corpus_policy import (
     RealCorpusPolicyError,
@@ -89,6 +89,16 @@ def test_real_builder_binds_every_case_to_real_source_annotation_and_reference_i
     assert all(row["real_source_pixels"] for row in bindings["cases"])
     assert all(not row["synthetic"] for row in bindings["cases"])
     assert bindings["reference_library"]["root_id"] == "reference_library"
+    assert manifest["corpus_id"] == "maskfactory_real_visual_critic_calibration_v2"
+
+    valid = manifest["cases"][0]
+    with Image.open(output / valid["panel_files"]["source"]) as source:
+        source_size = source.size
+    with Image.open(output / valid["panel_files"]["uncertainty_zoom"]) as zoom:
+        zoom_size = zoom.size
+    assert zoom_size[0] < source_size[0]
+    assert zoom_size[1] < source_size[1]
+    assert valid["panels"]["uncertainty_zoom"] != valid["panels"]["overlay"]
 
     validate_real_source_bindings(
         corpus=manifest,
@@ -184,3 +194,15 @@ def test_calibration_cli_requires_real_source_bindings_before_provider_invocatio
     assert result.returncode == 2
     assert "--source-bindings" in result.stderr
     assert not (tmp_path / "output.json").exists()
+
+
+def test_focus_crop_is_padded_bounded_and_includes_target_plus_candidate() -> None:
+    target = np.zeros((100, 120), dtype=bool)
+    candidate = np.zeros_like(target)
+    target[30:50, 20:40] = True
+    candidate[45:70, 55:75] = True
+    x0, y0, x1, y1 = _focus_crop_xyxy(target, candidate)
+    assert (x0, y0) == (4, 14)
+    assert (x1, y1) == (91, 86)
+    assert x0 <= 20 < 40 <= x1
+    assert x0 <= 55 < 75 <= x1

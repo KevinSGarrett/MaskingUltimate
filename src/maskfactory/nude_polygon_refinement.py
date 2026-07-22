@@ -26,6 +26,8 @@ MIN_SOURCE_IOU = 0.65
 MIN_AREA_RATIO = 0.50
 MAX_AREA_RATIO = 1.50
 MAX_EDGE_EXPANSION_PX = 16
+MAX_COMPONENT_INCREASE = 2
+BOUNDARY_SCORE_EPSILON = 1e-6
 
 
 class NudePolygonRefinementError(ValueError):
@@ -42,6 +44,26 @@ def _bbox(mask: np.ndarray) -> tuple[int, int, int, int]:
     if len(xs) == 0:
         raise NudePolygonRefinementError("mask_empty")
     return int(xs.min()), int(ys.min()), int(xs.max() + 1), int(ys.max() + 1)
+
+
+def _component_count(mask: np.ndarray) -> int:
+    count, _ = cv2.connectedComponents(mask.astype(np.uint8), connectivity=8)
+    return int(count - 1)
+
+
+def _boundary_alignment_score(image_rgb: np.ndarray, mask: np.ndarray) -> float:
+    """Measure how strongly a candidate contour follows local image gradients."""
+
+    gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
+    gradient_x = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=3)
+    gradient_y = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=3)
+    magnitude = cv2.magnitude(gradient_x, gradient_y)
+    boundary = cv2.morphologyEx(
+        mask.astype(np.uint8), cv2.MORPH_GRADIENT, np.ones((3, 3), np.uint8)
+    ).astype(bool)
+    if not boundary.any():
+        return 0.0
+    return float(magnitude[boundary].mean())
 
 
 def refine_polygon_mask(
@@ -88,14 +110,14 @@ def refine_polygon_mask(
     except cv2.error as exc:
         raise NudePolygonRefinementError("grabcut_failed") from exc
     refined = np.isin(grabcut_mask, (cv2.GC_FGD, cv2.GC_PR_FGD))
-    refined_pixels = int(refined.sum())
-    if refined_pixels == 0:
+    proposal_pixels = int(refined.sum())
+    if proposal_pixels == 0:
         raise NudePolygonRefinementError("refined_mask_empty")
     intersection = int(np.logical_and(source, refined).sum())
     union = int(np.logical_or(source, refined).sum())
     retention = intersection / source_pixels
     iou = intersection / union
-    area_ratio = refined_pixels / source_pixels
+    area_ratio = proposal_pixels / source_pixels
     refined_box = _bbox(refined)
     edge_expansion = max(
         source_box[0] - refined_box[0],
@@ -113,42 +135,72 @@ def refine_polygon_mask(
         reasons.append("area_ratio_out_of_bounds")
     if edge_expansion > MAX_EDGE_EXPANSION_PX:
         reasons.append("edge_expansion_out_of_bounds")
+    source_components = _component_count(source)
+    proposal_components = _component_count(refined)
+    if proposal_components > source_components + MAX_COMPONENT_INCREASE:
+        reasons.append("component_fragmentation_regression")
+    source_boundary_score = _boundary_alignment_score(image, source)
+    proposal_boundary_score = _boundary_alignment_score(image, refined)
+    if proposal_boundary_score <= source_boundary_score + BOUNDARY_SCORE_EPSILON:
+        reasons.append("boundary_alignment_not_improved")
     source_sha256 = _mask_sha256(source)
-    refined_sha256 = _mask_sha256(refined)
+    proposal_sha256 = _mask_sha256(refined)
+    if proposal_sha256 == source_sha256:
+        outcome = "no_progress"
+        selected = source
+    elif reasons:
+        outcome = (
+            "no_progress_boundary_not_improved"
+            if set(reasons) == {"boundary_alignment_not_improved"}
+            else "rejected_refinement_regression"
+        )
+        selected = source
+    else:
+        outcome = "draft_refined_candidate"
+        selected = refined
+    selected_sha256 = _mask_sha256(selected)
     report = {
-        "schema_version": "maskfactory.nude_polygon_refinement.v1",
+        "schema_version": "maskfactory.nude_polygon_refinement.v2",
         "provider_id": "opencv_grabcut_polygon_seeded",
         "provider_family": "classical_graphcut",
         "provider_revision": cv2.__version__,
         "iterations": iterations,
         "source_mask_sha256": source_sha256,
-        "refined_mask_sha256": refined_sha256,
+        "proposal_mask_sha256": proposal_sha256,
+        "selected_mask_sha256": selected_sha256,
+        "refined_mask_sha256": selected_sha256,
         "source_pixels": source_pixels,
-        "refined_pixels": refined_pixels,
-        "changed_pixels": int(np.logical_xor(source, refined).sum()),
+        "proposal_pixels": proposal_pixels,
+        "refined_pixels": int(selected.sum()),
+        "proposal_changed_pixels": int(np.logical_xor(source, refined).sum()),
+        "changed_pixels": int(np.logical_xor(source, selected).sum()),
         "source_retention": retention,
         "source_iou": iou,
         "area_ratio": area_ratio,
         "maximum_edge_expansion_px": edge_expansion,
+        "source_component_count": source_components,
+        "proposal_component_count": proposal_components,
+        "source_boundary_alignment_score": source_boundary_score,
+        "proposal_boundary_alignment_score": proposal_boundary_score,
+        "boundary_alignment_gain": proposal_boundary_score - source_boundary_score,
+        "parent_preserved": selected_sha256 == source_sha256,
         "thresholds": {
             "minimum_source_retention": MIN_SOURCE_RETENTION,
             "minimum_source_iou": MIN_SOURCE_IOU,
             "minimum_area_ratio": MIN_AREA_RATIO,
             "maximum_area_ratio": MAX_AREA_RATIO,
             "maximum_edge_expansion_px": MAX_EDGE_EXPANSION_PX,
+            "maximum_component_increase": MAX_COMPONENT_INCREASE,
+            "minimum_boundary_alignment_gain": 0.0,
         },
-        "outcome": (
-            "rejected_excessive_drift"
-            if reasons
-            else ("no_progress" if source_sha256 == refined_sha256 else "draft_refined_candidate")
-        ),
+        "outcome": outcome,
         "reasons": reasons,
         "authority": "deterministic_refiner_draft_only",
         "independent_provider_comparison_passed": False,
         "strict_visual_review_passed": False,
         "operational_certificate_eligible": False,
     }
-    return refined, report
+    return selected, report
 
 
 def _save_png(path: Path, image: np.ndarray) -> str:

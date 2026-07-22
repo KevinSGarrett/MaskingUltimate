@@ -1,0 +1,47 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_polygon_boundary_nonregression.v1",
+  "artifact_type": "adult_polygon_boundary_refinement_nonregression_gate",
+  "recorded_at": "2026-07-22T11:57:29Z",
+  "status": "PASS_BOUNDED_DRAFT_REFINEMENT",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.06",
+    "MF-P4-12.07"
+  ],
+  "product_behavior": {
+    "immutable_parent_preserved_on_rejection": true,
+    "unchanged_proposal_reported_as_no_progress": true,
+    "non_improving_boundary_proposal_preserves_parent": true,
+    "component_fragmentation_regression_rejected": true,
+    "geometric_drift_regression_rejected": true,
+    "accepted_refinement_requires_positive_image_boundary_alignment_gain": true
+  },
+  "real_canary": {
+    "record_count": 12,
+    "unique_split_group_count": 12,
+    "outcome_counts": {
+      "draft_refined_candidate": 12
+    },
+    "minimum_boundary_alignment_gain": 0.028582721948623657,
+    "average_boundary_alignment_gain": 0.152889804293712,
+    "maximum_boundary_alignment_gain": 0.34071308374404907,
+    "report_sha256": "cb9110db022fe88dfcb876ce806523d4a891916bf3c23f305be6a139e95b0172",
+    "contact_sheet_sha256": "ad532c2366e1cbef974806f509a9bd8f6847406f0c6cbb34891f35bb5b7c733e"
+  },
+  "codex_visual_review": {
+    "completed": true,
+    "result": "The 12 source/parent/refined/overlay/contour/ownership/delta rows remain localized to their labeled regions across real-photo and illustration domains. Boundary changes are small and no gross background expansion is visible. Several source annotations are coarse and the first source contains multiple people, so person-instance ownership and semantic correctness remain unproven."
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_polygon_refinement.py": "ba6d49d1f6a3ef9380b5ec8a7e65760855545a3a6b34ff64ff25d8edfd59391b",
+    "tests/test_nude_polygon_refinement.py": "bcfb020471567bfa17a59ce19008e8b2b1793f39f10a16de1692becae614dafd"
+  },
+  "authority": {
+    "draft_only": true,
+    "person_instance_ownership_verified": false,
+    "independent_provider_comparison_passed": false,
+    "strict_visual_review_quorum_passed": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Independent provider comparison, explicit person-instance ownership, strict per-record critic quorum, hard-QC integration, terminal receipts, and operational certification remain required."
+}

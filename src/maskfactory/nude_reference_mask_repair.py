@@ -562,9 +562,109 @@ def build_reference_person_repair_reentry_batch(
     return reentry, contracts
 
 
+def build_reference_repair_stage_receipt(
+    *,
+    repair_provider: Mapping[str, Any],
+    repair_batch_sha256: str,
+    record: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Seal per-target attempt history without advancing terminal authority."""
+
+    try:
+        identity = ProviderIdentity(**repair_provider)
+    except (TypeError, ValueError) as exc:
+        raise NudeReferenceMaskRepairError("repair_stage_provider_invalid") from exc
+    if identity.role != "interactive_segmenter":
+        raise NudeReferenceMaskRepairError("repair_stage_provider_invalid")
+    if not isinstance(repair_batch_sha256, str) or len(repair_batch_sha256) != 64:
+        raise NudeReferenceMaskRepairError("repair_stage_batch_hash_invalid")
+    sample_id = record.get("sample_id")
+    source_sha256 = record.get("source_sha256")
+    status = record.get("status")
+    reasons = record.get("reasons")
+    results = record.get("candidate_results")
+    if not isinstance(sample_id, str) or not sample_id:
+        raise NudeReferenceMaskRepairError("repair_stage_sample_id_invalid")
+    if not isinstance(source_sha256, str) or len(source_sha256) != 64:
+        raise NudeReferenceMaskRepairError("repair_stage_source_hash_invalid")
+    if status not in {"repair_candidates_created", "abstain", "record_error"}:
+        raise NudeReferenceMaskRepairError("repair_stage_status_invalid")
+    if not isinstance(reasons, list) or not all(isinstance(reason, str) for reason in reasons):
+        raise NudeReferenceMaskRepairError("repair_stage_reasons_invalid")
+    if not isinstance(results, list):
+        raise NudeReferenceMaskRepairError("repair_stage_results_invalid")
+    people = set()
+    for result in results:
+        person_index = result.get("person_index") if isinstance(result, Mapping) else None
+        if (
+            not isinstance(person_index, int)
+            or isinstance(person_index, bool)
+            or person_index < 0
+            or person_index in people
+        ):
+            raise NudeReferenceMaskRepairError("repair_stage_person_index_invalid")
+        people.add(person_index)
+        if result.get("status") not in {
+            "child_candidate_created",
+            "abstain",
+            "no_progress",
+            "record_error",
+        }:
+            raise NudeReferenceMaskRepairError("repair_stage_result_status_invalid")
+        if result["status"] == "child_candidate_created" and (
+            result.get("authority") != "draft_repair_candidate_only"
+            or result.get("hard_qc_complete") is not False
+            or result.get("strict_visual_review_complete") is not False
+            or result.get("production_mask_authority") is not False
+            or result.get("operational_certificate_eligible") is not False
+        ):
+            raise NudeReferenceMaskRepairError("repair_stage_child_authority_invalid")
+    body = {
+        "schema_version": "maskfactory.nude_reference_repair_stage.v1",
+        "stage": f"reference_person_bounded_repair:{identity.provider_key}",
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "repair_provider": dict(repair_provider),
+        "repair_batch_sha256": repair_batch_sha256,
+        "status": status,
+        "reasons": list(reasons),
+        "candidate_results": [dict(result) for result in results],
+        "authority": "intermediate_bounded_repair_evidence",
+        "terminal_progress_advanced": False,
+        "production_mask_authority": False,
+        "operational_certificate_issued": False,
+        "autonomous_certified_gold_created": False,
+    }
+    return {**body, "evidence_sha256": _canonical_sha256(body)}
+
+
+def validate_reference_repair_stage_receipt(payload: Mapping[str, Any]) -> dict[str, Any]:
+    if payload.get("schema_version") != "maskfactory.nude_reference_repair_stage.v1":
+        raise NudeReferenceMaskRepairError("repair_stage_schema_invalid")
+    rebuilt = build_reference_repair_stage_receipt(
+        repair_provider=payload.get("repair_provider", {}),
+        repair_batch_sha256=str(payload.get("repair_batch_sha256") or ""),
+        record={
+            key: payload.get(key)
+            for key in (
+                "sample_id",
+                "source_sha256",
+                "status",
+                "reasons",
+                "candidate_results",
+            )
+        },
+    )
+    if dict(payload) != rebuilt:
+        raise NudeReferenceMaskRepairError("repair_stage_evidence_drift")
+    return rebuilt
+
+
 __all__ = [
     "NudeReferenceMaskRepairError",
+    "build_reference_repair_stage_receipt",
     "build_reference_person_repair_reentry_batch",
     "execute_reference_person_repair_batch",
     "validate_reference_person_repair_batch",
+    "validate_reference_repair_stage_receipt",
 ]

@@ -23341,7 +23341,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 95,
+      "percent_complete": 97,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23427,12 +23427,17 @@
           "ts": "2026-07-22T17:21:08+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22: multi-person repair is now isolated per target. A cross-person-overlap failure becomes a typed target error without discarding a valid sibling child; accepted children immediately join protected geometry; re-entry advances only successful target revisions and preserves failed-target parents. Two-person complete-map hard-QC regression passes. Live governed execution and durable queue attempt state remain open."
+        },
+        {
+          "ts": "2026-07-22T17:25:03+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-22: per-person repair attempts are now sealed as nonterminal stage receipts in the existing leased SQLite shard queue. Exact replay is idempotent, changed hypotheses/payloads conflict, restart state preserves successful children and typed failures, and no terminal or authority state advances. Live governed shard execution remains open."
         }
       ],
-      "evidence": "qa/live_verification/nude_civitai_multi_person_repair_isolation_20260722.json; 128 focused/adjacent/tracker tests PASS; Ruff/Black/diff integrity clean.",
+      "evidence": "qa/live_verification/nude_civitai_repair_queue_checkpoint_20260722.json; 129 focused/adjacent/tracker tests PASS; Ruff/Black/diff integrity clean.",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T17:21:08+00:00",
+      "updated_at": "2026-07-22T17:25:03+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {

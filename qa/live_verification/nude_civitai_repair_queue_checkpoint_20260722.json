@@ -1,0 +1,42 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_repair_queue_checkpoint.v1",
+  "recorded_at": "2026-07-22T18:40:00Z",
+  "result": "STATIC_PASS_LIVE_SHARD_EXECUTION_PENDING",
+  "tracker_item": "MF-P4-12.06",
+  "implementation_hashes": {
+    "src/maskfactory/nude_reference_mask_repair.py": "0fd0571216da30871b1754b94e772d47c0fcfc5c0b7eb27a41244e5b09de1c76",
+    "src/maskfactory/nude_batch_queue.py": "5f7f22782943fb25fd23f1eddcd8706fd7b1b7e8c72aadd32c990fb71be4baff",
+    "tests/test_nude_batch_queue.py": "620977c7bfafc6a238a2cad55f58e52d135b3209d2f62407f54a19cc4d2e18ca"
+  },
+  "verified_controls": [
+    "every repair stage receipt binds the exact repair batch, source, provider, per-person status, hypothesis, plan, child lineage, and authority ceiling",
+    "repair receipts persist in the existing SQLite record_stage_evidence table rather than a shadow queue",
+    "an exact replay is idempotently retained",
+    "changed hypothesis or payload bytes fail the evidence-seal or idempotency check",
+    "stage checkpointing requires an owned live shard lease",
+    "repair-stage persistence never advances terminal record progress",
+    "repair-stage persistence cannot issue operational certificates or autonomous certified gold"
+  ],
+  "commands": [
+    {
+      "command": "python -m pytest -q tests/test_nude_box_mask_generation.py tests/test_nude_reference_mask_hard_qc.py tests/test_nude_batch_queue.py tests/test_visual_critic_authority.py tests/test_visual_critic_target_contract.py tests/test_visual_critic_repair_intent.py tests/test_autonomous_repair.py tests/test_tracker_modernization_coverage.py tests/test_tracker_completion_profiles.py",
+      "result": "PASS",
+      "passed": 129
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/nude_reference_mask_repair.py src/maskfactory/nude_batch_queue.py src/maskfactory/nude_box_mask_generation.py src/maskfactory/nude_reference_mask_hard_qc.py tests/test_nude_batch_queue.py tests/test_nude_reference_mask_hard_qc.py",
+      "result": "PASS"
+    }
+  ],
+  "authority_claims": {
+    "live_shard_repair_receipts": 0,
+    "terminal_records_advanced": 0,
+    "operational_certificates_issued": 0,
+    "autonomous_certified_gold_created": 0
+  },
+  "remaining": [
+    "execute and resume the repair stage on a live governed shard",
+    "run promoted independent critics and post-repair certification",
+    "publish measured pass/repair/abstain/quarantine throughput"
+  ]
+}

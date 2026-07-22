@@ -27,6 +27,7 @@ from maskfactory.nude_record_qualification import (
 from maskfactory.nude_reference_mask_hard_qc import (
     build_reference_mask_hard_qc_stage_receipt,
 )
+from maskfactory.nude_reference_mask_repair import build_reference_repair_stage_receipt
 from maskfactory.nude_reference_strict_visual_review import (
     build_reference_strict_visual_stage_receipt,
 )
@@ -627,6 +628,77 @@ def test_reference_strict_visual_checkpoint_is_idempotent_and_nonterminal(tmp_pa
     assert queue.summary(platform="runpod")["stage_evidence"] == {
         "reference_person_strict_visual_review:sam2_1_large": 1
     }
+
+
+def test_reference_repair_checkpoint_persists_attempt_history_without_terminal_progress(
+    tmp_path: Path,
+) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="repair-worker")
+    assert lease is not None
+    provider = {
+        "provider_key": "sam2-repair",
+        "role": "interactive_segmenter",
+        "model_family": "sam2",
+        "source_commit": "a" * 40,
+        "runtime_fingerprint": "b" * 64,
+        "contract_version": "1.0.0",
+    }
+    receipt = build_reference_repair_stage_receipt(
+        repair_provider=provider,
+        repair_batch_sha256="c" * 64,
+        record={
+            "sample_id": "repair-sample",
+            "source_sha256": "d" * 64,
+            "status": "repair_candidates_created",
+            "reasons": [],
+            "candidate_results": [
+                {
+                    "person_index": 0,
+                    "status": "child_candidate_created",
+                    "hypothesis_id": "underfill-owned-boundary-v1",
+                    "plan_sha256": "e" * 64,
+                    "authority": "draft_repair_candidate_only",
+                    "hard_qc_complete": False,
+                    "strict_visual_review_complete": False,
+                    "production_mask_authority": False,
+                    "operational_certificate_eligible": False,
+                }
+            ],
+        },
+    )
+    receipt["sample_index"] = 0
+    first = queue.checkpoint_reference_repairs(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+    replay = queue.checkpoint_reference_repairs(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        receipts=[receipt],
+    )
+
+    assert first == {"inserted": 1, "retained": 0, "terminal_progress_advanced": False}
+    assert replay == {"inserted": 0, "retained": 1, "terminal_progress_advanced": False}
+    assert queue.summary(platform="runpod")["checkpointed_records"] == 0
+    assert queue.summary(platform="runpod")["stage_evidence"] == {
+        "reference_person_bounded_repair:sam2-repair": 1
+    }
+
+    tampered = dict(receipt)
+    tampered["candidate_results"] = [dict(receipt["candidate_results"][0])]
+    tampered["candidate_results"][0]["hypothesis_id"] = "different-hypothesis"
+    with pytest.raises(ValueError, match="repair_stage_evidence_drift"):
+        queue.checkpoint_reference_repairs(
+            platform="runpod",
+            shard_path=lease["shard_path"],
+            lease_token=lease["lease_token"],
+            receipts=[tampered],
+        )
 
 
 def test_ownership_stage_checkpoint_rejects_authority_tamper(tmp_path: Path) -> None:

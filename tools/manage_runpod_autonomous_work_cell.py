@@ -14,6 +14,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from maskfactory.autonomy.work_cell import AutonomousWorkCell
+from maskfactory.autonomy.work_cell_command_handlers import CommandStageHandler
 from maskfactory.autonomy.work_cell_runner import WorkCellRunner
 
 
@@ -38,7 +39,7 @@ class _ManifestStageHandler:
         return self._function(work)
 
 
-def _load_handlers(path: Path) -> dict[str, _ManifestStageHandler]:
+def _load_handlers(path: Path) -> dict[str, Any]:
     document = _read(path)
     schema_path = (
         Path(__file__).parents[1]
@@ -60,11 +61,17 @@ def _load_handlers(path: Path) -> dict[str, _ManifestStageHandler]:
     if not isinstance(handlers, dict):
         raise SystemExit("handler manifest requires object handlers")
 
-    loaded: dict[str, _ManifestStageHandler] = {}
+    loaded: dict[str, Any] = {}
     base = path.parent
     for stage, spec in handlers.items():
         if not isinstance(spec, dict):
             raise SystemExit(f"handler spec invalid: {stage}")
+        if spec["kind"] == "subprocess_json":
+            try:
+                loaded[stage] = CommandStageHandler.from_spec(stage, spec, base=base)
+            except Exception as exc:
+                raise SystemExit(str(exc)) from exc
+            continue
         source_path = spec.get("source_path")
         callable_name = spec.get("callable")
         implementation_sha256 = spec.get("implementation_sha256")

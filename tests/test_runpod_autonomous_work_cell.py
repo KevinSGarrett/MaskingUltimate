@@ -16,6 +16,7 @@ from maskfactory.autonomy.work_cell import (
     seal_manifest,
     validate_mission_manifest,
 )
+from maskfactory.autonomy.work_cell_command_handlers import command_binding_sha256
 from maskfactory.autonomy.work_cell_runner import WorkCellRunner
 
 HEX = "a" * 64
@@ -627,6 +628,7 @@ def test_cli_run_loads_hash_bound_handlers_and_writes_milestones(tmp_path: Path)
                 "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
                 "handlers": {
                     stage: {
+                        "kind": "python_callable",
                         "source_path": str(handler_source),
                         "callable": "handle",
                         "implementation_sha256": source_hash,
@@ -706,6 +708,7 @@ def test_cli_run_rejects_incomplete_handler_manifest_before_work(tmp_path: Path)
                 "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
                 "handlers": {
                     "source_decode": {
+                        "kind": "python_callable",
                         "source_path": "stage_handlers.py",
                         "callable": "handle",
                         "implementation_sha256": HEX,
@@ -779,6 +782,203 @@ def test_cli_run_rejects_incomplete_handler_manifest_before_work(tmp_path: Path)
         )
     )
     assert report["stage_counts"] == {"source_decode": 1}
+
+
+def test_cli_run_executes_subprocess_json_handlers_for_full_batch(tmp_path: Path) -> None:
+    command_source = tmp_path / "stage_command.py"
+    command_source.write_text(
+        "\n".join(
+            [
+                "import json",
+                "import sys",
+                "work = json.loads(sys.stdin.read())",
+                "stage = work['stage']",
+                "actors = {",
+                "    'source_decode': 'deterministic_qa',",
+                "    'detection_ownership': 'deterministic_qa',",
+                "    'provider_tournament': 'segmentation_provider',",
+                "    'hard_qc': 'deterministic_qa',",
+                "    'primary_visual_review': 'visual_critic',",
+                "    'independent_visual_review': 'visual_critic',",
+                "    'repair_planning': 'visual_critic',",
+                "    'repair_execution': 'segmentation_provider',",
+                "    'package_freeze': 'deterministic_qa',",
+                "    'certification': 'certificate_service',",
+                "}",
+                "details = {",
+                "    'source_decode': {'decoded_pixel_sha256': 'a' * 64, 'alpha_policy': 'absent', 'width': 32, 'height': 32},",
+                "    'detection_ownership': {'target_contract_sha256': 'a' * 64, 'person_count': 1, 'ownership_status': 'verified'},",
+                "    'provider_tournament': {'tournament_report_sha256': 'a' * 64, 'family_count': 2, 'candidate_count': 2, 'winner_mask_sha256': 'a' * 64},",
+                "    'hard_qc': {'qa_vector_sha256': 'a' * 64, 'hard_veto_count': 0},",
+                "    'primary_visual_review': {'panel_sha256': 'a' * 64, 'critic_report_sha256': 'a' * 64, 'verdict': 'pass'},",
+                "    'independent_visual_review': {'panel_sha256': 'a' * 64, 'critic_report_sha256': 'a' * 64, 'verdict': 'pass'},",
+                "    'repair_planning': {'defect_hypothesis_sha256': 'a' * 64, 'roi_sha256': 'a' * 64, 'operation': 'box_refine'},",
+                "    'repair_execution': {'parent_mask_sha256': 'a' * 64, 'new_mask_sha256': 'b' * 64, 'changed_pixel_fraction': 0.1},",
+                "    'package_freeze': {'package_sha256': 'a' * 64, 'active_label_count': 1},",
+                "    'certification': {'certificate_sha256': 'a' * 64, 'authority_tier': 'operationally_certified_artifact'},",
+                "}",
+                "print(json.dumps({'stage': stage, 'status': 'pass', 'actor_kind': actors[stage], 'evidence_sha256': 'a' * 64, 'detail': details[stage]}))",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    base_spec = {
+        "kind": "subprocess_json",
+        "command": [sys.executable, str(command_source)],
+        "timeout_seconds": 10,
+    }
+    command_hash = command_binding_sha256(base_spec)
+    document = manifest(record_count=1)
+    document["mission_id"] = "mission-cmd-0001"
+    document["allowed_output_prefix"] = "missions/mission-cmd-0001"
+    document["stage_versions"] = {stage: command_hash for stage in document["stage_versions"]}
+    document = seal_manifest(document)
+    manifest_path = tmp_path / "mission.json"
+    records_path = tmp_path / "records.json"
+    handlers_path = tmp_path / "handlers.json"
+    manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    records_path.write_text(
+        json.dumps([{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}]),
+        encoding="utf-8",
+    )
+    handlers_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
+                "handlers": {
+                    stage: {**base_spec, "implementation_sha256": command_hash}
+                    for stage in document["stage_versions"]
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    root = tmp_path / "queue"
+    cli = Path.cwd() / "tools" / "manage_runpod_autonomous_work_cell.py"
+    for command in (
+        ["--root", str(root), "admit", "--manifest", str(manifest_path)],
+        [
+            "--root",
+            str(root),
+            "seed",
+            "--mission-id",
+            document["mission_id"],
+            "--records",
+            str(records_path),
+        ],
+        [
+            "--root",
+            str(root),
+            "run",
+            "--mission-id",
+            document["mission_id"],
+            "--owner",
+            "runpod-daemon",
+            "--handlers",
+            str(handlers_path),
+        ],
+    ):
+        subprocess.run([sys.executable, str(cli), *command], check=True, env=env, cwd=Path.cwd())
+
+    report = json.loads(
+        subprocess.check_output(
+            [
+                sys.executable,
+                str(cli),
+                "--root",
+                str(root),
+                "report",
+                "--mission-id",
+                document["mission_id"],
+            ],
+            env=env,
+            cwd=Path.cwd(),
+            text=True,
+        )
+    )
+    assert report["mission_state"] == "complete"
+    assert report["outcome_counts"] == {"accepted": 1}
+
+
+def test_cli_run_rejects_subprocess_handler_binding_drift(tmp_path: Path) -> None:
+    spec = {
+        "kind": "subprocess_json",
+        "command": [sys.executable, "-c", "print('{}')"],
+        "timeout_seconds": 10,
+    }
+    document = manifest(record_count=1)
+    command_hash = command_binding_sha256(spec)
+    document["stage_versions"] = {stage: command_hash for stage in document["stage_versions"]}
+    document = seal_manifest(document)
+    manifest_path = tmp_path / "mission.json"
+    records_path = tmp_path / "records.json"
+    handlers_path = tmp_path / "handlers.json"
+    manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    records_path.write_text(
+        json.dumps([{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}]),
+        encoding="utf-8",
+    )
+    handlers_path.write_text(
+        json.dumps(
+            {
+                "schema_version": "maskfactory.runpod_work_cell_handlers.v1",
+                "handlers": {
+                    stage: {**spec, "implementation_sha256": "f" * 64}
+                    for stage in document["stage_versions"]
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    env = {**os.environ, "PYTHONPATH": str(Path.cwd() / "src")}
+    root = tmp_path / "queue"
+    cli = Path.cwd() / "tools" / "manage_runpod_autonomous_work_cell.py"
+    subprocess.run(
+        [sys.executable, str(cli), "--root", str(root), "admit", "--manifest", str(manifest_path)],
+        check=True,
+        env=env,
+        cwd=Path.cwd(),
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--root",
+            str(root),
+            "seed",
+            "--mission-id",
+            document["mission_id"],
+            "--records",
+            str(records_path),
+        ],
+        check=True,
+        env=env,
+        cwd=Path.cwd(),
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(cli),
+            "--root",
+            str(root),
+            "run",
+            "--mission-id",
+            document["mission_id"],
+            "--owner",
+            "runpod-daemon",
+            "--handlers",
+            str(handlers_path),
+        ],
+        env=env,
+        cwd=Path.cwd(),
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "command handler binding hash mismatch" in result.stderr
 
 
 def _sha256_file_for_test(path: Path) -> str:

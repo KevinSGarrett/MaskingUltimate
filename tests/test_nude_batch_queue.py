@@ -107,6 +107,7 @@ def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
     result = qualify_terminal_record(
         {
             "sample_id": f"qualified-{index}",
+            "candidate_label": "breast_region",
             "source_sha256": source_sha,
             "mask_sha256": selected,
             "ownership": {
@@ -188,6 +189,7 @@ def _abstained_outcome(tmp_path: Path, index: int) -> dict[str, object]:
     result = qualify_nonacceptance_record(
         {
             "sample_id": accepted["sample_id"],
+            "candidate_label": accepted["candidate_label"],
             "source_sha256": accepted["source_sha256"],
             "mask_sha256": accepted["mask_sha256"],
             "outcome": "abstained",

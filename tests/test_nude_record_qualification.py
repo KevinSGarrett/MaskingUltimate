@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import cv2
@@ -25,6 +26,11 @@ _PANEL_CONTEXTS: dict[str, tuple[str, str]] = {}
 
 def _sha(value: str) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
+
+
+def _canonical_sha256(value: object) -> str:
+    encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
 def _panels(tmp_path: Path) -> dict[str, dict[str, str]]:
@@ -70,6 +76,7 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
     source_sha256, selected = _PANEL_CONTEXTS[panel_bundle_sha256]
     record: dict[str, object] = {
         "sample_id": "adult-sample-0001",
+        "candidate_label": "breast_region",
         "source_sha256": source_sha256,
         "mask_sha256": selected,
         "ownership": {
@@ -157,10 +164,34 @@ def test_accepted_record_binds_all_evidence_without_granting_production_authorit
     assert len(result["evidence_sha256"]) == 64
     authority = result["qualification_evidence"]
     assert authority["authority"] == "machine_verified_candidate"
+    assert authority["candidate_label"] == "breast_region"
+    assert authority["label_scale_hard_qc"]["mask_image_area_ratio"] == pytest.approx(480 / 2304)
     assert authority["human_gold"] is False
     assert authority["production_mask_authority"] is False
     assert authority["operational_certificate_issued"] is False
     assert validate_qualified_queue_payload(result) == result
+
+
+def test_terminal_receipt_rejects_whole_person_scale_for_fine_label(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record["candidate_label"] = "nipple"
+    with pytest.raises(NudeRecordQualificationError, match="label_scale_hard_qc_invalid"):
+        qualify_terminal_record(record, panels=panels)
+
+
+def test_queue_recomputes_label_scale_after_label_and_receipt_hash_rewrite(
+    tmp_path: Path,
+) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    result = qualify_terminal_record(_record(bundle["panel_bundle_sha256"]), panels=panels)
+    result["candidate_label"] = "nipple"
+    result["qualification_evidence"]["candidate_label"] = "nipple"
+    result["evidence_sha256"] = _canonical_sha256(result["qualification_evidence"])
+    with pytest.raises(NudeRecordQualificationError, match="label_scale_hard_qc_invalid"):
+        validate_qualified_queue_payload(result)
 
 
 def test_contact_sheet_or_missing_view_cannot_replace_per_record_evidence(tmp_path: Path) -> None:

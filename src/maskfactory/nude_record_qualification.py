@@ -7,6 +7,10 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import numpy as np
+from PIL import Image
+
+from .nude_polygon_hard_qc import NudePolygonQcError, evaluate_anatomy_mask_scale
 from .nude_visual_evidence import verify_pixel_semantic_visual_evidence
 
 REQUIRED_PANEL_KINDS = (
@@ -87,6 +91,18 @@ def _verify_pixel_semantic_evidence(
         )
     except ValueError as exc:
         raise NudeRecordQualificationError(f"pixel_semantic_visual_evidence_invalid:{exc}") from exc
+
+
+def _verify_label_scale(panels: Mapping[str, Any], *, candidate_label: str) -> dict[str, Any]:
+    mask_entry = panels.get("mask")
+    if not isinstance(mask_entry, Mapping):
+        raise NudeRecordQualificationError("mask_panel_entry_invalid")
+    path = Path(_nonempty(mask_entry.get("path"), "panel_mask_path"))
+    try:
+        pixels = np.asarray(Image.open(path).convert("L")) > 0
+        return evaluate_anatomy_mask_scale(pixels, candidate_label=candidate_label)
+    except (OSError, NudePolygonQcError) as exc:
+        raise NudeRecordQualificationError(f"label_scale_hard_qc_invalid:{exc}") from exc
 
 
 def _verify_provider_comparison(
@@ -315,10 +331,12 @@ def qualify_terminal_record(
             "abstained_or_rejected_outcomes_require_the_separate_failure_receipt_path"
         )
     sample_id = _nonempty(record.get("sample_id"), "sample_id")
+    candidate_label = _nonempty(record.get("candidate_label"), "candidate_label")
     source_sha256 = _sha256(record.get("source_sha256"), "source_sha256")
     selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
+    label_scale_hard_qc = _verify_label_scale(panels, candidate_label=candidate_label)
     ownership = _verify_ownership(
         record.get("ownership", {}),
         source_sha256=source_sha256,
@@ -342,8 +360,9 @@ def qualify_terminal_record(
         record.get("repair"), outcome=str(outcome), selected_mask_sha256=selected_mask_sha256
     )
     evidence = {
-        "schema_version": "maskfactory.nude_record_qualification.v2",
+        "schema_version": "maskfactory.nude_record_qualification.v3",
         "sample_id": sample_id,
+        "candidate_label": candidate_label,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
         "outcome": outcome,
@@ -351,6 +370,7 @@ def qualify_terminal_record(
         "hard_qc": hard_qc,
         "panel_evidence": panel_evidence,
         "pixel_semantic_visual_evidence": pixel_semantic_evidence,
+        "label_scale_hard_qc": label_scale_hard_qc,
         "ownership": ownership,
         "strict_reviews": strict_reviews,
         "repair": repair,
@@ -362,6 +382,7 @@ def qualify_terminal_record(
     evidence_sha256 = _canonical_sha256(evidence)
     return {
         "sample_id": sample_id,
+        "candidate_label": candidate_label,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
         "outcome": outcome,
@@ -378,9 +399,9 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     evidence = payload.get("qualification_evidence")
     if not isinstance(evidence, Mapping):
         raise NudeRecordQualificationError("qualification_evidence_required")
-    if evidence.get("schema_version") != "maskfactory.nude_record_qualification.v2":
+    if evidence.get("schema_version") != "maskfactory.nude_record_qualification.v3":
         raise NudeRecordQualificationError("qualification_evidence_schema_invalid")
-    for field in ("sample_id", "source_sha256", "mask_sha256", "outcome"):
+    for field in ("sample_id", "candidate_label", "source_sha256", "mask_sha256", "outcome"):
         if payload.get(field) != evidence.get(field):
             raise NudeRecordQualificationError(f"qualification_{field}_mismatch")
     expected = _sha256(payload.get("evidence_sha256"), "evidence_sha256")
@@ -414,6 +435,11 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     observed_semantic = _verify_pixel_semantic_evidence(evidence, semantic_panels)
     if dict(pixel_semantic_evidence) != observed_semantic:
         raise NudeRecordQualificationError("pixel_semantic_visual_evidence_drift")
+    observed_scale = _verify_label_scale(
+        panels, candidate_label=str(evidence.get("candidate_label") or "")
+    )
+    if evidence.get("label_scale_hard_qc") != observed_scale:
+        raise NudeRecordQualificationError("label_scale_hard_qc_drift")
     _verify_ownership(
         evidence.get("ownership", {}),
         source_sha256=str(payload["source_sha256"]),
@@ -515,6 +541,7 @@ def qualify_nonacceptance_record(
     if outcome not in {"abstained", "rejected"}:
         raise NudeRecordQualificationError("nonacceptance_outcome_invalid")
     sample_id = _nonempty(record.get("sample_id"), "sample_id")
+    candidate_label = _nonempty(record.get("candidate_label"), "candidate_label")
     source_sha256 = _sha256(record.get("source_sha256"), "source_sha256")
     selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
     failure_stage = record.get("failure_stage")
@@ -530,6 +557,7 @@ def qualify_nonacceptance_record(
         raise NudeRecordQualificationError("failure_reasons_required")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
+    label_scale_hard_qc = _verify_label_scale(panels, candidate_label=candidate_label)
     ownership = _verify_ownership(
         record.get("ownership", {}),
         source_sha256=source_sha256,
@@ -600,8 +628,9 @@ def qualify_nonacceptance_record(
             ),
         }
     evidence = {
-        "schema_version": "maskfactory.nude_record_nonacceptance.v2",
+        "schema_version": "maskfactory.nude_record_nonacceptance.v3",
         "sample_id": sample_id,
+        "candidate_label": candidate_label,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
         "outcome": outcome,
@@ -611,6 +640,7 @@ def qualify_nonacceptance_record(
         "hard_qc": hard_qc_evidence,
         "panel_evidence": panel_evidence,
         "pixel_semantic_visual_evidence": pixel_semantic_evidence,
+        "label_scale_hard_qc": label_scale_hard_qc,
         "ownership": ownership,
         "strict_reviews": reviews,
         "repair": repair_evidence,
@@ -622,6 +652,7 @@ def qualify_nonacceptance_record(
     evidence_sha256 = _canonical_sha256(evidence)
     return {
         "sample_id": sample_id,
+        "candidate_label": candidate_label,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
         "outcome": outcome,
@@ -652,6 +683,7 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
     rebuilt = qualify_nonacceptance_record(
         {
             "sample_id": evidence.get("sample_id"),
+            "candidate_label": evidence.get("candidate_label"),
             "source_sha256": evidence.get("source_sha256"),
             "mask_sha256": evidence.get("mask_sha256"),
             "outcome": evidence.get("outcome"),
@@ -667,7 +699,14 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
     )
     if dict(evidence) != rebuilt["qualification_evidence"]:
         raise NudeRecordQualificationError("nonacceptance_evidence_drift")
-    for field in ("sample_id", "source_sha256", "mask_sha256", "outcome", "evidence_sha256"):
+    for field in (
+        "sample_id",
+        "candidate_label",
+        "source_sha256",
+        "mask_sha256",
+        "outcome",
+        "evidence_sha256",
+    ):
         if payload.get(field) != rebuilt.get(field):
             raise NudeRecordQualificationError(f"nonacceptance_{field}_mismatch")
     return dict(payload)

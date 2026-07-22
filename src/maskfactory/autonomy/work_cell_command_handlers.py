@@ -24,6 +24,14 @@ def canonical_sha256(value: Mapping[str, Any]) -> str:
     return hashlib.sha256(body.encode("utf-8")).hexdigest()
 
 
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def command_binding_sha256(spec: Mapping[str, Any]) -> str:
     """Hash the command binding that must match the mission stage version."""
 
@@ -67,6 +75,14 @@ class CommandStageHandler:
         observed = command_binding_sha256(spec)
         if observed != expected:
             raise CommandStageHandlerError(f"command handler binding hash mismatch: {stage}")
+        for binding_file in spec.get("binding_files") or ():
+            path = Path(str(binding_file["path"]))
+            if not path.is_absolute():
+                path = base / path
+            if file_sha256(path) != binding_file["sha256"]:
+                raise CommandStageHandlerError(
+                    f"command handler binding file hash mismatch: {stage}"
+                )
         cwd = spec.get("cwd")
         resolved_cwd = None
         if isinstance(cwd, str):

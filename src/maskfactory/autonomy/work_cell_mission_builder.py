@@ -69,6 +69,16 @@ def normalize_handler_specs(
             spec["implementation_sha256"] = file_sha256(source)
         elif kind == "subprocess_json":
             spec.pop("implementation_sha256", None)
+            binding_files = []
+            for row in spec.get("binding_files") or ():
+                binding = dict(row)
+                source = Path(str(binding["path"]))
+                if not source.is_absolute():
+                    source = base / source
+                binding["sha256"] = file_sha256(source)
+                binding_files.append(binding)
+            if binding_files:
+                spec["binding_files"] = binding_files
             spec["implementation_sha256"] = command_binding_sha256(spec)
         else:
             raise MissionBuilderError(f"handler kind invalid: {stage}")

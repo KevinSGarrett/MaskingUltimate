@@ -16,7 +16,11 @@ from maskfactory.autonomy.work_cell import (
     seal_manifest,
     validate_mission_manifest,
 )
-from maskfactory.autonomy.work_cell_command_handlers import command_binding_sha256
+from maskfactory.autonomy.work_cell_command_handlers import (
+    CommandStageHandler,
+    CommandStageHandlerError,
+    command_binding_sha256,
+)
 from maskfactory.autonomy.work_cell_mission_builder import build_mission_artifacts
 from maskfactory.autonomy.work_cell_receipts import file_sha256
 from maskfactory.autonomy.work_cell_runner import WorkCellRunner
@@ -199,6 +203,23 @@ def test_schemas_are_closed_and_valid() -> None:
         schema = json.loads((root / name).read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(schema)
         assert schema["additionalProperties"] is False
+
+
+def test_subprocess_handler_rejects_binding_file_drift_before_work(tmp_path: Path) -> None:
+    bound_tool = tmp_path / "stage_tool.py"
+    bound_tool.write_text("print('{}')\n", encoding="utf-8")
+    spec = {
+        "kind": "subprocess_json",
+        "command": [sys.executable, str(bound_tool)],
+        "timeout_seconds": 10,
+        "binding_files": [{"path": str(bound_tool), "sha256": file_sha256(bound_tool)}],
+    }
+    spec["implementation_sha256"] = command_binding_sha256(spec)
+    CommandStageHandler.from_spec("source_decode", spec, base=tmp_path)
+
+    bound_tool.write_text('print(\'{"stage":"source_decode"}\')\n', encoding="utf-8")
+    with pytest.raises(CommandStageHandlerError, match="binding file hash mismatch"):
+        CommandStageHandler.from_spec("source_decode", spec, base=tmp_path)
 
 
 def test_manifest_rejects_drift_correlated_roles_and_unqualified_authority() -> None:

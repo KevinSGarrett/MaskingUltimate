@@ -65,6 +65,10 @@
           "type": "object",
           "additionalProperties": {"type": "string"}
         },
+        "binding_files": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/binding_file"}
+        },
         "description": {"type": "string"}
       },
       "allOf": [
@@ -77,6 +81,19 @@
           "then": {"required": ["command", "timeout_seconds"]}
         }
       ]
+    },
+    "binding_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
     },
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   }

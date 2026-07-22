@@ -31,7 +31,13 @@ Source representations retain distinct roles:
 - COCO boxes are prompts/coarse detection supervision, never pixel masks.
 - sexual-action and position labels are scene/action supervision and evaluation
   context, never anatomy pixels.
-- CivitAI images/metadata are reference and tournament inputs with no mask truth.
+- The exact 6,537 files under
+  `C:\Comfy_UI_Main\MaskedWarehouse\Nude\CivitAI_Top_NSFW_Images` are
+  `reference_and_tournament_input`, `reference_only_no_mask_truth`, and
+  `synthetic_or_generated`. They have zero polygon, bbox, or segmentation
+  annotations. Their filenames join exactly to `prompts.json`; prompt and
+  `nsfwLevel` values are weak scene/action/retrieval context only and cannot
+  create pixel anatomy labels, fine labels, boxes, or masks.
 - Porn-Blocker-Benchmark is frozen evaluation-only holdout and cannot train.
 
 Downloaded labels and generated masks never become human gold or operational
@@ -82,6 +88,14 @@ stop its shard. Systemic canary failures are corrected before expansion to
 1,000 records and then the full population. Thresholds are never weakened to
 increase throughput.
 
+The CivitAI reference lane is exactly 26 shards (25 of 256 records and one of
+137 records). Every shard runs independent multi-provider proposal generation,
+provider comparison, hard QC, strict per-record visual review, bounded repair,
+and terminal accept/abstain/quarantine handling. Only newly generated,
+hash-bound artifacts that pass the full autonomous qualification policy may
+become machine-verified supervision at their earned tier; neither the source
+image nor its prompt is gold, labeled segmentation supervision, or pixel truth.
+
 ## 5. Durable scheduler and reporting
 
 Queue every eligible shard. The durable state binds registry/index/shard,
@@ -117,6 +131,9 @@ Compare allowlisted files by relative path, size, and SHA-256; upload only
 missing or changed paths from `runpod_transfer_files.generated.txt`. Preserve
 paths, exclude ZIP duplicates/cache internals, retain extras for reconciliation,
 and verify local/pod registry seals and counts after transfer.
+The remote CivitAI files retain the exact relative
+`Nude/CivitAI_Top_NSFW_Images` path and reference-only role; synchronization
+must not relabel or relocate them into a mask, annotation, or gold directory.
 
 CPU/network transfer needs no GPU lease. Provider inference and strict-VLM
 bursts use SharedRunPodCoordinator v2, auto-tuned microbatches, 64-record panel

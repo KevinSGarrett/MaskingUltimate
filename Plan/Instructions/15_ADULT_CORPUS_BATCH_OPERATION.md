@@ -15,6 +15,13 @@ Operating memory for every fresh session:
   index `16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a`;
 - local shards are Windows-only; RunPod shards are remote-only;
 - polygons, boxes, actions, references, and holdout retain different roles;
+- the 6,537 files in `CivitAI_Top_NSFW_Images` are reference-only generated
+  source images across 26 shards, with zero source polygon/bbox/segmentation
+  truth; join filenames to `prompts.json` only for weak scene/action/retrieval
+  context and never infer pixel anatomy or fine labels from prompt text;
+- preserve their exact `Nude/CivitAI_Top_NSFW_Images` relative path and
+  reference-only role on RunPod; only newly generated masks that pass full
+  per-record qualification may earn machine-verified supervision;
 - decode both polygon arrays and valid COCO RLE; require exact RLE canvas/run
   totals, recompute pixel area, retain stale source-area metadata as advisory,
   preserve the 0.90 polygon bbox IoU floor, and allow only the separately logged

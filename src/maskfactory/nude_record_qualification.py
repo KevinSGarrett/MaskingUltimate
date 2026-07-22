@@ -16,6 +16,7 @@ REQUIRED_PANEL_KINDS = (
 )
 REQUIRED_REVIEW_ROLES = frozenset({"primary_visual_critic", "independent_juror"})
 TERMINAL_OUTCOMES = frozenset({"accepted", "repaired", "abstained", "rejected"})
+FAILURE_STAGES = frozenset({"provider_comparison", "hard_qc", "strict_review", "repair_exhausted"})
 
 
 class NudeRecordQualificationError(ValueError):
@@ -67,9 +68,12 @@ def verify_complete_panel_evidence(panels: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _verify_provider_comparison(
-    comparison: Mapping[str, Any], *, selected_mask_sha256: str
+    comparison: Mapping[str, Any],
+    *,
+    selected_mask_sha256: str,
+    allowed_statuses: frozenset[str] = frozenset({"pass"}),
 ) -> dict[str, Any]:
-    if comparison.get("status") != "pass":
+    if comparison.get("status") not in allowed_statuses:
         raise NudeRecordQualificationError("provider_comparison_not_passed")
     if comparison.get("selected_mask_sha256") != selected_mask_sha256:
         raise NudeRecordQualificationError("provider_selected_mask_mismatch")
@@ -109,7 +113,7 @@ def _verify_provider_comparison(
     if not selected_present:
         raise NudeRecordQualificationError("selected_mask_absent_from_provider_candidates")
     return {
-        "status": "pass",
+        "status": comparison["status"],
         "report_sha256": report_sha256,
         "selected_mask_sha256": selected_mask_sha256,
         "candidates": normalized,
@@ -324,11 +328,217 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     return dict(payload)
 
 
+def _verify_nonacceptance_reviews(
+    reviews: Sequence[Mapping[str, Any]],
+    *,
+    selected_mask_sha256: str,
+    panel_bundle_sha256: str,
+) -> list[dict[str, Any]]:
+    if not isinstance(reviews, Sequence) or isinstance(reviews, (str, bytes)):
+        raise NudeRecordQualificationError("strict_reviews_invalid")
+    normalized: list[dict[str, Any]] = []
+    roles: set[str] = set()
+    families: set[str] = set()
+    for review in reviews:
+        if not isinstance(review, Mapping):
+            raise NudeRecordQualificationError("strict_review_invalid")
+        role = _nonempty(review.get("role"), "strict_review_role")
+        verdict = review.get("verdict")
+        if role not in REQUIRED_REVIEW_ROLES or role in roles:
+            raise NudeRecordQualificationError("strict_review_role_quorum_invalid")
+        if verdict not in {"pass", "fail", "uncertain"}:
+            raise NudeRecordQualificationError("strict_review_verdict_invalid")
+        if review.get("mask_sha256") != selected_mask_sha256:
+            raise NudeRecordQualificationError("strict_review_mask_mismatch")
+        if review.get("panel_bundle_sha256") != panel_bundle_sha256:
+            raise NudeRecordQualificationError("strict_review_panel_bundle_mismatch")
+        evidence = _nonempty(review.get("evidence"), "strict_review_evidence")
+        if evidence.strip().lower() in {"pass", "fail", "uncertain", "looks good", "ok"}:
+            raise NudeRecordQualificationError("strict_review_rubber_stamp_rejected")
+        family_id = _nonempty(review.get("family_id"), "strict_review_family_id")
+        confidence = float(review.get("confidence", -1))
+        if not 0 <= confidence <= 1:
+            raise NudeRecordQualificationError("strict_review_confidence_invalid")
+        roles.add(role)
+        families.add(family_id)
+        normalized.append(
+            {
+                "role": role,
+                "model_id": _nonempty(review.get("model_id"), "strict_review_model_id"),
+                "family_id": family_id,
+                "revision": _nonempty(review.get("revision"), "strict_review_revision"),
+                "certificate_sha256": _sha256(
+                    review.get("certificate_sha256"), "strict_review_certificate_sha256"
+                ),
+                "prompt_sha256": _sha256(
+                    review.get("prompt_sha256"), "strict_review_prompt_sha256"
+                ),
+                "mask_sha256": selected_mask_sha256,
+                "panel_bundle_sha256": panel_bundle_sha256,
+                "verdict": verdict,
+                "confidence": confidence,
+                "evidence": evidence,
+            }
+        )
+    if roles != REQUIRED_REVIEW_ROLES or len(families) != 2:
+        raise NudeRecordQualificationError("independent_strict_review_quorum_required")
+    return sorted(normalized, key=lambda row: row["role"])
+
+
+def qualify_nonacceptance_record(
+    record: Mapping[str, Any], *, panels: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Create a full abstain/reject receipt without granting mask authority."""
+
+    outcome = record.get("outcome")
+    if outcome not in {"abstained", "rejected"}:
+        raise NudeRecordQualificationError("nonacceptance_outcome_invalid")
+    sample_id = _nonempty(record.get("sample_id"), "sample_id")
+    source_sha256 = _sha256(record.get("source_sha256"), "source_sha256")
+    selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
+    failure_stage = record.get("failure_stage")
+    if failure_stage not in FAILURE_STAGES:
+        raise NudeRecordQualificationError("failure_stage_invalid")
+    reasons = record.get("reasons")
+    if (
+        not isinstance(reasons, Sequence)
+        or isinstance(reasons, (str, bytes))
+        or not reasons
+        or any(not isinstance(reason, str) or not reason.strip() for reason in reasons)
+    ):
+        raise NudeRecordQualificationError("failure_reasons_required")
+    panel_evidence = verify_complete_panel_evidence(panels)
+    provider_comparison = _verify_provider_comparison(
+        record.get("provider_comparison", {}),
+        selected_mask_sha256=selected_mask_sha256,
+        allowed_statuses=frozenset({"pass", "fail", "abstain"}),
+    )
+    if failure_stage == "provider_comparison" and provider_comparison["status"] == "pass":
+        raise NudeRecordQualificationError("provider_failure_stage_requires_nonpass")
+    reviews = _verify_nonacceptance_reviews(
+        record.get("strict_reviews", ()),
+        selected_mask_sha256=selected_mask_sha256,
+        panel_bundle_sha256=panel_evidence["panel_bundle_sha256"],
+    )
+    verdicts = {review["verdict"] for review in reviews}
+    if outcome == "abstained" and "uncertain" not in verdicts:
+        raise NudeRecordQualificationError("abstain_requires_uncertain_review")
+    if outcome == "rejected" and failure_stage == "strict_review" and "fail" not in verdicts:
+        raise NudeRecordQualificationError("strict_review_reject_requires_fail")
+    hard_qc = record.get("hard_qc")
+    if not isinstance(hard_qc, Mapping) or hard_qc.get("status") not in {"pass", "fail"}:
+        raise NudeRecordQualificationError("hard_qc_status_invalid")
+    if hard_qc.get("mask_sha256") != selected_mask_sha256:
+        raise NudeRecordQualificationError("hard_qc_mask_mismatch")
+    hard_qc_evidence = {
+        "status": hard_qc["status"],
+        "mask_sha256": selected_mask_sha256,
+        "policy_sha256": _sha256(hard_qc.get("policy_sha256"), "hard_qc_policy_sha256"),
+        "report_sha256": _sha256(hard_qc.get("report_sha256"), "hard_qc_report_sha256"),
+    }
+    if failure_stage == "hard_qc" and hard_qc_evidence["status"] != "fail":
+        raise NudeRecordQualificationError("hard_qc_failure_stage_requires_veto")
+    repair = record.get("repair")
+    repair_evidence = None
+    if failure_stage == "repair_exhausted":
+        if not isinstance(repair, Mapping):
+            raise NudeRecordQualificationError("repair_exhaustion_evidence_required")
+        attempts = repair.get("attempts")
+        maximum = repair.get("max_attempts")
+        if (
+            not isinstance(attempts, int)
+            or isinstance(attempts, bool)
+            or not isinstance(maximum, int)
+            or isinstance(maximum, bool)
+            or attempts != maximum
+            or not 1 <= maximum <= 3
+        ):
+            raise NudeRecordQualificationError("repair_exhaustion_invalid")
+        repair_evidence = {
+            "attempts": attempts,
+            "max_attempts": maximum,
+            "last_parent_mask_sha256": _sha256(
+                repair.get("last_parent_mask_sha256"), "repair_parent_mask_sha256"
+            ),
+            "last_candidate_mask_sha256": selected_mask_sha256,
+            "repair_policy_sha256": _sha256(
+                repair.get("repair_policy_sha256"), "repair_policy_sha256"
+            ),
+            "repair_report_sha256": _sha256(
+                repair.get("repair_report_sha256"), "repair_report_sha256"
+            ),
+        }
+    evidence = {
+        "schema_version": "maskfactory.nude_record_nonacceptance.v1",
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "mask_sha256": selected_mask_sha256,
+        "outcome": outcome,
+        "failure_stage": failure_stage,
+        "reasons": sorted(set(reasons)),
+        "provider_comparison": provider_comparison,
+        "hard_qc": hard_qc_evidence,
+        "panel_evidence": panel_evidence,
+        "strict_reviews": reviews,
+        "repair": repair_evidence,
+        "authority": "no_mask_authority",
+        "human_gold": False,
+        "production_mask_authority": False,
+        "operational_certificate_issued": False,
+    }
+    evidence_sha256 = _canonical_sha256(evidence)
+    return {
+        "sample_id": sample_id,
+        "source_sha256": source_sha256,
+        "mask_sha256": selected_mask_sha256,
+        "outcome": outcome,
+        "evidence_sha256": evidence_sha256,
+        "qualification_evidence": evidence,
+    }
+
+
+def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Recompute an abstain/reject receipt before durable queue mutation."""
+
+    if payload.get("outcome") not in {"abstained", "rejected"}:
+        raise NudeRecordQualificationError("nonacceptance_queue_outcome_invalid")
+    evidence = payload.get("qualification_evidence")
+    if not isinstance(evidence, Mapping):
+        raise NudeRecordQualificationError("qualification_evidence_required")
+    panels = evidence.get("panel_evidence", {}).get("panels")
+    if not isinstance(panels, Mapping):
+        raise NudeRecordQualificationError("qualification_panels_invalid")
+    rebuilt = qualify_nonacceptance_record(
+        {
+            "sample_id": evidence.get("sample_id"),
+            "source_sha256": evidence.get("source_sha256"),
+            "mask_sha256": evidence.get("mask_sha256"),
+            "outcome": evidence.get("outcome"),
+            "failure_stage": evidence.get("failure_stage"),
+            "reasons": evidence.get("reasons"),
+            "provider_comparison": evidence.get("provider_comparison"),
+            "hard_qc": evidence.get("hard_qc"),
+            "strict_reviews": evidence.get("strict_reviews"),
+            "repair": evidence.get("repair"),
+        },
+        panels=panels,
+    )
+    if dict(evidence) != rebuilt["qualification_evidence"]:
+        raise NudeRecordQualificationError("nonacceptance_evidence_drift")
+    for field in ("sample_id", "source_sha256", "mask_sha256", "outcome", "evidence_sha256"):
+        if payload.get(field) != rebuilt.get(field):
+            raise NudeRecordQualificationError(f"nonacceptance_{field}_mismatch")
+    return dict(payload)
+
+
 __all__ = [
     "NudeRecordQualificationError",
+    "FAILURE_STAGES",
     "REQUIRED_PANEL_KINDS",
     "REQUIRED_REVIEW_ROLES",
     "qualify_terminal_record",
+    "qualify_nonacceptance_record",
+    "validate_nonacceptance_queue_payload",
     "validate_qualified_queue_payload",
     "verify_complete_panel_evidence",
 ]

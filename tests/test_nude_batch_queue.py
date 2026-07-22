@@ -7,6 +7,7 @@ import pytest
 
 from maskfactory.nude_batch_queue import NudeBatchQueue, NudeBatchQueueError
 from maskfactory.nude_record_qualification import (
+    qualify_nonacceptance_record,
     qualify_terminal_record,
     verify_complete_panel_evidence,
 )
@@ -105,6 +106,29 @@ def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
             ],
         },
         panels=panels,
+    )
+    result["sample_index"] = index
+    return result
+
+
+def _abstained_outcome(tmp_path: Path, index: int) -> dict[str, object]:
+    accepted = _qualified_outcome(tmp_path, index)
+    evidence = accepted["qualification_evidence"]
+    reviews = [dict(review) for review in evidence["strict_reviews"]]
+    reviews[0]["verdict"] = "uncertain"
+    result = qualify_nonacceptance_record(
+        {
+            "sample_id": accepted["sample_id"],
+            "source_sha256": accepted["source_sha256"],
+            "mask_sha256": accepted["mask_sha256"],
+            "outcome": "abstained",
+            "failure_stage": "strict_review",
+            "reasons": ["primary_review_uncertain"],
+            "provider_comparison": evidence["provider_comparison"],
+            "hard_qc": evidence["hard_qc"],
+            "strict_reviews": reviews,
+        },
+        panels=evidence["panel_evidence"]["panels"],
     )
     result["sample_index"] = index
     return result
@@ -263,4 +287,30 @@ def test_low_level_checkpoint_cannot_bypass_accepted_receipt_gate(tmp_path: Path
             shard_path=lease["shard_path"],
             lease_token=lease["lease_token"],
             outcomes=[unsafe],
+        )
+
+
+def test_low_level_checkpoint_accepts_valid_abstention_and_rejects_tampering(
+    tmp_path: Path,
+) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="failure-receipt")
+    assert lease is not None
+    payload = _abstained_outcome(tmp_path, 0)
+    result = queue.checkpoint(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        outcomes=[payload],
+    )
+    assert result["next_sample_index"] == 1
+    tampered = _abstained_outcome(tmp_path, 1)
+    tampered["qualification_evidence"]["authority"] = "machine_verified_candidate"
+    with pytest.raises(ValueError, match="nonacceptance_evidence_drift"):
+        queue.checkpoint(
+            platform="runpod",
+            shard_path=lease["shard_path"],
+            lease_token=lease["lease_token"],
+            outcomes=[tampered],
         )

@@ -7,7 +7,9 @@ import pytest
 
 from maskfactory.nude_record_qualification import (
     NudeRecordQualificationError,
+    qualify_nonacceptance_record,
     qualify_terminal_record,
+    validate_nonacceptance_queue_payload,
     validate_qualified_queue_payload,
     verify_complete_panel_evidence,
 )
@@ -193,3 +195,69 @@ def test_queue_payload_revalidation_rejects_hash_and_authority_tampering(tmp_pat
     result["qualification_evidence"]["human_gold"] = True
     with pytest.raises(NudeRecordQualificationError, match="evidence_hash_mismatch"):
         validate_qualified_queue_payload(result)
+
+
+def test_uncertain_reviews_create_hash_bound_abstention_receipt(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record.update(
+        {
+            "outcome": "abstained",
+            "failure_stage": "strict_review",
+            "reasons": ["independent_review_uncertain"],
+        }
+    )
+    record["strict_reviews"][1]["verdict"] = "uncertain"  # type: ignore[index]
+    result = qualify_nonacceptance_record(record, panels=panels)
+    assert result["qualification_evidence"]["authority"] == "no_mask_authority"
+    assert validate_nonacceptance_queue_payload(result) == result
+
+
+def test_hard_qc_rejection_retains_reviews_but_cannot_claim_authority(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record.update(
+        {
+            "outcome": "rejected",
+            "failure_stage": "hard_qc",
+            "reasons": ["deterministic_boundary_veto"],
+        }
+    )
+    record["hard_qc"]["status"] = "fail"  # type: ignore[index]
+    result = qualify_nonacceptance_record(record, panels=panels)
+    assert result["qualification_evidence"]["hard_qc"]["status"] == "fail"
+    assert result["qualification_evidence"]["production_mask_authority"] is False
+
+
+def test_nonacceptance_requires_full_independent_review_and_reason(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record.update({"outcome": "abstained", "failure_stage": "strict_review", "reasons": []})
+    with pytest.raises(NudeRecordQualificationError, match="failure_reasons_required"):
+        qualify_nonacceptance_record(record, panels=panels)
+
+
+def test_repair_exhaustion_is_bounded_and_reason_coded(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record.update(
+        {
+            "outcome": "rejected",
+            "failure_stage": "repair_exhausted",
+            "reasons": ["bounded_repair_exhausted"],
+            "repair": {
+                "attempts": 3,
+                "max_attempts": 3,
+                "last_parent_mask_sha256": _sha("parent"),
+                "repair_policy_sha256": _sha("repair-policy"),
+                "repair_report_sha256": _sha("repair-report"),
+            },
+        }
+    )
+    record["strict_reviews"][0]["verdict"] = "fail"  # type: ignore[index]
+    result = qualify_nonacceptance_record(record, panels=panels)
+    assert result["qualification_evidence"]["repair"]["attempts"] == 3

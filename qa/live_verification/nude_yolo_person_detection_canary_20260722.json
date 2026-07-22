@@ -1,0 +1,47 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_yolo_person_detection_canary.v1",
+  "artifact_type": "adult_polygon_lane_single_family_person_detection_canary",
+  "recorded_at": "2026-07-22T13:22:00Z",
+  "status": "PARTIAL_CANARY_PASS_OWNERSHIP_UNVERIFIED",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.07"
+  ],
+  "checkpoint": {
+    "provider": "yolo11m",
+    "bytes": 40684120,
+    "sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+    "source": "https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m.pt",
+    "historical_pin_matched": true
+  },
+  "execution": {
+    "runtime": "Windows Python 3.11 / torch 2.12.1+cpu / ultralytics 8.4.87",
+    "record_count": 4,
+    "dataset_count": 4,
+    "promoted_record_count": 2,
+    "no_person_record_count": 2,
+    "promoted_person_count": 2,
+    "detector_family_count": 1,
+    "ownership_verified_count": 0,
+    "runtime_report_self_sha256": "d4277fab9ecce28f05f66c39c82b45ef4980fb94e056ce7ed53110c7c5091697"
+  },
+  "visual_audit": {
+    "all_four_sources_reviewed": true,
+    "findings": [
+      "The photographic close-up record produced one plausible promoted person box.",
+      "The two-person illustrated mange.v2 record produced only one broad promoted box, so multi-person ownership is incomplete.",
+      "The explicit two-person illustrated mange.v3 record returned no person.",
+      "The multi-panel illustrated doujin record returned no person."
+    ],
+    "systemic_result": "YOLO11M alone is insufficient for adult illustration and multi-panel domains; no threshold was lowered and no ownership was inferred."
+  },
+  "authority_boundary": {
+    "independent_detector_consensus_completed": false,
+    "person_instance_ownership_verified": false,
+    "strict_visual_review_completed": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Run a governed independent detector family, preserve domain-specific misses as abstentions, and require two-family spatial consensus before person ownership."
+}

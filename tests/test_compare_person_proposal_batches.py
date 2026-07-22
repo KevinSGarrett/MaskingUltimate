@@ -143,3 +143,21 @@ def test_provider_output_seal_or_order_drift_fails_closed(tmp_path: Path) -> Non
             yolo_path=yolo,
             platform="runpod",
         )
+
+
+def test_non_person_prompt_text_cannot_be_promoted_to_person_label(tmp_path: Path) -> None:
+    runner = _module()
+    shard, (gdino, yolo) = _fixture(tmp_path)
+    document = json.loads(gdino.read_text())
+    document["records"][0]["proposals"][0]["phrase"] = "nude woman"
+    body = dict(document)
+    body.pop("output_sha256")
+    document["output_sha256"] = canonical_sha256(body)
+    gdino.write_text(json.dumps(document))
+    with pytest.raises(ValueError, match="exact person discovery"):
+        runner.compare_batches(
+            shard_path=shard,
+            groundingdino_path=gdino,
+            yolo_path=yolo,
+            platform="runpod",
+        )

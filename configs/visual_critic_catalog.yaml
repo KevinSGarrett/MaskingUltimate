@@ -1,6 +1,6 @@
 schema_version: 1.0.0
 catalog_id: maskfactory_visual_critic_catalog_v1
-recorded_at: '2026-07-21T23:32:00Z'
+recorded_at: '2026-07-22T23:30:00Z'
 current_hardware:
   tier_id: runpod_single_gpu_48gb
   gpu_name: NVIDIA RTX 6000 Ada Generation
@@ -56,8 +56,8 @@ models:
       live_measurement_required: true
     candidate_roles: [fast_screener, primary_visual_critic]
     assigned_roles: []
-    lifecycle: planned
-    artifact_sha256: null
+    lifecycle: downloaded
+    artifact_sha256: 240ee7cfda41472056d80e24fe717035577263e0249f0408fec9762459718aa4
     infeasibility_evidence_sha256: 4d487925cc1ae274db864e9764c8ebd1f8706b79f846bfa9325ab38cf3057c8b
     calibration: null
     private_endpoint: null
@@ -128,7 +128,9 @@ models:
     lifecycle: smoked
     artifact_sha256: e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65
     infeasibility_evidence_sha256: null
-    calibration: null
+    calibration:
+      status: fail
+      report_sha256: da4ae004d337191c272c4415dac715b690783e45432e283b3499774f306d3036
     private_endpoint: null
   - model_id: internvl3_5_241b_a28b_bf16
     family_id: internvl
@@ -169,11 +171,111 @@ models:
       single_gpu_48gb_feasible: true
       minimum_gpu_count_by_weight_bytes: 1
       live_measurement_required: true
-    candidate_roles: [fast_screener, primary_visual_critic]
+    candidate_roles: [fast_screener, primary_visual_critic, independent_juror]
     assigned_roles: []
     lifecycle: smoked
     artifact_sha256: 8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48
     infeasibility_evidence_sha256: null
+    calibration:
+      status: fail
+      report_sha256: 899613635fbfec84dfea2060a659204c2e85eed39cddd5f3fa9f6136873d2051
+    private_endpoint: null
+  - model_id: pixtral_12b_2409
+    family_id: mistral_pixtral
+    repository: mistralai/Pixtral-12B-2409
+    revision: a5ca2b7a9421a35ea24411c46e970758b8d3c6a7
+    license: apache-2.0
+    quantization: bf16
+    pipeline_tag: image-text-to-text
+    file_count: 5
+    total_repository_bytes: 25384844153
+    weight_bytes: 25365548952
+    runtime: {engine: vllm, version_constraint: '>=0.6.1', status: smoked}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [primary_visual_critic, independent_juror]
+    assigned_roles: []
+    lifecycle: smoked
+    artifact_sha256: 0070c50d26443b0e3204a96220b483480bf95eee34d7e81c9a5c46efa07aea0a
+    infeasibility_evidence_sha256: null
+    calibration:
+      status: fail
+      report_sha256: 32c7f575f88c18df5828ae3aaccb3863c643cab526338067d1ec3c4336a44d2e
+    private_endpoint: null
+  - model_id: qwen3_vl_30b_a3b_instruct_fp8
+    family_id: qwen
+    repository: Qwen/Qwen3-VL-30B-A3B-Instruct-FP8
+    revision: d9748a51ae66354c4dad665aab2c71f26cf2c8cd
+    license: apache-2.0
+    quantization: fp8
+    pipeline_tag: image-text-to-text
+    file_count: 16
+    total_repository_bytes: 32268919202
+    weight_bytes: 32251954920
+    runtime: {engine: vllm, version_constraint: '>=0.11.0', status: planned}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [primary_visual_critic, independent_juror]
+    assigned_roles: []
+    lifecycle: downloaded
+    artifact_sha256: dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a
+    infeasibility_evidence_sha256: null
     calibration: null
     private_endpoint: null
-sha256: fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead
+  - model_id: minicpm_v_4_5_bf16
+    family_id: qwen
+    repository: openbmb/MiniCPM-V-4_5
+    revision: fd3209b2e0580e346fc33d2c6f85b6e9332eecda
+    license: apache-2.0
+    quantization: bf16
+    pipeline_tag: image-text-to-text
+    file_count: 23
+    total_repository_bytes: 17408027996
+    weight_bytes: 17391890184
+    runtime: {engine: vllm, version_constraint: '>=0.11.0', status: smoked}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [primary_visual_critic, independent_juror]
+    assigned_roles: []
+    lifecycle: smoked
+    artifact_sha256: 6fca3294df97b0e9fa4bc70bea9907cbb01a27816ee59880bb2aea29bda138a0
+    infeasibility_evidence_sha256: null
+    calibration:
+      status: fail
+      report_sha256: 5269d6014c891fa7c82c4c4f0a80b3b6b20e1c1cc3710859c34161b5a594d93c
+    private_endpoint: null
+  - model_id: glm_4_1v_9b_thinking
+    family_id: glm
+    repository: zai-org/GLM-4.1V-9B-Thinking
+    revision: 3c1471e51dc811b589d4d12b1c1c7c1c941267c2
+    license: mit
+    quantization: bf16
+    pipeline_tag: image-text-to-text
+    file_count: 15
+    total_repository_bytes: 20608228300
+    weight_bytes: 20585644104
+    runtime: {engine: vllm, version_constraint: '>=0.11.0', status: smoked}
+    hardware:
+      tier: single_gpu_candidate
+      single_gpu_48gb_feasible: true
+      minimum_gpu_count_by_weight_bytes: 1
+      live_measurement_required: true
+    candidate_roles: [primary_visual_critic, independent_juror]
+    assigned_roles: []
+    lifecycle: smoked
+    artifact_sha256: e62628b04ac0286c137226dc3ff14f3d2d468e488d9e7b752be51f701d2efc32
+    infeasibility_evidence_sha256: null
+    calibration:
+      status: fail
+      report_sha256: 9d269ff93e8fd43bf8a92f6a58d1aa4ecd8d58280047a1b1556aace10366e3cc
+    private_endpoint: null
+sha256: 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a

@@ -133,8 +133,12 @@ def validate_calibration_corpus(manifest: Mapping[str, Any]) -> None:
             validate_target_contract(contract)
         except Exception as exc:
             raise CalibrationCorpusError(f"{case_id} target contract is incomplete: {exc}") from exc
-        source_sha = _sha256(contract["source"]["sha256"], f"{case_id}.source")
-        candidate_sha = _sha256(contract["candidate"]["mask_sha256"], f"{case_id}.candidate")
+        if contract["schema_version"] == "2.0.0":
+            source_sha = _sha256(contract["source"]["encoded_sha256"], f"{case_id}.source")
+            candidate_sha = _sha256(contract["candidate"]["encoded_sha256"], f"{case_id}.candidate")
+        else:
+            source_sha = _sha256(contract["source"]["sha256"], f"{case_id}.source")
+            candidate_sha = _sha256(contract["candidate"]["mask_sha256"], f"{case_id}.candidate")
         contract_sha = _sha256(contract["contract_sha256"], f"{case_id}.target_contract")
         source_partitions[source_sha].add(partition)
 

@@ -931,9 +931,21 @@ def suggest_next(data, n, phase=None, profile=None):
         profile is None
         and compute_completion_profile_status(data, "core_autonomous_runtime") != "complete"
     )
+    def unresolved_dependency_count(item):
+        return sum(
+            1
+            for dependency_id in parse_dependency_ids(item.get("description", ""))
+            if dependency_id not in data["items"]
+            or data["items"][dependency_id].get("status") not in ("complete", "not_applicable")
+        )
+
     items.sort(
         key=lambda r: (
+            0 if r["status"] in ("in_progress", "partially_complete") else 1,
+            unresolved_dependency_count(r),
             0 if prioritize_core and r["id"] in core_ids else 1,
+            0 if r.get("hard_blocker") else 1,
+            -int(r.get("percent_complete") or 0),
             PHASE_ORDER.index(r["phase"]) if r["phase"] in PHASE_ORDER else 99,
             r["source_line"],
         )
@@ -942,6 +954,10 @@ def suggest_next(data, n, phase=None, profile=None):
         it
         for it in items
         if it["status"] in ("open", "in_progress", "partially_complete", "failed")
+        and (
+            it["status"] in ("in_progress", "partially_complete")
+            or unresolved_dependency_count(it) == 0
+        )
     ]
     if phase:
         cands = [it for it in cands if it["phase"] == phase]

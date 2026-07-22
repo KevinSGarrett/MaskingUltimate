@@ -286,6 +286,14 @@ def check_cvat_project() -> CheckResult:
 
 
 def check_nuclio_interactor() -> CheckResult:
+    if os.environ.get("MASKFACTORY_INCLUDE_OPTIONAL_LOCAL_CVAT_CHECKS") != "1":
+        return _result(
+            "nuclio_interactor",
+            "SKIP",
+            "optional local pth-sam2 CVAT assistance check not requested; no production credit",
+            "Set MASKFACTORY_INCLUDE_OPTIONAL_LOCAL_CVAT_CHECKS=1 only for an explicitly "
+            "selected local CVAT integration item. Production masking runs on RunPod.",
+        )
     token = _env_values().get("CVAT_TOKEN")
     if not token:
         return _result("nuclio_interactor", "FAIL", "CVAT_TOKEN absent", "Set CVAT_TOKEN in .env.")
@@ -324,7 +332,10 @@ def check_nuclio_interactor() -> CheckResult:
             "Run tools/smoke_cvat_sam2.py and repair the pth-sam2 Nuclio deployment.",
         )
     return _result(
-        "nuclio_interactor", "PASS", f"pth-sam2 answered; foreground={np.count_nonzero(mask)}"
+        "nuclio_interactor",
+        "PASS",
+        "optional local CVAT assistance only; no production credit; "
+        f"pth-sam2 foreground={np.count_nonzero(mask)}",
     )
 
 

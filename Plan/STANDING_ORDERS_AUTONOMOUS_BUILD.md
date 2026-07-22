@@ -18,14 +18,14 @@ STANDING ORDERS — MaskFactory continuous autonomous build
 (Session must obey these for the rest of this chat. Re-read mid-flight. Side-chat guidance does not auto-apply.)
 
 MISSION
-Build the real MaskFactory product end-to-end: masks, packages, autonomous certification/repair/abstain, live local runtime (Docker CVAT/Nuclio/Ollama), bridge contracts, and honest tracker truth. Maximize real product progress per hour. Do not optimize for looking busy.
+Build the real MaskFactory product end-to-end: masks, packages, autonomous certification/repair/abstain, the persistent RunPod production runtime, bridge contracts, and honest tracker truth. Local Docker/CVAT/Nuclio/Ollama are diagnostics or optional integration tools only and earn no production progress. Maximize real product progress per hour. Do not optimize for looking busy.
 
 **Platform policy:** RunPod is MaskFactory’s production compute, self-hosted review, training, batch, and persistent-runtime platform; the F-drive DVC remote is a governed local backup tier; AWS is retired from active operation and may be accessed only through narrowly scoped, non-mutating, hash-verified legacy-source recovery when unique required material may still exist there.
 
 AUTHORITY
 - Live tracker = status authority (`Plan/Tracker/tracker.py`), not plan prose, checkboxes, or memory.
 - Governing plan: `maskfactory-full-completion_69d863cb.plan.md` + `Plan/` specs.
-- Docker/Ollama ops: `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md` (live-probe; never trust “Docker was off” memory).
+- Local Docker/Ollama ops, only when an explicitly selected local integration item requires them: `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`.
 - Human review / CVAT correction / human anchors are NOT certification authority and NOT operational blockers for core autonomy. Default is auto-certify / auto-repair / abstain-reject with typed evidence.
 
 AUTONOMY (NO HUMAN IN THE LOOP FOR ROUTINE WORK)
@@ -49,18 +49,18 @@ Anti-spin rule: if the same failure class repeats 2× without a new root cause +
 
 REAL WORK SELECTION (EVERY WAVE)
 1) `python tracker.py report` + `python tracker.py next -n 10` (from `Plan/Tracker/`)
-2) Prefer items that advance: live packages, HARD_QA (QC-001…), doctor/smoke, panels + Ollama VLM, MaskedWarehouse admission, Mode A/B, release/bridge evidence — over pure schema/fixture work when those are ready.
+2) Prefer items that advance: RunPod provider candidates, live packages, HARD_QA (QC-001…), qualified RunPod visual critics, MaskedWarehouse admission, Mode A/B, and release/bridge evidence. Local doctor/CVAT/Ollama/SAM2 smokes count only for an explicitly selected local-integration verify clause.
 3) Parallelize independent lanes; serialize only tracker integration, release claims, and bridge authority transitions.
 4) Keep STATIC work on RUNTIME_BLOCKED / AWAITING_MAIN items while climbing HARD_QA/RUNTIME/VISUAL on every ready item.
 5) Never invent Main adoption; leave `awaiting_main` until real Main artifacts exist.
 
-MANDATORY PROOF LADDER (LOCAL-FIRST)
+MANDATORY PROOF LADDER (RUNPOD-FIRST FOR PRODUCTION)
 Declare target tier before edits. Never report a lower tier as a higher tier.
-- Tier 0 RECONSTRUCTED: branch/HEAD/dirty ownership; item+blockers; live Docker/CVAT/Ollama probe; prior highest tier
+- Tier 0 RECONSTRUCTED: branch/HEAD/dirty ownership; item+blockers; current RunPod pod, persistent-volume, corpus-mirror, and coordinator state when production work is in scope; prior highest tier
 - Tier 1 STATIC_PASS: schemas fail-closed; focused pytest; ruff; tracker deps; evidence paths/hashes
 - Tier 2 HARD_QA_PASS_BOUNDED: real QC battery / seeded defects when masks/packages/certification in scope (pytest JSON shape ≠ HARD_QA)
-- Tier 3 RUNTIME_PASS_BOUNDED: live Docker preflight when in scope; doctor/provider smoke; real bounded package run; CVAT/SAM2/Ollama smokes when claimed
-- Tier 4 VISUAL_QA_PASS_BOUNDED: render real panels (source/mask/overlay/contour/ownership); review pixels/paths; local VLM critic when Ollama up; panel+report hashes. Decoding a PNG ≠ visual QA. VLM never clears hard BLOCK or invents gold.
+- Tier 3 RUNTIME_PASS_BOUNDED: exact RunPod provider/runtime hashes, valid coordinator lease, persistent output, and real bounded package run. Local Docker/CVAT/SAM2/Ollama smokes prove only their named optional integration.
+- Tier 4 VISUAL_QA_PASS_BOUNDED: render real panels (source/mask/overlay/contour/ownership) and run the currently qualified RunPod primary plus independent-family juror; bind panel, response, model, runtime, and role-certificate hashes. Decoding a PNG, a local VLM smoke, or a contact sheet alone is not visual QA.
 - Tier 5 PRODUCTION_EVIDENCE_PASS: verify clause satisfied; `tracker.py set … --evidence` with real commands/paths/hashes before `complete`
 - Tier 6 RUNPOD_SCALE_PASS: remote GPU execution is proven on persistent RunPod storage under a valid SharedRunPodCoordinator v2 capacity lease
 - AUDIO: N/A for MaskFactory core — do not invent audio gates; Main-owned if bridge touches audio
@@ -68,15 +68,15 @@ Declare target tier before edits. Never report a lower tier as a higher tier.
 Claim vocabulary ONLY: PLANNED, IN_PROGRESS, RECONSTRUCTED, STATIC_PASS, HARD_QA_PASS_BOUNDED, RUNTIME_PASS_BOUNDED, RUNTIME_BLOCKED, VISUAL_QA_PASS_BOUNDED, VISUAL_CRITIC_BLOCKED, PRODUCTION_EVIDENCE_PASS, RUNPOD_SCALE_PASS, AWAITING_MAIN, HOLD, BLOCKED, COMPLETE, AUDIO_QA_N_A_CORE.
 Forbidden without matching evidence: “done/green/production-ready/fully working/visual QA pass/doctor green/gold”.
 
-SELF-HOSTED LLM / OLLAMA (MUST USE WHEN VISUAL/VLM IN SCOPE)
-- Endpoint: loopback only `http://127.0.0.1:11434` (live-probe; do not skip because of stale memory).
+SELF-HOSTED VISUAL CRITICS (MUST USE WHEN VISUAL/VLM IN SCOPE)
+- Production endpoint is private loopback on RunPod. Local Ollama loopback is diagnostic/optional only and has no production authority or progress credit.
 - Use for Tier 4 panel criticism (P-PART / P-IMAGE), `tools/smoke_ollama_vlm.py`, doctor `ollama_image`, governed `maskfactory vlmqa` paths — not as a substitute for HARD_QA.
-- If Ollama down/wrong models: mark VISUAL_CRITIC_BLOCKED with exact evidence; continue HARD_QA + other lanes; repair Ollama/Docker yourself when in autonomous scope.
-- Prefer governed Docker/Ollama models required by P0-05 / doctor registry over casual native leftovers. Determinism: temperature=0, seed=1337 where spec requires.
+- If no RunPod critic pair has current positive-and-negative qualification and role certificates: mark `VISUAL_CRITIC_BLOCKED`, continue provider generation plus deterministic HARD_QA, and abstain from certification.
+- Determinism: temperature=0, seed=1337 where spec requires. Model presence, download, reputation, or a local smoke never grants a role.
 - Do not use cloud LLMs for MaskFactory VLM QA. Do not treat LLM chatter as certification.
 
-DOCKER (FIRST-CLASS, AUTONOMOUS)
-When engine is up: start/repair/smoke CVAT 2.24 (`localhost:8080`), Nuclio/`pth-sam2`, Ollama, GPU container proofs yourself — no permission asks.
+LOCAL DOCKER (CONDITIONAL INTEGRATION TOOL)
+Probe/start/repair CVAT 2.24, Nuclio/`pth-sam2`, or local Ollama only when a currently selected tracker item explicitly requires that local integration. `pth-sam2` is optional CVAT assistance/legacy compatibility and never production mask authority.
 Production CVAT = v2.24:8080 only (not cvat269:18080).
 Fixture/FakeCvat/producer_partial ≠ live CVAT complete.
 If Desktop truly down: host-only lanes continue; Docker items blocked with typed evidence.
@@ -146,7 +146,7 @@ Reconstruct → select unblocked highest-value item → declare target tier → 
 See `Plan/Instructions/00_START_HERE.md`, `02_AUTONOMOUS_OPERATING_RULES.md`, and `03_SESSION_PLAYBOOK.md` for the full procedure. Binding loop: reconstruct → select → climb → evidence → tracker → **immediate next wave** → repeat until E2E complete or only true `NEEDS KEVIN` remain (with other lanes still running).
 
 FIRST ACTIONS NOW
-1) Live-probe Docker + Ollama + `maskfactory doctor` (snapshot only; do not stall).
+1) For production work, verify the current RunPod pod, persistent-volume paths, corpus mirrors, and SharedRunPodCoordinator state. Probe local Docker/Ollama/doctor only for an explicitly selected local integration item.
 2) `tracker.py next` / hard-blockers for `core_autonomous_runtime`.
 3) Pick the highest-value climbable wave (prefer RUNTIME/VISUAL/HARD_QA-ready over more STATIC-only).
 4) Execute without waiting for Kevin — and do not stop until E2E complete.
@@ -157,12 +157,12 @@ FIRST ACTIONS NOW
 
 These facts supplement the standing orders for GPU/runtime climb when local VRAM is the ceiling. They do **not** weaken proof tiers, autonomy, tracker hygiene, Docker production rules on the Windows host, or the NEVER-EC2 rule.
 
-1. **Runtime gold / VLM climb may use RunPod RTX 6000 Ada** when the local 8 GB GPU is the ceiling. **NEVER EC2** for that work (or any MaskFactory work).
+1. **Production masking, strict review, repair, training, benchmarking, qualification, and corpus processing run on persistent RunPod storage under the shared coordinator.** Local GPU capacity is not a production fallback.
 2. **Authoritative catch-up archives on pod** (sealed via `paths.env`; do not treat as a separate product/dataset):
    - Ultimate reference library: `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images` (from `F:\Reference_Images\Ultimate_Masking_Reference_Images`)
    - MaskedWarehouse: `/workspace/assets/MaskedWarehouse` (`MASKED_WAREHOUSE`; matches local inventory when sealed)
    - Always `source /workspace/paths.env` on the pod before path-dependent work.
-3. **CVAT / Nuclio on current nested RunPod = `RUNTIME_BLOCKED_POD_CLASS` (no DinD).** Gold path does **not** hard-require CVAT when `sam2_1_large` is live. Seal/keep: `qa/live_verification/cvat_nuclio_runpod_deferred_pod_class.json`.
+3. **CVAT / Nuclio are optional assistance/integration surfaces, not autonomous-gold dependencies.** Preserve historical pod-class and SAM2 evidence for comparison/rollback, but do not select it as the active RunPod production route.
 4. **Proof-tier vocabulary remains binding on RunPod too** — same Tier 0–6 ladder and claim vocabulary as above; no inflated “done/green/gold/doctor-green” claims without matching evidence.
 5. Production CVAT **v2.24 on localhost:8080** remains the Windows/Docker Desktop production rule when that stack is in scope; pod-class DinD limits do not invent a second production CVAT authority.
 
@@ -170,7 +170,7 @@ These facts supplement the standing orders for GPU/runtime climb when local VRAM
 
 ## SELF-HOSTED STRICT VLM GATE (binding — 2026-07-21)
 
-Kevin mandate: **self-hosted high-end LLM on RunPod (or local Ollama loopback) MUST perform STRICT visual review / QA / approval / adjustments / corrections for MaskFactory autonomy — no blind approvals.** Cloud LLMs are forbidden for MF VLM QA. **NEVER EC2.**
+Kevin mandate: **a self-hosted high-end primary critic plus a genuinely independent-family juror on RunPod MUST perform STRICT visual review for MaskFactory autonomy—no blind approvals.** Local Ollama is diagnostic/optional only. Cloud LLMs are forbidden for MF VLM QA. **NEVER EC2.**
 
 ### Authority & endpoints
 - Endpoint: `http://127.0.0.1:11434` only (pod or host loopback).

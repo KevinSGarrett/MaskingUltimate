@@ -231,7 +231,13 @@ def validate_real_source_bindings(
             f"{case_id}.source_file",
         )
         panel_sha = _sha(binding.get("source_panel_sha256"), f"{case_id}.source_panel")
-        if panel_sha != case["target_contract"]["source"]["sha256"]:
+        contract_source = case["target_contract"]["source"]
+        contract_panel_sha = (
+            contract_source["encoded_sha256"]
+            if case["target_contract"]["schema_version"] == "2.0.0"
+            else contract_source["sha256"]
+        )
+        if panel_sha != contract_panel_sha:
             raise RealCorpusPolicyError(f"{case_id} source panel is not bound to the real source")
         annotation_paths = binding.get("annotation_relative_paths")
         annotation_shas = binding.get("annotation_file_sha256s")

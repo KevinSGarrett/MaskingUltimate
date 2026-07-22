@@ -10,6 +10,7 @@ from typing import Any
 
 from .calibration_corpus import validate_calibration_corpus
 from .critic_catalog import MODEL_ROLES, canonical_sha256, validate_catalog
+from .live_calibration import CHECK_KEYS, CHECK_VALUES, EVIDENCE_BOARD_LAYOUT
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
 VERDICTS = frozenset({"pass", "defect", "abstain"})
@@ -41,6 +42,8 @@ PREDICTION_KEYS = frozenset(
         "verdict",
         "defect_type",
         "cited_context_tags",
+        "checks",
+        "cited_evidence_panels",
         "schema_valid",
         "latency_ms",
         "peak_vram_bytes",
@@ -60,6 +63,10 @@ ROLE_THRESHOLDS: dict[str, dict[str, float]] = {
         "maximum_abstention_rate": 0.10,
         "minimum_schema_compliance_rate": 1.0,
         "minimum_context_binding_rate": 1.0,
+        "minimum_check_binding_rate": 1.0,
+        "minimum_evidence_localization_rate": 1.0,
+        "minimum_ownership_accuracy": 1.0,
+        "minimum_label_accuracy": 1.0,
         "minimum_deterministic_replay_rate": 1.0,
         "maximum_p95_latency_ms": 3000.0,
         "maximum_peak_vram_fraction": 0.98,
@@ -72,6 +79,10 @@ ROLE_THRESHOLDS: dict[str, dict[str, float]] = {
         "maximum_abstention_rate": 0.05,
         "minimum_schema_compliance_rate": 1.0,
         "minimum_context_binding_rate": 1.0,
+        "minimum_check_binding_rate": 1.0,
+        "minimum_evidence_localization_rate": 1.0,
+        "minimum_ownership_accuracy": 1.0,
+        "minimum_label_accuracy": 1.0,
         "minimum_deterministic_replay_rate": 1.0,
         "maximum_p95_latency_ms": 6000.0,
         "maximum_peak_vram_fraction": 0.98,
@@ -84,6 +95,10 @@ ROLE_THRESHOLDS: dict[str, dict[str, float]] = {
         "maximum_abstention_rate": 0.05,
         "minimum_schema_compliance_rate": 1.0,
         "minimum_context_binding_rate": 1.0,
+        "minimum_check_binding_rate": 1.0,
+        "minimum_evidence_localization_rate": 1.0,
+        "minimum_ownership_accuracy": 1.0,
+        "minimum_label_accuracy": 1.0,
         "minimum_deterministic_replay_rate": 1.0,
         "maximum_p95_latency_ms": 12000.0,
         "maximum_peak_vram_fraction": 0.98,
@@ -96,6 +111,10 @@ ROLE_THRESHOLDS: dict[str, dict[str, float]] = {
         "maximum_abstention_rate": 0.10,
         "minimum_schema_compliance_rate": 1.0,
         "minimum_context_binding_rate": 1.0,
+        "minimum_check_binding_rate": 1.0,
+        "minimum_evidence_localization_rate": 1.0,
+        "minimum_ownership_accuracy": 1.0,
+        "minimum_label_accuracy": 1.0,
         "minimum_deterministic_replay_rate": 1.0,
         "maximum_p95_latency_ms": 20000.0,
         "maximum_peak_vram_fraction": 0.98,
@@ -145,6 +164,10 @@ def _threshold_failures(metrics: Mapping[str, float], thresholds: Mapping[str, f
         "precision",
         "schema_compliance_rate",
         "context_binding_rate",
+        "check_binding_rate",
+        "evidence_localization_rate",
+        "ownership_accuracy",
+        "label_accuracy",
         "deterministic_replay_rate",
     ):
         if metrics[metric] < thresholds[f"minimum_{metric}"]:
@@ -208,6 +231,8 @@ def evaluate_critic_qualification(
     latencies: list[float] = []
     peak_vram: list[float] = []
     context_bound = 0
+    checks_bound = 0
+    evidence_localized = 0
     schema_valid = 0
     deterministic = 0
     for prediction in predictions:
@@ -239,6 +264,25 @@ def evaluate_critic_qualification(
             raise CriticQualificationError(f"{case_id} cited contexts are invalid")
         if cited and set(cited) <= set(case["context_tags"]):
             context_bound += 1
+        checks = prediction["checks"]
+        if (
+            isinstance(checks, Mapping)
+            and set(checks) == set(CHECK_KEYS)
+            and all(status in CHECK_VALUES for status in checks.values())
+            and (verdict != "pass" or set(checks.values()) == {"pass"})
+            and (verdict != "defect" or "defect" in checks.values())
+            and (verdict != "abstain" or "uncertain" in checks.values())
+        ):
+            checks_bound += 1
+        cited_panels = prediction["cited_evidence_panels"]
+        if (
+            isinstance(cited_panels, Sequence)
+            and not isinstance(cited_panels, (str, bytes))
+            and len(cited_panels) >= 2
+            and len(set(cited_panels)) == len(cited_panels)
+            and set(cited_panels) <= set(EVIDENCE_BOARD_LAYOUT)
+        ):
+            evidence_localized += 1
         if prediction["schema_valid"] is True:
             schema_valid += 1
         if prediction["deterministic_replay"] is True:
@@ -252,6 +296,8 @@ def evaluate_critic_qualification(
     valid = [case for case in cases.values() if case["expected_outcome"] == "valid_mask"]
     defects = [case for case in cases.values() if case["expected_outcome"] == "known_defect"]
     serious = [case for case in defects if case["defect_type"] in SERIOUS_DEFECTS]
+    ownership_cases = [case for case in defects if case["defect_type"] == "ownership"]
+    label_cases = [case for case in defects if case["defect_type"] in {"wrong_label", "wrong_side"}]
     predicted_defects = [row for row in predictions if row["verdict"] == "defect"]
     true_defect_calls = sum(observed[case["case_id"]]["verdict"] == "defect" for case in defects)
     metrics = {
@@ -272,6 +318,24 @@ def evaluate_critic_qualification(
         ),
         "schema_compliance_rate": _rate(schema_valid, len(predictions)),
         "context_binding_rate": _rate(context_bound, len(predictions)),
+        "check_binding_rate": _rate(checks_bound, len(predictions)),
+        "evidence_localization_rate": _rate(evidence_localized, len(predictions)),
+        "ownership_accuracy": _rate(
+            sum(
+                observed[case["case_id"]]["verdict"] == "defect"
+                and observed[case["case_id"]]["defect_type"] == case["defect_type"]
+                for case in ownership_cases
+            ),
+            len(ownership_cases),
+        ),
+        "label_accuracy": _rate(
+            sum(
+                observed[case["case_id"]]["verdict"] == "defect"
+                and observed[case["case_id"]]["defect_type"] == case["defect_type"]
+                for case in label_cases
+            ),
+            len(label_cases),
+        ),
         "deterministic_replay_rate": _rate(deterministic, len(predictions)),
         "p95_latency_ms": _nearest_rank_p95(latencies),
         "peak_vram_fraction": max(peak_vram) / float(hardware["vram_bytes"]),

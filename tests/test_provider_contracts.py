@@ -55,6 +55,8 @@ def test_pipeline_role_registry_keeps_incumbents_challengers_and_rollback_explic
     roles = config["provider_roles"]
     assert roles["interactive_segmenter"] == {
         "active": "sam2_1_large",
+        "active_scope": "optional_local_editor_and_legacy_compatibility_only",
+        "production_primary_forbidden": True,
         "challengers": ["sam3_1", "sam3_litetext_s0"],
         "shadow_only_experiments": ["sam3_litetext_s0"],
         "oom_fallback": "sam2_1_base_plus",

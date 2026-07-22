@@ -8,6 +8,7 @@ from PIL import Image
 
 from maskfactory.vlm.critic_catalog import load_catalog
 from maskfactory.vlm.live_calibration import (
+    CHECK_KEYS,
     PROMPT_SHA256,
     LiveCalibrationError,
     build_case_prompt,
@@ -36,6 +37,9 @@ def test_prompt_and_schema_are_target_bound_without_expected_answer() -> None:
     assert case["target_contract"]["target"]["label_id"] in prompt
     assert "Allowed target ROI" in prompt
     assert "character's anatomical perspective" in prompt
+    assert "Valid masks are expected" in prompt
+    assert "rejecting every case is a failed reviewer" in prompt
+    assert "output vocabulary, not a checklist" in prompt
     assert case["expected_outcome"] not in prompt
     assert str(case["defect_type"]) not in prompt.split("Allowed defect types:")[0]
     assert schema["schema"]["additionalProperties"] is False
@@ -44,6 +48,8 @@ def test_prompt_and_schema_are_target_bound_without_expected_answer() -> None:
         == case["context_tags"]
     )
     assert "uniqueItems" not in schema["schema"]["properties"]["cited_context_tags"]
+    assert schema["schema"]["properties"]["checks"]["required"] == list(CHECK_KEYS)
+    assert schema["schema"]["properties"]["cited_evidence_panels"]["minItems"] == 2
     assert len(PROMPT_SHA256) == 64
 
 
@@ -54,6 +60,8 @@ def test_strict_response_parser_accepts_only_bounded_exact_json() -> None:
         "verdict": "defect",
         "defect_type": "anatomy",
         "cited_context_tags": [case["context_tags"][0]],
+        "checks": {key: "defect" if key == "anatomy" else "pass" for key in CHECK_KEYS},
+        "cited_evidence_panels": ["source", "overlay"],
     }
     assert (
         parse_critic_response(
@@ -70,8 +78,41 @@ def test_strict_response_parser_rejects_duplicate_context_tags_without_backend_h
         "verdict": "pass",
         "defect_type": None,
         "cited_context_tags": [case["context_tags"][0], case["context_tags"][0]],
+        "checks": {key: "pass" for key in CHECK_KEYS},
+        "cited_evidence_panels": ["source", "overlay"],
     }
     with pytest.raises(LiveCalibrationError, match="duplicated"):
+        parse_critic_response(json.dumps(value), case, manifest["defect_taxonomy"])
+
+
+@pytest.mark.parametrize(
+    ("verdict", "defect_type", "changed_check", "changed_value", "message"),
+    [
+        ("pass", None, "boundary", "defect", "non-pass check"),
+        ("defect", "boundary", "boundary", "pass", "lacks a defect check"),
+        ("abstain", None, "boundary", "pass", "lacks an uncertain check"),
+    ],
+)
+def test_response_parser_rejects_verdict_check_contradictions(
+    verdict: str,
+    defect_type: str | None,
+    changed_check: str,
+    changed_value: str,
+    message: str,
+) -> None:
+    manifest = _manifest()
+    case = manifest["cases"][1]
+    baseline = "pass" if verdict != "abstain" else "defect"
+    checks = {key: baseline for key in CHECK_KEYS}
+    checks[changed_check] = changed_value
+    value = {
+        "verdict": verdict,
+        "defect_type": defect_type,
+        "cited_context_tags": [case["context_tags"][0]],
+        "checks": checks,
+        "cited_evidence_panels": ["source", "overlay"],
+    }
+    with pytest.raises(LiveCalibrationError, match=message):
         parse_critic_response(json.dumps(value), case, manifest["defect_taxonomy"])
 
 
@@ -125,7 +166,8 @@ def test_composites_are_deterministic_and_retain_all_six_panels(tmp_path: Path) 
     ]
     assert all(row["bytes"] > 0 for row in first)
     with Image.open(first[0]["path"]) as composite:
-        assert composite.height == 152
+        assert composite.size == (1536, 1592)
+    assert len(first) == 1
 
 
 def test_prediction_fails_closed_on_malformed_or_nondeterministic_response() -> None:
@@ -141,6 +183,8 @@ def test_prediction_fails_closed_on_malformed_or_nondeterministic_response() -> 
     assert prediction["verdict"] == "abstain"
     assert prediction["schema_valid"] is False
     assert prediction["cited_context_tags"] == []
+    assert set(prediction["checks"].values()) == {"uncertain"}
+    assert prediction["cited_evidence_panels"] == []
     assert prediction["deterministic_replay"] is False
 
 

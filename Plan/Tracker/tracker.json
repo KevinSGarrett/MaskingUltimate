@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T19:37:16+00:00",
+    "generated_at": "2026-07-22T23:34:19+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 858,
     "total_tracked_including_orphaned": 858
@@ -8083,7 +8083,7 @@
       "cluster_id": "MF-P6-02",
       "cluster_title": "FastAPI inference service",
       "spec_ref": "13 §3",
-      "description": "Model residency per doc 05 §5 schedule: champion body-part + hand specialist + clothing parser sequential slots · SAM2 loaded on demand for /refine",
+      "description": "Model residency per doc 05 §5 schedule: champion body-part + hand specialist + clothing parser sequential slots · production `/refine` resolves the governed RunPod interactive role (SAM 3.1 first); SAM2.1 is loaded only for an explicitly typed bounded fallback/rollback",
       "source_file": "07_ITEMS_P6_COMFYUI_SERVING.md",
       "source_line": 21,
       "is_exit_gate": false,
@@ -10881,7 +10881,7 @@
       "cluster_id": "MF-P0-17",
       "cluster_title": "Modern provider catalog, isolated runtimes, and installation evidence",
       "spec_ref": "SAM 3.1 handoff Content/Models, Safe Order 4–6",
-      "description": "Register SAM 2.1 as incumbent/refiner/CVAT fallback/rollback and official SAM 3.1 as a planned independent challenger with structured capabilities and constraints · Verify: catalog/governance tests pass without claiming SAM 3.1 installation · Blocked by: MF-P0-16.05",
+      "description": "Preserve SAM2.1 as a benchmark/typed bounded fallback/rollback and local `pth-sam2` as optional CVAT assistance only; register official SAM 3.1 as the first RunPod production interactive provider with structured capabilities and constraints, without granting authority from installation alone · Verify: catalog/governance tests forbid SAM2-first production selection while preserving comparison/rollback evidence · Blocked by: MF-P0-16.05",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 28,
       "is_exit_gate": false,
@@ -14763,7 +14763,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 72,
+      "percent_complete": 84,
       "notes": [
         {
           "ts": "2026-07-21T23:31:42+00:00",
@@ -14789,12 +14789,17 @@
           "ts": "2026-07-22T07:04:25+00:00",
           "actor": "ai_agent",
           "text": "Corrected two real visual-evidence delivery defects without weakening qualification thresholds: InternVL now uses documented deterministic dynamic high-resolution tiling (21 patches for each valid case's three composites), and real-corpus v2 renders padded target/candidate focus crops rather than duplicate full-frame zooms. Real 12-case v2 corpus bc53b407... and source bindings eb46647b... validate and are mirrored persistently on RunPod. Live rerun is still open: queued request req_46e0cdbd... never started a provider because its one-time token was lost across an idempotent grant replay; no role or authority granted."
+        },
+        {
+          "ts": "2026-07-22T23:34:18+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 RunPod authority reconciliation: expired coordinator lease safely reconciled; six exact persistent critic artifacts verified; complete-contract real corpus 7064d190... and v3 single-board/per-check protocol deployed. InternVL3.5-8B, Pixtral-12B, MiniCPM-V 4.5, GLM-4.1V-9B, and both Qwen3.6-27B attempts failed frozen positive/negative gates; Qwen3-VL-30B failed model load before semantic review. No role/certificate/approval authority issued. Generation and deterministic QA may continue; certification abstains."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_semantic_alignment_authority_leak_20260722.json; qa/live_verification/visual_critic_high_resolution_evidence_fix_20260722.json; prior failed report b981d28355e6bc49c250856ffada295bfd6ef884f8d77c14efbfba37c10fbbe6; commits 4261a46cddf652e8908d99081d54d8fcd9b1a326 and f573b58a9e059ad6f275f45c5718af35fe86eee0; 35+23 focused tests PASS, Ruff/Black/diff integrity PASS",
+      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; catalog 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a; 156 focused tests PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T07:04:25+00:00",
+      "updated_at": "2026-07-22T23:34:18+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {
@@ -14809,19 +14814,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "complete",
-      "percent_complete": 100,
+      "status": "in_progress",
+      "percent_complete": 75,
       "notes": [
         {
           "ts": "2026-07-21T23:36:46+00:00",
           "actor": "codex",
           "text": "STATIC_PASS only. Live primary and juror role certificates remain unissued until each exact model passes real frozen-corpus calibration."
+        },
+        {
+          "ts": "2026-07-22T23:34:19+00:00",
+          "actor": "codex",
+          "text": "Reopened from STATIC_PASS to required live state: same-family rejection logic remains verified, but no qualified independent-family juror role certificate exists. Qwen3.6-27B juror requalification failed valid-mask, ownership, and label gates; InternVL3.5-8B also remains failed. Item cannot complete until an exact current juror certificate exists."
         }
       ],
-      "evidence": "qa/live_verification/independent_visual_juror_quorum_20260721.json; 22 authority/qualification tests PASS; same-family ensemble abstains; exact distinct-family primary+juror fixtures proceed; stale/name-only/drifted evidence rejected; deterministic veto precedes quorum",
+      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; Qwen juror report 899613635fbfec84dfea2060a659204c2e85eed39cddd5f3fa9f6136873d2051",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T23:36:46+00:00",
+      "updated_at": "2026-07-22T23:34:19+00:00",
       "orphaned": false
     },
     "MF-P4-11.20": {
@@ -15750,7 +15760,7 @@
       "cluster_id": "MF-P6-06",
       "cluster_title": "Provider-neutral runtime, truth provenance, and safe CVAT publication",
       "spec_ref": "21 §8; 22 §§2–3; SAM handoff Required Surfaces",
-      "description": "Keep SAM2.1 as incumbent interactive/CVAT fallback until SAM 3.1 wins exact role benchmarks; preserve one-command rollback · Verify: active/fallback selection and rollback smokes pass · Blocked by: MF-P2-11.15",
+      "description": "Select SAM 3.1 first on the RunPod production route; retain SAM2.1 only as a typed bounded fallback/benchmark/rollback and local `pth-sam2` only as optional CVAT assistance · Verify: production selection rejects SAM2-first routes and fallback/rollback requires exact failure evidence · Blocked by: MF-P2-11.15",
       "source_file": "17_ITEMS_P6_MODERN_SERVING.md",
       "source_line": 22,
       "is_exit_gate": false,

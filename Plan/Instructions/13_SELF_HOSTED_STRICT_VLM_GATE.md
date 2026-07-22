@@ -9,9 +9,10 @@ Cloud LLMs are forbidden for MaskFactory VLM QA. **NEVER EC2.**
 
 MaskFactory autonomy must not blind-approve tournament winners, CAA samples, gold,
 champions, or package-freeze panels. A **self-hosted high-end vision LLM** on
-loopback Ollama (`127.0.0.1:11434`) performs STRICT visual review on real
+private loopback endpoints on RunPod perform STRICT visual review on real
 **source / mask / overlay** panels, with fail-closed behavior when Ollama or
-models are unavailable.
+models are unavailable. Local Ollama is diagnostic/optional and cannot occupy
+either production role or earn production progress.
 
 ---
 
@@ -30,6 +31,11 @@ Model names in this table are challengers, not authority. `llava:13b`,
 `VISUAL_CRITIC_BLOCKED` by their current zero-positive-pass/hallucination
 evidence. A new frozen positive-and-negative calibration is required before
 any can regain a role.
+
+Qwen3.6-27B and InternVL3.5-8B currently each have a measured 0% valid-mask
+pass rate. Both remain unassigned failed candidates. A corrected prompt/evidence
+protocol requires a new frozen-corpus result; current failed results cannot be
+reinterpreted or promoted.
 
 - `temperature=0`, `seed=1337`, structured JSON only.
 - Config: `configs/vlm.yaml` → `strict_visual_gate`.

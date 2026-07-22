@@ -16,15 +16,16 @@ because the work is done or because context/time is running out.
    and Suggested Next Actions. The portfolio percentage and optional/
    portfolio blockers include independent-accuracy and scale/DAZ work and
    cannot redefine core completion.
-3. **Docker runtime awareness (mandatory).** Re-read
-   `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`. Live-probe Docker Desktop
+3. **RunPod production awareness (mandatory for production work).** Verify the
+   current pod, persistent-volume paths, corpus mirrors, and shared coordinator.
+   Re-read `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md` and probe Docker Desktop
    (`docker info`, `docker ps`, CVAT `localhost:8080/api/server/about`,
    Ollama `127.0.0.1:11434/api/version`, `wsl -l -v`) before any
-   CVAT/Nuclio/Ollama/GPU-container work. Do not trust a prior chat memory
+   only before an explicitly selected local CVAT/Nuclio/Ollama integration item. Do not trust a prior chat memory
    that Docker was off. When the engine is up, start/repair/smoke services
    yourself (`python tools/bootstrap_cvat.py`, smokes, `maskfactory doctor`)
    for every in-scope need — do not wait for Kevin to operate containers.
-   Never treat a prior doctor-green as current without a fresh probe.
+   Never treat local doctor-green as production progress or authority.
 4. **Proof-tier honesty.** Before marking bridge/core items complete, re-read
    `02` §11. P6-11/12 producer fixture work is `STATIC_PASS` +
    `AWAITING_MAIN` until real Main adoption/runtime evidence exists. Record
@@ -54,8 +55,8 @@ because the work is done or because context/time is running out.
    checkable sub-steps (see `04` §3).
 9. **STRICT VLM gate awareness (when visual/MVC/CAA/gold/champion in scope).**
    Re-read Standing Orders § SELF-HOSTED STRICT VLM GATE and
-   `13_SELF_HOSTED_STRICT_VLM_GATE.md`. Confirm Ollama loopback + high-end
-   evidence-qualified primary and independent-family juror from doc 25. Do not promote MVC/CAA
+   `13_SELF_HOSTED_STRICT_VLM_GATE.md`. Confirm the RunPod private endpoint plus
+   the evidence-qualified primary and independent-family juror from doc 25. Do not promote MVC/CAA
    without panel+STRICT-VLM evidence. On RunPod, serialize with hand climb
    VRAM; unload VLMs after critic bursts. NEVER EC2; no cloud VLM for MF QA.
 10. **NO-STOP orientation.** Re-read Standing Orders § CONTINUOUS UNTIL E2E

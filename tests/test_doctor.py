@@ -18,6 +18,7 @@ from maskfactory.doctor import (
     check_data_junction_not_removable_usb,
     check_disk_free,
     check_gpu_lock,
+    check_nuclio_interactor,
     check_registered_models,
     check_torch_cuda,
     check_wsl_backing_store,
@@ -33,6 +34,18 @@ def test_cvat_uses_traefik_canonical_host() -> None:
 def test_local_doctor_requests_have_bounded_operational_timeouts() -> None:
     assert LOCAL_API_TIMEOUT_SECONDS == 10
     assert LOCAL_INFERENCE_TIMEOUT_SECONDS == 45
+
+
+def test_local_sam2_cvat_probe_is_opt_in_and_has_no_production_credit(
+    monkeypatch,
+) -> None:
+    monkeypatch.delenv("MASKFACTORY_INCLUDE_OPTIONAL_LOCAL_CVAT_CHECKS", raising=False)
+
+    result = check_nuclio_interactor()
+
+    assert result.status == "SKIP"
+    assert "optional local" in result.detail
+    assert "no production credit" in result.detail
 
 
 def test_default_doctor_battery_covers_every_p0_requirement() -> None:

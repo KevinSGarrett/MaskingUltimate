@@ -24,6 +24,9 @@ from maskfactory.nude_box_mask_generation import (  # noqa: E402
 from maskfactory.nude_reference_mask_hard_qc import (  # noqa: E402
     run_reference_person_mask_hard_qc,
 )
+from maskfactory.production_runpod_routing import (  # noqa: E402
+    require_bounded_sam21_fallback,
+)
 from maskfactory.providers.contracts import ProviderIdentity  # noqa: E402
 from maskfactory.providers.sam31_runtime import OfficialSam31Runtime  # noqa: E402
 from maskfactory.providers.sam31_shadow import Sam31InteractiveSegmenter  # noqa: E402
@@ -148,6 +151,10 @@ def main() -> None:
     parser.add_argument("--catalog-batch", type=Path, required=True)
     parser.add_argument("--source-shard", type=Path, required=True)
     parser.add_argument("--provider", choices=("sam2_1", "sam3_1"), required=True)
+    parser.add_argument("--execution-platform", choices=("runpod",), required=True)
+    parser.add_argument("--coordinator-lease-id", required=True)
+    parser.add_argument("--allow-bounded-sam21-fallback", action="store_true")
+    parser.add_argument("--sam21-fallback-reason")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--output-json", type=Path, required=True)
     parser.add_argument("--hard-qc-json", type=Path)
@@ -159,6 +166,14 @@ def main() -> None:
     parser.add_argument("--sam2-source-root", type=Path)
     parser.add_argument("--sam2-dependency-site", type=Path)
     args = parser.parse_args()
+
+    if not args.coordinator_lease_id.startswith("lease_"):
+        raise ValueError("a valid shared RunPod coordinator lease ID is required")
+    if args.provider == "sam2_1":
+        require_bounded_sam21_fallback(
+            enabled=args.allow_bounded_sam21_fallback,
+            reason=args.sam21_fallback_reason,
+        )
 
     catalog = _load_json(args.catalog_batch)
     source_paths = _source_paths_from_shard(args.source_shard)

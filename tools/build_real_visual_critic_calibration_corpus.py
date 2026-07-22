@@ -16,6 +16,7 @@ from typing import Any
 
 import numpy as np
 from PIL import Image, ImageFilter
+from PIL import __version__ as PILLOW_VERSION
 
 from maskfactory.vlm.calibration_corpus import (
     DEFECT_TYPES,
@@ -285,15 +286,29 @@ def build(
             candidate_bytes = _png(candidate.astype(np.uint8) * 255, "L")
             source_panel_sha = hashlib.sha256(source_bytes).hexdigest()
             candidate_sha = hashlib.sha256(candidate_bytes).hexdigest()
+            source_pixel_sha = hashlib.sha256(source.tobytes()).hexdigest()
+            candidate_u8 = candidate.astype(np.uint8) * 255
+            candidate_pixel_sha = hashlib.sha256(candidate_u8.tobytes()).hexdigest()
             height, width = candidate.shape
+            identity = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            focus_roi = list(_focus_crop_xyxy(scene["target"], candidate))
             contract = {
-                "schema_version": "1.0.0",
+                "schema_version": "2.0.0",
                 "contract_id": f"target-{case_id}",
                 "source": {
                     "image_id": f"lv_mhp_v1-{scene['image_id']}",
-                    "sha256": source_panel_sha,
+                    "encoded_sha256": source_panel_sha,
+                    "decoded_pixel_sha256": source_pixel_sha,
                     "width": width,
                     "height": height,
+                    "decoder": {
+                        "name": "Pillow",
+                        "version": PILLOW_VERSION,
+                        "exif_orientation": "source_pixels_as_stored",
+                        "color_policy": "RGB",
+                        "icc_policy": "decoded_source_profile",
+                        "alpha_policy": "not_applicable_opaque_rgb",
+                    },
                 },
                 "owner": {
                     "person_index": int(scene["owner_index"]),
@@ -304,31 +319,79 @@ def build(
                 },
                 "target": {
                     "label_id": "right_arm_external_reference",
-                    "expected_presence": "visible_nonempty",
-                    "minimum_area_pixels": 1,
-                    "maximum_area_pixels": width * height,
-                    "allowed_roi_xyxy": [0, 0, width, height],
-                    "inclusion_rule": "visible_pixels_only",
-                    "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+                    "ontology_version": "lv_mhp_v1_external_reference",
+                    "ontology_sha256": canonical_sha256(
+                        {"dataset": "LV-MHP-v1", "label_id": 15, "label": "right_arm"}
+                    ),
+                    "label_scale": "coarse_region",
+                    "laterality": "right",
+                    "perspective": "character_perspective",
+                    "visibility_policy": "visible_only",
+                    "expected_state": "present",
+                    "inclusions": [
+                        "all source-labeled visible pixels of the owner's anatomical right upper limb",
+                        "the LV-MHP coarse right_arm region includes the visible upper arm, forearm, hand, and fingers as one region",
+                    ],
+                    "exclusions": [
+                        "clothing and sleeve pixels",
+                        "torso, face, anatomical left arm, other people, held objects, and background",
+                        "occluded or out-of-frame pixels",
+                    ],
+                    "allowed_roi_xyxy": focus_roi,
+                    "overlap_policy": {
+                        "protected_overlap_max_pixels": 0,
+                        "cross_person_overlap_max_pixels": 0,
+                        "containment_rule": "inside_exact_owner_person_mask",
+                    },
+                    "topology_policy": {
+                        "minimum_components": 1,
+                        "maximum_components": 6,
+                        "holes_allowed": False,
+                        "thin_structures_expected": True,
+                    },
+                    "context": {
+                        "truncated": False,
+                        "contact": "contact" in context_tags,
+                        "self_occluded": "occlusion" in context_tags,
+                        "cross_person_occluded": "multi_person" in context_tags,
+                        "crop_edge": "crop" in context_tags,
+                        "out_of_frame": False,
+                    },
                 },
                 "candidate": {
-                    "mask_sha256": candidate_sha,
+                    "encoded_sha256": candidate_sha,
+                    "decoded_pixel_sha256": candidate_pixel_sha,
                     "width": width,
                     "height": height,
                     "binary_values": [0, 255],
+                    "coordinate_space": "canonical_source_pixels",
                 },
-                "excluded_labels": ["left_arm_external_reference"],
                 "protected_regions": [
                     {
                         "region_id": f"protected-face-{case_id}",
                         "label_id": "face",
                         "owner_person_index": int(scene["owner_index"]),
                         "mask_sha256": hashlib.sha256(scene["face"].tobytes()).hexdigest(),
+                        "overlap_max_pixels": 0,
                     }
                 ],
                 "transforms": {
-                    "source_to_candidate": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-                    "candidate_to_source": [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                    "coordinate_space": "canonical_source_pixels",
+                    "chain": [
+                        {
+                            "operation": "identity",
+                            "from_space": "canonical_source_pixels",
+                            "to_space": "canonical_source_pixels",
+                            "matrix": identity,
+                            "inverse_matrix": identity,
+                        }
+                    ],
+                    "round_trip_sha256": canonical_sha256(identity),
+                },
+                "package": {
+                    "package_id": f"critic-calibration-{case_id}",
+                    "revision": 1,
+                    "parent_revision": None,
                 },
                 "contract_sha256": "",
             }
@@ -340,9 +403,11 @@ def build(
                 target_contract=contract,
                 source_file_sha256=source_panel_sha,
                 candidate_file_sha256=candidate_sha,
+                source_decoded_pixel_sha256=source_pixel_sha,
+                candidate_decoded_pixel_sha256=candidate_pixel_sha,
                 expected_target_contract_sha256=contract["contract_sha256"],
                 expected_transform_sha256=transform_sha256(contract),
-                crop_xyxy=_focus_crop_xyxy(scene["target"], candidate),
+                crop_xyxy=tuple(focus_roi),
             )
             panel_hashes, panel_files = {}, {}
             for name in PANEL_NAMES:

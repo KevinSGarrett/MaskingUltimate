@@ -92,6 +92,14 @@ def test_real_builder_binds_every_case_to_real_source_annotation_and_reference_i
     assert manifest["corpus_id"] == "maskfactory_real_visual_critic_calibration_v2"
 
     valid = manifest["cases"][0]
+    contract = valid["target_contract"]
+    assert contract["schema_version"] == "2.0.0"
+    assert contract["target"]["laterality"] == "right"
+    assert contract["target"]["perspective"] == "character_perspective"
+    assert any("hand" in rule for rule in contract["target"]["inclusions"])
+    assert contract["source"]["encoded_sha256"] == valid["panels"]["source"]
+    assert contract["source"]["decoded_pixel_sha256"] != contract["source"]["encoded_sha256"]
+    assert contract["candidate"]["decoded_pixel_sha256"] != contract["candidate"]["encoded_sha256"]
     with Image.open(output / valid["panel_files"]["source"]) as source:
         source_size = source.size
     with Image.open(output / valid["panel_files"]["uncertainty_zoom"]) as zoom:

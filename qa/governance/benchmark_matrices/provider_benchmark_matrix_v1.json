@@ -79,10 +79,10 @@
   ],
   "source_hashes": {
     "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "d57837a1dc0e493b5ef6c9a301fab7d479803dec9ffdeae96ad515f9f6298b3e",
-    "configs/external_sources.yaml": "1e443d50d92440231ddd78288253769126766827781fee9f74e08afe631e1b84",
+    "configs/external_sources.yaml": "759946a447c4bcbf2641cb54113ee725da52cd3dada4854d2791821859508972",
     "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
     "configs/ontology_v2.yaml": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
-    "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
+    "configs/pipeline.yaml": "e16c0235583271c856953c7a584a75becf95be9cad236afdb5a514116e17cc83",
     "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d",
     "env/provider_runtime_matrix.json": "219fc1c74a4f7bc7f8f55eb8acff57e825a9730829531f7a7be18ebca44b02c7",
     "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
@@ -99,5 +99,5 @@
     "src/maskfactory/providers/silhouette_benchmark.py": "ca2dc22da503b755765f7ea05802ae3c86e74066ba0cba3deb3afef254abeef6",
     "src/maskfactory/qa/metrics.py": "5a5c00cf6354ea3366a165ee4ba7dc0b3681c7b5e9238eee5066a3d2e1f7d927"
   },
-  "sha256": "3c36aaf1928ae45a9dbf331afd274366622c7ff093f0014d9a8aeadad62e37fb"
+  "sha256": "15189d4a7f5759ba5873354962d9b9208d87952d80d0b2cadc35054d1a42f816"
 }

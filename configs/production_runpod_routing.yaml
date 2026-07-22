@@ -1,0 +1,91 @@
+schema_version: 1.0.0
+policy_id: maskfactory_production_runpod_routing_v1
+
+production_platform:
+  provider_inference: runpod
+  strict_visual_review: runpod
+  repair: runpod
+  training: runpod
+  benchmarking: runpod
+  qualification: runpod
+  corpus_processing: runpod
+  persistent_root: /workspace
+  shared_gpu_coordinator_required: true
+
+local_scope:
+  allowed:
+    - cpu_development
+    - unit_and_schema_tests
+    - tracker_and_queue_bookkeeping
+    - package_verification
+    - explicitly_required_local_integration
+  forbidden_as_production_progress:
+    - provider_inference
+    - strict_visual_review
+    - repair
+    - training
+    - benchmarking
+    - qualification
+    - corpus_processing
+    - local_doctor
+    - local_cvat
+    - local_nuclio
+    - local_ollama
+    - local_sam2_smoke
+
+provider_priorities:
+  concept_and_interactive_segmentation:
+    - sam3_1
+    - maskfactory_core
+  geometry:
+    - sam3d_body
+    - densepose_r50_fpn_s1x
+  independent_boundary_candidates:
+    - birefnet_general
+    - sam2matting_base_plus
+    - matanyone2
+  strict_visual_review:
+    - qualified_primary_visual_critic
+    - qualified_independent_family_juror
+
+legacy_classification:
+  pth-sam2:
+    allowed_roles:
+      - optional_cvat_assistance
+      - legacy_compatibility
+    production_authority: false
+    production_progress_credit: false
+  sam2_1:
+    allowed_roles:
+      - benchmark_baseline
+      - bounded_fallback
+      - rollback_comparison
+      - optional_interactive_editor
+    production_authority: false
+    primary_selection_forbidden: true
+    fallback_requires_typed_primary_failure: true
+
+canary_requirements:
+  required_platform: runpod
+  required_first_interactive_provider: sam3_1
+  require_distinct_provider_families: true
+  require_shared_coordinator_lease: true
+  require_persistent_outputs: true
+  require_hard_qc: true
+  require_qualified_independent_visual_quorum: true
+  require_bounded_repair: true
+  require_terminal_checkpoint: true
+
+reporting:
+  local_optional_checks_are_production_progress: false
+  required_runtime_fields:
+    - pod_id
+    - persistent_volume_binding
+    - coordinator_lease_id
+    - provider_and_runtime_hashes
+    - source_and_output_hashes
+    - hard_qc_counts
+    - strict_visual_counts
+    - repair_counts
+    - terminal_outcome_counts
+    - coverage

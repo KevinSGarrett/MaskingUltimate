@@ -18,7 +18,7 @@ trained-champion lane. The required human-free autonomy/bridge lane is `MF-P6-07
 ## MF-P6-02 — FastAPI inference service (spec: 13 §3)
 - [ ] MF-P6-02.01 `serve\api.py`: GET /health (versions, loaded models, VRAM) · GET /models (registry roles + champions) · POST /predict (multipart image + labels/return/inpaint params → base64 PNGs + manifest-lite JSON with per-label visibility guess, areas, provenance) · POST /refine (image + label + clicks → SAM2 single-part refine)
 - [ ] MF-P6-02.02 uvicorn bound 127.0.0.1:8765 inside WSL2 (localhost only) · `maskfactory serve --port 8765` command wired
-- [ ] MF-P6-02.03 Model residency per doc 05 §5 schedule: champion body-part + hand specialist + clothing parser sequential slots · SAM2 loaded on demand for /refine
+- [ ] MF-P6-02.03 Model residency per doc 05 §5 schedule: champion body-part + hand specialist + clothing parser sequential slots · production `/refine` resolves the governed RunPod interactive role (SAM 3.1 first); SAM2.1 is loaded only for an explicitly typed bounded fallback/rollback
 - [ ] MF-P6-02.04 `runs\gpu.lock` mutual exclusion with pipeline/training · refusal error names the lock holder · demonstrated both directions
 - [ ] MF-P6-02.05 Latency measured: /predict warm ≤ 4 s all-labels · ≤ 2 s single-label · /refine ≤ 1.2 s/click · cold start ≤ 60 s
 - [ ] MF-P6-02.06 Responses carry `status: draft_model_generated` · service has NO write path into `data\packages\`

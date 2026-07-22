@@ -144,7 +144,9 @@ providers:
     version: "sam2.1_hiera_large.pt (primary) + sam2.1_hiera_base_plus.pt (OOM auto-fallback)"
     local_path: "models/sam2/"
     output_type: "refined binary mask from box/point/mask prompt"
-    role: "boundary refinement from priors, crop lanes, alpha/matte proposals (S07)"
+    role: "optional local CVAT/editor assistance, benchmark baseline, typed bounded fallback, and rollback only"
+    production_authority: false
+    production_primary_forbidden: true
 
   sam2matting_base_plus:
     component: "boundary and alpha-matte challenger"
@@ -229,7 +231,7 @@ providers:
     authority_level: "shadow static/temporal alpha candidate only"
 
   sam3_1:
-    component: "concept discovery + interactive segmentation challenger"
+    component: "RunPod-first concept discovery + interactive segmentation provider"
     lifecycle_state: planned
     source_url: "https://huggingface.co/facebook/sam3.1"
     repo: "https://github.com/facebookresearch/sam3"
@@ -253,7 +255,7 @@ providers:
     runtime_lock: "env/sam31_runtime.lock.json"
     local_path: "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt"
     output_type: "concept instances, boxes, masks, point/box/mask refinements, video tracks"
-    role: "first-class shadow challenger; never silently replaces SAM2.1"
+    role: "first RunPod production-canary interactive provider; authority still requires exact route qualification"
     capabilities:
       - concept_detection
       - interactive_segmentation
@@ -532,11 +534,11 @@ providers:
     version: "qwen2.5vl:7b (Q4, primary); llava:13b (live-smoked fallback); qwen2.5:7b-instruct (manifest lint)"
     local_path: "managed by Ollama (docker container per MF-P0-05)"
     output_type: "strict-JSON QA verdicts + routing suggestions"
-    role: "VLM QA + routing only (S11); text-only cloud boundary (doc 10 §5-6)"
-    authority_level: "QA/router ONLY — cannot approve gold, clear a BLOCK, or edit a pixel"
+    role: "optional local diagnostic QA/router only; never a production visual-authority role"
+    authority_level: "local diagnostic only — cannot approve gold, clear a BLOCK, edit a pixel, or earn production progress"
 
   qwen3_vl:
-    component: "local VLM critic challenger"
+    component: "optional local diagnostic VLM challenger"
     lifecycle_state: installed
     source_url: "https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct-GGUF"
     repo: "https://github.com/QwenLM/Qwen3-VL"
@@ -565,8 +567,8 @@ providers:
         size_bytes: 6140415975
     local_path: "C:/Users/kevin/.ollama/models/manifests/registry.ollama.ai/library/qwen3-vl"
     output_type: "strict-JSON semantic criticism and repair routing"
-    role: "challenger to Qwen2.5-VL; LLaVA retires only after measured win"
-    authority_level: "independent critic; blocking defects veto certification"
+    role: "local diagnostic challenger only; RunPod role qualification is separate"
+    authority_level: "no production authority; cannot satisfy primary/juror quorum or veto certification"
 
   rtmw_x:
     component: "whole-body pose challenger"

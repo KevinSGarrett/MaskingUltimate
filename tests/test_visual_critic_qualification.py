@@ -11,6 +11,7 @@ from maskfactory.vlm.critic_qualification import (
     CriticQualificationError,
     evaluate_critic_qualification,
 )
+from maskfactory.vlm.live_calibration import CHECK_KEYS
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,6 +44,11 @@ def _evidence(*, verdict: str = "correct") -> dict:
                 "verdict": predicted_verdict,
                 "defect_type": defect_type,
                 "cited_context_tags": [case["context_tags"][0]],
+                "checks": {
+                    key: "defect" if is_defect and key == "anatomy" else "pass"
+                    for key in CHECK_KEYS
+                },
+                "cited_evidence_panels": ["source", "overlay"],
                 "schema_valid": True,
                 "latency_ms": 1000 + index,
                 "peak_vram_bytes": 40_000_000_000,

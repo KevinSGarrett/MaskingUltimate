@@ -92,10 +92,10 @@
         ],
         "properties": {
           "model_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{2,127}$"},
-          "family_id": {"enum": ["qwen", "internvl"]},
+          "family_id": {"enum": ["qwen", "internvl", "mistral_pixtral", "glm"]},
           "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
           "revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
-          "license": {"const": "apache-2.0"},
+          "license": {"enum": ["apache-2.0", "mit"]},
           "quantization": {"enum": ["fp8", "bf16"]},
           "pipeline_tag": {"const": "image-text-to-text"},
           "file_count": {"type": "integer", "minimum": 1},

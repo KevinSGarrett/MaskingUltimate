@@ -2,6 +2,9 @@ runtime:
   provider: ollama
   base_url: "http://127.0.0.1:11434"
   container_name: ollama
+  scope: local_diagnostic_optional_only
+  production_authority: false
+  production_progress_credit: false
   # Mirrors configs/cloud_teacher.yaml. Exact-image transmission is still
   # default-deny and separately hash/rights/provider authorized.
   cloud_enabled: true
@@ -18,6 +21,88 @@ models:
   challengers: ["qwen3-vl:4b-instruct-q4_K_M", "qwen3-vl:8b-instruct-q4_K_M"]
   challenger_mode: shadow_only
   llava_retirement_requires_measured_replacement_win: true
+
+production_runtime:
+  platform: runpod
+  persistent_root: /workspace
+  catalog: configs/visual_critic_catalog.yaml
+  shared_gpu_coordinator_required: true
+  private_loopback_endpoints_only: true
+  primary_visual_critic: null
+  independent_family_juror: null
+  authority_status: unavailable_pending_positive_and_negative_qualification
+  certification_behavior_when_unavailable: abstain
+  qualification_protocol:
+    version: maskfactory-live-critic-calibration-v3-single-board-explicit-checks
+    frozen_corpus_sha256: 7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0
+    one_exact_record_per_verdict: true
+    contact_sheet_authority: false
+  failed_candidates:
+    qwen3_6_27b_fp8:
+      role: independent_juror
+      valid_mask_pass_rate: 0.0
+      defect_precision: 0.8333333333333334
+      defect_recall: 1.0
+      ownership_accuracy: 0.0
+      label_accuracy: 0.5
+      qualification_status: fail
+      report_sha256: 899613635fbfec84dfea2060a659204c2e85eed39cddd5f3fa9f6136873d2051
+      report_file_sha256: d73257bab986162bc65db14be18614bde21b5868f046c72ba431c1e0b9595abc
+      evidence: qa/live_verification/runpod_visual_authority_reconciliation_20260722.json
+    internvl3_5_8b_bf16:
+      role: independent_juror
+      valid_mask_pass_rate: 0.0
+      defect_precision: 0.7777777777777778
+      defect_recall: 0.7
+      qualification_status: fail
+      report_file_sha256: e2d735b1ad8da00910cd46efb0fa5747d485e29bbad5cb516337e53d8c8066ff
+      evidence: qa/live_verification/runpod_visual_authority_reconciliation_20260722.json
+  unqualified_candidates:
+    pixtral_12b_2409:
+      family: mistral_pixtral
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: 0070c50d26443b0e3204a96220b483480bf95eee34d7e81c9a5c46efa07aea0a
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.0
+      serious_false_pass_rate: 1.0
+      report_file_sha256: b181b209679092d22ce94aece1c9043db666552ef7b7e132a6d7a6b1d935d3ee
+    qwen3_vl_30b_a3b_instruct_fp8:
+      family: qwen
+      lifecycle: downloaded_runtime_load_failed_unqualified
+      assigned_roles: []
+      artifact_tree_sha256: dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a
+      qualification_report: null
+    minicpm_v_4_5_bf16:
+      family: qwen
+      independent_family_eligible_against_qwen: false
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: 6fca3294df97b0e9fa4bc70bea9907cbb01a27816ee59880bb2aea29bda138a0
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.3
+      serious_false_pass_rate: 0.5
+      report_file_sha256: 44e0123326bcd45336f032d261a23b63834b60b39734fa9d8983b73f2a81d5f1
+    glm_4_1v_9b_thinking:
+      family: glm
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: e62628b04ac0286c137226dc3ff14f3d2d468e488d9e7b752be51f701d2efc32
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.0
+      ownership_accuracy: 0.0
+      label_accuracy: 0.0
+      serious_false_pass_rate: 1.0
+      report_sha256: 9d269ff93e8fd43bf8a92f6a58d1aa4ecd8d58280047a1b1556aace10366e3cc
+      report_file_sha256: 410bddc9348a3c17c0cf8ea6386b49555165deb7b41320890a9e111afc20f3d7
+  enable_autonomous_approval_only_after:
+    - acceptable_valid_mask_pass_rate
+    - acceptable_defect_precision_and_recall
+    - ownership_and_label_accuracy
+    - deterministic_replay
+    - current_role_certificates
+    - independent_model_families
+    - real_adult_anatomy_batch_canary
 
 prompts:
   p_part:
@@ -100,3 +185,5 @@ governance:
   may_approve_gold: false
   may_clear_blocks: false
   source_images_leave_machine: exact_hash_opt_in_only
+  local_runtime_is_production_authority: false
+  unavailable_visual_authority_requires_abstention: true

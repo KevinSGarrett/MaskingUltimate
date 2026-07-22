@@ -18,19 +18,37 @@ from .calibration_corpus import (
 )
 from .critic_catalog import canonical_sha256, validate_catalog
 
-RESPONSE_KEYS = frozenset({"verdict", "defect_type", "cited_context_tags"})
-VERDICTS = frozenset({"pass", "defect", "abstain"})
-COMPOSITE_PAIRS = (
-    ("source", "binary_mask"),
-    ("overlay", "contour"),
-    ("full_context", "uncertainty_zoom"),
+CHECK_KEYS = (
+    "anatomy",
+    "boundary",
+    "leakage",
+    "missing_area",
+    "label_consistency",
+    "ownership",
+    "laterality",
+    "topology",
+    "occlusion",
+    "protected_regions",
 )
-PROMPT_VERSION = "maskfactory-live-critic-calibration-v1"
+CHECK_VALUES = frozenset({"pass", "defect", "uncertain"})
+RESPONSE_KEYS = frozenset(
+    {"verdict", "defect_type", "cited_context_tags", "checks", "cited_evidence_panels"}
+)
+VERDICTS = frozenset({"pass", "defect", "abstain"})
+EVIDENCE_BOARD_LAYOUT = (
+    "source",
+    "binary_mask",
+    "overlay",
+    "contour",
+    "full_context",
+    "uncertainty_zoom",
+)
+PROMPT_VERSION = "maskfactory-live-critic-calibration-v3-single-board-explicit-checks"
 PROMPT_TEMPLATE = """/no_think
 You are evaluating one proposed binary mask for the exact target below.
-Image 1: source on the left, binary mask on the right (white is selected).
-Image 2: red overlay on the left, candidate contour on the right.
-Image 3: full context on the left, uncertainty zoom on the right.
+The one evidence board has six explicitly labeled tiles. Top row: SOURCE,
+BINARY_MASK (white is selected), OVERLAY (red is selected). Bottom row:
+CONTOUR, FULL_CONTEXT, UNCERTAINTY_ZOOM. Every tile belongs to this exact record.
 
 Target label: {label_id}
 Owner person index: {person_index}
@@ -43,18 +61,42 @@ Protected region labels: {protected_labels}
 Allowed context tags: {context_tags}
 Allowed defect types: {defect_taxonomy}
 
-Inspect anatomy/label correctness, ownership, protected regions, side, transform,
-coverage, leakage, missing area, flooding, and boundary placement. Do not infer
-anything outside these images and this target. Left/right always means the
-character's anatomical perspective; screen position alone is not evidence of
-side. The cyan rectangle on source/full-context panels is the allowed target
-ROI. A defect name appearing in the allowed list is not evidence that a defect
-exists. Return only one JSON object with
-exactly these keys:
+Use this balanced decision sequence:
+1. Confirm that every tile belongs to this exact target, owner, and ROI. If
+   that cannot be established from the supplied evidence, abstain.
+2. Locate the declared target in SOURCE and FULL_CONTEXT. Then compare the
+   white BINARY_MASK, red OVERLAY, CONTOUR, and UNCERTAINTY_ZOOM directly with those
+   visible target pixels. A mask over the whole person, a different body part,
+   the other person, the opposite side, background, or clothing is a defect
+   even when its boundary is clean.
+3. Record every required check separately: anatomy, boundary, leakage,
+   missing_area, label_consistency, ownership, laterality, topology, occlusion,
+   and protected_regions. Do not copy one blanket status into all checks without
+   comparing the relevant tiles.
+4. Report a defect only when a visible localized error contradicts the target
+   contract. The defect taxonomy is an output vocabulary, not a checklist of
+   defects that must be found. Do not invent microscopic, hidden, amodal, or
+   unsupported errors.
+5. If the evidence is sufficient and no visible contract violation exists,
+   the correct verdict is pass. Valid masks are expected in this qualification
+   and rejecting every case is a failed reviewer, not a conservative success.
+
+Do not infer anything outside this evidence board and target. Left/right always
+means the character's anatomical perspective; screen position alone is not
+evidence of side. The cyan rectangle on SOURCE and FULL_CONTEXT is the allowed
+target ROI. Return only one JSON object with exactly these keys:
 {{"verdict":"pass|defect|abstain","defect_type":null_or_allowed_type,
-"cited_context_tags":["one or more exact allowed tags"]}}
+"cited_context_tags":["one or more exact allowed tags"],
+"checks":{{"anatomy":"pass|defect|uncertain","boundary":"pass|defect|uncertain",
+"leakage":"pass|defect|uncertain","missing_area":"pass|defect|uncertain",
+"label_consistency":"pass|defect|uncertain","ownership":"pass|defect|uncertain",
+"laterality":"pass|defect|uncertain","topology":"pass|defect|uncertain",
+"occlusion":"pass|defect|uncertain","protected_regions":"pass|defect|uncertain"}},
+"cited_evidence_panels":["two or more exact panel labels"]}}
 Use pass only when the exact mask is valid. Use defect with exactly one allowed
-defect type for a visible error. Use abstain when the images are insufficient.
+defect type for the primary visible error. A pass requires every check to pass;
+a defect requires at least one defect check; abstain requires at least one
+uncertain check. Cite at least two panels that support the verdict.
 """
 PROMPT_SHA256 = hashlib.sha256(f"{PROMPT_VERSION}\n{PROMPT_TEMPLATE}".encode("utf-8")).hexdigest()
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
@@ -69,14 +111,22 @@ def build_case_prompt(case: Mapping[str, Any], defect_taxonomy: Sequence[str]) -
 
     contract = case["target_contract"]
     target = contract["target"]
+    if contract["schema_version"] == "2.0.0":
+        inclusion_rule = "; ".join(target["inclusions"])
+        exclusion_rule = "; ".join(target["exclusions"])
+        excluded_labels = "; ".join(target["exclusions"])
+    else:
+        inclusion_rule = target["inclusion_rule"]
+        exclusion_rule = target["exclusion_rule"]
+        excluded_labels = ", ".join(contract["excluded_labels"]) or "none"
     return PROMPT_TEMPLATE.format(
         label_id=target["label_id"],
         person_index=contract["owner"]["person_index"],
-        expected_presence=target["expected_presence"],
+        expected_presence=target.get("expected_presence", target.get("expected_state")),
         allowed_roi=target["allowed_roi_xyxy"],
-        inclusion_rule=target["inclusion_rule"],
-        exclusion_rule=target["exclusion_rule"],
-        excluded_labels=", ".join(contract["excluded_labels"]) or "none",
+        inclusion_rule=inclusion_rule,
+        exclusion_rule=exclusion_rule,
+        excluded_labels=excluded_labels,
         protected_labels=", ".join(
             str(region["label_id"]) for region in contract["protected_regions"]
         )
@@ -108,6 +158,19 @@ def critic_response_schema(
                     "type": "array",
                     "minItems": 1,
                     "items": {"type": "string", "enum": list(case["context_tags"])},
+                },
+                "checks": {
+                    "type": "object",
+                    "properties": {
+                        key: {"type": "string", "enum": sorted(CHECK_VALUES)} for key in CHECK_KEYS
+                    },
+                    "required": list(CHECK_KEYS),
+                    "additionalProperties": False,
+                },
+                "cited_evidence_panels": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {"type": "string", "enum": list(EVIDENCE_BOARD_LAYOUT)},
                 },
             },
             "required": sorted(RESPONSE_KEYS),
@@ -141,6 +204,8 @@ def parse_critic_response(
     verdict = value["verdict"]
     defect_type = value["defect_type"]
     cited = value["cited_context_tags"]
+    checks = value["checks"]
+    cited_panels = value["cited_evidence_panels"]
     if verdict not in VERDICTS:
         raise LiveCalibrationError("critic verdict is invalid")
     if verdict == "defect":
@@ -156,10 +221,32 @@ def parse_critic_response(
         or not set(cited) <= set(case["context_tags"])
     ):
         raise LiveCalibrationError("critic cited contexts are empty, duplicated, or widened")
+    if (
+        not isinstance(checks, Mapping)
+        or set(checks) != set(CHECK_KEYS)
+        or any(status not in CHECK_VALUES for status in checks.values())
+    ):
+        raise LiveCalibrationError("critic checks are incomplete, widened, or invalid")
+    if verdict == "pass" and set(checks.values()) != {"pass"}:
+        raise LiveCalibrationError("pass verdict carries a non-pass check")
+    if verdict == "defect" and "defect" not in checks.values():
+        raise LiveCalibrationError("defect verdict lacks a defect check")
+    if verdict == "abstain" and "uncertain" not in checks.values():
+        raise LiveCalibrationError("abstain verdict lacks an uncertain check")
+    if (
+        not isinstance(cited_panels, Sequence)
+        or isinstance(cited_panels, (str, bytes))
+        or len(cited_panels) < 2
+        or len(set(cited_panels)) != len(cited_panels)
+        or not set(cited_panels) <= set(EVIDENCE_BOARD_LAYOUT)
+    ):
+        raise LiveCalibrationError("critic panel citations are insufficient or invalid")
     return {
         "verdict": str(verdict),
         "defect_type": defect_type,
         "cited_context_tags": list(cited),
+        "checks": dict(checks),
+        "cited_evidence_panels": list(cited_panels),
     }
 
 
@@ -174,54 +261,57 @@ def _sha256_file(path: Path) -> str:
 def materialize_case_composites(
     case: Mapping[str, Any], corpus_root: Path, output_root: Path
 ) -> list[dict[str, Any]]:
-    """Create three deterministic pair sheets while retaining every frozen panel."""
+    """Create one deterministic labeled board retaining every frozen panel."""
 
     if set(case["panel_files"]) != PANEL_KEYS:
         raise LiveCalibrationError("calibration case panel files are incomplete")
     case_root = Path(output_root) / str(case["case_id"])
     case_root.mkdir(parents=True, exist_ok=True)
-    rows: list[dict[str, Any]] = []
-    for index, pair in enumerate(COMPOSITE_PAIRS, start=1):
-        paths = [(Path(corpus_root) / case["panel_files"][name]).resolve() for name in pair]
-        images: list[Image.Image] = []
-        try:
-            for path in paths:
-                image = Image.open(path)
-                image.load()
-                images.append(image.convert("RGB"))
-            header_height = 24
-            height = max(image.height for image in images)
-            width = sum(image.width for image in images)
-            sheet = Image.new("RGB", (width, height + header_height), color=(0, 0, 0))
-            draw = ImageDraw.Draw(sheet)
-            offset = 0
-            for name, image in zip(pair, images, strict=True):
-                panel = image.copy()
-                if name in {"source", "full_context"}:
-                    roi = tuple(
-                        int(value)
-                        for value in case["target_contract"]["target"]["allowed_roi_xyxy"]
-                    )
-                    ImageDraw.Draw(panel).rectangle(roi, outline=(0, 255, 255), width=1)
-                draw.text((offset + 3, 5), name, fill=(255, 255, 255))
-                sheet.paste(panel, (offset, header_height))
-                panel.close()
-                offset += image.width
-            destination = case_root / f"image_{index}.png"
-            sheet.save(destination, format="PNG", optimize=False, compress_level=9)
-        finally:
-            for image in images:
-                image.close()
-        rows.append(
-            {
-                "index": index,
-                "panel_names": list(pair),
-                "path": destination,
-                "sha256": _sha256_file(destination),
-                "bytes": destination.stat().st_size,
-            }
+    paths = [
+        (Path(corpus_root) / case["panel_files"][name]).resolve() for name in EVIDENCE_BOARD_LAYOUT
+    ]
+    images: list[Image.Image] = []
+    destination = case_root / "evidence_board.png"
+    try:
+        for path in paths:
+            image = Image.open(path)
+            image.load()
+            images.append(image.convert("RGB"))
+        tile_width, tile_height, header_height = 512, 768, 28
+        sheet = Image.new(
+            "RGB", (tile_width * 3, (tile_height + header_height) * 2), color=(0, 0, 0)
         )
-    return rows
+        draw = ImageDraw.Draw(sheet)
+        for index, (name, image) in enumerate(zip(EVIDENCE_BOARD_LAYOUT, images, strict=True)):
+            row, column = divmod(index, 3)
+            x0 = column * tile_width
+            y0 = row * (tile_height + header_height)
+            panel = image.copy()
+            if name in {"source", "full_context"}:
+                roi = tuple(
+                    int(value) for value in case["target_contract"]["target"]["allowed_roi_xyxy"]
+                )
+                ImageDraw.Draw(panel).rectangle(roi, outline=(0, 255, 255), width=3)
+            panel.thumbnail((tile_width, tile_height), Image.Resampling.LANCZOS)
+            paste_x = x0 + (tile_width - panel.width) // 2
+            paste_y = y0 + header_height + (tile_height - panel.height) // 2
+            draw.text((x0 + 5, y0 + 6), name.upper(), fill=(255, 255, 255))
+            sheet.paste(panel, (paste_x, paste_y))
+            panel.close()
+        sheet.save(destination, format="PNG", optimize=False, compress_level=9)
+        sheet.close()
+    finally:
+        for image in images:
+            image.close()
+    return [
+        {
+            "index": 1,
+            "panel_names": list(EVIDENCE_BOARD_LAYOUT),
+            "path": destination,
+            "sha256": _sha256_file(destination),
+            "bytes": destination.stat().st_size,
+        }
+    ]
 
 
 def build_prediction(
@@ -240,10 +330,14 @@ def build_prediction(
         verdict = "abstain"
         defect_type = None
         cited: list[str] = []
+        checks: dict[str, str] = {key: "uncertain" for key in CHECK_KEYS}
+        cited_panels: list[str] = []
     else:
         verdict = parsed["verdict"]
         defect_type = parsed["defect_type"]
         cited = list(parsed["cited_context_tags"])
+        checks = dict(parsed["checks"])
+        cited_panels = list(parsed["cited_evidence_panels"])
     canonical_response = (
         json.dumps(parsed, sort_keys=True, separators=(",", ":"))
         if parsed is not None
@@ -256,6 +350,8 @@ def build_prediction(
         "verdict": verdict,
         "defect_type": defect_type,
         "cited_context_tags": cited,
+        "checks": checks,
+        "cited_evidence_panels": cited_panels,
         "schema_valid": schema_valid,
         "latency_ms": float(latency_ms),
         "peak_vram_bytes": int(peak_vram_bytes),

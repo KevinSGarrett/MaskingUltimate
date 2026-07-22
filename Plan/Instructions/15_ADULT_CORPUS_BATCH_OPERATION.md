@@ -3,8 +3,9 @@
 Read `Plan/26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md` and the seven
 files named by `_MASKFACTORY_INTAKE/README_START_HERE.md` before operating this
 corpus. Adopt the recorded seals before rebuilding. Run the intake validator
-with `--rehash sample`, then use `tools/run_nude_corpus_canary.py` for the first
-local lane proof.
+with `--rehash sample`. Local canary tooling is limited to CPU decode/schema/
+queue preflight; provider inference, strict review, repair, and qualification
+canaries run on persistent RunPod storage under the shared coordinator.
 
 Operating memory for every fresh session:
 
@@ -34,6 +35,14 @@ Operating memory for every fresh session:
 - routine manual CVAT/Kevin review is optional exception handling;
 - RunPod transfer probes first and copies only allowlisted missing/drifted paths;
 - GPU work requires the shared coordinator; transfers do not.
+- the production provider order begins with governed SAM 3.1 and SAM 3D Body
+  where applicable, followed by hypothesis-distinct modern providers; SAM2.1
+  is benchmark/rollback or a typed bounded fallback only, and local `pth-sam2`
+  is optional CVAT assistance with no production authority;
+- milestone reports lead with pod/volume/lease identity, exact provider/runtime
+  hashes, source/output hashes, hard-QC, strict-review, repair, terminal-outcome,
+  and coverage counts. Local checks appear only when a selected local integration
+  requirement materially depends on them.
 
 Do not call a canary, transfer, file presence, one-provider result, or critic
 opinion complete corpus ingestion. Resume from durable sample/shard state and

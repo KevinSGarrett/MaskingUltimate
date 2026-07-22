@@ -1,6 +1,8 @@
 config_version: 2.0.0
 seed: 1337
 gpu_cooldown_sec: 3
+execution_scope: legacy_local_integration_only_no_production_authority
+production_routing_config: configs/production_runpod_routing.yaml
 
 io:
   workdir: work
@@ -32,6 +34,8 @@ provider_roles:
     rollback: groundingdino_local
   interactive_segmenter:
     active: sam2_1_large
+    active_scope: optional_local_editor_and_legacy_compatibility_only
+    production_primary_forbidden: true
     challengers: [sam3_1, sam3_litetext_s0]
     shadow_only_experiments: [sam3_litetext_s0]
     oom_fallback: sam2_1_base_plus
@@ -111,7 +115,7 @@ stages:
       registry_sha256: 9aabeb56ee9cac2d0720dfc748391f357200357c9a88ccdfb53780978255dd44
       runtime: configs/civitai_auxiliary_runtime.yaml
       runtime_sha256: 6f7feda1fd0358f26d723aa3a3457fe8336a606873d817fef99b2cc8b83907e9
-  S07: {enabled: true, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
+  S07: {enabled: true, execution_scope: optional_local_editor_and_legacy_compatibility_only, production_authority: false, primary_model: sam2_1_large, oom_fallback: sam2_1_base_plus, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4", dependency_site: "models/runtime_cache/sam2_deps"}
   S08: {enabled: true, coverage_policy: seed_then_nearest}
   S08.5: {enabled: true, local_cuda_python: "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe", source_path: "models/runtime_cache/detectron2/02b5c4e295e990042a714712c21dc79b731e8833", dependency_site: "models/runtime_cache/detectron2_deps"}
   S09: {enabled: true}

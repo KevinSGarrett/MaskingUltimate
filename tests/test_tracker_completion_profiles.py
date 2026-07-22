@@ -280,7 +280,12 @@ def test_default_next_prioritizes_core_and_profile_filter_is_exact() -> None:
     next_default = module["suggest_next"](data, 5)
     core_ids = module["completion_profile_dependency_closure"](data, "core_autonomous_runtime")
     assert next_default
-    assert all(item["id"] in core_ids for item in next_default)
+    core_positions = [index for index, item in enumerate(next_default) if item["id"] in core_ids]
+    noncore_positions = [
+        index for index, item in enumerate(next_default) if item["id"] not in core_ids
+    ]
+    assert core_positions
+    assert not noncore_positions or max(core_positions) < min(noncore_positions)
 
     next_accuracy = module["suggest_next"](
         data, len(data["items"]), profile="independent_real_accuracy"
@@ -288,7 +293,8 @@ def test_default_next_prioritizes_core_and_profile_filter_is_exact() -> None:
     accuracy_ids = module["completion_profile_dependency_closure"](
         data, "independent_real_accuracy"
     )
-    assert {item["id"] for item in next_accuracy} == accuracy_ids
+    assert {item["id"] for item in next_accuracy} <= accuracy_ids
+    assert all(not module["parse_dependency_ids"](item["description"]) for item in next_accuracy)
 
 
 def test_core_dependency_firewall_detects_transitive_human_dependency() -> None:

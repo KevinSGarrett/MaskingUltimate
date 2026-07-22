@@ -54,15 +54,24 @@ def render_target_panels(
     expected_target_contract_sha256: str,
     expected_transform_sha256: str,
     crop_xyxy: tuple[int, int, int, int],
+    source_decoded_pixel_sha256: str | None = None,
+    candidate_decoded_pixel_sha256: str | None = None,
 ) -> RenderedPanelSet:
     """Render source, mask, overlay, contour, zoom, and disagreement PNGs."""
 
     try:
         validate_target_contract(target_contract)
+        is_v2 = target_contract["schema_version"] == "2.0.0"
+        if is_v2 and (
+            source_decoded_pixel_sha256 is None or candidate_decoded_pixel_sha256 is None
+        ):
+            raise PanelRenderError("v2 panel authorization requires decoded pixel hashes")
         authorization = authorize_critic_invocation(
             target_contract,
-            source_sha256=source_file_sha256,
-            candidate_mask_sha256=candidate_file_sha256,
+            source_sha256=(source_decoded_pixel_sha256 if is_v2 else source_file_sha256),
+            candidate_mask_sha256=(
+                candidate_decoded_pixel_sha256 if is_v2 else candidate_file_sha256
+            ),
             source_size=(source_rgb.shape[1], source_rgb.shape[0]),
         )
     except Exception as exc:

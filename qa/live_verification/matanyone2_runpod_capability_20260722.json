@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P2-11.17",
+  "result": "live_static_and_temporal_capability_passed_shadow_challenger",
+  "verified_at": "2026-07-22T03:45:00Z",
+  "source": {
+    "repository": "https://github.com/pq-yang/MatAnyone2.git",
+    "commit": "d3bb5a1ebedf259a5453c6d168e6840fff85581e",
+    "tree": "754e115f9164332c25e8500f8d5206ad59a90a1d",
+    "path": "/workspace/models/runtime_cache/matanyone2_source_d3bb5a1e",
+    "license": "NTU S-Lab License 1.0",
+    "license_sha256": "dec3847228f2b16bb699a93c46be8c6c4131b90bb4181a14735f1e0006269903",
+    "pyproject_sha256": "f984d86671c0b29bde5cc41ed3cde617ff352316a6630ea51c852b522ebaec6a",
+    "readme_sha256": "b8c0f4df37725a703c4236fea721316a84c11491da21ba4348df3af298277a44",
+    "uv_lock_sha256": "b3ad196ce0114758ea84c1fabc01d5d2a9075a5067ab6f86ede3571c3dcd3079",
+    "inference_script_sha256": "62fbc53d3d7a8d3a4fafe8487d335f51e364ff174c011e224e7ba6aacb562c0d",
+    "huggingface_wrapper_sha256": "ea5a8d09e4b54b2206c5420c380f2bd0702904c983fe2f70ce21ff1a0c8339e9"
+  },
+  "model": {
+    "repository": "PeiqingYang/MatAnyone2",
+    "revision": "40c894a6f68d1f55c86ab0de838d89dc61587930",
+    "path": "/workspace/models/runtime_cache/matanyone2_checkpoint_40c894a6",
+    "checkpoint": {
+      "filename": "model.safetensors",
+      "size_bytes": 141199924,
+      "sha256": "70d3bf1d85d0aaf2020f9ef3577239f4f83b77c2ba47fca1eebaaf872f9ad40f"
+    },
+    "config": {
+      "filename": "config.json",
+      "size_bytes": 2814,
+      "sha256": "48dfbea235039093873586f352f0d05fbfdcbfeda094f2d8b257bc6408e68063"
+    },
+    "backbones": {
+      "resnet50-19c8e357.pth": {
+        "size_bytes": 102502400,
+        "sha256": "19c8e3572231adff6824a2da93fd67b5986919a2e65f8b6007eab4edee220097"
+      },
+      "resnet18-5c106cde.pth": {
+        "size_bytes": 46827520,
+        "sha256": "5c106cde386e87d4033832f2996f5493238eda96ccf559d1d62760c4de0613f8"
+      }
+    }
+  },
+  "runtime": {
+    "platform": "RunPod RTX 6000 Ada persistent volume",
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/matanyone2_env",
+    "python": "3.10.12",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "cuda": "12.8",
+    "requirements_lock": "env/matanyone2_runtime.requirements.lock.txt",
+    "requirements_lock_sha256": "232c9ad5f739a83279c98ed0bbacea2a8161b08f6a983f4ae132b94f4856247a",
+    "runtime_fingerprint": "ba4de3d22c40ce3cf0649a35e0f2d439dc1b8fb13f641c076cb71c3c27514b13",
+    "declared_uv_sync": "incomplete_15_declared_dependencies_missing",
+    "reconciliation": "python3.10-dev plus editable official source install",
+    "resolved_package_count": 121,
+    "thinplate_commit": "f6995795397118b7d0ac01aecd3f39ffbfad9dee",
+    "pip_check": "pass_121_compatible",
+    "install_logs": "/workspace/maskfactory/runtime_artifacts/matanyone2_install/"
+  },
+  "fixture": {
+    "shape": [512, 384],
+    "frame0_sha256": "c23f040729fad90b2d182cb8730d781e10b7e7c10748fb22eaf82f86c4bb0571",
+    "frame1_sha256": "a3481f8c564db4538c882e6e6a70b62df547794d2e6a0b63de988afec39bf6cf",
+    "initial_mask_sha256": "6068b9d154e8e98f22a99918acfe3a676efc9a71c2922661aa6f17a32c04ebda",
+    "frame1_transform": "deterministic 4-pixel horizontal shift"
+  },
+  "static_smoke": {
+    "route": "static_first_frame_refinement",
+    "frame_count": 1,
+    "alpha_shape": [1, 512, 384],
+    "repeats": 2,
+    "deterministic": true,
+    "alpha_sha256": "c3099b7b1217433f4109abea9307c44c3b37756d188faf3144cdbfda307385e8",
+    "output_npz_sha256": "5943d5bc4863f63896a58e68ad8bd8be4b6038887d78067d49f6859fb1b81c91",
+    "fractional_alpha_fraction": 0.033274332682291664,
+    "load_seconds": 1.075098,
+    "inference_seconds": [0.697824, 0.131779],
+    "peak_allocated_bytes": 2775513088,
+    "peak_reserved_bytes": 2906652672
+  },
+  "temporal_smoke": {
+    "route": "temporal_propagation",
+    "frame_count": 2,
+    "alpha_shape": [2, 512, 384],
+    "repeats": 2,
+    "deterministic": true,
+    "alpha_sha256": "2abe1b2956e29a92fdc31502b905018ec6175e1361eeac38f99f844fe6d5232d",
+    "output_npz_sha256": "010e52b1f66197ea132959a3d9e3332dcb86e908ceb7e69bb6a76f806c148e8c",
+    "fractional_alpha_fraction": 0.03145599365234375,
+    "load_seconds": 1.132882,
+    "inference_seconds": [1.020148, 0.158276],
+    "peak_allocated_bytes": 3485389312,
+    "peak_reserved_bytes": 3659530240
+  },
+  "visual_review": {
+    "result": "visual_qa_pass_bounded_capability_only",
+    "static_observation": "The output preserves the supplied silhouette and recovers fractional hair and boundary detail without adding another person.",
+    "temporal_observation": "The second-frame alpha follows the deterministic shifted subject and preserves the same identity and silhouette extent.",
+    "limitation": "The provider does not discover omitted anatomy, assign labels, or replace upstream person ownership."
+  },
+  "capability_contract": {
+    "static_first_frame_refinement": "exactly one frame plus one same-geometry nondegenerate binary prior",
+    "temporal_propagation": "at least two same-geometry frames plus the first-frame nondegenerate binary prior",
+    "unsupported_route_behavior": "fail before process execution",
+    "runtime_failure_behavior": "use only an explicitly configured route-compatible incumbent and preserve its bytes and provenance",
+    "semantic_authority": false,
+    "gold_authority": false,
+    "production_mask_authority": false,
+    "lifecycle": "installed_shadow_challenger"
+  },
+  "shared_gpu_coordination": {
+    "coordinator": "SharedRunPodCoordinator v2",
+    "adopted_after_existing_live_smokes": true,
+    "new_gpu_work_performed_after_adoption": false,
+    "cpu_only_freeze_and_validation_requires_lease": false
+  }
+}

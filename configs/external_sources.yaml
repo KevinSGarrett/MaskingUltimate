@@ -186,6 +186,48 @@ providers:
       - "falls back only to an explicitly configured incumbent matting refiner"
     authority_level: "shadow boundary/alpha candidate only"
 
+  matanyone2:
+    component: "static and temporal alpha-matte challenger"
+    lifecycle_state: installed
+    source_url: "https://github.com/pq-yang/MatAnyone2"
+    repo: "https://github.com/pq-yang/MatAnyone2.git"
+    source_revision: "d3bb5a1ebedf259a5453c6d168e6840fff85581e"
+    source_tree: "754e115f9164332c25e8500f8d5206ad59a90a1d"
+    license: "NTU S-Lab License 1.0"
+    verify_license: false
+    license_source: "https://github.com/pq-yang/MatAnyone2/blob/d3bb5a1ebedf259a5453c6d168e6840fff85581e/LICENSE.txt"
+    license_snapshot_sha256: "dec3847228f2b16bb699a93c46be8c6c4131b90bb4181a14735f1e0006269903"
+    license_reviewed_at: "2026-07-22T03:45:00Z"
+    version: "PeiqingYang/MatAnyone2 at 40c894a6f68d1f55c86ab0de838d89dc61587930"
+    checkpoint:
+      filename: "model.safetensors"
+      sha256: "70d3bf1d85d0aaf2020f9ef3577239f4f83b77c2ba47fca1eebaaf872f9ad40f"
+      size_bytes: 141199924
+      gating: none
+      downloaded: true
+      local_path: "/workspace/models/runtime_cache/matanyone2_checkpoint_40c894a6/model.safetensors"
+    runtime_lock: "env/matanyone2_runtime.lock.json"
+    runtime_environment: "/workspace/maskfactory/runtime_artifacts/matanyone2_env"
+    runtime_requirements_lock: "env/matanyone2_runtime.requirements.lock.txt"
+    runtime_evidence: "qa/live_verification/matanyone2_runpod_capability_20260722.json"
+    local_path: "/workspace/models/runtime_cache/matanyone2_source_d3bb5a1e"
+    output_type: "ordered float32 alpha sequence from an exact first-frame binary prior"
+    role: "shadow one-frame boundary refinement or multi-frame temporal propagation"
+    capabilities:
+      - static_first_frame_refinement
+      - temporal_propagation
+    roles:
+      - boundary_refiner_challenger
+      - temporal_matting_challenger
+    role_eligibility: shadow_only
+    authority_constraints:
+      - "never discovers semantic labels or person ownership"
+      - "never authors gold or production masks"
+      - "requires exact same-geometry frames and a nondegenerate first-frame binary prior"
+      - "unsupported routes fail before execution"
+      - "runtime failure falls back only to an explicitly configured route-compatible incumbent"
+    authority_level: "shadow static/temporal alpha candidate only"
+
   sam3_1:
     component: "concept discovery + interactive segmentation challenger"
     lifecycle_state: planned

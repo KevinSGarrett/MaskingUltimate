@@ -25,11 +25,11 @@ def _rehash(document: dict) -> None:
 
 def test_live_runtime_matrix_is_hash_exact_and_explicit_about_pending_runtimes():
     result = verify_runtime_matrix()
-    assert result["provider_count"] == 9
-    assert result["qualified_runtime_count"] == 7
+    assert result["provider_count"] == 10
+    assert result["qualified_runtime_count"] == 8
     assert result["human_gated_runtime_count"] == 0
     assert result["pending_runtime_count"] == 2
-    assert result["artifact_count"] == 20
+    assert result["artifact_count"] == 22
     assert result["core_torch"] == "2.11.0+cu128"
     assert result["status"] == "pass_with_explicit_pending_runtimes"
 

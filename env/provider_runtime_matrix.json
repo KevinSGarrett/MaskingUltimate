@@ -47,6 +47,18 @@
       ]
     },
     {
+      "provider": "matanyone2",
+      "status": "live_smoke_passed",
+      "isolation_boundary": "runpod_venv_matanyone2_d3bb5a1e",
+      "checkpoint_status": "installed",
+      "smoke_status": "pass",
+      "may_author_gold": false,
+      "artifacts": [
+        {"kind": "lock", "path": "env/matanyone2_runtime.lock.json", "sha256": "dff9439806f965468ad0ee4fa05ab9d05675d24ea8dc9e3cc8cb6ee0692d34fa"},
+        {"kind": "evidence", "path": "qa/live_verification/matanyone2_runpod_capability_20260722.json", "sha256": "508c8ec600830bee9458c7496a65a9ba51a7e64d476ea857e18395769da245cb"}
+      ]
+    },
+    {
       "provider": "sam3_litetext_s0",
       "status": "live_smoke_passed",
       "isolation_boundary": "wsl_venv_sam3_litetext_b09766e5",
@@ -119,5 +131,5 @@
       ]
     }
   ],
-  "manifest_sha256": "f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e"
+  "manifest_sha256": "b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef"
 }

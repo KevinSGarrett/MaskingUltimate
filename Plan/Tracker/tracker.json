@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T03:24:13+00:00",
+    "generated_at": "2026-07-22T04:02:07+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 827,
     "total_tracked_including_orphaned": 827
@@ -11224,12 +11224,17 @@
           "ts": "2026-07-22T03:03:28+00:00",
           "actor": "codex",
           "text": "2026-07-22 SAM2Matting refresh: the isolated matrix now covers nine provider runtimes with seven live-qualified and two exact pending states. The core remains PyTorch 2.11/cu128; SAM2Matting is isolated on RunPod Python 3.10/Torch 2.8/cu128. Percent remains 97 because SAM 3.1 point refinement and SAM 3D Body exact-repeat qualification are unresolved."
+        },
+        {
+          "ts": "2026-07-22T04:02:07+00:00",
+          "actor": "codex",
+          "text": "2026-07-22 MatAnyone2 refresh: the isolated matrix now covers ten provider runtimes with eight live-qualified and two exact pending states. MatAnyone2 uses a separately locked RunPod Python 3.10/Torch 2.10/cu128 environment. Percent remains 97 because SAM 3.1 point refinement and SAM 3D Body exact-repeat qualification remain unresolved."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e; nine provider runtimes, seven qualified, two explicit pending, zero human gates, twenty exact artifacts. SAM2Matting Base+ is live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
+      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef; ten provider runtimes, eight qualified, two exact pending, zero human gates, twenty-two exact artifacts. MatAnyone2 static and temporal routes are live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/matanyone2_runpod_capability_20260722.json, qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T03:03:28+00:00",
+      "updated_at": "2026-07-22T04:02:07+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -13090,13 +13095,13 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [],
-      "evidence": null,
+      "evidence": "qa/live_verification/matanyone2_runpod_capability_20260722.json binds official source d3bb5a1e, checkpoint 40c894a6, exact model/config/backbone/runtime hashes, and deterministic live RunPod proofs for one-frame static refinement and two-frame temporal propagation. Visual review confirms bounded boundary/temporal behavior without semantic or ownership authority. Static/temporal contract tests reject unsupported routes and geometry before execution and preserve only explicit route-compatible rollback. Runtime matrix b6cf5e25... records 10 providers, 8 live-qualified, 2 exact pending, 0 human gates, 22 artifacts. Final affected suite 116 passed; Ruff, Black, JSON/YAML parse, policy seals, runner/requirements hashes, and matrix verification pass.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-21T19:18:54+00:00",
+      "updated_at": "2026-07-22T04:02:06+00:00",
       "orphaned": false
     },
     "MF-P2-11.18": {

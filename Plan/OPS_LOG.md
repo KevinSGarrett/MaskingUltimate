@@ -11648,6 +11648,33 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   providers and is resealed at
   `f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e`.
   Evidence: `qa/live_verification/sam2matting_runpod_runtime_20260722.json`.
+
+## 2026-07-22 - MatAnyone2 static and temporal challenger live-verified
+
+- Installed and hash-bound the official MatAnyone2 source at commit
+  `d3bb5a1ebedf259a5453c6d168e6840fff85581e`, the immutable checkpoint at
+  revision `40c894a6f68d1f55c86ab0de838d89dc61587930`, its config, and both exact
+  ResNet backbone artifacts in an isolated persistent RunPod runtime.
+- Added a provider-neutral ordered float32 alpha-sequence contract and a
+  fail-closed adapter with exactly two routes: one-frame static refinement and
+  two-or-more-frame temporal propagation. Unsupported cardinality, geometry,
+  route, provenance, authority, output-hash, or determinism claims fail before
+  use; runtime failure can return only an explicitly configured,
+  route-compatible incumbent result.
+- Live deterministic RunPod proofs passed for both routes. The 512x384 static
+  route preserved the supplied silhouette while adding fractional hair and
+  boundary detail; the two-frame route followed the deterministic shifted
+  frame without inventing a new identity or person. Visual review confirms
+  these are boundary/temporal refinements only, not semantic discovery or
+  missing-anatomy recovery.
+- `MF-P2-11.17` is complete at bounded shadow-challenger authority. The runtime
+  matrix now contains ten providers, eight live-qualified, two exact pending,
+  zero human-gated, and twenty-two hash-bound artifacts. MatAnyone2 cannot
+  author labels, ownership, production masks, certificates, or gold.
+- The final affected suite passed 116/116; Ruff, Black, JSON/YAML parsing,
+  policy seals, runner/requirements hashes, runtime-matrix verification, and
+  tracker validation pass. Evidence:
+  `qa/live_verification/matanyone2_runpod_capability_20260722.json`.
 ## 2026-07-22 — S00 source registration simplification
 
 - Removed the retired intake classifier, its rescreen command, manifest fields, routing reasons,

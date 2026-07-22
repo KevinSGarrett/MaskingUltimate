@@ -89,6 +89,27 @@ class AlphaMatteProposal:
             raise ValueError("alpha matte prompt fingerprint is required")
 
 
+@dataclass(frozen=True)
+class AlphaMatteSequenceProposal:
+    """Provider-neutral ordered alpha sequence with exact route provenance."""
+
+    alphas: np.ndarray
+    provider: ProviderIdentity
+    prompt_fingerprint: str
+    route: str
+
+    def __post_init__(self) -> None:
+        alphas = np.asarray(self.alphas)
+        if alphas.ndim != 3 or alphas.dtype != np.float32 or alphas.shape[0] < 1:
+            raise ValueError("alpha sequence must be a non-empty 3-D float32 array")
+        if not np.isfinite(alphas).all() or alphas.min() < 0 or alphas.max() > 1:
+            raise ValueError("alpha sequence must contain finite values in 0..1")
+        if not self.prompt_fingerprint:
+            raise ValueError("alpha sequence prompt fingerprint is required")
+        if not self.route:
+            raise ValueError("alpha sequence route is required")
+
+
 @runtime_checkable
 class PersonDetector(Protocol):
     identity: ProviderIdentity
@@ -143,6 +164,15 @@ class MattingRefiner(Protocol):
 
 
 @runtime_checkable
+class TemporalMattingRefiner(Protocol):
+    identity: ProviderIdentity
+
+    def refine_sequence(
+        self, frame_paths: Sequence[Path], *, initial_mask: np.ndarray
+    ) -> AlphaMatteSequenceProposal: ...
+
+
+@runtime_checkable
 class VlmReviewer(Protocol):
     identity: ProviderIdentity
 
@@ -169,6 +199,7 @@ def require_independent_model_families(
 
 __all__ = [
     "AlphaMatteProposal",
+    "AlphaMatteSequenceProposal",
     "BoxProposal",
     "ConceptDetector",
     "GeometryProvider",
@@ -180,6 +211,7 @@ __all__ = [
     "PROVIDER_CONTRACT_VERSION",
     "ProviderIdentity",
     "SilhouetteProvider",
+    "TemporalMattingRefiner",
     "VlmReviewer",
     "independent_model_families",
     "require_independent_model_families",

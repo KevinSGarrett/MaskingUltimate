@@ -142,6 +142,47 @@ def _verify_provider_comparison(
     }
 
 
+def _verify_ownership(
+    ownership: Mapping[str, Any],
+    *,
+    source_sha256: str,
+    selected_mask_sha256: str,
+    acceptance_required: bool,
+) -> dict[str, Any]:
+    if not isinstance(ownership, Mapping):
+        raise NudeRecordQualificationError("ownership_evidence_required")
+    status = ownership.get("status")
+    if status not in {"verified", "ambiguous", "unresolved"}:
+        raise NudeRecordQualificationError("ownership_status_invalid")
+    if ownership.get("source_sha256") != source_sha256:
+        raise NudeRecordQualificationError("ownership_source_mismatch")
+    if ownership.get("mask_sha256") != selected_mask_sha256:
+        raise NudeRecordQualificationError("ownership_mask_mismatch")
+    report_sha256 = _sha256(ownership.get("report_sha256"), "ownership_report_sha256")
+    person_index = ownership.get("person_index")
+    owner_id = ownership.get("owner_id")
+    scene_instance_id = ownership.get("scene_instance_id")
+    if status == "verified":
+        if not isinstance(person_index, int) or isinstance(person_index, bool) or person_index < 0:
+            raise NudeRecordQualificationError("ownership_person_index_invalid")
+        owner_id = _nonempty(owner_id, "ownership_owner_id")
+        scene_instance_id = _nonempty(scene_instance_id, "ownership_scene_instance_id")
+    else:
+        if acceptance_required:
+            raise NudeRecordQualificationError("verified_person_instance_ownership_required")
+        if person_index is not None or owner_id is not None or scene_instance_id is not None:
+            raise NudeRecordQualificationError("ambiguous_ownership_cannot_claim_owner")
+    return {
+        "status": status,
+        "source_sha256": source_sha256,
+        "mask_sha256": selected_mask_sha256,
+        "person_index": person_index,
+        "owner_id": owner_id,
+        "scene_instance_id": scene_instance_id,
+        "report_sha256": report_sha256,
+    }
+
+
 def _verify_hard_qc(hard_qc: Mapping[str, Any], *, selected_mask_sha256: str) -> dict[str, str]:
     if hard_qc.get("status") != "pass":
         raise NudeRecordQualificationError("hard_qc_veto")
@@ -261,6 +302,12 @@ def qualify_terminal_record(
     selected_mask_sha256 = _sha256(record.get("mask_sha256"), "mask_sha256")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
+    ownership = _verify_ownership(
+        record.get("ownership", {}),
+        source_sha256=source_sha256,
+        selected_mask_sha256=selected_mask_sha256,
+        acceptance_required=True,
+    )
     provider_comparison = _verify_provider_comparison(
         record.get("provider_comparison", {}), selected_mask_sha256=selected_mask_sha256
     )
@@ -274,7 +321,7 @@ def qualify_terminal_record(
         record.get("repair"), outcome=str(outcome), selected_mask_sha256=selected_mask_sha256
     )
     evidence = {
-        "schema_version": "maskfactory.nude_record_qualification.v1",
+        "schema_version": "maskfactory.nude_record_qualification.v2",
         "sample_id": sample_id,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
@@ -283,6 +330,7 @@ def qualify_terminal_record(
         "hard_qc": hard_qc,
         "panel_evidence": panel_evidence,
         "pixel_semantic_visual_evidence": pixel_semantic_evidence,
+        "ownership": ownership,
         "strict_reviews": strict_reviews,
         "repair": repair,
         "authority": "machine_verified_candidate",
@@ -309,7 +357,7 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     evidence = payload.get("qualification_evidence")
     if not isinstance(evidence, Mapping):
         raise NudeRecordQualificationError("qualification_evidence_required")
-    if evidence.get("schema_version") != "maskfactory.nude_record_qualification.v1":
+    if evidence.get("schema_version") != "maskfactory.nude_record_qualification.v2":
         raise NudeRecordQualificationError("qualification_evidence_schema_invalid")
     for field in ("sample_id", "source_sha256", "mask_sha256", "outcome"):
         if payload.get(field) != evidence.get(field):
@@ -345,6 +393,12 @@ def validate_qualified_queue_payload(payload: Mapping[str, Any]) -> dict[str, An
     observed_semantic = _verify_pixel_semantic_evidence(evidence, semantic_panels)
     if dict(pixel_semantic_evidence) != observed_semantic:
         raise NudeRecordQualificationError("pixel_semantic_visual_evidence_drift")
+    _verify_ownership(
+        evidence.get("ownership", {}),
+        source_sha256=str(payload["source_sha256"]),
+        selected_mask_sha256=str(payload["mask_sha256"]),
+        acceptance_required=True,
+    )
     _verify_provider_comparison(
         evidence.get("provider_comparison", {}),
         selected_mask_sha256=str(payload["mask_sha256"]),
@@ -444,6 +498,12 @@ def qualify_nonacceptance_record(
         raise NudeRecordQualificationError("failure_reasons_required")
     panel_evidence = verify_complete_panel_evidence(panels)
     pixel_semantic_evidence = _verify_pixel_semantic_evidence(record, panels)
+    ownership = _verify_ownership(
+        record.get("ownership", {}),
+        source_sha256=source_sha256,
+        selected_mask_sha256=selected_mask_sha256,
+        acceptance_required=False,
+    )
     provider_comparison = _verify_provider_comparison(
         record.get("provider_comparison", {}),
         selected_mask_sha256=selected_mask_sha256,
@@ -505,7 +565,7 @@ def qualify_nonacceptance_record(
             ),
         }
     evidence = {
-        "schema_version": "maskfactory.nude_record_nonacceptance.v1",
+        "schema_version": "maskfactory.nude_record_nonacceptance.v2",
         "sample_id": sample_id,
         "source_sha256": source_sha256,
         "mask_sha256": selected_mask_sha256,
@@ -516,6 +576,7 @@ def qualify_nonacceptance_record(
         "hard_qc": hard_qc_evidence,
         "panel_evidence": panel_evidence,
         "pixel_semantic_visual_evidence": pixel_semantic_evidence,
+        "ownership": ownership,
         "strict_reviews": reviews,
         "repair": repair_evidence,
         "authority": "no_mask_authority",
@@ -565,6 +626,7 @@ def validate_nonacceptance_queue_payload(payload: Mapping[str, Any]) -> dict[str
             "hard_qc": evidence.get("hard_qc"),
             "strict_reviews": evidence.get("strict_reviews"),
             "repair": evidence.get("repair"),
+            "ownership": evidence.get("ownership"),
         },
         panels=semantic_panels,
     )

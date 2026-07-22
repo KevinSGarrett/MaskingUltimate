@@ -109,6 +109,15 @@ def _qualified_outcome(tmp_path: Path, index: int) -> dict[str, object]:
             "sample_id": f"qualified-{index}",
             "source_sha256": source_sha,
             "mask_sha256": selected,
+            "ownership": {
+                "status": "verified",
+                "source_sha256": source_sha,
+                "mask_sha256": selected,
+                "person_index": 0,
+                "owner_id": "person-0",
+                "scene_instance_id": f"fixture-scene-{index}-person-0",
+                "report_sha256": sha(f"ownership-{index}"),
+            },
             "outcome": "accepted",
             "provider_comparison": {
                 "status": "pass",
@@ -183,6 +192,7 @@ def _abstained_outcome(tmp_path: Path, index: int) -> dict[str, object]:
             "provider_comparison": evidence["provider_comparison"],
             "hard_qc": evidence["hard_qc"],
             "strict_reviews": reviews,
+            "ownership": evidence["ownership"],
         },
         panels=panels,
     )

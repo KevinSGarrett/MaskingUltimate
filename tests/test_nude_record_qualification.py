@@ -72,6 +72,15 @@ def _record(panel_bundle_sha256: str, *, outcome: str = "accepted") -> dict[str,
         "sample_id": "adult-sample-0001",
         "source_sha256": source_sha256,
         "mask_sha256": selected,
+        "ownership": {
+            "status": "verified",
+            "source_sha256": source_sha256,
+            "mask_sha256": selected,
+            "person_index": 0,
+            "owner_id": "person-0",
+            "scene_instance_id": "adult-scene-person-0",
+            "report_sha256": _sha("ownership-report"),
+        },
         "outcome": outcome,
         "provider_comparison": {
             "status": "pass",
@@ -171,6 +180,25 @@ def test_terminal_receipt_requires_original_source_pixel_binding(tmp_path: Path)
         qualify_terminal_record(_record(bundle["panel_bundle_sha256"]), panels=panels)
 
 
+def test_acceptance_requires_verified_exact_person_instance_ownership(tmp_path: Path) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record["ownership"] = {
+        "status": "ambiguous",
+        "source_sha256": record["source_sha256"],
+        "mask_sha256": record["mask_sha256"],
+        "person_index": None,
+        "owner_id": None,
+        "scene_instance_id": None,
+        "report_sha256": _sha("ambiguous-ownership"),
+    }
+    with pytest.raises(
+        NudeRecordQualificationError, match="verified_person_instance_ownership_required"
+    ):
+        qualify_terminal_record(record, panels=panels)
+
+
 def test_hard_qc_veto_cannot_be_cleared_by_passing_critics(tmp_path: Path) -> None:
     panels = _panels(tmp_path)
     bundle = verify_complete_panel_evidence(panels)
@@ -258,6 +286,36 @@ def test_uncertain_reviews_create_hash_bound_abstention_receipt(tmp_path: Path) 
     result = qualify_nonacceptance_record(record, panels=panels)
     assert result["qualification_evidence"]["authority"] == "no_mask_authority"
     assert validate_nonacceptance_queue_payload(result) == result
+
+
+def test_ambiguous_ownership_routes_to_abstention_without_claiming_an_owner(
+    tmp_path: Path,
+) -> None:
+    panels = _panels(tmp_path)
+    bundle = verify_complete_panel_evidence(panels)
+    record = _record(bundle["panel_bundle_sha256"])
+    record.update(
+        {
+            "outcome": "abstained",
+            "failure_stage": "strict_review",
+            "reasons": ["person_instance_ownership_ambiguous"],
+        }
+    )
+    record["strict_reviews"][1]["verdict"] = "uncertain"  # type: ignore[index]
+    record["ownership"] = {
+        "status": "ambiguous",
+        "source_sha256": record["source_sha256"],
+        "mask_sha256": record["mask_sha256"],
+        "person_index": None,
+        "owner_id": None,
+        "scene_instance_id": None,
+        "report_sha256": _sha("ambiguous-ownership"),
+    }
+    result = qualify_nonacceptance_record(record, panels=panels)
+    assert result["qualification_evidence"]["ownership"]["status"] == "ambiguous"
+    record["ownership"]["person_index"] = 0  # type: ignore[index]
+    with pytest.raises(NudeRecordQualificationError, match="cannot_claim_owner"):
+        qualify_nonacceptance_record(record, panels=panels)
 
 
 def test_hard_qc_rejection_retains_reviews_but_cannot_claim_authority(tmp_path: Path) -> None:

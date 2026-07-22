@@ -85,8 +85,8 @@ def ingest(
     event_log: Path,
     config_path: Path,
 ) -> None:
-    """S00: ingest a new image (source policy + registration)."""
-    from .intake import LocalSourceSafetyScreener, ingest_one
+    """S00: register and ingest a new image."""
+    from .intake import ingest_one
     from .orchestrator import load_pipeline_config
 
     config = load_pipeline_config(config_path)
@@ -99,7 +99,6 @@ def ingest(
     try:
         result = ingest_one(
             image,
-            screener=LocalSourceSafetyScreener(),
             incoming_root=incoming_root,
             images_root=images_root,
             database=database,
@@ -116,76 +115,6 @@ def ingest(
                 "reason": result.reason,
                 "duplicate": result.duplicate,
             },
-            sort_keys=True,
-        )
-    )
-
-
-@main.command("rescreen-quarantine")
-@click.argument(
-    "image", type=click.Path(path_type=Path, dir_okay=False, exists=True), required=True
-)
-@click.option(
-    "--incoming-root",
-    type=click.Path(path_type=Path, file_okay=False),
-    default=Path("data/incoming"),
-    show_default=True,
-)
-@click.option(
-    "--images-root",
-    type=click.Path(path_type=Path, file_okay=False),
-    default=Path("data/images"),
-    show_default=True,
-)
-@click.option(
-    "--database",
-    type=click.Path(path_type=Path, dir_okay=False),
-    default=Path("data/maskfactory.sqlite"),
-    show_default=True,
-)
-@click.option(
-    "--event-log",
-    type=click.Path(path_type=Path, dir_okay=False),
-    default=Path("logs/intake.jsonl"),
-    show_default=True,
-)
-@click.option(
-    "--config",
-    "config_path",
-    type=click.Path(path_type=Path, dir_okay=False),
-    default=Path("configs/pipeline.yaml"),
-    show_default=True,
-)
-def rescreen_quarantine(
-    image: Path,
-    incoming_root: Path,
-    images_root: Path,
-    database: Path,
-    event_log: Path,
-    config_path: Path,
-) -> None:
-    """Re-screen and safely promote one existing source-policy quarantine."""
-    from .intake import IntakeError, LocalSourceSafetyScreener, rescreen_quarantined
-    from .orchestrator import load_pipeline_config
-
-    config = load_pipeline_config(config_path)
-    intake_config = config.get("intake", {})
-    min_side = intake_config.get("min_side", 512) if isinstance(intake_config, dict) else 512
-    try:
-        result = rescreen_quarantined(
-            image,
-            screener=LocalSourceSafetyScreener(),
-            incoming_root=incoming_root,
-            images_root=images_root,
-            database=database,
-            event_log=event_log,
-            min_side=min_side,
-        )
-    except (IntakeError, OSError, ValueError) as exc:
-        raise click.ClickException(str(exc)) from exc
-    click.echo(
-        json.dumps(
-            {"image_id": result.image_id, "outcome": result.outcome, "reason": result.reason},
             sort_keys=True,
         )
     )
@@ -243,7 +172,7 @@ def draft(
 ) -> None:
     """D1: draft all active-v1 56 PARTs; gated v2 requires 65 after activation."""
     from .gpu import DEFAULT_GPU_LOCK_PATH, GpuLockError
-    from .intake import LocalSourceSafetyScreener, ingest_one
+    from .intake import ingest_one
     from .orchestrator import (
         SemanticStageError,
         StageConfigurationError,
@@ -262,7 +191,6 @@ def draft(
             raise StageConfigurationError("intake.min_side must be a positive integer")
         intake = ingest_one(
             image,
-            screener=LocalSourceSafetyScreener(),
             incoming_root=incoming_root,
             images_root=images_root,
             database=database,

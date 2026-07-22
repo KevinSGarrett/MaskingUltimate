@@ -127,7 +127,7 @@ Completed/open state is migrated from the checklist only when its evidence satis
 
 | Source requirement | Tracker coverage |
 |---|---|
-| §2 uniform source admission | `MF-P0-14.01`–`.04`; `MF-P0-16.01`, `.07`; `MF-P2-10.02`; `MF-P4-10.03` |
+| §2 source registration | `MF-P0-14.01`–`.04`; `MF-P0-16.01`, `.07`; `MF-P2-10.02`; `MF-P4-10.03` |
 | §§3–4 role hierarchy and hardware-qualified deployment | `MF-P0-17.15`, `.20`–`.24`; `MF-P4-11.16`, `.19`–`.20` |
 | §5 proposal/refinement stack | `MF-P2-11.16`–`.19` |
 | §6 target contracts and disagreement evidence | `MF-P2-11.20`–`.21`; `MF-P4-11.21` |

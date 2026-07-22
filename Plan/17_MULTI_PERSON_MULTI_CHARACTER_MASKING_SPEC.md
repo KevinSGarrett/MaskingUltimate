@@ -130,7 +130,7 @@ Per image, the orchestrator now runs:
      automatic check before any VLM or human review time is spent on it.
 4. **S10 → S13** (auto-QA, VLM QA, CVAT, gold export) run per promoted instance as already
    specified, with the amendments in §7 (new QA checks) and §9 (CVAT workflow).
-5. **S00 (intake)** applies the uniform source-admission contract once to the whole source image
+5. **S00 (intake)** records source-registration metadata once for the whole source image
    before person detection. Provenance, rights/allowed-use, integrity, and intake outcome are
    inherited by every promoted instance.
 6. **S14/S15** (dataset build, active learning) are amended in §8 — critically, the dataset split

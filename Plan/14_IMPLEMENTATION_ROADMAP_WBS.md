@@ -34,7 +34,7 @@ provable from the committed lockfiles and populated, hash-verified registry.
 | MF-P1-01 | Schemas + validators | jsonschema for manifest/qa_report/registry/failure/coverage | invalid fixtures rejected with pointer paths | 04 |
 | MF-P1-02 | SQLite state + orchestrator skeleton | `state.db`, stage graph, retries, `reindex` | kill −9 mid-run → resume completes; reindex rebuilds db from packages | 04 §6, 05 §3 |
 | MF-P1-03 | ontology.yaml generator + CI assert | generator from doc 02 tables; CI job diffs YAML↔tables | any table/YAML drift fails CI; 56 parts + 16 materials + swap_partners present | 02 §10 |
-| MF-P1-04 | S00 intake (incl. safety gate) | ingest CLI: hash id, EXIF strip, min-side, pHash, quarantine flow | 10-image mixed batch → correct ids, quarantine catches seeded case | 07 S00, 10 §7 |
+| MF-P1-04 | S00 source registration | ingest CLI: hash id, EXIF strip, min-side, pHash, provenance registration | 10-image mixed batch → correct identities and deterministic technical outcomes | 07 S00, 10 §7 |
 | MF-P1-05 | Maps→binaries exporter | `export-binaries`, `derive` (unions), png_strict everywhere | round-trip map→binaries→map identical; QC-001..007 pass on outputs | 03 §4 |
 | MF-P1-06 | CVAT bridge v1 | `cvat init-project/push/pull` | draft masks appear as editable pre-annotations; pull round-trips pixel-identical | 11 §2 |
 | MF-P1-07 | Packager + format QA subset | `package`, `verify-package`, QC-001…010 + QC-030 | seeded-defect fixtures each trip their QC; BLOCK prevents approval | 09 §2, 03 §8 |

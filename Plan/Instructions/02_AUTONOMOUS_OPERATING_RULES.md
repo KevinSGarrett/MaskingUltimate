@@ -106,7 +106,7 @@ a determinism setting to make something faster without noting the tradeoff.
 
 ## 7. Data Governance Is Non-Negotiable
 
-Every source follows one admission path. Record exact provenance,
+Every source receives the same registration metadata. Record exact provenance,
 rights/allowed-use, integrity, and intake outcome. Source images must be generated,
 owned, licensed, or consented per doc 01 §7; do not source training/dataset
 images from arbitrary scraping or unqualified third-party content. This rule

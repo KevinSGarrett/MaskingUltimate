@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T00:02:11+00:00",
+    "generated_at": "2026-07-22T03:24:13+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 827,
     "total_tracked_including_orphaned": 827
@@ -2406,7 +2406,7 @@
       "cluster_id": "MF-P1-04",
       "cluster_title": "S00 intake incl. safety gate",
       "spec_ref": "07 S00, 10 §7, 01 §7",
-      "description": "Apply the uniform source-admission contract: exact provenance, rights/allowed-use, integrity, and intake outcome → `accepted` or `quarantined` with a typed reason",
+      "description": "Record exact provenance, rights/allowed-use, integrity, and deterministic intake outcome for every source",
       "source_file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
       "source_line": 41,
       "is_exit_gate": false,
@@ -9414,7 +9414,7 @@
       "cluster_id": "MF-P0-13",
       "cluster_title": "Local MaskedWarehouse intake",
       "spec_ref": "16, MASKEDWAREHOUSE_SOURCE_REGISTRY",
-      "description": "Verify one uniform admission path governed by provenance, license, allowed use, annotation, QA, and authority.",
+      "description": "Record provenance, license, allowed-use, annotation, QA, and authority metadata for every registered source.",
       "source_file": "09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md",
       "source_line": 37,
       "is_exit_gate": false,
@@ -9422,22 +9422,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-21T23:52:54+00:00",
-          "actor": "codex",
-          "text": "Extended the completed reconciliation to active runtime locks; retired special content-policy fields were removed without changing provider artifacts, licensing identity, or runtime truth."
-        },
-        {
-          "ts": "2026-07-22T00:03:04+00:00",
-          "actor": "codex",
-          "text": "Extended uniform admission through DAZ adapter/QC/schema boundaries; descriptor category filters no longer decide acceptance, while construction identity, integrity, source/use, mask QA, and authority remain enforced."
-        }
-      ],
-      "evidence": "qa/live_verification/plan_items_tracker_reconciliation_20260721.json; qa/live_verification/uniform_admission_runtime_lock_reconciliation_20260721.json; qa/live_verification/uniform_admission_daz_boundary_reconciliation_20260721.json. Active Plan/Items/Instructions, runtime locks, and DAZ adapter/QC/schema boundaries use the uniform provenance/license/allowed-use/integrity/annotation/technical-QA/authority path. 101 focused DAZ tests, 23 runtime-lock tests, Ruff, Black, JSON parsing, active-policy scan, and tracker validation PASS.",
+      "notes": [],
+      "evidence": "qa/live_verification/source_registration_reconciliation_20260722.json. S00 records source identity and metadata without a project classifier or classifier-driven route. 117 focused tests pass across intake/state/orchestration/tracker/documentation/registry/drafting/fusion; Ruff, Black, diff integrity, tracker rebuild, validation, and report pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T05:50:01+00:00",
-      "updated_at": "2026-07-22T00:03:04+00:00",
+      "updated_at": "2026-07-22T03:41:24+00:00",
       "orphaned": false
     },
     "MF-P8-01.01": {
@@ -10567,7 +10556,7 @@
       "cluster_id": "MF-P0-16",
       "cluster_title": "Active registry governance and lifecycle foundation",
       "spec_ref": "22 §§1–4, §9",
-      "description": "Record and schema-enforce the private-personal-noncommercial, nondistributed operating profile with uniform source admission · Verify: live external/model registries validate and only declared lifecycle/license/benchmark authority controls activation · Blocked by: none",
+      "description": "Record and schema-enforce the private-personal-noncommercial, nondistributed operating profile with uniform source registration · Verify: live external/model registries validate and only declared lifecycle/license/benchmark authority controls activation · Blocked by: none",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 13,
       "is_exit_gate": false,
@@ -10798,7 +10787,7 @@
       "cluster_id": "MF-P0-16",
       "cluster_title": "Active registry governance and lifecycle foundation",
       "spec_ref": "22 §§1–4, §9",
-      "description": "Run bundled live-registry schema/governance regression evidence in CI · Verify: schema, governance, legacy bypass, duplicate-key, license, uniform admission, lifecycle, promotion, and rollback tests all pass · Blocked by: MF-P0-16.02 through MF-P0-16.11 · HARD BLOCKER",
+      "description": "Run bundled live-registry schema/governance regression evidence in CI · Verify: schema, governance, legacy bypass, duplicate-key, license, source registration, lifecycle, promotion, and rollback tests all pass · Blocked by: MF-P0-16.02 through MF-P0-16.11 · HARD BLOCKER",
       "source_file": "11_ITEMS_P0_MODERNIZATION_FOUNDATION.md",
       "source_line": 24,
       "is_exit_gate": false,
@@ -10806,17 +10795,11 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [
-        {
-          "ts": "2026-07-14T07:55:47+00:00",
-          "actor": "tracker_reconciliation",
-          "text": "Focused schema, governance, lifecycle, content, and license regression tests pass; checkpoint-specific restriction override coverage in MF-P0-16.09 is still missing, so the aggregate CI gate remains open."
-        }
-      ],
-      "evidence": ".github/workflows/ci.yml now has a dedicated fail-closed registry governance/lifecycle step covering schema, active/legacy policy, duplicate YAML keys, per-provider license/content decisions, lifecycle states, checkpoint precedence, hard-bucket promotion, and one-edit rollback. The exact five-file CI bundle passed 29/29 locally; full suite previously passed 914/914.",
+      "notes": [],
+      "evidence": "Current schema, registry-governance, duplicate-key, license, source-registration, lifecycle, promotion, and rollback coverage passes. The six focused governance/registry/drafting/fusion files pass 48/48; active governance code and tests contain no project classifier fields.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T12:04:09+00:00",
+      "updated_at": "2026-07-22T03:25:04+00:00",
       "orphaned": false
     },
     "MF-P0-17.01": {
@@ -12506,10 +12489,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Context regression coverage and hard-QA checks remain verified under the uniform source-admission contract.",
+      "evidence": "Exposed, clothed, partial, distant, hair-occluded, side-view, and cropped drafting/fusion contexts remain covered by current technical QA. Focused governance/registry/drafting/fusion verification passes 48/48.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-21T20:02:24+00:00",
+      "updated_at": "2026-07-22T03:25:04+00:00",
       "orphaned": false
     },
     "MF-P2-11.01": {
@@ -20012,7 +19995,7 @@
       "cluster_id": "MF-P9-14",
       "cluster_title": "Governed reference corpus, benchmark, and retrieval",
       "spec_ref": "23 §§7–8; reference_library.yaml",
-      "description": "Freeze source/output roots, immutable-original policy, uniform admission, and no-truth authority · Verify: policy validator passes and source selection does not change eligibility or authority · Blocked by: none",
+      "description": "Freeze source/output roots, immutable-original policy, uniform registration, and no-truth authority · Verify: policy validator passes and source selection does not change truth or authority · Blocked by: none",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 165,
       "is_exit_gate": false,

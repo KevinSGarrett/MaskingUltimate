@@ -11648,3 +11648,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   providers and is resealed at
   `f9bec1ea7a3d474ddc8e33aac16eb0d65a9dce5131b83a560c92b3edfd39c98e`.
   Evidence: `qa/live_verification/sam2matting_runpod_runtime_20260722.json`.
+## 2026-07-22 — S00 source registration simplification
+
+- Removed the retired intake classifier, its rescreen command, manifest fields, routing reasons,
+  and classifier-specific tests.
+- Reframed MF-P0-14.04 as source metadata registration, not a project admission decision.
+- Preserved provenance, licensing, allowed-use, integrity, annotation, technical QA, mask truth,
+  and release-authority controls.
+- Verification: 117 focused tests passed across source registration, state, orchestration, tracker,
+  documentation, registry governance, and drafting/fusion; Ruff, Black, diff integrity, tracker
+  rebuild, tracker validation, and tracker report passed. The unqualified worktree-wide run remains
+  unsuitable as acceptance evidence because of known missing governed assets, pre-existing
+  governing-source drift, and subprocess import-path failures.
+- Evidence: `qa/live_verification/source_registration_reconciliation_20260722.json`.

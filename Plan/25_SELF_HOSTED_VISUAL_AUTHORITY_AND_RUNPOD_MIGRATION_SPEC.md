@@ -25,7 +25,7 @@ Video matting providers such as Robust Video Matting remain horizon
 challengers until the existing video go/no-go authority activates them. Image
 masking and multi-person ownership remain the current MaskFactory product.
 
-## 2. Uniform source admission
+## 2. Source registration
 
 The same technical and data rules apply to every source:
 

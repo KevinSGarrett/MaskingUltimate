@@ -1,5 +1,3 @@
-import base64
-import io
 import json
 import sqlite3
 from pathlib import Path
@@ -12,12 +10,9 @@ from PIL import Image, PngImagePlugin
 from maskfactory.cli import main
 from maskfactory.intake import (
     DecodeRejected,
-    LocalSourceSafetyScreener,
-    SourceSafetyVerdict,
     ingest_one,
     inspect_image,
     perceptual_hash64,
-    rescreen_quarantined,
     source_origin,
     write_metadata_stripped,
 )
@@ -109,12 +104,6 @@ def test_jpeg_metadata_removed_while_scan_data_remains_identical(tmp_path: Path)
         assert np.array_equal(np.asarray(before), np.asarray(after))
 
 
-class NamedSafetyScreener:
-    def screen(self, image: Path) -> SourceSafetyVerdict:
-        verdict = "prohibited" if "prohibited" in image.name else "allowed"
-        return SourceSafetyVerdict(verdict, 1, "detector+fixture-vlm", "fixture decision")
-
-
 def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> None:
     incoming = tmp_path / "incoming"
     images = tmp_path / "images"
@@ -137,16 +126,15 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     corrupt.write_bytes(b"broken")
     root_drop = incoming / "root_drop.png"
     _pattern().save(root_drop)
-    prohibited = owned / "prohibited_source.png"
+    sixth_valid = owned / "sixth_valid.png"
     modified = np.asarray(_pattern()).copy()
     modified[20:40, 20:40] = 127
-    Image.fromarray(modified).save(prohibited)
+    Image.fromarray(modified).save(sixth_valid)
 
-    ordered = [*sources, duplicate, undersize, corrupt, root_drop, prohibited]
+    ordered = [*sources, duplicate, undersize, corrupt, root_drop, sixth_valid]
     results = [
         ingest_one(
             path,
-            screener=NamedSafetyScreener(),
             incoming_root=incoming,
             images_root=images,
             database=database,
@@ -164,191 +152,34 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
         "rejected",
         "rejected",
         "quarantined",
-        "quarantined",
+        "ingested",
     ]
     assert results[5].duplicate is True
     assert "missing_or_invalid_source_origin" in results[8].reason
-    assert results[9].reason == "source_safety_prohibited"
-    assert not (images / results[9].image_id).exists()
+    assert results[9].reason == "accepted"
+    assert (images / results[9].image_id).is_dir()
     accepted_manifest = json.loads(results[0].manifest_path.read_text(encoding="utf-8"))
     assert len(accepted_manifest["source"]["phash64"]) == 16
     assert accepted_manifest["source"]["exif_stripped"] is True
-    assert accepted_manifest["source_safety"]["non_configurable"] is True
     with sqlite3.connect(database) as connection:
         counts = dict(connection.execute("SELECT status, count(*) FROM images GROUP BY status"))
-    assert counts == {"ingested": 5, "quarantined": 2, "rejected": 2}
+    assert counts == {"ingested": 6, "quarantined": 1, "rejected": 2}
     events = [json.loads(line) for line in event_log.read_text(encoding="utf-8").splitlines()]
     assert len(events) == 10
     assert sum(event["outcome"] == "duplicate_skipped" for event in events) == 1
 
 
-def test_local_source_safety_is_fail_closed_and_parses_allowed(tmp_path: Path) -> None:
-    image = tmp_path / "source.png"
-    _pattern().save(image)
-
-    def clear_request(_request, _timeout):
-        return json.dumps(
-            {"message": {"content": json.dumps({"decision": "allowed", "reason": "allowed"})}}
-        ).encode()
-
-    clear = LocalSourceSafetyScreener(detector=lambda _path: 2, request=clear_request).screen(image)
-    assert clear == SourceSafetyVerdict("allowed", 2, "qwen2.5vl:7b", "allowed")
-    failed = LocalSourceSafetyScreener(
-        detector=lambda _path: (_ for _ in ()).throw(RuntimeError("detector unavailable"))
-    ).screen(image)
-    assert failed.verdict == "uncertain"
-    assert "detector unavailable" in failed.detail
-
-
-def test_source_safety_downscales_locally_and_retries_strict_json(tmp_path: Path) -> None:
-    image = tmp_path / "large.png"
-    _pattern((2400, 1600)).save(image)
-    payloads = []
-    responses = [
-        {"message": {"content": "not json"}},
-        {"message": {"content": json.dumps({"decision": "allowed", "reason": "allowed source"})}},
-    ]
-
-    def request(request, _timeout):
-        payloads.append(json.loads(request.data))
-        return json.dumps(responses.pop(0)).encode()
-
-    result = LocalSourceSafetyScreener(detector=lambda _path: 2, request=request).screen(image)
-    assert result.verdict == "allowed" and result.person_count == 2
-    assert len(payloads) == 2
-    for payload in payloads:
-        assert payload["options"] == {"temperature": 0, "seed": 1337, "num_predict": 128}
-        review_bytes = base64.b64decode(payload["messages"][0]["images"][0])
-        assert review_bytes != image.read_bytes()
-        with Image.open(io.BytesIO(review_bytes)) as review:
-            assert max(review.size) == 1024
-            assert review.mode == "RGB"
-    assert "prior response was invalid" in payloads[1]["messages"][0]["content"]
-
-
-def test_source_safety_rejects_extra_or_empty_response_fields(tmp_path: Path) -> None:
-    image = tmp_path / "source.png"
-    _pattern().save(image)
-    invalid = json.dumps(
-        {"message": {"content": json.dumps({"decision": "allowed", "reason": ""})}}
-    ).encode()
-    screener = LocalSourceSafetyScreener(detector=lambda _path: 1, request=lambda *_args: invalid)
-    result = screener.screen(image)
-    assert result.verdict == "uncertain"
-    assert "after one retry" in result.detail
-
-
-def test_quarantine_rescreen_promotes_only_matching_allowed_source(tmp_path: Path) -> None:
-    incoming = tmp_path / "incoming"
-    source = incoming / "generated" / "source.png"
-    source.parent.mkdir(parents=True)
-    _pattern().save(source)
-    images = tmp_path / "images"
-    database = tmp_path / "state.sqlite"
-    events = tmp_path / "intake.jsonl"
-
-    class Uncertain:
-        def screen(self, _image):
-            return SourceSafetyVerdict("uncertain", 1, "fixture", "first pass unavailable")
-
-    initial = ingest_one(
-        source,
-        screener=Uncertain(),
-        incoming_root=incoming,
-        images_root=images,
-        database=database,
-        event_log=events,
-    )
-    assert initial.outcome == "quarantined"
-
-    class Allowed:
-        def screen(self, _image):
-            return SourceSafetyVerdict("allowed", 1, "fixture", "allowed")
-
-    promoted = rescreen_quarantined(
-        source,
-        screener=Allowed(),
-        incoming_root=incoming,
-        images_root=images,
-        database=database,
-        event_log=events,
-    )
-    assert promoted.outcome == "ingested"
-    assert not initial.manifest_path.exists()
-    manifest = json.loads(promoted.manifest_path.read_text())
-    assert manifest["reason"] == "accepted_after_source_safety_rescreen"
-    assert manifest["source_safety"]["verdict"] == "allowed"
-    assert manifest["source"]["exif_stripped"] is True
-    with sqlite3.connect(database) as connection:
-        assert connection.execute(
-            "SELECT status FROM images WHERE image_id = ?", (promoted.image_id,)
-        ).fetchone() == ("ingested",)
-    assert json.loads(events.read_text().splitlines()[-1])["action"] == "source_safety_rescreen"
-
-
-def test_quarantine_rescreen_stays_closed_and_refuses_wrong_source(tmp_path: Path) -> None:
-    incoming = tmp_path / "incoming"
-    source = incoming / "generated" / "subject.png"
-    source.parent.mkdir(parents=True)
-    _pattern().save(source)
-    images = tmp_path / "images"
-    database = tmp_path / "state.sqlite"
-    events = tmp_path / "intake.jsonl"
-
-    class Uncertain:
-        def screen(self, _image):
-            return SourceSafetyVerdict("uncertain", 1, "fixture", "uncertain")
-
-    initial = ingest_one(
-        source,
-        screener=Uncertain(),
-        incoming_root=incoming,
-        images_root=images,
-        database=database,
-        event_log=events,
-    )
-    repeated = rescreen_quarantined(
-        source,
-        screener=Uncertain(),
-        incoming_root=incoming,
-        images_root=images,
-        database=database,
-        event_log=events,
-    )
-    assert repeated.outcome == "quarantined" and initial.manifest_path.exists()
-    changed = np.asarray(_pattern()).copy()
-    changed[0, 0] = (1, 2, 3)
-    Image.fromarray(changed).save(source)
-    with pytest.raises(ValueError, match="not an existing quarantined image"):
-        rescreen_quarantined(
-            source,
-            screener=Uncertain(),
-            incoming_root=incoming,
-            images_root=images,
-            database=database,
-            event_log=events,
-        )
-
-
-def test_cli_uses_configured_min_side_but_cannot_disable_source_safety(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_cli_uses_configured_min_side_for_uniform_admission(tmp_path: Path) -> None:
     incoming = tmp_path / "incoming"
     owned = incoming / "owned"
     owned.mkdir(parents=True)
-    source = owned / "prohibited.png"
+    source = owned / "source.png"
     _pattern((400, 400)).save(source)
     config = tmp_path / "pipeline.yaml"
     config.write_text(
-        "intake:\n  min_side: 256\n  source_safety_enabled: false\nstages: {}\n",
+        "intake:\n  min_side: 256\nstages: {}\n",
         encoding="utf-8",
     )
-
-    class ProhibitedScreener:
-        def screen(self, _image: Path) -> SourceSafetyVerdict:
-            return SourceSafetyVerdict("prohibited", 1, "fixture")
-
-    monkeypatch.setattr("maskfactory.intake.LocalSourceSafetyScreener", ProhibitedScreener)
     result = CliRunner().invoke(
         main,
         [
@@ -367,4 +198,4 @@ def test_cli_uses_configured_min_side_but_cannot_disable_source_safety(
         ],
     )
     assert result.exit_code == 0, result.output
-    assert json.loads(result.output)["outcome"] == "quarantined"
+    assert json.loads(result.output)["outcome"] == "ingested"

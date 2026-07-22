@@ -38,7 +38,7 @@ the required human-free `core_autonomous_runtime` profile. Parent IDs from doc 1
 - [ ] MF-P1-04.03 EXIF/metadata strip (PNG lossless; JPG byte-copied, metadata stripped)
 - [ ] MF-P1-04.04 `source_origin` from drop subfolder (incoming\generated|owned|licensed|consented) · root drops → quarantined until sorted
 - [ ] MF-P1-04.05 Compute + store 64-bit pHash (near-duplicate guard for split assignment, doc 12 §1)
-- [ ] MF-P1-04.06 Apply the uniform source-admission contract: exact provenance, rights/allowed-use, integrity, and intake outcome → `accepted` or `quarantined` with a typed reason
+- [ ] MF-P1-04.06 Record exact provenance, rights/allowed-use, integrity, and deterministic intake outcome for every source
 - [ ] MF-P1-04.07 Write manifest skeleton · SQLite row `ingested`
 - [ ] MF-P1-04.08 Test batch: 10 mixed images incl. seeded duplicate, undersize, and quarantine case → all outcomes correct
 

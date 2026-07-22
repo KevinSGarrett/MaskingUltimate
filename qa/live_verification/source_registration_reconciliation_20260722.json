@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "result": "pass",
+  "scope": "S00 source registration and MF-P0-14.04",
+  "project_policy": {
+    "classification_fields": [],
+    "classification_models": [],
+    "classification_routes": [],
+    "registration_metadata": [
+      "provenance",
+      "license",
+      "allowed_use",
+      "annotation",
+      "technical_qa",
+      "authority"
+    ]
+  },
+  "implementation": {
+    "intake_classifier_present": false,
+    "classifier_rescreen_command_present": false,
+    "classifier_manifest_fields_present": false,
+    "classifier_quarantine_reason_present": false,
+    "source_registration_command_present": true
+  },
+  "verification": {
+    "source_registration_and_tracker_tests": {
+      "command": "$env:PYTHONPATH='src'; python -m pytest -q tests/test_intake.py tests/test_state.py tests/test_orchestrator.py tests/test_tracker_modernization_coverage.py tests/test_tracker_completion_profiles.py tests/test_tracker_daz_vertical_slice.py tests/test_ontology_documentation.py",
+      "passed": 69,
+      "failed": 0
+    },
+    "registry_and_drafting_tests": {
+      "command": "python -m pytest -q tests/test_governance_policy.py tests/test_model_registry.py tests/test_model_registry_schema.py tests/test_external_probe.py tests/test_anatomy_v2_drafting.py tests/test_s09_fusion.py",
+      "passed": 48,
+      "failed": 0
+    },
+    "full_suite_observation": {
+      "result": "not_acceptance_evidence",
+      "reason": "The unqualified worktree-wide run includes known missing governed assets, pre-existing governing-source drift, and subprocess import-path failures. Scoped implementation, tracker, registry, drafting, and fusion clusters pass."
+    },
+    "ruff": "pass",
+    "black": "pass",
+    "git_diff_check": "pass",
+    "tracker_validate": "pass",
+    "tracker_items": 827,
+    "tracker_orphans": 0
+  },
+  "authority_boundary": "This evidence changes project source registration only. Provenance, licensing, integrity, annotation, technical QA, mask truth, and release authority remain independently enforced."
+}

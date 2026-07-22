@@ -34,4 +34,4 @@ Goal: use already-built datasets, models, and Civitai workflows to seed MaskFact
 - [ ] MF-P0-14.01 Classify every Civitai detector, workflow, pose pack, and manual-download candidate by MaskFactory role: provider vote, ComfyUI graph reference, stress fixture, QA probe, or reject.
 - [ ] MF-P0-14.02 Register usable auxiliary detector models for shoes/footwear, feet, hair, lips, socks, hands, face bands, armpits, nails, mouth, and any manually supplied rear/accessory/body detectors with hash, path, version, and install target.
 - [ ] MF-P0-14.03 Build a pose/control stress-fixture list from OpenPose/OpenPose+Depth packs covering contact, occlusion, hands-on-body, rear-body, from-below perspective, and difficult body visibility.
-- [ ] MF-P0-14.04 Verify one uniform admission path governed by provenance, license, allowed use, annotation, QA, and authority.
+- [ ] MF-P0-14.04 Record provenance, license, allowed-use, annotation, QA, and authority metadata for every registered source.

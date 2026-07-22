@@ -11831,3 +11831,13 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   diff integrity, tracker validation, and tracker report passed. `MF-P9-13.04` is complete;
   `MF-P9-13.05` and `MF-P9-13.06` remain partial pending full converted/package population.
 - Evidence: `qa/live_verification/external_supervision_live_admission_20260722.json`.
+
+## 2026-07-22 - Qualified source converter live canary
+
+- Ran the role-aware converters on one hash-bound real label case from each admitted source:
+  CelebAMask-HQ hair, LaPa train parsing, and an LV-MHP per-person annotation.
+- All three outputs matched the ignore-mask/part-255 invariant. LV-MHP retained the coarse dress
+  and left/right arm labels as 63,778 ignored pixels rather than inventing atomic anatomy.
+- Thirteen focused converter/package tests and Ruff passed. The converter grants only train-only
+  weighted pseudo-label authority; full package population remains tracked separately.
+- Evidence: `qa/live_verification/external_supervision_converter_live_canary_20260722.json`.

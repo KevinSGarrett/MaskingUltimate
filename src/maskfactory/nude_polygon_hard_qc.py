@@ -19,6 +19,7 @@ from .nude_corpus_intake import (
     load_records,
     rasterize_coco_segmentation,
 )
+from .providers.disagreement import binary_mask_sha256
 
 MIN_MASK_BBOX_IOU = 0.90
 MAX_MASK_BBOX_EDGE_DELTA_PX = 1.5
@@ -101,12 +102,11 @@ def evaluate_polygon_annotation(
     maximum_edge_delta = max(abs(first - second) for first, second in zip(expected, observed))
     if bbox_iou < MIN_MASK_BBOX_IOU and maximum_edge_delta > MAX_MASK_BBOX_EDGE_DELTA_PX:
         raise NudePolygonQcError("polygon_bbox_alignment_failed")
-    packed = np.packbits(mask, axis=None, bitorder="little").tobytes()
     return {
         "raw_label": raw_label,
         "candidate_label": mapped[0]["candidate_label"],
         "candidate_kind": mapped[0]["kind"],
-        "mask_sha256": hashlib.sha256(packed).hexdigest(),
+        "mask_sha256": binary_mask_sha256(mask),
         "mask_pixels": int(mask.sum()),
         "mask_bbox_xyxy": list(observed),
         "annotation_bbox_xyxy": list(expected),
@@ -212,6 +212,18 @@ def run_full_polygon_hard_qc(
                 encodings[result["segmentation_encoding"]] += 1
                 if result["source_annotation_area_matches_decoded_mask"] is False:
                     advisories["source_annotation_area_drift"] += 1
+        masks_by_hash: dict[str, list[dict[str, Any]]] = {}
+        for mask in masks:
+            masks_by_hash.setdefault(str(mask["mask_sha256"]), []).append(mask)
+        for duplicates in masks_by_hash.values():
+            if len(duplicates) < 2:
+                continue
+            duplicate_labels = {str(mask["candidate_label"]) for mask in duplicates}
+            record_reasons.append(
+                "cross_label_mask_collapse"
+                if len(duplicate_labels) > 1
+                else "duplicate_annotation_mask"
+            )
         outcome = "hard_qc_pass_candidate" if not record_reasons and masks else "quarantined_input"
         outcomes[outcome] += 1
         reasons.update(record_reasons)
@@ -234,7 +246,7 @@ def run_full_polygon_hard_qc(
             }
         )
     summary = {
-        "schema_version": "maskfactory.nude_polygon_hard_qc.v2",
+        "schema_version": "maskfactory.nude_polygon_hard_qc.v3",
         "artifact_type": "nude_polygon_full_corpus_hard_qc_summary",
         "status": "PASS_BOUNDED_HARD_QC",
         "registry_sha256": intake["registry"]["self_sha256"],

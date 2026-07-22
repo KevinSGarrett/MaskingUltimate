@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import numpy as np
 import pytest
 
 from maskfactory.nude_polygon_hard_qc import NudePolygonQcError, evaluate_polygon_annotation
+from maskfactory.providers.disagreement import binary_mask_sha256
 
 
 def _crosswalk() -> dict[str, object]:
@@ -34,6 +36,12 @@ def test_real_polygon_contract_materializes_binary_hash_and_preserves_coarse_lab
     assert result["mask_pixels"] == 25
     assert len(result["mask_sha256"]) == 64
     assert result["production_authority"] is False
+
+
+def test_binary_mask_identity_binds_canvas_geometry() -> None:
+    assert binary_mask_sha256(np.zeros((2, 8), dtype=bool)) != binary_mask_sha256(
+        np.zeros((4, 4), dtype=bool)
+    )
 
 
 @pytest.mark.parametrize(

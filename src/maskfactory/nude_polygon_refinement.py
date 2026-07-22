@@ -20,6 +20,7 @@ from .nude_corpus_intake import (
     representative_shards,
     validate_shard,
 )
+from .providers.disagreement import binary_mask_sha256
 
 MIN_SOURCE_RETENTION = 0.70
 MIN_SOURCE_IOU = 0.65
@@ -35,8 +36,7 @@ class NudePolygonRefinementError(ValueError):
 
 
 def _mask_sha256(mask: np.ndarray) -> str:
-    packed = np.packbits(mask.astype(bool), axis=None, bitorder="little").tobytes()
-    return hashlib.sha256(packed).hexdigest()
+    return binary_mask_sha256(np.asarray(mask, dtype=np.bool_))
 
 
 def _bbox(mask: np.ndarray) -> tuple[int, int, int, int]:

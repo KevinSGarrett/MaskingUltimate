@@ -23058,7 +23058,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 48,
+      "percent_complete": 52,
       "notes": [
         {
           "ts": "2026-07-22T09:57:03+00:00",
@@ -23079,12 +23079,17 @@
           "ts": "2026-07-22T11:58:11+00:00",
           "actor": "ai_agent",
           "text": "Polygon refinement now accepts a changed draft only when its real-image contour alignment improves, component fragmentation stays bounded, and all prior drift gates pass. Otherwise the exact immutable parent is returned with explicit no-progress/rejection evidence. Provider/VLM/ownership/certificate gates remain open."
+        },
+        {
+          "ts": "2026-07-22T12:07:17+00:00",
+          "actor": "ai_agent",
+          "text": "All 125,976 polygon masks now use the canonical shape-bound binary identity. Full-corpus rerun quarantined 200 additional records, including 225 duplicate-annotation and 22 cross-label-collapse reason occurrences; 1,319 previously role-eligible masks were removed. Provider/VLM/ownership/certificate gates remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json",
+      "evidence": "qa/live_verification/nude_polygon_hard_qc_20260722.json; qa/live_verification/nude_training_role_gate_20260722.json; qa/live_verification/nude_polygon_v4_requalification_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:58:11+00:00",
+      "updated_at": "2026-07-22T12:07:17+00:00",
       "orphaned": false
     },
     "MF-P4-12.03": {
@@ -23191,7 +23196,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 60,
+      "percent_complete": 62,
       "notes": [
         {
           "ts": "2026-07-22T11:12:16+00:00",
@@ -23212,12 +23217,17 @@
           "ts": "2026-07-22T11:58:12+00:00",
           "actor": "ai_agent",
           "text": "The live CPU refinement path now implements parent-preserving no-progress and regression rejection, rather than returning rejected proposal pixels. A 12-record real canary produced positive boundary gains while synthetic no-evidence input preserved its parent. Full provider/VLM repair-loop execution remains open."
+        },
+        {
+          "ts": "2026-07-22T12:07:19+00:00",
+          "actor": "ai_agent",
+          "text": "Continue-on-exception hard QC now diverts exact duplicate and cross-label-collapsed annotations into quarantine while unrelated records continue. Exact mask identities bind canvas geometry, preventing ambiguous downstream receipt lineage."
         }
       ],
-      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json",
+      "evidence": "qa/live_verification/nude_record_qualification_contract_20260722.json; qa/live_verification/nude_polygon_boundary_nonregression_20260722.json; qa/live_verification/nude_polygon_shape_bound_identity_and_collapse_qc_20260722.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T11:58:12+00:00",
+      "updated_at": "2026-07-22T12:07:19+00:00",
       "orphaned": false
     },
     "MF-P4-12.07": {
